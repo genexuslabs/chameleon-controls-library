@@ -9,7 +9,7 @@ import { getSvgContent, iconContent } from "./requests";
 export class ChIcon {
   private io?: IntersectionObserver;
 
-  @Element() element: HTMLElement;
+  @Element() element: HTMLChIconElement;
 
   /*********************************
   PROPERTIES & STATE
@@ -44,7 +44,7 @@ export class ChIcon {
   }
 
   disconnectedCallback() {
-    if (this.io) {
+    if (this.io !== undefined) {
       this.io.disconnect();
       this.io = undefined;
     }

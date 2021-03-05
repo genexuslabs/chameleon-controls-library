@@ -17,7 +17,7 @@
   "scripts": {
     "build": "stencil build --docs",
     "generate": "stencil generate",
-    "lint": "eslint ./src --fix",
+    "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
@@ -30,12 +30,14 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@stencil/eslint-plugin": "^0.3.1",
     "@types/jest": "^26.0.20",
     "@typescript-eslint/eslint-plugin": "^2.32.0",
     "@typescript-eslint/parser": "^2.32.0",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.22.0",
     "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
     "prettier": "^2.2.1",

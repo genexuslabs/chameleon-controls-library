@@ -1,0 +1,59 @@
+{
+  "name": "@genexus/chameleon",
+  "version": "0.0.1",
+  "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
+  "main": "dist/index.cjs.js",
+  "module": "dist/custom-elements/index.js",
+  "es2015": "dist/esm/index.mjs",
+  "es2017": "dist/esm/index.mjs",
+  "types": "dist/custom-elements/index.d.ts",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/chameleon/chameleon.esm.js",
+  "files": [
+    "dist/",
+    "loader/"
+  ],
+  "scripts": {
+    "build": "stencil build --docs",
+    "generate": "stencil generate",
+    "lint": "eslint ./src --fix",
+    "start": "stencil build --dev --watch --serve",
+    "test": "stencil test --spec --e2e",
+    "test.watch": "stencil test --spec --e2e --watchAll",
+    "validate": "npm run test && npm run build",
+    "validate.ci": "npm run test && npm run build -- --max-workers 1 --debug"
+  },
+  "dependencies": {
+    "@stencil/core": "^2.0.1",
+    "@stencil/sass": "^1.1.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.20",
+    "@typescript-eslint/eslint-plugin": "^2.32.0",
+    "@typescript-eslint/parser": "^2.32.0",
+    "eslint": "^6.6.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
+    "prettier": "^2.2.1",
+    "typescript": "^4.2.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{tsx,ts,jsx,js,css,json,md}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{tsx,ts,jsx,js}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
+}

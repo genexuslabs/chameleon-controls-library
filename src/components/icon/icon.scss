@@ -1,0 +1,16 @@
+:host {
+  /**
+  * @prop --icon-size: - Size of the icon (sets both width and height)
+  * @prop --icon-color: - Color of the icon (sets the SVG's `fill` property)
+  */
+
+  display: inline-flex;
+  svg {
+    width: var(--icon-size);
+    height: var(--icon-size);
+    * {
+      fill: var(--icon-color);
+    }
+  }
+  line-height: 0;
+}

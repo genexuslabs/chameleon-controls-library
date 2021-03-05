@@ -21,8 +21,8 @@
     "start": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
-    "validate": "npm run test && npm run build",
-    "validate.ci": "npm run test && npm run build -- --max-workers 1 --debug"
+    "validate": "npm run lint && npm run test && npm run build",
+    "validate.ci": "npm run lint && npm run test && npm run build -- --max-workers 1 --debug"
   },
   "dependencies": {
     "@stencil/core": "^2.0.1",
@@ -32,6 +32,7 @@
   "devDependencies": {
     "@stencil/eslint-plugin": "^0.3.1",
     "@types/jest": "^26.0.20",
+    "@types/puppeteer": "^5.4.2",
     "@typescript-eslint/eslint-plugin": "^2.32.0",
     "@typescript-eslint/parser": "^2.32.0",
     "eslint": "^6.6.0",
@@ -39,8 +40,11 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.22.0",
     "husky": "^3.0.9",
+    "jest": "^26.6.3",
+    "jest-cli": "^26.6.3",
     "lint-staged": "^9.4.2",
     "prettier": "^2.2.1",
+    "puppeteer": "^5.5.0",
     "typescript": "^4.2.3"
   },
   "husky": {

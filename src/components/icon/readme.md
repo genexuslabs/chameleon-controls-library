@@ -13,10 +13,9 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 
 ## CSS Custom Properties
 
-| Name           | Description                                          |
-| -------------- | ---------------------------------------------------- |
-| `--icon-color` | - Color of the icon (sets the SVG's `fill` property) |
-| `--icon-size`  | - Size of the icon (sets both width and height)      |
+| Name          | Description                                     |
+| ------------- | ----------------------------------------------- |
+| `--icon-size` | - Size of the icon (sets both width and height) |
 
 ---
 

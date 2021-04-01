@@ -43,6 +43,10 @@ export class ChIcon {
     });
   }
 
+  componentDidLoad() {
+    console.log("ch-icon loaded");
+  }
+
   disconnectedCallback() {
     if (this.io !== undefined) {
       this.io.disconnect();

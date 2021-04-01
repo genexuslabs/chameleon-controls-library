@@ -1,45 +1,50 @@
+:host(:not([color="auto"])) {
+  /*"
+  * @prop --icon-color: - Color of the icon (sets the SVG's `fill` property)
+  */
+  svg {
+    * {
+      fill: var(--icon-color);
+    }
+  }
+}
 :host {
   /**
   * @prop --icon-size: - Size of the icon (sets both width and height)
-  * @prop --icon-color: - Color of the icon (sets the SVG's `fill` property)
   */
-
   display: inline-flex;
   svg {
     width: var(--icon-size);
     height: var(--icon-size);
-    * {
-      fill: var(--icon-color);
-    }
   }
   line-height: 0;
 
   //Composed icons colors
   .icons01 {
-    fill: var(--icons01-enabled);
+    fill: var(--icons01-enabled) !important;
   }
   .icons02 {
-    fill: var(--icons02-enabled);
+    fill: var(--icons02-enabled) !important;
   }
   .icons03 {
-    fill: var(--icons03-enabled);
+    fill: var(--icons03-enabled) !important;
   }
   .icons04 {
-    fill: var(--icons04-enabled);
+    fill: var(--icons04-enabled) !important;
   }
   .icons05 {
-    fill: var(--icons05-enabled);
+    fill: var(--icons05-enabled) !important;
   }
   .icons06 {
-    fill: var(--icons06-enabled);
+    fill: var(--icons06-enabled) !important;
   }
   .icons07 {
-    fill: var(--icons07-enabled);
+    fill: var(--icons07-enabled) !important;
   }
   .icons08 {
-    fill: var(--icons08-enabled);
+    fill: var(--icons08-enabled) !important;
   }
   .icons09 {
-    fill: var(--icons09-enabled);
+    fill: var(--icons09-enabled) !important;
   }
 }

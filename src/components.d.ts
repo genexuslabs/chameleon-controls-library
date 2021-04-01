@@ -16,6 +16,11 @@ export namespace Components {
      */
     src: string;
   }
+  interface ChSidebarMenu {
+    title: string;
+  }
+  interface ChSidebarMenuList {}
+  interface ChSidebarMenuListItem {}
 }
 declare global {
   interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {}
@@ -23,8 +28,32 @@ declare global {
     prototype: HTMLChIconElement;
     new (): HTMLChIconElement;
   };
+  interface HTMLChSidebarMenuElement
+    extends Components.ChSidebarMenu,
+      HTMLStencilElement {}
+  var HTMLChSidebarMenuElement: {
+    prototype: HTMLChSidebarMenuElement;
+    new (): HTMLChSidebarMenuElement;
+  };
+  interface HTMLChSidebarMenuListElement
+    extends Components.ChSidebarMenuList,
+      HTMLStencilElement {}
+  var HTMLChSidebarMenuListElement: {
+    prototype: HTMLChSidebarMenuListElement;
+    new (): HTMLChSidebarMenuListElement;
+  };
+  interface HTMLChSidebarMenuListItemElement
+    extends Components.ChSidebarMenuListItem,
+      HTMLStencilElement {}
+  var HTMLChSidebarMenuListItemElement: {
+    prototype: HTMLChSidebarMenuListItemElement;
+    new (): HTMLChSidebarMenuListItemElement;
+  };
   interface HTMLElementTagNameMap {
     "ch-icon": HTMLChIconElement;
+    "ch-sidebar-menu": HTMLChSidebarMenuElement;
+    "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
+    "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
   }
 }
 declare namespace LocalJSX {
@@ -38,8 +67,16 @@ declare namespace LocalJSX {
      */
     src?: string;
   }
+  interface ChSidebarMenu {
+    title?: string;
+  }
+  interface ChSidebarMenuList {}
+  interface ChSidebarMenuListItem {}
   interface IntrinsicElements {
     "ch-icon": ChIcon;
+    "ch-sidebar-menu": ChSidebarMenu;
+    "ch-sidebar-menu-list": ChSidebarMenuList;
+    "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
   }
 }
 export { LocalJSX as JSX };
@@ -47,6 +84,12 @@ declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
       "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+      "ch-sidebar-menu": LocalJSX.ChSidebarMenu &
+        JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
+      "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList &
+        JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
+      "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem &
+        JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
     }
   }
 }

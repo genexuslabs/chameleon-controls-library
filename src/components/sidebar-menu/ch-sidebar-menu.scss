@@ -1,0 +1,35 @@
+:host {
+  display: block;
+
+  #menu {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 240px;
+    background-color: rgb(223, 223, 223);
+
+    #title {
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 16px;
+      margin: 0;
+    }
+
+    #main {
+      overflow-y: auto;
+      position: fixed;
+      width: 100%;
+      z-index: 10;
+    }
+
+    #footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 240px;
+      box-sizing: border-box;
+      z-index: 20;
+    }
+  }
+}

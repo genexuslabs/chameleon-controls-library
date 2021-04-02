@@ -17,7 +17,7 @@ export namespace Components {
     src: string;
   }
   interface ChSidebarMenu {
-    title: string;
+    menuTitle: string;
   }
   interface ChSidebarMenuList {}
   interface ChSidebarMenuListItem {}
@@ -68,7 +68,7 @@ declare namespace LocalJSX {
     src?: string;
   }
   interface ChSidebarMenu {
-    title?: string;
+    menuTitle?: string;
   }
   interface ChSidebarMenuList {}
   interface ChSidebarMenuListItem {}

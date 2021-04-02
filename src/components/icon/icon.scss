@@ -4,7 +4,7 @@
   */
   svg {
     * {
-      fill: var(--icon-color);
+      fill: var(--icon-color) !important;
     }
   }
 }
@@ -20,31 +20,31 @@
   line-height: 0;
 
   //Composed icons colors
-  .icons01 {
+  path.icons01 {
     fill: var(--icons01-enabled) !important;
   }
-  .icons02 {
+  path.icons02 {
     fill: var(--icons02-enabled) !important;
   }
-  .icons03 {
+  path.icons03 {
     fill: var(--icons03-enabled) !important;
   }
-  .icons04 {
+  path.icons04 {
     fill: var(--icons04-enabled) !important;
   }
-  .icons05 {
+  path.icons05 {
     fill: var(--icons05-enabled) !important;
   }
-  .icons06 {
+  path.icons06 {
     fill: var(--icons06-enabled) !important;
   }
-  .icons07 {
+  path.icons07 {
     fill: var(--icons07-enabled) !important;
   }
-  .icons08 {
+  path.icons08 {
     fill: var(--icons08-enabled) !important;
   }
-  .icons09 {
+  path.icons09 {
     fill: var(--icons09-enabled) !important;
   }
 }

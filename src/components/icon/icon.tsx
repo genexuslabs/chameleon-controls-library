@@ -43,9 +43,7 @@ export class ChIcon {
     });
   }
 
-  componentDidLoad() {
-    console.log("ch-icon loaded");
-  }
+  componentDidLoad() {}
 
   disconnectedCallback() {
     if (this.io !== undefined) {

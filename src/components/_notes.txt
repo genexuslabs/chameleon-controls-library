@@ -1,0 +1,37 @@
+//LIST ONE
+<li class="item list-1__item collapsable uncollapsed lastUl1Opened" id="carnes" style="max-height: 136px; transition-duration: 0.225s;">
+    <div class="list-1__main-container main-container">
+        <div class="left-container">
+            <span class="icon custom-icon">
+                <img src="assets/projects.svg" alt="projects">
+            </span>
+            <span class="text">
+                Carnes
+            </span>
+        </div>
+        <span class="icon arrow-icon">
+            <img src="assets/arrow-top.svg" alt="arrow">
+        </span>
+    </div>
+     <ul class="list-2"> ...
+
+//LIST TWO
+<li class="item list-2__item collapsable item--active" id="carnes-blancas" style="max-height: 32px; transition-duration: 0.225s;">
+    <div class="list-2__main-container main-container">
+        <span class="icon arrow-icon">
+            <img src="assets/arrow-right.svg" alt="arrow-right">
+        </span>
+        <span class="text">
+            carnes blancas
+        </span>
+    </div>
+    <ul class="list-3"> ...
+
+//LIST THREE
+<li class="item list-3__item" id="merluza">
+    <div class="main-container">
+        <span class="text">
+            Merluza
+        </span>
+    </div>
+</li>

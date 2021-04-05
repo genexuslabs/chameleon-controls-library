@@ -17,6 +17,22 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 | ------------- | ----------------------------------------------- |
 | `--icon-size` | - Size of the icon (sets both width and height) |
 
+## Dependencies
+
+### Used by
+
+- [ch-sidebar-menu](../sidebar-menu)
+- [ch-sidebar-menu-list-item](../sidebar-menu-list-item)
+
+### Graph
+
+```mermaid
+graph TD;
+  ch-sidebar-menu --> ch-icon
+  ch-sidebar-menu-list-item --> ch-icon
+  style ch-icon fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ---
 
 _Built with [StencilJS](https://stenciljs.com/)_

@@ -8,7 +8,58 @@
     <script nomodule src="/build/chameleon.js"></script>
   </head>
   <body>
-    <ch-sidebar-menu title="menu">
+
+    <ch-sidebar-menu menu-title="menu">
+      <ch-sidebar-menu-list>
+        <ch-sidebar-menu-list-item>
+          Carnes
+          <ch-sidebar-menu-list slot="list">
+            <ch-sidebar-menu-list-item>
+              Rojas
+              <ch-sidebar-menu-list slot="list">
+                <ch-sidebar-menu-list-item>
+                  Vaca
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item>
+                  Ternera
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item>
+                  Cerdo
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item>
+                  Toro
+                </ch-sidebar-menu-list-item>
+              </ch-sidebar-menu-list>
+            </ch-sidebar-menu-list-item>
+            <ch-sidebar-menu-list-item>
+              Blancas
+              <ch-sidebar-menu-list slot="list">
+                <ch-sidebar-menu-list-item>
+                  Pollo
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item>
+                  Pavo
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item>
+                  Conejo
+                </ch-sidebar-menu-list-item>
+              </ch-sidebar-menu-list>
+            </ch-sidebar-menu-list-item>
+            <ch-sidebar-menu-list-item>
+              Pescado
+            </ch-sidebar-menu-list-item>
+          </ch-sidebar-menu-list>
+        </ch-sidebar-menu-list-item>
+        <ch-sidebar-menu-list-item>
+          Verduras
+        </ch-sidebar-menu-list-item>
+        <ch-sidebar-menu-list-item>
+          Frutas
+        </ch-sidebar-menu-list-item>
+        <ch-sidebar-menu-list-item>
+          Condimentos
+        </ch-sidebar-menu-list-item>
+      </ch-sidebar-menu-list>
       <div slot="footer">something on the footer</div>
     </ch-sidebar-menu>
   </body>

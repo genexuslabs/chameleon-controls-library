@@ -8,6 +8,10 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
   interface ChIcon {
     /**
+     * If enabled, the icon will display its native color.
+     */
+    autoColor: boolean;
+    /**
      * If enabled, the icon will be loaded lazily when it's visible in the viewport.
      */
     lazy: boolean;
@@ -29,6 +33,10 @@ declare global {
 }
 declare namespace LocalJSX {
   interface ChIcon {
+    /**
+     * If enabled, the icon will display its native color.
+     */
+    autoColor?: boolean;
     /**
      * If enabled, the icon will be loaded lazily when it's visible in the viewport.
      */

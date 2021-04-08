@@ -21,6 +21,11 @@ export class ChIcon {
   @Prop() lazy = false;
 
   /**
+   * If enabled, the icon will display its native color.
+   */
+  @Prop({ reflect: true }) autoColor = false;
+
+  /**
    * The URL of the icon.
    */
   @Prop({ reflect: true }) src = "";

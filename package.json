@@ -22,7 +22,8 @@
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "validate": "npm run lint && npm run test && npm run build",
-    "validate.ci": "npm run lint && npm run test && npm run build -- --max-workers 1 --debug"
+    "validate.ci": "npm run lint && npm run test && npm run build -- --max-workers 1 --debug",
+    "storybook": "start-storybook -p 9001 -c .storybook -s www"
   },
   "dependencies": {
     "@stencil/core": "^2.0.1",
@@ -30,11 +31,14 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.13.14",
     "@stencil/eslint-plugin": "^0.3.1",
+    "@storybook/html": "^6.2.5",
     "@types/jest": "^26.0.20",
     "@types/puppeteer": "^5.4.2",
     "@typescript-eslint/eslint-plugin": "^2.32.0",
     "@typescript-eslint/parser": "^2.32.0",
+    "babel-loader": "^8.2.2",
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",

@@ -6,55 +6,48 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-  interface ChIcon {
-    /**
-     * If enabled, the icon will display its native color.
-     */
-    autoColor: boolean;
-    /**
-     * If enabled, the icon will be loaded lazily when it's visible in the viewport.
-     */
-    lazy: boolean;
-    /**
-     * The URL of the icon.
-     */
-    src: string;
-  }
+    interface ChIcon {
+        /**
+          * If enabled, the icon will be loaded lazily when it's visible in the viewport.
+         */
+        "lazy": boolean;
+        /**
+          * The URL of the icon.
+         */
+        "src": string;
+    }
 }
 declare global {
-  interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {}
-  var HTMLChIconElement: {
-    prototype: HTMLChIconElement;
-    new (): HTMLChIconElement;
-  };
-  interface HTMLElementTagNameMap {
-    "ch-icon": HTMLChIconElement;
-  }
+    interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {
+    }
+    var HTMLChIconElement: {
+        prototype: HTMLChIconElement;
+        new (): HTMLChIconElement;
+    };
+    interface HTMLElementTagNameMap {
+        "ch-icon": HTMLChIconElement;
+    }
 }
 declare namespace LocalJSX {
-  interface ChIcon {
-    /**
-     * If enabled, the icon will display its native color.
-     */
-    autoColor?: boolean;
-    /**
-     * If enabled, the icon will be loaded lazily when it's visible in the viewport.
-     */
-    lazy?: boolean;
-    /**
-     * The URL of the icon.
-     */
-    src?: string;
-  }
-  interface IntrinsicElements {
-    "ch-icon": ChIcon;
-  }
+    interface ChIcon {
+        /**
+          * If enabled, the icon will be loaded lazily when it's visible in the viewport.
+         */
+        "lazy"?: boolean;
+        /**
+          * The URL of the icon.
+         */
+        "src"?: string;
+    }
+    interface IntrinsicElements {
+        "ch-icon": ChIcon;
+    }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
-  export namespace JSX {
-    interface IntrinsicElements {
-      "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+    export namespace JSX {
+        interface IntrinsicElements {
+            "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+        }
     }
-  }
 }

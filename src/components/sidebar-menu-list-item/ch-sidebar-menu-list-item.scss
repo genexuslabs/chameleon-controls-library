@@ -89,6 +89,10 @@
     }
   }
 }
+:host(.list-two__item.collapsable) {
+  position: relative;
+  left: -7px;
+}
 :host(.list-two__item.uncollapsed) {
   .arrow-icon {
     transform: rotate(90deg);

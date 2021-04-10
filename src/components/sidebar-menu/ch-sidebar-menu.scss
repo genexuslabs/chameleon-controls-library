@@ -4,6 +4,27 @@ $backgroundColor: rgba(237, 237, 237);
 :host {
   display: block;
 
+  /*SCROLLBAR*/
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: black;
+    border-radius: 3px;
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 3px;
+  }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: red;
+    cursor: pointer;
+  }
+
   #menu {
     background-color: $backgroundColor;
     font-family: "Source Sans Pro", sans-serif;

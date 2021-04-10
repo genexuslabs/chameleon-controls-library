@@ -84,6 +84,7 @@ declare namespace LocalJSX {
      * ***************** PROPS *****************
      */
     menuTitle?: string;
+    onItemClicked?: (event: CustomEvent<any>) => void;
     singleListOpen?: boolean;
   }
   interface ChSidebarMenuList {}

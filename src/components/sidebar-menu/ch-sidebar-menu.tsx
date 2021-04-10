@@ -6,6 +6,8 @@ import {
   Prop,
   getAssetPath,
   State,
+  Event,
+  EventEmitter,
 } from "@stencil/core";
 
 @Component({
@@ -15,6 +17,7 @@ import {
   assetsDirs: ["sidebar-menu-assets"],
 })
 export class ChSidebarMenu {
+  @Event() itemClicked: EventEmitter;
   @Element() el: HTMLChSidebarMenuElement;
 
   private iconArrowLeft: string = getAssetPath(
@@ -90,12 +93,7 @@ export class ChSidebarMenu {
               //set current item as active
               item.classList.add("item--active");
 
-              //Event
-              // itemId = item.getAttribute("id");
-              // let itemClickedEvent = new CustomEvent("item-clicked", {
-              //   detail: { itemId: itemId },
-              // });
-              // document.dispatchEvent(itemClickedEvent);
+              //Emmit event from the selected item
             }
           }.bind(this)
         );
@@ -156,7 +154,7 @@ export class ChSidebarMenu {
     //This is an optional parameter. Applies if 'data-single-ul1-open' attribute is present on #menu
     if (this.singleListOpen) {
       const collapsableListOneItems = document.querySelectorAll(
-        ".collapsable.list-one__item"
+        ".list-one__item"
       );
       Array.from(collapsableListOneItems).forEach(
         function (item) {
@@ -316,15 +314,40 @@ export class ChSidebarMenu {
         );
       }.bind(this)
     );
+
+    //REPOSITION INDICATOR ON SCROLL
+    var timer = null;
+    this.main.addEventListener(
+      "scroll",
+      function (e) {
+        //get reference to current active item
+        const currentActiveItem = document.querySelector(".item--active");
+        if (currentActiveItem !== null) {
+          let currentActiveItemTopPosition = currentActiveItem.getBoundingClientRect()
+            .y;
+          this.indicator.classList.add("speed-zero");
+          this.indicator.style.top = currentActiveItemTopPosition + "px";
+
+          //detect when scrolling has stopped
+          if (timer !== null) {
+            clearTimeout(timer);
+          }
+          timer = setTimeout(
+            function () {
+              this.indicator.classList.remove("speed-zero");
+            }.bind(this),
+            50
+          );
+        }
+      }.bind(this)
+    );
   } // End of ComponentDidLoad
 
   //REPOSITION INDICATOR AFTER MENU COLLAPSE
   repositionIndicatorAfterMenuCollapse() {
     const activeItem = this.el.querySelector(".item--active");
-    console.log("activeItem", activeItem);
     if (activeItem !== null) {
       const closestL1 = activeItem.closest(".list-one__item");
-      console.log("closestL1", closestL1);
       if (closestL1 !== null) {
         const closestL1MainContainer = closestL1.shadowRoot.querySelector(
           ".main-container"

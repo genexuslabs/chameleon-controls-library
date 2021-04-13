@@ -11,15 +11,22 @@
     &:hover {
       background-color: rgba(223, 221, 221, 0.741);
     }
-    &:active {
-      background-color: rgba(196, 196, 196, 0.741);
-    }
   }
 }
 :host(.collapsable) {
   overflow: hidden;
 }
-
+:host(.item--active) {
+  .main-container {
+    background-color: rgba(197, 197, 197, 0.741);
+  }
+}
+//LIST ITEM
+:host(.item) {
+  .main-container:active {
+    background-color: rgba(197, 197, 197, 0.741);
+  }
+}
 // LIST ONE
 :host(.list-one__item) {
   .main-container {
@@ -89,9 +96,10 @@
     }
   }
 }
-:host(.list-two__item.collapsable) {
-  position: relative;
-  left: -7px;
+:host(.list-two__item:not(.collapsable)) {
+  .main-container {
+    padding-inline-start: 51px;
+  }
 }
 :host(.list-two__item.uncollapsed) {
   .arrow-icon {
@@ -104,10 +112,5 @@
     padding-inline-start: 73px;
     padding-top: 5px;
     padding-bottom: 5px;
-
-    .left-container {
-      .icon {
-      }
-    }
   }
 }

@@ -38,13 +38,14 @@ export class ChSidebarMenu {
   /*******************
    * PROPS
    *******************/
-  /*
+
+  /**
    * The menu title
    */
   @Prop() menuTitle: string;
 
-  /*
-   * The presence of this attribute allows the menu to have only one list open at the same time
+  /**
+   * The presence of this attribute allows the menu to have only one list opened at the same time
    */
   @Prop() singleListOpen: boolean = false;
 
@@ -83,7 +84,7 @@ export class ChSidebarMenu {
       function (item) {
         item.addEventListener(
           "click",
-          function (e) {
+          function () {
             if (!this.menu.classList.contains("collapsed")) {
               //remove current active item class
               const currentActiveItem = document.querySelector(".item--active");
@@ -108,7 +109,7 @@ export class ChSidebarMenu {
         const mainContainer = item.shadowRoot.querySelector(".main-container");
         mainContainer.addEventListener(
           "click",
-          function (e) {
+          function () {
             if (
               item.classList.contains("list-one__item") &&
               this.menu.classList.contains("collapsed")
@@ -116,18 +117,12 @@ export class ChSidebarMenu {
               //If item clicked is type 1, and menu is collapsed, just uncollapse the menu.
               this.collapseButton.click();
             } else {
-              let uncollapsed;
-              let actualMaxHeight = parseInt(
-                (item as HTMLElement).style.maxHeight.slice(0, -2)
-              );
               this.toggleIcon(item); //This function has to be before  uncollapseList or collapseList.
               this.setTransitionSpeed(item);
               if (item.classList.contains("uncollapsed")) {
                 this.uncollapseList(item);
-                uncollapsed = true;
               } else {
                 this.collapseList(item);
-                uncollapsed = false;
               }
               //If this item is type 2, then update list 1 transition speed and maxheight
               if (item.classList.contains("list-two__item")) {
@@ -163,7 +158,7 @@ export class ChSidebarMenu {
           );
           mainContainer.addEventListener(
             "click",
-            function (e) {
+            function () {
               if (!this.menu.classList.contains("collapsed")) {
                 const lastUl1Opened = document.querySelector(".lastUl1Opened");
                 if (
@@ -203,7 +198,7 @@ export class ChSidebarMenu {
           setTimeOutDelay = 600; //This value should be the same as the #menu without .collapse-faster transition speed value.
         }
         this.menu.classList.add("collapsing");
-        //hideIndicator();
+        this.hideIndicator();
         setTimeout(
           function () {
             if (this.menu.classList.contains("collapsed")) {
@@ -228,9 +223,12 @@ export class ChSidebarMenu {
               );
             }
             this.menu.classList.remove("collapsing");
-            setTimeout(function () {
-              //showIndicator();
-            }, 400);
+            setTimeout(
+              function () {
+                this.showIndicator();
+              }.bind(this),
+              400
+            );
           }.bind(this),
           setTimeOutDelay
         );
@@ -250,12 +248,10 @@ export class ChSidebarMenu {
         const mainContainer = item.shadowRoot.querySelector(".main-container");
         mainContainer.addEventListener(
           "mouseenter",
-          function (event) {
-            console.log("item", item.slot);
+          function () {
             if (this.menu.classList.contains("collapsed")) {
               itemTooltip.classList.add("visible");
               itemTooltip.innerHTML = item.childNodes[0].nodeValue;
-              console.log(itemTooltip.innerHTML);
               const itemTopPosition = item.getBoundingClientRect().y;
               itemTooltip.style.top = itemTopPosition + "px";
             }
@@ -263,7 +259,7 @@ export class ChSidebarMenu {
         );
         mainContainer.addEventListener(
           "mouseleave",
-          function (event) {
+          function () {
             if (this.menu.classList.contains("collapsed")) {
               itemTooltip.classList.remove("visible");
             }
@@ -319,7 +315,7 @@ export class ChSidebarMenu {
     var timer = null;
     this.main.addEventListener(
       "scroll",
-      function (e) {
+      function () {
         //get reference to current active item
         const currentActiveItem = document.querySelector(".item--active");
         if (currentActiveItem !== null) {
@@ -379,6 +375,15 @@ export class ChSidebarMenu {
     this.indicator.style.height = activeItemMainContainerHeight + "px";
   }
 
+  //HIDE INDICATOR
+  hideIndicator() {
+    this.indicator.classList.add("hide");
+  }
+  //SHOW INDICATOR
+  showIndicator() {
+    this.indicator.classList.remove("hide");
+  }
+
   collapseUncollapsedLists1() {
     let uncollapsedLists1Items = document.querySelectorAll(
       ".list-one__item.uncollapsed"
@@ -428,11 +433,8 @@ export class ChSidebarMenu {
 
   /*UPDATE LIST ITEM 1 TRANSITION SPEED*/
   updateListItem1TransitionSpeed(item, height) {
-    let transitionSpeed = 0;
     if (height > this.topHeightSpeed) {
-      transitionSpeed = this.topHeightSpeed;
-    } else {
-      transitionSpeed = height;
+      height = this.topHeightSpeed;
     }
     item.style.transitionDuration = height / this.speedDivisionValue + "s";
   }

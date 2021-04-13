@@ -22,9 +22,12 @@ export namespace Components {
   }
   interface ChSidebarMenu {
     /**
-     * ***************** PROPS *****************
+     * The menu title
      */
     menuTitle: string;
+    /**
+     * The presence of this attribute allows the menu to have only one list opened at the same time
+     */
     singleListOpen: boolean;
   }
   interface ChSidebarMenuList {}
@@ -81,10 +84,13 @@ declare namespace LocalJSX {
   }
   interface ChSidebarMenu {
     /**
-     * ***************** PROPS *****************
+     * The menu title
      */
     menuTitle?: string;
     onItemClicked?: (event: CustomEvent<any>) => void;
+    /**
+     * The presence of this attribute allows the menu to have only one list opened at the same time
+     */
     singleListOpen?: boolean;
   }
   interface ChSidebarMenuList {}

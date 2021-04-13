@@ -34,12 +34,6 @@
   "devDependencies": {
     "@babel/core": "^7.13.15",
     "@stencil/eslint-plugin": "^0.3.1",
-    "@storybook/addon-actions": "^6.2.7",
-    "@storybook/addon-essentials": "^6.2.7",
-    "@storybook/addon-knobs": "^6.2.7",
-    "@storybook/addon-links": "^6.2.7",
-    "@storybook/addon-notes": "^5.3.21",
-    "@storybook/html": "^6.2.7",
     "@types/jest": "^26.0.20",
     "@types/puppeteer": "^5.4.2",
     "@typescript-eslint/eslint-plugin": "^2.32.0",

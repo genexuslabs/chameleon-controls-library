@@ -11,12 +11,18 @@ import {
   tag: "ch-sidebar-menu-list-item",
   styleUrl: "ch-sidebar-menu-list-item.scss",
   shadow: true,
-  assetsDirs: ["assets"],
+  assetsDirs: ["sidebar-menu-list-item-assets"],
 })
 export class ChSidebarMenuListItem {
-  private listOneIcon: string = getAssetPath(`./assets/projects.svg`);
-  private arrowTop: string = getAssetPath(`./assets/arrow-top.svg`);
-  private arrowRight: string = getAssetPath(`./assets/arrow-right.svg`);
+  private listOneIcon: string = getAssetPath(
+    `./sidebar-menu-list-item-assets/projects.svg`
+  );
+  private arrowTop: string = getAssetPath(
+    `./sidebar-menu-list-item-assets/arrow-top.svg`
+  );
+  private arrowRight: string = getAssetPath(
+    `./sidebar-menu-list-item-assets/arrow-right.svg`
+  );
 
   @Element() el: HTMLChSidebarMenuListItemElement;
 

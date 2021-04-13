@@ -1,13 +1,3 @@
-# ch-sidebar-menu
-
-A sidebar menu that collapses
-
-<!-- Auto Generated Below -->
-
-## Usage
-
-### Colors Example
-
 ```
     <ch-sidebar-menu menu-title="menu">
       <ch-sidebar-menu-list>
@@ -66,40 +56,3 @@ A sidebar menu that collapses
       <div slot="footer">put somehting usefull on the footer</div>
     </ch-sidebar-menu>
 ```
-
-## Properties
-
-| Property         | Attribute          | Description                                                                                  | Type      | Default     |
-| ---------------- | ------------------ | -------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `menuTitle`      | `menu-title`       | The menu title                                                                               | `string`  | `undefined` |
-| `singleListOpen` | `single-list-open` | The presence of this attribute allows the menu to have only one list opened at the same time | `boolean` | `false`     |
-
-## Events
-
-| Event         | Description | Type               |
-| ------------- | ----------- | ------------------ |
-| `itemClicked` |             | `CustomEvent<any>` |
-
-## CSS Custom Properties
-
-| Name                      | Description                      |
-| ------------------------- | -------------------------------- |
-| `--menu-background-color` | The background color of the menu |
-
-## Dependencies
-
-### Depends on
-
-- [ch-icon](../icon)
-
-### Graph
-
-```mermaid
-graph TD;
-  ch-sidebar-menu --> ch-icon
-  style ch-sidebar-menu fill:#f9f,stroke:#333,stroke-width:4px
-```
-
----
-
-_Built with [StencilJS](https://stenciljs.com/)_

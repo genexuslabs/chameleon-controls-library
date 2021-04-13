@@ -1,15 +1,26 @@
-# ch-sidebar-menu
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
 
-A sidebar menu that collapses
+    <script type="module" src="/build/stencil-starter-project-name.esm.js"></script>
+    <script nomodule src="/build/stencil-starter-project-name.js"></script>
+  </head>
+  <body>
+    <!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+  </head>
+  <body>
 
-<!-- Auto Generated Below -->
-
-## Usage
-
-### Colors Example
-
-```
-    <ch-sidebar-menu menu-title="menu">
+    <ch-sidebar-menu menu-title="menu" style="--menu-backgruond-color: red">
       <ch-sidebar-menu-list>
         <ch-sidebar-menu-list-item id="colors">
           Colors
@@ -65,41 +76,8 @@ A sidebar menu that collapses
       </ch-sidebar-menu-list>
       <div slot="footer">put somehting usefull on the footer</div>
     </ch-sidebar-menu>
-```
+  </body>
+</html>
 
-## Properties
-
-| Property         | Attribute          | Description                                                                                  | Type      | Default     |
-| ---------------- | ------------------ | -------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `menuTitle`      | `menu-title`       | The menu title                                                                               | `string`  | `undefined` |
-| `singleListOpen` | `single-list-open` | The presence of this attribute allows the menu to have only one list opened at the same time | `boolean` | `false`     |
-
-## Events
-
-| Event         | Description | Type               |
-| ------------- | ----------- | ------------------ |
-| `itemClicked` |             | `CustomEvent<any>` |
-
-## CSS Custom Properties
-
-| Name                      | Description                      |
-| ------------------------- | -------------------------------- |
-| `--menu-background-color` | The background color of the menu |
-
-## Dependencies
-
-### Depends on
-
-- [ch-icon](../icon)
-
-### Graph
-
-```mermaid
-graph TD;
-  ch-sidebar-menu --> ch-icon
-  style ch-sidebar-menu fill:#f9f,stroke:#333,stroke-width:4px
-```
-
----
-
-_Built with [StencilJS](https://stenciljs.com/)_
+  </body>
+</html>

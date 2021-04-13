@@ -1,32 +1,15 @@
 $menuWidth: 240px;
-$backgroundColor: rgba(237, 237, 237);
 
 :host {
+  /**
+  * @prop --menu-background-color: The background color of the menu
+  */
+  --menu-background-color: rgba(237, 237, 237);
+
   display: block;
 
-  /*SCROLLBAR*/
-  /* width */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: black;
-    border-radius: 3px;
-  }
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: gray;
-    border-radius: 3px;
-  }
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: red;
-    cursor: pointer;
-  }
-
   #menu {
-    background-color: $backgroundColor;
+    background-color: var(--menu-background-color);
     font-family: "Source Sans Pro", sans-serif;
     width: $menuWidth;
     position: fixed;
@@ -75,7 +58,7 @@ $backgroundColor: rgba(237, 237, 237);
         display: flex;
         align-items: center;
         padding: 0 16px;
-        transition: background-color 0.25s;
+        transition: var(--menu-background-color) 0.25s;
       }
     }
 
@@ -118,12 +101,12 @@ $backgroundColor: rgba(237, 237, 237);
     left: 50px;
     opacity: 0;
     transition: opacity 0.25s;
-    background-color: $backgroundColor;
+    background-color: var(--menu-background-color);
     padding: 4px 8px;
     border-radius: 6px;
     border-width: 1px;
     border-style: solid;
-    border-color: $backgroundColor;
+    border-color: var(--menu-background-color);
     z-index: 0;
   }
   .tooltip.visible {
@@ -145,5 +128,26 @@ $backgroundColor: rgba(237, 237, 237);
   }
   #indicator.hide {
     opacity: 0;
+  }
+
+  /*SCROLLBAR*/
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(223, 221, 221, 0.741);
+    border-radius: 3px;
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 3px;
+  }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: gray;
+    cursor: pointer;
   }
 }

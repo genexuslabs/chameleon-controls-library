@@ -13,6 +13,6 @@
     "jsx": "react",
     "jsxFactory": "h"
   },
-  "include": ["src"],
+  "include": ["src", "stencil.config.ts"],
   "exclude": ["node_modules"]
 }

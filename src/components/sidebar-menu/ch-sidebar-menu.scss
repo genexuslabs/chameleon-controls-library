@@ -1,0 +1,153 @@
+$menuWidth: 240px;
+
+:host {
+  /**
+  * @prop --menu-background-color: The background color of the menu
+  */
+  --menu-background-color: rgba(237, 237, 237);
+
+  display: block;
+
+  #menu {
+    background-color: var(--menu-background-color);
+    font-family: "Source Sans Pro", sans-serif;
+    width: $menuWidth;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 5;
+
+    #title {
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.378px;
+      padding: 16px;
+      margin: 0;
+      z-index: 20;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    #main {
+      overflow-y: auto;
+      position: fixed;
+      width: $menuWidth;
+      z-index: 10;
+    }
+
+    transition: left 0.6s;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+
+    #footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: $menuWidth;
+      box-sizing: border-box;
+      z-index: 20;
+
+      #custom-content {
+        padding: 32px 16px 8px 16px;
+      }
+
+      #collapse-menu {
+        cursor: pointer;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        transition: var(--menu-background-color) 0.25s;
+      }
+    }
+
+    // COLLAPSED / COLLAPSING
+    &.collapsed,
+    &.collapsed #title,
+    &.collapsed #footer {
+      left: -196px;
+    }
+
+    &.collapsing,
+    &.collapsing #title,
+    &.collapsing #footer {
+      left: -240px !important;
+    }
+
+    &.collapse-faster,
+    &.collapse-faster #title,
+    &.collapse-faster #footer {
+      transition: left 0.3s;
+      transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    &.collapsed #collapse-menu {
+      flex-direction: row-reverse;
+      ch-icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+  #menu,
+  #footer {
+    transition: left 0.6s;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  /*TOOLTIP*/
+  .tooltip {
+    position: fixed;
+    left: 50px;
+    opacity: 0;
+    transition: opacity 0.25s;
+    background-color: var(--menu-background-color);
+    padding: 4px 8px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--menu-background-color);
+    z-index: 0;
+  }
+  .tooltip.visible {
+    opacity: 1;
+  }
+
+  /*INDICATOR*/
+  #indicator {
+    width: 2px;
+    background-color: black;
+    position: fixed;
+    left: 0;
+    height: 0;
+    transition: top 0.4s, height 0.5s, opacity 0.35s;
+    opacity: 1;
+  }
+  #indicator.speed-zero {
+    transition-duration: 0s;
+  }
+  #indicator.hide {
+    opacity: 0;
+  }
+
+  /*SCROLLBAR*/
+  /* width */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: rgba(223, 221, 221, 0.741);
+    border-radius: 3px;
+  }
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 3px;
+  }
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: gray;
+    cursor: pointer;
+  }
+}

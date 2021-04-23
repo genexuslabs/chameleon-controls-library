@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+  </head>
+  <body>
+    <!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <title>Stencil Component Starter</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <style>
+      #selected-menu-item {
+        position: fixed;
+        left: calc(50% + 120px);
+        top: 50%;
+        font-family: arial;
+        opacity: 1;
+        transition: 0.25s opacity;
+        transform: translateX(-50%);
+        text-transform: capitalize;
+        font-size: 20px;
+      }
+      #selected-menu-item.hidden {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <span id="selected-menu-item">
+      Click on any menu item
+    </span>
+
+    <ch-sidebar-menu menu-title="menu">
+      <ch-sidebar-menu-list>
+        <ch-sidebar-menu-list-item id="colors">
+          Colors
+          <ch-sidebar-menu-list slot="list">
+            <ch-sidebar-menu-list-item id="warm">
+              Warm
+              <ch-sidebar-menu-list slot="list">
+                <ch-sidebar-menu-list-item id="yellow">
+                  Yellow
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="yellow-orange">
+                  Yellow-orange
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="orange">
+                  Orange
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="red-orange">
+                  Red-orange
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="red">
+                  Red
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="red-violet">
+                  Red-violet
+                </ch-sidebar-menu-list-item>
+              </ch-sidebar-menu-list>
+            </ch-sidebar-menu-list-item>
+            <ch-sidebar-menu-list-item id="colds">
+              Colds
+              <ch-sidebar-menu-list slot="list">
+                <ch-sidebar-menu-list-item id="violet">
+                  Violet
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="blue-violet">
+                  Blue-violet
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="blue">
+                  Blue
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="blue-green">
+                  Blue-green
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="green">
+                  Green
+                </ch-sidebar-menu-list-item>
+                <ch-sidebar-menu-list-item id="yellow-green">
+                  Yellow-green
+                </ch-sidebar-menu-list-item>
+              </ch-sidebar-menu-list>
+            </ch-sidebar-menu-list-item>
+          </ch-sidebar-menu-list>
+        </ch-sidebar-menu-list-item>
+      </ch-sidebar-menu-list>
+      <div slot="footer">put somehting usefull on the footer</div>
+    </ch-sidebar-menu>
+
+    <script>
+      const selectedMenuItem = document.getElementById('selected-menu-item');
+      const sidebarMenu = document.getElementById('ch-sidebar-menu');
+      sidebarMenu.addEventListener('itemClickedEvent', function(e){
+        selectedMenuItem.classList.add('hidden');
+        setTimeout(function(){
+          selectedMenuItem.innerHTML = e.detail['item-id'];
+          selectedMenuItem.classList.remove('hidden');
+        }, 250);
+      })
+
+      
+
+    </script>
+  </body>
+</html>
+
+  </body>
+</html>

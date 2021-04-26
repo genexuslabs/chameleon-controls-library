@@ -5,7 +5,7 @@ import { getSvgContent, iconContent } from "./requests";
   tag: "ch-icon",
   styleUrl: "icon.scss",
   shadow: true,
-  assetsDirs: ["icon-assets"],
+  assetsDirs: ["ch-icon-assets"],
 })
 export class ChIcon {
   private io?: IntersectionObserver;

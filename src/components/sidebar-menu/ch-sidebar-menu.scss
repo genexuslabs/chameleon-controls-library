@@ -81,7 +81,7 @@ $menuWidth: 240px;
       letter-spacing: 0.378px;
       padding: 16px;
       margin: 0;
-      position: fixed;
+      //position: fixed;
       z-index: 20;
       width: $menuWidth;
       box-sizing: border-box;
@@ -215,6 +215,7 @@ $menuWidth: 240px;
   #footer {
     transition: left 0.6s;
     transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+    color: var(--text-color);
   }
 
   /*TOOLTIP*/
@@ -224,6 +225,7 @@ $menuWidth: 240px;
     opacity: 0;
     transition: opacity 0.25s;
     background-color: var(--menu-background-color);
+    color: var(--text-color);
     padding: 4px 8px;
     border-radius: 6px;
     z-index: 0;

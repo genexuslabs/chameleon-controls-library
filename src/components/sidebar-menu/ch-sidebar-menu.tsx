@@ -49,6 +49,11 @@ export class ChSidebarMenu {
    */
   @Prop() singleListOpen: boolean = false;
 
+  /**
+   * Allows to set the distance to the top of the page on the menu
+   */
+  @Prop() distanceToTop: number = 0;
+
   /*******************
    * STATE
    *******************/
@@ -62,13 +67,12 @@ export class ChSidebarMenu {
     const titleAndFooterHeight = titleHeight + footerHeight + "px";
     const collapsableItems = this.el.querySelectorAll(".collapsable");
 
-    // const items = document.getElementsByClassName("item");
+    /*Set menu top position*/
+    const topDistance = this.distanceToTop.toString() + "px";
+    this.menu.style.top = topDistance;
 
     /*Set main height*/
-    this.main.style.height = `calc(100vh - ${titleAndFooterHeight})`;
-
-    /*Set main top position*/
-    this.main.style.top = titleHeight + "px";
+    this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topDistance})`;
 
     //SET INITAL ITEMS MAX HEIGHT
     const items = this.el.querySelectorAll(".item");
@@ -367,15 +371,17 @@ export class ChSidebarMenu {
   //REPOSITION INDICATOR AFTER MENU UNCOLLAPSE
   repositionIndicatorAfterMenuUncollapse() {
     const activeItem = this.el.querySelector(".item--active");
-    const activeItemMainContainer = activeItem.shadowRoot.querySelector(
-      ".main-container"
-    );
-    const activeItemMainContainerTopPosition = activeItemMainContainer.getBoundingClientRect()
-      .y;
-    const activeItemMainContainerHeight = (activeItemMainContainer as HTMLElement)
-      .offsetHeight;
-    this.indicator.style.top = activeItemMainContainerTopPosition + "px";
-    this.indicator.style.height = activeItemMainContainerHeight + "px";
+    if (activeItem !== null) {
+      const activeItemMainContainer = activeItem.shadowRoot.querySelector(
+        ".main-container"
+      );
+      const activeItemMainContainerTopPosition = activeItemMainContainer.getBoundingClientRect()
+        .y;
+      const activeItemMainContainerHeight = (activeItemMainContainer as HTMLElement)
+        .offsetHeight;
+      this.indicator.style.top = activeItemMainContainerTopPosition + "px";
+      this.indicator.style.height = activeItemMainContainerHeight + "px";
+    }
   }
 
   //HIDE INDICATOR

@@ -319,32 +319,78 @@ export class ChSidebarMenu {
     );
 
     //REPOSITION INDICATOR ON SCROLL
-    var timer = null;
     this.main.addEventListener(
       "scroll",
       function () {
-        //get reference to current active item
-        const currentActiveItem = document.querySelector(".item--active");
-        if (currentActiveItem !== null) {
-          let currentActiveItemTopPosition = currentActiveItem.getBoundingClientRect()
-            .y;
-          this.indicator.classList.add("speed-zero");
-          this.indicator.style.top = currentActiveItemTopPosition + "px";
+        this.GetCurrentItemIndicatorPos();
+      }.bind(this)
+    );
 
-          //detect when scrolling has stopped
-          if (timer !== null) {
-            clearTimeout(timer);
+    //Calculation of menu top value and height on scroll
+    var lastTop: number;
+    document.addEventListener(
+      "scroll",
+      function () {
+        var doc = document.documentElement;
+        var top: any =
+          (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+        if (lastTop === undefined) {
+          lastTop = 0;
+        }
+        //make menu.top a number
+        var menuTop: number = Number(this.menu.style.top.split("px")[0]);
+        if (menuTop > 0) {
+          if (menuTop - (top - lastTop) > 0) {
+            var scrollTopValue: number = top - lastTop;
+            this.menu.style.top = menuTop - scrollTopValue + "px";
+            lastTop = top;
+            /*Set main height*/
+            var mainTop = this.distanceToTop - top;
+            var topStr = mainTop + "px";
+            this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topStr})`;
+            //reposition of active item indicator
+            this.GetCurrentItemIndicatorPos();
+          } else {
+            this.menu.style.top = "0px";
+            //reposition of active item indicator
+            this.GetCurrentItemIndicatorPos();
           }
-          timer = setTimeout(
-            function () {
-              this.indicator.classList.remove("speed-zero");
-            }.bind(this),
-            50
-          );
+        } else {
+          if (menuTop == 0) {
+            if (top <= this.distanceToTop) {
+              this.menu.style.top = this.distanceToTop - top + "px";
+              lastTop = top;
+              this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${top})`;
+              //reposition of active item indicator
+              this.GetCurrentItemIndicatorPos();
+            }
+          }
         }
       }.bind(this)
     );
   } // End of ComponentDidLoad
+
+  //get position of current active item
+  GetCurrentItemIndicatorPos() {
+    var timer = null;
+    const currentActiveItem = document.querySelector(".item--active");
+    if (currentActiveItem !== null) {
+      let currentActiveItemTopPosition = currentActiveItem.getBoundingClientRect()
+        .y;
+      this.indicator.classList.add("speed-zero");
+      this.indicator.style.top = currentActiveItemTopPosition + "px";
+      //detect when scrolling has stopped
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(
+        function () {
+          this.indicator.classList.remove("speed-zero");
+        }.bind(this),
+        50
+      );
+    }
+  }
 
   //REPOSITION INDICATOR AFTER MENU COLLAPSE
   repositionIndicatorAfterMenuCollapse() {

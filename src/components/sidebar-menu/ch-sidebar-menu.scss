@@ -81,10 +81,11 @@ $menuWidth: 240px;
       letter-spacing: 0.378px;
       padding: 16px;
       margin: 0;
-      //position: fixed;
+      position: relative;
       z-index: 20;
       width: $menuWidth;
       box-sizing: border-box;
+      height: 50px;
 
       &:before {
         //Hide indicator

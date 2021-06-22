@@ -48,7 +48,7 @@ stories.add(
     
     <span id="selected-menu-item">Press <code>ctrl + R</code> and select any item</span>
     
-    <ch-sidebar-menu menu-title="${text(
+    <ch-sidebar-menu style="--item-hover-color:green; --item-active-color: violet" menu-title="${text(
       "Menu title",
       "Foods"
     )}" ${singleListOpen()} id="ch-sidebar-menu">

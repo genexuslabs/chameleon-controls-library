@@ -91,7 +91,9 @@ export class ChSidebarMenu {
       function (item) {
         item.addEventListener(
           "click",
-          function () {
+          function (e) {
+            e.stopPropagation();
+            console.log("event", e);
             if (!this.menu.classList.contains("collapsed")) {
               //remove current active item class
               const currentActiveItem = document.querySelector(".item--active");

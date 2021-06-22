@@ -7,6 +7,36 @@ $menuWidth: 240px;
   --menu-font-family: "Source Sans Pro", sans-serif;
 
   /**
+  * @prop --first-list-font-size: The item font size for the first list
+  */
+  --first-list-font-size: 14px;
+
+  /**
+  * @prop --second-list-font-size: The item font size for the second list
+  */
+  --second-list-font-size: 14px;
+
+  /**
+  * @prop --third-list-font-size: The item font size for the third list
+  */
+  --third-list-font-size: 14px;
+
+  /**
+  * @prop --first-list-text-transform: The item text transform for the first list items
+  */
+  --first-list-text-transform: initial;
+
+  /**
+  * @prop --second-list-text-transform: The item text transform for the second list items
+  */
+  --first-list-text-transform: lowercase;
+
+  /**
+  * @prop --third-list-text-transform: The item text transform for the third list items
+  */
+  --first-list-text-transform: initial;
+
+  /**
   * @prop --menu-background-color: The background color of the menu
   */
   --menu-background-color: var(--whiteSmoke);
@@ -45,6 +75,11 @@ $menuWidth: 240px;
   * @prop --footer-line: The color of the footer separator line
   */
   --footer-line-color: var(--black);
+
+  /**
+  * @prop --footer-font-size: The footer font size
+  */
+  --footer-font-size: 14px;
 
   /**
   * @prop --indicator-color: The color of the lateral indicator
@@ -121,6 +156,7 @@ $menuWidth: 240px;
       width: $menuWidth;
       box-sizing: border-box;
       z-index: 20;
+      font-size: var(--footer-font-size);
 
       #custom-content {
         padding: 32px 16px 8px 16px;

@@ -47,6 +47,11 @@
       .custom-icon {
         margin-inline-end: 8px;
       }
+
+      .text {
+        font-size: var(--first-list-font-size);
+        text-transform: var(--first-list-text-transform);
+      }
     }
     .arrow-icon {
       transform: rotate(180deg);
@@ -92,10 +97,10 @@
       margin-inline-end: 4px;
     }
     .text {
-      font-size: 14px;
+      font-size: var(--second-list-font-size);
       font-weight: 700;
       letter-spacing: 0.38px;
-      text-transform: uppercase;
+      text-transform: var(--second-list-text-transform);
     }
   }
 }
@@ -113,7 +118,12 @@
 :host(.list-three__item) {
   .main-container {
     padding-inline-start: 73px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    .text {
+      font-size: var(--third-list-font-size);
+      text-transform: var(--third-list-text-transform);
+    }
   }
 }

@@ -54,6 +54,11 @@ export class ChSidebarMenu {
    */
   @Prop() distanceToTop: number = 0;
 
+  /**
+   * Determines if the menu can be collapsed
+   */
+  @Prop() collapsible: boolean = true;
+
   /*******************
    * STATE
    *******************/
@@ -564,18 +569,20 @@ export class ChSidebarMenu {
             <div id="custom-content">
               <slot name="footer" />
             </div>
-            <div
-              id="collapse-menu"
-              ref={(el) => (this.collapseButton = el as HTMLElement)}
-            >
-              <ch-icon
-                style={{
-                  "--icon-color": "var(--first-list-arrow-color)",
-                  "--icon-size": "20px",
-                }}
-                src={this.iconArrowLeft}
-              ></ch-icon>
-            </div>
+            {this.collapsible && (
+              <div
+                id="collapse-menu"
+                ref={(el) => (this.collapseButton = el as HTMLElement)}
+              >
+                <ch-icon
+                  style={{
+                    "--icon-color": "var(--first-list-arrow-color)",
+                    "--icon-size": "20px",
+                  }}
+                  src={this.iconArrowLeft}
+                ></ch-icon>
+              </div>
+            )}
           </footer>
         </nav>
       </Host>

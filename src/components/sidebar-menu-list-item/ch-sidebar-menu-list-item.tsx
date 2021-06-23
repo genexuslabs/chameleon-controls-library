@@ -39,6 +39,11 @@ export class ChSidebarMenuListItem {
    */
   @Prop() itemIconSrc: string;
 
+  /**
+   * If this attribute is present the item will be initially uncollapsed
+   */
+  @Prop() uncollapsed: boolean = false;
+
   @State() collapsable: boolean = false;
   @State() listTypeItem: string;
 
@@ -142,6 +147,7 @@ export class ChSidebarMenuListItem {
         class={{
           item: true,
           collapsable: this.collapsable,
+          uncollapsed: this.uncollapsed,
           "list-one__item": this.listTypeItem === "one",
           "list-two__item": this.listTypeItem === "two",
           "list-three__item": this.listTypeItem === "three",

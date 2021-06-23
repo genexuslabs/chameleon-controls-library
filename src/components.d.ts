@@ -22,6 +22,10 @@ export namespace Components {
   }
   interface ChSidebarMenu {
     /**
+     * The initial active item (optional)
+     */
+    activeItemId: string;
+    /**
      * Determines if the menu can be collapsed
      */
     collapsible: boolean;
@@ -44,6 +48,10 @@ export namespace Components {
      * The first list item icon (optional)
      */
     itemIconSrc: string;
+    /**
+     * If this attribute is present the item will be initially uncollapsed
+     */
+    uncollapsed: boolean;
   }
 }
 declare global {
@@ -97,6 +105,10 @@ declare namespace LocalJSX {
   }
   interface ChSidebarMenu {
     /**
+     * The initial active item (optional)
+     */
+    activeItemId?: string;
+    /**
      * Determines if the menu can be collapsed
      */
     collapsible?: boolean;
@@ -124,6 +136,10 @@ declare namespace LocalJSX {
      * Emmits the item id
      */
     onItemClickedEvent?: (event: CustomEvent<any>) => void;
+    /**
+     * If this attribute is present the item will be initially uncollapsed
+     */
+    uncollapsed?: boolean;
   }
   interface IntrinsicElements {
     "ch-icon": ChIcon;

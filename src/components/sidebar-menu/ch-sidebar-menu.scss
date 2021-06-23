@@ -2,39 +2,79 @@ $menuWidth: 240px;
 
 :host {
   /**
-  * @prop --menu-font-family: The menu font family
+  * @prop --title-font-family: The menu font family
   */
-  --menu-font-family: "Source Sans Pro", sans-serif;
+  --title-font-family: "Source Sans Pro", sans-serif;
 
   /**
-  * @prop --first-list-font-size: The item font size for the first list
+  * @prop --title-text-transform: The menu text transform property
+  */
+  --title-text-transform: lowercase;
+
+  /**
+  * @prop --title-font-weight: The menu text font weight
+  */
+  --title-font-weight: bold;
+
+  /**
+  * @prop --first-list-font-size: The item font size for the first list items
   */
   --first-list-font-size: 14px;
 
   /**
-  * @prop --second-list-font-size: The item font size for the second list
+  * @prop --second-list-font-size: The item font size for the second list items
   */
   --second-list-font-size: 14px;
 
   /**
-  * @prop --third-list-font-size: The item font size for the third list
+  * @prop --third-list-font-size: The item font size for the third list items
   */
   --third-list-font-size: 14px;
 
   /**
+  * @prop --first-list-line-height: The item line height for the first list items
+  */
+  --first-list-line-height: 1.4em;
+
+  /**
+  * @prop --second-list-line-height: The item line height for the second list items
+  */
+  --second-list-line-height: 1.4em;
+
+  /**
+  * @prop --third-list-line-height: The item line height for the third list items
+  */
+  --third-list-line-height: 1.4em;
+
+  /**
   * @prop --first-list-text-transform: The item text transform for the first list items
   */
-  --first-list-text-transform: initial;
+  --first-list-text-transform: capitalize;
 
   /**
   * @prop --second-list-text-transform: The item text transform for the second list items
   */
-  --first-list-text-transform: lowercase;
+  --second-list-text-transform: lowercase;
 
   /**
   * @prop --third-list-text-transform: The item text transform for the third list items
   */
-  --first-list-text-transform: initial;
+  --third-list-text-transform: capitalize;
+
+  /**
+  * @prop --first-list-text-vertical-padding: The vertical padding (top and bottom) for the first list items
+  */
+  --first-list-text-vertical-padding: 8px;
+
+  /**
+  * @prop --second-list-text-vertical-padding: The vertical padding (top and bottom) for the second list items
+  */
+  --second-list-text-vertical-padding: 6px;
+
+  /**
+  * @prop --third-list-text-vertical-padding: The vertical padding (top and bottom) for the third list items
+  */
+  --third-list-text-vertical-padding: 4px;
 
   /**
   * @prop --menu-background-color: The background color of the menu
@@ -100,7 +140,7 @@ $menuWidth: 240px;
 
   #menu {
     background-color: var(--menu-background-color);
-    font-family: var(--menu-font-family);
+    font-family: var(--title-font-family);
     width: $menuWidth;
     position: fixed;
     height: 100vh;
@@ -109,8 +149,8 @@ $menuWidth: 240px;
     z-index: 5;
 
     #title {
-      text-transform: uppercase;
-      font-weight: 700;
+      text-transform: var(--title-text-transform);
+      font-weight: var(--title-font-weight);
       color: var(--text-color);
       font-size: 14px;
       letter-spacing: 0.378px;
@@ -120,7 +160,6 @@ $menuWidth: 240px;
       z-index: 20;
       width: $menuWidth;
       box-sizing: border-box;
-      height: 50px;
 
       &:before {
         //Hide indicator

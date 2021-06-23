@@ -146,6 +146,8 @@ A sidebar menu that collapses
 
 | Property         | Attribute          | Description                                                                                  | Type      | Default     |
 | ---------------- | ------------------ | -------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `activeItemId`   | `active-item-id`   | The initial active item (optional)                                                           | `string`  | `""`        |
+| `collapsible`    | `collapsible`      | Determines if the menu can be collapsed                                                      | `boolean` | `true`      |
 | `distanceToTop`  | `distance-to-top`  | Allows to set the distance to the top of the page on the menu                                | `number`  | `0`         |
 | `menuTitle`      | `menu-title`       | The menu title                                                                               | `string`  | `undefined` |
 | `singleListOpen` | `single-list-open` | The presence of this attribute allows the menu to have only one list opened at the same time | `boolean` | `false`     |
@@ -158,27 +160,35 @@ A sidebar menu that collapses
 
 ## CSS Custom Properties
 
-| Name                           | Description                                       |
-| ------------------------------ | ------------------------------------------------- |
-| `--first-list-arrow-color`     | The color of the first list arrow icon            |
-| `--first-list-font-size`       | The item font size for the first list             |
-| `--first-list-icon-color`      | The color of the first list icon                  |
-| `--first-list-text-transform`  | The item text transform for the first list items  |
-| `--footer-font-size`           | The footer font size                              |
-| `--footer-line`                | The color of the footer separator line            |
-| `--indicator-color`            | The color of the lateral indicator                |
-| `--item-active-color`          | The color of active item                          |
-| `--item-hover-color`           | The color of the item on hover                    |
-| `--menu-background-color`      | The background color of the menu                  |
-| `--menu-font-family`           | The menu font family                              |
-| `--scrollbar-thumb`            | The color of the scrollbar thumb                  |
-| `--scrollbar-track`            | The color of the scrollbar track                  |
-| `--second-list-arrow-color`    | The color of the second list arrow icon           |
-| `--second-list-font-size`      | The item font size for the second list            |
-| `--second-list-text-transform` | The item text transform for the second list items |
-| `--text-color`                 | The color of the text                             |
-| `--third-list-font-size`       | The item font size for the third list             |
-| `--third-list-text-transform`  | The item text transform for the third list items  |
+| Name                                  | Description                                                     |
+| ------------------------------------- | --------------------------------------------------------------- |
+| `--first-list-arrow-color`            | The color of the first list arrow icon                          |
+| `--first-list-font-size`              | The item font size for the first list items                     |
+| `--first-list-icon-color`             | The color of the first list icon                                |
+| `--first-list-line-height`            | The item line height for the first list items                   |
+| `--first-list-text-transform`         | The item text transform for the first list items                |
+| `--first-list-text-vertical-padding`  | The vertical padding (top and bottom) for the first list items  |
+| `--footer-font-size`                  | The footer font size                                            |
+| `--footer-line`                       | The color of the footer separator line                          |
+| `--indicator-color`                   | The color of the lateral indicator                              |
+| `--item-active-color`                 | The color of active item                                        |
+| `--item-hover-color`                  | The color of the item on hover                                  |
+| `--menu-background-color`             | The background color of the menu                                |
+| `--scrollbar-thumb`                   | The color of the scrollbar thumb                                |
+| `--scrollbar-track`                   | The color of the scrollbar track                                |
+| `--second-list-arrow-color`           | The color of the second list arrow icon                         |
+| `--second-list-font-size`             | The item font size for the second list items                    |
+| `--second-list-line-height`           | The item line height for the second list items                  |
+| `--second-list-text-transform`        | The item text transform for the second list items               |
+| `--second-list-text-vertical-padding` | The vertical padding (top and bottom) for the second list items |
+| `--text-color`                        | The color of the text                                           |
+| `--third-list-font-size`              | The item font size for the third list items                     |
+| `--third-list-line-height`            | The item line height for the third list items                   |
+| `--third-list-text-transform`         | The item text transform for the third list items                |
+| `--third-list-text-vertical-padding`  | The vertical padding (top and bottom) for the third list items  |
+| `--title-font-family`                 | The menu font family                                            |
+| `--title-font-weight`                 | The menu text font weight                                       |
+| `--title-text-transform`              | The menu text transform property                                |
 
 ## Dependencies
 

@@ -30,12 +30,16 @@
     background-color: var(--item-active-color);
   }
 }
+//uncollapsed
+:host(.uncollapsed) {
+}
 // LIST ONE
 :host(.list-one__item) {
   .main-container {
     display: flex;
     justify-content: space-between;
-    padding: 8px 8px 8px 16px;
+    padding: var(--first-list-text-vertical-padding) 8px
+      var(--first-list-text-vertical-padding) 16px;
     min-height: 40px;
     box-sizing: border-box;
     align-items: start;
@@ -51,6 +55,7 @@
       .text {
         font-size: var(--first-list-font-size);
         text-transform: var(--first-list-text-transform);
+        line-height: var(--first-list-line-height);
       }
     }
     .arrow-icon {
@@ -88,8 +93,8 @@
     display: flex;
     align-items: self-start;
     padding-inline-start: 44px;
-    padding-top: 6px;
-    padding-bottom: 6px;
+    padding-top: var(--second-list-text-vertical-padding);
+    padding-bottom: var(--second-list-text-vertical-padding);
     min-height: 20px;
     .arrow-icon {
       transform: rotate(0);
@@ -99,8 +104,9 @@
     .text {
       font-size: var(--second-list-font-size);
       font-weight: 700;
-      letter-spacing: 0.38px;
+      letter-spacing: 0.027em;
       text-transform: var(--second-list-text-transform);
+      line-height: var(--second-list-line-height);
     }
   }
 }
@@ -118,12 +124,13 @@
 :host(.list-three__item) {
   .main-container {
     padding-inline-start: 73px;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: var(--third-list-text-vertical-padding);
+    padding-bottom: var(--third-list-text-vertical-padding);
 
     .text {
       font-size: var(--third-list-font-size);
       text-transform: var(--third-list-text-transform);
+      line-height: var(--third-list-line-height);
     }
   }
 }

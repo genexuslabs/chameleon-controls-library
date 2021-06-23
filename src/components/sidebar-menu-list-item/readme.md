@@ -4,9 +4,10 @@
 
 ## Properties
 
-| Property      | Attribute       | Description                         | Type     | Default     |
-| ------------- | --------------- | ----------------------------------- | -------- | ----------- |
-| `itemIconSrc` | `item-icon-src` | The first list item icon (optional) | `string` | `undefined` |
+| Property      | Attribute       | Description                                                         | Type      | Default     |
+| ------------- | --------------- | ------------------------------------------------------------------- | --------- | ----------- |
+| `itemIconSrc` | `item-icon-src` | The first list item icon (optional)                                 | `string`  | `undefined` |
+| `uncollapsed` | `uncollapsed`   | If this attribute is present the item will be initially uncollapsed | `boolean` | `false`     |
 
 ## Events
 

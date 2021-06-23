@@ -59,6 +59,11 @@ export class ChSidebarMenu {
    */
   @Prop() collapsible: boolean = true;
 
+  /**
+   * The initial active item (optional)
+   */
+  @Prop() activeItemId: string = "";
+
   /*******************
    * STATE
    *******************/
@@ -88,10 +93,71 @@ export class ChSidebarMenu {
           (mainContainer as HTMLElement).offsetHeight + "px";
       }
     );
+    //AFTER INITIAL ITEMS MAX HEIGHT HAS BEEN DEFINED, REDEFINE MAX HEIGHT FOR THE UNCOLLAPSED ITEMS
+    const uncollapsedItems = this.el.querySelectorAll(".item.uncollapsed");
+    const uncollapsedItemsArr = Array.prototype.slice
+      .call(uncollapsedItems)
+      .reverse();
 
-    /**************
-    SET ACTIVE ITEM
-    ***************/
+    uncollapsedItemsArr.forEach(function (item) {
+      //mainContainer height
+      const mainContainerHeight = item.shadowRoot.querySelector(
+        ".main-container"
+      ).offsetHeight;
+      //menu list height
+      const menuList = item.querySelector(":scope > ch-sidebar-menu-list");
+      const menuListHeight = (menuList as HTMLElement).offsetHeight;
+      item.style.maxHeight = mainContainerHeight + menuListHeight + "px";
+      console.log("mainContainer", mainContainerHeight);
+      console.log("menuListHeight", menuListHeight);
+    });
+
+    /**********************************
+    LATERAL ACTIVE ITEM INDICATOR LOGIC
+    ***********************************/
+    this.indicator = document.createElement("DIV");
+    this.indicator.setAttribute("id", "indicator");
+    this.main.appendChild(this.indicator);
+
+    Array.from(items).forEach(
+      function (item) {
+        item.addEventListener(
+          "click",
+          function (e) {
+            e.stopPropagation();
+            if (!this.menu.classList.contains("collapsed")) {
+              const itemTopPosition = item.getBoundingClientRect().y;
+              const itemHeight = item.shadowRoot.querySelector(
+                ".main-container"
+              ).offsetHeight;
+
+              if (
+                this.singleListOpen &&
+                item.classList.contains("list-one__item")
+              ) {
+                let itemCopy = item;
+                let totalHeight = titleHeight;
+                while ((itemCopy = itemCopy.previousElementSibling) != null) {
+                  const itemCopyMainContainer = itemCopy.shadowRoot.querySelector(
+                    ".main-container"
+                  );
+                  totalHeight += itemCopyMainContainer.offsetHeight;
+                }
+                this.indicator.style.top = totalHeight + "px";
+                this.indicator.style.height = itemHeight + "px";
+              } else {
+                this.indicator.style.top = itemTopPosition + "px";
+                this.indicator.style.height = itemHeight + "px";
+              }
+            }
+          }.bind(this)
+        );
+      }.bind(this)
+    );
+
+    /*********************
+    SET ACTIVE ITEM LOGIC
+    **********************/
     Array.from(items).forEach(
       function (item) {
         item.addEventListener(
@@ -114,6 +180,19 @@ export class ChSidebarMenu {
         );
       }.bind(this)
     );
+    //SET ACTIVE CURRENT ACTIVE ITEM IF PRESENT
+    if (this.activeItemId !== "") {
+      let activeItem = this.el.querySelector("#" + this.activeItemId);
+      activeItem.classList.add("item--active");
+      //indicator
+      let indicator = this.el.shadowRoot.querySelector("#indicator");
+      const activeItemTopPosition = activeItem.getBoundingClientRect().y;
+      const activeItemHeight = activeItem.shadowRoot.querySelector<HTMLElement>(
+        ".main-container"
+      ).offsetHeight;
+      this.indicator.style.top = activeItemTopPosition + "px";
+      this.indicator.style.height = activeItemHeight + "px";
+    }
 
     /****************************
     COLLAPSABLE LIST ITEMS LOGIC
@@ -276,49 +355,6 @@ export class ChSidebarMenu {
           function () {
             if (this.menu.classList.contains("collapsed")) {
               itemTooltip.classList.remove("visible");
-            }
-          }.bind(this)
-        );
-      }.bind(this)
-    );
-
-    /**********************************
-    LATERAL ACTIVE ITEM INDICATOR LOGIC
-    ***********************************/
-    this.indicator = document.createElement("DIV");
-    this.indicator.setAttribute("id", "indicator");
-    this.main.appendChild(this.indicator);
-
-    Array.from(items).forEach(
-      function (item) {
-        item.addEventListener(
-          "click",
-          function (e) {
-            e.stopPropagation();
-            if (!this.menu.classList.contains("collapsed")) {
-              const itemTopPosition = item.getBoundingClientRect().y;
-              const itemHeight = item.shadowRoot.querySelector(
-                ".main-container"
-              ).offsetHeight;
-
-              if (
-                this.singleListOpen &&
-                item.classList.contains("list-one__item")
-              ) {
-                let itemCopy = item;
-                let totalHeight = titleHeight;
-                while ((itemCopy = itemCopy.previousElementSibling) != null) {
-                  const itemCopyMainContainer = itemCopy.shadowRoot.querySelector(
-                    ".main-container"
-                  );
-                  totalHeight += itemCopyMainContainer.offsetHeight;
-                }
-                this.indicator.style.top = totalHeight + "px";
-                this.indicator.style.height = itemHeight + "px";
-              } else {
-                this.indicator.style.top = itemTopPosition + "px";
-                this.indicator.style.height = itemHeight + "px";
-              }
             }
           }.bind(this)
         );

@@ -23,6 +23,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 
 ### Used by
 
+- [ch-grid-column](../grid-column)
 - [ch-sidebar-menu](../sidebar-menu)
 - [ch-sidebar-menu-list-item](../sidebar-menu-list-item)
 
@@ -30,6 +31,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 
 ```mermaid
 graph TD;
+  ch-grid-column --> ch-icon
   ch-sidebar-menu --> ch-icon
   ch-sidebar-menu-list-item --> ch-icon
   style ch-icon fill:#f9f,stroke:#333,stroke-width:4px

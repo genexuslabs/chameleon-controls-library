@@ -185,7 +185,7 @@ export class ChSidebarMenu {
       let activeItem = this.el.querySelector("#" + this.activeItemId);
       activeItem.classList.add("item--active");
       //indicator
-      let indicator = this.el.shadowRoot.querySelector("#indicator");
+      //let indicator = this.el.shadowRoot.querySelector("#indicator");
       const activeItemTopPosition = activeItem.getBoundingClientRect().y;
       const activeItemHeight = activeItem.shadowRoot.querySelector<HTMLElement>(
         ".main-container"

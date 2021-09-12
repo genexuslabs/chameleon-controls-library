@@ -1,0 +1,22 @@
+:host {
+  display: contents; 
+
+  > ::slotted(.ch-grid-rowset) {
+    background-color: red;
+  }
+  > ::slotted(.ch-grid-rowset) {
+    background-color: pink;
+    .ch-grid-row {
+      background-color: green;
+    }
+  }
+  > ::slotted(.ch-grid-rowset .ch-grid-row) {
+    background-color: green;
+  }
+  > ::slotted(ch-grid-rowset > .ch-grid-row) {
+    background-color: green;
+  }
+  > ch-grid-rowset ch-grid-cell {
+    background-color: yellow;
+  }
+}

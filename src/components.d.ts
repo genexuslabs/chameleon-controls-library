@@ -5,7 +5,124 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ColType } from "./components/grid-column/ch-grid-column";
+import { ColType as ColType1 } from "./components/grid-menu/ch-grid-menu";
 export namespace Components {
+  interface ChGrid {}
+  interface ChGridAg {}
+  interface ChGridAgButton {}
+  interface ChGridCell {}
+  interface ChGridCheckbox {
+    /**
+     * Whether the checkbox is checked or not
+     */
+    checked: boolean;
+  }
+  interface ChGridColumn {
+    /**
+     * The columnd id
+     */
+    colId: string;
+    /**
+     * The column data type
+     */
+    colType: ColType;
+    /**
+     * The presence of this atribute displays a filter on the menu
+     */
+    filterable: boolean;
+    /**
+     * Displays a menu with options
+     */
+    showOptions: boolean;
+  }
+  interface ChGridColumnset {}
+  interface ChGridDatePicker {
+    /**
+     * The presence of this attribute makes the date-picker always visible
+     */
+    alwaysShow: boolean;
+    /**
+     * The columnd id that this datepicker belongs to
+     */
+    colId: string;
+    /**
+     * The date picker class
+     */
+    datePickerClass: string;
+    /**
+     * The date picker id
+     */
+    datePickerId: string;
+    /**
+     * initial date
+     */
+    defaultDate: string;
+    /**
+     * The datepicker label
+     */
+    label: string;
+    /**
+     * The max. date
+     */
+    maxDate: string;
+    /**
+     * The max. width
+     */
+    maxWidth: string;
+    /**
+     * The min. date
+     */
+    minDate: string;
+    /**
+     * no weekends available
+     */
+    noWeekends: boolean;
+  }
+  interface ChGridFooter {}
+  interface ChGridHeader {}
+  interface ChGridInputText {
+    /**
+     * The columnd id this input belongs to
+     */
+    colId: string;
+    /**
+     * The input placeholder
+     */
+    placeholder: string;
+  }
+  interface ChGridMenu {
+    /**
+     * The columnd id
+     */
+    colId: string;
+    /**
+     * The column data type
+     */
+    colType: ColType;
+    /**
+     * The presence of this atribute displays a filter on the menu
+     */
+    filterable: boolean;
+    /**
+     * If true, it shows the menu
+     */
+    showMenu: boolean;
+    /**
+     * The presence of this atribute displays an option to sort the column
+     */
+    sortable: boolean;
+  }
+  interface ChGridRow {}
+  interface ChGridRowset {}
+  interface ChGridRowsetLegend {}
+  interface ChGridSelect {
+    /**
+     * The columnd id this select belongs to
+     */
+    colId: string;
+  }
+  interface ChGridSelectOption {}
   interface ChIcon {
     /**
      * If enabled, the icon will display its inherent/natural color
@@ -53,8 +170,128 @@ export namespace Components {
      */
     uncollapsed: boolean;
   }
+  interface ComponentA {}
+  interface ComponentB {}
+  interface ComponentC {}
 }
 declare global {
+  interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {}
+  var HTMLChGridElement: {
+    prototype: HTMLChGridElement;
+    new (): HTMLChGridElement;
+  };
+  interface HTMLChGridAgElement
+    extends Components.ChGridAg,
+      HTMLStencilElement {}
+  var HTMLChGridAgElement: {
+    prototype: HTMLChGridAgElement;
+    new (): HTMLChGridAgElement;
+  };
+  interface HTMLChGridAgButtonElement
+    extends Components.ChGridAgButton,
+      HTMLStencilElement {}
+  var HTMLChGridAgButtonElement: {
+    prototype: HTMLChGridAgButtonElement;
+    new (): HTMLChGridAgButtonElement;
+  };
+  interface HTMLChGridCellElement
+    extends Components.ChGridCell,
+      HTMLStencilElement {}
+  var HTMLChGridCellElement: {
+    prototype: HTMLChGridCellElement;
+    new (): HTMLChGridCellElement;
+  };
+  interface HTMLChGridCheckboxElement
+    extends Components.ChGridCheckbox,
+      HTMLStencilElement {}
+  var HTMLChGridCheckboxElement: {
+    prototype: HTMLChGridCheckboxElement;
+    new (): HTMLChGridCheckboxElement;
+  };
+  interface HTMLChGridColumnElement
+    extends Components.ChGridColumn,
+      HTMLStencilElement {}
+  var HTMLChGridColumnElement: {
+    prototype: HTMLChGridColumnElement;
+    new (): HTMLChGridColumnElement;
+  };
+  interface HTMLChGridColumnsetElement
+    extends Components.ChGridColumnset,
+      HTMLStencilElement {}
+  var HTMLChGridColumnsetElement: {
+    prototype: HTMLChGridColumnsetElement;
+    new (): HTMLChGridColumnsetElement;
+  };
+  interface HTMLChGridDatePickerElement
+    extends Components.ChGridDatePicker,
+      HTMLStencilElement {}
+  var HTMLChGridDatePickerElement: {
+    prototype: HTMLChGridDatePickerElement;
+    new (): HTMLChGridDatePickerElement;
+  };
+  interface HTMLChGridFooterElement
+    extends Components.ChGridFooter,
+      HTMLStencilElement {}
+  var HTMLChGridFooterElement: {
+    prototype: HTMLChGridFooterElement;
+    new (): HTMLChGridFooterElement;
+  };
+  interface HTMLChGridHeaderElement
+    extends Components.ChGridHeader,
+      HTMLStencilElement {}
+  var HTMLChGridHeaderElement: {
+    prototype: HTMLChGridHeaderElement;
+    new (): HTMLChGridHeaderElement;
+  };
+  interface HTMLChGridInputTextElement
+    extends Components.ChGridInputText,
+      HTMLStencilElement {}
+  var HTMLChGridInputTextElement: {
+    prototype: HTMLChGridInputTextElement;
+    new (): HTMLChGridInputTextElement;
+  };
+  interface HTMLChGridMenuElement
+    extends Components.ChGridMenu,
+      HTMLStencilElement {}
+  var HTMLChGridMenuElement: {
+    prototype: HTMLChGridMenuElement;
+    new (): HTMLChGridMenuElement;
+  };
+  interface HTMLChGridRowElement
+    extends Components.ChGridRow,
+      HTMLStencilElement {}
+  var HTMLChGridRowElement: {
+    prototype: HTMLChGridRowElement;
+    new (): HTMLChGridRowElement;
+  };
+  interface HTMLChGridRowsetElement
+    extends Components.ChGridRowset,
+      HTMLStencilElement {}
+  var HTMLChGridRowsetElement: {
+    prototype: HTMLChGridRowsetElement;
+    new (): HTMLChGridRowsetElement;
+  };
+  interface HTMLChGridRowsetLegendElement
+    extends Components.ChGridRowsetLegend,
+      HTMLStencilElement {}
+  var HTMLChGridRowsetLegendElement: {
+    prototype: HTMLChGridRowsetLegendElement;
+    new (): HTMLChGridRowsetLegendElement;
+  };
+  interface HTMLChGridSelectElement
+    extends Components.ChGridSelect,
+      HTMLStencilElement {}
+  var HTMLChGridSelectElement: {
+    prototype: HTMLChGridSelectElement;
+    new (): HTMLChGridSelectElement;
+  };
+  interface HTMLChGridSelectOptionElement
+    extends Components.ChGridSelectOption,
+      HTMLStencilElement {}
+  var HTMLChGridSelectOptionElement: {
+    prototype: HTMLChGridSelectOptionElement;
+    new (): HTMLChGridSelectOptionElement;
+  };
   interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {}
   var HTMLChIconElement: {
     prototype: HTMLChIconElement;
@@ -81,14 +318,198 @@ declare global {
     prototype: HTMLChSidebarMenuListItemElement;
     new (): HTMLChSidebarMenuListItemElement;
   };
+  interface HTMLComponentAElement
+    extends Components.ComponentA,
+      HTMLStencilElement {}
+  var HTMLComponentAElement: {
+    prototype: HTMLComponentAElement;
+    new (): HTMLComponentAElement;
+  };
+  interface HTMLComponentBElement
+    extends Components.ComponentB,
+      HTMLStencilElement {}
+  var HTMLComponentBElement: {
+    prototype: HTMLComponentBElement;
+    new (): HTMLComponentBElement;
+  };
+  interface HTMLComponentCElement
+    extends Components.ComponentC,
+      HTMLStencilElement {}
+  var HTMLComponentCElement: {
+    prototype: HTMLComponentCElement;
+    new (): HTMLComponentCElement;
+  };
   interface HTMLElementTagNameMap {
+    "ch-grid": HTMLChGridElement;
+    "ch-grid-ag": HTMLChGridAgElement;
+    "ch-grid-ag-button": HTMLChGridAgButtonElement;
+    "ch-grid-cell": HTMLChGridCellElement;
+    "ch-grid-checkbox": HTMLChGridCheckboxElement;
+    "ch-grid-column": HTMLChGridColumnElement;
+    "ch-grid-columnset": HTMLChGridColumnsetElement;
+    "ch-grid-date-picker": HTMLChGridDatePickerElement;
+    "ch-grid-footer": HTMLChGridFooterElement;
+    "ch-grid-header": HTMLChGridHeaderElement;
+    "ch-grid-input-text": HTMLChGridInputTextElement;
+    "ch-grid-menu": HTMLChGridMenuElement;
+    "ch-grid-row": HTMLChGridRowElement;
+    "ch-grid-rowset": HTMLChGridRowsetElement;
+    "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
+    "ch-grid-select": HTMLChGridSelectElement;
+    "ch-grid-select-option": HTMLChGridSelectOptionElement;
     "ch-icon": HTMLChIconElement;
     "ch-sidebar-menu": HTMLChSidebarMenuElement;
     "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
     "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
+    "component-a": HTMLComponentAElement;
+    "component-b": HTMLComponentBElement;
+    "component-c": HTMLComponentCElement;
   }
 }
 declare namespace LocalJSX {
+  interface ChGrid {}
+  interface ChGridAg {}
+  interface ChGridAgButton {}
+  interface ChGridCell {}
+  interface ChGridCheckbox {
+    /**
+     * Whether the checkbox is checked or not
+     */
+    checked?: boolean;
+  }
+  interface ChGridColumn {
+    /**
+     * The columnd id
+     */
+    colId?: string;
+    /**
+     * The column data type
+     */
+    colType?: ColType;
+    /**
+     * The presence of this atribute displays a filter on the menu
+     */
+    filterable?: boolean;
+    /**
+     * Displays a menu with options
+     */
+    showOptions?: boolean;
+  }
+  interface ChGridColumnset {}
+  interface ChGridDatePicker {
+    /**
+     * The presence of this attribute makes the date-picker always visible
+     */
+    alwaysShow?: boolean;
+    /**
+     * The columnd id that this datepicker belongs to
+     */
+    colId?: string;
+    /**
+     * The date picker class
+     */
+    datePickerClass?: string;
+    /**
+     * The date picker id
+     */
+    datePickerId?: string;
+    /**
+     * initial date
+     */
+    defaultDate?: string;
+    /**
+     * The datepicker label
+     */
+    label?: string;
+    /**
+     * The max. date
+     */
+    maxDate?: string;
+    /**
+     * The max. width
+     */
+    maxWidth?: string;
+    /**
+     * The min. date
+     */
+    minDate?: string;
+    /**
+     * no weekends available
+     */
+    noWeekends?: boolean;
+    /**
+     * Emmits the sorting event
+     */
+    onDateRangeChanged?: (event: CustomEvent<any>) => void;
+  }
+  interface ChGridFooter {}
+  interface ChGridHeader {}
+  interface ChGridInputText {
+    /**
+     * The columnd id this input belongs to
+     */
+    colId?: string;
+    /**
+     * Emmits the input value
+     */
+    onInputValueChanged?: (event: CustomEvent<any>) => void;
+    /**
+     * The input placeholder
+     */
+    placeholder?: string;
+  }
+  interface ChGridMenu {
+    /**
+     * The columnd id
+     */
+    colId?: string;
+    /**
+     * The column data type
+     */
+    colType?: ColType;
+    /**
+     * The presence of this atribute displays a filter on the menu
+     */
+    filterable?: boolean;
+    /**
+     * Emmits the "freeze column" event
+     */
+    onFreezeColumn?: (event: CustomEvent<any>) => void;
+    /**
+     * Emmits the sorting event
+     */
+    onHideMenu?: (event: CustomEvent<any>) => void;
+    /**
+     * Emmits the sorting event
+     */
+    onSortChanged?: (event: CustomEvent<any>) => void;
+    /**
+     * Emmits the "unfreeze column" event
+     */
+    onUnfreezeColumn?: (event: CustomEvent<any>) => void;
+    /**
+     * If true, it shows the menu
+     */
+    showMenu?: boolean;
+    /**
+     * The presence of this atribute displays an option to sort the column
+     */
+    sortable?: boolean;
+  }
+  interface ChGridRow {}
+  interface ChGridRowset {}
+  interface ChGridRowsetLegend {}
+  interface ChGridSelect {
+    /**
+     * The columnd id this select belongs to
+     */
+    colId?: string;
+    /**
+     * Emmits select value
+     */
+    onSelectChanged?: (event: CustomEvent<any>) => void;
+  }
+  interface ChGridSelectOption {}
   interface ChIcon {
     /**
      * If enabled, the icon will display its inherent/natural color
@@ -141,17 +562,73 @@ declare namespace LocalJSX {
      */
     uncollapsed?: boolean;
   }
+  interface ComponentA {}
+  interface ComponentB {}
+  interface ComponentC {}
   interface IntrinsicElements {
+    "ch-grid": ChGrid;
+    "ch-grid-ag": ChGridAg;
+    "ch-grid-ag-button": ChGridAgButton;
+    "ch-grid-cell": ChGridCell;
+    "ch-grid-checkbox": ChGridCheckbox;
+    "ch-grid-column": ChGridColumn;
+    "ch-grid-columnset": ChGridColumnset;
+    "ch-grid-date-picker": ChGridDatePicker;
+    "ch-grid-footer": ChGridFooter;
+    "ch-grid-header": ChGridHeader;
+    "ch-grid-input-text": ChGridInputText;
+    "ch-grid-menu": ChGridMenu;
+    "ch-grid-row": ChGridRow;
+    "ch-grid-rowset": ChGridRowset;
+    "ch-grid-rowset-legend": ChGridRowsetLegend;
+    "ch-grid-select": ChGridSelect;
+    "ch-grid-select-option": ChGridSelectOption;
     "ch-icon": ChIcon;
     "ch-sidebar-menu": ChSidebarMenu;
     "ch-sidebar-menu-list": ChSidebarMenuList;
     "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
+    "component-a": ComponentA;
+    "component-b": ComponentB;
+    "component-c": ComponentC;
   }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
+      "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
+      "ch-grid-ag": LocalJSX.ChGridAg &
+        JSXBase.HTMLAttributes<HTMLChGridAgElement>;
+      "ch-grid-ag-button": LocalJSX.ChGridAgButton &
+        JSXBase.HTMLAttributes<HTMLChGridAgButtonElement>;
+      "ch-grid-cell": LocalJSX.ChGridCell &
+        JSXBase.HTMLAttributes<HTMLChGridCellElement>;
+      "ch-grid-checkbox": LocalJSX.ChGridCheckbox &
+        JSXBase.HTMLAttributes<HTMLChGridCheckboxElement>;
+      "ch-grid-column": LocalJSX.ChGridColumn &
+        JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
+      "ch-grid-columnset": LocalJSX.ChGridColumnset &
+        JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+      "ch-grid-date-picker": LocalJSX.ChGridDatePicker &
+        JSXBase.HTMLAttributes<HTMLChGridDatePickerElement>;
+      "ch-grid-footer": LocalJSX.ChGridFooter &
+        JSXBase.HTMLAttributes<HTMLChGridFooterElement>;
+      "ch-grid-header": LocalJSX.ChGridHeader &
+        JSXBase.HTMLAttributes<HTMLChGridHeaderElement>;
+      "ch-grid-input-text": LocalJSX.ChGridInputText &
+        JSXBase.HTMLAttributes<HTMLChGridInputTextElement>;
+      "ch-grid-menu": LocalJSX.ChGridMenu &
+        JSXBase.HTMLAttributes<HTMLChGridMenuElement>;
+      "ch-grid-row": LocalJSX.ChGridRow &
+        JSXBase.HTMLAttributes<HTMLChGridRowElement>;
+      "ch-grid-rowset": LocalJSX.ChGridRowset &
+        JSXBase.HTMLAttributes<HTMLChGridRowsetElement>;
+      "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend &
+        JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
+      "ch-grid-select": LocalJSX.ChGridSelect &
+        JSXBase.HTMLAttributes<HTMLChGridSelectElement>;
+      "ch-grid-select-option": LocalJSX.ChGridSelectOption &
+        JSXBase.HTMLAttributes<HTMLChGridSelectOptionElement>;
       "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
       "ch-sidebar-menu": LocalJSX.ChSidebarMenu &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
@@ -159,6 +636,12 @@ declare module "@stencil/core" {
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
       "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
+      "component-a": LocalJSX.ComponentA &
+        JSXBase.HTMLAttributes<HTMLComponentAElement>;
+      "component-b": LocalJSX.ComponentB &
+        JSXBase.HTMLAttributes<HTMLComponentBElement>;
+      "component-c": LocalJSX.ComponentC &
+        JSXBase.HTMLAttributes<HTMLComponentCElement>;
     }
   }
 }

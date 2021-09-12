@@ -1,0 +1,19 @@
+:host {
+  display: block;
+  height: 90px;
+  width: 90px;
+  padding: 20px;
+  background-color: red;
+
+  > ::slotted(component-b) {
+    background-color: green;
+  }
+  > ::slotted(component-b component-c) {
+    background-color: blue;
+  }
+  > ::slotted(component-b) {
+    component-c {
+      background-color: blue;
+    }
+  }
+}

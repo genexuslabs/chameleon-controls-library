@@ -1,0 +1,9 @@
+:host {
+  display: flex;
+}
+:host(.nested) {
+  ::before {
+    content:'';
+    width: calc(2ch * var(--level));
+  }
+}

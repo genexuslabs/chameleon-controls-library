@@ -1,0 +1,22 @@
+:host {
+  //display: block;
+}
+.menu {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid black;
+  width: 200px;
+
+  &__title, &__item {
+    display: block;
+  }
+  &__title {
+    color: gray;
+  }
+  &__item {
+    cursor: pointer;
+    &:hover {
+      background-color: lightgray;
+    }
+  }
+}

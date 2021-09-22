@@ -6,8 +6,11 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ColType } from "./components/grid-column/ch-grid-column";
-import { ColType as ColType1 } from "./components/grid-menu/ch-grid-menu";
+import { ColType as ColType1 } from "./components/grid-column-menu/ch-grid-menu";
 export namespace Components {
+  interface ChCompA {}
+  interface ChCompB {}
+  interface ChCompC {}
   interface ChGrid {}
   interface ChGridAg {}
   interface ChGridAgButton {}
@@ -20,7 +23,7 @@ export namespace Components {
   }
   interface ChGridColumn {
     /**
-     * The columnd id
+     * The columnd id (required)
      */
     colId: string;
     /**
@@ -32,9 +35,25 @@ export namespace Components {
      */
     filterable: boolean;
     /**
+     * The presence of this attribute hides the column
+     */
+    hidden: boolean;
+    /**
+     * The presence of this attribute makes this column hideable
+     */
+    hideable: boolean;
+    /**
+     * The presence of this attribute sets the indentation on this column (You should apply this attribute on one column only, usually on the first column that displays data)
+     */
+    indent: boolean;
+    /**
      * Displays a menu with options
      */
     showOptions: boolean;
+    /**
+     * The column size
+     */
+    size: string;
   }
   interface ChGridColumnset {}
   interface ChGridDatePicker {
@@ -170,11 +189,23 @@ export namespace Components {
      */
     uncollapsed: boolean;
   }
-  interface ComponentA {}
-  interface ComponentB {}
-  interface ComponentC {}
 }
 declare global {
+  interface HTMLChCompAElement extends Components.ChCompA, HTMLStencilElement {}
+  var HTMLChCompAElement: {
+    prototype: HTMLChCompAElement;
+    new (): HTMLChCompAElement;
+  };
+  interface HTMLChCompBElement extends Components.ChCompB, HTMLStencilElement {}
+  var HTMLChCompBElement: {
+    prototype: HTMLChCompBElement;
+    new (): HTMLChCompBElement;
+  };
+  interface HTMLChCompCElement extends Components.ChCompC, HTMLStencilElement {}
+  var HTMLChCompCElement: {
+    prototype: HTMLChCompCElement;
+    new (): HTMLChCompCElement;
+  };
   interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {}
   var HTMLChGridElement: {
     prototype: HTMLChGridElement;
@@ -318,28 +349,10 @@ declare global {
     prototype: HTMLChSidebarMenuListItemElement;
     new (): HTMLChSidebarMenuListItemElement;
   };
-  interface HTMLComponentAElement
-    extends Components.ComponentA,
-      HTMLStencilElement {}
-  var HTMLComponentAElement: {
-    prototype: HTMLComponentAElement;
-    new (): HTMLComponentAElement;
-  };
-  interface HTMLComponentBElement
-    extends Components.ComponentB,
-      HTMLStencilElement {}
-  var HTMLComponentBElement: {
-    prototype: HTMLComponentBElement;
-    new (): HTMLComponentBElement;
-  };
-  interface HTMLComponentCElement
-    extends Components.ComponentC,
-      HTMLStencilElement {}
-  var HTMLComponentCElement: {
-    prototype: HTMLComponentCElement;
-    new (): HTMLComponentCElement;
-  };
   interface HTMLElementTagNameMap {
+    "ch-comp-a": HTMLChCompAElement;
+    "ch-comp-b": HTMLChCompBElement;
+    "ch-comp-c": HTMLChCompCElement;
     "ch-grid": HTMLChGridElement;
     "ch-grid-ag": HTMLChGridAgElement;
     "ch-grid-ag-button": HTMLChGridAgButtonElement;
@@ -361,13 +374,15 @@ declare global {
     "ch-sidebar-menu": HTMLChSidebarMenuElement;
     "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
     "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
-    "component-a": HTMLComponentAElement;
-    "component-b": HTMLComponentBElement;
-    "component-c": HTMLComponentCElement;
   }
 }
 declare namespace LocalJSX {
-  interface ChGrid {}
+  interface ChCompA {}
+  interface ChCompB {}
+  interface ChCompC {}
+  interface ChGrid {
+    onPassEventToMenu?: (event: CustomEvent<any>) => void;
+  }
   interface ChGridAg {}
   interface ChGridAgButton {}
   interface ChGridCell {}
@@ -379,7 +394,7 @@ declare namespace LocalJSX {
   }
   interface ChGridColumn {
     /**
-     * The columnd id
+     * The columnd id (required)
      */
     colId?: string;
     /**
@@ -391,9 +406,25 @@ declare namespace LocalJSX {
      */
     filterable?: boolean;
     /**
+     * The presence of this attribute hides the column
+     */
+    hidden?: boolean;
+    /**
+     * The presence of this attribute makes this column hideable
+     */
+    hideable?: boolean;
+    /**
+     * The presence of this attribute sets the indentation on this column (You should apply this attribute on one column only, usually on the first column that displays data)
+     */
+    indent?: boolean;
+    /**
      * Displays a menu with options
      */
     showOptions?: boolean;
+    /**
+     * The column size
+     */
+    size?: string;
   }
   interface ChGridColumnset {}
   interface ChGridDatePicker {
@@ -484,6 +515,10 @@ declare namespace LocalJSX {
      */
     onSortChanged?: (event: CustomEvent<any>) => void;
     /**
+     * Emmits toggled column (hidden/visible)
+     */
+    onToggledColumn?: (event: CustomEvent<any>) => void;
+    /**
      * Emmits the "unfreeze column" event
      */
     onUnfreezeColumn?: (event: CustomEvent<any>) => void;
@@ -562,10 +597,10 @@ declare namespace LocalJSX {
      */
     uncollapsed?: boolean;
   }
-  interface ComponentA {}
-  interface ComponentB {}
-  interface ComponentC {}
   interface IntrinsicElements {
+    "ch-comp-a": ChCompA;
+    "ch-comp-b": ChCompB;
+    "ch-comp-c": ChCompC;
     "ch-grid": ChGrid;
     "ch-grid-ag": ChGridAg;
     "ch-grid-ag-button": ChGridAgButton;
@@ -587,15 +622,18 @@ declare namespace LocalJSX {
     "ch-sidebar-menu": ChSidebarMenu;
     "ch-sidebar-menu-list": ChSidebarMenuList;
     "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
-    "component-a": ComponentA;
-    "component-b": ComponentB;
-    "component-c": ComponentC;
   }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
+      "ch-comp-a": LocalJSX.ChCompA &
+        JSXBase.HTMLAttributes<HTMLChCompAElement>;
+      "ch-comp-b": LocalJSX.ChCompB &
+        JSXBase.HTMLAttributes<HTMLChCompBElement>;
+      "ch-comp-c": LocalJSX.ChCompC &
+        JSXBase.HTMLAttributes<HTMLChCompCElement>;
       "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
       "ch-grid-ag": LocalJSX.ChGridAg &
         JSXBase.HTMLAttributes<HTMLChGridAgElement>;
@@ -636,12 +674,6 @@ declare module "@stencil/core" {
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
       "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
-      "component-a": LocalJSX.ComponentA &
-        JSXBase.HTMLAttributes<HTMLComponentAElement>;
-      "component-b": LocalJSX.ComponentB &
-        JSXBase.HTMLAttributes<HTMLComponentBElement>;
-      "component-c": LocalJSX.ComponentC &
-        JSXBase.HTMLAttributes<HTMLComponentCElement>;
     }
   }
 }

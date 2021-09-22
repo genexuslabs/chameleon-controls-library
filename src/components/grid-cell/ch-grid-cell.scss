@@ -1,9 +1,19 @@
 :host {
   display: flex;
+  background-color: #fff;
+}
+:host(:nth-child(1)){
+  grid-column:1;
+}
+:host(:nth-child(2)){
+  grid-column:2;
 }
 :host(.nested) {
   ::before {
     content:'';
     width: calc(2ch * var(--level));
   }
+}
+:host(.hidden) {
+  display: none;
 }

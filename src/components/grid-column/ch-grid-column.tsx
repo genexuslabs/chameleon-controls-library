@@ -22,14 +22,29 @@ export class ChGridColumn {
   ********************/
 
   /**
-   * The columnd id
+   * The columnd id (required)
    */
-  @Prop() colId: string = "";
+  @Prop() colId: string = null;
 
   /**
    * The column data type
    */
   @Prop() colType: ColType = undefined;
+
+  /**
+   * The presence of this attribute makes this column hideable
+   */
+  @Prop() hideable: boolean = false;
+
+  /**
+   * The presence of this attribute hides the column
+   */
+  @Prop() hidden: boolean = false;
+
+  /**
+   * The presence of this attribute sets the indentation on this column (You should apply this attribute on one column only, usually on the first column that displays data)
+   */
+  @Prop() indent: boolean = false;
 
   /**
    * The presence of this atribute displays a filter on the menu
@@ -40,6 +55,11 @@ export class ChGridColumn {
    * Displays a menu with options
    */
   @Prop() showOptions: boolean = true;
+
+  /**
+   * The column size
+   */
+  @Prop() size: string = "minmax(max-content,auto)";
 
   /*******************
   STATE
@@ -97,6 +117,7 @@ export class ChGridColumn {
       );
     }
   }
+
   componentDidUnload() {
     if (this.showOptions) {
       document.removeEventListener("click", this.detectClickOutsideMenu);

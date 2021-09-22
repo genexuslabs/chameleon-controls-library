@@ -1,22 +1,25 @@
-:host {
+ch-grid-row {
   display: contents; 
-
-  > ::slotted(.ch-grid-rowset) {
-    background-color: red;
+  ch-grid-cell:nth-child(1),
+  ch-grid-cell:nth-child(2) {
+    transform: translateX(var(--scrollH));
   }
-  > ::slotted(.ch-grid-rowset) {
-    background-color: pink;
-    .ch-grid-row {
-      background-color: green;
-    }
-  }
-  > ::slotted(.ch-grid-rowset .ch-grid-row) {
-    background-color: green;
-  }
-  > ::slotted(ch-grid-rowset > .ch-grid-row) {
-    background-color: green;
-  }
-  > ch-grid-rowset ch-grid-cell {
-    background-color: yellow;
-  }
+}
+ch-grid-row.has-childs:not(.expanded) > ch-grid-rowset {
+  display: none;
+}
+ch-grid-row.has-childs > ch-grid-cell:nth-child(2)::after {
+  content: '(+)';
+  margin-left: 1ch;
+}
+ch-grid-row.has-childs.expanded > ch-grid-cell:nth-child(2)::after {
+  content: '(-)';
+}
+//HOVER
+ch-grid-row.hover > ch-grid-cell {
+  background-color: yellow;
+}
+//SELECTED
+ch-grid-row.selected > ch-grid-cell {
+  background-color: goldenrod;
 }

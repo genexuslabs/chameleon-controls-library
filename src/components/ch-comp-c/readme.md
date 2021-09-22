@@ -1,4 +1,4 @@
-# component-a
+# ch-comp-c
 
 <!-- Auto Generated Below -->
 

@@ -1,11 +1,11 @@
 import { Component, Host, h } from "@stencil/core";
 
 @Component({
-  tag: "component-c",
-  styleUrl: "component-c.scss",
+  tag: "ch-comp-c",
+  styleUrl: "ch-comp-c.css",
   shadow: true,
 })
-export class ComponentC {
+export class ChCompC {
   render() {
     return (
       <Host>

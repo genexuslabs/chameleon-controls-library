@@ -6,7 +6,7 @@
 
 ### Used by
 
-- [ch-grid-menu](../grid-menu)
+- [ch-grid-menu](../grid-column-menu)
 
 ### Graph
 

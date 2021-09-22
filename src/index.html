@@ -9,25 +9,16 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
   </head>
   <body>
-    <!-- test styling slotted content -->
-    <component-a>
-      <component-b>
-        <component-c>
-        </component-c>
-      </component-b>
-    </component-a>
-
-
     <!-- ch-grid -->
-    <ch-grid id="ch-grid">
+    <ch-grid id="ch-grid" checkboxes>
       <ch-grid-header slot="header">
         Título de grid
       </ch-grid-header>
       <ch-grid-columnset>
-        <ch-grid-column show-options="false" col-id="checkbox"></ch-grid-column>
-        <ch-grid-column col-id="nombre" col-type="string" filterable>Nombre</ch-grid-column>
-        <ch-grid-column col-id="fecha-de-nacimiento" col-type="date" filterable>Fecha de nacimiento</ch-grid-column>
-        <ch-grid-column col-id="boolean" col-type="boolean" filterable>Boolean</ch-grid-column>
+        <ch-grid-column size="min-content" show-options="false" col-id="checkbox"></ch-grid-column>
+        <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable col-id="nombre" id="nombre">Nombre</ch-grid-column>
+        <ch-grid-column hideable col-id="fecha-de-nacimiento" col-type="date" filterable col-id="fecha-nacimiento">Fecha de nacimiento</ch-grid-column>
+        <ch-grid-column hideable col-id="boolean" col-type="boolean" filterable col-id="boolean">Boolean</ch-grid-column>
       </ch-grid-columnset>
       <ch-grid-row>
         <ch-grid-cell><input type="checkbox"></ch-grid-cell>
@@ -115,6 +106,27 @@
         Footer
       </ch-grid-footer>
     </ch-grid>
+    
+    <br>
+
+    <ch-comp-a>
+      <ch-comp-b>
+        <ch-comp-c>
+          
+        </ch-comp-c>
+      </ch-comp-b>
+    </ch-comp-a>
+<!-- ch-grid -->
+<!-- <ch-grid id="ch-grid" checkboxes>
+  <ch-grid-row>
+    <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+    <ch-grid-cell>Nombre 0</ch-grid-cell>
+    <ch-grid-cell>Apellido 0</ch-grid-cell>
+    <ch-grid-cell>Fecha de nacimiento 0</ch-grid-cell>
+    <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+  </ch-grid-row>
+</ch-grid> -->
+
   </body>
 </html>
 

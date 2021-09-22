@@ -3,12 +3,12 @@ import { Component, Host, h } from "@stencil/core";
 @Component({
   tag: "ch-grid-row",
   styleUrl: "ch-grid-row.scss",
-  shadow: true,
+  shadow: false,
 })
 export class ChGridRow {
   render() {
     return (
-      <Host class="ch-grid-row">
+      <Host>
         <slot></slot>
       </Host>
     );

@@ -4,8 +4,8 @@
   border: 1px solid black;
 }
 section {
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: visible;
   display: grid;
-  grid-template-columns: min-content minmax(200px, 1fr) 300px 300px;
   grid-auto-flow: dense; /* para orden de columnas */
 }

@@ -14,12 +14,13 @@
 
 ## Events
 
-| Event            | Description                        | Type               |
-| ---------------- | ---------------------------------- | ------------------ |
-| `freezeColumn`   | Emmits the "freeze column" event   | `CustomEvent<any>` |
-| `hideMenu`       | Emmits the sorting event           | `CustomEvent<any>` |
-| `sortChanged`    | Emmits the sorting event           | `CustomEvent<any>` |
-| `unfreezeColumn` | Emmits the "unfreeze column" event | `CustomEvent<any>` |
+| Event            | Description                            | Type               |
+| ---------------- | -------------------------------------- | ------------------ |
+| `freezeColumn`   | Emmits the "freeze column" event       | `CustomEvent<any>` |
+| `hideMenu`       | Emmits the sorting event               | `CustomEvent<any>` |
+| `sortChanged`    | Emmits the sorting event               | `CustomEvent<any>` |
+| `toggledColumn`  | Emmits toggled column (hidden/visible) | `CustomEvent<any>` |
+| `unfreezeColumn` | Emmits the "unfreeze column" event     | `CustomEvent<any>` |
 
 ## Dependencies
 

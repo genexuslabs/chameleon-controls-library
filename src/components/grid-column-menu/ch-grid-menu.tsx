@@ -6,6 +6,7 @@ import {
   Element,
   Event,
   EventEmitter,
+  Listen,
   State,
 } from "@stencil/core";
 
@@ -15,6 +16,8 @@ import {
   shadow: true,
 })
 export class ChGridMenu {
+  @Element() el: HTMLChGridMenuElement;
+
   /*******************
   PROPS
   ********************/
@@ -47,7 +50,13 @@ export class ChGridMenu {
   /*******************
   STATE
   ********************/
+
   @State() columnFreezed: boolean = false;
+
+  /**
+   * An array containing information about the hideable columns
+   */
+  @State() hideableColumns: Array<Object> = [];
 
   /*******************
   EVENTS
@@ -73,9 +82,25 @@ export class ChGridMenu {
    */
   @Event() unfreezeColumn: EventEmitter;
 
+  /**
+   * Emmits toggled column (hidden/visible)
+   */
+  @Event() toggledColumn: EventEmitter;
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
+
+  @State() chGrid: HTMLElement = null;
+  componentDidLoad() {
+    this.chGrid = this.el.closest("ch-grid");
+    console.log("this.chGrid", this.chGrid);
+  }
+
+  @Listen("passEventToMenu", { target: "document" })
+  passEventToMenuHandler(event) {
+    console.log(event.detail);
+  }
 
   sortChangedFunc(order) {
     this.sortChanged.emit({
@@ -204,6 +229,33 @@ export class ChGridMenu {
     }
   }
 
+  toggleCol(colId, colHidden) {
+    this.toggledColumn.emit({
+      "column-id": colId,
+      hidden: !colHidden,
+    });
+  }
+
+  setHideableColumns() {
+    let returnedContent = [
+      <hr></hr>,
+      <span class="menu__title">Hide Columns</span>,
+    ];
+    this.hideableColumns.forEach((col) => {
+      returnedContent.push([
+        <span class="menu__item">
+          <input
+            type="checkbox"
+            checked={col["hidden"]}
+            onClick={this.toggleCol.bind(this, col["colId"], col["hidden"])}
+          ></input>
+          {col["colDesciption"]}
+        </span>,
+      ]);
+    });
+    return returnedContent;
+  }
+
   render() {
     return (
       <Host>
@@ -227,6 +279,7 @@ export class ChGridMenu {
               Freeze column
             </span>
           )}
+          {this.hideableColumns.length > 0 ? this.setHideableColumns() : null}
         </div>
       </Host>
     );

@@ -1,4 +1,5 @@
-import { Component, Host, h } from "@stencil/core";
+import { Component, Host, h, Element } from "@stencil/core";
+import { ChGrid } from "../grid/ch-grid";
 
 @Component({
   tag: "ch-grid-columnset",
@@ -6,10 +7,17 @@ import { Component, Host, h } from "@stencil/core";
   shadow: true,
 })
 export class ChGridColumnset {
+  @Element() el: HTMLChGridColumnsetElement;
+  chGrid: ChGrid;
+
+  componentWillLoad() {
+    this.chGrid = this.el.assignedSlot["data-chGrid"];
+  }
+
   render() {
     return (
       <Host>
-        <slot></slot>
+        <slot data-chGrid={this.chGrid}></slot>
       </Host>
     );
   }

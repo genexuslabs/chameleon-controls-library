@@ -8,10 +8,14 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ColType } from "./components/grid-column/ch-grid-column";
 import { ColType as ColType1 } from "./components/grid-column-menu/ch-grid-menu";
 export namespace Components {
-  interface ChCompA {}
+  interface ChCompA {
+    getInfo: () => Promise<void>;
+  }
   interface ChCompB {}
   interface ChCompC {}
-  interface ChGrid {}
+  interface ChGrid {
+    hideableCols: Array<Object>;
+  }
   interface ChGridAg {}
   interface ChGridAgButton {}
   interface ChGridCell {}
@@ -56,48 +60,6 @@ export namespace Components {
     size: string;
   }
   interface ChGridColumnset {}
-  interface ChGridDatePicker {
-    /**
-     * The presence of this attribute makes the date-picker always visible
-     */
-    alwaysShow: boolean;
-    /**
-     * The columnd id that this datepicker belongs to
-     */
-    colId: string;
-    /**
-     * The date picker class
-     */
-    datePickerClass: string;
-    /**
-     * The date picker id
-     */
-    datePickerId: string;
-    /**
-     * initial date
-     */
-    defaultDate: string;
-    /**
-     * The datepicker label
-     */
-    label: string;
-    /**
-     * The max. date
-     */
-    maxDate: string;
-    /**
-     * The max. width
-     */
-    maxWidth: string;
-    /**
-     * The min. date
-     */
-    minDate: string;
-    /**
-     * no weekends available
-     */
-    noWeekends: boolean;
-  }
   interface ChGridFooter {}
   interface ChGridHeader {}
   interface ChGridInputText {
@@ -123,6 +85,10 @@ export namespace Components {
      * The presence of this atribute displays a filter on the menu
      */
     filterable: boolean;
+    /**
+     * An array containing information about the hideable columns
+     */
+    hideableCols: Array<Object>;
     /**
      * If true, it shows the menu
      */
@@ -253,13 +219,6 @@ declare global {
     prototype: HTMLChGridColumnsetElement;
     new (): HTMLChGridColumnsetElement;
   };
-  interface HTMLChGridDatePickerElement
-    extends Components.ChGridDatePicker,
-      HTMLStencilElement {}
-  var HTMLChGridDatePickerElement: {
-    prototype: HTMLChGridDatePickerElement;
-    new (): HTMLChGridDatePickerElement;
-  };
   interface HTMLChGridFooterElement
     extends Components.ChGridFooter,
       HTMLStencilElement {}
@@ -360,7 +319,6 @@ declare global {
     "ch-grid-checkbox": HTMLChGridCheckboxElement;
     "ch-grid-column": HTMLChGridColumnElement;
     "ch-grid-columnset": HTMLChGridColumnsetElement;
-    "ch-grid-date-picker": HTMLChGridDatePickerElement;
     "ch-grid-footer": HTMLChGridFooterElement;
     "ch-grid-header": HTMLChGridHeaderElement;
     "ch-grid-input-text": HTMLChGridInputTextElement;
@@ -377,11 +335,16 @@ declare global {
   }
 }
 declare namespace LocalJSX {
-  interface ChCompA {}
+  interface ChCompA {
+    onCompCtextChanged?: (event: CustomEvent<any>) => void;
+  }
   interface ChCompB {}
-  interface ChCompC {}
+  interface ChCompC {
+    onTextChanged?: (event: CustomEvent<any>) => void;
+  }
   interface ChGrid {
-    onPassEventToMenu?: (event: CustomEvent<any>) => void;
+    hideableCols?: Array<Object>;
+    onEmitHideableCols?: (event: CustomEvent<any>) => void;
   }
   interface ChGridAg {}
   interface ChGridAgButton {}
@@ -427,52 +390,6 @@ declare namespace LocalJSX {
     size?: string;
   }
   interface ChGridColumnset {}
-  interface ChGridDatePicker {
-    /**
-     * The presence of this attribute makes the date-picker always visible
-     */
-    alwaysShow?: boolean;
-    /**
-     * The columnd id that this datepicker belongs to
-     */
-    colId?: string;
-    /**
-     * The date picker class
-     */
-    datePickerClass?: string;
-    /**
-     * The date picker id
-     */
-    datePickerId?: string;
-    /**
-     * initial date
-     */
-    defaultDate?: string;
-    /**
-     * The datepicker label
-     */
-    label?: string;
-    /**
-     * The max. date
-     */
-    maxDate?: string;
-    /**
-     * The max. width
-     */
-    maxWidth?: string;
-    /**
-     * The min. date
-     */
-    minDate?: string;
-    /**
-     * no weekends available
-     */
-    noWeekends?: boolean;
-    /**
-     * Emmits the sorting event
-     */
-    onDateRangeChanged?: (event: CustomEvent<any>) => void;
-  }
   interface ChGridFooter {}
   interface ChGridHeader {}
   interface ChGridInputText {
@@ -502,6 +419,10 @@ declare namespace LocalJSX {
      * The presence of this atribute displays a filter on the menu
      */
     filterable?: boolean;
+    /**
+     * An array containing information about the hideable columns
+     */
+    hideableCols?: Array<Object>;
     /**
      * Emmits the "freeze column" event
      */
@@ -608,7 +529,6 @@ declare namespace LocalJSX {
     "ch-grid-checkbox": ChGridCheckbox;
     "ch-grid-column": ChGridColumn;
     "ch-grid-columnset": ChGridColumnset;
-    "ch-grid-date-picker": ChGridDatePicker;
     "ch-grid-footer": ChGridFooter;
     "ch-grid-header": ChGridHeader;
     "ch-grid-input-text": ChGridInputText;
@@ -647,8 +567,6 @@ declare module "@stencil/core" {
         JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
       "ch-grid-columnset": LocalJSX.ChGridColumnset &
         JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
-      "ch-grid-date-picker": LocalJSX.ChGridDatePicker &
-        JSXBase.HTMLAttributes<HTMLChGridDatePickerElement>;
       "ch-grid-footer": LocalJSX.ChGridFooter &
         JSXBase.HTMLAttributes<HTMLChGridFooterElement>;
       "ch-grid-header": LocalJSX.ChGridHeader &

@@ -16,9 +16,9 @@
       </ch-grid-header>
       <ch-grid-columnset>
         <ch-grid-column size="min-content" show-options="false" col-id="checkbox"></ch-grid-column>
-        <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable col-id="nombre" id="nombre">Nombre</ch-grid-column>
-        <ch-grid-column hideable col-id="fecha-de-nacimiento" col-type="date" filterable col-id="fecha-nacimiento">Fecha de nacimiento</ch-grid-column>
-        <ch-grid-column hideable col-id="boolean" col-type="boolean" filterable col-id="boolean">Boolean</ch-grid-column>
+        <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable>Nombre</ch-grid-column>
+        <ch-grid-column hideable col-id="fecha-de-nacimiento" col-type="date" filterable >Fecha de nacimiento</ch-grid-column>
+        <ch-grid-column hideable size="100px" col-id="boolean" col-type="boolean" filterable>Boolean</ch-grid-column>
       </ch-grid-columnset>
       <ch-grid-row>
         <ch-grid-cell><input type="checkbox"></ch-grid-cell>
@@ -109,11 +109,119 @@
     
     <br>
 
+    <!-- ch-grid -->
+    <!-- <ch-grid id="ch-grid-2" checkboxes>
+      <ch-grid-header slot="header">
+        Título de grid
+      </ch-grid-header>
+      <ch-grid-columnset>
+        <ch-grid-column size="min-content" show-options="false" col-id="checkbox"></ch-grid-column>
+        <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable>Nombre</ch-grid-column>
+        <ch-grid-column hideable col-id="fecha-de-nacimiento" col-type="date" filterable >Fecha de nacimiento</ch-grid-column>
+        <ch-grid-column hideable size="100px" col-id="boolean" col-type="boolean" filterable>Boolean</ch-grid-column>
+      </ch-grid-columnset>
+      <ch-grid-row>
+        <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+        <ch-grid-cell>Nombre 0</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 0</ch-grid-cell>
+        <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+      </ch-grid-row>
+      <ch-grid-rowset>
+        <ch-grid-rowset-legend>Grupo 1</ch-grid-rowset-legend>
+        <ch-grid-row>
+          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+          <ch-grid-cell>Nombre 1</ch-grid-cell>
+          <ch-grid-cell>Fecha de nacimiento 1</ch-grid-cell>
+          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+          <ch-grid-cell>Nombre 2</ch-grid-cell>
+          <ch-grid-cell>Fecha de nacimiento 2</ch-grid-cell>
+          <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
+          <ch-grid-rowset>
+            <ch-grid-row>
+              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+              <ch-grid-cell>Nombre 2.1</ch-grid-cell>
+              <ch-grid-cell>Fecha de nacimiento 2.1</ch-grid-cell>
+              <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+              <ch-grid-cell>Nombre 2.2</ch-grid-cell>
+              <ch-grid-cell>Fecha de nacimiento 2.2</ch-grid-cell>
+              <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+                  <ch-grid-cell>Nombre 2.2.1</ch-grid-cell>
+                  <ch-grid-cell>Fecha de nacimiento 2.2.1</ch-grid-cell>
+                  <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+              <ch-grid-cell>Nombre 2.3</ch-grid-cell>
+              <ch-grid-cell>Fecha de nacimiento 2.3</ch-grid-cell>
+              <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+          <ch-grid-cell>Nombre 3</ch-grid-cell>
+          <ch-grid-cell>Fecha de nacimiento 3</ch-grid-cell>
+          <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+          <ch-grid-cell>Nombre 4</ch-grid-cell>
+          <ch-grid-cell>Fecha de nacimiento 4</ch-grid-cell>
+          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+          <ch-grid-rowset>
+            <ch-grid-row>
+              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+              <ch-grid-cell>Nombre 4.1</ch-grid-cell>
+              <ch-grid-cell>Fecha de nacimiento 4.1</ch-grid-cell>
+              <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-row>
+      </ch-grid-rowset>
+      <ch-grid-rowset>
+        <ch-grid-rowset-legend>Grupo 2</ch-grid-rowset-legend>
+        <ch-grid-row>
+          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+          <ch-grid-cell>Nombre 5</ch-grid-cell>
+          <ch-grid-cell>Fecha de nacimiento 5</ch-grid-cell>
+          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+        </ch-grid-row>
+      </ch-grid-rowset>
+          <ch-grid-ag hidden slot="row-hover"> 
+            <ch-grid-ag-button>Action A</ch-grid-ag-button>
+            <ch-grid-ag-button>Action B</ch-grid-ag-button>
+          </ch-grid-ag>
+      <ch-grid-footer slot="footer">
+        Footer
+      </ch-grid-footer>
+    </ch-grid> -->
+
+    <br>
+
     <ch-comp-a>
       <ch-comp-b>
-        <ch-comp-c>
-          
-        </ch-comp-c>
+        <ch-comp-c></ch-comp-c>
+        <ch-comp-c></ch-comp-c>
+        <ch-comp-c></ch-comp-c>
+      </ch-comp-b>
+    </ch-comp-a>
+    <br>
+    <ch-comp-a>
+      <ch-comp-b>
+        <ch-comp-c></ch-comp-c>
+        <ch-comp-c></ch-comp-c>
+        <ch-comp-c></ch-comp-c>
       </ch-comp-b>
     </ch-comp-a>
 <!-- ch-grid -->

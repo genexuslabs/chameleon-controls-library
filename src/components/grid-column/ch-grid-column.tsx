@@ -5,8 +5,10 @@ import {
   Prop,
   getAssetPath,
   State,
+  Element,
   Listen,
 } from "@stencil/core";
+import { ChGrid } from "../grid/ch-grid";
 
 @Component({
   tag: "ch-grid-column",
@@ -16,6 +18,8 @@ import {
 })
 export class ChGridColumn {
   menu!: HTMLElement;
+  @Element() el: HTMLChGridColumnElement;
+  chGrid: ChGrid;
 
   /*******************
   PROPS
@@ -75,9 +79,25 @@ export class ChGridColumn {
    */
   @State() clickedOnShowMenuIcon: boolean = false;
 
+  /**
+   * Information about the hideable cols
+   */
+  @State() hideableCols: Array<Object> = [];
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
+
+  componentWillLoad() {
+    this.chGrid = this.el.assignedSlot["data-chGrid"];
+  }
+
+  @Listen("emitHideableCols", { target: "document" })
+  emitHideableColsHandler() {
+    if (this.chGrid !== undefined) {
+      this.hideableCols = this.chGrid.hideableCols;
+    }
+  }
 
   showMenuFunc() {
     this.clickedOnShowMenuIcon = true;
@@ -129,7 +149,7 @@ export class ChGridColumn {
       <Host>
         <slot></slot>
         {this.showOptions ? (
-          <div class="icon-menu-container">
+          <div class="">
             <ch-icon
               class={{ "ch-icon-show-menu": true }}
               onMouseUp={this.showMenuFunc.bind(this)}
@@ -144,6 +164,7 @@ export class ChGridColumn {
                 col-id={this.colId}
                 col-type={this.colType}
                 hidden={!this.showMenu}
+                hideableCols={this.hideableCols}
                 filterable={this.filterable}
                 ref={(el) => (this.menu = el as HTMLElement)}
               ></ch-grid-menu>

@@ -2,4 +2,6 @@
   display: block;
   border: 1px solid green;
   padding: 20px;
+  display: flex;
+  flex: 1;
 }

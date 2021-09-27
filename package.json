@@ -34,7 +34,6 @@
     "@storybook/addons": "^6.2.7",
     "@storybook/source-loader": "^6.2.7",
     "js-datepicker": "^5.18.0",
-    "stencil-wormhole": "^3.4.1",
     "typescript": "^4.2.4"
   },
   "license": "MIT",

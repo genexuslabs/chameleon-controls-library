@@ -1,6 +1,7 @@
 :host {
   display: flex;
   background-color: #fff;
+  cursor: pointer;
 }
 :host(:nth-child(1)){
   grid-column:1;
@@ -16,4 +17,7 @@
 }
 :host(.hidden) {
   display: none;
+}
+:host(.toggle-row--expanded){
+  transform: rotate(180deg) !important;
 }

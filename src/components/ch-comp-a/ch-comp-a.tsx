@@ -1,5 +1,13 @@
-import { Component, Host, h, State } from "@stencil/core";
-import { Universe } from "stencil-wormhole";
+import {
+  Component,
+  Element,
+  Host,
+  h,
+  Method,
+  Listen,
+  Event,
+  EventEmitter,
+} from "@stencil/core";
 
 @Component({
   tag: "ch-comp-a",
@@ -7,26 +15,25 @@ import { Universe } from "stencil-wormhole";
   shadow: true,
 })
 export class ChCompA {
-  // 1. Setup your state.
-  @State() state: Record<string, any> = {
-    message: "apples",
-    data: { content: 1 },
-    // ...
-  };
+  @Element() el: HTMLChCompAElement;
 
-  componentWillLoad() {
-    // 2. Create the universe (it has to be called in this lifecycle method).
-    //Universe.create(this, this.state);
+  @Method()
+  async getInfo() {
+    console.log("Method !!!");
   }
 
-  // 3. Update your state as usual.
+  @Event() compCtextChanged: EventEmitter;
+
+  @Listen("textChanged")
+  todoCompletedHandler(event) {
+    this.compCtextChanged.emit(event.detail);
+  }
 
   render() {
     return (
-      // 4. Create the universe provider.
-      <Universe.Provider state={this.state}>
-        <my-child />
-      </Universe.Provider>
+      <Host>
+        <slot data-componentA={this.el}></slot>
+      </Host>
     );
   }
 }

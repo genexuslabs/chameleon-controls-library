@@ -9,12 +9,12 @@ ch-grid-row.has-childs:not(.expanded) > ch-grid-rowset {
   display: none;
 }
 ch-grid-row.has-childs > ch-grid-cell:nth-child(2)::after {
-  content: '(+)';
+  // content: '(+)';
   margin-left: 1ch;
 }
-ch-grid-row.has-childs.expanded > ch-grid-cell:nth-child(2)::after {
-  content: '(-)';
-}
+// ch-grid-row.has-childs.expanded > ch-grid-cell:nth-child(2)::after {
+//   content: '(-)';
+// }
 //HOVER
 ch-grid-row.hover > ch-grid-cell {
   background-color: yellow;

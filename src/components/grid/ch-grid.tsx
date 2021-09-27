@@ -2,11 +2,13 @@ import {
   Component,
   Host,
   h,
+  getAssetPath,
   Element,
   State,
   Event,
   EventEmitter,
   Listen,
+  Prop,
 } from "@stencil/core";
 import { ChGridColumn } from "../grid-column/ch-grid-column";
 import { ChGridRow } from "../grid-row/ch-grid-row";
@@ -15,6 +17,7 @@ import { ChGridRow } from "../grid-row/ch-grid-row";
   tag: "ch-grid",
   styleUrl: "ch-grid.scss",
   shadow: true,
+  assetsDirs: ["ch-grid-assets"],
 })
 export class ChGrid {
   @Element() el: HTMLChGridElement;
@@ -25,28 +28,31 @@ export class ChGrid {
   private _chGridColumIndentedIndex: number = undefined;
   @State() selectedChRow: ChGridRow = null;
   @State() rowWithHover: ChGridRow = null;
+  @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
 
-  @Event() passEventToMenu: EventEmitter;
+  @Event() emitHideableCols: EventEmitter;
+
+  componentWillLoad() {}
 
   componentDidLoad() {
     this.init();
-
-    this.passEventToMenu.emit("pass event to menu");
   }
 
   @Listen("toggledColumn")
   toggledColumnHandler(event: CustomEvent) {
-    console.log("Received the toggledColumn event: ", event.detail);
+    //console.log("Received the toggledColumn event: ", event.detail);
     const toggledColumnId = event.detail["column-id"];
     const toggledColumnHidden = event.detail["hidden"];
     const chGridColumnset = this.el.querySelector("ch-grid-columnset");
-    const toggledCol = chGridColumnset.querySelector(`#${toggledColumnId}`);
+    const toggledCol = chGridColumnset.querySelector(
+      "[col-id='" + toggledColumnId + "']"
+    );
     if (toggledColumnHidden) {
       ((toggledCol as unknown) as ChGridColumn).hidden = true;
     } else {
       ((toggledCol as unknown) as ChGridColumn).hidden = false;
     }
-    this.setHideableColsOnMenu();
+    this.setHideableCols();
     this.hideCols();
   }
 
@@ -54,12 +60,8 @@ export class ChGrid {
     console.log("init");
     const chgrid = this.el;
     const chgridSection = this.el.shadowRoot.querySelector("section");
-    this._chGridColumns = this.el.querySelectorAll("ch-grid-column");
 
-    this.getColumnWithIndentationIndex();
-    this.evaluateRowsetLevel();
-
-    chgrid.addEventListener("click", this.onClick.bind(this));
+    //chgrid.addEventListener("click", this.onClick.bind(this));
     chgridSection.addEventListener("mousemove", this.onHover.bind(this), {
       passive: true,
     });
@@ -70,14 +72,72 @@ export class ChGrid {
     if (this._actionGroup) {
       chgrid.addEventListener("mouseover", this.actionPosition.bind(this));
     }
-
-    this.setHideableColsOnMenu();
+    this.evaluateRowsetLevel();
+    this.insertToggleColumn();
+    this._chGridColumns = this.el.querySelectorAll("ch-grid-column"); //This assignment has to be after this.insertToggleColumn();
+    this.getColumnWithIndentationIndex(); //This method has to be after this._chGridColumns = this.el.querySelectorAll("ch-grid-column"); assignment
+    this.setNestedChGridCells();
+    this.setHideableCols();
     this.hideCols();
+  }
+
+  setNestedChGridCells() {
+    if (this._chGridColumIndentedIndex !== undefined) {
+      const secondGridCellsInsideRowSet = document.querySelectorAll(
+        `ch-grid-row > ch-grid-rowset ch-grid-cell:nth-child(${this._chGridColumIndentedIndex})`
+      );
+      secondGridCellsInsideRowSet.forEach((secondGridCellInsideRowSet) => {
+        secondGridCellInsideRowSet.classList.add("nested");
+      });
+    }
+  }
+
+  insertToggleColumn() {
+    /*This method inserts the first column whith a toggle icon, which purpose is to toggle the rows that have children*/
+    //First insert a ch-grid-column inside the ch-grid-columnset
+    const chGridColumnset = this.el.querySelector("ch-grid-columnset");
+    const chGridColumn = document.createElement("ch-grid-column");
+    chGridColumn.setAttribute("show-options", "false");
+    chGridColumn.setAttribute("id", "toggleRow");
+    chGridColumn.setAttribute("size", "min-content");
+    chGridColumnset.prepend(chGridColumn);
+    //Then insert the grid-cell with a toggle button as the first child inside every ch-grid-row
+    const chGridRows = this.el.querySelectorAll("ch-grid-row");
+    chGridRows.forEach((row) => {
+      const chGridCell = document.createElement("ch-grid-cell");
+      if (row.classList.contains("expanded")) {
+        chGridCell.classList.add("toggle-row--expanded");
+      }
+      if (row.classList.contains("has-childs")) {
+        const toggleIcon = document.createElement("ch-icon");
+        toggleIcon.setAttribute(
+          "src",
+          getAssetPath(`./ch-grid-assets/chevron-down.svg`)
+        );
+        chGridCell.append(toggleIcon);
+        chGridCell.addEventListener(
+          "click",
+          function (e) {
+            const chGridRow = e.srcElement.parentElement.parentElement;
+            //toggle row
+            if (chGridRow.classList.contains("expanded")) {
+              chGridCell.classList.remove("toggle-row--expanded");
+              chGridRow.classList.remove("expanded");
+            } else {
+              chGridRow.classList.add("expanded");
+              chGridCell.classList.add("toggle-row--expanded");
+            }
+          }.bind(this)
+        );
+      }
+      row.prepend(chGridCell);
+    });
   }
 
   getColumnWithIndentationIndex() {
     for (let i = 0; i < this._chGridColumns.length; i++) {
       if ((this._chGridColumns[i] as HTMLElement).hasAttribute("indent")) {
+        console.log("hola");
         this._chGridColumIndentedIndex = ++i;
         break;
       }
@@ -163,15 +223,6 @@ export class ChGrid {
         );
       }
     });
-
-    if (this._chGridColumIndentedIndex !== undefined) {
-      const secondGridCellsInsideRowSet = document.querySelectorAll(
-        `ch-grid-row > ch-grid-rowset ch-grid-cell:nth-child(${this._chGridColumIndentedIndex})`
-      );
-      secondGridCellsInsideRowSet.forEach((secondGridCellInsideRowSet) => {
-        secondGridCellInsideRowSet.classList.add("nested");
-      });
-    }
   }
 
   actionPosition(eventInfo) {
@@ -202,32 +253,26 @@ export class ChGrid {
     this._chGridColumns.forEach((column) => {
       const colHidden = (column as ChGridColumn).hidden;
       if (!colHidden) {
-        gridTemplateColumns += column.size + " ";
+        gridTemplateColumns += " " + column.size + " ";
       }
     });
     (this
       ._section as HTMLElement).style.gridTemplateColumns = gridTemplateColumns;
   }
 
-  setHideableColsOnMenu() {
-    /*
-    This method saves on ch-grid-store.ts the hideable and hidden cols, and then
-    this is information is used on ch-grid-menu.tsx to display the hideable columns on the menu
-    */
-    let hidenColumns = [];
+  setHideableCols() {
+    this.hideableCols = [];
     this._chGridColumns.forEach((column) => {
       if (column.hideable) {
         let colInfo = {
-          colId: null,
-          colDesciption: null,
-          hidden: false,
+          colId: (column as ChGridColumn).colId,
+          colDesciption: (column as HTMLElement).innerHTML,
+          hidden: (column as ChGridColumn).hidden,
         };
-        colInfo.colId = (column as ChGridColumn).colId;
-        colInfo.colDesciption = (column as HTMLElement).innerHTML;
-        colInfo.hidden = (column as ChGridColumn).hidden;
-        hidenColumns.push(colInfo);
+        this.hideableCols.push(colInfo);
       }
     });
+    this.emitHideableCols.emit();
   }
 
   hideCols() {
@@ -298,7 +343,7 @@ export class ChGrid {
       <Host>
         <slot name="header"></slot>
         <section>
-          <slot></slot>
+          <slot data-chGrid={this.el}></slot>
         </section>
         <aside>
           <slot name="row-hover"></slot>

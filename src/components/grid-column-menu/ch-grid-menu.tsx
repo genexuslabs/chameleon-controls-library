@@ -6,7 +6,6 @@ import {
   Element,
   Event,
   EventEmitter,
-  Listen,
   State,
 } from "@stencil/core";
 
@@ -47,16 +46,16 @@ export class ChGridMenu {
    */
   @Prop() showMenu: boolean = false;
 
+  /**
+   * An array containing information about the hideable columns
+   */
+  @Prop() hideableCols: Array<Object> = [];
+
   /*******************
   STATE
   ********************/
 
   @State() columnFreezed: boolean = false;
-
-  /**
-   * An array containing information about the hideable columns
-   */
-  @State() hideableColumns: Array<Object> = [];
 
   /*******************
   EVENTS
@@ -91,16 +90,7 @@ export class ChGridMenu {
   FUNCTIONS/METHODS
   ********************/
 
-  @State() chGrid: HTMLElement = null;
-  componentDidLoad() {
-    this.chGrid = this.el.closest("ch-grid");
-    console.log("this.chGrid", this.chGrid);
-  }
-
-  @Listen("passEventToMenu", { target: "document" })
-  passEventToMenuHandler(event) {
-    console.log(event.detail);
-  }
+  componentDidLoad() {}
 
   sortChangedFunc(order) {
     this.sortChanged.emit({
@@ -136,12 +126,7 @@ export class ChGridMenu {
         returnedContent.push(<div>number filter</div>);
         break;
       case "date":
-        returnedContent.push(
-          <ch-grid-date-picker
-            date-picker-id={this.colId}
-            col-id={this.colId}
-          ></ch-grid-date-picker>
-        );
+        returnedContent.push(<div>date input</div>);
         break;
       case "date-time":
         return null; //This type of data has no filter at the time of writting.
@@ -241,7 +226,7 @@ export class ChGridMenu {
       <hr></hr>,
       <span class="menu__title">Hide Columns</span>,
     ];
-    this.hideableColumns.forEach((col) => {
+    this.hideableCols.forEach((col) => {
       returnedContent.push([
         <span class="menu__item">
           <input
@@ -279,7 +264,7 @@ export class ChGridMenu {
               Freeze column
             </span>
           )}
-          {this.hideableColumns.length > 0 ? this.setHideableColumns() : null}
+          {this.hideableCols.length > 0 ? this.setHideableColumns() : null}
         </div>
       </Host>
     );

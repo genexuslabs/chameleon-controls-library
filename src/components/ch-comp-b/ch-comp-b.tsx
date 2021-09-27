@@ -1,4 +1,5 @@
-import { Component, Host, h } from "@stencil/core";
+import { Component, Element, Host, h } from "@stencil/core";
+import { ChCompA } from "../ch-comp-a/ch-comp-a";
 
 @Component({
   tag: "ch-comp-b",
@@ -6,10 +7,17 @@ import { Component, Host, h } from "@stencil/core";
   shadow: true,
 })
 export class ChCompB {
+  @Element() el: HTMLChCompBElement;
+  componentA: ChCompA;
+
+  componentWillLoad() {
+    this.componentA = this.el.assignedSlot["data-componentA"];
+  }
+
   render() {
     return (
       <Host>
-        <slot></slot>
+        <slot data-componentA={this.componentA}></slot>
       </Host>
     );
   }

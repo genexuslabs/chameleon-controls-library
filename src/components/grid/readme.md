@@ -6,12 +6,14 @@
 
 | Property       | Attribute | Description | Type       | Default |
 | -------------- | --------- | ----------- | ---------- | ------- |
+| `freezedCols`  | --        |             | `Object[]` | `[]`    |
 | `hideableCols` | --        |             | `Object[]` | `[]`    |
 
 ## Events
 
 | Event              | Description | Type               |
 | ------------------ | ----------- | ------------------ |
+| `emitFreezedCols`  |             | `CustomEvent<any>` |
 | `emitHideableCols` |             | `CustomEvent<any>` |
 
 ## Dependencies

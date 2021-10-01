@@ -1,9 +1,9 @@
 ch-grid-row {
   display: contents; 
-  ch-grid-cell:nth-child(1),
-  ch-grid-cell:nth-child(2) {
-    transform: translateX(var(--scrollH));
-  }
+  // ch-grid-cell:nth-child(1),
+  // ch-grid-cell:nth-child(2) {
+  //   transform: translateX(var(--scrollH));
+  // }
 }
 ch-grid-row.has-childs:not(.expanded) > ch-grid-rowset {
   display: none;

@@ -14,6 +14,7 @@ export namespace Components {
   interface ChCompB {}
   interface ChCompC {}
   interface ChGrid {
+    freezedCols: Array<Object>;
     hideableCols: Array<Object>;
   }
   interface ChGridAg {}
@@ -38,6 +39,10 @@ export namespace Components {
      * The presence of this atribute displays a filter on the menu
      */
     filterable: boolean;
+    /**
+     * The prescence of this property makes this column freezed
+     */
+    freezed: boolean;
     /**
      * The presence of this attribute hides the column
      */
@@ -85,6 +90,10 @@ export namespace Components {
      * The presence of this atribute displays a filter on the menu
      */
     filterable: boolean;
+    /**
+     * An array containing information about the freezed columns
+     */
+    freezedCols: Array<Object>;
     /**
      * An array containing information about the hideable columns
      */
@@ -343,7 +352,9 @@ declare namespace LocalJSX {
     onTextChanged?: (event: CustomEvent<any>) => void;
   }
   interface ChGrid {
+    freezedCols?: Array<Object>;
     hideableCols?: Array<Object>;
+    onEmitFreezedCols?: (event: CustomEvent<any>) => void;
     onEmitHideableCols?: (event: CustomEvent<any>) => void;
   }
   interface ChGridAg {}
@@ -368,6 +379,10 @@ declare namespace LocalJSX {
      * The presence of this atribute displays a filter on the menu
      */
     filterable?: boolean;
+    /**
+     * The prescence of this property makes this column freezed
+     */
+    freezed?: boolean;
     /**
      * The presence of this attribute hides the column
      */
@@ -420,6 +435,10 @@ declare namespace LocalJSX {
      */
     filterable?: boolean;
     /**
+     * An array containing information about the freezed columns
+     */
+    freezedCols?: Array<Object>;
+    /**
      * An array containing information about the hideable columns
      */
     hideableCols?: Array<Object>;
@@ -428,7 +447,7 @@ declare namespace LocalJSX {
      */
     onFreezeColumn?: (event: CustomEvent<any>) => void;
     /**
-     * Emmits the sorting event
+     * Emmits the hideMenu event
      */
     onHideMenu?: (event: CustomEvent<any>) => void;
     /**

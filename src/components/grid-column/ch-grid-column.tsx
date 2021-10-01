@@ -7,6 +7,7 @@ import {
   State,
   Element,
   Listen,
+  Watch,
 } from "@stencil/core";
 import { ChGrid } from "../grid/ch-grid";
 
@@ -65,6 +66,11 @@ export class ChGridColumn {
    */
   @Prop() size: string = "minmax(max-content,auto)";
 
+  /**
+   * The prescence of this property makes this column freezed
+   */
+  @Prop() freezed: boolean = false;
+
   /*******************
   STATE
   ********************/
@@ -84,9 +90,41 @@ export class ChGridColumn {
    */
   @State() hideableCols: Array<Object> = [];
 
+  /**
+   * Information about the freezed cols
+   */
+  @State() freezedCols: Array<Object> = [];
+
+  /**
+   * Information about the freezed cols
+   */
+  @State() menuPositionRight: boolean = false;
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
+
+  @Watch("showMenu")
+  setMenuPosition(newValue: boolean, oldValue: boolean) {
+    /*When the menu is visible, calculate the menu width, and the remaining space
+    to the right, to determine the menu position (left or right).*/
+    if (newValue) {
+      //if menu is visible...
+      setTimeout(
+        function () {
+          const menuWidth = this.menu.offsetWidth;
+          const chGridWidth = this.chGrid.offsetWidth;
+          const colOffsetLeft = this.el.offsetLeft;
+          if (chGridWidth - colOffsetLeft < menuWidth) {
+            this.menuPositionRight = true;
+          } else {
+            this.menuPositionRight = false;
+          }
+        }.bind(this),
+        0
+      );
+    }
+  }
 
   componentWillLoad() {
     this.chGrid = this.el.assignedSlot["data-chGrid"];
@@ -97,6 +135,30 @@ export class ChGridColumn {
     if (this.chGrid !== undefined) {
       this.hideableCols = this.chGrid.hideableCols;
     }
+  }
+
+  @Listen("emitFreezedCols", { target: "document" })
+  emitFreezedColsHandler() {
+    if (this.chGrid !== undefined) {
+      this.freezedCols = this.chGrid.freezedCols;
+    }
+  }
+
+  @Listen("unfreezeColumn")
+  unfreezeColumnHandler() {
+    console.log("unfreezeColumn at chGridColumn");
+    this.freezed = false;
+  }
+
+  @Listen("freezeColumn")
+  freezeColumnHandler() {
+    console.log("freezeColumn at chGridColumn");
+    this.freezed = true;
+  }
+
+  @Listen("hideMenu")
+  hideMenuHandler() {
+    this.showMenu = false;
   }
 
   showMenuFunc() {
@@ -148,29 +210,31 @@ export class ChGridColumn {
     return (
       <Host>
         <slot></slot>
-        {this.showOptions ? (
-          <div class="">
-            <ch-icon
-              class={{ "ch-icon-show-menu": true }}
-              onMouseUp={this.showMenuFunc.bind(this)}
-              src={getAssetPath(`./ch-grid-column-assets/chevron-down.svg`)}
-              style={{
-                "--icon-size": "20px",
-                "--icon-color": `white`,
-              }}
-            ></ch-icon>
-            {this.showOptions ? (
-              <ch-grid-menu
-                col-id={this.colId}
-                col-type={this.colType}
-                hidden={!this.showMenu}
-                hideableCols={this.hideableCols}
-                filterable={this.filterable}
-                ref={(el) => (this.menu = el as HTMLElement)}
-              ></ch-grid-menu>
-            ) : null}
-          </div>
-        ) : null}
+        {this.showOptions
+          ? [
+              <ch-icon
+                class={{ "ch-icon-show-menu": true }}
+                onMouseUp={this.showMenuFunc.bind(this)}
+                src={getAssetPath(`./ch-grid-column-assets/chevron-down.svg`)}
+                style={{
+                  "--icon-size": "20px",
+                  "--icon-color": `white`,
+                }}
+              ></ch-icon>,
+              this.showOptions ? (
+                <ch-grid-menu
+                  class={{ "position-right": this.menuPositionRight }}
+                  col-id={this.colId}
+                  col-type={this.colType}
+                  hidden={!this.showMenu}
+                  hideableCols={this.hideableCols}
+                  freezedCols={this.freezedCols}
+                  filterable={this.filterable}
+                  ref={(el) => (this.menu = el as HTMLElement)}
+                ></ch-grid-menu>
+              ) : null,
+            ]
+          : null}
       </Host>
     );
   }

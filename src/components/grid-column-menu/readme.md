@@ -9,6 +9,7 @@
 | `colId`        | `col-id`     | The columnd id                                                      | `string`                                                                                        | `""`        |
 | `colType`      | `col-type`   | The column data type                                                | `"action" \| "boolean" \| "custom" \| "date" \| "date-time" \| "image" \| "number" \| "string"` | `undefined` |
 | `filterable`   | `filterable` | The presence of this atribute displays a filter on the menu         | `boolean`                                                                                       | `false`     |
+| `freezedCols`  | --           | An array containing information about the freezed columns           | `Object[]`                                                                                      | `[]`        |
 | `hideableCols` | --           | An array containing information about the hideable columns          | `Object[]`                                                                                      | `[]`        |
 | `showMenu`     | `show-menu`  | If true, it shows the menu                                          | `boolean`                                                                                       | `false`     |
 | `sortable`     | `sortable`   | The presence of this atribute displays an option to sort the column | `boolean`                                                                                       | `true`      |
@@ -18,7 +19,7 @@
 | Event            | Description                            | Type               |
 | ---------------- | -------------------------------------- | ------------------ |
 | `freezeColumn`   | Emmits the "freeze column" event       | `CustomEvent<any>` |
-| `hideMenu`       | Emmits the sorting event               | `CustomEvent<any>` |
+| `hideMenu`       | Emmits the hideMenu event              | `CustomEvent<any>` |
 | `sortChanged`    | Emmits the sorting event               | `CustomEvent<any>` |
 | `toggledColumn`  | Emmits toggled column (hidden/visible) | `CustomEvent<any>` |
 | `unfreezeColumn` | Emmits the "unfreeze column" event     | `CustomEvent<any>` |

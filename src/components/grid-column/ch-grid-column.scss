@@ -1,10 +1,9 @@
 :host {
   position: sticky;
   top: 0;
-  z-index: 1000;
   background-color: gray;
   display: flex;
-  justify-content: space-between;
+  //justify-content: space-between;
   align-items: center;
 }
 :host(:nth-child(1)) {
@@ -13,10 +12,9 @@
 :host(:nth-child(2)) {
   grid-column: 2;
 }
-:host(:nth-child(1)),
-:host(:nth-child(2)) {
-  z-index: 1001;
+:host(.freezed){
   transform: translateX(var(--scrollH));
+  z-index: 1002;
 }
 .ch-icon-show-menu {
   cursor: pointer;

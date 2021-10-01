@@ -5,6 +5,7 @@
 }
 :host(:nth-child(1)){
   grid-column:1;
+  border-right: 0 !important;
 }
 :host(:nth-child(2)){
   grid-column:2;
@@ -15,9 +16,16 @@
     width: calc(2ch * var(--level));
   }
 }
+:host(.freezed) {
+  z-index: 1001;
+  transform: translateX(var(--scrollH));
+  border-right: 2px solid lightgray;
+}
 :host(.hidden) {
   display: none;
 }
 :host(.toggle-row--expanded){
-  transform: rotate(180deg) !important;
+  ::slotted(ch-icon) {
+    transform: rotate(180deg) !important;
+  }
 }

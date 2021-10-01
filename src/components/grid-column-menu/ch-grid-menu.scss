@@ -1,9 +1,8 @@
 :host {
-  position: relative;
-  top: 4px;
+  position: absolute;
+  top: 27px;
 }
 .menu {
-  position: absolute;
   background-color: #fff;
   border: 1px solid black;
   width: 200px;
@@ -20,4 +19,7 @@
       background-color: lightgray;
     }
   }
+}
+:host(.position-right) {
+  right: 7px;
 }

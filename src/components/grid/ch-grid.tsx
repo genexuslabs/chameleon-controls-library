@@ -29,8 +29,10 @@ export class ChGrid {
   @State() selectedChRow: ChGridRow = null;
   @State() rowWithHover: ChGridRow = null;
   @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
+  @Prop() freezedCols: Array<Object> = []; //This prop is for internal use.
 
   @Event() emitHideableCols: EventEmitter;
+  @Event() emitFreezedCols: EventEmitter;
 
   componentWillLoad() {}
 
@@ -40,7 +42,6 @@ export class ChGrid {
 
   @Listen("toggledColumn")
   toggledColumnHandler(event: CustomEvent) {
-    //console.log("Received the toggledColumn event: ", event.detail);
     const toggledColumnId = event.detail["column-id"];
     const toggledColumnHidden = event.detail["hidden"];
     const chGridColumnset = this.el.querySelector("ch-grid-columnset");
@@ -57,7 +58,6 @@ export class ChGrid {
   }
 
   init() {
-    console.log("init");
     const chgrid = this.el;
     const chgridSection = this.el.shadowRoot.querySelector("section");
 
@@ -79,6 +79,7 @@ export class ChGrid {
     this.setNestedChGridCells();
     this.setHideableCols();
     this.hideCols();
+    this.setFreezedCols();
   }
 
   setNestedChGridCells() {
@@ -137,7 +138,6 @@ export class ChGrid {
   getColumnWithIndentationIndex() {
     for (let i = 0; i < this._chGridColumns.length; i++) {
       if ((this._chGridColumns[i] as HTMLElement).hasAttribute("indent")) {
-        console.log("hola");
         this._chGridColumIndentedIndex = ++i;
         break;
       }
@@ -336,6 +336,84 @@ export class ChGrid {
         ).toString();
       });
     }
+  }
+
+  setFreezedCols() {
+    this.freezedCols = [];
+    let atLeastFirstColIsFreezed = false;
+    this._chGridColumns.forEach((col, i) => {
+      if (i !== 0) {
+        //col index 0 is the toggleRow. Do not take into account.
+        const colId = (col as ChGridColumn).colId;
+        let freezed = (col as ChGridColumn).freezed;
+        if (freezed && i === 1) {
+          atLeastFirstColIsFreezed = true;
+        }
+        if (this.freezedCols.length > 0 && i > 1) {
+          /*A column can only be freezed if previous sibling column is also freezed
+          (and previous column is not toggleRow -> i > 1). */
+          const prevColumnIsFreezed = this.freezedCols[i - 2][
+            Object.keys(this.freezedCols[i - 2])[0]
+          ];
+          if (!prevColumnIsFreezed) {
+            freezed = false;
+          }
+        }
+        this.freezedCols.push({
+          [colId]: freezed,
+          cellColumnIndex: i,
+        });
+      }
+    });
+
+    console.log(this.freezedCols);
+
+    if (atLeastFirstColIsFreezed) {
+      //freeze toggleRowCol
+      this._chGridColumns[0].classList.add("freezed");
+      //freeze columns
+      for (let i = 0; i < this._chGridColumns.length; i++) {
+        if (i !== 0) {
+          //col index 0 is the toggleRow. Do not take into account.
+          const colIsFreezed = this.freezedCols[i - 1][
+            Object.keys(this.freezedCols[i - 1])[0]
+          ];
+          if (colIsFreezed) {
+            this._chGridColumns[i].classList.add("freezed");
+          } else {
+            this._chGridColumns[i].classList.remove("freezed");
+          }
+        }
+      }
+      //freeze row cells
+      const chGridRows = this.el.querySelectorAll("ch-grid-row");
+      chGridRows.forEach((row) => {
+        //console.log(row);
+        const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
+        //Freeze toggleRowCell
+        rowCells[0].classList.add("freezed");
+        //Freeze cells
+        for (let i = 1; i < rowCells.length; i++) {
+          let cellIsFreezed = this.freezedCols[i - 1];
+          cellIsFreezed = cellIsFreezed[Object.keys(cellIsFreezed)[0]];
+          if (cellIsFreezed) {
+            rowCells[i].classList.add("freezed");
+          } else {
+            rowCells[i].classList.remove("freezed");
+          }
+        }
+      });
+    }
+    this.emitFreezedCols.emit();
+  }
+
+  @Listen("unfreezeColumn")
+  unfreezeColumnHandler() {
+    this.setFreezedCols();
+  }
+  @Listen("freezeColumn")
+  freezeColumnHandler() {
+    this.setFreezedCols();
   }
 
   render() {

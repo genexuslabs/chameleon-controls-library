@@ -51,11 +51,14 @@ export class ChGridMenu {
    */
   @Prop() hideableCols: Array<Object> = [];
 
+  /**
+   * An array containing information about the freezed columns
+   */
+  @Prop() freezedCols: Array<Object> = [];
+
   /*******************
   STATE
   ********************/
-
-  @State() columnFreezed: boolean = false;
 
   /*******************
   EVENTS
@@ -67,7 +70,7 @@ export class ChGridMenu {
   @Event() sortChanged: EventEmitter;
 
   /**
-   * Emmits the sorting event
+   * Emmits the hideMenu event
    */
   @Event() hideMenu: EventEmitter;
 
@@ -90,28 +93,18 @@ export class ChGridMenu {
   FUNCTIONS/METHODS
   ********************/
 
-  componentDidLoad() {}
+  componentWillLoad() {}
+
+  componentDidLoad() {
+    // console.log("this.el",this.el.offsetWidth);
+  }
 
   sortChangedFunc(order) {
     this.sortChanged.emit({
       "column-id": this.colId,
       "sort order": order,
     });
-    this.showMenu = false;
-  }
-
-  freezeColumnFunc() {
-    this.columnFreezed = true;
-    this.freezeColumn.emit({
-      "column-id": this.colId,
-    });
-  }
-
-  unfreezeColumnFunc() {
-    this.columnFreezed = false;
-    this.unfreezeColumn.emit({
-      "column-id": this.colId,
-    });
+    this.hideMenu.emit();
   }
 
   filter() {
@@ -241,6 +234,40 @@ export class ChGridMenu {
     return returnedContent;
   }
 
+  toggleColumnFreeze(colIsFreezed) {
+    if (colIsFreezed) {
+      //If col is freezed, emit the unfreezeColum event
+      this.unfreezeColumn.emit();
+    } else {
+      //If col is unfreezed, emit the freezeColumn event
+      this.freezeColumn.emit();
+    }
+    this.hideMenu.emit();
+  }
+
+  freezeColumnLogic() {
+    let colIsFreezed = false;
+    let disabled = false;
+    for (let i = 0; i < this.freezedCols.length; i++) {
+      if (this.colId === Object.keys(this.freezedCols[i])[0]) {
+        colIsFreezed = this.freezedCols[i][this.colId];
+      }
+    }
+    return (
+      <span class="menu__item">
+        <label htmlFor="">
+          <input
+            type="checkbox"
+            checked={colIsFreezed}
+            disabled={disabled}
+            onClick={this.toggleColumnFreeze.bind(this, colIsFreezed)}
+          ></input>
+          Freeze column
+        </label>
+      </span>
+    );
+  }
+
   render() {
     return (
       <Host>
@@ -252,18 +279,7 @@ export class ChGridMenu {
           {this.filterable ? this.filter() : null}
           <span class="menu__title">Options</span>
           {this.sortable ? this.sort() : null}
-          {this.columnFreezed ? (
-            <span
-              class="menu__item"
-              onClick={this.unfreezeColumnFunc.bind(this)}
-            >
-              Unfreeze column
-            </span>
-          ) : (
-            <span class="menu__item" onClick={this.freezeColumnFunc.bind(this)}>
-              Freeze column
-            </span>
-          )}
+          {this.freezeColumnLogic()}
           {this.hideableCols.length > 0 ? this.setHideableColumns() : null}
         </div>
       </Host>

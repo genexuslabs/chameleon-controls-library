@@ -17,7 +17,7 @@ ch-grid-row.has-childs > ch-grid-cell:nth-child(2)::after {
 // }
 //HOVER
 ch-grid-row.hover > ch-grid-cell {
-  background-color: yellow;
+  background-color: rgba(105,110,242,0.2);
 }
 //SELECTED
 ch-grid-row.selected > ch-grid-cell {

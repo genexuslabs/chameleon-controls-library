@@ -3,19 +3,22 @@ import {
   Host,
   h,
   Prop,
+  getAssetPath,
   Element,
   Event,
   EventEmitter,
-  State,
 } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-menu",
   styleUrl: "ch-grid-menu.scss",
   shadow: true,
+  assetsDirs: ["ch-grid-column-menu-assets"],
 })
 export class ChGridMenu {
   @Element() el: HTMLChGridMenuElement;
+  startDate!: HTMLInputElement;
+  endDate!: HTMLInputElement;
 
   /*******************
   PROPS
@@ -56,6 +59,11 @@ export class ChGridMenu {
    */
   @Prop() freezedCols: Array<Object> = [];
 
+  /**
+   * Whether this menu belongs to the last column
+   */
+  @Prop() lastCol: boolean = false;
+
   /*******************
   STATE
   ********************/
@@ -89,15 +97,18 @@ export class ChGridMenu {
    */
   @Event() toggledColumn: EventEmitter;
 
+  /**
+   * Emmits the dateRangeChanged event
+   */
+  @Event() dateRangeChanged: EventEmitter;
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
 
   componentWillLoad() {}
 
-  componentDidLoad() {
-    // console.log("this.el",this.el.offsetWidth);
-  }
+  componentDidLoad() {}
 
   sortChangedFunc(order) {
     this.sortChanged.emit({
@@ -105,6 +116,14 @@ export class ChGridMenu {
       "sort order": order,
     });
     this.hideMenu.emit();
+  }
+
+  dateRangeChangedFunc() {
+    this.dateRangeChanged.emit({
+      "column-id": this.colId,
+      "start-date": this.startDate.value,
+      "end-date": this.endDate.value,
+    });
   }
 
   filter() {
@@ -119,7 +138,36 @@ export class ChGridMenu {
         returnedContent.push(<div>number filter</div>);
         break;
       case "date":
-        returnedContent.push(<div>date input</div>);
+        function formatDate(date) {
+          var d = new Date(date),
+            month = "" + (d.getMonth() + 1),
+            day = "" + d.getDate(),
+            year = d.getFullYear();
+
+          if (month.length < 2) month = "0" + month;
+          if (day.length < 2) day = "0" + day;
+
+          return [year, month, day].join("-");
+        }
+        let today = formatDate(new Date());
+        returnedContent.push([
+          <span class="menu__subtitle">from:</span>,
+          <input
+            type="date"
+            value={today}
+            id="start"
+            onChange={this.dateRangeChangedFunc.bind(this)}
+            ref={(el) => (this.startDate = el as HTMLInputElement)}
+          ></input>,
+          <span class="menu__subtitle">to:</span>,
+          <input
+            type="date"
+            value={today}
+            id="end"
+            onChange={this.dateRangeChangedFunc.bind(this)}
+            ref={(el) => (this.endDate = el as HTMLInputElement)}
+          ></input>,
+        ]);
         break;
       case "date-time":
         return null; //This type of data has no filter at the time of writting.
@@ -207,7 +255,7 @@ export class ChGridMenu {
     }
   }
 
-  toggleCol(colId, colHidden) {
+  toggleColVisibility(colId, colHidden) {
     this.toggledColumn.emit({
       "column-id": colId,
       hidden: !colHidden,
@@ -225,7 +273,11 @@ export class ChGridMenu {
           <input
             type="checkbox"
             checked={col["hidden"]}
-            onClick={this.toggleCol.bind(this, col["colId"], col["hidden"])}
+            onClick={this.toggleColVisibility.bind(
+              this,
+              col["colId"],
+              col["hidden"]
+            )}
           ></input>
           {col["colDesciption"]}
         </span>,
@@ -246,25 +298,48 @@ export class ChGridMenu {
   }
 
   freezeColumnLogic() {
-    let colIsFreezed = false;
-    let disabled = false;
-    for (let i = 0; i < this.freezedCols.length; i++) {
-      if (this.colId === Object.keys(this.freezedCols[i])[0]) {
-        colIsFreezed = this.freezedCols[i][this.colId];
-      }
+    //If this menu belongs to the last column, do not allow to freeze the columnd
+    if (!this.lastCol) {
+      let colIsFreezed = this.freezedCols.includes(this.colId);
+      return (
+        <span class="menu__item">
+          <label htmlFor="">
+            <input
+              type="checkbox"
+              checked={colIsFreezed}
+              onClick={this.toggleColumnFreeze.bind(this, colIsFreezed)}
+            ></input>
+            Freeze column
+          </label>
+        </span>
+      );
     }
+  }
+
+  moveColumnLogic() {
     return (
-      <span class="menu__item">
-        <label htmlFor="">
-          <input
-            type="checkbox"
-            checked={colIsFreezed}
-            disabled={disabled}
-            onClick={this.toggleColumnFreeze.bind(this, colIsFreezed)}
-          ></input>
-          Freeze column
-        </label>
-      </span>
+      <div class="move-container">
+        <span class="menu__item move-left">
+          <ch-icon
+            src={getAssetPath(`./ch-grid-column-menu-assets/chevron-left.svg`)}
+            style={{
+              "--icon-size": "25px",
+              "--icon-color": `#696ef2`,
+            }}
+          ></ch-icon>
+          move left
+        </span>
+        <span class="menu__item move-right">
+          move right
+          <ch-icon
+            src={getAssetPath(`./ch-grid-column-menu-assets/chevron-right.svg`)}
+            style={{
+              "--icon-size": "25px",
+              "--icon-color": `#696ef2`,
+            }}
+          ></ch-icon>
+        </span>
+      </div>
     );
   }
 
@@ -280,6 +355,7 @@ export class ChGridMenu {
           <span class="menu__title">Options</span>
           {this.sortable ? this.sort() : null}
           {this.freezeColumnLogic()}
+          {this.moveColumnLogic()}
           {this.hideableCols.length > 0 ? this.setHideableColumns() : null}
         </div>
       </Host>

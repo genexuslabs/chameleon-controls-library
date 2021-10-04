@@ -99,6 +99,10 @@ export namespace Components {
      */
     hideableCols: Array<Object>;
     /**
+     * Whether this menu belongs to the last column
+     */
+    lastCol: boolean;
+    /**
      * If true, it shows the menu
      */
     showMenu: boolean;
@@ -442,6 +446,14 @@ declare namespace LocalJSX {
      * An array containing information about the hideable columns
      */
     hideableCols?: Array<Object>;
+    /**
+     * Whether this menu belongs to the last column
+     */
+    lastCol?: boolean;
+    /**
+     * Emmits the dateRangeChanged event
+     */
+    onDateRangeChanged?: (event: CustomEvent<any>) => void;
     /**
      * Emmits the "freeze column" event
      */

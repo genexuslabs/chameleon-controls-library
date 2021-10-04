@@ -2,6 +2,11 @@
   display: flex;
   background-color: #fff;
   cursor: pointer;
+  font-size: 12px;
+  font-weight: 400;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 12px;
+  align-items: center;
 }
 :host(:nth-child(1)){
   grid-column:1;
@@ -19,7 +24,9 @@
 :host(.freezed) {
   z-index: 1001;
   transform: translateX(var(--scrollH));
-  border-right: 2px solid lightgray;
+}
+:host(.last-freezed-col) {
+  border-right: 3px solid #8181813f;
 }
 :host(.hidden) {
   display: none;

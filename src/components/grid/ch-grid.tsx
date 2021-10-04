@@ -250,12 +250,23 @@ export class ChGrid {
 
   setGridTemplateColumns() {
     let gridTemplateColumns = "";
+    let atLeastOneColIsHidden = false;
     this._chGridColumns.forEach((column) => {
       const colHidden = (column as ChGridColumn).hidden;
       if (!colHidden) {
-        gridTemplateColumns += " " + column.size + " ";
+        gridTemplateColumns += column.size + " ";
+      } else {
+        atLeastOneColIsHidden = true;
       }
     });
+    /*If at least one col is hidden, set last visibile col size to "minmax(max-content,auto)"
+    to prevent empty space at the end of the grid.*/
+    if (atLeastOneColIsHidden) {
+      const gridTemplateColumnsArray = gridTemplateColumns.trim().split(" ");
+      gridTemplateColumnsArray.pop();
+      gridTemplateColumnsArray.push("minmax(max-content,auto)");
+      gridTemplateColumns = gridTemplateColumnsArray.join(" ");
+    }
     (this
       ._section as HTMLElement).style.gridTemplateColumns = gridTemplateColumns;
   }
@@ -338,72 +349,64 @@ export class ChGrid {
     }
   }
 
-  setFreezedCols() {
-    this.freezedCols = [];
-    let atLeastFirstColIsFreezed = false;
-    this._chGridColumns.forEach((col, i) => {
-      if (i !== 0) {
-        //col index 0 is the toggleRow. Do not take into account.
-        const colId = (col as ChGridColumn).colId;
-        let freezed = (col as ChGridColumn).freezed;
-        if (freezed && i === 1) {
-          atLeastFirstColIsFreezed = true;
-        }
-        if (this.freezedCols.length > 0 && i > 1) {
-          /*A column can only be freezed if previous sibling column is also freezed
-          (and previous column is not toggleRow -> i > 1). */
-          const prevColumnIsFreezed = this.freezedCols[i - 2][
-            Object.keys(this.freezedCols[i - 2])[0]
-          ];
-          if (!prevColumnIsFreezed) {
-            freezed = false;
+  clearFreezedCols() {
+    //Clear freezed cols
+    this._chGridColumns.forEach((col) => {
+      if (col.classList.contains("freezed")) {
+        col.classList.remove("freezed");
+      }
+    });
+    //Clear freezed cells
+    const chGridRows = this.el.querySelectorAll("ch-grid-row");
+    chGridRows.forEach((row) => {
+      const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
+      for (let i = 0; i <= rowCells.length; i++) {
+        if (rowCells[i].classList.contains("freezed")) {
+          rowCells[i].classList.remove("freezed");
+          if (rowCells[i].classList.contains("last-freezed-col")) {
+            rowCells[i].classList.remove("last-freezed-col");
           }
+        } else {
+          break;
         }
-        this.freezedCols.push({
-          [colId]: freezed,
-          cellColumnIndex: i,
-        });
+      }
+    });
+  }
+
+  setFreezedCols() {
+    this.clearFreezedCols();
+    let lastFreezedColIndex: number = null;
+    this.freezedCols = [];
+    this._chGridColumns.forEach((col, i) => {
+      //Determine the last freezed col
+      //(The last col should not be freezed)
+      if (i !== this._chGridColumns.length - 1) {
+        let colIsfreezed = (col as ChGridColumn).freezed;
+        if (colIsfreezed) {
+          lastFreezedColIndex = i;
+        }
       }
     });
 
-    console.log(this.freezedCols);
-
-    if (atLeastFirstColIsFreezed) {
-      //freeze toggleRowCol
-      this._chGridColumns[0].classList.add("freezed");
-      //freeze columns
-      for (let i = 0; i < this._chGridColumns.length; i++) {
-        if (i !== 0) {
-          //col index 0 is the toggleRow. Do not take into account.
-          const colIsFreezed = this.freezedCols[i - 1][
-            Object.keys(this.freezedCols[i - 1])[0]
-          ];
-          if (colIsFreezed) {
-            this._chGridColumns[i].classList.add("freezed");
-          } else {
-            this._chGridColumns[i].classList.remove("freezed");
-          }
-        }
+    if (lastFreezedColIndex !== null) {
+      //At least one column is freezed. Freeze all columns, up to the last freezed column.
+      for (let i = 0; i <= lastFreezedColIndex; i++) {
+        this._chGridColumns[i].classList.add("freezed");
+        this.freezedCols.push((this._chGridColumns[i] as ChGridColumn).colId);
       }
-      //freeze row cells
+      //Then freeze the cells
       const chGridRows = this.el.querySelectorAll("ch-grid-row");
       chGridRows.forEach((row) => {
-        //console.log(row);
         const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
-        //Freeze toggleRowCell
-        rowCells[0].classList.add("freezed");
-        //Freeze cells
-        for (let i = 1; i < rowCells.length; i++) {
-          let cellIsFreezed = this.freezedCols[i - 1];
-          cellIsFreezed = cellIsFreezed[Object.keys(cellIsFreezed)[0]];
-          if (cellIsFreezed) {
-            rowCells[i].classList.add("freezed");
-          } else {
-            rowCells[i].classList.remove("freezed");
+        for (let i = 0; i <= lastFreezedColIndex; i++) {
+          rowCells[i].classList.add("freezed");
+          if (i === lastFreezedColIndex) {
+            rowCells[i].classList.add("last-freezed-col");
           }
         }
       });
     }
+
     this.emitFreezedCols.emit();
   }
 

@@ -36,6 +36,7 @@ graph TD;
   ch-grid-menu --> ch-grid-input-text
   ch-grid-menu --> ch-grid-select
   ch-grid-menu --> ch-grid-select-option
+  ch-grid-menu --> ch-icon
   style ch-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

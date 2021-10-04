@@ -100,12 +100,17 @@ export class ChGridColumn {
    */
   @State() menuPositionRight: boolean = false;
 
+  /**
+   * Whether or not this is the last col
+   */
+  @State() lastCol: boolean = false;
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
 
   @Watch("showMenu")
-  setMenuPosition(newValue: boolean, oldValue: boolean) {
+  setMenuPosition(newValue: boolean) {
     /*When the menu is visible, calculate the menu width, and the remaining space
     to the right, to determine the menu position (left or right).*/
     if (newValue) {
@@ -128,6 +133,9 @@ export class ChGridColumn {
 
   componentWillLoad() {
     this.chGrid = this.el.assignedSlot["data-chGrid"];
+    if (this.el.nextElementSibling === null) {
+      this.lastCol = true;
+    }
   }
 
   @Listen("emitHideableCols", { target: "document" })
@@ -146,13 +154,13 @@ export class ChGridColumn {
 
   @Listen("unfreezeColumn")
   unfreezeColumnHandler() {
-    console.log("unfreezeColumn at chGridColumn");
+    //console.log("unfreezeColumn at chGridColumn");
     this.freezed = false;
   }
 
   @Listen("freezeColumn")
   freezeColumnHandler() {
-    console.log("freezeColumn at chGridColumn");
+    //console.log("freezeColumn at chGridColumn");
     this.freezed = true;
   }
 
@@ -215,10 +223,12 @@ export class ChGridColumn {
               <ch-icon
                 class={{ "ch-icon-show-menu": true }}
                 onMouseUp={this.showMenuFunc.bind(this)}
-                src={getAssetPath(`./ch-grid-column-assets/chevron-down.svg`)}
+                src={getAssetPath(
+                  `./ch-grid-column-assets/show-more-vertical.svg`
+                )}
                 style={{
-                  "--icon-size": "20px",
-                  "--icon-color": `white`,
+                  "--icon-size": "14px",
+                  "--icon-color": `#696ef2`,
                 }}
               ></ch-icon>,
               this.showOptions ? (
@@ -230,6 +240,7 @@ export class ChGridColumn {
                   hideableCols={this.hideableCols}
                   freezedCols={this.freezedCols}
                   filterable={this.filterable}
+                  lastCol={this.lastCol}
                   ref={(el) => (this.menu = el as HTMLElement)}
                 ></ch-grid-menu>
               ) : null,

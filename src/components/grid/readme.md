@@ -4,15 +4,17 @@
 
 ## Properties
 
-| Property       | Attribute | Description | Type       | Default |
-| -------------- | --------- | ----------- | ---------- | ------- |
-| `freezedCols`  | --        |             | `Object[]` | `[]`    |
-| `hideableCols` | --        |             | `Object[]` | `[]`    |
+| Property       | Attribute | Description | Type             | Default |
+| -------------- | --------- | ----------- | ---------------- | ------- |
+| `colsOrder`    | --        |             | `ChGridColumn[]` | `[]`    |
+| `freezedCols`  | --        |             | `Object[]`       | `[]`    |
+| `hideableCols` | --        |             | `Object[]`       | `[]`    |
 
 ## Events
 
 | Event              | Description | Type               |
 | ------------------ | ----------- | ------------------ |
+| `emitColsOrder`    |             | `CustomEvent<any>` |
 | `emitFreezedCols`  |             | `CustomEvent<any>` |
 | `emitHideableCols` |             | `CustomEvent<any>` |
 

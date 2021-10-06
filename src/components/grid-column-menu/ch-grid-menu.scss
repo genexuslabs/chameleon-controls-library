@@ -55,6 +55,11 @@
         margin-left: 4px;
       }
     }
+    .move-left.disabled,
+    .move-right.disabled {
+      pointer-events: none;
+      opacity: 0.5;
+    }
   }
 }
 :host(.position-right) {

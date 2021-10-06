@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ChGridColumn } from "./components/grid-column/ch-grid-column";
 import { ColType } from "./components/grid-column/ch-grid-column";
 import { ColType as ColType1 } from "./components/grid-column-menu/ch-grid-menu";
 export namespace Components {
@@ -14,6 +15,7 @@ export namespace Components {
   interface ChCompB {}
   interface ChCompC {}
   interface ChGrid {
+    colsOrder: Array<ChGridColumn>;
     freezedCols: Array<Object>;
     hideableCols: Array<Object>;
   }
@@ -86,6 +88,10 @@ export namespace Components {
      * The column data type
      */
     colType: ColType;
+    /**
+     * Information about the columns order
+     */
+    colsOrder: Array<ChGridColumn>;
     /**
      * The presence of this atribute displays a filter on the menu
      */
@@ -356,8 +362,10 @@ declare namespace LocalJSX {
     onTextChanged?: (event: CustomEvent<any>) => void;
   }
   interface ChGrid {
+    colsOrder?: Array<ChGridColumn>;
     freezedCols?: Array<Object>;
     hideableCols?: Array<Object>;
+    onEmitColsOrder?: (event: CustomEvent<any>) => void;
     onEmitFreezedCols?: (event: CustomEvent<any>) => void;
     onEmitHideableCols?: (event: CustomEvent<any>) => void;
   }
@@ -435,6 +443,10 @@ declare namespace LocalJSX {
      */
     colType?: ColType;
     /**
+     * Information about the columns order
+     */
+    colsOrder?: Array<ChGridColumn>;
+    /**
      * The presence of this atribute displays a filter on the menu
      */
     filterable?: boolean;
@@ -462,6 +474,10 @@ declare namespace LocalJSX {
      * Emmits the hideMenu event
      */
     onHideMenu?: (event: CustomEvent<any>) => void;
+    /**
+     * Emmits the move column event
+     */
+    onMoveCol?: (event: CustomEvent<any>) => void;
     /**
      * Emmits the sorting event
      */

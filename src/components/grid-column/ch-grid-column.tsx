@@ -105,6 +105,11 @@ export class ChGridColumn {
    */
   @State() lastCol: boolean = false;
 
+  /**
+   * Information about the cols order that is passed to the menu
+   */
+  @State() colsOrder: Array<ChGridColumn> = [];
+
   /*******************
   FUNCTIONS/METHODS
   ********************/
@@ -152,15 +157,20 @@ export class ChGridColumn {
     }
   }
 
+  @Listen("emitColsOrder", { target: "document" })
+  colsOrderHandler() {
+    if (this.chGrid !== undefined) {
+      this.colsOrder = this.chGrid.colsOrder;
+    }
+  }
+
   @Listen("unfreezeColumn")
   unfreezeColumnHandler() {
-    //console.log("unfreezeColumn at chGridColumn");
     this.freezed = false;
   }
 
   @Listen("freezeColumn")
   freezeColumnHandler() {
-    //console.log("freezeColumn at chGridColumn");
     this.freezed = true;
   }
 
@@ -241,6 +251,7 @@ export class ChGridColumn {
                   freezedCols={this.freezedCols}
                   filterable={this.filterable}
                   lastCol={this.lastCol}
+                  colsOrder={this.colsOrder}
                   ref={(el) => (this.menu = el as HTMLElement)}
                 ></ch-grid-menu>
               ) : null,

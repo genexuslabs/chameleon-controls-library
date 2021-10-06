@@ -30,9 +30,11 @@ export class ChGrid {
   @State() rowWithHover: ChGridRow = null;
   @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
   @Prop() freezedCols: Array<Object> = []; //This prop is for internal use.
+  @Prop() colsOrder: Array<ChGridColumn> = []; //This prop is for internal use.
 
   @Event() emitHideableCols: EventEmitter;
   @Event() emitFreezedCols: EventEmitter;
+  @Event() emitColsOrder: EventEmitter;
 
   componentWillLoad() {}
 
@@ -347,6 +349,8 @@ export class ChGrid {
         ).toString();
       });
     }
+    this.setGridColumnsOrder();
+    this.setGridCellsOrder();
   }
 
   clearFreezedCols() {
@@ -406,8 +410,44 @@ export class ChGrid {
         }
       });
     }
-
     this.emitFreezedCols.emit();
+  }
+
+  setGridColumnsOrder() {
+    this.colsOrder = [];
+    let i = 1;
+    let firstCol = true;
+    this._chGridColumns.forEach((col) => {
+      const colHidden = (col as HTMLElement).classList.contains("hidden");
+      if (!colHidden) {
+        (col as HTMLElement).style.gridColumn = i.toString();
+        if (!firstCol) {
+          //first col is "#toggleRow". Do not take into account.
+          this.colsOrder.push(col);
+        }
+        firstCol = false;
+        i++;
+      } else {
+        (col as HTMLElement).style.gridColumn = null;
+      }
+    });
+    this.emitColsOrder.emit();
+  }
+  setGridCellsOrder() {
+    const rows = this.el.querySelectorAll("ch-grid-row");
+    rows.forEach((row) => {
+      const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
+      let i = 1;
+      rowCells.forEach((cell) => {
+        const cellHidden = cell.classList.contains("hidden");
+        if (!cellHidden) {
+          (cell as HTMLElement).style.gridColumn = i.toString();
+          i++;
+        } else {
+          (cell as HTMLElement).style.gridColumn = null;
+        }
+      });
+    });
   }
 
   @Listen("unfreezeColumn")
@@ -417,6 +457,39 @@ export class ChGrid {
   @Listen("freezeColumn")
   freezeColumnHandler() {
     this.setFreezedCols();
+  }
+  @Listen("moveCol")
+  moveColHandler(e) {
+    const movingColId = e.detail["column-id"];
+    const moveDirection = e.detail["move-direction"];
+
+    // let movingColGridColumnValue = undefined;
+    // const columns = this.el.querySelector("ch-grid-columnset").querySelectorAll(":scope > ch-grid-column");
+    // let movingCol = undefined;
+    // for (let i = 0; i < columns.length; i++) {
+    //   //get a reference to the moving
+    //   const colId = columns[i].getAttribute("col-id");
+    //   if(colId === movingColId) {
+    //     movingCol = columns[i];
+    //     movingColGridColumnValue = (movingCol as HTMLElement).style.gridColumn;
+    //     break;
+    //   }
+    // }
+    // if(movingCol){
+    //   //get a reference to the previous and next col
+    //   let prevCol = undefined;
+    //   let next = undefined;
+    //   for (let i = 0; i < columns.length; i++) {
+    //     const colGridColumnValue = (columns[i] as HTMLElement).style.gridColumn;
+    //     if(colGridColumnValue === movingColGridColumnValue);
+    //   }
+    //   if(moveDirection === "left") {
+    //     //moving direction left
+
+    //   } else {
+    //     //moving direction right
+    //   }
+    // }
   }
 
   render() {

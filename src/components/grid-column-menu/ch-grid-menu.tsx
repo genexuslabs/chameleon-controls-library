@@ -8,6 +8,7 @@ import {
   Event,
   EventEmitter,
 } from "@stencil/core";
+import { ChGridColumn } from "../grid-column/ch-grid-column";
 
 @Component({
   tag: "ch-grid-menu",
@@ -64,6 +65,11 @@ export class ChGridMenu {
    */
   @Prop() lastCol: boolean = false;
 
+  /**
+   * Information about the columns order
+   */
+  @Prop() colsOrder: Array<ChGridColumn> = [];
+
   /*******************
   STATE
   ********************/
@@ -101,6 +107,11 @@ export class ChGridMenu {
    * Emmits the dateRangeChanged event
    */
   @Event() dateRangeChanged: EventEmitter;
+
+  /**
+   * Emmits the move column event
+   */
+  @Event() moveCol: EventEmitter;
 
   /*******************
   FUNCTIONS/METHODS
@@ -316,10 +327,63 @@ export class ChGridMenu {
     }
   }
 
+  moveColLeftFunc() {
+    this.moveCol.emit({
+      "column-id": this.colId,
+      "move-direction": "left",
+    });
+  }
+  moveColRightFunc() {
+    this.moveCol.emit({
+      "column-id": this.colId,
+      "move-direction": "right",
+    });
+  }
+
   moveColumnLogic() {
+    let moveLeftDisabled = false;
+    let moveRightDisabled = false;
+    if (this.colsOrder.length > 0) {
+      let prevColIsFreezed = false;
+      const thisCol = this.colsOrder.find((col) => col.colId === this.colId);
+      const thisColIndex = this.colsOrder.findIndex(
+        (col) => col.colId === this.colId
+      );
+      if (thisColIndex > 0) {
+        const prevCol = this.colsOrder[thisColIndex - 1];
+        prevColIsFreezed = ((prevCol as unknown) as HTMLElement).classList.contains(
+          "freezed"
+        );
+      }
+      if (((thisCol as unknown) as HTMLElement).classList.contains("freezed")) {
+        moveLeftDisabled = true;
+        moveRightDisabled = true;
+      } else {
+        if (thisColIndex === this.colsOrder.length - 1) {
+          //This is the last col
+          moveRightDisabled = true;
+        }
+        if (thisColIndex === 0) {
+          //This is the first col
+          moveLeftDisabled = true;
+        }
+        if (prevColIsFreezed) {
+          //The previous col is freezed. Disable move to the left
+          moveLeftDisabled = true;
+        }
+      }
+    }
+
     return (
-      <div class="move-container">
-        <span class="menu__item move-left">
+      <div class={{ "move-container": true }}>
+        <span
+          class={{
+            menu__item: true,
+            "move-left": true,
+            disabled: moveLeftDisabled,
+          }}
+          onClick={this.moveColLeftFunc.bind(this)}
+        >
           <ch-icon
             src={getAssetPath(`./ch-grid-column-menu-assets/chevron-left.svg`)}
             style={{
@@ -329,7 +393,14 @@ export class ChGridMenu {
           ></ch-icon>
           move left
         </span>
-        <span class="menu__item move-right">
+        <span
+          class={{
+            menu__item: true,
+            "move-right": true,
+            disabled: moveRightDisabled,
+          }}
+          onClick={this.moveColRightFunc.bind(this)}
+        >
           move right
           <ch-icon
             src={getAssetPath(`./ch-grid-column-menu-assets/chevron-right.svg`)}

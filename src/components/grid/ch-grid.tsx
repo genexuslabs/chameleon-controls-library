@@ -251,6 +251,8 @@ export class ChGrid {
   }
 
   setGridTemplateColumns() {
+    //Sets the grid-template-columns property on the section element
+
     let gridTemplateColumns = "";
     let atLeastOneColIsHidden = false;
     this._chGridColumns.forEach((column) => {
@@ -274,6 +276,8 @@ export class ChGrid {
   }
 
   setHideableCols() {
+    /* Retrieves the hideable cols along with its hidden value
+    and emits this information for being used in ch-grid-menu */
     this.hideableCols = [];
     this._chGridColumns.forEach((column) => {
       if (column.hideable) {
@@ -289,6 +293,8 @@ export class ChGrid {
   }
 
   hideCols() {
+    //Hides the columns, the cells,
+
     let hiddenCols = [];
     this._chGridColumns.forEach((column, i) => {
       if (column.hideable && column.hidden) {

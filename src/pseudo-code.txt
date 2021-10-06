@@ -1,0 +1,33 @@
+init() {
+    setHideableCols()
+    hideCols()
+}
+
+setHideableCols(){
+    // Obtiene las columnas hideables y el valor hidden de cada una
+    y emite esta información para ser usada en el ch-grid-menu.
+}
+
+hideCols(){
+    //Oculta las columnas
+    //Oculta las celdas
+    //Redefine grid-template-columns en el section
+    //Redefine ch-grid-rowset-legend
+
+    setGridColumnsOrder();
+    setGridCellsOrder()
+}
+
+setGridColumnsOrder(){
+    Define el orden de las columnas
+    emite el orden de las columnas para ser usado en el menu (moveColumnLogic)
+}
+
+setGridCellsOrder(){
+    Define el orden de las celdas
+}
+
+moveColHandler(){
+    setear el grid-column de A a B
+    setear el grid-column de B a A
+}

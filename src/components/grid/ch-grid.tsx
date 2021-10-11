@@ -255,7 +255,18 @@ export class ChGrid {
 
     let gridTemplateColumns = "";
     let atLeastOneColIsHidden = false;
-    this._chGridColumns.forEach((column) => {
+
+    const chGridColumnsArray: Array<ChGridColumn> = Array.from(
+      this._chGridColumns
+    );
+    const colsOrderedByDataIndex = chGridColumnsArray.sort(function (a, b) {
+      return (
+        parseInt(((a as unknown) as HTMLElement).getAttribute("data-index")) -
+        parseInt(((b as unknown) as HTMLElement).getAttribute("data-index"))
+      );
+    });
+
+    colsOrderedByDataIndex.forEach((column) => {
       const colHidden = (column as ChGridColumn).hidden;
       if (!colHidden) {
         gridTemplateColumns += column.size + " ";
@@ -332,6 +343,7 @@ export class ChGrid {
     //Redefine ch-grid-rowset-legend "grid-column-end" value
     let rowSetsLegend = [];
     let visibleCols = this._chGridColumns.length;
+
     this._chGridColumns.forEach((col) => {
       if (col.hideable && col.hidden) {
         visibleCols--;
@@ -524,7 +536,7 @@ export class ChGrid {
     (swapingCol as HTMLElement).style.gridColumn = a;
     (swapingCol as HTMLElement).setAttribute("data-index", b);
 
-    //Sort chGridColumns Emit the new cols order to update the movable cols configuration on the menus
+    //Sort chGridColumns. Emit the new cols order to update the movable cols configuration on the menus
     let chGridColumnsArray: Array<ChGridColumn> = Array.from(
       this._chGridColumns
     );
@@ -555,6 +567,8 @@ export class ChGrid {
       (swapingCell as HTMLElement).style.gridColumn = a;
       (swapingCell as HTMLElement).setAttribute("data-index", b);
     });
+
+    this.setGridTemplateColumns();
   }
 
   render() {

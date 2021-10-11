@@ -35,4 +35,7 @@ moveColHandler(){
 
     this.colsOrder = this._chGridColumns.sort(por indice)
     this.emitColsOrder.emit();
+
+    reordenar celdas
+    setGridTemplateColumns(); //Redefine grid-template-columns en el section
 }

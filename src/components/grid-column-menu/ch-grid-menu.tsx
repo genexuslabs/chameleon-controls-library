@@ -332,12 +332,14 @@ export class ChGridMenu {
       "column-id": this.colId,
       "move-direction": "left",
     });
+    this.hideMenu.emit();
   }
   moveColRightFunc() {
     this.moveCol.emit({
       "column-id": this.colId,
       "move-direction": "right",
     });
+    this.hideMenu.emit();
   }
 
   moveColumnLogic() {

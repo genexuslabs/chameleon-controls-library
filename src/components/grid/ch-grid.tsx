@@ -427,6 +427,7 @@ export class ChGrid {
       const colHidden = (col as HTMLElement).classList.contains("hidden");
       if (!colHidden) {
         (col as HTMLElement).style.gridColumn = i.toString();
+        (col as HTMLElement).setAttribute("data-index", i.toString());
         if (!firstCol) {
           //first col is "#toggleRow". Do not take into account.
           this.colsOrder.push(col);
@@ -435,6 +436,7 @@ export class ChGrid {
         i++;
       } else {
         (col as HTMLElement).style.gridColumn = null;
+        (col as HTMLElement).removeAttribute("data-index");
       }
     });
     this.emitColsOrder.emit();
@@ -448,9 +450,11 @@ export class ChGrid {
         const cellHidden = cell.classList.contains("hidden");
         if (!cellHidden) {
           (cell as HTMLElement).style.gridColumn = i.toString();
+          (cell as HTMLElement).setAttribute("data-index", i.toString());
           i++;
         } else {
           (cell as HTMLElement).style.gridColumn = null;
+          (cell as HTMLElement).removeAttribute("data-index");
         }
       });
     });
@@ -466,36 +470,91 @@ export class ChGrid {
   }
   @Listen("moveCol")
   moveColHandler(e) {
+    /*This function swaps the cols and the corresponding cells*/
     const movingColId = e.detail["column-id"];
     const moveDirection = e.detail["move-direction"];
+    let movingCol = undefined;
+    let swapingCol = undefined;
+    for (let i = 0; i < this._chGridColumns.length; i++) {
+      //get a reference to the moving column
+      const colId = this._chGridColumns[i].getAttribute("col-id");
+      if (colId === movingColId) {
+        movingCol = this._chGridColumns[i];
+        break;
+      }
+    }
+    const movingColGridColumnValue = (movingCol as HTMLElement).style
+      .gridColumn;
+    const movingColDataIndex = (movingCol as HTMLElement).getAttribute(
+      "data-index"
+    );
+    const movingColPrevDataIndex = (
+      parseInt(movingColDataIndex) - 1
+    ).toString();
+    const movingColNextDataIndex = (
+      parseInt(movingColDataIndex) + 1
+    ).toString();
+    const a = movingColGridColumnValue;
+    const b = movingColDataIndex;
 
-    // let movingColGridColumnValue = undefined;
-    // const columns = this.el.querySelector("ch-grid-columnset").querySelectorAll(":scope > ch-grid-column");
-    // let movingCol = undefined;
-    // for (let i = 0; i < columns.length; i++) {
-    //   //get a reference to the moving
-    //   const colId = columns[i].getAttribute("col-id");
-    //   if(colId === movingColId) {
-    //     movingCol = columns[i];
-    //     movingColGridColumnValue = (movingCol as HTMLElement).style.gridColumn;
-    //     break;
-    //   }
-    // }
-    // if(movingCol){
-    //   //get a reference to the previous and next col
-    //   let prevCol = undefined;
-    //   let next = undefined;
-    //   for (let i = 0; i < columns.length; i++) {
-    //     const colGridColumnValue = (columns[i] as HTMLElement).style.gridColumn;
-    //     if(colGridColumnValue === movingColGridColumnValue);
-    //   }
-    //   if(moveDirection === "left") {
-    //     //moving direction left
+    if (moveDirection === "left") {
+      swapingCol = this.el
+        .querySelector("ch-grid-columnset")
+        .querySelector(
+          ":scope > ch-grid-column[data-index='" + movingColPrevDataIndex + "']"
+        );
+    } else {
+      //moving direction is right
+      swapingCol = this.el
+        .querySelector("ch-grid-columnset")
+        .querySelector(
+          ":scope > ch-grid-column[data-index='" + movingColNextDataIndex + "']"
+        );
+    }
 
-    //   } else {
-    //     //moving direction right
-    //   }
-    // }
+    const swapingColGridColumnValue = (swapingCol as HTMLElement).style
+      .gridColumn;
+    const swapingColDataIndex = (swapingCol as HTMLElement).getAttribute(
+      "data-index"
+    );
+
+    //Swap gridColumn and data-index values between movingCol and SwapingCol
+    (movingCol as HTMLElement).style.gridColumn = swapingColGridColumnValue;
+    (movingCol as HTMLElement).setAttribute("data-index", swapingColDataIndex);
+    (swapingCol as HTMLElement).style.gridColumn = a;
+    (swapingCol as HTMLElement).setAttribute("data-index", b);
+
+    //Sort chGridColumns Emit the new cols order to update the movable cols configuration on the menus
+    let chGridColumnsArray: Array<ChGridColumn> = Array.from(
+      this._chGridColumns
+    );
+    chGridColumnsArray.shift(); //Remove first item from array, because it is the #toggleRow
+    this.colsOrder = chGridColumnsArray.sort(function (a, b) {
+      return (
+        parseInt(((a as unknown) as HTMLElement).getAttribute("data-index")) -
+        parseInt(((b as unknown) as HTMLElement).getAttribute("data-index"))
+      );
+    });
+    this.emitColsOrder.emit();
+
+    //Change cells order
+    const chGridRows = this.el.querySelectorAll("ch-grid-row");
+    chGridRows.forEach((row) => {
+      const movingCell = row.querySelector(
+        ":scope > ch-grid-cell[data-index='" + movingColDataIndex + "']"
+      );
+      const swapingCell = row.querySelector(
+        ":scope > ch-grid-cell[data-index='" + swapingColDataIndex + "']"
+      );
+
+      (movingCell as HTMLElement).style.gridColumn = swapingColGridColumnValue;
+      (movingCell as HTMLElement).setAttribute(
+        "data-index",
+        swapingColDataIndex
+      );
+      (swapingCell as HTMLElement).style.gridColumn = a;
+      (swapingCell as HTMLElement).setAttribute("data-index", b);
+    });
   }
 
   render() {

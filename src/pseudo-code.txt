@@ -11,7 +11,7 @@ setHideableCols(){
 hideCols(){
     //Oculta las columnas
     //Oculta las celdas
-    //Redefine grid-template-columns en el section
+    setGridTemplateColumns(); //Redefine grid-template-columns en el section
     //Redefine ch-grid-rowset-legend
 
     setGridColumnsOrder();
@@ -30,4 +30,9 @@ setGridCellsOrder(){
 moveColHandler(){
     setear el grid-column de A a B
     setear el grid-column de B a A
+    setear el data-index de A a B
+    setear el data-index de B a a
+
+    this.colsOrder = this._chGridColumns.sort(por indice)
+    this.emitColsOrder.emit();
 }

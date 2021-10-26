@@ -161,6 +161,16 @@ export class ChGridColumn {
   colsOrderHandler() {
     if (this.chGrid !== undefined) {
       this.colsOrder = this.chGrid.colsOrder;
+
+      const thisColIndex = this.colsOrder.findIndex(
+        (col) => col.colId === this.colId
+      );
+
+      if (this.colsOrder[thisColIndex + 1] !== undefined) {
+        this.lastCol = false;
+      } else {
+        this.lastCol = true;
+      }
     }
   }
 
@@ -172,6 +182,8 @@ export class ChGridColumn {
   @Listen("freezeColumn")
   freezeColumnHandler() {
     this.freezed = true;
+    console.log(this.colId);
+    console.log(this.freezed);
   }
 
   @Listen("hideMenu")

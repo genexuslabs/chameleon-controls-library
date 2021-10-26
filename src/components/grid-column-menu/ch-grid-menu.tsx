@@ -357,21 +357,25 @@ export class ChGridMenu {
           "freezed"
         );
       }
-      if (((thisCol as unknown) as HTMLElement).classList.contains("freezed")) {
-        moveLeftDisabled = true;
-        moveRightDisabled = true;
-      } else {
-        if (thisColIndex === this.colsOrder.length - 1) {
-          //This is the last col
+      if (thisCol !== undefined) {
+        if (
+          ((thisCol as unknown) as HTMLElement).classList.contains("freezed")
+        ) {
+          moveLeftDisabled = true;
           moveRightDisabled = true;
-        }
-        if (thisColIndex === 0) {
-          //This is the first col
-          moveLeftDisabled = true;
-        }
-        if (prevColIsFreezed) {
-          //The previous col is freezed. Disable move to the left
-          moveLeftDisabled = true;
+        } else {
+          if (thisColIndex === this.colsOrder.length - 1) {
+            //This is the last col
+            moveRightDisabled = true;
+          }
+          if (thisColIndex === 0) {
+            //This is the first col
+            moveLeftDisabled = true;
+          }
+          if (prevColIsFreezed) {
+            //The previous col is freezed. Disable move to the left
+            moveLeftDisabled = true;
+          }
         }
       }
     }

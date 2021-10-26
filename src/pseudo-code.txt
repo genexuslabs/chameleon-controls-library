@@ -1,6 +1,7 @@
 init() {
     setHideableCols()
     hideCols()
+    this.setFreezedCols()
 }
 
 setHideableCols(){
@@ -15,7 +16,7 @@ hideCols(){
     //Redefine ch-grid-rowset-legend
 
     setGridColumnsOrder();
-    setGridCellsOrder()
+    setGridCellsOrder();
 }
 
 setGridColumnsOrder(){
@@ -25,6 +26,10 @@ setGridColumnsOrder(){
 
 setGridCellsOrder(){
     Define el orden de las celdas
+}
+
+setFreezedCols(){
+
 }
 
 moveColHandler(){

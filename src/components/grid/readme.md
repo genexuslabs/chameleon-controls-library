@@ -6,6 +6,7 @@
 
 | Property       | Attribute | Description | Type             | Default |
 | -------------- | --------- | ----------- | ---------------- | ------- |
+| `cellsOrder`   | --        |             | `ChGridCell[]`   | `[]`    |
 | `colsOrder`    | --        |             | `ChGridColumn[]` | `[]`    |
 | `freezedCols`  | --        |             | `Object[]`       | `[]`    |
 | `hideableCols` | --        |             | `Object[]`       | `[]`    |

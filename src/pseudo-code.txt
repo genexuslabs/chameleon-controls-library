@@ -44,3 +44,42 @@ moveColHandler(){
     reordenar celdas
     setGridTemplateColumns(); //Redefine grid-template-columns en el section
 }
+
+///////////////////////////////////////////////////////
+
+CUANDO CLICKEO SOBRE "FREEZE COLUMN"
+1.En ch-grid-menu Se emite el evento freezeColumn
+2.En ch-grid-column se captura el evento y se setea this.freezed = true;
+3.En ch-grid se caputra el evento y se llama a setFreezedCols()
+
+setFreezedCols(){
+    this.clearFreezedCols(); -> limpia las freezed cols y cells
+
+    para cada columna de _chGridColumns {
+        Se determina el index de la ultima columna freezada;
+
+        Si el indice de la ultima columna freezada no es null {
+            //Al menos una columna esta freezada
+            //Freezamos todas las columnas hasta la ultima
+
+            
+
+        }
+    }
+
+    se emite emitFreezedCols()
+}
+
+///////////////////////////////////////////////////////
+
+OCULTADO DE COLUMNAS 
+
+1. Se emite toggledColumn con el id de la columna
+2. Se escucha el evento en ch-grid
+
+toggledColumnHandler {
+    se seta la property hidden en la columna, o se quita
+
+    se llama a setHideableCols();
+    se llama a hideCols();
+}

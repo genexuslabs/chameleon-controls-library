@@ -6,6 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ChGridColumn } from "./components/grid-column/ch-grid-column";
+import { ChGridCell } from "./components/grid-cell/ch-grid-cell";
 import { ColType } from "./components/grid-column/ch-grid-column";
 import { ColType as ColType1 } from "./components/grid-column-menu/ch-grid-menu";
 export namespace Components {
@@ -15,6 +16,7 @@ export namespace Components {
   interface ChCompB {}
   interface ChCompC {}
   interface ChGrid {
+    cellsOrder: Array<ChGridCell>;
     colsOrder: Array<ChGridColumn>;
     freezedCols: Array<Object>;
     hideableCols: Array<Object>;
@@ -362,6 +364,7 @@ declare namespace LocalJSX {
     onTextChanged?: (event: CustomEvent<any>) => void;
   }
   interface ChGrid {
+    cellsOrder?: Array<ChGridCell>;
     colsOrder?: Array<ChGridColumn>;
     freezedCols?: Array<Object>;
     hideableCols?: Array<Object>;

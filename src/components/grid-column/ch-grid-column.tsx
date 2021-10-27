@@ -182,8 +182,6 @@ export class ChGridColumn {
   @Listen("freezeColumn")
   freezeColumnHandler() {
     this.freezed = true;
-    console.log(this.colId);
-    console.log(this.freezed);
   }
 
   @Listen("hideMenu")

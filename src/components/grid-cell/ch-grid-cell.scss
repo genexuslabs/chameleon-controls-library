@@ -8,16 +8,16 @@
   padding: 10px 12px;
   align-items: center;
 }
-:host(:nth-child(1)){
-  grid-column:1;
+:host(:nth-child(1)) {
+  grid-column: 1;
   border-right: 0 !important;
 }
-:host(:nth-child(2)){
-  grid-column:2;
+:host(:nth-child(2)) {
+  grid-column: 2;
 }
 :host(.nested) {
   ::before {
-    content:'';
+    content: "";
     width: calc(2ch * var(--level));
   }
 }
@@ -31,7 +31,7 @@
 :host(.hidden) {
   display: none;
 }
-:host(.toggle-row--expanded){
+:host(.toggle-row--expanded) {
   ::slotted(ch-icon) {
     transform: rotate(180deg) !important;
   }

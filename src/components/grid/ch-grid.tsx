@@ -10,6 +10,7 @@ import {
   Listen,
   Prop,
 } from "@stencil/core";
+import { ChGridCell } from "../grid-cell/ch-grid-cell";
 import { ChGridColumn } from "../grid-column/ch-grid-column";
 import { ChGridRow } from "../grid-row/ch-grid-row";
 
@@ -31,6 +32,7 @@ export class ChGrid {
   @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
   @Prop() freezedCols: Array<Object> = []; //This prop is for internal use.
   @Prop() colsOrder: Array<ChGridColumn> = []; //This prop is for internal use.
+  @Prop() cellsOrder: Array<ChGridCell> = []; //This prop is for internal use.
 
   @Event() emitHideableCols: EventEmitter;
   @Event() emitFreezedCols: EventEmitter;
@@ -399,10 +401,17 @@ export class ChGrid {
     this.clearFreezedCols();
     let lastFreezedColIndex: number = null;
     this.freezedCols = [];
-    this._chGridColumns.forEach((col, i) => {
+
+    // console.log("this.colsOrder", this.colsOrder);
+    // console.log("this._chGridColumns", this._chGridColumns);
+
+    console.log("this.colsOrder", this.colsOrder);
+
+    this.colsOrder.forEach((col, i) => {
+      //console.log(i);
       //Determine the last freezed col
       //(The last col should not be freezed)
-      if (i !== this._chGridColumns.length - 1) {
+      if (i !== this.colsOrder.length - 1) {
         let colIsfreezed = (col as ChGridColumn).freezed;
         if (colIsfreezed) {
           lastFreezedColIndex = i;
@@ -413,17 +422,32 @@ export class ChGrid {
     if (lastFreezedColIndex !== null) {
       //At least one column is freezed. Freeze all columns, up to the last freezed column.
       for (let i = 0; i <= lastFreezedColIndex; i++) {
-        this._chGridColumns[i].classList.add("freezed");
+        ((this.colsOrder[i] as unknown) as HTMLElement).classList.add(
+          "freezed"
+        );
         this.freezedCols.push((this._chGridColumns[i] as ChGridColumn).colId);
       }
       //Then freeze the cells
       const chGridRows = this.el.querySelectorAll("ch-grid-row");
+      console.log();
       chGridRows.forEach((row) => {
-        const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
+        const rowCells = row.querySelectorAll(
+          ":scope > ch-grid-cell:not([data-index='1'])"
+        );
+        let rowCellsArray = Array.from(rowCells);
+        const rowCellsOrderedByIndex = rowCellsArray.sort(function (a, b) {
+          return (
+            parseInt(
+              ((a as unknown) as HTMLElement).getAttribute("data-index")
+            ) -
+            parseInt(((b as unknown) as HTMLElement).getAttribute("data-index"))
+          );
+        });
+
         for (let i = 0; i <= lastFreezedColIndex; i++) {
-          rowCells[i].classList.add("freezed");
+          rowCellsOrderedByIndex[i].classList.add("freezed");
           if (i === lastFreezedColIndex) {
-            rowCells[i].classList.add("last-freezed-col");
+            rowCellsOrderedByIndex[i].classList.add("last-freezed-col");
           }
         }
       });

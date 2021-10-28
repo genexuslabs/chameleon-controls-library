@@ -1,3 +1,9 @@
+TO DO
+
+1.Ver si podemos evitar llamar a clearFreezedCols en la primera carga.
+
+///////////////////////////////////////////////////////
+
 init() {
     setHideableCols()
     hideCols()
@@ -76,10 +82,21 @@ OCULTADO DE COLUMNAS
 
 1. Se emite toggledColumn con el id de la columna
 2. Se escucha el evento en ch-grid
-
 toggledColumnHandler {
     se seta la property hidden en la columna, o se quita
 
     se llama a setHideableCols();
     se llama a hideCols();
 }
+
+setHideableCols {
+    /* Retrieves the hideable cols along with its hidden value
+    and emits this information for being used in ch-grid-menu */
+}
+hideCols {
+
+}
+
+///////////////////////////////////////////////////////
+
+UNFREEZE COLUMN 

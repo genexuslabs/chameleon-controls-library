@@ -306,7 +306,7 @@ export class ChGrid {
   }
 
   hideCols() {
-    //Hides the columns, the cells,
+    //Hides/Shows the columns and the cells,
 
     let hiddenCols = [];
     this._chGridColumns.forEach((column, i) => {
@@ -374,41 +374,46 @@ export class ChGrid {
   }
 
   clearFreezedCols() {
+    console.log("clearFreezedCols");
     //Clear freezed cols
     this._chGridColumns.forEach((col) => {
       if (col.classList.contains("freezed")) {
         col.classList.remove("freezed");
+        (col as ChGridColumn).freezed = false;
       }
     });
     //Clear freezed cells
     const chGridRows = this.el.querySelectorAll("ch-grid-row");
     chGridRows.forEach((row) => {
       const rowCells = row.querySelectorAll(":scope > ch-grid-cell");
-      for (let i = 0; i <= rowCells.length; i++) {
+      for (let i = 0; i < rowCells.length; i++) {
         if (rowCells[i].classList.contains("freezed")) {
           rowCells[i].classList.remove("freezed");
           if (rowCells[i].classList.contains("last-freezed-col")) {
             rowCells[i].classList.remove("last-freezed-col");
           }
-        } else {
-          break;
         }
       }
     });
+    this.freezedCols = [];
+    this.emitFreezedCols.emit();
   }
 
   setFreezedCols() {
     this.clearFreezedCols();
+    //Freeze the first col (toggle-row)
+    const chGridRows = this.el.querySelectorAll("ch-grid-row");
+    chGridRows.forEach((row) => {
+      const firstRowCell = row.querySelector(
+        ":scope > ch-grid-cell:nth-child(1)"
+      );
+      ((firstRowCell as unknown) as HTMLElement).classList.add("freezed");
+    });
+
     let lastFreezedColIndex: number = null;
     this.freezedCols = [];
 
-    // console.log("this.colsOrder", this.colsOrder);
-    // console.log("this._chGridColumns", this._chGridColumns);
-
-    console.log("this.colsOrder", this.colsOrder);
-
     this.colsOrder.forEach((col, i) => {
-      //console.log(i);
       //Determine the last freezed col
       //(The last col should not be freezed)
       if (i !== this.colsOrder.length - 1) {
@@ -425,11 +430,11 @@ export class ChGrid {
         ((this.colsOrder[i] as unknown) as HTMLElement).classList.add(
           "freezed"
         );
-        this.freezedCols.push((this._chGridColumns[i] as ChGridColumn).colId);
+        this.freezedCols.push((this.colsOrder[i] as ChGridColumn).colId);
       }
       //Then freeze the cells
       const chGridRows = this.el.querySelectorAll("ch-grid-row");
-      console.log();
+
       chGridRows.forEach((row) => {
         const rowCells = row.querySelectorAll(
           ":scope > ch-grid-cell:not([data-index='1'])"
@@ -498,7 +503,7 @@ export class ChGrid {
 
   @Listen("unfreezeColumn")
   unfreezeColumnHandler() {
-    this.setFreezedCols();
+    this.clearFreezedCols();
   }
   @Listen("freezeColumn")
   freezeColumnHandler() {

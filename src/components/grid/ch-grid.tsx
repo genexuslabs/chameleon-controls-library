@@ -29,6 +29,7 @@ export class ChGrid {
   private _chGridColumIndentedIndex: number = undefined;
   @State() selectedChRow: ChGridRow = null;
   @State() rowWithHover: ChGridRow = null;
+  @State() colsOrderObj: Object = null;
   @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
   @Prop() freezedCols: Array<Object> = []; //This prop is for internal use.
   @Prop() colsOrder: Array<ChGridColumn> = []; //This prop is for internal use.
@@ -461,6 +462,7 @@ export class ChGrid {
   }
 
   setGridColumnsOrder() {
+    //flag
     this.colsOrder = [];
     let i = 1;
     let firstCol = true;
@@ -577,6 +579,14 @@ export class ChGrid {
       );
     });
     this.emitColsOrder.emit();
+
+    //flag
+    this.colsOrderObj = {};
+    this._chGridColumns.forEach((col, i) => {
+      this.colsOrderObj[i] = ((this._chGridColumns[
+        i
+      ] as unknown) as HTMLElement).dataset.index;
+    });
 
     //Change cells order
     const chGridRows = this.el.querySelectorAll("ch-grid-row");

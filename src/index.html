@@ -102,9 +102,7 @@
             <ch-grid-ag-button>Action A</ch-grid-ag-button>
             <ch-grid-ag-button>Action B</ch-grid-ag-button>
           </ch-grid-ag>
-      <ch-grid-footer slot="footer">
-        Footer
-      </ch-grid-footer>
+      <ch-grid-footer pagination-items=10 max-visible-pagination-items=5 active-page=3 slot="footer"></ch-grid-footer>
     </ch-grid>
     
     <br>
@@ -261,6 +259,10 @@
   });
   //Escuchar selectChanged
     chGrid.addEventListener("selectChanged", function(e){
+    console.log(e.detail);
+  });
+    //Escuchar paginationSelectedPage
+    chGrid.addEventListener("paginationSelectedPage", function(e){
     console.log(e.detail);
   });
 </script>

@@ -69,7 +69,24 @@ export namespace Components {
     size: string;
   }
   interface ChGridColumnset {}
-  interface ChGridFooter {}
+  interface ChGridFooter {
+    /**
+     * The active page
+     */
+    activePage: number;
+    /**
+     * The max. number of visibile pages pagination (first and last page are not counted)
+     */
+    maxVisiblePaginationItems: number;
+    /**
+     * The page number where dots should be inserted
+     */
+    pageDots: number;
+    /**
+     * The number of pages pagination
+     */
+    paginationItems: number;
+  }
   interface ChGridHeader {}
   interface ChGridInputText {
     /**
@@ -420,7 +437,25 @@ declare namespace LocalJSX {
     size?: string;
   }
   interface ChGridColumnset {}
-  interface ChGridFooter {}
+  interface ChGridFooter {
+    /**
+     * The active page
+     */
+    activePage?: number;
+    /**
+     * The max. number of visibile pages pagination (first and last page are not counted)
+     */
+    maxVisiblePaginationItems?: number;
+    onPaginationSelectedPage?: (event: CustomEvent<any>) => void;
+    /**
+     * The page number where dots should be inserted
+     */
+    pageDots?: number;
+    /**
+     * The number of pages pagination
+     */
+    paginationItems?: number;
+  }
   interface ChGridHeader {}
   interface ChGridInputText {
     /**

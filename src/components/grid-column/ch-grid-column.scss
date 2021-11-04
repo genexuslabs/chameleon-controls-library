@@ -11,13 +11,16 @@
   border-bottom: 1px solid #e0e0e0;
   padding: 7px;
 }
+:host(.over) {
+  background-color: rgba(105, 110, 242, 0.2);
+}
 :host(:nth-child(1)) {
   grid-column: 1;
 }
 :host(:nth-child(2)) {
   grid-column: 2;
 }
-:host(.freezed){
+:host(.freezed) {
   transform: translateX(var(--scrollH));
   z-index: 1002;
 }

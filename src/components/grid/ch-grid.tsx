@@ -13,6 +13,7 @@ import {
 import { ChGridCell } from "../grid-cell/ch-grid-cell";
 import { ChGridColumn } from "../grid-column/ch-grid-column";
 import { ChGridRow } from "../grid-row/ch-grid-row";
+import * as drag from "./drag-drop";
 
 @Component({
   tag: "ch-grid",
@@ -85,6 +86,7 @@ export class ChGrid {
     this.setHideableCols();
     this.hideCols();
     this.setFreezedCols();
+    this.setDraggable();
   }
 
   setNestedChGridCells() {
@@ -608,6 +610,18 @@ export class ChGrid {
     });
 
     this.setGridTemplateColumns();
+  }
+
+  setDraggable() {
+    this._chGridColumns.forEach((col) => {
+      (col as HTMLElement).setAttribute("draggable", "true");
+      col.addEventListener("dragstart", drag.handleDragStart, false);
+      col.addEventListener("dragenter", drag.handleDragEnter, false);
+      col.addEventListener("dragover", drag.handleDragOver, false);
+      col.addEventListener("dragleave", drag.handleDragLeave, false);
+      col.addEventListener("drop", drag.handleDrop, false);
+      col.addEventListener("dragend", drag.handleDragEnd, false);
+    });
   }
 
   render() {

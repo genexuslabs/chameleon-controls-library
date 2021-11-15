@@ -36,7 +36,6 @@ export class ChGridFooter {
   @Prop() pageDots: number = null;
 
   paginationStructure() {
-    console.log("paginationStructure");
     let paginationStructure = [];
 
     // PREV

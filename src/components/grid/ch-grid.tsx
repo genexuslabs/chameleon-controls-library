@@ -30,7 +30,7 @@ export class ChGrid {
   private _chGridColumIndentedIndex: number = undefined;
   @State() selectedChRow: ChGridRow = null;
   @State() rowWithHover: ChGridRow = null;
-  @State() colsOrderObj: Object = null;
+  @State() visibleColsByIndex: Array<string> = [];
   @Prop() hideableCols: Array<Object> = []; //This prop is for internal use.
   @Prop() freezedCols: Array<Object> = []; //This prop is for internal use.
   @Prop() colsOrder: Array<ChGridColumn> = []; //This prop is for internal use.
@@ -291,6 +291,22 @@ export class ChGrid {
       ._section as HTMLElement).style.gridTemplateColumns = gridTemplateColumns;
   }
 
+  setVisibleColsByIndex() {
+    if (this.visibleColsByIndex.length === 0) {
+      //This is the first time.
+      this._chGridColumns.forEach((col, i) => {
+        this.visibleColsByIndex.push((i + 1).toString());
+      });
+    } else {
+      this.visibleColsByIndex = [];
+      this._chGridColumns.forEach((col, i) => {
+        if (!(col as HTMLElement).classList.contains("hidden")) {
+          this.visibleColsByIndex.push((col as HTMLElement).dataset.index);
+        }
+      });
+    }
+  }
+
   setHideableCols() {
     /* Retrieves the hideable cols along with its hidden value
     and emits this information for being used in ch-grid-menu */
@@ -372,12 +388,12 @@ export class ChGrid {
         ).toString();
       });
     }
+    this.setVisibleColsByIndex();
     this.setGridColumnsOrder();
     this.setGridCellsOrder();
   }
 
   clearFreezedCols() {
-    console.log("clearFreezedCols");
     //Clear freezed cols
     this._chGridColumns.forEach((col) => {
       if (col.classList.contains("freezed")) {
@@ -465,24 +481,36 @@ export class ChGrid {
 
   setGridColumnsOrder() {
     //flag
+    console.log(this.visibleColsByIndex);
     this.colsOrder = [];
     let i = 1;
     let firstCol = true;
     this._chGridColumns.forEach((col) => {
-      const colHidden = (col as HTMLElement).classList.contains("hidden");
-      if (!colHidden) {
-        (col as HTMLElement).style.gridColumn = i.toString();
-        (col as HTMLElement).setAttribute("data-index", i.toString());
-        if (!firstCol) {
-          //first col is "#toggleRow". Do not take into account.
-          this.colsOrder.push(col);
-        }
-        firstCol = false;
-        i++;
+      let indexInVisibleCols =
+        this.visibleColsByIndex.findIndex((number) => number === i.toString()) +
+        1;
+      if (indexInVisibleCols !== -1) {
+        //col exists in visibleColsByIndex array, hence is visible
+        (col as HTMLElement).style.gridColumn = indexInVisibleCols.toString();
+        (col as HTMLElement).setAttribute(
+          "data-index",
+          indexInVisibleCols.toString()
+        );
       } else {
+        //col is hidden
         (col as HTMLElement).style.gridColumn = null;
         (col as HTMLElement).removeAttribute("data-index");
       }
+      // console.log(index);
+      // const colHidden = (col as HTMLElement).classList.contains("hidden");
+      // if (!colHidden) {
+      //   if (!firstCol) {
+      //     //first col is "#toggleRow". Do not take into account.
+      //     this.colsOrder.push(col);
+      //   }
+      //   firstCol = false;
+      // }
+      i++;
     });
     this.emitColsOrder.emit();
   }
@@ -583,12 +611,12 @@ export class ChGrid {
     this.emitColsOrder.emit();
 
     //flag
-    this.colsOrderObj = {};
-    this._chGridColumns.forEach((col, i) => {
-      this.colsOrderObj[i] = ((this._chGridColumns[
-        i
-      ] as unknown) as HTMLElement).dataset.index;
-    });
+    // this.colsOrderObj = {};
+    // this._chGridColumns.forEach((col, i) => {
+    //   this.colsOrderObj[i] = ((this._chGridColumns[
+    //     i
+    //   ] as unknown) as HTMLElement).dataset.index;
+    // });
 
     //Change cells order
     const chGridRows = this.el.querySelectorAll("ch-grid-row");

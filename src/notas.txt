@@ -9,7 +9,6 @@ Cuando oculto/muestro una columna se emite el evento toggledColumn
 @Listen("toggledColumn")
 toggledColumnHandler {
     agrega o quita el attributo "hidden" a la columna toggleada
-
     setHideableCols(); OK
     hideCols(); OK
 }
@@ -18,7 +17,6 @@ cuando muevo una columna se emite el evento moveCol
   @Listen("moveCol")
   moveColHandler(e) {
     Se swapea la columna origen por la destino, cambiando sus gridColum y data-index
-    
     setGridTemplateColumns();
   }
 
@@ -41,8 +39,8 @@ setGridTemplateColumns(){
 }
 setGridColumnsOrder(){
     Aca esta el tema!
-
 }
+
 setGridCellsOrder(){
 
 }

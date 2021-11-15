@@ -1,9 +1,0 @@
-:host {
-  display: block;
-  border: 1px solid blue;
-  padding: 20px;
-  flex: 1;
-}
-#text {
-  margin-left: 10px;
-}

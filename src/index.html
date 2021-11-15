@@ -1,113 +1,138 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
-    <title>Stencil Component Starter</title>
-    <script type="module" src="/build/chameleon.esm.js"></script>
-    <script nomodule src="/build/chameleon.js"></script>
-    <link href="/build/chameleon.css" rel="stylesheet" />
-  </head>
-  <body>
-    <!-- ch-grid -->
-    <ch-grid id="ch-grid" checkboxes>
-      <ch-grid-header slot="header">
-        Título de grid
-      </ch-grid-header>
-      <ch-grid-columnset>
-        <ch-grid-column size="min-content" col-id="checkbox"></ch-grid-column>
-        <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable>Nombre</ch-grid-column>
-        <ch-grid-column hideable size="500px" col-id="fecha-de-nacimiento" col-type="date" filterable >Fecha de nacimiento</ch-grid-column>
-        <ch-grid-column hideable col-id="boolean" col-type="boolean" filterable>Boolean</ch-grid-column>
-      </ch-grid-columnset>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+  <title>Stencil Component Starter</title>
+  <script type="module" src="/build/chameleon.esm.js"></script>
+  <script nomodule src="/build/chameleon.js"></script>
+  <link href="/build/chameleon.css" rel="stylesheet" />
+</head>
+
+<body>
+  <!-- ch-grid -->
+  <ch-grid id="ch-grid" checkboxes>
+    <ch-grid-header slot="header">
+      Título de grid
+    </ch-grid-header>
+    <ch-grid-columnset>
+      <ch-grid-column size="min-content" col-id="checkbox"></ch-grid-column>
+      <ch-grid-column hideable size="300px" indent col-id="nombre" col-type="string" filterable>Nombre</ch-grid-column>
+      <ch-grid-column hideable size="500px" col-id="fecha-de-nacimiento" col-type="date" filterable>Fecha de nacimiento
+      </ch-grid-column>
+      <ch-grid-column hideable col-id="boolean" col-type="boolean" filterable>Boolean</ch-grid-column>
+    </ch-grid-columnset>
+    <ch-grid-row>
+      <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+      <ch-grid-cell>Nombre 0</ch-grid-cell>
+      <ch-grid-cell>Fecha de nacimiento 0</ch-grid-cell>
+      <ch-grid-cell>
+        <ch-grid-checkbox checked></ch-grid-checkbox>
+      </ch-grid-cell>
+    </ch-grid-row>
+    <ch-grid-rowset>
+      <ch-grid-rowset-legend>Grupo 1</ch-grid-rowset-legend>
       <ch-grid-row>
         <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-        <ch-grid-cell>Nombre 0</ch-grid-cell>
-        <ch-grid-cell>Fecha de nacimiento 0</ch-grid-cell>
-        <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
+        <ch-grid-cell>Nombre 1</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 1</ch-grid-cell>
+        <ch-grid-cell>
+          <ch-grid-checkbox checked></ch-grid-checkbox>
+        </ch-grid-cell>
       </ch-grid-row>
-      <ch-grid-rowset>
-        <ch-grid-rowset-legend>Grupo 1</ch-grid-rowset-legend>
-        <ch-grid-row>
-          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-          <ch-grid-cell>Nombre 1</ch-grid-cell>
-          <ch-grid-cell>Fecha de nacimiento 1</ch-grid-cell>
-          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-        </ch-grid-row>
-        <ch-grid-row>
-          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-          <ch-grid-cell>Nombre 2</ch-grid-cell>
-          <ch-grid-cell>Fecha de nacimiento 2</ch-grid-cell>
-          <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
-          <ch-grid-rowset>
-            <ch-grid-row>
-              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-              <ch-grid-cell>Nombre 2.1</ch-grid-cell>
-              <ch-grid-cell>Fecha de nacimiento 2.1</ch-grid-cell>
-              <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-              <ch-grid-cell>Nombre 2.2</ch-grid-cell>
-              <ch-grid-cell>Fecha de nacimiento 2.2</ch-grid-cell>
-              <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-              <ch-grid-rowset>
-                <ch-grid-row>
-                  <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-                  <ch-grid-cell>Nombre 2.2.1</ch-grid-cell>
-                  <ch-grid-cell>Fecha de nacimiento 2.2.1</ch-grid-cell>
-                  <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-              <ch-grid-cell>Nombre 2.3</ch-grid-cell>
-              <ch-grid-cell>Fecha de nacimiento 2.3</ch-grid-cell>
-              <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-            </ch-grid-row>
-          </ch-grid-rowset>
-        </ch-grid-row>
-        <ch-grid-row>
-          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-          <ch-grid-cell>Nombre 3</ch-grid-cell>
-          <ch-grid-cell>Fecha de nacimiento 3</ch-grid-cell>
-          <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
-        </ch-grid-row>
-        <ch-grid-row>
-          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-          <ch-grid-cell>Nombre 4</ch-grid-cell>
-          <ch-grid-cell>Fecha de nacimiento 4</ch-grid-cell>
-          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-          <ch-grid-rowset>
-            <ch-grid-row>
-              <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-              <ch-grid-cell>Nombre 4.1</ch-grid-cell>
-              <ch-grid-cell>Fecha de nacimiento 4.1</ch-grid-cell>
-              <ch-grid-cell><ch-grid-checkbox ></ch-grid-checkbox></ch-grid-cell>
-            </ch-grid-row>
-          </ch-grid-rowset>
-        </ch-grid-row>
-      </ch-grid-rowset>
-      <ch-grid-rowset>
-        <ch-grid-rowset-legend>Grupo 2</ch-grid-rowset-legend>
-        <ch-grid-row>
-          <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-          <ch-grid-cell>Nombre 5</ch-grid-cell>
-          <ch-grid-cell>Fecha de nacimiento 5</ch-grid-cell>
-          <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-        </ch-grid-row>
-      </ch-grid-rowset>
-          <ch-grid-ag hidden slot="row-hover"> 
-            <ch-grid-ag-button>Action A</ch-grid-ag-button>
-            <ch-grid-ag-button>Action B</ch-grid-ag-button>
-          </ch-grid-ag>
-      <ch-grid-footer pagination-items=10 max-visible-pagination-items=5 active-page=3 slot="footer"></ch-grid-footer>
-    </ch-grid>
-    
-    <br>
+      <ch-grid-row>
+        <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+        <ch-grid-cell>Nombre 2</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 2</ch-grid-cell>
+        <ch-grid-cell>
+          <ch-grid-checkbox></ch-grid-checkbox>
+        </ch-grid-cell>
+        <ch-grid-rowset>
+          <ch-grid-row>
+            <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+            <ch-grid-cell>Nombre 2.1</ch-grid-cell>
+            <ch-grid-cell>Fecha de nacimiento 2.1</ch-grid-cell>
+            <ch-grid-cell>
+              <ch-grid-checkbox></ch-grid-checkbox>
+            </ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+            <ch-grid-cell>Nombre 2.2</ch-grid-cell>
+            <ch-grid-cell>Fecha de nacimiento 2.2</ch-grid-cell>
+            <ch-grid-cell>
+              <ch-grid-checkbox checked></ch-grid-checkbox>
+            </ch-grid-cell>
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+                <ch-grid-cell>Nombre 2.2.1</ch-grid-cell>
+                <ch-grid-cell>Fecha de nacimiento 2.2.1</ch-grid-cell>
+                <ch-grid-cell>
+                  <ch-grid-checkbox checked></ch-grid-checkbox>
+                </ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+            <ch-grid-cell>Nombre 2.3</ch-grid-cell>
+            <ch-grid-cell>Fecha de nacimiento 2.3</ch-grid-cell>
+            <ch-grid-cell>
+              <ch-grid-checkbox checked></ch-grid-checkbox>
+            </ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+      </ch-grid-row>
+      <ch-grid-row>
+        <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+        <ch-grid-cell>Nombre 3</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 3</ch-grid-cell>
+        <ch-grid-cell>
+          <ch-grid-checkbox></ch-grid-checkbox>
+        </ch-grid-cell>
+      </ch-grid-row>
+      <ch-grid-row>
+        <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+        <ch-grid-cell>Nombre 4</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 4</ch-grid-cell>
+        <ch-grid-cell>
+          <ch-grid-checkbox checked></ch-grid-checkbox>
+        </ch-grid-cell>
+        <ch-grid-rowset>
+          <ch-grid-row>
+            <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+            <ch-grid-cell>Nombre 4.1</ch-grid-cell>
+            <ch-grid-cell>Fecha de nacimiento 4.1</ch-grid-cell>
+            <ch-grid-cell>
+              <ch-grid-checkbox></ch-grid-checkbox>
+            </ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+      </ch-grid-row>
+    </ch-grid-rowset>
+    <ch-grid-rowset>
+      <ch-grid-rowset-legend>Grupo 2</ch-grid-rowset-legend>
+      <ch-grid-row>
+        <ch-grid-cell><input type="checkbox"></ch-grid-cell>
+        <ch-grid-cell>Nombre 5</ch-grid-cell>
+        <ch-grid-cell>Fecha de nacimiento 5</ch-grid-cell>
+        <ch-grid-cell>
+          <ch-grid-checkbox checked></ch-grid-checkbox>
+        </ch-grid-cell>
+      </ch-grid-row>
+    </ch-grid-rowset>
+    <ch-grid-ag hidden slot="row-hover">
+      <ch-grid-ag-button>Action A</ch-grid-ag-button>
+      <ch-grid-ag-button>Action B</ch-grid-ag-button>
+    </ch-grid-ag>
+    <ch-grid-footer pagination-items=10 max-visible-pagination-items=5 active-page=3 slot="footer"></ch-grid-footer>
+  </ch-grid>
 
-    <!-- <ch-grid id="ch-grid-2" checkboxes>
+  <br>
+
+  <!-- <ch-grid id="ch-grid-2" checkboxes>
       <ch-grid-header slot="header">
         Título de grid
       </ch-grid-header>
@@ -204,66 +229,40 @@
       </ch-grid-footer>
     </ch-grid> -->
 
-    <br>
+  <br>
 
-    <!-- <ch-comp-a>
-      <ch-comp-b>
-        <ch-comp-c></ch-comp-c>
-        <ch-comp-c></ch-comp-c>
-        <ch-comp-c></ch-comp-c>
-      </ch-comp-b>
-    </ch-comp-a>
-    <br>
-    <ch-comp-a>
-      <ch-comp-b>
-        <ch-comp-c></ch-comp-c>
-        <ch-comp-c></ch-comp-c>
-        <ch-comp-c></ch-comp-c>
-      </ch-comp-b>
-    </ch-comp-a> -->
+</body>
 
-<!-- ch-grid -->
-<!-- <ch-grid id="ch-grid" checkboxes>
-  <ch-grid-row>
-    <ch-grid-cell><input type="checkbox"></ch-grid-cell>
-    <ch-grid-cell>Nombre 0</ch-grid-cell>
-    <ch-grid-cell>Apellido 0</ch-grid-cell>
-    <ch-grid-cell>Fecha de nacimiento 0</ch-grid-cell>
-    <ch-grid-cell><ch-grid-checkbox checked></ch-grid-checkbox></ch-grid-cell>
-  </ch-grid-row>
-</ch-grid> -->
-
-  </body>
 </html>
 
 <script>
   var chGrid = document.getElementById("ch-grid");
   //Escuchar al evento sortChanged (Ordenar de A a Z o de Z a A)
-  chGrid.addEventListener("sortChanged", function(e){
+  chGrid.addEventListener("sortChanged", function (e) {
     console.log(e.detail);
   });
   //Escuchar al evento dateRangeChanged
-  chGrid.addEventListener("dateRangeChanged", function(e){
+  chGrid.addEventListener("dateRangeChanged", function (e) {
     console.log(e.detail);
   });
   //Escuchar al evento freezeColumn
-  chGrid.addEventListener("freezeColumn", function(e){
+  chGrid.addEventListener("freezeColumn", function (e) {
     console.log(e.detail);
   });
   //Escuchar al evento unfreezeColumn
-    chGrid.addEventListener("unfreezeColumn", function(e){
+  chGrid.addEventListener("unfreezeColumn", function (e) {
     console.log(e.detail);
   });
   //Escuchar inputValueChanged
-    chGrid.addEventListener("inputValueChanged", function(e){
+  chGrid.addEventListener("inputValueChanged", function (e) {
     console.log("inputValueChanged", e.detail);
   });
   //Escuchar selectChanged
-    chGrid.addEventListener("selectChanged", function(e){
+  chGrid.addEventListener("selectChanged", function (e) {
     console.log(e.detail);
   });
-    //Escuchar paginationSelectedPage
-    chGrid.addEventListener("paginationSelectedPage", function(e){
+  //Escuchar paginationSelectedPage
+  chGrid.addEventListener("paginationSelectedPage", function (e) {
     console.log(e.detail);
   });
 </script>

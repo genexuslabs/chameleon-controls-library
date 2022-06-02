@@ -1,12 +1,11 @@
+// @import "../grid-row/ch-grid-row.scss";
+// @import "../grid-cell/ch-grid-cell.scss";
+
 :host {
   display: flex;
   flex-direction: column;
-  border: 1px solid #e0e0e0;
-  font-family: 'Source Sans Pro', sans-serif;
 }
-section {
+.main {
+  display: none;
   overflow-x: auto;
-  overflow-y: visible;
-  display: grid;
-  grid-auto-flow: dense; /* para orden de columnas */
 }

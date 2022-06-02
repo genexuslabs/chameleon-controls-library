@@ -1,0 +1,39 @@
+@mixin box-simulation {
+  background-color: inherit;
+
+  margin-block-start: inherit;
+  margin-block-end: inherit;
+
+  border-block-start: inherit;
+  border-block-end: inherit;
+
+  padding-block-start: inherit;
+  padding-block-end: inherit;
+
+  // &:first-child {
+  //   margin-inline-start: inherit;
+  //   border-inline-start: inherit;
+  //   padding-inline-start: inherit;
+  // }
+
+  // &:last-child {
+  //   margin-inline-end: inherit;
+  //   border-inline-end: inherit;
+  //   padding-inline-end: inherit;
+  // }
+}
+
+@mixin reset-button {
+	padding:0px;
+	border:0px none transparent;
+	background-color:transparent;
+	box-sizing:content-box;
+	font-family:inherit;
+	font-size:100%;
+}
+
+@mixin reset-ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}

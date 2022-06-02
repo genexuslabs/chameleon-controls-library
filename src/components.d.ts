@@ -5,147 +5,31 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ChGridColumn } from "./components/grid-column/ch-grid-column";
-import { ChGridCell } from "./components/grid-cell/ch-grid-cell";
-import { ColType } from "./components/grid-column/ch-grid-column";
-import { ColType as ColType1 } from "./components/grid-column-menu/ch-grid-menu";
+import {
+  ChGridCellClickedEvent,
+  ChGridSelectionChangedEvent,
+} from "./components/grid/types";
+import {
+  ChPaginatorActivePageChangedEvent,
+  ChPaginatorNavigationButtonClieckedEvent,
+} from "./components/paginator/types";
+import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
 export namespace Components {
-  interface ChCompA {
-    getInfo: () => Promise<void>;
-  }
-  interface ChCompB {}
-  interface ChCompC {}
   interface ChGrid {
-    cellsOrder: Array<ChGridCell>;
-    colsOrder: Array<ChGridColumn>;
-    freezedCols: Array<Object>;
-    hideableCols: Array<Object>;
-  }
-  interface ChGridAg {}
-  interface ChGridAgButton {}
-  interface ChGridCell {}
-  interface ChGridCheckbox {
-    /**
-     * Whether the checkbox is checked or not
-     */
-    checked: boolean;
+    onRowHighlightedClass: string;
+    onRowSelectedClass: string;
+    rowSelectionMode: "none" | "single" | "multiple";
   }
   interface ChGridColumn {
-    /**
-     * The columnd id (required)
-     */
-    colId: string;
-    /**
-     * The column data type
-     */
-    colType: ColType;
-    /**
-     * The presence of this atribute displays a filter on the menu
-     */
-    filterable: boolean;
-    /**
-     * The prescence of this property makes this column freezed
-     */
-    freezed: boolean;
-    /**
-     * The presence of this attribute hides the column
-     */
-    hidden: boolean;
-    /**
-     * The presence of this attribute makes this column hideable
-     */
+    columnId: string;
     hideable: boolean;
-    /**
-     * The presence of this attribute sets the indentation on this column (You should apply this attribute on one column only, usually on the first column that displays data)
-     */
-    indent: boolean;
-    /**
-     * Displays a menu with options
-     */
-    showOptions: boolean;
-    /**
-     * The column size
-     */
+    order: number;
+    resizeable: boolean;
     size: string;
   }
   interface ChGridColumnset {}
-  interface ChGridFooter {
-    /**
-     * The active page
-     */
-    activePage: number;
-    /**
-     * The max. number of visibile pages pagination (first and last page are not counted)
-     */
-    maxVisiblePaginationItems: number;
-    /**
-     * The page number where dots should be inserted
-     */
-    pageDots: number;
-    /**
-     * The number of pages pagination
-     */
-    paginationItems: number;
-  }
-  interface ChGridHeader {}
-  interface ChGridInputText {
-    /**
-     * The columnd id this input belongs to
-     */
-    colId: string;
-    /**
-     * The input placeholder
-     */
-    placeholder: string;
-  }
-  interface ChGridMenu {
-    /**
-     * The columnd id
-     */
-    colId: string;
-    /**
-     * The column data type
-     */
-    colType: ColType;
-    /**
-     * Information about the columns order
-     */
-    colsOrder: Array<ChGridColumn>;
-    /**
-     * The presence of this atribute displays a filter on the menu
-     */
-    filterable: boolean;
-    /**
-     * An array containing information about the freezed columns
-     */
-    freezedCols: Array<Object>;
-    /**
-     * An array containing information about the hideable columns
-     */
-    hideableCols: Array<Object>;
-    /**
-     * Whether this menu belongs to the last column
-     */
-    lastCol: boolean;
-    /**
-     * If true, it shows the menu
-     */
-    showMenu: boolean;
-    /**
-     * The presence of this atribute displays an option to sort the column
-     */
-    sortable: boolean;
-  }
-  interface ChGridRow {}
   interface ChGridRowset {}
   interface ChGridRowsetLegend {}
-  interface ChGridSelect {
-    /**
-     * The columnd id this select belongs to
-     */
-    colId: string;
-  }
-  interface ChGridSelectOption {}
   interface ChIcon {
     /**
      * If enabled, the icon will display its inherent/natural color
@@ -159,6 +43,21 @@ export namespace Components {
      * The URL of the icon.
      */
     src: string;
+  }
+  interface ChPaginator {
+    activePage: number;
+    maxSize: number;
+    renderButtonFirst: boolean;
+    renderButtonLast: boolean;
+    renderButtonNext: boolean;
+    renderButtonPrevious: boolean;
+    renderFirstLastPages: boolean;
+    textDots: string;
+    textFirst: string;
+    textLast: string;
+    textNext: string;
+    textPrevious: string;
+    totalPages: number;
   }
   interface ChSidebarMenu {
     /**
@@ -193,55 +92,16 @@ export namespace Components {
      */
     uncollapsed: boolean;
   }
+  interface GxGridChameleon {
+    grid: GxGrid;
+    gridTimestamp: number;
+  }
 }
 declare global {
-  interface HTMLChCompAElement extends Components.ChCompA, HTMLStencilElement {}
-  var HTMLChCompAElement: {
-    prototype: HTMLChCompAElement;
-    new (): HTMLChCompAElement;
-  };
-  interface HTMLChCompBElement extends Components.ChCompB, HTMLStencilElement {}
-  var HTMLChCompBElement: {
-    prototype: HTMLChCompBElement;
-    new (): HTMLChCompBElement;
-  };
-  interface HTMLChCompCElement extends Components.ChCompC, HTMLStencilElement {}
-  var HTMLChCompCElement: {
-    prototype: HTMLChCompCElement;
-    new (): HTMLChCompCElement;
-  };
   interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {}
   var HTMLChGridElement: {
     prototype: HTMLChGridElement;
     new (): HTMLChGridElement;
-  };
-  interface HTMLChGridAgElement
-    extends Components.ChGridAg,
-      HTMLStencilElement {}
-  var HTMLChGridAgElement: {
-    prototype: HTMLChGridAgElement;
-    new (): HTMLChGridAgElement;
-  };
-  interface HTMLChGridAgButtonElement
-    extends Components.ChGridAgButton,
-      HTMLStencilElement {}
-  var HTMLChGridAgButtonElement: {
-    prototype: HTMLChGridAgButtonElement;
-    new (): HTMLChGridAgButtonElement;
-  };
-  interface HTMLChGridCellElement
-    extends Components.ChGridCell,
-      HTMLStencilElement {}
-  var HTMLChGridCellElement: {
-    prototype: HTMLChGridCellElement;
-    new (): HTMLChGridCellElement;
-  };
-  interface HTMLChGridCheckboxElement
-    extends Components.ChGridCheckbox,
-      HTMLStencilElement {}
-  var HTMLChGridCheckboxElement: {
-    prototype: HTMLChGridCheckboxElement;
-    new (): HTMLChGridCheckboxElement;
   };
   interface HTMLChGridColumnElement
     extends Components.ChGridColumn,
@@ -257,41 +117,6 @@ declare global {
     prototype: HTMLChGridColumnsetElement;
     new (): HTMLChGridColumnsetElement;
   };
-  interface HTMLChGridFooterElement
-    extends Components.ChGridFooter,
-      HTMLStencilElement {}
-  var HTMLChGridFooterElement: {
-    prototype: HTMLChGridFooterElement;
-    new (): HTMLChGridFooterElement;
-  };
-  interface HTMLChGridHeaderElement
-    extends Components.ChGridHeader,
-      HTMLStencilElement {}
-  var HTMLChGridHeaderElement: {
-    prototype: HTMLChGridHeaderElement;
-    new (): HTMLChGridHeaderElement;
-  };
-  interface HTMLChGridInputTextElement
-    extends Components.ChGridInputText,
-      HTMLStencilElement {}
-  var HTMLChGridInputTextElement: {
-    prototype: HTMLChGridInputTextElement;
-    new (): HTMLChGridInputTextElement;
-  };
-  interface HTMLChGridMenuElement
-    extends Components.ChGridMenu,
-      HTMLStencilElement {}
-  var HTMLChGridMenuElement: {
-    prototype: HTMLChGridMenuElement;
-    new (): HTMLChGridMenuElement;
-  };
-  interface HTMLChGridRowElement
-    extends Components.ChGridRow,
-      HTMLStencilElement {}
-  var HTMLChGridRowElement: {
-    prototype: HTMLChGridRowElement;
-    new (): HTMLChGridRowElement;
-  };
   interface HTMLChGridRowsetElement
     extends Components.ChGridRowset,
       HTMLStencilElement {}
@@ -306,24 +131,17 @@ declare global {
     prototype: HTMLChGridRowsetLegendElement;
     new (): HTMLChGridRowsetLegendElement;
   };
-  interface HTMLChGridSelectElement
-    extends Components.ChGridSelect,
-      HTMLStencilElement {}
-  var HTMLChGridSelectElement: {
-    prototype: HTMLChGridSelectElement;
-    new (): HTMLChGridSelectElement;
-  };
-  interface HTMLChGridSelectOptionElement
-    extends Components.ChGridSelectOption,
-      HTMLStencilElement {}
-  var HTMLChGridSelectOptionElement: {
-    prototype: HTMLChGridSelectOptionElement;
-    new (): HTMLChGridSelectOptionElement;
-  };
   interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {}
   var HTMLChIconElement: {
     prototype: HTMLChIconElement;
     new (): HTMLChIconElement;
+  };
+  interface HTMLChPaginatorElement
+    extends Components.ChPaginator,
+      HTMLStencilElement {}
+  var HTMLChPaginatorElement: {
+    prototype: HTMLChPaginatorElement;
+    new (): HTMLChPaginatorElement;
   };
   interface HTMLChSidebarMenuElement
     extends Components.ChSidebarMenu,
@@ -346,211 +164,48 @@ declare global {
     prototype: HTMLChSidebarMenuListItemElement;
     new (): HTMLChSidebarMenuListItemElement;
   };
+  interface HTMLGxGridChameleonElement
+    extends Components.GxGridChameleon,
+      HTMLStencilElement {}
+  var HTMLGxGridChameleonElement: {
+    prototype: HTMLGxGridChameleonElement;
+    new (): HTMLGxGridChameleonElement;
+  };
   interface HTMLElementTagNameMap {
-    "ch-comp-a": HTMLChCompAElement;
-    "ch-comp-b": HTMLChCompBElement;
-    "ch-comp-c": HTMLChCompCElement;
     "ch-grid": HTMLChGridElement;
-    "ch-grid-ag": HTMLChGridAgElement;
-    "ch-grid-ag-button": HTMLChGridAgButtonElement;
-    "ch-grid-cell": HTMLChGridCellElement;
-    "ch-grid-checkbox": HTMLChGridCheckboxElement;
     "ch-grid-column": HTMLChGridColumnElement;
     "ch-grid-columnset": HTMLChGridColumnsetElement;
-    "ch-grid-footer": HTMLChGridFooterElement;
-    "ch-grid-header": HTMLChGridHeaderElement;
-    "ch-grid-input-text": HTMLChGridInputTextElement;
-    "ch-grid-menu": HTMLChGridMenuElement;
-    "ch-grid-row": HTMLChGridRowElement;
     "ch-grid-rowset": HTMLChGridRowsetElement;
     "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
-    "ch-grid-select": HTMLChGridSelectElement;
-    "ch-grid-select-option": HTMLChGridSelectOptionElement;
     "ch-icon": HTMLChIconElement;
+    "ch-paginator": HTMLChPaginatorElement;
     "ch-sidebar-menu": HTMLChSidebarMenuElement;
     "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
     "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
+    "gx-grid-chameleon": HTMLGxGridChameleonElement;
   }
 }
 declare namespace LocalJSX {
-  interface ChCompA {
-    onCompCtextChanged?: (event: CustomEvent<any>) => void;
-  }
-  interface ChCompB {}
-  interface ChCompC {
-    onTextChanged?: (event: CustomEvent<any>) => void;
-  }
   interface ChGrid {
-    cellsOrder?: Array<ChGridCell>;
-    colsOrder?: Array<ChGridColumn>;
-    freezedCols?: Array<Object>;
-    hideableCols?: Array<Object>;
-    onEmitColsOrder?: (event: CustomEvent<any>) => void;
-    onEmitFreezedCols?: (event: CustomEvent<any>) => void;
-    onEmitHideableCols?: (event: CustomEvent<any>) => void;
-  }
-  interface ChGridAg {}
-  interface ChGridAgButton {}
-  interface ChGridCell {}
-  interface ChGridCheckbox {
-    /**
-     * Whether the checkbox is checked or not
-     */
-    checked?: boolean;
+    onCellClicked?: (event: CustomEvent<ChGridCellClickedEvent>) => void;
+    onRowHighlightedClass?: string;
+    onRowSelectedClass?: string;
+    onSelectionChanged?: (
+      event: CustomEvent<ChGridSelectionChangedEvent>
+    ) => void;
+    rowSelectionMode?: "none" | "single" | "multiple";
   }
   interface ChGridColumn {
-    /**
-     * The columnd id (required)
-     */
-    colId?: string;
-    /**
-     * The column data type
-     */
-    colType?: ColType;
-    /**
-     * The presence of this atribute displays a filter on the menu
-     */
-    filterable?: boolean;
-    /**
-     * The prescence of this property makes this column freezed
-     */
-    freezed?: boolean;
-    /**
-     * The presence of this attribute hides the column
-     */
-    hidden?: boolean;
-    /**
-     * The presence of this attribute makes this column hideable
-     */
+    columnId?: string;
     hideable?: boolean;
-    /**
-     * The presence of this attribute sets the indentation on this column (You should apply this attribute on one column only, usually on the first column that displays data)
-     */
-    indent?: boolean;
-    /**
-     * Displays a menu with options
-     */
-    showOptions?: boolean;
-    /**
-     * The column size
-     */
+    onColumnVisibleChanged?: (event: CustomEvent<any>) => void;
+    order?: number;
+    resizeable?: boolean;
     size?: string;
   }
   interface ChGridColumnset {}
-  interface ChGridFooter {
-    /**
-     * The active page
-     */
-    activePage?: number;
-    /**
-     * The max. number of visibile pages pagination (first and last page are not counted)
-     */
-    maxVisiblePaginationItems?: number;
-    onPaginationSelectedPage?: (event: CustomEvent<any>) => void;
-    /**
-     * The page number where dots should be inserted
-     */
-    pageDots?: number;
-    /**
-     * The number of pages pagination
-     */
-    paginationItems?: number;
-  }
-  interface ChGridHeader {}
-  interface ChGridInputText {
-    /**
-     * The columnd id this input belongs to
-     */
-    colId?: string;
-    /**
-     * Emmits the input value
-     */
-    onInputValueChanged?: (event: CustomEvent<any>) => void;
-    /**
-     * The input placeholder
-     */
-    placeholder?: string;
-  }
-  interface ChGridMenu {
-    /**
-     * The columnd id
-     */
-    colId?: string;
-    /**
-     * The column data type
-     */
-    colType?: ColType;
-    /**
-     * Information about the columns order
-     */
-    colsOrder?: Array<ChGridColumn>;
-    /**
-     * The presence of this atribute displays a filter on the menu
-     */
-    filterable?: boolean;
-    /**
-     * An array containing information about the freezed columns
-     */
-    freezedCols?: Array<Object>;
-    /**
-     * An array containing information about the hideable columns
-     */
-    hideableCols?: Array<Object>;
-    /**
-     * Whether this menu belongs to the last column
-     */
-    lastCol?: boolean;
-    /**
-     * Emmits the dateRangeChanged event
-     */
-    onDateRangeChanged?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits the "freeze column" event
-     */
-    onFreezeColumn?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits the hideMenu event
-     */
-    onHideMenu?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits the move column event
-     */
-    onMoveCol?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits the sorting event
-     */
-    onSortChanged?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits toggled column (hidden/visible)
-     */
-    onToggledColumn?: (event: CustomEvent<any>) => void;
-    /**
-     * Emmits the "unfreeze column" event
-     */
-    onUnfreezeColumn?: (event: CustomEvent<any>) => void;
-    /**
-     * If true, it shows the menu
-     */
-    showMenu?: boolean;
-    /**
-     * The presence of this atribute displays an option to sort the column
-     */
-    sortable?: boolean;
-  }
-  interface ChGridRow {}
   interface ChGridRowset {}
   interface ChGridRowsetLegend {}
-  interface ChGridSelect {
-    /**
-     * The columnd id this select belongs to
-     */
-    colId?: string;
-    /**
-     * Emmits select value
-     */
-    onSelectChanged?: (event: CustomEvent<any>) => void;
-  }
-  interface ChGridSelectOption {}
   interface ChIcon {
     /**
      * If enabled, the icon will display its inherent/natural color
@@ -564,6 +219,27 @@ declare namespace LocalJSX {
      * The URL of the icon.
      */
     src?: string;
+  }
+  interface ChPaginator {
+    activePage?: number;
+    maxSize?: number;
+    onActivePageChanged?: (
+      event: CustomEvent<ChPaginatorActivePageChangedEvent>
+    ) => void;
+    onNavigationButtonClicked?: (
+      event: CustomEvent<ChPaginatorNavigationButtonClieckedEvent>
+    ) => void;
+    renderButtonFirst?: boolean;
+    renderButtonLast?: boolean;
+    renderButtonNext?: boolean;
+    renderButtonPrevious?: boolean;
+    renderFirstLastPages?: boolean;
+    textDots?: string;
+    textFirst?: string;
+    textLast?: string;
+    textNext?: string;
+    textPrevious?: string;
+    totalPages?: number;
   }
   interface ChSidebarMenu {
     /**
@@ -603,80 +279,48 @@ declare namespace LocalJSX {
      */
     uncollapsed?: boolean;
   }
+  interface GxGridChameleon {
+    grid?: GxGrid;
+    gridTimestamp?: number;
+  }
   interface IntrinsicElements {
-    "ch-comp-a": ChCompA;
-    "ch-comp-b": ChCompB;
-    "ch-comp-c": ChCompC;
     "ch-grid": ChGrid;
-    "ch-grid-ag": ChGridAg;
-    "ch-grid-ag-button": ChGridAgButton;
-    "ch-grid-cell": ChGridCell;
-    "ch-grid-checkbox": ChGridCheckbox;
     "ch-grid-column": ChGridColumn;
     "ch-grid-columnset": ChGridColumnset;
-    "ch-grid-footer": ChGridFooter;
-    "ch-grid-header": ChGridHeader;
-    "ch-grid-input-text": ChGridInputText;
-    "ch-grid-menu": ChGridMenu;
-    "ch-grid-row": ChGridRow;
     "ch-grid-rowset": ChGridRowset;
     "ch-grid-rowset-legend": ChGridRowsetLegend;
-    "ch-grid-select": ChGridSelect;
-    "ch-grid-select-option": ChGridSelectOption;
     "ch-icon": ChIcon;
+    "ch-paginator": ChPaginator;
     "ch-sidebar-menu": ChSidebarMenu;
     "ch-sidebar-menu-list": ChSidebarMenuList;
     "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
+    "gx-grid-chameleon": GxGridChameleon;
   }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
   export namespace JSX {
     interface IntrinsicElements {
-      "ch-comp-a": LocalJSX.ChCompA &
-        JSXBase.HTMLAttributes<HTMLChCompAElement>;
-      "ch-comp-b": LocalJSX.ChCompB &
-        JSXBase.HTMLAttributes<HTMLChCompBElement>;
-      "ch-comp-c": LocalJSX.ChCompC &
-        JSXBase.HTMLAttributes<HTMLChCompCElement>;
       "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
-      "ch-grid-ag": LocalJSX.ChGridAg &
-        JSXBase.HTMLAttributes<HTMLChGridAgElement>;
-      "ch-grid-ag-button": LocalJSX.ChGridAgButton &
-        JSXBase.HTMLAttributes<HTMLChGridAgButtonElement>;
-      "ch-grid-cell": LocalJSX.ChGridCell &
-        JSXBase.HTMLAttributes<HTMLChGridCellElement>;
-      "ch-grid-checkbox": LocalJSX.ChGridCheckbox &
-        JSXBase.HTMLAttributes<HTMLChGridCheckboxElement>;
       "ch-grid-column": LocalJSX.ChGridColumn &
         JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
       "ch-grid-columnset": LocalJSX.ChGridColumnset &
         JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
-      "ch-grid-footer": LocalJSX.ChGridFooter &
-        JSXBase.HTMLAttributes<HTMLChGridFooterElement>;
-      "ch-grid-header": LocalJSX.ChGridHeader &
-        JSXBase.HTMLAttributes<HTMLChGridHeaderElement>;
-      "ch-grid-input-text": LocalJSX.ChGridInputText &
-        JSXBase.HTMLAttributes<HTMLChGridInputTextElement>;
-      "ch-grid-menu": LocalJSX.ChGridMenu &
-        JSXBase.HTMLAttributes<HTMLChGridMenuElement>;
-      "ch-grid-row": LocalJSX.ChGridRow &
-        JSXBase.HTMLAttributes<HTMLChGridRowElement>;
       "ch-grid-rowset": LocalJSX.ChGridRowset &
         JSXBase.HTMLAttributes<HTMLChGridRowsetElement>;
       "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend &
         JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
-      "ch-grid-select": LocalJSX.ChGridSelect &
-        JSXBase.HTMLAttributes<HTMLChGridSelectElement>;
-      "ch-grid-select-option": LocalJSX.ChGridSelectOption &
-        JSXBase.HTMLAttributes<HTMLChGridSelectOptionElement>;
       "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+      "ch-paginator": LocalJSX.ChPaginator &
+        JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
       "ch-sidebar-menu": LocalJSX.ChSidebarMenu &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
       "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
       "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem &
         JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
+      "gx-grid-chameleon": LocalJSX.GxGridChameleon &
+        JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
     }
   }
 }

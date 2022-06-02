@@ -1,3 +1,6 @@
-:host {
+ch-grid-columnset {
   display: contents;
 }
+
+@import "../grid-row/ch-grid-row.scss";
+@import "../grid-cell/ch-grid-cell.scss";

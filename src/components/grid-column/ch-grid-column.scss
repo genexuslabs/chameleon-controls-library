@@ -1,35 +1,35 @@
+@import "../grid/helpers/styles.scss";
+
 :host {
+  display: flex;
   position: sticky;
   top: 0;
-  background-color: #fff;
+}
+
+// column-set box simulation
+:host {
+  @include box-simulation;
+}
+
+.bar {
+  @include reset-ul;
   display: flex;
-  //justify-content: space-between;
   align-items: center;
-  text-transform: uppercase;
-  font-size: 14px;
-  font-weight: 600;
-  border-bottom: 1px solid #e0e0e0;
-  padding: 7px;
+
+  & .menu .button {
+    @include reset-button;
+  }
 }
-:host(.over) {
-  background-color: rgba(105, 110, 242, 0.2);
+
+.resize {
+  width: 4px;
+  cursor: ew-resize;
 }
-:host(:nth-child(1)) {
-  grid-column: 1;
-}
-:host(:nth-child(2)) {
-  grid-column: 2;
-}
-:host(.freezed) {
-  transform: translateX(var(--scrollH));
-  z-index: 1002;
-}
-.ch-icon-show-menu {
-  cursor: pointer;
-  padding: 5px;
-  margin-left: 4px;
-}
-//hidden
-:host(.hidden) {
-  display: none;
+
+.display-observer {
+  display: inherit;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
 }

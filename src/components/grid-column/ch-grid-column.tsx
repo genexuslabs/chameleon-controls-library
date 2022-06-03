@@ -67,7 +67,7 @@ export class ChGridColumn {
       <li class="resize" part="bar-resize">
         <ch-grid-column-resize
           column={this}
-          part="resize"
+          part="bar-resize-split"
         ></ch-grid-column-resize>
       </li>
     );

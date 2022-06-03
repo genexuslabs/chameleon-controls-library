@@ -95,7 +95,9 @@ export class ChGrid {
 
   @Listen("columnVisibleChanged")
   columnVisibleChangedHandler() {
-    this.gridStyle = this.gridManager.getGridStyle();
+    if (this.gridManager) {
+      this.gridStyle = this.gridManager.getGridStyle();
+    }
   }
 
   render() {

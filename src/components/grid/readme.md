@@ -8,7 +8,7 @@
 | ----------------------- | -------------------------- | ----------- | ---------------------------------- | ----------- |
 | `onRowHighlightedClass` | `on-row-highlighted-class` |             | `string`                           | `undefined` |
 | `onRowSelectedClass`    | `on-row-selected-class`    |             | `string`                           | `undefined` |
-| `rowSelectionMode`      | `row-selection-mode`       |             | `"multiple" \| "none" \| "single"` | `'single'`  |
+| `rowSelectionMode`      | `row-selection-mode`       |             | `"multiple" \| "none" \| "single"` | `"single"`  |
 
 ## Events
 

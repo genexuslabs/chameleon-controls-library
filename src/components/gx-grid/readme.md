@@ -26,6 +26,7 @@ graph TD;
   gx-grid-chameleon --> ch-grid-columnset
   gx-grid-chameleon --> ch-grid-column
   gx-grid-chameleon --> ch-paginator
+  ch-grid-column --> ch-grid-column-resize
   style gx-grid-chameleon fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

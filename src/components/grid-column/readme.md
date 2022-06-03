@@ -9,7 +9,8 @@
 | `columnId`   | `column-id`  |             | `string`  | `undefined` |
 | `hideable`   | `hideable`   |             | `boolean` | `undefined` |
 | `order`      | `order`      |             | `number`  | `undefined` |
-| `resizeable` | `resizeable` |             | `boolean` | `undefined` |
+| `resizeable` | `resizeable` |             | `boolean` | `true`      |
+| `resizing`   | `resizing`   |             | `boolean` | `undefined` |
 | `size`       | `size`       |             | `string`  | `undefined` |
 
 ## Events
@@ -24,10 +25,15 @@
 
 - [gx-grid-chameleon](../gx-grid)
 
+### Depends on
+
+- [ch-grid-column-resize](../grid-column-resize)
+
 ### Graph
 
 ```mermaid
 graph TD;
+  ch-grid-column --> ch-grid-column-resize
   gx-grid-chameleon --> ch-grid-column
   style ch-grid-column fill:#f9f,stroke:#333,stroke-width:4px
 ```

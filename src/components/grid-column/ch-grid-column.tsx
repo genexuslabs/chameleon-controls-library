@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Host,
   Prop,
+  Watch,
   h,
 } from "@stencil/core";
 
@@ -18,9 +19,10 @@ export class ChGridColumn {
   @Event() columnVisibleChanged: EventEmitter;
   @Prop() columnId: string;
   @Prop() hideable: boolean;
-  @Prop() resizeable: boolean;
   @Prop({ reflect: true }) order: number;
   @Prop() size: string;
+  @Prop() resizeable: boolean = true;
+  @Prop({ reflect: true }) resizing: boolean;
 
   displayObserver: HTMLDivElement;
   observer = new IntersectionObserver(() => {
@@ -32,9 +34,14 @@ export class ChGridColumn {
     this.observer.observe(this.displayObserver);
   }
 
+  @Watch("size")
+  sizeHandler() {
+    this.columnVisibleChanged.emit(this.el);
+  }
+
   render() {
     return (
-      <Host draggable="true">
+      <Host>
         <ul class="bar" part="bar">
           <li class="name" part="bar-name">
             <slot></slot>
@@ -45,13 +52,24 @@ export class ChGridColumn {
           <li class="menu" part="bar-menu">
             <button class="button" part="bar-menu-button"></button>
           </li>
+          {this.resizeable && this.renderResize()}
         </ul>
-        <div class="resize" part="resize"></div>
         <div
           class="display-observer"
           ref={(el) => (this.displayObserver = el)}
         ></div>
       </Host>
+    );
+  }
+
+  renderResize() {
+    return (
+      <li class="resize" part="bar-resize">
+        <ch-grid-column-resize
+          column={this}
+          part="resize"
+        ></ch-grid-column-resize>
+      </li>
     );
   }
 }

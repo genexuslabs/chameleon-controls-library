@@ -1,5 +1,9 @@
 ch-grid-columnset {
   display: contents;
+
+  &.resizing ch-grid-column {
+    cursor: ew-resize;
+  }
 }
 
 @import "../grid-row/ch-grid-row.scss";

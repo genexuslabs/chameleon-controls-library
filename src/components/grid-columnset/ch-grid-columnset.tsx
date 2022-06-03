@@ -1,4 +1,4 @@
-import { Component, Element, Host, h } from "@stencil/core";
+import { Component, Element, Host, Listen, h } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-columnset",
@@ -7,6 +7,21 @@ import { Component, Element, Host, h } from "@stencil/core";
 })
 export class ChGridColumnset {
   @Element() el: HTMLChGridColumnsetElement;
+  columns: HTMLChGridColumnElement[];
+
+  componentDidLoad() {
+    this.columns = Array.from(this.el.querySelectorAll("ch-grid-column"));
+  }
+
+  @Listen("columnResizeStarted")
+  columnResizeStartedHandler() {
+    this.columns.forEach((column) => (column.resizing = true));
+  }
+
+  @Listen("columnResizeFinished")
+  columnResizeFinishedHandler() {
+    this.columns.forEach((column) => (column.resizing = false));
+  }
 
   render() {
     return (

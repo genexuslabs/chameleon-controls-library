@@ -11,19 +11,25 @@
   @include box-simulation;
 }
 
+:host([resizing]) {
+  cursor: ew-resize;
+  & .bar {
+    pointer-events: none;
+  }
+}
+
 .bar {
   @include reset-ul;
   display: flex;
   align-items: center;
-
+  
   & .menu .button {
     @include reset-button;
   }
-}
 
-.resize {
-  width: 4px;
-  cursor: ew-resize;
+  & .resize {
+    height: 100%;
+  }
 }
 
 .display-observer {

@@ -7,5 +7,6 @@
 }
 .main {
   display: none;
+  grid-auto-flow: dense; /* necesario para poder reordenar las columnas */
   overflow-x: auto;
 }

@@ -59,6 +59,55 @@ export class ChGridManager {
     }
   }
 
+  columnDragging(eventInfo: CustomEvent): boolean {
+    let reorder = false;
+
+    let columnHover = this.columns.find((column) => {
+      const rect = column.getBoundingClientRect();
+
+      if (
+        eventInfo.detail.left > rect.left &&
+        eventInfo.detail.left < rect.right
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+
+    if (columnHover && columnHover != eventInfo.detail.column) {
+      const dragOrder = eventInfo.detail.column.order;
+
+      eventInfo.detail.column.order = columnHover.order;
+      columnHover.order = dragOrder;
+
+      reorder = true;
+    }
+
+    // this.columns.map(column => {
+    //   return {
+    //     column,
+    //     left: eventInfo.detail.column === column ? eventInfo.detail.left : column.getBoundingClientRect().left
+    //   }
+    // }).sort((columnA, columnB) => {
+
+    //   if (columnA.left < columnB.left) {
+    //     return -1;
+    //   }
+    //   if (columnA.left > columnB.left) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // }).forEach((column, i) => {
+    //   if (column.column.order != i+1) {
+    //     column.column.order = i+1;
+    //     reorder = true;
+    //   }
+    // });
+
+    return reorder;
+  }
+
   getGridStyle(): CSSProperties {
     let style: CSSProperties = {};
     let columnFirst = 0;

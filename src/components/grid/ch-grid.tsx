@@ -100,6 +100,13 @@ export class ChGrid {
     }
   }
 
+  @Listen("columnDragging")
+  columnDraggingHandler(eventInfo: CustomEvent) {
+    if (this.gridManager.columnDragging(eventInfo)) {
+      this.gridStyle = this.gridManager.getGridStyle();
+    }
+  }
+
   render() {
     return (
       <Host>

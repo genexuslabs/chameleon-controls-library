@@ -211,6 +211,7 @@ declare namespace LocalJSX {
   interface ChGridColumn {
     columnId?: string;
     hideable?: boolean;
+    onColumnDragging?: (event: CustomEvent<any>) => void;
     onColumnVisibleChanged?: (event: CustomEvent<any>) => void;
     order?: number;
     resizeable?: boolean;

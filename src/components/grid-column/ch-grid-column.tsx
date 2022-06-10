@@ -17,6 +17,7 @@ import {
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
   @Event() columnVisibleChanged: EventEmitter;
+  @Event() columnDragging: EventEmitter;
   @Prop() columnId: string;
   @Prop() hideable: boolean;
   @Prop({ reflect: true }) order: number;
@@ -24,6 +25,7 @@ export class ChGridColumn {
   @Prop() resizeable: boolean = true;
   @Prop({ reflect: true }) resizing: boolean;
 
+  dragMousemoveFn = this.dragMousemoveHandler.bind(this);
   displayObserver: HTMLDivElement;
   observer = new IntersectionObserver(() => {
     this.el.hidden = getComputedStyle(this.el).display === "none";
@@ -32,6 +34,20 @@ export class ChGridColumn {
 
   componentDidLoad() {
     this.observer.observe(this.displayObserver);
+    this.el.addEventListener("mousedown", (eventInfo) => {
+      eventInfo.preventDefault();
+
+      document.addEventListener("mousemove", this.dragMousemoveFn, {
+        passive: true,
+      });
+      document.addEventListener(
+        "mouseup",
+        () => {
+          document.removeEventListener("mousemove", this.dragMousemoveFn);
+        },
+        { once: true }
+      );
+    });
   }
 
   @Watch("size")
@@ -39,9 +55,13 @@ export class ChGridColumn {
     this.columnVisibleChanged.emit(this.el);
   }
 
+  dragMousemoveHandler(eventInfo: MouseEvent) {
+    this.columnDragging.emit({ column: this.el, left: eventInfo.pageX });
+  }
+
   render() {
     return (
-      <Host>
+      <Host draggable="true">
         <ul class="bar" part="bar">
           <li class="name" part="bar-name">
             <slot></slot>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Content xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Object id="ChameleonGridColumn">
+		<Group>
+			<Name>General</Name>
+			<Type>Main</Type>
+			<Children>
+				<Prop>
+					<Id>Hideable</Id>
+					<Name>Hideable</Name>
+					<Type>Text</Type>
+					<Default>true</Default>
+					<Metadata />
+					<Description>True to initially render this column as locked.</Description>
+				</Prop>
+			</Children>
+		</Group>
+	</Object>
+</Content>

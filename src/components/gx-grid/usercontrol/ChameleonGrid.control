@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<ControlDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Version>0.0.3</Version>
+	<IncludeInControlInfo>true</IncludeInControlInfo>
+	<ControlType>grid</ControlType>
+	<DataSourceAllowed>None</DataSourceAllowed>
+	<CustomDataSources />
+	<AutoGrowSupported>false</AutoGrowSupported>
+	<RuntimeRender>ChameleonGrid.js</RuntimeRender>
+	<HeightPropertyName>Height</HeightPropertyName>
+	<WidthPropertyName>Width</WidthPropertyName>
+	<ResizeSupported>false</ResizeSupported>
+	<ObjClass>ChameleonGrid</ObjClass>
+	<ColumnObjClass>ChameleonGridColumn</ColumnObjClass>
+	<Description>ChameleonGrid for Web</Description>
+	<Id>2B1F2516-6216-413F-8AD3-874F2EA3F54C</Id>
+	<Name>ChameleonGrid</Name>
+	<Platforms>
+		<Platform>WebLayout</Platform>
+	</Platforms>
+	<ShowMethod>show</ShowMethod>
+	<SupportFiles>
+		<Directory>chameleon</Directory>
+	</SupportFiles>
+	<ReferencedFiles>
+		<File>chameleon/chameleon.js</File>
+	</ReferencedFiles>
+	<Constructor>
+		<Parameters />
+		<Name>gx.uc.chameleonGrid</Name>
+	</Constructor>
+	<PropertiesDefinition>ChameleonGridProperties.xml</PropertiesDefinition>
+	<ColumnPropertiesDefinition>ChameleonGridColumnProperties.xml</ColumnPropertiesDefinition>
+	<Events>
+		<Event>OnPaginationFirst</Event>
+		<Event>OnPaginationPrevious</Event>
+		<Event>OnPaginationNext</Event>
+		<Event>OnPaginationLast</Event>
+	</Events>
+</ControlDefinition>

@@ -2,10 +2,6 @@ import {
   ChGridCellClickedEvent,
   ChGridSelectionChangedEvent,
 } from "../grid/types";
-import {
-  ChPaginatorButtonType,
-  ChPaginatorNavigationButtonClieckedEvent,
-} from "../paginator/types";
 import { Component, Host, Listen, Prop, h } from "@stencil/core";
 import {
   paginationGoToFirstPage,
@@ -13,6 +9,11 @@ import {
   paginationGoToNextPage,
   paginationGoToPreviousPage,
 } from "./gx-grid-chameleon-paginator";
+import {
+  ChPaginatorNavigationClickedEvent,
+  ChPaginatorNavigationType,
+} from "../paginator-navigate/ch-paginator-navigate-types";
+import { gridRefresh } from "./gx-grid-chameleon-actions";
 
 declare var gx: any;
 
@@ -47,24 +48,29 @@ export class GridChameleon {
     }
   }
 
-  @Listen("navigationButtonClicked")
-  navigationButtonClickedHandler(
-    eventInfo: CustomEvent<ChPaginatorNavigationButtonClieckedEvent>
+  @Listen("navigationClicked")
+  navigationClickedHandler(
+    eventInfo: CustomEvent<ChPaginatorNavigationClickedEvent>
   ) {
-    switch (eventInfo.detail.buttonType) {
-      case ChPaginatorButtonType.FIRST:
+    switch (eventInfo.detail.navigationType) {
+      case ChPaginatorNavigationType.FIRST:
         paginationGoToFirstPage(this.grid);
         break;
-      case ChPaginatorButtonType.PREVIOUS:
+      case ChPaginatorNavigationType.PREVIOUS:
         paginationGoToPreviousPage(this.grid);
         break;
-      case ChPaginatorButtonType.NEXT:
+      case ChPaginatorNavigationType.NEXT:
         paginationGoToNextPage(this.grid);
         break;
-      case ChPaginatorButtonType.LAST:
+      case ChPaginatorNavigationType.LAST:
         paginationGoToLastPage(this.grid);
         break;
     }
+  }
+
+  @Listen("refreshClicked")
+  refreshClickedHandler() {
+    gridRefresh(this.grid);
   }
 
   render() {
@@ -79,9 +85,12 @@ export class GridChameleon {
           onRowHighlightedClass={this.grid.RowHighlightedClass.trim()}
         >
           {this.grid.header && this.renderHeader()}
+          {this.grid.ActionbarShow && this.renderActionbar()}
           {this.renderColumns()}
           {this.renderRows()}
-          {this.grid.pageSize > 0 && this.renderPaginator()}
+          {this.grid.PaginatorShow &&
+            this.grid.pageSize > 0 &&
+            this.renderPaginator()}
         </ch-grid>
       </Host>
     );
@@ -89,6 +98,37 @@ export class GridChameleon {
 
   renderHeader() {
     return <h1 slot="header">{this.grid.header}</h1>;
+  }
+
+  renderActionbar() {
+    return (
+      <ch-grid-actionbar slot="header">
+        <ch-grid-action-refresh
+          class={this.grid.ButtonRefreshClass}
+          title={
+            this.grid.ButtonRefreshTextPosition == "title"
+              ? gx.getMessage("GX_BtnRefresh")
+              : ""
+          }
+        >
+          {this.grid.ButtonRefreshTextPosition == "text"
+            ? gx.getMessage("GX_BtnRefresh")
+            : ""}
+        </ch-grid-action-refresh>
+        <ch-grid-action-settings
+          class={this.grid.ButtonSettingsClass}
+          title={
+            this.grid.ButtonSettingsTextPosition == "title"
+              ? gx.getMessage("GXM_Settings")
+              : ""
+          }
+        >
+          {this.grid.ButtonSettingsTextPosition == "text"
+            ? gx.getMessage("GXM_Settings")
+            : ""}
+        </ch-grid-action-settings>
+      </ch-grid-actionbar>
+    );
   }
 
   renderColumns() {
@@ -150,26 +190,82 @@ export class GridChameleon {
   }
 
   renderPaginator() {
-    return <ch-paginator slot="footer"></ch-paginator>;
+    return (
+      <ch-paginator class={this.grid.pagingBarClass} slot="footer">
+        {this.renderPaginatorNavigate(
+          ChPaginatorNavigationType.FIRST,
+          this.grid.isFirstPage(),
+          this.grid.pagingButtonFirstClass,
+          gx.getMessage("GXM_first")
+        )}
+        {this.renderPaginatorNavigate(
+          ChPaginatorNavigationType.PREVIOUS,
+          this.grid.isFirstPage(),
+          this.grid.pagingButtonPreviousClass,
+          gx.getMessage("GXM_previous")
+        )}
+        {this.renderPaginatorNavigate(
+          ChPaginatorNavigationType.NEXT,
+          this.grid.isLastPage(),
+          this.grid.pagingButtonNextClass,
+          gx.getMessage("GXM_next")
+        )}
+        {this.renderPaginatorNavigate(
+          ChPaginatorNavigationType.LAST,
+          this.grid.isLastPage(),
+          this.grid.pagingButtonLastClass,
+          gx.getMessage("GXM_last")
+        )}
+      </ch-paginator>
+    );
+  }
+
+  renderPaginatorNavigate(
+    type: ChPaginatorNavigationType,
+    disabled: boolean,
+    className: string,
+    text: string
+  ) {
+    const textPosition = this.grid.PaginatorNavigationButtonTextPosition;
+
+    return (
+      <ch-paginator-navigate
+        type={type}
+        disabled={disabled}
+        class={className}
+        title={textPosition == "title" ? text : ""}
+      >
+        {textPosition == "text" ? text : ""}
+      </ch-paginator-navigate>
+    );
   }
 }
 
 export interface GxGrid {
+  readonly ControlName: string;
   readonly columns: GxGridColumn[];
   readonly rows: GxGridRow[];
   readonly usePaging: boolean;
   readonly pageSize: number;
   readonly properties: any;
-  readonly ParentObject: any;
+  readonly ParentObject: GxObject;
   readonly header: string;
   readonly Class: string;
   readonly gxAllowSelection: boolean;
   readonly gxAllowHovering: boolean;
+  readonly pagingBarClass: string;
+  readonly pagingButtonFirstClass: string;
+  readonly pagingButtonLastClass: string;
+  readonly pagingButtonNextClass: string;
+  readonly pagingButtonPreviousClass: string;
+
   getRowByGxId(gxId: string): GxGridRow;
   selectRow(index: number): void;
   execC2VFunctions(): void;
   executeEvent(columnIndex: number, rowIndex: number): void;
   changeGridPage(direction: string, force?: boolean): any;
+  isFirstPage(): boolean;
+  isLastPage(): boolean;
 
   // UC
   readonly ColumnsetClass: string;
@@ -180,6 +276,13 @@ export interface GxGrid {
   readonly RowSelectedClass: string;
   readonly RowHighlightedClass: string;
   readonly CellClass: string;
+  readonly PaginatorShow: boolean;
+  readonly PaginatorNavigationButtonTextPosition: "title" | "text";
+  readonly ActionbarShow: boolean;
+  readonly ButtonRefreshTextPosition: "title" | "text";
+  readonly ButtonRefreshClass: string;
+  readonly ButtonSettingsTextPosition: "title" | "text";
+  readonly ButtonSettingsClass: string;
 
   OnPaginationFirst(): void;
   OnPaginationPrevious(): void;
@@ -204,4 +307,8 @@ export interface GxGridRow {
 export interface GxControl {
   setProperties(): void;
   getHtml(): string;
+}
+
+export interface GxObject {
+  refreshGrid(gridName: string): void;
 }

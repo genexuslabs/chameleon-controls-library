@@ -58,6 +58,80 @@
 					</Prop>	
 				  </Childs>
 				</Group>
+				<Group>
+					<Name>Actionbar</Name>
+					<Childs>
+						<Prop>
+							<Id>ActionbarShow</Id>
+							<Name>ActionbarShow</Name>
+							<Type>Boolean</Type>
+							<Default>true</Default>
+						</Prop>
+						<Group>
+							<Name>Refresh</Name>
+							<Childs>
+								<Prop>
+									<Id>ButtonRefreshClass</Id>
+									<Name>ButtonRefreshClass</Name>
+									<Type>Text</Type>
+									<Default>button-refresh</Default>
+								</Prop>	
+								<Prop>
+									<Id>ButtonRefreshTextPosition</Id>
+									<Name>ButtonRefreshTextPosition</Name>
+									<Type>Combo</Type>
+									<Default>title</Default>
+									<Values>
+										<Value id='title' desc='Tooltip'/>
+										<Value id='text' desc='Text'/>
+									</Values>
+								</Prop>
+							</Childs>
+						</Group>
+						<Group>
+							<Name>Settings</Name>
+							<Childs>
+								<Prop>
+									<Id>ButtonSettingsClass</Id>
+									<Name>ButtonSettingsClass</Name>
+									<Type>Text</Type>
+									<Default>button-settings</Default>
+								</Prop>	
+								<Prop>
+									<Id>ButtonSettingsTextPosition</Id>
+									<Name>ButtonSettingsTextPosition</Name>
+									<Type>Combo</Type>
+									<Default>title</Default>
+									<Values>
+										<Value id='title' desc='Tooltip'/>
+										<Value id='text' desc='Text'/>
+									</Values>
+								</Prop>
+							</Childs>
+						</Group>
+					</Childs>
+				</Group>
+				<Group>
+					<Name>Paginator</Name>
+					<Childs>
+						<Prop>
+							<Id>PaginatorShow</Id>
+							<Name>PaginatorShow</Name>
+							<Type>Boolean</Type>
+							<Default>true</Default>
+						</Prop>
+						<Prop>
+							<Id>PaginatorNavigationButtonTextPosition</Id>
+							<Name>PaginatorNavigationButtonTextPosition</Name>
+							<Type>Combo</Type>
+							<Default>title</Default>
+							<Values>
+								<Value id='title' desc='Tooltip'/>
+								<Value id='text' desc='Text'/>
+							</Values>
+						</Prop>
+					</Childs>
+				</Group>
 			</Childs>
 		</Group>
 	</Object>

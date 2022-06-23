@@ -34,6 +34,7 @@
     "@storybook/addons": "^6.2.7",
     "@storybook/source-loader": "^6.2.7",
     "js-datepicker": "^5.18.0",
+    "qrcode": "^1.5.0",
     "typescript": "^4.2.4"
   },
   "license": "MIT",

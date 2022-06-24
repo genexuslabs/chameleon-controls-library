@@ -4,42 +4,30 @@
 
 ## Properties
 
-| Property       | Attribute | Description | Type             | Default |
-| -------------- | --------- | ----------- | ---------------- | ------- |
-| `cellsOrder`   | --        |             | `ChGridCell[]`   | `[]`    |
-| `colsOrder`    | --        |             | `ChGridColumn[]` | `[]`    |
-| `freezedCols`  | --        |             | `Object[]`       | `[]`    |
-| `hideableCols` | --        |             | `Object[]`       | `[]`    |
+| Property                | Attribute                  | Description | Type                               | Default     |
+| ----------------------- | -------------------------- | ----------- | ---------------------------------- | ----------- |
+| `onRowHighlightedClass` | `on-row-highlighted-class` |             | `string`                           | `undefined` |
+| `onRowSelectedClass`    | `on-row-selected-class`    |             | `string`                           | `undefined` |
+| `rowSelectionMode`      | `row-selection-mode`       |             | `"multiple" \| "none" \| "single"` | `"single"`  |
 
 ## Events
 
-| Event              | Description | Type               |
-| ------------------ | ----------- | ------------------ |
-| `emitColsOrder`    |             | `CustomEvent<any>` |
-| `emitFreezedCols`  |             | `CustomEvent<any>` |
-| `emitHideableCols` |             | `CustomEvent<any>` |
+| Event              | Description | Type                                       |
+| ------------------ | ----------- | ------------------------------------------ |
+| `cellClicked`      |             | `CustomEvent<ChGridCellClickedEvent>`      |
+| `selectionChanged` |             | `CustomEvent<ChGridSelectionChangedEvent>` |
 
 ## Dependencies
 
-### Depends on
+### Used by
 
-- [ch-grid-column](../grid-column)
-- [ch-grid-cell](../grid-cell)
-- [ch-icon](../icon)
+- [gx-grid-chameleon](../gx-grid)
 
 ### Graph
 
 ```mermaid
 graph TD;
-  ch-grid --> ch-grid-column
-  ch-grid --> ch-grid-cell
-  ch-grid --> ch-icon
-  ch-grid-column --> ch-icon
-  ch-grid-column --> ch-grid-menu
-  ch-grid-menu --> ch-grid-input-text
-  ch-grid-menu --> ch-grid-select
-  ch-grid-menu --> ch-grid-select-option
-  ch-grid-menu --> ch-icon
+  gx-grid-chameleon --> ch-grid
   style ch-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

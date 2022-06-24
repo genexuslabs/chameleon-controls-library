@@ -1,0 +1,26 @@
+:host(:not([hidden])) {
+    display: contents;
+}
+:host(:not([modal])) .mask {
+    pointer-events: none;
+}
+
+.window {
+    pointer-events: all;
+}
+
+.mask {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.window {
+    display: flex;
+    flex-direction: column;
+}

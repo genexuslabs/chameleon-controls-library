@@ -48,7 +48,10 @@ export class ChGrid {
   @Prop() onRowSelectedClass: string;
   @Prop() onRowHighlightedClass: string;
 
+  @Prop() localization: GridLocalization;
+
   gridManager: ChGridManager;
+  private settingsUI: HTMLChGridSettingsElement;
 
   componentWillLoad() {
     this.gridManager = new ChGridManager(this);
@@ -100,11 +103,31 @@ export class ChGrid {
     }
   }
 
+  @Listen("columnDragStart")
+  columnDragStartHandler(eventInfo: CustomEvent) {
+    this.gridManager.columnDragStart(eventInfo);
+  }
+
   @Listen("columnDragging")
   columnDraggingHandler(eventInfo: CustomEvent) {
-    if (this.gridManager.columnDragging(eventInfo)) {
-      this.gridStyle = this.gridManager.getGridStyle();
-    }
+    this.gridManager.columnDragging(eventInfo);
+    this.gridStyle = this.gridManager.getGridStyle();
+  }
+
+  @Listen("columnDragEnd")
+  columnDragEndHandler() {
+    this.gridManager.columnDragEnd();
+    this.gridStyle = this.gridManager.getGridStyle();
+  }
+
+  @Listen("settingsShowClicked")
+  settingsShowClickedHandler() {
+    this.settingsUI.show = true;
+  }
+
+  @Listen("settingsCloseClicked")
+  settingsCloseClickedHandler() {
+    this.settingsUI.show = false;
   }
 
   render() {
@@ -116,8 +139,10 @@ export class ChGrid {
         <section class="main" style={this.gridStyle} part="main">
           <slot></slot>
         </section>
-        <aside part="action-bar">
-          <slot name="row-hover"></slot>
+        <aside>
+          {this.renderSettings()}
+          <slot name="column-display"></slot>
+          <slot name="row-actions"></slot>
         </aside>
         <footer part="footer">
           <slot name="footer"></slot>
@@ -125,4 +150,39 @@ export class ChGrid {
       </Host>
     );
   }
+
+  renderSettings() {
+    return (
+      <ch-grid-settings
+        ref={(el) => (this.settingsUI = el)}
+        exportparts="
+          mask:settings-mask,
+          window:settings-window,
+          header:settings-header,
+          caption:settings-caption,
+          close:settings-close,
+          main:settings-main,
+          footer:settings-footer
+        "
+      >
+        <slot name="settings">
+          <ch-grid-settings-columns
+            part="settings-columns"
+            gridManager={this.gridManager}
+            exportparts="
+              column:settings-columns-item,
+              column-label:settings-columns-label,
+              column-visible:settings-columns-visible
+            "
+          ></ch-grid-settings-columns>
+        </slot>
+      </ch-grid-settings>
+    );
+  }
+}
+
+export interface GridLocalization {
+  settingsCaption: string;
+  settingsCloseText: string;
+  settingsCloseTooltip: string;
 }

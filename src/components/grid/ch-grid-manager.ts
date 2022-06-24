@@ -5,13 +5,34 @@ export class ChGridManager {
   grid: ChGrid;
   columns: HTMLChGridColumnElement[];
 
+  columnsBoundingClientRect: DOMRect[];
+  columnDragStartOrder: number;
+  columnDragTranslateX: number[];
+
   constructor(grid: ChGrid) {
     this.grid = grid;
     this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
+    this.columnDragTranslateX = [];
 
+    this.defineColumnsDisplayObserver();
     this.defineColumnsSize();
     this.defineColumnsOrder();
     this.defineColumnsVariables();
+  }
+
+  defineColumnsDisplayObserver() {
+    this.columns.forEach((column) => {
+      if (column.displayObserverClass) {
+        let columnDisplay = document.createElement(
+          "ch-grid-column-display"
+        ) as HTMLChGridColumnDisplayElement;
+        columnDisplay.setAttribute("slot", "column-display");
+        columnDisplay.setAttribute("class", column.displayObserverClass);
+        columnDisplay.column = column;
+
+        this.grid.el.appendChild(columnDisplay);
+      }
+    });
   }
 
   defineColumnsSize() {
@@ -35,15 +56,16 @@ export class ChGridManager {
     ) {
       let selectors = "";
       for (let i = 1; i <= this.columns.length; i++) {
-        selectors += `ch-grid-column:nth-child(${i}), ch-grid-cell:nth-child(${i}) { 
+        selectors += `ch-grid-column:nth-child(${i}), ch-grid-cell:nth-child(${i}) {
+                    display: var(--ch-grid-column-${i}-display);
                     grid-column: var(--ch-grid-column-${i}-position, ${i});
-                    margin-inline-start: var(--ch-grid-column-${i}-margin-start,);
+                    margin-inline-start: var(--ch-grid-column-${i}-margin-start);
                     border-inline-start: var(--ch-grid-column-${i}-border-start);
                     padding-inline-start: var(--ch-grid-column-${i}-padding-start);
                     margin-inline-end: var(--ch-grid-column-${i}-margin-end);
                     border-inline-end: var(--ch-grid-column-${i}-border-end);
                     padding-inline-end: var(--ch-grid-column-${i}-padding-end);
-                    opacity: var(--ch-grid-column-${i}-opacity);
+                    transform: var(--ch-grid-column-${i}-transform);
                 }`;
       }
 
@@ -59,53 +81,50 @@ export class ChGridManager {
     }
   }
 
-  columnDragging(eventInfo: CustomEvent): boolean {
-    let reorder = false;
+  columnDragStart(eventInfo: CustomEvent) {
+    this.columnDragStartOrder = eventInfo.detail.column.order - 1;
+    this.columnsBoundingClientRect = this.columns.map((column) =>
+      column.getBoundingClientRect()
+    );
+    this.columnDragTranslateX = new Array(this.columns.length);
+    this.columnDragTranslateX.fill(0);
+  }
 
-    let columnHover = this.columns.find((column) => {
-      const rect = column.getBoundingClientRect();
+  columnDragEnd() {
+    this.columnDragTranslateX = [];
+  }
 
-      if (
-        eventInfo.detail.left > rect.left &&
-        eventInfo.detail.left < rect.right
-      ) {
-        return true;
-      } else {
-        return false;
+  columnDragging(eventInfo: CustomEvent) {
+    const columnDraggingOrder = this.columnsBoundingClientRect.findIndex(
+      (rect) => {
+        if (
+          eventInfo.detail.position > rect.left &&
+          eventInfo.detail.position < rect.right
+        ) {
+          return true;
+        }
       }
-    });
+    );
 
-    if (columnHover && columnHover != eventInfo.detail.column) {
-      const dragOrder = eventInfo.detail.column.order;
-
-      eventInfo.detail.column.order = columnHover.order;
-      columnHover.order = dragOrder;
-
-      reorder = true;
+    this.columnDragTranslateX[this.columnDragStartOrder] = 0;
+    for (let i = this.columnDragStartOrder + 1; i <= columnDraggingOrder; i++) {
+      this.columnDragTranslateX[this.columnDragStartOrder] +=
+        this.columnsBoundingClientRect[i].width;
+      this.columnDragTranslateX[i] =
+        -1 *
+        this.columnsBoundingClientRect[this.columnDragStartOrder].width *
+        (i - this.columnDragStartOrder);
     }
 
-    // this.columns.map(column => {
-    //   return {
-    //     column,
-    //     left: eventInfo.detail.column === column ? eventInfo.detail.left : column.getBoundingClientRect().left
-    //   }
-    // }).sort((columnA, columnB) => {
-
-    //   if (columnA.left < columnB.left) {
-    //     return -1;
-    //   }
-    //   if (columnA.left > columnB.left) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // }).forEach((column, i) => {
-    //   if (column.column.order != i+1) {
-    //     column.column.order = i+1;
-    //     reorder = true;
-    //   }
-    // });
-
-    return reorder;
+    for (let i = 0; i <= this.columns.length; i++) {
+      if (i != this.columnDragStartOrder) {
+        this.columnDragTranslateX[i] =
+          i > this.columnDragStartOrder && i <= columnDraggingOrder
+            ? this.columnsBoundingClientRect[this.columnDragStartOrder].width *
+              -1
+            : 0;
+      }
+    }
   }
 
   getGridStyle(): CSSProperties {
@@ -120,7 +139,7 @@ export class ChGridManager {
       style[`--ch-grid-column-${i + 1}-position`] = column.order.toString();
 
       if (column.hidden) {
-        style[`--ch-grid-column-${i + 1}-opacity`] = "0";
+        style[`--ch-grid-column-${i + 1}-display`] = "none";
       } else {
         if (columnFirst == 0) {
           columnFirst = i + 1;
@@ -142,6 +161,10 @@ export class ChGridManager {
       "var(--ch-grid-fallback, inherit)";
     style[`--ch-grid-column-${columnEnd}-padding-end`] =
       "var(--ch-grid-fallback, inherit)";
+
+    this.columnDragTranslateX.forEach((x, i) => {
+      style[`--ch-grid-column-${i + 1}-transform`] = `translateX(${x}px)`;
+    });
 
     return style;
   }

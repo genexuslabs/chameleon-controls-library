@@ -1,4 +1,4 @@
-import { Component, Prop, h, Host } from "@stencil/core";
+import { Component, Prop, h, Host, Event, EventEmitter } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-action-settings",
@@ -7,11 +7,11 @@ import { Component, Prop, h, Host } from "@stencil/core";
 })
 export class ChGridActionSettings {
   @Prop() disabled: boolean;
-  private window: HTMLChWindowElement;
+  @Event() settingsShowClicked: EventEmitter;
 
   private handleClick = (eventInfo: Event) => {
     eventInfo.stopPropagation();
-    this.window.visible = true;
+    this.settingsShowClicked.emit();
   };
 
   render() {
@@ -21,15 +21,7 @@ export class ChGridActionSettings {
         tabindex="0"
         disabled={this.disabled}
         onClick={this.handleClick}
-      >
-        <ch-window
-          caption="Options"
-          closeText="Close"
-          ref={(el) => (this.window = el)}
-        >
-          Hola Mundo !!!
-        </ch-window>
-      </Host>
+      ></Host>
     );
   }
 }

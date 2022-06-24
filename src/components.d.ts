@@ -21,9 +21,6 @@ export namespace Components {
     onRowSelectedClass: string;
     rowSelectionMode: "none" | "single" | "multiple";
   }
-  interface ChGridActionSettings {
-    disabled: boolean;
-  }
   interface ChGridActionbar {}
   interface ChGridColumn {
     columnId: string;
@@ -211,10 +208,6 @@ declare namespace LocalJSX {
       event: CustomEvent<ChGridSelectionChangedEvent>
     ) => void;
     rowSelectionMode?: "none" | "single" | "multiple";
-  }
-  interface ChGridActionSettings {
-    disabled?: boolean;
-    onSettingsShowClicked?: (event: CustomEvent<any>) => void;
   }
   interface ChGridActionbar {}
   interface ChGridColumn {

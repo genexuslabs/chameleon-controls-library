@@ -1,3 +1,7 @@
+@mixin column-drag-transition {
+  transition: transform .2s;
+}
+
 @mixin box-simulation {
   background-color: inherit;
 
@@ -21,19 +25,4 @@
   //   border-inline-end: inherit;
   //   padding-inline-end: inherit;
   // }
-}
-
-@mixin reset-button {
-	padding:0px;
-	border:0px none transparent;
-	background-color:transparent;
-	box-sizing:content-box;
-	font-family:inherit;
-	font-size:100%;
-}
-
-@mixin reset-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
 }

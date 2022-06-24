@@ -1,14 +1,17 @@
+@import "../common/reset.scss";
 @import "../grid/helpers/styles.scss";
 
 :host {
   display: flex;
   position: sticky;
   top: 0;
+
 }
 
 // column-set box simulation
 :host {
   @include box-simulation;
+  @include column-drag-transition;
 }
 
 :host([resizing]) {
@@ -19,7 +22,7 @@
 }
 
 .bar {
-  @include reset-ul;
+  @include reset-list;
   display: flex;
   align-items: center;
   
@@ -28,14 +31,7 @@
   }
 
   & .resize {
-    height: 100%;
+    align-self: stretch;
+    margin-left: auto;
   }
-}
-
-.display-observer {
-  display: inherit;
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
 }

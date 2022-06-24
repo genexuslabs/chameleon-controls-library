@@ -4,4 +4,5 @@
 ch-grid-cell {
   grid-column: var(--grid-column);
   @include box-simulation;
+  @include column-drag-transition;
 }

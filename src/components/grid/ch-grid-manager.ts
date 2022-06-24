@@ -11,40 +11,52 @@ export class ChGridManager {
 
   constructor(grid: ChGrid) {
     this.grid = grid;
-    this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
     this.columnDragTranslateX = [];
 
-    this.defineColumnsDisplayObserver();
-    this.defineColumnsSize();
-    this.defineColumnsOrder();
+    this.defineColumns();
     this.defineColumnsVariables();
   }
 
-  defineColumnsDisplayObserver() {
-    this.columns.forEach((column) => {
-      if (column.displayObserverClass) {
-        let columnDisplay = document.createElement(
-          "ch-grid-column-display"
-        ) as HTMLChGridColumnDisplayElement;
-        columnDisplay.setAttribute("slot", "column-display");
-        columnDisplay.setAttribute("class", column.displayObserverClass);
-        columnDisplay.column = column;
+  defineColumns() {
+    this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
 
-        this.grid.el.appendChild(columnDisplay);
-      }
+    this.columns.forEach((column) => {
+      this.defineColumnId(column);
+      this.defineColumnOrder(column);
+      this.defineColumnSize(column);
+      this.defineColumnDisplayObserver(column);
     });
   }
 
-  defineColumnsSize() {
-    this.columns.forEach((column) => {
+  defineColumnId(column: HTMLChGridColumnElement) {
+    if (!column.columnId) {
+      column.columnId = `grid-column-${this.columns.indexOf(column) + 1}`;
+    }
+  }
+
+  defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
+    if (column.displayObserverClass) {
+      let columnDisplay = document.createElement(
+        "ch-grid-column-display"
+      ) as HTMLChGridColumnDisplayElement;
+      columnDisplay.setAttribute("slot", "column-display");
+      columnDisplay.setAttribute("class", column.displayObserverClass);
+      columnDisplay.column = column;
+
+      this.grid.el.appendChild(columnDisplay);
+    }
+  }
+
+  defineColumnSize(column: HTMLChGridColumnElement) {
+    if (!column.size) {
       column.size = "auto";
-    });
+    }
   }
 
-  defineColumnsOrder() {
-    this.columns.forEach((column, i) => {
-      column.order = i + 1;
-    });
+  defineColumnOrder(column: HTMLChGridColumnElement) {
+    if (!column.order) {
+      column.order = this.columns.indexOf(column) + 1;
+    }
   }
 
   defineColumnsVariables() {

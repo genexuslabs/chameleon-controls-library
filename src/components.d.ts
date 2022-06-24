@@ -21,6 +21,7 @@ export namespace Components {
     onRowSelectedClass: string;
     rowSelectionMode: "none" | "single" | "multiple";
   }
+  interface ChGridActionbar {}
   interface ChGridColumn {
     columnId: string;
     hideable: boolean;
@@ -208,6 +209,7 @@ declare namespace LocalJSX {
     ) => void;
     rowSelectionMode?: "none" | "single" | "multiple";
   }
+  interface ChGridActionbar {}
   interface ChGridColumn {
     columnId?: string;
     hideable?: boolean;

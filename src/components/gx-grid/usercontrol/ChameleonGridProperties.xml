@@ -59,6 +59,21 @@
 				  </Childs>
 				</Group>
 				<Group>
+					<Name>Settings</Name>
+					<Childs>
+						<Prop>
+							<Id>SettingsCloseTextPosition</Id>
+							<Name>SettingsCloseTextPosition</Name>
+							<Type>Combo</Type>
+							<Default>title</Default>
+							<Values>
+								<Value id='title' desc='Tooltip'/>
+								<Value id='text' desc='Text'/>
+							</Values>
+						</Prop>
+					</Childs>
+				</Group>
+				<Group>
 					<Name>Actionbar</Name>
 					<Childs>
 						<Prop>
@@ -68,17 +83,17 @@
 							<Default>true</Default>
 						</Prop>
 						<Group>
-							<Name>Refresh</Name>
+							<Name>Action Refresh</Name>
 							<Childs>
 								<Prop>
-									<Id>ButtonRefreshClass</Id>
-									<Name>ButtonRefreshClass</Name>
+									<Id>ActionRefreshClass</Id>
+									<Name>ActionRefreshClass</Name>
 									<Type>Text</Type>
 									<Default>button-refresh</Default>
 								</Prop>	
 								<Prop>
-									<Id>ButtonRefreshTextPosition</Id>
-									<Name>ButtonRefreshTextPosition</Name>
+									<Id>ActionRefreshTextPosition</Id>
+									<Name>ActionRefreshTextPosition</Name>
 									<Type>Combo</Type>
 									<Default>title</Default>
 									<Values>
@@ -89,17 +104,17 @@
 							</Childs>
 						</Group>
 						<Group>
-							<Name>Settings</Name>
+							<Name>Action Settings</Name>
 							<Childs>
 								<Prop>
-									<Id>ButtonSettingsClass</Id>
-									<Name>ButtonSettingsClass</Name>
+									<Id>ActionSettingsClass</Id>
+									<Name>ActionSettingsClass</Name>
 									<Type>Text</Type>
 									<Default>button-settings</Default>
 								</Prop>	
 								<Prop>
-									<Id>ButtonSettingsTextPosition</Id>
-									<Name>ButtonSettingsTextPosition</Name>
+									<Id>ActionSettingsTextPosition</Id>
+									<Name>ActionSettingsTextPosition</Name>
 									<Type>Combo</Type>
 									<Default>title</Default>
 									<Values>

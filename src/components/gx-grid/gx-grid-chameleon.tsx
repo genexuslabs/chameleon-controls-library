@@ -104,26 +104,26 @@ export class GridChameleon {
     return (
       <ch-grid-actionbar slot="header">
         <ch-grid-action-refresh
-          class={this.grid.ButtonRefreshClass}
+          class={this.grid.ActionRefreshClass}
           title={
-            this.grid.ButtonRefreshTextPosition == "title"
+            this.grid.ActionRefreshTextPosition == "title"
               ? gx.getMessage("GX_BtnRefresh")
               : ""
           }
         >
-          {this.grid.ButtonRefreshTextPosition == "text"
+          {this.grid.ActionRefreshTextPosition == "text"
             ? gx.getMessage("GX_BtnRefresh")
             : ""}
         </ch-grid-action-refresh>
         <ch-grid-action-settings
-          class={this.grid.ButtonSettingsClass}
+          class={this.grid.ActionSettingsClass}
           title={
-            this.grid.ButtonSettingsTextPosition == "title"
+            this.grid.ActionSettingsTextPosition == "title"
               ? gx.getMessage("GXM_Settings")
               : ""
           }
         >
-          {this.grid.ButtonSettingsTextPosition == "text"
+          {this.grid.ActionSettingsTextPosition == "text"
             ? gx.getMessage("GXM_Settings")
             : ""}
         </ch-grid-action-settings>
@@ -138,10 +138,11 @@ export class GridChameleon {
           if (gx.lang.gxBoolean(column.visible)) {
             return (
               <ch-grid-column
-                class={`${this.grid.ColumnClass} ${column.gxColumnClass}`}
-              >
-                <span>{column.title}</span>
-              </ch-grid-column>
+                columnId={column.gxAttName}
+                columnName={column.title}
+                displayObserverClass={column.gxColumnClass}
+                class={this.grid.ColumnClass}
+              ></ch-grid-column>
             );
           }
         })}
@@ -172,7 +173,7 @@ export class GridChameleon {
       if (gx.lang.gxBoolean(column.visible)) {
         return (
           <ch-grid-cell
-            class={`${this.grid.CellClass} ${column.gxColumnClass}`}
+            class={this.grid.CellClass}
             cellid={i}
             innerHTML={this.renderControl(
               column.gxControl,
@@ -267,7 +268,7 @@ export interface GxGrid {
   isFirstPage(): boolean;
   isLastPage(): boolean;
 
-  // UC
+  // UserControl
   readonly ColumnsetClass: string;
   readonly ColumnClass: string;
   readonly RowClass: string;
@@ -279,10 +280,11 @@ export interface GxGrid {
   readonly PaginatorShow: boolean;
   readonly PaginatorNavigationButtonTextPosition: "title" | "text";
   readonly ActionbarShow: boolean;
-  readonly ButtonRefreshTextPosition: "title" | "text";
-  readonly ButtonRefreshClass: string;
-  readonly ButtonSettingsTextPosition: "title" | "text";
-  readonly ButtonSettingsClass: string;
+  readonly ActionRefreshTextPosition: "title" | "text";
+  readonly ActionRefreshClass: string;
+  readonly ActionSettingsTextPosition: "title" | "text";
+  readonly ActionSettingsClass: string;
+  readonly SettingsCloseTextPosition: "title" | "text";
 
   OnPaginationFirst(): void;
   OnPaginationPrevious(): void;
@@ -295,6 +297,8 @@ export interface GxGridColumn {
   readonly visible: boolean;
   readonly gxColumnClass: string;
   readonly gxControl: GxControl;
+  readonly gxAttId: string;
+  readonly gxAttName: string;
 }
 
 export interface GxGridRow {

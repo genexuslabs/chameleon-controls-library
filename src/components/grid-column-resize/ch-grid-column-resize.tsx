@@ -28,6 +28,7 @@ export class ChGridColumnResize {
 
   componentDidLoad() {
     this.el.addEventListener("mousedown", (eventInfo) => {
+      eventInfo.stopPropagation();
       eventInfo.preventDefault();
 
       this.startPageX = eventInfo.pageX;

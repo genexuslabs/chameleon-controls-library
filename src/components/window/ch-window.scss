@@ -1,11 +1,15 @@
-:host {
-    display: none;
-}
-:host([visible]) {
+:host(:not([hidden])) {
     display: contents;
 }
+:host(:not([modal])) .mask {
+    pointer-events: none;
+}
 
-.modal {
+.window {
+    pointer-events: all;
+}
+
+.mask {
     display: flex;
     position: fixed;
     top: 0;
@@ -16,7 +20,7 @@
     justify-content: center;
 }
 
-.dialog {
+.window {
     display: flex;
     flex-direction: column;
 }

@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop } from "@stencil/core";
+import { Component, h, Host, Prop, Event, EventEmitter } from "@stencil/core";
 
 @Component({
   tag: "ch-window",
@@ -6,29 +6,52 @@ import { Component, h, Host, Prop } from "@stencil/core";
   shadow: true,
 })
 export class ChWindow {
-  @Prop({ reflect: true, mutable: true }) visible = false;
+  @Prop({ reflect: true, mutable: true }) hidden = true;
+  @Prop({ reflect: true }) modal = true;
   @Prop() caption = "";
   @Prop() closeText: string;
   @Prop() closeTooltip: string;
   @Prop() closeAuto: boolean;
 
-  private handleClick = (eventInfo: Event) => {
+  @Event() windowClosed: EventEmitter;
+
+  private handleMaskClick = (eventInfo: Event) => {
     eventInfo.stopPropagation();
-    this.visible = false;
+    if (this.closeAuto) {
+      this.close();
+    }
   };
+
+  private handleCloseClick = (eventInfo: Event) => {
+    eventInfo.stopPropagation();
+    this.close();
+  };
+
+  private handleDialogClick = (eventInfo: Event) => {
+    eventInfo.stopPropagation();
+  };
+
+  close() {
+    this.hidden = true;
+    this.windowClosed.emit();
+  }
 
   render() {
     return (
       <Host>
-        <div class="modal" part="mask" onClick={this.handleClick}>
-          <section class="dialog" part="window">
+        <div class="mask" part="mask" onClick={this.handleMaskClick}>
+          <section
+            class="window"
+            part="window"
+            onClick={this.handleDialogClick}
+          >
             <header part="header">
               <span part="caption">{this.caption}</span>
               <button
                 part="close"
                 type="button"
                 title={this.closeTooltip}
-                onClick={this.handleClick}
+                onClick={this.handleCloseClick}
               >
                 {this.closeText}
               </button>

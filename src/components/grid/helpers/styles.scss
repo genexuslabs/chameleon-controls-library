@@ -1,5 +1,5 @@
 @mixin column-drag-transition {
-  transition: transform .2s;
+  transition: transform var(--column-drag-transition-duration, .2s);
 }
 
 @mixin box-simulation {

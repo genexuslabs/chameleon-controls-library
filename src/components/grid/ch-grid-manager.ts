@@ -1,40 +1,54 @@
 import { CSSProperties } from "./types";
 import { ChGrid } from "./ch-grid";
+import { ChGridManagerColumnDrag } from "./ch-grid-manager-column-drag";
 
 export class ChGridManager {
   grid: ChGrid;
   columns: HTMLChGridColumnElement[];
-
-  columnsBoundingClientRect: DOMRect[];
-  columnDragStartOrder: number;
-  columnDragTranslateX: number[];
+  columnDragManager: ChGridManagerColumnDrag;
 
   constructor(grid: ChGrid) {
     this.grid = grid;
-    this.columnDragTranslateX = [];
 
     this.defineColumns();
     this.defineColumnsVariables();
   }
 
-  defineColumns() {
+  private defineColumns() {
     this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
 
     this.columns.forEach((column) => {
       this.defineColumnId(column);
+      this.defineColumnIndex(column);
       this.defineColumnOrder(column);
       this.defineColumnSize(column);
       this.defineColumnDisplayObserver(column);
     });
   }
 
-  defineColumnId(column: HTMLChGridColumnElement) {
+  private defineColumnId(column: HTMLChGridColumnElement) {
     if (!column.columnId) {
       column.columnId = `grid-column-${this.columns.indexOf(column) + 1}`;
     }
   }
 
-  defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
+  private defineColumnIndex(column: HTMLChGridColumnElement) {
+    column.physicalOrder = this.columns.indexOf(column) + 1;
+  }
+
+  private defineColumnOrder(column: HTMLChGridColumnElement) {
+    if (!column.order) {
+      column.order = column.physicalOrder;
+    }
+  }
+
+  private defineColumnSize(column: HTMLChGridColumnElement) {
+    if (!column.size) {
+      column.size = "auto";
+    }
+  }
+
+  private defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
     if (column.displayObserverClass) {
       let columnDisplay = document.createElement(
         "ch-grid-column-display"
@@ -47,19 +61,7 @@ export class ChGridManager {
     }
   }
 
-  defineColumnSize(column: HTMLChGridColumnElement) {
-    if (!column.size) {
-      column.size = "auto";
-    }
-  }
-
-  defineColumnOrder(column: HTMLChGridColumnElement) {
-    if (!column.order) {
-      column.order = this.columns.indexOf(column) + 1;
-    }
-  }
-
-  defineColumnsVariables() {
+  private defineColumnsVariables() {
     const style = document.head.querySelector("#ChGrid.ColumnsVariables");
 
     if (
@@ -93,97 +95,142 @@ export class ChGridManager {
     }
   }
 
-  columnDragStart(eventInfo: CustomEvent) {
-    this.columnDragStartOrder = eventInfo.detail.column.order - 1;
-    this.columnsBoundingClientRect = this.columns.map((column) =>
-      column.getBoundingClientRect()
+  columnDragStart(columnId: string) {
+    this.columnDragManager = new ChGridManagerColumnDrag(
+      columnId,
+      this.columns
     );
-    this.columnDragTranslateX = new Array(this.columns.length);
-    this.columnDragTranslateX.fill(0);
+  }
+
+  columnDragging(position: number): boolean {
+    return this.columnDragManager.dragging(position);
   }
 
   columnDragEnd() {
-    this.columnDragTranslateX = [];
-  }
-
-  columnDragging(eventInfo: CustomEvent) {
-    const columnDraggingOrder = this.columnsBoundingClientRect.findIndex(
-      (rect) => {
-        if (
-          eventInfo.detail.position > rect.left &&
-          eventInfo.detail.position < rect.right
-        ) {
-          return true;
-        }
-      }
-    );
-
-    this.columnDragTranslateX[this.columnDragStartOrder] = 0;
-    for (let i = this.columnDragStartOrder + 1; i <= columnDraggingOrder; i++) {
-      this.columnDragTranslateX[this.columnDragStartOrder] +=
-        this.columnsBoundingClientRect[i].width;
-      this.columnDragTranslateX[i] =
-        -1 *
-        this.columnsBoundingClientRect[this.columnDragStartOrder].width *
-        (i - this.columnDragStartOrder);
-    }
-
-    for (let i = 0; i <= this.columns.length; i++) {
-      if (i != this.columnDragStartOrder) {
-        this.columnDragTranslateX[i] =
-          i > this.columnDragStartOrder && i <= columnDraggingOrder
-            ? this.columnsBoundingClientRect[this.columnDragStartOrder].width *
-              -1
-            : 0;
-      }
-    }
+    this.columnDragManager.dragEnd();
+    this.columnDragManager = null;
   }
 
   getGridStyle(): CSSProperties {
-    let style: CSSProperties = {};
-    let columnFirst = 0;
-    let columnEnd = 0;
-
-    style["display"] = "grid";
-    style["grid-template-columns"] = this.getGridTemplateColumns();
-
-    this.columns.forEach((column, i) => {
-      style[`--ch-grid-column-${i + 1}-position`] = column.order.toString();
-
-      if (column.hidden) {
-        style[`--ch-grid-column-${i + 1}-display`] = "none";
-      } else {
-        if (columnFirst == 0) {
-          columnFirst = i + 1;
-        }
-        if (columnEnd < i + 1) {
-          columnEnd = i + 1;
-        }
-      }
-    });
-    style[`--ch-grid-column-${columnFirst}-margin-start`] =
-      "var(--ch-grid-fallback, inherit)";
-    style[`--ch-grid-column-${columnFirst}-border-start`] =
-      "var(--ch-grid-fallback, inherit)";
-    style[`--ch-grid-column-${columnFirst}-padding-start`] =
-      "var(--ch-grid-fallback, inherit)";
-    style[`--ch-grid-column-${columnEnd}-margin-end`] =
-      "var(--ch-grid-fallback, inherit)";
-    style[`--ch-grid-column-${columnEnd}-border-end`] =
-      "var(--ch-grid-fallback, inherit)";
-    style[`--ch-grid-column-${columnEnd}-padding-end`] =
-      "var(--ch-grid-fallback, inherit)";
-
-    this.columnDragTranslateX.forEach((x, i) => {
-      style[`--ch-grid-column-${i + 1}-transform`] = `translateX(${x}px)`;
-    });
-
-    return style;
+    return {
+      display: "grid",
+      ...this.getGridTemplateColumns(),
+      ...this.getRowBoxSimulationStyle(),
+      ...this.getDragTransitionStyle(),
+      ...this.getColumnsStyle(),
+    };
   }
 
-  getGridTemplateColumns(): string {
-    return this.columns
-      .map((column) => (column.hidden ? "0px" : column.size))
-      .join(" ");
+  private getGridTemplateColumns(): CSSProperties {
+    return {
+      "grid-template-columns": this.columns
+        .map((column) => `var(--ch-grid-column-${column.physicalOrder}-size)`)
+        .join(" "),
+    };
+  }
+
+  private getRowBoxSimulationStyle(): CSSProperties {
+    const { columnFirst, columnLast } = this.columnDragManager
+      ? this.columnDragManager.getColumnsFirstLast()
+      : this.getColumnsFirstLast();
+
+    return {
+      [`--ch-grid-column-${columnFirst.physicalOrder}-margin-start`]:
+        "var(--ch-grid-fallback, inherit)",
+      [`--ch-grid-column-${columnFirst.physicalOrder}-border-start`]:
+        "var(--ch-grid-fallback, inherit)",
+      [`--ch-grid-column-${columnFirst.physicalOrder}-padding-start`]:
+        "var(--ch-grid-fallback, inherit)",
+      [`--ch-grid-column-${columnLast.physicalOrder}-margin-end`]:
+        "var(--ch-grid-fallback, inherit)",
+      [`--ch-grid-column-${columnLast.physicalOrder}-border-end`]:
+        "var(--ch-grid-fallback, inherit)",
+      [`--ch-grid-column-${columnLast.physicalOrder}-padding-end`]:
+        "var(--ch-grid-fallback, inherit)",
+    };
+  }
+
+  private getColumnsFirstLast(): {
+    columnFirst: HTMLChGridColumnElement;
+    columnLast: HTMLChGridColumnElement;
+  } {
+    let columnFirst: HTMLChGridColumnElement;
+    let columnLast: HTMLChGridColumnElement;
+
+    this.columns.forEach((column) => {
+      if (
+        !column.hidden &&
+        (!columnFirst || column.order < columnFirst.order)
+      ) {
+        columnFirst = column;
+      }
+      if (!column.hidden && (!columnLast || column.order > columnLast.order)) {
+        columnLast = column;
+      }
+    });
+
+    return {
+      columnFirst,
+      columnLast,
+    };
+  }
+
+  private getDragTransitionStyle(): CSSProperties {
+    return {
+      "--column-drag-transition-duration": this.columnDragManager
+        ? ".2s"
+        : "0s",
+    };
+  }
+
+  private getColumnsStyle(): CSSProperties {
+    return this.columns.reduce((style, column) => {
+      return {
+        ...style,
+        ...this.getColumnStyle(column),
+      };
+    }, {} as CSSProperties);
+  }
+
+  private getColumnStyle(column: HTMLChGridColumnElement): CSSProperties {
+    return {
+      ...this.getColumnSizeStyle(column),
+      ...this.getColumnOrderStyle(column),
+      ...this.getColumnDisplayStyle(column),
+      ...this.getColumnDraggingStyle(column),
+    };
+  }
+
+  private getColumnSizeStyle(column: HTMLChGridColumnElement): CSSProperties {
+    return {
+      [`--ch-grid-column-${column.order}-size`]: column.hidden
+        ? "0px"
+        : column.size,
+    };
+  }
+
+  private getColumnOrderStyle(column: HTMLChGridColumnElement): CSSProperties {
+    return {
+      [`--ch-grid-column-${column.physicalOrder}-position`]:
+        column.order.toString(),
+    };
+  }
+
+  private getColumnDisplayStyle(
+    column: HTMLChGridColumnElement
+  ): CSSProperties {
+    return column.hidden
+      ? {
+          [`--ch-grid-column-${column.physicalOrder}-display`]: "none",
+        }
+      : null;
+  }
+
+  private getColumnDraggingStyle(
+    column: HTMLChGridColumnElement
+  ): CSSProperties {
+    return this.columnDragManager
+      ? this.columnDragManager.getColumnStyle(column)
+      : null;
   }
 }

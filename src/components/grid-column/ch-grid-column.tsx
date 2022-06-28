@@ -8,6 +8,7 @@ import {
   Watch,
   h,
 } from "@stencil/core";
+import { ChGridColumnDragEvent } from "./ch-grid-column-types";
 
 @Component({
   tag: "ch-grid-column",
@@ -17,21 +18,22 @@ import {
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
   @Event() columnVisibleChanged: EventEmitter;
-  @Event() columnDragStart: EventEmitter;
-  @Event() columnDragging: EventEmitter;
-  @Event() columnDragEnd: EventEmitter;
+  @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
+  @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
+  @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
   @Prop() columnId: string;
   @Prop() columnName: string;
   @Prop() displayObserverClass: string;
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;
   @Prop({ reflect: true }) order: number;
+  @Prop() physicalOrder: number;
   @Prop() size: string;
   @Prop() resizeable: boolean = true;
   @Prop({ reflect: true }) resizing: boolean;
 
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
-  private dragMouseMovePosition: number;
+  private dragMouseMovePositionX: number;
 
   componentDidLoad() {
     this.el.addEventListener("mousedown", (eventInfo) => {
@@ -65,28 +67,28 @@ export class ChGridColumn {
   }
 
   dragMouseDownHandler() {
-    this.columnDragStart.emit({ column: this.el });
+    this.columnDragStarted.emit({ columnId: this.columnId });
   }
 
   dragMouseMoveHandler(eventInfo: MouseEvent) {
     const direction =
-      eventInfo.pageX > this.dragMouseMovePosition ? "right" : "left";
-    this.dragMouseMovePosition = eventInfo.pageX;
+      eventInfo.pageX > this.dragMouseMovePositionX ? "right" : "left";
+    this.dragMouseMovePositionX = eventInfo.pageX;
 
     this.columnDragging.emit({
-      column: this.el,
-      position: eventInfo.pageX,
+      columnId: this.columnId,
+      positionX: this.dragMouseMovePositionX,
       direction,
     });
   }
 
   dragMouseUpHandler() {
-    this.columnDragEnd.emit({ column: this.el });
+    this.columnDragEnded.emit({ columnId: this.columnId });
   }
 
   render() {
     return (
-      <Host draggable="true">
+      <Host>
         <ul class="bar" part="bar">
           <li class="name" part="bar-name">
             {this.columnName}

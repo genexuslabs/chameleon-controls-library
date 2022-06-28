@@ -27,6 +27,7 @@ import {
 import { ChGridManager } from "./ch-grid-manager";
 import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
+import { ChGridColumnDragEvent } from "../grid-column/ch-grid-column-types";
 
 @Component({
   tag: "ch-grid",
@@ -103,18 +104,19 @@ export class ChGrid {
     }
   }
 
-  @Listen("columnDragStart")
-  columnDragStartHandler(eventInfo: CustomEvent) {
-    this.gridManager.columnDragStart(eventInfo);
+  @Listen("columnDragStarted")
+  columnDragStartHandler(eventInfo: CustomEvent<ChGridColumnDragEvent>) {
+    this.gridManager.columnDragStart(eventInfo.detail.columnId);
   }
 
   @Listen("columnDragging")
-  columnDraggingHandler(eventInfo: CustomEvent) {
-    this.gridManager.columnDragging(eventInfo);
-    this.gridStyle = this.gridManager.getGridStyle();
+  columnDraggingHandler(eventInfo: CustomEvent<ChGridColumnDragEvent>) {
+    if (this.gridManager.columnDragging(eventInfo.detail.positionX)) {
+      this.gridStyle = this.gridManager.getGridStyle();
+    }
   }
 
-  @Listen("columnDragEnd")
+  @Listen("columnDragEnded")
   columnDragEndHandler() {
     this.gridManager.columnDragEnd();
     this.gridStyle = this.gridManager.getGridStyle();

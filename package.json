@@ -27,29 +27,24 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "~4.7.0",
     "@stencil/core": "~1.17.0",
+    "@stencil/eslint-plugin": "~0.4.0",
     "@stencil/sass": "~1.4.0",
-
-    "prettier": "~2.7.0",
+    "@types/jest": "~26.0.0",
     "@types/prettier": "~2.4.0",
-
+    "@types/puppeteer": "~5.4.0",
+    "@typescript-eslint/eslint-plugin": "~4.33.0",
+    "@typescript-eslint/parser": "~4.33.0",
     "eslint": "~7.32.0",
     "eslint-config-prettier": "~8.5.0",
     "eslint-plugin-prettier": "~4.2.0",
-    "@stencil/eslint-plugin": "~0.4.0",
-    "@typescript-eslint/eslint-plugin": "~4.33.0",
-    "@typescript-eslint/parser": "~4.33.0",
-
+    "husky": "~8.0.0",
     "jest": "~26.6.0",
     "jest-cli": "~26.6.0",
-    "@types/jest": "~26.0.0",
-
+    "lint-staged": "~13.0.0",
+    "prettier": "~2.7.0",
     "puppeteer": "~15.2.0",
-    "@types/puppeteer": "~5.4.0",
-
-    "husky": "~8.0.0",
-    "lint-staged": "~13.0.0"
+    "typescript": "~4.7.0"
   },
   "husky": {
     "hooks": {
@@ -65,5 +60,8 @@
       "eslint --fix",
       "git add"
     ]
+  },
+  "dependencies": {
+    "qr-creator": "^1.0.0"
   }
 }

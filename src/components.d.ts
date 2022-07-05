@@ -12,6 +12,7 @@ import { ChGridColumn } from "./components/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
+import { ecLevel } from "./components/qr/ch-qr";
 import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
 export namespace Components {
     interface ChGrid {
@@ -89,6 +90,14 @@ export namespace Components {
         "renderFirstLastPages": true;
         "textDots": string;
         "totalPages": number;
+    }
+    interface ChQr {
+        "background": string | null;
+        "ecLevel": ecLevel;
+        "fill": string;
+        "radius": number;
+        "size": number;
+        "text": string | undefined;
     }
     interface ChSidebarMenu {
         /**
@@ -246,6 +255,12 @@ declare global {
         prototype: HTMLChPaginatorPagesElement;
         new (): HTMLChPaginatorPagesElement;
     };
+    interface HTMLChQrElement extends Components.ChQr, HTMLStencilElement {
+    }
+    var HTMLChQrElement: {
+        prototype: HTMLChQrElement;
+        new (): HTMLChQrElement;
+    };
     interface HTMLChSidebarMenuElement extends Components.ChSidebarMenu, HTMLStencilElement {
     }
     var HTMLChSidebarMenuElement: {
@@ -295,6 +310,7 @@ declare global {
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
+        "ch-qr": HTMLChQrElement;
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
@@ -392,6 +408,14 @@ declare namespace LocalJSX {
         "textDots"?: string;
         "totalPages"?: number;
     }
+    interface ChQr {
+        "background"?: string | null;
+        "ecLevel"?: ecLevel;
+        "fill"?: string;
+        "radius"?: number;
+        "size"?: number;
+        "text"?: string | undefined;
+    }
     interface ChSidebarMenu {
         /**
           * The initial active item (optional)
@@ -463,6 +487,7 @@ declare namespace LocalJSX {
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
         "ch-paginator-pages": ChPaginatorPages;
+        "ch-qr": ChQr;
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
@@ -492,6 +517,7 @@ declare module "@stencil/core" {
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
+            "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;

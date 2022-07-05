@@ -13,6 +13,7 @@ import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
+import { ecLevel } from "./components/qr/ch-qr";
 import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
 export namespace Components {
     interface ChFormCheckbox {

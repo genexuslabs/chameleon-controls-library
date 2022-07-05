@@ -16,6 +16,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 | `src`       | `src`        | The URL of the icon.                                                          | `string`                                                                                                                                                                                 | `""`        |
 
 
+
 ## CSS Custom Properties
 
 | Name           | Description                                        |

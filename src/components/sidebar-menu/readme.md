@@ -105,6 +105,7 @@ A sidebar menu that collapses
 | `itemClicked`        |             | `CustomEvent<any>` |
 
 
+
 ## CSS Custom Properties
 
 | Name                                  | Description                                                     |

@@ -175,7 +175,7 @@ export class ChSelect {
     }
   }
 
-  @Listen("keydown")
+  @Listen("keydown", { passive: true })
   handleKeyDown(ev: KeyboardEvent) {
     switch (ev.key) {
       case " ":

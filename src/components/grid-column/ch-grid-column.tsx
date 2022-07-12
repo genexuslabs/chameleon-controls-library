@@ -68,9 +68,8 @@ export class ChGridColumn {
     }
   }
 
-  @Listen("click")
+  @Listen("click", { passive: true })
   clickHandler() {
-
     if (!this.dragging) {
       if (this.sortable) {
         this.sortDirection = this.sortDirection == "asc" ? "desc" : "asc";
@@ -80,7 +79,7 @@ export class ChGridColumn {
     }
   }
 
-  mousedownHandler(eventInfo: MouseEvent) {
+  private mousedownHandler(eventInfo: MouseEvent) {
     eventInfo.preventDefault();
     eventInfo.stopPropagation();
 
@@ -94,12 +93,12 @@ export class ChGridColumn {
     });
   }
 
-  dragMouseDownHandler(eventInfo: MouseEvent) {
+  private dragMouseDownHandler(eventInfo: MouseEvent) {
     this.dragMouseMoveStartPositionX = eventInfo.pageX;
     this.columnDragStarted.emit({ columnId: this.columnId });
   }
 
-  dragMouseMoveHandler(eventInfo: MouseEvent) {
+  private dragMouseMoveHandler(eventInfo: MouseEvent) {
     if (
       this.dragging ||
       Math.abs(this.dragMouseMoveStartPositionX - eventInfo.pageX) > 5
@@ -114,7 +113,7 @@ export class ChGridColumn {
     }
   }
 
-  dragMouseUpHandler() {
+  private dragMouseUpHandler() {
     document.removeEventListener("mousemove", this.dragMouseMoveFn);
     this.columnDragEnded.emit({ columnId: this.columnId });
   }

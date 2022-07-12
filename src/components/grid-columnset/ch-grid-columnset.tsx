@@ -8,7 +8,7 @@ import { ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-type
 })
 export class ChGridColumnset {
   @Element() el: HTMLChGridColumnsetElement;
-  columns: HTMLChGridColumnElement[];
+  private columns: HTMLChGridColumnElement[];
 
   componentDidLoad() {
     this.columns = Array.from(this.el.querySelectorAll("ch-grid-column"));

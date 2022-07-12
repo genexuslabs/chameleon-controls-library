@@ -153,7 +153,7 @@ export class ChGrid {
     );
   }
 
-  renderSettings() {
+  private renderSettings() {
     return (
       <ch-grid-settings
         ref={(el) => (this.settingsUI = el)}

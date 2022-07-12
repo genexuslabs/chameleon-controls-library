@@ -28,7 +28,7 @@ export class ChGridColumnResize {
     this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
   }
 
-  mousedownHandler(eventInfo: MouseEvent) {
+  private mousedownHandler(eventInfo: MouseEvent) {
     eventInfo.stopPropagation();
     eventInfo.preventDefault();
 
@@ -43,7 +43,7 @@ export class ChGridColumnResize {
     this.columnResizeStarted.emit();
   }
 
-  mousemoveHandler(eventInfo: MouseEvent) {
+  private mousemoveHandler(eventInfo: MouseEvent) {
     const columnSize =
       this.startColumnWidth - (this.startPageX - eventInfo.pageX);
 
@@ -52,12 +52,12 @@ export class ChGridColumnResize {
     }
   }
 
-  mouseupHandler() {
+  private mouseupHandler() {
     document.removeEventListener("mousemove", this.mousemoveFn);
     this.columnResizeFinished.emit();
   }
 
-  @Listen("click")
+  @Listen("click", { passive: true })
   clickHandler(eventInfo: MouseEvent) {
     eventInfo.stopPropagation();
   }

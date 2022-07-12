@@ -31,7 +31,7 @@ export class ChWindow {
     eventInfo.stopPropagation();
   };
 
-  close() {
+  private close() {
     this.hidden = true;
     this.windowClosed.emit();
   }

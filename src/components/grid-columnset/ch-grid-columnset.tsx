@@ -8,7 +8,7 @@ import { ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-type
 })
 export class ChGridColumnset {
   @Element() el: HTMLChGridColumnsetElement;
-  columns: HTMLChGridColumnElement[];
+  private columns: HTMLChGridColumnElement[];
 
   componentDidLoad() {
     this.columns = Array.from(this.el.querySelectorAll("ch-grid-column"));
@@ -25,10 +25,12 @@ export class ChGridColumnset {
   }
 
   @Listen("columnSortChanged")
-  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
-    this.columns.forEach(column => {
+  columnSortChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnSortChangedEvent>
+  ) {
+    this.columns.forEach((column) => {
       if (column.columnId != eventInfo.detail.columnId) {
-        column.sortDirection = null
+        column.sortDirection = null;
       }
     });
   }

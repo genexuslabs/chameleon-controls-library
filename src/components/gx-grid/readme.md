@@ -2,12 +2,14 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property        | Attribute        | Description | Type     | Default     |
 | --------------- | ---------------- | ----------- | -------- | ----------- |
 | `grid`          | --               |             | `GxGrid` | `undefined` |
 | `gridTimestamp` | `grid-timestamp` |             | `number` | `undefined` |
+
 
 ## Dependencies
 
@@ -23,7 +25,6 @@
 - [ch-paginator-navigate](../paginator-navigate)
 
 ### Graph
-
 ```mermaid
 graph TD;
   gx-grid-chameleon --> ch-grid
@@ -34,12 +35,13 @@ graph TD;
   gx-grid-chameleon --> ch-grid-column
   gx-grid-chameleon --> ch-paginator
   gx-grid-chameleon --> ch-paginator-navigate
-  ch-grid --> ch-window
-  ch-grid-action-settings --> ch-window
+  ch-grid --> ch-grid-settings
+  ch-grid --> ch-grid-settings-columns
+  ch-grid-settings --> ch-window
   ch-grid-column --> ch-grid-column-resize
   style gx-grid-chameleon fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*

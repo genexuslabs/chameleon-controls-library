@@ -1,4 +1,4 @@
-export type ColumnSortDirection = 'asc' | 'desc';
+export type ColumnSortDirection = "asc" | "desc";
 
 export interface ChGridColumnDragEvent {
   columnId: string;

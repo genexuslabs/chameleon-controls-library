@@ -27,7 +27,7 @@ export class GridChameleon {
   constructor() {}
 
   @Prop() readonly grid: GxGrid;
-  @Prop({mutable: true}) gridTimestamp: number;
+  @Prop({ mutable: true }) gridTimestamp: number;
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -75,16 +75,19 @@ export class GridChameleon {
   }
 
   @Listen("columnSortChanged")
-  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
+  columnSortChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnSortChangedEvent>
+  ) {
     const column = this.grid.getColumnByHtmlName(eventInfo.detail.columnId);
 
-    this.grid.setSort(column.index, eventInfo.detail.sortDirection == "desc" ? false: true);
+    this.grid.setSort(
+      column.index,
+      eventInfo.detail.sortDirection == "desc" ? false : true
+    );
     this.gridTimestamp = Date.now();
   }
 
   render() {
-    console.log(this.grid);
-
     return (
       <Host>
         <ch-grid
@@ -105,11 +108,11 @@ export class GridChameleon {
     );
   }
 
-  renderHeader() {
+  private renderHeader() {
     return <h1 slot="header">{this.grid.header}</h1>;
   }
 
-  renderActionbar() {
+  private renderActionbar() {
     return (
       <ch-grid-actionbar slot="header">
         <ch-grid-action-refresh
@@ -140,7 +143,7 @@ export class GridChameleon {
     );
   }
 
-  renderColumns() {
+  private renderColumns() {
     return (
       <ch-grid-columnset class={this.grid.ColumnsetClass}>
         {this.grid.columns.map((column) => {
@@ -159,7 +162,7 @@ export class GridChameleon {
     );
   }
 
-  renderRows() {
+  private renderRows() {
     return this.grid.rows.map((row, i) => {
       const rowEvenClasses = `${this.grid.RowClass} ${this.grid.RowEvenClass}`;
       const rowOddClasses = `${this.grid.RowClass} ${this.grid.RowOddClass}`;
@@ -175,7 +178,7 @@ export class GridChameleon {
     });
   }
 
-  renderCells(row: GxGridRow) {
+  private renderCells(row: GxGridRow) {
     return row.gxProps.map((cellControlProperties, i) => {
       const column = this.grid.columns[i];
 
@@ -194,12 +197,12 @@ export class GridChameleon {
     });
   }
 
-  renderControl(control: GxControl, props: any): string {
+  private renderControl(control: GxControl, props: any): string {
     control.setProperties.apply(control, props);
     return control.getHtml();
   }
 
-  renderPaginator() {
+  private renderPaginator() {
     return (
       <ch-paginator class={this.grid.pagingBarClass} slot="footer">
         {this.renderPaginatorNavigate(
@@ -230,7 +233,7 @@ export class GridChameleon {
     );
   }
 
-  renderPaginatorNavigate(
+  private renderPaginatorNavigate(
     type: ChPaginatorNavigationType,
     disabled: boolean,
     className: string,
@@ -270,7 +273,7 @@ export interface GxGrid {
   readonly pagingButtonPreviousClass: string;
 
   getRowByGxId(gxId: string): GxGridRow;
-  setSort(columnIndex:number, asc?: boolean);
+  setSort(columnIndex: number, asc?: boolean);
   selectRow(index: number): void;
   execC2VFunctions(): void;
   executeEvent(columnIndex: number, rowIndex: number): void;

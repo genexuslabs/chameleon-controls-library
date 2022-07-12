@@ -25,10 +25,12 @@ export class ChGridColumnset {
   }
 
   @Listen("columnSortChanged")
-  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
-    this.columns.forEach(column => {
+  columnSortChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnSortChangedEvent>
+  ) {
+    this.columns.forEach((column) => {
       if (column.columnId != eventInfo.detail.columnId) {
-        column.sortDirection = null
+        column.sortDirection = null;
       }
     });
   }

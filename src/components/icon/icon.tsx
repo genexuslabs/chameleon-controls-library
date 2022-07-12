@@ -15,7 +15,11 @@ export class ChIcon {
   /*********************************
   PROPERTIES & STATE
   *********************************/
-
+  /**
+   * The color of the icon.
+   *
+   */
+  @Prop() color: Color;
   /**
    * If enabled, the icon will be loaded lazily when it's visible in the viewport.
    */
@@ -30,6 +34,11 @@ export class ChIcon {
    * The URL of the icon.
    */
   @Prop({ reflect: true }) src = "";
+
+  /**
+   * The size of the icon. Possible values: regular, small.
+   */
+  @Prop() size: Size = "regular";
 
   @State() private isVisible = false;
 
@@ -105,3 +114,19 @@ export class ChIcon {
     return <div innerHTML={this.svgContent} />;
   }
 }
+
+export type Color =
+  | "primary-enabled"
+  | "primary-active"
+  | "primary-hover"
+  | "onbackground"
+  | "negative"
+  | "disabled"
+  | "ondisabled"
+  | "error"
+  | "success"
+  | "warning"
+  | "alwaysblack"
+  | "auto";
+
+export type Size = "regular" | "small";

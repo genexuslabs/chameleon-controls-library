@@ -9,7 +9,11 @@ import {
   h,
   Listen,
 } from "@stencil/core";
-import { ChGridColumnDragEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./ch-grid-column-types";
+import {
+  ChGridColumnDragEvent,
+  ChGridColumnSortChangedEvent,
+  ColumnSortDirection,
+} from "./ch-grid-column-types";
 
 @Component({
   tag: "ch-grid-column",
@@ -43,7 +47,7 @@ export class ChGridColumn {
   componentDidLoad() {
     this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
   }
-  
+
   @Watch("size")
   sizeHandler() {
     this.columnVisibleChanged.emit(this.el);
@@ -56,23 +60,21 @@ export class ChGridColumn {
 
   @Watch("sortDirection")
   sortDirectionHandler() {
-
     if (this.sortDirection) {
       this.columnSortChanged.emit({
         columnId: this.columnId,
-        sortDirection: this.sortDirection
+        sortDirection: this.sortDirection,
       });
     }
   }
 
   @Listen("click")
   clickHandler() {
-    console.log(this.resizing);
-    
+
     if (!this.dragging) {
-        if (this.sortable) {
-          this.sortDirection = this.sortDirection == "asc" ? 'desc' : 'asc';
-        }
+      if (this.sortable) {
+        this.sortDirection = this.sortDirection == "asc" ? "desc" : "asc";
+      }
     } else {
       this.dragging = false;
     }
@@ -84,8 +86,12 @@ export class ChGridColumn {
 
     this.dragMouseDownHandler(eventInfo);
 
-    document.addEventListener("mousemove", this.dragMouseMoveFn, {passive: true});
-    document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), { once: true });
+    document.addEventListener("mousemove", this.dragMouseMoveFn, {
+      passive: true,
+    });
+    document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), {
+      once: true,
+    });
   }
 
   dragMouseDownHandler(eventInfo: MouseEvent) {
@@ -94,14 +100,16 @@ export class ChGridColumn {
   }
 
   dragMouseMoveHandler(eventInfo: MouseEvent) {
-
-    if (this.dragging || Math.abs(this.dragMouseMoveStartPositionX - eventInfo.pageX) > 5) {
+    if (
+      this.dragging ||
+      Math.abs(this.dragMouseMoveStartPositionX - eventInfo.pageX) > 5
+    ) {
       this.dragging = true;
 
       this.columnDragging.emit({
         columnId: this.columnId,
         positionX: eventInfo.pageX,
-        direction: eventInfo.movementX > 0 ? "right" : "left"
+        direction: eventInfo.movementX > 0 ? "right" : "left",
       });
     }
   }
@@ -132,7 +140,7 @@ export class ChGridColumn {
     return (
       <li class="sort" part="bar-sort">
         <div class="sort-asc" part="bar-sort-ascending"></div>
-        <div class="sort-desc"part="bar-sort-descending"></div>
+        <div class="sort-desc" part="bar-sort-descending"></div>
       </li>
     );
   }

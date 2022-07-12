@@ -35,12 +35,14 @@ export class ChGridColumnResize {
     this.startPageX = eventInfo.pageX;
     this.startColumnWidth = this.column.el.getBoundingClientRect().width;
 
-    document.addEventListener("mousemove", this.mousemoveFn, {passive: true});
-    document.addEventListener("mouseup", this.mouseupHandler.bind(this), { once: true });
+    document.addEventListener("mousemove", this.mousemoveFn, { passive: true });
+    document.addEventListener("mouseup", this.mouseupHandler.bind(this), {
+      once: true,
+    });
 
     this.columnResizeStarted.emit();
   }
-  
+
   mousemoveHandler(eventInfo: MouseEvent) {
     const columnSize =
       this.startColumnWidth - (this.startPageX - eventInfo.pageX);

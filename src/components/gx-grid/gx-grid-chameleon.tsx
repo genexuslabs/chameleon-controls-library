@@ -27,7 +27,7 @@ export class GridChameleon {
   constructor() {}
 
   @Prop() readonly grid: GxGrid;
-  @Prop({mutable: true}) gridTimestamp: number;
+  @Prop({ mutable: true }) gridTimestamp: number;
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -75,16 +75,19 @@ export class GridChameleon {
   }
 
   @Listen("columnSortChanged")
-  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
+  columnSortChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnSortChangedEvent>
+  ) {
     const column = this.grid.getColumnByHtmlName(eventInfo.detail.columnId);
 
-    this.grid.setSort(column.index, eventInfo.detail.sortDirection == "desc" ? false: true);
+    this.grid.setSort(
+      column.index,
+      eventInfo.detail.sortDirection == "desc" ? false : true
+    );
     this.gridTimestamp = Date.now();
   }
 
   render() {
-    console.log(this.grid);
-
     return (
       <Host>
         <ch-grid
@@ -270,7 +273,7 @@ export interface GxGrid {
   readonly pagingButtonPreviousClass: string;
 
   getRowByGxId(gxId: string): GxGridRow;
-  setSort(columnIndex:number, asc?: boolean);
+  setSort(columnIndex: number, asc?: boolean);
   selectRow(index: number): void;
   execC2VFunctions(): void;
   executeEvent(columnIndex: number, rowIndex: number): void;

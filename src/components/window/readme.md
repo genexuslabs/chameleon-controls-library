@@ -2,6 +2,7 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property       | Attribute       | Description | Type      | Default     |
@@ -13,26 +14,40 @@
 | `hidden`       | `hidden`        |             | `boolean` | `true`      |
 | `modal`        | `modal`         |             | `boolean` | `true`      |
 
+
 ## Events
 
 | Event          | Description | Type               |
 | -------------- | ----------- | ------------------ |
 | `windowClosed` |             | `CustomEvent<any>` |
 
+
+## Shadow Parts
+
+| Part        | Description |
+| ----------- | ----------- |
+| `"caption"` |             |
+| `"close"`   |             |
+| `"footer"`  |             |
+| `"header"`  |             |
+| `"main"`    |             |
+| `"mask"`    |             |
+| `"window"`  |             |
+
+
 ## Dependencies
 
 ### Used by
 
-- [ch-grid-settings](../grid-settings)
+ - [ch-grid-settings](../grid-settings)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-grid-settings --> ch-window
   style ch-window fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*

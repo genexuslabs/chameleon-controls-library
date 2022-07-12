@@ -1,0 +1,231 @@
+
+@import "../../globals/normalize.scss";
+@import "../../globals/mixins.scss";
+
+ch-tree-item::part(checkbox) {
+  color: red;
+}
+
+:host {
+
+  /**
+  * @prop --text-color: The color of the text
+  */
+  --text-color: var(--black);
+  /**
+  * @prop --font-family: The text font family
+  */
+  --font-family: "Source Sans Pro", sans-serif;
+  /**
+  * @prop --font-weight: The text font weight
+  */
+  --font-weight: normal;
+  /**
+  * @prop --font-size: The text font size
+  */
+  --font-size: 12px;
+  /**
+  * @prop --guide-color: The color of the tree guides
+  */
+  --guide-color: var(--darkGray);
+  /**
+  * @prop --item-hover-color: The color of the item on hover
+  */
+  --item-hover-color: var(--lightGray);
+  /**
+  * @prop --item-active-color: The color of the active item
+  */
+  --item-active-color: var(--silverGray);
+
+  .text {
+    padding-left: var(--spacing-comp-01);
+  }
+  
+  display: block;
+  li {
+    list-style: none;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    font-weight: var(--font-weight);
+    color: var(--text-color);
+    height: 20px;
+    overflow: hidden;
+
+    &.tree-open {
+      height: auto;
+    }
+    // &.disabled {
+    //   .text {
+    //     color: var(--gray-05);
+    //   }
+    // }
+
+    .li-text {
+      height: 100%;
+      padding: 0 var(--spacing-comp-02);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      position: relative;
+      //overflow: hidden;
+      &--focused {
+      }
+      &:hover {
+        background-color: var(--item-hover-color);
+      }
+      &:active {
+        background-color: var(--item-active-color);
+      }
+      &:focus {
+        outline: none;
+        box-shadow: inset 0px 0px 0px 2px var(--color-primary-active);
+      }
+      &--not-leaf {
+        .horizontal-line {
+          //margin-left: -18px;
+        }
+      }
+      &--selected {
+        background-color: var(--item-active-color);
+        &:hover {
+          background-color: var(--item-hover-color);
+        }
+      }
+
+      &--only-one-parent-tree {
+      }
+    }
+    .vertical-line {
+      position: absolute;
+      width: 1px;
+      height: 0;
+      top: 21px;
+      left: 15px;
+      z-index: 1;
+      //border style
+      background-image: linear-gradient(
+        var(--guide-color) 28%,
+        rgba(255, 255, 255, 0) 0%
+      );
+      background-position: right;
+      background-size: 1px 4px;
+      background-repeat: repeat-y;
+    }
+    .horizontal-line {
+      position: absolute;
+      width: 16px;
+      height: 1px;
+      top: 11px;
+      z-index: 1;
+      margin-left: -23px;
+      top: 10px;
+      //border style
+      background-image: linear-gradient(
+        to right,
+        var(--guide-color) 33%,
+        rgba(255, 255, 255, 0) 0%
+      );
+      background-position: bottom;
+      background-size: 3px 1px;
+      background-repeat: repeat-x;
+      &.display-none {
+        display: none;
+      }
+    }
+    .closed-opened-icons {
+      position: relative;
+      display: flex;
+      margin-left: -2px;
+    }
+    .toggle-icon {
+      position: relative;
+      z-index: 2;
+      padding-left: 3px;
+      padding-right: 3px;
+      @include ui-animation-slow(opacity);
+    }
+  }
+  .checkbox {
+    margin-right: var(--spacing-comp-01);
+  }
+
+  .icon {
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+
+  .right-icon {
+    margin-inline-start: auto;
+    position: relative;
+    top: 0;
+    @include ui-animation-slow(top);
+  }
+
+  .loading {
+    opacity: 1;
+    display: inline;
+    $base-line-height: 8px;
+    $white: var(--gray-01);
+    $off-white: var(--gray-04);
+    $spin-duration: 1s;
+    $pulse-duration: 750ms;
+    right: 11px;
+    top: -20px;
+    position: absolute;
+    z-index: 1;
+    @include ui-animation-slow(all);
+
+    //The loading animation
+    border-radius: 50%;
+    width: $base-line-height;
+    height: $base-line-height;
+    border: 0.18rem solid $off-white;
+    border-top-color: $white;
+    animation: spin $spin-duration infinite linear;
+    &--double {
+      border-style: double;
+      border-width: 0.5rem;
+    }
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+.label input[disabled] {
+  color: red;
+}
+
+:host([disabled]) {
+  li {
+    .text {
+      color: var(--darkGray);
+    }
+  }
+  .toggle-icon {
+    pointer-events: none;
+  }
+}
+:host([downloading]) {
+  .right-icon {
+    top: 20px;
+  }
+  .loading {
+    top: 3px;
+  }
+  pointer-events: none;
+}
+:host([downloaded]) {
+  .loading,
+  .right-icon {
+    opacity: 0;
+  }
+}

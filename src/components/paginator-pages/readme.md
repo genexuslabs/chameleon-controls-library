@@ -2,6 +2,7 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property               | Attribute                 | Description | Type      | Default     |
@@ -12,6 +13,16 @@
 | `textDots`             | `text-dots`               |             | `string`  | `"..."`     |
 | `totalPages`           | `total-pages`             |             | `number`  | `1`         |
 
----
 
-_Built with [StencilJS](https://stenciljs.com/)_
+## Shadow Parts
+
+| Part       | Description |
+| ---------- | ----------- |
+| `"button"` |             |
+| `"dots"`   |             |
+| `"pages"`  |             |
+
+
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

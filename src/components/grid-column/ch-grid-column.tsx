@@ -7,8 +7,9 @@ import {
   Prop,
   Watch,
   h,
+  Listen,
 } from "@stencil/core";
-import { ChGridColumnDragEvent } from "./ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./ch-grid-column-types";
 
 @Component({
   tag: "ch-grid-column",
@@ -18,6 +19,7 @@ import { ChGridColumnDragEvent } from "./ch-grid-column-types";
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
   @Event() columnVisibleChanged: EventEmitter;
+  @Event() columnSortChanged: EventEmitter<ChGridColumnSortChangedEvent>;
   @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
@@ -31,31 +33,17 @@ export class ChGridColumn {
   @Prop() size: string;
   @Prop() resizeable: boolean = true;
   @Prop({ reflect: true }) resizing: boolean;
+  @Prop() sortable: boolean = true;
+  @Prop({ mutable: true, reflect: true }) sortDirection?: ColumnSortDirection;
 
+  private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
-  private dragMouseMovePositionX: number;
+  private dragMouseMoveStartPositionX: number;
 
   componentDidLoad() {
-    this.el.addEventListener("mousedown", (eventInfo) => {
-      eventInfo.preventDefault();
-      eventInfo.stopPropagation();
-
-      this.dragMouseDownHandler();
-
-      document.addEventListener("mousemove", this.dragMouseMoveFn, {
-        passive: true,
-      });
-      document.addEventListener(
-        "mouseup",
-        () => {
-          document.removeEventListener("mousemove", this.dragMouseMoveFn);
-          this.dragMouseUpHandler();
-        },
-        { once: true }
-      );
-    });
+    this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
   }
-
+  
   @Watch("size")
   sizeHandler() {
     this.columnVisibleChanged.emit(this.el);
@@ -66,23 +54,60 @@ export class ChGridColumn {
     this.columnVisibleChanged.emit(this.el);
   }
 
-  dragMouseDownHandler() {
+  @Watch("sortDirection")
+  sortDirectionHandler() {
+
+    if (this.sortDirection) {
+      this.columnSortChanged.emit({
+        columnId: this.columnId,
+        sortDirection: this.sortDirection
+      });
+    }
+  }
+
+  @Listen("click")
+  clickHandler() {
+    console.log(this.resizing);
+    
+    if (!this.dragging) {
+        if (this.sortable) {
+          this.sortDirection = this.sortDirection == "asc" ? 'desc' : 'asc';
+        }
+    } else {
+      this.dragging = false;
+    }
+  }
+
+  mousedownHandler(eventInfo: MouseEvent) {
+    eventInfo.preventDefault();
+    eventInfo.stopPropagation();
+
+    this.dragMouseDownHandler(eventInfo);
+
+    document.addEventListener("mousemove", this.dragMouseMoveFn, {passive: true});
+    document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), { once: true });
+  }
+
+  dragMouseDownHandler(eventInfo: MouseEvent) {
+    this.dragMouseMoveStartPositionX = eventInfo.pageX;
     this.columnDragStarted.emit({ columnId: this.columnId });
   }
 
   dragMouseMoveHandler(eventInfo: MouseEvent) {
-    const direction =
-      eventInfo.pageX > this.dragMouseMovePositionX ? "right" : "left";
-    this.dragMouseMovePositionX = eventInfo.pageX;
 
-    this.columnDragging.emit({
-      columnId: this.columnId,
-      positionX: this.dragMouseMovePositionX,
-      direction,
-    });
+    if (this.dragging || Math.abs(this.dragMouseMoveStartPositionX - eventInfo.pageX) > 5) {
+      this.dragging = true;
+
+      this.columnDragging.emit({
+        columnId: this.columnId,
+        positionX: eventInfo.pageX,
+        direction: eventInfo.movementX > 0 ? "right" : "left"
+      });
+    }
   }
 
   dragMouseUpHandler() {
+    document.removeEventListener("mousemove", this.dragMouseMoveFn);
     this.columnDragEnded.emit({ columnId: this.columnId });
   }
 
@@ -93,15 +118,22 @@ export class ChGridColumn {
           <li class="name" part="bar-name">
             {this.columnName}
           </li>
-          <li class="sort" part="bar-sort">
-            <slot name="sort"></slot>
-          </li>
+          {this.sortable && this.renderSort()}
           <li class="menu" part="bar-menu">
             <button class="button" part="bar-menu-button"></button>
           </li>
           {this.resizeable && this.renderResize()}
         </ul>
       </Host>
+    );
+  }
+
+  renderSort() {
+    return (
+      <li class="sort" part="bar-sort">
+        <div class="sort-asc" part="bar-sort-ascending"></div>
+        <div class="sort-desc"part="bar-sort-descending"></div>
+      </li>
     );
   }
 

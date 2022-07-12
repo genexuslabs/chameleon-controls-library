@@ -14,6 +14,7 @@ import {
   ChPaginatorNavigationType,
 } from "../paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh } from "./gx-grid-chameleon-actions";
+import { ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-types";
 
 declare var gx: any;
 
@@ -26,7 +27,7 @@ export class GridChameleon {
   constructor() {}
 
   @Prop() readonly grid: GxGrid;
-  @Prop() gridTimestamp: number;
+  @Prop({mutable: true}) gridTimestamp: number;
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -71,6 +72,14 @@ export class GridChameleon {
   @Listen("refreshClicked")
   refreshClickedHandler() {
     gridRefresh(this.grid);
+  }
+
+  @Listen("columnSortChanged")
+  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
+    const column = this.grid.getColumnByHtmlName(eventInfo.detail.columnId);
+
+    this.grid.setSort(column.index, eventInfo.detail.sortDirection == "desc" ? false: true);
+    this.gridTimestamp = Date.now();
   }
 
   render() {
@@ -138,7 +147,7 @@ export class GridChameleon {
           if (gx.lang.gxBoolean(column.visible)) {
             return (
               <ch-grid-column
-                columnId={column.gxAttName}
+                columnId={column.htmlName}
                 columnName={column.title}
                 displayObserverClass={column.gxColumnClass}
                 class={this.grid.ColumnClass}
@@ -261,12 +270,14 @@ export interface GxGrid {
   readonly pagingButtonPreviousClass: string;
 
   getRowByGxId(gxId: string): GxGridRow;
+  setSort(columnIndex:number, asc?: boolean);
   selectRow(index: number): void;
   execC2VFunctions(): void;
   executeEvent(columnIndex: number, rowIndex: number): void;
   changeGridPage(direction: string, force?: boolean): any;
   isFirstPage(): boolean;
   isLastPage(): boolean;
+  getColumnByHtmlName(htmlName: string): GxGridColumn;
 
   // UserControl
   readonly ColumnsetClass: string;
@@ -299,6 +310,8 @@ export interface GxGridColumn {
   readonly gxControl: GxControl;
   readonly gxAttId: string;
   readonly gxAttName: string;
+  readonly htmlName: string;
+  readonly index: number;
 }
 
 export interface GxGridRow {

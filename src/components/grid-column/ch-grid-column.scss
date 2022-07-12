@@ -16,9 +16,14 @@
 
 :host([resizing]) {
   cursor: ew-resize;
-  & .bar {
-    pointer-events: none;
-  }
+  pointer-events: none;
+}
+
+:host([sort-direction="asc"]) .bar .sort .sort-asc {
+  visibility: visible;
+}
+:host([sort-direction="desc"]) .bar .sort .sort-desc {
+  visibility: visible;
 }
 
 .bar {
@@ -30,8 +35,29 @@
     @include reset-button;
   }
 
+  & .sort {
+    position: relative;
+    display: flex;
+    align-items: center;
+    & .sort-asc {
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+    & .sort-desc {
+      position: absolute;
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+  }
   & .resize {
     align-self: stretch;
     margin-left: auto;
   }
+}
+
+@keyframes column-sort {
+  0%   {opacity: 0;}
+  10%  {opacity: 1;}
+  90%  {opacity: 1;}
+  100% {opacity: 0;}
 }

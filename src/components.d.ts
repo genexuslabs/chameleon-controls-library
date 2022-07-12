@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/types";
-import { ChGridColumnDragEvent } from "./components/grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
 import { ChGridColumn } from "./components/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
@@ -39,6 +39,8 @@ export namespace Components {
         "resizeable": boolean;
         "resizing": boolean;
         "size": string;
+        "sortDirection"?: ColumnSortDirection;
+        "sortable": boolean;
     }
     interface ChGridColumnDisplay {
         "column": HTMLChGridColumnElement;
@@ -330,12 +332,15 @@ declare namespace LocalJSX {
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
         "onColumnVisibleChanged"?: (event: CustomEvent<any>) => void;
         "order"?: number;
         "physicalOrder"?: number;
         "resizeable"?: boolean;
         "resizing"?: boolean;
         "size"?: string;
+        "sortDirection"?: ColumnSortDirection;
+        "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {
         "column"?: HTMLChGridColumnElement;

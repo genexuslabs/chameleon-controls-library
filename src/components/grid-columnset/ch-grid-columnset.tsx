@@ -1,4 +1,5 @@
 import { Component, Element, Host, Listen, h } from "@stencil/core";
+import { ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-types";
 
 @Component({
   tag: "ch-grid-columnset",
@@ -21,6 +22,15 @@ export class ChGridColumnset {
   @Listen("columnResizeFinished")
   columnResizeFinishedHandler() {
     this.columns.forEach((column) => (column.resizing = false));
+  }
+
+  @Listen("columnSortChanged")
+  columnSortChangedHandler(eventInfo: CustomEvent<ChGridColumnSortChangedEvent>) {
+    this.columns.forEach(column => {
+      if (column.columnId != eventInfo.detail.columnId) {
+        column.sortDirection = null
+      }
+    });
   }
 
   render() {

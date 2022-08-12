@@ -13,6 +13,8 @@ export class ChGridManagerColumnDrag {
       order: column.order,
     }));
     this.column = this.columns.find((item) => item.column.columnId == columnId);
+
+    this.columns.forEach(this.setColumnHiddenRect.bind(this));
   }
 
   dragging(position: number): boolean {
@@ -92,6 +94,44 @@ export class ChGridManagerColumnDrag {
       columnFirst: itemFirst.column,
       columnLast: itemLast.column,
     };
+  }
+
+  private setColumnHiddenRect(item: ChGridManagerColumnDragItem) {
+
+    if (item.column.hidden) {
+      const columnSibling = this.getPreviousSiblingVisible(item) || this.getNextSiblingVisible(item);
+
+      item.rect = new DOMRect(
+        item.column.order < columnSibling.column.order ? columnSibling.rect.left : columnSibling.rect.right,
+        columnSibling.rect.y,
+        0,
+        columnSibling.rect.height
+      );
+    }
+  }
+
+  private getPreviousSiblingVisible(hidden: ChGridManagerColumnDragItem): ChGridManagerColumnDragItem {
+    let previous: ChGridManagerColumnDragItem;
+
+    this.columns.forEach(item => {
+      if (!item.column.hidden && item.column.order < hidden.column.order && (!previous || item.column.order > previous.column.order)) {
+        previous = item;
+      }
+    });
+
+    return previous;
+  }
+
+  private getNextSiblingVisible(hidden: ChGridManagerColumnDragItem): ChGridManagerColumnDragItem {
+    let next: ChGridManagerColumnDragItem;
+
+    this.columns.forEach(item => {
+      if (!item.column.hidden && item.column.order > hidden.column.order && (!next || item.column.order < next.column.order)) {
+        next = item;
+      }
+    });
+
+    return next;
   }
 }
 

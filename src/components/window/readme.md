@@ -39,11 +39,13 @@
 
 ### Used by
 
+ - [ch-grid-column-settings](../grid-column-settings)
  - [ch-grid-settings](../grid-settings)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-grid-column-settings --> ch-window
   ch-grid-settings --> ch-window
   style ch-window fill:#f9f,stroke:#333,stroke-width:4px
 ```

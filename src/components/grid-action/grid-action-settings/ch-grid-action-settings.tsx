@@ -3,7 +3,7 @@ import { Component, Prop, h, Host, Event, EventEmitter } from "@stencil/core";
 @Component({
   tag: "ch-grid-action-settings",
   styleUrl: "ch-grid-action-settings.scss",
-  shadow: true,
+  shadow: false,
 })
 export class ChGridActionSettings {
   @Prop() disabled: boolean;

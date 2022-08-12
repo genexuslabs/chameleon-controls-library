@@ -170,7 +170,7 @@ export class ChGrid {
         <slot name="settings">
           <ch-grid-settings-columns
             part="settings-columns"
-            gridManager={this.gridManager}
+            columns={[...this.gridManager.columns]}
             exportparts="
               column:settings-columns-item,
               column-label:settings-columns-label,

@@ -1,4 +1,4 @@
-import { Component, Host, h } from "@stencil/core";
+import { Component } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-rowset",
@@ -6,11 +6,5 @@ import { Component, Host, h } from "@stencil/core";
   shadow: false,
 })
 export class ChGridRowset {
-  render() {
-    return (
-      <Host>
-        <slot></slot>
-      </Host>
-    );
-  }
+
 }

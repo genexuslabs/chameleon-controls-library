@@ -5,20 +5,24 @@
 
 ## Properties
 
-| Property               | Attribute                | Description | Type              | Default     |
-| ---------------------- | ------------------------ | ----------- | ----------------- | ----------- |
-| `columnId`             | `column-id`              |             | `string`          | `undefined` |
-| `columnName`           | `column-name`            |             | `string`          | `undefined` |
-| `displayObserverClass` | `display-observer-class` |             | `string`          | `undefined` |
-| `hidden`               | `hidden`                 |             | `boolean`         | `false`     |
-| `hideable`             | `hideable`               |             | `boolean`         | `true`      |
-| `order`                | `order`                  |             | `number`          | `undefined` |
-| `physicalOrder`        | `physical-order`         |             | `number`          | `undefined` |
-| `resizeable`           | `resizeable`             |             | `boolean`         | `true`      |
-| `resizing`             | `resizing`               |             | `boolean`         | `undefined` |
-| `size`                 | `size`                   |             | `string`          | `undefined` |
-| `sortDirection`        | `sort-direction`         |             | `"asc" \| "desc"` | `undefined` |
-| `sortable`             | `sortable`               |             | `boolean`         | `true`      |
+| Property               | Attribute                | Description | Type                | Default     |
+| ---------------------- | ------------------------ | ----------- | ------------------- | ----------- |
+| `columnIconUrl`        | `column-icon-url`        |             | `string`            | `undefined` |
+| `columnId`             | `column-id`              |             | `string`            | `undefined` |
+| `columnName`           | `column-name`            |             | `string`            | `undefined` |
+| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"` | `undefined` |
+| `displayObserverClass` | `display-observer-class` |             | `string`            | `undefined` |
+| `hidden`               | `hidden`                 |             | `boolean`           | `false`     |
+| `hideable`             | `hideable`               |             | `boolean`           | `true`      |
+| `order`                | `order`                  |             | `number`            | `undefined` |
+| `physicalOrder`        | `physical-order`         |             | `number`            | `undefined` |
+| `resizeable`           | `resizeable`             |             | `boolean`           | `true`      |
+| `resizing`             | `resizing`               |             | `boolean`           | `undefined` |
+| `settingable`          | `settingable`            |             | `boolean`           | `true`      |
+| `showSettings`         | `show-settings`          |             | `boolean`           | `false`     |
+| `size`                 | `size`                   |             | `string`            | `undefined` |
+| `sortDirection`        | `sort-direction`         |             | `"asc" \| "desc"`   | `undefined` |
+| `sortable`             | `sortable`               |             | `boolean`           | `true`      |
 
 
 ## Events
@@ -37,11 +41,13 @@
 | Part                    | Description |
 | ----------------------- | ----------- |
 | `"bar"`                 |             |
-| `"bar-menu"`            |             |
-| `"bar-menu-button"`     |             |
 | `"bar-name"`            |             |
+| `"bar-name-icon"`       |             |
+| `"bar-name-text"`       |             |
 | `"bar-resize"`          |             |
 | `"bar-resize-split"`    |             |
+| `"bar-settings"`        |             |
+| `"bar-settings-button"` |             |
 | `"bar-sort"`            |             |
 | `"bar-sort-ascending"`  |             |
 | `"bar-sort-descending"` |             |
@@ -55,12 +61,15 @@
 
 ### Depends on
 
+- [ch-grid-column-settings](../grid-column-settings)
 - [ch-grid-column-resize](../grid-column-resize)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
+  ch-grid-column-settings --> ch-window
   gx-grid-chameleon --> ch-grid-column
   style ch-grid-column fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -5,9 +5,9 @@
 
 ## Properties
 
-| Property      | Attribute | Description | Type            | Default     |
-| ------------- | --------- | ----------- | --------------- | ----------- |
-| `gridManager` | --        |             | `ChGridManager` | `undefined` |
+| Property  | Attribute | Description | Type                        | Default     |
+| --------- | --------- | ----------- | --------------------------- | ----------- |
+| `columns` | --        |             | `HTMLChGridColumnElement[]` | `undefined` |
 
 
 ## Shadow Parts

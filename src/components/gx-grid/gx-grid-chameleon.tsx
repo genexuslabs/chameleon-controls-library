@@ -88,6 +88,8 @@ export class GridChameleon {
   }
 
   render() {
+    console.log(this.grid);
+
     return (
       <Host>
         <ch-grid
@@ -96,8 +98,9 @@ export class GridChameleon {
           onRowSelectedClass={this.grid.RowSelectedClass.trim()}
           onRowHighlightedClass={this.grid.RowHighlightedClass.trim()}
         >
-          {this.grid.header && this.renderHeader()}
-          {this.grid.ActionbarShow && this.renderActionbar()}
+          {this.grid.header && this.renderTitle()}
+          {this.renderActionbar("header", this.grid.ActionbarHeaderClass)}
+          {this.renderActionbar("footer", this.grid.ActionbarFooterClass)}
           {this.renderColumns()}
           {this.renderRows()}
           {this.grid.PaginatorShow &&
@@ -108,38 +111,55 @@ export class GridChameleon {
     );
   }
 
-  private renderHeader() {
+  private renderTitle() {
     return <h1 slot="header">{this.grid.header}</h1>;
   }
 
-  private renderActionbar() {
+  private renderActionbar(position: "header" | "footer", className: string) {
+    const refresh = this.grid.ActionRefreshPosition == position,
+          settings = this.grid.ActionSettingsPosition == position;
+
+    if (refresh || settings) {
+      return (
+        <ch-grid-actionbar slot={position} class={className}>
+          {refresh && this.renderActionRefresh()}
+          {settings && this.renderActionSettings()}
+        </ch-grid-actionbar>
+      );
+    }
+  }
+
+  private renderActionRefresh() {
     return (
-      <ch-grid-actionbar slot="header">
-        <ch-grid-action-refresh
-          class={this.grid.ActionRefreshClass}
-          title={
-            this.grid.ActionRefreshTextPosition == "title"
-              ? gx.getMessage("GX_BtnRefresh")
-              : ""
-          }
-        >
-          {this.grid.ActionRefreshTextPosition == "text"
+      <ch-grid-action-refresh
+        class={this.grid.ActionRefreshClass}
+        title={
+          this.grid.ActionRefreshTextPosition == "title"
             ? gx.getMessage("GX_BtnRefresh")
-            : ""}
-        </ch-grid-action-refresh>
-        <ch-grid-action-settings
-          class={this.grid.ActionSettingsClass}
-          title={
-            this.grid.ActionSettingsTextPosition == "title"
-              ? gx.getMessage("GXM_Settings")
-              : ""
-          }
-        >
-          {this.grid.ActionSettingsTextPosition == "text"
+            : ""
+        }
+      >
+        {this.grid.ActionRefreshTextPosition == "text"
+          ? gx.getMessage("GX_BtnRefresh")
+          : ""}
+      </ch-grid-action-refresh>
+    );
+  }
+
+  private renderActionSettings() {
+    return (
+      <ch-grid-action-settings
+        class={this.grid.ActionSettingsClass}
+        title={
+          this.grid.ActionSettingsTextPosition == "title"
             ? gx.getMessage("GXM_Settings")
-            : ""}
-        </ch-grid-action-settings>
-      </ch-grid-actionbar>
+            : ""
+        }
+      >
+        {this.grid.ActionSettingsTextPosition == "text"
+          ? gx.getMessage("GXM_Settings")
+          : ""}
+      </ch-grid-action-settings>
     );
   }
 
@@ -151,10 +171,27 @@ export class GridChameleon {
             return (
               <ch-grid-column
                 columnId={column.htmlName}
+                columnIconUrl={column.Icon}
                 columnName={column.title}
+                columnNamePosition={column.NamePosition}
+                size={this.getColumnSize(column)}
                 displayObserverClass={column.gxColumnClass}
-                class={this.grid.ColumnClass}
-              ></ch-grid-column>
+                class={`${this.grid.ColumnClass} ${column.HeaderClass}`}
+                hidden={column.Hidden == -1}
+                hideable={column.Hideable == -1}
+                resizeable={column.Resizeable == -1}
+                sortable={column.Sortable == -1}
+                settingable={column.Filterable == -1}
+              >
+                <div slot="settings">
+                  <fieldset>
+                    <caption>Filter</caption>
+                    <label>
+                      <input type="text" />
+                    </label>
+                  </fieldset>
+                </div>
+              </ch-grid-column>
             );
           }
         })}
@@ -252,6 +289,36 @@ export class GridChameleon {
       </ch-paginator-navigate>
     );
   }
+
+  private getColumnSize(column: GxGridColumn): string {
+    let size;
+
+    switch (column.Size) {
+      case "auto":
+        size = "auto";
+        break;
+      case "css":
+        size = `var(--${column.SizeVariableName}, min-content)`;
+        break;
+      case "length":
+        size = column.SizeLength;
+        break;
+      case "max":
+        size = "max-content";
+        break;
+      case "min":
+        size = "min-content";
+        break;
+      case "minmax":
+        size = `minmax(${column.SizeMinLength || "min-content"}, ${column.SizeMaxLength || "auto"})`;
+        break;
+      default:
+        size = "min-content";
+        break;
+    }
+
+    return size || "min-content";
+  }
 }
 
 export interface GxGrid {
@@ -291,13 +358,21 @@ export interface GxGrid {
   readonly RowSelectedClass: string;
   readonly RowHighlightedClass: string;
   readonly CellClass: string;
+
   readonly PaginatorShow: boolean;
   readonly PaginatorNavigationButtonTextPosition: "title" | "text";
-  readonly ActionbarShow: boolean;
+
+  readonly ActionbarHeaderClass: string;
+  readonly ActionbarFooterClass: string;
+
+  readonly ActionRefreshPosition: "none" | "header" | "footer";
   readonly ActionRefreshTextPosition: "title" | "text";
   readonly ActionRefreshClass: string;
+
+  readonly ActionSettingsPosition: "none" | "header" | "footer";
   readonly ActionSettingsTextPosition: "title" | "text";
   readonly ActionSettingsClass: string;
+
   readonly SettingsCloseTextPosition: "title" | "text";
 
   OnPaginationFirst(): void;
@@ -315,6 +390,21 @@ export interface GxGridColumn {
   readonly gxAttName: string;
   readonly htmlName: string;
   readonly index: number;
+
+  // UserControl
+  readonly Icon: string;
+  readonly NamePosition: "title" | "text";
+  readonly HeaderClass: string;
+  readonly Hidden: number;
+  readonly Hideable: number;
+  readonly Sortable: number;
+  readonly Filterable: number;
+  readonly Resizeable: number;
+  readonly Size: "min" | "max" | "minmax" | "auto" | "length" | "css";
+  readonly SizeLength: string;
+  readonly SizeMinLength: string;
+  readonly SizeMaxLength: string;
+  readonly SizeVariableName: string;
 }
 
 export interface GxGridRow {

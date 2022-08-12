@@ -1,6 +1,9 @@
 export default class HTMLChGridRowElement extends HTMLElement {
+  grid: HTMLChGridElement;
+
   constructor() {
     super();
+    this.grid = this.closest('ch-grid');
   }
 
   get rowId() {
@@ -8,17 +11,16 @@ export default class HTMLChGridRowElement extends HTMLElement {
   }
 
   set highlighted(value: boolean) {
-    const grid = this.getParentGrid();
 
     if (value === true) {
       this.setAttribute("highlighted", "");
-      if (grid.onRowHighlightedClass) {
-        this.classList.add(grid.onRowHighlightedClass);
+      if (this.grid.onRowHighlightedClass) {
+        this.classList.add(this.grid.onRowHighlightedClass);
       }
     } else {
       this.removeAttribute("highlighted");
-      if (grid.onRowHighlightedClass) {
-        this.classList.remove(grid.onRowHighlightedClass);
+      if (this.grid.onRowHighlightedClass) {
+        this.classList.remove(this.grid.onRowHighlightedClass);
       }
     }
   }
@@ -28,29 +30,22 @@ export default class HTMLChGridRowElement extends HTMLElement {
   }
 
   set selected(value: boolean) {
-    const grid = this.getParentGrid();
 
     if (value === true) {
       this.setAttribute("selected", "");
-      if (grid.onRowSelectedClass) {
-        this.classList.add(grid.onRowSelectedClass);
+      if (this.grid.onRowSelectedClass) {
+        this.classList.add(this.grid.onRowSelectedClass);
       }
     } else {
       this.removeAttribute("selected");
-      if (grid.onRowSelectedClass) {
-        this.classList.remove(grid.onRowSelectedClass);
+      if (this.grid.onRowSelectedClass) {
+        this.classList.remove(this.grid.onRowSelectedClass);
       }
     }
   }
 
   get selected(): boolean {
     return this.hasAttribute("selected");
-  }
-
-  getParentGrid(): HTMLChGridElement {
-    return this.assignedSlot.getRootNode({ composed: false })[
-      "host"
-    ] as HTMLChGridElement;
   }
 }
 customElements.define("ch-grid-row", HTMLChGridRowElement);

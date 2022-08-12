@@ -28,7 +28,9 @@ export class ChGridColumn {
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
   @Prop() columnId: string;
+  @Prop() columnIconUrl: string;
   @Prop() columnName: string;
+  @Prop() columnNamePosition: "title" | "text";
   @Prop() displayObserverClass: string;
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;
@@ -38,7 +40,9 @@ export class ChGridColumn {
   @Prop() resizeable: boolean = true;
   @Prop({ reflect: true }) resizing: boolean;
   @Prop() sortable: boolean = true;
+  @Prop() settingable: boolean = true;
   @Prop({ mutable: true, reflect: true }) sortDirection?: ColumnSortDirection;
+  @Prop({reflect: true}) showSettings = false;
 
   private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
@@ -77,6 +81,11 @@ export class ChGridColumn {
     } else {
       this.dragging = false;
     }
+  }
+
+  @Listen("settingsCloseClicked")
+  settingsCloseClickedHandler() {
+    this.showSettings = false;
   }
 
   private mousedownHandler(eventInfo: MouseEvent) {
@@ -118,24 +127,58 @@ export class ChGridColumn {
     this.columnDragEnded.emit({ columnId: this.columnId });
   }
 
+  private settingsMouseDownHandler(eventInfo: MouseEvent) {
+    eventInfo.stopPropagation();
+  }
+
+  private settingsClickHandler(eventInfo: MouseEvent) {
+    eventInfo.stopPropagation();
+    this.showSettings = true;
+  }
+
   render() {
     return (
       <Host>
         <ul class="bar" part="bar">
-          <li class="name" part="bar-name">
-            {this.columnName}
-          </li>
+          {this.renderName()}
           {this.sortable && this.renderSort()}
-          <li class="menu" part="bar-menu">
-            <button class="button" part="bar-menu-button"></button>
-          </li>
+          {this.settingable && this.renderSettings()}
           {this.resizeable && this.renderResize()}
         </ul>
+        <ch-grid-column-settings
+          column={this}
+          onMouseDown={this.settingsMouseDownHandler}
+          show={this.showSettings}
+          exportparts="
+            mask:settings-mask,
+            window:settings-window,
+            header:settings-header,
+            caption:settings-caption,
+            close:settings-close,
+            main:settings-main,
+            footer:settings-footer
+          "
+        >
+          <slot name="settings"></slot>
+        </ch-grid-column-settings>
       </Host>
     );
   }
 
-  renderSort() {
+  private renderName() {
+    return (
+      <li class="name" part="bar-name" title={this.columnNamePosition == 'title' ? this.columnName : null}>
+        {
+          this.columnIconUrl ?
+            <img class="name-icon" part="bar-name-icon" src={this.columnIconUrl} /> : 
+            <div class="name-icon" part="bar-name-icon"></div>
+        }
+        <span class="name-text" part="bar-name-text" hidden={this.columnNamePosition != 'text'}>{this.columnName}</span>
+      </li>
+    );
+  }
+
+  private renderSort() {
     return (
       <li class="sort" part="bar-sort">
         <div class="sort-asc" part="bar-sort-ascending"></div>
@@ -144,7 +187,15 @@ export class ChGridColumn {
     );
   }
 
-  renderResize() {
+  private renderSettings() {
+    return (
+      <li class="settings" part="bar-settings">
+        <button class="button" part="bar-settings-button" onClick={this.settingsClickHandler.bind(this)}></button>
+      </li>
+    );
+  }
+
+  private renderResize() {
     return (
       <li class="resize" part="bar-resize">
         <ch-grid-column-resize

@@ -5,7 +5,6 @@
   display: flex;
   position: sticky;
   top: 0;
-
 }
 
 // column-set box simulation
@@ -26,12 +25,27 @@
   visibility: visible;
 }
 
+:host([show-settings]) {
+  z-index: 1000;
+}
+
 .bar {
   @include reset-list;
   display: flex;
   align-items: center;
   
-  & .menu .button {
+  & .name {
+    display: flex;
+    overflow: hidden;
+    
+    & .name-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  & .settings .button {
     @include reset-button;
   }
 

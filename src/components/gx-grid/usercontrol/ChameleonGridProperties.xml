@@ -48,7 +48,7 @@
 					  <Id>RowHighlightedClass</Id>
 					  <Name>RowHighlightedClass</Name>
 					  <Type>Text</Type>
-					  <Default>grid-row-highlighted</Default>
+					  <Default>grid-row-highlight</Default>
 					</Prop>
 					<Prop>
 					  <Id>CellClass</Id>
@@ -74,17 +74,34 @@
 					</Childs>
 				</Group>
 				<Group>
-					<Name>Actionbar</Name>
+					<Name>Actionbars</Name>
 					<Childs>
 						<Prop>
-							<Id>ActionbarShow</Id>
-							<Name>ActionbarShow</Name>
-							<Type>Boolean</Type>
-							<Default>true</Default>
+							<Id>ActionbarHeaderClass</Id>
+							<Name>ActionbarTopClass</Name>
+							<Type>Text</Type>
+							<Default>grid-actionbar-header</Default>
 						</Prop>
+						<Prop>
+							<Id>ActionbarFooterClass</Id>
+							<Name>ActionbarFooterClass</Name>
+							<Type>Text</Type>
+							<Default>grid-actionbar-footer</Default>
+						</Prop>	
 						<Group>
 							<Name>Action Refresh</Name>
 							<Childs>
+								<Prop>
+									<Id>ActionRefreshPosition</Id>
+									<Name>ActionRefreshPosition</Name>
+									<Type>Combo</Type>
+									<Default>footer</Default>
+									<Values>
+										<Value id='none' desc='None'/>
+										<Value id='header' desc='Header'/>
+										<Value id='footer' desc='Footer'/>
+									</Values>
+								</Prop>
 								<Prop>
 									<Id>ActionRefreshClass</Id>
 									<Name>ActionRefreshClass</Name>
@@ -106,6 +123,17 @@
 						<Group>
 							<Name>Action Settings</Name>
 							<Childs>
+								<Prop>
+									<Id>ActionSettingsPosition</Id>
+									<Name>ActionSettingsPosition</Name>
+									<Type>Combo</Type>
+									<Default>footer</Default>
+									<Values>
+										<Value id='none' desc='None'/>
+										<Value id='header' desc='Header'/>
+										<Value id='footer' desc='Footer'/>
+									</Values>
+								</Prop>
 								<Prop>
 									<Id>ActionSettingsClass</Id>
 									<Name>ActionSettingsClass</Name>

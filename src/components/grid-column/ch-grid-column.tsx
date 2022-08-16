@@ -30,7 +30,7 @@ export class ChGridColumn {
   @Prop() columnId: string;
   @Prop() columnIconUrl: string;
   @Prop() columnName: string;
-  @Prop() columnNamePosition: "title" | "text";
+  @Prop() columnNamePosition: 'title' | 'text' = 'text';
   @Prop() displayObserverClass: string;
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;

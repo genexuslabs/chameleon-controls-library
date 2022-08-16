@@ -1,9 +1,12 @@
 export default class HTMLChGridRowElement extends HTMLElement {
-  grid: HTMLChGridElement;
+  private parentGrid: HTMLChGridElement;
 
   constructor() {
     super();
-    this.grid = this.closest('ch-grid');
+  }
+
+  get grid() {
+    return this.parentGrid ?? this.loadParentGrid();
   }
 
   get rowId() {
@@ -46,6 +49,11 @@ export default class HTMLChGridRowElement extends HTMLElement {
 
   get selected(): boolean {
     return this.hasAttribute("selected");
+  }
+
+  private loadParentGrid(): HTMLChGridElement {
+    this.parentGrid = this.closest('ch-grid');
+    return this.parentGrid;
   }
 }
 customElements.define("ch-grid-row", HTMLChGridRowElement);

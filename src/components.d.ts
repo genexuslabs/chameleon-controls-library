@@ -64,7 +64,7 @@ export namespace Components {
         "columnIconUrl": string;
         "columnId": string;
         "columnName": string;
-        "columnNamePosition": "title" | "text";
+        "columnNamePosition": 'title' | 'text';
         "displayObserverClass": string;
         "hidden": boolean;
         "hideable": boolean;
@@ -545,7 +545,7 @@ declare namespace LocalJSX {
         "columnIconUrl"?: string;
         "columnId"?: string;
         "columnName"?: string;
-        "columnNamePosition"?: "title" | "text";
+        "columnNamePosition"?: 'title' | 'text';
         "displayObserverClass"?: string;
         "hidden"?: boolean;
         "hideable"?: boolean;

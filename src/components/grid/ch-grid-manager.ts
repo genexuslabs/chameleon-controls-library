@@ -49,7 +49,7 @@ export class ChGridManager {
   }
 
   private defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
-    if (column.displayObserverClass) {
+    if (column.displayObserverClass && !column.hidden) {
       let columnDisplay = document.createElement(
         "ch-grid-column-display"
       ) as HTMLChGridColumnDisplayElement;

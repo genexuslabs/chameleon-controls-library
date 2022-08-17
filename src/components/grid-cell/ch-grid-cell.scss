@@ -1,8 +1,10 @@
 @import "../grid/helpers/styles.scss";
 
 // row box simulation
-ch-grid-cell {
-  grid-column: var(--grid-column);
-  @include box-simulation;
-  @include column-drag-transition;
+@layer ch-grid {
+  ch-grid-cell {
+    grid-column: var(--grid-column);
+    @include box-simulation;
+    @include column-drag-transition;
+  }
 }

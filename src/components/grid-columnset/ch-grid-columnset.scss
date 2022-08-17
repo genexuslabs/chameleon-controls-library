@@ -1,8 +1,10 @@
-ch-grid-columnset {
-  display: contents;
+@layer ch-grid {
+    ch-grid-columnset {
+    display: contents;
 
-  &.resizing ch-grid-column {
-    cursor: ew-resize;
+    &.resizing ch-grid-column {
+      cursor: ew-resize;
+    }
   }
 }
 

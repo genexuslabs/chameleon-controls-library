@@ -1,7 +1,9 @@
-ch-grid-column-resize {
-    display: block;
-    min-width: 1px;
-    height: 100%;
-    cursor: ew-resize;
-    pointer-events: all;
+@layer ch-grid {
+    ch-grid-column-resize {
+        display: block;
+        min-width: 1px;
+        height: 100%;
+        cursor: ew-resize;
+        pointer-events: all;
+    }
 }

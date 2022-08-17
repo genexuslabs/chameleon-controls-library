@@ -89,7 +89,7 @@ export class ChGridManager {
       } else {
         document.head.insertAdjacentHTML(
           "beforeend",
-          `<style id="ChGrid.ColumnsVariables" data-columns="${this.columns.length}">${selectors}</style>`
+          `<style id="ChGrid.ColumnsVariables" data-columns="${this.columns.length}">@layer ch-grid {${selectors}}</style>`
         );
       }
     }

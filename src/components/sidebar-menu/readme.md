@@ -105,6 +105,13 @@ A sidebar menu that collapses
 | `itemClicked`        |             | `CustomEvent<any>` |
 
 
+## Shadow Parts
+
+| Part     | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| `"menu"` | This part lets you customize the main container of the control  |
+
+
 ## CSS Custom Properties
 
 | Name                                  | Description                                                     |

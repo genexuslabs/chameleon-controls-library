@@ -728,7 +728,11 @@ export class ChSidebarMenu {
   render() {
     return (
       <Host>
-        <nav id="menu" ref={(el) => (this.menu = el as HTMLElement)}>
+        <nav
+          id="menu"
+          part="menu"
+          ref={(el) => (this.menu = el as HTMLElement)}
+        >
           <h1 id="title" ref={(el) => (this.title = el as HTMLElement)}>
             {this.menuTitle}
           </h1>

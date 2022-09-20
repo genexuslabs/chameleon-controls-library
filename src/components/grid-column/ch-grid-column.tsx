@@ -169,9 +169,9 @@ export class ChGridColumn {
       <Host>
         <ul class="bar" part="bar">
           {this.renderName()}
-          {this.sortable && this.renderSort()}
-          {this.settingable && this.renderSettings()}
-          {this.resizeable && this.renderResize()}
+          {this.renderSort()}
+          {this.renderSettings()}
+          {this.renderResize()}
         </ul>
         <ch-grid-column-settings
           column={this}
@@ -208,7 +208,7 @@ export class ChGridColumn {
 
   private renderSort() {
     return (
-      <li class="sort" part="bar-sort">
+      <li class="sort" part="bar-sort" hidden={!this.sortable}>
         <div class="sort-asc" part="bar-sort-ascending"></div>
         <div class="sort-desc" part="bar-sort-descending"></div>
       </li>
@@ -217,7 +217,7 @@ export class ChGridColumn {
 
   private renderSettings() {
     return (
-      <li class="settings" part="bar-settings">
+      <li class="settings" part="bar-settings" hidden={!this.settingable}>
         <button class="button" part="bar-settings-button" onClick={this.settingsClickHandler.bind(this)}></button>
       </li>
     );
@@ -225,7 +225,7 @@ export class ChGridColumn {
 
   private renderResize() {
     return (
-      <li class="resize" part="bar-resize">
+      <li class="resize" part="bar-resize" hidden={!this.resizeable}>
         <ch-grid-column-resize
           column={this}
           class="resize-split"

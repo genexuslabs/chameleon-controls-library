@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/types";
-import { ChGridColumnDragEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
 import { ChGridColumn } from "./components/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
@@ -15,6 +15,7 @@ import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-pag
 import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
 import { ecLevel } from "./components/qr/ch-qr";
 import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
+import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 export namespace Components {
     interface ChFormCheckbox {
         /**
@@ -124,6 +125,8 @@ export namespace Components {
         "src": string;
     }
     interface ChPaginator {
+        "activePage": number;
+        "totalPages": number;
     }
     interface ChPaginatorNavigate {
         "disabled": boolean;
@@ -282,6 +285,7 @@ export namespace Components {
     interface GxGridChameleon {
         "grid": GxGrid;
         "gridTimestamp": number;
+        "state": GridChameleonState;
     }
 }
 declare global {
@@ -552,8 +556,11 @@ declare namespace LocalJSX {
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
+        "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
+        "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+        "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
-        "onColumnVisibleChanged"?: (event: CustomEvent<any>) => void;
         "order"?: number;
         "physicalOrder"?: number;
         "resizeable"?: boolean;
@@ -614,7 +621,9 @@ declare namespace LocalJSX {
         "src"?: string;
     }
     interface ChPaginator {
+        "activePage"?: number;
         "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
+        "totalPages"?: number;
     }
     interface ChPaginatorNavigate {
         "disabled"?: boolean;
@@ -624,6 +633,7 @@ declare namespace LocalJSX {
     interface ChPaginatorPages {
         "activePage"?: number;
         "maxSize"?: number;
+        "onPageClicked"?: (event: CustomEvent<any>) => void;
         "renderFirstLastPages"?: true;
         "textDots"?: string;
         "totalPages"?: number;
@@ -795,6 +805,7 @@ declare namespace LocalJSX {
     interface GxGridChameleon {
         "grid"?: GxGrid;
         "gridTimestamp"?: number;
+        "state"?: GridChameleonState;
     }
     interface IntrinsicElements {
         "ch-form-checkbox": ChFormCheckbox;

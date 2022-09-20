@@ -36,7 +36,7 @@ export class ChGridColumn {
   @Prop() columnId: string;
   @Prop() columnIconUrl: string;
   @Prop() columnName: string;
-  @Prop() columnNamePosition: 'title' | 'text' = 'text';
+  @Prop() columnNamePosition: "title" | "text" = "text";
   @Prop() displayObserverClass: string;
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;
@@ -48,7 +48,7 @@ export class ChGridColumn {
   @Prop() sortable: boolean = true;
   @Prop() settingable: boolean = true;
   @Prop({ mutable: true, reflect: true }) sortDirection?: ColumnSortDirection;
-  @Prop({reflect: true}) showSettings = false;
+  @Prop({ reflect: true }) showSettings = false;
 
   private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
@@ -62,7 +62,7 @@ export class ChGridColumn {
   sizeHandler() {
     this.columnSizeChanging.emit({
       columnId: this.columnId,
-      size: this.size
+      size: this.size,
     });
   }
 
@@ -70,7 +70,7 @@ export class ChGridColumn {
   hiddenHandler() {
     this.columnHiddenChanged.emit({
       columnId: this.columnId,
-      hidden: this.hidden
+      hidden: this.hidden,
     });
   }
 
@@ -78,7 +78,7 @@ export class ChGridColumn {
   orderHandler() {
     this.columnOrderChanged.emit({
       columnId: this.columnId,
-      order: this.order
+      order: this.order,
     });
   }
 
@@ -112,7 +112,7 @@ export class ChGridColumn {
   columnResizeFinishedHandler() {
     this.columnSizeChanged.emit({
       columnId: this.columnId,
-      size: this.size
+      size: this.size,
     });
   }
 
@@ -195,13 +195,27 @@ export class ChGridColumn {
 
   private renderName() {
     return (
-      <li class="name" part="bar-name" title={this.columnNamePosition == 'title' ? this.columnName : null}>
-        {
-          this.columnIconUrl ?
-            <img class="name-icon" part="bar-name-icon" src={this.columnIconUrl} /> : 
-            <div class="name-icon" part="bar-name-icon"></div>
-        }
-        <span class="name-text" part="bar-name-text" hidden={this.columnNamePosition != 'text'}>{this.columnName}</span>
+      <li
+        class="name"
+        part="bar-name"
+        title={this.columnNamePosition == "title" ? this.columnName : null}
+      >
+        {this.columnIconUrl ? (
+          <img
+            class="name-icon"
+            part="bar-name-icon"
+            src={this.columnIconUrl}
+          />
+        ) : (
+          <div class="name-icon" part="bar-name-icon"></div>
+        )}
+        <span
+          class="name-text"
+          part="bar-name-text"
+          hidden={this.columnNamePosition != "text"}
+        >
+          {this.columnName}
+        </span>
       </li>
     );
   }
@@ -218,7 +232,11 @@ export class ChGridColumn {
   private renderSettings() {
     return (
       <li class="settings" part="bar-settings" hidden={!this.settingable}>
-        <button class="button" part="bar-settings-button" onClick={this.settingsClickHandler.bind(this)}></button>
+        <button
+          class="button"
+          part="bar-settings-button"
+          onClick={this.settingsClickHandler.bind(this)}
+        ></button>
       </li>
     );
   }

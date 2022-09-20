@@ -1,4 +1,12 @@
-import { Component, h, Host, Listen, Prop, Event, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  h,
+  Host,
+  Listen,
+  Prop,
+  Event,
+  EventEmitter,
+} from "@stencil/core";
 import { ChGridColumn } from "../grid-column/ch-grid-column";
 
 @Component({
@@ -8,7 +16,7 @@ import { ChGridColumn } from "../grid-column/ch-grid-column";
 })
 export class ChGridColumnSettings {
   @Prop() column: ChGridColumn;
-  @Prop({ reflect: true}) show = false;
+  @Prop({ reflect: true }) show = false;
   @Event() settingsCloseClicked: EventEmitter;
 
   @Listen("windowClosed")

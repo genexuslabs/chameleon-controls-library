@@ -10,7 +10,7 @@
 | `columnIconUrl`        | `column-icon-url`        |             | `string`            | `undefined` |
 | `columnId`             | `column-id`              |             | `string`            | `undefined` |
 | `columnName`           | `column-name`            |             | `string`            | `undefined` |
-| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"` | `'text'`    |
+| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"` | `"text"`    |
 | `displayObserverClass` | `display-observer-class` |             | `string`            | `undefined` |
 | `hidden`               | `hidden`                 |             | `boolean`           | `false`     |
 | `hideable`             | `hideable`               |             | `boolean`           | `true`      |

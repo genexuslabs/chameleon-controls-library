@@ -44,14 +44,16 @@ export class ChGridSettingsColumns {
   }
 
   private getColumnsSorted(): HTMLChGridColumnElement[] {
-    return [...this.columns].sort((a: HTMLChGridColumnElement, b: HTMLChGridColumnElement) => {
-      if (a.order < b.order) {
-        return -1;
+    return [...this.columns].sort(
+      (a: HTMLChGridColumnElement, b: HTMLChGridColumnElement) => {
+        if (a.order < b.order) {
+          return -1;
+        }
+        if (a.order > b.order) {
+          return 1;
+        }
+        return 0;
       }
-      if (a.order > b.order) {
-        return 1;
-      }
-      return 0;
-    })
+    );
   }
 }

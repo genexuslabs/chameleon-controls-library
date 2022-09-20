@@ -14,7 +14,6 @@ export default class HTMLChGridRowElement extends HTMLElement {
   }
 
   set highlighted(value: boolean) {
-
     if (value === true) {
       this.setAttribute("highlighted", "");
       if (this.grid.onRowHighlightedClass) {
@@ -33,7 +32,6 @@ export default class HTMLChGridRowElement extends HTMLElement {
   }
 
   set selected(value: boolean) {
-
     if (value === true) {
       this.setAttribute("selected", "");
       if (this.grid.onRowSelectedClass) {
@@ -52,7 +50,7 @@ export default class HTMLChGridRowElement extends HTMLElement {
   }
 
   private loadParentGrid(): HTMLChGridElement {
-    this.parentGrid = this.closest('ch-grid');
+    this.parentGrid = this.closest("ch-grid");
     return this.parentGrid;
   }
 }

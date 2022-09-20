@@ -14,8 +14,16 @@ import {
   ChPaginatorNavigationType,
 } from "../paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
-import { ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-types";
-import { GridChameleonManagerState, GridChameleonState } from "./gx-grid-chameleon-state";
+import {
+  ChGridColumnHiddenChangedEvent,
+  ChGridColumnOrderChangedEvent,
+  ChGridColumnSizeChangedEvent,
+  ChGridColumnSortChangedEvent,
+} from "../grid-column/ch-grid-column-types";
+import {
+  GridChameleonManagerState,
+  GridChameleonState,
+} from "./gx-grid-chameleon-state";
 
 declare var gx: Gx;
 
@@ -27,8 +35,7 @@ declare var gx: Gx;
 export class GridChameleon {
   @Prop() readonly grid: GxGrid;
   @Prop({ mutable: true }) gridTimestamp: number;
-  @Prop({ mutable: true }) state: GridChameleonState;
-
+  @Prop() state: GridChameleonState;
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -79,30 +86,43 @@ export class GridChameleon {
   columnHiddenChangedHandler(
     eventInfo: CustomEvent<ChGridColumnHiddenChangedEvent>
   ) {
-    GridChameleonManagerState.setColumnHidden(eventInfo.detail.columnId, eventInfo.detail.hidden);
+    GridChameleonManagerState.setColumnHidden(
+      eventInfo.detail.columnId,
+      eventInfo.detail.hidden
+    );
   }
 
   @Listen("columnSizeChanged")
   columnSizeChangedHandler(
     eventInfo: CustomEvent<ChGridColumnSizeChangedEvent>
   ) {
-    GridChameleonManagerState.setColumnSize(eventInfo.detail.columnId, eventInfo.detail.size);
+    GridChameleonManagerState.setColumnSize(
+      eventInfo.detail.columnId,
+      eventInfo.detail.size
+    );
   }
 
   @Listen("columnSortChanged")
   columnSortChangedHandler(
     eventInfo: CustomEvent<ChGridColumnSortChangedEvent>
   ) {
-    GridChameleonManagerState.setColumnSort(eventInfo.detail.columnId, eventInfo.detail.sortDirection);
+    GridChameleonManagerState.setColumnSort(
+      eventInfo.detail.columnId,
+      eventInfo.detail.sortDirection
+    );
 
-    switch(this.grid.SortMode) {
-    case "client":
-      gridSort(this.grid, eventInfo.detail.columnId, eventInfo.detail.sortDirection);
-      this.gridTimestamp = Date.now();
-      break;
-    case "server":
-      gridRefresh(this.grid);
-      break;
+    switch (this.grid.SortMode) {
+      case "client":
+        gridSort(
+          this.grid,
+          eventInfo.detail.columnId,
+          eventInfo.detail.sortDirection
+        );
+        this.gridTimestamp = Date.now();
+        break;
+      case "server":
+        gridRefresh(this.grid);
+        break;
     }
   }
 
@@ -110,7 +130,10 @@ export class GridChameleon {
   columnOrderChangedHandler(
     eventInfo: CustomEvent<ChGridColumnOrderChangedEvent>
   ) {
-    GridChameleonManagerState.setColumnOrder(eventInfo.detail.columnId, eventInfo.detail.order);
+    GridChameleonManagerState.setColumnOrder(
+      eventInfo.detail.columnId,
+      eventInfo.detail.order
+    );
   }
 
   @Watch("state")
@@ -120,25 +143,37 @@ export class GridChameleon {
 
   private handleChangeFilterEqual(eventInfo: Event) {
     const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterEqual = input.value;
+    this.grid.getColumnByHtmlName(input.dataset.columnId).filterEqual =
+      input.value;
 
-    GridChameleonManagerState.setColumnFilterEqual(input.dataset.columnId, input.value);
+    GridChameleonManagerState.setColumnFilterEqual(
+      input.dataset.columnId,
+      input.value
+    );
     gridRefresh(this.grid);
   }
 
   private handleChangeFilterLess(eventInfo: Event) {
     const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterLess = input.value;
+    this.grid.getColumnByHtmlName(input.dataset.columnId).filterLess =
+      input.value;
 
-    GridChameleonManagerState.setColumnFilterLess(input.dataset.columnId, input.value);
+    GridChameleonManagerState.setColumnFilterLess(
+      input.dataset.columnId,
+      input.value
+    );
     gridRefresh(this.grid);
   }
 
   private handleChangeFilterGreater(eventInfo: Event) {
     const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterGreater = input.value;
+    this.grid.getColumnByHtmlName(input.dataset.columnId).filterGreater =
+      input.value;
 
-    GridChameleonManagerState.setColumnFilterGreater(input.dataset.columnId, input.value);
+    GridChameleonManagerState.setColumnFilterGreater(
+      input.dataset.columnId,
+      input.value
+    );
     gridRefresh(this.grid);
   }
 
@@ -155,7 +190,6 @@ export class GridChameleon {
   }
 
   render() {
-
     return (
       <Host>
         <ch-grid
@@ -183,7 +217,7 @@ export class GridChameleon {
 
   private renderActionbar(position: "header" | "footer", className: string) {
     const refresh = this.grid.ActionRefreshPosition == position,
-          settings = this.grid.ActionSettingsPosition == position;
+      settings = this.grid.ActionSettingsPosition == position;
 
     if (refresh || settings) {
       return (
@@ -264,22 +298,53 @@ export class GridChameleon {
       <div slot="settings">
         <fieldset>
           <caption>Filter</caption>
-          {column.FilterMode == "single" && this.renderColumnFilterControl(column.htmlName, column.gxControl.type, column.gxControl.dataType, column.filterEqual, this.handleChangeFilterEqual)}
-          {column.FilterMode == "range" && this.renderColumnFilterControl(column.htmlName, column.gxControl.type, column.gxControl.dataType, column.filterLess, this.handleChangeFilterLess)}
-          {column.FilterMode == "range" && this.renderColumnFilterControl(column.htmlName, column.gxControl.type, column.gxControl.dataType, column.filterGreater, this.handleChangeFilterGreater)}
+          {column.FilterMode == "single" &&
+            this.renderColumnFilterControl(
+              column.htmlName,
+              column.gxControl.type,
+              column.gxControl.dataType,
+              column.filterEqual,
+              this.handleChangeFilterEqual
+            )}
+          {column.FilterMode == "range" &&
+            this.renderColumnFilterControl(
+              column.htmlName,
+              column.gxControl.type,
+              column.gxControl.dataType,
+              column.filterLess,
+              this.handleChangeFilterLess
+            )}
+          {column.FilterMode == "range" &&
+            this.renderColumnFilterControl(
+              column.htmlName,
+              column.gxControl.type,
+              column.gxControl.dataType,
+              column.filterGreater,
+              this.handleChangeFilterGreater
+            )}
         </fieldset>
       </div>
     );
   }
 
-  private renderColumnFilterControl(columnId: string, type: GxControlType, dataType: GxControlDataType, value: string, changeHandler: (eventInfo: Event) => void) {
-    
+  private renderColumnFilterControl(
+    columnId: string,
+    type: GxControlType,
+    dataType: GxControlDataType,
+    value: string,
+    changeHandler: (eventInfo: Event) => void
+  ) {
     switch (type) {
       case GxControlType.EDIT:
       case GxControlType.CHECK:
         return (
           <label>
-            <input type={this.getFilterInputType(dataType)} value={value} data-column-id={columnId} onChange={changeHandler.bind(this)} />
+            <input
+              type={this.getFilterInputType(dataType)}
+              value={value}
+              data-column-id={columnId}
+              onChange={changeHandler.bind(this)}
+            />
           </label>
         );
     }
@@ -396,7 +461,9 @@ export class GridChameleon {
         size = "min-content";
         break;
       case "minmax":
-        size = `minmax(${column.SizeMinLength || "min-content"}, ${column.SizeMaxLength || "auto"})`;
+        size = `minmax(${column.SizeMinLength || "min-content"}, ${
+          column.SizeMaxLength || "auto"
+        })`;
         break;
       default:
         size = "min-content";
@@ -410,17 +477,19 @@ export class GridChameleon {
     const properties = this.grid.properties;
 
     this.grid.columns.forEach((column, i) => {
-      column.render = (properties.length == 0 && column.visible) || properties.some(row => row[i].visible);
+      column.render =
+        (properties.length == 0 && column.visible) ||
+        properties.some((row) => row[i].visible);
     });
   }
 
   private getRowIndexByGxId(rowId: String): number {
-    return this.grid.rows.findIndex(row => row.gxId == rowId);
+    return this.grid.rows.findIndex((row) => row.gxId == rowId);
   }
 
   private notifyResizePopup() {
     if (gx.popup.ispopup()) {
-      gx.fx.obs.notify('gx.onafterevent');
+      gx.fx.obs.notify("gx.onafterevent");
     }
   }
 
@@ -452,13 +521,13 @@ export interface Gx {
   fx: {
     obs: {
       notify(eventName: string): void;
-    }
+    };
   };
   lang: {
-    gxBoolean(value: undefined | boolean | number | string): boolean
+    gxBoolean(value: undefined | boolean | number | string): boolean;
   };
   popup: {
-    ispopup(): boolean
+    ispopup(): boolean;
   };
   getMessage(id: string): string;
 }
@@ -587,7 +656,7 @@ enum GxControlType {
   EDIT = 1,
   RADIO = 4,
   COMBO = 5,
-  CHECK = 7
+  CHECK = 7,
 }
 
 enum GxControlDataType {
@@ -597,5 +666,5 @@ enum GxControlDataType {
   DATETIME = 3,
   VARCHAR = 5,
   LONGVARCHAR = 6,
-  BOOLEAN = 7
+  BOOLEAN = 7,
 }

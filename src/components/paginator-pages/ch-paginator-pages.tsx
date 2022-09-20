@@ -1,4 +1,4 @@
-import { Component, h, Prop, Watch } from "@stencil/core";
+import { Component, h, Prop, Watch, Event, EventEmitter } from "@stencil/core";
 
 @Component({
   tag: "ch-paginator-pages",
@@ -11,6 +11,7 @@ export class ChPaginatorPages {
   @Prop({ mutable: true, reflect: true }) maxSize = 9;
   @Prop() renderFirstLastPages: true;
   @Prop() textDots = "...";
+  @Event() pageClicked: EventEmitter;
 
   @Watch("maxSize")
   watchMaxSize() {

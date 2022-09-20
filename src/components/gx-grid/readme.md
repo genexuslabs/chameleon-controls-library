@@ -5,10 +5,11 @@
 
 ## Properties
 
-| Property        | Attribute        | Description | Type     | Default     |
-| --------------- | ---------------- | ----------- | -------- | ----------- |
-| `grid`          | --               |             | `GxGrid` | `undefined` |
-| `gridTimestamp` | `grid-timestamp` |             | `number` | `undefined` |
+| Property        | Attribute        | Description | Type                 | Default     |
+| --------------- | ---------------- | ----------- | -------------------- | ----------- |
+| `grid`          | --               |             | `GxGrid`             | `undefined` |
+| `gridTimestamp` | `grid-timestamp` |             | `number`             | `undefined` |
+| `state`         | --               |             | `GridChameleonState` | `undefined` |
 
 
 ## Dependencies

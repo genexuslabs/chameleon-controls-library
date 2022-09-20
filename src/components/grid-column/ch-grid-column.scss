@@ -37,7 +37,8 @@
   & .name {
     display: flex;
     overflow: hidden;
-    
+    order: 1;
+
     & .name-text {
       white-space: nowrap;
       overflow: hidden;
@@ -45,14 +46,14 @@
     }
   }
 
-  & .settings .button {
-    @include reset-button;
-  }
-
   & .sort {
     position: relative;
-    display: flex;
     align-items: center;
+    order: 2;
+    &:not([hidden]) {
+      display: flex;
+    }
+
     & .sort-asc {
       visibility: hidden;
       animation-fill-mode: forwards;
@@ -63,9 +64,13 @@
       animation-fill-mode: forwards;
     }
   }
+  & .settings {
+    order: 3;
+  }
   & .resize {
     align-self: stretch;
     margin-left: auto;
+    order: 4;
   }
 }
 

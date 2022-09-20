@@ -14,6 +14,13 @@
 | `totalPages`           | `total-pages`             |             | `number`  | `1`         |
 
 
+## Events
+
+| Event         | Description | Type               |
+| ------------- | ----------- | ------------------ |
+| `pageClicked` |             | `CustomEvent<any>` |
+
+
 ## Shadow Parts
 
 | Part       | Description |

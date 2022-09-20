@@ -10,7 +10,7 @@
 | `columnIconUrl`        | `column-icon-url`        |             | `string`            | `undefined` |
 | `columnId`             | `column-id`              |             | `string`            | `undefined` |
 | `columnName`           | `column-name`            |             | `string`            | `undefined` |
-| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"` | `'text'`    |
+| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"` | `"text"`    |
 | `displayObserverClass` | `display-observer-class` |             | `string`            | `undefined` |
 | `hidden`               | `hidden`                 |             | `boolean`           | `false`     |
 | `hideable`             | `hideable`               |             | `boolean`           | `true`      |
@@ -27,13 +27,16 @@
 
 ## Events
 
-| Event                  | Description | Type                                        |
-| ---------------------- | ----------- | ------------------------------------------- |
-| `columnDragEnded`      |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnDragging`       |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnDragStarted`    |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnSortChanged`    |             | `CustomEvent<ChGridColumnSortChangedEvent>` |
-| `columnVisibleChanged` |             | `CustomEvent<any>`                          |
+| Event                 | Description | Type                                          |
+| --------------------- | ----------- | --------------------------------------------- |
+| `columnDragEnded`     |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnDragging`      |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnDragStarted`   |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnHiddenChanged` |             | `CustomEvent<ChGridColumnHiddenChangedEvent>` |
+| `columnOrderChanged`  |             | `CustomEvent<ChGridColumnOrderChangedEvent>`  |
+| `columnSizeChanged`   |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
+| `columnSizeChanging`  |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
+| `columnSortChanged`   |             | `CustomEvent<ChGridColumnSortChangedEvent>`   |
 
 
 ## Shadow Parts

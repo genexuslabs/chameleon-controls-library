@@ -97,12 +97,15 @@ export class ChGridManagerColumnDrag {
   }
 
   private setColumnHiddenRect(item: ChGridManagerColumnDragItem) {
-
     if (item.column.hidden) {
-      const columnSibling = this.getPreviousSiblingVisible(item) || this.getNextSiblingVisible(item);
+      const columnSibling =
+        this.getPreviousSiblingVisible(item) ||
+        this.getNextSiblingVisible(item);
 
       item.rect = new DOMRect(
-        item.column.order < columnSibling.column.order ? columnSibling.rect.left : columnSibling.rect.right,
+        item.column.order < columnSibling.column.order
+          ? columnSibling.rect.left
+          : columnSibling.rect.right,
         columnSibling.rect.y,
         0,
         columnSibling.rect.height
@@ -110,11 +113,17 @@ export class ChGridManagerColumnDrag {
     }
   }
 
-  private getPreviousSiblingVisible(hidden: ChGridManagerColumnDragItem): ChGridManagerColumnDragItem {
+  private getPreviousSiblingVisible(
+    hidden: ChGridManagerColumnDragItem
+  ): ChGridManagerColumnDragItem {
     let previous: ChGridManagerColumnDragItem;
 
-    this.columns.forEach(item => {
-      if (!item.column.hidden && item.column.order < hidden.column.order && (!previous || item.column.order > previous.column.order)) {
+    this.columns.forEach((item) => {
+      if (
+        !item.column.hidden &&
+        item.column.order < hidden.column.order &&
+        (!previous || item.column.order > previous.column.order)
+      ) {
         previous = item;
       }
     });
@@ -122,11 +131,17 @@ export class ChGridManagerColumnDrag {
     return previous;
   }
 
-  private getNextSiblingVisible(hidden: ChGridManagerColumnDragItem): ChGridManagerColumnDragItem {
+  private getNextSiblingVisible(
+    hidden: ChGridManagerColumnDragItem
+  ): ChGridManagerColumnDragItem {
     let next: ChGridManagerColumnDragItem;
 
-    this.columns.forEach(item => {
-      if (!item.column.hidden && item.column.order > hidden.column.order && (!next || item.column.order < next.column.order)) {
+    this.columns.forEach((item) => {
+      if (
+        !item.column.hidden &&
+        item.column.order > hidden.column.order &&
+        (!next || item.column.order < next.column.order)
+      ) {
         next = item;
       }
     });

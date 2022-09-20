@@ -3,6 +3,14 @@
 <!-- Auto Generated Below -->
 
 
+## Properties
+
+| Property     | Attribute     | Description | Type     | Default     |
+| ------------ | ------------- | ----------- | -------- | ----------- |
+| `activePage` | `active-page` |             | `number` | `undefined` |
+| `totalPages` | `total-pages` |             | `number` | `undefined` |
+
+
 ## Events
 
 | Event               | Description | Type                                             |

@@ -5,6 +5,4 @@ import { Component } from "@stencil/core";
   styleUrl: "ch-grid-rowset.scss",
   shadow: false,
 })
-export class ChGridRowset {
-
-}
+export class ChGridRowset {}

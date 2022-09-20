@@ -96,14 +96,14 @@
 					<Default></Default>
 				</Prop>
 				<Prop>
-					<Id>Filter</Id>
-					<Name>Filter</Name>
-					<Type>Custom</Type>
-					<CustomType>Artech.Genexus.Common.CustomTypes.ControlAttVarReference, Artech.Genexus.Common</CustomType>
-					<Metadata>
-						<Value name="FlagHideAttributes">True</Value>
-						<Value name="FlagScope">DesignTime</Value>
-					</Metadata>
+					<Id>FilterMode</Id>
+					<Name>FilterMode</Name>
+					<Type>Combo</Type>
+					<Default>single</Default>
+					<Values>
+						<Value id='single' desc='Single'/>
+						<Value id='range' desc='Range'/>
+					</Values>
 				</Prop>
 			</Children>
 		</Group>

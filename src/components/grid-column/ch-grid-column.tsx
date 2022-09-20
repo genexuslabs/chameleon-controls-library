@@ -11,6 +11,9 @@ import {
 } from "@stencil/core";
 import {
   ChGridColumnDragEvent,
+  ChGridColumnHiddenChangedEvent,
+  ChGridColumnOrderChangedEvent,
+  ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
   ColumnSortDirection,
 } from "./ch-grid-column-types";
@@ -22,7 +25,10 @@ import {
 })
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
-  @Event() columnVisibleChanged: EventEmitter;
+  @Event() columnHiddenChanged: EventEmitter<ChGridColumnHiddenChangedEvent>;
+  @Event() columnSizeChanging: EventEmitter<ChGridColumnSizeChangedEvent>;
+  @Event() columnSizeChanged: EventEmitter<ChGridColumnSizeChangedEvent>;
+  @Event() columnOrderChanged: EventEmitter<ChGridColumnOrderChangedEvent>;
   @Event() columnSortChanged: EventEmitter<ChGridColumnSortChangedEvent>;
   @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
@@ -54,12 +60,26 @@ export class ChGridColumn {
 
   @Watch("size")
   sizeHandler() {
-    this.columnVisibleChanged.emit(this.el);
+    this.columnSizeChanging.emit({
+      columnId: this.columnId,
+      size: this.size
+    });
   }
 
   @Watch("hidden")
   hiddenHandler() {
-    this.columnVisibleChanged.emit(this.el);
+    this.columnHiddenChanged.emit({
+      columnId: this.columnId,
+      hidden: this.hidden
+    });
+  }
+
+  @Watch("order")
+  orderHandler() {
+    this.columnOrderChanged.emit({
+      columnId: this.columnId,
+      order: this.order
+    });
   }
 
   @Watch("sortDirection")
@@ -86,6 +106,14 @@ export class ChGridColumn {
   @Listen("settingsCloseClicked")
   settingsCloseClickedHandler() {
     this.showSettings = false;
+  }
+
+  @Listen("columnResizeFinished")
+  columnResizeFinishedHandler() {
+    this.columnSizeChanged.emit({
+      columnId: this.columnId,
+      size: this.size
+    });
   }
 
   private mousedownHandler(eventInfo: MouseEvent) {

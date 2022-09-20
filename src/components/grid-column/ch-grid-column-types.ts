@@ -10,3 +10,18 @@ export interface ChGridColumnSortChangedEvent {
   columnId: string;
   sortDirection: ColumnSortDirection;
 }
+
+export interface ChGridColumnHiddenChangedEvent {
+  columnId: string;
+  hidden: boolean;
+}
+
+export interface ChGridColumnSizeChangedEvent {
+  columnId: string;
+  size: string;
+}
+
+export interface ChGridColumnOrderChangedEvent {
+  columnId: string;
+  order: number;
+}

@@ -27,13 +27,16 @@
 
 ## Events
 
-| Event                  | Description | Type                                        |
-| ---------------------- | ----------- | ------------------------------------------- |
-| `columnDragEnded`      |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnDragging`       |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnDragStarted`    |             | `CustomEvent<ChGridColumnDragEvent>`        |
-| `columnSortChanged`    |             | `CustomEvent<ChGridColumnSortChangedEvent>` |
-| `columnVisibleChanged` |             | `CustomEvent<any>`                          |
+| Event                 | Description | Type                                          |
+| --------------------- | ----------- | --------------------------------------------- |
+| `columnDragEnded`     |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnDragging`      |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnDragStarted`   |             | `CustomEvent<ChGridColumnDragEvent>`          |
+| `columnHiddenChanged` |             | `CustomEvent<ChGridColumnHiddenChangedEvent>` |
+| `columnOrderChanged`  |             | `CustomEvent<ChGridColumnOrderChangedEvent>`  |
+| `columnSizeChanged`   |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
+| `columnSizeChanging`  |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
+| `columnSortChanged`   |             | `CustomEvent<ChGridColumnSortChangedEvent>`   |
 
 
 ## Shadow Parts

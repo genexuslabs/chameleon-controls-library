@@ -16,7 +16,7 @@ export class ChGridColumnSettings {
     eventInfo.stopPropagation();
     this.settingsCloseClicked.emit();
   }
-  
+
   render() {
     return (
       <Host>

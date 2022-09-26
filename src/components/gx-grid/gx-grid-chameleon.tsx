@@ -186,6 +186,7 @@ export class GridChameleon {
   }
 
   componentDidLoad() {
+    this.setCurrentRow();
     this.notifyResizePopup();
   }
 
@@ -493,6 +494,15 @@ export class GridChameleon {
     }
   }
 
+  private setCurrentRow() {
+    const firstRow = this.grid.rows[0];
+
+    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) 
+    {
+      gx.fn.setCurrentGridRow(this.grid.gxId, firstRow.gxId);
+    }
+  }
+
   private loadState() {
     GridChameleonManagerState.load(this.grid, this.state);
   }
@@ -521,18 +531,23 @@ export interface Gx {
   fx: {
     obs: {
       notify(eventName: string): void;
-    };
+    }
+  };
+  fn: {
+    currentGridRowImpl(gxId: number): string;
+    setCurrentGridRow(gxId: number, rowGxId: string): void;
   };
   lang: {
-    gxBoolean(value: undefined | boolean | number | string): boolean;
+    gxBoolean(value: undefined | boolean | number | string): boolean
   };
   popup: {
-    ispopup(): boolean;
+    ispopup(): boolean
   };
   getMessage(id: string): string;
 }
 
 export interface GxGrid {
+  readonly gxId: number;
   readonly ControlName: string;
   readonly columns: GxGridColumn[];
   readonly rows: GxGridRow[];

@@ -18,14 +18,11 @@ gx.uc.chameleonGrid = function () {
       if (_control) {
         _control.gridTimestamp = Date.now();
       } else {
-        var fragment = new DocumentFragment();
         _control = document.createElement("gx-grid-chameleon");
-
         _control.grid = this;
         _control.state = _controlState;
-        fragment.appendChild(_control);
 
-        this.getContainerControl().appendChild(fragment);
+        this.getContainerControl().appendChild(new DocumentFragment().appendChild(_control));
       }
     } else {
       _control.gridTimestamp = Date.now();

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ControlDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-	<Version>0.0.15</Version>
+	<Version>0.0.16</Version>
 	<IncludeInControlInfo>true</IncludeInControlInfo>
 	<GxResources>ChameleonGrid.xpz</GxResources>
 	<ControlType>grid</ControlType>

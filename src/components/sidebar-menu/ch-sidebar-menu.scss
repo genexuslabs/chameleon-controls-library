@@ -284,6 +284,9 @@ $menuWidth: 240px;
       flex-direction: row-reverse;
       ch-icon {
         transform: rotate(180deg);
+      } 
+      .collapse-icon {
+        transform: rotate(180deg);
       }
     }
   }
@@ -346,5 +349,13 @@ $menuWidth: 240px;
   ::-webkit-scrollbar-thumb:hover {
     background: var(--scrollbar-thumb);
     cursor: pointer;
+  }
+
+  .hidden-xs {
+    visibility: hidden;
+  }
+
+  .visible-xs {
+    visibility: inherit;
   }
 }

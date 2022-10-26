@@ -3,7 +3,6 @@ import {
   Element,
   Host,
   h,
-  getAssetPath,
   State,
   Prop,
   Event,
@@ -22,22 +21,16 @@ export class ChSidebarMenuListItem {
    */
   @Event() itemClickedEvent: EventEmitter;
 
-  private listOneIcon: string = getAssetPath(
-    `./sidebar-menu-list-item-assets/projects.svg`
-  );
-  private arrowTop: string = getAssetPath(
-    `./sidebar-menu-list-item-assets/arrow-top.svg`
-  );
-  private arrowRight: string = getAssetPath(
-    `./sidebar-menu-list-item-assets/arrow-right.svg`
-  );
-
   @Element() el: HTMLChSidebarMenuListItemElement;
 
   /**
    * The first list item icon (optional)
    */
   @Prop() itemIconSrc: string;
+  /**
+   * If enabled, the icon will display its inherent/natural color
+   */
+  @Prop({ reflect: true }) autoColor = false;
 
   /**
    * If this attribute is present the item will be initially uncollapsed
@@ -74,8 +67,6 @@ export class ChSidebarMenuListItem {
   firstListItemIcon() {
     if (this.itemIconSrc !== undefined) {
       return this.itemIconSrc;
-    } else {
-      return this.listOneIcon;
     }
   }
 
@@ -91,6 +82,7 @@ export class ChSidebarMenuListItem {
                   "--icon-size": "20px",
                   "--icon-color": `var(--first-list-icon-color)`,
                 }}
+                auto-color={this.autoColor}
               ></ch-icon>
             </span>
             <span class="text">
@@ -99,13 +91,7 @@ export class ChSidebarMenuListItem {
           </div>
           {this.collapsable ? (
             <span class="icon arrow-icon">
-              <ch-icon
-                src={this.arrowTop}
-                style={{
-                  "--icon-size": "20px",
-                  "--icon-color": `var(--first-list-arrow-color)`,
-                }}
-              ></ch-icon>
+              <div part="collapse-item-icon"></div>
             </span>
           ) : null}
         </div>,
@@ -116,13 +102,7 @@ export class ChSidebarMenuListItem {
         <div class="main-container" onClick={this.itemClicked.bind(this)}>
           {this.collapsable ? (
             <span class="icon arrow-icon">
-              <ch-icon
-                src={this.arrowRight}
-                style={{
-                  "--icon-size": "20px",
-                  "--icon-color": `var(--second-list-arrow-color)`,
-                }}
-              ></ch-icon>
+              <div part="collapse-item2-icon"></div>
             </span>
           ) : null}
           <span class="text">

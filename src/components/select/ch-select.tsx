@@ -274,14 +274,7 @@ export class ChSelect {
             </span>
           </div>
           <span class="icon arrow-icon">
-            <ch-icon
-              src={this.resolveArrowIcon()}
-              style={{
-                "--icon-size": "20px",
-                "--icon-color": `var(--arrow-color)`,
-              }}
-              auto-color={this.autoColor}
-            ></ch-icon>
+            <div part="collapse-icon"></div>
           </span>
         </div>
         <div

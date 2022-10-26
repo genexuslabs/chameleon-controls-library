@@ -2,10 +2,6 @@
 @import "../../globals/normalize.scss";
 @import "../../globals/mixins.scss";
 
-ch-tree-item::part(checkbox) {
-  color: red;
-}
-
 :host {
 
   /**

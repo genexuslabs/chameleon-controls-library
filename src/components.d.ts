@@ -193,6 +193,10 @@ export namespace Components {
     }
     interface ChSidebarMenuListItem {
         /**
+          * If enabled, the icon will display its inherent/natural color
+         */
+        "autoColor": boolean;
+        /**
           * The first list item icon (optional)
          */
         "itemIconSrc": string;
@@ -701,6 +705,10 @@ declare namespace LocalJSX {
     interface ChSidebarMenuList {
     }
     interface ChSidebarMenuListItem {
+        /**
+          * If enabled, the icon will display its inherent/natural color
+         */
+        "autoColor"?: boolean;
         /**
           * The first list item icon (optional)
          */

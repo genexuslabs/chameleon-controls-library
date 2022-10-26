@@ -12,7 +12,6 @@ import {
 } from "@stencil/core";
 import { Color } from "../icon/icon";
 import { ChTree } from "../tree/ch-tree";
-import { getAssetPath } from "@stencil/core";
 @Component({
   tag: "ch-tree-item",
   styleUrl: "ch-tree-item.scss",
@@ -477,11 +476,11 @@ export class ChTreeItem {
   }
 
   returnToggleIconType() {
-    //Returns the type of icon : gemini-tools/add or gemini-tools/minus
+    //Returns the type of icon : expand or collapse
     if (!this.opened || this.download) {
-      return "general/add";
+      return "expand-icon";
     } else {
-      return "general/minus";
+      return "collapse-icon";
     }
   }
 
@@ -612,16 +611,11 @@ export class ChTreeItem {
                     }}
                   ></span>,
                   <div class={{ "closed-opened-icons": true }}>
-                    <ch-icon
-                      src={getAssetPath(
-                        `./ch-icon-assets/${this.returnToggleIconType()}.svg`
-                      )}
-                      onClick={this.toggleTreeIconClicked.bind(this)}
+                    <div
+                      part={this.returnToggleIconType()}
                       class="icon toggle-icon"
-                      style={{
-                        "--icon-size": "12px",
-                      }}
-                    ></ch-icon>
+                      onClick={this.toggleTreeIconClicked.bind(this)}
+                    ></div>
                   </div>,
                 ]
               : null}

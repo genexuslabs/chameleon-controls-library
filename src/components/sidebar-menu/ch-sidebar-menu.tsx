@@ -4,13 +4,13 @@ import {
   Host,
   h,
   Prop,
-  getAssetPath,
   State,
   Event,
   EventEmitter,
 } from "@stencil/core";
 
 import * as StorageHelper from "../../helpers/storage-helper";
+import { ClickOutside } from "stencil-click-outside";
 
 @Component({
   tag: "ch-sidebar-menu",
@@ -24,9 +24,6 @@ export class ChSidebarMenu {
 
   @Element() el: HTMLChSidebarMenuElement;
 
-  private iconArrowLeft: string = getAssetPath(
-    `./sidebar-menu-assets/arrow-left.svg`
-  );
   private topHeightSpeed = 300;
   private speedDivisionValue = 400;
 
@@ -84,6 +81,14 @@ export class ChSidebarMenu {
   @State() indicator: HTMLElement;
 
   componentDidLoad() {
+    //hide menu in mobile view
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      this.menu.classList.add("hidden-xs");
+    }
+    window
+      .matchMedia("(max-width: 767px)")
+      .addEventListener("change", this.handleMatchMedia.bind(this));
+
     //get sidebar status from storage
     this.getSidebarState();
 
@@ -461,6 +466,25 @@ export class ChSidebarMenu {
     );
   } // End of ComponentDidLoad
 
+  handleMatchMedia(q) {
+    if (q.matches) {
+      this.menu.classList.add("hidden-xs");
+    } else {
+      this.menu.classList.remove("hidden-xs");
+    }
+  }
+
+  @ClickOutside({ exclude: ".sidebar__toggle-ico" })
+  closeSidebar() {
+    //close the sidebar when user clicks outside of component area (only in mobile view - xs media screens).
+    const screenSize = window.matchMedia("(max-width: 767px)");
+    if (screenSize.matches) {
+      // Viewport is less or equal to 767 pixels wide
+      this.menu.className = "";
+      this.menu.classList.add("hidden-xs");
+    }
+  }
+
   //get position of current active item
   GetCurrentItemIndicatorPos() {
     var timer = null;
@@ -748,13 +772,7 @@ export class ChSidebarMenu {
                 id="collapse-menu"
                 ref={(el) => (this.collapseButton = el as HTMLElement)}
               >
-                <ch-icon
-                  style={{
-                    "--icon-color": "var(--first-list-arrow-color)",
-                    "--icon-size": "20px",
-                  }}
-                  src={this.iconArrowLeft}
-                ></ch-icon>
+                <div part="collapse-menu-icon" class="collapse-icon"></div>
               </div>
             )}
           </footer>

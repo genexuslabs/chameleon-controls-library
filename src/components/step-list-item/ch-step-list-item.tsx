@@ -85,16 +85,7 @@ export class ChStepListItem {
               class="round-tab"
               onClick={() => this.itemClickedHandler(this)}
             >
-              <ch-icon
-                class="item-icon"
-                src={this.resolveIcon()}
-                auto-color="auto"
-                style={
-                  {
-                    //"--icon-size": '22px',
-                  }
-                }
-              ></ch-icon>
+              <div part="item-icon"></div>
             </div>
 
             <span

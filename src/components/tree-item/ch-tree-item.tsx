@@ -12,7 +12,6 @@ import {
 } from "@stencil/core";
 import { Color } from "../icon/icon";
 import { ChTree } from "../tree/ch-tree";
-import { getAssetPath } from "@stencil/core";
 @Component({
   tag: "ch-tree-item",
   styleUrl: "ch-tree-item.scss",

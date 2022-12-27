@@ -3,6 +3,7 @@ import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 export default class HTMLChGridCellElement extends HTMLElement {
   private caret: HTMLDivElement;
   private selector: HTMLInputElement;
+  private selectorLabel: HTMLLabelElement;
   private cellType = ChGridCellType.Single;
 
   constructor() {
@@ -77,11 +78,15 @@ export default class HTMLChGridCellElement extends HTMLElement {
         bubbles: true,
         composed: true,
         detail: {
-          checked: this.selector.value == "on" ? false : true,
+          checked: this.selector.checked,
           range: eventInfo.shiftKey
         },
       })
     );
+  }
+
+  private selectorLabelClickHandler(eventInfo: MouseEvent) {
+    eventInfo.stopPropagation();
   }
 
   private defineSingle() {
@@ -130,6 +135,12 @@ export default class HTMLChGridCellElement extends HTMLElement {
       this.selector.addEventListener(
         "click",
         this.selectorClickHandler.bind(this)
+      );
+
+      this.selectorLabel = this.shadowRoot.querySelector("[part='selector-label']");
+      this.selectorLabel.addEventListener(
+        "click",
+        this.selectorLabelClickHandler.bind(this)
       );
     }
   }

@@ -28,6 +28,7 @@
 | `"footer"`           |             |
 | `"header"`           |             |
 | `"main"`             |             |
+| `"row-actions"`      |             |
 | `"settings-columns"` |             |
 
 

@@ -2,4 +2,11 @@
   ch-grid-row {
     display: contents;
   }
+  ch-grid-row[collapsed] > ch-grid-rowset {
+    display: none;
+  }
+
+  ch-grid-row:is([leaf="false"], :has(> ch-grid-rowset)) > ch-grid-cell::part(caret) {
+    visibility: visible;
+  }
 }

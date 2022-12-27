@@ -1,6 +1,8 @@
 @layer ch-grid {
-  ch-grid-rowset-legend {
+  :host {
+    display: flex;
     grid-column-start: 1;
     grid-column-end: -1;
+    margin-inline-start: calc(var(--indent) * (var(--level) - 1));
   }
 }

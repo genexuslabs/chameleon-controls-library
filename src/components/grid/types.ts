@@ -10,3 +10,7 @@ export interface ChGridCellClickedEvent {
 export type CSSProperties = {
   [key: string]: string;
 };
+
+export interface IChGridCollapsible extends HTMLElement {
+  collapsed: boolean;
+}

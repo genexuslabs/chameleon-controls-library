@@ -324,6 +324,8 @@ export class GridChameleon {
               this.handleChangeFilterGreater
             )}
         </fieldset>
+        <button>Reset</button>
+        <button>Apply</button>
       </div>
     );
   }
@@ -497,8 +499,7 @@ export class GridChameleon {
   private setCurrentRow() {
     const firstRow = this.grid.rows[0];
 
-    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) 
-    {
+    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) {
       gx.fn.setCurrentGridRow(this.grid.gxId, firstRow.gxId);
     }
   }
@@ -531,17 +532,17 @@ export interface Gx {
   fx: {
     obs: {
       notify(eventName: string): void;
-    }
+    };
   };
   fn: {
     currentGridRowImpl(gxId: number): string;
     setCurrentGridRow(gxId: number, rowGxId: string): void;
   };
   lang: {
-    gxBoolean(value: undefined | boolean | number | string): boolean
+    gxBoolean(value: undefined | boolean | number | string): boolean;
   };
   popup: {
-    ispopup(): boolean
+    ispopup(): boolean;
   };
   getMessage(id: string): string;
 }

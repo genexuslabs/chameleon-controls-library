@@ -26,6 +26,13 @@
 | `optionClickedEvent` | Emmits the item id | `CustomEvent<any>` |
 
 
+## Shadow Parts
+
+| Part              | Description |
+| ----------------- | ----------- |
+| `"collapse-icon"` |             |
+
+
 ## CSS Custom Properties
 
 | Name                      | Description                      |

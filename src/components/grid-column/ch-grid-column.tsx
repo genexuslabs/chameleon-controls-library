@@ -34,10 +34,12 @@ export class ChGridColumn {
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
   @Prop() columnId: string;
+  @Prop() columnType: "simple" | "tree" | "select" = "simple";
   @Prop() columnIconUrl: string;
   @Prop() columnName: string;
   @Prop() columnNamePosition: "title" | "text" = "text";
   @Prop() displayObserverClass: string;
+  @Prop() freeze?: "start" | "end";
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;
   @Prop({ reflect: true }) order: number;

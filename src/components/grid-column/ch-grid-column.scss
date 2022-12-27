@@ -5,6 +5,7 @@
   display: flex;
   position: sticky;
   top: 0;
+  --ch-grid-column-head-z-index: 1;
 }
 
 // column-set box simulation
@@ -25,6 +26,7 @@
   visibility: visible;
 }
 
+:host([freeze]),
 :host([show-settings]) {
   z-index: 1000;
 }

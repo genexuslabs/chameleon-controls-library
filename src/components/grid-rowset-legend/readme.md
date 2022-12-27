@@ -3,6 +3,21 @@
 <!-- Auto Generated Below -->
 
 
+## Events
+
+| Event                 | Description | Type                            |
+| --------------------- | ----------- | ------------------------------- |
+| `rowsetLegendClicked` |             | `CustomEvent<CustomEvent<any>>` |
+
+
+## Shadow Parts
+
+| Part      | Description |
+| --------- | ----------- |
+| `"caret"` |             |
+| `"icon"`  |             |
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

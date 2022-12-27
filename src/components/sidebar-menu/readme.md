@@ -107,9 +107,10 @@ A sidebar menu that collapses
 
 ## Shadow Parts
 
-| Part     | Description                                                     |
-| -------- | --------------------------------------------------------------- |
-| `"menu"` | This part lets you customize the main container of the control  |
+| Part                   | Description |
+| ---------------------- | ----------- |
+| `"collapse-menu-icon"` |             |
+| `"menu"`               |             |
 
 
 ## CSS Custom Properties
@@ -144,19 +145,6 @@ A sidebar menu that collapses
 | `--title-font-weight`                 | The menu text font weight                                       |
 | `--title-text-transform`              | The menu text transform property                                |
 
-
-## Dependencies
-
-### Depends on
-
-- [ch-icon](../icon)
-
-### Graph
-```mermaid
-graph TD;
-  ch-sidebar-menu --> ch-icon
-  style ch-sidebar-menu fill:#f9f,stroke:#333,stroke-width:4px
-```
 
 ----------------------------------------------
 

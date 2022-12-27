@@ -66,7 +66,9 @@ export namespace Components {
         "columnId": string;
         "columnName": string;
         "columnNamePosition": "title" | "text";
+        "columnType": "simple" | "tree" | "select";
         "displayObserverClass": string;
+        "freeze"?: "start" | "end";
         "hidden": boolean;
         "hideable": boolean;
         "order": number;
@@ -90,8 +92,6 @@ export namespace Components {
         "show": boolean;
     }
     interface ChGridColumnset {
-    }
-    interface ChGridRowset {
     }
     interface ChGridRowsetLegend {
     }
@@ -353,12 +353,6 @@ declare global {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
     };
-    interface HTMLChGridRowsetElement extends Components.ChGridRowset, HTMLStencilElement {
-    }
-    var HTMLChGridRowsetElement: {
-        prototype: HTMLChGridRowsetElement;
-        new (): HTMLChGridRowsetElement;
-    };
     interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
     }
     var HTMLChGridRowsetLegendElement: {
@@ -478,7 +472,6 @@ declare global {
         "ch-grid-column-resize": HTMLChGridColumnResizeElement;
         "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
         "ch-grid-columnset": HTMLChGridColumnsetElement;
-        "ch-grid-rowset": HTMLChGridRowsetElement;
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
         "ch-grid-settings": HTMLChGridSettingsElement;
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
@@ -554,7 +547,9 @@ declare namespace LocalJSX {
         "columnId"?: string;
         "columnName"?: string;
         "columnNamePosition"?: "title" | "text";
+        "columnType"?: "simple" | "tree" | "select";
         "displayObserverClass"?: string;
+        "freeze"?: "start" | "end";
         "hidden"?: boolean;
         "hideable"?: boolean;
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
@@ -590,9 +585,8 @@ declare namespace LocalJSX {
     }
     interface ChGridColumnset {
     }
-    interface ChGridRowset {
-    }
     interface ChGridRowsetLegend {
+        "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
         "gridManager"?: ChGridManager;
@@ -826,7 +820,6 @@ declare namespace LocalJSX {
         "ch-grid-column-resize": ChGridColumnResize;
         "ch-grid-column-settings": ChGridColumnSettings;
         "ch-grid-columnset": ChGridColumnset;
-        "ch-grid-rowset": ChGridRowset;
         "ch-grid-rowset-legend": ChGridRowsetLegend;
         "ch-grid-settings": ChGridSettings;
         "ch-grid-settings-columns": ChGridSettingsColumns;
@@ -861,7 +854,6 @@ declare module "@stencil/core" {
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
-            "ch-grid-rowset": LocalJSX.ChGridRowset & JSXBase.HTMLAttributes<HTMLChGridRowsetElement>;
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;

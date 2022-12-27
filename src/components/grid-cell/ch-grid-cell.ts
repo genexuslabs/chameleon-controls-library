@@ -86,7 +86,9 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   private selectorLabelClickHandler(eventInfo: MouseEvent) {
-    eventInfo.stopPropagation();
+    if (!eventInfo.shiftKey) {
+      eventInfo.stopPropagation();
+    }
   }
 
   private defineSingle() {
@@ -124,13 +126,13 @@ export default class HTMLChGridCellElement extends HTMLElement {
     if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
       this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `
-        <style>:host::before {content: none !important} label {display:flex}</style>
+        <style>label {display:flex}</style>
         <label part="selector-label">
           <input type="checkbox" part="selector">
           <slot></slot>
         </label>
       `;
-
+      
       this.selector = this.shadowRoot.querySelector("[part='selector']");
       this.selector.addEventListener(
         "click",

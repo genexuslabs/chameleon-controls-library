@@ -44,7 +44,7 @@ export class ChGridManagerSelection {
     const row = this.getRowEventTarget(eventInfo);
 
     if (row) {
-      if (range && multiple) {
+      if (range && multiple && row.parentElement == this.lastRow?.parentElement) {
         const value = !row.selected;
         const rows = this.grid.manager.getRowsRange(this.lastRow ?? row, row);
 

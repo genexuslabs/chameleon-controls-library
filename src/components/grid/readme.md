@@ -17,7 +17,7 @@
 
 | Event              | Description | Type                                       |
 | ------------------ | ----------- | ------------------------------------------ |
-| `cellClicked`      |             | `CustomEvent<ChGridCellClickedEvent>`      |
+| `rowClicked`       |             | `CustomEvent<ChGridRowClickedEvent>`       |
 | `selectionChanged` |             | `CustomEvent<ChGridSelectionChangedEvent>` |
 
 

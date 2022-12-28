@@ -34,7 +34,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   get cellId(): string {
-    return this.getAttribute("cellid");
+    return this.getAttribute("cellid") ?? "";
   }
 
   set selected(value: boolean) {

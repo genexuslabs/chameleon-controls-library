@@ -4,8 +4,8 @@ import "../grid-cell/ch-grid-cell";
 
 import {
   CSSProperties,
-  ChGridCellClickedEvent,
   ChGridSelectionChangedEvent,
+  ChGridRowClickedEvent,
 } from "./types";
 import {
   Component,
@@ -36,7 +36,7 @@ export class ChGrid {
   @Element() el: HTMLChGridElement;
 
   @Event() selectionChanged: EventEmitter<ChGridSelectionChangedEvent>;
-  @Event() cellClicked: EventEmitter<ChGridCellClickedEvent>;
+  @Event() rowClicked: EventEmitter<ChGridRowClickedEvent>;
 
   @State() rowHighlighted: HTMLChGridRowElement;
   @State() rowsSelected: HTMLChGridRowElement[] = [];
@@ -89,13 +89,13 @@ export class ChGrid {
     this.selectionChanged.emit({ rowsId: rows.map((row) => row.rowId) });
   }
 
-  @Watch("cellSelected")
-  cellSelectedHandler(cell: HTMLChGridCellElement) {
-    this.cellClicked.emit({
-      rowId: cell.rowId,
-      cellId: cell.cellId,
-    });
-  }
+  // @Watch("cellSelected")
+  // cellSelectedHandler(cell: HTMLChGridCellElement) {
+  //   this.cellClicked.emit({
+  //     rowId: cell.rowId,
+  //     cellId: cell.cellId,
+  //   });
+  // }
 
   @Listen("mousemove", { passive: true })
   mouseMoveHandler(eventInfo: MouseEvent) {
@@ -117,13 +117,23 @@ export class ChGrid {
 
   @Listen("click", { passive: true })
   clickHandler(eventInfo: MouseEvent) {
+    const rowClicked = this.manager.getRowEventTarget(eventInfo);
+    const cellClicked = this.manager.getCellEventTarget(eventInfo);
+
+    if (rowClicked) {
+      this.rowClicked.emit({
+        rowId: rowClicked.rowId,
+        cellId: cellClicked?.cellId
+      });
+    }
+
     if (this.rowSelectionMode != "none") {
       this.cellSelected = this.manager.selection.setCellSelected(
-        eventInfo,
+        cellClicked,
         this.cellSelected
       );
       this.rowsSelected = this.manager.selection.setRowsSelected(
-        eventInfo,
+        rowClicked,
         eventInfo.ctrlKey ? "append" : "",
         eventInfo.shiftKey,
         this.rowSelectionMode === "multiple",
@@ -136,13 +146,16 @@ export class ChGrid {
   cellSelectorClickedHandler(
     eventInfo: CustomEvent<ChGridCellSelectorClickedEvent>
   ) {
+    const rowClicked = this.manager.getRowEventTarget(eventInfo);
+    const cellClicked = this.manager.getCellEventTarget(eventInfo);
+
     if (this.rowSelectionMode != "none") {
       this.cellSelected = this.manager.selection.setCellSelected(
-        eventInfo,
+        cellClicked,
         this.cellSelected
       );
       this.rowsSelected = this.manager.selection.setRowsSelected(
-        eventInfo,
+        rowClicked,
         eventInfo.detail.checked ? "append" : "unselect",
         eventInfo.detail.range,
         this.rowSelectionMode === "multiple",

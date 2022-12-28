@@ -1,5 +1,5 @@
 import {
-  ChGridCellClickedEvent,
+  ChGridRowClickedEvent,
   ChGridSelectionChangedEvent,
 } from "../grid/types";
 import { Component, Host, Listen, Prop, h, Watch } from "@stencil/core";
@@ -47,8 +47,8 @@ export class GridChameleon {
     }
   }
 
-  @Listen("cellClicked")
-  cellClickedHandler(eventInfo: CustomEvent<ChGridCellClickedEvent>) {
+  @Listen("rowClicked")
+  cellClickedHandler(eventInfo: CustomEvent<ChGridRowClickedEvent>) {
     const rowIndex = this.getRowIndexByGxId(eventInfo.detail.rowId);
     const cellIndex = parseInt(eventInfo.detail.cellId);
 

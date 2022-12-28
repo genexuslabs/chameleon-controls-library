@@ -35,13 +35,12 @@ export class ChGridManagerSelection {
   }
 
   setRowsSelected(
-    eventInfo: Event,
+    row: HTMLChGridRowElement,
     action: "" | "append" | "unselect",
     range: boolean,
     multiple: boolean,
     currentRowsSelected: HTMLChGridRowElement[]
   ): HTMLChGridRowElement[] {
-    const row = this.getRowEventTarget(eventInfo);
 
     if (row) {
       if (range && multiple && row.parentElement == this.lastRow?.parentElement) {
@@ -94,10 +93,9 @@ export class ChGridManagerSelection {
   }
 
   setCellSelected(
-    eventInfo: Event,
+    cell: HTMLChGridCellElement,
     currentCellSelected: HTMLChGridCellElement
   ): HTMLChGridCellElement {
-    const cell = this.getCellEventTarget(eventInfo);
 
     if (cell && !cell.selected) {
       if (currentCellSelected) {
@@ -142,14 +140,6 @@ export class ChGridManagerSelection {
       .find(
         (target: HTMLElement) => target.tagName === "CH-GRID-ROW"
       ) as HTMLChGridRowElement;
-  }
-
-  private getCellEventTarget(eventInfo: Event): HTMLChGridCellElement {
-    return eventInfo
-      .composedPath()
-      .find(
-        (target: HTMLElement) => target.tagName === "CH-GRID-CELL"
-      ) as HTMLChGridCellElement;
   }
 
   private isRowActionsEventTarget(eventInfo: Event): boolean {

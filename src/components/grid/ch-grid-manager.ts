@@ -64,6 +64,22 @@ export class ChGridManager {
     return rows;
   }
 
+  getRowEventTarget(eventInfo: Event): HTMLChGridRowElement {
+    return eventInfo
+      .composedPath()
+      .find(
+        (target: HTMLElement) => target.tagName === "CH-GRID-ROW"
+      ) as HTMLChGridRowElement;
+  }
+
+  getCellEventTarget(eventInfo: Event): HTMLChGridCellElement {
+    return eventInfo
+      .composedPath()
+      .find(
+        (target: HTMLElement) => target.tagName === "CH-GRID-CELL"
+      ) as HTMLChGridCellElement;
+  }
+
   columnDragStart(columnId: string) {
     this.columnDragManager = new ChGridManagerColumnDrag(
       columnId,

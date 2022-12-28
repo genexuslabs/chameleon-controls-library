@@ -15,12 +15,12 @@ export default class HTMLChGridRowElement
     this.addEventListener("cellCaretClicked", this.cellCaretClickedHandler);
   }
 
-  get grid() {
+  get grid(): HTMLChGridElement {
     return this.parentGrid ?? this.loadParentGrid();
   }
 
-  get rowId() {
-    return this.getAttribute("rowid");
+  get rowId(): string {
+    return this.getAttribute("rowid") ?? "";
   }
 
   set highlighted(value: boolean) {

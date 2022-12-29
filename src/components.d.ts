@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/types";
-import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
 import { ChGridColumn } from "./components/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
@@ -566,7 +566,7 @@ declare namespace LocalJSX {
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
         "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
-        "onColumnSelectorClicked"?: (event: CustomEvent<any>) => void;
+        "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
         "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
         "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;

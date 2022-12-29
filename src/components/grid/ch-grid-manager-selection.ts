@@ -34,7 +34,7 @@ export class ChGridManagerSelection {
     return row;
   }
 
-  setRowsSelected(
+  setRowSelected(
     row: HTMLChGridRowElement,
     action: "" | "append" | "unselect",
     range: boolean,
@@ -90,6 +90,24 @@ export class ChGridManagerSelection {
     }
 
     return currentRowsSelected;
+  }
+
+  setRowsSelected(value: boolean, currentRowsSelected: HTMLChGridRowElement[]): HTMLChGridRowElement[] {
+    let rows: HTMLChGridRowElement[] = [];
+
+    if (value == false && currentRowsSelected.length == 0) {
+      return currentRowsSelected
+    }
+
+    this.grid.el.querySelectorAll(HTMLChGridRowElement.TAG_NAME).forEach((row: HTMLChGridRowElement) => {
+      row.selected = value;
+      
+      if (value) {
+        rows.push(row);
+      }
+    });
+
+    return rows;
   }
 
   setCellSelected(

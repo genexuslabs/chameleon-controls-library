@@ -25,7 +25,7 @@ import HTMLChGridCellElement, {
   ChGridCellSelectorClickedEvent,
 } from "../grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
-import { ChGridColumnDragEvent } from "../grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnSelectorClickedEvent } from "../grid-column/ch-grid-column-types";
 
 @Component({
   tag: "ch-grid",
@@ -89,14 +89,6 @@ export class ChGrid {
     this.selectionChanged.emit({ rowsId: rows.map((row) => row.rowId) });
   }
 
-  // @Watch("cellSelected")
-  // cellSelectedHandler(cell: HTMLChGridCellElement) {
-  //   this.cellClicked.emit({
-  //     rowId: cell.rowId,
-  //     cellId: cell.cellId,
-  //   });
-  // }
-
   @Listen("mousemove", { passive: true })
   mouseMoveHandler(eventInfo: MouseEvent) {
     if (this.rowSelectionMode != "none") {
@@ -132,7 +124,7 @@ export class ChGrid {
         cellClicked,
         this.cellSelected
       );
-      this.rowsSelected = this.manager.selection.setRowsSelected(
+      this.rowsSelected = this.manager.selection.setRowSelected(
         rowClicked,
         eventInfo.ctrlKey ? "append" : "",
         eventInfo.shiftKey,
@@ -140,6 +132,13 @@ export class ChGrid {
         this.rowsSelected
       );
     }
+  }
+
+  @Listen("columnSelectorClicked", { passive: true })
+  columnSelectorClickedHandler(
+    eventInfo: CustomEvent<ChGridColumnSelectorClickedEvent>
+  ) {
+    this.rowsSelected = this.manager.selection.setRowsSelected(eventInfo.detail.checked, this.rowsSelected);
   }
 
   @Listen("cellSelectorClicked", { passive: true })
@@ -154,7 +153,7 @@ export class ChGrid {
         cellClicked,
         this.cellSelected
       );
-      this.rowsSelected = this.manager.selection.setRowsSelected(
+      this.rowsSelected = this.manager.selection.setRowSelected(
         rowClicked,
         eventInfo.detail.checked ? "append" : "unselect",
         eventInfo.detail.range,

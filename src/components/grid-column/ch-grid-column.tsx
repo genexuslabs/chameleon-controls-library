@@ -13,6 +13,7 @@ import {
   ChGridColumnDragEvent,
   ChGridColumnHiddenChangedEvent,
   ChGridColumnOrderChangedEvent,
+  ChGridColumnSelectorClickedEvent,
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
   ColumnSortDirection,
@@ -33,6 +34,7 @@ export class ChGridColumn {
   @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
+  @Event() columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
   @Prop() columnId: string;
   @Prop() columnType: "simple" | "tree" | "select" = "simple";
   @Prop() columnIconUrl: string;
@@ -166,10 +168,21 @@ export class ChGridColumn {
     this.showSettings = true;
   }
 
+  private selectorClickHandler(eventInfo: MouseEvent) {
+    const target = eventInfo.target as HTMLInputElement;
+
+    this.columnSelectorClicked.emit({
+      checked: target.checked
+    });
+
+    eventInfo.stopPropagation();
+  }
+
   render() {
     return (
       <Host>
         <ul class="bar" part="bar">
+          {this.renderSelector()}
           {this.renderName()}
           {this.renderSort()}
           {this.renderSettings()}
@@ -192,6 +205,20 @@ export class ChGridColumn {
           <slot name="settings"></slot>
         </ch-grid-column-settings>
       </Host>
+    );
+  }
+
+  private renderSelector() {
+    return (
+      <li
+        class="selector"
+        part="bar-selector"
+        hidden={this.columnType != "select"}
+      >
+        <label part="selector-label">
+          <input type="checkbox" part="selector" onClick={this.selectorClickHandler.bind(this)} />
+        </label>
+      </li>
     );
   }
 

@@ -29,16 +29,17 @@
 
 ## Events
 
-| Event                 | Description | Type                                          |
-| --------------------- | ----------- | --------------------------------------------- |
-| `columnDragEnded`     |             | `CustomEvent<ChGridColumnDragEvent>`          |
-| `columnDragging`      |             | `CustomEvent<ChGridColumnDragEvent>`          |
-| `columnDragStarted`   |             | `CustomEvent<ChGridColumnDragEvent>`          |
-| `columnHiddenChanged` |             | `CustomEvent<ChGridColumnHiddenChangedEvent>` |
-| `columnOrderChanged`  |             | `CustomEvent<ChGridColumnOrderChangedEvent>`  |
-| `columnSizeChanged`   |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
-| `columnSizeChanging`  |             | `CustomEvent<ChGridColumnSizeChangedEvent>`   |
-| `columnSortChanged`   |             | `CustomEvent<ChGridColumnSortChangedEvent>`   |
+| Event                   | Description | Type                                            |
+| ----------------------- | ----------- | ----------------------------------------------- |
+| `columnDragEnded`       |             | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnDragging`        |             | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnDragStarted`     |             | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnHiddenChanged`   |             | `CustomEvent<ChGridColumnHiddenChangedEvent>`   |
+| `columnOrderChanged`    |             | `CustomEvent<ChGridColumnOrderChangedEvent>`    |
+| `columnSelectorClicked` |             | `CustomEvent<ChGridColumnSelectorClickedEvent>` |
+| `columnSizeChanged`     |             | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
+| `columnSizeChanging`    |             | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
+| `columnSortChanged`     |             | `CustomEvent<ChGridColumnSortChangedEvent>`     |
 
 
 ## Shadow Parts
@@ -51,11 +52,14 @@
 | `"bar-name-text"`       |             |
 | `"bar-resize"`          |             |
 | `"bar-resize-split"`    |             |
+| `"bar-selector"`        |             |
 | `"bar-settings"`        |             |
 | `"bar-settings-button"` |             |
 | `"bar-sort"`            |             |
 | `"bar-sort-ascending"`  |             |
 | `"bar-sort-descending"` |             |
+| `"selector"`            |             |
+| `"selector-label"`      |             |
 
 
 ## Dependencies

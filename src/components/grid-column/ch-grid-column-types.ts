@@ -25,3 +25,7 @@ export interface ChGridColumnOrderChangedEvent {
   columnId: string;
   order: number;
 }
+
+export interface ChGridColumnSelectorClickedEvent {
+  checked: boolean;
+}

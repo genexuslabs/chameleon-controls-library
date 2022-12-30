@@ -36,7 +36,7 @@ export class ChGridColumn {
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
   @Prop() columnId: string;
-  @Prop() columnType: "simple" | "tree" | "select" = "simple";
+  @Prop() columnType: "simple" | "tree" | "select" | "drag" = "simple";
   @Prop() columnIconUrl: string;
   @Prop() columnName: string;
   @Prop() columnNamePosition: "title" | "text" = "text";

@@ -120,7 +120,14 @@ export class ChGridManagerColumns {
             cell.type = ChGridCellType.Selector;
           });
         break;
-    }
+      case "drag":
+        this.grid.el
+          .querySelectorAll(`ch-grid-cell:nth-child(${column.physicalOrder})`)
+          .forEach((cell: HTMLChGridCellElement) => {
+            cell.type = ChGridCellType.Drag;
+          });
+        break;
+      }
   }
 
   private defineColumnsVariables() {

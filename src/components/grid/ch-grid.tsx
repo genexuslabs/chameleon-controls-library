@@ -22,7 +22,7 @@ import {
 
 import { ChGridManager } from "./ch-grid-manager";
 import HTMLChGridCellElement, {
-  ChGridCellSelectorClickedEvent,
+  ChGridCellSelectorClickedEvent, ChGridRowDragEvent,
 } from "../grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 import { ChGridColumnDragEvent, ChGridColumnSelectorClickedEvent } from "../grid-column/ch-grid-column-types";
@@ -183,15 +183,20 @@ export class ChGrid {
     }
   }
 
-  @Listen("cellEnsureVisible")
-  cellEnsureVisibleHandler(eventInfo: CustomEvent) {
-    this.manager.ensureCellVisible(eventInfo.target as HTMLChGridCellElement);
-  }
-
   @Listen("columnDragEnded")
   columnDragEndHandler() {
     this.manager.columnDragEnd();
     this.gridStyle = this.manager.getGridStyle();
+  }
+
+  @Listen("rowDragStarted")
+  rowDragStartHandler(eventInfo: CustomEvent<ChGridRowDragEvent>) {
+    this.manager.rowDragStart(eventInfo.detail.row);
+  }
+
+  @Listen("cellEnsureVisible")
+  cellEnsureVisibleHandler(eventInfo: CustomEvent) {
+    this.manager.ensureCellVisible(eventInfo.target as HTMLChGridCellElement);
   }
 
   @Listen("settingsShowClicked")

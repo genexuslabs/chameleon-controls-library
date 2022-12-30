@@ -66,7 +66,7 @@ export namespace Components {
         "columnId": string;
         "columnName": string;
         "columnNamePosition": "title" | "text";
-        "columnType": "simple" | "tree" | "select";
+        "columnType": "simple" | "tree" | "select" | "drag";
         "displayObserverClass": string;
         "freeze"?: "start" | "end";
         "hidden": boolean;
@@ -556,7 +556,7 @@ declare namespace LocalJSX {
         "columnId"?: string;
         "columnName"?: string;
         "columnNamePosition"?: "title" | "text";
-        "columnType"?: "simple" | "tree" | "select";
+        "columnType"?: "simple" | "tree" | "select" | "drag";
         "displayObserverClass"?: string;
         "freeze"?: "start" | "end";
         "hidden"?: boolean;

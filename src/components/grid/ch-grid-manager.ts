@@ -7,11 +7,13 @@ import HTMLChGridRowsetElement from "../grid-rowset/ch-grid-rowset";
 import { ChGridManagerColumns } from "./ch-grid-manager-columns";
 import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
 import { ChGridManagerSelection } from "./ch-grid-manager-selection";
+import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
 
 export class ChGridManager {
   grid: ChGrid;
   private columnsManager: ChGridManagerColumns;
   private columnDragManager: ChGridManagerColumnDrag;
+  private rowDragManager: ChGridManagerRowDrag;
   private selectionManager: ChGridManagerSelection;
 
   constructor(grid: ChGrid) {
@@ -38,8 +40,20 @@ export class ChGridManager {
     return this.columnsManager.getColumns();
   }
 
-  getRowIndex(row: HTMLChGridRowElement): number {
+
+  getGridRowIndex(row: HTMLChGridRowElement): number {
+    return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(HTMLChGridRowElement.TAG_NAME), row);
+  }
+
+  getRowsetRowIndex(row: HTMLChGridRowElement): number {
     return Array.prototype.indexOf.call(row.parentElement.children, row);
+  }
+
+  getRowHeight(row: HTMLChGridRowElement): string {
+    const gridRowsHeight = getComputedStyle(this.grid.gridMainEl).gridTemplateRows.split(" ");
+    const rowIndex = this.getGridRowIndex(row) + 1;
+
+    return gridRowsHeight[rowIndex];
   }
 
   getRowsRange(
@@ -47,7 +61,7 @@ export class ChGridManager {
     end: HTMLChGridRowElement
   ): HTMLChGridRowElement[] {
     const nextElementSibling =
-      this.getRowIndex(start) <= this.getRowIndex(end)
+      this.getRowsetRowIndex(start) <= this.getRowsetRowIndex(end)
         ? "nextElementSibling"
         : "previousElementSibling";
     let rows: HTMLChGridRowElement[] = [];
@@ -94,6 +108,11 @@ export class ChGridManager {
   columnDragEnd() {
     this.columnDragManager.dragEnd();
     this.columnDragManager = null;
+  }
+
+  rowDragStart(row: HTMLChGridRowElement) {
+    this.rowDragManager = new ChGridManagerRowDrag(this.grid);
+    this.rowDragManager.dragStart(row);
   }
 
   getGridStyle(): CSSProperties {

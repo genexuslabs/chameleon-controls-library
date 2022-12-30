@@ -18,6 +18,9 @@ export class ChGridRowsetLegend {
     return (
       <Host>
         <div part="caret"></div>
+        <label part="selector-label">
+          <input type="checkbox" part="selector"></input>
+        </label>
         <div part="icon"></div>
         <slot></slot>
       </Host>

@@ -5,4 +5,7 @@
     grid-column-end: -1;
     margin-inline-start: calc(var(--indent) * (var(--level) - 1));
   }
+  :host::part(selector-label) {
+    display: none;
+  }
 }

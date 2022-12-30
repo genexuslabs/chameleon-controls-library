@@ -12,10 +12,12 @@
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"caret"` |             |
-| `"icon"`  |             |
+| Part               | Description |
+| ------------------ | ----------- |
+| `"caret"`          |             |
+| `"icon"`           |             |
+| `"selector"`       |             |
+| `"selector-label"` |             |
 
 
 ----------------------------------------------

@@ -107,11 +107,6 @@ export class ChGridColumn {
     }
   }
 
-  @Listen("settingsCloseClicked")
-  settingsCloseClickedHandler() {
-    this.showSettings = false;
-  }
-
   @Listen("columnResizeFinished")
   columnResizeFinishedHandler() {
     this.columnSizeChanged.emit({

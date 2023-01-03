@@ -4,8 +4,6 @@ import {
   Host,
   Listen,
   Prop,
-  Event,
-  EventEmitter,
 } from "@stencil/core";
 import { ChGridColumn } from "../grid-column/ch-grid-column";
 
@@ -17,14 +15,18 @@ import { ChGridColumn } from "../grid-column/ch-grid-column";
 export class ChGridColumnSettings {
   @Prop() column: ChGridColumn;
   @Prop({ reflect: true }) show = false;
-  @Event() settingsCloseClicked: EventEmitter;
 
   @Listen("windowClosed")
   windowClosedHandler(eventInfo: Event) {
     eventInfo.stopPropagation();
-    this.settingsCloseClicked.emit();
+    this.column.showSettings = false;
   }
 
+  @Listen("columnSettingsChanged")
+  columnSettingsChangedHandler() {
+    this.column.showSettings = false;
+  }
+  
   render() {
     return (
       <Host>

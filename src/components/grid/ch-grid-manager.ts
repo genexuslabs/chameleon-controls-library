@@ -8,6 +8,7 @@ import { ChGridManagerColumns } from "./ch-grid-manager-columns";
 import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
 import { ChGridManagerSelection } from "./ch-grid-manager-selection";
 import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
+import { ChGridRowsetLegend } from "../grid-rowset-legend/ch-grid-rowset-legend";
 
 export class ChGridManager {
   grid: ChGrid;
@@ -42,7 +43,7 @@ export class ChGridManager {
 
 
   getGridRowIndex(row: HTMLChGridRowElement): number {
-    return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(HTMLChGridRowElement.TAG_NAME), row);
+    return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}, ${ChGridRowsetLegend.TAG_NAME}`), row);
   }
 
   getRowsetRowIndex(row: HTMLChGridRowElement): number {

@@ -26,7 +26,7 @@ export class ChGridManagerRowDrag {
     const target = eventInfo.target as HTMLElement;
     const rowHover = target.closest(HTMLChGridRowElement.TAG_NAME) as HTMLChGridRowElement;
 
-    if (rowHover && rowHover.grid == this.grid.el) {
+    if (rowHover && rowHover.parentElement == this.row.parentElement && rowHover.grid == this.grid.el) {
       const rowHoverIndex = this.grid.manager.getGridRowIndex(rowHover);
       const rowHoverGridPosition = rowHoverIndex + 2; // +1 RowHeaderColumn, +1 array start at 1
       const offsetPosition = this.rowIndex < rowHoverIndex ? -1 : 1;

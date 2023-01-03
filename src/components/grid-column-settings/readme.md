@@ -13,13 +13,6 @@
 | `show`   | `show`    |             | `boolean`      | `false`     |
 
 
-## Events
-
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `settingsCloseClicked` |             | `CustomEvent<any>` |
-
-
 ## Dependencies
 
 ### Used by

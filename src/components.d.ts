@@ -14,8 +14,9 @@ import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
 import { ecLevel } from "./components/qr/ch-qr";
-import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
+import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
+import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
     interface ChFormCheckbox {
         /**
@@ -293,6 +294,12 @@ export namespace Components {
         "gridTimestamp": number;
         "state": GridChameleonState;
     }
+    interface GxGridChameleonColumnFilter {
+        "column": GxGridColumn;
+        "equal": string;
+        "greater": string;
+        "less": string;
+    }
 }
 declare global {
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
@@ -469,6 +476,12 @@ declare global {
         prototype: HTMLGxGridChameleonElement;
         new (): HTMLGxGridChameleonElement;
     };
+    interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
+    }
+    var HTMLGxGridChameleonColumnFilterElement: {
+        prototype: HTMLGxGridChameleonColumnFilterElement;
+        new (): HTMLGxGridChameleonColumnFilterElement;
+    };
     interface HTMLElementTagNameMap {
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
@@ -499,6 +512,7 @@ declare global {
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
+        "gx-grid-chameleon-column-filter": HTMLGxGridChameleonColumnFilterElement;
     }
 }
 declare namespace LocalJSX {
@@ -590,7 +604,6 @@ declare namespace LocalJSX {
     }
     interface ChGridColumnSettings {
         "column"?: ChGridColumn;
-        "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
         "show"?: boolean;
     }
     interface ChGridColumnset {
@@ -821,6 +834,13 @@ declare namespace LocalJSX {
         "gridTimestamp"?: number;
         "state"?: GridChameleonState;
     }
+    interface GxGridChameleonColumnFilter {
+        "column"?: GxGridColumn;
+        "equal"?: string;
+        "greater"?: string;
+        "less"?: string;
+        "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
+    }
     interface IntrinsicElements {
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
@@ -851,6 +871,7 @@ declare namespace LocalJSX {
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
         "gx-grid-chameleon": GxGridChameleon;
+        "gx-grid-chameleon-column-filter": GxGridChameleonColumnFilter;
     }
 }
 export { LocalJSX as JSX };
@@ -886,6 +907,7 @@ declare module "@stencil/core" {
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
             "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
+            "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
         }
     }
 }

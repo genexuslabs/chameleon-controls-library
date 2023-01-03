@@ -1,5 +1,5 @@
 import { ColumnSortDirection } from "../grid-column/ch-grid-column-types";
-import { GxGrid } from "./gx-grid-chameleon";
+import { GxGrid } from "./genexus";
 
 export function gridRefresh(grid: GxGrid) {
   grid.ParentObject.refreshGrid(grid.ControlName);

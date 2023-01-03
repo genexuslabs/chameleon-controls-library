@@ -105,6 +105,16 @@
 						<Value id='range' desc='Range'/>
 					</Values>
 				</Prop>
+				<Prop>
+					<Id>FilterEnum</Id>
+					<Name>FilterEnum</Name>
+					<Type>Custom</Type>
+					<CustomType>Artech.Genexus.Common.CustomTypes.ControlAttVarReference, Artech.Genexus.Common</CustomType>
+					<Metadata>
+						<Value name="FlagHideVariables">false</Value>
+						<Value name="FlagHideAttributes">true</Value>
+					</Metadata>
+				</Prop>
 			</Children>
 		</Group>
 	</Object>

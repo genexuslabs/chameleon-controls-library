@@ -53,6 +53,7 @@ export interface Gx {
   
     readonly ColumnsetClass: string;
     readonly ColumnClass: string;
+    readonly ColumnFilterClass: string;
     readonly RowClass: string;
     readonly RowEvenClass: string;
     readonly RowOddClass: string;
@@ -60,6 +61,9 @@ export interface Gx {
     readonly RowHighlightedClass: string;
     readonly CellClass: string;
   
+    readonly FilterButtonApplyText: string;
+    readonly FilterButtonResetText: string;
+
     readonly PaginatorShow: boolean;
     readonly PaginatorNavigationButtonTextPosition: "title" | "text";
   
@@ -106,8 +110,12 @@ export interface Gx {
     SizeMinLength: string;
     SizeMaxLength: string;
     SizeVariableName: string;
-    FilterMode: "single" | "range";
-    FilterEnum: GridChameleonColumnFilterEnum[],
+    readonly FilterMode: "single" | "range";
+    readonly FilterEnum: GridChameleonColumnFilterEnum[],
+    readonly FilterCaption: string,
+    readonly FilterLabelEqual: string,
+    readonly FilterLabelLess: string,
+    readonly FilterLabelGreater: string,
     SortDirection: "asc" | "desc";
   
     filterEqual: string;

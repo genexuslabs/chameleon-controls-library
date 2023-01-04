@@ -17,6 +17,8 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
   export class GridChameleonColumnFilter {
     @Element() el: HTMLGxGridChameleonColumnFilterElement;
     @Prop() readonly column: GxGridColumn;
+    @Prop() buttonApplyText: string;
+    @Prop() buttonResetText: string;
     @Prop({mutable: true}) equal: string;
     @Prop({mutable: true}) less: string;
     @Prop({mutable: true}) greater: string;
@@ -73,11 +75,10 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
     }
 
     render() {
-      console.log(this.column);
       return (
         <Host>
-            <fieldset>
-              <caption>Filter</caption>
+            <fieldset part="main">
+              <caption part="caption">{this.column.FilterCaption}</caption>
               {this.column.FilterMode == "single" &&
                   this.renderColumnFilterControl(
                   "inputEqual",
@@ -85,6 +86,7 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
                   this.column.gxControl.type,
                   this.column.gxControl.dataType,
                   this.column.gxControl.possibleValues,
+                  this.column.FilterLabelEqual,
                   this.equal
               )}
               {this.column.FilterMode == "range" &&
@@ -94,6 +96,7 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
                   this.column.gxControl.type,
                   this.column.gxControl.dataType,
                   this.column.gxControl.possibleValues,
+                  this.column.FilterLabelLess,
                   this.less
               )}
               {this.column.FilterMode == "range" &&
@@ -103,11 +106,14 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
                   this.column.gxControl.type,
                   this.column.gxControl.dataType,
                   this.column.gxControl.possibleValues,
+                  this.column.FilterLabelGreater,
                   this.greater
               )}
             </fieldset>
-            <button onClick={this.resetClickHandler.bind(this)}>Reset</button>
-            <button onClick={this.applyClickHandler.bind(this)}>Apply</button>
+            <section part="footer">
+              <button part="button reset" onClick={this.resetClickHandler.bind(this)}>{this.buttonResetText}</button>
+              <button part="button apply" onClick={this.applyClickHandler.bind(this)}>{this.buttonApplyText}</button>
+            </section>
         </Host>
       );
     }
@@ -118,8 +124,10 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
         type: GxControlType,
         dataType: GxControlDataType,
         possibleValues: GxControlPossibleValues,
+        label: string,
         value: string
       ) {
+        const part = input.replace("input", "").toLowerCase();
 
         if (Array.isArray(filterEnum) && filterEnum.length > 0) {
           type = GxControlType.COMBO;
@@ -130,21 +138,27 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
           case GxControlType.EDIT:
           case GxControlType.CHECK:
             return (
-              <label>
+              <label part={`label ${part}`}>
+                {label}
                 <input
                   type={this.getFilterInputType(dataType)}
                   value={value}
                   ref={el => this[input] = el}
+                  part={`field ${part}`}
                 />
               </label>
             );
           case GxControlType.COMBO:
             return (
-              <select
-                ref={el => this[input] = el}
-              >
-                {possibleValues.map(([optionValue, optionDescription]) => <option value={optionValue} selected={optionValue==value}>{optionDescription}</option>)}
-              </select>
+              <label part={`label ${part}`}>
+                {label}
+                <select
+                  ref={el => this[input] = el}
+                  part={`field ${part}`}
+                >
+                  {possibleValues.map(([optionValue, optionDescription]) => <option value={optionValue} selected={optionValue==value}>{optionDescription}</option>)}
+                </select>
+              </label>
             );
         }
       }

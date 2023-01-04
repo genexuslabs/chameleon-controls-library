@@ -281,10 +281,13 @@ export class GridChameleon {
 
     return (
       <gx-grid-chameleon-column-filter
+        class={this.grid.ColumnFilterClass}
         column={column}
         equal={column.filterEqual}
         less={column.filterLess}
         greater={column.filterGreater}
+        buttonResetText={this.grid.FilterButtonResetText}
+        buttonApplyText={this.grid.FilterButtonApplyText}
         slot="settings"
       >
       </gx-grid-chameleon-column-filter>

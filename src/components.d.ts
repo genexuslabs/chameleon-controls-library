@@ -295,6 +295,8 @@ export namespace Components {
         "state": GridChameleonState;
     }
     interface GxGridChameleonColumnFilter {
+        "buttonApplyText": string;
+        "buttonResetText": string;
         "column": GxGridColumn;
         "equal": string;
         "greater": string;
@@ -835,6 +837,8 @@ declare namespace LocalJSX {
         "state"?: GridChameleonState;
     }
     interface GxGridChameleonColumnFilter {
+        "buttonApplyText"?: string;
+        "buttonResetText"?: string;
         "column"?: GxGridColumn;
         "equal"?: string;
         "greater"?: string;

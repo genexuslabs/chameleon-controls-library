@@ -115,6 +115,30 @@
 						<Value name="FlagHideAttributes">true</Value>
 					</Metadata>
 				</Prop>
+				<Prop>
+					<Id>FilterCaption</Id>
+					<Name>FilterCaption</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelEqual</Id>
+					<Name>FilterLabelEqual</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelLess</Id>
+					<Name>FilterLabelLess</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelGreater</Id>
+					<Name>FilterLabelGreater</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
 			</Children>
 		</Group>
 	</Object>

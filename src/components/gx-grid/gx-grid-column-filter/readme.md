@@ -7,12 +7,14 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type           | Default     |
-| --------- | --------- | ----------- | -------------- | ----------- |
-| `column`  | --        |             | `GxGridColumn` | `undefined` |
-| `equal`   | `equal`   |             | `string`       | `undefined` |
-| `greater` | `greater` |             | `string`       | `undefined` |
-| `less`    | `less`    |             | `string`       | `undefined` |
+| Property          | Attribute           | Description | Type           | Default     |
+| ----------------- | ------------------- | ----------- | -------------- | ----------- |
+| `buttonApplyText` | `button-apply-text` |             | `string`       | `undefined` |
+| `buttonResetText` | `button-reset-text` |             | `string`       | `undefined` |
+| `column`          | --                  |             | `GxGridColumn` | `undefined` |
+| `equal`           | `equal`             |             | `string`       | `undefined` |
+| `greater`         | `greater`           |             | `string`       | `undefined` |
+| `less`            | `less`              |             | `string`       | `undefined` |
 
 
 ## Events
@@ -20,6 +22,18 @@
 | Event                   | Description | Type                                            |
 | ----------------------- | ----------- | ----------------------------------------------- |
 | `columnSettingsChanged` |             | `CustomEvent<GridChameleonColumnFilterChanged>` |
+
+
+## Shadow Parts
+
+| Part        | Description |
+| ----------- | ----------- |
+| `"apply"`   |             |
+| `"button"`  |             |
+| `"caption"` |             |
+| `"footer"`  |             |
+| `"main"`    |             |
+| `"reset"`   |             |
 
 
 ## Dependencies

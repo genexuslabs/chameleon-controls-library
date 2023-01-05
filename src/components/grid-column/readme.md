@@ -5,26 +5,29 @@
 
 ## Properties
 
-| Property               | Attribute                | Description | Type                                       | Default     |
-| ---------------------- | ------------------------ | ----------- | ------------------------------------------ | ----------- |
-| `columnIconUrl`        | `column-icon-url`        |             | `string`                                   | `undefined` |
-| `columnId`             | `column-id`              |             | `string`                                   | `undefined` |
-| `columnName`           | `column-name`            |             | `string`                                   | `undefined` |
-| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"`                        | `"text"`    |
-| `columnType`           | `column-type`            |             | `"drag" \| "select" \| "simple" \| "tree"` | `"simple"`  |
-| `displayObserverClass` | `display-observer-class` |             | `string`                                   | `undefined` |
-| `freeze`               | `freeze`                 |             | `"end" \| "start"`                         | `undefined` |
-| `hidden`               | `hidden`                 |             | `boolean`                                  | `false`     |
-| `hideable`             | `hideable`               |             | `boolean`                                  | `true`      |
-| `order`                | `order`                  |             | `number`                                   | `undefined` |
-| `physicalOrder`        | `physical-order`         |             | `number`                                   | `undefined` |
-| `resizeable`           | `resizeable`             |             | `boolean`                                  | `true`      |
-| `resizing`             | `resizing`               |             | `boolean`                                  | `undefined` |
-| `settingable`          | `settingable`            |             | `boolean`                                  | `true`      |
-| `showSettings`         | `show-settings`          |             | `boolean`                                  | `false`     |
-| `size`                 | `size`                   |             | `string`                                   | `undefined` |
-| `sortDirection`        | `sort-direction`         |             | `"asc" \| "desc"`                          | `undefined` |
-| `sortable`             | `sortable`               |             | `boolean`                                  | `true`      |
+| Property               | Attribute                | Description | Type                          | Default     |
+| ---------------------- | ------------------------ | ----------- | ----------------------------- | ----------- |
+| `columnIconUrl`        | `column-icon-url`        |             | `string`                      | `undefined` |
+| `columnId`             | `column-id`              |             | `string`                      | `undefined` |
+| `columnName`           | `column-name`            |             | `string`                      | `undefined` |
+| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"`           | `"text"`    |
+| `columnType`           | `column-type`            |             | `"plain" \| "rich" \| "tree"` | `"plain"`   |
+| `displayObserverClass` | `display-observer-class` |             | `string`                      | `undefined` |
+| `freeze`               | `freeze`                 |             | `"end" \| "start"`            | `undefined` |
+| `hidden`               | `hidden`                 |             | `boolean`                     | `false`     |
+| `hideable`             | `hideable`               |             | `boolean`                     | `true`      |
+| `order`                | `order`                  |             | `number`                      | `undefined` |
+| `physicalOrder`        | `physical-order`         |             | `number`                      | `undefined` |
+| `resizeable`           | `resizeable`             |             | `boolean`                     | `true`      |
+| `resizing`             | `resizing`               |             | `boolean`                     | `undefined` |
+| `richRowActions`       | `rich-row-actions`       |             | `boolean`                     | `undefined` |
+| `richRowDrag`          | `rich-row-drag`          |             | `boolean`                     | `undefined` |
+| `richRowSelector`      | `rich-row-selector`      |             | `boolean`                     | `undefined` |
+| `settingable`          | `settingable`            |             | `boolean`                     | `true`      |
+| `showSettings`         | `show-settings`          |             | `boolean`                     | `false`     |
+| `size`                 | `size`                   |             | `string`                      | `undefined` |
+| `sortDirection`        | `sort-direction`         |             | `"asc" \| "desc"`             | `undefined` |
+| `sortable`             | `sortable`               |             | `boolean`                     | `true`      |
 
 
 ## Events

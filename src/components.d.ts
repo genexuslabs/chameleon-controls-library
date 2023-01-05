@@ -67,7 +67,7 @@ export namespace Components {
         "columnId": string;
         "columnName": string;
         "columnNamePosition": "title" | "text";
-        "columnType": "simple" | "tree" | "select" | "drag";
+        "columnType": "plain" | "rich" | "tree";
         "displayObserverClass": string;
         "freeze"?: "start" | "end";
         "hidden": boolean;
@@ -76,6 +76,9 @@ export namespace Components {
         "physicalOrder": number;
         "resizeable": boolean;
         "resizing": boolean;
+        "richRowActions": boolean;
+        "richRowDrag": boolean;
+        "richRowSelector": boolean;
         "settingable": boolean;
         "showSettings": boolean;
         "size": string;
@@ -572,7 +575,7 @@ declare namespace LocalJSX {
         "columnId"?: string;
         "columnName"?: string;
         "columnNamePosition"?: "title" | "text";
-        "columnType"?: "simple" | "tree" | "select" | "drag";
+        "columnType"?: "plain" | "rich" | "tree";
         "displayObserverClass"?: string;
         "freeze"?: "start" | "end";
         "hidden"?: boolean;
@@ -590,6 +593,9 @@ declare namespace LocalJSX {
         "physicalOrder"?: number;
         "resizeable"?: boolean;
         "resizing"?: boolean;
+        "richRowActions"?: boolean;
+        "richRowDrag"?: boolean;
+        "richRowSelector"?: boolean;
         "settingable"?: boolean;
         "showSettings"?: boolean;
         "size"?: string;

@@ -45,7 +45,7 @@ export class ChGridManagerColumns {
   }
 
   public getColumnSelector(): HTMLChGridColumnElement {
-    return this.columns.find((column) => column.columnType == "select");
+    return this.columns.find((column) => column.columnType == "rich" && column.richRowSelector);
   }
 
   private defineColumns() {
@@ -110,24 +110,20 @@ export class ChGridManagerColumns {
         this.grid.el
           .querySelectorAll(`ch-grid-cell:nth-child(${column.physicalOrder})`)
           .forEach((cell: HTMLChGridCellElement) => {
-            cell.type = ChGridCellType.Node;
+            cell.type = ChGridCellType.TreeNode;
           });
         break;
-      case "select":
+      case "rich":
         this.grid.el
           .querySelectorAll(`ch-grid-cell:nth-child(${column.physicalOrder})`)
           .forEach((cell: HTMLChGridCellElement) => {
-            cell.type = ChGridCellType.Selector;
+            cell.rowDrag = column.richRowDrag;
+            cell.rowSelector = column.richRowSelector;
+            cell.rowActions = column.richRowActions;
+            cell.type = ChGridCellType.Rich;
           });
         break;
-      case "drag":
-        this.grid.el
-          .querySelectorAll(`ch-grid-cell:nth-child(${column.physicalOrder})`)
-          .forEach((cell: HTMLChGridCellElement) => {
-            cell.type = ChGridCellType.Drag;
-          });
-        break;
-      }
+    }
   }
 
   private defineColumnsVariables() {

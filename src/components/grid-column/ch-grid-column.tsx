@@ -36,10 +36,13 @@ export class ChGridColumn {
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
   @Prop() columnId: string;
-  @Prop() columnType: "simple" | "tree" | "select" | "drag" = "simple";
+  @Prop() columnType: "plain" | "rich" | "tree" = "plain";
   @Prop() columnIconUrl: string;
   @Prop() columnName: string;
   @Prop() columnNamePosition: "title" | "text" = "text";
+  @Prop() richRowDrag: boolean;
+  @Prop() richRowSelector: boolean;
+  @Prop() richRowActions: boolean;
   @Prop() displayObserverClass: string;
   @Prop() freeze?: "start" | "end";
   @Prop({ reflect: true }) hidden = false;
@@ -208,7 +211,7 @@ export class ChGridColumn {
       <li
         class="selector"
         part="bar-selector"
-        hidden={this.columnType != "select"}
+        hidden={!(this.columnType == "rich" && this.richRowSelector)}
       >
         <label part="selector-label">
           <input type="checkbox" part="selector" onClick={this.selectorClickHandler.bind(this)} />

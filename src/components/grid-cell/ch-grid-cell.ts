@@ -1,10 +1,15 @@
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 
 export default class HTMLChGridCellElement extends HTMLElement {
-  private cellType = ChGridCellType.Single;
+  private cellType = ChGridCellType.Plain;
   private caret: HTMLDivElement;
+  private drag: HTMLDivElement;
   private selector: HTMLInputElement;
   private selectorLabel: HTMLLabelElement;
+
+  public rowDrag: boolean;
+  public rowSelector: boolean;
+  public rowActions: boolean;
 
   constructor() {
     super();
@@ -16,17 +21,14 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
   set type(value: ChGridCellType) {
     switch (value) {
-      case ChGridCellType.Single:
-        this.defineSingle();
+      case ChGridCellType.Plain:
+        this.definePlain();
         break;
-      case ChGridCellType.Node:
-        this.defineNode();
+      case ChGridCellType.Rich:
+        this.defineRich();
         break;
-      case ChGridCellType.Selector:
-        this.defineSelector();
-        break;
-      case ChGridCellType.Drag:
-        this.defineDrag();
+      case ChGridCellType.TreeNode:
+        this.defineTreeNode();
         break;
       }
   }
@@ -108,12 +110,61 @@ export default class HTMLChGridCellElement extends HTMLElement {
     );
   }
 
-  private defineSingle() {
-    this.cellType = ChGridCellType.Single;
+  private definePlain() {
+    this.cellType = ChGridCellType.Plain;
   }
 
-  private defineNode() {
-    this.cellType = ChGridCellType.Node;
+  private defineRich() {
+    let html = "";
+    this.cellType = ChGridCellType.Rich;
+
+    if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
+      this.attachShadow({ mode: "open" });
+      
+      if (this.rowDrag) {
+        html += `
+          <div part="drag-icon"></div>
+        `;
+      }
+
+      if (this.rowSelector) {
+        html += `
+          <style>label {display:flex}</style>
+          <label part="selector-label">
+            <input type="checkbox" part="selector">
+          </label>
+        `;
+      }
+
+      this.shadowRoot.innerHTML = `
+        ${html}
+        <slot></slot>
+      `;
+
+
+      if (this.rowDrag) {
+        this.drag = this.shadowRoot.querySelector("[part='drag-icon']");
+        this.drag.addEventListener("mousedown", this.dragMouseDownHandler.bind(this));
+      }
+
+      if (this.rowSelector) {
+        this.selector = this.shadowRoot.querySelector("[part='selector']");
+        this.selector.addEventListener(
+          "click",
+          this.selectorClickHandler.bind(this)
+        );
+  
+        this.selectorLabel = this.shadowRoot.querySelector("[part='selector-label']");
+        this.selectorLabel.addEventListener(
+          "click",
+          this.selectorLabelClickHandler.bind(this)
+        );  
+      }
+    }
+  }
+
+  private defineTreeNode() {
+    this.cellType = ChGridCellType.TreeNode;
 
     if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
       this.attachShadow({ mode: "open" });
@@ -130,54 +181,13 @@ export default class HTMLChGridCellElement extends HTMLElement {
       this.caret.addEventListener("click", this.caretClickHandler.bind(this));
     }
   }
-
-  private defineSelector() {
-    this.cellType = ChGridCellType.Selector;
-
-    if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
-      this.attachShadow({ mode: "open" });
-      this.shadowRoot.innerHTML = `
-        <style>label {display:flex}</style>
-        <label part="selector-label">
-          <input type="checkbox" part="selector">
-          <slot></slot>
-        </label>
-      `;
-      
-      this.selector = this.shadowRoot.querySelector("[part='selector']");
-      this.selector.addEventListener(
-        "click",
-        this.selectorClickHandler.bind(this)
-      );
-
-      this.selectorLabel = this.shadowRoot.querySelector("[part='selector-label']");
-      this.selectorLabel.addEventListener(
-        "click",
-        this.selectorLabelClickHandler.bind(this)
-      );
-    }
-  }
-
-  private defineDrag() {
-    this.cellType = ChGridCellType.Drag;
-
-    if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
-      this.attachShadow({ mode: "open" });
-      this.shadowRoot.innerHTML = `
-        <div part="drag-icon"></div>
-        <slot></slot>
-      `;
-
-      this.addEventListener("mousedown", this.dragMouseDownHandler.bind(this));
-    }
-  }
 }
 
 export enum ChGridCellType {
-  Single = "single",
-  Node = "node",
-  Selector = "selector",
-  Drag = "drag"
+  Plain = "plain",
+  Rich = "rich",
+  TreeNode = "node",
+  RowAction = "action"
 }
 
 export interface ChGridCellSelectorClickedEvent {

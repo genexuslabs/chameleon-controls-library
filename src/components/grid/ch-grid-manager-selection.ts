@@ -1,5 +1,5 @@
-import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
-import HTMLChGridRowElement from "../grid-row/ch-grid-row";
+import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
+import HTMLChGridRowElement from "./grid-row/ch-grid-row";
 import { ChGrid } from "./ch-grid";
 
 export class ChGridManagerSelection {

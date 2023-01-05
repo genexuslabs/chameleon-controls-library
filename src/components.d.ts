@@ -6,9 +6,9 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
-import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/types";
-import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
-import { ChGridColumn } from "./components/grid-column/ch-grid-column";
+import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
+import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridColumn } from "./components/grid/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
@@ -96,6 +96,8 @@ export namespace Components {
         "show": boolean;
     }
     interface ChGridColumnset {
+    }
+    interface ChGridRowActions {
     }
     interface ChGridRowsetEmpty {
     }
@@ -367,6 +369,12 @@ declare global {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
     };
+    interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
+    }
+    var HTMLChGridRowActionsElement: {
+        prototype: HTMLChGridRowActionsElement;
+        new (): HTMLChGridRowActionsElement;
+    };
     interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
     }
     var HTMLChGridRowsetEmptyElement: {
@@ -498,6 +506,7 @@ declare global {
         "ch-grid-column-resize": HTMLChGridColumnResizeElement;
         "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
         "ch-grid-columnset": HTMLChGridColumnsetElement;
+        "ch-grid-row-actions": HTMLChGridRowActionsElement;
         "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
         "ch-grid-settings": HTMLChGridSettingsElement;
@@ -615,6 +624,8 @@ declare namespace LocalJSX {
         "show"?: boolean;
     }
     interface ChGridColumnset {
+    }
+    interface ChGridRowActions {
     }
     interface ChGridRowsetEmpty {
     }
@@ -862,6 +873,7 @@ declare namespace LocalJSX {
         "ch-grid-column-resize": ChGridColumnResize;
         "ch-grid-column-settings": ChGridColumnSettings;
         "ch-grid-columnset": ChGridColumnset;
+        "ch-grid-row-actions": ChGridRowActions;
         "ch-grid-rowset-empty": ChGridRowsetEmpty;
         "ch-grid-rowset-legend": ChGridRowsetLegend;
         "ch-grid-settings": ChGridSettings;
@@ -898,6 +910,7 @@ declare module "@stencil/core" {
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+            "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
             "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;

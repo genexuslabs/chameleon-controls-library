@@ -22,11 +22,11 @@
 
 ### Used by
 
- - [ch-grid](../grid)
+ - [ch-grid](..)
 
 ### Depends on
 
-- [ch-window](../window)
+- [ch-window](../../window)
 
 ### Graph
 ```mermaid

@@ -1,6 +1,6 @@
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
-import { ChGridRowsetLegend } from "../grid-rowset-legend/ch-grid-rowset-legend";
-import { IChGridCollapsible } from "../grid/types";
+import { ChGridRowsetLegend } from "./grid-rowset-legend/ch-grid-rowset-legend";
+import { IChGridCollapsible } from "../ch-grid-types";
 
 export default class HTMLChGridRowsetElement
   extends HTMLElement

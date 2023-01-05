@@ -40,8 +40,8 @@
 
 ### Depends on
 
-- [ch-grid-settings](../grid-settings)
-- [ch-grid-settings-columns](../grid-settings/grid-settings-columns)
+- [ch-grid-settings](grid-settings)
+- [ch-grid-settings-columns](./grid-settings/grid-settings-columns)
 
 ### Graph
 ```mermaid

@@ -7,7 +7,7 @@ import {
   Prop,
 } from "@stencil/core";
 
-import { ChGridColumn } from "../grid-column/ch-grid-column";
+import { ChGridColumn } from "../ch-grid-column";
 
 @Component({
   tag: "ch-grid-column-resize",

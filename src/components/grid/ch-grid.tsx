@@ -1,12 +1,12 @@
-import "../grid-row/ch-grid-row";
-import "../grid-rowset/ch-grid-rowset";
-import "../grid-cell/ch-grid-cell";
+import "./grid-row/ch-grid-row";
+import "./grid-rowset/ch-grid-rowset";
+import "./grid-cell/ch-grid-cell";
 
 import {
   CSSProperties,
   ChGridSelectionChangedEvent,
   ChGridRowClickedEvent,
-} from "./types";
+} from "./ch-grid-types";
 import {
   Component,
   Element,
@@ -23,9 +23,9 @@ import {
 import { ChGridManager } from "./ch-grid-manager";
 import HTMLChGridCellElement, {
   ChGridCellSelectorClickedEvent, ChGridRowDragEvent,
-} from "../grid-cell/ch-grid-cell";
-import HTMLChGridRowElement from "../grid-row/ch-grid-row";
-import { ChGridColumnDragEvent, ChGridColumnSelectorClickedEvent } from "../grid-column/ch-grid-column-types";
+} from "./grid-cell/ch-grid-cell";
+import HTMLChGridRowElement from "./grid-row/ch-grid-row";
+import { ChGridColumnDragEvent, ChGridColumnSelectorClickedEvent } from "./grid-column/ch-grid-column-types";
 
 @Component({
   tag: "ch-grid",

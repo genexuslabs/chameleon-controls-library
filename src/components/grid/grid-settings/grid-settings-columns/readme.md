@@ -23,7 +23,7 @@
 
 ### Used by
 
- - [ch-grid](../../grid)
+ - [ch-grid](../..)
 
 ### Graph
 ```mermaid

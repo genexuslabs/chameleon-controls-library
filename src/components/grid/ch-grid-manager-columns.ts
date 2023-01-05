@@ -1,6 +1,6 @@
 import HTMLChGridCellElement, {
   ChGridCellType,
-} from "../grid-cell/ch-grid-cell";
+} from "./grid-cell/ch-grid-cell";
 import { ChGrid } from "./ch-grid";
 
 export class ChGridManagerColumns {

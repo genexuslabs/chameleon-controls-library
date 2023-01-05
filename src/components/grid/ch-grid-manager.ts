@@ -1,14 +1,14 @@
-import { IChGridCollapsible, CSSProperties } from "./types";
+import { IChGridCollapsible, CSSProperties } from "./ch-grid-types";
 import { ChGrid } from "./ch-grid";
 import { ChGridManagerColumnDrag } from "./ch-grid-manager-column-drag";
 
-import HTMLChGridRowElement from "../grid-row/ch-grid-row";
-import HTMLChGridRowsetElement from "../grid-rowset/ch-grid-rowset";
+import HTMLChGridRowElement from "./grid-row/ch-grid-row";
+import HTMLChGridRowsetElement from "./grid-rowset/ch-grid-rowset";
 import { ChGridManagerColumns } from "./ch-grid-manager-columns";
-import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
+import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 import { ChGridManagerSelection } from "./ch-grid-manager-selection";
 import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
-import { ChGridRowsetLegend } from "../grid-rowset-legend/ch-grid-rowset-legend";
+import { ChGridRowsetLegend } from "./grid-rowset/grid-rowset-legend/ch-grid-rowset-legend";
 
 export class ChGridManager {
   grid: ChGrid;
@@ -41,6 +41,9 @@ export class ChGridManager {
     return this.columnsManager.getColumns();
   }
 
+  getColumnsWidth(): string[] {
+    return getComputedStyle(this.grid.gridMainEl).gridTemplateColumns.split(" ");
+  }
 
   getGridRowIndex(row: HTMLChGridRowElement): number {
     return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}, ${ChGridRowsetLegend.TAG_NAME}`), row);

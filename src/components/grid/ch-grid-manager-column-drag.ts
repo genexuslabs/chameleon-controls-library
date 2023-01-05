@@ -1,4 +1,4 @@
-import { CSSProperties } from "./types";
+import { CSSProperties } from "./ch-grid-types";
 
 export class ChGridManagerColumnDrag {
   private column: ChGridManagerColumnDragItem;

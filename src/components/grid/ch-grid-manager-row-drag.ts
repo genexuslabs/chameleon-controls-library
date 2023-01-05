@@ -1,5 +1,6 @@
-import HTMLChGridRowElement from "../grid-row/ch-grid-row";
+import HTMLChGridRowElement from "./grid-row/ch-grid-row";
 import { ChGrid } from "./ch-grid";
+import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 
 export class ChGridManagerRowDrag {
   private grid: ChGrid;
@@ -31,10 +32,10 @@ export class ChGridManagerRowDrag {
       const rowHoverGridPosition = rowHoverIndex + 2; // +1 RowHeaderColumn, +1 array start at 1
       const offsetPosition = this.rowIndex < rowHoverIndex ? -1 : 1;
 
-      if (this.rowShadow.style.gridRowStart != `${rowHoverGridPosition}`) {
-        this.rowShadow.style.gridRowStart = `${rowHoverGridPosition}`;
+      if (this.rowShadow.style.getPropertyValue("--row-shadow-row-start") != `${rowHoverGridPosition}`) {
+        this.rowShadow.style.setProperty("--row-shadow-row-start", `${rowHoverGridPosition}`);
       } else {
-        this.rowShadow.style.gridRowStart = `${rowHoverGridPosition + offsetPosition}`;
+        this.rowShadow.style.setProperty("--row-shadow-row-start", `${rowHoverGridPosition + offsetPosition}`);
       }
 
       this.updateRowPosition();
@@ -44,7 +45,7 @@ export class ChGridManagerRowDrag {
   private dragMouseUpHandler() {
     document.removeEventListener("mousemove", this.dragMouseMoveFn);
 
-    const dropPosition = parseInt(this.rowShadow.style.gridRowStart);
+    const dropPosition = parseInt(this.rowShadow.style.getPropertyValue("--row-shadow-row-start"));
     const rowDrop = this.grid.el.querySelectorAll("ch-grid-row").item(dropPosition-2);
 
     if (dropPosition < this.rowIndex+2) {
@@ -54,7 +55,7 @@ export class ChGridManagerRowDrag {
       rowDrop.after(this.row);
     }
 
-    this.row.removeAttribute("dragging");
+    this.unfloatRow();
     this.rowShadow.remove();
 
     this.row = null;
@@ -71,19 +72,53 @@ export class ChGridManagerRowDrag {
   }
 
   private createRowShadow() {
+    const rowHeight = this.grid.manager.getRowHeight(this.row);
+
     this.rowShadow = document.createElement("div");
-    this.rowShadow.style.gridColumn = "1 / -1";
-    this.rowShadow.style.opacity = "0";
-    this.rowShadow.style.height = this.grid.manager.getRowHeight(this.row);
+    this.rowShadow.style.display = "contents";
+
+    this.grid.manager.getColumnsWidth().forEach(width => {
+      const column = document.createElement("div");
+      
+      column.style.opacity = "0";
+      column.style.minWidth = width;
+      column.style.height = rowHeight;
+      column.style.gridRowStart = "var(--row-shadow-row-start)";
+
+      this.rowShadow.append(column);
+    });
   }
 
   private floatRow() {
+    const columnsWidth = this.grid.manager.getColumnsWidth();
+    const rowWidth = this.grid.gridMainEl.clientWidth;
+
     this.row.before(this.rowShadow);
     this.row.setAttribute("dragging", "");
+    this.row.style.width = `${rowWidth}px`;
+
+    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement, i) => {
+      const columnPosition = parseInt(this.grid.gridMainEl.style.getPropertyValue(`--ch-grid-column-${i+1}-position`));
+      
+      if (!cell.hidden) {
+        cell.style.width = columnsWidth[columnPosition-1];
+        cell.style.order = `${columnPosition}`;
+      }
+    });
+  }
+
+  private unfloatRow() {
+    this.row.removeAttribute("dragging");
+    this.row.style.width = "";
+
+    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement, i) => {
+        cell.style.width = "";
+        cell.style.order = "";
+    });
   }
 
   private updateRowPosition() {
-    const rect = this.rowShadow.getBoundingClientRect();
+    const rect = this.rowShadow.children[0].getBoundingClientRect();
 
     this.row.style.top = `${rect.top}px`;
     this.row.style.left = `${rect.left}px`;

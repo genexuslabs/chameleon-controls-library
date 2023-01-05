@@ -22,7 +22,7 @@
 
 ### Used by
 
- - [ch-grid-column](../grid-column)
+ - [ch-grid-column](..)
 
 ### Graph
 ```mermaid

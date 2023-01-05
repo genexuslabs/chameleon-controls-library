@@ -7,7 +7,7 @@ import {
   Event,
   EventEmitter,
 } from "@stencil/core";
-import { ChGridManager } from "../grid/ch-grid-manager";
+import { ChGridManager } from "../ch-grid-manager";
 
 @Component({
   tag: "ch-grid-settings",

@@ -69,12 +69,12 @@
 
 ### Used by
 
- - [gx-grid-chameleon](../gx-grid)
+ - [gx-grid-chameleon](../../gx-grid)
 
 ### Depends on
 
-- [ch-grid-column-settings](../grid-column-settings)
-- [ch-grid-column-resize](../grid-column-resize)
+- [ch-grid-column-settings](grid-column-settings)
+- [ch-grid-column-resize](grid-column-resize)
 
 ### Graph
 ```mermaid

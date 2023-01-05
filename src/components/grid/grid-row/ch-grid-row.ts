@@ -1,4 +1,4 @@
-import { IChGridCollapsible } from "../grid/types";
+import { IChGridCollapsible } from "../ch-grid-types";
 
 export default class HTMLChGridRowElement
   extends HTMLElement

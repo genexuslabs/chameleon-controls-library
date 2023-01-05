@@ -39,8 +39,8 @@
 
 ### Used by
 
- - [ch-grid-column-settings](../grid-column-settings)
- - [ch-grid-settings](../grid-settings)
+ - [ch-grid-column-settings](../grid/grid-column/grid-column-settings)
+ - [ch-grid-settings](../grid/grid-settings)
 
 ### Graph
 ```mermaid

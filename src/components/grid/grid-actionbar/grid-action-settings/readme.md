@@ -21,7 +21,7 @@
 
 ### Used by
 
- - [gx-grid-chameleon](../../gx-grid)
+ - [gx-grid-chameleon](../../../gx-grid)
 
 ### Graph
 ```mermaid

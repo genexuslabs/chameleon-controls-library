@@ -1,7 +1,7 @@
 import {
   ChGridRowClickedEvent,
   ChGridSelectionChangedEvent,
-} from "../grid/types";
+} from "../grid/ch-grid-types";
 import { Component, Host, Listen, Prop, h, Watch } from "@stencil/core";
 import {
   paginationGoToFirstPage,
@@ -19,7 +19,7 @@ import {
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
-} from "../grid-column/ch-grid-column-types";
+} from "../grid/grid-column/ch-grid-column-types";
 import {
   GridChameleonManagerState,
   GridChameleonState,

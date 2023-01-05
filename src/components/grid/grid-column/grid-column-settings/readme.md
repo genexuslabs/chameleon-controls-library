@@ -17,11 +17,11 @@
 
 ### Used by
 
- - [ch-grid-column](../grid-column)
+ - [ch-grid-column](..)
 
 ### Depends on
 
-- [ch-window](../window)
+- [ch-window](../../../window)
 
 ### Graph
 ```mermaid

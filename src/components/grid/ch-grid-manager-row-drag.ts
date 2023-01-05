@@ -111,7 +111,7 @@ export class ChGridManagerRowDrag {
     this.row.removeAttribute("dragging");
     this.row.style.width = "";
 
-    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement, i) => {
+    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement) => {
         cell.style.width = "";
         cell.style.order = "";
     });

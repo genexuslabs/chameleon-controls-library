@@ -4,6 +4,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
   private cellType = ChGridCellType.Plain;
   private caret: HTMLDivElement;
   private drag: HTMLDivElement;
+  private action: HTMLButtonElement;
   private selector: HTMLInputElement;
   private selectorLabel: HTMLLabelElement;
 
@@ -110,6 +111,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
     );
   }
 
+  private actionClickHandler(eventInfo: MouseEvent) {
+    console.log(eventInfo);
+  }
+
   private definePlain() {
     this.cellType = ChGridCellType.Plain;
   }
@@ -136,6 +141,12 @@ export default class HTMLChGridCellElement extends HTMLElement {
         `;
       }
 
+      if (this.rowActions) {
+        html += `
+          <button part="actions-icon"></button>
+        `;
+      }
+
       this.shadowRoot.innerHTML = `
         ${html}
         <slot></slot>
@@ -145,6 +156,11 @@ export default class HTMLChGridCellElement extends HTMLElement {
       if (this.rowDrag) {
         this.drag = this.shadowRoot.querySelector("[part='drag-icon']");
         this.drag.addEventListener("mousedown", this.dragMouseDownHandler.bind(this));
+      }
+
+      if (this.rowActions) {
+        this.action = this.shadowRoot.querySelector("[part='actions-icon']");
+        this.action.addEventListener("click", this.actionClickHandler.bind(this));
       }
 
       if (this.rowSelector) {

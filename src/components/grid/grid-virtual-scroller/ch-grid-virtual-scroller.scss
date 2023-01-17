@@ -1,0 +1,21 @@
+@layer ch-grid {
+    ch-grid-virtual-scroller {
+      display: contents;
+    }
+    // ch-grid-virtual-scroller::before {
+    //   content: '';
+    //   grid-column-start: 1;
+    //   grid-column-end: -1;
+    //   pointer-events: none;
+    //   grid-row: var(--ch-grid-vs-row-start);
+    //   height: var(--ch-grid-vs-row-height);
+    // }
+    // ch-grid-virtual-scroller::after {
+    //   content: '';
+    //   grid-column-start: 1;
+    //   grid-column-end: -1;
+    //   pointer-events: none;
+    //   grid-row: var(--ch-grid-vs-row-end);
+    //   height: var(--ch-grid-vs-row-height);
+    // }
+  }

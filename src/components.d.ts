@@ -110,6 +110,10 @@ export namespace Components {
     interface ChGridSettingsColumns {
         "columns": HTMLChGridColumnElement[];
     }
+    interface ChGridVirtualScroller {
+        "items": any[];
+        "renderItems": (item:any) => {};
+    }
     interface ChIcon {
         /**
           * If enabled, the icon will display its inherent/natural color
@@ -399,6 +403,12 @@ declare global {
         prototype: HTMLChGridSettingsColumnsElement;
         new (): HTMLChGridSettingsColumnsElement;
     };
+    interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
+    }
+    var HTMLChGridVirtualScrollerElement: {
+        prototype: HTMLChGridVirtualScrollerElement;
+        new (): HTMLChGridVirtualScrollerElement;
+    };
     interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {
     }
     var HTMLChIconElement: {
@@ -511,6 +521,7 @@ declare global {
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
         "ch-grid-settings": HTMLChGridSettingsElement;
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
+        "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
@@ -639,6 +650,10 @@ declare namespace LocalJSX {
     }
     interface ChGridSettingsColumns {
         "columns"?: HTMLChGridColumnElement[];
+    }
+    interface ChGridVirtualScroller {
+        "items"?: any[];
+        "renderItems"?: (item:any) => {};
     }
     interface ChIcon {
         /**
@@ -878,6 +893,7 @@ declare namespace LocalJSX {
         "ch-grid-rowset-legend": ChGridRowsetLegend;
         "ch-grid-settings": ChGridSettings;
         "ch-grid-settings-columns": ChGridSettingsColumns;
+        "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
@@ -915,6 +931,7 @@ declare module "@stencil/core" {
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
+            "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;

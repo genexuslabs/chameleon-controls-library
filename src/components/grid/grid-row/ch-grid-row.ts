@@ -15,6 +15,28 @@ export default class HTMLChGridRowElement
     this.addEventListener("cellCaretClicked", this.cellCaretClickedHandler);
   }
 
+  getBoundingClientRect(): DOMRect {
+    let rect: DOMRect;
+
+    if (!this.firstElementChild) {
+      rect = new DOMRect();
+    } else if (this.firstElementChild == this.lastElementChild) {
+      rect = this.firstElementChild.getBoundingClientRect();
+    } else {
+      const firstCellRect = this.firstElementChild.getBoundingClientRect();
+      const lastCellRect = this.lastElementChild.getBoundingClientRect();
+
+      rect = new DOMRect(
+        firstCellRect.x,
+        firstCellRect.y,
+        lastCellRect.x - firstCellRect.x + lastCellRect.width,
+        lastCellRect.y - firstCellRect.y + lastCellRect.height
+      );
+    }
+
+    return rect;
+  }
+
   get grid(): HTMLChGridElement {
     return this.parentGrid ?? this.loadParentGrid();
   }

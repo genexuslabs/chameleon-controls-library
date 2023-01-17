@@ -1,7 +1,7 @@
 import {
-  ChGridCellClickedEvent,
+  ChGridRowClickedEvent,
   ChGridSelectionChangedEvent,
-} from "../grid/types";
+} from "../grid/ch-grid-types";
 import { Component, Host, Listen, Prop, h, Watch } from "@stencil/core";
 import {
   paginationGoToFirstPage,
@@ -19,11 +19,13 @@ import {
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
-} from "../grid-column/ch-grid-column-types";
+} from "../grid/grid-column/ch-grid-column-types";
 import {
   GridChameleonManagerState,
   GridChameleonState,
 } from "./gx-grid-chameleon-state";
+import { Gx, GxControl, GxGrid, GxGridColumn, GxGridRow } from "./genexus";
+import { GridChameleonColumnFilterChanged } from "./gx-grid-column-filter/gx-grid-chameleon-column-filter";
 
 declare var gx: Gx;
 
@@ -47,8 +49,8 @@ export class GridChameleon {
     }
   }
 
-  @Listen("cellClicked")
-  cellClickedHandler(eventInfo: CustomEvent<ChGridCellClickedEvent>) {
+  @Listen("rowClicked")
+  cellClickedHandler(eventInfo: CustomEvent<ChGridRowClickedEvent>) {
     const rowIndex = this.getRowIndexByGxId(eventInfo.detail.rowId);
     const cellIndex = parseInt(eventInfo.detail.cellId);
 
@@ -136,45 +138,26 @@ export class GridChameleon {
     );
   }
 
+  @Listen("columnSettingsChanged")
+  columnFilterChangedHandler(
+    eventInfo: CustomEvent<GridChameleonColumnFilterChanged>
+  ) {
+    const column = eventInfo.detail.column;
+
+    column.filterEqual = eventInfo.detail.equal ?? "";
+    column.filterLess = eventInfo.detail.less ?? "";
+    column.filterGreater = eventInfo.detail.greater ?? "";
+
+    GridChameleonManagerState.setColumnFilterEqual(column.htmlName, column.filterEqual);
+    GridChameleonManagerState.setColumnFilterLess(column.htmlName, column.filterLess);
+    GridChameleonManagerState.setColumnFilterGreater(column.htmlName, column.filterGreater);
+
+    gridRefresh(this.grid);
+  }
+
   @Watch("state")
   controlStateHandler() {
     this.loadState();
-  }
-
-  private handleChangeFilterEqual(eventInfo: Event) {
-    const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterEqual =
-      input.value;
-
-    GridChameleonManagerState.setColumnFilterEqual(
-      input.dataset.columnId,
-      input.value
-    );
-    gridRefresh(this.grid);
-  }
-
-  private handleChangeFilterLess(eventInfo: Event) {
-    const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterLess =
-      input.value;
-
-    GridChameleonManagerState.setColumnFilterLess(
-      input.dataset.columnId,
-      input.value
-    );
-    gridRefresh(this.grid);
-  }
-
-  private handleChangeFilterGreater(eventInfo: Event) {
-    const input = eventInfo.target as HTMLInputElement;
-    this.grid.getColumnByHtmlName(input.dataset.columnId).filterGreater =
-      input.value;
-
-    GridChameleonManagerState.setColumnFilterGreater(
-      input.dataset.columnId,
-      input.value
-    );
-    gridRefresh(this.grid);
   }
 
   componentWillLoad() {
@@ -295,60 +278,20 @@ export class GridChameleon {
   }
 
   private renderColumnFilter(column: GxGridColumn) {
-    return (
-      <div slot="settings">
-        <fieldset>
-          <caption>Filter</caption>
-          {column.FilterMode == "single" &&
-            this.renderColumnFilterControl(
-              column.htmlName,
-              column.gxControl.type,
-              column.gxControl.dataType,
-              column.filterEqual,
-              this.handleChangeFilterEqual
-            )}
-          {column.FilterMode == "range" &&
-            this.renderColumnFilterControl(
-              column.htmlName,
-              column.gxControl.type,
-              column.gxControl.dataType,
-              column.filterLess,
-              this.handleChangeFilterLess
-            )}
-          {column.FilterMode == "range" &&
-            this.renderColumnFilterControl(
-              column.htmlName,
-              column.gxControl.type,
-              column.gxControl.dataType,
-              column.filterGreater,
-              this.handleChangeFilterGreater
-            )}
-        </fieldset>
-      </div>
-    );
-  }
 
-  private renderColumnFilterControl(
-    columnId: string,
-    type: GxControlType,
-    dataType: GxControlDataType,
-    value: string,
-    changeHandler: (eventInfo: Event) => void
-  ) {
-    switch (type) {
-      case GxControlType.EDIT:
-      case GxControlType.CHECK:
-        return (
-          <label>
-            <input
-              type={this.getFilterInputType(dataType)}
-              value={value}
-              data-column-id={columnId}
-              onChange={changeHandler.bind(this)}
-            />
-          </label>
-        );
-    }
+    return (
+      <gx-grid-chameleon-column-filter
+        class={this.grid.ColumnFilterClass}
+        column={column}
+        equal={column.filterEqual}
+        less={column.filterLess}
+        greater={column.filterGreater}
+        buttonResetText={this.grid.FilterButtonResetText}
+        buttonApplyText={this.grid.FilterButtonApplyText}
+        slot="settings"
+      >
+      </gx-grid-chameleon-column-filter>
+    );
   }
 
   private renderRows() {
@@ -497,8 +440,7 @@ export class GridChameleon {
   private setCurrentRow() {
     const firstRow = this.grid.rows[0];
 
-    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) 
-    {
+    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) {
       gx.fn.setCurrentGridRow(this.grid.gxId, firstRow.gxId);
     }
   }
@@ -506,180 +448,4 @@ export class GridChameleon {
   private loadState() {
     GridChameleonManagerState.load(this.grid, this.state);
   }
-
-  private getFilterInputType(dataType: GxControlDataType): string {
-    switch (dataType) {
-      case GxControlDataType.BOOLEAN:
-        return "checkbox";
-      case GxControlDataType.CHAR:
-      case GxControlDataType.VARCHAR:
-      case GxControlDataType.LONGVARCHAR:
-        return "text";
-      case GxControlDataType.DATE:
-        return "date";
-      case GxControlDataType.DATETIME:
-        return "datetime-local";
-      case GxControlDataType.NUMBER:
-        return "number";
-      default:
-        return "text";
-    }
-  }
-}
-
-export interface Gx {
-  fx: {
-    obs: {
-      notify(eventName: string): void;
-    }
-  };
-  fn: {
-    currentGridRowImpl(gxId: number): string;
-    setCurrentGridRow(gxId: number, rowGxId: string): void;
-  };
-  lang: {
-    gxBoolean(value: undefined | boolean | number | string): boolean
-  };
-  popup: {
-    ispopup(): boolean
-  };
-  getMessage(id: string): string;
-}
-
-export interface GxGrid {
-  readonly gxId: number;
-  readonly ControlName: string;
-  readonly columns: GxGridColumn[];
-  readonly rows: GxGridRow[];
-  readonly usePaging: boolean;
-  readonly pageSize: number;
-  readonly properties: GxGridCellProperties[][];
-  readonly ParentObject: GxObject;
-  readonly header: string;
-  readonly Class: string;
-  readonly gxAllowSelection: boolean;
-  readonly gxAllowHovering: boolean;
-  readonly pagingBarClass: string;
-  readonly pagingButtonFirstClass: string;
-  readonly pagingButtonLastClass: string;
-  readonly pagingButtonNextClass: string;
-  readonly pagingButtonPreviousClass: string;
-
-  getRowByGxId(gxId: string): GxGridRow;
-  setSort(columnIndex: number, asc?: boolean): void;
-  selectRow(index: number): void;
-  execC2VFunctions(): void;
-  executeEvent(columnIndex: number, rowIndex: number): void;
-  changeGridPage(direction: string, force?: boolean): any;
-  isFirstPage(): boolean;
-  isLastPage(): boolean;
-  getColumnByHtmlName(htmlName: string): GxGridColumn;
-
-  // UserControl
-  readonly SortMode: "client" | "server";
-
-  readonly ColumnsetClass: string;
-  readonly ColumnClass: string;
-  readonly RowClass: string;
-  readonly RowEvenClass: string;
-  readonly RowOddClass: string;
-  readonly RowSelectedClass: string;
-  readonly RowHighlightedClass: string;
-  readonly CellClass: string;
-
-  readonly PaginatorShow: boolean;
-  readonly PaginatorNavigationButtonTextPosition: "title" | "text";
-
-  readonly ActionbarHeaderClass: string;
-  readonly ActionbarFooterClass: string;
-
-  readonly ActionRefreshPosition: "none" | "header" | "footer";
-  readonly ActionRefreshTextPosition: "title" | "text";
-  readonly ActionRefreshClass: string;
-
-  readonly ActionSettingsPosition: "none" | "header" | "footer";
-  readonly ActionSettingsTextPosition: "title" | "text";
-  readonly ActionSettingsClass: string;
-
-  readonly SettingsCloseTextPosition: "title" | "text";
-
-  OnPaginationFirst(): void;
-  OnPaginationPrevious(): void;
-  OnPaginationNext(): void;
-  OnPaginationLast(): void;
-}
-
-export interface GxGridColumn {
-  readonly title: string;
-  readonly visible: boolean;
-  readonly gxColumnClass: string;
-  readonly gxControl: GxControl;
-  readonly gxAttId: string;
-  readonly gxAttName: string;
-  readonly htmlName: string;
-  readonly index: number;
-
-  // UserControl
-  readonly Icon: string;
-  readonly NamePosition: "title" | "text";
-  readonly HeaderClass: string;
-  Hidden: number;
-  readonly Hideable: number;
-  readonly Sortable: number;
-  readonly Filterable: number;
-  readonly Resizeable: number;
-  Size: "min" | "max" | "minmax" | "auto" | "length" | "css";
-  SizeLength: string;
-  SizeMinLength: string;
-  SizeMaxLength: string;
-  SizeVariableName: string;
-  FilterMode: "single" | "range";
-  SortDirection: "asc" | "desc";
-
-  filterEqual: string;
-  filterLess: string;
-  filterGreater: string;
-
-  render: boolean;
-}
-
-export interface GxGridRow {
-  readonly id: number;
-  readonly gxId: string;
-  readonly values: string[];
-  readonly gxProps: any[];
-}
-
-export interface GxGridCellProperties {
-  column: GxGridColumn;
-  visible: boolean;
-}
-
-export interface GxControl {
-  setProperties(): void;
-  getHtml(): string;
-
-  dataType: GxControlDataType;
-  type: GxControlType;
-}
-
-export interface GxObject {
-  refreshGrid(gridName: string): void;
-}
-
-enum GxControlType {
-  EDIT = 1,
-  RADIO = 4,
-  COMBO = 5,
-  CHECK = 7,
-}
-
-enum GxControlDataType {
-  NUMBER = 0,
-  CHAR = 1,
-  DATE = 2,
-  DATETIME = 3,
-  VARCHAR = 5,
-  LONGVARCHAR = 6,
-  BOOLEAN = 7,
 }

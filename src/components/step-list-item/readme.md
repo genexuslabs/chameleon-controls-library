@@ -19,6 +19,13 @@
 | `itemClicked` | Emits the item id | `CustomEvent<any>` |
 
 
+## Shadow Parts
+
+| Part          | Description |
+| ------------- | ----------- |
+| `"item-icon"` |             |
+
+
 ## CSS Custom Properties
 
 | Name                  | Description                  |
@@ -31,19 +38,6 @@
 | `--line-color`        | The color of item's line     |
 | `--text-color`        | The color of the text        |
 
-
-## Dependencies
-
-### Depends on
-
-- [ch-icon](../icon)
-
-### Graph
-```mermaid
-graph TD;
-  ch-step-list-item --> ch-icon
-  style ch-step-list-item fill:#f9f,stroke:#333,stroke-width:4px
-```
 
 ----------------------------------------------
 

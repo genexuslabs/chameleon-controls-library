@@ -1,0 +1,23 @@
+@import "../helpers/styles.scss";
+
+// row box simulation
+@layer ch-grid {
+  ch-grid-cell {
+    position: sticky;
+    grid-column: var(--grid-column);
+    @include box-simulation;
+    @include column-drag-transition;
+  }
+
+  ch-grid-cell:before {
+    margin-inline-start: calc(var(--indent) * var(--level));
+  }
+
+  ch-grid-cell::part(indent) {
+    width: calc(var(--indent) * var(--level));
+  }
+
+  ch-grid-cell::part(caret) {
+    visibility: hidden;
+  }
+}

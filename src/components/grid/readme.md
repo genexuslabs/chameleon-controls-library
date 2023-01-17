@@ -17,7 +17,7 @@
 
 | Event              | Description | Type                                       |
 | ------------------ | ----------- | ------------------------------------------ |
-| `cellClicked`      |             | `CustomEvent<ChGridCellClickedEvent>`      |
+| `rowClicked`       |             | `CustomEvent<ChGridRowClickedEvent>`       |
 | `selectionChanged` |             | `CustomEvent<ChGridSelectionChangedEvent>` |
 
 
@@ -28,6 +28,7 @@
 | `"footer"`           |             |
 | `"header"`           |             |
 | `"main"`             |             |
+| `"row-actions"`      |             |
 | `"settings-columns"` |             |
 
 
@@ -39,8 +40,8 @@
 
 ### Depends on
 
-- [ch-grid-settings](../grid-settings)
-- [ch-grid-settings-columns](../grid-settings/grid-settings-columns)
+- [ch-grid-settings](grid-settings)
+- [ch-grid-settings-columns](./grid-settings/grid-settings-columns)
 
 ### Graph
 ```mermaid

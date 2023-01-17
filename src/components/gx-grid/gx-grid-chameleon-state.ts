@@ -1,5 +1,5 @@
-import { ColumnSortDirection } from "../grid-column/ch-grid-column-types";
-import { GxGrid } from "./gx-grid-chameleon";
+import { ColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
+import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {
   private static grid: GxGrid;

@@ -6,16 +6,17 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
-import { ChGridCellClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/types";
-import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid-column/ch-grid-column-types";
-import { ChGridColumn } from "./components/grid-column/ch-grid-column";
+import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
+import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridColumn } from "./components/grid/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
 import { ecLevel } from "./components/qr/ch-qr";
-import { GxGrid } from "./components/gx-grid/gx-grid-chameleon";
+import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
+import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
     interface ChFormCheckbox {
         /**
@@ -66,13 +67,18 @@ export namespace Components {
         "columnId": string;
         "columnName": string;
         "columnNamePosition": "title" | "text";
+        "columnType": "plain" | "rich" | "tree";
         "displayObserverClass": string;
+        "freeze"?: "start" | "end";
         "hidden": boolean;
         "hideable": boolean;
         "order": number;
         "physicalOrder": number;
         "resizeable": boolean;
         "resizing": boolean;
+        "richRowActions": boolean;
+        "richRowDrag": boolean;
+        "richRowSelector": boolean;
         "settingable": boolean;
         "showSettings": boolean;
         "size": string;
@@ -91,7 +97,9 @@ export namespace Components {
     }
     interface ChGridColumnset {
     }
-    interface ChGridRowset {
+    interface ChGridRowActions {
+    }
+    interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
     }
@@ -101,6 +109,10 @@ export namespace Components {
     }
     interface ChGridSettingsColumns {
         "columns": HTMLChGridColumnElement[];
+    }
+    interface ChGridVirtualScroller {
+        "items": any[];
+        "renderItems": (item:any) => {};
     }
     interface ChIcon {
         /**
@@ -291,6 +303,14 @@ export namespace Components {
         "gridTimestamp": number;
         "state": GridChameleonState;
     }
+    interface GxGridChameleonColumnFilter {
+        "buttonApplyText": string;
+        "buttonResetText": string;
+        "column": GxGridColumn;
+        "equal": string;
+        "greater": string;
+        "less": string;
+    }
 }
 declare global {
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
@@ -353,11 +373,17 @@ declare global {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
     };
-    interface HTMLChGridRowsetElement extends Components.ChGridRowset, HTMLStencilElement {
+    interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
     }
-    var HTMLChGridRowsetElement: {
-        prototype: HTMLChGridRowsetElement;
-        new (): HTMLChGridRowsetElement;
+    var HTMLChGridRowActionsElement: {
+        prototype: HTMLChGridRowActionsElement;
+        new (): HTMLChGridRowActionsElement;
+    };
+    interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
+    }
+    var HTMLChGridRowsetEmptyElement: {
+        prototype: HTMLChGridRowsetEmptyElement;
+        new (): HTMLChGridRowsetEmptyElement;
     };
     interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
     }
@@ -376,6 +402,12 @@ declare global {
     var HTMLChGridSettingsColumnsElement: {
         prototype: HTMLChGridSettingsColumnsElement;
         new (): HTMLChGridSettingsColumnsElement;
+    };
+    interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
+    }
+    var HTMLChGridVirtualScrollerElement: {
+        prototype: HTMLChGridVirtualScrollerElement;
+        new (): HTMLChGridVirtualScrollerElement;
     };
     interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {
     }
@@ -467,6 +499,12 @@ declare global {
         prototype: HTMLGxGridChameleonElement;
         new (): HTMLGxGridChameleonElement;
     };
+    interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
+    }
+    var HTMLGxGridChameleonColumnFilterElement: {
+        prototype: HTMLGxGridChameleonColumnFilterElement;
+        new (): HTMLGxGridChameleonColumnFilterElement;
+    };
     interface HTMLElementTagNameMap {
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
@@ -478,10 +516,12 @@ declare global {
         "ch-grid-column-resize": HTMLChGridColumnResizeElement;
         "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
         "ch-grid-columnset": HTMLChGridColumnsetElement;
-        "ch-grid-rowset": HTMLChGridRowsetElement;
+        "ch-grid-row-actions": HTMLChGridRowActionsElement;
+        "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
         "ch-grid-settings": HTMLChGridSettingsElement;
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
+        "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
@@ -497,6 +537,7 @@ declare global {
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
+        "gx-grid-chameleon-column-filter": HTMLGxGridChameleonColumnFilterElement;
     }
 }
 declare namespace LocalJSX {
@@ -533,7 +574,7 @@ declare namespace LocalJSX {
     }
     interface ChGrid {
         "localization"?: GridLocalization;
-        "onCellClicked"?: (event: CustomEvent<ChGridCellClickedEvent>) => void;
+        "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
         "onRowHighlightedClass"?: string;
         "onRowSelectedClass"?: string;
         "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
@@ -554,7 +595,9 @@ declare namespace LocalJSX {
         "columnId"?: string;
         "columnName"?: string;
         "columnNamePosition"?: "title" | "text";
+        "columnType"?: "plain" | "rich" | "tree";
         "displayObserverClass"?: string;
+        "freeze"?: "start" | "end";
         "hidden"?: boolean;
         "hideable"?: boolean;
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
@@ -562,6 +605,7 @@ declare namespace LocalJSX {
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
         "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
+        "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
         "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
         "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
@@ -569,6 +613,9 @@ declare namespace LocalJSX {
         "physicalOrder"?: number;
         "resizeable"?: boolean;
         "resizing"?: boolean;
+        "richRowActions"?: boolean;
+        "richRowDrag"?: boolean;
+        "richRowSelector"?: boolean;
         "settingable"?: boolean;
         "showSettings"?: boolean;
         "size"?: string;
@@ -585,14 +632,16 @@ declare namespace LocalJSX {
     }
     interface ChGridColumnSettings {
         "column"?: ChGridColumn;
-        "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
         "show"?: boolean;
     }
     interface ChGridColumnset {
     }
-    interface ChGridRowset {
+    interface ChGridRowActions {
+    }
+    interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
+        "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
         "gridManager"?: ChGridManager;
@@ -601,6 +650,10 @@ declare namespace LocalJSX {
     }
     interface ChGridSettingsColumns {
         "columns"?: HTMLChGridColumnElement[];
+    }
+    interface ChGridVirtualScroller {
+        "items"?: any[];
+        "renderItems"?: (item:any) => {};
     }
     interface ChIcon {
         /**
@@ -815,6 +868,15 @@ declare namespace LocalJSX {
         "gridTimestamp"?: number;
         "state"?: GridChameleonState;
     }
+    interface GxGridChameleonColumnFilter {
+        "buttonApplyText"?: string;
+        "buttonResetText"?: string;
+        "column"?: GxGridColumn;
+        "equal"?: string;
+        "greater"?: string;
+        "less"?: string;
+        "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
+    }
     interface IntrinsicElements {
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
@@ -826,10 +888,12 @@ declare namespace LocalJSX {
         "ch-grid-column-resize": ChGridColumnResize;
         "ch-grid-column-settings": ChGridColumnSettings;
         "ch-grid-columnset": ChGridColumnset;
-        "ch-grid-rowset": ChGridRowset;
+        "ch-grid-row-actions": ChGridRowActions;
+        "ch-grid-rowset-empty": ChGridRowsetEmpty;
         "ch-grid-rowset-legend": ChGridRowsetLegend;
         "ch-grid-settings": ChGridSettings;
         "ch-grid-settings-columns": ChGridSettingsColumns;
+        "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
@@ -845,6 +909,7 @@ declare namespace LocalJSX {
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
         "gx-grid-chameleon": GxGridChameleon;
+        "gx-grid-chameleon-column-filter": GxGridChameleonColumnFilter;
     }
 }
 export { LocalJSX as JSX };
@@ -861,10 +926,12 @@ declare module "@stencil/core" {
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
-            "ch-grid-rowset": LocalJSX.ChGridRowset & JSXBase.HTMLAttributes<HTMLChGridRowsetElement>;
+            "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
+            "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
+            "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
@@ -880,6 +947,7 @@ declare module "@stencil/core" {
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
             "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
+            "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
         }
     }
 }

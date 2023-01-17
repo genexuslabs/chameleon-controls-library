@@ -1,0 +1,8 @@
+@layer ch-grid {
+  ch-grid-rowset {
+    display: contents;
+  }
+  ch-grid-rowset[collapsed] > :not(ch-grid-rowset-legend) {
+    display: none;
+  }
+}

@@ -24,10 +24,16 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
     @Prop({mutable: true}) greater: string;
     @Event() columnSettingsChanged: EventEmitter<GridChameleonColumnFilterChanged>;
 
+    private filterEnum: GridChameleonColumnFilterEnum[] = [];
     private inputEqual: HTMLInputElement | HTMLSelectElement;
     private inputLess: HTMLInputElement | HTMLSelectElement;
     private inputGreater: HTMLInputElement | HTMLSelectElement;
 
+    componentWillLoad() {
+      if (Array.isArray(this.column.FilterEnum) && this.column.FilterEnum.length > 0) {
+        this.filterEnum = this.column.FilterEnum;
+      }
+    }
 
     private applyClickHandler() {
         this.equal = this.inputEqual?.value ?? "";
@@ -82,7 +88,6 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
               {this.column.FilterMode == "single" &&
                   this.renderColumnFilterControl(
                   "inputEqual",
-                  this.column.FilterEnum,
                   this.column.gxControl.type,
                   this.column.gxControl.dataType,
                   this.column.gxControl.possibleValues,
@@ -91,23 +96,21 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
               )}
               {this.column.FilterMode == "range" &&
                   this.renderColumnFilterControl(
-                  "inputLess",
-                  this.column.FilterEnum,
-                  this.column.gxControl.type,
-                  this.column.gxControl.dataType,
-                  this.column.gxControl.possibleValues,
-                  this.column.FilterLabelLess,
-                  this.less
-              )}
-              {this.column.FilterMode == "range" &&
-                  this.renderColumnFilterControl(
                   "inputGreater",
-                  this.column.FilterEnum,
                   this.column.gxControl.type,
                   this.column.gxControl.dataType,
                   this.column.gxControl.possibleValues,
                   this.column.FilterLabelGreater,
                   this.greater
+              )}
+              {this.column.FilterMode == "range" &&
+                  this.renderColumnFilterControl(
+                  "inputLess",
+                  this.column.gxControl.type,
+                  this.column.gxControl.dataType,
+                  this.column.gxControl.possibleValues,
+                  this.column.FilterLabelLess,
+                  this.less
               )}
             </fieldset>
             <section part="footer">
@@ -120,7 +123,6 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
 
     private renderColumnFilterControl(
         input: string,
-        filterEnum: GridChameleonColumnFilterEnum[],
         type: GxControlType,
         dataType: GxControlDataType,
         possibleValues: GxControlPossibleValues,
@@ -129,9 +131,9 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
       ) {
         const part = input.replace("input", "").toLowerCase();
 
-        if (Array.isArray(filterEnum) && filterEnum.length > 0) {
+        if (this.filterEnum.length > 0) {
           type = GxControlType.COMBO;
-          possibleValues = filterEnum.map(filter => [filter.Value, filter.Description]);
+          possibleValues = this.filterEnum.map(filter => [filter.Value, filter.Description]);
         }
 
         switch (type) {

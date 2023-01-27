@@ -254,13 +254,14 @@ export class GridChameleon {
           if (gx.lang.gxBoolean(column.render)) {
             return (
               <ch-grid-column
+                key={column.htmlName}
                 columnId={column.htmlName}
                 columnIconUrl={column.Icon}
                 columnName={column.title}
                 columnNamePosition={column.NamePosition}
                 size={this.getColumnSize(column)}
                 displayObserverClass={column.gxColumnClass}
-                class={`${this.grid.ColumnClass} ${column.HeaderClass}`}
+                class={`${this.grid.ColumnClass} ${column.HeaderClass} ${column.isFiltering ? "grid-column-filtering" : ""}`}
                 hidden={column.Hidden == -1}
                 hideable={column.Hideable == -1}
                 resizable={column.Resizeable == -1}

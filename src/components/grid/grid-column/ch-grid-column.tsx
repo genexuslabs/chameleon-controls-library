@@ -50,7 +50,7 @@ export class ChGridColumn {
   @Prop({ reflect: true }) order: number;
   @Prop() physicalOrder: number;
   @Prop() size: string;
-  @Prop() resizeable: boolean = true;
+  @Prop() resizable: boolean = true;
   @Prop({ reflect: true }) resizing: boolean;
   @Prop() sortable: boolean = true;
   @Prop() settingable: boolean = true;
@@ -270,7 +270,7 @@ export class ChGridColumn {
 
   private renderResize() {
     return (
-      <li class="resize" part="bar-resize" hidden={!this.resizeable}>
+      <li class="resize" part="bar-resize" hidden={!this.resizable}>
         <ch-grid-column-resize
           column={this}
           class="resize-split"

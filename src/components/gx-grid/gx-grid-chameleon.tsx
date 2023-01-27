@@ -263,7 +263,7 @@ export class GridChameleon {
                 class={`${this.grid.ColumnClass} ${column.HeaderClass}`}
                 hidden={column.Hidden == -1}
                 hideable={column.Hideable == -1}
-                resizeable={column.Resizeable == -1}
+                resizable={column.Resizeable == -1}
                 sortable={column.Sortable == -1}
                 settingable={column.Filterable == -1}
                 sortDirection={column.SortDirection}

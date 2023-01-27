@@ -49,9 +49,11 @@ export namespace Components {
         "value": string;
     }
     interface ChGrid {
+        "cellEnsureVisible": (cellId: string) => Promise<void>;
         "localization": GridLocalization;
-        "onRowHighlightedClass": string;
-        "onRowSelectedClass": string;
+        "rowEnsureVisible": (rowId: string) => Promise<void>;
+        "rowHighlightedClass": string;
+        "rowSelectedClass": string;
         "rowSelectionMode": "none" | "single" | "multiple";
     }
     interface ChGridActionRefresh {
@@ -74,7 +76,7 @@ export namespace Components {
         "hideable": boolean;
         "order": number;
         "physicalOrder": number;
-        "resizeable": boolean;
+        "resizable": boolean;
         "resizing": boolean;
         "richRowActions": boolean;
         "richRowDrag": boolean;
@@ -112,7 +114,7 @@ export namespace Components {
     }
     interface ChGridVirtualScroller {
         "items": any[];
-        "renderItems": (item:any) => {};
+        "viewPortItems": any[];
     }
     interface ChIcon {
         /**
@@ -575,9 +577,9 @@ declare namespace LocalJSX {
     interface ChGrid {
         "localization"?: GridLocalization;
         "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
-        "onRowHighlightedClass"?: string;
-        "onRowSelectedClass"?: string;
         "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+        "rowHighlightedClass"?: string;
+        "rowSelectedClass"?: string;
         "rowSelectionMode"?: "none" | "single" | "multiple";
     }
     interface ChGridActionRefresh {
@@ -611,7 +613,7 @@ declare namespace LocalJSX {
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
         "order"?: number;
         "physicalOrder"?: number;
-        "resizeable"?: boolean;
+        "resizable"?: boolean;
         "resizing"?: boolean;
         "richRowActions"?: boolean;
         "richRowDrag"?: boolean;
@@ -653,7 +655,8 @@ declare namespace LocalJSX {
     }
     interface ChGridVirtualScroller {
         "items"?: any[];
-        "renderItems"?: (item:any) => {};
+        "onViewPortItemsChanged"?: (event: CustomEvent<any>) => void;
+        "viewPortItems"?: any[];
     }
     interface ChIcon {
         /**

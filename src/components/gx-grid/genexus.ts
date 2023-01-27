@@ -16,7 +16,18 @@ export interface Gx {
     popup: {
       ispopup(): boolean;
     };
+    date: {
+      ctod(value: string, format?: "Y4MD"): gxdate;
+      ctot(value: string, format?: "Y4MD"): gxdate;
+      isNullDate(date: Date | gxdate): boolean;
+    };
     getMessage(id: string): string;
+  }
+
+  export interface gxdate {
+    toString(): string;
+    toISOString(): string;
+    Value: Date;
   }
   
   export interface GxGrid {
@@ -112,6 +123,7 @@ export interface Gx {
     SizeVariableName: string;
     readonly FilterMode: "single" | "range";
     readonly FilterEnum: GridChameleonColumnFilterEnum[],
+    readonly FilterDateTimeAsDate: number,
     readonly FilterCaption: string,
     readonly FilterLabelEqual: string,
     readonly FilterLabelLess: string,
@@ -121,7 +133,8 @@ export interface Gx {
     filterEqual: string;
     filterLess: string;
     filterGreater: string;
-  
+    isFiltering: boolean;
+
     render: boolean;
   }
   

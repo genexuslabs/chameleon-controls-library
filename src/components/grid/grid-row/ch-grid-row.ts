@@ -4,8 +4,8 @@ export default class HTMLChGridRowElement
   extends HTMLElement
   implements IChGridCollapsible
 {
-  static TAG_NAME = "CH-GRID-ROW";
   private parentGrid: HTMLChGridElement;
+  public static readonly TAG_NAME = "CH-GRID-ROW";
 
   constructor() {
     super();
@@ -48,13 +48,13 @@ export default class HTMLChGridRowElement
   set highlighted(value: boolean) {
     if (value === true) {
       this.setAttribute("highlighted", "");
-      if (this.grid.onRowHighlightedClass) {
-        this.classList.add(this.grid.onRowHighlightedClass);
+      if (this.grid.rowHighlightedClass) {
+        this.classList.add(this.grid.rowHighlightedClass);
       }
     } else {
       this.removeAttribute("highlighted");
-      if (this.grid.onRowHighlightedClass) {
-        this.classList.remove(this.grid.onRowHighlightedClass);
+      if (this.grid.rowHighlightedClass) {
+        this.classList.remove(this.grid.rowHighlightedClass);
       }
     }
   }
@@ -66,13 +66,13 @@ export default class HTMLChGridRowElement
   set selected(value: boolean) {
     if (value === true) {
       this.setAttribute("selected", "");
-      if (this.grid.onRowSelectedClass) {
-        this.classList.add(this.grid.onRowSelectedClass);
+      if (this.grid.rowSelectedClass) {
+        this.classList.add(this.grid.rowSelectedClass);
       }
     } else {
       this.removeAttribute("selected");
-      if (this.grid.onRowSelectedClass) {
-        this.classList.remove(this.grid.onRowSelectedClass);
+      if (this.grid.rowSelectedClass) {
+        this.classList.remove(this.grid.rowSelectedClass);
       }
     }
   }
@@ -109,7 +109,11 @@ export default class HTMLChGridRowElement
     }
   }
 
-  public ensureVisible() {}
+  public ensureVisible() {
+    this.dispatchEvent(
+      new CustomEvent("rowEnsureVisible", { bubbles: true, composed: true })
+    );
+  }
 
   private cellCaretClickedHandler(eventInfo: PointerEvent) {
     const targetRow = eventInfo.currentTarget as HTMLChGridRowElement;

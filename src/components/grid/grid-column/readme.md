@@ -18,7 +18,7 @@
 | `hideable`             | `hideable`               |             | `boolean`                     | `true`      |
 | `order`                | `order`                  |             | `number`                      | `undefined` |
 | `physicalOrder`        | `physical-order`         |             | `number`                      | `undefined` |
-| `resizeable`           | `resizeable`             |             | `boolean`                     | `true`      |
+| `resizable`            | `resizable`              |             | `boolean`                     | `true`      |
 | `resizing`             | `resizing`               |             | `boolean`                     | `undefined` |
 | `richRowActions`       | `rich-row-actions`       |             | `boolean`                     | `undefined` |
 | `richRowDrag`          | `rich-row-drag`          |             | `boolean`                     | `undefined` |

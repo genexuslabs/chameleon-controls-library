@@ -1,4 +1,4 @@
-import { Component, Prop, Element } from "@stencil/core";
+import { Component, Prop, Element, Event, EventEmitter, Watch, State } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-virtual-scroller",
@@ -8,71 +8,123 @@ import { Component, Prop, Element } from "@stencil/core";
 export class ChGridVirtualScrollerLegend {
     @Element() el: HTMLChGridVirtualScrollerElement;
     @Prop() items: any[];
-    @Prop() renderItems: (item:any) => {};
+    @Prop({mutable: true}) viewPortItems: any[];
+    @State() rowHeight = 0;
+    @State() browserHeight = document.documentElement.clientHeight;
+    @State() hasGridScroll = false;
+    @State() hasWindowScroll = false;
+    @State() maxViewPortItems = 1;
+    @Event() viewPortItemsChanged: EventEmitter;
 
-    // @State() startIndex = 0;
-    // @State() totalViewPortItems = 1;
-    // @State() rowHeight: string;
+    private gridMainEl: HTMLElement;
+    private resizeObserver = new ResizeObserver(this.resizeHandler.bind(this));
+    private timer: NodeJS.Timeout;
 
-    // private gridMainEl: HTMLElement;
-    // private observer: ResizeObserver;
+    componentWillLoad() {
+        this.gridMainEl = this.el.assignedSlot.parentElement;
+        this.resizeObserver.observe(this.gridMainEl);
+        this.resizeObserver.observe(document.documentElement);
+    }
 
-    // componentWillLoad() {
-    //     this.gridMainEl = this.el.assignedSlot.parentElement;
-    //     this.gridMainEl.addEventListener("scroll", this.updateStartIndex.bind(this), {passive: true});
+    componentDidLoad() {
+      this.updateViewPortItems();
+    }
 
-    //     this.rowHeight = '21px';
+    disconnectedCallback() {
+      this.resizeObserver.disconnect();
+    }
 
-    //     this.observer = new ResizeObserver(this.resizing.bind(this));
-    //     this.observer.observe(this.gridMainEl);
-    // }
+    @Watch("items")
+    itemsHandler() {
+      if (this.gridMainEl) {
+        this.updateViewPortItems();
+      }
+    }
 
-    // componentDidLoad() {
-    //     this.updateShadowRows();
-    // }
+    @Watch("rowHeight")
+    rowHeightHandler() {
+      if (this.gridMainEl) {
+        this.updateViewPortItems();
+      }
+    }
 
-    // @Watch("items")
-    // itemsHandler() {
-    //     this.updateStartIndex();
-    //     this.updateShadowRows();
-    // }
+    @Watch("maxViewPortItems")
+    maxViewPortItemsHandler() {
+      if (this.gridMainEl) {
+        this.updateViewPortItems();
+      }
+    }
 
-    // @Watch("totalViewPortItems")
-    // totalViewPortItemsHandler() {
-    //     this.updateStartIndex();
-    // }
+    @Watch("hasGridScroll")
+    hasScrollHandler() {
+      if (this.hasGridScroll) {
+        this.gridMainEl.addEventListener("scroll", this.updateViewPortItems.bind(this), {passive: true});
+      } else {
+        this.gridMainEl.removeEventListener("scroll", this.updateViewPortItems.bind(this));
+      }
+      this.updateViewPortItems();
+    }
 
-    // render() {
+    @Watch("hasWindowScroll")
+    hasWindowScrollHandler() {
+      if (this.hasWindowScroll) {
+        document.addEventListener("scroll", this.updateViewPortItems.bind(this), {passive: true});
+      } else {
+        document.removeEventListener("scroll", this.updateViewPortItems.bind(this));
+      }
+      this.updateViewPortItems();
+    }
 
-    //     this.renderItems(this.items.slice(this.startIndex, this.startIndex + this.totalViewPortItems).map((item, i) => {
-    //         item.chGridRow = this.startIndex+2+i;
-    //         return item;
-    //     }));
-    // }
+    private resizeHandler() {
+      const rowHeights = getComputedStyle(this.gridMainEl).gridTemplateRows.split(" ");
 
-    // private updateStartIndex() {
-    //     let percentScroll = this.gridMainEl.scrollTop * 100 / (this.gridMainEl.scrollHeight-this.gridMainEl.clientHeight);
-    //     if (isNaN(percentScroll)) {
-    //         percentScroll = 0;
-    //     }
-    //     this.startIndex = Math.floor(percentScroll * (this.items.length - this.totalViewPortItems) / 100);
-    // }
+      this.browserHeight = document.documentElement.clientHeight;
+      this.rowHeight = rowHeights.length >= 4 ? parseInt(rowHeights[2]) : 0; // row[0]:column header, row[1]:top shadow row, row[2]:first row, row[3]:second row OR bottom shadow row
+      
+      if (this.rowHeight > 0) {
+        this.hasGridScroll = this.gridMainEl.scrollHeight != this.gridMainEl.clientHeight;
+        this.hasWindowScroll = !this.hasGridScroll && this.gridMainEl.clientHeight > this.browserHeight;
+        this.maxViewPortItems = Math.ceil(this.browserHeight / this.rowHeight);
+      }
+    }
 
-    // private updateShadowRows() {
-    //     if (this.gridMainEl) {
-    //         this.gridMainEl.style.gridAutoRows = this.rowHeight;
-    //         this.el.style.setProperty('--ch-grid-vs-row-height', this.rowHeight);
-    //         this.el.style.setProperty('--ch-grid-vs-row-start', "2");
-    //         this.el.style.setProperty('--ch-grid-vs-row-end', `${this.items.length+2}`);
-    //     }
-    // }
+    private updateViewPortItems(eventInfo?: Event) {
+      let percentScroll = this.getPercentScroll();
+      let startIndex: number;
 
-    // private resizing() {
+      if (percentScroll <= 50) {
+        startIndex = Math.floor(percentScroll * Math.max(this.items.length - this.maxViewPortItems, 0) / 100);
+      } else {
+        startIndex = Math.ceil(percentScroll * Math.max(this.items.length - this.maxViewPortItems, 0) / 100);
+      }
 
-    //     if (this.gridMainEl.scrollHeight != this.gridHeight) {
-    //         // const templateRows = getComputedStyle(this.gridMainEl).gridTemplateRows.split(" ");
-            
-    //         // this.rowHeight = templateRows[1] ?? '0px';
-    //     }
-    // }
+      this.el.style.paddingTop = `${startIndex * this.rowHeight}px`;
+      this.el.style.paddingBottom = `${(this.items.length - (startIndex + Math.min(this.items.length, this.maxViewPortItems))) * this.rowHeight}px`;
+
+      this.viewPortItems = this.items.slice(startIndex, startIndex + this.maxViewPortItems);
+      this.viewPortItemsChanged.emit();
+
+      if (eventInfo) {
+        // Angular discards events during rendering, if it lags it can discard the last one and not display correctly
+        clearTimeout(this.timer);
+        this.timer = setTimeout(this.updateViewPortItems.bind(this), 100);
+      }
+    }
+
+    private getPercentScroll(): number {
+      let hiddenHeight = 0;
+      let scrollPosition = 0;
+
+      if (this.hasGridScroll) {
+        hiddenHeight = this.gridMainEl.scrollHeight - this.gridMainEl.clientHeight;
+        scrollPosition = this.gridMainEl.scrollTop;
+
+      } else if (this.hasWindowScroll) {
+        const gridMainRect = this.gridMainEl.getBoundingClientRect();
+        hiddenHeight = this.gridMainEl.clientHeight - this.browserHeight;
+        scrollPosition = Math.min((gridMainRect.top >= 0 ? 0 : gridMainRect.top * -1), hiddenHeight);
+      }
+
+      return (hiddenHeight > 0) ? scrollPosition * 100 / hiddenHeight : 0;
+    }
 }

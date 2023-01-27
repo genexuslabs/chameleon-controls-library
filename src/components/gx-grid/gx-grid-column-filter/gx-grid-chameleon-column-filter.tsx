@@ -7,8 +7,10 @@ import {
     Event,
     EventEmitter
   } from "@stencil/core";
-import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn } from "../genexus";
+import { Gx, GxControlDataType, GxControlPossibleValues, GxControlType, gxdate, GxGridColumn } from "../genexus";
   
+  declare var gx: Gx;
+
   @Component({
     tag: "gx-grid-chameleon-column-filter",
     styleUrl: "gx-grid-chameleon-column-filter.scss",
@@ -36,9 +38,9 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
     }
 
     private applyClickHandler() {
-        this.equal = this.inputEqual?.value ?? "";
-        this.less = this.inputLess?.value ?? "";
-        this.greater = this.inputGreater?.value ?? "";
+        this.equal = this.getControlValue(this.inputEqual);
+        this.less = this.getControlValue(this.inputLess);
+        this.greater = this.getControlValue(this.inputGreater);
 
         this.columnSettingsChanged.emit({
             column: this.column,
@@ -59,6 +61,60 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
             less: this.less,
             greater: this.greater
         });
+    }
+
+    private getControlValue(input: HTMLInputElement | HTMLSelectElement): string {
+      const value = input?.value ?? "";
+      let dataType = this.column.gxControl.dataType;
+
+      if (dataType == GxControlDataType.DATETIME && this.column.FilterDateTimeAsDate == -1) {
+        dataType = GxControlDataType.DATE;
+      }
+
+      switch (dataType) {
+        case GxControlDataType.DATE:
+          return gx.date.ctod(value, "Y4MD").toString();
+        case GxControlDataType.DATETIME:
+          return gx.date.ctot(value, "Y4MD").toString();
+        default:
+          return value;
+      }
+    }
+
+    private toControlValue(value: string): string {
+      let dataType = this.column.gxControl.dataType;
+
+      if (!value) {
+        return "";
+      }
+
+      if (dataType == GxControlDataType.DATETIME && this.column.FilterDateTimeAsDate == -1) {
+        dataType = GxControlDataType.DATE;
+      }
+
+      switch (dataType) {
+        case GxControlDataType.DATE:
+          return this.convertGxDateToISO(gx.date.ctod(value), false);
+        case GxControlDataType.DATETIME:
+          return this.convertGxDateToISO(gx.date.ctot(value), true);
+        default:
+          return value;
+      }
+    }
+
+    private convertGxDateToISO(gxdate: gxdate, isDateTime: boolean): string {
+      const pad = (n:number) => n.toString().padStart(2, "0");
+      const date = gxdate.Value;
+
+      if (gx.date.isNullDate(date)) {
+        return "";
+      }
+
+      if (isDateTime) {
+        return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+      } else {
+        return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
+      }
     }
 
     private getFilterInputType(dataType: GxControlDataType): string {
@@ -136,6 +192,10 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
           possibleValues = this.filterEnum.map(filter => [filter.Value, filter.Description]);
         }
 
+        if (dataType == GxControlDataType.DATETIME && this.column.FilterDateTimeAsDate == -1) {
+          dataType = GxControlDataType.DATE;
+        }
+
         switch (type) {
           case GxControlType.EDIT:
           case GxControlType.CHECK:
@@ -144,7 +204,7 @@ import { GxControlDataType, GxControlPossibleValues, GxControlType, GxGridColumn
                 {label}
                 <input
                   type={this.getFilterInputType(dataType)}
-                  value={value}
+                  value={this.toControlValue(value)}
                   ref={el => this[input] = el}
                   part={`field ${part}`}
                 />

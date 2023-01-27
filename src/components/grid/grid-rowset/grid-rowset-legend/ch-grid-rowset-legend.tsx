@@ -6,7 +6,7 @@ import { Component, Listen, Event, EventEmitter, h, Host } from "@stencil/core";
   shadow: true,
 })
 export class ChGridRowsetLegend {
-  static TAG_NAME = "CH-GRID-ROWSET-LEGEND";
+  public static readonly TAG_NAME = "CH-GRID-ROWSET-LEGEND";
   @Event() rowsetLegendClicked: EventEmitter<CustomEvent>;
 
   @Listen("click", { passive: true })

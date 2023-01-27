@@ -116,6 +116,12 @@
 					</Metadata>
 				</Prop>
 				<Prop>
+					<Id>FilterDateTimeAsDate</Id>
+					<Name>FilterDateTimeAsDate</Name>
+					<Type>Boolean</Type>
+					<Default>false</Default>
+				</Prop>
+				<Prop>
 					<Id>FilterCaption</Id>
 					<Name>FilterCaption</Name>
 					<Type>Text</Type>

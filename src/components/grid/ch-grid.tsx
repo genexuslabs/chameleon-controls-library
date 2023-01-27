@@ -18,6 +18,7 @@ import {
   State,
   Watch,
   h,
+  Method,
 } from "@stencil/core";
 
 import { ChGridManager } from "./ch-grid-manager";
@@ -44,8 +45,8 @@ export class ChGrid {
   @State() gridStyle: CSSProperties;
 
   @Prop() rowSelectionMode: "none" | "single" | "multiple" = "single";
-  @Prop() onRowSelectedClass: string;
-  @Prop() onRowHighlightedClass: string;
+  @Prop() rowSelectedClass: string;
+  @Prop() rowHighlightedClass: string;
 
   @Prop() localization: GridLocalization;
 
@@ -108,6 +109,7 @@ export class ChGrid {
   }
 
   @Listen("click", { passive: true })
+  @Listen("contextmenu", { passive: true })
   clickHandler(eventInfo: MouseEvent) {
     const rowClicked = this.manager.getRowEventTarget(eventInfo);
     const cellClicked = this.manager.getCellEventTarget(eventInfo);
@@ -164,6 +166,7 @@ export class ChGrid {
   }
 
   @Listen("columnHiddenChanged")
+  @Listen("columnOrderChanged")
   @Listen("columnSizeChanging")
   columnStyleChangedHandler() {
     if (this.manager) {
@@ -194,6 +197,11 @@ export class ChGrid {
     this.manager.rowDragStart(eventInfo.detail.row);
   }
 
+  @Listen("rowEnsureVisible")
+  rowEnsureVisibleHandler(eventInfo: CustomEvent) {
+    this.manager.ensureRowVisible(eventInfo.target as HTMLChGridRowElement);
+  }
+
   @Listen("cellEnsureVisible")
   cellEnsureVisibleHandler(eventInfo: CustomEvent) {
     this.manager.ensureCellVisible(eventInfo.target as HTMLChGridCellElement);
@@ -207,6 +215,24 @@ export class ChGrid {
   @Listen("settingsCloseClicked")
   settingsCloseClickedHandler() {
     this.gridSettingsUI.show = false;
+  }
+
+  @Method()
+  async rowEnsureVisible(rowId: string) {
+    const row = this.el.querySelector(`${HTMLChGridRowElement.TAG_NAME.toLowerCase()}[rowid="${rowId}"]`) as HTMLChGridRowElement;
+
+    if (row) {
+      this.manager.ensureRowVisible(row);
+    }
+  }
+
+  @Method()
+  async cellEnsureVisible(cellId: string) {
+    const cell = this.el.querySelector(`${HTMLChGridCellElement.TAG_NAME.toLowerCase()}[cellid="${cellId}"]`) as HTMLChGridCellElement;
+
+    if (cell) {
+      this.manager.ensureCellVisible(cell);
+    }
   }
 
   render() {

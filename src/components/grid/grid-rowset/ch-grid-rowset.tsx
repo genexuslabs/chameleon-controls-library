@@ -6,9 +6,10 @@ export default class HTMLChGridRowsetElement
   extends HTMLElement
   implements IChGridCollapsible
 {
-  static TAG_NAME = "CH-GRID-ROWSET";
   private computedLevel = 0;
   private grid: HTMLChGridElement;
+  
+  public static readonly TAG_NAME = "CH-GRID-ROWSET";
 
   constructor() {
     super();

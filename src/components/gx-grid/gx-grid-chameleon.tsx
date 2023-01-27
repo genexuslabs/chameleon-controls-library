@@ -179,8 +179,8 @@ export class GridChameleon {
         <ch-grid
           class={this.grid.Class}
           rowSelectionMode={this.grid.gxAllowSelection ? "single" : "none"}
-          onRowSelectedClass={this.grid.RowSelectedClass.trim()}
-          onRowHighlightedClass={this.grid.RowHighlightedClass.trim()}
+          rowSelectedClass={this.grid.RowSelectedClass.trim()}
+          rowHighlightedClass={this.grid.RowHighlightedClass.trim()}
         >
           {this.grid.header && this.renderTitle()}
           {this.renderActionbar("header", this.grid.ActionbarHeaderClass)}
@@ -254,16 +254,17 @@ export class GridChameleon {
           if (gx.lang.gxBoolean(column.render)) {
             return (
               <ch-grid-column
+                key={column.htmlName}
                 columnId={column.htmlName}
                 columnIconUrl={column.Icon}
                 columnName={column.title}
                 columnNamePosition={column.NamePosition}
                 size={this.getColumnSize(column)}
                 displayObserverClass={column.gxColumnClass}
-                class={`${this.grid.ColumnClass} ${column.HeaderClass}`}
+                class={`${this.grid.ColumnClass} ${column.HeaderClass} ${column.isFiltering ? "grid-column-filtering" : ""}`}
                 hidden={column.Hidden == -1}
                 hideable={column.Hideable == -1}
-                resizeable={column.Resizeable == -1}
+                resizable={column.Resizeable == -1}
                 sortable={column.Sortable == -1}
                 settingable={column.Filterable == -1}
                 sortDirection={column.SortDirection}

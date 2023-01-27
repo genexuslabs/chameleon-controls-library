@@ -8,6 +8,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
   private selector: HTMLInputElement;
   private selectorLabel: HTMLLabelElement;
 
+  public static readonly TAG_NAME = "CH-GRID-CELL";
   public rowDrag: boolean;
   public rowSelector: boolean;
   public rowActions: boolean;

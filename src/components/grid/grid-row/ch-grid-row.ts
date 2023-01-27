@@ -4,8 +4,8 @@ export default class HTMLChGridRowElement
   extends HTMLElement
   implements IChGridCollapsible
 {
-  static TAG_NAME = "CH-GRID-ROW";
   private parentGrid: HTMLChGridElement;
+  public static readonly TAG_NAME = "CH-GRID-ROW";
 
   constructor() {
     super();
@@ -109,7 +109,11 @@ export default class HTMLChGridRowElement
     }
   }
 
-  public ensureVisible() {}
+  public ensureVisible() {
+    this.dispatchEvent(
+      new CustomEvent("rowEnsureVisible", { bubbles: true, composed: true })
+    );
+  }
 
   private cellCaretClickedHandler(eventInfo: PointerEvent) {
     const targetRow = eventInfo.currentTarget as HTMLChGridRowElement;

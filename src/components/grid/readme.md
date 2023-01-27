@@ -5,12 +5,12 @@
 
 ## Properties
 
-| Property                | Attribute                  | Description | Type                               | Default     |
-| ----------------------- | -------------------------- | ----------- | ---------------------------------- | ----------- |
-| `localization`          | --                         |             | `GridLocalization`                 | `undefined` |
-| `onRowHighlightedClass` | `on-row-highlighted-class` |             | `string`                           | `undefined` |
-| `onRowSelectedClass`    | `on-row-selected-class`    |             | `string`                           | `undefined` |
-| `rowSelectionMode`      | `row-selection-mode`       |             | `"multiple" \| "none" \| "single"` | `"single"`  |
+| Property              | Attribute               | Description | Type                               | Default     |
+| --------------------- | ----------------------- | ----------- | ---------------------------------- | ----------- |
+| `localization`        | --                      |             | `GridLocalization`                 | `undefined` |
+| `rowHighlightedClass` | `row-highlighted-class` |             | `string`                           | `undefined` |
+| `rowSelectedClass`    | `row-selected-class`    |             | `string`                           | `undefined` |
+| `rowSelectionMode`    | `row-selection-mode`    |             | `"multiple" \| "none" \| "single"` | `"single"`  |
 
 
 ## Events
@@ -19,6 +19,29 @@
 | ------------------ | ----------- | ------------------------------------------ |
 | `rowClicked`       |             | `CustomEvent<ChGridRowClickedEvent>`       |
 | `selectionChanged` |             | `CustomEvent<ChGridSelectionChangedEvent>` |
+
+
+## Methods
+
+### `cellEnsureVisible(cellId: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `rowEnsureVisible(rowId: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Shadow Parts

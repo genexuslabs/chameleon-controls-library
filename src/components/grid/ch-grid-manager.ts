@@ -164,6 +164,7 @@ export class ChGridManager {
     let node: IChGridCollapsible = row.parentElement.closest(
       `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
     );
+    const {columnFirst} = this.columnsManager.getColumnsFirstLast();
 
     while (node) {
       node.collapsed = false;
@@ -172,10 +173,7 @@ export class ChGridManager {
       );
     }
 
-    this.columnsManager
-      .getColumns()
-      .find((column) => !column.hidden)
-      ?.scrollIntoView();
+    row.children[columnFirst.physicalOrder]?.scrollIntoView();
   }
 
   ensureCellVisible(cell: HTMLChGridCellElement) {

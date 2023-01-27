@@ -7,10 +7,17 @@
 
 ## Properties
 
-| Property      | Attribute | Description | Type                | Default     |
-| ------------- | --------- | ----------- | ------------------- | ----------- |
-| `items`       | --        |             | `any[]`             | `undefined` |
-| `renderItems` | --        |             | `(item: any) => {}` | `undefined` |
+| Property        | Attribute | Description | Type    | Default     |
+| --------------- | --------- | ----------- | ------- | ----------- |
+| `items`         | --        |             | `any[]` | `undefined` |
+| `viewPortItems` | --        |             | `any[]` | `undefined` |
+
+
+## Events
+
+| Event                  | Description | Type               |
+| ---------------------- | ----------- | ------------------ |
+| `viewPortItemsChanged` |             | `CustomEvent<any>` |
 
 
 ----------------------------------------------

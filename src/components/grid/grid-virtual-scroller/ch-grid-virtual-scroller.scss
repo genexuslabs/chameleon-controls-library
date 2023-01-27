@@ -2,20 +2,17 @@
     ch-grid-virtual-scroller {
       display: contents;
     }
-    // ch-grid-virtual-scroller::before {
-    //   content: '';
-    //   grid-column-start: 1;
-    //   grid-column-end: -1;
-    //   pointer-events: none;
-    //   grid-row: var(--ch-grid-vs-row-start);
-    //   height: var(--ch-grid-vs-row-height);
-    // }
-    // ch-grid-virtual-scroller::after {
-    //   content: '';
-    //   grid-column-start: 1;
-    //   grid-column-end: -1;
-    //   pointer-events: none;
-    //   grid-row: var(--ch-grid-vs-row-end);
-    //   height: var(--ch-grid-vs-row-height);
-    // }
+    ch-grid-virtual-scroller::before {
+      content: '';
+      height: 0;
+      padding-top: inherit;
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    ch-grid-virtual-scroller::after {
+      content: '';
+      height: 0;
+      padding-bottom: inherit;
+      grid-column: 1 / -1;
+    }
   }

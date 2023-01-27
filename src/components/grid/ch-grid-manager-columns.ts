@@ -5,13 +5,18 @@ import { ChGrid } from "./ch-grid";
 
 export class ChGridManagerColumns {
   private grid: ChGrid;
+  private columnsetObserver = new MutationObserver(this.reloadColumns.bind(this));
+  private columnResizeObserver = new ResizeObserver(this.resizeColumnHandler.bind(this));
   private columns: HTMLChGridColumnElement[];
-  private columnResizeObserver: ResizeObserver;
+  private columnsDisplay: HTMLChGridColumnDisplayElement[] = [];
 
   constructor(grid: ChGrid) {
     this.grid = grid;
+    this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
 
-    this.defineColumns();
+    this.observeColumnset();
+
+    this.defineColumns(this.columns);
     this.defineColumnsVariables();
   }
 
@@ -48,13 +53,9 @@ export class ChGridManagerColumns {
     return this.columns.find((column) => column.columnType == "rich" && column.richRowSelector);
   }
 
-  private defineColumns() {
-    this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
-    this.columnResizeObserver = new ResizeObserver(
-      this.resizeColumnHandler.bind(this)
-    );
+  private defineColumns(columns: HTMLChGridColumnElement[]) {
 
-    this.columns.forEach((column) => {
+    columns.forEach((column) => {
       this.defineColumnId(column);
       this.defineColumnIndex(column);
       this.defineColumnOrder(column);
@@ -67,7 +68,7 @@ export class ChGridManagerColumns {
 
   private defineColumnId(column: HTMLChGridColumnElement) {
     if (!column.columnId) {
-      column.columnId = `grid-column-${this.columns.indexOf(column) + 1}`;
+      column.columnId = this.getColumnUniqueId();
     }
   }
 
@@ -88,15 +89,17 @@ export class ChGridManagerColumns {
   }
 
   private defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
-    if (column.displayObserverClass && !column.hidden) {
-      let columnDisplay = document.createElement(
-        "ch-grid-column-display"
-      ) as HTMLChGridColumnDisplayElement;
-      columnDisplay.setAttribute("slot", "column-display");
-      columnDisplay.setAttribute("class", column.displayObserverClass);
-      columnDisplay.column = column;
 
-      this.grid.el.appendChild(columnDisplay);
+    if (column.displayObserverClass && !column.hidden) {
+      const i = this.columnsDisplay.push(document.createElement(
+        "ch-grid-column-display"
+      )) - 1;
+
+      this.columnsDisplay[i].setAttribute("slot", "column-display");
+      this.columnsDisplay[i].setAttribute("class", column.displayObserverClass);
+      this.columnsDisplay[i].column = column;
+
+      this.grid.el.appendChild(this.columnsDisplay[i]);
     }
   }
 
@@ -167,6 +170,37 @@ export class ChGridManagerColumns {
     }
   }
 
+  private undefineColumns(columns: HTMLChGridColumnElement[]) {
+
+    columns.forEach(column => {
+
+      this.columnResizeObserver.unobserve(column);
+      this.columnsDisplay.filter(columnDisplay => columnDisplay.column == column).forEach(item => {
+        item.remove();
+      })
+    });
+  }
+
+  private observeColumnset() {
+    this.columnsetObserver.observe(this.grid.el.querySelector("ch-grid-columnset"), {childList: true});
+  }
+
+  private reloadColumns() {
+    const columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
+    const columnsAdded = columns.filter(column => !this.columns.includes(column));
+    const columnsRemoved = this.columns.filter(column => !columns.includes(column));
+
+    if (columnsAdded.length || columnsRemoved.length) {
+      this.columns = columns;
+
+      this.undefineColumns(columnsRemoved);
+      this.defineColumns(columnsAdded);
+      this.defineColumnsVariables();
+
+      this.adjustOrders();
+    }
+  }
+
   private resizeColumnHandler(entries: ResizeObserverEntry[]) {
     for (const entry of entries) {
       const column = entry.target as HTMLChGridColumnElement;
@@ -175,5 +209,30 @@ export class ChGridManagerColumns {
         `${entry.contentRect.width}px`
       );
     }
+  }
+
+  private getColumnUniqueId(): string {
+    const uniqueId = Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+    return `ch-grid-column-auto-${uniqueId}`;
+  }
+
+  private adjustOrders() {
+
+    // adjust physicalOrder
+    this.columns.forEach((column, i) => column.physicalOrder = i+1);
+    
+    // adjust order, preserving physicalOrder array
+    [...this.columns].sort((columnA, columnB) => {
+      if (columnA.order < columnB.order) {
+        return -1;
+      }
+      if (columnA.order > columnB.order) {
+        return 1;
+      }
+      return 0;
+    }).forEach((column, i) => {
+      column.order = i+1;
+    });
   }
 }

@@ -179,8 +179,8 @@ export class GridChameleon {
         <ch-grid
           class={this.grid.Class}
           rowSelectionMode={this.grid.gxAllowSelection ? "single" : "none"}
-          onRowSelectedClass={this.grid.RowSelectedClass.trim()}
-          onRowHighlightedClass={this.grid.RowHighlightedClass.trim()}
+          rowSelectedClass={this.grid.RowSelectedClass.trim()}
+          rowHighlightedClass={this.grid.RowHighlightedClass.trim()}
         >
           {this.grid.header && this.renderTitle()}
           {this.renderActionbar("header", this.grid.ActionbarHeaderClass)}

@@ -218,7 +218,7 @@ export class ChGrid {
   }
 
   @Method()
-  rowEnsureVisible(rowId: string) {
+  async rowEnsureVisible(rowId: string) {
     const row = this.el.querySelector(`${HTMLChGridRowElement.TAG_NAME.toLowerCase()}[rowid="${rowId}"]`) as HTMLChGridRowElement;
 
     if (row) {
@@ -227,7 +227,7 @@ export class ChGrid {
   }
 
   @Method()
-  cellEnsureVisible(cellId: string) {
+  async cellEnsureVisible(cellId: string) {
     const cell = this.el.querySelector(`${HTMLChGridCellElement.TAG_NAME.toLowerCase()}[cellid="${cellId}"]`) as HTMLChGridCellElement;
 
     if (cell) {

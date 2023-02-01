@@ -28,7 +28,7 @@ export class ChGridSettingsColumns {
           <li part="column">
             <label part="column-label">
               <input
-                part="column-visible"
+                part={!column.hidden ? "column-visible column-visible-checked" : "column-visible"}
                 type="checkbox"
                 checked={!column.hidden}
                 disabled={!column.hideable}

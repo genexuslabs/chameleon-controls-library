@@ -12,11 +12,10 @@
 
 ## Shadow Parts
 
-| Part               | Description |
-| ------------------ | ----------- |
-| `"column"`         |             |
-| `"column-label"`   |             |
-| `"column-visible"` |             |
+| Part             | Description |
+| ---------------- | ----------- |
+| `"column"`       |             |
+| `"column-label"` |             |
 
 
 ## Dependencies

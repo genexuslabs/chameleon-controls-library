@@ -1,5 +1,5 @@
-import { ColumnSortDirection } from "../grid-column/ch-grid-column-types";
-import { GxGrid } from "./gx-grid-chameleon";
+import { ColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
+import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {
   private static grid: GxGrid;
@@ -35,14 +35,18 @@ export class GridChameleonManagerState {
 
   static setColumnFilterEqual(columnId: string, value: string): void {
     this.getColumnFilter(columnId).Equal = value;
+    this.updateIsFiltering(columnId);
+
   }
 
   static setColumnFilterLess(columnId: string, value: string): void {
     this.getColumnFilter(columnId).Less = value;
+    this.updateIsFiltering(columnId);
   }
 
   static setColumnFilterGreater(columnId: string, value: string): void {
     this.getColumnFilter(columnId).Greater = value;
+    this.updateIsFiltering(columnId);
   }
 
   private static apply() {
@@ -67,6 +71,8 @@ export class GridChameleonManagerState {
           (stateColumn.Filter ?? {}).Less ?? column.filterLess;
         column.filterGreater =
           (stateColumn.Filter ?? {}).Greater ?? column.filterGreater;
+
+        this.updateIsFiltering(column.htmlName);
       }
     });
   }
@@ -94,6 +100,12 @@ export class GridChameleonManagerState {
     }
 
     return column.Filter;
+  }
+
+  private static updateIsFiltering(columnId: string) {
+    let column = this.grid.getColumnByHtmlName(columnId);
+
+    column.isFiltering = column.filterEqual || column.filterGreater || column.filterGreater ? true : false;
   }
 }
 

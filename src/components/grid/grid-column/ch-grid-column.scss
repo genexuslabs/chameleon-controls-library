@@ -1,0 +1,92 @@
+@import "../../common/reset.scss";
+@import "../helpers/styles.scss";
+
+:host {
+  display: flex;
+  position: sticky;
+  top: 0;
+  --ch-grid-column-head-z-index: 1;
+}
+
+// column-set box simulation
+:host {
+  @include box-simulation;
+  @include column-drag-transition;
+}
+
+:host([resizing]) {
+  cursor: ew-resize;
+  pointer-events: none;
+}
+
+:host([sort-direction="asc"]) .bar .sort .sort-asc {
+  visibility: visible;
+}
+:host([sort-direction="desc"]) .bar .sort .sort-desc {
+  visibility: visible;
+}
+
+:host([freeze]),
+:host([show-settings]) {
+  z-index: 1000;
+}
+
+.bar {
+  @include reset-list;
+  display: flex;
+  align-items: center;
+  
+  & .selector {
+    overflow: hidden;
+    order: 0;
+    &:not([hidden]) {
+      display: flex;
+    }
+  }
+
+  & .name {
+    display: flex;
+    overflow: hidden;
+    order: 1;
+
+    & .name-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  & .sort {
+    position: relative;
+    align-items: center;
+    order: 2;
+    &:not([hidden]) {
+      display: flex;
+    }
+
+    & .sort-asc {
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+    & .sort-desc {
+      position: absolute;
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+  }
+  & .settings {
+    order: 3;
+  }
+  & .resize {
+    align-self: stretch;
+    margin-left: auto;
+    order: 4;
+  }
+}
+
+@keyframes column-sort {
+  0%   {opacity: 0;}
+  10%  {opacity: 1;}
+  90%  {opacity: 1;}
+  100% {opacity: 0;}
+}

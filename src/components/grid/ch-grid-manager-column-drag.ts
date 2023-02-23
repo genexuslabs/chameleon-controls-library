@@ -1,4 +1,4 @@
-import { CSSProperties } from "./types";
+import { CSSProperties } from "./ch-grid-types";
 
 export class ChGridManagerColumnDrag {
   private column: ChGridManagerColumnDragItem;
@@ -19,38 +19,41 @@ export class ChGridManagerColumnDrag {
 
   dragging(position: number): boolean {
     const sourceOrder = this.column.column.order;
+    const sourceFreeze = this.column.column.freeze;
     let targetOrder = 0;
     let targetOrderChanged = false;
 
     this.column.translateX = 0;
-    this.columns.forEach((item) => {
-      const columnOrder = item.column.order;
-      const dragDirection = sourceOrder > columnOrder ? -1 : 1;
-      const shiftDirection = sourceOrder > columnOrder ? 1 : -1;
+    this.columns
+      .filter((item) => item.column.freeze == sourceFreeze)
+      .forEach((item) => {
+        const columnOrder = item.column.order;
+        const dragDirection = sourceOrder > columnOrder ? -1 : 1;
+        const shiftDirection = sourceOrder > columnOrder ? 1 : -1;
 
-      if (
-        item.rect.left < position &&
-        position < item.rect.right &&
-        columnOrder != sourceOrder
-      ) {
-        item.translateX = this.column.rect.width * shiftDirection;
-        item.order = item.column.order + shiftDirection;
-        this.column.translateX += item.rect.width * dragDirection;
+        if (
+          item.rect.left < position &&
+          position < item.rect.right &&
+          columnOrder != sourceOrder
+        ) {
+          item.translateX = this.column.rect.width * shiftDirection;
+          item.order = item.column.order + shiftDirection;
+          this.column.translateX += item.rect.width * dragDirection;
 
-        targetOrder = columnOrder;
-      } else if (position < item.rect.left && columnOrder < sourceOrder) {
-        item.translateX = this.column.rect.width * shiftDirection;
-        item.order = item.column.order + shiftDirection;
-        this.column.translateX += item.rect.width * dragDirection;
-      } else if (position > item.rect.right && columnOrder > sourceOrder) {
-        item.translateX = this.column.rect.width * shiftDirection;
-        item.order = item.column.order + shiftDirection;
-        this.column.translateX += item.rect.width * dragDirection;
-      } else if (columnOrder != sourceOrder) {
-        item.translateX = 0;
-        item.order = item.column.order;
-      }
-    });
+          targetOrder = columnOrder;
+        } else if (position < item.rect.left && columnOrder < sourceOrder) {
+          item.translateX = this.column.rect.width * shiftDirection;
+          item.order = item.column.order + shiftDirection;
+          this.column.translateX += item.rect.width * dragDirection;
+        } else if (position > item.rect.right && columnOrder > sourceOrder) {
+          item.translateX = this.column.rect.width * shiftDirection;
+          item.order = item.column.order + shiftDirection;
+          this.column.translateX += item.rect.width * dragDirection;
+        } else if (columnOrder != sourceOrder) {
+          item.translateX = 0;
+          item.order = item.column.order;
+        }
+      });
     this.column.order = targetOrder ? targetOrder : this.column.column.order;
 
     targetOrderChanged = targetOrder != this.lastTargetOrder;

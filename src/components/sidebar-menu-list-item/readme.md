@@ -7,6 +7,7 @@
 
 | Property      | Attribute       | Description                                                         | Type      | Default     |
 | ------------- | --------------- | ------------------------------------------------------------------- | --------- | ----------- |
+| `autoColor`   | `auto-color`    | If enabled, the icon will display its inherent/natural color        | `boolean` | `false`     |
 | `itemIconSrc` | `item-icon-src` | The first list item icon (optional)                                 | `string`  | `undefined` |
 | `uncollapsed` | `uncollapsed`   | If this attribute is present the item will be initially uncollapsed | `boolean` | `false`     |
 
@@ -16,6 +17,14 @@
 | Event              | Description        | Type               |
 | ------------------ | ------------------ | ------------------ |
 | `itemClickedEvent` | Emmits the item id | `CustomEvent<any>` |
+
+
+## Shadow Parts
+
+| Part                    | Description |
+| ----------------------- | ----------- |
+| `"collapse-item-icon"`  |             |
+| `"collapse-item2-icon"` |             |
 
 
 ## Dependencies

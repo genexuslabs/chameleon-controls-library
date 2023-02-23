@@ -1,4 +1,4 @@
-import { GxGrid } from "./gx-grid-chameleon";
+import { GxGrid } from "./genexus";
 
 export function paginationGoToFirstPage(grid: GxGrid) {
   if (grid.OnPaginationFirst) {

@@ -1,0 +1,13 @@
+@layer ch-grid {
+    ch-grid-columnset {
+    display: contents;
+
+    &.resizing ch-grid-column {
+      cursor: ew-resize;
+    }
+  }
+}
+
+@import "../grid-row/ch-grid-row.scss";
+@import "../grid-rowset/ch-grid-rowset.scss";
+@import "../grid-cell/ch-grid-cell.scss";

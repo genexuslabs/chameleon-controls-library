@@ -17,11 +17,12 @@
 ### Depends on
 
 - [ch-grid](../grid)
-- [ch-grid-actionbar](../grid-actionbar)
-- [ch-grid-action-refresh](../grid-action/grid-action-refresh)
-- [ch-grid-action-settings](../grid-action/grid-action-settings)
-- [ch-grid-columnset](../grid-columnset)
-- [ch-grid-column](../grid-column)
+- [ch-grid-actionbar](../grid/grid-actionbar)
+- [ch-grid-action-refresh](../grid/grid-actionbar/grid-action-refresh)
+- [ch-grid-action-settings](../grid/grid-actionbar/grid-action-settings)
+- [ch-grid-columnset](../grid/grid-columnset)
+- [ch-grid-column](../grid/grid-column)
+- [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
 - [ch-paginator-navigate](../paginator-navigate)
 
@@ -34,6 +35,7 @@ graph TD;
   gx-grid-chameleon --> ch-grid-action-settings
   gx-grid-chameleon --> ch-grid-columnset
   gx-grid-chameleon --> ch-grid-column
+  gx-grid-chameleon --> gx-grid-chameleon-column-filter
   gx-grid-chameleon --> ch-paginator
   gx-grid-chameleon --> ch-paginator-navigate
   ch-grid --> ch-grid-settings

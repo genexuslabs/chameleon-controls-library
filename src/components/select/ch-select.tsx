@@ -8,6 +8,7 @@ import {
   Event,
   EventEmitter,
   Listen,
+  Host,
 } from "@stencil/core";
 
 import { ClickOutside } from "stencil-click-outside";
@@ -41,6 +42,10 @@ export class ChSelect {
    * If enabled, the icon will display its inherent/natural color
    */
   @Prop({ reflect: true }) autoColor = false;
+  /*
+   * Disables the select
+   */
+  @Prop() disabled: boolean;
   /*
    * The select width (optional)
    */
@@ -89,7 +94,6 @@ export class ChSelect {
   componentDidLoad() {
     const selectItems: HTMLElement =
       this.el.shadowRoot.querySelector(".select-options");
-
     let heightValueStr = "";
     let heightValue = 0;
     if (this.height !== "" && this.height) {
@@ -128,13 +132,11 @@ export class ChSelect {
     }
 
     //get all options
-    const options = selectItems.children;
+    const options = this.selectOptions;
+
     for (var i = 0; i < options.length; i++) {
       //calculate selectBox's height based on items quantity and optionHeight property
       this.selectHeight = this.selectHeight + optionHeight;
-      //set active option class
-      if (options[i].innerHTML === this.optionSelected)
-        options[i].classList.add("option-selected");
     }
     //set selectBox height
     selectItems.style.height = this.selectHeight + "px";
@@ -159,6 +161,29 @@ export class ChSelect {
       if (this.resolveIcon() !== "") {
         this.selectWidth = this.selectWidth + 20;
       }
+
+      //set select width based on the placeholder text of the selectBox
+      const leftContainer:HTMLElement = this.el.shadowRoot.querySelector('div.left-container');
+      var styleLeftContainer = window.getComputedStyle(leftContainer);
+      var paddingLeftContainer = parseFloat(styleLeftContainer.paddingLeft) + parseFloat(styleLeftContainer.paddingRight); 
+      const leftIcon:HTMLElement = leftContainer.querySelector('ch-icon');
+      var leftIconWidth  = 0;
+      var marginLeftIcon = 0
+      if (this.iconSrc){
+        var styleLeftIcon = window.getComputedStyle(leftIcon);
+        leftIconWidth = parseFloat(styleLeftIcon.getPropertyValue('--icon-size'));
+        var leftIconContainer = leftContainer.querySelector('span.custom-icon');
+        var styleLeftIconContainer = window.getComputedStyle(leftIconContainer);
+        marginLeftIcon = parseFloat(styleLeftIconContainer.marginInlineStart) + parseFloat(styleLeftIconContainer.marginInlineEnd);
+      }else{
+        marginLeftIcon = 8;
+      }
+      const arrowIcon:HTMLElement = this.el.shadowRoot.querySelector('span.arrow-icon');
+      const constructedSelectWidth = leftIconWidth + marginLeftIcon + leftContainer.offsetWidth + paddingLeftContainer + arrowIcon.offsetWidth;
+
+      if (constructedSelectWidth > this.selectWidth)
+        this.selectWidth = constructedSelectWidth;
+
       this.el.style.width = this.selectWidth + "px";
       selectItems.style.width = this.selectWidth + "px";
     }
@@ -175,7 +200,7 @@ export class ChSelect {
     }
   }
 
-  @Listen("keydown", { passive: true })
+  @Listen("keydown")
   handleKeyDown(ev: KeyboardEvent) {
     switch (ev.key) {
       case " ":
@@ -195,35 +220,12 @@ export class ChSelect {
     if (this.toggle) this.toggleComponent();
   }
 
+  @Listen("itemClicked")
   optionClickedHandler(event) {
     const targetOption = event.currentTarget.id;
     this.toggleComponent();
-    this.setActiveOption(targetOption);
     this.optionClickedEvent.emit({ "option-value": targetOption });
   }
-
-  setActiveOption(targetOption) {
-    const selectItems: HTMLElement =
-      this.el.shadowRoot.querySelector(".select-options");
-    var optionText = "";
-    //get all options
-    const options = selectItems.children;
-    for (var i = 0; i < options.length; i++) {
-      //remove old option's selected class
-      if (options[i].classList.contains("option-selected"))
-        options[i].classList.remove("option-selected");
-      //set active option class
-      if (options[i].id === targetOption) {
-        options[i].classList.add("option-selected");
-        optionText = options[i].innerHTML;
-      }
-    }
-    //update selected option text in select-container
-    const selectedOptionText: HTMLElement =
-      this.el.shadowRoot.querySelector("span.text");
-    selectedOptionText.innerHTML = optionText;
-  }
-
   /*
    * This will manage the dropdown component event and state changes
    */
@@ -251,48 +253,46 @@ export class ChSelect {
 
   render() {
     return (
-      <div
-        class={
-          this.toggle
-            ? "select-container uncollapsed"
-            : "select-container collapsed"
-        }
-      >
-        <div class="list-container" onClick={() => this.toggleComponent()}>
-          <div class="left-container">
-            <span class="icon custom-icon">
-              <ch-icon
-                src={this.resolveIcon()}
-                style={{
-                  "--select-icon-size": "var(--icon-size)",
-                  "--select-icon-color": `var(--icon-color)`,
-                }}
-              ></ch-icon>
-            </span>
-            <span class="text">
-              {this.optionSelected ? this.optionSelected : this.name}
+      <Host aria-label={this.name} role="listbox" aria-expanded={this.toggle ? 'true':'false'} tabindex="0">
+        <div
+          class={
+            this.toggle
+              ? "select-container uncollapsed"
+              : "select-container collapsed"
+          }
+        >
+          <div class="list-container" part="select-box" onClick={() => this.toggleComponent()}>
+            <div class="left-container">
+            {this.iconSrc && (
+              <span class="icon custom-icon">
+                <ch-icon
+                  src={this.resolveIcon()}
+                  style={{
+                    "--select-icon-size": "var(--icon-size)",
+                    "--select-icon-color": `var(--icon-color)`,
+                  }}
+                ></ch-icon>
+              </span>
+            )}
+              <span class="text">
+                {this.optionSelected ? this.optionSelected : this.name}
+              </span>
+            </div>
+            <span class="icon arrow-icon">
+              <div part="collapse-icon"></div>
             </span>
           </div>
-          <span class="icon arrow-icon">
-            <div part="collapse-icon"></div>
-          </span>
         </div>
+
         <div
           class={
             this.toggle ? "select-options active" : "select-options inactive"
           }
+          part="select-options"
         >
-          {this.selectOptions.map((option) => (
-            <div
-              id={option.value}
-              class="option"
-              onClick={this.optionClickedHandler.bind(this)}
-            >
-              {option.text}
-            </div>
-          ))}
+          <slot></slot>
         </div>
-      </div>
+      </Host>
     );
   }
 }

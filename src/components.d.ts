@@ -153,11 +153,34 @@ export namespace Components {
           * If enabled, the icon will display its inherent/natural color
          */
         "autoColor": boolean;
+        "disabled": boolean;
         "height": string;
         "iconSrc": string;
         "name": string;
         "optionHeight": string;
         "width": string;
+    }
+    interface ChSelectOption {
+        /**
+          * If enabled, the option icons will display its inherent/natural color
+         */
+        "autoColor": boolean;
+        /**
+          * Determines if the option is disabled
+         */
+        "disabled": boolean;
+        /**
+          * Set the left side icon
+         */
+        "leftIconSrc": string;
+        /**
+          * Set the right side icon
+         */
+        "rightIconSrc": string;
+        /**
+          * Determines the selected option
+         */
+        "selected": boolean;
     }
     interface ChSidebarMenu {
         /**
@@ -413,6 +436,12 @@ declare global {
         prototype: HTMLChSelectElement;
         new (): HTMLChSelectElement;
     };
+    interface HTMLChSelectOptionElement extends Components.ChSelectOption, HTMLStencilElement {
+    }
+    var HTMLChSelectOptionElement: {
+        prototype: HTMLChSelectOptionElement;
+        new (): HTMLChSelectOptionElement;
+    };
     interface HTMLChSidebarMenuElement extends Components.ChSidebarMenu, HTMLStencilElement {
     }
     var HTMLChSidebarMenuElement: {
@@ -488,6 +517,7 @@ declare global {
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
         "ch-qr": HTMLChQrElement;
         "ch-select": HTMLChSelectElement;
+        "ch-select-option": HTMLChSelectOptionElement;
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
@@ -656,6 +686,7 @@ declare namespace LocalJSX {
           * If enabled, the icon will display its inherent/natural color
          */
         "autoColor"?: boolean;
+        "disabled"?: boolean;
         "height"?: string;
         "iconSrc"?: string;
         "name"?: string;
@@ -669,6 +700,32 @@ declare namespace LocalJSX {
         "onOptionClickedEvent"?: (event: CustomEvent<any>) => void;
         "optionHeight"?: string;
         "width"?: string;
+    }
+    interface ChSelectOption {
+        /**
+          * If enabled, the option icons will display its inherent/natural color
+         */
+        "autoColor"?: boolean;
+        /**
+          * Determines if the option is disabled
+         */
+        "disabled"?: boolean;
+        /**
+          * Set the left side icon
+         */
+        "leftIconSrc"?: string;
+        /**
+          * Emits the item id
+         */
+        "onItemClicked"?: (event: CustomEvent<any>) => void;
+        /**
+          * Set the right side icon
+         */
+        "rightIconSrc"?: string;
+        /**
+          * Determines the selected option
+         */
+        "selected"?: boolean;
     }
     interface ChSidebarMenu {
         /**
@@ -836,6 +893,7 @@ declare namespace LocalJSX {
         "ch-paginator-pages": ChPaginatorPages;
         "ch-qr": ChQr;
         "ch-select": ChSelect;
+        "ch-select-option": ChSelectOption;
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
@@ -871,6 +929,7 @@ declare module "@stencil/core" {
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
             "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
+            "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;

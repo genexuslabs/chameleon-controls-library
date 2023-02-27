@@ -163,23 +163,36 @@ export class ChSelect {
       }
 
       //set select width based on the placeholder text of the selectBox
-      const leftContainer:HTMLElement = this.el.shadowRoot.querySelector('div.left-container');
+      const leftContainer: HTMLElement =
+        this.el.shadowRoot.querySelector("div.left-container");
       var styleLeftContainer = window.getComputedStyle(leftContainer);
-      var paddingLeftContainer = parseFloat(styleLeftContainer.paddingLeft) + parseFloat(styleLeftContainer.paddingRight); 
-      const leftIcon:HTMLElement = leftContainer.querySelector('ch-icon');
-      var leftIconWidth  = 0;
-      var marginLeftIcon = 0
-      if (this.iconSrc){
+      var paddingLeftContainer =
+        parseFloat(styleLeftContainer.paddingLeft) +
+        parseFloat(styleLeftContainer.paddingRight);
+      const leftIcon: HTMLElement = leftContainer.querySelector("ch-icon");
+      var leftIconWidth = 0;
+      var marginLeftIcon = 0;
+      if (this.iconSrc) {
         var styleLeftIcon = window.getComputedStyle(leftIcon);
-        leftIconWidth = parseFloat(styleLeftIcon.getPropertyValue('--icon-size'));
-        var leftIconContainer = leftContainer.querySelector('span.custom-icon');
+        leftIconWidth = parseFloat(
+          styleLeftIcon.getPropertyValue("--icon-size")
+        );
+        var leftIconContainer = leftContainer.querySelector("span.custom-icon");
         var styleLeftIconContainer = window.getComputedStyle(leftIconContainer);
-        marginLeftIcon = parseFloat(styleLeftIconContainer.marginInlineStart) + parseFloat(styleLeftIconContainer.marginInlineEnd);
-      }else{
+        marginLeftIcon =
+          parseFloat(styleLeftIconContainer.marginInlineStart) +
+          parseFloat(styleLeftIconContainer.marginInlineEnd);
+      } else {
         marginLeftIcon = 8;
       }
-      const arrowIcon:HTMLElement = this.el.shadowRoot.querySelector('span.arrow-icon');
-      const constructedSelectWidth = leftIconWidth + marginLeftIcon + leftContainer.offsetWidth + paddingLeftContainer + arrowIcon.offsetWidth;
+      const arrowIcon: HTMLElement =
+        this.el.shadowRoot.querySelector("span.arrow-icon");
+      const constructedSelectWidth =
+        leftIconWidth +
+        marginLeftIcon +
+        leftContainer.offsetWidth +
+        paddingLeftContainer +
+        arrowIcon.offsetWidth;
 
       if (constructedSelectWidth > this.selectWidth)
         this.selectWidth = constructedSelectWidth;
@@ -200,7 +213,7 @@ export class ChSelect {
     }
   }
 
-  @Listen("keydown")
+  @Listen("keydown", { passive: true })
   handleKeyDown(ev: KeyboardEvent) {
     switch (ev.key) {
       case " ":
@@ -253,7 +266,12 @@ export class ChSelect {
 
   render() {
     return (
-      <Host aria-label={this.name} role="listbox" aria-expanded={this.toggle ? 'true':'false'} tabindex="0">
+      <Host
+        aria-label={this.name}
+        role="listbox"
+        aria-expanded={this.toggle ? "true" : "false"}
+        tabindex="0"
+      >
         <div
           class={
             this.toggle
@@ -261,19 +279,23 @@ export class ChSelect {
               : "select-container collapsed"
           }
         >
-          <div class="list-container" part="select-box" onClick={() => this.toggleComponent()}>
+          <div
+            class="list-container"
+            part="select-box"
+            onClick={() => this.toggleComponent()}
+          >
             <div class="left-container">
-            {this.iconSrc && (
-              <span class="icon custom-icon">
-                <ch-icon
-                  src={this.resolveIcon()}
-                  style={{
-                    "--select-icon-size": "var(--icon-size)",
-                    "--select-icon-color": `var(--icon-color)`,
-                  }}
-                ></ch-icon>
-              </span>
-            )}
+              {this.iconSrc && (
+                <span class="icon custom-icon">
+                  <ch-icon
+                    src={this.resolveIcon()}
+                    style={{
+                      "--select-icon-size": "var(--icon-size)",
+                      "--select-icon-color": `var(--icon-color)`,
+                    }}
+                  ></ch-icon>
+                </span>
+              )}
               <span class="text">
                 {this.optionSelected ? this.optionSelected : this.name}
               </span>

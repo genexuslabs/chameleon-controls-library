@@ -62,8 +62,9 @@
     }
     .text {
         color: var(--text-color);
-        font-size: var(--font-size);
+        //font-size: var(--font-size);
         font-family: var(--font-family);
+        white-space: nowrap;
     }
     .active {
        overflow: hidden;
@@ -73,8 +74,7 @@
        height: 0 !important;
        overflow: hidden;
        transition-duration: 0.32s;
-       //new
-       //position: absolute;
+       padding: 0 !important;
     }
     .list-container {
         background-color: var(--background-color);
@@ -109,21 +109,4 @@
         position: absolute;
         z-index: 100;
     }
-    .option {
-        padding-left: 16px;
-        padding-right: 16px;
-        color: var(--text-color);
-        font-size: var(--font-size);
-        font-family: var(--font-family);
-        height: 32px;
-        line-height: 32px;
-    }
-    .option:hover {
-        transition: background-color 0.25s;
-        background-color: var(--item-hover-color);
-    }
-    .option-selected {
-        background-color: var(--item-active-color) !important;
-    }
-
 }

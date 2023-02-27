@@ -11,6 +11,7 @@
 | -------------- | ---------------- | ------------------------------------------------------------ | --------- | ----------- |
 | `arrowIconSrc` | `arrow-icon-src` |                                                              | `string`  | `undefined` |
 | `autoColor`    | `auto-color`     | If enabled, the icon will display its inherent/natural color | `boolean` | `false`     |
+| `disabled`     | `disabled`       |                                                              | `boolean` | `undefined` |
 | `height`       | `height`         |                                                              | `string`  | `undefined` |
 | `iconSrc`      | `icon-src`       |                                                              | `string`  | `undefined` |
 | `name`         | `name`           |                                                              | `string`  | `undefined` |
@@ -28,9 +29,11 @@
 
 ## Shadow Parts
 
-| Part              | Description |
-| ----------------- | ----------- |
-| `"collapse-icon"` |             |
+| Part               | Description |
+| ------------------ | ----------- |
+| `"collapse-icon"`  |             |
+| `"select-box"`     |             |
+| `"select-options"` |             |
 
 
 ## CSS Custom Properties

@@ -1,104 +1,107 @@
-import { CSSProperties } from "./types";
+import { IChGridCollapsible, CSSProperties } from "./ch-grid-types";
 import { ChGrid } from "./ch-grid";
 import { ChGridManagerColumnDrag } from "./ch-grid-manager-column-drag";
 
+import HTMLChGridRowElement from "./grid-row/ch-grid-row";
+import HTMLChGridRowsetElement from "./grid-rowset/ch-grid-rowset";
+import { ChGridManagerColumns } from "./ch-grid-manager-columns";
+import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
+import { ChGridManagerSelection } from "./ch-grid-manager-selection";
+import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
+import { ChGridRowsetLegend } from "./grid-rowset/grid-rowset-legend/ch-grid-rowset-legend";
+
 export class ChGridManager {
   grid: ChGrid;
-  columns: HTMLChGridColumnElement[];
-  columnDragManager: ChGridManagerColumnDrag;
+  private columnsManager: ChGridManagerColumns;
+  private columnDragManager: ChGridManagerColumnDrag;
+  private rowDragManager: ChGridManagerRowDrag;
+  private selectionManager: ChGridManagerSelection;
 
   constructor(grid: ChGrid) {
     this.grid = grid;
-
-    this.defineColumns();
-    this.defineColumnsVariables();
+    this.columnsManager = new ChGridManagerColumns(this.grid);
+    this.selectionManager = new ChGridManagerSelection(this.grid);
   }
 
-  private defineColumns() {
-    this.columns = Array.from(this.grid.el.querySelectorAll("ch-grid-column"));
-
-    this.columns.forEach((column) => {
-      this.defineColumnId(column);
-      this.defineColumnIndex(column);
-      this.defineColumnOrder(column);
-      this.defineColumnSize(column);
-      this.defineColumnDisplayObserver(column);
-    });
+  get selection(): ChGridManagerSelection {
+    return this.selectionManager;
   }
 
-  private defineColumnId(column: HTMLChGridColumnElement) {
-    if (!column.columnId) {
-      column.columnId = `grid-column-${this.columns.indexOf(column) + 1}`;
+  get columns(): ChGridManagerColumns {
+    return this.columnsManager;
+  }
+
+  gridDidLoad() {
+    if (this.isRowActionsEnabled()) {
+      this.observeMainScroll();
     }
   }
 
-  private defineColumnIndex(column: HTMLChGridColumnElement) {
-    column.physicalOrder = this.columns.indexOf(column) + 1;
+  getColumns() {
+    return this.columnsManager.getColumns();
   }
 
-  private defineColumnOrder(column: HTMLChGridColumnElement) {
-    if (!column.order) {
-      column.order = column.physicalOrder;
-    }
+  getColumnsWidth(): string[] {
+    return getComputedStyle(this.grid.gridMainEl).gridTemplateColumns.split(" ");
   }
 
-  private defineColumnSize(column: HTMLChGridColumnElement) {
-    if (!column.size) {
-      column.size = "auto";
-    }
+  getGridRowIndex(row: HTMLChGridRowElement): number {
+    return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}, ${ChGridRowsetLegend.TAG_NAME}`), row);
   }
 
-  private defineColumnDisplayObserver(column: HTMLChGridColumnElement) {
-    if (column.displayObserverClass && !column.hidden) {
-      let columnDisplay = document.createElement(
-        "ch-grid-column-display"
-      ) as HTMLChGridColumnDisplayElement;
-      columnDisplay.setAttribute("slot", "column-display");
-      columnDisplay.setAttribute("class", column.displayObserverClass);
-      columnDisplay.column = column;
-
-      this.grid.el.appendChild(columnDisplay);
-    }
+  getRowsetRowIndex(row: HTMLChGridRowElement): number {
+    return Array.prototype.indexOf.call(row.parentElement.children, row);
   }
 
-  private defineColumnsVariables() {
-    const style = document.head.querySelector("#ChGrid.ColumnsVariables");
+  getRowHeight(row: HTMLChGridRowElement): string {
+    const gridRowsHeight = getComputedStyle(this.grid.gridMainEl).gridTemplateRows.split(" ");
+    const rowIndex = this.getGridRowIndex(row) + 1;
 
-    if (
-      !style ||
-      parseInt(style.getAttribute("data-columns")) < this.columns.length
-    ) {
-      let selectors = "";
-      for (let i = 1; i <= this.columns.length; i++) {
-        selectors += `ch-grid-column:nth-child(${i}), ch-grid-cell:nth-child(${i}) {
-                    display: var(--ch-grid-column-${i}-display);
-                    grid-column: var(--ch-grid-column-${i}-position, ${i});
-                    margin-inline-start: var(--ch-grid-column-${i}-margin-start);
-                    border-inline-start: var(--ch-grid-column-${i}-border-start);
-                    padding-inline-start: var(--ch-grid-column-${i}-padding-start);
-                    margin-inline-end: var(--ch-grid-column-${i}-margin-end);
-                    border-inline-end: var(--ch-grid-column-${i}-border-end);
-                    padding-inline-end: var(--ch-grid-column-${i}-padding-end);
-                    transform: var(--ch-grid-column-${i}-transform);
-                }`;
-      }
+    return gridRowsHeight[rowIndex];
+  }
 
-      if (style) {
-        style.setAttribute("data-columns", this.columns.length.toString());
-        style.innerHTML = selectors;
-      } else {
-        document.head.insertAdjacentHTML(
-          "beforeend",
-          `<style id="ChGrid.ColumnsVariables" data-columns="${this.columns.length}">@layer ch-grid {${selectors}}</style>`
-        );
-      }
+  getRowsRange(
+    start: HTMLChGridRowElement,
+    end: HTMLChGridRowElement
+  ): HTMLChGridRowElement[] {
+    const nextElementSibling =
+      this.getRowsetRowIndex(start) <= this.getRowsetRowIndex(end)
+        ? "nextElementSibling"
+        : "previousElementSibling";
+    let rows: HTMLChGridRowElement[] = [];
+    let row: HTMLChGridRowElement;
+
+    row = start[nextElementSibling] as HTMLChGridRowElement;
+    rows.push(start);
+    while (row && row != end) {
+      rows.push(row);
+      row = row[nextElementSibling] as HTMLChGridRowElement;
     }
+    rows.push(end);
+
+    return rows;
+  }
+
+  getRowEventTarget(eventInfo: Event): HTMLChGridRowElement {
+    return eventInfo
+      .composedPath()
+      .find(
+        (target: HTMLElement) => target.tagName === "CH-GRID-ROW"
+      ) as HTMLChGridRowElement;
+  }
+
+  getCellEventTarget(eventInfo: Event): HTMLChGridCellElement {
+    return eventInfo
+      .composedPath()
+      .find(
+        (target: HTMLElement) => target.tagName === "CH-GRID-CELL"
+      ) as HTMLChGridCellElement;
   }
 
   columnDragStart(columnId: string) {
     this.columnDragManager = new ChGridManagerColumnDrag(
       columnId,
-      this.columns
+      this.columnsManager.getColumns()
     );
   }
 
@@ -111,6 +114,11 @@ export class ChGridManager {
     this.columnDragManager = null;
   }
 
+  rowDragStart(row: HTMLChGridRowElement) {
+    this.rowDragManager = new ChGridManagerRowDrag(this.grid);
+    this.rowDragManager.dragStart(row);
+  }
+
   getGridStyle(): CSSProperties {
     return {
       display: "grid",
@@ -121,9 +129,75 @@ export class ChGridManager {
     };
   }
 
+  getRowsSelected(): HTMLChGridRowElement[] {
+    let rows: HTMLChGridRowElement[] = [];
+
+    this.grid.el
+      .querySelectorAll("ch-grid-row[selected]")
+      .forEach((el: HTMLChGridRowElement) => rows.push(el));
+
+    return rows;
+  }
+
+  isRowActionsEnabled(): boolean {
+    const slot = this.grid.gridRowActionsEl
+      .firstElementChild as HTMLSlotElement;
+    return slot.assignedElements().length > 0;
+  }
+
+  setRowActionsPosition(row: HTMLChGridRowElement) {
+    if (row) {
+      this.grid.gridRowActionsEl.setAttribute("show", "");
+      this.grid.gridRowActionsEl.style.setProperty(
+        "--ch-grid-row-highlighted-top",
+        `${this.getRowTop(row)}px`
+      );
+    } else {
+      this.grid.gridRowActionsEl.removeAttribute("show");
+      this.grid.gridRowActionsEl.style.removeProperty(
+        "--ch-grid-row-highlighted-top"
+      );
+    }
+  }
+
+  ensureRowVisible(row: HTMLChGridRowElement) {
+    let node: IChGridCollapsible = row.parentElement.closest(
+      `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
+    );
+    const {columnFirst} = this.columnsManager.getColumnsFirstLast();
+
+    while (node) {
+      node.collapsed = false;
+      node = node.parentElement.closest(
+        `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
+      );
+    }
+
+    row.children[columnFirst.physicalOrder]?.scrollIntoView();
+  }
+
+  ensureCellVisible(cell: HTMLChGridCellElement) {
+    let node: IChGridCollapsible = cell.closest(
+      `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
+    );
+
+    while (!cell.isVisible() && node) {
+      node.collapsed = false;
+      node = node.parentElement.closest(
+        `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
+      );
+    }
+
+    if (!cell.isVisible()) {
+    }
+
+    cell.scrollIntoView();
+  }
+
   private getGridTemplateColumns(): CSSProperties {
     return {
-      "grid-template-columns": this.columns
+      "grid-template-columns": this.columnsManager
+        .getColumns()
         .map((column) => `var(--ch-grid-column-${column.physicalOrder}-size)`)
         .join(" "),
     };
@@ -132,7 +206,7 @@ export class ChGridManager {
   private getRowBoxSimulationStyle(): CSSProperties {
     const { columnFirst, columnLast } = this.columnDragManager
       ? this.columnDragManager.getColumnsFirstLast()
-      : this.getColumnsFirstLast();
+      : this.columnsManager.getColumnsFirstLast();
 
     return {
       [`--ch-grid-column-${columnFirst.physicalOrder}-margin-start`]:
@@ -150,29 +224,10 @@ export class ChGridManager {
     };
   }
 
-  private getColumnsFirstLast(): {
-    columnFirst: HTMLChGridColumnElement;
-    columnLast: HTMLChGridColumnElement;
-  } {
-    let columnFirst: HTMLChGridColumnElement;
-    let columnLast: HTMLChGridColumnElement;
+  private getRowTop(row: HTMLChGridRowElement): number {
+    const cell = row.firstElementChild as HTMLElement;
 
-    this.columns.forEach((column) => {
-      if (
-        !column.hidden &&
-        (!columnFirst || column.order < columnFirst.order)
-      ) {
-        columnFirst = column;
-      }
-      if (!column.hidden && (!columnLast || column.order > columnLast.order)) {
-        columnLast = column;
-      }
-    });
-
-    return {
-      columnFirst,
-      columnLast,
-    };
+    return cell.offsetTop;
   }
 
   private getDragTransitionStyle(): CSSProperties {
@@ -184,7 +239,7 @@ export class ChGridManager {
   }
 
   private getColumnsStyle(): CSSProperties {
-    return this.columns.reduce((style, column) => {
+    return this.columnsManager.getColumns().reduce((style, column) => {
       return {
         ...style,
         ...this.getColumnStyle(column),
@@ -197,7 +252,9 @@ export class ChGridManager {
       ...this.getColumnSizeStyle(column),
       ...this.getColumnOrderStyle(column),
       ...this.getColumnDisplayStyle(column),
+      ...this.getColumnFreezeStyle(column),
       ...this.getColumnDraggingStyle(column),
+      ...this.getColumnIndentStyle(column),
     };
   }
 
@@ -213,6 +270,52 @@ export class ChGridManager {
     return {
       [`--ch-grid-column-${column.physicalOrder}-position`]:
         column.order.toString(),
+    };
+  }
+
+  private getColumnFreezeStyle(column: HTMLChGridColumnElement): CSSProperties {
+    switch (column.freeze) {
+      case "start":
+        return this.getColumnFreezeStartStyle(column);
+      case "end":
+        return this.getColumnFreezeEndStyle(column);
+    }
+  }
+
+  private getColumnFreezeStartStyle(
+    column: HTMLChGridColumnElement
+  ): CSSProperties {
+    let calcItems = ["0px"];
+
+    for (let i = 1; i < column.order; i++) {
+      calcItems.push(`var(--ch-grid-column-${i}-width)`);
+    }
+
+    return {
+      [`--ch-grid-column-${column.physicalOrder}-left-freeze`]: `calc(${calcItems.join(
+        " + "
+      )})`,
+      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000",
+    };
+  }
+
+  private getColumnFreezeEndStyle(
+    column: HTMLChGridColumnElement
+  ): CSSProperties {
+    let calcItems = ["0px"];
+    for (
+      let i = this.columnsManager.getColumns().length;
+      i > column.order;
+      i--
+    ) {
+      calcItems.push(`var(--ch-grid-column-${i}-width)`);
+    }
+
+    return {
+      [`--ch-grid-column-${column.physicalOrder}-right-freeze`]: `calc(${calcItems.join(
+        " + "
+      )})`,
+      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000",
     };
   }
 
@@ -232,5 +335,24 @@ export class ChGridManager {
     return this.columnDragManager
       ? this.columnDragManager.getColumnStyle(column)
       : null;
+  }
+
+  private getColumnIndentStyle(column: HTMLChGridColumnElement): CSSProperties {
+    return {
+      [`--ch-grid-column-${column.physicalOrder}-content`]:
+        column.order == 1 ? "''" : "none",
+    };
+  }
+
+  private observeMainScroll() {
+    this.grid.gridMainEl.addEventListener(
+      "scroll",
+      () =>
+        this.grid.gridRowActionsEl.style.setProperty(
+          "--ch-grid-scroll-v",
+          `${this.grid.gridMainEl.scrollTop}px`
+        ),
+      { passive: true }
+    );
   }
 }

@@ -105,6 +105,46 @@
 						<Value id='range' desc='Range'/>
 					</Values>
 				</Prop>
+				<Prop>
+					<Id>FilterEnum</Id>
+					<Name>FilterEnum</Name>
+					<Type>Custom</Type>
+					<CustomType>Artech.Genexus.Common.CustomTypes.ControlAttVarReference, Artech.Genexus.Common</CustomType>
+					<Metadata>
+						<Value name="FlagHideVariables">false</Value>
+						<Value name="FlagHideAttributes">true</Value>
+					</Metadata>
+				</Prop>
+				<Prop>
+					<Id>FilterDateTimeAsDate</Id>
+					<Name>FilterDateTimeAsDate</Name>
+					<Type>Boolean</Type>
+					<Default>false</Default>
+				</Prop>
+				<Prop>
+					<Id>FilterCaption</Id>
+					<Name>FilterCaption</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelEqual</Id>
+					<Name>FilterLabelEqual</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelLess</Id>
+					<Name>FilterLabelLess</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
+				<Prop>
+					<Id>FilterLabelGreater</Id>
+					<Name>FilterLabelGreater</Name>
+					<Type>Text</Type>
+					<Default></Default>
+				</Prop>
 			</Children>
 		</Group>
 	</Object>

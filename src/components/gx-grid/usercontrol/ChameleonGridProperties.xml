@@ -43,6 +43,12 @@
 					  <Default>grid-column</Default>
 					</Prop>	
 					<Prop>
+					  <Id>ColumnFilterClass</Id>
+					  <Name>ColumnFilterClass</Name>
+					  <Type>Text</Type>
+					  <Default>grid-column-filter</Default>
+					</Prop>	
+					<Prop>
 					  <Id>RowClass</Id>
 					  <Name>RowClass</Name>
 					  <Type>Text</Type>
@@ -92,6 +98,23 @@
 								<Value id='title' desc='Tooltip'/>
 								<Value id='text' desc='Text'/>
 							</Values>
+						</Prop>
+					</Childs>
+				</Group>
+				<Group>
+					<Name>Filters</Name>
+					<Childs>
+						<Prop>
+							<Id>FilterButtonApplyText</Id>
+							<Name>FilterButtonApplyText</Name>
+							<Type>Text</Type>
+							<Default>Apply</Default>
+						</Prop>
+						<Prop>
+							<Id>FilterButtonResetText</Id>
+							<Name>FilterButtonResetText</Name>
+							<Type>Text</Type>
+							<Default>Reset</Default>
 						</Prop>
 					</Childs>
 				</Group>

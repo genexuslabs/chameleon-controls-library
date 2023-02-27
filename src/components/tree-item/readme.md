@@ -71,14 +71,14 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [ch-icon](../icon)
 - [ch-form-checkbox](../form-checkbox)
+- [ch-icon](../icon)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-tree-item --> ch-icon
   ch-tree-item --> ch-form-checkbox
+  ch-tree-item --> ch-icon
   style ch-tree-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

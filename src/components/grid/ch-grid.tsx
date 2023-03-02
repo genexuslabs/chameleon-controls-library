@@ -282,7 +282,8 @@ export class ChGrid {
             exportparts="
               column:settings-columns-item,
               column-label:settings-columns-label,
-              column-visible:settings-columns-visible
+              column-visible:settings-columns-visible,
+              column-visible-checked:settings-columns-visible-checked
             "
           ></ch-grid-settings-columns>
         </slot>

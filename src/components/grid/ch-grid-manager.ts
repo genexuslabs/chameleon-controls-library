@@ -208,6 +208,10 @@ export class ChGridManager {
       ? this.columnDragManager.getColumnsFirstLast()
       : this.columnsManager.getColumnsFirstLast();
 
+    if (!columnFirst || !columnLast) {
+      return null;
+    }
+
     return {
       [`--ch-grid-column-${columnFirst.physicalOrder}-margin-start`]:
         "var(--ch-grid-fallback, inherit)",

@@ -7,7 +7,7 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
-import { ChGridColumnDragEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridColumn } from "./components/grid/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
@@ -52,6 +52,7 @@ export namespace Components {
         "cellEnsureVisible": (cellId: string) => Promise<void>;
         "localization": GridLocalization;
         "rowEnsureVisible": (rowId: string) => Promise<void>;
+        "rowHighlightEnabled": boolean | "auto";
         "rowHighlightedClass": string;
         "rowSelectedClass": string;
         "rowSelectionMode": "none" | "single" | "multiple";
@@ -71,7 +72,7 @@ export namespace Components {
         "columnNamePosition": "title" | "text";
         "columnType": "plain" | "rich" | "tree";
         "displayObserverClass": string;
-        "freeze"?: "start" | "end";
+        "freeze"?: ChGridColumnFreeze;
         "hidden": boolean;
         "hideable": boolean;
         "order": number;
@@ -84,7 +85,7 @@ export namespace Components {
         "settingable": boolean;
         "showSettings": boolean;
         "size": string;
-        "sortDirection"?: ColumnSortDirection;
+        "sortDirection"?: ChGridColumnSortDirection;
         "sortable": boolean;
     }
     interface ChGridColumnDisplay {
@@ -608,6 +609,7 @@ declare namespace LocalJSX {
         "localization"?: GridLocalization;
         "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
         "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+        "rowHighlightEnabled"?: boolean | "auto";
         "rowHighlightedClass"?: string;
         "rowSelectedClass"?: string;
         "rowSelectionMode"?: "none" | "single" | "multiple";
@@ -629,12 +631,13 @@ declare namespace LocalJSX {
         "columnNamePosition"?: "title" | "text";
         "columnType"?: "plain" | "rich" | "tree";
         "displayObserverClass"?: string;
-        "freeze"?: "start" | "end";
+        "freeze"?: ChGridColumnFreeze;
         "hidden"?: boolean;
         "hideable"?: boolean;
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnFreezeChanged"?: (event: CustomEvent<ChGridColumnFreezeChangedEvent>) => void;
         "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
         "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
         "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
@@ -651,7 +654,7 @@ declare namespace LocalJSX {
         "settingable"?: boolean;
         "showSettings"?: boolean;
         "size"?: string;
-        "sortDirection"?: ColumnSortDirection;
+        "sortDirection"?: ChGridColumnSortDirection;
         "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {

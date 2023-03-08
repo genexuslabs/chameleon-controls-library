@@ -8,6 +8,7 @@
 | Property              | Attribute               | Description | Type                               | Default     |
 | --------------------- | ----------------------- | ----------- | ---------------------------------- | ----------- |
 | `localization`        | --                      |             | `GridLocalization`                 | `undefined` |
+| `rowHighlightEnabled` | `row-highlight-enabled` |             | `"auto" \| boolean`                | `"auto"`    |
 | `rowHighlightedClass` | `row-highlighted-class` |             | `string`                           | `undefined` |
 | `rowSelectedClass`    | `row-selected-class`    |             | `string`                           | `undefined` |
 | `rowSelectionMode`    | `row-selection-mode`    |             | `"multiple" \| "none" \| "single"` | `"single"`  |

@@ -167,11 +167,17 @@ export class ChGrid {
 
   @Listen("columnHiddenChanged")
   @Listen("columnOrderChanged")
+  @Listen("columnFreezeChanged")
   @Listen("columnSizeChanging")
   columnStyleChangedHandler() {
     if (this.manager) {
       this.gridStyle = this.manager.getGridStyle();
     }
+  }
+
+  @Listen("columnFreezeChanged")
+  columnFreezeChangedHandler() {
+    this.manager.columns.adjustFreezeOrder();
   }
 
   @Listen("columnDragStarted")

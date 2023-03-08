@@ -45,6 +45,7 @@ export class ChGrid {
   @State() gridStyle: CSSProperties;
 
   @Prop() rowSelectionMode: "none" | "single" | "multiple" = "single";
+  @Prop() rowHighlightEnabled: boolean | "auto" = "auto";
   @Prop() rowSelectedClass: string;
   @Prop() rowHighlightedClass: string;
 
@@ -92,7 +93,7 @@ export class ChGrid {
 
   @Listen("mousemove", { passive: true })
   mouseMoveHandler(eventInfo: MouseEvent) {
-    if (this.rowSelectionMode != "none") {
+    if ((this.rowHighlightEnabled === "auto" && this.rowSelectionMode !== "none") || this.rowHighlightEnabled == true) {
       this.rowHighlighted = this.manager.selection.setRowHighlighted(
         eventInfo,
         this.rowHighlighted

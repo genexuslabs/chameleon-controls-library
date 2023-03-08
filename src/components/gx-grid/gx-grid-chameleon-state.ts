@@ -1,4 +1,4 @@
-import { ColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
+import { ChGridColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
 import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {
@@ -15,7 +15,7 @@ export class GridChameleonManagerState {
 
   static setColumnSort(
     columnId: string,
-    sortDirection: ColumnSortDirection
+    sortDirection: ChGridColumnSortDirection
   ): void {
     this.state.SortColumnName = columnId;
     this.state.SortDirection = sortDirection;

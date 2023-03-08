@@ -1,4 +1,5 @@
-export type ColumnSortDirection = "asc" | "desc";
+export type ChGridColumnSortDirection = "asc" | "desc";
+export type ChGridColumnFreeze = "start" | "end";
 
 export interface ChGridColumnDragEvent {
   columnId: string;
@@ -8,7 +9,7 @@ export interface ChGridColumnDragEvent {
 
 export interface ChGridColumnSortChangedEvent {
   columnId: string;
-  sortDirection: ColumnSortDirection;
+  sortDirection: ChGridColumnSortDirection;
 }
 
 export interface ChGridColumnHiddenChangedEvent {
@@ -28,4 +29,9 @@ export interface ChGridColumnOrderChangedEvent {
 
 export interface ChGridColumnSelectorClickedEvent {
   checked: boolean;
+}
+
+export interface ChGridColumnFreezeChangedEvent {
+  columnId: string;
+  freeze: ChGridColumnFreeze;
 }

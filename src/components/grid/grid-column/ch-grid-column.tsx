@@ -11,12 +11,14 @@ import {
 } from "@stencil/core";
 import {
   ChGridColumnDragEvent,
+  ChGridColumnFreezeChangedEvent,
   ChGridColumnHiddenChangedEvent,
   ChGridColumnOrderChangedEvent,
   ChGridColumnSelectorClickedEvent,
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
-  ColumnSortDirection,
+  ChGridColumnFreeze,
+  ChGridColumnSortDirection,
 } from "./ch-grid-column-types";
 
 @Component({
@@ -31,6 +33,7 @@ export class ChGridColumn {
   @Event() columnSizeChanged: EventEmitter<ChGridColumnSizeChangedEvent>;
   @Event() columnOrderChanged: EventEmitter<ChGridColumnOrderChangedEvent>;
   @Event() columnSortChanged: EventEmitter<ChGridColumnSortChangedEvent>;
+  @Event() columnFreezeChanged: EventEmitter<ChGridColumnFreezeChangedEvent>;
   @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
@@ -44,7 +47,7 @@ export class ChGridColumn {
   @Prop() richRowSelector: boolean;
   @Prop() richRowActions: boolean;
   @Prop() displayObserverClass: string;
-  @Prop() freeze?: "start" | "end";
+  @Prop() freeze?: ChGridColumnFreeze;
   @Prop({ reflect: true }) hidden = false;
   @Prop() hideable = true;
   @Prop({ reflect: true }) order: number;
@@ -54,7 +57,7 @@ export class ChGridColumn {
   @Prop({ reflect: true }) resizing: boolean;
   @Prop() sortable: boolean = true;
   @Prop() settingable: boolean = true;
-  @Prop({ mutable: true, reflect: true }) sortDirection?: ColumnSortDirection;
+  @Prop({ mutable: true, reflect: true }) sortDirection?: ChGridColumnSortDirection;
   @Prop({ reflect: true }) showSettings = false;
 
   private dragging = false;
@@ -86,6 +89,14 @@ export class ChGridColumn {
     this.columnOrderChanged.emit({
       columnId: this.columnId,
       order: this.order,
+    });
+  }
+
+  @Watch("freeze")
+  freezeHandler() {
+    this.columnFreezeChanged.emit({
+      columnId: this.columnId,
+      freeze: this.freeze,
     });
   }
 

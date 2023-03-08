@@ -18,6 +18,8 @@ export class ChGridManagerColumns {
 
     this.defineColumns(this.columns);
     this.defineColumnsVariables();
+
+    this.adjustFreezeOrder();
   }
 
   public getColumns() {
@@ -51,6 +53,17 @@ export class ChGridManagerColumns {
 
   public getColumnSelector(): HTMLChGridColumnElement {
     return this.columns.find((column) => column.columnType == "rich" && column.richRowSelector);
+  }
+
+  public adjustFreezeOrder() {
+    const freezeStart = this.columns.filter(column => column.freeze == "start").sort(this.fnSortByOrder);
+    const noFreeze = this.columns.filter(column => column.freeze != "start" && column.freeze != "end").sort(this.fnSortByOrder);
+    const freezeEnd = this.columns.filter(column => column.freeze == "end").sort(this.fnSortByOrder);
+    let order = 1;
+
+    freezeStart.forEach(column => column.order = order++);
+    noFreeze.forEach(column => column.order = order++);
+    freezeEnd.forEach(column => column.order = order++);
   }
 
   private defineColumns(columns: HTMLChGridColumnElement[]) {
@@ -223,16 +236,18 @@ export class ChGridManagerColumns {
     this.columns.forEach((column, i) => column.physicalOrder = i+1);
     
     // adjust order, preserving physicalOrder array
-    [...this.columns].sort((columnA, columnB) => {
-      if (columnA.order < columnB.order) {
-        return -1;
-      }
-      if (columnA.order > columnB.order) {
-        return 1;
-      }
-      return 0;
-    }).forEach((column, i) => {
+    [...this.columns].sort(this.fnSortByOrder).forEach((column, i) => {
       column.order = i+1;
     });
+  }
+  
+  private fnSortByOrder(columnA: HTMLChGridColumnElement, columnB: HTMLChGridColumnElement): number {
+    if (columnA.order < columnB.order) {
+      return -1;
+    }
+    if (columnA.order > columnB.order) {
+      return 1;
+    }
+    return 0;
   }
 }

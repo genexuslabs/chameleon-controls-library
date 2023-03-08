@@ -37,6 +37,7 @@
 | `columnDragEnded`       |             | `CustomEvent<ChGridColumnDragEvent>`            |
 | `columnDragging`        |             | `CustomEvent<ChGridColumnDragEvent>`            |
 | `columnDragStarted`     |             | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnFreezeChanged`   |             | `CustomEvent<ChGridColumnFreezeChangedEvent>`   |
 | `columnHiddenChanged`   |             | `CustomEvent<ChGridColumnHiddenChangedEvent>`   |
 | `columnOrderChanged`    |             | `CustomEvent<ChGridColumnOrderChangedEvent>`    |
 | `columnSelectorClicked` |             | `CustomEvent<ChGridColumnSelectorClickedEvent>` |

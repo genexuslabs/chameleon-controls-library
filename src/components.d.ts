@@ -139,6 +139,36 @@ export namespace Components {
          */
         "src": string;
     }
+    interface ChIntersectionObserver {
+        /**
+          * Bottom margin around the root element
+         */
+        "bottomMargin": string;
+        /**
+          * A CSS class to set as the gx-intersection-observer element class
+         */
+        "cssClass": string;
+        /**
+          * Left margin around the root element
+         */
+        "leftMargin": string;
+        /**
+          * Right margin around the root element
+         */
+        "rightMargin": string;
+        /**
+          * Set the ID of the component that is used as the viewport, default is the browser.
+         */
+        "root": string;
+        /**
+          * Numeric values representing percentages of the target element which are visible.
+         */
+        "threshold": string;
+        /**
+          * Top margin around the root element
+         */
+        "topMargin": string;
+    }
     interface ChPaginator {
         "activePage": number;
         "totalPages": number;
@@ -441,6 +471,12 @@ declare global {
         prototype: HTMLChIconElement;
         new (): HTMLChIconElement;
     };
+    interface HTMLChIntersectionObserverElement extends Components.ChIntersectionObserver, HTMLStencilElement {
+    }
+    var HTMLChIntersectionObserverElement: {
+        prototype: HTMLChIntersectionObserverElement;
+        new (): HTMLChIntersectionObserverElement;
+    };
     interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
     }
     var HTMLChPaginatorElement: {
@@ -555,6 +591,7 @@ declare global {
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
+        "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
@@ -712,6 +749,41 @@ declare namespace LocalJSX {
           * The URL of the icon.
          */
         "src"?: string;
+    }
+    interface ChIntersectionObserver {
+        /**
+          * Bottom margin around the root element
+         */
+        "bottomMargin"?: string;
+        /**
+          * A CSS class to set as the gx-intersection-observer element class
+         */
+        "cssClass"?: string;
+        /**
+          * Left margin around the root element
+         */
+        "leftMargin"?: string;
+        /**
+          * Emitted whenever the control reaches a threshold specified by the threshold property
+          * @param IntersectionObserverEntry Details of intersection object.
+         */
+        "onIntersectionUpdate"?: (event: CustomEvent<IntersectionObserverEntry>) => void;
+        /**
+          * Right margin around the root element
+         */
+        "rightMargin"?: string;
+        /**
+          * Set the ID of the component that is used as the viewport, default is the browser.
+         */
+        "root"?: string;
+        /**
+          * Numeric values representing percentages of the target element which are visible.
+         */
+        "threshold"?: string;
+        /**
+          * Top margin around the root element
+         */
+        "topMargin"?: string;
     }
     interface ChPaginator {
         "activePage"?: number;
@@ -958,6 +1030,7 @@ declare namespace LocalJSX {
         "ch-grid-settings-columns": ChGridSettingsColumns;
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
+        "ch-intersection-observer": ChIntersectionObserver;
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
         "ch-paginator-pages": ChPaginatorPages;
@@ -997,6 +1070,7 @@ declare module "@stencil/core" {
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+            "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;

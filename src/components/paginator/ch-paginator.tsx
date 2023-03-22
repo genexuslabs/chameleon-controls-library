@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Component, Event, EventEmitter, Listen, Prop } from "@stencil/core";
 import { ChPaginatorNavigationClickedEvent } from "../paginator-navigate/ch-paginator-navigate-types";
 
 @Component({
   tag: "ch-paginator",
   styleUrl: "ch-paginator.scss",
-  shadow: false,
+  shadow: false
 })
 export class ChPaginator {
-  @Prop() activePage: number;
-  @Prop() totalPages: number;
+  @Prop() readonly activePage: number;
+  @Prop() readonly totalPages: number;
   @Event() activePageChanged: EventEmitter<ChPaginatorActivePageChangedEvent>;
 
   @Listen("navigationClicked")

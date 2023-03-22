@@ -5,35 +5,35 @@ import {
   Event,
   EventEmitter,
   Element,
-  Prop,
+  Prop
 } from "@stencil/core";
 
 @Component({
   tag: "ch-select-option",
   styleUrl: "ch-select-option.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChSelectItem {
   /**
    * Set the left side icon
    */
-  @Prop() leftIconSrc: string;
+  @Prop() readonly leftIconSrc: string;
   /**
    * Set the right side icon
    */
-  @Prop() rightIconSrc: string;
+  @Prop() readonly rightIconSrc: string;
   /**
    * Determines the selected option
    */
-  @Prop() selected: boolean;
+  @Prop() readonly selected: boolean;
   /**
    * Determines if the option is disabled
    */
-  @Prop() disabled: boolean;
+  @Prop() readonly disabled: boolean;
   /**
    * If enabled, the option icons will display its inherent/natural color
    */
-  @Prop({ reflect: true }) autoColor = true;
+  @Prop({ reflect: true }) readonly autoColor: boolean = true;
   /**
    * Emits the item id
    */
@@ -62,9 +62,9 @@ export class ChSelectItem {
   setActiveOption(targetItem) {
     const parent: any = this.el.parentElement;
     const selectItems: NodeListOf<HTMLElement> = parent.children;
-    var optionText = "";
+    let optionText = "";
 
-    for (var i = 0; i < selectItems.length; i++) {
+    for (let i = 0; i < selectItems.length; i++) {
       const item: any = selectItems[i].shadowRoot.lastChild;
       //remove old item selected class
       if (item.classList.contains("option-selected"))
@@ -117,7 +117,7 @@ export class ChSelectItem {
                   src={this.resolveLeftIcon()}
                   style={{
                     "--icon-size": "20px",
-                    "--icon-color": `var(--first-list-icon-color)`,
+                    "--icon-color": `var(--first-list-icon-color)`
                   }}
                   auto-color={this.autoColor}
                 ></ch-icon>
@@ -133,7 +133,7 @@ export class ChSelectItem {
                 src={this.resolveRightIcon()}
                 style={{
                   "--icon-size": "20px",
-                  "--icon-color": `var(--first-list-icon-color)`,
+                  "--icon-color": `var(--first-list-icon-color)`
                 }}
                 auto-color={this.autoColor}
               ></ch-icon>

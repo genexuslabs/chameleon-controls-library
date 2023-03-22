@@ -3,14 +3,14 @@ import { Component, h, Prop, Watch, Event, EventEmitter } from "@stencil/core";
 @Component({
   tag: "ch-paginator-pages",
   styleUrl: "ch-paginator-pages.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChPaginatorPages {
   @Prop({ mutable: true, reflect: true }) activePage = 1;
-  @Prop() totalPages = 1;
+  @Prop() readonly totalPages: number = 1;
   @Prop({ mutable: true, reflect: true }) maxSize = 9;
-  @Prop() renderFirstLastPages: true;
-  @Prop() textDots = "...";
+  @Prop() readonly renderFirstLastPages: true;
+  @Prop() readonly textDots: string = "...";
   @Event() pageClicked: EventEmitter;
 
   @Watch("maxSize")
@@ -36,7 +36,6 @@ export class ChPaginatorPages {
     let fillLeft: number, fillStart: (number | string)[];
     let fillRight: number, fillEnd: (number | string)[];
     let items: (number | string)[] = [];
-    let activeIndex: number;
 
     if (this.maxSize == 0 || this.maxSize >= this.totalPages) {
       fillStart = this.fillStart(false);
@@ -68,7 +67,7 @@ export class ChPaginatorPages {
       fillStart = this.fillStart(true);
       fillLeft = padLeft - fillStart.length + padRight - fillRight;
     }
-    activeIndex = fillStart.length + fillLeft;
+    const activeIndex: number = fillStart.length + fillLeft;
 
     items = fillStart
       .concat(this.range(this.activePage - fillLeft, this.activePage - 1))

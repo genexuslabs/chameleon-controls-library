@@ -3,15 +3,15 @@ import { Component, h, Host, Prop, Event, EventEmitter } from "@stencil/core";
 @Component({
   tag: "ch-window",
   styleUrl: "ch-window.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChWindow {
   @Prop({ reflect: true, mutable: true }) hidden = true;
-  @Prop({ reflect: true }) modal = true;
-  @Prop() caption = "";
-  @Prop() closeText: string;
-  @Prop() closeTooltip: string;
-  @Prop() closeAuto: boolean;
+  @Prop({ reflect: true }) readonly modal: boolean = true;
+  @Prop() readonly caption: string = "";
+  @Prop() readonly closeText: string;
+  @Prop() readonly closeTooltip: string;
+  @Prop() readonly closeAuto: boolean;
 
   @Event() windowClosed: EventEmitter;
 

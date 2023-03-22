@@ -5,7 +5,7 @@ import "./grid-cell/ch-grid-cell";
 import {
   CSSProperties,
   ChGridSelectionChangedEvent,
-  ChGridRowClickedEvent,
+  ChGridRowClickedEvent
 } from "./ch-grid-types";
 import {
   Component,
@@ -18,20 +18,24 @@ import {
   State,
   Watch,
   h,
-  Method,
+  Method
 } from "@stencil/core";
 
 import { ChGridManager } from "./ch-grid-manager";
 import HTMLChGridCellElement, {
-  ChGridCellSelectorClickedEvent, ChGridRowDragEvent,
+  ChGridCellSelectorClickedEvent,
+  ChGridRowDragEvent
 } from "./grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "./grid-row/ch-grid-row";
-import { ChGridColumnDragEvent, ChGridColumnSelectorClickedEvent } from "./grid-column/ch-grid-column-types";
+import {
+  ChGridColumnDragEvent,
+  ChGridColumnSelectorClickedEvent
+} from "./grid-column/ch-grid-column-types";
 
 @Component({
   tag: "ch-grid",
   styleUrl: "ch-grid.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGrid {
   @Element() el: HTMLChGridElement;
@@ -44,12 +48,12 @@ export class ChGrid {
   @State() cellSelected: HTMLChGridCellElement;
   @State() gridStyle: CSSProperties;
 
-  @Prop() rowSelectionMode: "none" | "single" | "multiple" = "single";
-  @Prop() rowHighlightEnabled: boolean | "auto" = "auto";
-  @Prop() rowSelectedClass: string;
-  @Prop() rowHighlightedClass: string;
+  @Prop() readonly rowSelectionMode: "none" | "single" | "multiple" = "single";
+  @Prop() readonly rowHighlightEnabled: boolean | "auto" = "auto";
+  @Prop() readonly rowSelectedClass: string;
+  @Prop() readonly rowHighlightedClass: string;
 
-  @Prop() localization: GridLocalization;
+  @Prop() readonly localization: GridLocalization;
 
   manager: ChGridManager;
   gridMainEl: HTMLElement;
@@ -88,12 +92,16 @@ export class ChGrid {
   ) {
     this.manager.selection.refreshCellSelector(rows, previous);
 
-    this.selectionChanged.emit({ rowsId: rows.map((row) => row.rowId) });
+    this.selectionChanged.emit({ rowsId: rows.map(row => row.rowId) });
   }
 
   @Listen("mousemove", { passive: true })
   mouseMoveHandler(eventInfo: MouseEvent) {
-    if ((this.rowHighlightEnabled === "auto" && this.rowSelectionMode !== "none") || this.rowHighlightEnabled == true) {
+    if (
+      (this.rowHighlightEnabled === "auto" &&
+        this.rowSelectionMode !== "none") ||
+      this.rowHighlightEnabled == true
+    ) {
       this.rowHighlighted = this.manager.selection.setRowHighlighted(
         eventInfo,
         this.rowHighlighted
@@ -141,7 +149,10 @@ export class ChGrid {
   columnSelectorClickedHandler(
     eventInfo: CustomEvent<ChGridColumnSelectorClickedEvent>
   ) {
-    this.rowsSelected = this.manager.selection.setRowsSelected(eventInfo.detail.checked, this.rowsSelected);
+    this.rowsSelected = this.manager.selection.setRowsSelected(
+      eventInfo.detail.checked,
+      this.rowsSelected
+    );
   }
 
   @Listen("cellSelectorClicked", { passive: true })
@@ -226,7 +237,9 @@ export class ChGrid {
 
   @Method()
   async rowEnsureVisible(rowId: string) {
-    const row = this.el.querySelector(`${HTMLChGridRowElement.TAG_NAME.toLowerCase()}[rowid="${rowId}"]`) as HTMLChGridRowElement;
+    const row = this.el.querySelector(
+      `${HTMLChGridRowElement.TAG_NAME.toLowerCase()}[rowid="${rowId}"]`
+    ) as HTMLChGridRowElement;
 
     if (row) {
       this.manager.ensureRowVisible(row);
@@ -235,7 +248,9 @@ export class ChGrid {
 
   @Method()
   async cellEnsureVisible(cellId: string) {
-    const cell = this.el.querySelector(`${HTMLChGridCellElement.TAG_NAME.toLowerCase()}[cellid="${cellId}"]`) as HTMLChGridCellElement;
+    const cell = this.el.querySelector(
+      `${HTMLChGridCellElement.TAG_NAME.toLowerCase()}[cellid="${cellId}"]`
+    ) as HTMLChGridCellElement;
 
     if (cell) {
       this.manager.ensureCellVisible(cell);
@@ -252,7 +267,7 @@ export class ChGrid {
           class="main"
           style={this.gridStyle}
           part="main"
-          ref={(el) => (this.gridMainEl = el)}
+          ref={el => (this.gridMainEl = el)}
         >
           <slot></slot>
         </section>
@@ -271,7 +286,7 @@ export class ChGrid {
   private renderSettings() {
     return (
       <ch-grid-settings
-        ref={(el) => (this.gridSettingsUI = el)}
+        ref={el => (this.gridSettingsUI = el)}
         exportparts="
           mask:settings-mask,
           window:settings-window,
@@ -303,7 +318,7 @@ export class ChGrid {
       <section
         class="row-actions"
         part="row-actions"
-        ref={(el) => (this.gridRowActionsEl = el)}
+        ref={el => (this.gridRowActionsEl = el)}
       >
         <slot name="row-actions"></slot>
       </section>

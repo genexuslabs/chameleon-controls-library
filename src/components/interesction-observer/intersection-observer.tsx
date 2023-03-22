@@ -1,4 +1,12 @@
-import { Component, h, EventEmitter, Event, Element, Host, Prop } from "@stencil/core";
+import {
+  Component,
+  h,
+  EventEmitter,
+  Event,
+  Element,
+  Host,
+  Prop
+} from "@stencil/core";
 
 const REGEX_TO_REPLACE_PERCENTAGE = /%/g;
 const REGEX_TO_TEST_DIP = /^\d+(dip)?$/;
@@ -7,7 +15,7 @@ const REGEX_TO_TEST_PERCENTAGE = /^\d+(%)?$/;
 @Component({
   tag: "ch-intersection-observer",
   styleUrl: "intersection-observer.scss",
-  shadow: true,
+  shadow: true
 })
 export class IntersectionObserverControl {
   private defaultThreshold: Array<number> = [0];
@@ -68,7 +76,9 @@ export class IntersectionObserverControl {
    * @returns When is a valid dip value returns the value converted to pixels. Otherwise returns "0px".
    */
   private checkValidDipValue(dipValue: string) {
-    return REGEX_TO_TEST_DIP.test(dipValue) ? this.convertDipToPxValue(dipValue) : "0px";
+    return REGEX_TO_TEST_DIP.test(dipValue)
+      ? this.convertDipToPxValue(dipValue)
+      : "0px";
   }
 
   /**
@@ -117,8 +127,9 @@ export class IntersectionObserverControl {
     const finalThresholds: number[] = [];
     const thresholdsToParse = threshold.split(",");
 
-    thresholdsToParse.forEach((thresholdValue) => {
-      const convertedNumber = this.convertThresholdValueToNumber(thresholdValue);
+    thresholdsToParse.forEach(thresholdValue => {
+      const convertedNumber =
+        this.convertThresholdValueToNumber(thresholdValue);
 
       if (convertedNumber <= 1) {
         finalThresholds.push(convertedNumber);
@@ -134,9 +145,9 @@ export class IntersectionObserverControl {
     const options: IntersectionObserverInit = {
       root: this.rootElement,
       rootMargin: this.rootMarginString,
-      threshold: this.defaultThreshold,
+      threshold: this.defaultThreshold
     };
-    this.observer = new IntersectionObserver((entries) => {
+    this.observer = new IntersectionObserver(entries => {
       const detail: IntersectionObserverEntry = entries[0];
       const detailObject = {
         boundingClientRect: detail.boundingClientRect,
@@ -145,7 +156,7 @@ export class IntersectionObserverControl {
         isIntersecting: detail.isIntersecting,
         rootBounds: detail.rootBounds,
         target: detail.target,
-        time: detail.time,
+        time: detail.time
       };
 
       this.intersectionUpdate.emit(detailObject);
@@ -165,7 +176,7 @@ export class IntersectionObserverControl {
       this.validatePosition(this.topMargin),
       this.validatePosition(this.leftMargin),
       this.validatePosition(this.bottomMargin),
-      this.validatePosition(this.rightMargin),
+      this.validatePosition(this.rightMargin)
     ].join(" ");
 
     this.defaultThreshold = this.parseThreshold(this.threshold);
@@ -199,7 +210,7 @@ export class IntersectionObserverControl {
     return (
       <Host
         class={{
-          [this.cssClass]: !!this.cssClass,
+          [this.cssClass]: !!this.cssClass
         }}
       >
         <slot name="content" />

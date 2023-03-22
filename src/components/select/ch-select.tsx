@@ -8,7 +8,7 @@ import {
   Event,
   EventEmitter,
   Listen,
-  Host,
+  Host
 } from "@stencil/core";
 
 import { ClickOutside } from "stencil-click-outside";
@@ -17,7 +17,7 @@ import { ClickOutside } from "stencil-click-outside";
   tag: "ch-select",
   styleUrl: "ch-select.scss",
   shadow: true,
-  assetsDirs: ["select-assets"],
+  assetsDirs: ["select-assets"]
 })
 export class ChSelect {
   private selectWidth = 0;
@@ -29,40 +29,40 @@ export class ChSelect {
   /*
     Text to show in the select box when not selected option
     */
-  @Prop() name: string;
+  @Prop() readonly name: string;
   /*
    * The select icon (optional)
    */
-  @Prop() iconSrc: string;
+  @Prop() readonly iconSrc: string;
   /*
    * The select arrow icon (optional)
    */
-  @Prop() arrowIconSrc: string;
+  @Prop() readonly arrowIconSrc: string;
   /**
    * If enabled, the icon will display its inherent/natural color
    */
-  @Prop({ reflect: true }) autoColor = false;
+  @Prop({ reflect: true }) readonly autoColor: boolean = false;
   /*
    * Disables the select
    */
-  @Prop() disabled: boolean;
+  @Prop() readonly disabled: boolean;
   /*
    * The select width (optional)
    */
-  @Prop() width: string;
+  @Prop() readonly width: string;
   /*
    * The select height (optional)
    */
-  @Prop() height: string;
+  @Prop() readonly height: string;
   /*
    * The select's option height (optional)
    */
-  @Prop() optionHeight: string;
+  @Prop() readonly optionHeight: string;
   /*
    * This will track state changes (whether the
    * dropdown component is open or closed)
    */
-  @State() toggle: boolean = false;
+  @State() toggle = false;
 
   /**
    * @type EventEmitter
@@ -80,10 +80,10 @@ export class ChSelect {
 
   componentWillRender() {
     //load select options to render
-    for (var i = 0; i < this.el.children.length; i++) {
+    for (let i = 0; i < this.el.children.length; i++) {
       if (!this.selectOptions.includes(this.el.children[i]))
         this.selectOptions.push(this.el.children[i]);
-      for (var j = 0; j < this.el.children[i].attributes.length; j++) {
+      for (let j = 0; j < this.el.children[i].attributes.length; j++) {
         if (this.el.children[i].attributes[j].name === "selected") {
           this.optionSelected = this.el.children[i].innerHTML;
         }
@@ -105,7 +105,7 @@ export class ChSelect {
         heightValueStr = this.height;
         heightValueStr = heightValueStr.split("px")[0];
         heightValue = Number(heightValueStr);
-        var elmt: HTMLElement =
+        const elmt: HTMLElement =
           this.el.shadowRoot.querySelector(".list-container");
         elmt.style.height = heightValue + "px";
       }
@@ -120,9 +120,9 @@ export class ChSelect {
       optionHeightStr = this.optionHeight;
       optionHeightStr = optionHeightStr.split("px")[0];
       optionHeight = Number(optionHeightStr);
-      var optionElmts: NodeListOf<HTMLElement> =
+      const optionElmts: NodeListOf<HTMLElement> =
         this.el.shadowRoot.querySelectorAll(".option");
-      for (var f = 0; f < optionElmts.length; f++) {
+      for (let f = 0; f < optionElmts.length; f++) {
         optionElmts[f].style.height = optionHeight + "px";
         optionElmts[f].style.lineHeight = optionHeight + "px";
       }
@@ -134,7 +134,7 @@ export class ChSelect {
     //get all options
     const options = this.selectOptions;
 
-    for (var i = 0; i < options.length; i++) {
+    for (let i = 0; i < options.length; i++) {
       //calculate selectBox's height based on items quantity and optionHeight property
       this.selectHeight = this.selectHeight + optionHeight;
     }
@@ -142,7 +142,7 @@ export class ChSelect {
     selectItems.style.height = this.selectHeight + "px";
 
     //set select width based on the wider item of the selectBox
-    var selectBoxWidth = selectItems.getBoundingClientRect().width;
+    let selectBoxWidth = selectItems.getBoundingClientRect().width;
     selectBoxWidth = Math.round(selectBoxWidth * 100) / 100;
     this.selectWidth = selectBoxWidth;
 
@@ -165,20 +165,22 @@ export class ChSelect {
       //set select width based on the placeholder text of the selectBox
       const leftContainer: HTMLElement =
         this.el.shadowRoot.querySelector("div.left-container");
-      var styleLeftContainer = window.getComputedStyle(leftContainer);
-      var paddingLeftContainer =
+      const styleLeftContainer = window.getComputedStyle(leftContainer);
+      const paddingLeftContainer =
         parseFloat(styleLeftContainer.paddingLeft) +
         parseFloat(styleLeftContainer.paddingRight);
       const leftIcon: HTMLElement = leftContainer.querySelector("ch-icon");
-      var leftIconWidth = 0;
-      var marginLeftIcon = 0;
+      let leftIconWidth = 0;
+      let marginLeftIcon = 0;
       if (this.iconSrc) {
-        var styleLeftIcon = window.getComputedStyle(leftIcon);
+        const styleLeftIcon = window.getComputedStyle(leftIcon);
         leftIconWidth = parseFloat(
           styleLeftIcon.getPropertyValue("--icon-size")
         );
-        var leftIconContainer = leftContainer.querySelector("span.custom-icon");
-        var styleLeftIconContainer = window.getComputedStyle(leftIconContainer);
+        const leftIconContainer =
+          leftContainer.querySelector("span.custom-icon");
+        const styleLeftIconContainer =
+          window.getComputedStyle(leftIconContainer);
         marginLeftIcon =
           parseFloat(styleLeftIconContainer.marginInlineStart) +
           parseFloat(styleLeftIconContainer.marginInlineEnd);
@@ -207,7 +209,7 @@ export class ChSelect {
     if (window.innerHeight - totalFromTop > 0) {
       this.el.style.position = "relative";
     } else {
-      var listContainer: HTMLElement =
+      const listContainer: HTMLElement =
         this.el.shadowRoot.querySelector(".select-options");
       listContainer.style.position = "unset";
     }
@@ -291,7 +293,7 @@ export class ChSelect {
                     src={this.resolveIcon()}
                     style={{
                       "--select-icon-size": "var(--icon-size)",
-                      "--select-icon-color": `var(--icon-color)`,
+                      "--select-icon-color": `var(--icon-color)`
                     }}
                   ></ch-icon>
                 </span>

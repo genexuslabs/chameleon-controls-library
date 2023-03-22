@@ -6,14 +6,14 @@ import {
   State,
   Prop,
   Event,
-  EventEmitter,
+  EventEmitter
 } from "@stencil/core";
 
 @Component({
   tag: "ch-sidebar-menu-list-item",
   styleUrl: "ch-sidebar-menu-list-item.scss",
   shadow: true,
-  assetsDirs: ["sidebar-menu-list-item-assets"],
+  assetsDirs: ["sidebar-menu-list-item-assets"]
 })
 export class ChSidebarMenuListItem {
   /**
@@ -26,18 +26,18 @@ export class ChSidebarMenuListItem {
   /**
    * The first list item icon (optional)
    */
-  @Prop() itemIconSrc: string;
+  @Prop() readonly itemIconSrc: string;
   /**
    * If enabled, the icon will display its inherent/natural color
    */
-  @Prop({ reflect: true }) autoColor = false;
+  @Prop({ reflect: true }) readonly autoColor: boolean = false;
 
   /**
    * If this attribute is present the item will be initially uncollapsed
    */
-  @Prop() uncollapsed: boolean = false;
+  @Prop() readonly uncollapsed: boolean = false;
 
-  @State() collapsable: boolean = false;
+  @State() collapsable = false;
   @State() listTypeItem: string;
 
   componentWillLoad() {
@@ -80,7 +80,7 @@ export class ChSidebarMenuListItem {
                 src={this.firstListItemIcon()}
                 style={{
                   "--icon-size": "20px",
-                  "--icon-color": `var(--first-list-icon-color)`,
+                  "--icon-color": `var(--first-list-icon-color)`
                 }}
                 auto-color={this.autoColor}
               ></ch-icon>
@@ -95,7 +95,7 @@ export class ChSidebarMenuListItem {
             </span>
           ) : null}
         </div>,
-        <slot name="list"></slot>,
+        <slot name="list"></slot>
       ];
     if (this.listTypeItem === "two")
       return [
@@ -109,7 +109,7 @@ export class ChSidebarMenuListItem {
             <slot></slot>
           </span>
         </div>,
-        <slot name="list"></slot>,
+        <slot name="list"></slot>
       ];
     if (this.listTypeItem === "three")
       return (
@@ -130,7 +130,7 @@ export class ChSidebarMenuListItem {
           uncollapsed: this.uncollapsed,
           "list-one__item": this.listTypeItem === "one",
           "list-two__item": this.listTypeItem === "two",
-          "list-three__item": this.listTypeItem === "three",
+          "list-three__item": this.listTypeItem === "three"
         }}
       >
         {this.listItemContent()}

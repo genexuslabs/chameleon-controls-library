@@ -1,43 +1,43 @@
 import {
   ChGridRowClickedEvent,
-  ChGridSelectionChangedEvent,
+  ChGridSelectionChangedEvent
 } from "../grid/ch-grid-types";
 import { Component, Host, Listen, Prop, h, Watch } from "@stencil/core";
 import {
   paginationGoToFirstPage,
   paginationGoToLastPage,
   paginationGoToNextPage,
-  paginationGoToPreviousPage,
+  paginationGoToPreviousPage
 } from "./gx-grid-chameleon-paginator";
 import {
   ChPaginatorNavigationClickedEvent,
-  ChPaginatorNavigationType,
+  ChPaginatorNavigationType
 } from "../paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
 import {
   ChGridColumnHiddenChangedEvent,
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
-  ChGridColumnSortChangedEvent,
+  ChGridColumnSortChangedEvent
 } from "../grid/grid-column/ch-grid-column-types";
 import {
   GridChameleonManagerState,
-  GridChameleonState,
+  GridChameleonState
 } from "./gx-grid-chameleon-state";
 import { Gx, GxControl, GxGrid, GxGridColumn, GxGridRow } from "./genexus";
 import { GridChameleonColumnFilterChanged } from "./gx-grid-column-filter/gx-grid-chameleon-column-filter";
 
-declare var gx: Gx;
+declare let gx: Gx;
 
 @Component({
   shadow: false,
   styleUrl: "gx-grid-chameleon.scss",
-  tag: "gx-grid-chameleon",
+  tag: "gx-grid-chameleon"
 })
 export class GridChameleon {
   @Prop() readonly grid: GxGrid;
   @Prop({ mutable: true }) gridTimestamp: number;
-  @Prop() state: GridChameleonState;
+  @Prop() readonly state: GridChameleonState;
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -148,9 +148,18 @@ export class GridChameleon {
     column.filterLess = eventInfo.detail.less ?? "";
     column.filterGreater = eventInfo.detail.greater ?? "";
 
-    GridChameleonManagerState.setColumnFilterEqual(column.htmlName, column.filterEqual);
-    GridChameleonManagerState.setColumnFilterLess(column.htmlName, column.filterLess);
-    GridChameleonManagerState.setColumnFilterGreater(column.htmlName, column.filterGreater);
+    GridChameleonManagerState.setColumnFilterEqual(
+      column.htmlName,
+      column.filterEqual
+    );
+    GridChameleonManagerState.setColumnFilterLess(
+      column.htmlName,
+      column.filterLess
+    );
+    GridChameleonManagerState.setColumnFilterGreater(
+      column.htmlName,
+      column.filterGreater
+    );
 
     gridRefresh(this.grid);
   }
@@ -250,7 +259,7 @@ export class GridChameleon {
   private renderColumns() {
     return (
       <ch-grid-columnset class={this.grid.ColumnsetClass}>
-        {this.grid.columns.map((column) => {
+        {this.grid.columns.map(column => {
           if (gx.lang.gxBoolean(column.render)) {
             return (
               <ch-grid-column
@@ -261,7 +270,9 @@ export class GridChameleon {
                 columnNamePosition={column.NamePosition}
                 size={this.getColumnSize(column)}
                 displayObserverClass={column.gxColumnClass}
-                class={`${this.grid.ColumnClass} ${column.HeaderClass} ${column.isFiltering ? "grid-column-filtering" : ""}`}
+                class={`${this.grid.ColumnClass} ${column.HeaderClass} ${
+                  column.isFiltering ? "grid-column-filtering" : ""
+                }`}
                 hidden={column.Hidden == -1}
                 hideable={column.Hideable == -1}
                 resizable={column.Resizeable == -1}
@@ -279,7 +290,6 @@ export class GridChameleon {
   }
 
   private renderColumnFilter(column: GxGridColumn) {
-
     return (
       <gx-grid-chameleon-column-filter
         class={this.grid.ColumnFilterClass}
@@ -290,8 +300,7 @@ export class GridChameleon {
         buttonResetText={this.grid.FilterButtonResetText}
         buttonApplyText={this.grid.FilterButtonApplyText}
         slot="settings"
-      >
-      </gx-grid-chameleon-column-filter>
+      ></gx-grid-chameleon-column-filter>
     );
   }
 
@@ -331,6 +340,7 @@ export class GridChameleon {
   }
 
   private renderControl(control: GxControl, props: any): string {
+    // eslint-disable-next-line prefer-spread
     control.setProperties.apply(control, props);
     return control.getHtml();
   }
@@ -424,12 +434,12 @@ export class GridChameleon {
     this.grid.columns.forEach((column, i) => {
       column.render =
         (properties.length == 0 && column.visible) ||
-        properties.some((row) => row[i].visible);
+        properties.some(row => row[i].visible);
     });
   }
 
-  private getRowIndexByGxId(rowId: String): number {
-    return this.grid.rows.findIndex((row) => row.gxId == rowId);
+  private getRowIndexByGxId(rowId: string): number {
+    return this.grid.rows.findIndex(row => row.gxId == rowId);
   }
 
   private notifyResizePopup() {

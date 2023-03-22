@@ -6,20 +6,20 @@ import {
   h,
   Host,
   Prop,
-  getAssetPath,
+  getAssetPath
 } from "@stencil/core";
 
 @Component({
   tag: "ch-step-list-item",
   styleUrl: "ch-step-list-item.scss",
   shadow: true,
-  assetsDirs: ["step-list-item-assets"],
+  assetsDirs: ["step-list-item-assets"]
 })
 export class ChStepListItem {
   /**
    * Set the left side icon
    */
-  @Prop() iconSrc: string;
+  @Prop() readonly iconSrc: string;
 
   /**
    * Emits the item id
@@ -39,7 +39,7 @@ export class ChStepListItem {
     const parent: any = this.el.parentElement;
     const stepItems: NodeListOf<HTMLElement> = parent.children;
 
-    for (var i = 0; i < stepItems.length; i++) {
+    for (let i = 0; i < stepItems.length; i++) {
       const item: any = stepItems[i].shadowRoot.lastChild.childNodes[0];
 
       //remove old item selected class
@@ -73,7 +73,7 @@ export class ChStepListItem {
         >
           <div
             class={{
-              "li-item": true,
+              "li-item": true
               //"li-text--selected": this.selected,
             }}
           >
@@ -90,7 +90,7 @@ export class ChStepListItem {
 
             <span
               class={{
-                "horizontal-line": true,
+                "horizontal-line": true
               }}
             ></span>
           </div>

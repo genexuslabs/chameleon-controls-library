@@ -4,7 +4,7 @@ import { ChTreeItem } from "../tree-item/ch-tree-item";
 @Component({
   tag: "ch-tree",
   styleUrl: "ch-tree.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChTree {
   @Element() el: HTMLChTreeElement;
@@ -14,22 +14,22 @@ export class ChTree {
   /**
    * Set this attribute if you want all this tree tree-items to have a checkbox
    */
-  @Prop() checkbox = false;
+  @Prop() readonly checkbox: boolean = false;
 
   /**
    * Set this attribute if you want all this tree tree-items to have the checkbox checked
    */
-  @Prop() checked = false;
+  @Prop() readonly checked: boolean = false;
 
   /**
    * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
    */
-  @Prop() toggleCheckboxes = false;
+  @Prop({ mutable: true }) toggleCheckboxes = false;
 
   /**
    * Allows to select only one item
    */
-  @Prop() singleSelection: boolean;
+  @Prop() readonly singleSelection: boolean;
 
   //STATE
   @State() nestedTree = false;
@@ -67,7 +67,7 @@ export class ChTree {
     if (this.checkbox) {
       //Add a checkbox to all this tree direct tree-items children
       const directTreeItemChildren = this.el.querySelectorAll("ch-tree-item");
-      directTreeItemChildren.forEach((treeItem) => {
+      directTreeItemChildren.forEach(treeItem => {
         treeItem.setAttribute("checkbox", "checkbox");
         //If checked attribute is present, also set the checkboxes to be checked
         if (this.checked) {
@@ -87,7 +87,7 @@ export class ChTree {
   liItemClickedHandler() {
     //Remove 'selected' state from previous selected item
     const chTreeItems = this.el.querySelectorAll("ch-tree-item");
-    chTreeItems.forEach((chTreeItem) => {
+    chTreeItems.forEach(chTreeItem => {
       (chTreeItem as unknown as ChTreeItem).selected = false;
     });
   }
@@ -96,7 +96,7 @@ export class ChTree {
   toggleIconClickedHandler() {
     //Update not leaf tree items vertical line height
     const treeItems = this.el.querySelectorAll("ch-tree-item.not-leaf");
-    treeItems.forEach((treeItem) => {
+    treeItems.forEach(treeItem => {
       (treeItem as unknown as ChTreeItem).updateTreeVerticalLineHeight();
     });
   }
@@ -136,11 +136,11 @@ export class ChTree {
       <div
         class={{
           tree: true,
-          "main-tree": true,
+          "main-tree": true
         }}
       >
         <div class="main-tree-container">
-          <ul ref={(el) => (this.ulTree = el as HTMLElement)}>
+          <ul ref={el => (this.ulTree = el as HTMLElement)}>
             <slot></slot>
           </ul>
         </div>
@@ -149,10 +149,10 @@ export class ChTree {
       <div
         class={{
           tree: true,
-          "nested-tree": true,
+          "nested-tree": true
         }}
       >
-        <ul ref={(el) => (this.ulTree = el as HTMLElement)}>
+        <ul ref={el => (this.ulTree = el as HTMLElement)}>
           <slot></slot>
         </ul>
       </div>

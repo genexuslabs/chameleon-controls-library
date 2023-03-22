@@ -3,7 +3,7 @@ import { Component, Element, Host, h, State } from "@stencil/core";
 @Component({
   tag: "ch-sidebar-menu-list",
   styleUrl: "ch-sidebar-menu-list.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChSidebarMenuList {
   @Element() el: HTMLChSidebarMenuListElement;
@@ -11,7 +11,7 @@ export class ChSidebarMenuList {
   /*******************
    * STATE
    *******************/
-  @State() listType: string = "list-one";
+  @State() listType = "list-one";
 
   componentWillLoad() {
     /*
@@ -43,7 +43,7 @@ export class ChSidebarMenuList {
         class={{
           "list-one": this.listType === "list-one",
           "list-two": this.listType === "list-two",
-          "list-three": this.listType === "list-three",
+          "list-three": this.listType === "list-three"
         }}
       >
         <slot></slot>

@@ -5,7 +5,7 @@ import { getSvgContent, iconContent } from "./requests";
   tag: "ch-icon",
   styleUrl: "icon.scss",
   shadow: true,
-  assetsDirs: ["ch-icon-assets"],
+  assetsDirs: ["ch-icon-assets"]
 })
 export class ChIcon {
   private io?: IntersectionObserver;
@@ -19,26 +19,26 @@ export class ChIcon {
    * The color of the icon.
    *
    */
-  @Prop() color: Color;
+  @Prop() readonly color: Color;
   /**
    * If enabled, the icon will be loaded lazily when it's visible in the viewport.
    */
-  @Prop() lazy = false;
+  @Prop() readonly lazy: boolean = false;
 
   /**
    * If enabled, the icon will display its inherent/natural color
    */
-  @Prop({ reflect: true }) autoColor = false;
+  @Prop({ reflect: true }) readonly autoColor: boolean = false;
 
   /**
    * The URL of the icon.
    */
-  @Prop({ reflect: true }) src = "";
+  @Prop({ reflect: true }) readonly src: string = "";
 
   /**
    * The size of the icon. Possible values: regular, small.
    */
-  @Prop() size: Size = "regular";
+  @Prop() readonly size: Size = "regular";
 
   @State() private isVisible = false;
 

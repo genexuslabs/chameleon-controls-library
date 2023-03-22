@@ -8,7 +8,7 @@ import {
   State,
   h,
   Watch,
-  Method,
+  Method
 } from "@stencil/core";
 import { Color } from "../icon/icon";
 import { ChTree } from "../tree/ch-tree";
@@ -16,7 +16,7 @@ import { ChTree } from "../tree/ch-tree";
   tag: "ch-tree-item",
   styleUrl: "ch-tree-item.scss",
   shadow: true,
-  assetsDirs: ["tree-item-assets"],
+  assetsDirs: ["tree-item-assets"]
 })
 export class ChTreeItem {
   checkboxInput!: HTMLInputElement;
@@ -25,58 +25,58 @@ export class ChTreeItem {
   /**
    * Set this attribute if you want the ch-tree-item to display a checkbox
    */
-  @Prop() checkbox = false;
+  @Prop() readonly checkbox: boolean = false;
 
   /**
    * Set this attribute if you want the ch-tree-item checkbox to be checked by default
    */
-  @Prop() checked = false;
+  @Prop({ mutable: true }) checked = false;
 
   /**
    * Set this attribute if this tree-item has a resource to be downloaded;
    */
-  @Prop() download = false;
+  @Prop() readonly download: boolean = false;
 
   /**
    * Set this attribute when you are downloading a resource
    */
-  @Prop() downloading = false;
+  @Prop() readonly downloading: boolean = false;
 
   /**
    * Set this attribute when you have downloaded the resource
    */
-  @Prop() downloaded = false;
+  @Prop() readonly downloaded: boolean = false;
 
   /**
    * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
    */
-  @Prop() leftIcon: string;
+  @Prop() readonly leftIcon: string;
 
   /**
    * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
    */
-  @Prop() rightIcon: string;
+  @Prop() readonly rightIcon: string;
 
   /**
    * If this tree-item has a nested tree, set this attribute to make the tree open by default
    */
-  @Prop() opened = false;
+  @Prop({ mutable: true }) opened = false;
 
   /**
    * The presence of this attribute sets the tree-item as selected
    */
-  @Prop() selected = false;
+  @Prop({ mutable: true }) selected = false;
 
   /**
    * The presence of this attribute displays a +/- icon to toggle/untoggle the tree
    */
-  @Prop() isLeaf: boolean = undefined;
+  @Prop({ mutable: true }) isLeaf: boolean = undefined;
 
   //PROPS
-  @Prop() hasChildTree = false;
-  @Prop() firstTreeItem = false;
-  @Prop() indeterminate: boolean;
-  @Prop() disabled = false;
+  @Prop({ mutable: true }) hasChildTree = false;
+  @Prop({ mutable: true }) firstTreeItem = false;
+  @Prop({ mutable: true }) indeterminate: boolean;
+  @Prop() readonly disabled: boolean = false;
 
   //STATE
   @State() numberOfParentTrees = 1;
@@ -195,12 +195,12 @@ export class ChTreeItem {
         ":scope > ch-tree-item"
       );
       if (this.opened) {
-        directTreeDirectTreeItems.forEach((item) => {
+        directTreeDirectTreeItems.forEach(item => {
           item.classList.remove("not-visible");
           item.classList.add("visible");
         });
       } else {
-        directTreeDirectTreeItems.forEach((item) => {
+        directTreeDirectTreeItems.forEach(item => {
           item.classList.remove("visible");
           item.classList.add("not-visible");
         });
@@ -579,7 +579,7 @@ export class ChTreeItem {
         <li
           class={{
             "tree-open": this.opened,
-            disabled: this.disabled,
+            disabled: this.disabled
           }}
         >
           <div
@@ -589,7 +589,7 @@ export class ChTreeItem {
               "li-text--leaf": this.isLeaf,
               "li-text--first-tree-item": this.firstTreeItem,
               "li-text--has-child-tree": this.hasChildTree,
-              "li-text--selected": this.selected,
+              "li-text--selected": this.selected
             }}
             style={{ paddingLeft: this.returnPaddingLeft() }}
             onClick={this.liTextClicked.bind(this)}
@@ -607,7 +607,7 @@ export class ChTreeItem {
                         this.numberOfDirectTreeItemsDescendants * 20 -
                         10 +
                         "px",
-                      left: this.returnVerticalLineLeftPosition(),
+                      left: this.returnVerticalLineLeftPosition()
                     }}
                   ></span>,
                   <div class={{ "closed-opened-icons": true }}>
@@ -616,16 +616,16 @@ export class ChTreeItem {
                       class="icon toggle-icon"
                       onClick={this.toggleTreeIconClicked.bind(this)}
                     ></div>
-                  </div>,
+                  </div>
                 ]
               : null}
             <span
               class={{
                 "horizontal-line": true,
-                "display-none": this.numberOfParentTrees === 1,
+                "display-none": this.numberOfParentTrees === 1
               }}
               style={{
-                left: this.itemPaddingLeft + "px",
+                left: this.itemPaddingLeft + "px"
               }}
             ></span>
             {this.checkbox ? (
@@ -645,7 +645,7 @@ export class ChTreeItem {
                 auto-color={this.disabled ? "disabled" : "auto"}
                 class="icon"
                 style={{
-                  "--icon-size": "14px",
+                  "--icon-size": "14px"
                 }}
               ></ch-icon>
             ) : null}
@@ -658,7 +658,7 @@ export class ChTreeItem {
                 color={this.rightIconColor}
                 class={{ "right-icon": true }}
                 style={{
-                  "--icon-size": "14px",
+                  "--icon-size": "14px"
                 }}
               ></ch-icon>
             ) : null}

@@ -5,13 +5,13 @@ import {
   Prop,
   h,
   Event,
-  EventEmitter,
+  EventEmitter
 } from "@stencil/core";
 
 @Component({
   tag: "ch-form-checkbox",
   styleUrl: "ch-form-checkbox.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChFormCheckbox {
   @Element() el: HTMLChFormCheckboxElement;
@@ -26,37 +26,37 @@ export class ChFormCheckbox {
   /**
    * The checkbox id
    */
-  @Prop() checkboxId: string;
+  @Prop() readonly checkboxId: string;
 
   /**
    * The presence of this attribute makes the checkbox checked by default
    */
-  @Prop({ reflect: false }) checked = false;
+  @Prop({ reflect: false, mutable: true }) checked = false;
 
   /**
    * The presence of this attribute makes the checkbox indeterminate
    */
-  @Prop({ reflect: true }) indeterminate = false;
+  @Prop({ reflect: true }) readonly indeterminate: boolean = false;
 
   /**
    * The presence of this attribute disables the checkbox
    */
-  @Prop() disabled = false;
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * The checkbox label
    */
-  @Prop() label: string;
+  @Prop() readonly label: string;
 
   /**
    * The checkbox value
    */
-  @Prop() value: string;
+  @Prop() readonly value: string;
 
   /**
    * The checkbox name
    */
-  @Prop() name: string;
+  @Prop() readonly name: string;
 
   @Event() change: EventEmitter;
 
@@ -75,7 +75,7 @@ export class ChFormCheckbox {
     this.checked = this.checkboxInput.checked;
     this.change.emit({
       "checkbox id": this.checkboxId,
-      "checkbox value": this.checked,
+      "checkbox value": this.checked
     });
   }
 
@@ -89,7 +89,7 @@ export class ChFormCheckbox {
       }
       this.change.emit({
         "checkbox id": this.checkboxId,
-        "checkbox value": this.checked,
+        "checkbox value": this.checked
       });
     }
   }
@@ -116,7 +116,7 @@ export class ChFormCheckbox {
       >
         <label class="label">
           <input
-            ref={(el) => (this.checkboxInput = el as HTMLInputElement)}
+            ref={el => (this.checkboxInput = el as HTMLInputElement)}
             type="checkbox"
             checked={this.checked}
             class="input"

@@ -6,7 +6,7 @@ import {
   Prop,
   State,
   Event,
-  EventEmitter,
+  EventEmitter
 } from "@stencil/core";
 
 import * as StorageHelper from "../../helpers/storage-helper";
@@ -16,7 +16,7 @@ import { ClickOutside } from "stencil-click-outside";
   tag: "ch-sidebar-menu",
   styleUrl: "ch-sidebar-menu.scss",
   shadow: true,
-  assetsDirs: ["sidebar-menu-assets"],
+  assetsDirs: ["sidebar-menu-assets"]
 })
 export class ChSidebarMenu {
   @Event() itemClicked: EventEmitter;
@@ -43,37 +43,37 @@ export class ChSidebarMenu {
   /**
    * The menu title
    */
-  @Prop() menuTitle: string;
+  @Prop() readonly menuTitle: string;
 
   /**
    * The presence of this attribute allows the menu to have only one list opened at the same time
    */
-  @Prop() singleListOpen: boolean = false;
+  @Prop() readonly singleListOpen: boolean = false;
 
   /**
    * Allows to set the distance to the top of the page on the menu
    */
-  @Prop() distanceToTop: number = 0;
+  @Prop() readonly distanceToTop: number = 0;
 
   /**
    * Determines if the menu can be collapsed
    */
-  @Prop() collapsible: boolean = true;
+  @Prop() readonly collapsible: boolean = true;
 
   /**
    * The initial active item (optional)
    */
-  @Prop() activeItemId: string = "";
+  @Prop() readonly activeItemId: string = "";
 
   /**
    * The active item
    */
-  @Prop() activeItem: string = "";
+  @Prop({ mutable: true }) activeItem = "";
 
   /**
    * Determines if the menu is collapsed
    */
-  @Prop({ reflect: true }) isCollapsed: boolean;
+  @Prop({ reflect: true, mutable: true }) isCollapsed: boolean;
 
   /*******************
    * STATE
@@ -208,7 +208,7 @@ export class ChSidebarMenu {
     //SET ACTIVE CURRENT ACTIVE ITEM IF PRESENT
     //if (this.activeItemId !== "") {
     if (this.activeItemId !== "" && !this.activeItem) {
-      let activeItem = this.el.querySelector("#" + this.activeItemId);
+      const activeItem = this.el.querySelector("#" + this.activeItemId);
       activeItem.classList.add("item--active");
 
       //uncollapse item's parent if exists
@@ -261,7 +261,7 @@ export class ChSidebarMenu {
               //If this item is type 2, then update list 1 transition speed and maxheight
               if (item.classList.contains("list-two__item")) {
                 const parentItem1 = item.closest(".list-one__item");
-                let heightToTransition =
+                const heightToTransition =
                   item.querySelector(".list-three").offsetHeight;
                 this.updateListItem1TransitionSpeed(
                   parentItem1,
@@ -384,7 +384,7 @@ export class ChSidebarMenu {
     /******************
     ITEMS TOOLTIP LOGIC
     *******************/
-    var itemTooltip = document.createElement("DIV");
+    const itemTooltip = document.createElement("DIV");
     itemTooltip.classList.add("tooltip");
     itemTooltip.style.zIndex = "0";
     this.menu.appendChild(itemTooltip);
@@ -423,26 +423,26 @@ export class ChSidebarMenu {
     );
 
     //Calculation of menu top value and height on scroll
-    var lastTop: number;
+    let lastTop: number;
     document.addEventListener(
       "scroll",
       function () {
-        var doc = document.documentElement;
-        var top: any =
+        const doc = document.documentElement;
+        const top: any =
           (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
         if (lastTop === undefined) {
           lastTop = 0;
         }
         //make menu.top a number
-        var menuTop: number = Number(this.menu.style.top.split("px")[0]);
+        const menuTop = Number(this.menu.style.top.split("px")[0]);
         if (menuTop > 0) {
           if (menuTop - (top - lastTop) > 0) {
-            var scrollTopValue: number = top - lastTop;
+            const scrollTopValue: number = top - lastTop;
             this.menu.style.top = menuTop - scrollTopValue + "px";
             lastTop = top;
             /*Set main height*/
-            var mainTop = this.distanceToTop - top;
-            var topStr = mainTop + "px";
+            const mainTop = this.distanceToTop - top;
+            const topStr = mainTop + "px";
             this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topStr})`;
             //reposition of active item indicator
             this.GetCurrentItemIndicatorPos();
@@ -487,10 +487,10 @@ export class ChSidebarMenu {
 
   //get position of current active item
   GetCurrentItemIndicatorPos() {
-    var timer = null;
+    let timer = null;
     const currentActiveItem = document.querySelector(".item--active");
     if (currentActiveItem !== null) {
-      let currentActiveItemTopPosition =
+      const currentActiveItemTopPosition =
         currentActiveItem.getBoundingClientRect().y;
       this.indicator.classList.add("speed-zero");
       this.indicator.style.top = currentActiveItemTopPosition + "px";
@@ -554,7 +554,7 @@ export class ChSidebarMenu {
   }
 
   collapseUncollapsedLists1() {
-    let uncollapsedLists1Items = document.querySelectorAll(
+    const uncollapsedLists1Items = document.querySelectorAll(
       ".list-one__item.uncollapsed"
     );
     Array.from(uncollapsedLists1Items).forEach(function (item) {
@@ -569,7 +569,7 @@ export class ChSidebarMenu {
     });
   }
   uncollapseCollapsedLists() {
-    let uncollapsedLists1Items = document.querySelectorAll(
+    const uncollapsedLists1Items = document.querySelectorAll(
       ".list-one__item.uncollapsed"
     );
     Array.from(uncollapsedLists1Items).forEach(function (item) {
@@ -588,13 +588,13 @@ export class ChSidebarMenu {
     });
   }
   switchListOneOrder() {
-    let listOneItems = document.querySelectorAll(".list-one__item");
+    const listOneItems = document.querySelectorAll(".list-one__item");
     Array.from(listOneItems).forEach(function (item) {
       item.classList.add("switch-order");
     });
   }
   undoSwitchListOneOrder() {
-    let listOneItems = document.querySelectorAll(".list-one__item");
+    const listOneItems = document.querySelectorAll(".list-one__item");
     Array.from(listOneItems).forEach(function (item) {
       item.classList.remove("switch-order");
     });
@@ -672,8 +672,8 @@ export class ChSidebarMenu {
 
   /* PRESERVE SIDEBAR STATE */
   storeSidebarActiveItem(item) {
-    let storageHelper = new StorageHelper.SessionStorageWorker();
-    let sessionItemValue = storageHelper.get("active-item");
+    const storageHelper = new StorageHelper.SessionStorageWorker();
+    const sessionItemValue = storageHelper.get("active-item");
     if (sessionItemValue != "" && sessionItemValue != null) {
       storageHelper.remove("active-item");
     }
@@ -681,21 +681,21 @@ export class ChSidebarMenu {
   }
 
   storeSidebarUncollapsedItem(item) {
-    let storageHelper = new StorageHelper.SessionStorageWorker();
+    const storageHelper = new StorageHelper.SessionStorageWorker();
     if (!item.classList.contains("list-three__item")) {
       storageHelper.add(item.id, "uncollapsed");
     }
   }
 
   storeSidebarCollapsedItem(item) {
-    let storageHelper = new StorageHelper.SessionStorageWorker();
+    const storageHelper = new StorageHelper.SessionStorageWorker();
     storageHelper.remove(item.id);
   }
 
   //new fede
   storeSidebarState() {
-    let storageHelper = new StorageHelper.SessionStorageWorker();
-    let storageItem = storageHelper.get("isCollapsed");
+    const storageHelper = new StorageHelper.SessionStorageWorker();
+    const storageItem = storageHelper.get("isCollapsed");
     if (storageItem === "false") {
       storageHelper.add("isCollapsed", "true");
     } else {
@@ -705,8 +705,8 @@ export class ChSidebarMenu {
 
   /*GET SIDEBAR STATE*/
   getSidebarState() {
-    let storageHelper = new StorageHelper.SessionStorageWorker();
-    let storageItems = storageHelper.getAllItems();
+    const storageHelper = new StorageHelper.SessionStorageWorker();
+    const storageItems = storageHelper.getAllItems();
     for (let i = 0; i < storageItems.length; i++) {
       let item;
       switch (true) {
@@ -752,25 +752,21 @@ export class ChSidebarMenu {
   render() {
     return (
       <Host>
-        <nav
-          id="menu"
-          part="menu"
-          ref={(el) => (this.menu = el as HTMLElement)}
-        >
-          <h1 id="title" ref={(el) => (this.title = el as HTMLElement)}>
+        <nav id="menu" part="menu" ref={el => (this.menu = el as HTMLElement)}>
+          <h1 id="title" ref={el => (this.title = el as HTMLElement)}>
             {this.menuTitle}
           </h1>
-          <main id="main" ref={(el) => (this.main = el as HTMLElement)}>
+          <main id="main" ref={el => (this.main = el as HTMLElement)}>
             <slot></slot>
           </main>
-          <footer id="footer" ref={(el) => (this.footer = el as HTMLElement)}>
+          <footer id="footer" ref={el => (this.footer = el as HTMLElement)}>
             <div id="custom-content">
               <slot name="footer" />
             </div>
             {this.collapsible && (
               <div
                 id="collapse-menu"
-                ref={(el) => (this.collapseButton = el as HTMLElement)}
+                ref={el => (this.collapseButton = el as HTMLElement)}
               >
                 <div part="collapse-menu-icon" class="collapse-icon"></div>
               </div>

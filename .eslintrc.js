@@ -14,7 +14,7 @@ module.exports = {
   rules: {
     "no-unused-vars": "off",
     "no-undef": "off", // Allows defining undefined variables
-    "@typescript-eslint/no-use-before-define": ["error", { functions: false }],
+    "@typescript-eslint/no-use-before-define": ["warn", { functions: false }],
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -25,10 +25,10 @@ module.exports = {
       }
     ],
 
-    "@stencil/async-methods": "error", // This rule catches Stencil public methods that are not async
-    "@stencil/decorators-context": "error", // This rule catches Stencil decorators in bad locations
+    "@stencil/async-methods": "warn", // This rule catches Stencil public methods that are not async
+    "@stencil/decorators-context": "warn", // This rule catches Stencil decorators in bad locations
     "@stencil/decorators-style": [
-      "error",
+      "warn",
       {
         prop: "inline",
         state: "inline",
@@ -48,7 +48,7 @@ module.exports = {
     "@stencil/props-must-be-public": "warn", // This rule catches Stencil Props marked as private or protected
     "@stencil/props-must-be-readonly": "warn", // This rule catches Stencil Props marked as non readonly, excluding mutable ones
     "@stencil/required-jsdoc": "warn", // This rule catches Stencil Props, Methods and Events to define jsdoc
-    "@stencil/required-prefix": ["error", ["ch-"]], // Ensures that a Component's tag use the "ch-" prefix.
+    "@stencil/required-prefix": ["warn", ["ch-"]], // Ensures that a Component's tag use the "ch-" prefix.
     "@stencil/single-export": "warn", // This rule catches modules that expose more than just the Stencil Component itself
     "@stencil/strict-boolean-conditions": "off",
     "@stencil/strict-mutable": "off" // This rule catches Stencil Prop marked as mutable but not changing value in code

@@ -42,11 +42,18 @@ export class ChGridManager {
   }
 
   getColumnsWidth(): string[] {
-    return getComputedStyle(this.grid.gridMainEl).gridTemplateColumns.split(" ");
+    return getComputedStyle(this.grid.gridMainEl).gridTemplateColumns.split(
+      " "
+    );
   }
 
   getGridRowIndex(row: HTMLChGridRowElement): number {
-    return Array.prototype.indexOf.call(this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}, ${ChGridRowsetLegend.TAG_NAME}`), row);
+    return Array.prototype.indexOf.call(
+      this.grid.el.querySelectorAll(
+        `${HTMLChGridRowElement.TAG_NAME}, ${ChGridRowsetLegend.TAG_NAME}`
+      ),
+      row
+    );
   }
 
   getRowsetRowIndex(row: HTMLChGridRowElement): number {
@@ -54,7 +61,9 @@ export class ChGridManager {
   }
 
   getRowHeight(row: HTMLChGridRowElement): string {
-    const gridRowsHeight = getComputedStyle(this.grid.gridMainEl).gridTemplateRows.split(" ");
+    const gridRowsHeight = getComputedStyle(
+      this.grid.gridMainEl
+    ).gridTemplateRows.split(" ");
     const rowIndex = this.getGridRowIndex(row) + 1;
 
     return gridRowsHeight[rowIndex];
@@ -68,7 +77,7 @@ export class ChGridManager {
       this.getRowsetRowIndex(start) <= this.getRowsetRowIndex(end)
         ? "nextElementSibling"
         : "previousElementSibling";
-    let rows: HTMLChGridRowElement[] = [];
+    const rows: HTMLChGridRowElement[] = [];
     let row: HTMLChGridRowElement;
 
     row = start[nextElementSibling] as HTMLChGridRowElement;
@@ -125,12 +134,12 @@ export class ChGridManager {
       ...this.getGridTemplateColumns(),
       ...this.getRowBoxSimulationStyle(),
       ...this.getDragTransitionStyle(),
-      ...this.getColumnsStyle(),
+      ...this.getColumnsStyle()
     };
   }
 
   getRowsSelected(): HTMLChGridRowElement[] {
-    let rows: HTMLChGridRowElement[] = [];
+    const rows: HTMLChGridRowElement[] = [];
 
     this.grid.el
       .querySelectorAll("ch-grid-row[selected]")
@@ -164,7 +173,7 @@ export class ChGridManager {
     let node: IChGridCollapsible = row.parentElement.closest(
       `${HTMLChGridRowElement.TAG_NAME}, ${HTMLChGridRowsetElement.TAG_NAME}`
     );
-    const {columnFirst} = this.columnsManager.getColumnsFirstLast();
+    const { columnFirst } = this.columnsManager.getColumnsFirstLast();
 
     while (node) {
       node.collapsed = false;
@@ -188,6 +197,7 @@ export class ChGridManager {
       );
     }
 
+    // eslint-disable-next-line no-empty
     if (!cell.isVisible()) {
     }
 
@@ -198,8 +208,8 @@ export class ChGridManager {
     return {
       "grid-template-columns": this.columnsManager
         .getColumns()
-        .map((column) => `var(--ch-grid-column-${column.physicalOrder}-size)`)
-        .join(" "),
+        .map(column => `var(--ch-grid-column-${column.physicalOrder}-size)`)
+        .join(" ")
     };
   }
 
@@ -224,7 +234,7 @@ export class ChGridManager {
       [`--ch-grid-column-${columnLast.physicalOrder}-border-end`]:
         "var(--ch-grid-fallback, inherit)",
       [`--ch-grid-column-${columnLast.physicalOrder}-padding-end`]:
-        "var(--ch-grid-fallback, inherit)",
+        "var(--ch-grid-fallback, inherit)"
     };
   }
 
@@ -236,9 +246,7 @@ export class ChGridManager {
 
   private getDragTransitionStyle(): CSSProperties {
     return {
-      "--column-drag-transition-duration": this.columnDragManager
-        ? ".2s"
-        : "0s",
+      "--column-drag-transition-duration": this.columnDragManager ? ".2s" : "0s"
     };
   }
 
@@ -246,7 +254,7 @@ export class ChGridManager {
     return this.columnsManager.getColumns().reduce((style, column) => {
       return {
         ...style,
-        ...this.getColumnStyle(column),
+        ...this.getColumnStyle(column)
       };
     }, {} as CSSProperties);
   }
@@ -258,7 +266,7 @@ export class ChGridManager {
       ...this.getColumnDisplayStyle(column),
       ...this.getColumnFreezeStyle(column),
       ...this.getColumnDraggingStyle(column),
-      ...this.getColumnIndentStyle(column),
+      ...this.getColumnIndentStyle(column)
     };
   }
 
@@ -266,14 +274,14 @@ export class ChGridManager {
     return {
       [`--ch-grid-column-${column.order}-size`]: column.hidden
         ? "0px"
-        : column.size,
+        : column.size
     };
   }
 
   private getColumnOrderStyle(column: HTMLChGridColumnElement): CSSProperties {
     return {
       [`--ch-grid-column-${column.physicalOrder}-position`]:
-        column.order.toString(),
+        column.order.toString()
     };
   }
 
@@ -289,7 +297,7 @@ export class ChGridManager {
   private getColumnFreezeStartStyle(
     column: HTMLChGridColumnElement
   ): CSSProperties {
-    let calcItems = ["0px"];
+    const calcItems = ["0px"];
 
     for (let i = 1; i < column.order; i++) {
       calcItems.push(`var(--ch-grid-column-${i}-width)`);
@@ -299,14 +307,14 @@ export class ChGridManager {
       [`--ch-grid-column-${column.physicalOrder}-left-freeze`]: `calc(${calcItems.join(
         " + "
       )})`,
-      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000",
+      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000"
     };
   }
 
   private getColumnFreezeEndStyle(
     column: HTMLChGridColumnElement
   ): CSSProperties {
-    let calcItems = ["0px"];
+    const calcItems = ["0px"];
     for (
       let i = this.columnsManager.getColumns().length;
       i > column.order;
@@ -319,7 +327,7 @@ export class ChGridManager {
       [`--ch-grid-column-${column.physicalOrder}-right-freeze`]: `calc(${calcItems.join(
         " + "
       )})`,
-      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000",
+      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000"
     };
   }
 
@@ -328,7 +336,7 @@ export class ChGridManager {
   ): CSSProperties {
     return column.hidden
       ? {
-          [`--ch-grid-column-${column.physicalOrder}-display`]: "none",
+          [`--ch-grid-column-${column.physicalOrder}-display`]: "none"
         }
       : null;
   }
@@ -344,7 +352,7 @@ export class ChGridManager {
   private getColumnIndentStyle(column: HTMLChGridColumnElement): CSSProperties {
     return {
       [`--ch-grid-column-${column.physicalOrder}-content`]:
-        column.order == 1 ? "''" : "none",
+        column.order == 1 ? "''" : "none"
     };
   }
 

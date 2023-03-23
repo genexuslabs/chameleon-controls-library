@@ -137,7 +137,6 @@ They refer to the following set of [products](https://www.genexus.com/en/product
 - GeneXus Server, a tool for team collaboration.
 - GeneXus BPM for process modeling, automation, management, and optimization.
 - GeneXus Query for reporting and data analysis.
-- GXportal for creating websites.
 
 ### Resources
 

@@ -153,6 +153,4 @@ They refer to the following set of [products](https://www.genexus.com/en/product
 The following well-defined branches can be found within a repository:
 
 - `master`: stable development version (its functionality and integration with GeneXus has been tested).
-- `beta`: development version that integrates the different pull requests made from feature branches in order to test their functionality and integration with GeneXus; it is unstable by definition.
-- `release-*`: stable versions that have been released together with a GeneXus version; published releases emerge from these branches.
 - All other branches are known as 'feature branches.' That is to say, branches where specific developments (features or fixes) are being made; they are deleted after they are merged into a 'master' branch.

@@ -1,5 +1,12 @@
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 
+export enum ChGridCellType {
+  Plain = "plain",
+  Rich = "rich",
+  TreeNode = "node",
+  RowAction = "action"
+}
+
 export default class HTMLChGridCellElement extends HTMLElement {
   private cellType = ChGridCellType.Plain;
   private caret: HTMLDivElement;
@@ -205,13 +212,6 @@ export default class HTMLChGridCellElement extends HTMLElement {
       this.caret.addEventListener("click", this.caretClickHandler.bind(this));
     }
   }
-}
-
-export enum ChGridCellType {
-  Plain = "plain",
-  Rich = "rich",
-  TreeNode = "node",
-  RowAction = "action"
 }
 
 export interface ChGridCellSelectorClickedEvent {

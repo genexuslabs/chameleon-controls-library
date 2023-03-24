@@ -10,7 +10,7 @@ export class ChGridRowsetLegend {
   @Event() rowsetLegendClicked: EventEmitter<CustomEvent>;
 
   @Listen("click", { passive: true })
-  clickHandler(_eventInfo: MouseEvent) {
+  clickHandler() {
     this.rowsetLegendClicked.emit();
   }
 

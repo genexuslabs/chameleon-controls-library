@@ -7,7 +7,7 @@ import { Component, Element, Prop } from "@stencil/core";
 })
 export class ChGridColumnDisplay {
   @Element() el: HTMLChGridColumnDisplayElement;
-  @Prop() readonly column: HTMLChGridColumnElement;
+  @Prop() readonly column!: HTMLChGridColumnElement;
 
   private observer = new IntersectionObserver(() => {
     this.column.hidden = getComputedStyle(this.el).display === "none";

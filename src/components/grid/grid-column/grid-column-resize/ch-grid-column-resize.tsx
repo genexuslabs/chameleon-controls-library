@@ -16,7 +16,7 @@ export class ChGridColumnResize {
   @Element() el: HTMLChGridColumnResizeElement;
   @Event() columnResizeStarted: EventEmitter;
   @Event() columnResizeFinished: EventEmitter;
-  @Prop() readonly column: HTMLChGridColumnElement;
+  @Prop() readonly column!: HTMLChGridColumnElement;
 
   private startPageX: number;
   private startColumnWidth: number;

@@ -7,7 +7,7 @@ import {
   Prop,
   Watch,
   h,
-  Listen,
+  Listen
 } from "@stencil/core";
 import {
   ChGridColumnDragEvent,
@@ -18,13 +18,13 @@ import {
   ChGridColumnSizeChangedEvent,
   ChGridColumnSortChangedEvent,
   ChGridColumnFreeze,
-  ChGridColumnSortDirection,
+  ChGridColumnSortDirection
 } from "./ch-grid-column-types";
 
 @Component({
   tag: "ch-grid-column",
   styleUrl: "ch-grid-column.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
@@ -37,28 +37,30 @@ export class ChGridColumn {
   @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
   @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
-  @Event() columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
-  @Prop() columnId: string;
-  @Prop() columnType: "plain" | "rich" | "tree" = "plain";
-  @Prop() columnIconUrl: string;
-  @Prop() columnName: string;
-  @Prop() columnNamePosition: "title" | "text" = "text";
-  @Prop() richRowDrag: boolean;
-  @Prop() richRowSelector: boolean;
-  @Prop() richRowActions: boolean;
-  @Prop() displayObserverClass: string;
-  @Prop() freeze?: ChGridColumnFreeze;
-  @Prop({ reflect: true }) hidden = false;
-  @Prop() hideable = true;
-  @Prop({ reflect: true }) order: number;
-  @Prop() physicalOrder: number;
-  @Prop() size: string;
-  @Prop() resizable: boolean = true;
-  @Prop({ reflect: true }) resizing: boolean;
-  @Prop() sortable: boolean = true;
-  @Prop() settingable: boolean = true;
-  @Prop({ mutable: true, reflect: true }) sortDirection?: ChGridColumnSortDirection;
-  @Prop({ reflect: true }) showSettings = false;
+  @Event()
+  columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
+  @Prop() readonly columnId: string;
+  @Prop() readonly columnType: "plain" | "rich" | "tree" = "plain";
+  @Prop() readonly columnIconUrl: string;
+  @Prop() readonly columnName: string;
+  @Prop() readonly columnNamePosition: "title" | "text" = "text";
+  @Prop() readonly richRowDrag: boolean;
+  @Prop() readonly richRowSelector: boolean;
+  @Prop() readonly richRowActions: boolean;
+  @Prop() readonly displayObserverClass: string;
+  @Prop() readonly freeze?: ChGridColumnFreeze;
+  @Prop({ reflect: true }) readonly hidden = false;
+  @Prop() readonly hideable = true;
+  @Prop({ reflect: true }) readonly order: number;
+  @Prop() readonly physicalOrder: number;
+  @Prop() readonly size: string;
+  @Prop() readonly resizable = true;
+  @Prop({ reflect: true }) readonly resizing: boolean;
+  @Prop() readonly sortable = true;
+  @Prop() readonly settingable = true;
+  @Prop({ mutable: true, reflect: true })
+  sortDirection?: ChGridColumnSortDirection;
+  @Prop({ reflect: true }) readonly showSettings = false;
 
   private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
@@ -72,7 +74,7 @@ export class ChGridColumn {
   sizeHandler() {
     this.columnSizeChanging.emit({
       columnId: this.columnId,
-      size: this.size,
+      size: this.size
     });
   }
 
@@ -80,7 +82,7 @@ export class ChGridColumn {
   hiddenHandler() {
     this.columnHiddenChanged.emit({
       columnId: this.columnId,
-      hidden: this.hidden,
+      hidden: this.hidden
     });
   }
 
@@ -88,7 +90,7 @@ export class ChGridColumn {
   orderHandler() {
     this.columnOrderChanged.emit({
       columnId: this.columnId,
-      order: this.order,
+      order: this.order
     });
   }
 
@@ -96,7 +98,7 @@ export class ChGridColumn {
   freezeHandler() {
     this.columnFreezeChanged.emit({
       columnId: this.columnId,
-      freeze: this.freeze,
+      freeze: this.freeze
     });
   }
 
@@ -105,7 +107,7 @@ export class ChGridColumn {
     if (this.sortDirection) {
       this.columnSortChanged.emit({
         columnId: this.columnId,
-        sortDirection: this.sortDirection,
+        sortDirection: this.sortDirection
       });
     }
   }
@@ -125,7 +127,7 @@ export class ChGridColumn {
   columnResizeFinishedHandler() {
     this.columnSizeChanged.emit({
       columnId: this.columnId,
-      size: this.size,
+      size: this.size
     });
   }
 
@@ -136,10 +138,10 @@ export class ChGridColumn {
     this.dragMouseDownHandler(eventInfo);
 
     document.addEventListener("mousemove", this.dragMouseMoveFn, {
-      passive: true,
+      passive: true
     });
     document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), {
-      once: true,
+      once: true
     });
   }
 
@@ -158,7 +160,7 @@ export class ChGridColumn {
       this.columnDragging.emit({
         columnId: this.columnId,
         positionX: eventInfo.pageX,
-        direction: eventInfo.movementX > 0 ? "right" : "left",
+        direction: eventInfo.movementX > 0 ? "right" : "left"
       });
     }
   }
@@ -225,7 +227,11 @@ export class ChGridColumn {
         hidden={!(this.columnType == "rich" && this.richRowSelector)}
       >
         <label part="selector-label">
-          <input type="checkbox" part="selector" onClick={this.selectorClickHandler.bind(this)} />
+          <input
+            type="checkbox"
+            part="selector"
+            onClick={this.selectorClickHandler.bind(this)}
+          />
         </label>
       </li>
     );

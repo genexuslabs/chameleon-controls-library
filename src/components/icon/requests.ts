@@ -7,9 +7,9 @@ export function getSvgContent(url: string) {
 
   if (!request) {
     // we don't already have a request
-    request = fetch(url).then((response) => {
+    request = fetch(url).then(response => {
       if (response.ok) {
-        return response.text().then((svgContent) => {
+        return response.text().then(svgContent => {
           iconContent.set(url, svgContent);
           return svgContent;
         });

@@ -32,15 +32,15 @@ export class SessionStorageWorker {
 
   // get all values from storage (all items)
   getAllItems(): Array<StorageItem> {
-    var list = new Array<StorageItem>();
-    for (var i = 0; i < sessionStorage.length; i++) {
-      var key = sessionStorage.key(i);
-      var value = sessionStorage.getItem(key);
+    const list = new Array<StorageItem>();
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
 
       list.push(
         new StorageItem({
           key: key,
-          value: value,
+          value: value
         })
       );
     }
@@ -49,10 +49,10 @@ export class SessionStorageWorker {
 
   // get only all values from sessionStorage
   getAllValues(): Array<any> {
-    var list = new Array<any>();
-    for (var i = 0; i < sessionStorage.length; i++) {
-      var key = sessionStorage.key(i);
-      var value = sessionStorage.getItem(key);
+    const list = new Array<any>();
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
 
       list.push(value);
     }
@@ -62,7 +62,7 @@ export class SessionStorageWorker {
   // get one item by key from storage
   get(key: string): string {
     if (this.sessionStorageSupported) {
-      var item = sessionStorage.getItem(key);
+      const item = sessionStorage.getItem(key);
       return item;
     } else {
       return null;

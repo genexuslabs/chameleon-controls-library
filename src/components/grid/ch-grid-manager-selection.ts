@@ -41,21 +41,24 @@ export class ChGridManagerSelection {
     multiple: boolean,
     currentRowsSelected: HTMLChGridRowElement[]
   ): HTMLChGridRowElement[] {
-
     if (row) {
-      if (range && multiple && row.parentElement == this.lastRow?.parentElement) {
+      if (
+        range &&
+        multiple &&
+        row.parentElement == this.lastRow?.parentElement
+      ) {
         const value = !row.selected;
         const rows = this.grid.manager.getRowsRange(this.lastRow ?? row, row);
 
         this.lastRow = row;
-        rows.forEach((row) => (row.selected = value));
+        rows.forEach(row => (row.selected = value));
 
         if (value) {
           return currentRowsSelected.concat(
-            rows.filter((row) => !currentRowsSelected.includes(row))
+            rows.filter(row => !currentRowsSelected.includes(row))
           );
         } else {
-          return currentRowsSelected.filter((row) => !rows.includes(row));
+          return currentRowsSelected.filter(row => !rows.includes(row));
         }
       } else {
         this.lastRow = row;
@@ -63,7 +66,7 @@ export class ChGridManagerSelection {
         if (row.selected) {
           if (action == "append" || action == "unselect") {
             row.selected = false;
-            return currentRowsSelected.filter((r) => r !== row);
+            return currentRowsSelected.filter(r => r !== row);
           }
         } else {
           if (multiple) {
@@ -75,13 +78,13 @@ export class ChGridManagerSelection {
                 row.selected = true;
                 return currentRowsSelected.concat([row]);
               } else {
-                currentRowsSelected.forEach((row) => (row.selected = false));
+                currentRowsSelected.forEach(row => (row.selected = false));
                 row.selected = true;
                 return [row];
               }
             }
           } else {
-            currentRowsSelected.forEach((row) => (row.selected = false));
+            currentRowsSelected.forEach(row => (row.selected = false));
             row.selected = true;
             return [row];
           }
@@ -92,20 +95,25 @@ export class ChGridManagerSelection {
     return currentRowsSelected;
   }
 
-  setRowsSelected(value: boolean, currentRowsSelected: HTMLChGridRowElement[]): HTMLChGridRowElement[] {
-    let rows: HTMLChGridRowElement[] = [];
+  setRowsSelected(
+    value: boolean,
+    currentRowsSelected: HTMLChGridRowElement[]
+  ): HTMLChGridRowElement[] {
+    const rows: HTMLChGridRowElement[] = [];
 
     if (value == false && currentRowsSelected.length == 0) {
-      return currentRowsSelected
+      return currentRowsSelected;
     }
 
-    this.grid.el.querySelectorAll(HTMLChGridRowElement.TAG_NAME).forEach((row: HTMLChGridRowElement) => {
-      row.selected = value;
-      
-      if (value) {
-        rows.push(row);
-      }
-    });
+    this.grid.el
+      .querySelectorAll(HTMLChGridRowElement.TAG_NAME)
+      .forEach((row: HTMLChGridRowElement) => {
+        row.selected = value;
+
+        if (value) {
+          rows.push(row);
+        }
+      });
 
     return rows;
   }
@@ -114,7 +122,6 @@ export class ChGridManagerSelection {
     cell: HTMLChGridCellElement,
     currentCellSelected: HTMLChGridCellElement
   ): HTMLChGridCellElement {
-
     if (cell && !cell.selected) {
       if (currentCellSelected) {
         currentCellSelected.selected = false;
@@ -133,8 +140,8 @@ export class ChGridManagerSelection {
 
     if (columnSelector) {
       rows
-        .filter((x) => !previous.includes(x))
-        .forEach((row) => {
+        .filter(x => !previous.includes(x))
+        .forEach(row => {
           const cell = row.children[
             columnSelector.physicalOrder - 1
           ] as HTMLChGridCellElement;
@@ -142,8 +149,8 @@ export class ChGridManagerSelection {
         });
 
       previous
-        .filter((x) => !rows.includes(x))
-        .forEach((row) => {
+        .filter(x => !rows.includes(x))
+        .forEach(row => {
           const cell = row.children[
             columnSelector.physicalOrder - 1
           ] as HTMLChGridCellElement;

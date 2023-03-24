@@ -6,13 +6,13 @@ export class ChGridManagerColumnDrag {
   private lastTargetOrder = 0;
 
   constructor(columnId: string, columns: HTMLChGridColumnElement[]) {
-    this.columns = columns.map((column) => ({
+    this.columns = columns.map(column => ({
       column,
       rect: column.getBoundingClientRect(),
       translateX: 0,
-      order: column.order,
+      order: column.order
     }));
-    this.column = this.columns.find((item) => item.column.columnId == columnId);
+    this.column = this.columns.find(item => item.column.columnId == columnId);
 
     this.columns.forEach(this.setColumnHiddenRect.bind(this));
   }
@@ -25,8 +25,8 @@ export class ChGridManagerColumnDrag {
 
     this.column.translateX = 0;
     this.columns
-      .filter((item) => item.column.freeze == sourceFreeze)
-      .forEach((item) => {
+      .filter(item => item.column.freeze == sourceFreeze)
+      .forEach(item => {
         const columnOrder = item.column.order;
         const dragDirection = sourceOrder > columnOrder ? -1 : 1;
         const shiftDirection = sourceOrder > columnOrder ? 1 : -1;
@@ -63,7 +63,7 @@ export class ChGridManagerColumnDrag {
   }
 
   dragEnd() {
-    this.columns.forEach((item) => {
+    this.columns.forEach(item => {
       item.column.order = item.order;
       item.translateX = 0;
     });
@@ -73,7 +73,7 @@ export class ChGridManagerColumnDrag {
     return {
       [`--ch-grid-column-${column.physicalOrder}-transform`]: `translateX(${
         this.columns[column.physicalOrder - 1].translateX
-      }px)`,
+      }px)`
     };
   }
 
@@ -84,7 +84,7 @@ export class ChGridManagerColumnDrag {
     let itemFirst: ChGridManagerColumnDragItem;
     let itemLast: ChGridManagerColumnDragItem;
 
-    this.columns.forEach((item) => {
+    this.columns.forEach(item => {
       if (!item.column.hidden && (!itemFirst || item.order < itemFirst.order)) {
         itemFirst = item;
       }
@@ -95,7 +95,7 @@ export class ChGridManagerColumnDrag {
 
     return {
       columnFirst: itemFirst.column,
-      columnLast: itemLast.column,
+      columnLast: itemLast.column
     };
   }
 
@@ -121,7 +121,7 @@ export class ChGridManagerColumnDrag {
   ): ChGridManagerColumnDragItem {
     let previous: ChGridManagerColumnDragItem;
 
-    this.columns.forEach((item) => {
+    this.columns.forEach(item => {
       if (
         !item.column.hidden &&
         item.column.order < hidden.column.order &&
@@ -139,7 +139,7 @@ export class ChGridManagerColumnDrag {
   ): ChGridManagerColumnDragItem {
     let next: ChGridManagerColumnDragItem;
 
-    this.columns.forEach((item) => {
+    this.columns.forEach(item => {
       if (
         !item.column.hidden &&
         item.column.order > hidden.column.order &&

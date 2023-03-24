@@ -32,7 +32,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
       case ChGridCellType.TreeNode:
         this.defineTreeNode();
         break;
-      }
+    }
   }
 
   get row(): HTMLChGridRowElement {
@@ -86,7 +86,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
         detail: {
           checked: this.selector.checked,
           range: eventInfo.shiftKey
-        },
+        }
       })
     );
   }
@@ -107,7 +107,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
         composed: true,
         detail: {
           row: this.row
-        },
+        }
       })
     );
   }
@@ -126,7 +126,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
     if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
       this.attachShadow({ mode: "open" });
-      
+
       if (this.rowDrag) {
         html += `
           <div part="drag-icon"></div>
@@ -153,15 +153,20 @@ export default class HTMLChGridCellElement extends HTMLElement {
         <slot></slot>
       `;
 
-
       if (this.rowDrag) {
         this.drag = this.shadowRoot.querySelector("[part='drag-icon']");
-        this.drag.addEventListener("mousedown", this.dragMouseDownHandler.bind(this));
+        this.drag.addEventListener(
+          "mousedown",
+          this.dragMouseDownHandler.bind(this)
+        );
       }
 
       if (this.rowActions) {
         this.action = this.shadowRoot.querySelector("[part='actions-icon']");
-        this.action.addEventListener("click", this.actionClickHandler.bind(this));
+        this.action.addEventListener(
+          "click",
+          this.actionClickHandler.bind(this)
+        );
       }
 
       if (this.rowSelector) {
@@ -170,12 +175,14 @@ export default class HTMLChGridCellElement extends HTMLElement {
           "click",
           this.selectorClickHandler.bind(this)
         );
-  
-        this.selectorLabel = this.shadowRoot.querySelector("[part='selector-label']");
+
+        this.selectorLabel = this.shadowRoot.querySelector(
+          "[part='selector-label']"
+        );
         this.selectorLabel.addEventListener(
           "click",
           this.selectorLabelClickHandler.bind(this)
-        );  
+        );
       }
     }
   }

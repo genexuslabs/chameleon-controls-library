@@ -3,7 +3,7 @@ import { Component, Listen, Event, EventEmitter, h, Host } from "@stencil/core";
 @Component({
   tag: "ch-grid-rowset-legend",
   styleUrl: "ch-grid-rowset-legend.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGridRowsetLegend {
   public static readonly TAG_NAME = "CH-GRID-ROWSET-LEGEND";

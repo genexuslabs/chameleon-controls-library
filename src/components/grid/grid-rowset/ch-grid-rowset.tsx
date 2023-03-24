@@ -8,13 +8,13 @@ export default class HTMLChGridRowsetElement
 {
   private computedLevel = 0;
   private grid: HTMLChGridElement;
-  
+
   public static readonly TAG_NAME = "CH-GRID-ROWSET";
 
   constructor() {
     super();
   }
- 
+
   connectedCallback() {
     this.addEventListener(
       "rowsetLegendClicked",
@@ -27,10 +27,14 @@ export default class HTMLChGridRowsetElement
     let rect: DOMRect;
 
     const paddingTop = parseInt(this.style.getPropertyValue("padding-top"));
-    const paddingbottom = parseInt(this.style.getPropertyValue("padding-bottom"));
+    const paddingbottom = parseInt(
+      this.style.getPropertyValue("padding-bottom")
+    );
 
     if (!this.firstElementChild) {
-      const mainRect = this.grid.shadowRoot.querySelector(".main").getBoundingClientRect();
+      const mainRect = this.grid.shadowRoot
+        .querySelector(".main")
+        .getBoundingClientRect();
       rect = new DOMRect(mainRect.x, mainRect.y, mainRect.width, 0);
     } else if (this.firstElementChild == this.lastElementChild) {
       const firstRowRect = this.firstElementChild.getBoundingClientRect();
@@ -49,7 +53,11 @@ export default class HTMLChGridRowsetElement
         firstRowRect.x,
         firstRowRect.y - paddingTop,
         lastRowRect.x - firstRowRect.x + lastRowRect.width,
-        lastRowRect.y - firstRowRect.y + lastRowRect.height + paddingTop + paddingbottom
+        lastRowRect.y -
+          firstRowRect.y +
+          lastRowRect.height +
+          paddingTop +
+          paddingbottom
       );
     }
 

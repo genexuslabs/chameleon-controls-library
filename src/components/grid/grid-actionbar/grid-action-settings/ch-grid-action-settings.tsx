@@ -3,10 +3,10 @@ import { Component, Prop, h, Host, Event, EventEmitter } from "@stencil/core";
 @Component({
   tag: "ch-grid-action-settings",
   styleUrl: "ch-grid-action-settings.scss",
-  shadow: false,
+  shadow: false
 })
 export class ChGridActionSettings {
-  @Prop() disabled: boolean;
+  @Prop() readonly disabled: boolean;
   @Event() settingsShowClicked: EventEmitter;
 
   private handleClick = (eventInfo: Event) => {

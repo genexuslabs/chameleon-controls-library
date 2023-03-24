@@ -174,12 +174,12 @@ export class ChGridColumn {
     eventInfo.stopPropagation();
   }
 
-  private settingsClickHandler(eventInfo: MouseEvent) {
+  private settingsClickHandler = (eventInfo: MouseEvent) => {
     eventInfo.stopPropagation();
     this.showSettings = true;
-  }
+  };
 
-  private selectorClickHandler(eventInfo: MouseEvent) {
+  private selectorClickHandler = (eventInfo: MouseEvent) => {
     const target = eventInfo.target as HTMLInputElement;
 
     this.columnSelectorClicked.emit({
@@ -187,7 +187,7 @@ export class ChGridColumn {
     });
 
     eventInfo.stopPropagation();
-  }
+  };
 
   render() {
     return (
@@ -230,7 +230,7 @@ export class ChGridColumn {
           <input
             type="checkbox"
             part="selector"
-            onClick={this.selectorClickHandler.bind(this)}
+            onClick={this.selectorClickHandler}
           />
         </label>
       </li>
@@ -279,7 +279,7 @@ export class ChGridColumn {
         <button
           class="button"
           part="bar-settings-button"
-          onClick={this.settingsClickHandler.bind(this)}
+          onClick={this.settingsClickHandler}
         ></button>
       </li>
     );

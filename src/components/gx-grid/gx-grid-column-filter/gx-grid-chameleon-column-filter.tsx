@@ -48,7 +48,7 @@ export class GridChameleonColumnFilter {
     }
   }
 
-  private applyClickHandler() {
+  private applyClickHandler = () => {
     this.equal = this.getControlValue(this.inputEqual);
     this.less = this.getControlValue(this.inputLess);
     this.greater = this.getControlValue(this.inputGreater);
@@ -59,9 +59,9 @@ export class GridChameleonColumnFilter {
       less: this.less,
       greater: this.greater
     });
-  }
+  };
 
-  private resetClickHandler() {
+  private resetClickHandler = () => {
     this.equal = "";
     this.less = "";
     this.greater = "";
@@ -72,7 +72,7 @@ export class GridChameleonColumnFilter {
       less: this.less,
       greater: this.greater
     });
-  }
+  };
 
   private getControlValue(input: HTMLInputElement | HTMLSelectElement): string {
     const value = input?.value ?? "";
@@ -191,16 +191,10 @@ export class GridChameleonColumnFilter {
             )}
         </fieldset>
         <section part="footer">
-          <button
-            part="button reset"
-            onClick={this.resetClickHandler.bind(this)}
-          >
+          <button part="button reset" onClick={this.resetClickHandler}>
             {this.buttonResetText}
           </button>
-          <button
-            part="button apply"
-            onClick={this.applyClickHandler.bind(this)}
-          >
+          <button part="button apply" onClick={this.applyClickHandler}>
             {this.buttonApplyText}
           </button>
         </section>

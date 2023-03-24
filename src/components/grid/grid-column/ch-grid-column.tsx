@@ -60,7 +60,7 @@ export class ChGridColumn {
   @Prop() readonly settingable: boolean = true;
   @Prop({ mutable: true, reflect: true })
   sortDirection?: ChGridColumnSortDirection;
-  @Prop({ reflect: true }) readonly showSettings = false;
+  @Prop({ reflect: true, mutable: true }) showSettings = false;
 
   private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);

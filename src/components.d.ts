@@ -73,30 +73,30 @@ export namespace Components {
         "columnType": "plain" | "rich" | "tree";
         "displayObserverClass": string;
         "freeze"?: ChGridColumnFreeze;
-        "hidden": false;
-        "hideable": true;
+        "hidden": boolean;
+        "hideable": boolean;
         "order": number;
         "physicalOrder": number;
-        "resizable": true;
+        "resizable": boolean;
         "resizing": boolean;
         "richRowActions": boolean;
         "richRowDrag": boolean;
         "richRowSelector": boolean;
-        "settingable": true;
-        "showSettings": false;
+        "settingable": boolean;
+        "showSettings": boolean;
         "size": string;
         "sortDirection"?: ChGridColumnSortDirection;
-        "sortable": true;
+        "sortable": boolean;
     }
     interface ChGridColumnDisplay {
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column": ChGridColumn;
+        "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnSettings {
         "column": ChGridColumn;
-        "show": false;
+        "show": boolean;
     }
     interface ChGridColumnset {
     }
@@ -669,8 +669,8 @@ declare namespace LocalJSX {
         "columnType"?: "plain" | "rich" | "tree";
         "displayObserverClass"?: string;
         "freeze"?: ChGridColumnFreeze;
-        "hidden"?: false;
-        "hideable"?: true;
+        "hidden"?: boolean;
+        "hideable"?: boolean;
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
@@ -683,28 +683,28 @@ declare namespace LocalJSX {
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
         "order"?: number;
         "physicalOrder"?: number;
-        "resizable"?: true;
+        "resizable"?: boolean;
         "resizing"?: boolean;
         "richRowActions"?: boolean;
         "richRowDrag"?: boolean;
         "richRowSelector"?: boolean;
-        "settingable"?: true;
-        "showSettings"?: false;
+        "settingable"?: boolean;
+        "showSettings"?: boolean;
         "size"?: string;
         "sortDirection"?: ChGridColumnSortDirection;
-        "sortable"?: true;
+        "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {
         "column"?: HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column"?: ChGridColumn;
+        "column"?: HTMLChGridColumnElement;
         "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
         "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridColumnSettings {
         "column"?: ChGridColumn;
-        "show"?: false;
+        "show"?: boolean;
     }
     interface ChGridColumnset {
     }
@@ -713,6 +713,10 @@ declare namespace LocalJSX {
     interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
+        /**
+          * Event that is emitted when the row legend is clicked.
+          * @event rowsetLegendClicked
+         */
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {

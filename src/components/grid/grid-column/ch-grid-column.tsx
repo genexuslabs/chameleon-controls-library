@@ -289,7 +289,7 @@ export class ChGridColumn {
     return (
       <li class="resize" part="bar-resize" hidden={!this.resizable}>
         <ch-grid-column-resize
-          column={this}
+          column={this.el}
           class="resize-split"
           part="bar-resize-split"
         ></ch-grid-column-resize>

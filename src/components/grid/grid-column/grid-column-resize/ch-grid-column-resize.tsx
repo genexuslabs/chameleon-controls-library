@@ -7,8 +7,6 @@ import {
   Prop
 } from "@stencil/core";
 
-import { ChGridColumn } from "../ch-grid-column";
-
 @Component({
   tag: "ch-grid-column-resize",
   styleUrl: "ch-grid-column-resize.scss",
@@ -18,7 +16,7 @@ export class ChGridColumnResize {
   @Element() el: HTMLChGridColumnResizeElement;
   @Event() columnResizeStarted: EventEmitter;
   @Event() columnResizeFinished: EventEmitter;
-  @Prop() readonly column: ChGridColumn;
+  @Prop() readonly column: HTMLChGridColumnElement;
 
   private startPageX: number;
   private startColumnWidth: number;
@@ -33,7 +31,7 @@ export class ChGridColumnResize {
     eventInfo.preventDefault();
 
     this.startPageX = eventInfo.pageX;
-    this.startColumnWidth = this.column.el.getBoundingClientRect().width;
+    this.startColumnWidth = this.column.getBoundingClientRect().width;
 
     document.addEventListener("mousemove", this.mousemoveFn, { passive: true });
     document.addEventListener("mouseup", this.mouseupHandler.bind(this), {

@@ -8,7 +8,7 @@ import { ChGridColumn } from "../ch-grid-column";
 })
 export class ChGridColumnSettings {
   @Prop() readonly column: ChGridColumn;
-  @Prop({ reflect: true }) readonly show = false;
+  @Prop({ reflect: true }) readonly show: boolean = false;
 
   @Listen("windowClosed")
   windowClosedHandler(eventInfo: Event) {

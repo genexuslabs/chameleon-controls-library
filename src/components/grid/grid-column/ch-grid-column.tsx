@@ -49,15 +49,15 @@ export class ChGridColumn {
   @Prop() readonly richRowActions: boolean;
   @Prop() readonly displayObserverClass: string;
   @Prop() readonly freeze?: ChGridColumnFreeze;
-  @Prop({ reflect: true }) readonly hidden = false;
-  @Prop() readonly hideable = true;
+  @Prop({ reflect: true }) readonly hidden: boolean = false;
+  @Prop() readonly hideable: boolean = true;
   @Prop({ reflect: true }) readonly order: number;
   @Prop() readonly physicalOrder: number;
   @Prop() readonly size: string;
-  @Prop() readonly resizable = true;
+  @Prop() readonly resizable: boolean = true;
   @Prop({ reflect: true }) readonly resizing: boolean;
-  @Prop() readonly sortable = true;
-  @Prop() readonly settingable = true;
+  @Prop() readonly sortable: boolean = true;
+  @Prop() readonly settingable: boolean = true;
   @Prop({ mutable: true, reflect: true })
   sortDirection?: ChGridColumnSortDirection;
   @Prop({ reflect: true }) readonly showSettings = false;

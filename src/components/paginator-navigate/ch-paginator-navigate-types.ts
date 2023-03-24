@@ -2,7 +2,7 @@ export enum ChPaginatorNavigationType {
   FIRST = "first",
   PREVIOUS = "previous",
   NEXT = "next",
-  LAST = "last",
+  LAST = "last"
 }
 
 export interface ChPaginatorNavigationClickedEvent {

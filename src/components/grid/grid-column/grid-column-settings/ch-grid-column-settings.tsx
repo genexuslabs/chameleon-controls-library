@@ -1,20 +1,13 @@
-import {
-  Component,
-  h,
-  Host,
-  Listen,
-  Prop,
-} from "@stencil/core";
-import { ChGridColumn } from "../ch-grid-column";
+import { Component, h, Host, Listen, Prop } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-column-settings",
   styleUrl: "ch-grid-column-settings.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGridColumnSettings {
-  @Prop() column: ChGridColumn;
-  @Prop({ reflect: true }) show = false;
+  @Prop() readonly column!: HTMLChGridColumnElement;
+  @Prop({ reflect: true }) readonly show: boolean = false;
 
   @Listen("windowClosed")
   windowClosedHandler(eventInfo: Event) {
@@ -26,7 +19,7 @@ export class ChGridColumnSettings {
   columnSettingsChangedHandler() {
     this.column.showSettings = false;
   }
-  
+
   render() {
     return (
       <Host>

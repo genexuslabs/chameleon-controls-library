@@ -92,7 +92,7 @@ export namespace Components {
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column": ChGridColumn;
+        "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnSettings {
         "column": ChGridColumn;
@@ -698,7 +698,7 @@ declare namespace LocalJSX {
         "column"?: HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column"?: ChGridColumn;
+        "column"?: HTMLChGridColumnElement;
         "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
         "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
     }
@@ -713,6 +713,10 @@ declare namespace LocalJSX {
     interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
+        /**
+          * Event that is emitted when the row legend is clicked.
+          * @event rowsetLegendClicked
+         */
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {

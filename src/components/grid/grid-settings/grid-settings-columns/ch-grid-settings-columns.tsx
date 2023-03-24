@@ -3,15 +3,15 @@ import { Component, h, Prop } from "@stencil/core";
 @Component({
   tag: "ch-grid-settings-columns",
   styleUrl: "ch-grid-settings-columns.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGridSettingsColumns {
-  @Prop() columns: HTMLChGridColumnElement[];
+  @Prop() readonly columns: HTMLChGridColumnElement[];
 
   private handleClick = (eventInfo: Event) => {
     const checkbox = eventInfo.target as HTMLInputElement;
     const column = this.columns.find(
-      (column) => column.columnId === checkbox.name
+      column => column.columnId === checkbox.name
     );
 
     column.hidden = !checkbox.checked;
@@ -24,11 +24,15 @@ export class ChGridSettingsColumns {
 
     return (
       <ul>
-        {columnsSorted.map((column) => (
+        {columnsSorted.map(column => (
           <li part="column">
             <label part="column-label">
               <input
-                part={!column.hidden ? "column-visible column-visible-checked" : "column-visible"}
+                part={
+                  !column.hidden
+                    ? "column-visible column-visible-checked"
+                    : "column-visible"
+                }
                 type="checkbox"
                 checked={!column.hidden}
                 disabled={!column.hideable}

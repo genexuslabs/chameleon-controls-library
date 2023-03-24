@@ -3,10 +3,10 @@ import { Component, Prop, Event, h, Host, EventEmitter } from "@stencil/core";
 @Component({
   tag: "ch-grid-action-refresh",
   styleUrl: "ch-grid-action-refresh.scss",
-  shadow: false,
+  shadow: false
 })
 export class ChGridActionRefresh {
-  @Prop() disabled: boolean;
+  @Prop() readonly disabled: boolean;
   @Event() refreshClicked: EventEmitter;
 
   private handleClick = (eventInfo: Event) => {

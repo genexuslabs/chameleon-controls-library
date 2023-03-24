@@ -25,17 +25,32 @@ export class ChGridManagerRowDrag {
 
   private dragMouseMoveHandler(eventInfo: MouseEvent) {
     const target = eventInfo.target as HTMLElement;
-    const rowHover = target.closest(HTMLChGridRowElement.TAG_NAME) as HTMLChGridRowElement;
+    const rowHover = target.closest(
+      HTMLChGridRowElement.TAG_NAME
+    ) as HTMLChGridRowElement;
 
-    if (rowHover && rowHover.parentElement == this.row.parentElement && rowHover.grid == this.grid.el) {
+    if (
+      rowHover &&
+      rowHover.parentElement == this.row.parentElement &&
+      rowHover.grid == this.grid.el
+    ) {
       const rowHoverIndex = this.grid.manager.getGridRowIndex(rowHover);
       const rowHoverGridPosition = rowHoverIndex + 2; // +1 RowHeaderColumn, +1 array start at 1
       const offsetPosition = this.rowIndex < rowHoverIndex ? -1 : 1;
 
-      if (this.rowShadow.style.getPropertyValue("--row-shadow-row-start") != `${rowHoverGridPosition}`) {
-        this.rowShadow.style.setProperty("--row-shadow-row-start", `${rowHoverGridPosition}`);
+      if (
+        this.rowShadow.style.getPropertyValue("--row-shadow-row-start") !=
+        `${rowHoverGridPosition}`
+      ) {
+        this.rowShadow.style.setProperty(
+          "--row-shadow-row-start",
+          `${rowHoverGridPosition}`
+        );
       } else {
-        this.rowShadow.style.setProperty("--row-shadow-row-start", `${rowHoverGridPosition + offsetPosition}`);
+        this.rowShadow.style.setProperty(
+          "--row-shadow-row-start",
+          `${rowHoverGridPosition + offsetPosition}`
+        );
       }
 
       this.updateRowPosition();
@@ -45,13 +60,17 @@ export class ChGridManagerRowDrag {
   private dragMouseUpHandler() {
     document.removeEventListener("mousemove", this.dragMouseMoveFn);
 
-    const dropPosition = parseInt(this.rowShadow.style.getPropertyValue("--row-shadow-row-start"));
-    const rowDrop = this.grid.el.querySelectorAll("ch-grid-row").item(dropPosition-2);
+    const dropPosition = parseInt(
+      this.rowShadow.style.getPropertyValue("--row-shadow-row-start")
+    );
+    const rowDrop = this.grid.el
+      .querySelectorAll("ch-grid-row")
+      .item(dropPosition - 2);
 
-    if (dropPosition < this.rowIndex+2) {
+    if (dropPosition < this.rowIndex + 2) {
       rowDrop.before(this.row);
-    } 
-    if (dropPosition > this.rowIndex+2) {
+    }
+    if (dropPosition > this.rowIndex + 2) {
       rowDrop.after(this.row);
     }
 
@@ -64,10 +83,10 @@ export class ChGridManagerRowDrag {
 
   private defineListeners() {
     document.addEventListener("mousemove", this.dragMouseMoveFn, {
-        passive: true,
+      passive: true
     });
     document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), {
-        once: true,
+      once: true
     });
   }
 
@@ -79,7 +98,7 @@ export class ChGridManagerRowDrag {
 
     this.grid.manager.getColumnsWidth().forEach(width => {
       const column = document.createElement("div");
-      
+
       column.style.opacity = "0";
       column.style.minWidth = width;
       column.style.height = rowHeight;
@@ -97,24 +116,32 @@ export class ChGridManagerRowDrag {
     this.row.setAttribute("dragging", "");
     this.row.style.width = `${rowWidth}px`;
 
-    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement, i) => {
-      const columnPosition = parseInt(this.grid.gridMainEl.style.getPropertyValue(`--ch-grid-column-${i+1}-position`));
-      
-      if (!cell.hidden) {
-        cell.style.width = columnsWidth[columnPosition-1];
-        cell.style.order = `${columnPosition}`;
-      }
-    });
+    this.row
+      .querySelectorAll(":scope > ch-grid-cell")
+      .forEach((cell: HTMLChGridCellElement, i) => {
+        const columnPosition = parseInt(
+          this.grid.gridMainEl.style.getPropertyValue(
+            `--ch-grid-column-${i + 1}-position`
+          )
+        );
+
+        if (!cell.hidden) {
+          cell.style.width = columnsWidth[columnPosition - 1];
+          cell.style.order = `${columnPosition}`;
+        }
+      });
   }
 
   private unfloatRow() {
     this.row.removeAttribute("dragging");
     this.row.style.width = "";
 
-    this.row.querySelectorAll(":scope > ch-grid-cell").forEach((cell: HTMLChGridCellElement) => {
+    this.row
+      .querySelectorAll(":scope > ch-grid-cell")
+      .forEach((cell: HTMLChGridCellElement) => {
         cell.style.width = "";
         cell.style.order = "";
-    });
+      });
   }
 
   private updateRowPosition() {

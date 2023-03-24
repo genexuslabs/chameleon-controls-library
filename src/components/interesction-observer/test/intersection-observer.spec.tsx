@@ -9,7 +9,7 @@ describe("ch-intersection-observer", () => {
   it.only("renders", async () => {
     const page = await newSpecPage({
       components: [IntersectionObserverControl],
-      html: `<ch-intersection-observer></ch-intersection-observer>`,
+      html: `<ch-intersection-observer></ch-intersection-observer>`
     });
 
     expect(page.root).toEqualHtml(`
@@ -24,7 +24,7 @@ describe("ch-intersection-observer", () => {
   it("sets the root prop correctly", () => {
     const page = newSpecPage({
       components: [IntersectionObserverControl],
-      html: `<ch-intersection-observer root="root-id"></ch-intersection-observer>`,
+      html: `<ch-intersection-observer root="root-id"></ch-intersection-observer>`
     });
     expect(page.rootInstance.root).toEqual("root-id");
   });
@@ -32,7 +32,7 @@ describe("ch-intersection-observer", () => {
   it("sets the margin props correctly", () => {
     const page = newSpecPage({
       components: [IntersectionObserverControl],
-      html: `<ch-intersection-observer top-margin="10dip" left-margin="20dip" bottom-margin="30dip" right-margin="40dip"></ch-intersection-observer>`,
+      html: `<ch-intersection-observer top-margin="10dip" left-margin="20dip" bottom-margin="30dip" right-margin="40dip"></ch-intersection-observer>`
     });
     expect(page.rootInstance.topMargin).toEqual("10dip");
     expect(page.rootInstance.leftMargin).toEqual("20dip");
@@ -43,7 +43,7 @@ describe("ch-intersection-observer", () => {
   it("sets the active props correctly", async () => {
     const page = await newSpecPage({
       components: [IntersectionObserverControl],
-      html: `<ch-intersection-observer active="true" active-class="active-class"></ch-intersection-observer>`,
+      html: `<ch-intersection-observer active="true" active-class="active-class"></ch-intersection-observer>`
     });
     expect(page.rootInstance.active).toEqual(true);
     expect(page.root.getAttribute("class")).toContain("active-class");
@@ -52,7 +52,7 @@ describe("ch-intersection-observer", () => {
   it("sets the threshold prop correctly", () => {
     const page = newSpecPage({
       components: [IntersectionObserverControl],
-      html: `<ch-intersection-observer threshold="10% 30% 40%"></ch-intersection-observer>`,
+      html: `<ch-intersection-observer threshold="10% 30% 40%"></ch-intersection-observer>`
     });
     expect(page.rootInstance.threshold).toEqual("10% 30% 40%");
   });

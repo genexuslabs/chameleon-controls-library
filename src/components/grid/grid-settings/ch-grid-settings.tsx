@@ -5,17 +5,17 @@ import {
   Listen,
   Prop,
   Event,
-  EventEmitter,
+  EventEmitter
 } from "@stencil/core";
 import { ChGridManager } from "../ch-grid-manager";
 
 @Component({
   tag: "ch-grid-settings",
   styleUrl: "ch-grid-settings.scss",
-  shadow: true,
+  shadow: true
 })
 export class ChGridSettings {
-  @Prop() gridManager: ChGridManager;
+  @Prop() readonly gridManager: ChGridManager;
   @Prop({ reflect: true, mutable: true }) show = false;
   @Event() settingsCloseClicked: EventEmitter;
 

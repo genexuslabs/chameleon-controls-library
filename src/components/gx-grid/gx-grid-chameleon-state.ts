@@ -36,7 +36,6 @@ export class GridChameleonManagerState {
   static setColumnFilterEqual(columnId: string, value: string): void {
     this.getColumnFilter(columnId).Equal = value;
     this.updateIsFiltering(columnId);
-
   }
 
   static setColumnFilterLess(columnId: string, value: string): void {
@@ -50,7 +49,7 @@ export class GridChameleonManagerState {
   }
 
   private static apply() {
-    let sortColumn = this.grid.getColumnByHtmlName(
+    const sortColumn = this.grid.getColumnByHtmlName(
       (this.state.SortColumnName ?? "").toUpperCase()
     );
 
@@ -58,8 +57,8 @@ export class GridChameleonManagerState {
       sortColumn.SortDirection = this.state.SortDirection;
     }
 
-    this.state.Columns?.forEach((stateColumn) => {
-      let column = this.grid.getColumnByHtmlName(
+    this.state.Columns?.forEach(stateColumn => {
+      const column = this.grid.getColumnByHtmlName(
         stateColumn.Name.toUpperCase()
       );
 
@@ -79,12 +78,12 @@ export class GridChameleonManagerState {
 
   private static getColumn(name: string): GridChameleonStateColumn {
     let column = this.state.Columns.find(
-      (column) => column.Name.localeCompare(name) == 0
+      column => column.Name.localeCompare(name) == 0
     );
 
     if (!column) {
       column = {
-        Name: name,
+        Name: name
       };
       this.state.Columns.push(column);
     }
@@ -93,7 +92,7 @@ export class GridChameleonManagerState {
   }
 
   private static getColumnFilter(name: string): GridChameleonStateColumnFilter {
-    let column = this.getColumn(name);
+    const column = this.getColumn(name);
 
     if (!column.Filter) {
       column.Filter = {};
@@ -103,9 +102,12 @@ export class GridChameleonManagerState {
   }
 
   private static updateIsFiltering(columnId: string) {
-    let column = this.grid.getColumnByHtmlName(columnId);
+    const column = this.grid.getColumnByHtmlName(columnId);
 
-    column.isFiltering = column.filterEqual || column.filterGreater || column.filterGreater ? true : false;
+    column.isFiltering =
+      column.filterEqual || column.filterGreater || column.filterGreater
+        ? true
+        : false;
   }
 }
 

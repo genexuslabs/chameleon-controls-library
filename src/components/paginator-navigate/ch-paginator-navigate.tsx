@@ -5,22 +5,22 @@ import {
   EventEmitter,
   h,
   Host,
-  Element,
+  Element
 } from "@stencil/core";
 import {
   ChPaginatorNavigationClickedEvent,
-  ChPaginatorNavigationType,
+  ChPaginatorNavigationType
 } from "./ch-paginator-navigate-types";
 
 @Component({
   tag: "ch-paginator-navigate",
   styleUrl: "ch-paginator-navigate.scss",
-  shadow: false,
+  shadow: false
 })
 export class ChPaginatorNavigate {
   @Element() el: HTMLChPaginatorNavigateElement;
-  @Prop() type: ChPaginatorNavigationType;
-  @Prop() disabled: boolean;
+  @Prop() readonly type: ChPaginatorNavigationType;
+  @Prop() readonly disabled: boolean;
   @Event() navigationClicked: EventEmitter<ChPaginatorNavigationClickedEvent>; // prettier-ignore
 
   private handleClick = (eventInfo: Event) => {

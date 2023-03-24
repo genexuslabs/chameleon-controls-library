@@ -3,11 +3,11 @@ import { Component, Element, Prop } from "@stencil/core";
 @Component({
   tag: "ch-grid-column-display",
   styleUrl: "ch-grid-column-display.scss",
-  shadow: false,
+  shadow: false
 })
 export class ChGridColumnDisplay {
   @Element() el: HTMLChGridColumnDisplayElement;
-  @Prop() column: HTMLChGridColumnElement;
+  @Prop() readonly column!: HTMLChGridColumnElement;
 
   private observer = new IntersectionObserver(() => {
     this.column.hidden = getComputedStyle(this.el).display === "none";

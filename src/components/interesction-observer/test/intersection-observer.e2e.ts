@@ -3,7 +3,9 @@ import { newE2EPage } from "@stencil/core/testing";
 describe("ch-intersection-observer", () => {
   it("renders", async () => {
     const page = await newE2EPage();
-    await page.setContent("<ch-intersection-observer></ch-intersection-observer>");
+    await page.setContent(
+      "<ch-intersection-observer></ch-intersection-observer>"
+    );
 
     const element = await page.find("ch-intersection-observer");
     expect(element).toHaveClass("hydrated");
@@ -14,7 +16,10 @@ describe("ch-intersection-observer", () => {
     await page.setContent(
       ' <div style = "background-color: cornsilk; height: 1000px; width: 500px"></div><ch-intersection-observer></ch-intersection-observer>'
     );
-    const intersectionUpdate = await page.spyOnEvent("intersectionUpdate", "document");
+    const intersectionUpdate = await page.spyOnEvent(
+      "intersectionUpdate",
+      "document"
+    );
     await page.mouse.wheel({ deltaY: 1200 });
     await page.waitForChanges();
     expect(intersectionUpdate).toHaveReceivedEvent();
@@ -22,7 +27,9 @@ describe("ch-intersection-observer", () => {
 
   it("display slot content when is set", async () => {
     const page = await newE2EPage();
-    await page.setContent("<ch-intersection-observer><h1>Some title</h1></ch-intersection-observer>");
+    await page.setContent(
+      "<ch-intersection-observer><h1>Some title</h1></ch-intersection-observer>"
+    );
     const el = await page.find("ch-intersection-observer h1");
     expect(el).not.toBeNull();
   });
@@ -60,7 +67,10 @@ describe("ch-intersection-observer", () => {
     </ch-intersection-observer>
     <div style="height: 1000px; width: 500px" > </div>
     `);
-    const intersectionUpdate = await page.spyOnEvent("intersectionUpdate", "document");
+    const intersectionUpdate = await page.spyOnEvent(
+      "intersectionUpdate",
+      "document"
+    );
     await page.mouse.wheel({ deltaY: 1800 });
     await page.waitForChanges();
     expect(intersectionUpdate).toHaveReceivedEventTimes(2);
@@ -76,7 +86,10 @@ describe("ch-intersection-observer", () => {
     <div style="height: 1000px; width: 500px" > </div>
     `);
     const intersectionComponent = await page.find("ch-intersection-observer");
-    const intersectionUpdate = await page.spyOnEvent("intersectionUpdate", "document");
+    const intersectionUpdate = await page.spyOnEvent(
+      "intersectionUpdate",
+      "document"
+    );
     await page.mouse.wheel({ deltaY: 200 });
     await page.waitForChanges();
     const isIntersecting = await intersectionComponent.isIntersectingViewport();
@@ -93,9 +106,15 @@ describe("ch-intersection-observer", () => {
     </ch-intersection-observer>
     <div style="height: 1000px; width: 500px" > </div>
     `);
-    const intersectionUpdate = await page.spyOnEvent("intersectionUpdate", "document");
+    const intersectionUpdate = await page.spyOnEvent(
+      "intersectionUpdate",
+      "document"
+    );
     await page.mouse.wheel({ deltaY: 600 });
     await page.waitForChanges();
-    expect(intersectionUpdate.lastEvent.detail).toHaveProperty("isIntersecting", true);
+    expect(intersectionUpdate.lastEvent.detail).toHaveProperty(
+      "isIntersecting",
+      true
+    );
   });
 });

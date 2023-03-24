@@ -200,7 +200,7 @@ export class ChGridColumn {
           {this.renderResize()}
         </ul>
         <ch-grid-column-settings
-          column={this}
+          column={this.el}
           onMouseDown={this.settingsMouseDownHandler}
           show={this.showSettings}
           exportparts="

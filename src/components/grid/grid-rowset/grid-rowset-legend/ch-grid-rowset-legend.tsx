@@ -14,12 +14,22 @@ export class ChGridRowsetLegend {
     this.rowsetLegendClicked.emit();
   }
 
+  inputClicked(e) {
+    e.target.checked
+      ? e.target.setAttribute("part", "selector selector-checked")
+      : e.target.setAttribute("part", "selector");
+  }
+
   render() {
     return (
       <Host>
         <div part="caret"></div>
         <label part="selector-label">
-          <input type="checkbox" part="selector"></input>
+          <input
+            type="checkbox"
+            part="selector"
+            onClick={this.inputClicked}
+          ></input>
         </label>
         <div part="icon"></div>
         <slot></slot>

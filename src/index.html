@@ -2,438 +2,1017 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
     <title>Stencil Component Starter</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
   </head>
   <body>
+    <style>
+      .header,
+      .footer {
+        background-color: black;
+        color: white;
+      }
 
-    <ch-sidebar-menu menu-title="main menu" id="ch-sidebar-menu" distance-to-top="0" collapsible=true active-item-id="pig">
-      <ch-sidebar-menu-list>
-        <ch-sidebar-menu-list-item id="meats">
-          Meats Meats Meats Meats Meats Meats Meats Meats Meats Meats Meats Meats 
-          <ch-sidebar-menu-list slot="list">
-            <ch-sidebar-menu-list-item id="red">
-              Red
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="cow">
-                  Cow
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="veal">
-                  Veal
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="pig">
-                  Pig
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="bull">
-                  Bull
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="ox">
-                  Ox
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="duck">
-                  Duck
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="goose">
-                  Goose
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="white">
-              White
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="chicken">
-                  Chicken
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="turkey">
-                  Turkey
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="rabbit">
-                  Rabbit
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="fish">
-              Fish
-              <ch-sidebar-menu-list slot="list">
-              <ch-sidebar-menu-list-item id="hake">
-                Hake
-              </ch-sidebar-menu-list-item>
-              <ch-sidebar-menu-list-item id="rooster">
-                Rooster
-              </ch-sidebar-menu-list-item>
-              <ch-sidebar-menu-list-item id="cod">
-                Cod
-              </ch-sidebar-menu-list-item>
-              <ch-sidebar-menu-list-item id="turbot">
-                Turbot
-              </ch-sidebar-menu-list-item>
-              <ch-sidebar-menu-list-item id="sole">
-                Sole
-              </ch-sidebar-menu-list-item>
-              <ch-sidebar-menu-list-item id="bass">
-                Bass
-              </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="other-meats">
-              other meats
-            </ch-sidebar-menu-list-item>
-          </ch-sidebar-menu-list>
-        </ch-sidebar-menu-list-item>
-        
-        <ch-sidebar-menu-list-item id="vegetables">
-          healthy vegetables
-          <ch-sidebar-menu-list slot="list">
-            <ch-sidebar-menu-list-item id="leaf">
-              Leaf
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="chard">
-                  Chard
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="celery">
-                  Celery
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="cole">
-                  Cole
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="endive">
-                  Endive
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="spinach">
-                  Spinach
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="lettuce">
-                  Lettuce
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="stem">
-              Stem
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="thistle">
-                  Thistle
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="asparagus">
-                  asparagus
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="inflorescences">
-              Inflorescences
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="cauliflower">
-                  Cauliflower
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="broccoli">
-                  Broccoli
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-          </ch-sidebar-menu-list>
-        </ch-sidebar-menu-list-item>
+      .group {
+        display: flex;
+      }
+      .group ch-grid {
+        flex: 1;
+      }
 
+      ch-grid {
+        border: 1px solid red;
+      }
+      ch-grid-columnset {
+        background-color: grey;
+      }
+      ch-grid-row {
+        background-color: white;
+      }
 
-        <ch-sidebar-menu-list-item id="fruits">
-          Fruits
-          <ch-sidebar-menu-list slot="list">
-            <ch-sidebar-menu-list-item id="apple">
-              Apple Apple Apple Apple Apple Apple Apple Apple
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="banana">
-              Banana
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="apple-banana">
-                  Apple banana
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="cavendish">
-                  Cavendish Cavendish Cavendish Cavendish Cavendish Cavendish Cavendish Cavendish
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="lady-finger">
-                  Lady's Finger
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="pisang-raja">
-                  Pisang Raja
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="orange">
-              orange
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="navbel">
-                  Navbel
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="seville">
-                  Seville
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="valencia">
-                  Valencia
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="mandarin">
-                  Mandarin
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="tangelo">
-                  Tangelo
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="clementine">
-                  Clementine
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="kiwi">
-              Kiwi
-              <ch-sidebar-menu-list slot="list">
-                <ch-sidebar-menu-list-item id="hardy">
-                  Hardy
-                </ch-sidebar-menu-list-item >
-                <ch-sidebar-menu-list-item id="fuzzy">
-                  Fuzzy
-                </ch-sidebar-menu-list-item>
-                <ch-sidebar-menu-list-item id="artic">
-                  Artic
-                </ch-sidebar-menu-list-item>
-              </ch-sidebar-menu-list>
-            </ch-sidebar-menu-list-item>
-          </ch-sidebar-menu-list>
-        </ch-sidebar-menu-list-item>
+      ch-grid-row[highlighted] {
+        background-color: lightgoldenrodyellow;
+      }
+      ch-grid-row[selected] {
+        background-color: yellow;
+      }
 
+      ch-grid-rowset-legend {
+        background-color: lightgrey;
+      }
 
-        <ch-sidebar-menu-list-item id="condiments">
-          Condiments
-          <ch-sidebar-menu-list slot="list">
-            <ch-sidebar-menu-list-item id="mayonnaise">
-              Mayonnaise
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="soy-sauce">
-              Soy sauce
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="relish">
-              Relish
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="tabasco">
-              Tabasco
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="mustard">
-              Mustard
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="gochujang">
-              Gochujang
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="fish-sauce">
-              Fish sauce
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="ketchup">
-              Ketchup
-            </ch-sidebar-menu-list-item>
-            <ch-sidebar-menu-list-item id="wasabi">
-              Wasabi
-            </ch-sidebar-menu-list-item>
-          </ch-sidebar-menu-list>
-        </ch-sidebar-menu-list-item>
+      ch-grid-cell::part(drag-icon) {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        background-position: center;
+        background-image: url("http://localhost/images/drag.svg");
+      }
 
+      ch-grid-cell::part(actions-icon) {
+        padding: 0px;
+        border: 0px none transparent;
+        background-color: transparent;
+        box-sizing: content-box;
+        font-family: inherit;
+        font-size: 100%;
 
-        <ch-sidebar-menu-list-item id="single">
-          Single item
-        </ch-sidebar-menu-list-item>
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 10px 10px;
+        background-position: center;
+        background-image: url("http://localhost/images/view-more.svg");
+      }
 
+      .group.scroll ch-grid {
+        height: 150px;
+      }
 
-      </ch-sidebar-menu-list>
-      <div slot="footer">
-        <ch-select tabindex="0" name="Language" icon-src="/build/select-assets/language.svg" arrow-icon-src="/build/select-assets/Select.svg" style="--arrow-color:green; --icon-color: blue;" auto-color>
-          <option value="english" >English</option>
-          <option value="spanish" >Español</option>
-          <option value="portuguese" selected>Portugués</option>
-          <option value="japanese" >日本語</option>
-          <option value="chinese" >漢語</option>
-        </ch-select>
-      </div>
-    </ch-sidebar-menu>
+      .group.tree ch-grid-cell::part(node-icon) {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center;
+      }
 
-    <div style="margin-left: 400px; height: 150px; background: gray">
-      <ch-select tabindex="0" name="Language" icon-src="/build/select-assets/language.svg" >
-        <option value="english" >English</option>
-        <option value="spanish" selected>Español</option>
-        <option value="portuguese" >Portugués</option>
-        <option value="japanese" >日本語</option>
-        <option value="chinese" >漢語</option>
-        <option value="UDE" >UNIVERSIDAD DE LA EMPRESA (UDE)</option>
-      </ch-select>
+      .group.tree
+        ch-grid-row:has(> ch-grid-rowset)
+        > ch-grid-cell::part(node-icon) {
+        background-image: url("http://localhost/images/folder.svg");
+      }
+      .group.tree ch-grid-cell::part(node-icon) {
+        background-image: url("http://localhost/images/file.svg");
+      }
+
+      .group.tree ch-grid-rowset-legend::part(icon) {
+        width: 16px;
+        height: 16px;
+        background-image: url("http://localhost/images/group.svg");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center;
+      }
+
+      /* caret */
+      ch-grid-row > ch-grid-cell::part(caret),
+      ch-grid-rowset > ch-grid-rowset-legend::part(caret) {
+        width: 16px;
+        height: 16px;
+        background-image: url("http://localhost/images/node_collapse.gif");
+      }
+
+      ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset)))
+        > ch-grid-cell::part(caret),
+      ch-grid-rowset[collapsed] > ch-grid-rowset-legend::part(caret) {
+        background-image: url("http://localhost/images/node_expand.gif");
+      }
+
+      /* indentation */
+      ch-grid {
+        --indent: 16px;
+      }
+
+      /* row-actions */
+      ch-grid::part(row-actions) {
+        right: 20px;
+      }
+      ch-grid-action-refresh,
+      ch-grid-action-settings {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: blue;
+      }
+    </style>
+
+    <div class="group scroll">
+      <ch-grid id="virtual-scroller" row-selection-mode="multiple">
+        <ch-grid-actionbar slot="header">
+          <ch-grid-action-refresh></ch-grid-action-refresh>
+          <ch-grid-action-settings></ch-grid-action-settings>
+        </ch-grid-actionbar>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            column-type="rich"
+            rich-row-drag
+            size="min-content"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+            size="min-content"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-row selected>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Nombre</ch-grid-cell>
+          <ch-grid-cell>Productos</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row selected>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>English</ch-grid-cell>
+          <ch-grid-cell>Products</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Português</ch-grid-cell>
+          <ch-grid-cell>Produtos</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Redireccionar a</ch-grid-cell>
+          <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+          <ch-grid-cell>Found</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Url amigable</ch-grid-cell>
+          <ch-grid-cell>productos</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>English</ch-grid-cell>
+          <ch-grid-cell>products</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Português</ch-grid-cell>
+          <ch-grid-cell>produtos</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Id</ch-grid-cell>
+          <ch-grid-cell>7867</ch-grid-cell>
+        </ch-grid-row>
+
+        <div class="header" slot="header">
+          <span>HEADER</span>
+        </div>
+        <div class="footer" slot="footer">
+          <span>FOOTER</span>
+        </div>
+        <div slot="row-actions">
+          <button>Action A</button>
+          <button>Action B</button>
+        </div>
+      </ch-grid>
+
+      <ch-grid row-selection-mode="multiple" id="vs">
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            size="min-content"
+            column-type="rich"
+            rich-row-actions
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset id="vs-rowset" virtual-box>
+          <ch-grid-row>
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>Products</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>Produtos</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Url amigable</ch-grid-cell>
+            <ch-grid-cell>productos</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>products</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>produtos</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Id</ch-grid-cell>
+            <ch-grid-cell>7867</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <div class="header" slot="header">
+          <span>HEADER</span>
+        </div>
+        <div class="footer" slot="footer">
+          <span>FOOTER</span>
+        </div>
+        <div slot="row-actions">
+          <button>Action A</button>
+          <button>Action B</button>
+        </div>
+      </ch-grid>
     </div>
-   
-  <!--
-    <ch-select name="Language" icon-src="/build/select-assets/language.svg" >
-      <option value="english" >English</option>
-      <option value="spanish" selected>Español</option>
-      <option value="portuguese" >Portugués</option>
-      <option value="japanese" >日本語</option>
-      <option value="chinese" >漢語</option>
-    </ch-select>
--->
 
-  <!--
-    style="--text-color: blue; --arrow-color:green; --icon-color: orange; --font-size:12px; --icon-size:14px" height="20px" option-height="50px"
-    -->
-     
-    <div style="margin-left: 300px;">
-      <ch-tree id="ch-treeview" toggle-checkboxes="false" single-selection="true">
-        <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
-          Meats
-          <ch-tree checkbox slot="tree">
-            <ch-tree-item left-icon="/build/ch-icon-assets/patterns.svg">
-              White meats
-              <ch-tree checkbox slot="tree">
-                <ch-tree-item left-icon="/build/ch-icon-assets/csharp.svg">
-                  Chicken
-                </ch-tree-item>
-                <ch-tree-item left-icon="/build/ch-icon-assets/java.svg"> 
-                  Turkey
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Duck
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-            <ch-tree-item left-icon="/build/ch-icon-assets/knowledge-base.svg">
-              Red meats
-              <ch-tree checkbox slot="tree">
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Beef
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base"> 
-                  Lamb and mutton
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base" >
-                  Pork
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-          </ch-tree>
-        </ch-tree-item>
-        <ch-tree-item id="fish" left-icon="general/patterns" checkbox opened download disabled right-icon="/build/tree-item-assets/download.svg">
-          Fish
-        </ch-tree-item>
-        <ch-tree-item checkbox opened left-icon="objects/module">
-          Fruits
-          <ch-tree slot="tree">
-            <ch-tree-item checkbox left-icon="objects/module">
-              Orange
-            </ch-tree-item>
-            <ch-tree-item checkbox left-icon="objects/module" opened>
-              Banana
-              <ch-tree slot="tree">
-                <ch-tree-item left-icon="objects/module" checkbox>
-                  Pisang
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Red Banana
-                </ch-tree-item>
-                <ch-tree-item left-icon="objects/module" checkbox>
-                  Cavendish
-                  <ch-tree slot="tree">
-                    <ch-tree-item left-icon="objects/module" checkbox>
-                      Big
-                    </ch-tree-item>
-                    <ch-tree-item left-icon="objects/module" checkbox>
-                      Small
-                    </ch-tree-item>
-                    <ch-tree-item checkbox left-icon="objects/module">
-                      Mini
-                    </ch-tree-item>
-                  </ch-tree>
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-            <ch-tree-item checkbox opened left-icon="objects/module">
-              Strawberry
-              <ch-tree slot="tree">
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Albion 
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module" opened> 
-                  Tillamook 
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Northeaster 
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-          </ch-tree>
-        </ch-tree-item>
-      <ch-tree-item opened checkbox left-icon="objects/document" empty-tree>
-        Nuts
-        <ch-tree slot="tree">
-          <ch-tree-item opened checkbox left-icon="objects/document">
-            Almonds 
-            <ch-tree slot="tree">
-              <ch-tree-item checkbox left-icon="objects/document" opened> 
-                Mollar de Tarragona
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/document">
-                Ferragnès 
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/document">
-                Verdal 
-              </ch-tree-item>
-            </ch-tree>
-          </ch-tree-item>
-          <ch-tree-item checkbox left-icon="objects/document" opened> 
-            Brazil nuts 
-          </ch-tree-item>
-          <ch-tree-item checkbox left-icon="objects/document">
-            Cashews 
-          </ch-tree-item>
-          <ch-tree-item checkbox left-icon="objects/document">
-            Chestnuts 
-          </ch-tree-item>
-        </ch-tree>
-      </ch-tree-item>
-      </ch-tree>
+    <div class="group">
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>Products</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>Produtos</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Url amigable</ch-grid-cell>
+            <ch-grid-cell>productos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>products</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>produtos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Id</ch-grid-cell>
+              <ch-grid-cell>7867</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Nombre</ch-grid-cell>
+              <ch-grid-cell>Productos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>English</ch-grid-cell>
+              <ch-grid-cell>Products</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Português</ch-grid-cell>
+              <ch-grid-cell>Produtos</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Redireccionar a</ch-grid-cell>
+              <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+              <ch-grid-cell>Found</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Url amigable</ch-grid-cell>
+              <ch-grid-cell>productos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>English</ch-grid-cell>
+              <ch-grid-cell>products</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Português</ch-grid-cell>
+              <ch-grid-cell>produtos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+              <ch-grid-row>
+                <ch-grid-cell>Id</ch-grid-cell>
+                <ch-grid-cell>7867</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+
+      <ch-grid row-selection-mode="multiple">
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+            rich-row-drag
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Nombre</ch-grid-cell>
+              <ch-grid-cell>Productos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>English</ch-grid-cell>
+              <ch-grid-cell>Products</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Português</ch-grid-cell>
+              <ch-grid-cell>Produtos</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Redireccionar a</ch-grid-cell>
+              <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+              <ch-grid-cell>Found</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Url amigable</ch-grid-cell>
+              <ch-grid-cell>productos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>English</ch-grid-cell>
+              <ch-grid-cell>products</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Português</ch-grid-cell>
+              <ch-grid-cell>produtos</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+              <ch-grid-row>
+                <ch-grid-cell>Id</ch-grid-cell>
+                <ch-grid-cell>7867</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
     </div>
-  
-    <!--
-  <div style="margin-left: 300px">
-    <ch-step-list>
-      <ch-step-list-item >
-        soy el item 1
-      </ch-step-list-item>
-      <ch-step-list-item icon-src="/build/step-list-item-assets/dot.svg">
-        soy el item 2
-      </ch-step-list-item>
-      <ch-step-list-item icon-src="/build/step-list-item-assets/dot.svg">
-        soy el item 3
-      </ch-step-list-item>
-      <ch-step-list-item icon-src="/build/step-list-item-assets/dot.svg">
-        soy el item 4
-      </ch-step-list-item>
-    </ch-step-list>
-  </div>
-    -->
 
+    <div class="group tree">
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Name"
+            settingable="false"
+            column-type="tree"
+            freeze="start"
+            size="20%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Type"
+            settingable="false"
+            size="80%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Description"
+            settingable="false"
+            size="500px"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Is Collection"
+            settingable="false"
+            size="100px"
+            freeze="end"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-row>
+          <ch-grid-cell>Target</ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Target</ch-grid-cell>
+          <ch-grid-cell>false</ch-grid-cell>
+
+          <ch-grid-rowset>
+            <ch-grid-row leaf="false">
+              <ch-grid-cell>TargetType</ch-grid-cell>
+              <ch-grid-cell
+                >TargetType, GeneXus.Common.Notifications</ch-grid-cell
+              >
+              <ch-grid-cell>Target Type (required)</ch-grid-cell>
+              <ch-grid-cell>false</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Devices</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Devices List</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Device</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>DeviceToken</ch-grid-cell>
+                      <ch-grid-cell>Character(500)</ch-grid-cell>
+                      <ch-grid-cell>DeviceToken</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Groups</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Groups</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Group</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Targets</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Targets</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Filter</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                    <ch-grid-row>
+                      <ch-grid-cell>Value</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-row>
+      </ch-grid>
+
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Column A"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Column B"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
+          <ch-grid-column column-name="Column C" size="20%"></ch-grid-column>
+          <ch-grid-column column-name="Column D" size="20%"></ch-grid-column>
+          <ch-grid-column column-name="Column E" size="20%"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column F"
+            size="20%"
+            freeze="end"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Column G"
+            size="20%"
+            freeze="end"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-row>
+            <ch-grid-cell>A</ch-grid-cell>
+            <ch-grid-cell>B</ch-grid-cell>
+            <ch-grid-cell>C</ch-grid-cell>
+            <ch-grid-cell>D</ch-grid-cell>
+            <ch-grid-cell>E</ch-grid-cell>
+            <ch-grid-cell>F</ch-grid-cell>
+            <ch-grid-cell>G</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+      </ch-grid>
+    </div>
+
+    <div class="group tree">
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-row>
+          <ch-grid-cell>Nombre</ch-grid-cell>
+          <ch-grid-cell>Productos</ch-grid-cell>
+
+          <ch-grid-rowset>
+            <ch-grid-row>
+              <ch-grid-cell>English</ch-grid-cell>
+              <ch-grid-cell>Products</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Português</ch-grid-cell>
+              <ch-grid-cell>Produtos</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell>Redireccionar a</ch-grid-cell>
+          <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row>
+          <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+          <ch-grid-cell>Found</ch-grid-cell>
+        </ch-grid-row>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Url amigable</ch-grid-cell>
+            <ch-grid-cell>productos</ch-grid-cell>
+
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell>English</ch-grid-cell>
+                <ch-grid-cell>products</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Português</ch-grid-cell>
+                <ch-grid-cell>produtos</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+
+            <ch-grid-row rowid="row-permalink">
+              <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
+              <ch-grid-cell>7867</ch-grid-cell>
+            </ch-grid-row>
+
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell>Guid</ch-grid-cell>
+                <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-row>
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell>English</ch-grid-cell>
+                <ch-grid-cell>Products</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Português</ch-grid-cell>
+                <ch-grid-cell>Produtos</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Url amigable</ch-grid-cell>
+              <ch-grid-cell>productos</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>English</ch-grid-cell>
+                  <ch-grid-cell>products</ch-grid-cell>
+                </ch-grid-row>
+                <ch-grid-row>
+                  <ch-grid-cell>Português</ch-grid-cell>
+                  <ch-grid-cell>produtos</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+
+              <ch-grid-row rowid="row-permalink">
+                <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
+                <ch-grid-cell>7867</ch-grid-cell>
+              </ch-grid-row>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Guid</ch-grid-cell>
+                  <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Página</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell>English</ch-grid-cell>
+                <ch-grid-cell>Products</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Português</ch-grid-cell>
+                <ch-grid-cell>Produtos</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+            <ch-grid-row>
+              <ch-grid-cell>Url amigable</ch-grid-cell>
+              <ch-grid-cell>productos</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>English</ch-grid-cell>
+                  <ch-grid-cell>products</ch-grid-cell>
+                </ch-grid-row>
+                <ch-grid-row>
+                  <ch-grid-cell>Português</ch-grid-cell>
+                  <ch-grid-cell>produtos</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+
+              <ch-grid-row rowid="row-permalink">
+                <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
+                <ch-grid-cell>7867</ch-grid-cell>
+              </ch-grid-row>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Guid</ch-grid-cell>
+                  <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+    </div>
+
+    <div class="group empty">
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+        </ch-grid-rowset>
+
+        <div class="header" slot="header">
+          <span>HEADER</span>
+        </div>
+        <div class="footer" slot="footer">
+          <span>FOOTER</span>
+        </div>
+      </ch-grid>
+
+      <ch-grid row-selection-mode="multiple">
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+          </ch-grid-rowset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+              <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+
+        <div class="header" slot="header">
+          <span>HEADER</span>
+        </div>
+        <div class="footer" slot="footer">
+          <span>FOOTER</span>
+        </div>
+      </ch-grid>
+    </div>
 
     <script>
-      ( function(){
-        var tree = document.querySelector('#ch-treeview');
-        
-        if (tree) {
-          tree.addEventListener("toggleIconClicked", function(e){
-            console.log("click en toggleIcon");
-            e.stopPropagation();
-            e.preventDefault();
-          })
-          
-          tree.addEventListener("liItemClicked", function(e){
-            console.log("click en item");
-            
-          })
-        }
-        
-       
-      })();
+      document.addEventListener("rowClicked", eventInfo =>
+        console.log(
+          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}`
+        )
+      );
+      document.addEventListener("selectionChanged", eventInfo =>
+        console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`)
+      );
     </script>
-
-
-
   </body>
 </html>

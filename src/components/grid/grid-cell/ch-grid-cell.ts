@@ -74,6 +74,9 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
   public setSelectorChecked(value: boolean) {
     this.selector.checked = value;
+    value
+      ? this.selector.setAttribute("part", "selector selector-checked")
+      : this.selector.setAttribute("part", "selector");
   }
 
   private caretClickHandler(eventInfo: Event) {

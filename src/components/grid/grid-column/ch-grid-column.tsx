@@ -186,6 +186,10 @@ export class ChGridColumn {
       checked: target.checked
     });
 
+    target.checked
+      ? target.setAttribute("part", "selector selector-checked")
+      : target.setAttribute("part", "selector");
+
     eventInfo.stopPropagation();
   };
 

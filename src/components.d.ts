@@ -8,7 +8,6 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
-import { ChGridColumn } from "./components/grid/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
@@ -95,7 +94,7 @@ export namespace Components {
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnSettings {
-        "column": ChGridColumn;
+        "column": HTMLChGridColumnElement;
         "show": boolean;
     }
     interface ChGridColumnset {
@@ -695,15 +694,15 @@ declare namespace LocalJSX {
         "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {
-        "column"?: HTMLChGridColumnElement;
+        "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column"?: HTMLChGridColumnElement;
+        "column": HTMLChGridColumnElement;
         "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
         "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridColumnSettings {
-        "column"?: ChGridColumn;
+        "column": HTMLChGridColumnElement;
         "show"?: boolean;
     }
     interface ChGridColumnset {
@@ -713,10 +712,6 @@ declare namespace LocalJSX {
     interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
-        /**
-          * Event that is emitted when the row legend is clicked.
-          * @event rowsetLegendClicked
-         */
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {

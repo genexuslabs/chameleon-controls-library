@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type           | Default     |
-| -------- | --------- | ----------- | -------------- | ----------- |
-| `column` | --        |             | `ChGridColumn` | `undefined` |
-| `show`   | `show`    |             | `boolean`      | `false`     |
+| Property              | Attribute | Description | Type                      | Default     |
+| --------------------- | --------- | ----------- | ------------------------- | ----------- |
+| `column` _(required)_ | --        |             | `HTMLChGridColumnElement` | `undefined` |
+| `show`                | `show`    |             | `boolean`                 | `false`     |
 
 
 ## Dependencies

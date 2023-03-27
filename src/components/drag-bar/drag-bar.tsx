@@ -1,4 +1,4 @@
-import { Component, Element, Host, Prop, h } from "@stencil/core";
+import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 
 const START_COMPONENT_MIN_WIDTH = 0; // 0%
@@ -23,8 +23,8 @@ const START_COMPONENT_WIDTH = "--ch-drag-bar__start-component-width";
 })
 export class DragBar implements ChComponent {
   private lastBarRelativePositionX = 0;
-
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  private rtlWatcher: MutationObserver;
 
   // Refs
   private barRef: HTMLDivElement;
@@ -32,6 +32,11 @@ export class DragBar implements ChComponent {
   private startComponentRef: HTMLDivElement;
 
   @Element() element: HTMLChDragBarElement;
+
+  /**
+   * Determine the language direction.
+   */
+  @State() isRTLDirection = false;
 
   /**
    * This attribute lets you specify the label for the drag bar.
@@ -84,17 +89,38 @@ export class DragBar implements ChComponent {
 
       const containerWidth = this.mainContainerRef.scrollWidth;
 
-      const startComponentWidth =
+      let startComponentWidth =
         containerWidth !== 0
           ? (this.lastBarRelativePositionX / containerWidth) * 100
           : 0;
 
+      if (this.isRTLDirection) {
+        startComponentWidth = 100 - startComponentWidth;
+      }
+
       this.startComponentRef.style.setProperty(
-        "width",
+        START_COMPONENT_WIDTH,
         `${this.keepValueInBetween(startComponentWidth)}%`
       );
     });
   };
+
+  connectedCallback() {
+    this.rtlWatcher = new MutationObserver(mutations => {
+      this.isRTLDirection = (mutations[0].target as Document).dir === "rtl";
+    });
+
+    // Watch changes in the dir attribute of the html tag
+    this.rtlWatcher.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["dir"],
+      childList: false,
+      subtree: false
+    });
+
+    // Initialize the value, since the observer won't do it
+    this.isRTLDirection = document.documentElement.dir === "rtl";
+  }
 
   componentDidLoad() {
     const removeMouseMoveHandler = () => {
@@ -152,6 +178,13 @@ export class DragBar implements ChComponent {
     );
   }
 
+  disconnectedCallback() {
+    if (this.rtlWatcher) {
+      this.rtlWatcher.disconnect();
+      this.rtlWatcher = null;
+    }
+  }
+
   render() {
     return (
       <Host
@@ -187,7 +220,10 @@ export class DragBar implements ChComponent {
                 ) : (
                   <svg
                     aria-hidden="true"
-                    class="bar-item-src"
+                    class={{
+                      "bar-item-src": true,
+                      "bar-item-src--rtl": this.isRTLDirection
+                    }}
                     part="bar-item-src"
                     viewBox="0 0 12 57"
                     xmlns="http://www.w3.org/2000/svg"

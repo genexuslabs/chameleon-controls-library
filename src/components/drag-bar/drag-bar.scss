@@ -59,6 +59,10 @@ $bar-item-border-radius: $bar-item-width / 2;
   height: 100%;
 
   pointer-events: none;
+
+  &--rtl {
+    transform: rotateY(180deg);
+  }
 }
 
 .start-component {

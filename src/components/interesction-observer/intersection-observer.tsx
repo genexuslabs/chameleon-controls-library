@@ -151,7 +151,26 @@ export class IntersectionObserverControl {
       this.intersectionUpdate.emit(entries[0]);
     }, options);
 
-    this.observer.observe(this.element);
+    const childElement = this.getChildElement();
+
+    if (childElement) {
+      this.observer.observe(childElement);
+    }
+  }
+
+  /**
+   * @returns The first child element that its display CSS property is different from `contents`
+   */
+  private getChildElement() {
+    let childElement = this.element.firstElementChild as HTMLElement;
+
+    while (
+      childElement &&
+      getComputedStyle(childElement).display === "contents"
+    ) {
+      childElement = childElement.firstElementChild as HTMLElement;
+    }
+    return childElement;
   }
 
   /**

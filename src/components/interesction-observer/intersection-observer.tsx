@@ -148,19 +148,9 @@ export class IntersectionObserverControl {
       threshold: this.defaultThreshold
     };
     this.observer = new IntersectionObserver(entries => {
-      const detail: IntersectionObserverEntry = entries[0];
-      const detailObject = {
-        boundingClientRect: detail.boundingClientRect,
-        intersectionRatio: detail.intersectionRatio,
-        intersectionRect: detail.intersectionRect,
-        isIntersecting: detail.isIntersecting,
-        rootBounds: detail.rootBounds,
-        target: detail.target,
-        time: detail.time
-      };
-
-      this.intersectionUpdate.emit(detailObject);
+      this.intersectionUpdate.emit(entries[0]);
     }, options);
+
     this.observer.observe(this.element);
   }
 

@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Event,
   Element,
-  Host,
   Prop
 } from "@stencil/core";
 
@@ -29,11 +28,6 @@ export class IntersectionObserverControl {
    * Bottom margin around the root element
    */
   @Prop() readonly bottomMargin: string;
-
-  /**
-   * A CSS class to set as the gx-intersection-observer element class
-   */
-  @Prop() readonly cssClass: string;
 
   /**
    * Left margin around the root element
@@ -216,14 +210,6 @@ export class IntersectionObserverControl {
   }
 
   render() {
-    return (
-      <Host
-        class={{
-          [this.cssClass]: !!this.cssClass
-        }}
-      >
-        <slot name="content" />
-      </Host>
-    );
+    return <slot name="content" />;
   }
 }

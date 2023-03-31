@@ -144,7 +144,7 @@ $menuWidth: 240px;
     width: $menuWidth;
     position: fixed;
     height: 100vh;
-    left: 0;
+    inset-inline-start: 0;
     top: 0;
     z-index: 5;
 
@@ -168,7 +168,7 @@ $menuWidth: 240px;
         width: 2px;
         height: 10px;
         background-color: var(--menu-background-color);
-        left: 0;
+        inset-inline-start: 0;
         height: 100%;
         top: 0;
       }
@@ -185,13 +185,10 @@ $menuWidth: 240px;
       color: var(--text-color);
     }
 
-    transition: left 0.6s;
-    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
-
     #footer {
       position: fixed;
       bottom: 0;
-      left: 0;
+      inset-inline-start: 0;
       width: $menuWidth;
       box-sizing: border-box;
       z-index: 20;
@@ -207,7 +204,7 @@ $menuWidth: 240px;
           width: 2px;
           height: 10px;
           background-color: var(--menu-background-color);
-          left: 0;
+          inset-inline-start: 0;
           height: 100%;
           top: 0;
         }
@@ -242,7 +239,7 @@ $menuWidth: 240px;
           width: 2px;
           height: 10px;
           background-color: var(--menu-background-color);
-          left: 0;
+          inset-inline-start: 0;
           height: 100%;
           top: 0;
           transition: background-color 0.25s;
@@ -264,13 +261,15 @@ $menuWidth: 240px;
     &.collapsed,
     &.collapsed #title,
     &.collapsed #footer {
-      left: -202px;
+      inset-inline-start: -202px;
     }
 
     &.collapsing,
     &.collapsing #title,
     &.collapsing #footer {
-      left: -240px !important;
+      inset-inline-start: -240px !important;
+      transition: left 0.6s;
+      transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
     &.collapse-faster,
@@ -292,15 +291,13 @@ $menuWidth: 240px;
   }
   #menu,
   #footer {
-    transition: left 0.6s;
-    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
     color: var(--text-color);
   }
 
   /*TOOLTIP*/
   .tooltip {
     position: fixed;
-    left: 50px;
+    inset-inline-start:50px;
     opacity: 0;
     transition: opacity 0.25s;
     background-color: var(--menu-background-color);
@@ -318,7 +315,7 @@ $menuWidth: 240px;
     width: 2px;
     background-color: var(--indicator-color);
     position: fixed;
-    left: 0;
+    inset-inline-start: 0;
     height: 0;
     transition: top 0.4s, height 0.5s, opacity 0.35s;
     opacity: 1;

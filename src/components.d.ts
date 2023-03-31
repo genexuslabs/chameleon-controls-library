@@ -8,7 +8,6 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
-import { ChGridColumn } from "./components/grid/grid-column/ch-grid-column";
 import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
@@ -95,7 +94,7 @@ export namespace Components {
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnSettings {
-        "column": ChGridColumn;
+        "column": HTMLChGridColumnElement;
         "show": boolean;
     }
     interface ChGridColumnset {
@@ -197,23 +196,23 @@ export namespace Components {
         /**
           * If enabled, the icon will display its inherent/natural color
          */
-        "autoColor": boolean;
+        "autoColor": false;
         "disabled": boolean;
         "height": string;
         "iconSrc": string;
         "name": string;
-        "optionHeight": string;
         "width": string;
     }
     interface ChSelectOption {
         /**
           * If enabled, the option icons will display its inherent/natural color
          */
-        "autoColor": boolean;
+        "autoColor": true;
         /**
           * Determines if the option is disabled
          */
         "disabled": boolean;
+        "height": string;
         /**
           * Set the left side icon
          */
@@ -226,6 +225,10 @@ export namespace Components {
           * Determines the selected option
          */
         "selected": boolean;
+        /**
+          * The select option's value
+         */
+        "value": string;
     }
     interface ChSidebarMenu {
         /**
@@ -695,15 +698,15 @@ declare namespace LocalJSX {
         "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {
-        "column"?: HTMLChGridColumnElement;
+        "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
-        "column"?: HTMLChGridColumnElement;
+        "column": HTMLChGridColumnElement;
         "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
         "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridColumnSettings {
-        "column"?: ChGridColumn;
+        "column": HTMLChGridColumnElement;
         "show"?: boolean;
     }
     interface ChGridColumnset {
@@ -713,10 +716,6 @@ declare namespace LocalJSX {
     interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
-        /**
-          * Event that is emitted when the row legend is clicked.
-          * @event rowsetLegendClicked
-         */
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
@@ -820,7 +819,7 @@ declare namespace LocalJSX {
         /**
           * If enabled, the icon will display its inherent/natural color
          */
-        "autoColor"?: boolean;
+        "autoColor"?: false;
         "disabled"?: boolean;
         "height"?: string;
         "iconSrc"?: string;
@@ -833,18 +832,18 @@ declare namespace LocalJSX {
           * Emmits the item id
          */
         "onOptionClickedEvent"?: (event: CustomEvent<any>) => void;
-        "optionHeight"?: string;
         "width"?: string;
     }
     interface ChSelectOption {
         /**
           * If enabled, the option icons will display its inherent/natural color
          */
-        "autoColor"?: boolean;
+        "autoColor"?: true;
         /**
           * Determines if the option is disabled
          */
         "disabled"?: boolean;
+        "height"?: string;
         /**
           * Set the left side icon
          */
@@ -861,6 +860,10 @@ declare namespace LocalJSX {
           * Determines the selected option
          */
         "selected"?: boolean;
+        /**
+          * The select option's value
+         */
+        "value"?: string;
     }
     interface ChSidebarMenu {
         /**

@@ -56,12 +56,8 @@ export class ChSidebarMenuListItem {
   }
 
   itemClicked() {
-    const chSidebarMenu = document.querySelector("ch-sidebar-menu");
-    const menu = chSidebarMenu.shadowRoot.getElementById("menu");
-    if (!menu.classList.contains("collapsed")) {
-      const itemId = this.el.getAttribute("id");
-      this.itemClickedEvent.emit({ "item-id": itemId });
-    }
+    const itemId = this.el.getAttribute("id");
+    this.itemClickedEvent.emit({ "item-id": itemId });
   }
 
   firstListItemIcon() {

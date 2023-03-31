@@ -184,23 +184,23 @@ export class ChSidebarMenu {
           "click",
           function (e) {
             e.stopPropagation();
-            if (!this.menu.classList.contains("collapsed")) {
-              //remove current active item class
-              const currentActiveItem = document.querySelector(".item--active");
-              if (currentActiveItem !== null) {
-                currentActiveItem.classList.remove("item--active");
-              }
-              //set current item as active
-              item.classList.add("item--active");
-
-              //store the active item on the sessionStorage
-              this.storeSidebarActiveItem(item);
-
-              //fede
-              this.activeItem = item.id;
-
-              //Emmit event from the selected item
+            //fede
+            //if (!this.menu.classList.contains("collapsed")) {
+            //remove current active item class
+            const currentActiveItem = document.querySelector(".item--active");
+            if (currentActiveItem !== null) {
+              currentActiveItem.classList.remove("item--active");
             }
+            //set current item as active
+            item.classList.add("item--active");
+
+            //fede
+            this.GetCurrentItemIndicatorPos();
+
+            //store the active item on the sessionStorage
+            this.storeSidebarActiveItem(item);
+            this.activeItem = item.id;
+            //}
           }.bind(this)
         );
       }.bind(this)
@@ -343,13 +343,8 @@ export class ChSidebarMenu {
                   }.bind(this),
                   50
                 );
-
-                //nuevo
                 this.isCollapsed = false;
                 this.collapseMenuHandler();
-
-                //this.collapseBtnClicked.emit({ "isCollapsed": "false" });
-
                 this.storeSidebarState();
               } else {
                 this.collapseUncollapsedLists1();
@@ -361,10 +356,8 @@ export class ChSidebarMenu {
                   }.bind(this),
                   50
                 );
-
                 this.isCollapsed = true;
                 this.collapseMenuHandler();
-
                 this.storeSidebarState();
               }
               this.menu.classList.remove("collapsing");
@@ -380,6 +373,8 @@ export class ChSidebarMenu {
         }.bind(this)
       );
     }
+
+    this.getSidebarCollapsedState();
 
     /******************
     ITEMS TOOLTIP LOGIC
@@ -692,7 +687,6 @@ export class ChSidebarMenu {
     storageHelper.remove(item.id);
   }
 
-  //new fede
   storeSidebarState() {
     const storageHelper = new StorageHelper.SessionStorageWorker();
     const storageItem = storageHelper.get("isCollapsed");
@@ -712,30 +706,51 @@ export class ChSidebarMenu {
       switch (true) {
         case storageItems[i].key === "active-item": {
           item = document.getElementById(storageItems[i].value);
-
-          //fede
           if (item) {
             item.classList.add("item--active");
             this.activeItem = item.id;
+            //fede
+            //const itemPos = item.offsetTop;
+            /*
+            this.main.scroll({
+              top: 100, 
+              left: 0,
+              behavior: 'smooth'
+            })*/
+            this.main.scrollTop = 100;
           }
-
           break;
         }
+
         case storageItems[i].value === "uncollapsed": {
           item = document.getElementById(storageItems[i].key);
-          //fede
           if (item) {
             item.classList.add("uncollapsed");
           }
           break;
         }
-        //new
+      }
+    }
+  }
+
+  getSidebarCollapsedState() {
+    const storageHelper = new StorageHelper.SessionStorageWorker();
+    const storageItems = storageHelper.getAllItems();
+    for (let i = 0; i < storageItems.length; i++) {
+      switch (true) {
         case storageItems[i].key === "isCollapsed": {
           if (storageItems[i].value === "true") {
-            //test
             this.collapseUncollapsedLists1();
+            this.switchListOneOrder();
             this.menu.classList.add("collapsed");
+            setTimeout(
+              function () {
+                this.repositionIndicatorAfterMenuCollapse();
+              }.bind(this),
+              50
+            );
             this.isCollapsed = true;
+            this.collapseMenuHandler();
           } else {
             this.isCollapsed = false;
           }

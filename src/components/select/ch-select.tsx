@@ -20,9 +20,6 @@ import { ClickOutside } from "stencil-click-outside";
   assetsDirs: ["select-assets"]
 })
 export class ChSelect {
-  private selectWidth = 0;
-  private selectHeight = 0;
-  private selectOptions: Array<any> = [];
   private optionSelected = "";
   private arrowTop: string = getAssetPath(`./select-assets/arrow-top.svg`);
 
@@ -41,7 +38,7 @@ export class ChSelect {
   /**
    * If enabled, the icon will display its inherent/natural color
    */
-  @Prop({ reflect: true }) readonly autoColor: boolean = false;
+  @Prop({ reflect: true }) readonly autoColor = false;
   /*
    * Disables the select
    */
@@ -54,10 +51,6 @@ export class ChSelect {
    * The select height (optional)
    */
   @Prop() readonly height: string;
-  /*
-   * The select's option height (optional)
-   */
-  @Prop() readonly optionHeight: string;
   /*
    * This will track state changes (whether the
    * dropdown component is open or closed)
@@ -78,140 +71,30 @@ export class ChSelect {
 
   @Element() el: HTMLChSelectElement;
 
-  componentWillRender() {
-    //load select options to render
-    for (let i = 0; i < this.el.children.length; i++) {
-      if (!this.selectOptions.includes(this.el.children[i]))
-        this.selectOptions.push(this.el.children[i]);
-      for (let j = 0; j < this.el.children[i].attributes.length; j++) {
-        if (this.el.children[i].attributes[j].name === "selected") {
-          this.optionSelected = this.el.children[i].innerHTML;
-        }
-      }
-    }
-  }
+  //test
+  private optionsContainerEl?: HTMLDivElement;
+  private selectContainerEl?: HTMLDivElement;
+  private selectFlexContainerEl?: HTMLDivElement;
+  private ro: ResizeObserver;
 
   componentDidLoad() {
-    const selectItems: HTMLElement =
-      this.el.shadowRoot.querySelector(".select-options");
-    let heightValueStr = "";
-    let heightValue = 0;
+    this.ro = new ResizeObserver(entries => {
+      for (const entry of entries) {
+        this.calculateSelectWidth(entry.contentBoxSize[0].inlineSize);
+        this.calculateSelectHeight();
+      }
+    });
+    this.ro.observe(this.el);
+    this.ro.observe(this.optionsContainerEl);
+  }
+
+  calculateSelectWidth(width) {
+    if (width !== 0) this.selectContainerEl.style.width = width + "px";
+  }
+
+  calculateSelectHeight() {
     if (this.height !== "" && this.height) {
-      heightValueStr = this.height;
-      //selectBox height
-      if (this.height.includes("%")) {
-        heightValueStr = "100%";
-      } else {
-        heightValueStr = this.height;
-        heightValueStr = heightValueStr.split("px")[0];
-        heightValue = Number(heightValueStr);
-        const elmt: HTMLElement =
-          this.el.shadowRoot.querySelector(".list-container");
-        elmt.style.height = heightValue + "px";
-      }
-    } else {
-      //default height: 32px
-      heightValue = 32;
-    }
-    //option's height
-    let optionHeightStr = "";
-    let optionHeight = 0;
-    if (this.optionHeight !== "" && this.optionHeight) {
-      optionHeightStr = this.optionHeight;
-      optionHeightStr = optionHeightStr.split("px")[0];
-      optionHeight = Number(optionHeightStr);
-      const optionElmts: NodeListOf<HTMLElement> =
-        this.el.shadowRoot.querySelectorAll(".option");
-      for (let f = 0; f < optionElmts.length; f++) {
-        optionElmts[f].style.height = optionHeight + "px";
-        optionElmts[f].style.lineHeight = optionHeight + "px";
-      }
-    } else {
-      //default option height: 32px
-      optionHeight = 32;
-    }
-
-    //get all options
-    const options = this.selectOptions;
-
-    for (let i = 0; i < options.length; i++) {
-      //calculate selectBox's height based on items quantity and optionHeight property
-      this.selectHeight = this.selectHeight + optionHeight;
-    }
-    //set selectBox height
-    selectItems.style.height = this.selectHeight + "px";
-
-    //set select width based on the wider item of the selectBox
-    let selectBoxWidth = selectItems.getBoundingClientRect().width;
-    selectBoxWidth = Math.round(selectBoxWidth * 100) / 100;
-    this.selectWidth = selectBoxWidth;
-
-    if (this.width !== "" && this.width) {
-      this.el.style.width = this.width;
-      //selectBox width
-      if (this.width.includes("%")) {
-        selectItems.style.width = "100%";
-      } else {
-        selectItems.style.width = this.width;
-      }
-    } else {
-      //add an extra space for the up/down arrow
-      this.selectWidth = this.selectWidth + 20;
-      //add an extra space for the icon, if it's used
-      if (this.resolveIcon() !== "") {
-        this.selectWidth = this.selectWidth + 20;
-      }
-
-      //set select width based on the placeholder text of the selectBox
-      const leftContainer: HTMLElement =
-        this.el.shadowRoot.querySelector("div.left-container");
-      const styleLeftContainer = window.getComputedStyle(leftContainer);
-      const paddingLeftContainer =
-        parseFloat(styleLeftContainer.paddingLeft) +
-        parseFloat(styleLeftContainer.paddingRight);
-      const leftIcon: HTMLElement = leftContainer.querySelector("ch-icon");
-      let leftIconWidth = 0;
-      let marginLeftIcon = 0;
-      if (this.iconSrc) {
-        const styleLeftIcon = window.getComputedStyle(leftIcon);
-        leftIconWidth = parseFloat(
-          styleLeftIcon.getPropertyValue("--icon-size")
-        );
-        const leftIconContainer =
-          leftContainer.querySelector("span.custom-icon");
-        const styleLeftIconContainer =
-          window.getComputedStyle(leftIconContainer);
-        marginLeftIcon =
-          parseFloat(styleLeftIconContainer.marginInlineStart) +
-          parseFloat(styleLeftIconContainer.marginInlineEnd);
-      } else {
-        marginLeftIcon = 8;
-      }
-      const arrowIcon: HTMLElement =
-        this.el.shadowRoot.querySelector("span.arrow-icon");
-      const constructedSelectWidth =
-        leftIconWidth +
-        marginLeftIcon +
-        leftContainer.offsetWidth +
-        paddingLeftContainer +
-        arrowIcon.offsetWidth;
-
-      if (constructedSelectWidth > this.selectWidth)
-        this.selectWidth = constructedSelectWidth;
-
-      this.el.style.width = this.selectWidth + "px";
-      selectItems.style.width = this.selectWidth + "px";
-    }
-
-    //calculate position
-    const top: number = this.el.getBoundingClientRect().top;
-    const totalFromTop = top + this.selectHeight + heightValue;
-    if (window.innerHeight - totalFromTop > 0) {
-      this.el.style.position = "relative";
-    } else {
-      const listContainer: HTMLElement =
-        this.el.shadowRoot.querySelector(".select-options");
-      listContainer.style.position = "unset";
+      this.selectFlexContainerEl.style.height = this.height;
     }
   }
 
@@ -275,6 +158,7 @@ export class ChSelect {
         tabindex="0"
       >
         <div
+          ref={el => (this.selectContainerEl = el as HTMLDivElement)}
           class={
             this.toggle
               ? "select-container uncollapsed"
@@ -285,6 +169,7 @@ export class ChSelect {
             class="list-container"
             part="select-box"
             onClick={() => this.toggleComponent()}
+            ref={el => (this.selectFlexContainerEl = el as HTMLDivElement)}
           >
             <div class="left-container">
               {this.iconSrc && (
@@ -309,6 +194,7 @@ export class ChSelect {
         </div>
 
         <div
+          ref={el => (this.optionsContainerEl = el as HTMLDivElement)}
           class={
             this.toggle ? "select-options active" : "select-options inactive"
           }

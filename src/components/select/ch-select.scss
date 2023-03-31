@@ -1,112 +1,111 @@
 :host {
-    /**
+  /**
     * @prop --text-color: The color of the text
     */
-    --text-color: var(--black);
-    /**
+  --text-color: var(--black);
+  /**
     * @prop --font-family: The select's font family
     */
-    --font-family: "Source Sans Pro", sans-serif;
-    /**
+  --font-family: "Source Sans Pro", sans-serif;
+  /**
     * @prop --title-font-weight: The select's text font weight
     */
-    --title-font-weight: bold;
-    /**
+  --title-font-weight: bold;
+  /**
     * @prop --font-size: The item's font size
     */
-    --font-size: 14px;
-    /**
+  --font-size: 14px;
+  /**
     * @prop --menu-background-color: The background color of the menu
     */
-    --background-color: var(--whiteSmoke);
-    /**
+  --background-color: var(--whiteSmoke);
+  /**
     * @prop --item-hover-color: The color of the item on hover
     */
-    --item-hover-color: var(--lightGray);
-    /**
+  --item-hover-color: var(--lightGray);
+  /**
     * @prop --item-active-color: The color of active item
     */
-    --item-active-color: var(--silverGray);
-    /**
+  --item-active-color: var(--silverGray);
+  /**
     * @prop --icon-color: The color of the item's icon
     */
-    --icon-color: var(--black);
-    /**
+  --icon-color: var(--black);
+  /**
     * @prop --icon-size: The size of the item's icon
     */
-    --icon-size: 20px;
-    /**
+  --icon-size: 20px;
+  /**
     * @prop --arrow-color: The color of the arrow icon
     */
-    --arrow-color: var(--black);
-    /**
+  --arrow-color: var(--black);
+  /**
     * @prop --padding-left: select's left padding
     */
-    --padding-left: 8px;
-    /**
+  --padding-left: 8px;
+  /**
     * @prop --padding-right: select's right padding
     */
-    --padding-right: 8px;
-    /**
+  --padding-right: 8px;
+  /**
     * @prop --justify-content: content position handling
     */
-    --justify-content: space-between;
+  --justify-content: space-between;
 
-    display: block;
-    cursor: pointer;
-    z-index: 10;
+  display: block;
+  cursor: pointer;
+  z-index: 10;
 
-    .icon {
-      display: inline-block;
-      line-height: 0;
+  .icon {
+    display: inline-block;
+    line-height: 0;
+  }
+  .text {
+    color: var(--text-color);
+    font-family: var(--font-family);
+    white-space: nowrap;
+  }
+  .active {
+    overflow: hidden;
+    transition: max-height 0.5s;
+    max-height: 1000px;
+  }
+  .inactive {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.32s;
+  }
+  .list-container {
+    background-color: var(--background-color);
+    display: flex;
+    justify-content: var(--justify-content);
+    padding: 6px var(--padding-right) 6px var(--padding-left);
+    height: 32px;
+    box-sizing: border-box;
+    align-items: center;
+    .left-container {
+      display: flex;
+      align-items: center;
+      align-self: center;
+      padding-inline-end: 8px;
+      .custom-icon {
+        margin-inline-end: 8px;
+      }
     }
-    .text {
-        color: var(--text-color);
-        //font-size: var(--font-size);
-        font-family: var(--font-family);
-        white-space: nowrap;
+    .arrow-icon {
+      transform: rotate(180deg);
+      transition: transform 0.25s;
     }
-    .active {
-       overflow: hidden;
-       transition: height 0.32s;
+  }
+  .select-container.uncollapsed {
+    .arrow-icon {
+      transform: rotate(0);
     }
-    .inactive {
-       height: 0 !important;
-       overflow: hidden;
-       transition-duration: 0.32s;
-       padding: 0 !important;
-    }
-    .list-container {
-        background-color: var(--background-color);
-        display: flex;
-        justify-content: var(--justify-content);//space-between;
-        padding: 6px var(--padding-right) 6px var(--padding-left);
-        height: 32px;
-        box-sizing: border-box;
-        align-items: center;
-        .left-container {
-            display: flex;
-            align-items: center;
-            align-self: center;
-            padding-inline-end: 8px;
-            .custom-icon { 
-                margin-inline-end: 8px;
-            }
-        }
-        .arrow-icon {
-            transform: rotate(180deg);
-            transition: transform 0.25s;
-        }
-    }
-    .select-container.uncollapsed {
-        .arrow-icon {
-            transform: rotate(0);
-        }
-    }
-    .select-options {
-        width: fit-content;
-        background-color: var(--background-color);
-        position: absolute;
-        z-index: 100;
-    }
+  }
+  .select-options {
+    width: fit-content;
+    background-color: var(--background-color);
+    position: absolute;
+    z-index: 100;
+  }
 }

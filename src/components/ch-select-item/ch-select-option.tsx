@@ -14,6 +14,10 @@ import {
   shadow: true
 })
 export class ChSelectItem {
+  /*
+   * The select's option height (optional)
+   */
+  @Prop() readonly height: string;
   /**
    * Set the left side icon
    */
@@ -25,15 +29,19 @@ export class ChSelectItem {
   /**
    * Determines the selected option
    */
-  @Prop() readonly selected: boolean;
+  @Prop({ reflect: true }) readonly selected: boolean;
   /**
    * Determines if the option is disabled
    */
-  @Prop() readonly disabled: boolean;
+  @Prop({ reflect: true }) readonly disabled: boolean;
   /**
    * If enabled, the option icons will display its inherent/natural color
    */
-  @Prop({ reflect: true }) readonly autoColor: boolean = true;
+  @Prop({ reflect: true }) readonly autoColor = true;
+  /**
+   * The select option's value
+   */
+  @Prop({ reflect: true }) readonly value: string;
   /**
    * Emits the item id
    */
@@ -41,18 +49,22 @@ export class ChSelectItem {
 
   @Element() el: HTMLChSelectOptionElement;
 
+  private selectOption?: HTMLDivElement;
+
   componentDidRender() {
-    const option: HTMLElement = this.el.shadowRoot.querySelector("div.option");
     if (this.el.hasAttribute("disabled")) {
-      option.setAttribute("disabled", "");
+      this.selectOption.setAttribute("disabled", "");
     }
     if (this.el.hasAttribute("selected")) {
-      option.classList.add("option-selected");
+      this.selectOption.classList.add("option-selected");
+      const selectedOptionText: HTMLElement =
+        this.el.parentElement.shadowRoot.querySelector("span.text");
+      selectedOptionText.innerHTML = this.el.innerHTML;
     }
   }
 
   optionClickedHandler(event) {
-    const targetOption = event.el.innerHTML;
+    const targetOption = event.el.value;
     if (!event.disabled) {
       this.setActiveOption(targetOption);
       this.itemClicked.emit({ "option-value": targetOption });
@@ -61,7 +73,7 @@ export class ChSelectItem {
 
   setActiveOption(targetItem) {
     const parent: any = this.el.parentElement;
-    const selectItems: NodeListOf<HTMLElement> = parent.children;
+    const selectItems: NodeListOf<HTMLChSelectOptionElement> = parent.children;
     let optionText = "";
 
     for (let i = 0; i < selectItems.length; i++) {
@@ -73,7 +85,7 @@ export class ChSelectItem {
       //remove pre-selection attribute
       selectItems[i].removeAttribute("selected");
       //set active item class
-      if (selectItems[i].innerText === targetItem.trim()) {
+      if (selectItems[i].value === targetItem.trim()) {
         item.classList.add("option-selected");
         selectItems[i].setAttribute("aria-selected", "true");
         optionText = selectItems[i].innerHTML;
@@ -106,10 +118,15 @@ export class ChSelectItem {
       <Host
         class="option"
         role="option"
-        value={this.el.innerHTML.trim()}
+        value={this.value}
         onClick={() => this.optionClickedHandler(this)}
       >
-        <div class="option" exportparts="option-text: select-option">
+        <div
+          class="option"
+          exportparts="option-text: select-option"
+          ref={el => (this.selectOption = el as HTMLDivElement)}
+          style={{ height: this.height }}
+        >
           <div class="left-container">
             {this.leftIconSrc && (
               <span class="icon left-icon">

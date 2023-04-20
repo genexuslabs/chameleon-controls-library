@@ -29,7 +29,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 ### Used by
 
  - [ch-select](../select)
- - [ch-select-option](../ch-select-item)
+ - [ch-select-option](../select-item)
  - [ch-sidebar-menu-list-item](../sidebar-menu-list-item)
  - [ch-tree-item](../tree-item)
 

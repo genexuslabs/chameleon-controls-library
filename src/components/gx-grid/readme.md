@@ -24,7 +24,7 @@
 - [ch-grid-column](../grid/grid-column)
 - [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
-- [ch-paginator-navigate](../paginator-navigate)
+- [ch-paginator-navigate](../paginator/paginator-navigate)
 
 ### Graph
 ```mermaid
@@ -41,6 +41,7 @@ graph TD;
   ch-grid --> ch-grid-settings
   ch-grid --> ch-grid-settings-columns
   ch-grid-settings --> ch-window
+  ch-window --> ch-window-close
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window

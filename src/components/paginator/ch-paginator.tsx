@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Component, Event, EventEmitter, Listen, Prop } from "@stencil/core";
-import { ChPaginatorNavigationClickedEvent } from "../paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorNavigationClickedEvent } from "./paginator-navigate/ch-paginator-navigate-types";
 
 @Component({
   tag: "ch-paginator",

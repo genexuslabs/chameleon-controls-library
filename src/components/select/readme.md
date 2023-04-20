@@ -15,7 +15,6 @@
 | `height`       | `height`         |                                                              | `string`  | `undefined` |
 | `iconSrc`      | `icon-src`       |                                                              | `string`  | `undefined` |
 | `name`         | `name`           |                                                              | `string`  | `undefined` |
-| `optionHeight` | `option-height`  |                                                              | `string`  | `undefined` |
 | `width`        | `width`          |                                                              | `string`  | `undefined` |
 
 

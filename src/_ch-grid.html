@@ -2,16 +2,19 @@
 <html dir="ltr" lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
     <title>Stencil Component Starter</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
   </head>
   <body>
-
     <style>
-      .header, .footer {
+      .header,
+      .footer {
         background-color: black;
         color: white;
       }
@@ -28,6 +31,11 @@
       }
       ch-grid-columnset {
         background-color: grey;
+      }
+
+      ch-grid::part(settings-mask),
+      ch-grid-column::part(settings-mask) {
+        background-color: rgba(255, 0, 0, 0.3);
       }
       ch-grid-row {
         background-color: white;
@@ -54,13 +62,13 @@
       }
 
       ch-grid-cell::part(actions-icon) {
-        padding:0px;
-        border:0px none transparent;
-        background-color:transparent;
-        box-sizing:content-box;
-        font-family:inherit;
-        font-size:100%;
-        
+        padding: 0px;
+        border: 0px none transparent;
+        background-color: transparent;
+        box-sizing: content-box;
+        font-family: inherit;
+        font-size: 100%;
+
         width: 16px;
         height: 16px;
         background-repeat: no-repeat;
@@ -70,7 +78,7 @@
       }
 
       .group.scroll ch-grid {
-         height: 150px;
+        height: 150px;
       }
 
       .group.tree ch-grid-cell::part(node-icon) {
@@ -81,7 +89,9 @@
         background-position: center;
       }
 
-      .group.tree ch-grid-row:has(> ch-grid-rowset) > ch-grid-cell::part(node-icon) {
+      .group.tree
+        ch-grid-row:has(> ch-grid-rowset)
+        > ch-grid-cell::part(node-icon) {
         background-image: url("http://localhost/images/folder.svg");
       }
       .group.tree ch-grid-cell::part(node-icon) {
@@ -105,7 +115,8 @@
         background-image: url("http://localhost/images/node_collapse.gif");
       }
 
-      ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset))) > ch-grid-cell::part(caret),
+      ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset)))
+        > ch-grid-cell::part(caret),
       ch-grid-rowset[collapsed] > ch-grid-rowset-legend::part(caret) {
         background-image: url("http://localhost/images/node_expand.gif");
       }
@@ -124,10 +135,28 @@
     <div class="group scroll">
       <ch-grid id="virtual-scroller" row-selection-mode="multiple">
         <ch-grid-columnset>
-          <ch-grid-column column-name="" settingable="false" column-type="rich" rich-row-drag size="min-content"></ch-grid-column>
-          <ch-grid-column column-name="" settingable="false" column-type="rich" rich-row-selector size="min-content"></ch-grid-column>
-          <ch-grid-column column-name="Property" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            column-type="rich"
+            rich-row-drag
+            size="min-content"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+            size="min-content"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-row selected>
@@ -199,9 +228,21 @@
 
       <ch-grid row-selection-mode="multiple" id="vs">
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="" settingable="false" size="min-content" column-type="rich" rich-row-actions></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            size="min-content"
+            column-type="rich"
+            rich-row-actions
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset id="vs-rowset" virtual-box>
@@ -268,8 +309,14 @@
     <div class="group">
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
@@ -330,14 +377,20 @@
 
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Nombre</ch-grid-cell>
               <ch-grid-cell>Productos</ch-grid-cell>
@@ -351,10 +404,10 @@
               <ch-grid-cell>Produtos</ch-grid-cell>
             </ch-grid-row>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Redireccionar a</ch-grid-cell>
               <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
@@ -364,10 +417,10 @@
               <ch-grid-cell>Found</ch-grid-cell>
             </ch-grid-row>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Url amigable</ch-grid-cell>
               <ch-grid-cell>productos</ch-grid-cell>
@@ -393,14 +446,23 @@
 
       <ch-grid row-selection-mode="multiple">
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false" column-type="rich" rich-row-selector rich-row-drag></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+            rich-row-drag
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Nombre</ch-grid-cell>
               <ch-grid-cell>Productos</ch-grid-cell>
@@ -414,10 +476,10 @@
               <ch-grid-cell>Produtos</ch-grid-cell>
             </ch-grid-row>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Redireccionar a</ch-grid-cell>
               <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
@@ -427,10 +489,10 @@
               <ch-grid-cell>Found</ch-grid-cell>
             </ch-grid-row>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-  
+
             <ch-grid-row>
               <ch-grid-cell>Url amigable</ch-grid-cell>
               <ch-grid-cell>productos</ch-grid-cell>
@@ -458,10 +520,29 @@
     <div class="group tree">
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Name" settingable="false" column-type="tree" freeze="start" size="20%"></ch-grid-column>
-          <ch-grid-column column-name="Type" settingable="false" size="80%"></ch-grid-column>
-          <ch-grid-column column-name="Description" settingable="false" size="500px"></ch-grid-column>
-          <ch-grid-column column-name="Is Collection" settingable="false" size="100px" freeze="end"></ch-grid-column>
+          <ch-grid-column
+            column-name="Name"
+            settingable="false"
+            column-type="tree"
+            freeze="start"
+            size="20%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Type"
+            settingable="false"
+            size="80%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Description"
+            settingable="false"
+            size="500px"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Is Collection"
+            settingable="false"
+            size="100px"
+            freeze="end"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-row>
@@ -473,7 +554,9 @@
           <ch-grid-rowset>
             <ch-grid-row leaf="false">
               <ch-grid-cell>TargetType</ch-grid-cell>
-              <ch-grid-cell>TargetType, GeneXus.Common.Notifications</ch-grid-cell>
+              <ch-grid-cell
+                >TargetType, GeneXus.Common.Notifications</ch-grid-cell
+              >
               <ch-grid-cell>Target Type (required)</ch-grid-cell>
               <ch-grid-cell>false</ch-grid-cell>
             </ch-grid-row>
@@ -573,13 +656,69 @@
 
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Column A" size="20%" freeze="start"></ch-grid-column>
-          <ch-grid-column column-name="Column B" size="20%" freeze="start"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column A"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Column B"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
           <ch-grid-column column-name="Column C" size="20%"></ch-grid-column>
           <ch-grid-column column-name="Column D" size="20%"></ch-grid-column>
           <ch-grid-column column-name="Column E" size="20%"></ch-grid-column>
-          <ch-grid-column column-name="Column F" size="20%" freeze="end"></ch-grid-column>
-          <ch-grid-column column-name="Column G" size="20%" freeze="end"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column F"
+            size="20%"
+            freeze="end"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Column G"
+            size="20%"
+            freeze="end"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-row>
+            <ch-grid-cell>A</ch-grid-cell>
+            <ch-grid-cell>B</ch-grid-cell>
+            <ch-grid-cell>C</ch-grid-cell>
+            <ch-grid-cell>D</ch-grid-cell>
+            <ch-grid-cell>E</ch-grid-cell>
+            <ch-grid-cell>F</ch-grid-cell>
+            <ch-grid-cell>G</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <ch-grid-actionbar slot="footer">
+          <ch-grid-action-settings>Settings</ch-grid-action-settings>
+        </ch-grid-actionbar>
+      </ch-grid>
+
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column column-name="Column A" size="20%"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column B"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
+          <ch-grid-column column-name="Column C" size="20%"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column D"
+            size="20%"
+            freeze="start"
+          ></ch-grid-column>
+          <ch-grid-column column-name="Column E" size="20%"></ch-grid-column>
+          <ch-grid-column
+            column-name="Column F"
+            size="20%"
+            freeze="end"
+          ></ch-grid-column>
+          <ch-grid-column column-name="Column G" size="20%"></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
@@ -599,8 +738,15 @@
     <div class="group tree">
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false" column-type="tree"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-row>
@@ -616,7 +762,7 @@
               <ch-grid-cell>Português</ch-grid-cell>
               <ch-grid-cell>Produtos</ch-grid-cell>
             </ch-grid-row>
-          </ch-grid-rowset> 
+          </ch-grid-rowset>
         </ch-grid-row>
         <ch-grid-row>
           <ch-grid-cell>Redireccionar a</ch-grid-cell>
@@ -643,7 +789,7 @@
                 <ch-grid-cell>Português</ch-grid-cell>
                 <ch-grid-cell>produtos</ch-grid-cell>
               </ch-grid-row>
-            </ch-grid-rowset> 
+            </ch-grid-rowset>
           </ch-grid-row>
 
           <ch-grid-rowset>
@@ -661,17 +807,23 @@
               </ch-grid-row>
             </ch-grid-rowset>
           </ch-grid-rowset>
-        </ch-grid-rowset> 
+        </ch-grid-rowset>
       </ch-grid>
 
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false" column-type="tree"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
-
           <ch-grid-row>
             <ch-grid-cell>Nombre</ch-grid-cell>
             <ch-grid-cell>Productos</ch-grid-cell>
@@ -685,7 +837,7 @@
                 <ch-grid-cell>Português</ch-grid-cell>
                 <ch-grid-cell>Produtos</ch-grid-cell>
               </ch-grid-row>
-            </ch-grid-rowset> 
+            </ch-grid-rowset>
           </ch-grid-row>
           <ch-grid-row>
             <ch-grid-cell>Redireccionar a</ch-grid-cell>
@@ -712,7 +864,7 @@
                   <ch-grid-cell>Português</ch-grid-cell>
                   <ch-grid-cell>produtos</ch-grid-cell>
                 </ch-grid-row>
-              </ch-grid-rowset> 
+              </ch-grid-rowset>
             </ch-grid-row>
 
             <ch-grid-rowset>
@@ -730,14 +882,21 @@
                 </ch-grid-row>
               </ch-grid-rowset>
             </ch-grid-rowset>
-          </ch-grid-rowset> 
+          </ch-grid-rowset>
         </ch-grid-rowset>
       </ch-grid>
 
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false" column-type="tree"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="tree"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
@@ -756,7 +915,7 @@
                 <ch-grid-cell>Português</ch-grid-cell>
                 <ch-grid-cell>Produtos</ch-grid-cell>
               </ch-grid-row>
-            </ch-grid-rowset> 
+            </ch-grid-rowset>
           </ch-grid-row>
           <ch-grid-row>
             <ch-grid-cell>Redireccionar a</ch-grid-cell>
@@ -783,14 +942,14 @@
                   <ch-grid-cell>Português</ch-grid-cell>
                   <ch-grid-cell>produtos</ch-grid-cell>
                 </ch-grid-row>
-              </ch-grid-rowset> 
+              </ch-grid-rowset>
             </ch-grid-row>
 
             <ch-grid-rowset>
               <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
 
-            <ch-grid-row rowid="row-permalink">
-              <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
+              <ch-grid-row rowid="row-permalink">
+                <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
                 <ch-grid-cell>7867</ch-grid-cell>
               </ch-grid-row>
 
@@ -801,22 +960,26 @@
                 </ch-grid-row>
               </ch-grid-rowset>
             </ch-grid-rowset>
-          </ch-grid-rowset> 
+          </ch-grid-rowset>
         </ch-grid-rowset>
       </ch-grid>
     </div>
-    
+
     <div class="group empty">
       <ch-grid>
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false"></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
-          <ch-grid-rowset-empty>
-            No hay registros
-          </ch-grid-rowset-empty>
+          <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
         </ch-grid-rowset>
 
         <div class="header" slot="header">
@@ -829,39 +992,39 @@
 
       <ch-grid row-selection-mode="multiple">
         <ch-grid-columnset>
-          <ch-grid-column column-name="Property" settingable="false" column-type="rich" rich-row-selector></ch-grid-column>
-          <ch-grid-column column-name="Value" settingable="false"></ch-grid-column>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
         </ch-grid-columnset>
 
         <ch-grid-rowset>
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-  
-            <ch-grid-rowset-empty>
-              No hay registros
-            </ch-grid-rowset-empty>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-  
-            <ch-grid-rowset-empty>
-              No hay registros
-            </ch-grid-rowset-empty>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
           </ch-grid-rowset>
-  
+
           <ch-grid-rowset>
             <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-  
-            <ch-grid-rowset-empty>
-              No hay registros
-            </ch-grid-rowset-empty>
+
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
 
             <ch-grid-rowset>
               <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-              <ch-grid-rowset-empty>
-                No hay registros
-              </ch-grid-rowset-empty>
+              <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
             </ch-grid-rowset>
           </ch-grid-rowset>
         </ch-grid-rowset>
@@ -876,8 +1039,14 @@
     </div>
 
     <script>
-      document.addEventListener("rowClicked", (eventInfo) => console.log(`[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}`))
-      document.addEventListener("selectionChanged", (eventInfo) => console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`))
+      document.addEventListener("rowClicked", eventInfo =>
+        console.log(
+          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}`
+        )
+      );
+      document.addEventListener("selectionChanged", eventInfo =>
+        console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`)
+      );
     </script>
   </body>
 </html>

@@ -12,7 +12,7 @@ import {
 import {
   ChPaginatorNavigationClickedEvent,
   ChPaginatorNavigationType
-} from "../paginator-navigate/ch-paginator-navigate-types";
+} from "../paginator/paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
 import {
   ChGridColumnHiddenChangedEvent,

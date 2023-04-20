@@ -8,11 +8,11 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
-import { ChGridManager } from "./components/grid/ch-grid-manager";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
-import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ecLevel } from "./components/qr/ch-qr";
+import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
@@ -106,7 +106,7 @@ export namespace Components {
     interface ChGridRowsetLegend {
     }
     interface ChGridSettings {
-        "gridManager": ChGridManager;
+        "grid": HTMLChGridElement;
         "show": boolean;
     }
     interface ChGridSettingsColumns {
@@ -350,12 +350,20 @@ export namespace Components {
         "updateTreeVerticalLineHeight": () => Promise<void>;
     }
     interface ChWindow {
+        "allowDrag": "no" | "header" | "box";
         "caption": string;
-        "closeAuto": boolean;
+        "closeOnEscape": boolean;
+        "closeOnOutsideClick": boolean;
         "closeText": string;
         "closeTooltip": string;
+        "container"?: HTMLElement;
         "hidden": boolean;
         "modal": boolean;
+        "xAlign": ChWindowAlign;
+        "yAlign": ChWindowAlign;
+    }
+    interface ChWindowClose {
+        "disabled": boolean;
     }
     interface GxGridChameleon {
         "grid": GxGrid;
@@ -564,6 +572,12 @@ declare global {
         prototype: HTMLChWindowElement;
         new (): HTMLChWindowElement;
     };
+    interface HTMLChWindowCloseElement extends Components.ChWindowClose, HTMLStencilElement {
+    }
+    var HTMLChWindowCloseElement: {
+        prototype: HTMLChWindowCloseElement;
+        new (): HTMLChWindowCloseElement;
+    };
     interface HTMLGxGridChameleonElement extends Components.GxGridChameleon, HTMLStencilElement {
     }
     var HTMLGxGridChameleonElement: {
@@ -609,6 +623,7 @@ declare global {
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
+        "ch-window-close": HTMLChWindowCloseElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
         "gx-grid-chameleon-column-filter": HTMLGxGridChameleonColumnFilterElement;
     }
@@ -719,7 +734,7 @@ declare namespace LocalJSX {
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
-        "gridManager"?: ChGridManager;
+        "grid": HTMLChGridElement;
         "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
         "show"?: boolean;
     }
@@ -997,13 +1012,23 @@ declare namespace LocalJSX {
         "selected"?: boolean;
     }
     interface ChWindow {
+        "allowDrag"?: "no" | "header" | "box";
         "caption"?: string;
-        "closeAuto"?: boolean;
+        "closeOnEscape"?: boolean;
+        "closeOnOutsideClick"?: boolean;
         "closeText"?: string;
         "closeTooltip"?: string;
+        "container"?: HTMLElement;
         "hidden"?: boolean;
         "modal"?: boolean;
         "onWindowClosed"?: (event: CustomEvent<any>) => void;
+        "onWindowOpened"?: (event: CustomEvent<any>) => void;
+        "xAlign"?: ChWindowAlign;
+        "yAlign"?: ChWindowAlign;
+    }
+    interface ChWindowClose {
+        "disabled"?: boolean;
+        "onWindowCloseClicked"?: (event: CustomEvent<any>) => void;
     }
     interface GxGridChameleon {
         "grid"?: GxGrid;
@@ -1052,6 +1077,7 @@ declare namespace LocalJSX {
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
+        "ch-window-close": ChWindowClose;
         "gx-grid-chameleon": GxGridChameleon;
         "gx-grid-chameleon-column-filter": GxGridChameleonColumnFilter;
     }
@@ -1092,6 +1118,7 @@ declare module "@stencil/core" {
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
+            "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;
             "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
             "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
         }

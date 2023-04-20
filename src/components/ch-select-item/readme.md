@@ -11,9 +11,11 @@
 | -------------- | ---------------- | -------------------------------------------------------------------- | --------- | ----------- |
 | `autoColor`    | `auto-color`     | If enabled, the option icons will display its inherent/natural color | `boolean` | `true`      |
 | `disabled`     | `disabled`       | Determines if the option is disabled                                 | `boolean` | `undefined` |
+| `height`       | `height`         |                                                                      | `string`  | `undefined` |
 | `leftIconSrc`  | `left-icon-src`  | Set the left side icon                                               | `string`  | `undefined` |
 | `rightIconSrc` | `right-icon-src` | Set the right side icon                                              | `string`  | `undefined` |
 | `selected`     | `selected`       | Determines the selected option                                       | `boolean` | `undefined` |
+| `value`        | `value`          | The select option's value                                            | `string`  | `undefined` |
 
 
 ## Events

@@ -41,6 +41,7 @@ graph TD;
   ch-grid --> ch-grid-settings
   ch-grid --> ch-grid-settings-columns
   ch-grid-settings --> ch-window
+  ch-window --> ch-window-close
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window

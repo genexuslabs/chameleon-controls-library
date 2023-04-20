@@ -73,6 +73,7 @@ graph TD;
   ch-grid --> ch-grid-settings
   ch-grid --> ch-grid-settings-columns
   ch-grid-settings --> ch-window
+  ch-window --> ch-window-close
   gx-grid-chameleon --> ch-grid
   style ch-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -292,6 +292,7 @@ export class GridChameleon {
   private renderColumnFilter(column: GxGridColumn) {
     return (
       <gx-grid-chameleon-column-filter
+        key={column.htmlName}
         class={this.grid.ColumnFilterClass}
         column={column}
         equal={column.filterEqual}
@@ -311,6 +312,7 @@ export class GridChameleon {
 
       return (
         <ch-grid-row
+          key={row.gxId}
           rowid={row.gxId}
           class={i % 2 === 0 ? rowEvenClasses : rowOddClasses}
         >
@@ -327,6 +329,7 @@ export class GridChameleon {
       if (gx.lang.gxBoolean(column.render)) {
         return (
           <ch-grid-cell
+            key={cellControlProperties[0]}
             class={this.grid.CellClass}
             cellid={i}
             innerHTML={this.renderControl(

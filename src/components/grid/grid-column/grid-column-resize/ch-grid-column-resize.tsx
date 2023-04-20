@@ -8,6 +8,7 @@ import {
   State,
   h
 } from "@stencil/core";
+import { mouseEventModifierKey } from "../../../common/helpers";
 
 @Component({
   tag: "ch-grid-column-resize",
@@ -67,7 +68,7 @@ export class ChGridColumnResize {
   dblclickHandler(eventInfo: MouseEvent) {
     eventInfo.stopPropagation();
 
-    if (eventInfo.ctrlKey) {
+    if (mouseEventModifierKey(eventInfo)) {
       this.column.size = "auto";
     } else {
       this.column.size = "max-content";

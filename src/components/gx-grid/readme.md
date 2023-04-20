@@ -24,7 +24,7 @@
 - [ch-grid-column](../grid/grid-column)
 - [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
-- [ch-paginator-navigate](../paginator-navigate)
+- [ch-paginator-navigate](../paginator/paginator-navigate)
 
 ### Graph
 ```mermaid

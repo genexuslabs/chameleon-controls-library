@@ -1,7 +1,7 @@
-@import "../common/reset.scss";
+@import "../../common/reset.scss";
 
 .pages {
-    display: flex;
-    align-items: center;
-    @include reset-list;
+  display: flex;
+  align-items: center;
+  @include reset-list;
 }

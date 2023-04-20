@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type           | Default     |
-| -------- | --------- | ----------- | -------------- | ----------- |
-| `column` | --        |             | `ChGridColumn` | `undefined` |
-| `show`   | `show`    |             | `boolean`      | `false`     |
+| Property              | Attribute | Description | Type                      | Default     |
+| --------------------- | --------- | ----------- | ------------------------- | ----------- |
+| `column` _(required)_ | --        |             | `HTMLChGridColumnElement` | `undefined` |
+| `show`                | `show`    |             | `boolean`                 | `false`     |
 
 
 ## Dependencies
@@ -27,6 +27,7 @@
 ```mermaid
 graph TD;
   ch-grid-column-settings --> ch-window
+  ch-window --> ch-window-close
   ch-grid-column --> ch-grid-column-settings
   style ch-grid-column-settings fill:#f9f,stroke:#333,stroke-width:4px
 ```

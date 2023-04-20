@@ -7,7 +7,6 @@ import {
   Event,
   EventEmitter
 } from "@stencil/core";
-import { ChGridManager } from "../ch-grid-manager";
 
 @Component({
   tag: "ch-grid-settings",
@@ -15,7 +14,7 @@ import { ChGridManager } from "../ch-grid-manager";
   shadow: true
 })
 export class ChGridSettings {
-  @Prop() readonly gridManager: ChGridManager;
+  @Prop() readonly grid!: HTMLChGridElement;
   @Prop({ reflect: true, mutable: true }) show = false;
   @Event() settingsCloseClicked: EventEmitter;
 
@@ -31,9 +30,13 @@ export class ChGridSettings {
     return (
       <Host>
         <ch-window
+          modal={true}
+          container={this.grid}
           caption="Options"
           closeText="Close"
-          closeAuto={true}
+          closeOnOutsideClick={true}
+          closeOnEscape={true}
+          allowDrag="header"
           hidden={!this.show}
           exportparts="mask,window,header,caption,close,main,footer"
         >

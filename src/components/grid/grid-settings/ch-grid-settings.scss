@@ -1,3 +1,4 @@
 :host {
-    display: contents;
+  display: contents;
+  --ch-window-mask-z-index: var(--ch-grid-settings-layer);
 }

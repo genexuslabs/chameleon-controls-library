@@ -31,6 +31,7 @@ import {
   ChGridColumnDragEvent,
   ChGridColumnSelectorClickedEvent
 } from "./grid-column/ch-grid-column-types";
+import { mouseEventModifierKey } from "../common/helpers";
 
 @Component({
   tag: "ch-grid",
@@ -137,7 +138,7 @@ export class ChGrid {
       );
       this.rowsSelected = this.manager.selection.setRowSelected(
         rowClicked,
-        eventInfo.ctrlKey ? "append" : "",
+        mouseEventModifierKey(eventInfo) ? "append" : "",
         eventInfo.shiftKey,
         this.rowSelectionMode === "multiple",
         this.rowsSelected

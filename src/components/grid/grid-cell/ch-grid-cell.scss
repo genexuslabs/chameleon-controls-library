@@ -1,12 +1,16 @@
 @import "../helpers/styles.scss";
 
-// row box simulation
 @layer ch-grid {
   ch-grid-cell {
     position: sticky;
     grid-column: var(--grid-column);
-    @include box-simulation;
     @include column-drag-transition;
+  }
+
+  ch-grid-cell,
+  ch-grid-row[selected] > ch-grid-cell,
+  ch-grid-row[highlighted] > ch-grid-cell {
+    @include box-simulation;
   }
 
   ch-grid-cell:before {

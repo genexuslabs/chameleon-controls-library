@@ -4,19 +4,22 @@ import {
   Event,
   EventEmitter,
   Listen,
-  Prop
+  Prop,
+  State,
+  h
 } from "@stencil/core";
 
 @Component({
   tag: "ch-grid-column-resize",
   styleUrl: "ch-grid-column-resize.scss",
-  shadow: false
+  shadow: true
 })
 export class ChGridColumnResize {
   @Element() el: HTMLChGridColumnResizeElement;
+  @Prop() readonly column!: HTMLChGridColumnElement;
+  @State() resizing = false;
   @Event() columnResizeStarted: EventEmitter;
   @Event() columnResizeFinished: EventEmitter;
-  @Prop() readonly column!: HTMLChGridColumnElement;
 
   private startPageX: number;
   private startColumnWidth: number;
@@ -69,5 +72,19 @@ export class ChGridColumnResize {
     } else {
       this.column.size = "max-content";
     }
+  }
+
+  @Listen("columnResizeStarted")
+  columnResizeStartedHandler() {
+    this.resizing = true;
+  }
+
+  @Listen("columnResizeFinished")
+  columnResizeFinishedHandler() {
+    this.resizing = false;
+  }
+
+  render() {
+    return <div class="resize-mask" hidden={!this.resizing}></div>;
   }
 }

@@ -1,9 +1,11 @@
-@layer ch-grid {
-    ch-grid-column-resize {
-        display: block;
-        min-width: 1px;
-        height: 100%;
-        cursor: ew-resize;
-        pointer-events: all;
-    }
+:host {
+  display: block;
+  min-width: 1px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.resize-mask {
+  position: fixed;
+  inset: 0;
 }

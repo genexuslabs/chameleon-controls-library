@@ -1,10 +1,6 @@
 @layer ch-grid {
-    ch-grid-columnset {
+  ch-grid-columnset {
     display: contents;
-
-    &.resizing ch-grid-column {
-      cursor: ew-resize;
-    }
   }
 }
 

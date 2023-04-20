@@ -5,7 +5,6 @@
   display: flex;
   position: sticky;
   top: 0;
-  --ch-grid-column-head-z-index: 1;
 }
 
 // column-set box simulation
@@ -14,9 +13,13 @@
   @include column-drag-transition;
 }
 
+// z-index levels
+:host {
+  --ch-grid-column-z-index-head: var(--ch-grid-column-header-layer);
+}
+:host([show-settings]),
 :host([resizing]) {
-  cursor: ew-resize;
-  pointer-events: none;
+  --ch-grid-column-z-index-active: var(--ch-grid-column-active-layer);
 }
 
 :host([sort-direction="asc"]) .bar .sort .sort-asc {
@@ -26,16 +29,11 @@
   visibility: visible;
 }
 
-:host([freeze]),
-:host([show-settings]) {
-  z-index: 1000;
-}
-
 .bar {
   @include reset-list;
   display: flex;
   align-items: center;
-  
+
   & .selector {
     overflow: hidden;
     order: 0;
@@ -85,8 +83,16 @@
 }
 
 @keyframes column-sort {
-  0%   {opacity: 0;}
-  10%  {opacity: 1;}
-  90%  {opacity: 1;}
-  100% {opacity: 0;}
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

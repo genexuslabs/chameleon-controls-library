@@ -5,9 +5,9 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type                      | Default     |
-| -------- | --------- | ----------- | ------------------------- | ----------- |
-| `column` | --        |             | `HTMLChGridColumnElement` | `undefined` |
+| Property              | Attribute | Description | Type                      | Default     |
+| --------------------- | --------- | ----------- | ------------------------- | ----------- |
+| `column` _(required)_ | --        |             | `HTMLChGridColumnElement` | `undefined` |
 
 
 ## Events

@@ -55,7 +55,7 @@ export class ChGridColumn {
   @Prop() readonly physicalOrder: number;
   @Prop() readonly size: string;
   @Prop() readonly resizable: boolean = true;
-  @Prop({ reflect: true }) readonly resizing: boolean;
+  @Prop({ reflect: true, mutable: true }) resizing: boolean;
   @Prop() readonly sortable: boolean = true;
   @Prop() readonly settingable: boolean = true;
   @Prop({ mutable: true, reflect: true })
@@ -123,8 +123,15 @@ export class ChGridColumn {
     }
   }
 
+  @Listen("columnResizeStarted")
+  columnResizeStartedHandler() {
+    this.resizing = true;
+  }
+
   @Listen("columnResizeFinished")
   columnResizeFinishedHandler() {
+    this.resizing = false;
+
     this.columnSizeChanged.emit({
       columnId: this.columnId,
       size: this.size

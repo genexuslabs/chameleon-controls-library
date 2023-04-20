@@ -10,7 +10,7 @@ import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
-import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ecLevel } from "./components/qr/ch-qr";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";

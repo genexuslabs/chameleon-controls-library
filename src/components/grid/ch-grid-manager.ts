@@ -307,7 +307,8 @@ export class ChGridManager {
       [`--ch-grid-column-${column.physicalOrder}-left-freeze`]: `calc(${calcItems.join(
         " + "
       )})`,
-      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000"
+      [`--ch-grid-column-${column.physicalOrder}-z-index-freeze`]:
+        "var(--ch-grid-column-freeze-layer)"
     };
   }
 
@@ -327,7 +328,8 @@ export class ChGridManager {
       [`--ch-grid-column-${column.physicalOrder}-right-freeze`]: `calc(${calcItems.join(
         " + "
       )})`,
-      [`--ch-grid-column-${column.physicalOrder}-z-index`]: "1000"
+      [`--ch-grid-column-${column.physicalOrder}-z-index-freeze`]:
+        "var(--ch-grid-column-freeze-layer)"
     };
   }
 

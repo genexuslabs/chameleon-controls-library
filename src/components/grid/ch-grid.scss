@@ -1,8 +1,12 @@
-
 :host {
   display: flex;
   position: relative;
   flex-direction: column;
+
+  --ch-grid-column-header-layer: 1000;
+  --ch-grid-column-freeze-layer: 2000;
+  --ch-grid-column-active-layer: 4000;
+  --ch-grid-settings-layer: 8000;
 }
 .main {
   display: none;
@@ -11,7 +15,9 @@
 }
 .row-actions {
   position: absolute;
-  top: calc(var(--ch-grid-row-highlighted-top, 0px) - var(--ch-grid-scroll-v, 0px));
+  top: calc(
+    var(--ch-grid-row-highlighted-top, 0px) - var(--ch-grid-scroll-v, 0px)
+  );
 }
 .row-actions:not([show]) {
   display: none;

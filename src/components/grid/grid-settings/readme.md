@@ -5,10 +5,10 @@
 
 ## Properties
 
-| Property      | Attribute | Description | Type            | Default     |
-| ------------- | --------- | ----------- | --------------- | ----------- |
-| `gridManager` | --        |             | `ChGridManager` | `undefined` |
-| `show`        | `show`    |             | `boolean`       | `false`     |
+| Property            | Attribute | Description | Type                | Default     |
+| ------------------- | --------- | ----------- | ------------------- | ----------- |
+| `grid` _(required)_ | --        |             | `HTMLChGridElement` | `undefined` |
+| `show`              | `show`    |             | `boolean`           | `false`     |
 
 
 ## Events
@@ -32,6 +32,7 @@
 ```mermaid
 graph TD;
   ch-grid-settings --> ch-window
+  ch-window --> ch-window-close
   ch-grid --> ch-grid-settings
   style ch-grid-settings fill:#f9f,stroke:#333,stroke-width:4px
 ```

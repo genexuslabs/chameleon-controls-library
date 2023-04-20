@@ -24,9 +24,15 @@ export class ChGridColumnSettings {
     return (
       <Host>
         <ch-window
+          modal={true}
+          container={this.column}
+          xAlign="inside-start"
+          yAlign="outside-end"
           caption={this.column.columnName}
           closeText="Close"
-          closeAuto={true}
+          closeOnOutsideClick={true}
+          closeOnEscape={true}
+          allowDrag="header"
           hidden={!this.show}
           exportparts="mask,window,header,caption,close,main,footer"
         >

@@ -174,7 +174,7 @@ export class ChGridManagerColumns {
                         transform: var(--ch-grid-column-${i}-transform);
                         left: var(--ch-grid-column-${i}-left-freeze);
                         right: var(--ch-grid-column-${i}-right-freeze);
-                        z-index: calc(var(--ch-grid-column-${i}-z-index, 0) + var(--ch-grid-column-head-z-index, 0));
+                        z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-column-z-index-head, 0)  + var(--ch-grid-column-z-index-active, 0));
                     }
                     ch-grid-cell:nth-child(${i})::before {
                         content: var(--ch-grid-column-${i}-content);

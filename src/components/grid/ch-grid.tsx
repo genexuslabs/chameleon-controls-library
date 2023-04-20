@@ -286,6 +286,7 @@ export class ChGrid {
   private renderSettings() {
     return (
       <ch-grid-settings
+        grid={this.el}
         ref={el => (this.gridSettingsUI = el)}
         exportparts="
           mask:settings-mask,

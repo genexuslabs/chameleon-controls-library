@@ -182,13 +182,17 @@ export class ChGridManagerColumns {
                 `;
       }
 
+      const styleInnerHTML = `@layer ch-grid {
+        ${selectors}
+      }`;
+
       if (style) {
         style.setAttribute("data-columns", this.columns.length.toString());
-        style.innerHTML = selectors;
+        style.innerHTML = styleInnerHTML;
       } else {
         document.head.insertAdjacentHTML(
           "beforeend",
-          `<style id="ch-grid-columns-variables" data-columns="${this.columns.length}">@layer ch-grid {${selectors}}</style>`
+          `<style id="ch-grid-columns-variables" data-columns="${this.columns.length}">${styleInnerHTML}</style>`
         );
       }
     }

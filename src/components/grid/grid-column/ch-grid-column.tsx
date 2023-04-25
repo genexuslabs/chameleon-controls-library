@@ -21,6 +21,9 @@ import {
   ChGridColumnSortDirection
 } from "./ch-grid-column-types";
 
+/**
+ * The `ch-grid-column` component represents a grid column.
+ */
 @Component({
   tag: "ch-grid-column",
   styleUrl: "ch-grid-column.scss",
@@ -28,39 +31,165 @@ import {
 })
 export class ChGridColumn {
   @Element() el: HTMLChGridColumnElement;
-  @Event() columnHiddenChanged: EventEmitter<ChGridColumnHiddenChangedEvent>;
-  @Event() columnSizeChanging: EventEmitter<ChGridColumnSizeChangedEvent>;
-  @Event() columnSizeChanged: EventEmitter<ChGridColumnSizeChangedEvent>;
-  @Event() columnOrderChanged: EventEmitter<ChGridColumnOrderChangedEvent>;
-  @Event() columnSortChanged: EventEmitter<ChGridColumnSortChangedEvent>;
-  @Event() columnFreezeChanged: EventEmitter<ChGridColumnFreezeChangedEvent>;
-  @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
-  @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
-  @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
-  @Event()
-  columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
+
+  /**
+   * A unique identifier for the column.
+   */
   @Prop() readonly columnId: string;
+
+  /**
+   * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+   */
   @Prop() readonly columnType: "plain" | "rich" | "tree" = "plain";
+
+  /**
+   * A URL to an icon to display in the column header.
+   */
   @Prop() readonly columnIconUrl: string;
+
+  /**
+   * The text to display in the column header.
+   */
   @Prop() readonly columnName: string;
-  @Prop() readonly columnNamePosition: "title" | "text" = "text";
+
+  /**
+   * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+   */
+  @Prop() readonly columnNamePosition: "text" | "title" = "text";
+
+  /**
+   * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+   */
   @Prop() readonly richRowDrag: boolean;
+
+  /**
+   * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+   */
   @Prop() readonly richRowSelector: boolean;
+
+  /**
+   * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+   */
   @Prop() readonly richRowActions: boolean;
+
+  /**
+   * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+   */
   @Prop() readonly displayObserverClass: string;
+
+  /**
+   * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+   */
   @Prop() readonly freeze?: ChGridColumnFreeze;
+
+  /**
+   * A boolean indicating whether the column should be hidden.
+   * The user can display it from the grid settings.
+   */
   @Prop({ reflect: true }) readonly hidden: boolean = false;
+
+  /**
+   * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+   */
   @Prop() readonly hideable: boolean = true;
+
+  /**
+   * A number indicating the order in which the column should appear.
+   */
   @Prop({ reflect: true }) readonly order: number;
+
+  /**
+   * A number indicating the physical order of the column (i.e. its position in the DOM).
+   */
   @Prop() readonly physicalOrder: number;
+
+  /**
+   * A string indicating the width of the column.
+   * Any value supported by the "grid-template-columns" CSS property is valid.
+   */
   @Prop() readonly size: string;
+
+  /**
+   * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+   */
   @Prop() readonly resizable: boolean = true;
+
+  /**
+   * A boolean indicating whether the column is currently being resized.
+   */
   @Prop({ reflect: true, mutable: true }) resizing: boolean;
+
+  /**
+   * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+   */
   @Prop() readonly sortable: boolean = true;
+
+  /**
+   * A boolean indicating whether the user should be able to open a settings panel for the column.
+   */
   @Prop() readonly settingable: boolean = true;
+
+  /**
+   * One of "asc" or "desc", indicating the current sort direction.
+   */
   @Prop({ mutable: true, reflect: true })
   sortDirection?: ChGridColumnSortDirection;
+
+  /**
+   * A boolean indicating whether the settings panel for the column should be visible.
+   */
   @Prop({ reflect: true, mutable: true }) showSettings = false;
+
+  /**
+   * Event emitted when the `hidden` property is changed.
+   */
+  @Event() columnHiddenChanged: EventEmitter<ChGridColumnHiddenChangedEvent>;
+
+  /**
+   * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
+   */
+  @Event() columnSizeChanging: EventEmitter<ChGridColumnSizeChangedEvent>;
+
+  /**
+   * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
+   */
+  @Event() columnSizeChanged: EventEmitter<ChGridColumnSizeChangedEvent>;
+
+  /**
+   * Event emitted when the `order` property is changed.
+   */
+  @Event() columnOrderChanged: EventEmitter<ChGridColumnOrderChangedEvent>;
+
+  /**
+   * Event emitted when the `sortDirection` property is changed.
+   */
+  @Event() columnSortChanged: EventEmitter<ChGridColumnSortChangedEvent>;
+
+  /**
+   * Event emitted when the `freeze` property is changed.
+   */
+  @Event() columnFreezeChanged: EventEmitter<ChGridColumnFreezeChangedEvent>;
+
+  /**
+   * Event emitted when the user is dragging the column header to move it.
+   */
+  @Event() columnDragStarted: EventEmitter<ChGridColumnDragEvent>;
+
+  /**
+   * Event emitted when the user is dragging the column header to move it.
+   */
+  @Event() columnDragging: EventEmitter<ChGridColumnDragEvent>;
+
+  /**
+   * Event emitted when the user stops dragging the column header to move it.
+   */
+  @Event() columnDragEnded: EventEmitter<ChGridColumnDragEvent>;
+
+  /**
+   * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
+   */
+  @Event()
+  columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
 
   private dragging = false;
   private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);

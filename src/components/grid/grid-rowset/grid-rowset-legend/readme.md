@@ -5,9 +5,9 @@
 
 ## Events
 
-| Event                 | Description | Type                            |
-| --------------------- | ----------- | ------------------------------- |
-| `rowsetLegendClicked` |             | `CustomEvent<CustomEvent<any>>` |
+| Event                 | Description                               | Type                            |
+| --------------------- | ----------------------------------------- | ------------------------------- |
+| `rowsetLegendClicked` | Event emitted when the legend is clicked. | `CustomEvent<CustomEvent<any>>` |
 
 
 ## Shadow Parts

@@ -5,17 +5,17 @@
 
 ## Properties
 
-| Property            | Attribute | Description | Type                | Default     |
-| ------------------- | --------- | ----------- | ------------------- | ----------- |
-| `grid` _(required)_ | --        |             | `HTMLChGridElement` | `undefined` |
-| `show`              | `show`    |             | `boolean`           | `false`     |
+| Property            | Attribute | Description                                                          | Type                | Default     |
+| ------------------- | --------- | -------------------------------------------------------------------- | ------------------- | ----------- |
+| `grid` _(required)_ | --        | The `HTMLChGridElement` that the settings window is associated with. | `HTMLChGridElement` | `undefined` |
+| `show`              | `show`    | Indicates whether the settings window is currently shown or not.     | `boolean`           | `false`     |
 
 
 ## Events
 
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `settingsCloseClicked` |             | `CustomEvent<any>` |
+| Event                  | Description                                                            | Type               |
+| ---------------------- | ---------------------------------------------------------------------- | ------------------ |
+| `settingsCloseClicked` | Event emitted when the close button of the settings window is clicked. | `CustomEvent<any>` |
 
 
 ## Dependencies

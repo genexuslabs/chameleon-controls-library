@@ -1,12 +1,18 @@
 import { Component, h, Prop } from "@stencil/core";
 
+/**
+ * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+ */
 @Component({
   tag: "ch-grid-settings-columns",
   styleUrl: "ch-grid-settings-columns.scss",
   shadow: true
 })
 export class ChGridSettingsColumns {
-  @Prop() readonly columns: HTMLChGridColumnElement[];
+  /**
+   * An array of column elements to render.
+   */
+  @Prop() readonly columns!: HTMLChGridColumnElement[];
 
   private handleClick = (eventInfo: Event) => {
     const checkbox = eventInfo.target as HTMLInputElement;

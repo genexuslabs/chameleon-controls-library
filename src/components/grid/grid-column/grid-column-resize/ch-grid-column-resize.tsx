@@ -10,6 +10,9 @@ import {
 } from "@stencil/core";
 import { mouseEventModifierKey } from "../../../common/helpers";
 
+/**
+ * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+ */
 @Component({
   tag: "ch-grid-column-resize",
   styleUrl: "ch-grid-column-resize.scss",
@@ -17,9 +20,25 @@ import { mouseEventModifierKey } from "../../../common/helpers";
 })
 export class ChGridColumnResize {
   @Element() el: HTMLChGridColumnResizeElement;
+
+  /**
+   * The column element that is being resized.
+   */
   @Prop() readonly column!: HTMLChGridColumnElement;
+
+  /**
+   * Whether the component is currently resizing the column.
+   */
   @State() resizing = false;
+
+  /**
+   * Event emitted when the user starts resizing the column.
+   */
   @Event() columnResizeStarted: EventEmitter;
+
+  /**
+   * Event emitted when the user finishes resizing the column.
+   */
   @Event() columnResizeFinished: EventEmitter;
 
   private startPageX: number;

@@ -1,5 +1,16 @@
 import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 
+/**
+ * ChGridCellType indicates the type of cell.
+ * "Plain" is a simple cell that shows the contents of it.
+ * "Rich" is a rich cell that, in addition to displaying its content, enables
+ * the user to execute different actions on the row.
+ * The actions are:
+ * - allow dragging the row to reorder it.
+ * - allow to select the row by means of a checkbox.
+ * - allow displaying actions to be executed in the row.
+ * "TreeNode" is a cell that represents a node of the Tree.
+ */
 export enum ChGridCellType {
   Plain = "plain",
   Rich = "rich",
@@ -7,6 +18,9 @@ export enum ChGridCellType {
   RowAction = "action"
 }
 
+/**
+ * The `ch-grid-cell` component represents a grid cell.
+ */
 export default class HTMLChGridCellElement extends HTMLElement {
   private cellType = ChGridCellType.Plain;
   private caret: HTMLDivElement;
@@ -24,7 +38,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
     super();
   }
 
-  get type() {
+  /**
+   * One of "plain", "rich", or "node", indicating the type of cell.
+   */
+  get type(): ChGridCellType {
     return this.cellType;
   }
 
@@ -42,12 +59,25 @@ export default class HTMLChGridCellElement extends HTMLElement {
     }
   }
 
+  /**
+   * Returns the parent ch-grid-row element of the cell.
+   */
   get row(): HTMLChGridRowElement {
     return this.parentElement as HTMLChGridRowElement;
   }
 
+  /**
+   * A unique identifier for the cell.
+   */
   get cellId(): string {
     return this.getAttribute("cellid") ?? "";
+  }
+
+  /**
+   * A boolean value indicating whether the cell is selected.
+   */
+  get selected(): boolean {
+    return this.hasAttribute("selected");
   }
 
   set selected(value: boolean) {
@@ -58,20 +88,25 @@ export default class HTMLChGridCellElement extends HTMLElement {
     }
   }
 
-  get selected(): boolean {
-    return this.hasAttribute("selected");
-  }
-
+  /**
+   * A boolean value indicates whether the grid cell is visible.
+   */
   public isVisible(): boolean {
     return this.offsetParent !== null;
   }
 
+  /**
+   * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+   */
   public ensureVisible() {
     this.dispatchEvent(
       new CustomEvent("cellEnsureVisible", { bubbles: true, composed: true })
     );
   }
 
+  /**
+   * A boolean value indicates whether the selector of cell is checked or not.
+   */
   public setSelectorChecked(value: boolean) {
     this.selector.checked = value;
   }

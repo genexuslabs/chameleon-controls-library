@@ -5,9 +5,9 @@
 
 ## Properties
 
-| Property  | Attribute | Description | Type                        | Default     |
-| --------- | --------- | ----------- | --------------------------- | ----------- |
-| `columns` | --        |             | `HTMLChGridColumnElement[]` | `undefined` |
+| Property               | Attribute | Description                            | Type                        | Default     |
+| ---------------------- | --------- | -------------------------------------- | --------------------------- | ----------- |
+| `columns` _(required)_ | --        | An array of column elements to render. | `HTMLChGridColumnElement[]` | `undefined` |
 
 
 ## Shadow Parts

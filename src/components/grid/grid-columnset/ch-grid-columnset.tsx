@@ -1,6 +1,9 @@
 import { Component, Element, Listen } from "@stencil/core";
 import { ChGridColumnSortChangedEvent } from "../grid-column/ch-grid-column-types";
 
+/**
+ * The `ch-grid-columnset` component represents a group of columns.
+ */
 @Component({
   tag: "ch-grid-columnset",
   styleUrl: "ch-grid-columnset.scss",

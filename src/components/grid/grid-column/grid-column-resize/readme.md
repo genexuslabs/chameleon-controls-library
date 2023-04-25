@@ -5,17 +5,17 @@
 
 ## Properties
 
-| Property              | Attribute | Description | Type                      | Default     |
-| --------------------- | --------- | ----------- | ------------------------- | ----------- |
-| `column` _(required)_ | --        |             | `HTMLChGridColumnElement` | `undefined` |
+| Property              | Attribute | Description                               | Type                      | Default     |
+| --------------------- | --------- | ----------------------------------------- | ------------------------- | ----------- |
+| `column` _(required)_ | --        | The column element that is being resized. | `HTMLChGridColumnElement` | `undefined` |
 
 
 ## Events
 
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `columnResizeFinished` |             | `CustomEvent<any>` |
-| `columnResizeStarted`  |             | `CustomEvent<any>` |
+| Event                  | Description                                               | Type               |
+| ---------------------- | --------------------------------------------------------- | ------------------ |
+| `columnResizeFinished` | Event emitted when the user finishes resizing the column. | `CustomEvent<any>` |
+| `columnResizeStarted`  | Event emitted when the user starts resizing the column.   | `CustomEvent<any>` |
 
 
 ## Dependencies

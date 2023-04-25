@@ -8,14 +8,28 @@ import {
   EventEmitter
 } from "@stencil/core";
 
+/**
+ * The `ch-grid-settings` component represents a settings window for a grid component.
+ */
 @Component({
   tag: "ch-grid-settings",
   styleUrl: "ch-grid-settings.scss",
   shadow: true
 })
 export class ChGridSettings {
+  /**
+   * The `HTMLChGridElement` that the settings window is associated with.
+   */
   @Prop() readonly grid!: HTMLChGridElement;
+
+  /**
+   * Indicates whether the settings window is currently shown or not.
+   */
   @Prop({ reflect: true, mutable: true }) show = false;
+
+  /**
+   * Event emitted when the close button of the settings window is clicked.
+   */
   @Event() settingsCloseClicked: EventEmitter;
 
   @Listen("windowClosed")

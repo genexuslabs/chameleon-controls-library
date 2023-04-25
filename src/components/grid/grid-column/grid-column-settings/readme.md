@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property              | Attribute | Description | Type                      | Default     |
-| --------------------- | --------- | ----------- | ------------------------- | ----------- |
-| `column` _(required)_ | --        |             | `HTMLChGridColumnElement` | `undefined` |
-| `show`                | `show`    |             | `boolean`                 | `false`     |
+| Property              | Attribute | Description                                                                | Type                      | Default     |
+| --------------------- | --------- | -------------------------------------------------------------------------- | ------------------------- | ----------- |
+| `column` _(required)_ | --        | The `HTMLChGridColumnElement` that the settings window is associated with. | `HTMLChGridColumnElement` | `undefined` |
+| `show`                | `show`    | Indicates whether the settings window is currently shown or not.           | `boolean`                 | `false`     |
 
 
 ## Dependencies

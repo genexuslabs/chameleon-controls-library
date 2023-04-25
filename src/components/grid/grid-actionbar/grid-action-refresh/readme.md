@@ -5,16 +5,16 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type      | Default     |
-| ---------- | ---------- | ----------- | --------- | ----------- |
-| `disabled` | `disabled` |             | `boolean` | `undefined` |
+| Property   | Attribute  | Description                                              | Type      | Default     |
+| ---------- | ---------- | -------------------------------------------------------- | --------- | ----------- |
+| `disabled` | `disabled` | Indicates whether the refresh button is disabled or not. | `boolean` | `undefined` |
 
 
 ## Events
 
-| Event            | Description | Type               |
-| ---------------- | ----------- | ------------------ |
-| `refreshClicked` |             | `CustomEvent<any>` |
+| Event            | Description                                       | Type               |
+| ---------------- | ------------------------------------------------- | ------------------ |
+| `refreshClicked` | Event emitted when the refresh button is clicked. | `CustomEvent<any>` |
 
 
 ## Dependencies

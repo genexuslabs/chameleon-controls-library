@@ -1,5 +1,8 @@
 import { Component, Listen, Event, EventEmitter, h, Host } from "@stencil/core";
 
+/**
+ * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+ */
 @Component({
   tag: "ch-grid-rowset-legend",
   styleUrl: "ch-grid-rowset-legend.scss",
@@ -7,6 +10,10 @@ import { Component, Listen, Event, EventEmitter, h, Host } from "@stencil/core";
 })
 export class ChGridRowsetLegend {
   public static readonly TAG_NAME = "CH-GRID-ROWSET-LEGEND";
+
+  /**
+   * Event emitted when the legend is clicked.
+   */
   @Event() rowsetLegendClicked: EventEmitter<CustomEvent>;
 
   @Listen("click", { passive: true })

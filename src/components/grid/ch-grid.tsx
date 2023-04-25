@@ -33,6 +33,9 @@ import {
 } from "./grid-column/ch-grid-column-types";
 import { mouseEventModifierKey } from "../common/helpers";
 
+/**
+ * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+ */
 @Component({
   tag: "ch-grid",
   styleUrl: "ch-grid.scss",
@@ -41,7 +44,14 @@ import { mouseEventModifierKey } from "../common/helpers";
 export class ChGrid {
   @Element() el: HTMLChGridElement;
 
+  /**
+   * Event emitted when the row selection is changed.
+   */
   @Event() selectionChanged: EventEmitter<ChGridSelectionChangedEvent>;
+
+  /**
+   * Event emitted when a row is clicked.
+   */
   @Event() rowClicked: EventEmitter<ChGridRowClickedEvent>;
 
   @State() rowHighlighted: HTMLChGridRowElement;
@@ -49,11 +59,33 @@ export class ChGrid {
   @State() cellSelected: HTMLChGridCellElement;
   @State() gridStyle: CSSProperties;
 
+  /**
+   * One of "none", "single" or "multiple", indicating how rows can be selected.
+   * It can be set to "none" if no rows should be selectable,
+   * "single" if only one row can be selected at a time, or
+   * "multiple" if multiple rows can be selected at once.
+   */
   @Prop() readonly rowSelectionMode: "none" | "single" | "multiple" = "single";
+
+  /**
+   * One of "false", "true" or "auto", indicating whether or not rows can be highlighted.
+   * "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+   */
   @Prop() readonly rowHighlightEnabled: boolean | "auto" = "auto";
+
+  /**
+   * A CSS class name applied to a row when it is selected.
+   */
   @Prop() readonly rowSelectedClass: string;
+
+  /**
+   * A CSS class name applied to a row when it is hovered.
+   */
   @Prop() readonly rowHighlightedClass: string;
 
+  /**
+   * An object that contains localized strings for the grid.
+   */
   @Prop() readonly localization: GridLocalization;
 
   manager: ChGridManager;

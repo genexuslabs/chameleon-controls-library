@@ -5,16 +5,16 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type      | Default     |
-| ---------- | ---------- | ----------- | --------- | ----------- |
-| `disabled` | `disabled` |             | `boolean` | `undefined` |
+| Property   | Attribute  | Description                                               | Type      | Default     |
+| ---------- | ---------- | --------------------------------------------------------- | --------- | ----------- |
+| `disabled` | `disabled` | Indicates whether the settings button is disabled or not. | `boolean` | `undefined` |
 
 
 ## Events
 
-| Event                 | Description | Type               |
-| --------------------- | ----------- | ------------------ |
-| `settingsShowClicked` |             | `CustomEvent<any>` |
+| Event                 | Description                                        | Type               |
+| --------------------- | -------------------------------------------------- | ------------------ |
+| `settingsShowClicked` | Event emitted when the settings button is clicked. | `CustomEvent<any>` |
 
 
 ## Dependencies

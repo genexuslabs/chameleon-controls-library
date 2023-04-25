@@ -5,45 +5,45 @@
 
 ## Properties
 
-| Property               | Attribute                | Description | Type                          | Default     |
-| ---------------------- | ------------------------ | ----------- | ----------------------------- | ----------- |
-| `columnIconUrl`        | `column-icon-url`        |             | `string`                      | `undefined` |
-| `columnId`             | `column-id`              |             | `string`                      | `undefined` |
-| `columnName`           | `column-name`            |             | `string`                      | `undefined` |
-| `columnNamePosition`   | `column-name-position`   |             | `"text" \| "title"`           | `"text"`    |
-| `columnType`           | `column-type`            |             | `"plain" \| "rich" \| "tree"` | `"plain"`   |
-| `displayObserverClass` | `display-observer-class` |             | `string`                      | `undefined` |
-| `freeze`               | `freeze`                 |             | `"end" \| "start"`            | `undefined` |
-| `hidden`               | `hidden`                 |             | `boolean`                     | `false`     |
-| `hideable`             | `hideable`               |             | `boolean`                     | `true`      |
-| `order`                | `order`                  |             | `number`                      | `undefined` |
-| `physicalOrder`        | `physical-order`         |             | `number`                      | `undefined` |
-| `resizable`            | `resizable`              |             | `boolean`                     | `true`      |
-| `resizing`             | `resizing`               |             | `boolean`                     | `undefined` |
-| `richRowActions`       | `rich-row-actions`       |             | `boolean`                     | `undefined` |
-| `richRowDrag`          | `rich-row-drag`          |             | `boolean`                     | `undefined` |
-| `richRowSelector`      | `rich-row-selector`      |             | `boolean`                     | `undefined` |
-| `settingable`          | `settingable`            |             | `boolean`                     | `true`      |
-| `showSettings`         | `show-settings`          |             | `boolean`                     | `false`     |
-| `size`                 | `size`                   |             | `string`                      | `undefined` |
-| `sortDirection`        | `sort-direction`         |             | `"asc" \| "desc"`             | `undefined` |
-| `sortable`             | `sortable`               |             | `boolean`                     | `true`      |
+| Property               | Attribute                | Description                                                                                                                                    | Type                          | Default     |
+| ---------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------- |
+| `columnIconUrl`        | `column-icon-url`        | A URL to an icon to display in the column header.                                                                                              | `string`                      | `undefined` |
+| `columnId`             | `column-id`              | A unique identifier for the column.                                                                                                            | `string`                      | `undefined` |
+| `columnName`           | `column-name`            | The text to display in the column header.                                                                                                      | `string`                      | `undefined` |
+| `columnNamePosition`   | `column-name-position`   | One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.         | `"text" \| "title"`           | `"text"`    |
+| `columnType`           | `column-type`            | One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.                                                        | `"plain" \| "rich" \| "tree"` | `"plain"`   |
+| `displayObserverClass` | `display-observer-class` | A CSS class name to apply to the display observer element used to detect changes in the column visibility.                                     | `string`                      | `undefined` |
+| `freeze`               | `freeze`                 | One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).           | `"end" \| "start"`            | `undefined` |
+| `hidden`               | `hidden`                 | A boolean indicating whether the column should be hidden. The user can display it from the grid settings.                                      | `boolean`                     | `false`     |
+| `hideable`             | `hideable`               | A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).                     | `boolean`                     | `true`      |
+| `order`                | `order`                  | A number indicating the order in which the column should appear.                                                                               | `number`                      | `undefined` |
+| `physicalOrder`        | `physical-order`         | A number indicating the physical order of the column (i.e. its position in the DOM).                                                           | `number`                      | `undefined` |
+| `resizable`            | `resizable`              | A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).                          | `boolean`                     | `true`      |
+| `resizing`             | `resizing`               | A boolean indicating whether the column is currently being resized.                                                                            | `boolean`                     | `undefined` |
+| `richRowActions`       | `rich-row-actions`       | A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").         | `boolean`                     | `undefined` |
+| `richRowDrag`          | `rich-row-drag`          | A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").            | `boolean`                     | `undefined` |
+| `richRowSelector`      | `rich-row-selector`      | A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").             | `boolean`                     | `undefined` |
+| `settingable`          | `settingable`            | A boolean indicating whether the user should be able to open a settings panel for the column.                                                  | `boolean`                     | `true`      |
+| `showSettings`         | `show-settings`          | A boolean indicating whether the settings panel for the column should be visible.                                                              | `boolean`                     | `false`     |
+| `size`                 | `size`                   | A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.                         | `string`                      | `undefined` |
+| `sortDirection`        | `sort-direction`         | One of "asc" or "desc", indicating the current sort direction.                                                                                 | `"asc" \| "desc"`             | `undefined` |
+| `sortable`             | `sortable`               | A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data). | `boolean`                     | `true`      |
 
 
 ## Events
 
-| Event                   | Description | Type                                            |
-| ----------------------- | ----------- | ----------------------------------------------- |
-| `columnDragEnded`       |             | `CustomEvent<ChGridColumnDragEvent>`            |
-| `columnDragging`        |             | `CustomEvent<ChGridColumnDragEvent>`            |
-| `columnDragStarted`     |             | `CustomEvent<ChGridColumnDragEvent>`            |
-| `columnFreezeChanged`   |             | `CustomEvent<ChGridColumnFreezeChangedEvent>`   |
-| `columnHiddenChanged`   |             | `CustomEvent<ChGridColumnHiddenChangedEvent>`   |
-| `columnOrderChanged`    |             | `CustomEvent<ChGridColumnOrderChangedEvent>`    |
-| `columnSelectorClicked` |             | `CustomEvent<ChGridColumnSelectorClickedEvent>` |
-| `columnSizeChanged`     |             | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
-| `columnSizeChanging`    |             | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
-| `columnSortChanged`     |             | `CustomEvent<ChGridColumnSortChangedEvent>`     |
+| Event                   | Description                                                                                                              | Type                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
+| `columnDragEnded`       | Event emitted when the user stops dragging the column header to move it.                                                 | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnDragging`        | Event emitted when the user is dragging the column header to move it.                                                    | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnDragStarted`     | Event emitted when the user is dragging the column header to move it.                                                    | `CustomEvent<ChGridColumnDragEvent>`            |
+| `columnFreezeChanged`   | Event emitted when the `freeze` property is changed.                                                                     | `CustomEvent<ChGridColumnFreezeChangedEvent>`   |
+| `columnHiddenChanged`   | Event emitted when the `hidden` property is changed.                                                                     | `CustomEvent<ChGridColumnHiddenChangedEvent>`   |
+| `columnOrderChanged`    | Event emitted when the `order` property is changed.                                                                      | `CustomEvent<ChGridColumnOrderChangedEvent>`    |
+| `columnSelectorClicked` | Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.              | `CustomEvent<ChGridColumnSelectorClickedEvent>` |
+| `columnSizeChanged`     | Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).     | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
+| `columnSizeChanging`    | Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column). | `CustomEvent<ChGridColumnSizeChangedEvent>`     |
+| `columnSortChanged`     | Event emitted when the `sortDirection` property is changed.                                                              | `CustomEvent<ChGridColumnSortChangedEvent>`     |
 
 
 ## Shadow Parts

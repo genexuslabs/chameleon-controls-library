@@ -1,5 +1,8 @@
 import { IChGridCollapsible } from "../ch-grid-types";
 
+/**
+ * The `ch-grid-row` component represents a grid row.
+ */
 export default class HTMLChGridRowElement
   extends HTMLElement
   implements IChGridCollapsible
@@ -15,7 +18,112 @@ export default class HTMLChGridRowElement
     this.addEventListener("cellCaretClicked", this.cellCaretClickedHandler);
   }
 
-  getBoundingClientRect(): DOMRect {
+  /**
+   * Returns the parent ch-grid element of the grid row.
+   */
+  get grid(): HTMLChGridElement {
+    return this.parentGrid ?? this.loadParentGrid();
+  }
+
+  /**
+   * A unique identifier for the row.
+   */
+  get rowId(): string {
+    return this.getAttribute("rowid") ?? "";
+  }
+
+  /**
+   * A boolean value indicating whether the row is highlighted.
+   */
+  get highlighted(): boolean {
+    return this.hasAttribute("highlighted");
+  }
+
+  set highlighted(value: boolean) {
+    if (value === true) {
+      this.setAttribute("highlighted", "");
+      if (this.grid.rowHighlightedClass) {
+        this.classList.add(this.grid.rowHighlightedClass);
+      }
+    } else {
+      this.removeAttribute("highlighted");
+      if (this.grid.rowHighlightedClass) {
+        this.classList.remove(this.grid.rowHighlightedClass);
+      }
+    }
+  }
+
+  /**
+   * A boolean value indicating whether the row is selected.
+   */
+  get selected(): boolean {
+    return this.hasAttribute("selected");
+  }
+
+  set selected(value: boolean) {
+    if (value === true) {
+      this.setAttribute("selected", "");
+      if (this.grid.rowSelectedClass) {
+        this.classList.add(this.grid.rowSelectedClass);
+      }
+    } else {
+      this.removeAttribute("selected");
+      if (this.grid.rowSelectedClass) {
+        this.classList.remove(this.grid.rowSelectedClass);
+      }
+    }
+  }
+
+  /**
+   * A boolean value indicating whether the grid row has child rows.
+   */
+  get hasChildRows(): boolean {
+    return this.querySelector("ch-grid-rowset") ? true : false;
+  }
+
+  /**
+   * A boolean value indicates whether the grid row is collapsed.
+   */
+  get collapsed(): boolean {
+    return this.hasAttribute("collapsed");
+  }
+
+  set collapsed(value: boolean) {
+    if (value) {
+      this.setAttribute("collapsed", "");
+    } else {
+      this.removeAttribute("collapsed");
+    }
+  }
+
+  /**
+   * A boolean value indicates whether the grid row is a leaf node.
+   */
+  get leaf(): boolean {
+    return this.hasAttribute("leaf");
+  }
+
+  set leaf(value: boolean) {
+    if (value === true) {
+      this.setAttribute("leaf", "");
+    } else {
+      this.removeAttribute("leaf");
+    }
+  }
+
+  /**
+   * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+   */
+  public ensureVisible() {
+    this.dispatchEvent(
+      new CustomEvent("rowEnsureVisible", { bubbles: true, composed: true })
+    );
+  }
+
+  /**
+   * returns a `DOMRect` object representing the size of the grid row element.
+   */
+  public getBoundingClientRect(): DOMRect {
     let rect: DOMRect;
 
     if (!this.firstElementChild) {
@@ -35,84 +143,6 @@ export default class HTMLChGridRowElement
     }
 
     return rect;
-  }
-
-  get grid(): HTMLChGridElement {
-    return this.parentGrid ?? this.loadParentGrid();
-  }
-
-  get rowId(): string {
-    return this.getAttribute("rowid") ?? "";
-  }
-
-  set highlighted(value: boolean) {
-    if (value === true) {
-      this.setAttribute("highlighted", "");
-      if (this.grid.rowHighlightedClass) {
-        this.classList.add(this.grid.rowHighlightedClass);
-      }
-    } else {
-      this.removeAttribute("highlighted");
-      if (this.grid.rowHighlightedClass) {
-        this.classList.remove(this.grid.rowHighlightedClass);
-      }
-    }
-  }
-
-  get highlighted(): boolean {
-    return this.hasAttribute("highlighted");
-  }
-
-  set selected(value: boolean) {
-    if (value === true) {
-      this.setAttribute("selected", "");
-      if (this.grid.rowSelectedClass) {
-        this.classList.add(this.grid.rowSelectedClass);
-      }
-    } else {
-      this.removeAttribute("selected");
-      if (this.grid.rowSelectedClass) {
-        this.classList.remove(this.grid.rowSelectedClass);
-      }
-    }
-  }
-
-  get selected(): boolean {
-    return this.hasAttribute("selected");
-  }
-
-  get hasChildRows(): boolean {
-    return this.querySelector("ch-grid-rowset") ? true : false;
-  }
-
-  get collapsed(): boolean {
-    return this.hasAttribute("collapsed");
-  }
-
-  set collapsed(value: boolean) {
-    if (value) {
-      this.setAttribute("collapsed", "");
-    } else {
-      this.removeAttribute("collapsed");
-    }
-  }
-
-  get leaf(): boolean {
-    return this.hasAttribute("leaf");
-  }
-
-  set leaf(value: boolean) {
-    if (value === true) {
-      this.setAttribute("leaf", "");
-    } else {
-      this.removeAttribute("leaf");
-    }
-  }
-
-  public ensureVisible() {
-    this.dispatchEvent(
-      new CustomEvent("rowEnsureVisible", { bubbles: true, composed: true })
-    );
   }
 
   private cellCaretClickedHandler(eventInfo: PointerEvent) {

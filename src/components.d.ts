@@ -49,52 +49,148 @@ export namespace Components {
     }
     interface ChGrid {
         "cellEnsureVisible": (cellId: string) => Promise<void>;
+        /**
+          * An object that contains localized strings for the grid.
+         */
         "localization": GridLocalization;
         "rowEnsureVisible": (rowId: string) => Promise<void>;
+        /**
+          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+         */
         "rowHighlightEnabled": boolean | "auto";
+        /**
+          * A CSS class name applied to a row when it is hovered.
+         */
         "rowHighlightedClass": string;
+        /**
+          * A CSS class name applied to a row when it is selected.
+         */
         "rowSelectedClass": string;
+        /**
+          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+         */
         "rowSelectionMode": "none" | "single" | "multiple";
     }
     interface ChGridActionRefresh {
+        /**
+          * Indicates whether the refresh button is disabled or not.
+         */
         "disabled": boolean;
     }
     interface ChGridActionSettings {
+        /**
+          * Indicates whether the settings button is disabled or not.
+         */
         "disabled": boolean;
     }
     interface ChGridActionbar {
     }
     interface ChGridColumn {
+        /**
+          * A URL to an icon to display in the column header.
+         */
         "columnIconUrl": string;
+        /**
+          * A unique identifier for the column.
+         */
         "columnId": string;
+        /**
+          * The text to display in the column header.
+         */
         "columnName": string;
-        "columnNamePosition": "title" | "text";
+        /**
+          * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+         */
+        "columnNamePosition": "text" | "title";
+        /**
+          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+         */
         "columnType": "plain" | "rich" | "tree";
+        /**
+          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+         */
         "displayObserverClass": string;
+        /**
+          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+         */
         "freeze"?: ChGridColumnFreeze;
+        /**
+          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+         */
         "hidden": boolean;
+        /**
+          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+         */
         "hideable": boolean;
+        /**
+          * A number indicating the order in which the column should appear.
+         */
         "order": number;
+        /**
+          * A number indicating the physical order of the column (i.e. its position in the DOM).
+         */
         "physicalOrder": number;
+        /**
+          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+         */
         "resizable": boolean;
+        /**
+          * A boolean indicating whether the column is currently being resized.
+         */
         "resizing": boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+         */
         "richRowActions": boolean;
+        /**
+          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+         */
         "richRowDrag": boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+         */
         "richRowSelector": boolean;
+        /**
+          * A boolean indicating whether the user should be able to open a settings panel for the column.
+         */
         "settingable": boolean;
+        /**
+          * A boolean indicating whether the settings panel for the column should be visible.
+         */
         "showSettings": boolean;
+        /**
+          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+         */
         "size": string;
+        /**
+          * One of "asc" or "desc", indicating the current sort direction.
+         */
         "sortDirection"?: ChGridColumnSortDirection;
+        /**
+          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+         */
         "sortable": boolean;
     }
     interface ChGridColumnDisplay {
+        /**
+          * The column element that is being monitored.
+         */
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
+        /**
+          * The column element that is being resized.
+         */
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnSettings {
+        /**
+          * The `HTMLChGridColumnElement` that the settings window is associated with.
+         */
         "column": HTMLChGridColumnElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
         "show": boolean;
     }
     interface ChGridColumnset {
@@ -106,14 +202,29 @@ export namespace Components {
     interface ChGridRowsetLegend {
     }
     interface ChGridSettings {
+        /**
+          * The `HTMLChGridElement` that the settings window is associated with.
+         */
         "grid": HTMLChGridElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
         "show": boolean;
     }
     interface ChGridSettingsColumns {
+        /**
+          * An array of column elements to render.
+         */
         "columns": HTMLChGridColumnElement[];
     }
     interface ChGridVirtualScroller {
+        /**
+          * The list of items to be rendered in the grid.
+         */
         "items": any[];
+        /**
+          * The list of items to display within the current viewport.
+         */
         "viewPortItems": any[];
     }
     interface ChIcon {
@@ -661,67 +772,211 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface ChGrid {
+        /**
+          * An object that contains localized strings for the grid.
+         */
         "localization"?: GridLocalization;
+        /**
+          * Event emitted when a row is clicked.
+         */
         "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
+        /**
+          * Event emitted when the row selection is changed.
+         */
         "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+        /**
+          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+         */
         "rowHighlightEnabled"?: boolean | "auto";
+        /**
+          * A CSS class name applied to a row when it is hovered.
+         */
         "rowHighlightedClass"?: string;
+        /**
+          * A CSS class name applied to a row when it is selected.
+         */
         "rowSelectedClass"?: string;
+        /**
+          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+         */
         "rowSelectionMode"?: "none" | "single" | "multiple";
     }
     interface ChGridActionRefresh {
+        /**
+          * Indicates whether the refresh button is disabled or not.
+         */
         "disabled"?: boolean;
+        /**
+          * Event emitted when the refresh button is clicked.
+         */
         "onRefreshClicked"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridActionSettings {
+        /**
+          * Indicates whether the settings button is disabled or not.
+         */
         "disabled"?: boolean;
+        /**
+          * Event emitted when the settings button is clicked.
+         */
         "onSettingsShowClicked"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridActionbar {
     }
     interface ChGridColumn {
+        /**
+          * A URL to an icon to display in the column header.
+         */
         "columnIconUrl"?: string;
+        /**
+          * A unique identifier for the column.
+         */
         "columnId"?: string;
+        /**
+          * The text to display in the column header.
+         */
         "columnName"?: string;
-        "columnNamePosition"?: "title" | "text";
+        /**
+          * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+         */
+        "columnNamePosition"?: "text" | "title";
+        /**
+          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+         */
         "columnType"?: "plain" | "rich" | "tree";
+        /**
+          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+         */
         "displayObserverClass"?: string;
+        /**
+          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+         */
         "freeze"?: ChGridColumnFreeze;
+        /**
+          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+         */
         "hidden"?: boolean;
+        /**
+          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+         */
         "hideable"?: boolean;
+        /**
+          * Event emitted when the user stops dragging the column header to move it.
+         */
         "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the user is dragging the column header to move it.
+         */
         "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the user is dragging the column header to move it.
+         */
         "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the `freeze` property is changed.
+         */
         "onColumnFreezeChanged"?: (event: CustomEvent<ChGridColumnFreezeChangedEvent>) => void;
+        /**
+          * Event emitted when the `hidden` property is changed.
+         */
         "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
+        /**
+          * Event emitted when the `order` property is changed.
+         */
         "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
+        /**
+          * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
+         */
         "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
+        /**
+          * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
+         */
         "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+        /**
+          * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
+         */
         "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+        /**
+          * Event emitted when the `sortDirection` property is changed.
+         */
         "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
+        /**
+          * A number indicating the order in which the column should appear.
+         */
         "order"?: number;
+        /**
+          * A number indicating the physical order of the column (i.e. its position in the DOM).
+         */
         "physicalOrder"?: number;
+        /**
+          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+         */
         "resizable"?: boolean;
+        /**
+          * A boolean indicating whether the column is currently being resized.
+         */
         "resizing"?: boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+         */
         "richRowActions"?: boolean;
+        /**
+          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+         */
         "richRowDrag"?: boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+         */
         "richRowSelector"?: boolean;
+        /**
+          * A boolean indicating whether the user should be able to open a settings panel for the column.
+         */
         "settingable"?: boolean;
+        /**
+          * A boolean indicating whether the settings panel for the column should be visible.
+         */
         "showSettings"?: boolean;
+        /**
+          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+         */
         "size"?: string;
+        /**
+          * One of "asc" or "desc", indicating the current sort direction.
+         */
         "sortDirection"?: ChGridColumnSortDirection;
+        /**
+          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+         */
         "sortable"?: boolean;
     }
     interface ChGridColumnDisplay {
+        /**
+          * The column element that is being monitored.
+         */
         "column": HTMLChGridColumnElement;
     }
     interface ChGridColumnResize {
+        /**
+          * The column element that is being resized.
+         */
         "column": HTMLChGridColumnElement;
+        /**
+          * Event emitted when the user finishes resizing the column.
+         */
         "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
+        /**
+          * Event emitted when the user starts resizing the column.
+         */
         "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
     }
     interface ChGridColumnSettings {
+        /**
+          * The `HTMLChGridColumnElement` that the settings window is associated with.
+         */
         "column": HTMLChGridColumnElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
         "show"?: boolean;
     }
     interface ChGridColumnset {
@@ -731,19 +986,43 @@ declare namespace LocalJSX {
     interface ChGridRowsetEmpty {
     }
     interface ChGridRowsetLegend {
+        /**
+          * Event emitted when the legend is clicked.
+         */
         "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
+        /**
+          * The `HTMLChGridElement` that the settings window is associated with.
+         */
         "grid": HTMLChGridElement;
+        /**
+          * Event emitted when the close button of the settings window is clicked.
+         */
         "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
         "show"?: boolean;
     }
     interface ChGridSettingsColumns {
-        "columns"?: HTMLChGridColumnElement[];
+        /**
+          * An array of column elements to render.
+         */
+        "columns": HTMLChGridColumnElement[];
     }
     interface ChGridVirtualScroller {
+        /**
+          * The list of items to be rendered in the grid.
+         */
         "items"?: any[];
+        /**
+          * Event emitted when the list of visible items in the grid changes.
+         */
         "onViewPortItemsChanged"?: (event: CustomEvent<any>) => void;
+        /**
+          * The list of items to display within the current viewport.
+         */
         "viewPortItems"?: any[];
     }
     interface ChIcon {

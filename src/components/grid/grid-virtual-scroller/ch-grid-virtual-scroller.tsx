@@ -8,6 +8,11 @@ import {
   State
 } from "@stencil/core";
 
+/**
+ * The `ch-grid-virtual-scroller` component that displays a subset of items.
+ * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+ * based on the viewport size and scroll position.
+ */
 @Component({
   tag: "ch-grid-virtual-scroller",
   styleUrl: "ch-grid-virtual-scroller.scss",
@@ -15,13 +20,45 @@ import {
 })
 export class ChGridVirtualScrollerLegend {
   @Element() el: HTMLChGridVirtualScrollerElement;
+
+  /**
+   * The list of items to be rendered in the grid.
+   */
   @Prop() readonly items: any[];
+
+  /**
+   * The list of items to display within the current viewport.
+   */
   @Prop({ mutable: true }) viewPortItems: any[];
+
+  /**
+   * Height of each row in pixels.
+   */
   @State() rowHeight = 0;
+
+  /**
+   * Height of the browser window in pixels.
+   */
   @State() browserHeight = document.documentElement.clientHeight;
+
+  /**
+   * Flag indicating whether the grid has a scrollbar.
+   */
   @State() hasGridScroll = false;
+
+  /**
+   * Flag indicating whether the browser window has a scrollbar.
+   */
   @State() hasWindowScroll = false;
+
+  /**
+   * The maximum number of items that can fit on the screen at any given time.
+   */
   @State() maxViewPortItems = 1;
+
+  /**
+   *Event emitted when the list of visible items in the grid changes.
+   */
   @Event() viewPortItemsChanged: EventEmitter;
 
   private gridMainEl: HTMLElement;

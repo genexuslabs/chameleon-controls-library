@@ -2,6 +2,9 @@ import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 import { ChGridRowsetLegend } from "./grid-rowset-legend/ch-grid-rowset-legend";
 import { IChGridCollapsible } from "../ch-grid-types";
 
+/**
+ * The `ch-grid-rowset` component represents a group of rows.
+ */
 export default class HTMLChGridRowsetElement
   extends HTMLElement
   implements IChGridCollapsible
@@ -23,7 +26,36 @@ export default class HTMLChGridRowsetElement
     this.defineLevel();
   }
 
-  getBoundingClientRect(): DOMRect {
+  /**
+   * A boolean value indicates whether the grid rowset is collapsed.
+   */
+  get collapsed(): boolean {
+    return this.hasAttribute("collapsed");
+  }
+
+  set collapsed(value: boolean) {
+    if (value) {
+      this.setAttribute("collapsed", "");
+    } else {
+      this.removeAttribute("collapsed");
+    }
+  }
+
+  /**
+   * Gets the zero-based depth of the rowset in the tree.
+   */
+  get level(): number {
+    if (!this.computedLevel) {
+      this.computeLevel();
+    }
+
+    return this.computedLevel;
+  }
+
+  /**
+   * returns a `DOMRect` object representing the size of the grid rowset element.
+   */
+  public getBoundingClientRect(): DOMRect {
     let rect: DOMRect;
 
     const paddingTop = parseInt(this.style.getPropertyValue("padding-top"));
@@ -62,26 +94,6 @@ export default class HTMLChGridRowsetElement
     }
 
     return rect;
-  }
-
-  get collapsed(): boolean {
-    return this.hasAttribute("collapsed");
-  }
-
-  set collapsed(value: boolean) {
-    if (value) {
-      this.setAttribute("collapsed", "");
-    } else {
-      this.removeAttribute("collapsed");
-    }
-  }
-
-  get level(): number {
-    if (!this.computedLevel) {
-      this.computeLevel();
-    }
-
-    return this.computedLevel;
   }
 
   private rowsetLegendClickedHandler(eventInfo: CustomEvent) {

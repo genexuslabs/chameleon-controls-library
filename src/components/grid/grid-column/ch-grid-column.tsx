@@ -66,6 +66,11 @@ export class ChGridColumn {
    * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
    */
   @Prop() readonly richRowSelector: boolean;
+  @Prop() readonly richRowSelectorMode: "select" | "mark" = "select";
+  @Prop({ mutable: true }) richRowSelectorState:
+    | ""
+    | "checked"
+    | "indeterminate" = "";
 
   /**
    * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
@@ -318,6 +323,7 @@ export class ChGridColumn {
   private selectorClickHandler = (eventInfo: MouseEvent) => {
     const target = eventInfo.target as HTMLInputElement;
 
+    this.richRowSelectorState = target.checked ? "checked" : "";
     this.columnSelectorClicked.emit({
       checked: target.checked
     });
@@ -365,8 +371,12 @@ export class ChGridColumn {
         <label part="selector-label">
           <input
             type="checkbox"
-            part="selector"
+            part={["selector", this.richRowSelectorState]
+              .filter(part => part != "")
+              .join(" ")}
             onClick={this.selectorClickHandler}
+            checked={this.richRowSelectorState === "checked"}
+            indeterminate={this.richRowSelectorState === "indeterminate"}
           />
         </label>
       </li>

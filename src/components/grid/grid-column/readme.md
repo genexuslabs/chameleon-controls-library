@@ -5,29 +5,31 @@
 
 ## Properties
 
-| Property               | Attribute                | Description                                                                                                                                    | Type                          | Default     |
-| ---------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------- |
-| `columnIconUrl`        | `column-icon-url`        | A URL to an icon to display in the column header.                                                                                              | `string`                      | `undefined` |
-| `columnId`             | `column-id`              | A unique identifier for the column.                                                                                                            | `string`                      | `undefined` |
-| `columnName`           | `column-name`            | The text to display in the column header.                                                                                                      | `string`                      | `undefined` |
-| `columnNamePosition`   | `column-name-position`   | One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.         | `"text" \| "title"`           | `"text"`    |
-| `columnType`           | `column-type`            | One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.                                                        | `"plain" \| "rich" \| "tree"` | `"plain"`   |
-| `displayObserverClass` | `display-observer-class` | A CSS class name to apply to the display observer element used to detect changes in the column visibility.                                     | `string`                      | `undefined` |
-| `freeze`               | `freeze`                 | One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).           | `"end" \| "start"`            | `undefined` |
-| `hidden`               | `hidden`                 | A boolean indicating whether the column should be hidden. The user can display it from the grid settings.                                      | `boolean`                     | `false`     |
-| `hideable`             | `hideable`               | A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).                     | `boolean`                     | `true`      |
-| `order`                | `order`                  | A number indicating the order in which the column should appear.                                                                               | `number`                      | `undefined` |
-| `physicalOrder`        | `physical-order`         | A number indicating the physical order of the column (i.e. its position in the DOM).                                                           | `number`                      | `undefined` |
-| `resizable`            | `resizable`              | A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).                          | `boolean`                     | `true`      |
-| `resizing`             | `resizing`               | A boolean indicating whether the column is currently being resized.                                                                            | `boolean`                     | `undefined` |
-| `richRowActions`       | `rich-row-actions`       | A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").         | `boolean`                     | `undefined` |
-| `richRowDrag`          | `rich-row-drag`          | A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").            | `boolean`                     | `undefined` |
-| `richRowSelector`      | `rich-row-selector`      | A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").             | `boolean`                     | `undefined` |
-| `settingable`          | `settingable`            | A boolean indicating whether the user should be able to open a settings panel for the column.                                                  | `boolean`                     | `true`      |
-| `showSettings`         | `show-settings`          | A boolean indicating whether the settings panel for the column should be visible.                                                              | `boolean`                     | `false`     |
-| `size`                 | `size`                   | A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.                         | `string`                      | `undefined` |
-| `sortDirection`        | `sort-direction`         | One of "asc" or "desc", indicating the current sort direction.                                                                                 | `"asc" \| "desc"`             | `undefined` |
-| `sortable`             | `sortable`               | A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data). | `boolean`                     | `true`      |
+| Property               | Attribute                 | Description                                                                                                                                    | Type                                 | Default     |
+| ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ----------- |
+| `columnIconUrl`        | `column-icon-url`         | A URL to an icon to display in the column header.                                                                                              | `string`                             | `undefined` |
+| `columnId`             | `column-id`               | A unique identifier for the column.                                                                                                            | `string`                             | `undefined` |
+| `columnName`           | `column-name`             | The text to display in the column header.                                                                                                      | `string`                             | `undefined` |
+| `columnNamePosition`   | `column-name-position`    | One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.         | `"text" \| "title"`                  | `"text"`    |
+| `columnType`           | `column-type`             | One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.                                                        | `"plain" \| "rich" \| "tree"`        | `"plain"`   |
+| `displayObserverClass` | `display-observer-class`  | A CSS class name to apply to the display observer element used to detect changes in the column visibility.                                     | `string`                             | `undefined` |
+| `freeze`               | `freeze`                  | One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).           | `"end" \| "start"`                   | `undefined` |
+| `hidden`               | `hidden`                  | A boolean indicating whether the column should be hidden. The user can display it from the grid settings.                                      | `boolean`                            | `false`     |
+| `hideable`             | `hideable`                | A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).                     | `boolean`                            | `true`      |
+| `order`                | `order`                   | A number indicating the order in which the column should appear.                                                                               | `number`                             | `undefined` |
+| `physicalOrder`        | `physical-order`          | A number indicating the physical order of the column (i.e. its position in the DOM).                                                           | `number`                             | `undefined` |
+| `resizable`            | `resizable`               | A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).                          | `boolean`                            | `true`      |
+| `resizing`             | `resizing`                | A boolean indicating whether the column is currently being resized.                                                                            | `boolean`                            | `undefined` |
+| `richRowActions`       | `rich-row-actions`        | A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").         | `boolean`                            | `undefined` |
+| `richRowDrag`          | `rich-row-drag`           | A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").            | `boolean`                            | `undefined` |
+| `richRowSelector`      | `rich-row-selector`       | A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").             | `boolean`                            | `undefined` |
+| `richRowSelectorMode`  | `rich-row-selector-mode`  |                                                                                                                                                | `"mark" \| "select"`                 | `"select"`  |
+| `richRowSelectorState` | `rich-row-selector-state` |                                                                                                                                                | `"" \| "checked" \| "indeterminate"` | `""`        |
+| `settingable`          | `settingable`             | A boolean indicating whether the user should be able to open a settings panel for the column.                                                  | `boolean`                            | `true`      |
+| `showSettings`         | `show-settings`           | A boolean indicating whether the settings panel for the column should be visible.                                                              | `boolean`                            | `false`     |
+| `size`                 | `size`                    | A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.                         | `string`                             | `undefined` |
+| `sortDirection`        | `sort-direction`          | One of "asc" or "desc", indicating the current sort direction.                                                                                 | `"asc" \| "desc"`                    | `undefined` |
+| `sortable`             | `sortable`                | A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data). | `boolean`                            | `true`      |
 
 
 ## Events
@@ -62,7 +64,6 @@
 | `"bar-sort"`            |             |
 | `"bar-sort-ascending"`  |             |
 | `"bar-sort-descending"` |             |
-| `"selector"`            |             |
 | `"selector-label"`      |             |
 
 

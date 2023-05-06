@@ -47,6 +47,85 @@ export class ChGridManager {
     );
   }
 
+  getColumnsHeight(): number {
+    const gridColumnsHeight = getComputedStyle(
+      this.grid.gridMainEl
+    ).gridTemplateRows.split(" ");
+
+    return parseInt(gridColumnsHeight[0]) || 0;
+  }
+
+  getFirstColumn(): HTMLChGridColumnElement {
+    return this.columnsManager.getColumnsFirstLast().columnFirst;
+  }
+
+  getFirstRow(): HTMLChGridRowElement {
+    return this.grid.el.querySelector(
+      `${HTMLChGridRowElement.TAG_NAME.toLowerCase()}`
+    );
+  }
+
+  getPreviousRow(current: HTMLChGridRowElement): HTMLChGridRowElement {
+    const rows = this.getRows();
+    const i = rows.indexOf(current);
+
+    return rows
+      .slice(0, i)
+      .reverse()
+      .find(row => row.isVisible());
+  }
+
+  getNextRow(current: HTMLChGridRowElement): HTMLChGridRowElement {
+    const rows = this.getRows();
+    const i = rows.indexOf(current);
+
+    return rows.slice(i + 1).find(row => row.isVisible());
+  }
+
+  getLastRow(): HTMLChGridRowElement {
+    const rows = this.getRows();
+
+    return rows.reverse().find(row => row.isVisible());
+  }
+
+  getPreviousCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
+    const columnOrder = current.column.order;
+    const previousColumn = this.grid.manager.columns
+      .getColumns()
+      .reduce((previous, column) => {
+        return column.order < columnOrder &&
+          !column.hidden &&
+          (!previous || column.order > previous.order)
+          ? column
+          : previous;
+      }, null);
+
+    if (previousColumn) {
+      return current.row.querySelector(
+        `:scope > ch-grid-cell:nth-of-type(${previousColumn.physicalOrder})`
+      );
+    }
+  }
+
+  getNextCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
+    const columnOrder = current.column.order;
+    const nextColumn = this.grid.manager.columns
+      .getColumns()
+      .reduce((previous, column) => {
+        return column.order > columnOrder &&
+          !column.hidden &&
+          (!previous || column.order < previous.order)
+          ? column
+          : previous;
+      }, null);
+
+    if (nextColumn) {
+      return current.row.querySelector(
+        `:scope > ch-grid-cell:nth-of-type(${nextColumn.physicalOrder})`
+      );
+    }
+  }
+
   getGridRowIndex(row: HTMLChGridRowElement): number {
     return Array.prototype.indexOf.call(
       this.grid.el.querySelectorAll(
@@ -60,35 +139,56 @@ export class ChGridManager {
     return Array.prototype.indexOf.call(row.parentElement.children, row);
   }
 
-  getRowHeight(row: HTMLChGridRowElement): string {
+  getRowHeight(row: HTMLChGridRowElement): number {
     const gridRowsHeight = getComputedStyle(
       this.grid.gridMainEl
     ).gridTemplateRows.split(" ");
     const rowIndex = this.getGridRowIndex(row) + 1;
 
-    return gridRowsHeight[rowIndex];
+    return parseInt(gridRowsHeight[rowIndex]) || 0;
+  }
+
+  getRowsPerPage(): number {
+    const gridHeight = this.grid.gridMainEl.clientHeight;
+    const columnsHeight = this.getColumnsHeight();
+    const rowHeight = this.getRowHeight(this.getFirstRow());
+
+    return Math.floor((gridHeight - columnsHeight) / rowHeight);
+  }
+
+  getRow(rowId: string): HTMLChGridRowElement {
+    return this.grid.el.querySelector(`ch-grid-row[rowid="${rowId}"]`);
+  }
+
+  getRows(state: "all" | "visible" = "all"): HTMLChGridRowElement[] {
+    const rows = Array.from(
+      this.grid.el.querySelectorAll(`ch-grid-row`)
+    ) as HTMLChGridRowElement[];
+
+    if (state === "visible") {
+      return rows.filter(row => row.isVisible());
+    } else {
+      return rows;
+    }
+  }
+
+  getRowsSelected(): HTMLChGridRowElement[] {
+    return Array.from(
+      this.grid.el.querySelectorAll(`ch-grid-row[selected]`)
+    ) as HTMLChGridRowElement[];
   }
 
   getRowsRange(
     start: HTMLChGridRowElement,
     end: HTMLChGridRowElement
   ): HTMLChGridRowElement[] {
-    const nextElementSibling =
-      this.getRowsetRowIndex(start) <= this.getRowsetRowIndex(end)
-        ? "nextElementSibling"
-        : "previousElementSibling";
-    const rows: HTMLChGridRowElement[] = [];
-    let row: HTMLChGridRowElement;
+    const rows = this.getRows();
+    const indexStart = rows.indexOf(start);
+    const indexEnd = rows.indexOf(end);
 
-    row = start[nextElementSibling] as HTMLChGridRowElement;
-    rows.push(start);
-    while (row && row != end) {
-      rows.push(row);
-      row = row[nextElementSibling] as HTMLChGridRowElement;
-    }
-    rows.push(end);
-
-    return rows;
+    return rows
+      .slice(Math.min(indexStart, indexEnd), Math.max(indexStart, indexEnd) + 1)
+      .filter(row => row.isVisible());
   }
 
   getRowEventTarget(eventInfo: Event): HTMLChGridRowElement {
@@ -97,6 +197,31 @@ export class ChGridManager {
       .find(
         (target: HTMLElement) => target.tagName === "CH-GRID-ROW"
       ) as HTMLChGridRowElement;
+  }
+
+  isRowActionsEventTarget(eventInfo: Event): boolean {
+    return (
+      eventInfo
+        .composedPath()
+        .find((target: HTMLElement) =>
+          target.classList?.contains("row-actions")
+        ) != null
+    );
+  }
+
+  getCell(
+    cellId?: string,
+    rowId?: string,
+    columnId?: string
+  ): HTMLChGridCellElement {
+    if (cellId) {
+      return this.grid.el.querySelector(`ch-grid-cell[cellid="${cellId}"]`);
+    } else if (rowId && columnId) {
+      const row = this.getRow(rowId);
+      const column = this.columns.getColumn(columnId);
+
+      return row.getCell(column);
+    }
   }
 
   getCellEventTarget(eventInfo: Event): HTMLChGridCellElement {
@@ -138,16 +263,6 @@ export class ChGridManager {
     };
   }
 
-  getRowsSelected(): HTMLChGridRowElement[] {
-    const rows: HTMLChGridRowElement[] = [];
-
-    this.grid.el
-      .querySelectorAll("ch-grid-row[selected]")
-      .forEach((el: HTMLChGridRowElement) => rows.push(el));
-
-    return rows;
-  }
-
   isRowActionsEnabled(): boolean {
     const slot = this.grid.gridRowActionsEl
       .firstElementChild as HTMLSlotElement;
@@ -182,7 +297,11 @@ export class ChGridManager {
       );
     }
 
-    row.children[columnFirst.physicalOrder]?.scrollIntoView();
+    if (row.children[columnFirst.physicalOrder]) {
+      this.ensureVisible(
+        row.children[columnFirst.physicalOrder] as HTMLChGridRowElement
+      );
+    }
   }
 
   ensureCellVisible(cell: HTMLChGridCellElement) {
@@ -201,7 +320,28 @@ export class ChGridManager {
     if (!cell.isVisible()) {
     }
 
-    cell.scrollIntoView();
+    this.ensureVisible(cell);
+  }
+
+  private ensureVisible(element: HTMLElement) {
+    const scroll = this.grid.gridMainEl;
+    const offset = this.getColumnsHeight();
+
+    if (scroll.scrollTop + offset > element.offsetTop) {
+      scroll.scrollBy({
+        top: (scroll.scrollTop - element.offsetTop + offset) * -1
+      });
+    } else if (
+      scroll.scrollTop + scroll.offsetHeight <
+      element.offsetTop + element.offsetHeight
+    ) {
+      scroll.scrollBy({
+        top:
+          element.offsetTop +
+          element.offsetHeight -
+          (scroll.scrollTop + scroll.offsetHeight)
+      });
+    }
   }
 
   private getGridTemplateColumns(): CSSProperties {

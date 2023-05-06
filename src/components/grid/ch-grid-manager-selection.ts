@@ -2,178 +2,521 @@ import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "./grid-row/ch-grid-row";
 import { ChGrid } from "./ch-grid";
 
+export type ManagerSelectionState = {
+  rowFocused: HTMLChGridRowElement;
+  rowsSelected: HTMLChGridRowElement[];
+  cellSelected: HTMLChGridCellElement;
+};
+
 export class ChGridManagerSelection {
+  public selecting: boolean;
+  public selectingRow: HTMLChGridRowElement;
+  public selectingCell: HTMLChGridCellElement;
   private grid: ChGrid;
-  private lastRow: HTMLChGridRowElement;
+  private rangeStart: HTMLChGridRowElement;
+  private rangeValue: boolean;
+  private lastRowMarked: HTMLChGridRowElement;
+  private selectionStateNone: ManagerSelectionState = {
+    rowFocused: null,
+    rowsSelected: [],
+    cellSelected: null
+  };
 
   constructor(grid: ChGrid) {
     this.grid = grid;
   }
 
-  setRowHighlighted(
-    eventInfo: Event,
-    currentRowHighlighted: HTMLChGridRowElement
-  ): HTMLChGridRowElement {
-    const row =
-      this.getRowEventTarget(eventInfo) ||
-      (this.isRowActionsEventTarget(eventInfo) ? currentRowHighlighted : null);
+  select(
+    state: ManagerSelectionState,
+    row: HTMLChGridRowElement,
+    cell: HTMLChGridCellElement,
+    append: boolean,
+    range: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+      range = false;
+    }
 
-    if (row) {
-      if (!row.highlighted) {
-        if (currentRowHighlighted) {
-          currentRowHighlighted.highlighted = false;
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    rowFocused = row;
+    if (range) {
+      const rangeRows = this.grid.manager.getRowsRange(
+        this.rangeStart ?? row,
+        row
+      );
+
+      if (this.rangeValue) {
+        if (append) {
+          rowsSelected = Array.from(new Set(rowsSelected.concat(rangeRows)));
+        } else {
+          rowsSelected =
+            rowsSelected.length === rangeRows.length ? rowsSelected : rangeRows;
         }
-        row.highlighted = true;
+        cellSelected =
+          cell ||
+          row.getCell(
+            cellSelected?.column || this.grid.manager.getFirstColumn()
+          );
+      } else {
+        rowsSelected = rowsSelected.filter(
+          rowSelected => !rangeRows.includes(rowSelected)
+        );
+        cellSelected = null;
+      }
+    } else if (append) {
+      this.rangeStart = row;
+      this.rangeValue = !row.selected;
+
+      if (rowsSelected.includes(row)) {
+        rowsSelected = rowsSelected.filter(rowSelected => rowSelected !== row);
+        cellSelected = null;
+      } else {
+        rowsSelected = [...rowsSelected, row];
+        cellSelected =
+          cell ||
+          row.getCell(
+            cellSelected?.column || this.grid.manager.getFirstColumn()
+          );
       }
     } else {
-      if (currentRowHighlighted) {
-        currentRowHighlighted.highlighted = false;
-      }
+      this.rangeStart = row;
+      this.rangeValue = true;
+
+      rowsSelected =
+        rowsSelected.length === 1 && rowsSelected[0] === row
+          ? rowsSelected
+          : [row];
+      cellSelected =
+        cell ||
+        row.getCell(cellSelected?.column || this.grid.manager.getFirstColumn());
     }
 
-    return row;
+    return { rowFocused, rowsSelected, cellSelected };
   }
 
-  setRowSelected(
-    row: HTMLChGridRowElement,
-    action: "" | "append" | "unselect",
-    range: boolean,
-    multiple: boolean,
-    currentRowsSelected: HTMLChGridRowElement[]
-  ): HTMLChGridRowElement[] {
-    if (row) {
-      if (
-        range &&
-        multiple &&
-        row.parentElement == this.lastRow?.parentElement
-      ) {
-        const value = !row.selected;
-        const rows = this.grid.manager.getRowsRange(this.lastRow ?? row, row);
+  selectAll(state: ManagerSelectionState, value = true): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    }
 
-        this.lastRow = row;
-        rows.forEach(row => (row.selected = value));
+    const rows = this.grid.manager.getRows();
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
 
-        if (value) {
-          return currentRowsSelected.concat(
-            rows.filter(row => !currentRowsSelected.includes(row))
-          );
+    if (value) {
+      rowFocused = rowFocused ?? this.grid.manager.getFirstRow();
+      rowsSelected = rows;
+      cellSelected = rowFocused.getCell(
+        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    } else {
+      rowFocused = rowFocused ?? this.grid.manager.getFirstRow();
+      rowsSelected = [];
+      cellSelected = null;
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectFirstRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+    }
+
+    const firstRow = this.grid.manager.getFirstRow();
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (firstRow) {
+      if (append) {
+        const rangeRows = this.grid.manager.getRowsRange(
+          rowFocused ?? firstRow,
+          firstRow
+        );
+        rowsSelected = Array.from(new Set(rowsSelected.concat(rangeRows)));
+      } else {
+        rowsSelected = [firstRow];
+      }
+      rowFocused = firstRow;
+      cellSelected = firstRow.getCell(
+        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectPreviousRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+    }
+
+    const previousRow = this.grid.manager.getPreviousRow(state.rowFocused);
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (previousRow) {
+      if (append) {
+        const sortedRowsSelected = this.sortRowsSelected(rowsSelected);
+        const isContiguousSelection =
+          this.isContiguousSelection(sortedRowsSelected);
+
+        if (isContiguousSelection && rowFocused === sortedRowsSelected[0]) {
+          rowsSelected = [...rowsSelected, previousRow];
+        } else if (
+          isContiguousSelection &&
+          rowFocused === sortedRowsSelected[sortedRowsSelected.length - 1]
+        ) {
+          rowsSelected = rowsSelected.slice(0, -1);
         } else {
-          return currentRowsSelected.filter(row => !rows.includes(row));
+          rowsSelected = [rowFocused, previousRow];
         }
       } else {
-        this.lastRow = row;
-
-        if (row.selected) {
-          if (action == "append" || action == "unselect") {
-            row.selected = false;
-            return currentRowsSelected.filter(r => r !== row);
-          }
-        } else {
-          if (multiple) {
-            if (currentRowsSelected.length == 0) {
-              row.selected = true;
-              return currentRowsSelected.concat([row]);
-            } else {
-              if (action == "append") {
-                row.selected = true;
-                return currentRowsSelected.concat([row]);
-              } else {
-                currentRowsSelected.forEach(row => (row.selected = false));
-                row.selected = true;
-                return [row];
-              }
-            }
-          } else {
-            currentRowsSelected.forEach(row => (row.selected = false));
-            row.selected = true;
-            return [row];
-          }
-        }
+        rowsSelected = [previousRow];
       }
+      rowFocused = previousRow;
+      cellSelected = previousRow.getCell(
+        cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
     }
 
-    return currentRowsSelected;
+    return { rowFocused, rowsSelected, cellSelected };
   }
 
-  setRowsSelected(
-    value: boolean,
-    currentRowsSelected: HTMLChGridRowElement[]
-  ): HTMLChGridRowElement[] {
-    const rows: HTMLChGridRowElement[] = [];
-
-    if (value == false && currentRowsSelected.length == 0) {
-      return currentRowsSelected;
+  selectNextRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
     }
 
-    this.grid.el
-      .querySelectorAll(HTMLChGridRowElement.TAG_NAME)
-      .forEach((row: HTMLChGridRowElement) => {
-        row.selected = value;
+    const nextRow = this.grid.manager.getNextRow(state.rowFocused);
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (nextRow) {
+      if (append) {
+        const sortedRowsSelected = this.sortRowsSelected(rowsSelected);
+        const isContiguousSelection =
+          this.isContiguousSelection(sortedRowsSelected);
+
+        if (
+          isContiguousSelection &&
+          rowFocused === sortedRowsSelected[sortedRowsSelected.length - 1]
+        ) {
+          rowsSelected = [...rowsSelected, nextRow];
+        } else if (
+          isContiguousSelection &&
+          rowFocused === sortedRowsSelected[0]
+        ) {
+          rowsSelected = rowsSelected.slice(1);
+        } else {
+          rowsSelected = [rowFocused, nextRow];
+        }
+      } else {
+        rowsSelected = [nextRow];
+      }
+      rowFocused = nextRow;
+      cellSelected = nextRow.getCell(
+        cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectLastRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+    }
+
+    const firstRow = this.grid.manager.getLastRow();
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (firstRow) {
+      if (append) {
+        const rangeRows = this.grid.manager.getRowsRange(
+          rowFocused ?? firstRow,
+          firstRow
+        );
+        rowsSelected = Array.from(new Set(rowsSelected.concat(rangeRows)));
+      } else {
+        rowsSelected = [firstRow];
+      }
+      rowFocused = firstRow;
+      cellSelected = firstRow.getCell(
+        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectPreviousPageRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+    }
+
+    const rows = this.grid.manager.getRows();
+    const rowsPerPage = this.grid.manager.getRowsPerPage();
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    const previousPageRow =
+      rows[Math.max(rows.indexOf(rowFocused) - rowsPerPage, 0)];
+    if (previousPageRow) {
+      if (append) {
+        const rangeRows = this.grid.manager.getRowsRange(
+          rowFocused ?? previousPageRow,
+          previousPageRow
+        );
+        rowsSelected = Array.from(new Set(rowsSelected.concat(rangeRows)));
+      } else {
+        rowsSelected =
+          rowsSelected.length === 1 && rowsSelected[0] === previousPageRow
+            ? rowsSelected
+            : [previousPageRow];
+      }
+      rowFocused = previousPageRow;
+      cellSelected = previousPageRow.getCell(
+        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectNextPageRow(
+    state: ManagerSelectionState,
+    append: boolean
+  ): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.grid.rowSelectionMode != "multiple") {
+      append = false;
+    }
+
+    const rows = this.grid.manager.getRows();
+    const rowsPerPage = this.grid.manager.getRowsPerPage();
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    const nextPageRow =
+      rows[Math.min(rows.indexOf(rowFocused) + rowsPerPage, rows.length - 1)];
+    if (nextPageRow) {
+      if (append) {
+        const rangeRows = this.grid.manager.getRowsRange(
+          rowFocused ?? nextPageRow,
+          nextPageRow
+        );
+        rowsSelected = Array.from(new Set(rowsSelected.concat(rangeRows)));
+      } else {
+        rowsSelected =
+          rowsSelected.length === 1 && rowsSelected[0] === nextPageRow
+            ? rowsSelected
+            : [nextPageRow];
+      }
+      rowFocused = nextPageRow;
+      cellSelected = nextPageRow.getCell(
+        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+      );
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectPreviousCell(state: ManagerSelectionState): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    }
+
+    const nextCell = this.grid.manager.getPreviousCell(state.cellSelected);
+    const rowFocused = state.rowFocused;
+    const rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (nextCell) {
+      cellSelected = nextCell;
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  selectNextCell(state: ManagerSelectionState): ManagerSelectionState {
+    if (this.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    }
+
+    const nextCell = this.grid.manager.getNextCell(state.cellSelected);
+    const rowFocused = state.rowFocused;
+    const rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    if (nextCell) {
+      cellSelected = nextCell;
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
+  markRow(
+    row: HTMLChGridRowElement,
+    checked: boolean,
+    range: boolean,
+    currentRowsMarked: HTMLChGridRowElement[]
+  ): HTMLChGridRowElement[] {
+    if (row) {
+      if (range) {
+        const value = !row.marked;
+        const rows = this.grid.manager.getRowsRange(
+          this.lastRowMarked ?? row,
+          row
+        );
+
+        this.lastRowMarked = row;
 
         if (value) {
-          rows.push(row);
+          return currentRowsMarked.concat(
+            rows.filter(row => !currentRowsMarked.includes(row))
+          );
+        } else {
+          return currentRowsMarked.filter(row => !rows.includes(row));
         }
-      });
+      } else {
+        this.lastRowMarked = row;
 
-    return rows;
-  }
-
-  setCellSelected(
-    cell: HTMLChGridCellElement,
-    currentCellSelected: HTMLChGridCellElement
-  ): HTMLChGridCellElement {
-    if (cell && !cell.selected) {
-      if (currentCellSelected) {
-        currentCellSelected.selected = false;
+        if (checked && !currentRowsMarked.includes(row)) {
+          return currentRowsMarked.concat([row]);
+        } else if (!checked && currentRowsMarked.includes(row)) {
+          return currentRowsMarked.filter(r => r !== row);
+        }
       }
-      cell.selected = true;
     }
 
-    return cell || currentCellSelected;
+    return currentRowsMarked;
   }
 
-  refreshCellSelector(
+  markAllRows(value = true): HTMLChGridRowElement[] {
+    if (value) {
+      return this.grid.manager.getRows();
+    } else {
+      return [];
+    }
+  }
+
+  syncRowSelector(
     rows: HTMLChGridRowElement[],
-    previous: HTMLChGridRowElement[] = []
+    previous: HTMLChGridRowElement[] = [],
+    selectorMode: "select" | "mark"
   ) {
     const columnSelector = this.grid.manager.columns.getColumnSelector();
 
-    if (columnSelector) {
-      rows
-        .filter(x => !previous.includes(x))
-        .forEach(row => {
-          const cell = row.children[
-            columnSelector.physicalOrder - 1
-          ] as HTMLChGridCellElement;
-          cell.setSelectorChecked(true);
-        });
+    if (columnSelector?.richRowSelectorMode == selectorMode) {
+      const indexColumnSelector = columnSelector.physicalOrder - 1;
 
       previous
-        .filter(x => !rows.includes(x))
+        ?.filter(x => !rows.includes(x))
         .forEach(row => {
+          row.marked = false;
           const cell = row.children[
-            columnSelector.physicalOrder - 1
+            indexColumnSelector
           ] as HTMLChGridCellElement;
           cell.setSelectorChecked(false);
         });
+
+      rows?.forEach(row => {
+        row.marked =
+          columnSelector.richRowSelectorMode === "mark" ? true : false;
+        const cell = row.children[indexColumnSelector] as HTMLChGridCellElement;
+        cell.setSelectorChecked(true);
+      });
+
+      if (rows.length === 0) {
+        columnSelector.richRowSelectorState = "";
+      } else if (rows.length === this.grid.manager.getRows().length) {
+        columnSelector.richRowSelectorState = "checked";
+      } else {
+        columnSelector.richRowSelectorState = "indeterminate";
+      }
     }
   }
 
-  private getRowEventTarget(eventInfo: Event): HTMLChGridRowElement {
-    return eventInfo
-      .composedPath()
-      .find(
-        (target: HTMLElement) => target.tagName === "CH-GRID-ROW"
-      ) as HTMLChGridRowElement;
+  private sortRowsSelected(
+    rowsSelected: HTMLChGridRowElement[]
+  ): HTMLChGridRowElement[] {
+    const rows = Array.from(
+      this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}`)
+    ) as HTMLChGridRowElement[];
+
+    return rowsSelected.sort((rowA, rowB) => {
+      const rowAIndex = rows.indexOf(rowA);
+      const rowBIndex = rows.indexOf(rowB);
+      if (rowAIndex < rowBIndex) {
+        return -1;
+      }
+      if (rowAIndex > rowBIndex) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
-  private isRowActionsEventTarget(eventInfo: Event): boolean {
-    return (
-      eventInfo
-        .composedPath()
-        .find((target: HTMLElement) =>
-          target.classList?.contains("row-actions")
-        ) != null
-    );
+  private isContiguousSelection(
+    sortedRowsSelected: HTMLChGridRowElement[]
+  ): boolean {
+    const rows = (
+      Array.from(
+        this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}`)
+      ) as HTMLChGridRowElement[]
+    ).filter(row => row.isVisible());
+
+    if (sortedRowsSelected.length === 0) {
+      return false;
+    } else if (sortedRowsSelected.length === 1) {
+      return true;
+    } else {
+      const startIndex = rows.indexOf(sortedRowsSelected[0]);
+      const endIndex = rows.indexOf(
+        sortedRowsSelected[sortedRowsSelected.length - 1]
+      );
+      return endIndex - startIndex + 1 === sortedRowsSelected.length;
+    }
   }
 }

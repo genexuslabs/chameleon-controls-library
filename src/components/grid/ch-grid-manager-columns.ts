@@ -26,7 +26,11 @@ export class ChGridManagerColumns {
     this.adjustFreezeOrder();
   }
 
-  public getColumns() {
+  public getColumn(columnId: string): HTMLChGridColumnElement {
+    return this.columns.find(column => column.columnId == columnId);
+  }
+
+  public getColumns(): HTMLChGridColumnElement[] {
     return this.columns;
   }
 

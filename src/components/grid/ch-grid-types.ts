@@ -2,6 +2,16 @@ export interface ChGridSelectionChangedEvent {
   rowsId: string[];
 }
 
+export interface ChGridMarkingChangedEvent {
+  rowsId: string[];
+}
+
+export interface ChGridCellSelectionChangedEvent {
+  columnId: string;
+  rowId: string;
+  cellId: string;
+}
+
 export interface ChGridRowClickedEvent {
   rowId: string;
   cellId?: string;

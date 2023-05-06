@@ -101,7 +101,7 @@ export class ChGridManagerRowDrag {
 
       column.style.opacity = "0";
       column.style.minWidth = width;
-      column.style.height = rowHeight;
+      column.style.height = `${rowHeight}px`;
       column.style.gridRowStart = "var(--row-shadow-row-start)";
 
       this.rowShadow.append(column);

@@ -8,23 +8,137 @@
 | Property              | Attribute               | Description                                                                                                                                                                                                                                      | Type                               | Default     |
 | --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- | ----------- |
 | `localization`        | --                      | An object that contains localized strings for the grid.                                                                                                                                                                                          | `GridLocalization`                 | `undefined` |
+| `rowFocusedClass`     | `row-focused-class`     | A CSS class name applied to a row when it is focused.                                                                                                                                                                                            | `string`                           | `undefined` |
 | `rowHighlightEnabled` | `row-highlight-enabled` | One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".                                                        | `"auto" \| boolean`                | `"auto"`    |
 | `rowHighlightedClass` | `row-highlighted-class` | A CSS class name applied to a row when it is hovered.                                                                                                                                                                                            | `string`                           | `undefined` |
+| `rowMarkedClass`      | `row-marked-class`      | A CSS class name applied to a row when it is marked.                                                                                                                                                                                             | `string`                           | `undefined` |
 | `rowSelectedClass`    | `row-selected-class`    | A CSS class name applied to a row when it is selected.                                                                                                                                                                                           | `string`                           | `undefined` |
 | `rowSelectionMode`    | `row-selection-mode`    | One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once. | `"multiple" \| "none" \| "single"` | `"single"`  |
 
 
 ## Events
 
-| Event              | Description                                      | Type                                       |
-| ------------------ | ------------------------------------------------ | ------------------------------------------ |
-| `rowClicked`       | Event emitted when a row is clicked.             | `CustomEvent<ChGridRowClickedEvent>`       |
-| `selectionChanged` | Event emitted when the row selection is changed. | `CustomEvent<ChGridSelectionChangedEvent>` |
+| Event                  | Description                                      | Type                                           |
+| ---------------------- | ------------------------------------------------ | ---------------------------------------------- |
+| `cellSelectionChanged` |                                                  | `CustomEvent<ChGridCellSelectionChangedEvent>` |
+| `rowClicked`           | Event emitted when a row is clicked.             | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowMarkingChanged`    | Event emitted when the row marking is changed.   | `CustomEvent<ChGridMarkingChangedEvent>`       |
+| `selectionChanged`     | Event emitted when the row selection is changed. | `CustomEvent<ChGridSelectionChangedEvent>`     |
 
 
 ## Methods
 
 ### `cellEnsureVisible(cellId: string) => Promise<void>`
+
+Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `getFocusedRow() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
+### `getHoveredRow() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
+### `getMarkedRows() => Promise<string[]>`
+
+
+
+#### Returns
+
+Type: `Promise<string[]>`
+
+
+
+### `getNextCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+#### Returns
+
+Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+### `getNextRow() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
+### `getPreviousCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+#### Returns
+
+Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+### `getPreviousRow() => Promise<string>`
+
+
+
+#### Returns
+
+Type: `Promise<string>`
+
+
+
+### `getSelectedCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+#### Returns
+
+Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+
+
+### `getSelectedRows() => Promise<string[]>`
+
+
+
+#### Returns
+
+Type: `Promise<string[]>`
+
+
+
+### `rowEnsureVisible(rowId: string) => Promise<void>`
+
+Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `selectAllRows(selected?: boolean) => Promise<void>`
 
 
 
@@ -34,7 +148,17 @@ Type: `Promise<void>`
 
 
 
-### `rowEnsureVisible(rowId: string) => Promise<void>`
+### `selectCell(cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `selectRow(rowId: string, selected?: boolean) => Promise<void>`
 
 
 

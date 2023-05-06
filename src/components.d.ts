@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
-import { ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
+import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
 import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
@@ -48,12 +48,31 @@ export namespace Components {
         "value": string;
     }
     interface ChGrid {
+        /**
+          * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+         */
         "cellEnsureVisible": (cellId: string) => Promise<void>;
+        "getFocusedRow": () => Promise<string>;
+        "getHoveredRow": () => Promise<string>;
+        "getMarkedRows": () => Promise<string[]>;
+        "getNextCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        "getNextRow": () => Promise<string>;
+        "getPreviousCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        "getPreviousRow": () => Promise<string>;
+        "getSelectedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        "getSelectedRows": () => Promise<string[]>;
         /**
           * An object that contains localized strings for the grid.
          */
         "localization": GridLocalization;
+        /**
+          * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+         */
         "rowEnsureVisible": (rowId: string) => Promise<void>;
+        /**
+          * A CSS class name applied to a row when it is focused.
+         */
+        "rowFocusedClass": string;
         /**
           * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
          */
@@ -63,6 +82,10 @@ export namespace Components {
          */
         "rowHighlightedClass": string;
         /**
+          * A CSS class name applied to a row when it is marked.
+         */
+        "rowMarkedClass": string;
+        /**
           * A CSS class name applied to a row when it is selected.
          */
         "rowSelectedClass": string;
@@ -70,6 +93,9 @@ export namespace Components {
           * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
          */
         "rowSelectionMode": "none" | "single" | "multiple";
+        "selectAllRows": (selected?: boolean) => Promise<void>;
+        "selectCell": (cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>;
+        "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
     }
     interface ChGridActionRefresh {
         /**
@@ -150,6 +176,10 @@ export namespace Components {
           * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
          */
         "richRowSelector": boolean;
+        "richRowSelectorMode": "select" | "mark";
+        "richRowSelectorState": | ""
+    | "checked"
+    | "indeterminate";
         /**
           * A boolean indicating whether the user should be able to open a settings panel for the column.
          */
@@ -776,14 +806,23 @@ declare namespace LocalJSX {
           * An object that contains localized strings for the grid.
          */
         "localization"?: GridLocalization;
+        "onCellSelectionChanged"?: (event: CustomEvent<ChGridCellSelectionChangedEvent>) => void;
         /**
           * Event emitted when a row is clicked.
          */
         "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
         /**
+          * Event emitted when the row marking is changed.
+         */
+        "onRowMarkingChanged"?: (event: CustomEvent<ChGridMarkingChangedEvent>) => void;
+        /**
           * Event emitted when the row selection is changed.
          */
         "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+        /**
+          * A CSS class name applied to a row when it is focused.
+         */
+        "rowFocusedClass"?: string;
         /**
           * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
          */
@@ -792,6 +831,10 @@ declare namespace LocalJSX {
           * A CSS class name applied to a row when it is hovered.
          */
         "rowHighlightedClass"?: string;
+        /**
+          * A CSS class name applied to a row when it is marked.
+         */
+        "rowMarkedClass"?: string;
         /**
           * A CSS class name applied to a row when it is selected.
          */
@@ -928,6 +971,10 @@ declare namespace LocalJSX {
           * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
          */
         "richRowSelector"?: boolean;
+        "richRowSelectorMode"?: "select" | "mark";
+        "richRowSelectorState"?: | ""
+    | "checked"
+    | "indeterminate";
         /**
           * A boolean indicating whether the user should be able to open a settings panel for the column.
          */

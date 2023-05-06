@@ -12,6 +12,7 @@
   display: none;
   grid-auto-flow: dense; /* necesario para poder reordenar las columnas */
   overflow-x: auto;
+  user-select: none;
 }
 .row-actions {
   position: absolute;

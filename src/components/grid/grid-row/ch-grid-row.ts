@@ -1,4 +1,5 @@
 import { IChGridCollapsible } from "../ch-grid-types";
+import HTMLChGridCellElement from "../grid-cell/ch-grid-cell";
 
 /**
  * The `ch-grid-row` component represents a grid row.
@@ -75,6 +76,48 @@ export default class HTMLChGridRowElement
   }
 
   /**
+   * A boolean value indicating whether the row is marked.
+   */
+  get marked(): boolean {
+    return this.hasAttribute("marked");
+  }
+
+  set marked(value: boolean) {
+    if (value === true) {
+      this.setAttribute("marked", "");
+      if (this.grid.rowMarkedClass) {
+        this.classList.add(this.grid.rowMarkedClass);
+      }
+    } else {
+      this.removeAttribute("marked");
+      if (this.grid.rowMarkedClass) {
+        this.classList.remove(this.grid.rowMarkedClass);
+      }
+    }
+  }
+
+  /**
+   * A boolean value indicating whether the row is focused.
+   */
+  get focused(): boolean {
+    return this.hasAttribute("focused");
+  }
+
+  set focused(value: boolean) {
+    if (value === true) {
+      this.setAttribute("focused", "");
+      if (this.grid.rowFocusedClass) {
+        this.classList.add(this.grid.rowFocusedClass);
+      }
+    } else {
+      this.removeAttribute("focused");
+      if (this.grid.rowFocusedClass) {
+        this.classList.remove(this.grid.rowFocusedClass);
+      }
+    }
+  }
+
+  /**
    * A boolean value indicating whether the grid row has child rows.
    */
   get hasChildRows(): boolean {
@@ -109,6 +152,21 @@ export default class HTMLChGridRowElement
     } else {
       this.removeAttribute("leaf");
     }
+  }
+
+  public getCell(column: HTMLChGridColumnElement): HTMLChGridCellElement {
+    return this.querySelector(
+      `:scope > ch-grid-cell:nth-of-type(${column.physicalOrder})`
+    );
+  }
+
+  /**
+   * A boolean value indicates whether the grid row is visible.
+   */
+  public isVisible(): boolean {
+    return Array.from(this.querySelectorAll(":scope > ch-grid-cell")).some(
+      (cell: HTMLChGridCellElement) => cell.isVisible()
+    );
   }
 
   /**

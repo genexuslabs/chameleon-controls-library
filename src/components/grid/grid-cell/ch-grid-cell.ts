@@ -60,6 +60,26 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   /**
+   * Returns the parent ch-grid element of the cell.
+   */
+  get grid(): HTMLChGridElement {
+    return this.closest("ch-grid");
+  }
+
+  /**
+   * Returns the ch-grid-column element of the cell.
+   */
+  get column(): HTMLChGridColumnElement {
+    const cellIndex = Array.prototype.indexOf.call(
+      this.row.querySelectorAll(`:scope > ch-grid-cell`),
+      this
+    );
+    return this.grid.querySelector(
+      `ch-grid-column:nth-of-type(${cellIndex + 1})`
+    );
+  }
+
+  /**
    * Returns the parent ch-grid-row element of the cell.
    */
   get row(): HTMLChGridRowElement {
@@ -109,9 +129,15 @@ export default class HTMLChGridCellElement extends HTMLElement {
    */
   public setSelectorChecked(value: boolean) {
     this.selector.checked = value;
+
+    if (this.selector.checked) {
+      this.selector.setAttribute("part", "selector checked");
+    } else {
+      this.selector.setAttribute("part", "selector");
+    }
   }
 
-  private caretClickHandler(eventInfo: Event) {
+  private caretMouseDownHandler(eventInfo: Event) {
     eventInfo.stopPropagation();
     this.dispatchEvent(
       new CustomEvent("cellCaretClicked", { bubbles: true, composed: true })
@@ -212,6 +238,9 @@ export default class HTMLChGridCellElement extends HTMLElement {
       }
 
       if (this.rowSelector) {
+        this.addEventListener("mousedown", (eventInfo: MouseEvent) =>
+          eventInfo.stopPropagation()
+        );
         this.selector = this.shadowRoot.querySelector("[part='selector']");
         this.selector.addEventListener(
           "click",
@@ -244,7 +273,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
       `;
 
       this.caret = this.shadowRoot.querySelector("[part='caret']");
-      this.caret.addEventListener("click", this.caretClickHandler.bind(this));
+      this.caret.addEventListener(
+        "mousedown",
+        this.caretMouseDownHandler.bind(this)
+      );
     }
   }
 }

@@ -38,6 +38,26 @@ Type: `Promise<void>`
 
 
 
+### `collapseRow(rowId: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `expandRow(rowId: string) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `getFocusedRow() => Promise<string>`
 
 

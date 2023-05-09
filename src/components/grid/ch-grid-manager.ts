@@ -47,7 +47,7 @@ export class ChGridManager {
     );
   }
 
-  getColumnsHeight(): number {
+  getColumnsetHeight(): number {
     const gridColumnsHeight = getComputedStyle(
       this.grid.gridMainEl
     ).gridTemplateRows.split(" ");
@@ -63,6 +63,30 @@ export class ChGridManager {
     return this.grid.el.querySelector(
       `${HTMLChGridRowElement.TAG_NAME.toLowerCase()}`
     );
+  }
+
+  getScrollOffsetTop(): number {
+    return this.grid.gridMainEl.offsetTop + this.getColumnsetHeight();
+  }
+
+  getScrollOffsetLeft(): number {
+    return this.grid.manager.columns
+      .getColumns(true)
+      .reduce((offsetRight, column) => {
+        return column.freeze == "start" && !column.hidden
+          ? offsetRight + column.offsetWidth
+          : offsetRight;
+      }, 0);
+  }
+
+  getScrollOffsetRight(): number {
+    return this.grid.manager.columns
+      .getColumns(true)
+      .reduce((offsetRight, column) => {
+        return column.freeze == "end" && !column.hidden
+          ? offsetRight + column.offsetWidth
+          : offsetRight;
+      }, 0);
   }
 
   getPreviousRow(current: HTMLChGridRowElement): HTMLChGridRowElement {
@@ -150,7 +174,7 @@ export class ChGridManager {
 
   getRowsPerPage(): number {
     const gridHeight = this.grid.gridMainEl.clientHeight;
-    const columnsHeight = this.getColumnsHeight();
+    const columnsHeight = this.getColumnsetHeight();
     const rowHeight = this.getRowHeight(this.getFirstRow());
 
     return Math.floor((gridHeight - columnsHeight) / rowHeight);
@@ -299,7 +323,7 @@ export class ChGridManager {
 
     if (row.children[columnFirst.physicalOrder]) {
       this.ensureVisible(
-        row.children[columnFirst.physicalOrder] as HTMLChGridRowElement
+        row.children[columnFirst.physicalOrder] as HTMLChGridCellElement
       );
     }
   }
@@ -316,30 +340,51 @@ export class ChGridManager {
       );
     }
 
-    // eslint-disable-next-line no-empty
     if (!cell.isVisible()) {
+      cell.column.hidden = false;
     }
 
     this.ensureVisible(cell);
   }
 
-  private ensureVisible(element: HTMLElement) {
+  private ensureVisible(cell: HTMLChGridCellElement) {
+    const isColumnFreeze = ["start", "end"].includes(cell.column.freeze);
     const scroll = this.grid.gridMainEl;
-    const offset = this.getColumnsHeight();
+    const scrollOffsetTop = this.getScrollOffsetTop();
+    const scrollOffsetLeft = this.getScrollOffsetLeft();
+    const scrollOffsetRight = this.getScrollOffsetRight();
 
-    if (scroll.scrollTop + offset > element.offsetTop) {
+    if (scroll.scrollTop + scrollOffsetTop > cell.offsetTop) {
       scroll.scrollBy({
-        top: (scroll.scrollTop - element.offsetTop + offset) * -1
+        top: (scroll.scrollTop - cell.offsetTop + scrollOffsetTop) * -1
       });
     } else if (
       scroll.scrollTop + scroll.offsetHeight <
-      element.offsetTop + element.offsetHeight
+      cell.offsetTop + cell.offsetHeight
     ) {
       scroll.scrollBy({
         top:
-          element.offsetTop +
-          element.offsetHeight -
+          cell.offsetTop +
+          cell.offsetHeight -
           (scroll.scrollTop + scroll.offsetHeight)
+      });
+    } else if (
+      scroll.scrollLeft + scrollOffsetLeft > cell.offsetLeft &&
+      !isColumnFreeze
+    ) {
+      scroll.scrollBy({
+        left: (scroll.scrollLeft - cell.offsetLeft + scrollOffsetLeft) * -1
+      });
+    } else if (
+      scroll.scrollLeft + scroll.clientWidth - scrollOffsetRight <
+        cell.offsetLeft + cell.offsetWidth &&
+      !isColumnFreeze
+    ) {
+      scroll.scrollBy({
+        left:
+          cell.offsetLeft +
+          cell.offsetWidth -
+          (scroll.scrollLeft + scroll.clientWidth - scrollOffsetRight)
       });
     }
   }

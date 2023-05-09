@@ -17,6 +17,28 @@ import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
+    interface ChDragBar {
+        /**
+          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
+         */
+        "barItemSrc": string;
+        /**
+          * This attribute lets you specify the label for the drag bar. Important for accessibility.
+         */
+        "barLabel": string;
+        /**
+          * A CSS class to set as the `ch-next-drag-bar` element class.
+         */
+        "cssClass": string;
+        /**
+          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
+         */
+        "showBarItem": boolean;
+        /**
+          * Specifies the initial width of the start component
+         */
+        "startComponentInitialWidth": string;
+    }
     interface ChFormCheckbox {
         /**
           * The checkbox id
@@ -52,6 +74,8 @@ export namespace Components {
           * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
          */
         "cellEnsureVisible": (cellId: string) => Promise<void>;
+        "collapseRow": (rowId: string) => Promise<void>;
+        "expandRow": (rowId: string) => Promise<void>;
         "getFocusedRow": () => Promise<string>;
         "getHoveredRow": () => Promise<string>;
         "getMarkedRows": () => Promise<string[]>;
@@ -309,6 +333,32 @@ export namespace Components {
          */
         "topMargin": string;
     }
+    interface ChNextProgressBar {
+        /**
+          * It specifies the main text that is shown on the progress.
+         */
+        "caption": string;
+        /**
+          * A CSS class to set as the `ch-next-progress-bar` element class.
+         */
+        "cssClass": string;
+        /**
+          * This attribute lets you specify the value of the progress.
+         */
+        "currentStep": number;
+        /**
+          * It specifies more information that is shown on the progress.
+         */
+        "description": string;
+        /**
+          * This attribute lets you specify if the progress bar is rendered.
+         */
+        "presented": boolean;
+        /**
+          * This attribute lets you specify the amount of steps for the progress.
+         */
+        "steps": number;
+    }
     interface ChPaginator {
         "activePage": number;
         "totalPages": number;
@@ -521,6 +571,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
+    }
+    var HTMLChDragBarElement: {
+        prototype: HTMLChDragBarElement;
+        new (): HTMLChDragBarElement;
+    };
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
     }
     var HTMLChFormCheckboxElement: {
@@ -629,6 +685,12 @@ declare global {
         prototype: HTMLChIntersectionObserverElement;
         new (): HTMLChIntersectionObserverElement;
     };
+    interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
+    }
+    var HTMLChNextProgressBarElement: {
+        prototype: HTMLChNextProgressBarElement;
+        new (): HTMLChNextProgressBarElement;
+    };
     interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
     }
     var HTMLChPaginatorElement: {
@@ -732,6 +794,7 @@ declare global {
         new (): HTMLGxGridChameleonColumnFilterElement;
     };
     interface HTMLElementTagNameMap {
+        "ch-drag-bar": HTMLChDragBarElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
         "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
@@ -750,6 +813,7 @@ declare global {
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
+        "ch-next-progress-bar": HTMLChNextProgressBarElement;
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
@@ -770,6 +834,28 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface ChDragBar {
+        /**
+          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
+         */
+        "barItemSrc"?: string;
+        /**
+          * This attribute lets you specify the label for the drag bar. Important for accessibility.
+         */
+        "barLabel"?: string;
+        /**
+          * A CSS class to set as the `ch-next-drag-bar` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
+         */
+        "showBarItem"?: boolean;
+        /**
+          * Specifies the initial width of the start component
+         */
+        "startComponentInitialWidth"?: string;
+    }
     interface ChFormCheckbox {
         /**
           * The checkbox id
@@ -1129,6 +1215,32 @@ declare namespace LocalJSX {
          */
         "topMargin"?: string;
     }
+    interface ChNextProgressBar {
+        /**
+          * It specifies the main text that is shown on the progress.
+         */
+        "caption"?: string;
+        /**
+          * A CSS class to set as the `ch-next-progress-bar` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * This attribute lets you specify the value of the progress.
+         */
+        "currentStep"?: number;
+        /**
+          * It specifies more information that is shown on the progress.
+         */
+        "description"?: string;
+        /**
+          * This attribute lets you specify if the progress bar is rendered.
+         */
+        "presented"?: boolean;
+        /**
+          * This attribute lets you specify the amount of steps for the progress.
+         */
+        "steps"?: number;
+    }
     interface ChPaginator {
         "activePage"?: number;
         "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
@@ -1371,6 +1483,7 @@ declare namespace LocalJSX {
         "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
     }
     interface IntrinsicElements {
+        "ch-drag-bar": ChDragBar;
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
         "ch-grid-action-refresh": ChGridActionRefresh;
@@ -1389,6 +1502,7 @@ declare namespace LocalJSX {
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
+        "ch-next-progress-bar": ChNextProgressBar;
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
         "ch-paginator-pages": ChPaginatorPages;
@@ -1412,6 +1526,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
@@ -1430,6 +1545,7 @@ declare module "@stencil/core" {
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
+            "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;

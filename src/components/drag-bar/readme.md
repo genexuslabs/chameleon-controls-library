@@ -6,6 +6,7 @@ At this moment, it only support slots separation via a vertical bar. In the futu
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property                     | Attribute                       | Description                                                                                               | Type      | Default     |
@@ -16,12 +17,14 @@ At this moment, it only support slots separation via a vertical bar. In the futu
 | `showBarItem`                | `show-bar-item`                 | If `true` an item at the middle of the bar will be displayed to give more context about the resize action | `boolean` | `true`      |
 | `startComponentInitialWidth` | `start-component-initial-width` | Specifies the initial width of the start component                                                        | `string`  | `"50%"`     |
 
+
 ## Slots
 
 | Slot                | Description                                                                  |
 | ------------------- | ---------------------------------------------------------------------------- |
 | `"end-component"`   | The component to be displayed in the right position when using LTR languages |
 | `"start-component"` | The component to be displayed in the left position when using LTR languages  |
+
 
 ## Shadow Parts
 
@@ -33,7 +36,7 @@ At this moment, it only support slots separation via a vertical bar. In the futu
 | `"end-component"`   | The component that wraps the `end-component` slot                         |
 | `"start-component"` | The component that wraps the `start-component` slot                       |
 
----
 
-_Built with [StencilJS](https://stenciljs.com/)_
+----------------------------------------------
 
+*Built with [StencilJS](https://stenciljs.com/)*

@@ -255,8 +255,10 @@ export class ChGrid {
           this.toggleRowsMarked();
           break;
         case "+":
+          this.setRowCollapsed(this.rowFocused, false);
           break;
         case "-":
+          this.setRowCollapsed(this.rowFocused, true);
           break;
         case "Home":
           this.selectByKeyboardEvent(
@@ -367,6 +369,11 @@ export class ChGrid {
     const cell = this.manager.getCellEventTarget(eventInfo);
 
     if (row) {
+      this.rowClicked.emit({
+        rowId: row.rowId,
+        cellId: cell?.cellId
+      });
+
       this.manager.selection.selecting = true;
       this.selectByPointerEvent(
         row,
@@ -561,14 +568,22 @@ export class ChGrid {
     }
   }
 
+  @Method()
+  async expandRow(rowId: string): Promise<void> {
+    this.setRowCollapsed(this.manager.getRow(rowId), false);
+  }
+
+  @Method()
+  async collapseRow(rowId: string): Promise<void> {
+    this.setRowCollapsed(this.manager.getRow(rowId), true);
+  }
+
   /**
    * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
    */
   @Method()
   async rowEnsureVisible(rowId: string): Promise<void> {
-    const row = this.el.querySelector(
-      `${HTMLChGridRowElement.TAG_NAME.toLowerCase()}[rowid="${rowId}"]`
-    ) as HTMLChGridRowElement;
+    const row = this.manager.getRow(rowId);
 
     if (row) {
       this.manager.ensureRowVisible(row);
@@ -580,9 +595,7 @@ export class ChGrid {
    */
   @Method()
   async cellEnsureVisible(cellId: string): Promise<void> {
-    const cell = this.el.querySelector(
-      `${HTMLChGridCellElement.TAG_NAME.toLowerCase()}[cellid="${cellId}"]`
-    ) as HTMLChGridCellElement;
+    const cell = this.manager.getCell(cellId);
 
     if (cell) {
       this.manager.ensureCellVisible(cell);
@@ -678,7 +691,11 @@ export class ChGrid {
     this.rowsSelected = rowsSelected;
     this.cellSelected = cellSelected;
 
-    rowFocused?.ensureVisible();
+    if (cellSelected) {
+      cellSelected.ensureVisible();
+    } else {
+      rowFocused?.ensureVisible();
+    }
   }
 
   private selectByKeyboardEvent(
@@ -701,7 +718,11 @@ export class ChGrid {
     this.rowsSelected = rowsSelected;
     this.cellSelected = cellSelected;
 
-    rowFocused?.ensureVisible();
+    if (cellSelected) {
+      cellSelected.ensureVisible();
+    } else {
+      rowFocused?.ensureVisible();
+    }
   }
 
   private selectAll(value = true) {
@@ -719,12 +740,26 @@ export class ChGrid {
     this.rowsSelected = rowsSelected;
     this.cellSelected = cellSelected;
 
-    rowFocused?.ensureVisible();
+    if (cellSelected) {
+      cellSelected.ensureVisible();
+    } else {
+      rowFocused?.ensureVisible();
+    }
+  }
+
+  private setRowCollapsed(row: HTMLChGridRowElement, collapsed: boolean) {
+    if (row && collapsed) {
+      if (row && row.hasChildRows) {
+        row.collapsed = true;
+      }
+    } else if (row && !collapsed) {
+      row.collapsed = false;
+    }
   }
 
   render() {
     return (
-      <Host tabindex="0">
+      <Host tabindex={this.rowSelectionMode != "none" ? "0" : false}>
         <header part="header">
           <slot name="header"></slot>
         </header>

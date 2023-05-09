@@ -30,8 +30,12 @@ export class ChGridManagerColumns {
     return this.columns.find(column => column.columnId == columnId);
   }
 
-  public getColumns(): HTMLChGridColumnElement[] {
-    return this.columns;
+  public getColumns(sorted = false): HTMLChGridColumnElement[] {
+    if (sorted) {
+      return this.columns.sort(this.fnSortByOrder);
+    } else {
+      return this.columns;
+    }
   }
 
   public getColumnsFirstLast(): {

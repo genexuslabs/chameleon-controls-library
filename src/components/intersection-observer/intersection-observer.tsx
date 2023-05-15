@@ -4,7 +4,6 @@ import {
   EventEmitter,
   Event,
   Element,
-  Host,
   Prop
 } from "@stencil/core";
 
@@ -29,11 +28,6 @@ export class IntersectionObserverControl {
    * Bottom margin around the root element
    */
   @Prop() readonly bottomMargin: string;
-
-  /**
-   * A CSS class to set as the gx-intersection-observer element class
-   */
-  @Prop() readonly cssClass: string;
 
   /**
    * Left margin around the root element
@@ -148,20 +142,29 @@ export class IntersectionObserverControl {
       threshold: this.defaultThreshold
     };
     this.observer = new IntersectionObserver(entries => {
-      const detail: IntersectionObserverEntry = entries[0];
-      const detailObject = {
-        boundingClientRect: detail.boundingClientRect,
-        intersectionRatio: detail.intersectionRatio,
-        intersectionRect: detail.intersectionRect,
-        isIntersecting: detail.isIntersecting,
-        rootBounds: detail.rootBounds,
-        target: detail.target,
-        time: detail.time
-      };
-
-      this.intersectionUpdate.emit(detailObject);
+      this.intersectionUpdate.emit(entries[0]);
     }, options);
-    this.observer.observe(this.element);
+
+    const childElement = this.getChildElement();
+
+    if (childElement) {
+      this.observer.observe(childElement);
+    }
+  }
+
+  /**
+   * @returns The first child element that its display CSS property is different from `contents`
+   */
+  private getChildElement() {
+    let childElement = this.element.firstElementChild as HTMLElement;
+
+    while (
+      childElement &&
+      getComputedStyle(childElement).display === "contents"
+    ) {
+      childElement = childElement.firstElementChild as HTMLElement;
+    }
+    return childElement;
   }
 
   /**
@@ -207,14 +210,6 @@ export class IntersectionObserverControl {
   }
 
   render() {
-    return (
-      <Host
-        class={{
-          [this.cssClass]: !!this.cssClass
-        }}
-      >
-        <slot name="content" />
-      </Host>
-    );
+    return <slot name="content" />;
   }
 }

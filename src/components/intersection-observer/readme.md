@@ -10,7 +10,6 @@
 | Property       | Attribute       | Description                                                                       | Type     | Default     |
 | -------------- | --------------- | --------------------------------------------------------------------------------- | -------- | ----------- |
 | `bottomMargin` | `bottom-margin` | Bottom margin around the root element                                             | `string` | `undefined` |
-| `cssClass`     | `css-class`     | A CSS class to set as the gx-intersection-observer element class                  | `string` | `undefined` |
 | `leftMargin`   | `left-margin`   | Left margin around the root element                                               | `string` | `undefined` |
 | `rightMargin`  | `right-margin`  | Right margin around the root element                                              | `string` | `undefined` |
 | `root`         | `root`          | Set the ID of the component that is used as the viewport, default is the browser. | `string` | `undefined` |

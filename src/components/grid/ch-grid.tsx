@@ -57,6 +57,9 @@ export class ChGrid {
    */
   @Event() rowMarkingChanged: EventEmitter<ChGridMarkingChangedEvent>;
 
+  /**
+   * Event emitted when the cell selection is changed.
+   */
   @Event() cellSelectionChanged: EventEmitter<ChGridCellSelectionChangedEvent>;
 
   /**
@@ -487,26 +490,41 @@ export class ChGrid {
     this.gridSettingsUI.show = false;
   }
 
+  /**
+   * Retrieves the rowId of the currently focused row.
+   */
   @Method()
   async getFocusedRow(): Promise<string> {
     return this.rowFocused?.rowId;
   }
 
+  /**
+   * Retrieves the rowId of the currently hovered row.
+   */
   @Method()
   async getHoveredRow(): Promise<string> {
     return this.rowHighlighted?.rowId;
   }
 
+  /**
+   * Retrieves the list of rowId of the selected rows.
+   */
   @Method()
   async getSelectedRows(): Promise<string[]> {
     return this.rowsSelected.map(row => row.rowId);
   }
 
+  /**
+   * Retrieves the list of rowId of the marked rows.
+   */
   @Method()
   async getMarkedRows(): Promise<string[]> {
     return this.rowsMarked.map(row => row.rowId);
   }
 
+  /**
+   * Retrieves information about the currently selected cell.
+   */
   @Method()
   async getSelectedCell(): Promise<{
     cellId: string;
@@ -520,6 +538,11 @@ export class ChGrid {
     };
   }
 
+  /**
+   * Selects or deselects a row.
+   * @param rowId - The rowId of the row to select or deselect.
+   * @param selected - A boolean indicating whether to select or deselect the row.
+   */
   @Method()
   async selectRow(rowId: string, selected = true): Promise<void> {
     const row = this.manager.getRow(rowId);
@@ -546,11 +569,24 @@ export class ChGrid {
     }
   }
 
+  /**
+   * Selects or deselects all rows.
+   * @param selected - A boolean indicating whether to select or deselect all rows.
+   */
   @Method()
   async selectAllRows(selected = true): Promise<void> {
     this.selectAll(selected);
   }
 
+  /**
+   * Select or deselect a cell.
+   * The cell can be identified by the cellId parameter or
+   * by using the rowId and columnId pair.
+   * @param cellId - The cellId of the cell to select or deselect.
+   * @param rowId - The rowId of the row containing the cell.
+   * @param columnId - The columnId of the column containing the cell.
+   * @param selected - A boolean indicating whether to select or deselect the cell.
+   */
   @Method()
   async selectCell(
     cellId?: string,
@@ -568,11 +604,19 @@ export class ChGrid {
     }
   }
 
+  /**
+   * Expands a row, showing its children.
+   * @param rowId - The rowId of the row to expand.
+   */
   @Method()
   async expandRow(rowId: string): Promise<void> {
     this.setRowCollapsed(this.manager.getRow(rowId), false);
   }
 
+  /**
+   * Collapses a row, hiding its children.
+   * @param rowId - The rowId of the row to collapse.
+   */
   @Method()
   async collapseRow(rowId: string): Promise<void> {
     this.setRowCollapsed(this.manager.getRow(rowId), true);
@@ -580,6 +624,7 @@ export class ChGrid {
 
   /**
    * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+   * @param rowId - The rowId of the row to ensure visibility.
    */
   @Method()
   async rowEnsureVisible(rowId: string): Promise<void> {
@@ -592,6 +637,7 @@ export class ChGrid {
 
   /**
    * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+   * @param cellId - The cellId of the cell to ensure visibility.
    */
   @Method()
   async cellEnsureVisible(cellId: string): Promise<void> {
@@ -602,6 +648,9 @@ export class ChGrid {
     }
   }
 
+  /**
+   * Retrieves the rowId of the previous row relative to the currently selected cell.
+   */
   @Method()
   async getPreviousRow(): Promise<string> {
     const currentRow = this.cellSelected?.row;
@@ -611,6 +660,9 @@ export class ChGrid {
     }
   }
 
+  /**
+   * Retrieves the rowId of the next row relative to the currently selected cell.
+   */
   @Method()
   async getNextRow(): Promise<string> {
     const currentRow = this.cellSelected?.row;
@@ -620,6 +672,9 @@ export class ChGrid {
     }
   }
 
+  /**
+   * Retrieves information about the previous cell relative to the currently selected cell.
+   */
   @Method()
   async getPreviousCell(): Promise<{
     cellId: string;
@@ -635,6 +690,9 @@ export class ChGrid {
     };
   }
 
+  /**
+   * Retrieves information about the next cell relative to the currently selected cell.
+   */
   @Method()
   async getNextCell(): Promise<{
     cellId: string;

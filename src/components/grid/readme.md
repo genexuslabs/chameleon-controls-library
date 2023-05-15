@@ -18,12 +18,12 @@
 
 ## Events
 
-| Event                  | Description                                      | Type                                           |
-| ---------------------- | ------------------------------------------------ | ---------------------------------------------- |
-| `cellSelectionChanged` |                                                  | `CustomEvent<ChGridCellSelectionChangedEvent>` |
-| `rowClicked`           | Event emitted when a row is clicked.             | `CustomEvent<ChGridRowClickedEvent>`           |
-| `rowMarkingChanged`    | Event emitted when the row marking is changed.   | `CustomEvent<ChGridMarkingChangedEvent>`       |
-| `selectionChanged`     | Event emitted when the row selection is changed. | `CustomEvent<ChGridSelectionChangedEvent>`     |
+| Event                  | Description                                       | Type                                           |
+| ---------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `cellSelectionChanged` | Event emitted when the cell selection is changed. | `CustomEvent<ChGridCellSelectionChangedEvent>` |
+| `rowClicked`           | Event emitted when a row is clicked.              | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowMarkingChanged`    | Event emitted when the row marking is changed.    | `CustomEvent<ChGridMarkingChangedEvent>`       |
+| `selectionChanged`     | Event emitted when the row selection is changed.  | `CustomEvent<ChGridSelectionChangedEvent>`     |
 
 
 ## Methods
@@ -40,7 +40,7 @@ Type: `Promise<void>`
 
 ### `collapseRow(rowId: string) => Promise<void>`
 
-
+Collapses a row, hiding its children.
 
 #### Returns
 
@@ -50,7 +50,7 @@ Type: `Promise<void>`
 
 ### `expandRow(rowId: string) => Promise<void>`
 
-
+Expands a row, showing its children.
 
 #### Returns
 
@@ -60,7 +60,7 @@ Type: `Promise<void>`
 
 ### `getFocusedRow() => Promise<string>`
 
-
+Retrieves the rowId of the currently focused row.
 
 #### Returns
 
@@ -70,7 +70,7 @@ Type: `Promise<string>`
 
 ### `getHoveredRow() => Promise<string>`
 
-
+Retrieves the rowId of the currently hovered row.
 
 #### Returns
 
@@ -80,7 +80,7 @@ Type: `Promise<string>`
 
 ### `getMarkedRows() => Promise<string[]>`
 
-
+Retrieves the list of rowId of the marked rows.
 
 #### Returns
 
@@ -90,7 +90,7 @@ Type: `Promise<string[]>`
 
 ### `getNextCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
-
+Retrieves information about the next cell relative to the currently selected cell.
 
 #### Returns
 
@@ -100,7 +100,7 @@ Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 ### `getNextRow() => Promise<string>`
 
-
+Retrieves the rowId of the next row relative to the currently selected cell.
 
 #### Returns
 
@@ -110,7 +110,7 @@ Type: `Promise<string>`
 
 ### `getPreviousCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
-
+Retrieves information about the previous cell relative to the currently selected cell.
 
 #### Returns
 
@@ -120,7 +120,7 @@ Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 ### `getPreviousRow() => Promise<string>`
 
-
+Retrieves the rowId of the previous row relative to the currently selected cell.
 
 #### Returns
 
@@ -130,7 +130,7 @@ Type: `Promise<string>`
 
 ### `getSelectedCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
-
+Retrieves information about the currently selected cell.
 
 #### Returns
 
@@ -140,7 +140,7 @@ Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 ### `getSelectedRows() => Promise<string[]>`
 
-
+Retrieves the list of rowId of the selected rows.
 
 #### Returns
 
@@ -160,7 +160,7 @@ Type: `Promise<void>`
 
 ### `selectAllRows(selected?: boolean) => Promise<void>`
 
-
+Selects or deselects all rows.
 
 #### Returns
 
@@ -170,7 +170,9 @@ Type: `Promise<void>`
 
 ### `selectCell(cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>`
 
-
+Select or deselect a cell.
+The cell can be identified by the cellId parameter or
+by using the rowId and columnId pair.
 
 #### Returns
 
@@ -180,7 +182,7 @@ Type: `Promise<void>`
 
 ### `selectRow(rowId: string, selected?: boolean) => Promise<void>`
 
-
+Selects or deselects a row.
 
 #### Returns
 

@@ -66,7 +66,20 @@ export class ChGridColumn {
    * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
    */
   @Prop() readonly richRowSelector: boolean;
+
+  /**
+   * One of "select" or "mark", indicating the mode of rich row selector.
+   * "select" indicates that the row selector is bound to the row selection.
+   * "mark" allows to mark a row independently of the selection.
+   */
   @Prop() readonly richRowSelectorMode: "select" | "mark" = "select";
+
+  /**
+   * Indicate the state of the rich row selector.
+   * "" indicates that all rows are unchecked.
+   * "checked" indicates that all rows are checked.
+   * "indeterminate" indicates that some rows are marked.
+   */
   @Prop({ mutable: true }) richRowSelectorState:
     | ""
     | "checked"

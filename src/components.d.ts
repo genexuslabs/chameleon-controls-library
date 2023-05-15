@@ -72,18 +72,54 @@ export namespace Components {
     interface ChGrid {
         /**
           * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+          * @param cellId - The cellId of the cell to ensure visibility.
          */
         "cellEnsureVisible": (cellId: string) => Promise<void>;
+        /**
+          * Collapses a row, hiding its children.
+          * @param rowId - The rowId of the row to collapse.
+         */
         "collapseRow": (rowId: string) => Promise<void>;
+        /**
+          * Expands a row, showing its children.
+          * @param rowId - The rowId of the row to expand.
+         */
         "expandRow": (rowId: string) => Promise<void>;
+        /**
+          * Retrieves the rowId of the currently focused row.
+         */
         "getFocusedRow": () => Promise<string>;
+        /**
+          * Retrieves the rowId of the currently hovered row.
+         */
         "getHoveredRow": () => Promise<string>;
+        /**
+          * Retrieves the list of rowId of the marked rows.
+         */
         "getMarkedRows": () => Promise<string[]>;
+        /**
+          * Retrieves information about the next cell relative to the currently selected cell.
+         */
         "getNextCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the rowId of the next row relative to the currently selected cell.
+         */
         "getNextRow": () => Promise<string>;
+        /**
+          * Retrieves information about the previous cell relative to the currently selected cell.
+         */
         "getPreviousCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the rowId of the previous row relative to the currently selected cell.
+         */
         "getPreviousRow": () => Promise<string>;
+        /**
+          * Retrieves information about the currently selected cell.
+         */
         "getSelectedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the list of rowId of the selected rows.
+         */
         "getSelectedRows": () => Promise<string[]>;
         /**
           * An object that contains localized strings for the grid.
@@ -91,6 +127,7 @@ export namespace Components {
         "localization": GridLocalization;
         /**
           * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+          * @param rowId - The rowId of the row to ensure visibility.
          */
         "rowEnsureVisible": (rowId: string) => Promise<void>;
         /**
@@ -117,8 +154,24 @@ export namespace Components {
           * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
          */
         "rowSelectionMode": "none" | "single" | "multiple";
+        /**
+          * Selects or deselects all rows.
+          * @param selected - A boolean indicating whether to select or deselect all rows.
+         */
         "selectAllRows": (selected?: boolean) => Promise<void>;
+        /**
+          * Select or deselect a cell. The cell can be identified by the cellId parameter or by using the rowId and columnId pair.
+          * @param cellId - The cellId of the cell to select or deselect.
+          * @param rowId - The rowId of the row containing the cell.
+          * @param columnId - The columnId of the column containing the cell.
+          * @param selected - A boolean indicating whether to select or deselect the cell.
+         */
         "selectCell": (cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>;
+        /**
+          * Selects or deselects a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param selected - A boolean indicating whether to select or deselect the row.
+         */
         "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
     }
     interface ChGridActionRefresh {
@@ -200,7 +253,13 @@ export namespace Components {
           * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
          */
         "richRowSelector": boolean;
+        /**
+          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+         */
         "richRowSelectorMode": "select" | "mark";
+        /**
+          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+         */
         "richRowSelectorState": | ""
     | "checked"
     | "indeterminate";
@@ -308,10 +367,6 @@ export namespace Components {
           * Bottom margin around the root element
          */
         "bottomMargin": string;
-        /**
-          * A CSS class to set as the gx-intersection-observer element class
-         */
-        "cssClass": string;
         /**
           * Left margin around the root element
          */
@@ -892,6 +947,9 @@ declare namespace LocalJSX {
           * An object that contains localized strings for the grid.
          */
         "localization"?: GridLocalization;
+        /**
+          * Event emitted when the cell selection is changed.
+         */
         "onCellSelectionChanged"?: (event: CustomEvent<ChGridCellSelectionChangedEvent>) => void;
         /**
           * Event emitted when a row is clicked.
@@ -1057,7 +1115,13 @@ declare namespace LocalJSX {
           * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
          */
         "richRowSelector"?: boolean;
+        /**
+          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+         */
         "richRowSelectorMode"?: "select" | "mark";
+        /**
+          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+         */
         "richRowSelectorState"?: | ""
     | "checked"
     | "indeterminate";
@@ -1185,10 +1249,6 @@ declare namespace LocalJSX {
           * Bottom margin around the root element
          */
         "bottomMargin"?: string;
-        /**
-          * A CSS class to set as the gx-intersection-observer element class
-         */
-        "cssClass"?: string;
         /**
           * Left margin around the root element
          */

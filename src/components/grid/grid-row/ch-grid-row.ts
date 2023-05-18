@@ -132,10 +132,22 @@ export default class HTMLChGridRowElement
   }
 
   set collapsed(value: boolean) {
+    const dispatchEvent = this.collapsed != value;
+
     if (value) {
       this.setAttribute("collapsed", "");
     } else {
       this.removeAttribute("collapsed");
+    }
+
+    if (dispatchEvent) {
+      this.dispatchEvent(
+        new CustomEvent("rowCollapsedChanged", {
+          bubbles: true,
+          composed: true,
+          detail: { rowId: this.rowId, collapsed: value }
+        })
+      );
     }
   }
 

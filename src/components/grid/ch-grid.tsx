@@ -374,7 +374,8 @@ export class ChGrid {
     if (row) {
       this.rowClicked.emit({
         rowId: row.rowId,
-        cellId: cell?.cellId
+        cellId: cell?.cellId,
+        columnId: cell?.column.columnId
       });
 
       this.manager.selection.selecting = true;

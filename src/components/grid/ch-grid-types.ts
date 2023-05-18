@@ -15,6 +15,7 @@ export interface ChGridCellSelectionChangedEvent {
 export interface ChGridRowClickedEvent {
   rowId: string;
   cellId?: string;
+  columnId?: string;
 }
 
 export type CSSProperties = {

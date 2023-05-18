@@ -244,7 +244,9 @@ export class ChGridManager {
       const row = this.getRow(rowId);
       const column = this.columns.getColumn(columnId);
 
-      return row.getCell(column);
+      if (row && column) {
+        return row.getCell(column);
+      }
     }
   }
 

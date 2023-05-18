@@ -163,7 +163,6 @@ export class ChGrid {
   rowFocusedHandler(row: HTMLChGridRowElement, previous: HTMLChGridRowElement) {
     if (row) {
       row.focused = true;
-      row.ensureVisible();
     }
     if (previous) {
       previous.focused = false;

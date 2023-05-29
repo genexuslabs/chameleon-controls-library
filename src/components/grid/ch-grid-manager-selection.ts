@@ -125,6 +125,32 @@ export class ChGridManagerSelection {
     return { rowFocused, rowsSelected, cellSelected };
   }
 
+  selectSet(
+    state: ManagerSelectionState,
+    row: HTMLChGridRowElement,
+    cell: HTMLChGridCellElement,
+    value = true
+  ): ManagerSelectionState {
+    let rowFocused = state.rowFocused;
+    let rowsSelected = state.rowsSelected;
+    let cellSelected = state.cellSelected;
+
+    rowFocused = row;
+    if (value) {
+      rowsSelected = rowsSelected.includes(row)
+        ? rowsSelected
+        : [...rowsSelected, row];
+      cellSelected = cell;
+    } else {
+      rowsSelected = !rowsSelected.includes(row)
+        ? rowsSelected
+        : rowsSelected.filter(rowSelected => rowSelected != row);
+      cellSelected = null;
+    }
+
+    return { rowFocused, rowsSelected, cellSelected };
+  }
+
   selectFirstRow(
     state: ManagerSelectionState,
     append: boolean
@@ -367,13 +393,22 @@ export class ChGridManagerSelection {
       return this.selectionStateNone;
     }
 
-    const nextCell = this.grid.manager.getPreviousCell(state.cellSelected);
     const rowFocused = state.rowFocused;
-    const rowsSelected = state.rowsSelected;
+    let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
-    if (nextCell) {
-      cellSelected = nextCell;
+    if (cellSelected) {
+      const nextCell = this.grid.manager.getPreviousCell(cellSelected);
+      if (nextCell) {
+        cellSelected = nextCell;
+      }
+    } else {
+      if (!rowsSelected.includes(rowFocused)) {
+        rowsSelected = [...rowsSelected, rowFocused];
+      }
+      if (!cellSelected) {
+        cellSelected = rowFocused.getCell(this.grid.manager.getFirstColumn());
+      }
     }
 
     return { rowFocused, rowsSelected, cellSelected };
@@ -384,13 +419,22 @@ export class ChGridManagerSelection {
       return this.selectionStateNone;
     }
 
-    const nextCell = this.grid.manager.getNextCell(state.cellSelected);
     const rowFocused = state.rowFocused;
-    const rowsSelected = state.rowsSelected;
+    let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
-    if (nextCell) {
-      cellSelected = nextCell;
+    if (cellSelected) {
+      const nextCell = this.grid.manager.getNextCell(cellSelected);
+      if (nextCell) {
+        cellSelected = nextCell;
+      }
+    } else {
+      if (!rowsSelected.includes(rowFocused)) {
+        rowsSelected = [...rowsSelected, rowFocused];
+      }
+      if (!cellSelected) {
+        cellSelected = rowFocused.getCell(this.grid.manager.getFirstColumn());
+      }
     }
 
     return { rowFocused, rowsSelected, cellSelected };

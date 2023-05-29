@@ -547,9 +547,9 @@ export class ChGrid {
   async selectRow(rowId: string, selected = true): Promise<void> {
     const row = this.manager.getRow(rowId);
 
-    if (row && row.selected != selected) {
+    if (row) {
       const { rowFocused, rowsSelected, cellSelected } =
-        this.manager.selection.select(
+        this.manager.selection.selectSet(
           {
             rowFocused: this.rowFocused,
             rowsSelected: this.rowsSelected,
@@ -557,8 +557,7 @@ export class ChGrid {
           },
           row,
           null,
-          true,
-          false
+          selected
         );
 
       this.rowFocused = rowFocused;
@@ -597,10 +596,23 @@ export class ChGrid {
     const cell = this.manager.getCell(cellId, rowId, columnId);
 
     if (cell) {
-      const row = cell.row;
-      const append = row.selected != selected;
+      const { rowFocused, rowsSelected, cellSelected } =
+        this.manager.selection.selectSet(
+          {
+            rowFocused: this.rowFocused,
+            rowsSelected: this.rowsSelected,
+            cellSelected: this.cellSelected
+          },
+          cell.row,
+          cell,
+          selected
+        );
 
-      this.selectByPointerEvent(row, cell, append, false);
+      this.rowFocused = rowFocused;
+      this.rowsSelected = rowsSelected;
+      this.cellSelected = cellSelected;
+
+      rowFocused?.ensureVisible();
     }
   }
 

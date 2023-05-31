@@ -41,15 +41,17 @@ export default class HTMLChGridRowElement
   }
 
   set highlighted(value: boolean) {
+    const highlightedClasses = this.grid.rowHighlightedClass?.split(" ");
+
     if (value === true) {
       this.setAttribute("highlighted", "");
       if (this.grid.rowHighlightedClass) {
-        this.classList.add(this.grid.rowHighlightedClass);
+        this.classList.add(...highlightedClasses);
       }
     } else {
       this.removeAttribute("highlighted");
       if (this.grid.rowHighlightedClass) {
-        this.classList.remove(this.grid.rowHighlightedClass);
+        this.classList.remove(...highlightedClasses);
       }
     }
   }
@@ -62,15 +64,17 @@ export default class HTMLChGridRowElement
   }
 
   set selected(value: boolean) {
+    const selectedClasses = this.grid.rowSelectedClass?.split(" ");
+
     if (value === true) {
       this.setAttribute("selected", "");
       if (this.grid.rowSelectedClass) {
-        this.classList.add(this.grid.rowSelectedClass);
+        this.classList.add(...selectedClasses);
       }
     } else {
       this.removeAttribute("selected");
       if (this.grid.rowSelectedClass) {
-        this.classList.remove(this.grid.rowSelectedClass);
+        this.classList.remove(...selectedClasses);
       }
     }
   }
@@ -83,15 +87,17 @@ export default class HTMLChGridRowElement
   }
 
   set marked(value: boolean) {
+    const markedClasses = this.grid.rowMarkedClass?.split(" ");
+
     if (value === true) {
       this.setAttribute("marked", "");
       if (this.grid.rowMarkedClass) {
-        this.classList.add(this.grid.rowMarkedClass);
+        this.classList.add(...markedClasses);
       }
     } else {
       this.removeAttribute("marked");
       if (this.grid.rowMarkedClass) {
-        this.classList.remove(this.grid.rowMarkedClass);
+        this.classList.remove(...markedClasses);
       }
     }
   }
@@ -104,15 +110,17 @@ export default class HTMLChGridRowElement
   }
 
   set focused(value: boolean) {
+    const focusedClasses = this.grid.rowFocusedClass?.split(" ");
+
     if (value === true) {
       this.setAttribute("focused", "");
       if (this.grid.rowFocusedClass) {
-        this.classList.add(this.grid.rowFocusedClass);
+        this.classList.add(...focusedClasses);
       }
     } else {
       this.removeAttribute("focused");
       if (this.grid.rowFocusedClass) {
-        this.classList.remove(this.grid.rowFocusedClass);
+        this.classList.remove(...focusedClasses);
       }
     }
   }

@@ -47,6 +47,7 @@ and the last one for the dropdown footer.
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property             | Attribute             | Description                                                                                                             | Type                                     | Default            |
@@ -59,11 +60,13 @@ and the last one for the dropdown footer.
 | `position`           | `position`            | Specifies the position of the dropdown section that is placed relative to the expandable button.                        | `"Bottom" \| "Left" \| "Right" \| "Top"` | `"Bottom"`         |
 | `valign`             | `valign`              | Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.   | `"Bottom" \| "Middle" \| "Top"`          | `"Middle"`         |
 
+
 ## Events
 
 | Event            | Description                                                  | Type                   |
 | ---------------- | ------------------------------------------------------------ | ---------------------- |
 | `expandedChange` | Fired when the visibility of the dropdown section is changed | `CustomEvent<boolean>` |
+
 
 ## Shadow Parts
 
@@ -75,7 +78,7 @@ and the last one for the dropdown footer.
 | `"dropdown__list"`              |             |
 | `"dropdown__section"`           |             |
 
----
 
-_Built with [StencilJS](https://stenciljs.com/)_
+----------------------------------------------
 
+*Built with [StencilJS](https://stenciljs.com/)*

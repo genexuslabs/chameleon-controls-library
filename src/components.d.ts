@@ -696,19 +696,55 @@ export namespace Components {
         "updateTreeVerticalLineHeight": () => Promise<void>;
     }
     interface ChWindow {
+        /**
+          * Specifies the drag behavior of the window.
+         */
         "allowDrag": "no" | "header" | "box";
+        /**
+          * The caption or title of the window.
+         */
         "caption": string;
+        /**
+          * Determines whether the window should close when the Escape key is pressed.
+         */
         "closeOnEscape": boolean;
+        /**
+          * Determines whether the window should close when clicked outside.
+         */
         "closeOnOutsideClick": boolean;
+        /**
+          * The text for the close button.
+         */
         "closeText": string;
+        /**
+          * The tooltip text for the close button.
+         */
         "closeTooltip": string;
+        /**
+          * The container element for the window.
+         */
         "container"?: HTMLElement;
+        /**
+          * Determines if the window is hidden or visible.
+         */
         "hidden": boolean;
+        /**
+          * Specifies whether the window should be displayed as a modal.
+         */
         "modal": boolean;
+        /**
+          * The horizontal alignment of the window.
+         */
         "xAlign": ChWindowAlign;
+        /**
+          * The vertical alignment of the window.
+         */
         "yAlign": ChWindowAlign;
     }
     interface ChWindowClose {
+        /**
+          * Specifies whether the close button is disabled.
+         */
         "disabled": boolean;
     }
     interface GxGridChameleon {
@@ -1751,22 +1787,67 @@ declare namespace LocalJSX {
         "selected"?: boolean;
     }
     interface ChWindow {
+        /**
+          * Specifies the drag behavior of the window.
+         */
         "allowDrag"?: "no" | "header" | "box";
+        /**
+          * The caption or title of the window.
+         */
         "caption"?: string;
+        /**
+          * Determines whether the window should close when the Escape key is pressed.
+         */
         "closeOnEscape"?: boolean;
+        /**
+          * Determines whether the window should close when clicked outside.
+         */
         "closeOnOutsideClick"?: boolean;
+        /**
+          * The text for the close button.
+         */
         "closeText"?: string;
+        /**
+          * The tooltip text for the close button.
+         */
         "closeTooltip"?: string;
+        /**
+          * The container element for the window.
+         */
         "container"?: HTMLElement;
+        /**
+          * Determines if the window is hidden or visible.
+         */
         "hidden"?: boolean;
+        /**
+          * Specifies whether the window should be displayed as a modal.
+         */
         "modal"?: boolean;
+        /**
+          * Emitted when the window is closed.
+         */
         "onWindowClosed"?: (event: CustomEvent<any>) => void;
+        /**
+          * Emitted when the window is opened.
+         */
         "onWindowOpened"?: (event: CustomEvent<any>) => void;
+        /**
+          * The horizontal alignment of the window.
+         */
         "xAlign"?: ChWindowAlign;
+        /**
+          * The vertical alignment of the window.
+         */
         "yAlign"?: ChWindowAlign;
     }
     interface ChWindowClose {
+        /**
+          * Specifies whether the close button is disabled.
+         */
         "disabled"?: boolean;
+        /**
+          * Emitted when the close button is clicked.
+         */
         "onWindowCloseClicked"?: (event: CustomEvent<any>) => void;
     }
     interface GxGridChameleon {

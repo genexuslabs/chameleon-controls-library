@@ -17,28 +17,16 @@ export type ChWindowAlign =
   | "inside-end"
   | "outside-end";
 
+/**
+ * The 'ch-window' component represents a popup container that is positioned
+ * relative to an element or the screen.
+ */
 @Component({
   tag: "ch-window",
   styleUrl: "ch-window.scss",
   shadow: true
 })
 export class ChWindow {
-  @Element() el: HTMLChWindowElement;
-  @Prop() readonly container?: HTMLElement;
-  @Prop({ reflect: true, mutable: true }) xAlign: ChWindowAlign = "center";
-  @Prop({ reflect: true, mutable: true }) yAlign: ChWindowAlign = "center";
-  @Prop({ reflect: true, mutable: true }) hidden = true;
-  @Prop({ reflect: true }) readonly modal: boolean = true;
-  @Prop() readonly caption: string = "";
-  @Prop() readonly closeText: string;
-  @Prop() readonly closeTooltip: string;
-  @Prop() readonly closeOnOutsideClick: boolean;
-  @Prop() readonly closeOnEscape: boolean;
-  @Prop() readonly allowDrag: "no" | "header" | "box" = "no";
-
-  @Event() windowOpened: EventEmitter;
-  @Event() windowClosed: EventEmitter;
-
   private isContainerCssOverride = false;
   private containerResizeObserver: ResizeObserver;
   private mask: HTMLElement;
@@ -56,18 +44,25 @@ export class ChWindow {
   private draggedX = 0;
   private draggedY = 0;
 
-  componentWillLoad() {
-    this.containerResizeObserver = new ResizeObserver(this.updatePosition);
+  @Element() el: HTMLChWindowElement;
 
-    this.containerResizeObserverHandler(this.container);
-    this.watchCSSAlign();
-  }
+  /** The container element for the window. */
+  @Prop() readonly container?: HTMLElement;
 
   @Watch("container")
   containerHandler(value: HTMLElement, oldValue: HTMLElement) {
     this.containerResizeObserverHandler(value, oldValue);
     this.updatePosition();
   }
+
+  /** The horizontal alignment of the window. */
+  @Prop({ reflect: true, mutable: true }) xAlign: ChWindowAlign = "center";
+
+  /** The vertical alignment of the window. */
+  @Prop({ reflect: true, mutable: true }) yAlign: ChWindowAlign = "center";
+
+  /** Determines if the window is hidden or visible. */
+  @Prop({ reflect: true, mutable: true }) hidden = true;
 
   @Watch("hidden")
   hiddenHandler() {
@@ -78,6 +73,40 @@ export class ChWindow {
       this.updatePosition();
       this.windowOpened.emit();
     }
+  }
+
+  /** Specifies whether the window should be displayed as a modal. */
+  @Prop({ reflect: true }) readonly modal: boolean = true;
+
+  /** The caption or title of the window. */
+  @Prop() readonly caption: string = "";
+
+  /** The text for the close button. */
+  @Prop() readonly closeText: string;
+
+  /** The tooltip text for the close button. */
+  @Prop() readonly closeTooltip: string;
+
+  /** Determines whether the window should close when clicked outside. */
+  @Prop() readonly closeOnOutsideClick: boolean;
+
+  /** Determines whether the window should close when the Escape key is pressed. */
+  @Prop() readonly closeOnEscape: boolean;
+
+  /** Specifies the drag behavior of the window. */
+  @Prop() readonly allowDrag: "no" | "header" | "box" = "no";
+
+  /** Emitted when the window is opened. */
+  @Event() windowOpened: EventEmitter;
+
+  /** Emitted when the window is closed. */
+  @Event() windowClosed: EventEmitter;
+
+  componentWillLoad() {
+    this.containerResizeObserver = new ResizeObserver(this.updatePosition);
+
+    this.containerResizeObserverHandler(this.container);
+    this.watchCSSAlign();
   }
 
   @Listen("resize", { target: "window", passive: true })

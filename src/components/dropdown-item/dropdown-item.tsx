@@ -92,8 +92,6 @@ export class ChDropDownItem implements ChComponent {
   };
 
   render() {
-    console.log(this.leftImgSrc);
-
     return (
       <Host role="listitem">
         {this.href ? (

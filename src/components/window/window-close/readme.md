@@ -7,16 +7,16 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type      | Default     |
-| ---------- | ---------- | ----------- | --------- | ----------- |
-| `disabled` | `disabled` |             | `boolean` | `undefined` |
+| Property   | Attribute  | Description                                     | Type      | Default     |
+| ---------- | ---------- | ----------------------------------------------- | --------- | ----------- |
+| `disabled` | `disabled` | Specifies whether the close button is disabled. | `boolean` | `undefined` |
 
 
 ## Events
 
-| Event                | Description | Type               |
-| -------------------- | ----------- | ------------------ |
-| `windowCloseClicked` |             | `CustomEvent<any>` |
+| Event                | Description                               | Type               |
+| -------------------- | ----------------------------------------- | ------------------ |
+| `windowCloseClicked` | Emitted when the close button is clicked. | `CustomEvent<any>` |
 
 
 ## Dependencies

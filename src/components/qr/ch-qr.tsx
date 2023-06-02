@@ -7,29 +7,39 @@ import QrCreator from "qr-creator";
   shadow: true
 })
 export class ChQr {
-  //Any kind of text, also links, email addresses, any thing.
+  private qrContainer!: HTMLElement;
+
+  /**
+   * Any kind of text, also links, email addresses, any thing.
+   */
   @Prop() readonly text: string | undefined = undefined;
 
-  //Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+  /**
+   * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+   */
   @Prop() readonly radius: number = 0;
 
-  /*
-   Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR 
-   code for error correction respectively. So on one hand the code will get bigger but chances are also higher 
-   that it will be read without errors later on. This value is by default High (H)
-  */
+  /**
+   * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR
+   * code for error correction respectively. So on one hand the code will get bigger but chances are also higher
+   * that it will be read without errors later on. This value is by default High (H)
+   */
   @Prop() readonly ecLevel: ecLevel = "H";
 
-  //What color you want your QR code to be. By default is black.
+  /**
+   * What color you want your QR code to be. By default is black.
+   */
   @Prop() readonly fill: string = "black";
 
-  //The background color. By default is transparent.
+  /**
+   * The background color. By default is transparent.
+   */
   @Prop() readonly background: string | null = null;
 
-  //The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+  /**
+   * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+   */
   @Prop() readonly size: number = 128;
-
-  qrContainer!: HTMLElement;
 
   componentDidLoad() {
     if (this.text) {
@@ -46,6 +56,7 @@ export class ChQr {
       );
     }
   }
+
   render() {
     return (
       <Host>

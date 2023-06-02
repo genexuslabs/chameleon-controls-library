@@ -512,11 +512,29 @@ export namespace Components {
         "totalPages": number;
     }
     interface ChQr {
+        /**
+          * The background color. By default is transparent.
+         */
         "background": string | null;
+        /**
+          * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+         */
         "ecLevel": ecLevel;
+        /**
+          * What color you want your QR code to be. By default is black.
+         */
         "fill": string;
+        /**
+          * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+         */
         "radius": number;
+        /**
+          * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+         */
         "size": number;
+        /**
+          * Any kind of text, also links, email addresses, any thing.
+         */
         "text": string | undefined;
     }
     interface ChSelect {
@@ -1525,11 +1543,29 @@ declare namespace LocalJSX {
         "totalPages"?: number;
     }
     interface ChQr {
+        /**
+          * The background color. By default is transparent.
+         */
         "background"?: string | null;
+        /**
+          * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+         */
         "ecLevel"?: ecLevel;
+        /**
+          * What color you want your QR code to be. By default is black.
+         */
         "fill"?: string;
+        /**
+          * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+         */
         "radius"?: number;
+        /**
+          * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+         */
         "size"?: number;
+        /**
+          * Any kind of text, also links, email addresses, any thing.
+         */
         "text"?: string | undefined;
     }
     interface ChSelect {

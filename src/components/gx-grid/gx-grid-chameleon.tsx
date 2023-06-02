@@ -10,8 +10,8 @@ import {
   paginationGoToPreviousPage
 } from "./gx-grid-chameleon-paginator";
 import {
-  ChPaginatorNavigationClickedEvent,
-  ChPaginatorNavigationType
+  ChPaginatorNavigateClickedEvent,
+  ChPaginatorNavigateType
 } from "../paginator/paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
 import {
@@ -59,21 +59,21 @@ export class GridChameleon {
     }
   }
 
-  @Listen("navigationClicked")
-  navigationClickedHandler(
-    eventInfo: CustomEvent<ChPaginatorNavigationClickedEvent>
+  @Listen("navigateClicked")
+  navigateClickedHandler(
+    eventInfo: CustomEvent<ChPaginatorNavigateClickedEvent>
   ) {
-    switch (eventInfo.detail.navigationType) {
-      case ChPaginatorNavigationType.FIRST:
+    switch (eventInfo.detail.type) {
+      case "first":
         paginationGoToFirstPage(this.grid);
         break;
-      case ChPaginatorNavigationType.PREVIOUS:
+      case "previous":
         paginationGoToPreviousPage(this.grid);
         break;
-      case ChPaginatorNavigationType.NEXT:
+      case "next":
         paginationGoToNextPage(this.grid);
         break;
-      case ChPaginatorNavigationType.LAST:
+      case "last":
         paginationGoToLastPage(this.grid);
         break;
     }
@@ -352,25 +352,25 @@ export class GridChameleon {
     return (
       <ch-paginator class={this.grid.pagingBarClass} slot="footer">
         {this.renderPaginatorNavigate(
-          ChPaginatorNavigationType.FIRST,
+          "first",
           this.grid.isFirstPage(),
           this.grid.pagingButtonFirstClass,
           gx.getMessage("GXM_first")
         )}
         {this.renderPaginatorNavigate(
-          ChPaginatorNavigationType.PREVIOUS,
+          "previous",
           this.grid.isFirstPage(),
           this.grid.pagingButtonPreviousClass,
           gx.getMessage("GXM_previous")
         )}
         {this.renderPaginatorNavigate(
-          ChPaginatorNavigationType.NEXT,
+          "next",
           this.grid.isLastPage(),
           this.grid.pagingButtonNextClass,
           gx.getMessage("GXM_next")
         )}
         {this.renderPaginatorNavigate(
-          ChPaginatorNavigationType.LAST,
+          "last",
           this.grid.isLastPage(),
           this.grid.pagingButtonLastClass,
           gx.getMessage("GXM_last")
@@ -380,7 +380,7 @@ export class GridChameleon {
   }
 
   private renderPaginatorNavigate(
-    type: ChPaginatorNavigationType,
+    type: ChPaginatorNavigateType,
     disabled: boolean,
     className: string,
     text: string

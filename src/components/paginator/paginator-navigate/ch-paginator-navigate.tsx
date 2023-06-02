@@ -5,37 +5,47 @@ import {
   EventEmitter,
   h,
   Host,
-  Element
+  Listen
 } from "@stencil/core";
 import {
-  ChPaginatorNavigationClickedEvent,
-  ChPaginatorNavigationType
+  ChPaginatorNavigateClickedEvent,
+  ChPaginatorNavigateType
 } from "./ch-paginator-navigate-types";
 
+/**
+ * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+ */
 @Component({
   tag: "ch-paginator-navigate",
   styleUrl: "ch-paginator-navigate.scss",
   shadow: false
 })
 export class ChPaginatorNavigate {
-  @Element() el: HTMLChPaginatorNavigateElement;
-  @Prop() readonly type: ChPaginatorNavigationType;
-  @Prop() readonly disabled: boolean;
-  @Event() navigationClicked: EventEmitter<ChPaginatorNavigationClickedEvent>; // prettier-ignore
+  /**
+   * The type of navigation button.
+   */
+  @Prop({ reflect: true }) readonly type: ChPaginatorNavigateType;
 
-  private handleClick = (eventInfo: Event) => {
-    eventInfo.stopPropagation();
-    this.navigationClicked.emit({ navigationType: this.type });
-  };
+  /**
+   * Flag indicating if the button is disabled.
+   */
+  @Prop() readonly disabled: boolean;
+
+  /**
+   * Event emitted when the navigation button is pressed.
+   */
+  @Event() navigateClicked: EventEmitter<ChPaginatorNavigateClickedEvent>; // prettier-ignore
+
+  @Listen("keydown", { passive: true })
+  @Listen("click", { passive: true })
+  pressedHandler(eventInfo) {
+    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+      this.navigateClicked.emit({ type: this.type });
+      eventInfo.stopPropagation();
+    }
+  }
 
   render() {
-    return (
-      <Host
-        role="button"
-        tabindex="0"
-        disabled={this.disabled}
-        onClick={this.handleClick}
-      ></Host>
-    );
+    return <Host role="button" tabindex="0" disabled={this.disabled}></Host>;
   }
 }

@@ -1,4 +1,12 @@
-import { Component, Prop, Event, h, Host, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  Prop,
+  Event,
+  h,
+  Host,
+  EventEmitter,
+  Listen
+} from "@stencil/core";
 
 /**
  * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
@@ -19,19 +27,16 @@ export class ChGridActionRefresh {
    */
   @Event() refreshClicked: EventEmitter;
 
-  private handleClick = (eventInfo: Event) => {
-    eventInfo.stopPropagation();
-    this.refreshClicked.emit();
-  };
+  @Listen("keydown", { passive: true })
+  @Listen("click", { passive: true })
+  pressedHandler(eventInfo: any) {
+    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+      this.refreshClicked.emit();
+      eventInfo.stopPropagation();
+    }
+  }
 
   render() {
-    return (
-      <Host
-        role="button"
-        tabindex="0"
-        disabled={this.disabled}
-        onClick={this.handleClick}
-      ></Host>
-    );
+    return <Host role="button" tabindex="0" disabled={this.disabled}></Host>;
   }
 }

@@ -1,4 +1,12 @@
-import { Component, Prop, h, Host, Event, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  Prop,
+  h,
+  Host,
+  Event,
+  EventEmitter,
+  Listen
+} from "@stencil/core";
 
 /**
  * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
@@ -19,19 +27,16 @@ export class ChGridActionSettings {
    */
   @Event() settingsShowClicked: EventEmitter;
 
-  private handleClick = (eventInfo: Event) => {
-    eventInfo.stopPropagation();
-    this.settingsShowClicked.emit();
-  };
+  @Listen("keydown", { passive: true })
+  @Listen("click", { passive: true })
+  pressedHandler(eventInfo: any) {
+    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+      this.settingsShowClicked.emit();
+      eventInfo.stopPropagation();
+    }
+  }
 
   render() {
-    return (
-      <Host
-        role="button"
-        tabindex="0"
-        disabled={this.disabled}
-        onClick={this.handleClick}
-      ></Host>
-    );
+    return <Host role="button" tabindex="0" disabled={this.disabled}></Host>;
   }
 }

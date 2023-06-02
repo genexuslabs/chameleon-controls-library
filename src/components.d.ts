@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { DynamicMenuActivatedEvent } from "./components/dynamic-menu/dynamic-menu";
+import { MenuActionActiveEvent } from "./components/dynamic-menu-action/dynamic-menu-action";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -38,6 +40,106 @@ export namespace Components {
           * Specifies the initial width of the start component
          */
         "startComponentInitialWidth": string;
+    }
+    interface ChDropdown {
+        /**
+          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+         */
+        "align": "Left" | "Center" | "Right";
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel": string;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "dropdownSeparation": number;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior": "Click" | "Click or Hover";
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus": boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position": "Top" | "Right" | "Bottom" | "Left";
+        /**
+          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+         */
+        "valign": "Top" | "Middle" | "Bottom";
+    }
+    interface ChDropdownItem {
+        /**
+          * Focuses the control's anchor or button.
+         */
+        "handleFocusElement": () => Promise<void>;
+        /**
+          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+         */
+        "href": string;
+        /**
+          * Specifies the src for the left img.
+         */
+        "leftImgSrc": string;
+        /**
+          * Specifies the src for the right img.
+         */
+        "rightImgSrc": string;
+    }
+    interface ChDropdownItemSeparator {
+    }
+    interface ChDynamicMenu {
+        /**
+          * A CSS class to set as the `ch-dynamic-menu` element class.
+         */
+        "cssClass": string;
+        /**
+          * This attribute specifies which must be open by default.
+         */
+        "openItem": string;
+    }
+    interface ChDynamicMenuAction {
+        /**
+          * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
+         */
+        "actionId": string;
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
+         */
+        "activeClass": string;
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-action` element class.
+         */
+        "cssClass": string;
+        /**
+          * This attribute lets you specify if the menu action is activated or not.
+         */
+        "deactivated": boolean;
+        /**
+          * The subtitle of menu action.
+         */
+        "itemSubtitle": string;
+        /**
+          * The title of menu action.
+         */
+        "itemTitle": string;
+        /**
+          * This attribute specifies which popup of the ch-dynamic-menu must be open.
+         */
+        "popupId": string;
+    }
+    interface ChDynamicMenuPopup {
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-popup` element class.
+         */
+        "cssClass": string;
+        /**
+          * This attribute lets you specify if the menu popup is opened
+         */
+        "opened": boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -632,6 +734,42 @@ declare global {
         prototype: HTMLChDragBarElement;
         new (): HTMLChDragBarElement;
     };
+    interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
+    }
+    var HTMLChDropdownElement: {
+        prototype: HTMLChDropdownElement;
+        new (): HTMLChDropdownElement;
+    };
+    interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
+    }
+    var HTMLChDropdownItemElement: {
+        prototype: HTMLChDropdownItemElement;
+        new (): HTMLChDropdownItemElement;
+    };
+    interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
+    }
+    var HTMLChDropdownItemSeparatorElement: {
+        prototype: HTMLChDropdownItemSeparatorElement;
+        new (): HTMLChDropdownItemSeparatorElement;
+    };
+    interface HTMLChDynamicMenuElement extends Components.ChDynamicMenu, HTMLStencilElement {
+    }
+    var HTMLChDynamicMenuElement: {
+        prototype: HTMLChDynamicMenuElement;
+        new (): HTMLChDynamicMenuElement;
+    };
+    interface HTMLChDynamicMenuActionElement extends Components.ChDynamicMenuAction, HTMLStencilElement {
+    }
+    var HTMLChDynamicMenuActionElement: {
+        prototype: HTMLChDynamicMenuActionElement;
+        new (): HTMLChDynamicMenuActionElement;
+    };
+    interface HTMLChDynamicMenuPopupElement extends Components.ChDynamicMenuPopup, HTMLStencilElement {
+    }
+    var HTMLChDynamicMenuPopupElement: {
+        prototype: HTMLChDynamicMenuPopupElement;
+        new (): HTMLChDynamicMenuPopupElement;
+    };
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
     }
     var HTMLChFormCheckboxElement: {
@@ -850,6 +988,12 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "ch-drag-bar": HTMLChDragBarElement;
+        "ch-dropdown": HTMLChDropdownElement;
+        "ch-dropdown-item": HTMLChDropdownItemElement;
+        "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
+        "ch-dynamic-menu": HTMLChDynamicMenuElement;
+        "ch-dynamic-menu-action": HTMLChDynamicMenuActionElement;
+        "ch-dynamic-menu-popup": HTMLChDynamicMenuPopupElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
         "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
@@ -910,6 +1054,126 @@ declare namespace LocalJSX {
           * Specifies the initial width of the start component
          */
         "startComponentInitialWidth"?: string;
+    }
+    interface ChDropdown {
+        /**
+          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+         */
+        "align"?: "Left" | "Center" | "Right";
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel"?: string;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "dropdownSeparation"?: number;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior"?: "Click" | "Click or Hover";
+        /**
+          * Fired when the visibility of the dropdown section is changed
+         */
+        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus"?: boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position"?: "Top" | "Right" | "Bottom" | "Left";
+        /**
+          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+         */
+        "valign"?: "Top" | "Middle" | "Bottom";
+    }
+    interface ChDropdownItem {
+        /**
+          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+         */
+        "href"?: string;
+        /**
+          * Specifies the src for the left img.
+         */
+        "leftImgSrc"?: string;
+        /**
+          * Fires when the control's anchor or button is clicked.
+         */
+        "onActionClick"?: (event: CustomEvent<string>) => void;
+        /**
+          * Fires when the control's anchor or button is in focus.
+         */
+        "onFocusChange"?: (event: CustomEvent<any>) => void;
+        /**
+          * Specifies the src for the right img.
+         */
+        "rightImgSrc"?: string;
+    }
+    interface ChDropdownItemSeparator {
+    }
+    interface ChDynamicMenu {
+        /**
+          * A CSS class to set as the `ch-dynamic-menu` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Fired when the menu container is opened or closed.
+         */
+        "onDynamicMenuActivated"?: (event: CustomEvent<DynamicMenuActivatedEvent>) => void;
+        /**
+          * This attribute specifies which must be open by default.
+         */
+        "openItem"?: string;
+    }
+    interface ChDynamicMenuAction {
+        /**
+          * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
+         */
+        "actionId"?: string;
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
+         */
+        "activeClass"?: string;
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-action` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * This attribute lets you specify if the menu action is activated or not.
+         */
+        "deactivated"?: boolean;
+        /**
+          * The subtitle of menu action.
+         */
+        "itemSubtitle"?: string;
+        /**
+          * The title of menu action.
+         */
+        "itemTitle"?: string;
+        /**
+          * Fired when the menu action is activated.
+         */
+        "onMenuActionActivated"?: (event: CustomEvent<MenuActionActiveEvent>) => void;
+        /**
+          * Fired when a KeyboardEvent is captured for the menu action.
+         */
+        "onMenuActionKeyDown"?: (event: CustomEvent<KeyboardEvent>) => void;
+        /**
+          * This attribute specifies which popup of the ch-dynamic-menu must be open.
+         */
+        "popupId"?: string;
+    }
+    interface ChDynamicMenuPopup {
+        /**
+          * A CSS class to set as the `ch-dynamic-menu-popup` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * This attribute lets you specify if the menu popup is opened
+         */
+        "opened"?: boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -1544,6 +1808,12 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "ch-drag-bar": ChDragBar;
+        "ch-dropdown": ChDropdown;
+        "ch-dropdown-item": ChDropdownItem;
+        "ch-dropdown-item-separator": ChDropdownItemSeparator;
+        "ch-dynamic-menu": ChDynamicMenu;
+        "ch-dynamic-menu-action": ChDynamicMenuAction;
+        "ch-dynamic-menu-popup": ChDynamicMenuPopup;
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
         "ch-grid-action-refresh": ChGridActionRefresh;
@@ -1587,6 +1857,12 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
+            "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
+            "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
+            "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
+            "ch-dynamic-menu": LocalJSX.ChDynamicMenu & JSXBase.HTMLAttributes<HTMLChDynamicMenuElement>;
+            "ch-dynamic-menu-action": LocalJSX.ChDynamicMenuAction & JSXBase.HTMLAttributes<HTMLChDynamicMenuActionElement>;
+            "ch-dynamic-menu-popup": LocalJSX.ChDynamicMenuPopup & JSXBase.HTMLAttributes<HTMLChDynamicMenuPopupElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;

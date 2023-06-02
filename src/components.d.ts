@@ -9,8 +9,9 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
-import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
+import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
@@ -38,6 +39,56 @@ export namespace Components {
           * Specifies the initial width of the start component
          */
         "startComponentInitialWidth": string;
+    }
+    interface ChDropdown {
+        /**
+          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+         */
+        "align": "Left" | "Center" | "Right";
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel": string;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "dropdownSeparation": number;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior": "Click" | "Click or Hover";
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus": boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position": "Top" | "Right" | "Bottom" | "Left";
+        /**
+          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+         */
+        "valign": "Top" | "Middle" | "Bottom";
+    }
+    interface ChDropdownItem {
+        /**
+          * Focuses the control's anchor or button.
+         */
+        "handleFocusElement": () => Promise<void>;
+        /**
+          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+         */
+        "href": string;
+        /**
+          * Specifies the src for the left img.
+         */
+        "leftImgSrc": string;
+        /**
+          * Specifies the src for the right img.
+         */
+        "rightImgSrc": string;
+    }
+    interface ChDropdownItemSeparator {
     }
     interface ChFormCheckbox {
         /**
@@ -415,18 +466,49 @@ export namespace Components {
         "steps": number;
     }
     interface ChPaginator {
+        /**
+          * The active page number.
+         */
         "activePage": number;
-        "totalPages": number;
+        /**
+          * Indicates that the end has been reached. Use when total pages are not known (totalPages = -1).
+         */
+        "hasNextPage": boolean;
+        /**
+          * The total number of pages. Use -1 if not known and 'hasNextPage' property to indicate that the end has been reached.
+         */
+        "totalPages": 1;
     }
     interface ChPaginatorNavigate {
+        /**
+          * Flag indicating if the button is disabled.
+         */
         "disabled": boolean;
-        "type": ChPaginatorNavigationType;
+        /**
+          * The type of navigation button.
+         */
+        "type": ChPaginatorNavigateType;
     }
     interface ChPaginatorPages {
-        "activePage": number;
+        /**
+          * The maximum number of items to display in the pagination.
+         */
         "maxSize": number;
-        "renderFirstLastPages": true;
+        /**
+          * The active page number.
+         */
+        "page": number;
+        /**
+          * Flag to render the first and last pages.
+         */
+        "renderFirstLastPages": boolean;
+        /**
+          * The text to display for the dots.
+         */
         "textDots": string;
+        /**
+          * The total number of pages.
+         */
         "totalPages": number;
     }
     interface ChQr {
@@ -631,6 +713,24 @@ declare global {
     var HTMLChDragBarElement: {
         prototype: HTMLChDragBarElement;
         new (): HTMLChDragBarElement;
+    };
+    interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
+    }
+    var HTMLChDropdownElement: {
+        prototype: HTMLChDropdownElement;
+        new (): HTMLChDropdownElement;
+    };
+    interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
+    }
+    var HTMLChDropdownItemElement: {
+        prototype: HTMLChDropdownItemElement;
+        new (): HTMLChDropdownItemElement;
+    };
+    interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
+    }
+    var HTMLChDropdownItemSeparatorElement: {
+        prototype: HTMLChDropdownItemSeparatorElement;
+        new (): HTMLChDropdownItemSeparatorElement;
     };
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
     }
@@ -850,6 +950,9 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "ch-drag-bar": HTMLChDragBarElement;
+        "ch-dropdown": HTMLChDropdownElement;
+        "ch-dropdown-item": HTMLChDropdownItemElement;
+        "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
         "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
@@ -910,6 +1013,64 @@ declare namespace LocalJSX {
           * Specifies the initial width of the start component
          */
         "startComponentInitialWidth"?: string;
+    }
+    interface ChDropdown {
+        /**
+          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+         */
+        "align"?: "Left" | "Center" | "Right";
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel"?: string;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "dropdownSeparation"?: number;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior"?: "Click" | "Click or Hover";
+        /**
+          * Fired when the visibility of the dropdown section is changed
+         */
+        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus"?: boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position"?: "Top" | "Right" | "Bottom" | "Left";
+        /**
+          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+         */
+        "valign"?: "Top" | "Middle" | "Bottom";
+    }
+    interface ChDropdownItem {
+        /**
+          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+         */
+        "href"?: string;
+        /**
+          * Specifies the src for the left img.
+         */
+        "leftImgSrc"?: string;
+        /**
+          * Fires when the control's anchor or button is clicked.
+         */
+        "onActionClick"?: (event: CustomEvent<string>) => void;
+        /**
+          * Fires when the control's anchor or button is in focus.
+         */
+        "onFocusChange"?: (event: CustomEvent<any>) => void;
+        /**
+          * Specifies the src for the right img.
+         */
+        "rightImgSrc"?: string;
+    }
+    interface ChDropdownItemSeparator {
     }
     interface ChFormCheckbox {
         /**
@@ -1302,21 +1463,65 @@ declare namespace LocalJSX {
         "steps"?: number;
     }
     interface ChPaginator {
+        /**
+          * The active page number.
+         */
         "activePage"?: number;
+        /**
+          * Indicates that the end has been reached. Use when total pages are not known (totalPages = -1).
+         */
+        "hasNextPage"?: boolean;
+        /**
+          * Event emitted when the active page changes.
+         */
         "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
-        "totalPages"?: number;
+        /**
+          * Event emitted when the navigation is requested.
+         */
+        "onPageNavigationRequested"?: (event: CustomEvent<ChPaginatorPageNavigationRequestedEvent>) => void;
+        /**
+          * The total number of pages. Use -1 if not known and 'hasNextPage' property to indicate that the end has been reached.
+         */
+        "totalPages"?: 1;
     }
     interface ChPaginatorNavigate {
+        /**
+          * Flag indicating if the button is disabled.
+         */
         "disabled"?: boolean;
-        "onNavigationClicked"?: (event: CustomEvent<ChPaginatorNavigationClickedEvent>) => void;
-        "type"?: ChPaginatorNavigationType;
+        /**
+          * Event emitted when the navigation button is pressed.
+         */
+        "onNavigateClicked"?: (event: CustomEvent<ChPaginatorNavigateClickedEvent>) => void;
+        /**
+          * The type of navigation button.
+         */
+        "type"?: ChPaginatorNavigateType;
     }
     interface ChPaginatorPages {
-        "activePage"?: number;
+        /**
+          * The maximum number of items to display in the pagination.
+         */
         "maxSize"?: number;
-        "onPageClicked"?: (event: CustomEvent<any>) => void;
-        "renderFirstLastPages"?: true;
+        /**
+          * Event emitted when the page changes.
+         */
+        "onPageChanged"?: (event: CustomEvent<ChPaginatorPagesPageChangedEvent>) => void;
+        /**
+          * The active page number.
+         */
+        "page"?: number;
+        /**
+          * Flag to render the first and last pages.
+         */
+        "renderFirstLastPages"?: boolean;
+        /**
+          * The text to display for the dots.
+         */
         "textDots"?: string;
+        /**
+          * The total number of pages.
+         */
         "totalPages"?: number;
     }
     interface ChQr {
@@ -1544,6 +1749,9 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "ch-drag-bar": ChDragBar;
+        "ch-dropdown": ChDropdown;
+        "ch-dropdown-item": ChDropdownItem;
+        "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
         "ch-grid-action-refresh": ChGridActionRefresh;
@@ -1587,6 +1795,9 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
+            "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
+            "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
+            "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;

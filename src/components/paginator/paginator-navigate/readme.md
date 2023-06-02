@@ -5,17 +5,17 @@
 
 ## Properties
 
-| Property   | Attribute  | Description | Type                                                                                                                                        | Default     |
-| ---------- | ---------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `disabled` | `disabled` |             | `boolean`                                                                                                                                   | `undefined` |
-| `type`     | `type`     |             | `ChPaginatorNavigationType.FIRST \| ChPaginatorNavigationType.LAST \| ChPaginatorNavigationType.NEXT \| ChPaginatorNavigationType.PREVIOUS` | `undefined` |
+| Property   | Attribute  | Description                                | Type                                        | Default     |
+| ---------- | ---------- | ------------------------------------------ | ------------------------------------------- | ----------- |
+| `disabled` | `disabled` | Flag indicating if the button is disabled. | `boolean`                                   | `undefined` |
+| `type`     | `type`     | The type of navigation button.             | `"first" \| "last" \| "next" \| "previous"` | `undefined` |
 
 
 ## Events
 
-| Event               | Description | Type                                             |
-| ------------------- | ----------- | ------------------------------------------------ |
-| `navigationClicked` |             | `CustomEvent<ChPaginatorNavigationClickedEvent>` |
+| Event             | Description                                          | Type                                           |
+| ----------------- | ---------------------------------------------------- | ---------------------------------------------- |
+| `navigateClicked` | Event emitted when the navigation button is pressed. | `CustomEvent<ChPaginatorNavigateClickedEvent>` |
 
 
 ## Dependencies

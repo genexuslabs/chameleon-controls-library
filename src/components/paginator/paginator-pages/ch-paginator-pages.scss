@@ -1,5 +1,9 @@
 @import "../../common/reset.scss";
 
+button {
+  all: unset;
+}
+
 .pages {
   display: flex;
   align-items: center;

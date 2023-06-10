@@ -11,1894 +11,2087 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { ChPaginatorActivePageChangedEvent } from "./components/paginator/ch-paginator";
-import { ChPaginatorNavigationClickedEvent, ChPaginatorNavigationType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
+import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
+import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
-    interface ChDragBar {
-        /**
-          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
-         */
-        "barItemSrc": string;
-        /**
-          * This attribute lets you specify the label for the drag bar. Important for accessibility.
-         */
-        "barLabel": string;
-        /**
-          * A CSS class to set as the `ch-next-drag-bar` element class.
-         */
-        "cssClass": string;
-        /**
-          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
-         */
-        "showBarItem": boolean;
-        /**
-          * Specifies the initial width of the start component
-         */
-        "startComponentInitialWidth": string;
-    }
-    interface ChDropdown {
-        /**
-          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
-         */
-        "align": "Left" | "Center" | "Right";
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel": string;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "dropdownSeparation": number;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "Click or Hover";
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus": boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position": "Top" | "Right" | "Bottom" | "Left";
-        /**
-          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
-         */
-        "valign": "Top" | "Middle" | "Bottom";
-    }
-    interface ChDropdownItem {
-        /**
-          * Focuses the control's anchor or button.
-         */
-        "handleFocusElement": () => Promise<void>;
-        /**
-          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
-         */
-        "href": string;
-        /**
-          * Specifies the src for the left img.
-         */
-        "leftImgSrc": string;
-        /**
-          * Specifies the src for the right img.
-         */
-        "rightImgSrc": string;
-    }
-    interface ChDropdownItemSeparator {
-    }
-    interface ChDynamicMenu {
-        /**
-          * A CSS class to set as the `ch-dynamic-menu` element class.
-         */
-        "cssClass": string;
-        /**
-          * This attribute specifies which must be open by default.
-         */
-        "openItem": string;
-    }
-    interface ChDynamicMenuAction {
-        /**
-          * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
-         */
-        "actionId": string;
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
-         */
-        "activeClass": string;
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-action` element class.
-         */
-        "cssClass": string;
-        /**
-          * This attribute lets you specify if the menu action is activated or not.
-         */
-        "deactivated": boolean;
-        /**
-          * The subtitle of menu action.
-         */
-        "itemSubtitle": string;
-        /**
-          * The title of menu action.
-         */
-        "itemTitle": string;
-        /**
-          * This attribute specifies which popup of the ch-dynamic-menu must be open.
-         */
-        "popupId": string;
-    }
-    interface ChDynamicMenuPopup {
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-popup` element class.
-         */
-        "cssClass": string;
-        /**
-          * This attribute lets you specify if the menu popup is opened
-         */
-        "opened": boolean;
-    }
-    interface ChFormCheckbox {
-        /**
-          * The checkbox id
-         */
-        "checkboxId": string;
-        /**
-          * The presence of this attribute makes the checkbox checked by default
-         */
-        "checked": boolean;
-        /**
-          * The presence of this attribute disables the checkbox
-         */
-        "disabled": boolean;
-        /**
-          * The presence of this attribute makes the checkbox indeterminate
-         */
-        "indeterminate": boolean;
-        /**
-          * The checkbox label
-         */
-        "label": string;
-        /**
-          * The checkbox name
-         */
-        "name": string;
-        /**
-          * The checkbox value
-         */
-        "value": string;
-    }
-    interface ChGrid {
-        /**
-          * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
-          * @param cellId - The cellId of the cell to ensure visibility.
-         */
-        "cellEnsureVisible": (cellId: string) => Promise<void>;
-        /**
-          * Collapses a row, hiding its children.
-          * @param rowId - The rowId of the row to collapse.
-         */
-        "collapseRow": (rowId: string) => Promise<void>;
-        /**
-          * Expands a row, showing its children.
-          * @param rowId - The rowId of the row to expand.
-         */
-        "expandRow": (rowId: string) => Promise<void>;
-        /**
-          * Retrieves the rowId of the currently focused row.
-         */
-        "getFocusedRow": () => Promise<string>;
-        /**
-          * Retrieves the rowId of the currently hovered row.
-         */
-        "getHoveredRow": () => Promise<string>;
-        /**
-          * Retrieves the list of rowId of the marked rows.
-         */
-        "getMarkedRows": () => Promise<string[]>;
-        /**
-          * Retrieves information about the next cell relative to the currently selected cell.
-         */
-        "getNextCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
-        /**
-          * Retrieves the rowId of the next row relative to the currently selected cell.
-         */
-        "getNextRow": () => Promise<string>;
-        /**
-          * Retrieves information about the previous cell relative to the currently selected cell.
-         */
-        "getPreviousCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
-        /**
-          * Retrieves the rowId of the previous row relative to the currently selected cell.
-         */
-        "getPreviousRow": () => Promise<string>;
-        /**
-          * Retrieves information about the currently selected cell.
-         */
-        "getSelectedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
-        /**
-          * Retrieves the list of rowId of the selected rows.
-         */
-        "getSelectedRows": () => Promise<string[]>;
-        /**
-          * An object that contains localized strings for the grid.
-         */
-        "localization": GridLocalization;
-        /**
-          * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
-          * @param rowId - The rowId of the row to ensure visibility.
-         */
-        "rowEnsureVisible": (rowId: string) => Promise<void>;
-        /**
-          * A CSS class name applied to a row when it is focused.
-         */
-        "rowFocusedClass": string;
-        /**
-          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
-         */
-        "rowHighlightEnabled": boolean | "auto";
-        /**
-          * A CSS class name applied to a row when it is hovered.
-         */
-        "rowHighlightedClass": string;
-        /**
-          * A CSS class name applied to a row when it is marked.
-         */
-        "rowMarkedClass": string;
-        /**
-          * A CSS class name applied to a row when it is selected.
-         */
-        "rowSelectedClass": string;
-        /**
-          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
-         */
-        "rowSelectionMode": "none" | "single" | "multiple";
-        /**
-          * Selects or deselects all rows.
-          * @param selected - A boolean indicating whether to select or deselect all rows.
-         */
-        "selectAllRows": (selected?: boolean) => Promise<void>;
-        /**
-          * Select or deselect a cell. The cell can be identified by the cellId parameter or by using the rowId and columnId pair.
-          * @param cellId - The cellId of the cell to select or deselect.
-          * @param rowId - The rowId of the row containing the cell.
-          * @param columnId - The columnId of the column containing the cell.
-          * @param selected - A boolean indicating whether to select or deselect the cell.
-         */
-        "selectCell": (cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>;
-        /**
-          * Selects or deselects a row.
-          * @param rowId - The rowId of the row to select or deselect.
-          * @param selected - A boolean indicating whether to select or deselect the row.
-         */
-        "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
-    }
-    interface ChGridActionRefresh {
-        /**
-          * Indicates whether the refresh button is disabled or not.
-         */
-        "disabled": boolean;
-    }
-    interface ChGridActionSettings {
-        /**
-          * Indicates whether the settings button is disabled or not.
-         */
-        "disabled": boolean;
-    }
-    interface ChGridActionbar {
-    }
-    interface ChGridColumn {
-        /**
-          * A URL to an icon to display in the column header.
-         */
-        "columnIconUrl": string;
-        /**
-          * A unique identifier for the column.
-         */
-        "columnId": string;
-        /**
-          * The text to display in the column header.
-         */
-        "columnName": string;
-        /**
-          * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
-         */
-        "columnNamePosition": "text" | "title";
-        /**
-          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
-         */
-        "columnType": "plain" | "rich" | "tree";
-        /**
-          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
-         */
-        "displayObserverClass": string;
-        /**
-          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
-         */
-        "freeze"?: ChGridColumnFreeze;
-        /**
-          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
-         */
-        "hidden": boolean;
-        /**
-          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
-         */
-        "hideable": boolean;
-        /**
-          * A number indicating the order in which the column should appear.
-         */
-        "order": number;
-        /**
-          * A number indicating the physical order of the column (i.e. its position in the DOM).
-         */
-        "physicalOrder": number;
-        /**
-          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
-         */
-        "resizable": boolean;
-        /**
-          * A boolean indicating whether the column is currently being resized.
-         */
-        "resizing": boolean;
-        /**
-          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
-         */
-        "richRowActions": boolean;
-        /**
-          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
-         */
-        "richRowDrag": boolean;
-        /**
-          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
-         */
-        "richRowSelector": boolean;
-        /**
-          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
-         */
-        "richRowSelectorMode": "select" | "mark";
-        /**
-          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
-         */
-        "richRowSelectorState": | ""
+  interface ChDragBar {
+    /**
+      * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
+     */
+    "barItemSrc": string;
+    /**
+      * This attribute lets you specify the label for the drag bar. Important for accessibility.
+     */
+    "barLabel": string;
+    /**
+      * A CSS class to set as the `ch-next-drag-bar` element class.
+     */
+    "cssClass": string;
+    /**
+      * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
+     */
+    "showBarItem": boolean;
+    /**
+      * Specifies the initial width of the start component
+     */
+    "startComponentInitialWidth": string;
+  }
+  interface ChDropdown {
+    /**
+      * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+     */
+    "align": "Left" | "Center" | "Right";
+    /**
+      * This attribute lets you specify the label for the expandable button. Important for accessibility.
+     */
+    "buttonLabel": string;
+    /**
+      * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+     */
+    "dropdownSeparation": number;
+    /**
+      * Determine which actions on the expandable button display the dropdown section.
+     */
+    "expandBehavior": "Click" | "Click or Hover";
+    /**
+      * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+     */
+    "openOnFocus": boolean;
+    /**
+      * Specifies the position of the dropdown section that is placed relative to the expandable button.
+     */
+    "position": "Top" | "Right" | "Bottom" | "Left";
+    /**
+      * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+     */
+    "valign": "Top" | "Middle" | "Bottom";
+  }
+  interface ChDropdownItem {
+    /**
+      * Focuses the control's anchor or button.
+     */
+    "handleFocusElement": () => Promise<void>;
+    /**
+      * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+     */
+    "href": string;
+    /**
+      * Specifies the src for the left img.
+     */
+    "leftImgSrc": string;
+    /**
+      * Specifies the src for the right img.
+     */
+    "rightImgSrc": string;
+  }
+  interface ChDropdownItemSeparator {
+  }
+  interface ChDynamicMenu {
+    /**
+      * A CSS class to set as the `ch-dynamic-menu` element class.
+     */
+    "cssClass": string;
+    /**
+      * This attribute specifies which must be open by default.
+     */
+    "openItem": string;
+  }
+  interface ChDynamicMenuAction {
+    /**
+      * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
+     */
+    "actionId": string;
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
+     */
+    "activeClass": string;
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-action` element class.
+     */
+    "cssClass": string;
+    /**
+      * This attribute lets you specify if the menu action is activated or not.
+     */
+    "deactivated": boolean;
+    /**
+      * The subtitle of menu action.
+     */
+    "itemSubtitle": string;
+    /**
+      * The title of menu action.
+     */
+    "itemTitle": string;
+    /**
+      * This attribute specifies which popup of the ch-dynamic-menu must be open.
+     */
+    "popupId": string;
+  }
+  interface ChDynamicMenuPopup {
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-popup` element class.
+     */
+    "cssClass": string;
+    /**
+      * This attribute lets you specify if the menu popup is opened
+     */
+    "opened": boolean;
+  }
+  interface ChFormCheckbox {
+    /**
+      * The checkbox id
+     */
+    "checkboxId": string;
+    /**
+      * The presence of this attribute makes the checkbox checked by default
+     */
+    "checked": boolean;
+    /**
+      * The presence of this attribute disables the checkbox
+     */
+    "disabled": boolean;
+    /**
+      * The presence of this attribute makes the checkbox indeterminate
+     */
+    "indeterminate": boolean;
+    /**
+      * The checkbox label
+     */
+    "label": string;
+    /**
+      * The checkbox name
+     */
+    "name": string;
+    /**
+      * The checkbox value
+     */
+    "value": string;
+  }
+  interface ChGrid {
+    /**
+      * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+      * @param cellId - The cellId of the cell to ensure visibility.
+     */
+    "cellEnsureVisible": (cellId: string) => Promise<void>;
+    /**
+      * Collapses a row, hiding its children.
+      * @param rowId - The rowId of the row to collapse.
+     */
+    "collapseRow": (rowId: string) => Promise<void>;
+    /**
+      * Expands a row, showing its children.
+      * @param rowId - The rowId of the row to expand.
+     */
+    "expandRow": (rowId: string) => Promise<void>;
+    /**
+      * Retrieves the rowId of the currently focused row.
+     */
+    "getFocusedRow": () => Promise<string>;
+    /**
+      * Retrieves the rowId of the currently hovered row.
+     */
+    "getHoveredRow": () => Promise<string>;
+    /**
+      * Retrieves the list of rowId of the marked rows.
+     */
+    "getMarkedRows": () => Promise<string[]>;
+    /**
+      * Retrieves information about the next cell relative to the currently selected cell.
+     */
+    "getNextCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+    /**
+      * Retrieves the rowId of the next row relative to the currently selected cell.
+     */
+    "getNextRow": () => Promise<string>;
+    /**
+      * Retrieves information about the previous cell relative to the currently selected cell.
+     */
+    "getPreviousCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+    /**
+      * Retrieves the rowId of the previous row relative to the currently selected cell.
+     */
+    "getPreviousRow": () => Promise<string>;
+    /**
+      * Retrieves information about the currently selected cell.
+     */
+    "getSelectedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+    /**
+      * Retrieves the list of rowId of the selected rows.
+     */
+    "getSelectedRows": () => Promise<string[]>;
+    /**
+      * An object that contains localized strings for the grid.
+     */
+    "localization": GridLocalization;
+    /**
+      * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+      * @param rowId - The rowId of the row to ensure visibility.
+     */
+    "rowEnsureVisible": (rowId: string) => Promise<void>;
+    /**
+      * A CSS class name applied to a row when it is focused.
+     */
+    "rowFocusedClass": string;
+    /**
+      * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+     */
+    "rowHighlightEnabled": boolean | "auto";
+    /**
+      * A CSS class name applied to a row when it is hovered.
+     */
+    "rowHighlightedClass": string;
+    /**
+      * A CSS class name applied to a row when it is marked.
+     */
+    "rowMarkedClass": string;
+    /**
+      * A CSS class name applied to a row when it is selected.
+     */
+    "rowSelectedClass": string;
+    /**
+      * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+     */
+    "rowSelectionMode": "none" | "single" | "multiple";
+    /**
+      * Selects or deselects all rows.
+      * @param selected - A boolean indicating whether to select or deselect all rows.
+     */
+    "selectAllRows": (selected?: boolean) => Promise<void>;
+    /**
+      * Select or deselect a cell. The cell can be identified by the cellId parameter or by using the rowId and columnId pair.
+      * @param cellId - The cellId of the cell to select or deselect.
+      * @param rowId - The rowId of the row containing the cell.
+      * @param columnId - The columnId of the column containing the cell.
+      * @param selected - A boolean indicating whether to select or deselect the cell.
+     */
+    "selectCell": (cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>;
+    /**
+      * Selects or deselects a row.
+      * @param rowId - The rowId of the row to select or deselect.
+      * @param selected - A boolean indicating whether to select or deselect the row.
+     */
+    "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
+  }
+  interface ChGridActionRefresh {
+    /**
+      * Indicates whether the refresh button is disabled or not.
+     */
+    "disabled": boolean;
+  }
+  interface ChGridActionSettings {
+    /**
+      * Indicates whether the settings button is disabled or not.
+     */
+    "disabled": boolean;
+  }
+  interface ChGridActionbar {
+  }
+  interface ChGridColumn {
+    /**
+      * A URL to an icon to display in the column header.
+     */
+    "columnIconUrl": string;
+    /**
+      * A unique identifier for the column.
+     */
+    "columnId": string;
+    /**
+      * The text to display in the column header.
+     */
+    "columnName": string;
+    /**
+      * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+     */
+    "columnNamePosition": "text" | "title";
+    /**
+      * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+     */
+    "columnType": "plain" | "rich" | "tree";
+    /**
+      * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+     */
+    "displayObserverClass": string;
+    /**
+      * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+     */
+    "freeze"?: ChGridColumnFreeze;
+    /**
+      * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+     */
+    "hidden": boolean;
+    /**
+      * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+     */
+    "hideable": boolean;
+    /**
+      * A number indicating the order in which the column should appear.
+     */
+    "order": number;
+    /**
+      * A number indicating the physical order of the column (i.e. its position in the DOM).
+     */
+    "physicalOrder": number;
+    /**
+      * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+     */
+    "resizable": boolean;
+    /**
+      * A boolean indicating whether the column is currently being resized.
+     */
+    "resizing": boolean;
+    /**
+      * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+     */
+    "richRowActions": boolean;
+    /**
+      * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+     */
+    "richRowDrag": boolean;
+    /**
+      * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+     */
+    "richRowSelector": boolean;
+    /**
+      * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+     */
+    "richRowSelectorMode": "select" | "mark";
+    /**
+      * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+     */
+    "richRowSelectorState": | ""
     | "checked"
     | "indeterminate";
-        /**
-          * A boolean indicating whether the user should be able to open a settings panel for the column.
-         */
-        "settingable": boolean;
-        /**
-          * A boolean indicating whether the settings panel for the column should be visible.
-         */
-        "showSettings": boolean;
-        /**
-          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
-         */
-        "size": string;
-        /**
-          * One of "asc" or "desc", indicating the current sort direction.
-         */
-        "sortDirection"?: ChGridColumnSortDirection;
-        /**
-          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
-         */
-        "sortable": boolean;
-    }
-    interface ChGridColumnDisplay {
-        /**
-          * The column element that is being monitored.
-         */
-        "column": HTMLChGridColumnElement;
-    }
-    interface ChGridColumnResize {
-        /**
-          * The column element that is being resized.
-         */
-        "column": HTMLChGridColumnElement;
-    }
-    interface ChGridColumnSettings {
-        /**
-          * The `HTMLChGridColumnElement` that the settings window is associated with.
-         */
-        "column": HTMLChGridColumnElement;
-        /**
-          * Indicates whether the settings window is currently shown or not.
-         */
-        "show": boolean;
-    }
-    interface ChGridColumnset {
-    }
-    interface ChGridRowActions {
-    }
-    interface ChGridRowsetEmpty {
-    }
-    interface ChGridRowsetLegend {
-    }
-    interface ChGridSettings {
-        /**
-          * The `HTMLChGridElement` that the settings window is associated with.
-         */
-        "grid": HTMLChGridElement;
-        /**
-          * Indicates whether the settings window is currently shown or not.
-         */
-        "show": boolean;
-    }
-    interface ChGridSettingsColumns {
-        /**
-          * An array of column elements to render.
-         */
-        "columns": HTMLChGridColumnElement[];
-    }
-    interface ChGridVirtualScroller {
-        /**
-          * The list of items to be rendered in the grid.
-         */
-        "items": any[];
-        /**
-          * The list of items to display within the current viewport.
-         */
-        "viewPortItems": any[];
-    }
-    interface ChIcon {
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor": boolean;
-        /**
-          * The color of the icon.
-         */
-        "color": Color;
-        /**
-          * If enabled, the icon will be loaded lazily when it's visible in the viewport.
-         */
-        "lazy": boolean;
-        /**
-          * The size of the icon. Possible values: regular, small.
-         */
-        "size": Size;
-        /**
-          * The URL of the icon.
-         */
-        "src": string;
-    }
-    interface ChIntersectionObserver {
-        /**
-          * Bottom margin around the root element
-         */
-        "bottomMargin": string;
-        /**
-          * Left margin around the root element
-         */
-        "leftMargin": string;
-        /**
-          * Right margin around the root element
-         */
-        "rightMargin": string;
-        /**
-          * Set the ID of the component that is used as the viewport, default is the browser.
-         */
-        "root": string;
-        /**
-          * Numeric values representing percentages of the target element which are visible.
-         */
-        "threshold": string;
-        /**
-          * Top margin around the root element
-         */
-        "topMargin": string;
-    }
-    interface ChNextProgressBar {
-        /**
-          * It specifies the main text that is shown on the progress.
-         */
-        "caption": string;
-        /**
-          * A CSS class to set as the `ch-next-progress-bar` element class.
-         */
-        "cssClass": string;
-        /**
-          * This attribute lets you specify the value of the progress.
-         */
-        "currentStep": number;
-        /**
-          * It specifies more information that is shown on the progress.
-         */
-        "description": string;
-        /**
-          * This attribute lets you specify if the progress bar is rendered.
-         */
-        "presented": boolean;
-        /**
-          * This attribute lets you specify the amount of steps for the progress.
-         */
-        "steps": number;
-    }
-    interface ChPaginator {
-        "activePage": number;
-        "totalPages": number;
-    }
-    interface ChPaginatorNavigate {
-        "disabled": boolean;
-        "type": ChPaginatorNavigationType;
-    }
-    interface ChPaginatorPages {
-        "activePage": number;
-        "maxSize": number;
-        "renderFirstLastPages": true;
-        "textDots": string;
-        "totalPages": number;
-    }
-    interface ChQr {
-        "background": string | null;
-        "ecLevel": ecLevel;
-        "fill": string;
-        "radius": number;
-        "size": number;
-        "text": string | undefined;
-    }
-    interface ChSelect {
-        "arrowIconSrc": string;
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor": false;
-        "disabled": boolean;
-        "height": string;
-        "iconSrc": string;
-        "name": string;
-        "width": string;
-    }
-    interface ChSelectOption {
-        /**
-          * If enabled, the option icons will display its inherent/natural color
-         */
-        "autoColor": true;
-        /**
-          * Determines if the option is disabled
-         */
-        "disabled": boolean;
-        "height": string;
-        /**
-          * Set the left side icon
-         */
-        "leftIconSrc": string;
-        /**
-          * Set the right side icon
-         */
-        "rightIconSrc": string;
-        /**
-          * Determines the selected option
-         */
-        "selected": boolean;
-        /**
-          * The select option's value
-         */
-        "value": string;
-    }
-    interface ChSidebarMenu {
-        /**
-          * The active item
-         */
-        "activeItem": string;
-        /**
-          * The initial active item (optional)
-         */
-        "activeItemId": string;
-        /**
-          * Determines if the menu can be collapsed
-         */
-        "collapsible": boolean;
-        /**
-          * Allows to set the distance to the top of the page on the menu
-         */
-        "distanceToTop": number;
-        /**
-          * Determines if the menu is collapsed
-         */
-        "isCollapsed": boolean;
-        /**
-          * The menu title
-         */
-        "menuTitle": string;
-        /**
-          * The presence of this attribute allows the menu to have only one list opened at the same time
-         */
-        "singleListOpen": boolean;
-    }
-    interface ChSidebarMenuList {
-    }
-    interface ChSidebarMenuListItem {
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor": boolean;
-        /**
-          * The first list item icon (optional)
-         */
-        "itemIconSrc": string;
-        /**
-          * If this attribute is present the item will be initially uncollapsed
-         */
-        "uncollapsed": boolean;
-    }
-    interface ChStepList {
-    }
-    interface ChStepListItem {
-        /**
-          * Set the left side icon
-         */
-        "iconSrc": string;
-    }
-    interface ChTree {
-        /**
-          * Set this attribute if you want all this tree tree-items to have a checkbox
-         */
-        "checkbox": boolean;
-        /**
-          * Set this attribute if you want all this tree tree-items to have the checkbox checked
-         */
-        "checked": boolean;
-        /**
-          * Allows to select only one item
-         */
-        "singleSelection": boolean;
-        /**
-          * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
-         */
-        "toggleCheckboxes": boolean;
-    }
-    interface ChTreeItem {
-        /**
-          * Set this attribute if you want the ch-tree-item to display a checkbox
-         */
-        "checkbox": boolean;
-        /**
-          * Set this attribute if you want the ch-tree-item checkbox to be checked by default
-         */
-        "checked": boolean;
-        "disabled": boolean;
-        /**
-          * Set this attribute if this tree-item has a resource to be downloaded;
-         */
-        "download": boolean;
-        /**
-          * Set this attribute when you have downloaded the resource
-         */
-        "downloaded": boolean;
-        /**
-          * Set this attribute when you are downloading a resource
-         */
-        "downloading": boolean;
-        "firstTreeItem": boolean;
-        "hasChildTree": boolean;
-        "indeterminate": boolean;
-        /**
-          * The presence of this attribute displays a +/- icon to toggle/untoggle the tree
-         */
-        "isLeaf": boolean;
-        /**
-          * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-         */
-        "leftIcon": string;
-        /**
-          * If this tree-item has a nested tree, set this attribute to make the tree open by default
-         */
-        "opened": boolean;
-        /**
-          * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-         */
-        "rightIcon": string;
-        /**
-          * The presence of this attribute sets the tree-item as selected
-         */
-        "selected": boolean;
-        "updateTreeVerticalLineHeight": () => Promise<void>;
-    }
-    interface ChWindow {
-        "allowDrag": "no" | "header" | "box";
-        "caption": string;
-        "closeOnEscape": boolean;
-        "closeOnOutsideClick": boolean;
-        "closeText": string;
-        "closeTooltip": string;
-        "container"?: HTMLElement;
-        "hidden": boolean;
-        "modal": boolean;
-        "xAlign": ChWindowAlign;
-        "yAlign": ChWindowAlign;
-    }
-    interface ChWindowClose {
-        "disabled": boolean;
-    }
-    interface GxGridChameleon {
-        "grid": GxGrid;
-        "gridTimestamp": number;
-        "state": GridChameleonState;
-    }
-    interface GxGridChameleonColumnFilter {
-        "buttonApplyText": string;
-        "buttonResetText": string;
-        "column": GxGridColumn;
-        "equal": string;
-        "greater": string;
-        "less": string;
-    }
+    /**
+      * A boolean indicating whether the user should be able to open a settings panel for the column.
+     */
+    "settingable": boolean;
+    /**
+      * A boolean indicating whether the settings panel for the column should be visible.
+     */
+    "showSettings": boolean;
+    /**
+      * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+     */
+    "size": string;
+    /**
+      * One of "asc" or "desc", indicating the current sort direction.
+     */
+    "sortDirection"?: ChGridColumnSortDirection;
+    /**
+      * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+     */
+    "sortable": boolean;
+  }
+  interface ChGridColumnDisplay {
+    /**
+      * The column element that is being monitored.
+     */
+    "column": HTMLChGridColumnElement;
+  }
+  interface ChGridColumnResize {
+    /**
+      * The column element that is being resized.
+     */
+    "column": HTMLChGridColumnElement;
+  }
+  interface ChGridColumnSettings {
+    /**
+      * The `HTMLChGridColumnElement` that the settings window is associated with.
+     */
+    "column": HTMLChGridColumnElement;
+    /**
+      * Indicates whether the settings window is currently shown or not.
+     */
+    "show": boolean;
+  }
+  interface ChGridColumnset {
+  }
+  interface ChGridRowActions {
+  }
+  interface ChGridRowsetEmpty {
+  }
+  interface ChGridRowsetLegend {
+  }
+  interface ChGridSettings {
+    /**
+      * The `HTMLChGridElement` that the settings window is associated with.
+     */
+    "grid": HTMLChGridElement;
+    /**
+      * Indicates whether the settings window is currently shown or not.
+     */
+    "show": boolean;
+  }
+  interface ChGridSettingsColumns {
+    /**
+      * An array of column elements to render.
+     */
+    "columns": HTMLChGridColumnElement[];
+  }
+  interface ChGridVirtualScroller {
+    /**
+      * The list of items to be rendered in the grid.
+     */
+    "items": any[];
+    /**
+      * The list of items to display within the current viewport.
+     */
+    "viewPortItems": any[];
+  }
+  interface ChIcon {
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor": boolean;
+    /**
+      * The color of the icon.
+     */
+    "color": Color;
+    /**
+      * If enabled, the icon will be loaded lazily when it's visible in the viewport.
+     */
+    "lazy": boolean;
+    /**
+      * The size of the icon. Possible values: regular, small.
+     */
+    "size": Size;
+    /**
+      * The URL of the icon.
+     */
+    "src": string;
+  }
+  interface ChIntersectionObserver {
+    /**
+      * Bottom margin around the root element
+     */
+    "bottomMargin": string;
+    /**
+      * Left margin around the root element
+     */
+    "leftMargin": string;
+    /**
+      * Right margin around the root element
+     */
+    "rightMargin": string;
+    /**
+      * Set the ID of the component that is used as the viewport, default is the browser.
+     */
+    "root": string;
+    /**
+      * Numeric values representing percentages of the target element which are visible.
+     */
+    "threshold": string;
+    /**
+      * Top margin around the root element
+     */
+    "topMargin": string;
+  }
+  interface ChNextProgressBar {
+    /**
+      * It specifies the main text that is shown on the progress.
+     */
+    "caption": string;
+    /**
+      * A CSS class to set as the `ch-next-progress-bar` element class.
+     */
+    "cssClass": string;
+    /**
+      * This attribute lets you specify the value of the progress.
+     */
+    "currentStep": number;
+    /**
+      * It specifies more information that is shown on the progress.
+     */
+    "description": string;
+    /**
+      * This attribute lets you specify if the progress bar is rendered.
+     */
+    "presented": boolean;
+    /**
+      * This attribute lets you specify the amount of steps for the progress.
+     */
+    "steps": number;
+  }
+  interface ChPaginator {
+    /**
+      * The active page number.
+     */
+    "activePage": number;
+    /**
+      * Indicates that the end has been reached. Use when total pages are not known (totalPages = -1).
+     */
+    "hasNextPage": boolean;
+    /**
+      * The total number of pages. Use -1 if not known and 'hasNextPage' property to indicate that the end has been reached.
+     */
+    "totalPages": 1;
+  }
+  interface ChPaginatorNavigate {
+    /**
+      * Flag indicating if the button is disabled.
+     */
+    "disabled": boolean;
+    /**
+      * The type of navigation button.
+     */
+    "type": ChPaginatorNavigateType;
+  }
+  interface ChPaginatorPages {
+    /**
+      * The maximum number of items to display in the pagination.
+     */
+    "maxSize": number;
+    /**
+      * The active page number.
+     */
+    "page": number;
+    /**
+      * Flag to render the first and last pages.
+     */
+    "renderFirstLastPages": boolean;
+    /**
+      * The text to display for the dots.
+     */
+    "textDots": string;
+    /**
+      * The total number of pages.
+     */
+    "totalPages": number;
+  }
+  interface ChQr {
+    /**
+      * The background color. By default is transparent.
+     */
+    "background": string | null;
+    /**
+      * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+     */
+    "ecLevel": ecLevel;
+    /**
+      * What color you want your QR code to be. By default is black.
+     */
+    "fill": string;
+    /**
+      * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+     */
+    "radius": number;
+    /**
+      * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+     */
+    "size": number;
+    /**
+      * Any kind of text, also links, email addresses, any thing.
+     */
+    "text": string | undefined;
+  }
+  interface ChSelect {
+    "arrowIconSrc": string;
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor": false;
+    "disabled": boolean;
+    "height": string;
+    "iconSrc": string;
+    "name": string;
+    "width": string;
+  }
+  interface ChSelectOption {
+    /**
+      * If enabled, the option icons will display its inherent/natural color
+     */
+    "autoColor": true;
+    /**
+      * Determines if the option is disabled
+     */
+    "disabled": boolean;
+    "height": string;
+    /**
+      * Set the left side icon
+     */
+    "leftIconSrc": string;
+    /**
+      * Set the right side icon
+     */
+    "rightIconSrc": string;
+    /**
+      * Determines the selected option
+     */
+    "selected": boolean;
+    /**
+      * The select option's value
+     */
+    "value": string;
+  }
+  interface ChSidebarMenu {
+    /**
+      * The active item
+     */
+    "activeItem": string;
+    /**
+      * The initial active item (optional)
+     */
+    "activeItemId": string;
+    /**
+      * Determines if the menu can be collapsed
+     */
+    "collapsible": boolean;
+    /**
+      * Allows to set the distance to the top of the page on the menu
+     */
+    "distanceToTop": number;
+    /**
+      * Determines if the menu is collapsed
+     */
+    "isCollapsed": boolean;
+    /**
+      * The menu title
+     */
+    "menuTitle": string;
+    /**
+      * The presence of this attribute allows the menu to have only one list opened at the same time
+     */
+    "singleListOpen": boolean;
+  }
+  interface ChSidebarMenuList {
+  }
+  interface ChSidebarMenuListItem {
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor": boolean;
+    /**
+      * The first list item icon (optional)
+     */
+    "itemIconSrc": string;
+    /**
+      * If this attribute is present the item will be initially uncollapsed
+     */
+    "uncollapsed": boolean;
+  }
+  interface ChStepList {
+  }
+  interface ChStepListItem {
+    /**
+      * Set the left side icon
+     */
+    "iconSrc": string;
+  }
+  interface ChTree {
+    /**
+      * Set this attribute if you want all this tree tree-items to have a checkbox
+     */
+    "checkbox": boolean;
+    /**
+      * Set this attribute if you want all this tree tree-items to have the checkbox checked
+     */
+    "checked": boolean;
+    /**
+      * Allows to select only one item
+     */
+    "singleSelection": boolean;
+    /**
+      * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
+     */
+    "toggleCheckboxes": boolean;
+  }
+  interface ChTreeItem {
+    /**
+      * Set this attribute if you want the ch-tree-item to display a checkbox
+     */
+    "checkbox": boolean;
+    /**
+      * Set this attribute if you want the ch-tree-item checkbox to be checked by default
+     */
+    "checked": boolean;
+    "disabled": boolean;
+    /**
+      * Set this attribute if this tree-item has a resource to be downloaded;
+     */
+    "download": boolean;
+    /**
+      * Set this attribute when you have downloaded the resource
+     */
+    "downloaded": boolean;
+    /**
+      * Set this attribute when you are downloading a resource
+     */
+    "downloading": boolean;
+    "firstTreeItem": boolean;
+    "hasChildTree": boolean;
+    "indeterminate": boolean;
+    /**
+      * The presence of this attribute displays a +/- icon to toggle/untoggle the tree
+     */
+    "isLeaf": boolean;
+    /**
+      * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+     */
+    "leftIcon": string;
+    /**
+      * If this tree-item has a nested tree, set this attribute to make the tree open by default
+     */
+    "opened": boolean;
+    /**
+      * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+     */
+    "rightIcon": string;
+    /**
+      * The presence of this attribute sets the tree-item as selected
+     */
+    "selected": boolean;
+    "updateTreeVerticalLineHeight": () => Promise<void>;
+  }
+  interface ChWindow {
+    /**
+      * Specifies the drag behavior of the window.
+     */
+    "allowDrag": "no" | "header" | "box";
+    /**
+      * The caption or title of the window.
+     */
+    "caption": string;
+    /**
+      * Determines whether the window should close when the Escape key is pressed.
+     */
+    "closeOnEscape": boolean;
+    /**
+      * Determines whether the window should close when clicked outside.
+     */
+    "closeOnOutsideClick": boolean;
+    /**
+      * The text for the close button.
+     */
+    "closeText": string;
+    /**
+      * The tooltip text for the close button.
+     */
+    "closeTooltip": string;
+    /**
+      * The container element for the window.
+     */
+    "container"?: HTMLElement;
+    /**
+      * Determines if the window is hidden or visible.
+     */
+    "hidden": boolean;
+    /**
+      * Specifies whether the window should be displayed as a modal.
+     */
+    "modal": boolean;
+    /**
+      * The horizontal alignment of the window.
+     */
+    "xAlign": ChWindowAlign;
+    /**
+      * The vertical alignment of the window.
+     */
+    "yAlign": ChWindowAlign;
+  }
+  interface ChWindowClose {
+    /**
+      * Specifies whether the close button is disabled.
+     */
+    "disabled": boolean;
+  }
+  interface GxGridChameleon {
+    "grid": GxGrid;
+    "gridTimestamp": number;
+    "state": GridChameleonState;
+  }
+  interface GxGridChameleonColumnFilter {
+    "buttonApplyText": string;
+    "buttonResetText": string;
+    "column": GxGridColumn;
+    "equal": string;
+    "greater": string;
+    "less": string;
+  }
 }
 declare global {
-    interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
-    }
-    var HTMLChDragBarElement: {
-        prototype: HTMLChDragBarElement;
-        new (): HTMLChDragBarElement;
-    };
-    interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
-    }
-    var HTMLChDropdownElement: {
-        prototype: HTMLChDropdownElement;
-        new (): HTMLChDropdownElement;
-    };
-    interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
-    }
-    var HTMLChDropdownItemElement: {
-        prototype: HTMLChDropdownItemElement;
-        new (): HTMLChDropdownItemElement;
-    };
-    interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
-    }
-    var HTMLChDropdownItemSeparatorElement: {
-        prototype: HTMLChDropdownItemSeparatorElement;
-        new (): HTMLChDropdownItemSeparatorElement;
-    };
-    interface HTMLChDynamicMenuElement extends Components.ChDynamicMenu, HTMLStencilElement {
-    }
-    var HTMLChDynamicMenuElement: {
-        prototype: HTMLChDynamicMenuElement;
-        new (): HTMLChDynamicMenuElement;
-    };
-    interface HTMLChDynamicMenuActionElement extends Components.ChDynamicMenuAction, HTMLStencilElement {
-    }
-    var HTMLChDynamicMenuActionElement: {
-        prototype: HTMLChDynamicMenuActionElement;
-        new (): HTMLChDynamicMenuActionElement;
-    };
-    interface HTMLChDynamicMenuPopupElement extends Components.ChDynamicMenuPopup, HTMLStencilElement {
-    }
-    var HTMLChDynamicMenuPopupElement: {
-        prototype: HTMLChDynamicMenuPopupElement;
-        new (): HTMLChDynamicMenuPopupElement;
-    };
-    interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
-    }
-    var HTMLChFormCheckboxElement: {
-        prototype: HTMLChFormCheckboxElement;
-        new (): HTMLChFormCheckboxElement;
-    };
-    interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {
-    }
-    var HTMLChGridElement: {
-        prototype: HTMLChGridElement;
-        new (): HTMLChGridElement;
-    };
-    interface HTMLChGridActionRefreshElement extends Components.ChGridActionRefresh, HTMLStencilElement {
-    }
-    var HTMLChGridActionRefreshElement: {
-        prototype: HTMLChGridActionRefreshElement;
-        new (): HTMLChGridActionRefreshElement;
-    };
-    interface HTMLChGridActionSettingsElement extends Components.ChGridActionSettings, HTMLStencilElement {
-    }
-    var HTMLChGridActionSettingsElement: {
-        prototype: HTMLChGridActionSettingsElement;
-        new (): HTMLChGridActionSettingsElement;
-    };
-    interface HTMLChGridActionbarElement extends Components.ChGridActionbar, HTMLStencilElement {
-    }
-    var HTMLChGridActionbarElement: {
-        prototype: HTMLChGridActionbarElement;
-        new (): HTMLChGridActionbarElement;
-    };
-    interface HTMLChGridColumnElement extends Components.ChGridColumn, HTMLStencilElement {
-    }
-    var HTMLChGridColumnElement: {
-        prototype: HTMLChGridColumnElement;
-        new (): HTMLChGridColumnElement;
-    };
-    interface HTMLChGridColumnDisplayElement extends Components.ChGridColumnDisplay, HTMLStencilElement {
-    }
-    var HTMLChGridColumnDisplayElement: {
-        prototype: HTMLChGridColumnDisplayElement;
-        new (): HTMLChGridColumnDisplayElement;
-    };
-    interface HTMLChGridColumnResizeElement extends Components.ChGridColumnResize, HTMLStencilElement {
-    }
-    var HTMLChGridColumnResizeElement: {
-        prototype: HTMLChGridColumnResizeElement;
-        new (): HTMLChGridColumnResizeElement;
-    };
-    interface HTMLChGridColumnSettingsElement extends Components.ChGridColumnSettings, HTMLStencilElement {
-    }
-    var HTMLChGridColumnSettingsElement: {
-        prototype: HTMLChGridColumnSettingsElement;
-        new (): HTMLChGridColumnSettingsElement;
-    };
-    interface HTMLChGridColumnsetElement extends Components.ChGridColumnset, HTMLStencilElement {
-    }
-    var HTMLChGridColumnsetElement: {
-        prototype: HTMLChGridColumnsetElement;
-        new (): HTMLChGridColumnsetElement;
-    };
-    interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
-    }
-    var HTMLChGridRowActionsElement: {
-        prototype: HTMLChGridRowActionsElement;
-        new (): HTMLChGridRowActionsElement;
-    };
-    interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
-    }
-    var HTMLChGridRowsetEmptyElement: {
-        prototype: HTMLChGridRowsetEmptyElement;
-        new (): HTMLChGridRowsetEmptyElement;
-    };
-    interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
-    }
-    var HTMLChGridRowsetLegendElement: {
-        prototype: HTMLChGridRowsetLegendElement;
-        new (): HTMLChGridRowsetLegendElement;
-    };
-    interface HTMLChGridSettingsElement extends Components.ChGridSettings, HTMLStencilElement {
-    }
-    var HTMLChGridSettingsElement: {
-        prototype: HTMLChGridSettingsElement;
-        new (): HTMLChGridSettingsElement;
-    };
-    interface HTMLChGridSettingsColumnsElement extends Components.ChGridSettingsColumns, HTMLStencilElement {
-    }
-    var HTMLChGridSettingsColumnsElement: {
-        prototype: HTMLChGridSettingsColumnsElement;
-        new (): HTMLChGridSettingsColumnsElement;
-    };
-    interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
-    }
-    var HTMLChGridVirtualScrollerElement: {
-        prototype: HTMLChGridVirtualScrollerElement;
-        new (): HTMLChGridVirtualScrollerElement;
-    };
-    interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {
-    }
-    var HTMLChIconElement: {
-        prototype: HTMLChIconElement;
-        new (): HTMLChIconElement;
-    };
-    interface HTMLChIntersectionObserverElement extends Components.ChIntersectionObserver, HTMLStencilElement {
-    }
-    var HTMLChIntersectionObserverElement: {
-        prototype: HTMLChIntersectionObserverElement;
-        new (): HTMLChIntersectionObserverElement;
-    };
-    interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
-    }
-    var HTMLChNextProgressBarElement: {
-        prototype: HTMLChNextProgressBarElement;
-        new (): HTMLChNextProgressBarElement;
-    };
-    interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
-    }
-    var HTMLChPaginatorElement: {
-        prototype: HTMLChPaginatorElement;
-        new (): HTMLChPaginatorElement;
-    };
-    interface HTMLChPaginatorNavigateElement extends Components.ChPaginatorNavigate, HTMLStencilElement {
-    }
-    var HTMLChPaginatorNavigateElement: {
-        prototype: HTMLChPaginatorNavigateElement;
-        new (): HTMLChPaginatorNavigateElement;
-    };
-    interface HTMLChPaginatorPagesElement extends Components.ChPaginatorPages, HTMLStencilElement {
-    }
-    var HTMLChPaginatorPagesElement: {
-        prototype: HTMLChPaginatorPagesElement;
-        new (): HTMLChPaginatorPagesElement;
-    };
-    interface HTMLChQrElement extends Components.ChQr, HTMLStencilElement {
-    }
-    var HTMLChQrElement: {
-        prototype: HTMLChQrElement;
-        new (): HTMLChQrElement;
-    };
-    interface HTMLChSelectElement extends Components.ChSelect, HTMLStencilElement {
-    }
-    var HTMLChSelectElement: {
-        prototype: HTMLChSelectElement;
-        new (): HTMLChSelectElement;
-    };
-    interface HTMLChSelectOptionElement extends Components.ChSelectOption, HTMLStencilElement {
-    }
-    var HTMLChSelectOptionElement: {
-        prototype: HTMLChSelectOptionElement;
-        new (): HTMLChSelectOptionElement;
-    };
-    interface HTMLChSidebarMenuElement extends Components.ChSidebarMenu, HTMLStencilElement {
-    }
-    var HTMLChSidebarMenuElement: {
-        prototype: HTMLChSidebarMenuElement;
-        new (): HTMLChSidebarMenuElement;
-    };
-    interface HTMLChSidebarMenuListElement extends Components.ChSidebarMenuList, HTMLStencilElement {
-    }
-    var HTMLChSidebarMenuListElement: {
-        prototype: HTMLChSidebarMenuListElement;
-        new (): HTMLChSidebarMenuListElement;
-    };
-    interface HTMLChSidebarMenuListItemElement extends Components.ChSidebarMenuListItem, HTMLStencilElement {
-    }
-    var HTMLChSidebarMenuListItemElement: {
-        prototype: HTMLChSidebarMenuListItemElement;
-        new (): HTMLChSidebarMenuListItemElement;
-    };
-    interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
-    }
-    var HTMLChStepListElement: {
-        prototype: HTMLChStepListElement;
-        new (): HTMLChStepListElement;
-    };
-    interface HTMLChStepListItemElement extends Components.ChStepListItem, HTMLStencilElement {
-    }
-    var HTMLChStepListItemElement: {
-        prototype: HTMLChStepListItemElement;
-        new (): HTMLChStepListItemElement;
-    };
-    interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
-    }
-    var HTMLChTreeElement: {
-        prototype: HTMLChTreeElement;
-        new (): HTMLChTreeElement;
-    };
-    interface HTMLChTreeItemElement extends Components.ChTreeItem, HTMLStencilElement {
-    }
-    var HTMLChTreeItemElement: {
-        prototype: HTMLChTreeItemElement;
-        new (): HTMLChTreeItemElement;
-    };
-    interface HTMLChWindowElement extends Components.ChWindow, HTMLStencilElement {
-    }
-    var HTMLChWindowElement: {
-        prototype: HTMLChWindowElement;
-        new (): HTMLChWindowElement;
-    };
-    interface HTMLChWindowCloseElement extends Components.ChWindowClose, HTMLStencilElement {
-    }
-    var HTMLChWindowCloseElement: {
-        prototype: HTMLChWindowCloseElement;
-        new (): HTMLChWindowCloseElement;
-    };
-    interface HTMLGxGridChameleonElement extends Components.GxGridChameleon, HTMLStencilElement {
-    }
-    var HTMLGxGridChameleonElement: {
-        prototype: HTMLGxGridChameleonElement;
-        new (): HTMLGxGridChameleonElement;
-    };
-    interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
-    }
-    var HTMLGxGridChameleonColumnFilterElement: {
-        prototype: HTMLGxGridChameleonColumnFilterElement;
-        new (): HTMLGxGridChameleonColumnFilterElement;
-    };
-    interface HTMLElementTagNameMap {
-        "ch-drag-bar": HTMLChDragBarElement;
-        "ch-dropdown": HTMLChDropdownElement;
-        "ch-dropdown-item": HTMLChDropdownItemElement;
-        "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
-        "ch-dynamic-menu": HTMLChDynamicMenuElement;
-        "ch-dynamic-menu-action": HTMLChDynamicMenuActionElement;
-        "ch-dynamic-menu-popup": HTMLChDynamicMenuPopupElement;
-        "ch-form-checkbox": HTMLChFormCheckboxElement;
-        "ch-grid": HTMLChGridElement;
-        "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
-        "ch-grid-action-settings": HTMLChGridActionSettingsElement;
-        "ch-grid-actionbar": HTMLChGridActionbarElement;
-        "ch-grid-column": HTMLChGridColumnElement;
-        "ch-grid-column-display": HTMLChGridColumnDisplayElement;
-        "ch-grid-column-resize": HTMLChGridColumnResizeElement;
-        "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
-        "ch-grid-columnset": HTMLChGridColumnsetElement;
-        "ch-grid-row-actions": HTMLChGridRowActionsElement;
-        "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
-        "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
-        "ch-grid-settings": HTMLChGridSettingsElement;
-        "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
-        "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
-        "ch-icon": HTMLChIconElement;
-        "ch-intersection-observer": HTMLChIntersectionObserverElement;
-        "ch-next-progress-bar": HTMLChNextProgressBarElement;
-        "ch-paginator": HTMLChPaginatorElement;
-        "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
-        "ch-paginator-pages": HTMLChPaginatorPagesElement;
-        "ch-qr": HTMLChQrElement;
-        "ch-select": HTMLChSelectElement;
-        "ch-select-option": HTMLChSelectOptionElement;
-        "ch-sidebar-menu": HTMLChSidebarMenuElement;
-        "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
-        "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
-        "ch-step-list": HTMLChStepListElement;
-        "ch-step-list-item": HTMLChStepListItemElement;
-        "ch-tree": HTMLChTreeElement;
-        "ch-tree-item": HTMLChTreeItemElement;
-        "ch-window": HTMLChWindowElement;
-        "ch-window-close": HTMLChWindowCloseElement;
-        "gx-grid-chameleon": HTMLGxGridChameleonElement;
-        "gx-grid-chameleon-column-filter": HTMLGxGridChameleonColumnFilterElement;
-    }
+  interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
+  }
+  var HTMLChDragBarElement: {
+    prototype: HTMLChDragBarElement;
+    new(): HTMLChDragBarElement;
+  };
+  interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
+  }
+  var HTMLChDropdownElement: {
+    prototype: HTMLChDropdownElement;
+    new(): HTMLChDropdownElement;
+  };
+  interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
+  }
+  var HTMLChDropdownItemElement: {
+    prototype: HTMLChDropdownItemElement;
+    new(): HTMLChDropdownItemElement;
+  };
+  interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
+  }
+  var HTMLChDropdownItemSeparatorElement: {
+    prototype: HTMLChDropdownItemSeparatorElement;
+    new(): HTMLChDropdownItemSeparatorElement;
+  };
+  interface HTMLChDynamicMenuElement extends Components.ChDynamicMenu, HTMLStencilElement {
+  }
+  var HTMLChDynamicMenuElement: {
+    prototype: HTMLChDynamicMenuElement;
+    new(): HTMLChDynamicMenuElement;
+  };
+  interface HTMLChDynamicMenuActionElement extends Components.ChDynamicMenuAction, HTMLStencilElement {
+  }
+  var HTMLChDynamicMenuActionElement: {
+    prototype: HTMLChDynamicMenuActionElement;
+    new(): HTMLChDynamicMenuActionElement;
+  };
+  interface HTMLChDynamicMenuPopupElement extends Components.ChDynamicMenuPopup, HTMLStencilElement {
+  }
+  var HTMLChDynamicMenuPopupElement: {
+    prototype: HTMLChDynamicMenuPopupElement;
+    new(): HTMLChDynamicMenuPopupElement;
+  };
+  interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
+  }
+  var HTMLChFormCheckboxElement: {
+    prototype: HTMLChFormCheckboxElement;
+    new(): HTMLChFormCheckboxElement;
+  };
+  interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {
+  }
+  var HTMLChGridElement: {
+    prototype: HTMLChGridElement;
+    new(): HTMLChGridElement;
+  };
+  interface HTMLChGridActionRefreshElement extends Components.ChGridActionRefresh, HTMLStencilElement {
+  }
+  var HTMLChGridActionRefreshElement: {
+    prototype: HTMLChGridActionRefreshElement;
+    new(): HTMLChGridActionRefreshElement;
+  };
+  interface HTMLChGridActionSettingsElement extends Components.ChGridActionSettings, HTMLStencilElement {
+  }
+  var HTMLChGridActionSettingsElement: {
+    prototype: HTMLChGridActionSettingsElement;
+    new(): HTMLChGridActionSettingsElement;
+  };
+  interface HTMLChGridActionbarElement extends Components.ChGridActionbar, HTMLStencilElement {
+  }
+  var HTMLChGridActionbarElement: {
+    prototype: HTMLChGridActionbarElement;
+    new(): HTMLChGridActionbarElement;
+  };
+  interface HTMLChGridColumnElement extends Components.ChGridColumn, HTMLStencilElement {
+  }
+  var HTMLChGridColumnElement: {
+    prototype: HTMLChGridColumnElement;
+    new(): HTMLChGridColumnElement;
+  };
+  interface HTMLChGridColumnDisplayElement extends Components.ChGridColumnDisplay, HTMLStencilElement {
+  }
+  var HTMLChGridColumnDisplayElement: {
+    prototype: HTMLChGridColumnDisplayElement;
+    new(): HTMLChGridColumnDisplayElement;
+  };
+  interface HTMLChGridColumnResizeElement extends Components.ChGridColumnResize, HTMLStencilElement {
+  }
+  var HTMLChGridColumnResizeElement: {
+    prototype: HTMLChGridColumnResizeElement;
+    new(): HTMLChGridColumnResizeElement;
+  };
+  interface HTMLChGridColumnSettingsElement extends Components.ChGridColumnSettings, HTMLStencilElement {
+  }
+  var HTMLChGridColumnSettingsElement: {
+    prototype: HTMLChGridColumnSettingsElement;
+    new(): HTMLChGridColumnSettingsElement;
+  };
+  interface HTMLChGridColumnsetElement extends Components.ChGridColumnset, HTMLStencilElement {
+  }
+  var HTMLChGridColumnsetElement: {
+    prototype: HTMLChGridColumnsetElement;
+    new(): HTMLChGridColumnsetElement;
+  };
+  interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
+  }
+  var HTMLChGridRowActionsElement: {
+    prototype: HTMLChGridRowActionsElement;
+    new(): HTMLChGridRowActionsElement;
+  };
+  interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
+  }
+  var HTMLChGridRowsetEmptyElement: {
+    prototype: HTMLChGridRowsetEmptyElement;
+    new(): HTMLChGridRowsetEmptyElement;
+  };
+  interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
+  }
+  var HTMLChGridRowsetLegendElement: {
+    prototype: HTMLChGridRowsetLegendElement;
+    new(): HTMLChGridRowsetLegendElement;
+  };
+  interface HTMLChGridSettingsElement extends Components.ChGridSettings, HTMLStencilElement {
+  }
+  var HTMLChGridSettingsElement: {
+    prototype: HTMLChGridSettingsElement;
+    new(): HTMLChGridSettingsElement;
+  };
+  interface HTMLChGridSettingsColumnsElement extends Components.ChGridSettingsColumns, HTMLStencilElement {
+  }
+  var HTMLChGridSettingsColumnsElement: {
+    prototype: HTMLChGridSettingsColumnsElement;
+    new(): HTMLChGridSettingsColumnsElement;
+  };
+  interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
+  }
+  var HTMLChGridVirtualScrollerElement: {
+    prototype: HTMLChGridVirtualScrollerElement;
+    new(): HTMLChGridVirtualScrollerElement;
+  };
+  interface HTMLChIconElement extends Components.ChIcon, HTMLStencilElement {
+  }
+  var HTMLChIconElement: {
+    prototype: HTMLChIconElement;
+    new(): HTMLChIconElement;
+  };
+  interface HTMLChIntersectionObserverElement extends Components.ChIntersectionObserver, HTMLStencilElement {
+  }
+  var HTMLChIntersectionObserverElement: {
+    prototype: HTMLChIntersectionObserverElement;
+    new(): HTMLChIntersectionObserverElement;
+  };
+  interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
+  }
+  var HTMLChNextProgressBarElement: {
+    prototype: HTMLChNextProgressBarElement;
+    new(): HTMLChNextProgressBarElement;
+  };
+  interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
+  }
+  var HTMLChPaginatorElement: {
+    prototype: HTMLChPaginatorElement;
+    new(): HTMLChPaginatorElement;
+  };
+  interface HTMLChPaginatorNavigateElement extends Components.ChPaginatorNavigate, HTMLStencilElement {
+  }
+  var HTMLChPaginatorNavigateElement: {
+    prototype: HTMLChPaginatorNavigateElement;
+    new(): HTMLChPaginatorNavigateElement;
+  };
+  interface HTMLChPaginatorPagesElement extends Components.ChPaginatorPages, HTMLStencilElement {
+  }
+  var HTMLChPaginatorPagesElement: {
+    prototype: HTMLChPaginatorPagesElement;
+    new(): HTMLChPaginatorPagesElement;
+  };
+  interface HTMLChQrElement extends Components.ChQr, HTMLStencilElement {
+  }
+  var HTMLChQrElement: {
+    prototype: HTMLChQrElement;
+    new(): HTMLChQrElement;
+  };
+  interface HTMLChSelectElement extends Components.ChSelect, HTMLStencilElement {
+  }
+  var HTMLChSelectElement: {
+    prototype: HTMLChSelectElement;
+    new(): HTMLChSelectElement;
+  };
+  interface HTMLChSelectOptionElement extends Components.ChSelectOption, HTMLStencilElement {
+  }
+  var HTMLChSelectOptionElement: {
+    prototype: HTMLChSelectOptionElement;
+    new(): HTMLChSelectOptionElement;
+  };
+  interface HTMLChSidebarMenuElement extends Components.ChSidebarMenu, HTMLStencilElement {
+  }
+  var HTMLChSidebarMenuElement: {
+    prototype: HTMLChSidebarMenuElement;
+    new(): HTMLChSidebarMenuElement;
+  };
+  interface HTMLChSidebarMenuListElement extends Components.ChSidebarMenuList, HTMLStencilElement {
+  }
+  var HTMLChSidebarMenuListElement: {
+    prototype: HTMLChSidebarMenuListElement;
+    new(): HTMLChSidebarMenuListElement;
+  };
+  interface HTMLChSidebarMenuListItemElement extends Components.ChSidebarMenuListItem, HTMLStencilElement {
+  }
+  var HTMLChSidebarMenuListItemElement: {
+    prototype: HTMLChSidebarMenuListItemElement;
+    new(): HTMLChSidebarMenuListItemElement;
+  };
+  interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
+  }
+  var HTMLChStepListElement: {
+    prototype: HTMLChStepListElement;
+    new(): HTMLChStepListElement;
+  };
+  interface HTMLChStepListItemElement extends Components.ChStepListItem, HTMLStencilElement {
+  }
+  var HTMLChStepListItemElement: {
+    prototype: HTMLChStepListItemElement;
+    new(): HTMLChStepListItemElement;
+  };
+  interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
+  }
+  var HTMLChTreeElement: {
+    prototype: HTMLChTreeElement;
+    new(): HTMLChTreeElement;
+  };
+  interface HTMLChTreeItemElement extends Components.ChTreeItem, HTMLStencilElement {
+  }
+  var HTMLChTreeItemElement: {
+    prototype: HTMLChTreeItemElement;
+    new(): HTMLChTreeItemElement;
+  };
+  interface HTMLChWindowElement extends Components.ChWindow, HTMLStencilElement {
+  }
+  var HTMLChWindowElement: {
+    prototype: HTMLChWindowElement;
+    new(): HTMLChWindowElement;
+  };
+  interface HTMLChWindowCloseElement extends Components.ChWindowClose, HTMLStencilElement {
+  }
+  var HTMLChWindowCloseElement: {
+    prototype: HTMLChWindowCloseElement;
+    new(): HTMLChWindowCloseElement;
+  };
+  interface HTMLGxGridChameleonElement extends Components.GxGridChameleon, HTMLStencilElement {
+  }
+  var HTMLGxGridChameleonElement: {
+    prototype: HTMLGxGridChameleonElement;
+    new(): HTMLGxGridChameleonElement;
+  };
+  interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
+  }
+  var HTMLGxGridChameleonColumnFilterElement: {
+    prototype: HTMLGxGridChameleonColumnFilterElement;
+    new(): HTMLGxGridChameleonColumnFilterElement;
+  };
+  interface HTMLElementTagNameMap {
+    "ch-drag-bar": HTMLChDragBarElement;
+    "ch-dropdown": HTMLChDropdownElement;
+    "ch-dropdown-item": HTMLChDropdownItemElement;
+    "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
+    "ch-dynamic-menu": HTMLChDynamicMenuElement;
+    "ch-dynamic-menu-action": HTMLChDynamicMenuActionElement;
+    "ch-dynamic-menu-popup": HTMLChDynamicMenuPopupElement;
+    "ch-form-checkbox": HTMLChFormCheckboxElement;
+    "ch-grid": HTMLChGridElement;
+    "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
+    "ch-grid-action-settings": HTMLChGridActionSettingsElement;
+    "ch-grid-actionbar": HTMLChGridActionbarElement;
+    "ch-grid-column": HTMLChGridColumnElement;
+    "ch-grid-column-display": HTMLChGridColumnDisplayElement;
+    "ch-grid-column-resize": HTMLChGridColumnResizeElement;
+    "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
+    "ch-grid-columnset": HTMLChGridColumnsetElement;
+    "ch-grid-row-actions": HTMLChGridRowActionsElement;
+    "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
+    "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
+    "ch-grid-settings": HTMLChGridSettingsElement;
+    "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
+    "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
+    "ch-icon": HTMLChIconElement;
+    "ch-intersection-observer": HTMLChIntersectionObserverElement;
+    "ch-next-progress-bar": HTMLChNextProgressBarElement;
+    "ch-paginator": HTMLChPaginatorElement;
+    "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
+    "ch-paginator-pages": HTMLChPaginatorPagesElement;
+    "ch-qr": HTMLChQrElement;
+    "ch-select": HTMLChSelectElement;
+    "ch-select-option": HTMLChSelectOptionElement;
+    "ch-sidebar-menu": HTMLChSidebarMenuElement;
+    "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
+    "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
+    "ch-step-list": HTMLChStepListElement;
+    "ch-step-list-item": HTMLChStepListItemElement;
+    "ch-tree": HTMLChTreeElement;
+    "ch-tree-item": HTMLChTreeItemElement;
+    "ch-window": HTMLChWindowElement;
+    "ch-window-close": HTMLChWindowCloseElement;
+    "gx-grid-chameleon": HTMLGxGridChameleonElement;
+    "gx-grid-chameleon-column-filter": HTMLGxGridChameleonColumnFilterElement;
+  }
 }
 declare namespace LocalJSX {
-    interface ChDragBar {
-        /**
-          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
-         */
-        "barItemSrc"?: string;
-        /**
-          * This attribute lets you specify the label for the drag bar. Important for accessibility.
-         */
-        "barLabel"?: string;
-        /**
-          * A CSS class to set as the `ch-next-drag-bar` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
-         */
-        "showBarItem"?: boolean;
-        /**
-          * Specifies the initial width of the start component
-         */
-        "startComponentInitialWidth"?: string;
-    }
-    interface ChDropdown {
-        /**
-          * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
-         */
-        "align"?: "Left" | "Center" | "Right";
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel"?: string;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "dropdownSeparation"?: number;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "Click or Hover";
-        /**
-          * Fired when the visibility of the dropdown section is changed
-         */
-        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus"?: boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position"?: "Top" | "Right" | "Bottom" | "Left";
-        /**
-          * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
-         */
-        "valign"?: "Top" | "Middle" | "Bottom";
-    }
-    interface ChDropdownItem {
-        /**
-          * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
-         */
-        "href"?: string;
-        /**
-          * Specifies the src for the left img.
-         */
-        "leftImgSrc"?: string;
-        /**
-          * Fires when the control's anchor or button is clicked.
-         */
-        "onActionClick"?: (event: CustomEvent<string>) => void;
-        /**
-          * Fires when the control's anchor or button is in focus.
-         */
-        "onFocusChange"?: (event: CustomEvent<any>) => void;
-        /**
-          * Specifies the src for the right img.
-         */
-        "rightImgSrc"?: string;
-    }
-    interface ChDropdownItemSeparator {
-    }
-    interface ChDynamicMenu {
-        /**
-          * A CSS class to set as the `ch-dynamic-menu` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * Fired when the menu container is opened or closed.
-         */
-        "onDynamicMenuActivated"?: (event: CustomEvent<DynamicMenuActivatedEvent>) => void;
-        /**
-          * This attribute specifies which must be open by default.
-         */
-        "openItem"?: string;
-    }
-    interface ChDynamicMenuAction {
-        /**
-          * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
-         */
-        "actionId"?: string;
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
-         */
-        "activeClass"?: string;
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-action` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * This attribute lets you specify if the menu action is activated or not.
-         */
-        "deactivated"?: boolean;
-        /**
-          * The subtitle of menu action.
-         */
-        "itemSubtitle"?: string;
-        /**
-          * The title of menu action.
-         */
-        "itemTitle"?: string;
-        /**
-          * Fired when the menu action is activated.
-         */
-        "onMenuActionActivated"?: (event: CustomEvent<MenuActionActiveEvent>) => void;
-        /**
-          * Fired when a KeyboardEvent is captured for the menu action.
-         */
-        "onMenuActionKeyDown"?: (event: CustomEvent<KeyboardEvent>) => void;
-        /**
-          * This attribute specifies which popup of the ch-dynamic-menu must be open.
-         */
-        "popupId"?: string;
-    }
-    interface ChDynamicMenuPopup {
-        /**
-          * A CSS class to set as the `ch-dynamic-menu-popup` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * This attribute lets you specify if the menu popup is opened
-         */
-        "opened"?: boolean;
-    }
-    interface ChFormCheckbox {
-        /**
-          * The checkbox id
-         */
-        "checkboxId"?: string;
-        /**
-          * The presence of this attribute makes the checkbox checked by default
-         */
-        "checked"?: boolean;
-        /**
-          * The presence of this attribute disables the checkbox
-         */
-        "disabled"?: boolean;
-        /**
-          * The presence of this attribute makes the checkbox indeterminate
-         */
-        "indeterminate"?: boolean;
-        /**
-          * The checkbox label
-         */
-        "label"?: string;
-        /**
-          * The checkbox name
-         */
-        "name"?: string;
-        "onChange"?: (event: CustomEvent<any>) => void;
-        /**
-          * The checkbox value
-         */
-        "value"?: string;
-    }
-    interface ChGrid {
-        /**
-          * An object that contains localized strings for the grid.
-         */
-        "localization"?: GridLocalization;
-        /**
-          * Event emitted when the cell selection is changed.
-         */
-        "onCellSelectionChanged"?: (event: CustomEvent<ChGridCellSelectionChangedEvent>) => void;
-        /**
-          * Event emitted when a row is clicked.
-         */
-        "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
-        /**
-          * Event emitted when the row marking is changed.
-         */
-        "onRowMarkingChanged"?: (event: CustomEvent<ChGridMarkingChangedEvent>) => void;
-        /**
-          * Event emitted when the row selection is changed.
-         */
-        "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
-        /**
-          * A CSS class name applied to a row when it is focused.
-         */
-        "rowFocusedClass"?: string;
-        /**
-          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
-         */
-        "rowHighlightEnabled"?: boolean | "auto";
-        /**
-          * A CSS class name applied to a row when it is hovered.
-         */
-        "rowHighlightedClass"?: string;
-        /**
-          * A CSS class name applied to a row when it is marked.
-         */
-        "rowMarkedClass"?: string;
-        /**
-          * A CSS class name applied to a row when it is selected.
-         */
-        "rowSelectedClass"?: string;
-        /**
-          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
-         */
-        "rowSelectionMode"?: "none" | "single" | "multiple";
-    }
-    interface ChGridActionRefresh {
-        /**
-          * Indicates whether the refresh button is disabled or not.
-         */
-        "disabled"?: boolean;
-        /**
-          * Event emitted when the refresh button is clicked.
-         */
-        "onRefreshClicked"?: (event: CustomEvent<any>) => void;
-    }
-    interface ChGridActionSettings {
-        /**
-          * Indicates whether the settings button is disabled or not.
-         */
-        "disabled"?: boolean;
-        /**
-          * Event emitted when the settings button is clicked.
-         */
-        "onSettingsShowClicked"?: (event: CustomEvent<any>) => void;
-    }
-    interface ChGridActionbar {
-    }
-    interface ChGridColumn {
-        /**
-          * A URL to an icon to display in the column header.
-         */
-        "columnIconUrl"?: string;
-        /**
-          * A unique identifier for the column.
-         */
-        "columnId"?: string;
-        /**
-          * The text to display in the column header.
-         */
-        "columnName"?: string;
-        /**
-          * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
-         */
-        "columnNamePosition"?: "text" | "title";
-        /**
-          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
-         */
-        "columnType"?: "plain" | "rich" | "tree";
-        /**
-          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
-         */
-        "displayObserverClass"?: string;
-        /**
-          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
-         */
-        "freeze"?: ChGridColumnFreeze;
-        /**
-          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
-         */
-        "hidden"?: boolean;
-        /**
-          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
-         */
-        "hideable"?: boolean;
-        /**
-          * Event emitted when the user stops dragging the column header to move it.
-         */
-        "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
-        /**
-          * Event emitted when the user is dragging the column header to move it.
-         */
-        "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
-        /**
-          * Event emitted when the user is dragging the column header to move it.
-         */
-        "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
-        /**
-          * Event emitted when the `freeze` property is changed.
-         */
-        "onColumnFreezeChanged"?: (event: CustomEvent<ChGridColumnFreezeChangedEvent>) => void;
-        /**
-          * Event emitted when the `hidden` property is changed.
-         */
-        "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
-        /**
-          * Event emitted when the `order` property is changed.
-         */
-        "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
-        /**
-          * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
-         */
-        "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
-        /**
-          * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
-         */
-        "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
-        /**
-          * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
-         */
-        "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
-        /**
-          * Event emitted when the `sortDirection` property is changed.
-         */
-        "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
-        /**
-          * A number indicating the order in which the column should appear.
-         */
-        "order"?: number;
-        /**
-          * A number indicating the physical order of the column (i.e. its position in the DOM).
-         */
-        "physicalOrder"?: number;
-        /**
-          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
-         */
-        "resizable"?: boolean;
-        /**
-          * A boolean indicating whether the column is currently being resized.
-         */
-        "resizing"?: boolean;
-        /**
-          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
-         */
-        "richRowActions"?: boolean;
-        /**
-          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
-         */
-        "richRowDrag"?: boolean;
-        /**
-          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
-         */
-        "richRowSelector"?: boolean;
-        /**
-          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
-         */
-        "richRowSelectorMode"?: "select" | "mark";
-        /**
-          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
-         */
-        "richRowSelectorState"?: | ""
+  interface ChDragBar {
+    /**
+      * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
+     */
+    "barItemSrc"?: string;
+    /**
+      * This attribute lets you specify the label for the drag bar. Important for accessibility.
+     */
+    "barLabel"?: string;
+    /**
+      * A CSS class to set as the `ch-next-drag-bar` element class.
+     */
+    "cssClass"?: string;
+    /**
+      * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
+     */
+    "showBarItem"?: boolean;
+    /**
+      * Specifies the initial width of the start component
+     */
+    "startComponentInitialWidth"?: string;
+  }
+  interface ChDropdown {
+    /**
+      * Specifies the horizontal alignment the dropdown section has when using `position === "Top"` or `position === "Bottom"`.
+     */
+    "align"?: "Left" | "Center" | "Right";
+    /**
+      * This attribute lets you specify the label for the expandable button. Important for accessibility.
+     */
+    "buttonLabel"?: string;
+    /**
+      * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+     */
+    "dropdownSeparation"?: number;
+    /**
+      * Determine which actions on the expandable button display the dropdown section.
+     */
+    "expandBehavior"?: "Click" | "Click or Hover";
+    /**
+      * Fired when the visibility of the dropdown section is changed
+     */
+    "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+    /**
+      * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+     */
+    "openOnFocus"?: boolean;
+    /**
+      * Specifies the position of the dropdown section that is placed relative to the expandable button.
+     */
+    "position"?: "Top" | "Right" | "Bottom" | "Left";
+    /**
+      * Specifies the vertical alignment the dropdown section has when using `position === "Right"` or `position === "Left"`.
+     */
+    "valign"?: "Top" | "Middle" | "Bottom";
+  }
+  interface ChDropdownItem {
+    /**
+      * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
+     */
+    "href"?: string;
+    /**
+      * Specifies the src for the left img.
+     */
+    "leftImgSrc"?: string;
+    /**
+      * Fires when the control's anchor or button is clicked.
+     */
+    "onActionClick"?: (event: CustomEvent<string>) => void;
+    /**
+      * Fires when the control's anchor or button is in focus.
+     */
+    "onFocusChange"?: (event: CustomEvent<any>) => void;
+    /**
+      * Specifies the src for the right img.
+     */
+    "rightImgSrc"?: string;
+  }
+  interface ChDropdownItemSeparator {
+  }
+  interface ChDynamicMenu {
+    /**
+      * A CSS class to set as the `ch-dynamic-menu` element class.
+     */
+    "cssClass"?: string;
+    /**
+      * Fired when the menu container is opened or closed.
+     */
+    "onDynamicMenuActivated"?: (event: CustomEvent<DynamicMenuActivatedEvent>) => void;
+    /**
+      * This attribute specifies which must be open by default.
+     */
+    "openItem"?: string;
+  }
+  interface ChDynamicMenuAction {
+    /**
+      * This attribute specifies the id of the ch-dynamic-menu-action for manage from outside, will be an unique attribute.
+     */
+    "actionId"?: string;
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-action` element class when `inactivated = false`.
+     */
+    "activeClass"?: string;
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-action` element class.
+     */
+    "cssClass"?: string;
+    /**
+      * This attribute lets you specify if the menu action is activated or not.
+     */
+    "deactivated"?: boolean;
+    /**
+      * The subtitle of menu action.
+     */
+    "itemSubtitle"?: string;
+    /**
+      * The title of menu action.
+     */
+    "itemTitle"?: string;
+    /**
+      * Fired when the menu action is activated.
+     */
+    "onMenuActionActivated"?: (event: CustomEvent<MenuActionActiveEvent>) => void;
+    /**
+      * Fired when a KeyboardEvent is captured for the menu action.
+     */
+    "onMenuActionKeyDown"?: (event: CustomEvent<KeyboardEvent>) => void;
+    /**
+      * This attribute specifies which popup of the ch-dynamic-menu must be open.
+     */
+    "popupId"?: string;
+  }
+  interface ChDynamicMenuPopup {
+    /**
+      * A CSS class to set as the `ch-dynamic-menu-popup` element class.
+     */
+    "cssClass"?: string;
+    /**
+      * This attribute lets you specify if the menu popup is opened
+     */
+    "opened"?: boolean;
+  }
+  interface ChFormCheckbox {
+    /**
+      * The checkbox id
+     */
+    "checkboxId"?: string;
+    /**
+      * The presence of this attribute makes the checkbox checked by default
+     */
+    "checked"?: boolean;
+    /**
+      * The presence of this attribute disables the checkbox
+     */
+    "disabled"?: boolean;
+    /**
+      * The presence of this attribute makes the checkbox indeterminate
+     */
+    "indeterminate"?: boolean;
+    /**
+      * The checkbox label
+     */
+    "label"?: string;
+    /**
+      * The checkbox name
+     */
+    "name"?: string;
+    "onChange"?: (event: CustomEvent<any>) => void;
+    /**
+      * The checkbox value
+     */
+    "value"?: string;
+  }
+  interface ChGrid {
+    /**
+      * An object that contains localized strings for the grid.
+     */
+    "localization"?: GridLocalization;
+    /**
+      * Event emitted when the cell selection is changed.
+     */
+    "onCellSelectionChanged"?: (event: CustomEvent<ChGridCellSelectionChangedEvent>) => void;
+    /**
+      * Event emitted when a row is clicked.
+     */
+    "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
+    /**
+      * Event emitted when the row marking is changed.
+     */
+    "onRowMarkingChanged"?: (event: CustomEvent<ChGridMarkingChangedEvent>) => void;
+    /**
+      * Event emitted when the row selection is changed.
+     */
+    "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+    /**
+      * A CSS class name applied to a row when it is focused.
+     */
+    "rowFocusedClass"?: string;
+    /**
+      * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+     */
+    "rowHighlightEnabled"?: boolean | "auto";
+    /**
+      * A CSS class name applied to a row when it is hovered.
+     */
+    "rowHighlightedClass"?: string;
+    /**
+      * A CSS class name applied to a row when it is marked.
+     */
+    "rowMarkedClass"?: string;
+    /**
+      * A CSS class name applied to a row when it is selected.
+     */
+    "rowSelectedClass"?: string;
+    /**
+      * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+     */
+    "rowSelectionMode"?: "none" | "single" | "multiple";
+  }
+  interface ChGridActionRefresh {
+    /**
+      * Indicates whether the refresh button is disabled or not.
+     */
+    "disabled"?: boolean;
+    /**
+      * Event emitted when the refresh button is clicked.
+     */
+    "onRefreshClicked"?: (event: CustomEvent<any>) => void;
+  }
+  interface ChGridActionSettings {
+    /**
+      * Indicates whether the settings button is disabled or not.
+     */
+    "disabled"?: boolean;
+    /**
+      * Event emitted when the settings button is clicked.
+     */
+    "onSettingsShowClicked"?: (event: CustomEvent<any>) => void;
+  }
+  interface ChGridActionbar {
+  }
+  interface ChGridColumn {
+    /**
+      * A URL to an icon to display in the column header.
+     */
+    "columnIconUrl"?: string;
+    /**
+      * A unique identifier for the column.
+     */
+    "columnId"?: string;
+    /**
+      * The text to display in the column header.
+     */
+    "columnName"?: string;
+    /**
+      * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+     */
+    "columnNamePosition"?: "text" | "title";
+    /**
+      * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+     */
+    "columnType"?: "plain" | "rich" | "tree";
+    /**
+      * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+     */
+    "displayObserverClass"?: string;
+    /**
+      * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+     */
+    "freeze"?: ChGridColumnFreeze;
+    /**
+      * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+     */
+    "hidden"?: boolean;
+    /**
+      * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+     */
+    "hideable"?: boolean;
+    /**
+      * Event emitted when the user stops dragging the column header to move it.
+     */
+    "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+    /**
+      * Event emitted when the user is dragging the column header to move it.
+     */
+    "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+    /**
+      * Event emitted when the user is dragging the column header to move it.
+     */
+    "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+    /**
+      * Event emitted when the `freeze` property is changed.
+     */
+    "onColumnFreezeChanged"?: (event: CustomEvent<ChGridColumnFreezeChangedEvent>) => void;
+    /**
+      * Event emitted when the `hidden` property is changed.
+     */
+    "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
+    /**
+      * Event emitted when the `order` property is changed.
+     */
+    "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
+    /**
+      * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
+     */
+    "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
+    /**
+      * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
+     */
+    "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+    /**
+      * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
+     */
+    "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+    /**
+      * Event emitted when the `sortDirection` property is changed.
+     */
+    "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
+    /**
+      * A number indicating the order in which the column should appear.
+     */
+    "order"?: number;
+    /**
+      * A number indicating the physical order of the column (i.e. its position in the DOM).
+     */
+    "physicalOrder"?: number;
+    /**
+      * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+     */
+    "resizable"?: boolean;
+    /**
+      * A boolean indicating whether the column is currently being resized.
+     */
+    "resizing"?: boolean;
+    /**
+      * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+     */
+    "richRowActions"?: boolean;
+    /**
+      * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+     */
+    "richRowDrag"?: boolean;
+    /**
+      * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+     */
+    "richRowSelector"?: boolean;
+    /**
+      * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+     */
+    "richRowSelectorMode"?: "select" | "mark";
+    /**
+      * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+     */
+    "richRowSelectorState"?: | ""
     | "checked"
     | "indeterminate";
-        /**
-          * A boolean indicating whether the user should be able to open a settings panel for the column.
-         */
-        "settingable"?: boolean;
-        /**
-          * A boolean indicating whether the settings panel for the column should be visible.
-         */
-        "showSettings"?: boolean;
-        /**
-          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
-         */
-        "size"?: string;
-        /**
-          * One of "asc" or "desc", indicating the current sort direction.
-         */
-        "sortDirection"?: ChGridColumnSortDirection;
-        /**
-          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
-         */
-        "sortable"?: boolean;
-    }
-    interface ChGridColumnDisplay {
-        /**
-          * The column element that is being monitored.
-         */
-        "column": HTMLChGridColumnElement;
-    }
-    interface ChGridColumnResize {
-        /**
-          * The column element that is being resized.
-         */
-        "column": HTMLChGridColumnElement;
-        /**
-          * Event emitted when the user finishes resizing the column.
-         */
-        "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
-        /**
-          * Event emitted when the user starts resizing the column.
-         */
-        "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
-    }
-    interface ChGridColumnSettings {
-        /**
-          * The `HTMLChGridColumnElement` that the settings window is associated with.
-         */
-        "column": HTMLChGridColumnElement;
-        /**
-          * Indicates whether the settings window is currently shown or not.
-         */
-        "show"?: boolean;
-    }
-    interface ChGridColumnset {
-    }
-    interface ChGridRowActions {
-    }
-    interface ChGridRowsetEmpty {
-    }
-    interface ChGridRowsetLegend {
-        /**
-          * Event emitted when the legend is clicked.
-         */
-        "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
-    }
-    interface ChGridSettings {
-        /**
-          * The `HTMLChGridElement` that the settings window is associated with.
-         */
-        "grid": HTMLChGridElement;
-        /**
-          * Event emitted when the close button of the settings window is clicked.
-         */
-        "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
-        /**
-          * Indicates whether the settings window is currently shown or not.
-         */
-        "show"?: boolean;
-    }
-    interface ChGridSettingsColumns {
-        /**
-          * An array of column elements to render.
-         */
-        "columns": HTMLChGridColumnElement[];
-    }
-    interface ChGridVirtualScroller {
-        /**
-          * The list of items to be rendered in the grid.
-         */
-        "items"?: any[];
-        /**
-          * Event emitted when the list of visible items in the grid changes.
-         */
-        "onViewPortItemsChanged"?: (event: CustomEvent<any>) => void;
-        /**
-          * The list of items to display within the current viewport.
-         */
-        "viewPortItems"?: any[];
-    }
-    interface ChIcon {
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor"?: boolean;
-        /**
-          * The color of the icon.
-         */
-        "color"?: Color;
-        /**
-          * If enabled, the icon will be loaded lazily when it's visible in the viewport.
-         */
-        "lazy"?: boolean;
-        /**
-          * The size of the icon. Possible values: regular, small.
-         */
-        "size"?: Size;
-        /**
-          * The URL of the icon.
-         */
-        "src"?: string;
-    }
-    interface ChIntersectionObserver {
-        /**
-          * Bottom margin around the root element
-         */
-        "bottomMargin"?: string;
-        /**
-          * Left margin around the root element
-         */
-        "leftMargin"?: string;
-        /**
-          * Emitted whenever the control reaches a threshold specified by the threshold property
-          * @param IntersectionObserverEntry Details of intersection object.
-         */
-        "onIntersectionUpdate"?: (event: CustomEvent<IntersectionObserverEntry>) => void;
-        /**
-          * Right margin around the root element
-         */
-        "rightMargin"?: string;
-        /**
-          * Set the ID of the component that is used as the viewport, default is the browser.
-         */
-        "root"?: string;
-        /**
-          * Numeric values representing percentages of the target element which are visible.
-         */
-        "threshold"?: string;
-        /**
-          * Top margin around the root element
-         */
-        "topMargin"?: string;
-    }
-    interface ChNextProgressBar {
-        /**
-          * It specifies the main text that is shown on the progress.
-         */
-        "caption"?: string;
-        /**
-          * A CSS class to set as the `ch-next-progress-bar` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * This attribute lets you specify the value of the progress.
-         */
-        "currentStep"?: number;
-        /**
-          * It specifies more information that is shown on the progress.
-         */
-        "description"?: string;
-        /**
-          * This attribute lets you specify if the progress bar is rendered.
-         */
-        "presented"?: boolean;
-        /**
-          * This attribute lets you specify the amount of steps for the progress.
-         */
-        "steps"?: number;
-    }
-    interface ChPaginator {
-        "activePage"?: number;
-        "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
-        "totalPages"?: number;
-    }
-    interface ChPaginatorNavigate {
-        "disabled"?: boolean;
-        "onNavigationClicked"?: (event: CustomEvent<ChPaginatorNavigationClickedEvent>) => void;
-        "type"?: ChPaginatorNavigationType;
-    }
-    interface ChPaginatorPages {
-        "activePage"?: number;
-        "maxSize"?: number;
-        "onPageClicked"?: (event: CustomEvent<any>) => void;
-        "renderFirstLastPages"?: true;
-        "textDots"?: string;
-        "totalPages"?: number;
-    }
-    interface ChQr {
-        "background"?: string | null;
-        "ecLevel"?: ecLevel;
-        "fill"?: string;
-        "radius"?: number;
-        "size"?: number;
-        "text"?: string | undefined;
-    }
-    interface ChSelect {
-        "arrowIconSrc"?: string;
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor"?: false;
-        "disabled"?: boolean;
-        "height"?: string;
-        "iconSrc"?: string;
-        "name"?: string;
-        /**
-          * @type EventEmitter * Track component events (I.e. activation of dropdown component)
-         */
-        "onOnToggle"?: (event: CustomEvent<any>) => void;
-        /**
-          * Emmits the item id
-         */
-        "onOptionClickedEvent"?: (event: CustomEvent<any>) => void;
-        "width"?: string;
-    }
-    interface ChSelectOption {
-        /**
-          * If enabled, the option icons will display its inherent/natural color
-         */
-        "autoColor"?: true;
-        /**
-          * Determines if the option is disabled
-         */
-        "disabled"?: boolean;
-        "height"?: string;
-        /**
-          * Set the left side icon
-         */
-        "leftIconSrc"?: string;
-        /**
-          * Emits the item id
-         */
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
-        /**
-          * Set the right side icon
-         */
-        "rightIconSrc"?: string;
-        /**
-          * Determines the selected option
-         */
-        "selected"?: boolean;
-        /**
-          * The select option's value
-         */
-        "value"?: string;
-    }
-    interface ChSidebarMenu {
-        /**
-          * The active item
-         */
-        "activeItem"?: string;
-        /**
-          * The initial active item (optional)
-         */
-        "activeItemId"?: string;
-        /**
-          * Determines if the menu can be collapsed
-         */
-        "collapsible"?: boolean;
-        /**
-          * Allows to set the distance to the top of the page on the menu
-         */
-        "distanceToTop"?: number;
-        /**
-          * Determines if the menu is collapsed
-         */
-        "isCollapsed"?: boolean;
-        /**
-          * The menu title
-         */
-        "menuTitle"?: string;
-        "onCollapseBtnClicked"?: (event: CustomEvent<any>) => void;
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
-        /**
-          * The presence of this attribute allows the menu to have only one list opened at the same time
-         */
-        "singleListOpen"?: boolean;
-    }
-    interface ChSidebarMenuList {
-    }
-    interface ChSidebarMenuListItem {
-        /**
-          * If enabled, the icon will display its inherent/natural color
-         */
-        "autoColor"?: boolean;
-        /**
-          * The first list item icon (optional)
-         */
-        "itemIconSrc"?: string;
-        /**
-          * Emmits the item id
-         */
-        "onItemClickedEvent"?: (event: CustomEvent<any>) => void;
-        /**
-          * If this attribute is present the item will be initially uncollapsed
-         */
-        "uncollapsed"?: boolean;
-    }
-    interface ChStepList {
-    }
-    interface ChStepListItem {
-        /**
-          * Set the left side icon
-         */
-        "iconSrc"?: string;
-        /**
-          * Emits the item id
-         */
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
-    }
-    interface ChTree {
-        /**
-          * Set this attribute if you want all this tree tree-items to have a checkbox
-         */
-        "checkbox"?: boolean;
-        /**
-          * Set this attribute if you want all this tree tree-items to have the checkbox checked
-         */
-        "checked"?: boolean;
-        /**
-          * Allows to select only one item
-         */
-        "singleSelection"?: boolean;
-        /**
-          * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
-         */
-        "toggleCheckboxes"?: boolean;
-    }
-    interface ChTreeItem {
-        /**
-          * Set this attribute if you want the ch-tree-item to display a checkbox
-         */
-        "checkbox"?: boolean;
-        /**
-          * Set this attribute if you want the ch-tree-item checkbox to be checked by default
-         */
-        "checked"?: boolean;
-        "disabled"?: boolean;
-        /**
-          * Set this attribute if this tree-item has a resource to be downloaded;
-         */
-        "download"?: boolean;
-        /**
-          * Set this attribute when you have downloaded the resource
-         */
-        "downloaded"?: boolean;
-        /**
-          * Set this attribute when you are downloading a resource
-         */
-        "downloading"?: boolean;
-        "firstTreeItem"?: boolean;
-        "hasChildTree"?: boolean;
-        "indeterminate"?: boolean;
-        /**
-          * The presence of this attribute displays a +/- icon to toggle/untoggle the tree
-         */
-        "isLeaf"?: boolean;
-        /**
-          * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-         */
-        "leftIcon"?: string;
-        "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
-        "onLiItemClicked"?: (event: CustomEvent<any>) => void;
-        "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
-        /**
-          * If this tree-item has a nested tree, set this attribute to make the tree open by default
-         */
-        "opened"?: boolean;
-        /**
-          * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-         */
-        "rightIcon"?: string;
-        /**
-          * The presence of this attribute sets the tree-item as selected
-         */
-        "selected"?: boolean;
-    }
-    interface ChWindow {
-        "allowDrag"?: "no" | "header" | "box";
-        "caption"?: string;
-        "closeOnEscape"?: boolean;
-        "closeOnOutsideClick"?: boolean;
-        "closeText"?: string;
-        "closeTooltip"?: string;
-        "container"?: HTMLElement;
-        "hidden"?: boolean;
-        "modal"?: boolean;
-        "onWindowClosed"?: (event: CustomEvent<any>) => void;
-        "onWindowOpened"?: (event: CustomEvent<any>) => void;
-        "xAlign"?: ChWindowAlign;
-        "yAlign"?: ChWindowAlign;
-    }
-    interface ChWindowClose {
-        "disabled"?: boolean;
-        "onWindowCloseClicked"?: (event: CustomEvent<any>) => void;
-    }
-    interface GxGridChameleon {
-        "grid"?: GxGrid;
-        "gridTimestamp"?: number;
-        "state"?: GridChameleonState;
-    }
-    interface GxGridChameleonColumnFilter {
-        "buttonApplyText"?: string;
-        "buttonResetText"?: string;
-        "column"?: GxGridColumn;
-        "equal"?: string;
-        "greater"?: string;
-        "less"?: string;
-        "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
-    }
-    interface IntrinsicElements {
-        "ch-drag-bar": ChDragBar;
-        "ch-dropdown": ChDropdown;
-        "ch-dropdown-item": ChDropdownItem;
-        "ch-dropdown-item-separator": ChDropdownItemSeparator;
-        "ch-dynamic-menu": ChDynamicMenu;
-        "ch-dynamic-menu-action": ChDynamicMenuAction;
-        "ch-dynamic-menu-popup": ChDynamicMenuPopup;
-        "ch-form-checkbox": ChFormCheckbox;
-        "ch-grid": ChGrid;
-        "ch-grid-action-refresh": ChGridActionRefresh;
-        "ch-grid-action-settings": ChGridActionSettings;
-        "ch-grid-actionbar": ChGridActionbar;
-        "ch-grid-column": ChGridColumn;
-        "ch-grid-column-display": ChGridColumnDisplay;
-        "ch-grid-column-resize": ChGridColumnResize;
-        "ch-grid-column-settings": ChGridColumnSettings;
-        "ch-grid-columnset": ChGridColumnset;
-        "ch-grid-row-actions": ChGridRowActions;
-        "ch-grid-rowset-empty": ChGridRowsetEmpty;
-        "ch-grid-rowset-legend": ChGridRowsetLegend;
-        "ch-grid-settings": ChGridSettings;
-        "ch-grid-settings-columns": ChGridSettingsColumns;
-        "ch-grid-virtual-scroller": ChGridVirtualScroller;
-        "ch-icon": ChIcon;
-        "ch-intersection-observer": ChIntersectionObserver;
-        "ch-next-progress-bar": ChNextProgressBar;
-        "ch-paginator": ChPaginator;
-        "ch-paginator-navigate": ChPaginatorNavigate;
-        "ch-paginator-pages": ChPaginatorPages;
-        "ch-qr": ChQr;
-        "ch-select": ChSelect;
-        "ch-select-option": ChSelectOption;
-        "ch-sidebar-menu": ChSidebarMenu;
-        "ch-sidebar-menu-list": ChSidebarMenuList;
-        "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
-        "ch-step-list": ChStepList;
-        "ch-step-list-item": ChStepListItem;
-        "ch-tree": ChTree;
-        "ch-tree-item": ChTreeItem;
-        "ch-window": ChWindow;
-        "ch-window-close": ChWindowClose;
-        "gx-grid-chameleon": GxGridChameleon;
-        "gx-grid-chameleon-column-filter": GxGridChameleonColumnFilter;
-    }
+    /**
+      * A boolean indicating whether the user should be able to open a settings panel for the column.
+     */
+    "settingable"?: boolean;
+    /**
+      * A boolean indicating whether the settings panel for the column should be visible.
+     */
+    "showSettings"?: boolean;
+    /**
+      * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+     */
+    "size"?: string;
+    /**
+      * One of "asc" or "desc", indicating the current sort direction.
+     */
+    "sortDirection"?: ChGridColumnSortDirection;
+    /**
+      * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+     */
+    "sortable"?: boolean;
+  }
+  interface ChGridColumnDisplay {
+    /**
+      * The column element that is being monitored.
+     */
+    "column": HTMLChGridColumnElement;
+  }
+  interface ChGridColumnResize {
+    /**
+      * The column element that is being resized.
+     */
+    "column": HTMLChGridColumnElement;
+    /**
+      * Event emitted when the user finishes resizing the column.
+     */
+    "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
+    /**
+      * Event emitted when the user starts resizing the column.
+     */
+    "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
+  }
+  interface ChGridColumnSettings {
+    /**
+      * The `HTMLChGridColumnElement` that the settings window is associated with.
+     */
+    "column": HTMLChGridColumnElement;
+    /**
+      * Indicates whether the settings window is currently shown or not.
+     */
+    "show"?: boolean;
+  }
+  interface ChGridColumnset {
+  }
+  interface ChGridRowActions {
+  }
+  interface ChGridRowsetEmpty {
+  }
+  interface ChGridRowsetLegend {
+    /**
+      * Event emitted when the legend is clicked.
+     */
+    "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
+  }
+  interface ChGridSettings {
+    /**
+      * The `HTMLChGridElement` that the settings window is associated with.
+     */
+    "grid": HTMLChGridElement;
+    /**
+      * Event emitted when the close button of the settings window is clicked.
+     */
+    "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
+    /**
+      * Indicates whether the settings window is currently shown or not.
+     */
+    "show"?: boolean;
+  }
+  interface ChGridSettingsColumns {
+    /**
+      * An array of column elements to render.
+     */
+    "columns": HTMLChGridColumnElement[];
+  }
+  interface ChGridVirtualScroller {
+    /**
+      * The list of items to be rendered in the grid.
+     */
+    "items"?: any[];
+    /**
+      * Event emitted when the list of visible items in the grid changes.
+     */
+    "onViewPortItemsChanged"?: (event: CustomEvent<any>) => void;
+    /**
+      * The list of items to display within the current viewport.
+     */
+    "viewPortItems"?: any[];
+  }
+  interface ChIcon {
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor"?: boolean;
+    /**
+      * The color of the icon.
+     */
+    "color"?: Color;
+    /**
+      * If enabled, the icon will be loaded lazily when it's visible in the viewport.
+     */
+    "lazy"?: boolean;
+    /**
+      * The size of the icon. Possible values: regular, small.
+     */
+    "size"?: Size;
+    /**
+      * The URL of the icon.
+     */
+    "src"?: string;
+  }
+  interface ChIntersectionObserver {
+    /**
+      * Bottom margin around the root element
+     */
+    "bottomMargin"?: string;
+    /**
+      * Left margin around the root element
+     */
+    "leftMargin"?: string;
+    /**
+      * Emitted whenever the control reaches a threshold specified by the threshold property
+      * @param IntersectionObserverEntry Details of intersection object.
+     */
+    "onIntersectionUpdate"?: (event: CustomEvent<IntersectionObserverEntry>) => void;
+    /**
+      * Right margin around the root element
+     */
+    "rightMargin"?: string;
+    /**
+      * Set the ID of the component that is used as the viewport, default is the browser.
+     */
+    "root"?: string;
+    /**
+      * Numeric values representing percentages of the target element which are visible.
+     */
+    "threshold"?: string;
+    /**
+      * Top margin around the root element
+     */
+    "topMargin"?: string;
+  }
+  interface ChNextProgressBar {
+    /**
+      * It specifies the main text that is shown on the progress.
+     */
+    "caption"?: string;
+    /**
+      * A CSS class to set as the `ch-next-progress-bar` element class.
+     */
+    "cssClass"?: string;
+    /**
+      * This attribute lets you specify the value of the progress.
+     */
+    "currentStep"?: number;
+    /**
+      * It specifies more information that is shown on the progress.
+     */
+    "description"?: string;
+    /**
+      * This attribute lets you specify if the progress bar is rendered.
+     */
+    "presented"?: boolean;
+    /**
+      * This attribute lets you specify the amount of steps for the progress.
+     */
+    "steps"?: number;
+  }
+  interface ChPaginator {
+    /**
+      * The active page number.
+     */
+    "activePage"?: number;
+    /**
+      * Indicates that the end has been reached. Use when total pages are not known (totalPages = -1).
+     */
+    "hasNextPage"?: boolean;
+    /**
+      * Event emitted when the active page changes.
+     */
+    "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
+    /**
+      * Event emitted when the navigation is requested.
+     */
+    "onPageNavigationRequested"?: (event: CustomEvent<ChPaginatorPageNavigationRequestedEvent>) => void;
+    /**
+      * The total number of pages. Use -1 if not known and 'hasNextPage' property to indicate that the end has been reached.
+     */
+    "totalPages"?: 1;
+  }
+  interface ChPaginatorNavigate {
+    /**
+      * Flag indicating if the button is disabled.
+     */
+    "disabled"?: boolean;
+    /**
+      * Event emitted when the navigation button is pressed.
+     */
+    "onNavigateClicked"?: (event: CustomEvent<ChPaginatorNavigateClickedEvent>) => void;
+    /**
+      * The type of navigation button.
+     */
+    "type"?: ChPaginatorNavigateType;
+  }
+  interface ChPaginatorPages {
+    /**
+      * The maximum number of items to display in the pagination.
+     */
+    "maxSize"?: number;
+    /**
+      * Event emitted when the page changes.
+     */
+    "onPageChanged"?: (event: CustomEvent<ChPaginatorPagesPageChangedEvent>) => void;
+    /**
+      * The active page number.
+     */
+    "page"?: number;
+    /**
+      * Flag to render the first and last pages.
+     */
+    "renderFirstLastPages"?: boolean;
+    /**
+      * The text to display for the dots.
+     */
+    "textDots"?: string;
+    /**
+      * The total number of pages.
+     */
+    "totalPages"?: number;
+  }
+  interface ChQr {
+    /**
+      * The background color. By default is transparent.
+     */
+    "background"?: string | null;
+    /**
+      * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+     */
+    "ecLevel"?: ecLevel;
+    /**
+      * What color you want your QR code to be. By default is black.
+     */
+    "fill"?: string;
+    /**
+      * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+     */
+    "radius"?: number;
+    /**
+      * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+     */
+    "size"?: number;
+    /**
+      * Any kind of text, also links, email addresses, any thing.
+     */
+    "text"?: string | undefined;
+  }
+  interface ChSelect {
+    "arrowIconSrc"?: string;
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor"?: false;
+    "disabled"?: boolean;
+    "height"?: string;
+    "iconSrc"?: string;
+    "name"?: string;
+    /**
+      * @type EventEmitter * Track component events (I.e. activation of dropdown component)
+     */
+    "onOnToggle"?: (event: CustomEvent<any>) => void;
+    /**
+      * Emmits the item id
+     */
+    "onOptionClickedEvent"?: (event: CustomEvent<any>) => void;
+    "width"?: string;
+  }
+  interface ChSelectOption {
+    /**
+      * If enabled, the option icons will display its inherent/natural color
+     */
+    "autoColor"?: true;
+    /**
+      * Determines if the option is disabled
+     */
+    "disabled"?: boolean;
+    "height"?: string;
+    /**
+      * Set the left side icon
+     */
+    "leftIconSrc"?: string;
+    /**
+      * Emits the item id
+     */
+    "onItemClicked"?: (event: CustomEvent<any>) => void;
+    /**
+      * Set the right side icon
+     */
+    "rightIconSrc"?: string;
+    /**
+      * Determines the selected option
+     */
+    "selected"?: boolean;
+    /**
+      * The select option's value
+     */
+    "value"?: string;
+  }
+  interface ChSidebarMenu {
+    /**
+      * The active item
+     */
+    "activeItem"?: string;
+    /**
+      * The initial active item (optional)
+     */
+    "activeItemId"?: string;
+    /**
+      * Determines if the menu can be collapsed
+     */
+    "collapsible"?: boolean;
+    /**
+      * Allows to set the distance to the top of the page on the menu
+     */
+    "distanceToTop"?: number;
+    /**
+      * Determines if the menu is collapsed
+     */
+    "isCollapsed"?: boolean;
+    /**
+      * The menu title
+     */
+    "menuTitle"?: string;
+    "onCollapseBtnClicked"?: (event: CustomEvent<any>) => void;
+    "onItemClicked"?: (event: CustomEvent<any>) => void;
+    /**
+      * The presence of this attribute allows the menu to have only one list opened at the same time
+     */
+    "singleListOpen"?: boolean;
+  }
+  interface ChSidebarMenuList {
+  }
+  interface ChSidebarMenuListItem {
+    /**
+      * If enabled, the icon will display its inherent/natural color
+     */
+    "autoColor"?: boolean;
+    /**
+      * The first list item icon (optional)
+     */
+    "itemIconSrc"?: string;
+    /**
+      * Emmits the item id
+     */
+    "onItemClickedEvent"?: (event: CustomEvent<any>) => void;
+    /**
+      * If this attribute is present the item will be initially uncollapsed
+     */
+    "uncollapsed"?: boolean;
+  }
+  interface ChStepList {
+  }
+  interface ChStepListItem {
+    /**
+      * Set the left side icon
+     */
+    "iconSrc"?: string;
+    /**
+      * Emits the item id
+     */
+    "onItemClicked"?: (event: CustomEvent<any>) => void;
+  }
+  interface ChTree {
+    /**
+      * Set this attribute if you want all this tree tree-items to have a checkbox
+     */
+    "checkbox"?: boolean;
+    /**
+      * Set this attribute if you want all this tree tree-items to have the checkbox checked
+     */
+    "checked"?: boolean;
+    /**
+      * Allows to select only one item
+     */
+    "singleSelection"?: boolean;
+    /**
+      * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
+     */
+    "toggleCheckboxes"?: boolean;
+  }
+  interface ChTreeItem {
+    /**
+      * Set this attribute if you want the ch-tree-item to display a checkbox
+     */
+    "checkbox"?: boolean;
+    /**
+      * Set this attribute if you want the ch-tree-item checkbox to be checked by default
+     */
+    "checked"?: boolean;
+    "disabled"?: boolean;
+    /**
+      * Set this attribute if this tree-item has a resource to be downloaded;
+     */
+    "download"?: boolean;
+    /**
+      * Set this attribute when you have downloaded the resource
+     */
+    "downloaded"?: boolean;
+    /**
+      * Set this attribute when you are downloading a resource
+     */
+    "downloading"?: boolean;
+    "firstTreeItem"?: boolean;
+    "hasChildTree"?: boolean;
+    "indeterminate"?: boolean;
+    /**
+      * The presence of this attribute displays a +/- icon to toggle/untoggle the tree
+     */
+    "isLeaf"?: boolean;
+    /**
+      * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+     */
+    "leftIcon"?: string;
+    "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
+    "onLiItemClicked"?: (event: CustomEvent<any>) => void;
+    "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
+    /**
+      * If this tree-item has a nested tree, set this attribute to make the tree open by default
+     */
+    "opened"?: boolean;
+    /**
+      * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+     */
+    "rightIcon"?: string;
+    /**
+      * The presence of this attribute sets the tree-item as selected
+     */
+    "selected"?: boolean;
+  }
+  interface ChWindow {
+    /**
+      * Specifies the drag behavior of the window.
+     */
+    "allowDrag"?: "no" | "header" | "box";
+    /**
+      * The caption or title of the window.
+     */
+    "caption"?: string;
+    /**
+      * Determines whether the window should close when the Escape key is pressed.
+     */
+    "closeOnEscape"?: boolean;
+    /**
+      * Determines whether the window should close when clicked outside.
+     */
+    "closeOnOutsideClick"?: boolean;
+    /**
+      * The text for the close button.
+     */
+    "closeText"?: string;
+    /**
+      * The tooltip text for the close button.
+     */
+    "closeTooltip"?: string;
+    /**
+      * The container element for the window.
+     */
+    "container"?: HTMLElement;
+    /**
+      * Determines if the window is hidden or visible.
+     */
+    "hidden"?: boolean;
+    /**
+      * Specifies whether the window should be displayed as a modal.
+     */
+    "modal"?: boolean;
+    /**
+      * Emitted when the window is closed.
+     */
+    "onWindowClosed"?: (event: CustomEvent<any>) => void;
+    /**
+      * Emitted when the window is opened.
+     */
+    "onWindowOpened"?: (event: CustomEvent<any>) => void;
+    /**
+      * The horizontal alignment of the window.
+     */
+    "xAlign"?: ChWindowAlign;
+    /**
+      * The vertical alignment of the window.
+     */
+    "yAlign"?: ChWindowAlign;
+  }
+  interface ChWindowClose {
+    /**
+      * Specifies whether the close button is disabled.
+     */
+    "disabled"?: boolean;
+    /**
+      * Emitted when the close button is clicked.
+     */
+    "onWindowCloseClicked"?: (event: CustomEvent<any>) => void;
+  }
+  interface GxGridChameleon {
+    "grid"?: GxGrid;
+    "gridTimestamp"?: number;
+    "state"?: GridChameleonState;
+  }
+  interface GxGridChameleonColumnFilter {
+    "buttonApplyText"?: string;
+    "buttonResetText"?: string;
+    "column"?: GxGridColumn;
+    "equal"?: string;
+    "greater"?: string;
+    "less"?: string;
+    "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
+  }
+  interface IntrinsicElements {
+    "ch-drag-bar": ChDragBar;
+    "ch-dropdown": ChDropdown;
+    "ch-dropdown-item": ChDropdownItem;
+    "ch-dropdown-item-separator": ChDropdownItemSeparator;
+    "ch-dynamic-menu": ChDynamicMenu;
+    "ch-dynamic-menu-action": ChDynamicMenuAction;
+    "ch-dynamic-menu-popup": ChDynamicMenuPopup;
+    "ch-form-checkbox": ChFormCheckbox;
+    "ch-grid": ChGrid;
+    "ch-grid-action-refresh": ChGridActionRefresh;
+    "ch-grid-action-settings": ChGridActionSettings;
+    "ch-grid-actionbar": ChGridActionbar;
+    "ch-grid-column": ChGridColumn;
+    "ch-grid-column-display": ChGridColumnDisplay;
+    "ch-grid-column-resize": ChGridColumnResize;
+    "ch-grid-column-settings": ChGridColumnSettings;
+    "ch-grid-columnset": ChGridColumnset;
+    "ch-grid-row-actions": ChGridRowActions;
+    "ch-grid-rowset-empty": ChGridRowsetEmpty;
+    "ch-grid-rowset-legend": ChGridRowsetLegend;
+    "ch-grid-settings": ChGridSettings;
+    "ch-grid-settings-columns": ChGridSettingsColumns;
+    "ch-grid-virtual-scroller": ChGridVirtualScroller;
+    "ch-icon": ChIcon;
+    "ch-intersection-observer": ChIntersectionObserver;
+    "ch-next-progress-bar": ChNextProgressBar;
+    "ch-paginator": ChPaginator;
+    "ch-paginator-navigate": ChPaginatorNavigate;
+    "ch-paginator-pages": ChPaginatorPages;
+    "ch-qr": ChQr;
+    "ch-select": ChSelect;
+    "ch-select-option": ChSelectOption;
+    "ch-sidebar-menu": ChSidebarMenu;
+    "ch-sidebar-menu-list": ChSidebarMenuList;
+    "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
+    "ch-step-list": ChStepList;
+    "ch-step-list-item": ChStepListItem;
+    "ch-tree": ChTree;
+    "ch-tree-item": ChTreeItem;
+    "ch-window": ChWindow;
+    "ch-window-close": ChWindowClose;
+    "gx-grid-chameleon": GxGridChameleon;
+    "gx-grid-chameleon-column-filter": GxGridChameleonColumnFilter;
+  }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
-    export namespace JSX {
-        interface IntrinsicElements {
-            "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
-            "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
-            "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
-            "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
-            "ch-dynamic-menu": LocalJSX.ChDynamicMenu & JSXBase.HTMLAttributes<HTMLChDynamicMenuElement>;
-            "ch-dynamic-menu-action": LocalJSX.ChDynamicMenuAction & JSXBase.HTMLAttributes<HTMLChDynamicMenuActionElement>;
-            "ch-dynamic-menu-popup": LocalJSX.ChDynamicMenuPopup & JSXBase.HTMLAttributes<HTMLChDynamicMenuPopupElement>;
-            "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
-            "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
-            "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
-            "ch-grid-action-settings": LocalJSX.ChGridActionSettings & JSXBase.HTMLAttributes<HTMLChGridActionSettingsElement>;
-            "ch-grid-actionbar": LocalJSX.ChGridActionbar & JSXBase.HTMLAttributes<HTMLChGridActionbarElement>;
-            "ch-grid-column": LocalJSX.ChGridColumn & JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
-            "ch-grid-column-display": LocalJSX.ChGridColumnDisplay & JSXBase.HTMLAttributes<HTMLChGridColumnDisplayElement>;
-            "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
-            "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
-            "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
-            "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
-            "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
-            "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
-            "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
-            "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
-            "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
-            "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
-            "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
-            "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
-            "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
-            "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
-            "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
-            "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
-            "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
-            "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
-            "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
-            "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
-            "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
-            "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
-            "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
-            "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
-            "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
-            "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
-            "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;
-            "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
-            "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
-        }
+  export namespace JSX {
+    interface IntrinsicElements {
+      "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
+      "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
+      "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
+      "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
+      "ch-dynamic-menu": LocalJSX.ChDynamicMenu & JSXBase.HTMLAttributes<HTMLChDynamicMenuElement>;
+      "ch-dynamic-menu-action": LocalJSX.ChDynamicMenuAction & JSXBase.HTMLAttributes<HTMLChDynamicMenuActionElement>;
+      "ch-dynamic-menu-popup": LocalJSX.ChDynamicMenuPopup & JSXBase.HTMLAttributes<HTMLChDynamicMenuPopupElement>;
+      "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
+      "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
+      "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
+      "ch-grid-action-settings": LocalJSX.ChGridActionSettings & JSXBase.HTMLAttributes<HTMLChGridActionSettingsElement>;
+      "ch-grid-actionbar": LocalJSX.ChGridActionbar & JSXBase.HTMLAttributes<HTMLChGridActionbarElement>;
+      "ch-grid-column": LocalJSX.ChGridColumn & JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
+      "ch-grid-column-display": LocalJSX.ChGridColumnDisplay & JSXBase.HTMLAttributes<HTMLChGridColumnDisplayElement>;
+      "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
+      "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
+      "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+      "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
+      "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
+      "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
+      "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
+      "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
+      "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
+      "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+      "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
+      "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
+      "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
+      "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
+      "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
+      "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
+      "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
+      "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
+      "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
+      "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
+      "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
+      "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
+      "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+      "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
+      "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
+      "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
+      "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;
+      "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
+      "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
     }
+  }
 }

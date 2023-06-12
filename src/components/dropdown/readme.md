@@ -77,6 +77,7 @@ and the last one for the dropdown footer.
 | `"dropdown__header"`            |             |
 | `"dropdown__list"`              |             |
 | `"dropdown__section"`           |             |
+| `"dropdown__separation"`        |             |
 
 
 ----------------------------------------------

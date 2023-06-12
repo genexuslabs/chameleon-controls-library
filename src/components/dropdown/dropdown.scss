@@ -1,5 +1,7 @@
 @import "./dropdown-tokens";
 
+$z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
+
 :where(button) {
   all: unset;
 }
@@ -45,9 +47,10 @@
   width: 100%;
   height: 100%;
   cursor: pointer;
+  z-index: $z-index-gx-navbar-item + 1;
 
   &:focus-within {
-    box-shadow: 0px 0px 0 2px currentColor;
+    box-shadow: 0px 0px 0 1px currentColor;
     transition: box-shadow 250ms;
   }
 }
@@ -59,7 +62,7 @@
 .dummy-separation {
   display: flex;
   position: absolute;
-  z-index: 107; // Same as $z-index-gx-navbar-item from w-c-l
+  z-index: $z-index-gx-navbar-item;
 
   // Top or Bottom
   &--vertical {
@@ -96,7 +99,7 @@
   box-shadow: 0 3px 4px #80808024, 0 3px 3px -2px #8080801f, 0 1px 8px #80808030;
   width: max-content;
   max-width: 350px;
-  z-index: 107; // Same as $z-index-gx-navbar-item from w-c-l
+  z-index: $z-index-gx-navbar-item;
 }
 
 // Separation between list and header/footer

@@ -1,0 +1,85 @@
+$separation-between-icons: 12px;
+
+// Reset browser defaults
+:where(button) {
+  all: unset;
+  display: none; // By default, they are hidden
+  cursor: pointer;
+}
+
+// WA to add mouse pointer un gx-button
+gx-button {
+  cursor: pointer;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+.header {
+  display: grid;
+  grid-template: "name type edit delete" min-content "description description edit delete" 1fr / min-content 1fr min-content min-content;
+  width: 100%;
+  margin-inline-end: $separation-between-icons;
+}
+
+// Reset browser defaults
+.name,
+.description {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
+.name {
+  grid-area: name;
+
+  &-entity {
+    text-decoration: underline;
+  }
+}
+
+.type {
+  grid-area: type;
+}
+
+.description {
+  grid-area: description;
+}
+
+.edit-button {
+  grid-area: edit;
+  align-self: center;
+  width: 21px;
+  height: 20px;
+  padding: 2px;
+
+  & > .img {
+    -webkit-mask: var(--edit-icon);
+  }
+}
+
+.delete-button {
+  grid-area: delete;
+  align-self: center;
+  width: 18px;
+  height: 20px;
+  padding: 2px;
+  margin-inline-start: $separation-between-icons;
+
+  & > .img {
+    -webkit-mask: var(--delete-icon);
+  }
+}
+
+:host(:hover),
+:host(:focus-within) {
+  .edit-button,
+  .delete-button {
+    display: grid;
+  }
+}

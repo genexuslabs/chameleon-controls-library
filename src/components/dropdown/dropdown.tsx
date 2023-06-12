@@ -234,6 +234,11 @@ export class ChDropDown implements ChComponent {
 
   private closeDropdownWithHover = () => {
     this.expandedWithHover = false;
+
+    // If the control was not expanded with focus
+    if (!this.expanded) {
+      this.expandedChange.emit(false);
+    }
   };
 
   /**
@@ -365,7 +370,7 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "Click or Hover" && (
+        {this.expandBehavior === "Click or Hover" && this.expandedWithHover && (
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
           <div
@@ -376,6 +381,7 @@ export class ChDropDown implements ChComponent {
               "dummy-separation--vertical": hasVerticalPosition,
               "dummy-separation--horizontal": !hasVerticalPosition
             }}
+            part="dropdown__separation"
           ></div>
         )}
 

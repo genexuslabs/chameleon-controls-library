@@ -6,19 +6,35 @@ export const config: Config = {
   outputTargets: [
     {
       type: "dist",
-      esmLoaderPath: "../loader",
+      esmLoaderPath: "../loader"
     },
     {
-      type: "dist-custom-elements-bundle",
+      type: "dist-custom-elements-bundle"
     },
     {
-      type: "docs-readme",
+      type: "docs-readme"
     },
     {
       type: "www",
-      serviceWorker: null,
-    },
+      serviceWorker: null
+    }
   ],
   globalStyle: "src/globals/globals.scss",
   plugins: [sass()],
+  bundles: [
+    {
+      components: [
+        "ch-dropdown",
+        "ch-dropdown-item",
+        "ch-dropdown-item-separator"
+      ]
+    },
+    {
+      components: [
+        "ch-next-data-modeling",
+        "ch-next-data-modeling-item",
+        "ch-next-data-modeling-subitem"
+      ]
+    }
+  ]
 };

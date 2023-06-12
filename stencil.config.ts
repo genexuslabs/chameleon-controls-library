@@ -28,6 +28,13 @@ export const config: Config = {
         "ch-dropdown-item",
         "ch-dropdown-item-separator"
       ]
+    },
+    {
+      components: [
+        "ch-next-data-modeling",
+        "ch-next-data-modeling-item",
+        "ch-next-data-modeling-subitem"
+      ]
     }
   ]
 };

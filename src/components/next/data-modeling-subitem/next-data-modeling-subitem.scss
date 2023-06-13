@@ -18,6 +18,27 @@ gx-button {
   box-sizing: border-box;
 }
 
+:host {
+  display: grid;
+}
+
+:host(.ch-next-data-modeling--add-new-field) {
+  grid-template: "name . ." min-content "field-name button-confirm button-cancel" 1fr / 1fr 32px 32px;
+  column-gap: 8px;
+}
+
+.field-name {
+  grid-area: field-name;
+}
+
+.button-confirm {
+  grid-area: button-confirm;
+}
+
+.button-cancel {
+  grid-area: button-cancel;
+}
+
 .header {
   display: grid;
   grid-template: "name type edit delete" min-content "description description edit delete" 1fr / min-content 1fr min-content min-content;

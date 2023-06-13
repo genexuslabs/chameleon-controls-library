@@ -129,7 +129,14 @@ export class NextDataModelingSubitem implements ChComponent {
 
   render() {
     return (
-      <Host role="listitem">
+      <Host
+        role="listitem"
+        class={
+          this.addNewFieldMode && !this.showNewFieldBtn
+            ? "ch-next-data-modeling--add-new-field"
+            : undefined
+        }
+      >
         {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode ? (
@@ -148,8 +155,18 @@ export class NextDataModelingSubitem implements ChComponent {
                   {this.name}
                 </h1>,
 
+                <gx-edit
+                  class="field-name"
+                  part={`${PART_PREFIX}field-name`}
+                  type="text"
+                ></gx-edit>,
+
                 <gx-button
+                  class="button-confirm"
                   part={`${PART_PREFIX}button-confirm`}
+                  exportparts={`caption:${PART_PREFIX}button-confirm-caption`}
+                  width="32px"
+                  height="32px"
                   type="button"
                   onClick={this.toggleShowNewField}
                 >
@@ -157,7 +174,11 @@ export class NextDataModelingSubitem implements ChComponent {
                 </gx-button>,
 
                 <gx-button
+                  class="button-cancel"
                   part={`${PART_PREFIX}button-cancel`}
+                  exportparts={`caption:${PART_PREFIX}button-cancel-caption`}
+                  width="32px"
+                  height="32px"
                   type="button"
                   onClick={this.toggleShowNewField}
                 >

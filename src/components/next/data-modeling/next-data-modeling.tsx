@@ -9,7 +9,7 @@ import {
 } from "@stencil/core";
 import { Component as ChComponent } from "../../../common/interfaces";
 import {
-  DataModel,
+  Entity,
   EntityNameToATTs,
   mapDataModelToEntityATTs
 } from "./data-model";
@@ -24,12 +24,15 @@ import {
 })
 export class NextDataModeling implements ChComponent {
   /**
-   * This property represents the current data model of the project.
+   * This property represents the current entities of the data model of the
+   * project.
    */
-  @Prop() readonly dataModel: DataModel;
-  @Watch("dataModel")
-  handleDataModelChange(newValue: DataModel) {
-    if (newValue?.Entities) {
+  @Prop() readonly entities: Entity[];
+  @Watch("entities")
+  handleDataModelChange(newValue: Entity[]) {
+    if (newValue) {
+      console.log("newValue");
+
       const entityNameToATTs: EntityNameToATTs =
         mapDataModelToEntityATTs(newValue);
 
@@ -43,7 +46,7 @@ export class NextDataModeling implements ChComponent {
   @Event() dataModelUpdate: EventEmitter<EntityNameToATTs>;
 
   componentWillLoad() {
-    this.handleDataModelChange(this.dataModel);
+    this.handleDataModelChange(this.entities);
   }
 
   render() {

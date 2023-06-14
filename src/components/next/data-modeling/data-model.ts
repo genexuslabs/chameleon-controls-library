@@ -1,10 +1,10 @@
 /**
  * Maps entities of the current dataModel with their corresponding ATTs.
  */
-export const mapDataModelToEntityATTs = (dataModel: DataModel) => {
+export const mapDataModelToEntityATTs = (entities: Entity[]) => {
   const result: EntityNameToATTs = {};
 
-  dataModel.Entities.forEach(entity => {
+  entities.forEach(entity => {
     result[entity.Name] = entity.Level.map(entityItem => entityItem.Name);
   });
 

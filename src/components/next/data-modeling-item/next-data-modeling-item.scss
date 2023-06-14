@@ -45,7 +45,7 @@ $separation-between-icons: 24px;
   padding: 2px;
 
   & > .img {
-    -webkit-mask: var(--edit-icon);
+    -webkit-mask: var(--edit-icon) no-repeat;
   }
 }
 
@@ -58,7 +58,7 @@ $separation-between-icons: 24px;
   margin-inline-start: $separation-between-icons;
 
   & > .img {
-    -webkit-mask: var(--delete-icon);
+    -webkit-mask: var(--delete-icon) no-repeat;
   }
 }
 

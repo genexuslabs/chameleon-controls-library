@@ -23,7 +23,7 @@ gx-button {
 }
 
 :host(.ch-next-data-modeling--add-new-field) {
-  grid-template: "name . ." min-content "field-name button-confirm button-cancel" 1fr / 1fr 32px 32px;
+  grid-template: "name . ." min-content "field-name button-confirm button-cancel" 1fr "error-text . ." min-content / 1fr 32px 32px;
   column-gap: 8px;
 }
 
@@ -37,6 +37,10 @@ gx-button {
 
 .button-cancel {
   grid-area: button-cancel;
+}
+
+.error-text {
+  grid-area: error-text;
 }
 
 .header {
@@ -80,7 +84,7 @@ gx-button {
   padding: 2px;
 
   & > .img {
-    -webkit-mask: var(--edit-icon);
+    -webkit-mask: var(--edit-icon) no-repeat;
   }
 }
 
@@ -93,7 +97,7 @@ gx-button {
   margin-inline-start: $separation-between-icons;
 
   & > .img {
-    -webkit-mask: var(--delete-icon);
+    -webkit-mask: var(--delete-icon) no-repeat;
   }
 }
 

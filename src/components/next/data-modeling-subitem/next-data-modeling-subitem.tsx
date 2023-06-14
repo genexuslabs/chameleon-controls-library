@@ -11,6 +11,8 @@ import {
 import { Component as ChComponent } from "../../../common/interfaces";
 import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
 
+export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
+
 const NAME = "name";
 const DESCRIPTION = "description";
 const PART_PREFIX = "data-modeling-subitem__";
@@ -29,6 +31,10 @@ const MAX_ATTS = 3;
   tag: "ch-next-data-modeling-subitem"
 })
 export class NextDataModelingSubitem implements ChComponent {
+  private inputText = "";
+
+  @State() errorText = "";
+
   @State() expanded = false;
 
   @State() showNewFieldBtn = true;
@@ -84,6 +90,16 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly entityNameToATTs: EntityNameToATTs = {};
 
   /**
+   * The error texts used for the new field input.
+   */
+  @Prop() readonly errorTexts: { [key in ErrorText]: string };
+
+  /**
+   * This property specifies the defined field names of the current entity.
+   */
+  @Prop() readonly fieldNames: string[] = [];
+
+  /**
    * The name of the field.
    */
   @Prop() readonly name: string = "";
@@ -102,6 +118,11 @@ export class NextDataModelingSubitem implements ChComponent {
    * Fired when the edit button is clicked
    */
   @Event() editButtonClick: EventEmitter;
+
+  /**
+   * Fired when a new file is comitted to be added
+   */
+  @Event() newField: EventEmitter<string>;
 
   @Listen("expandedChange")
   handleExpandedChange(event: CustomEvent) {
@@ -124,7 +145,35 @@ export class NextDataModelingSubitem implements ChComponent {
       : `(${atts.slice(0, MAX_ATTS).join(", ")} (+${atts.length - MAX_ATTS}))`;
 
   private toggleShowNewField = () => {
+    this.errorText = "";
+    this.inputText = "";
     this.showNewFieldBtn = !this.showNewFieldBtn;
+  };
+
+  private updateInputText = (event: InputEvent) => {
+    console.log((event.target as HTMLInputElement).value);
+
+    this.inputText = (event.target as HTMLInputElement).value;
+  };
+
+  private confirmNewField = () => {
+    const trimmedInput = this.inputText.trim();
+
+    if (trimmedInput === "") {
+      this.errorText = this.errorTexts.Empty;
+      return;
+    }
+
+    if (this.fieldNames.includes(trimmedInput)) {
+      this.errorText =
+        this.errorTexts.AlreadyDefined1 +
+        this.inputText +
+        this.errorTexts.AlreadyDefined2;
+      return;
+    }
+
+    this.newField.emit(trimmedInput);
+    this.toggleShowNewField();
   };
 
   render() {
@@ -159,6 +208,7 @@ export class NextDataModelingSubitem implements ChComponent {
                   class="field-name"
                   part={`${PART_PREFIX}field-name`}
                   type="text"
+                  onInput={this.updateInputText}
                 ></gx-edit>,
 
                 <gx-button
@@ -168,7 +218,7 @@ export class NextDataModelingSubitem implements ChComponent {
                   width="32px"
                   height="32px"
                   type="button"
-                  onClick={this.toggleShowNewField}
+                  onClick={this.confirmNewField}
                 >
                   {this.confirmNewFieldCaption}
                 </gx-button>,
@@ -183,7 +233,13 @@ export class NextDataModelingSubitem implements ChComponent {
                   onClick={this.toggleShowNewField}
                 >
                   {this.cancelNewFieldCaption}
-                </gx-button>
+                </gx-button>,
+
+                !!this.errorText && (
+                  <span class="error-text" part={`${PART_PREFIX}error-text`}>
+                    {this.errorText}
+                  </span>
+                )
               ]
             )
           ) : (

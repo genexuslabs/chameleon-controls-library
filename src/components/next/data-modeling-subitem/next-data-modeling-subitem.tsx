@@ -69,6 +69,11 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly confirmNewFieldCaption: string = "";
 
   /**
+   * The dataType of the field.
+   */
+  @Prop() readonly dataType: string = "";
+
+  /**
    * The label of the delete button. Important for accessibility.
    */
   @Prop() readonly deleteButtonLabel: string = "";
@@ -77,6 +82,12 @@ export class NextDataModelingSubitem implements ChComponent {
    * The description of the field.
    */
   @Prop() readonly description: string = "";
+
+  /**
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event.
+   */
+  @Prop() readonly disabled = false;
 
   /**
    * The label of the edit button. Important for accessibility.
@@ -177,6 +188,8 @@ export class NextDataModelingSubitem implements ChComponent {
   };
 
   render() {
+    const disabledPart = this.disabled ? "disabled" : "";
+
     return (
       <Host
         role="listitem"
@@ -191,7 +204,8 @@ export class NextDataModelingSubitem implements ChComponent {
           this.addNewFieldMode ? (
             this.showNewFieldBtn ? (
               <gx-button
-                part={`${PART_PREFIX}button-new-entity`}
+                part={`${PART_PREFIX}button-new-entity ${disabledPart}`}
+                disabled={this.disabled}
                 height="24px"
                 type="button"
                 onClick={this.toggleShowNewField}
@@ -206,15 +220,17 @@ export class NextDataModelingSubitem implements ChComponent {
 
                 <gx-edit
                   class="field-name"
-                  part={`${PART_PREFIX}field-name`}
+                  part={`${PART_PREFIX}field-name ${disabledPart}`}
+                  disabled={this.disabled}
                   type="text"
                   onInput={this.updateInputText}
                 ></gx-edit>,
 
                 <gx-button
                   class="button-confirm"
-                  part={`${PART_PREFIX}button-confirm`}
+                  part={`${PART_PREFIX}button-confirm ${disabledPart}`}
                   exportparts={`caption:${PART_PREFIX}button-confirm-caption`}
+                  disabled={this.disabled}
                   width="32px"
                   height="32px"
                   type="button"
@@ -225,8 +241,9 @@ export class NextDataModelingSubitem implements ChComponent {
 
                 <gx-button
                   class="button-cancel"
-                  part={`${PART_PREFIX}button-cancel`}
+                  part={`${PART_PREFIX}button-cancel ${disabledPart}`}
                   exportparts={`caption:${PART_PREFIX}button-cancel-caption`}
+                  disabled={this.disabled}
                   width="32px"
                   height="32px"
                   type="button"
@@ -269,7 +286,9 @@ export class NextDataModelingSubitem implements ChComponent {
                   >
                     {this.type === "LEVEL"
                       ? this.collectionCaption
-                      : this.makeAttsPrettier(this.entityNameToATTs[this.name])}
+                      : this.makeAttsPrettier(
+                          this.entityNameToATTs[this.dataType]
+                        )}
                   </span>
                 )}
 
@@ -285,6 +304,7 @@ export class NextDataModelingSubitem implements ChComponent {
                   aria-label={this.editButtonLabel}
                   class="edit-button"
                   part={`${PART_PREFIX}edit-button`}
+                  disabled={this.disabled}
                   type="button"
                   onClick={this.emitEdit}
                 >
@@ -298,6 +318,7 @@ export class NextDataModelingSubitem implements ChComponent {
                   aria-label={this.deleteButtonLabel}
                   class="delete-button"
                   part={`${PART_PREFIX}delete-button`}
+                  disabled={this.disabled}
                   type="button"
                   onClick={this.emitDelete}
                 >

@@ -40,6 +40,12 @@ export class NextDataModelingItem implements ChComponent {
   @Prop() readonly description: string = "";
 
   /**
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event.
+   */
+  @Prop() readonly disabled = false;
+
+  /**
    * The label of the edit button. Important for accessibility.
    */
   @Prop() readonly editButtonLabel: string = "";
@@ -104,6 +110,7 @@ export class NextDataModelingItem implements ChComponent {
                 aria-label={this.editButtonLabel}
                 class="edit-button"
                 part={`${PART_PREFIX}edit-button`}
+                disabled={this.disabled}
                 type="button"
                 onClick={this.emitEdit}
               >
@@ -117,6 +124,7 @@ export class NextDataModelingItem implements ChComponent {
                 aria-label={this.deleteButtonLabel}
                 class="delete-button"
                 part={`${PART_PREFIX}delete-button`}
+                disabled={this.disabled}
                 type="button"
                 onClick={this.emitDelete}
               >

@@ -32,6 +32,10 @@ gx-button {
   column-gap: 8px;
 }
 
+.sub-field {
+  grid-area: sub-field;
+}
+
 .field-name {
   grid-area: field-name;
   margin-inline-end: 8px;
@@ -51,7 +55,7 @@ gx-button {
 
 .header {
   display: grid;
-  grid-template: "name type edit delete" min-content "description description edit delete" 1fr / min-content 1fr min-content min-content;
+  grid-template: "sub-field name type edit delete" min-content "sub-field description description edit delete" 1fr / min-content min-content 1fr min-content min-content;
   width: 100%;
   margin-inline-end: $separation-between-icons;
 }

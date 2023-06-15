@@ -112,6 +112,11 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly fieldNames: string[] = [];
 
   /**
+   * This property specifies at which collection level the field is located.
+   */
+  @Prop() readonly level: "field" | "subfield" = "field";
+
+  /**
    * The name of the field.
    */
   @Prop() readonly name: string = "";
@@ -279,6 +284,14 @@ export class NextDataModelingSubitem implements ChComponent {
                 aria-labelledby={NAME}
                 aria-describedby={DESCRIPTION}
               >
+                {this.level === "subfield" && (
+                  <div
+                    aria-hidden="true"
+                    class="sub-field"
+                    part={`${PART_PREFIX}sub-field`}
+                  ></div>
+                )}
+
                 <h1
                   id={NAME}
                   class={{ name: true, "name-entity": this.type === "ENTITY" }}

@@ -10,6 +10,7 @@ import {
 } from "@stencil/core";
 import { Component as ChComponent } from "../../../common/interfaces";
 import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
+import { KEY_CODES } from "../../../common/reserverd-names";
 
 export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
 
@@ -187,6 +188,15 @@ export class NextDataModelingSubitem implements ChComponent {
     this.toggleShowNewField();
   };
 
+  private handleInputTextKeyDown = (event: KeyboardEvent) => {
+    if (event.code !== KEY_CODES.ENTER) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    this.confirmNewField();
+  };
+
   render() {
     const disabledPart = this.disabled ? "disabled" : "";
 
@@ -224,6 +234,7 @@ export class NextDataModelingSubitem implements ChComponent {
                   disabled={this.disabled}
                   type="text"
                   onInput={this.updateInputText}
+                  onKeydown={this.handleInputTextKeyDown}
                 ></gx-edit>,
 
                 <gx-button

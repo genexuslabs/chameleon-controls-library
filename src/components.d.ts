@@ -9,6 +9,9 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
+import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
+import { ErrorText } from "./components/next/data-modeling-subitem/next-data-modeling-subitem";
+import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
@@ -18,6 +21,20 @@ import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
+    interface ChAccordion {
+        /**
+          * The description of the entity.
+         */
+        "accessibleDescription": string;
+        /**
+          * The name of the entity.
+         */
+        "accessibleName": string;
+        /**
+          * `true` if the accordion is expanded.
+         */
+        "expanded": boolean;
+    }
     interface ChDragBar {
         /**
           * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
@@ -439,6 +456,112 @@ export namespace Components {
          */
         "topMargin": string;
     }
+    interface ChNextDataModeling {
+    }
+    interface ChNextDataModelingItem {
+        /**
+          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+         */
+        "addNewEntityMode": boolean;
+        /**
+          * The label of the delete button. Important for accessibility.
+         */
+        "deleteButtonLabel": string;
+        /**
+          * The description of the entity.
+         */
+        "description": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled": false;
+        /**
+          * The label of the edit button. Important for accessibility.
+         */
+        "editButtonLabel": string;
+        /**
+          * The name of the entity.
+         */
+        "name": string;
+    }
+    interface ChNextDataModelingSubitem {
+        /**
+          * The caption used in the button to show the new field layout. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = true`.
+         */
+        "addNewFieldCaption": string;
+        /**
+          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+         */
+        "addNewFieldMode": boolean;
+        /**
+          * The caption used in the button to cancel the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+         */
+        "cancelNewFieldCaption": string;
+        /**
+          * The caption used when the entity is a collection (`type === "LEVEL"`).
+         */
+        "collectionCaption": string;
+        /**
+          * The caption used in the button to confirm the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+         */
+        "confirmNewFieldCaption": string;
+        /**
+          * The dataType of the field.
+         */
+        "dataType": string;
+        /**
+          * The label of the delete button. Important for accessibility.
+         */
+        "deleteButtonLabel": string;
+        /**
+          * The label of the cancel button in delete mode. Important for accessibility.
+         */
+        "deleteModeCancelLabel": string;
+        /**
+          * The caption used in the message to confirm the delete of the field.
+         */
+        "deleteModeCaption": string;
+        /**
+          * The label of the confirm button in delete mode. Important for accessibility.
+         */
+        "deleteModeConfirmLabel": string;
+        /**
+          * The description of the field.
+         */
+        "description": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled": false;
+        /**
+          * The label of the edit button. Important for accessibility.
+         */
+        "editButtonLabel": string;
+        /**
+          * This property maps entities of the current dataModel with their corresponding ATTs.
+         */
+        "entityNameToATTs": EntityNameToATTs;
+        /**
+          * The error texts used for the new field input.
+         */
+        "errorTexts": { [key in ErrorText]: string };
+        /**
+          * This property specifies the defined field names of the current entity.
+         */
+        "fieldNames": string[];
+        /**
+          * This property specifies at which collection level the field is located.
+         */
+        "level": "field" | "subfield";
+        /**
+          * The name of the field.
+         */
+        "name": string;
+        /**
+          * The type of the field.
+         */
+        "type": EntityItemType;
+    }
     interface ChNextProgressBar {
         /**
           * It specifies the main text that is shown on the progress.
@@ -464,6 +587,23 @@ export namespace Components {
           * This attribute lets you specify the amount of steps for the progress.
          */
         "steps": number;
+    }
+    interface ChNotifications {
+        "delayToAnimateNewNotifications": number;
+        "notifications": NotificationMessageWithDelay[];
+        "position": "bottom-start" | "bottom-end";
+        "timeToDismissNotifications": number;
+        "timeType": "Seconds" | "Milliseconds";
+    }
+    interface ChNotificationsItem {
+        "buttonImgSrc": string;
+        "closeButtonLabel": string;
+        "leftImgSrc": string;
+        /**
+          * `true` to show the close notification button
+         */
+        "showCloseButton": boolean;
+        "timeToDismiss": 5000;
     }
     interface ChPaginator {
         /**
@@ -762,6 +902,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLChAccordionElement extends Components.ChAccordion, HTMLStencilElement {
+    }
+    var HTMLChAccordionElement: {
+        prototype: HTMLChAccordionElement;
+        new (): HTMLChAccordionElement;
+    };
     interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
     }
     var HTMLChDragBarElement: {
@@ -894,11 +1040,41 @@ declare global {
         prototype: HTMLChIntersectionObserverElement;
         new (): HTMLChIntersectionObserverElement;
     };
+    interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
+    }
+    var HTMLChNextDataModelingElement: {
+        prototype: HTMLChNextDataModelingElement;
+        new (): HTMLChNextDataModelingElement;
+    };
+    interface HTMLChNextDataModelingItemElement extends Components.ChNextDataModelingItem, HTMLStencilElement {
+    }
+    var HTMLChNextDataModelingItemElement: {
+        prototype: HTMLChNextDataModelingItemElement;
+        new (): HTMLChNextDataModelingItemElement;
+    };
+    interface HTMLChNextDataModelingSubitemElement extends Components.ChNextDataModelingSubitem, HTMLStencilElement {
+    }
+    var HTMLChNextDataModelingSubitemElement: {
+        prototype: HTMLChNextDataModelingSubitemElement;
+        new (): HTMLChNextDataModelingSubitemElement;
+    };
     interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
     }
     var HTMLChNextProgressBarElement: {
         prototype: HTMLChNextProgressBarElement;
         new (): HTMLChNextProgressBarElement;
+    };
+    interface HTMLChNotificationsElement extends Components.ChNotifications, HTMLStencilElement {
+    }
+    var HTMLChNotificationsElement: {
+        prototype: HTMLChNotificationsElement;
+        new (): HTMLChNotificationsElement;
+    };
+    interface HTMLChNotificationsItemElement extends Components.ChNotificationsItem, HTMLStencilElement {
+    }
+    var HTMLChNotificationsItemElement: {
+        prototype: HTMLChNotificationsItemElement;
+        new (): HTMLChNotificationsItemElement;
     };
     interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
     }
@@ -1003,6 +1179,7 @@ declare global {
         new (): HTMLGxGridChameleonColumnFilterElement;
     };
     interface HTMLElementTagNameMap {
+        "ch-accordion": HTMLChAccordionElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
@@ -1025,7 +1202,12 @@ declare global {
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
+        "ch-next-data-modeling": HTMLChNextDataModelingElement;
+        "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
+        "ch-next-data-modeling-subitem": HTMLChNextDataModelingSubitemElement;
         "ch-next-progress-bar": HTMLChNextProgressBarElement;
+        "ch-notifications": HTMLChNotificationsElement;
+        "ch-notifications-item": HTMLChNotificationsItemElement;
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
@@ -1046,6 +1228,24 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface ChAccordion {
+        /**
+          * The description of the entity.
+         */
+        "accessibleDescription"?: string;
+        /**
+          * The name of the entity.
+         */
+        "accessibleName"?: string;
+        /**
+          * `true` if the accordion is expanded.
+         */
+        "expanded"?: boolean;
+        /**
+          * Fired when the content is expanded or collapsed
+         */
+        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+    }
     interface ChDragBar {
         /**
           * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
@@ -1490,6 +1690,132 @@ declare namespace LocalJSX {
          */
         "topMargin"?: string;
     }
+    interface ChNextDataModeling {
+    }
+    interface ChNextDataModelingItem {
+        /**
+          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+         */
+        "addNewEntityMode"?: boolean;
+        /**
+          * The label of the delete button. Important for accessibility.
+         */
+        "deleteButtonLabel"?: string;
+        /**
+          * The description of the entity.
+         */
+        "description"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled"?: false;
+        /**
+          * The label of the edit button. Important for accessibility.
+         */
+        "editButtonLabel"?: string;
+        /**
+          * The name of the entity.
+         */
+        "name"?: string;
+        /**
+          * Fired when the delete button is clicked
+         */
+        "onDeleteButtonClick"?: (event: CustomEvent<any>) => void;
+        /**
+          * Fired when the edit button is clicked
+         */
+        "onEditButtonClick"?: (event: CustomEvent<any>) => void;
+    }
+    interface ChNextDataModelingSubitem {
+        /**
+          * The caption used in the button to show the new field layout. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = true`.
+         */
+        "addNewFieldCaption"?: string;
+        /**
+          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+         */
+        "addNewFieldMode"?: boolean;
+        /**
+          * The caption used in the button to cancel the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+         */
+        "cancelNewFieldCaption"?: string;
+        /**
+          * The caption used when the entity is a collection (`type === "LEVEL"`).
+         */
+        "collectionCaption"?: string;
+        /**
+          * The caption used in the button to confirm the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+         */
+        "confirmNewFieldCaption"?: string;
+        /**
+          * The dataType of the field.
+         */
+        "dataType"?: string;
+        /**
+          * The label of the delete button. Important for accessibility.
+         */
+        "deleteButtonLabel"?: string;
+        /**
+          * The label of the cancel button in delete mode. Important for accessibility.
+         */
+        "deleteModeCancelLabel"?: string;
+        /**
+          * The caption used in the message to confirm the delete of the field.
+         */
+        "deleteModeCaption"?: string;
+        /**
+          * The label of the confirm button in delete mode. Important for accessibility.
+         */
+        "deleteModeConfirmLabel"?: string;
+        /**
+          * The description of the field.
+         */
+        "description"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled"?: false;
+        /**
+          * The label of the edit button. Important for accessibility.
+         */
+        "editButtonLabel"?: string;
+        /**
+          * This property maps entities of the current dataModel with their corresponding ATTs.
+         */
+        "entityNameToATTs"?: EntityNameToATTs;
+        /**
+          * The error texts used for the new field input.
+         */
+        "errorTexts"?: { [key in ErrorText]: string };
+        /**
+          * This property specifies the defined field names of the current entity.
+         */
+        "fieldNames"?: string[];
+        /**
+          * This property specifies at which collection level the field is located.
+         */
+        "level"?: "field" | "subfield";
+        /**
+          * The name of the field.
+         */
+        "name"?: string;
+        /**
+          * Fired when the delete button is clicked
+         */
+        "onDeleteField"?: (event: CustomEvent<any>) => void;
+        /**
+          * Fired when the edit button is clicked
+         */
+        "onEditButtonClick"?: (event: CustomEvent<any>) => void;
+        /**
+          * Fired when a new file is comitted to be added
+         */
+        "onNewField"?: (event: CustomEvent<string>) => void;
+        /**
+          * The type of the field.
+         */
+        "type"?: EntityItemType;
+    }
     interface ChNextProgressBar {
         /**
           * It specifies the main text that is shown on the progress.
@@ -1515,6 +1841,25 @@ declare namespace LocalJSX {
           * This attribute lets you specify the amount of steps for the progress.
          */
         "steps"?: number;
+    }
+    interface ChNotifications {
+        "delayToAnimateNewNotifications"?: number;
+        "notifications"?: NotificationMessageWithDelay[];
+        "position"?: "bottom-start" | "bottom-end";
+        "timeToDismissNotifications"?: number;
+        "timeType"?: "Seconds" | "Milliseconds";
+    }
+    interface ChNotificationsItem {
+        "buttonImgSrc"?: string;
+        "closeButtonLabel"?: string;
+        "leftImgSrc"?: string;
+        "onNotificationClick"?: (event: CustomEvent<number>) => void;
+        "onNotificationDismiss"?: (event: CustomEvent<number>) => void;
+        /**
+          * `true` to show the close notification button
+         */
+        "showCloseButton"?: boolean;
+        "timeToDismiss"?: 5000;
     }
     interface ChPaginator {
         /**
@@ -1865,6 +2210,7 @@ declare namespace LocalJSX {
         "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
     }
     interface IntrinsicElements {
+        "ch-accordion": ChAccordion;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
@@ -1887,7 +2233,12 @@ declare namespace LocalJSX {
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
+        "ch-next-data-modeling": ChNextDataModeling;
+        "ch-next-data-modeling-item": ChNextDataModelingItem;
+        "ch-next-data-modeling-subitem": ChNextDataModelingSubitem;
         "ch-next-progress-bar": ChNextProgressBar;
+        "ch-notifications": ChNotifications;
+        "ch-notifications-item": ChNotificationsItem;
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
         "ch-paginator-pages": ChPaginatorPages;
@@ -1911,6 +2262,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
@@ -1933,7 +2285,12 @@ declare module "@stencil/core" {
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
+            "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
+            "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
+            "ch-next-data-modeling-subitem": LocalJSX.ChNextDataModelingSubitem & JSXBase.HTMLAttributes<HTMLChNextDataModelingSubitemElement>;
             "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
+            "ch-notifications": LocalJSX.ChNotifications & JSXBase.HTMLAttributes<HTMLChNotificationsElement>;
+            "ch-notifications-item": LocalJSX.ChNotificationsItem & JSXBase.HTMLAttributes<HTMLChNotificationsItemElement>;
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;

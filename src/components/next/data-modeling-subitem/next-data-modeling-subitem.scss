@@ -59,6 +59,8 @@ gx-button {
 
 .error-text {
   grid-area: error-text;
+  display: flex;
+  white-space: break-spaces; // Show empty spaces even when using "display: flex"
 }
 
 .header {

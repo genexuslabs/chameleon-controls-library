@@ -12,6 +12,7 @@ import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
 import { KEY_CODES } from "../../../common/reserverd-names";
 
 export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
+export type ErrorType = "Empty" | "AlreadyDefined" | "None";
 
 const NAME = "name";
 const DESCRIPTION = "description";
@@ -33,7 +34,7 @@ const MAX_ATTS = 3;
 export class NextDataModelingSubitem implements ChComponent {
   private inputText = "";
 
-  @State() errorText = "";
+  @State() errorText: ErrorType = "None";
 
   @State() showDeleteMode = false;
 
@@ -182,7 +183,7 @@ export class NextDataModelingSubitem implements ChComponent {
       : `(${atts.slice(0, MAX_ATTS).join(", ")} (+${atts.length - MAX_ATTS}))`;
 
   private toggleShowNewField = () => {
-    this.errorText = "";
+    this.errorText = "None";
     this.inputText = "";
     this.showNewFieldBtn = !this.showNewFieldBtn;
   };
@@ -196,16 +197,17 @@ export class NextDataModelingSubitem implements ChComponent {
   private confirmNewField = () => {
     const trimmedInput = this.inputText.trim();
 
+    // Force re-render. Useful when the error type don't change but the
+    // displayed error text must change
+    this.errorText = "None";
+
     if (trimmedInput === "") {
-      this.errorText = this.errorTexts.Empty;
+      this.errorText = "Empty";
       return;
     }
 
     if (this.fieldNames.includes(trimmedInput)) {
-      this.errorText =
-        this.errorTexts.AlreadyDefined1 +
-        this.inputText +
-        this.errorTexts.AlreadyDefined2;
+      this.errorText = "AlreadyDefined";
       return;
     }
 
@@ -288,10 +290,18 @@ export class NextDataModelingSubitem implements ChComponent {
                   {this.cancelNewFieldCaption}
                 </gx-button>,
 
-                !!this.errorText && (
-                  <span class="error-text" part={`${PART_PREFIX}error-text`}>
-                    {this.errorText}
-                  </span>
+                this.errorText !== "None" && (
+                  <p class="error-text" part={`${PART_PREFIX}error-text`}>
+                    {this.errorText === "Empty"
+                      ? this.errorTexts.Empty
+                      : [
+                          this.errorTexts.AlreadyDefined1,
+                          <span part={`${PART_PREFIX}error-text-name`}>
+                            {this.inputText}
+                          </span>,
+                          this.errorTexts.AlreadyDefined2
+                        ]}
+                  </p>
                 )
               ]
             )

@@ -3,7 +3,7 @@ $separation-between-icons: 12px;
 // Reset browser defaults
 :where(button) {
   all: unset;
-  display: none; // By default, they are hidden
+  display: inline-flex;
   cursor: pointer;
 }
 
@@ -12,15 +12,58 @@ gx-button {
   cursor: pointer;
 }
 
+// WA to disable the gx-button
+.gx-disabled {
+  pointer-events: none;
+}
+
 *,
 ::before,
 ::after {
   box-sizing: border-box;
 }
 
+:host {
+  display: grid;
+}
+
+:host(.ch-next-data-modeling--add-new-field) {
+  grid-template: "name . ." min-content "field-name button-confirm button-cancel" 1fr "error-text . ." min-content / 1fr 32px 32px;
+  column-gap: 8px;
+}
+
+:host(:hover),
+:host(:focus-within) {
+  .edit-button,
+  .delete-button {
+    display: grid;
+  }
+}
+
+.sub-field {
+  grid-area: sub-field;
+}
+
+.field-name {
+  grid-area: field-name;
+  margin-inline-end: 8px;
+}
+
+.button-confirm {
+  grid-area: button-confirm;
+}
+
+.button-cancel {
+  grid-area: button-cancel;
+}
+
+.error-text {
+  grid-area: error-text;
+}
+
 .header {
   display: grid;
-  grid-template: "name type edit delete" min-content "description description edit delete" 1fr / min-content 1fr min-content min-content;
+  grid-template: "sub-field name type edit delete" min-content "sub-field description description edit delete" 1fr / min-content min-content 1fr min-content max-content;
   width: 100%;
   margin-inline-end: $separation-between-icons;
 }
@@ -53,18 +96,20 @@ gx-button {
 
 .edit-button {
   grid-area: edit;
+  display: none; // By default, it's hidden
   align-self: center;
   width: 21px;
   height: 20px;
   padding: 2px;
 
   & > .img {
-    -webkit-mask: var(--edit-icon);
+    -webkit-mask: var(--edit-icon) no-repeat;
   }
 }
 
 .delete-button {
   grid-area: delete;
+  display: none; // By default, it's hidden
   align-self: center;
   width: 18px;
   height: 20px;
@@ -72,14 +117,15 @@ gx-button {
   margin-inline-start: $separation-between-icons;
 
   & > .img {
-    -webkit-mask: var(--delete-icon);
+    -webkit-mask: var(--delete-icon) no-repeat;
   }
 }
 
-:host(:hover),
-:host(:focus-within) {
-  .edit-button,
-  .delete-button {
-    display: grid;
-  }
+.delete-mode {
+  grid-area: delete;
+  display: grid;
+  grid-template-columns: 1fr 24px 24px;
+  align-items: center;
+  column-gap: 8px;
+  cursor: auto;
 }

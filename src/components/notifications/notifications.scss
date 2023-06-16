@@ -1,0 +1,34 @@
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+:host {
+  --ch-notification-item-rtl-initial-X: 1;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: fixed;
+  inset-block-end: 86px;
+  width: 425px;
+  max-width: 75vw;
+}
+
+// - - - - - - - - - - - - - - - -
+//     Notification's position
+// - - - - - - - - - - - - - - - -
+:host(.ch-notifications-position--bottom-end) {
+  --ch-notification-item-initial-X: var(--ch-notification-item-rtl-initial-X);
+
+  inset-inline-end: 70px;
+}
+
+:host(.ch-notifications-position--bottom-start) {
+  --ch-notification-item-initial-X: calc(
+    var(--ch-notification-item-rtl-initial-X) * -1
+  );
+
+  inset-inline-start: 70px;
+}

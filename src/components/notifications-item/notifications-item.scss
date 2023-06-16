@@ -1,0 +1,45 @@
+:where(button) {
+  all: unset;
+  display: flex;
+  height: 100%;
+  cursor: pointer;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+:host {
+  display: grid;
+  grid-template-columns: 1fr 48px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 4px 25px #00000040;
+  overflow: hidden;
+
+  // Initial style
+  opacity: 0;
+  transform: translateX(calc(100% * var(--ch-notification-item-initial-X)));
+
+  animation: notification-added 250ms ease-in-out var(--delay-to-animate)
+    forwards;
+}
+
+.main {
+  padding: 12px;
+}
+
+.close-image {
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.875 18L6.75 16.875L11.25 12.375L6.75 7.875L7.875 6.75L12.375 11.25L16.875 6.75L18 7.875L13.5 12.375L18 16.875L16.875 18L12.375 13.5L7.875 18Z'/%3E%3C/svg%3E")
+    50% 50% / 24px 24px no-repeat;
+}
+
+@keyframes notification-added {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

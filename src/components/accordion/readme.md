@@ -4,6 +4,7 @@ This control implements a simple accordion with a header and a collapsible/expan
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property                | Attribute                | Description                          | Type      | Default |
@@ -12,11 +13,13 @@ This control implements a simple accordion with a header and a collapsible/expan
 | `accessibleName`        | `accessible-name`        | The name of the entity.              | `string`  | `""`    |
 | `expanded`              | `expanded`               | `true` if the accordion is expanded. | `boolean` | `false` |
 
+
 ## Events
 
 | Event            | Description                                     | Type                   |
 | ---------------- | ----------------------------------------------- | ---------------------- |
 | `expandedChange` | Fired when the content is expanded or collapsed | `CustomEvent<boolean>` |
+
 
 ## Slots
 
@@ -24,6 +27,7 @@ This control implements a simple accordion with a header and a collapsible/expan
 | ----------- | -------------------------------------------------------------------------------- |
 | `"content"` | The component to be displayed as the content of the accordion (below the header) |
 | `"header"`  | The component to be displayed in the header of the control                       |
+
 
 ## Shadow Parts
 
@@ -33,21 +37,20 @@ This control implements a simple accordion with a header and a collapsible/expan
 | `"accordion__expandable"` | The container of the accordion content |
 | `"accordion__header"`     |                                        |
 
+
 ## Dependencies
 
 ### Used by
 
-- [ch-next-data-modeling-item](../next/data-modeling-item)
+ - [ch-next-data-modeling-item](../next/data-modeling-item)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-next-data-modeling-item --> ch-accordion
   style ch-accordion fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
-
+*Built with [StencilJS](https://stenciljs.com/)*

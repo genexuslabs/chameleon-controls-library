@@ -1,6 +1,6 @@
 export type NotificationMessage = {
-  id?: number;
-  value: string;
+  Id?: number;
+  Value: string;
   closeOnClick?: boolean;
   notificationType: string;
 };

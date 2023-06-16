@@ -7,13 +7,14 @@
 
 ## Properties
 
-| Property            | Attribute             | Description                                                                                                           | Type      | Default |
-| ------------------- | --------------------- | --------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| `addNewEntityMode`  | `add-new-entity-mode` | `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list. | `boolean` | `false` |
-| `deleteButtonLabel` | `delete-button-label` | The label of the delete button. Important for accessibility.                                                          | `string`  | `""`    |
-| `description`       | `description`         | The description of the entity.                                                                                        | `string`  | `""`    |
-| `editButtonLabel`   | `edit-button-label`   | The label of the edit button. Important for accessibility.                                                            | `string`  | `""`    |
-| `name`              | `name`                | The name of the entity.                                                                                               | `string`  | `""`    |
+| Property            | Attribute             | Description                                                                                                                   | Type      | Default |
+| ------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
+| `addNewEntityMode`  | `add-new-entity-mode` | `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.         | `boolean` | `false` |
+| `deleteButtonLabel` | `delete-button-label` | The label of the delete button. Important for accessibility.                                                                  | `string`  | `""`    |
+| `description`       | `description`         | The description of the entity.                                                                                                | `string`  | `""`    |
+| `disabled`          | `disabled`            | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event. | `boolean` | `false` |
+| `editButtonLabel`   | `edit-button-label`   | The label of the edit button. Important for accessibility.                                                                    | `string`  | `""`    |
+| `name`              | `name`                | The name of the entity.                                                                                                       | `string`  | `""`    |
 
 
 ## Events

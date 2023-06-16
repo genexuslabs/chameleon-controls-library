@@ -24,11 +24,6 @@ export class ChNotifications implements ChComponent {
   @State() notificationsSize = 0;
 
   /**
-   * A CSS class to set as the `ch-next-progress-bar` element class.
-   */
-  @Prop() readonly cssClass: string;
-
-  /**
    *
    */
   @Prop() readonly delayToAnimateNewNotifications: number = 50;
@@ -36,7 +31,7 @@ export class ChNotifications implements ChComponent {
   /**
    *
    */
-  @Prop() readonly notifications: string;
+  @Prop() readonly notifications: NotificationMessageWithDelay[] = [];
 
   /**
    *
@@ -51,10 +46,12 @@ export class ChNotifications implements ChComponent {
   /**
    *
    */
-  @Prop() readonly timeType: "seconds" | "milliseconds" = "milliseconds";
+  @Prop() readonly timeType: "Seconds" | "Milliseconds" = "Milliseconds";
 
   @Watch("notifications")
-  handleNewNotificationsChange(newNotifications: string) {
+  handleNewNotificationsChange(
+    newNotifications: NotificationMessageWithDelay[]
+  ) {
     // Sometimes StencilJS calls this decorator before the component did load
     if (this.didLoad) {
       this.addNewNotifications(newNotifications);
@@ -85,31 +82,24 @@ export class ChNotifications implements ChComponent {
     this.notificationsSize--;
   }
 
-  private addNewNotifications(newNotificationsJSON: string) {
-    const notifications: NotificationMessageWithDelay[] =
-      JSON.parse(newNotificationsJSON);
-
-    if (notifications.length === 0) {
+  private addNewNotifications(notifications: NotificationMessageWithDelay[]) {
+    if (!notifications) {
       return;
     }
 
     let delayToAnimate = 0;
 
-    console.log("notifications", notifications);
-
     notifications.forEach(notification => {
-      const notificationID = notification.id ?? this.lastNotificationID;
+      const notificationID = notification.Id ?? this.lastNotificationID;
 
       // If the notification did not have an ID, increment the counter
-      if (!notification.id) {
+      if (!notification.Id) {
         this.lastNotificationID++;
       }
 
       notification["id"] = notificationID;
       notification["delayToAnimate"] = delayToAnimate;
       this.currentNotifications.set(notificationID, notification);
-
-      console.log("notificationID", notificationID, notification);
 
       delayToAnimate++;
     });
@@ -118,7 +108,7 @@ export class ChNotifications implements ChComponent {
   private getMessages = () => [...this.currentNotifications.values()];
 
   private getTimeToDismiss = () =>
-    this.timeType === "seconds"
+    this.timeType === "Seconds"
       ? this.timeToDismissNotifications * 1000
       : this.timeToDismissNotifications;
 
@@ -152,8 +142,6 @@ export class ChNotifications implements ChComponent {
   render() {
     const messages = this.getMessages();
 
-    console.log("messages", messages);
-
     return (
       <Host
         tabindex={messages.length > 0 ? "0" : undefined}
@@ -161,10 +149,10 @@ export class ChNotifications implements ChComponent {
         aria-atomic="true"
         class={`ch-notifications-position--${this.position}`}
       >
-        {messages.map(({ id, value, delayToAnimate, notificationType }) => (
+        {messages.map(({ Id, Value, delayToAnimate, notificationType }) => (
           <ch-notifications-item
-            id={id.toString()}
-            key={id}
+            id={Id.toString()}
+            key={Id}
             exportparts={this.getExportParts(notificationType)}
             part={`notification-item ${notificationType}`}
             style={{
@@ -177,7 +165,7 @@ export class ChNotifications implements ChComponent {
               delayToAnimate * this.delayToAnimateNewNotifications
             }
           >
-            {value}
+            {Value}
           </ch-notifications-item>
         ))}
       </Host>

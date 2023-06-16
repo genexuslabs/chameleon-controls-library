@@ -3,7 +3,6 @@ import {
   Event,
   EventEmitter,
   Host,
-  Listen,
   Prop,
   State,
   h
@@ -36,7 +35,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   @State() errorText = "";
 
-  @State() expanded = false;
+  @State() showDeleteMode = false;
 
   @State() showNewFieldBtn = true;
 
@@ -78,6 +77,23 @@ export class NextDataModelingSubitem implements ChComponent {
    * The label of the delete button. Important for accessibility.
    */
   @Prop() readonly deleteButtonLabel: string = "";
+
+  /**
+   * The label of the cancel button in delete mode. Important for
+   * accessibility.
+   */
+  @Prop() readonly deleteModeCancelLabel: string = "";
+
+  /**
+   * The caption used in the message to confirm the delete of the field.
+   */
+  @Prop() readonly deleteModeCaption: string = "";
+
+  /**
+   * The label of the confirm button in delete mode. Important for
+   * accessibility.
+   */
+  @Prop() readonly deleteModeConfirmLabel: string = "";
 
   /**
    * The description of the field.
@@ -129,7 +145,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * Fired when the delete button is clicked
    */
-  @Event() deleteButtonClick: EventEmitter;
+  @Event() deleteField: EventEmitter;
 
   /**
    * Fired when the edit button is clicked
@@ -141,14 +157,9 @@ export class NextDataModelingSubitem implements ChComponent {
    */
   @Event() newField: EventEmitter<string>;
 
-  @Listen("expandedChange")
-  handleExpandedChange(event: CustomEvent) {
-    event.stopPropagation();
-  }
-
   private emitDelete = (event: UIEvent) => {
     event.stopPropagation();
-    this.deleteButtonClick.emit();
+    this.deleteField.emit();
   };
 
   private emitEdit = (event: UIEvent) => {
@@ -156,6 +167,15 @@ export class NextDataModelingSubitem implements ChComponent {
     this.editButtonClick.emit();
   };
 
+  private toggleDeleteMode = () => {
+    this.showDeleteMode = !this.showDeleteMode;
+  };
+
+  /**
+   * Returns:
+   *   @example ```(Scorer, Goals)```
+   *   @example ```(Name, Age, Nationality (+3))```
+   */
   private makeAttsPrettier = (atts: string[]) =>
     atts.length <= MAX_ATTS
       ? "(" + atts.join(", ") + ")"
@@ -324,34 +344,57 @@ export class NextDataModelingSubitem implements ChComponent {
                   {this.description}
                 </p>
 
-                <button
-                  aria-label={this.editButtonLabel}
-                  class="edit-button"
-                  part={`${PART_PREFIX}edit-button`}
-                  disabled={this.disabled}
-                  type="button"
-                  onClick={this.emitEdit}
-                >
-                  <div
-                    aria-hidden="true"
-                    class="img"
-                    part={`${PART_PREFIX}edit-button-img`}
-                  ></div>
-                </button>
-                <button
-                  aria-label={this.deleteButtonLabel}
-                  class="delete-button"
-                  part={`${PART_PREFIX}delete-button`}
-                  disabled={this.disabled}
-                  type="button"
-                  onClick={this.emitDelete}
-                >
-                  <div
-                    aria-hidden="true"
-                    class="img"
-                    part={`${PART_PREFIX}delete-button-img`}
-                  ></div>
-                </button>
+                {this.showDeleteMode ? (
+                  <div class="delete-mode" part={`${PART_PREFIX}delete-mode`}>
+                    {this.deleteModeCaption}
+                    <button
+                      aria-label={this.deleteModeConfirmLabel}
+                      part={`${PART_PREFIX}delete-mode-confirm`}
+                      disabled={this.disabled}
+                      type="button"
+                      onClick={this.emitDelete}
+                    ></button>
+                    <button
+                      aria-label={this.deleteModeCancelLabel}
+                      part={`${PART_PREFIX}delete-mode-cancel`}
+                      disabled={this.disabled}
+                      type="button"
+                      onClick={this.toggleDeleteMode}
+                    ></button>
+                  </div>
+                ) : (
+                  [
+                    <button
+                      aria-label={this.editButtonLabel}
+                      class="edit-button"
+                      part={`${PART_PREFIX}edit-button`}
+                      disabled={this.disabled}
+                      type="button"
+                      onClick={this.emitEdit}
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="img"
+                        part={`${PART_PREFIX}edit-button-img`}
+                      ></div>
+                    </button>,
+
+                    <button
+                      aria-label={this.deleteButtonLabel}
+                      class="delete-button"
+                      part={`${PART_PREFIX}delete-button`}
+                      disabled={this.disabled}
+                      type="button"
+                      onClick={this.toggleDeleteMode}
+                    >
+                      <div
+                        aria-hidden="true"
+                        class="img"
+                        part={`${PART_PREFIX}delete-button-img`}
+                      ></div>
+                    </button>
+                  ]
+                )}
               </button>,
 
               this.type === "LEVEL" && <slot />

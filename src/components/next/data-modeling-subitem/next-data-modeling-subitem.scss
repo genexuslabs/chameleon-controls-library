@@ -3,7 +3,7 @@ $separation-between-icons: 12px;
 // Reset browser defaults
 :where(button) {
   all: unset;
-  display: none; // By default, they are hidden
+  display: inline-flex;
   cursor: pointer;
 }
 
@@ -32,6 +32,14 @@ gx-button {
   column-gap: 8px;
 }
 
+:host(:hover),
+:host(:focus-within) {
+  .edit-button,
+  .delete-button {
+    display: grid;
+  }
+}
+
 .sub-field {
   grid-area: sub-field;
 }
@@ -55,7 +63,7 @@ gx-button {
 
 .header {
   display: grid;
-  grid-template: "sub-field name type edit delete" min-content "sub-field description description edit delete" 1fr / min-content min-content 1fr min-content min-content;
+  grid-template: "sub-field name type edit delete" min-content "sub-field description description edit delete" 1fr / min-content min-content 1fr min-content max-content;
   width: 100%;
   margin-inline-end: $separation-between-icons;
 }
@@ -88,6 +96,7 @@ gx-button {
 
 .edit-button {
   grid-area: edit;
+  display: none; // By default, it's hidden
   align-self: center;
   width: 21px;
   height: 20px;
@@ -100,6 +109,7 @@ gx-button {
 
 .delete-button {
   grid-area: delete;
+  display: none; // By default, it's hidden
   align-self: center;
   width: 18px;
   height: 20px;
@@ -111,10 +121,11 @@ gx-button {
   }
 }
 
-:host(:hover),
-:host(:focus-within) {
-  .edit-button,
-  .delete-button {
-    display: grid;
-  }
+.delete-mode {
+  grid-area: delete;
+  display: grid;
+  grid-template-columns: 1fr 24px 24px;
+  align-items: center;
+  column-gap: 8px;
+  cursor: auto;
 }

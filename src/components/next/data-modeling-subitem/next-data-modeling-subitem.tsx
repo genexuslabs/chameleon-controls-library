@@ -224,9 +224,84 @@ export class NextDataModelingSubitem implements ChComponent {
     this.confirmNewField();
   };
 
+  private newFieldMode = (disabledPart: string) =>
+    this.showNewFieldBtn ? (
+      <gx-button
+        part={`${PART_PREFIX}button-new-entity ${disabledPart}`}
+        disabled={this.disabled}
+        height="24px"
+        type="button"
+        onClick={this.toggleShowNewField}
+      >
+        {this.addNewFieldCaption}
+      </gx-button>
+    ) : (
+      [
+        this.level === 2 && (
+          <div
+            aria-hidden="true"
+            class="sub-field"
+            part={`${PART_PREFIX}sub-field`}
+          ></div>
+        ),
+
+        <h1 class="name" part={`${PART_PREFIX}name`}>
+          {this.name}
+        </h1>,
+
+        <gx-edit
+          class="field-name"
+          part={`${PART_PREFIX}field-name ${disabledPart}`}
+          disabled={this.disabled}
+          type="text"
+          onInput={this.updateInputText}
+          onKeydown={this.handleInputTextKeyDown}
+        ></gx-edit>,
+
+        <gx-button
+          class="button-confirm"
+          part={`${PART_PREFIX}button-confirm ${disabledPart}`}
+          exportparts={`caption:${PART_PREFIX}button-confirm-caption`}
+          disabled={this.disabled}
+          width="32px"
+          height="32px"
+          type="button"
+          onClick={this.confirmNewField}
+        >
+          {this.confirmNewFieldCaption}
+        </gx-button>,
+
+        <gx-button
+          class="button-cancel"
+          part={`${PART_PREFIX}button-cancel ${disabledPart}`}
+          exportparts={`caption:${PART_PREFIX}button-cancel-caption`}
+          disabled={this.disabled}
+          width="32px"
+          height="32px"
+          type="button"
+          onClick={this.toggleShowNewField}
+        >
+          {this.cancelNewFieldCaption}
+        </gx-button>,
+
+        this.errorType !== "None" && (
+          <p class="error-text" part={`${PART_PREFIX}error-text`}>
+            {this.errorType === "Empty"
+              ? this.errorTexts.Empty
+              : [
+                  this.errorTexts.AlreadyDefined1,
+                  <span part={`${PART_PREFIX}error-text-name`}>
+                    {this.inputText}
+                  </span>,
+                  this.errorTexts.AlreadyDefined2
+                ]}
+          </p>
+        )
+      ]
+    );
+
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
-    const disabledPart = this.disabled ? "disabled" : "";
 
     return (
       <Host
@@ -240,186 +315,122 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
-          this.addNewFieldMode ? (
-            this.showNewFieldBtn ? (
-              <gx-button
-                part={`${PART_PREFIX}button-new-entity ${disabledPart}`}
-                disabled={this.disabled}
-                height="24px"
-                type="button"
-                onClick={this.toggleShowNewField}
-              >
-                {this.addNewFieldCaption}
-              </gx-button>
-            ) : (
-              [
-                this.level === 2 && (
-                  <div
-                    aria-hidden="true"
-                    class="sub-field"
-                    part={`${PART_PREFIX}sub-field`}
-                  ></div>
-                ),
-
-                <h1 class="name" part={`${PART_PREFIX}name`}>
-                  {this.name}
-                </h1>,
-
-                <gx-edit
-                  class="field-name"
-                  part={`${PART_PREFIX}field-name ${disabledPart}`}
-                  disabled={this.disabled}
-                  type="text"
-                  onInput={this.updateInputText}
-                  onKeydown={this.handleInputTextKeyDown}
-                ></gx-edit>,
-
-                <gx-button
-                  class="button-confirm"
-                  part={`${PART_PREFIX}button-confirm ${disabledPart}`}
-                  exportparts={`caption:${PART_PREFIX}button-confirm-caption`}
-                  disabled={this.disabled}
-                  width="32px"
-                  height="32px"
-                  type="button"
-                  onClick={this.confirmNewField}
+          this.addNewFieldMode
+            ? this.newFieldMode(this.disabled ? "disabled" : "")
+            : [
+                <button
+                  slot="header"
+                  class="header"
+                  part={`${PART_PREFIX}header-content`}
+                  aria-labelledby={NAME}
+                  aria-describedby={DESCRIPTION}
                 >
-                  {this.confirmNewFieldCaption}
-                </gx-button>,
+                  {this.level === 2 && (
+                    <div
+                      aria-hidden="true"
+                      class="sub-field"
+                      part={`${PART_PREFIX}sub-field`}
+                    ></div>
+                  )}
 
-                <gx-button
-                  class="button-cancel"
-                  part={`${PART_PREFIX}button-cancel ${disabledPart}`}
-                  exportparts={`caption:${PART_PREFIX}button-cancel-caption`}
-                  disabled={this.disabled}
-                  width="32px"
-                  height="32px"
-                  type="button"
-                  onClick={this.toggleShowNewField}
-                >
-                  {this.cancelNewFieldCaption}
-                </gx-button>,
-
-                this.errorType !== "None" && (
-                  <p class="error-text" part={`${PART_PREFIX}error-text`}>
-                    {this.errorType === "Empty"
-                      ? this.errorTexts.Empty
-                      : [
-                          this.errorTexts.AlreadyDefined1,
-                          <span part={`${PART_PREFIX}error-text-name`}>
-                            {this.inputText}
-                          </span>,
-                          this.errorTexts.AlreadyDefined2
-                        ]}
-                  </p>
-                )
-              ]
-            )
-          ) : (
-            [
-              <button
-                slot="header"
-                class="header"
-                part={`${PART_PREFIX}header-content`}
-                aria-labelledby={NAME}
-                aria-describedby={DESCRIPTION}
-              >
-                {this.level === 2 && (
-                  <div
-                    aria-hidden="true"
-                    class="sub-field"
-                    part={`${PART_PREFIX}sub-field`}
-                  ></div>
-                )}
-
-                <h1
-                  id={NAME}
-                  class={{ name: true, "name-entity": this.type === "ENTITY" }}
-                  part={`${PART_PREFIX}name`}
-                >
-                  {this.name}
-                </h1>
-                {this.type !== "ATT" && (
-                  <span
-                    class="type"
-                    part={
-                      this.type === "LEVEL"
-                        ? `${PART_PREFIX}collection`
-                        : `${PART_PREFIX}entity`
-                    }
+                  <h1
+                    id={NAME}
+                    class={{
+                      name: true,
+                      "name-entity": this.type === "ENTITY"
+                    }}
+                    part={`${PART_PREFIX}name`}
                   >
-                    {this.type === "LEVEL"
-                      ? this.collectionCaption
-                      : this.makeAttsPrettier(
-                          this.entityNameToATTs[this.dataType]
-                        )}
-                  </span>
-                )}
-
-                <p
-                  id={DESCRIPTION}
-                  class="description"
-                  part={`${PART_PREFIX}description`}
-                >
-                  {this.description}
-                </p>
-
-                {this.showDeleteMode ? (
-                  <div class="delete-mode" part={`${PART_PREFIX}delete-mode`}>
-                    {this.deleteModeCaption}
-                    <button
-                      aria-label={this.deleteModeConfirmLabel}
-                      part={`${PART_PREFIX}delete-mode-confirm`}
-                      disabled={this.disabled}
-                      type="button"
-                      onClick={this.emitDelete}
-                    ></button>
-                    <button
-                      aria-label={this.deleteModeCancelLabel}
-                      part={`${PART_PREFIX}delete-mode-cancel`}
-                      disabled={this.disabled}
-                      type="button"
-                      onClick={this.toggleDeleteMode}
-                    ></button>
-                  </div>
-                ) : (
-                  [
-                    <button
-                      aria-label={this.editButtonLabel}
-                      class="edit-button"
-                      part={`${PART_PREFIX}edit-button`}
-                      disabled={this.disabled}
-                      type="button"
-                      onClick={this.emitEdit}
+                    {this.name}
+                  </h1>
+                  {this.type !== "ATT" && (
+                    <span
+                      class="type"
+                      part={
+                        this.type === "LEVEL"
+                          ? `${PART_PREFIX}collection`
+                          : `${PART_PREFIX}entity`
+                      }
                     >
-                      <div
-                        aria-hidden="true"
-                        class="img"
-                        part={`${PART_PREFIX}edit-button-img`}
-                      ></div>
-                    </button>,
+                      {this.type === "LEVEL"
+                        ? this.collectionCaption
+                        : this.makeAttsPrettier(
+                            this.entityNameToATTs[this.dataType]
+                          )}
+                    </span>
+                  )}
 
-                    <button
-                      aria-label={this.deleteButtonLabel}
-                      class="delete-button"
-                      part={`${PART_PREFIX}delete-button`}
-                      disabled={this.disabled}
-                      type="button"
-                      onClick={this.toggleDeleteMode}
-                    >
-                      <div
-                        aria-hidden="true"
-                        class="img"
-                        part={`${PART_PREFIX}delete-button-img`}
-                      ></div>
-                    </button>
-                  ]
-                )}
-              </button>,
+                  <p
+                    id={DESCRIPTION}
+                    class="description"
+                    part={`${PART_PREFIX}description`}
+                  >
+                    {this.description}
+                  </p>
 
-              this.type === "LEVEL" && <slot />
-            ]
-          )
+                  {
+                    // Delete Mode
+                    this.showDeleteMode ? (
+                      <div
+                        class="delete-mode"
+                        part={`${PART_PREFIX}delete-mode`}
+                      >
+                        {this.deleteModeCaption}
+
+                        <button
+                          aria-label={this.deleteModeConfirmLabel}
+                          part={`${PART_PREFIX}delete-mode-confirm`}
+                          disabled={this.disabled}
+                          type="button"
+                          onClick={this.emitDelete}
+                        ></button>
+
+                        <button
+                          aria-label={this.deleteModeCancelLabel}
+                          part={`${PART_PREFIX}delete-mode-cancel`}
+                          disabled={this.disabled}
+                          type="button"
+                          onClick={this.toggleDeleteMode}
+                        ></button>
+                      </div>
+                    ) : (
+                      [
+                        <button
+                          aria-label={this.editButtonLabel}
+                          class="edit-button"
+                          part={`${PART_PREFIX}edit-button`}
+                          disabled={this.disabled}
+                          type="button"
+                          onClick={this.emitEdit}
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="img"
+                            part={`${PART_PREFIX}edit-button-img`}
+                          ></div>
+                        </button>,
+
+                        <button
+                          aria-label={this.deleteButtonLabel}
+                          class="delete-button"
+                          part={`${PART_PREFIX}delete-button`}
+                          disabled={this.disabled}
+                          type="button"
+                          onClick={this.toggleDeleteMode}
+                        >
+                          <div
+                            aria-hidden="true"
+                            class="img"
+                            part={`${PART_PREFIX}delete-button-img`}
+                          ></div>
+                        </button>
+                      ]
+                    )
+                  }
+                </button>,
+
+                this.type === "LEVEL" && <slot />
+              ]
         }
       </Host>
     );

@@ -34,7 +34,7 @@ const MAX_ATTS = 3;
 export class NextDataModelingSubitem implements ChComponent {
   private inputText = "";
 
-  @State() errorText: ErrorType = "None";
+  @State() errorType: ErrorType = "None";
 
   @State() showDeleteMode = false;
 
@@ -131,7 +131,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * This property specifies at which collection level the field is located.
    */
-  @Prop() readonly level: "field" | "subfield" = "field";
+  @Prop() readonly level: 0 | 1 | 2 = 1;
 
   /**
    * The name of the field.
@@ -183,7 +183,7 @@ export class NextDataModelingSubitem implements ChComponent {
       : `(${atts.slice(0, MAX_ATTS).join(", ")} (+${atts.length - MAX_ATTS}))`;
 
   private toggleShowNewField = () => {
-    this.errorText = "None";
+    this.errorType = "None";
     this.inputText = "";
     this.showNewFieldBtn = !this.showNewFieldBtn;
   };
@@ -199,15 +199,15 @@ export class NextDataModelingSubitem implements ChComponent {
 
     // Force re-render. Useful when the error type don't change but the
     // displayed error text must change
-    this.errorText = "None";
+    this.errorType = "None";
 
     if (trimmedInput === "") {
-      this.errorText = "Empty";
+      this.errorType = "Empty";
       return;
     }
 
     if (this.fieldNames.includes(trimmedInput)) {
-      this.errorText = "AlreadyDefined";
+      this.errorType = "AlreadyDefined";
       return;
     }
 
@@ -225,16 +225,18 @@ export class NextDataModelingSubitem implements ChComponent {
   };
 
   render() {
+    const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
     const disabledPart = this.disabled ? "disabled" : "";
 
     return (
       <Host
         role="listitem"
-        class={
-          this.addNewFieldMode && !this.showNewFieldBtn
-            ? "ch-next-data-modeling--add-new-field"
-            : undefined
-        }
+        class={{
+          "ch-next-data-modeling--add-new-field":
+            addNewField && this.level !== 2,
+          "ch-next-data-modeling--add-new-field-level-2":
+            addNewField && this.level === 2
+        }}
       >
         {
           // Add new field layout (last cell of the collection/entity)
@@ -251,6 +253,14 @@ export class NextDataModelingSubitem implements ChComponent {
               </gx-button>
             ) : (
               [
+                this.level === 2 && (
+                  <div
+                    aria-hidden="true"
+                    class="sub-field"
+                    part={`${PART_PREFIX}sub-field`}
+                  ></div>
+                ),
+
                 <h1 class="name" part={`${PART_PREFIX}name`}>
                   {this.name}
                 </h1>,
@@ -290,9 +300,9 @@ export class NextDataModelingSubitem implements ChComponent {
                   {this.cancelNewFieldCaption}
                 </gx-button>,
 
-                this.errorText !== "None" && (
+                this.errorType !== "None" && (
                   <p class="error-text" part={`${PART_PREFIX}error-text`}>
-                    {this.errorText === "Empty"
+                    {this.errorType === "Empty"
                       ? this.errorTexts.Empty
                       : [
                           this.errorTexts.AlreadyDefined1,
@@ -314,7 +324,7 @@ export class NextDataModelingSubitem implements ChComponent {
                 aria-labelledby={NAME}
                 aria-describedby={DESCRIPTION}
               >
-                {this.level === "subfield" && (
+                {this.level === 2 && (
                   <div
                     aria-hidden="true"
                     class="sub-field"

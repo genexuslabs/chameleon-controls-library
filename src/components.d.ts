@@ -9,8 +9,8 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
+import { DataModelItemLabels, ErrorText } from "./components/next/data-modeling-subitem/next-data-modeling-subitem";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
-import { ErrorText } from "./components/next/data-modeling-subitem/next-data-modeling-subitem";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
@@ -486,45 +486,21 @@ export namespace Components {
     }
     interface ChNextDataModelingSubitem {
         /**
-          * The caption used in the button to show the new field layout. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = true`.
-         */
-        "addNewFieldCaption": string;
-        /**
           * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
          */
         "addNewFieldMode": boolean;
         /**
-          * The caption used in the button to cancel the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+          * The labels used in the buttons of the items. Important for accessibility.
          */
-        "cancelNewFieldCaption": string;
+        "captions": DataModelItemLabels;
         /**
           * The caption used when the entity is a collection (`type === "LEVEL"`).
          */
         "collectionCaption": string;
         /**
-          * The caption used in the button to confirm the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
-         */
-        "confirmNewFieldCaption": string;
-        /**
           * The dataType of the field.
          */
         "dataType": string;
-        /**
-          * The label of the delete button. Important for accessibility.
-         */
-        "deleteButtonLabel": string;
-        /**
-          * The label of the cancel button in delete mode. Important for accessibility.
-         */
-        "deleteModeCancelLabel": string;
-        /**
-          * The caption used in the message to confirm the delete of the field.
-         */
-        "deleteModeCaption": string;
-        /**
-          * The label of the confirm button in delete mode. Important for accessibility.
-         */
-        "deleteModeConfirmLabel": string;
         /**
           * The description of the field.
          */
@@ -533,10 +509,6 @@ export namespace Components {
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
         "disabled": false;
-        /**
-          * The label of the edit button. Important for accessibility.
-         */
-        "editButtonLabel": string;
         /**
           * This property maps entities of the current dataModel with their corresponding ATTs.
          */
@@ -552,7 +524,7 @@ export namespace Components {
         /**
           * This property specifies at which collection level the field is located.
          */
-        "level": "field" | "subfield";
+        "level": 0 | 1 | 2;
         /**
           * The name of the field.
          */
@@ -1728,45 +1700,21 @@ declare namespace LocalJSX {
     }
     interface ChNextDataModelingSubitem {
         /**
-          * The caption used in the button to show the new field layout. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = true`.
-         */
-        "addNewFieldCaption"?: string;
-        /**
           * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
          */
         "addNewFieldMode"?: boolean;
         /**
-          * The caption used in the button to cancel the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
+          * The labels used in the buttons of the items. Important for accessibility.
          */
-        "cancelNewFieldCaption"?: string;
+        "captions"?: DataModelItemLabels;
         /**
           * The caption used when the entity is a collection (`type === "LEVEL"`).
          */
         "collectionCaption"?: string;
         /**
-          * The caption used in the button to confirm the adding of the new field. Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
-         */
-        "confirmNewFieldCaption"?: string;
-        /**
           * The dataType of the field.
          */
         "dataType"?: string;
-        /**
-          * The label of the delete button. Important for accessibility.
-         */
-        "deleteButtonLabel"?: string;
-        /**
-          * The label of the cancel button in delete mode. Important for accessibility.
-         */
-        "deleteModeCancelLabel"?: string;
-        /**
-          * The caption used in the message to confirm the delete of the field.
-         */
-        "deleteModeCaption"?: string;
-        /**
-          * The label of the confirm button in delete mode. Important for accessibility.
-         */
-        "deleteModeConfirmLabel"?: string;
         /**
           * The description of the field.
          */
@@ -1775,10 +1723,6 @@ declare namespace LocalJSX {
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
         "disabled"?: false;
-        /**
-          * The label of the edit button. Important for accessibility.
-         */
-        "editButtonLabel"?: string;
         /**
           * This property maps entities of the current dataModel with their corresponding ATTs.
          */
@@ -1794,19 +1738,19 @@ declare namespace LocalJSX {
         /**
           * This property specifies at which collection level the field is located.
          */
-        "level"?: "field" | "subfield";
+        "level"?: 0 | 1 | 2;
         /**
           * The name of the field.
          */
         "name"?: string;
         /**
-          * Fired when the delete button is clicked
+          * Fired when the item is confirmed to be deleted
          */
         "onDeleteField"?: (event: CustomEvent<any>) => void;
         /**
-          * Fired when the edit button is clicked
+          * Fired when the item is edited
          */
-        "onEditButtonClick"?: (event: CustomEvent<any>) => void;
+        "onEditField"?: (event: CustomEvent<{ name: string; description: string }>) => void;
         /**
           * Fired when a new file is comitted to be added
          */

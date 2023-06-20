@@ -14,6 +14,16 @@ import { KEY_CODES } from "../../../common/reserverd-names";
 export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
 export type ErrorType = "Empty" | "AlreadyDefined" | "None";
 
+export type DataModelItemLabels = { [key in DataModelItemLabel]: string };
+export type DataModelItemLabel =
+  | "addNewField"
+  | "cancel"
+  | "confirm"
+  | "edit"
+  | "delete"
+  | "deleteMode"
+  | "newField";
+
 const NAME = "name";
 const DESCRIPTION = "description";
 const PART_PREFIX = "data-modeling-subitem__";
@@ -37,14 +47,9 @@ export class NextDataModelingSubitem implements ChComponent {
   @State() errorType: ErrorType = "None";
 
   @State() showDeleteMode = false;
+  @State() showEditMode = false;
 
   @State() showNewFieldBtn = true;
-
-  /**
-   * The caption used in the button to show the new field layout. Only useful
-   * if `addNewFieldMode = true` and `showNewFieldBtn = true`.
-   */
-  @Prop() readonly addNewFieldCaption: string = "";
 
   /**
    * `true` to only show the component that comes with the default slot. Useful
@@ -53,48 +58,19 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly addNewFieldMode: boolean = false;
 
   /**
+   * The labels used in the buttons of the items. Important for accessibility.
+   */
+  @Prop() readonly captions: DataModelItemLabels;
+
+  /**
    * The caption used when the entity is a collection (`type === "LEVEL"`).
    */
   @Prop() readonly collectionCaption: string = "";
 
   /**
-   * The caption used in the button to cancel the adding of the new field.
-   * Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
-   */
-  @Prop() readonly cancelNewFieldCaption: string = "";
-
-  /**
-   * The caption used in the button to confirm the adding of the new field.
-   * Only useful if `addNewFieldMode = true` and `showNewFieldBtn = false`.
-   */
-  @Prop() readonly confirmNewFieldCaption: string = "";
-
-  /**
    * The dataType of the field.
    */
   @Prop() readonly dataType: string = "";
-
-  /**
-   * The label of the delete button. Important for accessibility.
-   */
-  @Prop() readonly deleteButtonLabel: string = "";
-
-  /**
-   * The label of the cancel button in delete mode. Important for
-   * accessibility.
-   */
-  @Prop() readonly deleteModeCancelLabel: string = "";
-
-  /**
-   * The caption used in the message to confirm the delete of the field.
-   */
-  @Prop() readonly deleteModeCaption: string = "";
-
-  /**
-   * The label of the confirm button in delete mode. Important for
-   * accessibility.
-   */
-  @Prop() readonly deleteModeConfirmLabel: string = "";
 
   /**
    * The description of the field.
@@ -106,11 +82,6 @@ export class NextDataModelingSubitem implements ChComponent {
    * If disabled, it will not fire any user interaction related event.
    */
   @Prop() readonly disabled = false;
-
-  /**
-   * The label of the edit button. Important for accessibility.
-   */
-  @Prop() readonly editButtonLabel: string = "";
 
   /**
    * This property maps entities of the current dataModel with their
@@ -166,6 +137,10 @@ export class NextDataModelingSubitem implements ChComponent {
   private emitEdit = (event: UIEvent) => {
     event.stopPropagation();
     this.editButtonClick.emit();
+  };
+
+  private toggleEditMode = () => {
+    this.showEditMode = !this.showEditMode;
   };
 
   private toggleDeleteMode = () => {
@@ -224,17 +199,20 @@ export class NextDataModelingSubitem implements ChComponent {
     this.confirmNewField();
   };
 
-  private newFieldMode = (disabledPart: string) =>
+  private newFieldMode = (
+    captions: DataModelItemLabels,
+    disabledPart: string
+  ) =>
     this.showNewFieldBtn ? (
-      <gx-button
+      <button
+        class="button-new-entity"
         part={`${PART_PREFIX}button-new-entity ${disabledPart}`}
         disabled={this.disabled}
-        height="24px"
         type="button"
         onClick={this.toggleShowNewField}
       >
-        {this.addNewFieldCaption}
-      </gx-button>
+        {captions.addNewField}
+      </button>
     ) : (
       [
         this.level === 2 && (
@@ -246,7 +224,7 @@ export class NextDataModelingSubitem implements ChComponent {
         ),
 
         <h1 class="name" part={`${PART_PREFIX}name`}>
-          {this.name}
+          {captions.newField}
         </h1>,
 
         <gx-edit
@@ -258,31 +236,23 @@ export class NextDataModelingSubitem implements ChComponent {
           onKeydown={this.handleInputTextKeyDown}
         ></gx-edit>,
 
-        <gx-button
+        <button
+          aria-label={captions.confirm}
           class="button-confirm"
-          part={`${PART_PREFIX}button-confirm ${disabledPart}`}
-          exportparts={`caption:${PART_PREFIX}button-confirm-caption`}
+          part={`${PART_PREFIX}button-action confirm ${disabledPart}`}
           disabled={this.disabled}
-          width="32px"
-          height="32px"
           type="button"
           onClick={this.confirmNewField}
-        >
-          {this.confirmNewFieldCaption}
-        </gx-button>,
+        ></button>,
 
-        <gx-button
+        <button
+          aria-label={captions.cancel}
           class="button-cancel"
-          part={`${PART_PREFIX}button-cancel ${disabledPart}`}
-          exportparts={`caption:${PART_PREFIX}button-cancel-caption`}
+          part={`${PART_PREFIX}button-action cancel ${disabledPart}`}
           disabled={this.disabled}
-          width="32px"
-          height="32px"
           type="button"
           onClick={this.toggleShowNewField}
-        >
-          {this.cancelNewFieldCaption}
-        </gx-button>,
+        ></button>,
 
         this.errorType !== "None" && (
           <p class="error-text" part={`${PART_PREFIX}error-text`}>
@@ -302,6 +272,8 @@ export class NextDataModelingSubitem implements ChComponent {
 
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
+    const disabledPart = this.disabled ? "disabled" : "";
+    const captions = this.captions;
 
     return (
       <Host
@@ -316,7 +288,7 @@ export class NextDataModelingSubitem implements ChComponent {
         {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode
-            ? this.newFieldMode(this.disabled ? "disabled" : "")
+            ? this.newFieldMode(captions, disabledPart)
             : [
                 <button
                   slot="header"
@@ -375,56 +347,53 @@ export class NextDataModelingSubitem implements ChComponent {
                         class="delete-mode"
                         part={`${PART_PREFIX}delete-mode`}
                       >
-                        {this.deleteModeCaption}
+                        {captions.deleteMode}
 
-                        <button
-                          aria-label={this.deleteModeConfirmLabel}
-                          part={`${PART_PREFIX}delete-mode-confirm`}
+                        <button // Confirm delete
+                          aria-label={captions.confirm}
+                          part={`${PART_PREFIX}button-delete-action confirm ${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
                           onClick={this.emitDelete}
                         ></button>
 
-                        <button
-                          aria-label={this.deleteModeCancelLabel}
-                          part={`${PART_PREFIX}delete-mode-cancel`}
+                        <button // Cancel delete
+                          aria-label={captions.cancel}
+                          part={`${PART_PREFIX}button-delete-action cancel ${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
                           onClick={this.toggleDeleteMode}
                         ></button>
                       </div>
                     ) : (
-                      [
+                      // Dummy div to trigger an Stencil optimization by reusing DOM nodes
+                      <div class="optimization">
                         <button
-                          aria-label={this.editButtonLabel}
-                          class="edit-button"
-                          part={`${PART_PREFIX}edit-button`}
+                          aria-label={captions.edit}
+                          class="button-primary button-edit"
+                          part={`${PART_PREFIX}button-primary edit ${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
-                          onClick={this.emitEdit}
-                        >
-                          <div
-                            aria-hidden="true"
-                            class="img"
-                            part={`${PART_PREFIX}edit-button-img`}
-                          ></div>
-                        </button>,
+                          onClick={
+                            this.showEditMode
+                              ? this.emitEdit
+                              : this.toggleEditMode
+                          }
+                        ></button>
 
                         <button
-                          aria-label={this.deleteButtonLabel}
-                          class="delete-button"
-                          part={`${PART_PREFIX}delete-button`}
+                          aria-label={captions.delete}
+                          class="button-primary button-delete"
+                          part={`${PART_PREFIX}button-primary delete ${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
-                          onClick={this.toggleDeleteMode}
-                        >
-                          <div
-                            aria-hidden="true"
-                            class="img"
-                            part={`${PART_PREFIX}delete-button-img`}
-                          ></div>
-                        </button>
-                      ]
+                          onClick={
+                            this.showEditMode
+                              ? this.toggleEditMode
+                              : this.toggleDeleteMode
+                          }
+                        ></button>
+                      </div>
                     )
                   }
                 </button>,

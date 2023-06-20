@@ -7,15 +7,15 @@ $separation-between-icons: 12px;
   cursor: pointer;
 }
 
-// WA to add mouse pointer un gx-button
-gx-button {
-  cursor: pointer;
-}
+// // WA to add mouse pointer un gx-button
+// gx-button {
+//   cursor: pointer;
+// }
 
-// WA to disable the gx-button
-.gx-disabled {
-  pointer-events: none;
-}
+// // WA to disable the gx-button
+// .gx-disabled {
+//   pointer-events: none;
+// }
 
 *,
 ::before,
@@ -39,9 +39,12 @@ gx-button {
 
 :host(:hover),
 :host(:focus-within) {
-  .edit-button,
-  .delete-button {
+  .button-primary {
     display: grid;
+
+    &::before {
+      content: "";
+    }
   }
 }
 
@@ -101,38 +104,55 @@ gx-button {
   grid-area: description;
 }
 
-.edit-button {
-  grid-area: edit;
+.button-new-entity {
+  align-items: center;
+  transition: color 250ms;
+}
+
+// - - - - - - - - - - - - - - - -
+//         Primary actions
+// - - - - - - - - - - - - - - - -
+// This class is only used to trigger an Stencil optimization by reusing DOM nodes
+.optimization {
+  display: contents;
+}
+
+.button-primary {
   display: none; // By default, it's hidden
   align-self: center;
-  width: 21px;
   height: 20px;
   padding: 2px;
 
-  & > .img {
+  &::before {
+    display: flex;
+  }
+}
+
+.button-edit {
+  grid-area: edit;
+  width: 21px;
+
+  &::before {
     -webkit-mask: var(--edit-icon) no-repeat;
   }
 }
 
-.delete-button {
+.button-delete {
   grid-area: delete;
-  display: none; // By default, it's hidden
-  align-self: center;
   width: 18px;
-  height: 20px;
-  padding: 2px;
   margin-inline-start: $separation-between-icons;
 
-  & > .img {
+  &::before {
     -webkit-mask: var(--delete-icon) no-repeat;
   }
 }
 
+// Delete mode
 .delete-mode {
   grid-area: delete;
   display: grid;
   grid-template-columns: 1fr 24px 24px;
   align-items: center;
   column-gap: 8px;
-  cursor: auto;
+  cursor: auto; // Remove "cursor: pointer" inherited from <button> tag
 }

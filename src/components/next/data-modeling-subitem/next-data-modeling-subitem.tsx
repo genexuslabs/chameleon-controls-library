@@ -52,7 +52,7 @@ const MAX_ATTS = 3;
 })
 export class NextDataModelingSubitem implements ChComponent {
   private errorName: string;
-  private errorDesc: string;
+  // private errorDesc: string;
 
   // Refs
   private inputName: HTMLElement;

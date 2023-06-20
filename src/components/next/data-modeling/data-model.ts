@@ -9,6 +9,7 @@ export type Entity = {
 
 export type EntityItem = {
   Name: string;
+  Description?: string;
   Type: EntityItemType;
   DataType: string;
   Level?: EntityItem[];

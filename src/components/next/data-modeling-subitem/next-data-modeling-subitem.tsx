@@ -28,6 +28,15 @@ const NAME = "name";
 const DESCRIPTION = "description";
 const PART_PREFIX = "data-modeling-subitem__";
 
+const CANCEL_CLASS = "button-cancel";
+const CONFIRM_CLASS = "button-confirm";
+
+const BUTTON_CONFIRM_PART = (disabledPart: string) =>
+  `${PART_PREFIX}button-action confirm ${disabledPart}`;
+
+const BUTTON_CANCEL_PART = (disabledPart: string) =>
+  `${PART_PREFIX}button-action cancel ${disabledPart}`;
+
 /**
  * Determine the maximum amount of ATTs displayed per entity
  */
@@ -42,7 +51,12 @@ const MAX_ATTS = 3;
   tag: "ch-next-data-modeling-subitem"
 })
 export class NextDataModelingSubitem implements ChComponent {
-  private inputText = "";
+  private errorName: string;
+  private errorDesc: string;
+
+  // Refs
+  private inputName: HTMLElement;
+  private inputDescription: HTMLElement;
 
   @State() errorType: ErrorType = "None";
 
@@ -115,37 +129,19 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly type: EntityItemType;
 
   /**
-   * Fired when the delete button is clicked
+   * Fired when the item is confirmed to be deleted
    */
   @Event() deleteField: EventEmitter;
 
   /**
-   * Fired when the edit button is clicked
+   * Fired when the item is edited
    */
-  @Event() editButtonClick: EventEmitter;
+  @Event() editField: EventEmitter<{ name: string; description: string }>;
 
   /**
    * Fired when a new file is comitted to be added
    */
   @Event() newField: EventEmitter<string>;
-
-  private emitDelete = (event: UIEvent) => {
-    event.stopPropagation();
-    this.deleteField.emit();
-  };
-
-  private emitEdit = (event: UIEvent) => {
-    event.stopPropagation();
-    this.editButtonClick.emit();
-  };
-
-  private toggleEditMode = () => {
-    this.showEditMode = !this.showEditMode;
-  };
-
-  private toggleDeleteMode = () => {
-    this.showDeleteMode = !this.showDeleteMode;
-  };
 
   /**
    * Returns:
@@ -157,20 +153,62 @@ export class NextDataModelingSubitem implements ChComponent {
       ? "(" + atts.join(", ") + ")"
       : `(${atts.slice(0, MAX_ATTS).join(", ")} (+${atts.length - MAX_ATTS}))`;
 
+  private emitDelete = (event: UIEvent) => {
+    event.stopPropagation();
+    this.deleteField.emit();
+  };
+
+  private toggleEditMode = () => {
+    this.showEditMode = !this.showEditMode;
+  };
+
+  private toggleDeleteMode = () => {
+    this.showDeleteMode = !this.showDeleteMode;
+  };
+
   private toggleShowNewField = () => {
     this.errorType = "None";
-    this.inputText = "";
     this.showNewFieldBtn = !this.showNewFieldBtn;
   };
 
-  private updateInputText = (event: InputEvent) => {
-    console.log((event.target as HTMLInputElement).value);
+  /**
+   * @todo TODO: Improve typing
+   * WA function to get the gx-edit's input value
+   * @param editElement An HTMLGxEditElement that is implemented in the web-controls-library
+   */
+  private getGxEditInputValue = (editElement: HTMLElement) =>
+    (editElement.shadowRoot.firstElementChild as HTMLInputElement).value;
 
-    this.inputText = (event.target as HTMLInputElement).value;
+  private confirmEdit = () => {
+    const trimmedInputName = this.getGxEditInputValue(this.inputName).trim();
+    const trimmedInputDesc = this.getGxEditInputValue(
+      this.inputDescription
+    ).trim();
+
+    // Force re-render. Useful when the error type don't change but the
+    // displayed error text must change
+    this.errorType = "None";
+
+    if (trimmedInputName === "") {
+      this.errorType = "Empty";
+      return;
+    }
+
+    if (this.fieldNames.includes(trimmedInputName)) {
+      this.errorType = "AlreadyDefined";
+      this.errorName = trimmedInputName;
+      return;
+    }
+
+    this.editField.emit({
+      name: trimmedInputName,
+      description: trimmedInputDesc
+    });
+    this.toggleEditMode();
   };
 
   private confirmNewField = () => {
-    const trimmedInput = this.inputText.trim();
+    const trimmedInput = this.getGxEditInputValue(this.inputName).trim();
 
     // Force re-render. Useful when the error type don't change but the
     // displayed error text must change
@@ -183,6 +221,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
     if (this.fieldNames.includes(trimmedInput)) {
       this.errorType = "AlreadyDefined";
+      this.errorName = trimmedInput;
       return;
     }
 
@@ -190,7 +229,16 @@ export class NextDataModelingSubitem implements ChComponent {
     this.toggleShowNewField();
   };
 
-  private handleInputTextKeyDown = (event: KeyboardEvent) => {
+  private keyDownEditField = (event: KeyboardEvent) => {
+    if (event.code !== KEY_CODES.ENTER) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    this.confirmEdit();
+  };
+
+  private keyDownNewField = (event: KeyboardEvent) => {
     if (event.code !== KEY_CODES.ENTER) {
       return;
     }
@@ -229,17 +277,17 @@ export class NextDataModelingSubitem implements ChComponent {
 
         <gx-edit
           class="field-name"
-          part={`${PART_PREFIX}field-name ${disabledPart}`}
+          part={`${PART_PREFIX}input ${disabledPart}`}
           disabled={this.disabled}
           type="text"
-          onInput={this.updateInputText}
-          onKeydown={this.handleInputTextKeyDown}
+          ref={el => (this.inputName = el as HTMLElement)}
+          onKeydown={this.keyDownNewField}
         ></gx-edit>,
 
         <button
           aria-label={captions.confirm}
-          class="button-confirm"
-          part={`${PART_PREFIX}button-action confirm ${disabledPart}`}
+          class={CONFIRM_CLASS}
+          part={BUTTON_CONFIRM_PART(disabledPart)}
           disabled={this.disabled}
           type="button"
           onClick={this.confirmNewField}
@@ -247,8 +295,8 @@ export class NextDataModelingSubitem implements ChComponent {
 
         <button
           aria-label={captions.cancel}
-          class="button-cancel"
-          part={`${PART_PREFIX}button-action cancel ${disabledPart}`}
+          class={CANCEL_CLASS}
+          part={BUTTON_CANCEL_PART(disabledPart)}
           disabled={this.disabled}
           type="button"
           onClick={this.toggleShowNewField}
@@ -261,7 +309,7 @@ export class NextDataModelingSubitem implements ChComponent {
               : [
                   this.errorTexts.AlreadyDefined1,
                   <span part={`${PART_PREFIX}error-text-name`}>
-                    {this.inputText}
+                    {this.errorName}
                   </span>,
                   this.errorTexts.AlreadyDefined2
                 ]}
@@ -292,7 +340,10 @@ export class NextDataModelingSubitem implements ChComponent {
             : [
                 <button
                   slot="header"
-                  class="header"
+                  class={{
+                    header: true,
+                    "edit-mode": this.showEditMode
+                  }}
                   part={`${PART_PREFIX}header-content`}
                   aria-labelledby={NAME}
                   aria-describedby={DESCRIPTION}
@@ -305,40 +356,44 @@ export class NextDataModelingSubitem implements ChComponent {
                     ></div>
                   )}
 
-                  <h1
-                    id={NAME}
-                    class={{
-                      name: true,
-                      "name-entity": this.type === "ENTITY"
-                    }}
-                    part={`${PART_PREFIX}name`}
-                  >
-                    {this.name}
-                  </h1>
-                  {this.type !== "ATT" && (
-                    <span
-                      class="type"
-                      part={
-                        this.type === "LEVEL"
-                          ? `${PART_PREFIX}collection`
-                          : `${PART_PREFIX}entity`
-                      }
+                  {!this.showEditMode && [
+                    // Readonly
+                    <h1
+                      id={NAME}
+                      class={{
+                        name: true,
+                        "name-entity": this.type === "ENTITY"
+                      }}
+                      part={`${PART_PREFIX}name`}
                     >
-                      {this.type === "LEVEL"
-                        ? this.collectionCaption
-                        : this.makeAttsPrettier(
-                            this.entityNameToATTs[this.dataType]
-                          )}
-                    </span>
-                  )}
+                      {this.name}
+                    </h1>,
 
-                  <p
-                    id={DESCRIPTION}
-                    class="description"
-                    part={`${PART_PREFIX}description`}
-                  >
-                    {this.description}
-                  </p>
+                    this.type !== "ATT" && (
+                      <span
+                        class="type"
+                        part={
+                          this.type === "LEVEL"
+                            ? `${PART_PREFIX}collection`
+                            : `${PART_PREFIX}entity`
+                        }
+                      >
+                        {this.type === "LEVEL"
+                          ? this.collectionCaption
+                          : this.makeAttsPrettier(
+                              this.entityNameToATTs[this.dataType]
+                            )}
+                      </span>
+                    ),
+
+                    <p
+                      id={DESCRIPTION}
+                      class="description"
+                      part={`${PART_PREFIX}description`}
+                    >
+                      {this.description}
+                    </p>
+                  ]}
 
                   {
                     // Delete Mode
@@ -368,23 +423,65 @@ export class NextDataModelingSubitem implements ChComponent {
                     ) : (
                       // Dummy div to trigger an Stencil optimization by reusing DOM nodes
                       <div class="optimization">
+                        {this.showEditMode && [
+                          // Editable
+                          <gx-edit
+                            class="name"
+                            part={`${PART_PREFIX}input ${disabledPart}`}
+                            disabled={this.disabled}
+                            type="text"
+                            value={this.name}
+                            ref={el => (this.inputName = el as HTMLElement)}
+                            onKeydown={this.keyDownEditField}
+                          ></gx-edit>,
+
+                          // Editable
+                          <gx-edit
+                            class="description"
+                            part={`${PART_PREFIX}input ${disabledPart}`}
+                            disabled={this.disabled}
+                            type="text"
+                            value={this.description}
+                            ref={el =>
+                              (this.inputDescription = el as HTMLElement)
+                            }
+                            onKeydown={this.keyDownEditField}
+                          ></gx-edit>
+                        ]}
+
                         <button
                           aria-label={captions.edit}
-                          class="button-primary button-edit"
-                          part={`${PART_PREFIX}button-primary edit ${disabledPart}`}
+                          class={
+                            this.showEditMode
+                              ? CONFIRM_CLASS
+                              : "button-primary button-edit"
+                          }
+                          part={
+                            this.showEditMode
+                              ? BUTTON_CONFIRM_PART(disabledPart)
+                              : `${PART_PREFIX}button-primary edit ${disabledPart}`
+                          }
                           disabled={this.disabled}
                           type="button"
                           onClick={
                             this.showEditMode
-                              ? this.emitEdit
+                              ? this.confirmEdit
                               : this.toggleEditMode
                           }
                         ></button>
 
                         <button
                           aria-label={captions.delete}
-                          class="button-primary button-delete"
-                          part={`${PART_PREFIX}button-primary delete ${disabledPart}`}
+                          class={
+                            this.showEditMode
+                              ? CANCEL_CLASS
+                              : "button-primary button-delete"
+                          }
+                          part={
+                            this.showEditMode
+                              ? BUTTON_CANCEL_PART(disabledPart)
+                              : `${PART_PREFIX}button-primary delete ${disabledPart}`
+                          }
                           disabled={this.disabled}
                           type="button"
                           onClick={

@@ -23,17 +23,32 @@ $separation-between-icons: 12px;
   box-sizing: border-box;
 }
 
+// Reset browser defaults
+.name,
+.description {
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+
+// WA to customize auto-fill in gx-edit
+gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto-fill:hover) {
+  background-color: var(--gx-edit-auto-fill-background-color);
+}
+
 :host {
   display: grid;
 }
 
 :host(.ch-next-data-modeling--add-new-field) {
-  grid-template: "name . ." min-content "field-name button-confirm button-cancel" 1fr "error-text . ." min-content / 1fr 32px 32px;
+  grid-template: "name . ." min-content "field-name confirm cancel" 1fr "error-text . ." min-content / 1fr 32px 32px;
   column-gap: 8px;
 }
 
 :host(.ch-next-data-modeling--add-new-field-level-2) {
-  grid-template: "sub-field name . ." min-content ". field-name button-confirm button-cancel" 1fr ". error-text . ." min-content / min-content 1fr 32px 32px;
+  grid-template: "sub-field name . ." min-content ". field-name confirm cancel" 1fr ". error-text . ." min-content / min-content 1fr 32px 32px;
   column-gap: 8px;
 }
 
@@ -58,11 +73,11 @@ $separation-between-icons: 12px;
 }
 
 .button-confirm {
-  grid-area: button-confirm;
+  grid-area: confirm;
 }
 
 .button-cancel {
-  grid-area: button-cancel;
+  grid-area: cancel;
 }
 
 .error-text {
@@ -73,19 +88,21 @@ $separation-between-icons: 12px;
 
 .header {
   display: grid;
-  grid-template: "sub-field name type edit delete" min-content "sub-field description description edit delete" 1fr / min-content min-content 1fr min-content max-content;
+  grid-template: "sub-field name type edit delete" min-content "sub-field desc desc edit delete" 1fr / min-content min-content 1fr min-content max-content;
   width: 100%;
   margin-inline-end: $separation-between-icons;
 }
 
-// Reset browser defaults
-.name,
-.description {
-  color: inherit;
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  outline: 0;
+.edit-mode {
+  grid-template: "sub-field name confirm cancel" min-content "sub-field error-text-name confirm cancel" min-content "sub-field desc confirm cancel" min-content "sub-field error-text-desc confirm cancel" min-content / min-content 1fr 56px 32px;
+
+  .button-confirm {
+    margin-inline: 16px 8px;
+  }
+
+  .description {
+    margin-block-start: 12px;
+  }
 }
 
 .name {
@@ -101,7 +118,7 @@ $separation-between-icons: 12px;
 }
 
 .description {
-  grid-area: description;
+  grid-area: desc;
 }
 
 .button-new-entity {
@@ -155,4 +172,14 @@ $separation-between-icons: 12px;
   align-items: center;
   column-gap: 8px;
   cursor: auto; // Remove "cursor: pointer" inherited from <button> tag
+  animation: fade-in 250ms ease-in-out;
+}
+
+// - - - - - - - - - - - - - - - -
+//           Key frames
+// - - - - - - - - - - - - - - - -
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
 }

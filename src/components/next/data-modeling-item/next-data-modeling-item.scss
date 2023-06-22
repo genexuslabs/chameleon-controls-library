@@ -16,6 +16,7 @@ $separation-between-icons: 24px;
 .header {
   display: grid;
   grid-template: "name edit delete" 1fr / 1fr min-content min-content;
+  align-items: center;
   margin-inline-end: $separation-between-icons;
 }
 

@@ -13,7 +13,6 @@
 | `captions`          | --                   | The labels used in the buttons of the items. Important for accessibility.                                                     | `{ addNewField: string; cancel: string; confirm: string; edit: string; delete: string; deleteMode: string; newField: string; }` | `undefined` |
 | `collectionCaption` | `collection-caption` | The caption used when the entity is a collection (`type === "LEVEL"`).                                                        | `string`                                                                                                                        | `""`        |
 | `dataType`          | `data-type`          | The dataType of the field.                                                                                                    | `string`                                                                                                                        | `""`        |
-| `description`       | `description`        | The description of the field.                                                                                                 | `string`                                                                                                                        | `""`        |
 | `disabled`          | `disabled`           | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event. | `boolean`                                                                                                                       | `false`     |
 | `entityNameToATTs`  | --                   | This property maps entities of the current dataModel with their corresponding ATTs.                                           | `{ [key: string]: string[]; }`                                                                                                  | `{}`        |
 | `errorTexts`        | --                   | The error texts used for the new field input.                                                                                 | `{ Empty: string; AlreadyDefined1: string; AlreadyDefined2: string; }`                                                          | `undefined` |
@@ -25,11 +24,11 @@
 
 ## Events
 
-| Event         | Description                                    | Type                                                  |
-| ------------- | ---------------------------------------------- | ----------------------------------------------------- |
-| `deleteField` | Fired when the item is confirmed to be deleted | `CustomEvent<any>`                                    |
-| `editField`   | Fired when the item is edited                  | `CustomEvent<{ name: string; description: string; }>` |
-| `newField`    | Fired when a new file is comitted to be added  | `CustomEvent<string>`                                 |
+| Event         | Description                                    | Type                  |
+| ------------- | ---------------------------------------------- | --------------------- |
+| `deleteField` | Fired when the item is confirmed to be deleted | `CustomEvent<any>`    |
+| `editField`   | Fired when the item is edited                  | `CustomEvent<string>` |
+| `newField`    | Fired when a new file is comitted to be added  | `CustomEvent<string>` |
 
 
 ## Slots

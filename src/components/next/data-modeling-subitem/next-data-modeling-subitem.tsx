@@ -189,7 +189,10 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
 
-    this.editField.emit(trimmedInputName);
+    if (this.name !== trimmedInputName) {
+      this.editField.emit(trimmedInputName);
+    }
+
     this.toggleEditMode();
   };
 

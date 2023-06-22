@@ -25,7 +25,6 @@ export type DataModelItemLabel =
   | "newField";
 
 const NAME = "name";
-const DESCRIPTION = "description";
 const PART_PREFIX = "data-modeling-subitem__";
 
 const CANCEL_CLASS = "button-cancel";
@@ -52,11 +51,9 @@ const MAX_ATTS = 3;
 })
 export class NextDataModelingSubitem implements ChComponent {
   private errorName: string;
-  // private errorDesc: string;
 
   // Refs
   private inputName: HTMLElement;
-  private inputDescription: HTMLElement;
 
   @State() errorType: ErrorType = "None";
 
@@ -85,11 +82,6 @@ export class NextDataModelingSubitem implements ChComponent {
    * The dataType of the field.
    */
   @Prop() readonly dataType: string = "";
-
-  /**
-   * The description of the field.
-   */
-  @Prop() readonly description: string = "";
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -136,7 +128,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * Fired when the item is edited
    */
-  @Event() editField: EventEmitter<{ name: string; description: string }>;
+  @Event() editField: EventEmitter<string>;
 
   /**
    * Fired when a new file is comitted to be added
@@ -181,9 +173,6 @@ export class NextDataModelingSubitem implements ChComponent {
 
   private confirmEdit = () => {
     const trimmedInputName = this.getGxEditInputValue(this.inputName).trim();
-    const trimmedInputDesc = this.getGxEditInputValue(
-      this.inputDescription
-    ).trim();
 
     // Force re-render. Useful when the error type don't change but the
     // displayed error text must change
@@ -200,10 +189,7 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
 
-    this.editField.emit({
-      name: trimmedInputName,
-      description: trimmedInputDesc
-    });
+    this.editField.emit(trimmedInputName);
     this.toggleEditMode();
   };
 
@@ -346,7 +332,6 @@ export class NextDataModelingSubitem implements ChComponent {
                   }}
                   part={`${PART_PREFIX}header-content`}
                   aria-labelledby={NAME}
-                  aria-describedby={DESCRIPTION}
                 >
                   {this.level === 2 && (
                     <div
@@ -384,15 +369,7 @@ export class NextDataModelingSubitem implements ChComponent {
                               this.entityNameToATTs[this.dataType]
                             )}
                       </span>
-                    ),
-
-                    <p
-                      id={DESCRIPTION}
-                      class="description"
-                      part={`${PART_PREFIX}description`}
-                    >
-                      {this.description}
-                    </p>
+                    )
                   ]}
 
                   {
@@ -432,19 +409,6 @@ export class NextDataModelingSubitem implements ChComponent {
                             type="text"
                             value={this.name}
                             ref={el => (this.inputName = el as HTMLElement)}
-                            onKeydown={this.keyDownEditField}
-                          ></gx-edit>,
-
-                          // Editable
-                          <gx-edit
-                            class="description"
-                            part={`${PART_PREFIX}input ${disabledPart}`}
-                            disabled={this.disabled}
-                            type="text"
-                            value={this.description}
-                            ref={el =>
-                              (this.inputDescription = el as HTMLElement)
-                            }
                             onKeydown={this.keyDownEditField}
                           ></gx-edit>
                         ]}

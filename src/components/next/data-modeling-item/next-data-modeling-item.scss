@@ -15,7 +15,7 @@ $separation-between-icons: 24px;
 
 .header {
   display: grid;
-  grid-template: "name edit delete" min-content "description edit delete" 1fr / 1fr min-content min-content;
+  grid-template: "name edit delete" 1fr / 1fr min-content min-content;
   margin-inline-end: $separation-between-icons;
 }
 
@@ -31,10 +31,6 @@ $separation-between-icons: 24px;
 
 .name {
   grid-area: name;
-}
-
-.description {
-  grid-area: description;
 }
 
 .edit-button {

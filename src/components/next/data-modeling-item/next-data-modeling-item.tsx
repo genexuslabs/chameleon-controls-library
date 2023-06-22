@@ -102,9 +102,6 @@ export class NextDataModelingItem implements ChComponent {
               <h1 class="name" part={`${PART_PREFIX}name`}>
                 {this.name}
               </h1>
-              <p class="description" part={`${PART_PREFIX}description`}>
-                {this.description}
-              </p>
 
               <button
                 aria-label={this.editButtonLabel}

@@ -24,8 +24,7 @@ $separation-between-icons: 12px;
 }
 
 // Reset browser defaults
-.name,
-.description {
+.name {
   color: inherit;
   font: inherit;
   margin: 0;
@@ -88,20 +87,17 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 .header {
   display: grid;
-  grid-template: "sub-field name type edit delete" min-content "sub-field desc desc edit delete" 1fr / min-content min-content 1fr min-content max-content;
+  grid-template: "sub-field name type edit delete" 1fr / min-content min-content 1fr min-content max-content;
+  align-items: center;
   width: 100%;
   margin-inline-end: $separation-between-icons;
 }
 
 .edit-mode {
-  grid-template: "sub-field name confirm cancel" min-content "sub-field error-text-name confirm cancel" min-content "sub-field desc confirm cancel" min-content "sub-field error-text-desc confirm cancel" min-content / min-content 1fr 56px 32px;
+  grid-template: "sub-field name confirm cancel" min-content "sub-field error-text-name confirm cancel" min-content / min-content 1fr 56px 32px;
 
   .button-confirm {
     margin-inline: 16px 8px;
-  }
-
-  .description {
-    margin-block-start: 12px;
   }
 }
 
@@ -115,10 +111,6 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 .type {
   grid-area: type;
-}
-
-.description {
-  grid-area: desc;
 }
 
 .button-new-entity {

@@ -307,6 +307,134 @@ export class NextDataModelingSubitem implements ChComponent {
       ]
     );
 
+  private editMode = (captions: DataModelItemLabels, disabledPart: string) => [
+    <div
+      slot="header"
+      class={{
+        header: true,
+        "edit-mode": this.showEditMode
+      }}
+      part={`${PART_PREFIX}header-content`}
+      tabindex="0"
+    >
+      {this.level === 2 && (
+        <div
+          aria-hidden="true"
+          class="sub-field"
+          part={`${PART_PREFIX}sub-field`}
+        ></div>
+      )}
+
+      {!this.showEditMode && [
+        // Readonly
+        <h1
+          id={NAME}
+          class={{
+            name: true,
+            "name-entity": this.type === "ENTITY"
+          }}
+          part={`${PART_PREFIX}name`}
+        >
+          {this.name}
+        </h1>,
+
+        this.type !== "ATT" && (
+          <span
+            class="type"
+            part={
+              this.type === "LEVEL"
+                ? `${PART_PREFIX}collection`
+                : `${PART_PREFIX}entity`
+            }
+          >
+            {this.type === "LEVEL"
+              ? this.collectionCaption
+              : this.makeAttsPrettier(this.entityNameToATTs[this.dataType])}
+          </span>
+        )
+      ]}
+
+      {
+        // Delete Mode
+        this.showDeleteMode ? (
+          <div class="delete-mode" part={`${PART_PREFIX}delete-mode`}>
+            {captions.deleteMode}
+
+            <button // Confirm delete
+              aria-label={captions.confirm}
+              part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
+              disabled={this.disabled}
+              type="button"
+              onClick={this.emitDelete}
+            ></button>
+
+            <button // Cancel delete
+              aria-label={captions.cancel}
+              part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
+              disabled={this.disabled}
+              type="button"
+              onClick={this.toggleDeleteMode}
+            ></button>
+          </div>
+        ) : (
+          // Dummy div to trigger an Stencil optimization by reusing DOM nodes
+          <div class="optimization">
+            {this.showEditMode && [
+              // Editable
+              <gx-edit
+                class="name"
+                part={`${PART_PREFIX}input${disabledPart}`}
+                disabled={this.disabled}
+                type="text"
+                value={this.name}
+                ref={el => (this.inputName = el as HTMLElement)}
+                onKeydown={this.keyDownEditField}
+              ></gx-edit>
+            ]}
+
+            <button
+              aria-label={captions.edit}
+              class={
+                this.showEditMode ? CONFIRM_CLASS : "button-primary button-edit"
+              }
+              part={
+                this.showEditMode
+                  ? BUTTON_CONFIRM_PART(disabledPart)
+                  : `${PART_PREFIX}button-primary edit${disabledPart}`
+              }
+              disabled={this.disabled}
+              type="button"
+              onClick={
+                this.showEditMode ? this.confirmEdit : this.toggleEditMode
+              }
+            ></button>
+
+            <button
+              aria-label={captions.delete}
+              class={
+                this.showEditMode
+                  ? CANCEL_CLASS
+                  : "button-primary button-delete"
+              }
+              part={
+                this.showEditMode
+                  ? BUTTON_CANCEL_PART(disabledPart)
+                  : `${PART_PREFIX}button-primary delete${disabledPart}`
+              }
+              disabled={this.disabled}
+              type="button"
+              onClick={
+                this.showEditMode ? this.toggleEditMode : this.toggleDeleteMode
+              }
+            ></button>
+          </div>
+        )
+      }
+    </div>,
+
+    this.type === "LEVEL" && <slot />
+  ];
+
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
     const disabledPart = this.disabled ? " disabled" : "";
@@ -328,144 +456,7 @@ export class NextDataModelingSubitem implements ChComponent {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode
             ? this.newFieldMode(captions, disabledPart)
-            : [
-                <div
-                  slot="header"
-                  class={{
-                    header: true,
-                    "edit-mode": this.showEditMode
-                  }}
-                  part={`${PART_PREFIX}header-content`}
-                  tabindex="0"
-                >
-                  {this.level === 2 && (
-                    <div
-                      aria-hidden="true"
-                      class="sub-field"
-                      part={`${PART_PREFIX}sub-field`}
-                    ></div>
-                  )}
-
-                  {!this.showEditMode && [
-                    // Readonly
-                    <h1
-                      id={NAME}
-                      class={{
-                        name: true,
-                        "name-entity": this.type === "ENTITY"
-                      }}
-                      part={`${PART_PREFIX}name`}
-                    >
-                      {this.name}
-                    </h1>,
-
-                    this.type !== "ATT" && (
-                      <span
-                        class="type"
-                        part={
-                          this.type === "LEVEL"
-                            ? `${PART_PREFIX}collection`
-                            : `${PART_PREFIX}entity`
-                        }
-                      >
-                        {this.type === "LEVEL"
-                          ? this.collectionCaption
-                          : this.makeAttsPrettier(
-                              this.entityNameToATTs[this.dataType]
-                            )}
-                      </span>
-                    )
-                  ]}
-
-                  {
-                    // Delete Mode
-                    this.showDeleteMode ? (
-                      <div
-                        class="delete-mode"
-                        part={`${PART_PREFIX}delete-mode`}
-                      >
-                        {captions.deleteMode}
-
-                        <button // Confirm delete
-                          aria-label={captions.confirm}
-                          part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
-                          disabled={this.disabled}
-                          type="button"
-                          onClick={this.emitDelete}
-                        ></button>
-
-                        <button // Cancel delete
-                          aria-label={captions.cancel}
-                          part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
-                          disabled={this.disabled}
-                          type="button"
-                          onClick={this.toggleDeleteMode}
-                        ></button>
-                      </div>
-                    ) : (
-                      // Dummy div to trigger an Stencil optimization by reusing DOM nodes
-                      <div class="optimization">
-                        {this.showEditMode && [
-                          // Editable
-                          <gx-edit
-                            class="name"
-                            part={`${PART_PREFIX}input${disabledPart}`}
-                            disabled={this.disabled}
-                            type="text"
-                            value={this.name}
-                            ref={el => (this.inputName = el as HTMLElement)}
-                            onKeydown={this.keyDownEditField}
-                          ></gx-edit>
-                        ]}
-
-                        <button
-                          aria-label={captions.edit}
-                          class={
-                            this.showEditMode
-                              ? CONFIRM_CLASS
-                              : "button-primary button-edit"
-                          }
-                          part={
-                            this.showEditMode
-                              ? BUTTON_CONFIRM_PART(disabledPart)
-                              : `${PART_PREFIX}button-primary edit${disabledPart}`
-                          }
-                          disabled={this.disabled}
-                          type="button"
-                          onClick={
-                            this.showEditMode
-                              ? this.confirmEdit
-                              : this.toggleEditMode
-                          }
-                        ></button>
-
-                        <button
-                          aria-label={captions.delete}
-                          class={
-                            this.showEditMode
-                              ? CANCEL_CLASS
-                              : "button-primary button-delete"
-                          }
-                          part={
-                            this.showEditMode
-                              ? BUTTON_CANCEL_PART(disabledPart)
-                              : `${PART_PREFIX}button-primary delete${disabledPart}`
-                          }
-                          disabled={this.disabled}
-                          type="button"
-                          onClick={
-                            this.showEditMode
-                              ? this.toggleEditMode
-                              : this.toggleDeleteMode
-                          }
-                        ></button>
-                      </div>
-                    )
-                  }
-                </div>,
-
-                this.type === "LEVEL" && <slot />
-              ]
+            : this.editMode(captions, disabledPart)
         }
       </Host>
     );

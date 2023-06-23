@@ -35,7 +35,7 @@ export type DataModelItemLabel =
   | "newField";
 
 const NAME = "name";
-const PART_PREFIX = "data-modeling-subitem__";
+const PART_PREFIX = "dm-item__";
 
 const CANCEL_CLASS = "button-cancel";
 const CONFIRM_CLASS = "button-confirm";

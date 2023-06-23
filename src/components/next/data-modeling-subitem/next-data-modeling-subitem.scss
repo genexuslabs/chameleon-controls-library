@@ -66,6 +66,15 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
   pointer-events: none;
 }
 
+// Accordion
+.accordion:hover,
+.accordion:focus-within {
+  .edit-button,
+  .delete-button {
+    display: grid;
+  }
+}
+
 .sub-field {
   grid-area: sub-field;
 }

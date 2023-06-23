@@ -58,11 +58,3 @@ $separation-between-icons: 24px;
     -webkit-mask: var(--delete-icon) no-repeat;
   }
 }
-
-.accordion:hover,
-.accordion:focus-within {
-  .edit-button,
-  .delete-button {
-    display: grid;
-  }
-}

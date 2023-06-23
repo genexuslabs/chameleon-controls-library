@@ -3,6 +3,7 @@ import {
   Event,
   EventEmitter,
   Host,
+  Listen,
   Prop,
   State,
   h
@@ -15,13 +16,22 @@ export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
 export type ErrorType = "Empty" | "AlreadyDefined" | "None";
 
 export type DataModelItemLabels = { [key in DataModelItemLabel]: string };
+
+/**
+ * | Value        | Details                                                                  |
+ * | ------------ | ------------------------------------------------------------------------ |
+ * | `collection` | The caption used when the entity is a collection (`type === "LEVEL"`).   |
+ */
 export type DataModelItemLabel =
+  | "addNewEntity"
   | "addNewField"
   | "cancel"
+  | "collection"
   | "confirm"
   | "edit"
   | "delete"
   | "deleteMode"
+  | "newEntity"
   | "newField";
 
 const NAME = "name";
@@ -62,6 +72,8 @@ export class NextDataModelingSubitem implements ChComponent {
 
   @State() showNewFieldBtn = true;
 
+  @State() expanded = false;
+
   /**
    * `true` to only show the component that comes with the default slot. Useful
    * when the item is the last one of the list.
@@ -72,11 +84,6 @@ export class NextDataModelingSubitem implements ChComponent {
    * The labels used in the buttons of the items. Important for accessibility.
    */
   @Prop() readonly captions: DataModelItemLabels;
-
-  /**
-   * The caption used when the entity is a collection (`type === "LEVEL"`).
-   */
-  @Prop() readonly collectionCaption: string = "";
 
   /**
    * The dataType of the field.
@@ -118,7 +125,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * The type of the field.
    */
-  @Prop() readonly type: EntityItemType;
+  @Prop() readonly type: EntityItemType = "LEVEL";
 
   /**
    * Fired when the item is confirmed to be deleted
@@ -134,6 +141,11 @@ export class NextDataModelingSubitem implements ChComponent {
    * Fired when a new file is comitted to be added
    */
   @Event() newField: EventEmitter<string>;
+
+  @Listen("expandedChange")
+  handleExpandedChange(event: CustomEvent) {
+    event.stopPropagation();
+  }
 
   /**
    * Returns:
@@ -248,7 +260,7 @@ export class NextDataModelingSubitem implements ChComponent {
         type="button"
         onClick={this.toggleShowNewField}
       >
-        {captions.addNewField}
+        {this.level === 0 ? captions.addNewEntity : captions.addNewField}
       </button>
     ) : (
       [
@@ -261,7 +273,7 @@ export class NextDataModelingSubitem implements ChComponent {
         ),
 
         <h1 class="name" part={`${PART_PREFIX}name`}>
-          {captions.newField}
+          {this.level === 0 ? captions.newEntity : captions.newField}
         </h1>,
 
         <gx-edit
@@ -338,7 +350,7 @@ export class NextDataModelingSubitem implements ChComponent {
           {this.name}
         </h1>,
 
-        this.type !== "ATT" && (
+        this.level !== 0 && this.type !== "ATT" && (
           <span
             class="type"
             part={
@@ -348,7 +360,7 @@ export class NextDataModelingSubitem implements ChComponent {
             }
           >
             {this.type === "LEVEL"
-              ? this.collectionCaption
+              ? captions.collection
               : this.makeAttsPrettier(this.entityNameToATTs[this.dataType])}
           </span>
         )
@@ -432,7 +444,14 @@ export class NextDataModelingSubitem implements ChComponent {
       }
     </div>,
 
-    this.type === "LEVEL" && <slot />
+    this.type === "LEVEL" &&
+      (this.level === 0 ? (
+        <div slot="content" part={`${PART_PREFIX}content`}>
+          <slot />
+        </div>
+      ) : (
+        <slot />
+      ))
   ];
 
   render() {
@@ -454,9 +473,21 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
-          this.addNewFieldMode
-            ? this.newFieldMode(captions, disabledPart)
-            : this.editMode(captions, disabledPart)
+          this.addNewFieldMode ? (
+            this.newFieldMode(captions, disabledPart)
+          ) : this.level === 0 ? (
+            <ch-accordion
+              class="accordion"
+              part={`${PART_PREFIX}accordion`}
+              accessibleName={this.name}
+              expanded={this.expanded}
+              exportparts={`accordion__chevron:${PART_PREFIX}chevron,accordion__expandable:${PART_PREFIX}expandable,accordion__header:${PART_PREFIX}header`}
+            >
+              {this.editMode(captions, disabledPart)}
+            </ch-accordion>
+          ) : (
+            this.editMode(captions, disabledPart)
+          )
         }
       </Host>
     );

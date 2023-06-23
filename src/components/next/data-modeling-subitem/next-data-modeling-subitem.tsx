@@ -31,10 +31,10 @@ const CANCEL_CLASS = "button-cancel";
 const CONFIRM_CLASS = "button-confirm";
 
 const BUTTON_CONFIRM_PART = (disabledPart: string) =>
-  `${PART_PREFIX}button-action confirm ${disabledPart}`;
+  `${PART_PREFIX}button-action confirm${disabledPart}`;
 
 const BUTTON_CANCEL_PART = (disabledPart: string) =>
-  `${PART_PREFIX}button-action cancel ${disabledPart}`;
+  `${PART_PREFIX}button-action cancel${disabledPart}`;
 
 /**
  * Determine the maximum amount of ATTs displayed per entity
@@ -243,7 +243,7 @@ export class NextDataModelingSubitem implements ChComponent {
     this.showNewFieldBtn ? (
       <button
         class="button-new-entity"
-        part={`${PART_PREFIX}button-new-entity ${disabledPart}`}
+        part={`${PART_PREFIX}button-new-entity${disabledPart}`}
         disabled={this.disabled}
         type="button"
         onClick={this.toggleShowNewField}
@@ -266,7 +266,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
         <gx-edit
           class="field-name"
-          part={`${PART_PREFIX}input ${disabledPart}`}
+          part={`${PART_PREFIX}input${disabledPart}`}
           disabled={this.disabled}
           type="text"
           ref={el => (this.inputName = el as HTMLElement)}
@@ -309,7 +309,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
-    const disabledPart = this.disabled ? "disabled" : "";
+    const disabledPart = this.disabled ? " disabled" : "";
     const captions = this.captions;
 
     return (
@@ -319,7 +319,8 @@ export class NextDataModelingSubitem implements ChComponent {
           "ch-next-data-modeling--add-new-field":
             addNewField && this.level !== 2,
           "ch-next-data-modeling--add-new-field-level-2":
-            addNewField && this.level === 2
+            addNewField && this.level === 2,
+          "gx-disabled": this.disabled
         }}
       >
         {
@@ -386,7 +387,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
                         <button // Confirm delete
                           aria-label={captions.confirm}
-                          part={`${PART_PREFIX}button-delete-action confirm ${disabledPart}`}
+                          part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
                           onClick={this.emitDelete}
@@ -394,7 +395,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
                         <button // Cancel delete
                           aria-label={captions.cancel}
-                          part={`${PART_PREFIX}button-delete-action cancel ${disabledPart}`}
+                          part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
                           disabled={this.disabled}
                           type="button"
                           onClick={this.toggleDeleteMode}
@@ -407,7 +408,7 @@ export class NextDataModelingSubitem implements ChComponent {
                           // Editable
                           <gx-edit
                             class="name"
-                            part={`${PART_PREFIX}input ${disabledPart}`}
+                            part={`${PART_PREFIX}input${disabledPart}`}
                             disabled={this.disabled}
                             type="text"
                             value={this.name}
@@ -426,7 +427,7 @@ export class NextDataModelingSubitem implements ChComponent {
                           part={
                             this.showEditMode
                               ? BUTTON_CONFIRM_PART(disabledPart)
-                              : `${PART_PREFIX}button-primary edit ${disabledPart}`
+                              : `${PART_PREFIX}button-primary edit${disabledPart}`
                           }
                           disabled={this.disabled}
                           type="button"
@@ -447,7 +448,7 @@ export class NextDataModelingSubitem implements ChComponent {
                           part={
                             this.showEditMode
                               ? BUTTON_CANCEL_PART(disabledPart)
-                              : `${PART_PREFIX}button-primary delete ${disabledPart}`
+                              : `${PART_PREFIX}button-primary delete${disabledPart}`
                           }
                           disabled={this.disabled}
                           type="button"

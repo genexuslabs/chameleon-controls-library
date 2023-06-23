@@ -315,6 +315,7 @@ export class NextDataModelingSubitem implements ChComponent {
     return (
       <Host
         role="listitem"
+        aria-labelledby={NAME}
         class={{
           "ch-next-data-modeling--add-new-field":
             addNewField && this.level !== 2,
@@ -328,14 +329,14 @@ export class NextDataModelingSubitem implements ChComponent {
           this.addNewFieldMode
             ? this.newFieldMode(captions, disabledPart)
             : [
-                <button
+                <div
                   slot="header"
                   class={{
                     header: true,
                     "edit-mode": this.showEditMode
                   }}
                   part={`${PART_PREFIX}header-content`}
-                  aria-labelledby={NAME}
+                  tabindex="0"
                 >
                   {this.level === 2 && (
                     <div
@@ -461,7 +462,7 @@ export class NextDataModelingSubitem implements ChComponent {
                       </div>
                     )
                   }
-                </button>,
+                </div>,
 
                 this.type === "LEVEL" && <slot />
               ]

@@ -47,11 +47,6 @@ const BUTTON_CANCEL_PART = (disabledPart: string) =>
   `${PART_PREFIX}button-action cancel${disabledPart}`;
 
 /**
- * Determine the maximum amount of ATTs displayed per entity
- */
-const MAX_ATTS = 3;
-
-/**
  * @slot items - The first level items (entities) of the data model
  */
 @Component({
@@ -118,6 +113,11 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly level: 0 | 1 | 2 = 1;
 
   /**
+   * Determine the maximum amount of ATTs displayed per entity.
+   */
+  @Prop() readonly maxAtts: number = 3;
+
+  /**
    * The name of the field.
    */
   @Prop() readonly name: string = "";
@@ -152,10 +152,10 @@ export class NextDataModelingSubitem implements ChComponent {
    *   @example ```(Scorer, Goals)```
    *   @example ```(Name, Age, Nationality (+3))```
    */
-  private makeAttsPrettier = (atts: string[]) =>
-    atts.length <= MAX_ATTS
+  private makeAttsPrettier = (atts: string[], maxAtts) =>
+    atts.length <= maxAtts
       ? "(" + atts.join(", ") + ")"
-      : `(${atts.slice(0, MAX_ATTS).join(", ")} (+${atts.length - MAX_ATTS}))`;
+      : `(${atts.slice(0, maxAtts).join(", ")} (+${atts.length - maxAtts}))`;
 
   private emitDelete = (event: UIEvent) => {
     event.stopPropagation();
@@ -327,7 +327,7 @@ export class NextDataModelingSubitem implements ChComponent {
         "edit-mode": this.showEditMode
       }}
       part={`${PART_PREFIX}header-content`}
-      tabindex="0"
+      tabindex={this.level !== 0 ? "0" : undefined}
     >
       {this.level === 2 && (
         <div
@@ -361,7 +361,10 @@ export class NextDataModelingSubitem implements ChComponent {
           >
             {this.type === "LEVEL"
               ? captions.collection
-              : this.makeAttsPrettier(this.entityNameToATTs[this.dataType])}
+              : this.makeAttsPrettier(
+                  this.entityNameToATTs[this.dataType],
+                  this.maxAtts
+                )}
           </span>
         )
       ]}

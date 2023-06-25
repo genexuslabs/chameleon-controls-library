@@ -279,6 +279,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   private newFieldMode = (
     captions: DataModelItemLabels,
+    errorPart: string,
     disabledPart: string
   ) =>
     this.showNewFieldBtn ? (
@@ -307,12 +308,26 @@ export class NextDataModelingSubitem implements ChComponent {
 
         <gx-edit
           class="field-name"
-          part={`${PART_PREFIX}input${disabledPart}`}
+          part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
           disabled={this.disabled}
           type="text"
           ref={el => (this.inputName = el as HTMLElement)}
           onKeydown={this.keyDownNewField}
         ></gx-edit>,
+
+        this.errorType !== "None" && (
+          <p class="error-text" part={`${PART_PREFIX}error-text`}>
+            {this.errorType === "Empty"
+              ? this.errorTexts.Empty
+              : [
+                  this.errorTexts.AlreadyDefined1,
+                  <span part={`${PART_PREFIX}error-text-name`}>
+                    {this.errorName}
+                  </span>,
+                  this.errorTexts.AlreadyDefined2
+                ]}
+          </p>
+        ),
 
         <button
           aria-label={captions.confirm}
@@ -330,26 +345,13 @@ export class NextDataModelingSubitem implements ChComponent {
           disabled={this.disabled}
           type="button"
           onClick={this.toggleShowNewField}
-        ></button>,
-
-        this.errorType !== "None" && (
-          <p class="error-text" part={`${PART_PREFIX}error-text`}>
-            {this.errorType === "Empty"
-              ? this.errorTexts.Empty
-              : [
-                  this.errorTexts.AlreadyDefined1,
-                  <span part={`${PART_PREFIX}error-text-name`}>
-                    {this.errorName}
-                  </span>,
-                  this.errorTexts.AlreadyDefined2
-                ]}
-          </p>
-        )
+        ></button>
       ]
     );
 
   private editMode = (
     captions: DataModelItemLabels,
+    errorPart: string,
     disabledPart: string,
     waitingModePart: string
   ) => [
@@ -443,7 +445,7 @@ export class NextDataModelingSubitem implements ChComponent {
               // Editable
               <gx-edit
                 class="name"
-                part={`${PART_PREFIX}input${disabledPart}`}
+                part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
                 disabled={this.disabled}
                 type="text"
                 value={this.name}
@@ -504,10 +506,13 @@ export class NextDataModelingSubitem implements ChComponent {
 
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
+    const captions = this.captions;
+
+    // Parts
     const disabledPart = this.disabled ? " disabled" : "";
     const waitingModePart =
       this.waitingMode === "none" ? "" : ` ${PART_PREFIX}waiting-mode`;
-    const captions = this.captions;
+    const errorPart = this.errorType !== "None" ? " error" : "";
 
     return (
       <Host
@@ -524,7 +529,7 @@ export class NextDataModelingSubitem implements ChComponent {
         {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode ? (
-            this.newFieldMode(captions, disabledPart)
+            this.newFieldMode(captions, errorPart, disabledPart)
           ) : this.level === 0 ? (
             <ch-accordion
               class="accordion"
@@ -533,10 +538,15 @@ export class NextDataModelingSubitem implements ChComponent {
               expanded={this.expanded}
               exportparts={`accordion__chevron:${PART_PREFIX}chevron,accordion__expandable:${PART_PREFIX}expandable,accordion__header:${PART_PREFIX}header`}
             >
-              {this.editMode(captions, disabledPart, waitingModePart)}
+              {this.editMode(
+                captions,
+                errorPart,
+                disabledPart,
+                waitingModePart
+              )}
             </ch-accordion>
           ) : (
-            this.editMode(captions, disabledPart, waitingModePart)
+            this.editMode(captions, errorPart, disabledPart, waitingModePart)
           )
         }
       </Host>

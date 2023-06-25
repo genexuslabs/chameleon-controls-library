@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Host,
   Listen,
+  Method,
   Prop,
   State,
   h
@@ -23,13 +24,16 @@ export type DataModelItemLabels = { [key in DataModelItemLabel]: string };
  * | `collection` | The caption used when the entity is a collection (`type === "LEVEL"`).   |
  */
 export type DataModelItemLabel =
+  | "adding"
   | "addNewEntity"
   | "addNewField"
   | "cancel"
   | "collection"
   | "confirm"
   | "edit"
+  | "editing"
   | "delete"
+  | "deleting"
   | "deleteMode"
   | "newEntity"
   | "newField";
@@ -64,10 +68,11 @@ export class NextDataModelingSubitem implements ChComponent {
 
   @State() showDeleteMode = false;
   @State() showEditMode = false;
-
   @State() showNewFieldBtn = true;
 
   @State() expanded = false;
+
+  @State() waitingMode: "adding" | "deleting" | "editing" | "none" = "none";
 
   /**
    * `true` to only show the component that comes with the default slot. Useful
@@ -148,6 +153,18 @@ export class NextDataModelingSubitem implements ChComponent {
   }
 
   /**
+   * Hides the waiting mode to continue editing the field.
+   */
+  @Method()
+  async hideWaitingMode() {
+    if (this.waitingMode === "deleting") {
+      this.showDeleteMode = false;
+    }
+
+    this.waitingMode = "none";
+  }
+
+  /**
    * Returns:
    *   @example ```(Scorer, Goals)```
    *   @example ```(Name, Age, Nationality (+3))```
@@ -159,18 +176,22 @@ export class NextDataModelingSubitem implements ChComponent {
 
   private emitDelete = (event: UIEvent) => {
     event.stopPropagation();
+    this.waitingMode = "deleting";
     this.deleteField.emit();
   };
 
-  private toggleEditMode = () => {
+  private toggleEditMode = (event: UIEvent) => {
+    event.stopPropagation();
     this.showEditMode = !this.showEditMode;
   };
 
-  private toggleDeleteMode = () => {
+  private toggleDeleteMode = (event: UIEvent) => {
+    event.stopPropagation();
     this.showDeleteMode = !this.showDeleteMode;
   };
 
-  private toggleShowNewField = () => {
+  private toggleShowNewField = (event: UIEvent) => {
+    event.stopPropagation();
     this.errorType = "None";
     this.showNewFieldBtn = !this.showNewFieldBtn;
   };
@@ -183,7 +204,8 @@ export class NextDataModelingSubitem implements ChComponent {
   private getGxEditInputValue = (editElement: HTMLElement) =>
     (editElement.shadowRoot.firstElementChild as HTMLInputElement).value;
 
-  private confirmEdit = () => {
+  private confirmEdit = (event: UIEvent) => {
+    event.stopPropagation();
     const trimmedInputName = this.getGxEditInputValue(this.inputName).trim();
 
     // Force re-render. Useful when the error type don't change but the
@@ -202,13 +224,15 @@ export class NextDataModelingSubitem implements ChComponent {
     }
 
     if (this.name !== trimmedInputName) {
+      this.waitingMode = "editing";
       this.editField.emit(trimmedInputName);
     }
 
-    this.toggleEditMode();
+    this.toggleEditMode(event);
   };
 
-  private confirmNewField = () => {
+  private confirmNewField = (event: UIEvent) => {
+    event.stopPropagation();
     const trimmedInput = this.getGxEditInputValue(this.inputName).trim();
 
     // Force re-render. Useful when the error type don't change but the
@@ -226,8 +250,9 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
 
+    this.waitingMode = "adding";
     this.newField.emit(trimmedInput);
-    this.toggleShowNewField();
+    this.toggleShowNewField(event);
   };
 
   private keyDownEditField = (event: KeyboardEvent) => {
@@ -235,8 +260,7 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
     event.preventDefault();
-    event.stopPropagation();
-    this.confirmEdit();
+    this.confirmEdit(event);
   };
 
   private keyDownNewField = (event: KeyboardEvent) => {
@@ -244,9 +268,14 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
     event.preventDefault();
-    event.stopPropagation();
-    this.confirmNewField();
+    this.confirmNewField(event);
   };
+
+  private loading = () => (
+    <svg class="waiting-mode__loading" height="28" viewBox="6 6 12 12">
+      <circle cx="12" cy="12" r="4" stroke-width="1.125"></circle>
+    </svg>
+  );
 
   private newFieldMode = (
     captions: DataModelItemLabels,
@@ -319,7 +348,11 @@ export class NextDataModelingSubitem implements ChComponent {
       ]
     );
 
-  private editMode = (captions: DataModelItemLabels, disabledPart: string) => [
+  private editMode = (
+    captions: DataModelItemLabels,
+    disabledPart: string,
+    waitingModePart: string
+  ) => [
     <div
       slot="header"
       class={{
@@ -372,24 +405,36 @@ export class NextDataModelingSubitem implements ChComponent {
       {
         // Delete Mode
         this.showDeleteMode ? (
-          <div class="delete-mode" part={`${PART_PREFIX}delete-mode`}>
-            {captions.deleteMode}
+          <div
+            class={{
+              "delete-mode": true,
+              "waiting-mode": this.waitingMode !== "none"
+            }}
+            part={`${PART_PREFIX}delete-mode${waitingModePart}`}
+          >
+            {this.waitingMode === "none"
+              ? captions.deleteMode
+              : captions.deleting}
 
-            <button // Confirm delete
-              aria-label={captions.confirm}
-              part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
-              disabled={this.disabled}
-              type="button"
-              onClick={this.emitDelete}
-            ></button>
+            {this.waitingMode === "none"
+              ? [
+                  <button // Confirm delete
+                    aria-label={captions.confirm}
+                    part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
+                    disabled={this.disabled}
+                    type="button"
+                    onClick={this.emitDelete}
+                  ></button>,
 
-            <button // Cancel delete
-              aria-label={captions.cancel}
-              part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
-              disabled={this.disabled}
-              type="button"
-              onClick={this.toggleDeleteMode}
-            ></button>
+                  <button // Cancel delete
+                    aria-label={captions.cancel}
+                    part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
+                    disabled={this.disabled}
+                    type="button"
+                    onClick={this.toggleDeleteMode}
+                  ></button>
+                ]
+              : this.loading()}
           </div>
         ) : (
           // Dummy div to trigger an Stencil optimization by reusing DOM nodes
@@ -460,6 +505,8 @@ export class NextDataModelingSubitem implements ChComponent {
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
     const disabledPart = this.disabled ? " disabled" : "";
+    const waitingModePart =
+      this.waitingMode === "none" ? "" : ` ${PART_PREFIX}waiting-mode`;
     const captions = this.captions;
 
     return (
@@ -486,10 +533,10 @@ export class NextDataModelingSubitem implements ChComponent {
               expanded={this.expanded}
               exportparts={`accordion__chevron:${PART_PREFIX}chevron,accordion__expandable:${PART_PREFIX}expandable,accordion__header:${PART_PREFIX}header`}
             >
-              {this.editMode(captions, disabledPart)}
+              {this.editMode(captions, disabledPart, waitingModePart)}
             </ch-accordion>
           ) : (
-            this.editMode(captions, disabledPart)
+            this.editMode(captions, disabledPart, waitingModePart)
           )
         }
       </Host>

@@ -204,34 +204,17 @@ export class NextDataModelingSubitem implements ChComponent {
   private getGxEditInputValue = (editElement: HTMLElement) =>
     (editElement.shadowRoot.firstElementChild as HTMLInputElement).value;
 
-  private confirmEdit = (event: UIEvent) => {
-    event.stopPropagation();
-    const trimmedInputName = this.getGxEditInputValue(this.inputName).trim();
+  private handleKeyDown =
+    (actionType: "edit" | "new") => (event: KeyboardEvent) => {
+      if (event.code !== KEY_CODES.ENTER) {
+        return;
+      }
+      event.preventDefault();
 
-    // Force re-render. Useful when the error type don't change but the
-    // displayed error text must change
-    this.errorType = "None";
+      this.confirmAction(actionType)(event);
+    };
 
-    if (trimmedInputName === "") {
-      this.errorType = "Empty";
-      return;
-    }
-
-    if (this.fieldNames.includes(trimmedInputName)) {
-      this.errorType = "AlreadyDefined";
-      this.errorName = trimmedInputName;
-      return;
-    }
-
-    if (this.name !== trimmedInputName) {
-      this.waitingMode = "editing";
-      this.editField.emit(trimmedInputName);
-    }
-
-    this.toggleEditMode(event);
-  };
-
-  private confirmNewField = (event: UIEvent) => {
+  private confirmAction = (actionType: "edit" | "new") => (event: UIEvent) => {
     event.stopPropagation();
     const trimmedInput = this.getGxEditInputValue(this.inputName).trim();
 
@@ -250,31 +233,41 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
 
-    this.waitingMode = "adding";
-    this.newField.emit(trimmedInput);
-    this.toggleShowNewField(event);
-  };
-
-  private keyDownEditField = (event: KeyboardEvent) => {
-    if (event.code !== KEY_CODES.ENTER) {
+    // New field
+    if (actionType === "new") {
+      this.waitingMode = "adding";
+      this.newField.emit(trimmedInput);
+      this.toggleShowNewField(event);
       return;
     }
-    event.preventDefault();
-    this.confirmEdit(event);
-  };
 
-  private keyDownNewField = (event: KeyboardEvent) => {
-    if (event.code !== KEY_CODES.ENTER) {
-      return;
+    // Edit field
+    if (this.name !== trimmedInput) {
+      this.waitingMode = "editing";
+      this.editField.emit(trimmedInput);
     }
-    event.preventDefault();
-    this.confirmNewField(event);
+
+    this.toggleEditMode(event);
   };
 
   private loading = () => (
     <svg class="waiting-mode__loading" height="28" viewBox="6 6 12 12">
       <circle cx="12" cy="12" r="4" stroke-width="1.125"></circle>
     </svg>
+  );
+
+  private errorText = () => (
+    <p class="error-text" part={`${PART_PREFIX}error-text`}>
+      {this.errorType === "Empty"
+        ? this.errorTexts.Empty
+        : [
+            this.errorTexts.AlreadyDefined1,
+            <span part={`${PART_PREFIX}error-text-name`}>
+              {this.errorName}
+            </span>,
+            this.errorTexts.AlreadyDefined2
+          ]}
+    </p>
   );
 
   private newFieldMode = (
@@ -312,22 +305,10 @@ export class NextDataModelingSubitem implements ChComponent {
           disabled={this.disabled}
           type="text"
           ref={el => (this.inputName = el as HTMLElement)}
-          onKeydown={this.keyDownNewField}
+          onKeydown={this.handleKeyDown("new")}
         ></gx-edit>,
 
-        this.errorType !== "None" && (
-          <p class="error-text" part={`${PART_PREFIX}error-text`}>
-            {this.errorType === "Empty"
-              ? this.errorTexts.Empty
-              : [
-                  this.errorTexts.AlreadyDefined1,
-                  <span part={`${PART_PREFIX}error-text-name`}>
-                    {this.errorName}
-                  </span>,
-                  this.errorTexts.AlreadyDefined2
-                ]}
-          </p>
-        ),
+        this.errorType !== "None" && this.errorText(),
 
         <button
           aria-label={captions.confirm}
@@ -335,7 +316,7 @@ export class NextDataModelingSubitem implements ChComponent {
           part={BUTTON_CONFIRM_PART(disabledPart)}
           disabled={this.disabled}
           type="button"
-          onClick={this.confirmNewField}
+          onClick={this.confirmAction("new")}
         ></button>,
 
         <button
@@ -450,8 +431,10 @@ export class NextDataModelingSubitem implements ChComponent {
                 type="text"
                 value={this.name}
                 ref={el => (this.inputName = el as HTMLElement)}
-                onKeydown={this.keyDownEditField}
-              ></gx-edit>
+                onKeydown={this.handleKeyDown("edit")}
+              ></gx-edit>,
+
+              this.errorType !== "None" && this.errorText()
             ]}
 
             <button
@@ -467,7 +450,9 @@ export class NextDataModelingSubitem implements ChComponent {
               disabled={this.disabled}
               type="button"
               onClick={
-                this.showEditMode ? this.confirmEdit : this.toggleEditMode
+                this.showEditMode
+                  ? this.confirmAction("edit")
+                  : this.toggleEditMode
               }
             ></button>
 

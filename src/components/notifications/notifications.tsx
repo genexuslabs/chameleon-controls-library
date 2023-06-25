@@ -1,10 +1,9 @@
 import { Component, Host, Listen, Prop, Watch, State, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { NOTIFICATION_ITEM_PARTS } from "../notifications-item/part-names";
 import { NotificationMessageWithDelay } from "./notifications-types";
 
 @Component({
-  shadow: true,
+  shadow: false,
   styleUrl: "notifications.scss",
   tag: "ch-notifications"
 })
@@ -112,25 +111,6 @@ export class ChNotifications implements ChComponent {
       ? this.timeToDismissNotifications * 1000
       : this.timeToDismissNotifications;
 
-  /**
-   * If the notification item has a defined type, it renames the exported parts
-   * to suffix the exported parts with the `notificationType`
-   */
-  private getExportParts(notificationType: string) {
-    if (!notificationType) {
-      return (
-        NOTIFICATION_ITEM_PARTS.MAIN +
-        "," +
-        NOTIFICATION_ITEM_PARTS.CLOSE_BUTTON
-      );
-    }
-
-    const partMain = `${NOTIFICATION_ITEM_PARTS.MAIN}:${NOTIFICATION_ITEM_PARTS.MAIN}--${notificationType}`;
-    const partCloseButton = `${NOTIFICATION_ITEM_PARTS.CLOSE_BUTTON}:${NOTIFICATION_ITEM_PARTS.CLOSE_BUTTON}--${notificationType}`;
-
-    return partMain + "," + partCloseButton;
-  }
-
   componentWillLoad() {
     this.addNewNotifications(this.notifications);
   }
@@ -149,12 +129,11 @@ export class ChNotifications implements ChComponent {
         aria-atomic="true"
         class={`ch-notifications-position--${this.position}`}
       >
-        {messages.map(({ Id, Value, delayToAnimate, notificationType }) => (
+        {messages.map(({ Id, Value, Class, delayToAnimate }) => (
           <ch-notifications-item
             id={Id.toString()}
             key={Id}
-            exportparts={this.getExportParts(notificationType)}
-            part={`notification-item ${notificationType}`}
+            class={Class}
             style={{
               "--delay-to-animate": `${
                 delayToAnimate * this.delayToAnimateNewNotifications
@@ -164,9 +143,8 @@ export class ChNotifications implements ChComponent {
               this.getTimeToDismiss() +
               delayToAnimate * this.delayToAnimateNewNotifications
             }
-          >
-            {Value}
-          </ch-notifications-item>
+            innerHTML={Value}
+          ></ch-notifications-item>
         ))}
       </Host>
     );

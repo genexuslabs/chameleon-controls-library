@@ -1,8 +1,8 @@
 export type NotificationMessage = {
   Id?: number;
   Value: string;
+  Class: string;
   closeOnClick?: boolean;
-  notificationType: string;
 };
 
 export type NotificationMessageWithDelay = NotificationMessage & {

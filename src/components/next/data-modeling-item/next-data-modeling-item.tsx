@@ -38,6 +38,24 @@ export type DataModelItemLabel =
   | "newEntity"
   | "newField";
 
+type ActionMetadata = {
+  label: string;
+  class: string;
+  part: string;
+  event: (event: UIEvent) => void;
+};
+
+type ActionsMetadata = {
+  [key in Mode]: ActionMetadata[];
+};
+
+type ActionsMetadataFunction = (
+  captions: DataModelItemLabels,
+  disabledPart: string
+) => ActionsMetadata;
+
+type Mode = "delete" | "edit" | "normal";
+
 const NAME = "name";
 const PART_PREFIX = "dm-item__";
 
@@ -59,6 +77,63 @@ const BUTTON_CANCEL_PART = (disabledPart: string) =>
   tag: "ch-next-data-modeling-item"
 })
 export class NextDataModelingSubitem implements ChComponent {
+  /**
+   * The metadata used for the different actions in the UI.
+   */
+  private actions: ActionsMetadataFunction = (
+    captions: DataModelItemLabels,
+    disabledPart: string
+  ) => ({
+    delete: [
+      {
+        // Confirm delete
+        label: captions.confirm,
+        class: undefined,
+        part: `${PART_PREFIX}button-delete-action confirm${disabledPart}`,
+        event: this.emitDelete
+      },
+      {
+        // Cancel delete
+        label: captions.cancel,
+        class: undefined,
+        part: `${PART_PREFIX}button-delete-action cancel${disabledPart}`,
+        event: this.toggleMode("delete")
+      }
+    ],
+    edit: [
+      {
+        // Confirm edit
+        label: captions.confirm,
+        class: CONFIRM_CLASS,
+        part: BUTTON_CONFIRM_PART(disabledPart),
+        event: this.confirmAction("edit")
+      },
+      {
+        // Cancel edit
+        label: captions.cancel,
+        class: CANCEL_CLASS,
+        part: BUTTON_CANCEL_PART(disabledPart),
+        event: this.toggleMode("edit")
+      }
+    ],
+    normal: [
+      {
+        // Edit action
+        label: captions.edit,
+        class: "button-primary button-edit",
+        part: `${PART_PREFIX}button-primary edit${disabledPart}`,
+        event: this.toggleMode("edit")
+      },
+      {
+        // Delete action
+        label: captions.delete,
+        class: "button-primary button-delete",
+        part: `${PART_PREFIX}button-primary delete${disabledPart}`,
+        event: this.toggleMode("delete")
+      }
+    ]
+  });
+
   private errorName: string;
 
   // Refs
@@ -66,8 +141,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   @State() errorType: ErrorType = "None";
 
-  @State() showDeleteMode = false;
-  @State() showEditMode = false;
+  @State() mode: Mode = "normal";
   @State() showNewFieldBtn = true;
 
   @State() expanded = false;
@@ -157,10 +231,7 @@ export class NextDataModelingSubitem implements ChComponent {
    */
   @Method()
   async hideWaitingMode() {
-    if (this.waitingMode === "deleting") {
-      this.showDeleteMode = false;
-    }
-
+    this.mode = "normal";
     this.waitingMode = "none";
   }
 
@@ -180,14 +251,9 @@ export class NextDataModelingSubitem implements ChComponent {
     this.deleteField.emit();
   };
 
-  private toggleEditMode = (event: UIEvent) => {
+  private toggleMode = (mode: Mode) => (event: UIEvent) => {
     event.stopPropagation();
-    this.showEditMode = !this.showEditMode;
-  };
-
-  private toggleDeleteMode = (event: UIEvent) => {
-    event.stopPropagation();
-    this.showDeleteMode = !this.showDeleteMode;
+    this.mode = this.mode === "normal" ? mode : "normal";
   };
 
   private toggleShowNewField = (event: UIEvent) => {
@@ -247,7 +313,7 @@ export class NextDataModelingSubitem implements ChComponent {
       this.editField.emit(trimmedInput);
     }
 
-    this.toggleEditMode(event);
+    this.toggleMode("edit")(event);
   };
 
   private loading = () => (
@@ -269,6 +335,57 @@ export class NextDataModelingSubitem implements ChComponent {
           ]}
     </p>
   );
+
+  private readonlyContent = (captions: DataModelItemLabels) => [
+    // Readonly
+    <h1
+      id={NAME}
+      class={{
+        name: true,
+        "name-entity": this.type === "ENTITY"
+      }}
+      part={`${PART_PREFIX}name`}
+    >
+      {this.name}
+    </h1>,
+
+    this.level !== 0 && this.type !== "ATT" && (
+      <span
+        class="type"
+        part={
+          this.type === "LEVEL"
+            ? `${PART_PREFIX}collection`
+            : `${PART_PREFIX}entity`
+        }
+      >
+        {this.type === "LEVEL"
+          ? captions.collection
+          : this.makeAttsPrettier(
+              this.entityNameToATTs[this.dataType],
+              this.maxAtts
+            )}
+      </span>
+    )
+  ];
+
+  private editableContent = (
+    actionType: "new" | "edit",
+    disabledPart: string,
+    errorPart: string
+  ) => [
+    // Editable
+    <gx-edit
+      class="name"
+      part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
+      disabled={this.disabled}
+      type="text"
+      value={this.name}
+      ref={el => (this.inputName = el as HTMLElement)}
+      onKeydown={this.handleKeyDown(actionType)}
+    ></gx-edit>,
+
+    this.errorType !== "None" && this.errorText()
+  ];
 
   private newFieldMode = (
     captions: DataModelItemLabels,
@@ -299,16 +416,7 @@ export class NextDataModelingSubitem implements ChComponent {
           {this.level === 0 ? captions.newEntity : captions.newField}
         </h1>,
 
-        <gx-edit
-          class="field-name"
-          part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
-          disabled={this.disabled}
-          type="text"
-          ref={el => (this.inputName = el as HTMLElement)}
-          onKeydown={this.handleKeyDown("new")}
-        ></gx-edit>,
-
-        this.errorType !== "None" && this.errorText(),
+        this.editableContent("new", disabledPart, errorPart),
 
         <button
           aria-label={captions.confirm}
@@ -330,17 +438,18 @@ export class NextDataModelingSubitem implements ChComponent {
       ]
     );
 
-  private editMode = (
+  private normalMode = (
     captions: DataModelItemLabels,
     errorPart: string,
     disabledPart: string,
-    waitingModePart: string
+    waitingModePart: string,
+    actions: ActionMetadata[]
   ) => [
     <div
       slot="header"
       class={{
         header: true,
-        "edit-mode": this.showEditMode
+        "edit-mode": this.mode === "edit"
       }}
       part={`${PART_PREFIX}header-content`}
       tabindex={this.level !== 0 ? "0" : undefined}
@@ -353,130 +462,42 @@ export class NextDataModelingSubitem implements ChComponent {
         ></div>
       )}
 
-      {!this.showEditMode && [
-        // Readonly
-        <h1
-          id={NAME}
-          class={{
-            name: true,
-            "name-entity": this.type === "ENTITY"
-          }}
-          part={`${PART_PREFIX}name`}
-        >
-          {this.name}
-        </h1>,
+      {this.mode === "edit"
+        ? this.editableContent("edit", disabledPart, errorPart)
+        : this.readonlyContent(captions)}
 
-        this.level !== 0 && this.type !== "ATT" && (
-          <span
-            class="type"
-            part={
-              this.type === "LEVEL"
-                ? `${PART_PREFIX}collection`
-                : `${PART_PREFIX}entity`
-            }
-          >
-            {this.type === "LEVEL"
-              ? captions.collection
-              : this.makeAttsPrettier(
-                  this.entityNameToATTs[this.dataType],
-                  this.maxAtts
-                )}
-          </span>
-        )
-      ]}
+      <div
+        class={{
+          "delete-mode": this.mode === "delete",
+          optimization: this.mode !== "delete",
+          "waiting-mode": this.waitingMode !== "none"
+        }}
+        part={`${PART_PREFIX}delete-mode${waitingModePart}`}
+      >
+        {this.waitingMode === "none"
+          ? [
+              this.mode === "delete" && captions.deleteMode, // Delete Mode
 
-      {
-        // Delete Mode
-        this.showDeleteMode ? (
-          <div
-            class={{
-              "delete-mode": true,
-              "waiting-mode": this.waitingMode !== "none"
-            }}
-            part={`${PART_PREFIX}delete-mode${waitingModePart}`}
-          >
-            {this.waitingMode === "none"
-              ? captions.deleteMode
-              : captions.deleting}
-
-            {this.waitingMode === "none"
-              ? [
-                  <button // Confirm delete
-                    aria-label={captions.confirm}
-                    part={`${PART_PREFIX}button-delete-action confirm${disabledPart}`}
-                    disabled={this.disabled}
-                    type="button"
-                    onClick={this.emitDelete}
-                  ></button>,
-
-                  <button // Cancel delete
-                    aria-label={captions.cancel}
-                    part={`${PART_PREFIX}button-delete-action cancel${disabledPart}`}
-                    disabled={this.disabled}
-                    type="button"
-                    onClick={this.toggleDeleteMode}
-                  ></button>
-                ]
-              : this.loading()}
-          </div>
-        ) : (
-          // Dummy div to trigger an Stencil optimization by reusing DOM nodes
-          <div class="optimization">
-            {this.showEditMode && [
-              // Editable
-              <gx-edit
-                class="name"
-                part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
+              <button
+                aria-label={actions[0].label}
+                class={actions[0].class}
+                part={actions[0].part}
                 disabled={this.disabled}
-                type="text"
-                value={this.name}
-                ref={el => (this.inputName = el as HTMLElement)}
-                onKeydown={this.handleKeyDown("edit")}
-              ></gx-edit>,
+                type="button"
+                onClick={actions[0].event}
+              ></button>,
 
-              this.errorType !== "None" && this.errorText()
-            ]}
-
-            <button
-              aria-label={captions.edit}
-              class={
-                this.showEditMode ? CONFIRM_CLASS : "button-primary button-edit"
-              }
-              part={
-                this.showEditMode
-                  ? BUTTON_CONFIRM_PART(disabledPart)
-                  : `${PART_PREFIX}button-primary edit${disabledPart}`
-              }
-              disabled={this.disabled}
-              type="button"
-              onClick={
-                this.showEditMode
-                  ? this.confirmAction("edit")
-                  : this.toggleEditMode
-              }
-            ></button>
-
-            <button
-              aria-label={captions.delete}
-              class={
-                this.showEditMode
-                  ? CANCEL_CLASS
-                  : "button-primary button-delete"
-              }
-              part={
-                this.showEditMode
-                  ? BUTTON_CANCEL_PART(disabledPart)
-                  : `${PART_PREFIX}button-primary delete${disabledPart}`
-              }
-              disabled={this.disabled}
-              type="button"
-              onClick={
-                this.showEditMode ? this.toggleEditMode : this.toggleDeleteMode
-              }
-            ></button>
-          </div>
-        )
-      }
+              <button
+                aria-label={actions[1].label}
+                class={actions[1].class}
+                part={actions[1].part}
+                disabled={this.disabled}
+                type="button"
+                onClick={actions[1].event}
+              ></button>
+            ]
+          : [captions.deleting, this.loading()]}
+      </div>
     </div>,
 
     this.type === "LEVEL" &&
@@ -523,15 +544,22 @@ export class NextDataModelingSubitem implements ChComponent {
               expanded={this.expanded}
               exportparts={`accordion__chevron:${PART_PREFIX}chevron,accordion__expandable:${PART_PREFIX}expandable,accordion__header:${PART_PREFIX}header`}
             >
-              {this.editMode(
+              {this.normalMode(
                 captions,
                 errorPart,
                 disabledPart,
-                waitingModePart
+                waitingModePart,
+                this.actions(captions, disabledPart)[this.mode]
               )}
             </ch-accordion>
           ) : (
-            this.editMode(captions, errorPart, disabledPart, waitingModePart)
+            this.normalMode(
+              captions,
+              errorPart,
+              disabledPart,
+              waitingModePart,
+              this.actions(captions, disabledPart)[this.mode]
+            )
           )
         }
       </Host>

@@ -231,7 +231,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * Fired when a new file is comitted to be added
    */
-  @Event() newField: EventEmitter<string>;
+  @Event() newField: EventEmitter<ItemInfo>;
 
   @Listen("expandedChange")
   handleExpandedChange(event: CustomEvent) {
@@ -321,7 +321,7 @@ export class NextDataModelingSubitem implements ChComponent {
         type:
           this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
       };
-      this.newField.emit(trimmedInput);
+      this.newField.emit(this.lastEditInfo);
       this.toggleShowNewField(event);
       return;
     }

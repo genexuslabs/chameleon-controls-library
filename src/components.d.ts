@@ -9,7 +9,7 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { DataModelItemLabels, ErrorText } from "./components/next/data-modeling-subitem/next-data-modeling-subitem";
+import { DataModelItemLabels, ErrorText, ItemInfo } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
@@ -462,49 +462,15 @@ export namespace Components {
         /**
           * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
          */
-        "addNewEntityMode": boolean;
-        /**
-          * The label of the delete button. Important for accessibility.
-         */
-        "deleteButtonLabel": string;
-        /**
-          * The description of the entity.
-         */
-        "description": string;
-        /**
-          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
-         */
-        "disabled": false;
-        /**
-          * The label of the edit button. Important for accessibility.
-         */
-        "editButtonLabel": string;
-        /**
-          * The name of the entity.
-         */
-        "name": string;
-    }
-    interface ChNextDataModelingSubitem {
-        /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
-         */
         "addNewFieldMode": boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
         "captions": DataModelItemLabels;
         /**
-          * The caption used when the entity is a collection (`type === "LEVEL"`).
-         */
-        "collectionCaption": string;
-        /**
           * The dataType of the field.
          */
         "dataType": string;
-        /**
-          * The description of the field.
-         */
-        "description": string;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
@@ -522,9 +488,17 @@ export namespace Components {
          */
         "fieldNames": string[];
         /**
+          * Hides the waiting mode to continue editing the field.
+         */
+        "hideWaitingMode": () => Promise<void>;
+        /**
           * This property specifies at which collection level the field is located.
          */
         "level": 0 | 1 | 2;
+        /**
+          * Determine the maximum amount of ATTs displayed per entity.
+         */
+        "maxAtts": number;
         /**
           * The name of the field.
          */
@@ -1024,12 +998,6 @@ declare global {
         prototype: HTMLChNextDataModelingItemElement;
         new (): HTMLChNextDataModelingItemElement;
     };
-    interface HTMLChNextDataModelingSubitemElement extends Components.ChNextDataModelingSubitem, HTMLStencilElement {
-    }
-    var HTMLChNextDataModelingSubitemElement: {
-        prototype: HTMLChNextDataModelingSubitemElement;
-        new (): HTMLChNextDataModelingSubitemElement;
-    };
     interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
     }
     var HTMLChNextProgressBarElement: {
@@ -1176,7 +1144,6 @@ declare global {
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
-        "ch-next-data-modeling-subitem": HTMLChNextDataModelingSubitemElement;
         "ch-next-progress-bar": HTMLChNextProgressBarElement;
         "ch-notifications": HTMLChNotificationsElement;
         "ch-notifications-item": HTMLChNotificationsItemElement;
@@ -1668,57 +1635,15 @@ declare namespace LocalJSX {
         /**
           * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
          */
-        "addNewEntityMode"?: boolean;
-        /**
-          * The label of the delete button. Important for accessibility.
-         */
-        "deleteButtonLabel"?: string;
-        /**
-          * The description of the entity.
-         */
-        "description"?: string;
-        /**
-          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
-         */
-        "disabled"?: false;
-        /**
-          * The label of the edit button. Important for accessibility.
-         */
-        "editButtonLabel"?: string;
-        /**
-          * The name of the entity.
-         */
-        "name"?: string;
-        /**
-          * Fired when the delete button is clicked
-         */
-        "onDeleteButtonClick"?: (event: CustomEvent<any>) => void;
-        /**
-          * Fired when the edit button is clicked
-         */
-        "onEditButtonClick"?: (event: CustomEvent<any>) => void;
-    }
-    interface ChNextDataModelingSubitem {
-        /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
-         */
         "addNewFieldMode"?: boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
         "captions"?: DataModelItemLabels;
         /**
-          * The caption used when the entity is a collection (`type === "LEVEL"`).
-         */
-        "collectionCaption"?: string;
-        /**
           * The dataType of the field.
          */
         "dataType"?: string;
-        /**
-          * The description of the field.
-         */
-        "description"?: string;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
@@ -1740,6 +1665,10 @@ declare namespace LocalJSX {
          */
         "level"?: 0 | 1 | 2;
         /**
+          * Determine the maximum amount of ATTs displayed per entity.
+         */
+        "maxAtts"?: number;
+        /**
           * The name of the field.
          */
         "name"?: string;
@@ -1750,7 +1679,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the item is edited
          */
-        "onEditField"?: (event: CustomEvent<{ name: string; description: string }>) => void;
+        "onEditField"?: (event: CustomEvent<ItemInfo>) => void;
         /**
           * Fired when a new file is comitted to be added
          */
@@ -2179,7 +2108,6 @@ declare namespace LocalJSX {
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
-        "ch-next-data-modeling-subitem": ChNextDataModelingSubitem;
         "ch-next-progress-bar": ChNextProgressBar;
         "ch-notifications": ChNotifications;
         "ch-notifications-item": ChNotificationsItem;
@@ -2231,7 +2159,6 @@ declare module "@stencil/core" {
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
-            "ch-next-data-modeling-subitem": LocalJSX.ChNextDataModelingSubitem & JSXBase.HTMLAttributes<HTMLChNextDataModelingSubitemElement>;
             "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
             "ch-notifications": LocalJSX.ChNotifications & JSXBase.HTMLAttributes<HTMLChNotificationsElement>;
             "ch-notifications-item": LocalJSX.ChNotificationsItem & JSXBase.HTMLAttributes<HTMLChNotificationsItemElement>;

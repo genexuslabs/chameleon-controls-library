@@ -13,7 +13,11 @@ import { Component as ChComponent } from "../../../common/interfaces";
 import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
 import { KEY_CODES } from "../../../common/reserverd-names";
 
-export type ErrorText = "Empty" | "AlreadyDefined1" | "AlreadyDefined2";
+export type ErrorText =
+  | "Empty"
+  | "AlreadyDefined1"
+  | "AlreadyDefinedEntity1"
+  | "AlreadyDefined2";
 export type ErrorType = "Empty" | "AlreadyDefined" | "None";
 
 export type DataModelItemLabels = { [key in DataModelItemLabel]: string };
@@ -24,6 +28,9 @@ export type DataModelItemLabels = { [key in DataModelItemLabel]: string };
  * | `collection` | The caption used when the entity is a collection (`type === "LEVEL"`).   |
  */
 export type DataModelItemLabel =
+  | "ATT"
+  | "ENTITY"
+  | "LEVEL"
   | "adding"
   | "addNewEntity"
   | "addNewField"
@@ -37,6 +44,8 @@ export type DataModelItemLabel =
   | "deleteMode"
   | "newEntity"
   | "newField";
+
+export type ItemInfo = { name: string; type?: EntityItemType };
 
 type ActionMetadata = {
   label: string;
@@ -67,6 +76,8 @@ const BUTTON_CONFIRM_PART = (disabledPart: string) =>
 
 const BUTTON_CANCEL_PART = (disabledPart: string) =>
   `${PART_PREFIX}button-action cancel${disabledPart}`;
+
+const SELECT_OPTION_PART = `${PART_PREFIX}select-option`;
 
 /**
  * @slot items - The first level items (entities) of the data model
@@ -135,17 +146,18 @@ export class NextDataModelingSubitem implements ChComponent {
   });
 
   private errorName: string;
+  private lastEditInfo: ItemInfo = { name: "", type: "ATT" };
 
   // Refs
   private inputName: HTMLElement;
+  private inputType: HTMLSelectElement;
 
-  @State() errorType: ErrorType = "None";
-
-  @State() mode: Mode = "normal";
   @State() showNewFieldBtn = true;
-
   @State() expanded = false;
 
+  // Modes
+  @State() errorType: ErrorType = "None";
+  @State() mode: Mode = "normal";
   @State() waitingMode: "adding" | "deleting" | "editing" | "none" = "none";
 
   /**
@@ -214,7 +226,7 @@ export class NextDataModelingSubitem implements ChComponent {
   /**
    * Fired when the item is edited
    */
-  @Event() editField: EventEmitter<string>;
+  @Event() editField: EventEmitter<ItemInfo>;
 
   /**
    * Fired when a new file is comitted to be added
@@ -293,7 +305,8 @@ export class NextDataModelingSubitem implements ChComponent {
       return;
     }
 
-    if (this.fieldNames.includes(trimmedInput)) {
+    // The field already exists
+    if (this.name !== trimmedInput && this.fieldNames.includes(trimmedInput)) {
       this.errorType = "AlreadyDefined";
       this.errorName = trimmedInput;
       return;
@@ -302,15 +315,30 @@ export class NextDataModelingSubitem implements ChComponent {
     // New field
     if (actionType === "new") {
       this.waitingMode = "adding";
+
+      this.lastEditInfo = {
+        name: trimmedInput,
+        type:
+          this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
+      };
       this.newField.emit(trimmedInput);
       this.toggleShowNewField(event);
       return;
     }
 
-    // Edit field
-    if (this.name !== trimmedInput) {
+    // Edit field (level 0 fields don't have a type, because they are always entities)
+    if (
+      this.name !== trimmedInput ||
+      (this.level !== 0 && this.type !== this.inputType.value)
+    ) {
       this.waitingMode = "editing";
-      this.editField.emit(trimmedInput);
+
+      this.lastEditInfo = {
+        name: trimmedInput,
+        type:
+          this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
+      };
+      this.editField.emit(this.lastEditInfo);
     }
 
     this.toggleMode("edit")(event);
@@ -322,46 +350,50 @@ export class NextDataModelingSubitem implements ChComponent {
     </svg>
   );
 
-  private errorText = () => (
+  private errorText = (errorTexts: { [key in ErrorText]: string }) => (
     <p class="error-text" part={`${PART_PREFIX}error-text`}>
       {this.errorType === "Empty"
-        ? this.errorTexts.Empty
+        ? errorTexts.Empty
         : [
-            this.errorTexts.AlreadyDefined1,
+            this.level === 0
+              ? errorTexts.AlreadyDefinedEntity1
+              : errorTexts.AlreadyDefined1,
             <span part={`${PART_PREFIX}error-text-name`}>
               {this.errorName}
             </span>,
-            this.errorTexts.AlreadyDefined2
+            errorTexts.AlreadyDefined2
           ]}
     </p>
   );
 
-  private readonlyContent = (captions: DataModelItemLabels) => [
+  private readonlyContent = (
+    captions: DataModelItemLabels,
+    name: string,
+    type: EntityItemType
+  ) => [
     // Readonly
     <h1
       id={NAME}
       class={{
         name: true,
-        "name-entity": this.type === "ENTITY"
+        "name-entity": type === "ENTITY"
       }}
       part={`${PART_PREFIX}name`}
     >
-      {this.name}
+      {name}
     </h1>,
 
-    this.level !== 0 && this.type !== "ATT" && (
+    this.level !== 0 && type !== "ATT" && (
       <span
         class="type"
         part={
-          this.type === "LEVEL"
-            ? `${PART_PREFIX}collection`
-            : `${PART_PREFIX}entity`
+          type === "LEVEL" ? `${PART_PREFIX}collection` : `${PART_PREFIX}entity`
         }
       >
-        {this.type === "LEVEL"
+        {type === "LEVEL"
           ? captions.collection
           : this.makeAttsPrettier(
-              this.entityNameToATTs[this.dataType],
+              this.entityNameToATTs[this.dataType] || [],
               this.maxAtts
             )}
       </span>
@@ -370,12 +402,13 @@ export class NextDataModelingSubitem implements ChComponent {
 
   private editableContent = (
     actionType: "new" | "edit",
+    captions: DataModelItemLabels,
     disabledPart: string,
     errorPart: string
   ) => [
     // Editable
     <gx-edit
-      class="name"
+      class="field-name"
       part={`${PART_PREFIX}input${errorPart}${disabledPart}`}
       disabled={this.disabled}
       type="text"
@@ -384,7 +417,42 @@ export class NextDataModelingSubitem implements ChComponent {
       onKeydown={this.handleKeyDown(actionType)}
     ></gx-edit>,
 
-    this.errorType !== "None" && this.errorText()
+    this.level !== 0 && (
+      <div class="select-wrapper">
+        <select
+          class="select"
+          part={`${PART_PREFIX}input${errorPart}${disabledPart} select`}
+          disabled={this.disabled}
+          ref={el => (this.inputType = el)}
+        >
+          <option
+            part={SELECT_OPTION_PART}
+            value={"ATT" as EntityItemType}
+            selected={this.type === "ATT"}
+          >
+            {captions.ATT}
+          </option>
+
+          <option
+            part={SELECT_OPTION_PART}
+            value={"ENTITY" as EntityItemType}
+            selected={this.type === "ENTITY"}
+          >
+            {captions.ENTITY}
+          </option>
+
+          <option
+            part={SELECT_OPTION_PART}
+            value={"LEVEL" as EntityItemType}
+            selected={this.type === "LEVEL"}
+          >
+            {captions.LEVEL}
+          </option>
+        </select>
+      </div>
+    ),
+
+    this.errorType !== "None" && this.errorText(this.errorTexts)
   ];
 
   private newFieldMode = (
@@ -416,7 +484,9 @@ export class NextDataModelingSubitem implements ChComponent {
           {this.level === 0 ? captions.newEntity : captions.newField}
         </h1>,
 
-        this.editableContent("new", disabledPart, errorPart),
+        this.editableContent("new", captions, disabledPart, errorPart),
+
+        this.errorType !== "None" && this.errorText(this.errorTexts),
 
         <button
           aria-label={captions.confirm}
@@ -443,7 +513,8 @@ export class NextDataModelingSubitem implements ChComponent {
     errorPart: string,
     disabledPart: string,
     waitingModePart: string,
-    actions: ActionMetadata[]
+    actions: ActionMetadata[],
+    showWaitingModeTexts: boolean
   ) => [
     <div
       slot="header"
@@ -463,8 +534,12 @@ export class NextDataModelingSubitem implements ChComponent {
       )}
 
       {this.mode === "edit"
-        ? this.editableContent("edit", disabledPart, errorPart)
-        : this.readonlyContent(captions)}
+        ? this.editableContent("edit", captions, disabledPart, errorPart)
+        : this.readonlyContent(
+            captions,
+            showWaitingModeTexts ? this.lastEditInfo.name : this.name,
+            showWaitingModeTexts ? this.lastEditInfo.type : this.type
+          )}
 
       <div
         class={{
@@ -496,7 +571,7 @@ export class NextDataModelingSubitem implements ChComponent {
                 onClick={actions[1].event}
               ></button>
             ]
-          : [captions.deleting, this.loading()]}
+          : [captions[this.waitingMode], this.loading()]}
       </div>
     </div>,
 
@@ -520,6 +595,9 @@ export class NextDataModelingSubitem implements ChComponent {
       this.waitingMode === "none" ? "" : ` ${PART_PREFIX}waiting-mode`;
     const errorPart = this.errorType !== "None" ? " error" : "";
 
+    const showWaitingModeTexts =
+      this.waitingMode === "editing" || this.waitingMode === "adding";
+
     return (
       <Host
         role="listitem"
@@ -534,7 +612,7 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
-          this.addNewFieldMode ? (
+          this.addNewFieldMode && this.waitingMode !== "adding" ? (
             this.newFieldMode(captions, errorPart, disabledPart)
           ) : this.level === 0 ? (
             <ch-accordion
@@ -549,7 +627,8 @@ export class NextDataModelingSubitem implements ChComponent {
                 errorPart,
                 disabledPart,
                 waitingModePart,
-                this.actions(captions, disabledPart)[this.mode]
+                this.actions(captions, disabledPart)[this.mode],
+                showWaitingModeTexts
               )}
             </ch-accordion>
           ) : (
@@ -558,7 +637,8 @@ export class NextDataModelingSubitem implements ChComponent {
               errorPart,
               disabledPart,
               waitingModePart,
-              this.actions(captions, disabledPart)[this.mode]
+              this.actions(captions, disabledPart)[this.mode],
+              showWaitingModeTexts
             )
           )
         }

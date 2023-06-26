@@ -1,4 +1,5 @@
 $separation-between-icons: 12px;
+$transition-duration: 250ms;
 
 // Reset browser defaults
 :where(button) {
@@ -40,16 +41,15 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 :host {
   display: grid;
+  --chevron-color: #ccc;
 }
 
 :host(.ch-next-data-modeling--add-new-field) {
-  grid-template: "name . ." min-content "field-name confirm cancel" 1fr "error-text . ." min-content / 1fr 32px 32px;
-  column-gap: 8px;
+  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . . ." min-content / 1fr min-content 56px 32px;
 }
 
 :host(.ch-next-data-modeling--add-new-field-level-2) {
-  grid-template: "sub-field name . ." min-content ". field-name confirm cancel" 1fr ". error-text . ." min-content / min-content 1fr 32px 32px;
-  column-gap: 8px;
+  grid-template: "sub-field name . . ." min-content ". field-name type confirm cancel" 1fr ". error-text . . ." min-content / min-content 1fr min-content 56px 32px;
 }
 
 :host(:hover),
@@ -87,6 +87,7 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 .button-confirm {
   grid-area: confirm;
+  margin-inline: 16px 8px;
 }
 
 .button-cancel {
@@ -113,11 +114,7 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 }
 
 .edit-mode {
-  grid-template: "sub-field name confirm cancel" min-content "sub-field error-text-name confirm cancel" min-content / min-content 1fr 56px 32px;
-
-  .button-confirm {
-    margin-inline: 16px 8px;
-  }
+  grid-template: "sub-field field-name type confirm cancel" min-content "sub-field error-text error-text confirm cancel" min-content / min-content 1fr min-content 56px 32px;
 }
 
 .name {
@@ -132,9 +129,44 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
   grid-area: type;
 }
 
+// - - - - - - - - - - - - - - - -
+//             Select
+// - - - - - - - - - - - - - - - -
+.select-wrapper {
+  --chevron: url('data:image/svg+xml,<svg width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="M1.41 0L6 4.59L10.59 0L12 1.42L6 7.42L0 1.42L1.41 0Z"/></svg>');
+  grid-area: type;
+  position: relative;
+
+  &::after {
+    content: "";
+    display: flex;
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(50% - 3.75px);
+    width: 12px;
+    height: 7.5px;
+    margin-inline: 8px 16px;
+    -webkit-mask: var(--chevron) no-repeat;
+    background-color: var(--chevron-color);
+    pointer-events: none;
+  }
+}
+
+.select {
+  display: flex;
+  height: 100%;
+  appearance: none;
+  background-color: unset;
+  cursor: pointer;
+  outline: unset;
+
+  transition-property: background-color, border-color, color;
+  transition-duration: $transition-duration;
+}
+
 .button-new-entity {
   align-items: center;
-  transition: color 250ms;
+  transition: color $transition-duration;
 }
 
 // - - - - - - - - - - - - - - - -
@@ -176,14 +208,15 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 }
 
 // Delete mode
-.delete-mode {
+.delete-mode,
+.waiting-mode {
   grid-area: delete;
   display: grid;
   grid-template-columns: 1fr 24px 24px;
   align-items: center;
   column-gap: 8px;
   cursor: auto; // Remove "cursor: pointer" inherited from <button> tag
-  animation: fade-in 250ms ease-in-out;
+  animation: fade-in $transition-duration ease-in-out;
 }
 
 // - - - - - - - - - - - - - - - -

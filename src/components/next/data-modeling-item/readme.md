@@ -28,7 +28,7 @@
 | ------------- | ---------------------------------------------- | ------------------------------------------------------- |
 | `deleteField` | Fired when the item is confirmed to be deleted | `CustomEvent<any>`                                      |
 | `editField`   | Fired when the item is edited                  | `CustomEvent<{ name: string; type?: EntityItemType; }>` |
-| `newField`    | Fired when a new file is comitted to be added  | `CustomEvent<string>`                                   |
+| `newField`    | Fired when a new file is comitted to be added  | `CustomEvent<{ name: string; type?: EntityItemType; }>` |
 
 
 ## Methods

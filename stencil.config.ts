@@ -30,11 +30,7 @@ export const config: Config = {
       ]
     },
     {
-      components: [
-        "ch-next-data-modeling",
-        "ch-next-data-modeling-item",
-        "ch-next-data-modeling-subitem"
-      ]
+      components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
     }
   ]
 };

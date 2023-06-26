@@ -5,7 +5,7 @@ import { Component as ChComponent } from "../../../common/interfaces";
  * @slot - The first level items (entities) of the data model
  */
 @Component({
-  shadow: true,
+  shadow: false,
   styleUrl: "next-data-modeling.scss",
   tag: "ch-next-data-modeling"
 })

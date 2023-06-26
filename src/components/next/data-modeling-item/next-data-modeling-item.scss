@@ -1,11 +1,22 @@
-$separation-between-icons: 24px;
+$separation-between-icons: 12px;
+$transition-duration: 250ms;
 
 // Reset browser defaults
 :where(button) {
   all: unset;
-  display: none; // By default, they are hidden
+  display: inline-flex;
   cursor: pointer;
 }
+
+// // WA to add mouse pointer un gx-button
+// gx-button {
+//   cursor: pointer;
+// }
+
+// // WA to disable the gx-button
+// .gx-disabled {
+//   pointer-events: none;
+// }
 
 *,
 ::before,
@@ -13,16 +24,9 @@ $separation-between-icons: 24px;
   box-sizing: border-box;
 }
 
-.header {
-  display: grid;
-  grid-template: "name edit delete" 1fr / 1fr min-content min-content;
-  align-items: center;
-  margin-inline-end: $separation-between-icons;
-}
-
 // Reset browser defaults
-.name,
-.description {
+.error-text,
+.name {
   color: inherit;
   font: inherit;
   margin: 0;
@@ -30,39 +34,241 @@ $separation-between-icons: 24px;
   outline: 0;
 }
 
-.name {
-  grid-area: name;
+// WA to customize auto-fill in gx-edit
+gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto-fill:hover) {
+  background-color: var(--gx-edit-auto-fill-background-color);
 }
 
-.edit-button {
-  grid-area: edit;
-  align-self: center;
-  width: 21px;
-  height: 20px;
-  padding: 2px;
+:host {
+  display: grid;
+  --chevron-color: #ccc;
+}
 
-  & > .img {
-    -webkit-mask: var(--edit-icon) no-repeat;
+:host(:hover),
+:host(:focus-within) {
+  .button-primary {
+    display: grid;
+
+    &::before {
+      content: "";
+    }
   }
 }
 
-.delete-button {
-  grid-area: delete;
-  align-self: center;
-  width: 18px;
-  height: 20px;
-  padding: 2px;
-  margin-inline-start: $separation-between-icons;
-
-  & > .img {
-    -webkit-mask: var(--delete-icon) no-repeat;
-  }
+:host(.gx-disabled) {
+  pointer-events: none;
 }
 
+// - - - - - - - - - - - - - - - -
+//          Add new field
+// - - - - - - - - - - - - - - - -
+.add-new-field {
+  display: grid;
+  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . . ." min-content / 1fr min-content 56px 32px;
+  row-gap: 8px;
+}
+
+.add-new-field-level-2 {
+  display: grid;
+  grid-template: "sub-field name . . ." min-content ". field-name type confirm cancel" 1fr ". error-text . . ." min-content / min-content 1fr min-content 56px 32px;
+  row-gap: 4px;
+}
+
+// Accordion
 .accordion:hover,
 .accordion:focus-within {
   .edit-button,
   .delete-button {
     display: grid;
+  }
+}
+
+.sub-field {
+  grid-area: sub-field;
+}
+
+.field-name {
+  grid-area: field-name;
+  margin-inline-end: 8px;
+}
+
+.button-confirm {
+  grid-area: confirm;
+  margin-inline: 16px 8px;
+}
+
+.button-cancel {
+  grid-area: cancel;
+}
+
+.error-text {
+  grid-area: error-text;
+  display: flex;
+  white-space: break-spaces; // Show empty spaces even when using "display: flex"
+}
+
+.header {
+  display: grid;
+  grid-template: "sub-field name type edit delete" 1fr / min-content max-content 1fr min-content max-content;
+  align-items: center;
+  width: 100%;
+  margin-inline-end: $separation-between-icons;
+}
+
+// Separation between the actions and the chevron
+.accordion::part(accordion__header) {
+  column-gap: 24px;
+}
+
+.edit-mode {
+  grid-template: "sub-field field-name type confirm cancel" min-content "sub-field error-text error-text confirm cancel" min-content / min-content 1fr min-content 56px 32px;
+}
+
+.name {
+  grid-area: name;
+
+  &-entity {
+    text-decoration: underline;
+  }
+}
+
+.type {
+  grid-area: type;
+}
+
+// - - - - - - - - - - - - - - - -
+//             Select
+// - - - - - - - - - - - - - - - -
+.select-wrapper {
+  --chevron: url('data:image/svg+xml,<svg width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg"><path d="M1.41 0L6 4.59L10.59 0L12 1.42L6 7.42L0 1.42L1.41 0Z"/></svg>');
+  grid-area: type;
+  position: relative;
+
+  &::after {
+    content: "";
+    display: flex;
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(50% - 3.75px);
+    width: 12px;
+    height: 7.5px;
+    margin-inline: 8px 16px;
+    -webkit-mask: var(--chevron) no-repeat;
+    background-color: var(--chevron-color);
+    pointer-events: none;
+  }
+}
+
+.select {
+  display: flex;
+  height: 100%;
+  appearance: none;
+  background-color: unset;
+  cursor: pointer;
+  outline: unset;
+
+  transition-property: background-color, border-color, color;
+  transition-duration: $transition-duration;
+}
+
+.button-new-entity {
+  align-items: center;
+  transition: color $transition-duration;
+}
+
+// - - - - - - - - - - - - - - - -
+//         Primary actions
+// - - - - - - - - - - - - - - - -
+// This class is only used to trigger an Stencil optimization by reusing DOM nodes
+.optimization {
+  display: contents;
+}
+
+.button-primary {
+  display: none; // By default, it's hidden
+  align-self: center;
+  height: 20px;
+  padding: 2px;
+
+  &::before {
+    display: flex;
+  }
+}
+
+.button-edit {
+  grid-area: edit;
+  width: 21px;
+
+  &::before {
+    -webkit-mask: var(--edit-icon) no-repeat;
+  }
+}
+
+.button-delete {
+  grid-area: delete;
+  width: 18px;
+  margin-inline-start: $separation-between-icons;
+
+  &::before {
+    -webkit-mask: var(--delete-icon) no-repeat;
+  }
+}
+
+// Delete mode
+.delete-mode,
+.waiting-mode {
+  grid-area: delete;
+  display: grid;
+  grid-template-columns: 1fr 24px 24px;
+  align-items: center;
+  column-gap: 8px;
+  cursor: auto; // Remove "cursor: pointer" inherited from <button> tag
+  animation: fade-in $transition-duration ease-in-out;
+}
+
+// - - - - - - - - - - - - - - - -
+//          Waiting mode
+// - - - - - - - - - - - - - - - -
+.waiting-mode {
+  grid-template-columns: 24px 1fr;
+}
+
+.waiting-mode__loading {
+  order: -1;
+  width: 100%;
+  fill: none;
+  animation: rotate 1.5s linear 0.125s infinite;
+}
+
+circle {
+  stroke: currentColor;
+  stroke-dasharray: 1, 200;
+  stroke-linecap: round;
+  animation: indeterminate-loading 1.25s ease-in-out 0.125s infinite;
+}
+
+// - - - - - - - - - - - - - - - -
+//           Key frames
+// - - - - - - - - - - - - - - - -
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes indeterminate-loading {
+  50%,
+  60% {
+    stroke-dasharray: 20, 200;
+    stroke-dashoffset: -8px;
+  }
+  100% {
+    stroke-dashoffset: -24px;
   }
 }

@@ -24,6 +24,14 @@
 | `notificationDismiss` |             | `CustomEvent<number>` |
 
 
+## Shadow Parts
+
+| Part                                | Description |
+| ----------------------------------- | ----------- |
+| `"notification-item__close-button"` |             |
+| `"notification-item__main"`         |             |
+
+
 ## Dependencies
 
 ### Used by

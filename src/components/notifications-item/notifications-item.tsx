@@ -8,7 +8,6 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { NOTIFICATION_ITEM_PARTS } from "./part-names";
 
 @Component({
   shadow: true,
@@ -91,7 +90,7 @@ export class ChNotificationsItem implements ChComponent {
       <Host>
         <button
           class="main"
-          part={NOTIFICATION_ITEM_PARTS.MAIN}
+          part="notification-item__main"
           type="button"
           onClick={this.handleNotificationClick(true)}
         >
@@ -110,7 +109,7 @@ export class ChNotificationsItem implements ChComponent {
           <button
             aria-label={this.closeButtonLabel}
             class={!this.buttonImgSrc ? "close-image" : undefined}
-            part={NOTIFICATION_ITEM_PARTS.CLOSE_BUTTON}
+            part="notification-item__close-button"
             type="button"
             onClick={this.handleNotificationDismiss(true)}
           >

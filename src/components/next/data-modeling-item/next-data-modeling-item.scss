@@ -44,14 +44,6 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
   --chevron-color: #ccc;
 }
 
-:host(.ch-next-data-modeling--add-new-field) {
-  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . . ." min-content / 1fr min-content 56px 32px;
-}
-
-:host(.ch-next-data-modeling--add-new-field-level-2) {
-  grid-template: "sub-field name . . ." min-content ". field-name type confirm cancel" 1fr ". error-text . . ." min-content / min-content 1fr min-content 56px 32px;
-}
-
 :host(:hover),
 :host(:focus-within) {
   .button-primary {
@@ -65,6 +57,21 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 :host(.gx-disabled) {
   pointer-events: none;
+}
+
+// - - - - - - - - - - - - - - - -
+//          Add new field
+// - - - - - - - - - - - - - - - -
+.add-new-field {
+  display: grid;
+  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . . ." min-content / 1fr min-content 56px 32px;
+  row-gap: 8px;
+}
+
+.add-new-field-level-2 {
+  display: grid;
+  grid-template: "sub-field name . . ." min-content ". field-name type confirm cancel" 1fr ". error-text . . ." min-content / min-content 1fr min-content 56px 32px;
+  row-gap: 4px;
 }
 
 // Accordion
@@ -102,7 +109,7 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 .header {
   display: grid;
-  grid-template: "sub-field name type edit delete" 1fr / min-content min-content 1fr min-content max-content;
+  grid-template: "sub-field name type edit delete" 1fr / min-content max-content 1fr min-content max-content;
   align-items: center;
   width: 100%;
   margin-inline-end: $separation-between-icons;

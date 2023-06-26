@@ -458,7 +458,8 @@ export class NextDataModelingSubitem implements ChComponent {
   private newFieldMode = (
     captions: DataModelItemLabels,
     errorPart: string,
-    disabledPart: string
+    disabledPart: string,
+    addNewField: boolean
   ) =>
     this.showNewFieldBtn ? (
       <button
@@ -471,22 +472,28 @@ export class NextDataModelingSubitem implements ChComponent {
         {this.level === 0 ? captions.addNewEntity : captions.addNewField}
       </button>
     ) : (
-      [
-        this.level === 2 && (
+      <div
+        slot={this.level === 0 ? "header" : undefined}
+        class={{
+          "add-new-field": addNewField && this.level !== 2,
+          "add-new-field-level-2": addNewField && this.level === 2
+        }}
+        part={`${PART_PREFIX}header-content`}
+        tabindex={this.level !== 0 ? "0" : undefined}
+      >
+        {this.level === 2 && (
           <div
             aria-hidden="true"
             class="sub-field"
             part={`${PART_PREFIX}sub-field`}
           ></div>
-        ),
+        )}
 
         <h1 class="name" part={`${PART_PREFIX}name`}>
           {this.level === 0 ? captions.newEntity : captions.newField}
-        </h1>,
+        </h1>
 
-        this.editableContent("new", captions, disabledPart, errorPart),
-
-        this.errorType !== "None" && this.errorText(this.errorTexts),
+        {this.editableContent("new", captions, disabledPart, errorPart)}
 
         <button
           aria-label={captions.confirm}
@@ -495,7 +502,7 @@ export class NextDataModelingSubitem implements ChComponent {
           disabled={this.disabled}
           type="button"
           onClick={this.confirmAction("new")}
-        ></button>,
+        ></button>
 
         <button
           aria-label={captions.cancel}
@@ -505,7 +512,7 @@ export class NextDataModelingSubitem implements ChComponent {
           type="button"
           onClick={this.toggleShowNewField}
         ></button>
-      ]
+      </div>
     );
 
   private normalMode = (
@@ -517,7 +524,7 @@ export class NextDataModelingSubitem implements ChComponent {
     showWaitingModeTexts: boolean
   ) => [
     <div
-      slot="header"
+      slot={this.level === 0 ? "header" : undefined}
       class={{
         header: true,
         "edit-mode": this.mode === "edit"
@@ -603,17 +610,13 @@ export class NextDataModelingSubitem implements ChComponent {
         role="listitem"
         aria-labelledby={NAME}
         class={{
-          "ch-next-data-modeling--add-new-field":
-            addNewField && this.level !== 2,
-          "ch-next-data-modeling--add-new-field-level-2":
-            addNewField && this.level === 2,
           "gx-disabled": this.disabled
         }}
       >
         {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode && this.waitingMode !== "adding" ? (
-            this.newFieldMode(captions, errorPart, disabledPart)
+            this.newFieldMode(captions, errorPart, disabledPart, addNewField)
           ) : this.level === 0 ? (
             <ch-accordion
               class="accordion"

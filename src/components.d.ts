@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { ActionGroupItemKeyDownEvent, ActionGroupItemTargetEvent } from "./components/action-group-item/action-group-item";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -34,6 +35,106 @@ export namespace Components {
           * `true` if the accordion is expanded.
          */
         "expanded": boolean;
+    }
+    interface ChActionGroup {
+        /**
+          * The aria label for the accessibility of the component.
+         */
+        "caption": "";
+        /**
+          * When it's true and an action is activated close the actions menu.
+         */
+        "closeOnActionActivated": boolean;
+        /**
+          * If the menu is opened or closed.
+         */
+        "closed": boolean;
+        /**
+          * A CSS class to set as the `ch-action-group` element class.
+         */
+        "cssClass": string;
+        /**
+          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+         */
+        "itemsOverflowBehavior": | "Add Scroll"
+    | "Multiline"
+    | "Responsive Collapse";
+        /**
+          * This attribute determines the position of the More Actions button in the Action Group.  | Value   | Details                                                               | | --------| --------------------------------------------------------------------- | | `Start` | The More Actions Button is displayed to the left of the ActionGroup.  | | `End`   | The More Actions Button is displayed to the right of the ActionGroup. |
+         */
+        "moreActionsButtonPosition": "Start" | "End";
+        /**
+          * The index of item action that is targeted.
+         */
+        "openIndex": number;
+        /**
+          * When it's true and an action is hovered show the actions menu.
+         */
+        "showActionsMenuOnHover": boolean;
+    }
+    interface ChActionGroupItem {
+        /**
+          * A CSS class to set as the `ch-action-group-item` element class when it is un the first level (disposedTop = true).
+         */
+        "cssClass": string;
+        /**
+          * This attribute lets you specify if the action item is activated or not.
+         */
+        "deactivated": boolean;
+        /**
+          * This attribute lets you specify if the action item is disabled or not.
+         */
+        "disabled": boolean;
+        /**
+          * Visual position of the menu of item. When action item is in the first level disposedTop = true.
+         */
+        "disposedTop": boolean;
+        /**
+          * A CSS class to set as the `ch-action-group-item` element class when it is inside a ch-action-group-menu.
+         */
+        "groupedClass": string;
+        /**
+          * The url for item navigate.
+         */
+        "link": string;
+        /**
+          * This attribute lets you specify if the action item is presented or not.
+         */
+        "presented": true;
+        /**
+          * When it's true and an the action is hovered show the menu.
+         */
+        "showActionsMenuOnHover": boolean;
+    }
+    interface ChActionGroupMenu {
+        /**
+          * The aria label for the accessibility of the component.
+         */
+        "caption": "";
+        /**
+          * If the menu is opened or closed.
+         */
+        "closed": boolean;
+        /**
+          * A CSS class to set as the `ch-action-group-menu` element class.
+         */
+        "cssClass": string;
+        /**
+          * Visual disposition of the menu.
+         */
+        "disposedTop": boolean;
+        /**
+          * The index of item action that is targeted.
+         */
+        "openIndex": number;
+        /**
+          * Used when the ch-action-group scroll changed, then update the position of menu.
+         */
+        "parentScroll": number;
+        /**
+          * Used when the ch-action-group scroll changed, then update the position of menu.
+         */
+        "parentSize": number;
     }
     interface ChDragBar {
         /**
@@ -854,6 +955,24 @@ declare global {
         prototype: HTMLChAccordionElement;
         new (): HTMLChAccordionElement;
     };
+    interface HTMLChActionGroupElement extends Components.ChActionGroup, HTMLStencilElement {
+    }
+    var HTMLChActionGroupElement: {
+        prototype: HTMLChActionGroupElement;
+        new (): HTMLChActionGroupElement;
+    };
+    interface HTMLChActionGroupItemElement extends Components.ChActionGroupItem, HTMLStencilElement {
+    }
+    var HTMLChActionGroupItemElement: {
+        prototype: HTMLChActionGroupItemElement;
+        new (): HTMLChActionGroupItemElement;
+    };
+    interface HTMLChActionGroupMenuElement extends Components.ChActionGroupMenu, HTMLStencilElement {
+    }
+    var HTMLChActionGroupMenuElement: {
+        prototype: HTMLChActionGroupMenuElement;
+        new (): HTMLChActionGroupMenuElement;
+    };
     interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
     }
     var HTMLChDragBarElement: {
@@ -1120,6 +1239,9 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "ch-accordion": HTMLChAccordionElement;
+        "ch-action-group": HTMLChActionGroupElement;
+        "ch-action-group-item": HTMLChActionGroupItemElement;
+        "ch-action-group-menu": HTMLChActionGroupMenuElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
@@ -1184,6 +1306,122 @@ declare namespace LocalJSX {
           * Fired when the content is expanded or collapsed
          */
         "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+    }
+    interface ChActionGroup {
+        /**
+          * The aria label for the accessibility of the component.
+         */
+        "caption"?: "";
+        /**
+          * When it's true and an action is activated close the actions menu.
+         */
+        "closeOnActionActivated"?: boolean;
+        /**
+          * If the menu is opened or closed.
+         */
+        "closed"?: boolean;
+        /**
+          * A CSS class to set as the `ch-action-group` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+         */
+        "itemsOverflowBehavior"?: | "Add Scroll"
+    | "Multiline"
+    | "Responsive Collapse";
+        /**
+          * This attribute determines the position of the More Actions button in the Action Group.  | Value   | Details                                                               | | --------| --------------------------------------------------------------------- | | `Start` | The More Actions Button is displayed to the left of the ActionGroup.  | | `End`   | The More Actions Button is displayed to the right of the ActionGroup. |
+         */
+        "moreActionsButtonPosition"?: "Start" | "End";
+        /**
+          * Fired when the item is targeted or not.
+         */
+        "onDisplayedItemsCountChange"?: (event: CustomEvent<number>) => void;
+        /**
+          * The index of item action that is targeted.
+         */
+        "openIndex"?: number;
+        /**
+          * When it's true and an action is hovered show the actions menu.
+         */
+        "showActionsMenuOnHover"?: boolean;
+    }
+    interface ChActionGroupItem {
+        /**
+          * A CSS class to set as the `ch-action-group-item` element class when it is un the first level (disposedTop = true).
+         */
+        "cssClass"?: string;
+        /**
+          * This attribute lets you specify if the action item is activated or not.
+         */
+        "deactivated"?: boolean;
+        /**
+          * This attribute lets you specify if the action item is disabled or not.
+         */
+        "disabled"?: boolean;
+        /**
+          * Visual position of the menu of item. When action item is in the first level disposedTop = true.
+         */
+        "disposedTop"?: boolean;
+        /**
+          * A CSS class to set as the `ch-action-group-item` element class when it is inside a ch-action-group-menu.
+         */
+        "groupedClass"?: string;
+        /**
+          * The url for item navigate.
+         */
+        "link"?: string;
+        /**
+          * Fired when a KeyboardEvent is captured for the action item.
+         */
+        "onActionGroupItemKeyDown"?: (event: CustomEvent<ActionGroupItemKeyDownEvent>) => void;
+        /**
+          * Fired when the item is selected.
+         */
+        "onActionGroupItemSelected"?: (event: CustomEvent<HTMLChActionGroupItemElement>) => void;
+        /**
+          * Fired when the item is targeted or not.
+         */
+        "onActionGroupItemTargeted"?: (event: CustomEvent<ActionGroupItemTargetEvent>) => void;
+        /**
+          * This attribute lets you specify if the action item is presented or not.
+         */
+        "presented"?: true;
+        /**
+          * When it's true and an the action is hovered show the menu.
+         */
+        "showActionsMenuOnHover"?: boolean;
+    }
+    interface ChActionGroupMenu {
+        /**
+          * The aria label for the accessibility of the component.
+         */
+        "caption"?: "";
+        /**
+          * If the menu is opened or closed.
+         */
+        "closed"?: boolean;
+        /**
+          * A CSS class to set as the `ch-action-group-menu` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Visual disposition of the menu.
+         */
+        "disposedTop"?: boolean;
+        /**
+          * The index of item action that is targeted.
+         */
+        "openIndex"?: number;
+        /**
+          * Used when the ch-action-group scroll changed, then update the position of menu.
+         */
+        "parentScroll"?: number;
+        /**
+          * Used when the ch-action-group scroll changed, then update the position of menu.
+         */
+        "parentSize"?: number;
     }
     interface ChDragBar {
         /**
@@ -2084,6 +2322,9 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "ch-accordion": ChAccordion;
+        "ch-action-group": ChActionGroup;
+        "ch-action-group-item": ChActionGroupItem;
+        "ch-action-group-menu": ChActionGroupMenu;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
@@ -2135,6 +2376,9 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
+            "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
+            "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
+            "ch-action-group-menu": LocalJSX.ChActionGroupMenu & JSXBase.HTMLAttributes<HTMLChActionGroupMenuElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;

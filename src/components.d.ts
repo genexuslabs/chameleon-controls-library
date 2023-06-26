@@ -1683,7 +1683,7 @@ declare namespace LocalJSX {
         /**
           * Fired when a new file is comitted to be added
          */
-        "onNewField"?: (event: CustomEvent<string>) => void;
+        "onNewField"?: (event: CustomEvent<ItemInfo>) => void;
         /**
           * The type of the field.
          */

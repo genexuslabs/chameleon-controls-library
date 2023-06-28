@@ -106,36 +106,6 @@ export namespace Components {
          */
         "showActionsMenuOnHover": boolean;
     }
-    interface ChActionGroupMenu {
-        /**
-          * The aria label for the accessibility of the component.
-         */
-        "caption": "";
-        /**
-          * If the menu is opened or closed.
-         */
-        "closed": boolean;
-        /**
-          * A CSS class to set as the `ch-action-group-menu` element class.
-         */
-        "cssClass": string;
-        /**
-          * Visual disposition of the menu.
-         */
-        "disposedTop": boolean;
-        /**
-          * The index of item action that is targeted.
-         */
-        "openIndex": number;
-        /**
-          * Used when the ch-action-group scroll changed, then update the position of menu.
-         */
-        "parentScroll": number;
-        /**
-          * Used when the ch-action-group scroll changed, then update the position of menu.
-         */
-        "parentSize": number;
-    }
     interface ChDragBar {
         /**
           * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
@@ -967,12 +937,6 @@ declare global {
         prototype: HTMLChActionGroupItemElement;
         new (): HTMLChActionGroupItemElement;
     };
-    interface HTMLChActionGroupMenuElement extends Components.ChActionGroupMenu, HTMLStencilElement {
-    }
-    var HTMLChActionGroupMenuElement: {
-        prototype: HTMLChActionGroupMenuElement;
-        new (): HTMLChActionGroupMenuElement;
-    };
     interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
     }
     var HTMLChDragBarElement: {
@@ -1241,7 +1205,6 @@ declare global {
         "ch-accordion": HTMLChAccordionElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
-        "ch-action-group-menu": HTMLChActionGroupMenuElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
@@ -1392,36 +1355,6 @@ declare namespace LocalJSX {
           * When it's true and an the action is hovered show the menu.
          */
         "showActionsMenuOnHover"?: boolean;
-    }
-    interface ChActionGroupMenu {
-        /**
-          * The aria label for the accessibility of the component.
-         */
-        "caption"?: "";
-        /**
-          * If the menu is opened or closed.
-         */
-        "closed"?: boolean;
-        /**
-          * A CSS class to set as the `ch-action-group-menu` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * Visual disposition of the menu.
-         */
-        "disposedTop"?: boolean;
-        /**
-          * The index of item action that is targeted.
-         */
-        "openIndex"?: number;
-        /**
-          * Used when the ch-action-group scroll changed, then update the position of menu.
-         */
-        "parentScroll"?: number;
-        /**
-          * Used when the ch-action-group scroll changed, then update the position of menu.
-         */
-        "parentSize"?: number;
     }
     interface ChDragBar {
         /**
@@ -2324,7 +2257,6 @@ declare namespace LocalJSX {
         "ch-accordion": ChAccordion;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
-        "ch-action-group-menu": ChActionGroupMenu;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
@@ -2378,7 +2310,6 @@ declare module "@stencil/core" {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
-            "ch-action-group-menu": LocalJSX.ChActionGroupMenu & JSXBase.HTMLAttributes<HTMLChActionGroupMenuElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;

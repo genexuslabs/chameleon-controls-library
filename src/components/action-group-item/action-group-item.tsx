@@ -25,7 +25,7 @@ const SPACE_KEY_CODE = "Space";
 export class ChActionGroupItem implements ChComponent {
   private a: HTMLElement = null;
 
-  private menu: HTMLChActionGroupMenuElement;
+  private menu: HTMLChDropdownElement;
 
   @Element() el: HTMLChActionGroupItemElement;
 
@@ -39,7 +39,7 @@ export class ChActionGroupItem implements ChComponent {
    */
   @Prop({ mutable: true }) deactivated = true;
 
-  @Watch("deactivated")
+  /* @Watch("deactivated")
   watchPropDeactivatedHandler(newValue: boolean) {
     if (this.menu) {
       this.menu.closed = newValue;
@@ -49,7 +49,7 @@ export class ChActionGroupItem implements ChComponent {
       active: !newValue,
       item: this.el as HTMLChActionGroupItemElement
     });
-  }
+  } */
 
   /**
    * This attribute lets you specify if the action item is disabled or not.
@@ -61,12 +61,12 @@ export class ChActionGroupItem implements ChComponent {
    */
   @Prop() readonly disposedTop: boolean = false;
 
-  @Watch("disposedTop")
+  /* @Watch("disposedTop")
   watchPropDisposedTopHandler(newValue: boolean) {
     if (this.menu) {
       this.menu.disposedTop = newValue;
     }
-  }
+  } */
 
   /**
    * This attribute lets you specify if the action item is presented or not.
@@ -113,22 +113,22 @@ export class ChActionGroupItem implements ChComponent {
   actionGroupItemKeyDown: EventEmitter<ActionGroupItemKeyDownEvent>;
 
   componentDidLoad() {
-    const menus: any = this.el.querySelectorAll("ch-action-group-menu");
+    const menus: any = this.el.querySelectorAll("ch-dropdown");
     if (menus.length > 0) {
       this.menu = menus[0];
     }
     this.el.addEventListener("mousedown", this.handleMousedown);
     this.el.addEventListener("touchstart", this.handleTouchStart);
-    this.el.addEventListener("mouseover", this.handleMouseover);
+    /* this.el.addEventListener("mouseover", this.handleMouseover); */
     this.el.addEventListener("keydown", this.handleActionKeyDown);
   }
 
   private handleMousedown = (ev: MouseEvent) => {
     ev.stopPropagation();
-    if (!this.disabled && this.menu) {
+    /* if (!this.disabled && this.menu) {
       const actionExpanded = this.a.getAttribute("aria-expanded") === "true";
       this.deactivated = actionExpanded;
-    }
+    } */
     if (!this.link && !this.menu) {
       this.actionGroupItemSelected.emit(
         this.el as HTMLChActionGroupItemElement
@@ -157,7 +157,7 @@ export class ChActionGroupItem implements ChComponent {
         this.el as HTMLChActionGroupItemElement
       );
     }
-    this.actionGroupItemKeyDown.emit({ event, item: this.el });
+    /*  this.actionGroupItemKeyDown.emit({ event, item: this.el }); */
   };
 
   render() {
@@ -185,7 +185,7 @@ export class ChActionGroupItem implements ChComponent {
         >
           <slot></slot>
         </a>
-        <slot name="menu"></slot>
+        {/*  <slot name="menu"></slot> */}
       </Host>
     );
   }

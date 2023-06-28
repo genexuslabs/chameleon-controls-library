@@ -18,8 +18,12 @@
       /* flex-direction: row-reverse; */
     }
     .container {
-      
+      position: relative;
     }
+   /*  ch-dropdown {
+  position: inherit;
+} */
+   
   </style>
 
   <script type="text/javascript">
@@ -58,7 +62,8 @@
           if (moreButton.length > 0) {
             for (let index = 0; index < ev.detail - items.length; index++) {
               moreButton[index].setAttribute('slot', 'list-item');
-              item.setAttribute('disposed-top', true);
+              moreButton[index].setAttribute('disposed-top', true);
+              moreButton[index].classList.add("first-level-action")
             }
           }
         });
@@ -82,48 +87,67 @@
         <ch-action-group-item slot="list-item" id="item1" link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
 
         <ch-action-group-item slot="list-item" id="item2" css-class="itemClass1" grouped-class="itemClass1--grouped">
-          Dispara el evento
-          <ch-action-group-menu slot="menu">
-            <ch-action-group-item id="item2-1" link="http://google.com" css-class="itemClass1"> Navegar a item2 1 </ch-action-group-item>
-
-            <ch-action-group-item id="item2-2" css-class="itemClass1"> Dispara el evento desde item2 2 </ch-action-group-item>
-          </ch-action-group-menu>
+          <ch-dropdown
+          align="Right"
+          class="Class"
+          dropdown-separation="5"
+          expand-behavior="Click or hover"
+          open-on-focus="false"
+          position="Bottom"
+          
+        >
+          <span slot="action">User info</span>
+          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
+          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
+        </ch-dropdown>
         </ch-action-group-item>
+      
+        
 
         <ch-action-group-item slot="list-item" id="item3">
-          Abre un submenu
-          <ch-action-group-menu slot="menu">
-            <ch-action-group-item id="item3-1" link="http://google.com" css-class="itemClass1"> Navegar a yyy </ch-action-group-item>
-
-            <ch-action-group-item id="item3-2" css-class="itemClass1">
-              Abre un sub submenu
-              <ch-action-group-menu slot="menu">
-                <ch-action-group-item id="item3-2-2" css-class="itemClass1">
-                  Abre un sub sub submenu
-                  <ch-action-group-menu slot="menu">
-                    <ch-action-group-item id="item3-2-2-1" link="http://google.com" css-class="itemClass1"> Navegar a uuu </ch-action-group-item>
-
-                    <ch-action-group-item id="item3-2-2-2" css-class="itemClass1"> Dispara el evento desde sub sub submenu </ch-action-group-item>
-                  </ch-action-group-menu>
-                </ch-action-group-item>
-
-                <ch-action-group-item id="item3-2-1" link="http://google.com" css-class="itemClass1"> Navegar a cccc </ch-action-group-item>
-              </ch-action-group-menu>
-            </ch-action-group-item>
-
-            <ch-action-group-item id="item3-3" link="http://google.com" css-class="itemClass1"> Navegar a 1111 </ch-action-group-item>
-
-            <ch-action-group-item id="item3-4" link="http://google.com" css-class="itemClass1"> Navegar a 22222 </ch-action-group-item>
-          </ch-action-group-menu>
+         
+          <ch-dropdown
+          align="Right"
+          class="Class"
+          dropdown-separation="5"
+          expand-behavior="Click or hover"
+          open-on-focus="false"
+          position="Bottom"
+          
+        >
+          <span slot="action"> Abre un submenu</span>
+          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
+          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
+        </ch-dropdown>
         </ch-action-group-item>
 
         <ch-action-group-item slot="list-item" id="item4">
-          Abre un submenu 4
-          <ch-action-group-menu slot="menu">
-            <ch-action-group-item id="item4-1" link="http://google.com" css-class="itemClass1"> Navegar a ooo </ch-action-group-item>
-
-            <ch-action-group-item id="item4-2" css-class="itemClass1"> Dispara el evento desde submenu </ch-action-group-item>
-          </ch-action-group-menu>
+          
+          <ch-dropdown
+          align="Right"
+          class="Class"
+          dropdown-separation="5"
+          expand-behavior="Click or hover"
+          open-on-focus="false"
+          position="Bottom"
+          
+        >
+          <span slot="action">Abre un submenu 4</span>
+          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
+          <ch-action-group-item slot = "items"  css-class="itemClass1">    <ch-dropdown
+            align="Center"
+            class="Class"
+            dropdown-separation="5"
+            expand-behavior="Click or hover"
+            open-on-focus="false"
+            position="Bottom"
+            
+          >
+            <span slot="action">Sub</span>
+            <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> SubSub1</ch-action-group-item>
+            <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> SubSub2</ch-action-group-item>
+          </ch-dropdown> </ch-action-group-item>
+        </ch-dropdown>
         </ch-action-group-item>
 
         <!-- <ch-action-group-item slot="more-button-item" id="item5">

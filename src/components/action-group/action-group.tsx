@@ -157,11 +157,11 @@ export class ChActionGroup implements ChComponent {
     const actionsContainer: any =
       this.el.shadowRoot.querySelector(".actions-container");
     actionsContainer.addEventListener("scroll", () => {
-      this.changeMenuItemsPositions(actionsContainer.scrollLeft);
+      /*  this.changeMenuItemsPositions(actionsContainer.scrollLeft); */
     });
 
     this.updateDisplayedItems();
-    this.changeMenuItemsPositions(this.el.clientWidth);
+    /* this.changeMenuItemsPositions(this.el.clientWidth); */
   }
 
   disconnectedCallback() {
@@ -279,29 +279,9 @@ export class ChActionGroup implements ChComponent {
   private containerSizeChanged() {
     if (this.itemsOverflowBehavior === "Responsive Collapse") {
       this.updateDisplayedItems();
-
-      // const actionsContainerSeparator: any = this.el.shadowRoot.querySelector(
-      //   ".actions-container .separator"
-      // );
-      // const firstItemTop =
-      //   actionsContainerSeparator.getBoundingClientRect().top;
-      // const actionsButtonItems: HTMLGxActionGroupItemElement[] = [];
-      // this.firstLevelItems.forEach(it => {
-      //   const itemTop = it.getBoundingClientRect().top;
-      //   if (itemTop !== firstItemTop) {
-      //     const itToClone: any = it;
-      //     actionsButtonItems.push(itToClone.cloneNode(true));
-      //     it.disabled = true;
-      //     it.deactivated = true;
-      //   } else {
-      //     it.disabled = false;
-      //   }
-      // });
-
-      // this.updateMenuItems(actionsButtonItems);
     }
 
-    this.changeMenuItemsPositions(this.el.clientWidth);
+    /*  this.changeMenuItemsPositions(this.el.clientWidth); */
   }
 
   /*  */
@@ -386,27 +366,18 @@ export class ChActionGroup implements ChComponent {
     }
   }
 
-  private handleMenuBtnClick = () => {
-    const menu: any = this.btnMenuElement.querySelector(
-      ":scope > ch-action-group-menu"
-    );
-    if (menu) {
-      menu.closed = !menu.closed;
-    }
-  };
-
-  private changeMenuItemsPositions = (value: number) => {
+  /* private changeMenuItemsPositions = (value: number) => {
     setTimeout(() => {
       this.firstLevelItems.forEach(it => {
         const menu = it.item.querySelector(
-          ":scope.first-level-action > ch-action-group-menu"
-        ) as HTMLChActionGroupMenuElement;
+          ":scope.first-level-action > ch-dropdown"
+        ) as HTMLChDropdownElement;
         if (menu) {
           menu.parentSize = value;
         }
       });
     }, 150);
-  };
+  }; */
 
   private closeOpenAction(closeMoreBtn = true) {
     if (this.openIndex !== null) {
@@ -466,7 +437,7 @@ export class ChActionGroup implements ChComponent {
         // eslint-disable-next-line no-case-declarations
         const menu = this.firstLevelItems[currentIndex].item.querySelector(
           ":scope > ch-action-group-menu"
-        ) as HTMLChActionGroupMenuElement;
+        ) as HTMLChDropdownElement;
         if (menu) {
           if (this.openIndex !== currentIndex) {
             this.firstLevelItems[currentIndex].item.deactivated =
@@ -535,10 +506,6 @@ export class ChActionGroup implements ChComponent {
     }
   };
 
-  private stopPropagation = (e: UIEvent) => {
-    e.stopPropagation();
-  };
-
   render() {
     return (
       <Host
@@ -556,31 +523,40 @@ export class ChActionGroup implements ChComponent {
         }}
       >
         {this.itemsOverflowBehavior === "Responsive Collapse" ? (
-          <div
-            tabindex="0"
-            class={{
-              "more-action-btn": true,
-              // 'hide': this.actionsButtonItems.length === 0,
-              hide: false
-            }}
-            part="more-action-btn"
-            onClick={this.handleMenuBtnClick}
+          <ch-dropdown
+            align="Center"
+            class="Class"
+            dropdown-separation="5"
+            expand-behavior="Click or hover"
+            open-on-focus="false"
+            position="Bottom"
+            style={{ width: "auto" }}
           >
-            <div class="more-action-btn-line"></div>
-            <div class="more-action-btn-line"></div>
-            <div class="more-action-btn-line"></div>
             <div
-              class="more-action-btn-container"
-              onClick={this.stopPropagation}
+              tabindex="0"
+              class="more-action-btn"
+              slot="action"
+              part="more-action-btn"
               ref={btnMenuElement =>
                 (this.btnMenuElement = btnMenuElement as HTMLElement)
               }
             >
-              <ch-action-group-menu>
-                <slot name="more-button-item"></slot>
-              </ch-action-group-menu>
+              <div class="more-action-btn-line"></div>
+              <div class="more-action-btn-line"></div>
+              <div class="more-action-btn-line"></div>
             </div>
-          </div>
+
+            {/*  <ch-action-group-item
+              slot="items"
+              id="item3-1"
+              link="http://google.com"
+              css-class="itemClass1"
+            >
+              {" "}
+              Navegar a yyy{" "}
+            </ch-action-group-item> */}
+            <slot name="more-button-item" slot="items"></slot>
+          </ch-dropdown>
         ) : null}
 
         <div

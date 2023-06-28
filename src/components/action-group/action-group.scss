@@ -1,7 +1,8 @@
 :host {
-  display: flex;
-  position: relative;
+  display: grid;
+  width: 100%;
   max-width: 100%;
+  grid-auto-flow: column;
 }
 
 .actions-container {
@@ -24,7 +25,6 @@
 
 :host(.overflow-behavior-responsive-collapse) .actions-container {
   // flex-wrap: wrap;
-  // overflow-y: hidden;
   overflow-x: hidden;
 }
 

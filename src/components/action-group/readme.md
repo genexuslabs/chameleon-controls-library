@@ -45,12 +45,12 @@
 
 ### Depends on
 
-- [ch-action-group-menu](../action-group-menu)
+- [ch-dropdown](../dropdown)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-action-group --> ch-action-group-menu
+  ch-action-group --> ch-dropdown
   style ch-action-group fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

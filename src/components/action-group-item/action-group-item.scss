@@ -7,10 +7,16 @@
   position: relative;
   user-select: none;
 }
+
+:host ::slotted(ch-dropdown) {
+  position: inherit;
+}
+
 :host(:hover),
 :host(.hover) {
   background-color: #efefef;
 }
+
 :host(.first-level-action) {
   border-radius: 4px;
   position: inherit;

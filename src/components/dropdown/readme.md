@@ -80,6 +80,19 @@ and the last one for the dropdown footer.
 | `"dropdown__separation"`        |             |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-action-group](../action-group)
+
+### Graph
+```mermaid
+graph TD;
+  ch-action-group --> ch-dropdown
+  style ch-dropdown fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

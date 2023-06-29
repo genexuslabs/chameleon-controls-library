@@ -6,53 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>Stencil Component Starter</title>
+    <title>ch-window | Chameleon</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="./styles.css" />
     <style>
-      body {
-        margin: 0;
-        padding: 0;
-
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100vw;
-        height: 200vh;
-      }
-      button {
-        border: none;
-        margin: 0;
-        padding: 0;
-        width: auto;
-        overflow: visible;
-
-        background: transparent;
-
-        /* inherit font & color from ancestor */
-        color: inherit;
-        font: inherit;
-
-        /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
-        line-height: normal;
-
-        /* Corrects font smoothing for webkit */
-        -webkit-font-smoothing: inherit;
-        -moz-osx-font-smoothing: inherit;
-
-        /* Corrects inability to style clickable `input` types in iOS */
-        -webkit-appearance: none;
-
-        /* mío */
-        width: 30vw;
-        height: 40vh;
-        background-color: red;
-
-        margin-bottom: 500px;
-      }
-
       /* ch-window {
         --x-align: outside-start;
       }
@@ -87,26 +46,32 @@
     </script>
   </head>
   <body>
-    <button onclick="openDialog()">
-      Open
-      <ch-window
-        caption="Options"
-        close-tooltip="Cerrar"
-        close-on-outside-click
-        close-on-escape
-        x-align="outside-end"
-        y-align="outside-end"
-        allow-drag="header"
-      >
-        <div>Hola Mundo!</div>
-      </ch-window>
-    </button>
-
+    <header class="header-dev">
+      <span class="tag-name">ch-window</span
+      ><button id="toggle-dir-btn">Toggle dir</button>
+    </header>
+    <div class="container">
+      <button onclick="openDialog()">
+        Open
+        <ch-window
+          caption="Options"
+          close-tooltip="Cerrar"
+          close-on-outside-click
+          close-on-escape
+          x-align="inside-start"
+          y-align="inside-start"
+          allow-drag="header"
+        >
+          <div>Hola Mundo!</div>
+        </ch-window>
+      </button>
+    </div>
     <script>
       var windowEl = document.querySelector("ch-window");
       var buttonEl = document.querySelector("button");
 
       windowEl.container = buttonEl;
     </script>
+    <script src="common.js"></script>
   </body>
 </html>

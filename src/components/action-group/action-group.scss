@@ -10,8 +10,8 @@
   flex: 1;
 }
 
-:host(.btn-actions-position-end) {
-  flex-direction: row-reverse;
+:host(.btn-actions-position-end) > ch-dropdown {
+  grid-column: 3;
 }
 
 :host(.overflow-behavior-add-scroll) .actions-container {

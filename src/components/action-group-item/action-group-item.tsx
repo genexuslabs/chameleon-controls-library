@@ -4,7 +4,6 @@ import {
   h,
   Element,
   Prop,
-  Watch,
   Event,
   EventEmitter
 } from "@stencil/core";
@@ -113,6 +112,8 @@ export class ChActionGroupItem implements ChComponent {
   actionGroupItemKeyDown: EventEmitter<ActionGroupItemKeyDownEvent>;
 
   componentDidLoad() {
+    console.log(this.a);
+
     const menus: any = this.el.querySelectorAll("ch-dropdown");
     if (menus.length > 0) {
       this.menu = menus[0];
@@ -133,13 +134,6 @@ export class ChActionGroupItem implements ChComponent {
       this.actionGroupItemSelected.emit(
         this.el as HTMLChActionGroupItemElement
       );
-    }
-  };
-
-  private handleMouseover = (ev: MouseEvent) => {
-    ev.stopPropagation();
-    if (!this.disabled && this.showActionsMenuOnHover) {
-      this.deactivated = false;
     }
   };
 

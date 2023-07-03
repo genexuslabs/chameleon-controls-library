@@ -85,7 +85,8 @@ https://stenciljs.com/docs/style-guide#code-organization
     if (
       event.code === "ArrowUp" ||
       event.code === "ArrowDown" ||
-      event.code === "Enter"
+      event.code === "Enter" ||
+      event.code === "Tab"
     ) {
       const availableListItems = this.el.querySelectorAll(
         "ch-suggest-list-item"
@@ -128,9 +129,12 @@ https://stenciljs.com/docs/style-guide#code-organization
               }
             }
           }
-        } else if (tagName === "CH-SUGGEST" && event.code === "ArrowDown") {
-          availableListItems[0].focus();
-          availableListItems[0].setAttribute("selected", "");
+        } else if (tagName === "CH-SUGGEST") {
+          if (event.code === "ArrowDown" || event.code === "Tab") {
+            event.preventDefault();
+            availableListItems[0].focus();
+            availableListItems[0].setAttribute("selected", "");
+          }
         }
       }
     }

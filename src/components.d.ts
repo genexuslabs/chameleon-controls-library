@@ -716,6 +716,32 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChSuggest {
+        /**
+          * The label
+         */
+        "label": string;
+        /**
+          * The input value
+         */
+        "value": string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label": string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc": string;
+        /**
+          * The presence of this property adds a class to the item, indicating that is currently selected.
+         */
+        "selected": boolean;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -1082,6 +1108,24 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
+    }
+    var HTMLChSuggestElement: {
+        prototype: HTMLChSuggestElement;
+        new (): HTMLChSuggestElement;
+    };
+    interface HTMLChSuggestListElement extends Components.ChSuggestList, HTMLStencilElement {
+    }
+    var HTMLChSuggestListElement: {
+        prototype: HTMLChSuggestListElement;
+        new (): HTMLChSuggestListElement;
+    };
+    interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
+    }
+    var HTMLChSuggestListItemElement: {
+        prototype: HTMLChSuggestListItemElement;
+        new (): HTMLChSuggestListItemElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1158,6 +1202,9 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-suggest": HTMLChSuggestElement;
+        "ch-suggest-list": HTMLChSuggestListElement;
+        "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
@@ -1937,6 +1984,40 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: CustomEvent<any>) => void;
     }
+    interface ChSuggest {
+        /**
+          * The label
+         */
+        "label"?: string;
+        /**
+          * ***************************** 5.EVENTS (EMMIT) ******************************
+         */
+        "onInputChanged"?: (event: CustomEvent<string>) => void;
+        /**
+          * The input value
+         */
+        "value"?: string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label"?: string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc"?: string;
+        /**
+          * ***************************** 5.EVENTS (EMMIT) ******************************
+         */
+        "onItemClicked"?: (event: CustomEvent<boolean>) => void;
+        /**
+          * The presence of this property adds a class to the item, indicating that is currently selected.
+         */
+        "selected"?: boolean;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -2122,6 +2203,9 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-suggest": ChSuggest;
+        "ch-suggest-list": ChSuggestList;
+        "ch-suggest-list-item": ChSuggestListItem;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
@@ -2173,6 +2257,9 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
+            "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
+            "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;

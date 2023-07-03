@@ -51,20 +51,18 @@
       ><button id="toggle-dir-btn">Toggle dir</button>
     </header>
     <div class="container">
-      <button onclick="openDialog()">
-        Open
-        <ch-window
-          caption="Options"
-          close-tooltip="Cerrar"
-          close-on-outside-click
-          close-on-escape
-          x-align="inside-start"
-          y-align="inside-start"
-          allow-drag="header"
-        >
-          <div>Hola Mundo!</div>
-        </ch-window>
-      </button>
+      <button onclick="openDialog()">Open</button>
+      <ch-window
+        caption="Options"
+        close-tooltip="Cerrar"
+        close-on-outside-click
+        close-on-escape
+        x-align="inside-start"
+        y-align="inside-start"
+        allow-drag="header"
+      >
+        <div>Hola Mundo!</div>
+      </ch-window>
     </div>
     <script>
       var windowEl = document.querySelector("ch-window");

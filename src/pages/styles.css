@@ -25,7 +25,8 @@ h5,
 h6 {
   font-family: "Raleway", sans-serif;
 }
-body {
+body.home,
+.header-dev {
   font-family: "Rubik", sans-serif;
 }
 body.dark {
@@ -256,6 +257,9 @@ body.dark {
   cursor: pointer;
   font-family: "Rubik", sans-serif;
 }
+.header-dev button:hover {
+  filter: brightness(125%);
+}
 .title {
   margin-bottom: 0;
   margin-top: var(--ch-space--m);
@@ -303,6 +307,10 @@ body.dark {
 }
 .h4 {
   color: var(--ch-color--dark-800);
+}
+/*PARTS*/
+html.show-parts *::part(part) {
+  outline: 2px dashed orange;
 }
 /*responsive*/
 @media screen and (max-width: 1200px) {

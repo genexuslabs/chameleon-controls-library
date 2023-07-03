@@ -1,0 +1,10 @@
+:host {
+  display: flex;
+  flex-direction: column;
+}
+.ch-window-container {
+  position: relative;
+}
+ch-window::part(window) {
+  width: 100%;
+}

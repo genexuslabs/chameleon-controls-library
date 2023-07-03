@@ -11,14 +11,205 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
+    <!--Google Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /*general*/
+      :root {
+        --highlight-color: rgb(163, 25, 161);
+      }
+      body {
+        font-family: "Rubik", sans-serif;
+        font-size: 14px;
+      }
+      ul {
+        margin: 0 0 16px 0;
+        padding-left: 16px;
+      }
+      li {
+        margin-bottom: 2px;
+      }
+      code {
+        color: rgb(156, 30, 156);
+        background-color: rgba(255, 193, 203, 0.469);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      /*ch-suggest*/
+      .styles ch-suggest {
+        font-family: "Rubik", sans-serif;
+        font-size: 14px;
+      }
+      .styles ch-suggest:focus {
+      }
+      .styles ch-suggest::part(label) {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .styles ch-suggest::part(input) {
+        padding: 4px 8px;
+      }
+      .styles ch-suggest::part(input):focus {
+        outline: 2px solid var(--highlight-color);
+        border-color: var(--highlight-color);
+      }
+      /*ch-suggest-list*/
+      .styles ch-suggest-list {
+        background-color: rgba(234, 234, 234, 0.224);
+        border: 1px solid rgba(128, 128, 128, 0.275);
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 4px;
+      }
+      .styles ch-suggest-list::part(title) {
+        font-size: 14px;
+        text-transform: uppercase;
+      }
+      /*ch-suggest-list-item*/
+      .styles ch-suggest-list-item {
+        padding: 4px 8px;
+        cursor: pointer;
+      }
+      .styles ch-suggest-list-item ch-icon {
+        --icon-size: 16px;
+        margin-right: 2px;
+      }
+      .styles ch-suggest-list-item:hover {
+        background-color: rgba(255, 221, 0, 0.294);
+      }
+      .styles ch-suggest-list-item[selected] {
+        background-color: rgba(241, 184, 243, 0.42);
+        outline: none;
+      }
+      /*ch-window*/
+      .styles ch-suggest::part(ch-window-window) {
+        margin-top: 4px;
+        border: 1px solid black;
+        background-color: white;
+        padding: 8px;
+      }
+    </style>
   </head>
-  <body>
+  <body class="styles">
     <header class="header-dev">
-      <span class="tag-name">ch-suggest</span
-      ><button id="toggle-dir-btn">Toggle dir</button>
+      <span class="tag-name">ch-suggest</span>
+      <div class="buttons-group">
+        <button id="toggle-dir-btn">Toggle dir</button>
+        <button id="toggle-styles-btn">Toggle styles</button>
+        <button id="toggle-parts-btn">Toggle parts</button>
+      </div>
     </header>
-    <div class="container">To be done.</div>
 
+    <div class="container">
+      <button id="set-focus">Set focus on suggest</button> <br /><br />
+
+      <!-- frutas -->
+      <span><strong>frutas</strong></span>
+      <ul data-category="frutas" class="data-list">
+        <li>manzanas</li>
+        <li>bananas</li>
+        <li>naranjas</li>
+        <li>uvas</li>
+        <li>frutillas</li>
+      </ul>
+      <!-- verduras -->
+      <span><strong>verduras</strong></span>
+      <ul data-category="verduras" class="data-list">
+        <li>lecuhgas</li>
+        <li>tomates</li>
+        <li>cebollas</li>
+        <li>apio</li>
+        <li>papas</li>
+      </ul>
+      <!-- granos -->
+      <span><strong>(sin categoría)</strong></span>
+      <ul class="data-list">
+        <li>porotos</li>
+        <li>garbanzos</li>
+        <li>lentejas</li>
+        <li>chia</li>
+      </ul>
+
+      <p><code>ch-suggest</code></p>
+      <ch-suggest label="nombre"></ch-suggest>
+
+      <p><code>ch-suggest-list-item</code></p>
+      <ch-suggest-list-item>
+        <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
+        apple
+      </ch-suggest-list-item>
+
+      <p><code>ch-suggest-list</code></p>
+      <ch-suggest-list label="fruits">
+        <ch-suggest-list-item>
+          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
+          apple
+        </ch-suggest-list-item>
+        <ch-suggest-list-item>
+          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
+          apple
+        </ch-suggest-list-item>
+        <ch-suggest-list-item>
+          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
+          apple
+        </ch-suggest-list-item>
+      </ch-suggest-list>
+    </div>
+
+    <script>
+      const chSuggest = document.querySelector("ch-suggest");
+      const lists = document.querySelectorAll(".data-list");
+      chSuggest.addEventListener("inputChanged", e => {
+        let counter = 0;
+        chSuggest.innerHTML = "";
+        lists.forEach(list => {
+          const category = list.getAttribute("data-category");
+          const items = list.querySelectorAll("li");
+          const filteredItems = Array.from(items).filter(item => {
+            return item.innerText.toLowerCase().includes(e.detail);
+          });
+          if (filteredItems.length) {
+            const chSuggestList = document.createElement("ch-suggest-list");
+            if (category) {
+              chSuggestList.setAttribute("label", category);
+            }
+            filteredItems.forEach(item => {
+              const chSuggestListItem = document.createElement(
+                "ch-suggest-list-item"
+              );
+              chSuggestListItem.innerText = item.innerText;
+              if (category) {
+                chSuggestList.appendChild(chSuggestListItem);
+                counter++;
+              } else {
+                chSuggest.appendChild(chSuggestListItem);
+                counter++;
+              }
+            });
+            if (category) {
+              chSuggest.appendChild(chSuggestList);
+            }
+          }
+        });
+        if (e.detail !== "" && counter === 0) {
+          /*no hay coincidencias*/
+          chSuggest.innerHTML = "<p style='margin:0'>No hay coincidencias</p>";
+        }
+      });
+    </script>
+
+    <script>
+      const setFocusBtn = document.getElementById("set-focus");
+      setFocusBtn.addEventListener("click", function () {
+        chSuggest.focus();
+      });
+    </script>
     <script src="common.js"></script>
   </body>
 </html>

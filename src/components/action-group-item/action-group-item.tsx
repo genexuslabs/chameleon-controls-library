@@ -112,8 +112,6 @@ export class ChActionGroupItem implements ChComponent {
   actionGroupItemKeyDown: EventEmitter<ActionGroupItemKeyDownEvent>;
 
   componentDidLoad() {
-    console.log(this.a);
-
     const menus: any = this.el.querySelectorAll("ch-dropdown");
     if (menus.length > 0) {
       this.menu = menus[0];

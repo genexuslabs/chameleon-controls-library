@@ -37,6 +37,11 @@ https://stenciljs.com/docs/style-guide#code-organization
    ********************************/
 
   /**
+   * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+   */
+  @Prop() readonly debounce = 500;
+
+  /**
    * The label
    */
   @Prop() readonly label: string;
@@ -45,6 +50,8 @@ https://stenciljs.com/docs/style-guide#code-organization
    * The input value
    */
   @Prop({ mutable: true }) value: string;
+
+  private timeoutReference;
 
   /** *****************************
    * 2. REFERENCE TO ELEMENTS
@@ -88,6 +95,9 @@ https://stenciljs.com/docs/style-guide#code-organization
       event.code === "Enter" ||
       event.code === "Tab"
     ) {
+      if (event.code === "ArrowUp" || event.code === "ArrowDown") {
+        event.preventDefault();
+      }
       const availableListItems = this.el.querySelectorAll(
         "ch-suggest-list-item"
       );
@@ -108,6 +118,9 @@ https://stenciljs.com/docs/style-guide#code-organization
             if (selectedItemIndex !== -1) {
               if (event.code === "ArrowUp") {
                 this.unselectCurrentItem();
+                if (selectedItemIndex === 1) {
+                  this.scrollListToTop();
+                }
                 if (selectedItemIndex === 0) {
                   this.textInput.focus();
                 } else {
@@ -145,6 +158,8 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.unselectCurrentItem();
     const target = event.target;
     (target as unknown as HTMLElement).setAttribute("selected", "");
+    this.value = (event.target as HTMLElement).innerText;
+    this.chWindow.hidden = true;
   }
 
   /** *****************************
@@ -169,11 +184,13 @@ https://stenciljs.com/docs/style-guide#code-organization
   };
 
   private handleInput = (e): void => {
-    this.evaluateWindowMaxHeight();
-    this.chWindow.hidden = false;
-    const value = e.target.value;
-    this.inputChanged.emit(value);
-    this.value = value;
+    if (this.timeoutReference) {
+      clearTimeout(this.timeoutReference);
+    }
+    const targetValue = e.target.value;
+    this.timeoutReference = setTimeout(() => {
+      this.setTimeoutHandler(targetValue);
+    }, this.debounce);
   };
 
   private evaluateWindowMaxHeight = () => {
@@ -186,6 +203,20 @@ https://stenciljs.com/docs/style-guide#code-organization
       this.textInput.getBoundingClientRect().bottom + window.scrollY;
     const windowMaxHeight = height - inputBottomPosition - gap + "px";
     this.el.style.setProperty("--window-max-height", windowMaxHeight);
+  };
+
+  private scrollListToTop = () => {
+    const partWindow =
+      this.chWindow.shadowRoot.querySelector("[part='window']");
+    partWindow.scrollTop = 0;
+  };
+
+  private setTimeoutHandler = targetValue => {
+    this.evaluateWindowMaxHeight();
+    this.chWindow.hidden = false;
+    const value = targetValue;
+    this.inputChanged.emit(value);
+    this.value = value;
   };
 
   /** *****************************

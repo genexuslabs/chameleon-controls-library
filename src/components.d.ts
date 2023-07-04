@@ -718,6 +718,10 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
+          * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce": 500;
+        /**
           * The label
          */
         "label": string;
@@ -1985,6 +1989,10 @@ declare namespace LocalJSX {
         "onItemClicked"?: (event: CustomEvent<any>) => void;
     }
     interface ChSuggest {
+        /**
+          * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce"?: 500;
         /**
           * The label
          */

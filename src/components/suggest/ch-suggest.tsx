@@ -169,10 +169,23 @@ https://stenciljs.com/docs/style-guide#code-organization
   };
 
   private handleInput = (e): void => {
+    this.evaluateWindowMaxHeight();
     this.chWindow.hidden = false;
     const value = e.target.value;
     this.inputChanged.emit(value);
     this.value = value;
+  };
+
+  private evaluateWindowMaxHeight = () => {
+    const viewportHeight = window.innerHeight;
+    const documentHeight = document.body.scrollHeight;
+    const height =
+      documentHeight >= viewportHeight ? documentHeight : viewportHeight;
+    const gap = 50;
+    const inputBottomPosition =
+      this.textInput.getBoundingClientRect().bottom + window.scrollY;
+    const windowMaxHeight = height - inputBottomPosition - gap + "px";
+    this.el.style.setProperty("--window-max-height", windowMaxHeight);
   };
 
   /** *****************************

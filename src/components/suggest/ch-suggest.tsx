@@ -58,7 +58,6 @@ https://stenciljs.com/docs/style-guide#code-organization
    ********************************/
   @Element() el: HTMLChSuggestElement;
   private textInput!: HTMLInputElement;
-  private chWindowContainer!: HTMLElement;
   private chWindow!: HTMLChWindowElement;
 
   /** *****************************
@@ -78,10 +77,6 @@ https://stenciljs.com/docs/style-guide#code-organization
   /** *****************************
    *  6.COMPONENT LIFECYCLE EVENTS
    ********************************/
-
-  componentDidLoad(): void {
-    this.chWindow.container = this.chWindowContainer;
-  }
 
   /** *****************************
    *  7.LISTENERS
@@ -107,8 +102,7 @@ https://stenciljs.com/docs/style-guide#code-organization
           if (event.code === "Enter") {
             this.unselectCurrentItem();
             this.value = (event.target as HTMLElement).innerText;
-            this.chWindow.hidden = true;
-            this.textInput.focus();
+            this.closeWindow();
           } else {
             const selectedItemIndex = Array.from(availableListItems).findIndex(
               item => {
@@ -159,7 +153,7 @@ https://stenciljs.com/docs/style-guide#code-organization
     const target = event.target;
     (target as unknown as HTMLElement).setAttribute("selected", "");
     this.value = (event.target as HTMLElement).innerText;
-    this.chWindow.hidden = true;
+    this.closeWindow();
   }
 
   /** *****************************
@@ -219,6 +213,11 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.value = value;
   };
 
+  private closeWindow = () => {
+    this.chWindow.hidden = true;
+    this.textInput.focus();
+  };
+
   /** *****************************
    *  10.RENDER() FUNCTION
    ********************************/
@@ -240,18 +239,14 @@ https://stenciljs.com/docs/style-guide#code-organization
           value={this.value}
           autocomplete="off"
         ></input>
-        <div
-          class="ch-window-container"
-          part="ch-window-container"
-          ref={el => (this.chWindowContainer = el as HTMLElement)}
-        >
-          <ch-window
-            close-on-outside-click
-            close-on-escape
-            x-align="inside-start"
-            y-align="inside-start"
-            ref={el => (this.chWindow = el as HTMLChWindowElement)}
-            exportparts="
+        <ch-window
+          container={this.textInput}
+          close-on-outside-click
+          close-on-escape
+          xAlign="inside-start"
+          yAlign="outside-end"
+          ref={el => (this.chWindow = el as HTMLChWindowElement)}
+          exportparts="
             caption:ch-window-caption, 
             close:ch-window-close,
             footer:ch-window-footer,
@@ -259,10 +254,9 @@ https://stenciljs.com/docs/style-guide#code-organization
             main:ch-window-main,
             mask:ch-window-mask,
             window:ch-window-window"
-          >
-            <slot></slot>
-          </ch-window>
-        </div>
+        >
+          <slot></slot>
+        </ch-window>
       </Host>
     );
   }

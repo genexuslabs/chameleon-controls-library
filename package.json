@@ -3,9 +3,10 @@
   "version": "1.2.9",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
-  "module": "dist/custom-elements/index.js",
-  "es2015": "dist/esm/index.mjs",
-  "es2017": "dist/esm/index.mjs",
+  "module": "dist/index.js",
+  "es2015": "dist/esm/index.js",
+  "es2017": "dist/esm/index.js",
+  "jsnext:main": "dist/esm/index.js",
   "types": "./dist/types/components.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
@@ -32,7 +33,7 @@
     "stencil-click-outside": "^1.8.0"
   },
   "devDependencies": {
-    "@stencil/core": "~1.17.0",
+    "@stencil/core": "2.17.0",
     "@stencil/eslint-plugin": "~0.4.0",
     "@stencil/sass": "~1.4.0",
     "@types/jest": "~26.0.0",

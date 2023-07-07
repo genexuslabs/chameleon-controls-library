@@ -1,5 +1,6 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
   Host,
@@ -152,6 +153,8 @@ export class NextDataModelingSubitem implements ChComponent {
   private inputName: HTMLElement;
   private inputType: HTMLSelectElement;
 
+  @Element() el: HTMLChNextDataModelingItemElement;
+
   @State() showNewFieldBtn = true;
   @State() expanded = false;
 
@@ -194,7 +197,7 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly errorTexts: { [key in ErrorText]: string };
 
   /**
-   * This property specifies the defined field names of the current entity.
+   * This property specifies the defined field names of the entity parent.
    */
   @Prop() readonly fieldNames: string[] = [];
 
@@ -248,6 +251,14 @@ export class NextDataModelingSubitem implements ChComponent {
   }
 
   /**
+   * Deletes the field.
+   */
+  @Method()
+  async delete(event: UIEvent) {
+    this.emitDelete(event);
+  }
+
+  /**
    * Returns:
    *   @example ```(Scorer, Goals)```
    *   @example ```(Name, Age, Nationality (+3))```
@@ -258,6 +269,16 @@ export class NextDataModelingSubitem implements ChComponent {
       : `(${atts.slice(0, maxAtts).join(", ")} (+${atts.length - maxAtts}))`;
 
   private emitDelete = (event: UIEvent) => {
+    // The subitem is the last one of the parent. Delete the parent instead
+    if (this.level !== 0 && this.fieldNames.length === 1) {
+      const parentItem = this.el.parentElement
+        .parentElement as HTMLChNextDataModelingItemElement;
+
+      parentItem.delete(event);
+      this.mode = "normal";
+      return;
+    }
+
     event.stopPropagation();
     this.waitingMode = "deleting";
     this.deleteField.emit();

@@ -6,8 +6,10 @@
   --ch-color--dark-700: #5a5f63;
   --ch-color--dark-300: #d9d9d9;
   --ch-color--dark-100: #f2f2f2;
+  --ch-color--violet-100: #e4d8ff;
   --ch-color--violet-300: #9a7fda;
   --ch-color--violet-500: #6c48c9;
+  --ch-color--orange-50: #fff4de;
   --ch-color--orange-100: #ffeac4;
   --ch-color--orange-500: orange;
   --ch-color--white: #fff;
@@ -354,6 +356,10 @@ html.show-parts .header-dev__parts {
 /*PARTS*/
 html.show-parts *::part(part) {
   outline: 2px dashed var(--ch-color--orange-500);
+  background-color: var(--ch-color--orange-50);
+}
+html.show-parts *::part(part):hover {
+  cursor: default;
   background-color: var(--ch-color--orange-100);
 }
 /*SECTION*/

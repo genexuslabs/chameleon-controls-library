@@ -135,12 +135,9 @@ window.addEventListener("appload", () => {
     const elementsWithPart = chComponent.shadowRoot?.querySelectorAll("[part]");
     if (elementsWithPart) {
       elementsWithPart.forEach(elementWithPart => {
-        const actualPart = elementWithPart.part.value;
-        if (!actualPart.includes("part")) {
-          elementWithPart.part = `part ${actualPart}`;
-          elementWithPart.addEventListener("onmouseenter", function () {
-            console.log("mouse entered");
-          });
+        const actualParts = elementWithPart.part.value;
+        if (!actualParts.includes("part")) {
+          elementWithPart.part = `part ${actualParts}`;
         }
       });
     }

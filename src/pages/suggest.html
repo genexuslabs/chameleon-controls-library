@@ -6,18 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-suggest | Chameleon</title>
+    <title>ch-suggest</title>
+    <link rel="icon" type="image/ico" href="./assets/ch.ico" />
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
-    <!--Google Fonts-->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="stylesheet" href="./assets/styles.css" />
     <style>
       /*general*/
       :root {
@@ -42,56 +36,56 @@
         font-weight: bold;
       }
       /*ch-suggest*/
-      .styles ch-suggest {
+      body.styles ch-suggest {
         font-family: "Rubik", sans-serif;
         font-size: 14px;
       }
-      .styles ch-suggest:focus {
+      body.styles ch-suggest:focus {
       }
-      .styles ch-suggest::part(label) {
+      body.styles ch-suggest::part(label) {
         font-weight: 700;
         margin-bottom: 4px;
       }
-      .styles ch-suggest::part(input) {
+      body.styles ch-suggest::part(input) {
         padding: 4px 8px;
       }
-      .styles ch-suggest::part(input):focus {
+      body.styles ch-suggest::part(input):focus {
         outline: 2px solid var(--highlight-color);
         border-color: var(--highlight-color);
       }
       /*ch-suggest-list*/
-      .styles ch-suggest-list {
+      body.styles ch-suggest-list {
         background-color: rgba(234, 234, 234, 0.224);
         border: 1px solid rgba(128, 128, 128, 0.275);
         border-radius: 4px;
         padding: 8px;
         margin-bottom: 4px;
       }
-      .styles ch-suggest-list::part(title) {
+      body.styles ch-suggest-list::part(title) {
         font-size: 14px;
         text-transform: uppercase;
       }
       /*ch-suggest-list-item*/
-      .styles ch-suggest-list-item {
+      body.styles ch-suggest-list-item {
         padding: 4px 8px;
         cursor: pointer;
       }
-      .styles ch-suggest-list-item ch-icon {
+      body.styles ch-suggest-list-item ch-icon {
         --icon-size: 16px;
         margin-right: 2px;
       }
-      .styles ch-suggest-list-item:hover {
+      body.styles ch-suggest-list-item:hover {
         background-color: rgba(255, 221, 0, 0.294);
       }
-      .styles ch-suggest-list-item:focus {
+      body.styles ch-suggest-list-item:focus {
         outline: 2px solid var(--highlight-color);
       }
-      .styles ch-suggest-list-item[selected] {
+      body.styles ch-suggest-list-item[selected] {
         background-color: rgba(241, 184, 243, 0.42);
         outline: none;
       }
       /*ch-window*/
-      .styles ch-suggest::part(ch-window-window) {
+      body.styles ch-suggest::part(ch-window-window) {
         margin-top: 4px;
         border: 1px solid black;
         background-color: white;
@@ -100,14 +94,7 @@
     </style>
   </head>
   <body class="styles">
-    <header class="header-dev">
-      <span class="tag-name">ch-suggest</span>
-      <div class="buttons-group">
-        <button id="toggle-dir-btn">Toggle dir</button>
-        <button id="toggle-styles-btn">Toggle styles</button>
-        <button id="toggle-parts-btn">Toggle parts</button>
-      </div>
-    </header>
+    <!-- Here goes the .header-dev (common.js)-->
 
     <div class="container">
       <button id="set-focus">Set focus on suggest</button> <br /><br />
@@ -139,30 +126,36 @@
         <li>chia</li>
       </ul>
 
-      <p><code>ch-suggest</code></p>
-      <ch-suggest label="nombre"></ch-suggest>
+      <!-- ch-suggest -->
+      <section class="section-dev" data-title="ch-suggest">
+        <ch-suggest label="nombre"></ch-suggest>
+      </section>
 
-      <p><code>ch-suggest-list-item</code></p>
-      <ch-suggest-list-item>
-        <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
-        apple
-      </ch-suggest-list-item>
+      <!-- ch-suggest-list -->
+      <section class="section-dev" data-title="ch-suggest-list">
+        <ch-suggest-list label="fruits">
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            apple
+          </ch-suggest-list-item>
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            banana
+          </ch-suggest-list-item>
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            orange
+          </ch-suggest-list-item>
+        </ch-suggest-list>
+      </section>
 
-      <p><code>ch-suggest-list</code></p>
-      <ch-suggest-list label="fruits">
+      <!-- ch-suggest-list-item -->
+      <section class="section-dev" data-title="ch-suggest-list-item">
         <ch-suggest-list-item>
-          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
+          <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
           apple
         </ch-suggest-list-item>
-        <ch-suggest-list-item>
-          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
-          banana
-        </ch-suggest-list-item>
-        <ch-suggest-list-item>
-          <ch-icon auto-color src="./apple.svg" slot="icon"></ch-icon>
-          orange
-        </ch-suggest-list-item>
-      </ch-suggest-list>
+      </section>
     </div>
 
     <script>
@@ -213,6 +206,6 @@
         chSuggest.focus();
       });
     </script>
-    <script src="common.js"></script>
+    <script src="assets/common.js"></script>
   </body>
 </html>

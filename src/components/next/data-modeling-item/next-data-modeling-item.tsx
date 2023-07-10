@@ -297,6 +297,8 @@ export class NextDataModelingSubitem implements ChComponent {
     event.stopPropagation();
     this.errorType = "None";
     this.showNewFieldBtn = !this.showNewFieldBtn;
+
+    this.focusInputInNextRender = true;
   };
 
   /**
@@ -654,7 +656,7 @@ export class NextDataModelingSubitem implements ChComponent {
           // Add new field layout (last cell of the collection/entity)
           this.addNewFieldMode && this.waitingMode !== "adding" ? (
             this.newFieldMode(captions, errorPart, disabledPart, addNewField)
-          ) : this.level === 0 ? (
+          ) : this.level === 0 ? ( // Normal mode. Level === 0
             <ch-accordion
               class="accordion"
               part={`${PART_PREFIX}accordion`}
@@ -672,6 +674,7 @@ export class NextDataModelingSubitem implements ChComponent {
               )}
             </ch-accordion>
           ) : (
+            // Normal mode. Level !== 0
             this.normalMode(
               captions,
               errorPart,

@@ -64,8 +64,12 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 // - - - - - - - - - - - - - - - -
 .add-new-field--level-0 {
   display: grid;
-  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . . ." min-content / 1fr min-content 56px 32px;
+  grid-template: "name . . ." min-content "field-name type confirm cancel" 1fr "error-text . confirm cancel" min-content "sub-item sub-item confirm cancel" min-content / 1fr min-content 56px 32px;
   row-gap: 8px;
+
+  ::slotted(ch-next-data-modeling) {
+    grid-area: sub-item;
+  }
 }
 
 .add-new-field--level-1 {
@@ -78,6 +82,10 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
   display: grid;
   grid-template: "sub-field name . . ." min-content ". field-name type confirm cancel" 1fr ". error-text . . ." min-content / min-content 1fr min-content 56px 32px;
   row-gap: 4px;
+}
+
+.add-new-field--no-actions {
+  grid-template: "sub-field name ." min-content ". field-name type" 1fr ". error-text ." min-content / min-content 1fr min-content;
 }
 
 // Accordion

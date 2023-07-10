@@ -46,6 +46,7 @@ export type DataModelItemLabel =
   | "newEntity"
   | "newField";
 
+export type EntityInfo = { name: string; level: ItemInfo[] };
 export type ItemInfo = { name: string; type?: EntityItemType };
 
 type ActionMetadata = {
@@ -174,12 +175,17 @@ export class NextDataModelingSubitem implements ChComponent {
 
   @Element() el: HTMLChNextDataModelingItemElement;
 
-  @State() showNewFieldBtn = true;
   @State() expanded = false;
 
   // Modes
   @State() errorType: ErrorType = "None";
   @State() waitingMode: WaitingMode = "none";
+
+  /**
+   * This attribute lets you specify if the actions in the `mode === "add"` are
+   * visible.
+   */
+  @Prop() readonly actionsVisible: boolean = true;
 
   /**
    * The labels used in the buttons of the items. Important for accessibility.
@@ -234,6 +240,11 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly name: string = "";
 
   /**
+   * `true` to show the new field button when `mode === "add"`
+   */
+  @Prop({ mutable: true }) showNewFieldBtn = true;
+
+  /**
    * The type of the field.
    */
   @Prop() readonly type: EntityItemType = "LEVEL";
@@ -249,7 +260,23 @@ export class NextDataModelingSubitem implements ChComponent {
   @Event() editField: EventEmitter<ItemInfo>;
 
   /**
-   * Fired when a new file is comitted to be added
+   * Fired when a new entity is committed to be added
+   */
+  @Event() newEntity: EventEmitter<EntityInfo>;
+
+  /**
+   * Fired when a new file is committed to be added when adding a new entity (level === 0)
+   */
+  @Event() firstNewField: EventEmitter<ItemInfo>;
+
+  /**
+   * Fired when the new field of the new entity tries to commits the adding
+   * operation, but fails because it has errors
+   */
+  @Event() firstNewFieldErrors: EventEmitter;
+
+  /**
+   * Fired when a new file is committed to be added
    */
   @Event() newField: EventEmitter<ItemInfo>;
 
@@ -258,15 +285,51 @@ export class NextDataModelingSubitem implements ChComponent {
     event.stopPropagation();
   }
 
+  @Listen("firstNewField")
+  handleFirstNewField(event: CustomEvent<ItemInfo>) {
+    if (this.level !== 0) {
+      return;
+    }
+    this.confirmAction("new", "no", event.detail)(event);
+  }
+
+  @Listen("firstNewFieldErrors")
+  handleFirstNewFieldErrors(event: CustomEvent<ItemInfo>) {
+    this.confirmAction("new", "yes")(event);
+  }
+
   /**
-   * Hides the waiting mode to continue editing the field.
+   * Set the adding mode for the first field of the entity.
    */
   @Method()
-  async hideWaitingMode() {
-    if (this.mode !== "add") {
-      this.mode = "normal";
+  async setAddingMode() {
+    this.clearInput();
+    this.waitingMode = "adding";
+  }
+
+  /**
+   * Remove the value of the input when mode === "add" | "edit"
+   */
+  @Method()
+  async clearInput() {
+    if (this.inputName) {
+      const inputRef = (this.inputName as HTMLElement).shadowRoot
+        .firstElementChild as HTMLInputElement; // TODO: Improve typing
+      inputRef.value = "";
     }
-    this.waitingMode = "none";
+
+    this.errorType = "None";
+  }
+
+  /**
+   * Check errors in the item when `level !== 0`
+   */
+  @Method()
+  async checkErrors(
+    errors: "yes" | "no" | "unknown",
+    event: CustomEvent | UIEvent
+  ) {
+    this.confirmAction("new", errors)(event);
   }
 
   /**
@@ -275,6 +338,23 @@ export class NextDataModelingSubitem implements ChComponent {
   @Method()
   async delete(event: UIEvent) {
     this.emitDelete(event);
+  }
+
+  /**
+   * Hides the waiting mode to continue editing the field.
+   */
+  @Method()
+  async hideWaitingMode() {
+    if (this.mode === "add" && this.level === 0) {
+      const entityItem = this.el.firstElementChild
+        .firstElementChild as HTMLChNextDataModelingItemElement;
+      entityItem.hideWaitingMode();
+    }
+    // The add mode should not be changed
+    else if (this.mode !== "add") {
+      this.mode = "normal";
+    }
+    this.waitingMode = "none";
   }
 
   /**
@@ -303,19 +383,26 @@ export class NextDataModelingSubitem implements ChComponent {
     this.deleteField.emit();
   };
 
-  private toggleMode = (mode: Mode) => (event: UIEvent) => {
+  private toggleMode = (mode: Mode) => (event: CustomEvent | UIEvent) => {
     event.stopPropagation();
     this.mode = this.mode === "normal" ? mode : "normal";
 
     this.focusInputInNextRender = mode === "edit";
   };
 
-  private toggleShowNewField = (event: UIEvent) => {
+  private toggleShowNewField = (event: CustomEvent | UIEvent) => {
     event.stopPropagation();
     this.errorType = "None";
-    this.showNewFieldBtn = !this.showNewFieldBtn;
+    const showNewField = !this.showNewFieldBtn;
 
-    this.focusInputInNextRender = true;
+    this.showNewFieldBtn = showNewField;
+    this.focusInputInNextRender = showNewField;
+
+    if (!showNewField && this.level === 0) {
+      const entityItem = this.el.firstElementChild
+        .firstElementChild as HTMLChNextDataModelingItemElement;
+      entityItem.clearInput();
+    }
   };
 
   /**
@@ -336,57 +423,122 @@ export class NextDataModelingSubitem implements ChComponent {
       this.confirmAction(actionType)(event);
     };
 
-  private confirmAction = (actionType: "edit" | "new") => (event: UIEvent) => {
-    event.stopPropagation();
-    const trimmedInput = this.getGxEditInputValue(this.inputName).trim();
-
-    // Force re-render. Useful when the error type don't change but the
-    // displayed error text must change
-    this.errorType = "None";
-
-    if (trimmedInput === "") {
-      this.errorType = "Empty";
-      return;
-    }
-
-    // The field already exists
-    if (this.name !== trimmedInput && this.fieldNames.includes(trimmedInput)) {
-      this.errorType = "AlreadyDefined";
-      this.errorName = trimmedInput;
-      return;
-    }
-
-    // New field
-    if (actionType === "new") {
-      this.waitingMode = "adding";
-
-      this.lastEditInfo = {
-        name: trimmedInput,
-        type:
-          this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
-      };
-      this.newField.emit(this.lastEditInfo);
-      this.toggleShowNewField(event);
-      return;
-    }
-
-    // Edit field (level 0 fields don't have a type, because they are always entities)
-    if (
-      this.name !== trimmedInput ||
-      (this.level !== 0 && this.type !== this.inputType.value)
-    ) {
-      this.waitingMode = "editing";
-
-      this.lastEditInfo = {
-        name: trimmedInput,
-        type:
-          this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
-      };
-      this.editField.emit(this.lastEditInfo);
-    }
-
-    this.toggleMode("edit")(event);
+  private checkChildErrors = (
+    errors: "yes" | "no" | "unknown",
+    event: CustomEvent | UIEvent
+  ) => {
+    (
+      this.el.firstElementChild
+        .firstElementChild as HTMLChNextDataModelingItemElement
+    ).checkErrors(errors, event);
   };
+
+  private validateErrorsWhenAddingEntity = (
+    actionType: "edit" | "new",
+    errors: "yes" | "no" | "unknown" = "unknown",
+    event: CustomEvent | UIEvent
+  ) => {
+    // Validate child errors when adding a new entity
+    if (this.level === 0 && actionType === "new" && errors === "unknown") {
+      this.checkChildErrors(errors, event);
+    }
+    // Validate parent errors when adding a new field in the new entity
+    else if (!this.actionsVisible && errors === "unknown") {
+      this.firstNewFieldErrors.emit();
+    }
+  };
+
+  private confirmAction =
+    (
+      actionType: "edit" | "new",
+      errors: "yes" | "no" | "unknown" = "unknown",
+      itemInfo: ItemInfo = null
+    ) =>
+    (event: CustomEvent | UIEvent) => {
+      event.stopPropagation();
+      const trimmedInput = this.getGxEditInputValue(this.inputName).trim();
+
+      // Force re-render. Useful when the error type don't change but the
+      // displayed error text must change
+      this.errorType = "None";
+
+      if (trimmedInput === "") {
+        this.errorType = "Empty";
+
+        this.validateErrorsWhenAddingEntity(actionType, errors, event);
+        return;
+      }
+
+      // The field already exists
+      if (
+        this.name !== trimmedInput &&
+        this.fieldNames.includes(trimmedInput)
+      ) {
+        this.errorType = "AlreadyDefined";
+        this.errorName = trimmedInput;
+
+        this.validateErrorsWhenAddingEntity(actionType, errors, event);
+        return;
+      }
+
+      // New field
+      if (actionType === "new") {
+        this.lastEditInfo = {
+          name: trimmedInput,
+          type:
+            this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
+        };
+
+        // Adding a entity
+        if (this.level === 0) {
+          // Must check child errors
+          if (errors === "unknown") {
+            this.checkChildErrors(errors, event);
+          }
+          // The child does not have errors, commit the new entity
+          else if (errors === "no") {
+            this.waitingMode = "adding";
+            this.expanded = true;
+            this.newEntity.emit({ name: trimmedInput, level: [itemInfo] });
+            this.toggleShowNewField(event);
+
+            (
+              this.el.firstElementChild
+                .firstElementChild as HTMLChNextDataModelingItemElement
+            ).setAddingMode(); // TODO: Improve typing
+          }
+        }
+        // Normal case: Adding a field that is not the first field of the entity
+        else if (this.actionsVisible) {
+          this.waitingMode = "adding";
+          this.newField.emit(this.lastEditInfo);
+          this.toggleShowNewField(event);
+        }
+        // Adding a field that is the first field of the entity
+        else {
+          this.firstNewField.emit(this.lastEditInfo);
+        }
+
+        return;
+      }
+
+      // Edit field (level 0 fields don't have a type, because they are always entities)
+      if (
+        this.name !== trimmedInput ||
+        (this.level !== 0 && this.type !== this.inputType.value)
+      ) {
+        this.waitingMode = "editing";
+
+        this.lastEditInfo = {
+          name: trimmedInput,
+          type:
+            this.level === 0 ? "ATT" : (this.inputType.value as EntityItemType) // Doesn't matter the type when level = 0
+        };
+        this.editField.emit(this.lastEditInfo);
+      }
+
+      this.toggleMode("edit")(event);
+    };
 
   private loading = () => (
     <svg class="waiting-mode__loading" height="28" viewBox="6 6 12 12">
@@ -518,9 +670,12 @@ export class NextDataModelingSubitem implements ChComponent {
     ) : (
       <div
         slot={this.level === 0 ? "header" : undefined}
-        class={`add-new-field--level-${this.level}`}
+        class={{
+          [`add-new-field--level-${this.level}`]: true,
+          "add-new-field--no-actions": !this.actionsVisible
+        }}
         part={`${PART_PREFIX}header-content`}
-        tabindex={this.level !== 0 ? "0" : undefined}
+        tabindex={this.level !== 0 && this.actionsVisible ? "0" : undefined}
       >
         {this.level === 2 && (
           <div
@@ -536,23 +691,27 @@ export class NextDataModelingSubitem implements ChComponent {
 
         {this.editableContent("new", captions, disabledPart, errorPart)}
 
-        <button
-          aria-label={actions[0].label}
-          class={actions[0].class}
-          part={actions[0].part}
-          disabled={this.disabled}
-          type="button"
-          onClick={actions[0].event}
-        ></button>
+        {this.level === 0 && <slot />}
 
-        <button
-          aria-label={actions[1].label}
-          class={actions[1].class}
-          part={actions[1].part}
-          disabled={this.disabled}
-          type="button"
-          onClick={actions[1].event}
-        ></button>
+        {this.actionsVisible && [
+          <button
+            aria-label={actions[0].label}
+            class={actions[0].class}
+            part={actions[0].part}
+            disabled={this.disabled}
+            type="button"
+            onClick={actions[0].event}
+          ></button>,
+
+          <button
+            aria-label={actions[1].label}
+            class={actions[1].class}
+            part={actions[1].part}
+            disabled={this.disabled}
+            type="button"
+            onClick={actions[1].event}
+          ></button>
+        ]}
       </div>
     );
 
@@ -589,38 +748,40 @@ export class NextDataModelingSubitem implements ChComponent {
             showWaitingModeTexts ? this.lastEditInfo.type : this.type
           )}
 
-      <div
-        class={{
-          "delete-mode": this.mode === "delete",
-          optimization: this.mode !== "delete",
-          "waiting-mode": this.waitingMode !== "none"
-        }}
-        part={`${PART_PREFIX}delete-mode${waitingModePart}`}
-      >
-        {this.waitingMode === "none"
-          ? [
-              this.mode === "delete" && captions.deleteMode, // Delete Mode
+      {this.actionsVisible && (
+        <div
+          class={{
+            "delete-mode": this.mode === "delete",
+            optimization: this.mode !== "delete",
+            "waiting-mode": this.waitingMode !== "none"
+          }}
+          part={`${PART_PREFIX}delete-mode${waitingModePart}`}
+        >
+          {this.waitingMode === "none"
+            ? [
+                this.mode === "delete" && captions.deleteMode, // Delete Mode
 
-              <button
-                aria-label={actions[0].label}
-                class={actions[0].class}
-                part={actions[0].part}
-                disabled={this.disabled}
-                type="button"
-                onClick={actions[0].event}
-              ></button>,
+                <button
+                  aria-label={actions[0].label}
+                  class={actions[0].class}
+                  part={actions[0].part}
+                  disabled={this.disabled}
+                  type="button"
+                  onClick={actions[0].event}
+                ></button>,
 
-              <button
-                aria-label={actions[1].label}
-                class={actions[1].class}
-                part={actions[1].part}
-                disabled={this.disabled}
-                type="button"
-                onClick={actions[1].event}
-              ></button>
-            ]
-          : [captions[this.waitingMode], this.loading()]}
-      </div>
+                <button
+                  aria-label={actions[1].label}
+                  class={actions[1].class}
+                  part={actions[1].part}
+                  disabled={this.disabled}
+                  type="button"
+                  onClick={actions[1].event}
+                ></button>
+              ]
+            : [captions[this.waitingMode], this.loading()]}
+        </div>
+      )}
     </div>,
 
     this.type === "LEVEL" &&

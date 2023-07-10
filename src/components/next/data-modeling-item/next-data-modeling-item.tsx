@@ -393,12 +393,12 @@ export class NextDataModelingSubitem implements ChComponent {
   private toggleShowNewField = (event: CustomEvent | UIEvent) => {
     event.stopPropagation();
     this.errorType = "None";
-    const showNewField = !this.showNewFieldBtn;
+    const showNewFieldBtn = !this.showNewFieldBtn;
 
-    this.showNewFieldBtn = showNewField;
-    this.focusInputInNextRender = showNewField;
+    this.showNewFieldBtn = showNewFieldBtn;
+    this.focusInputInNextRender = !showNewFieldBtn;
 
-    if (!showNewField && this.level === 0) {
+    if (!showNewFieldBtn && this.level === 0) {
       const entityItem = this.el.firstElementChild
         .firstElementChild as HTMLChNextDataModelingItemElement;
       entityItem.clearInput();

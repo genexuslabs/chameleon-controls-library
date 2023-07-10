@@ -9,7 +9,7 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { DataModelItemLabels, ErrorText, ItemInfo } from "./components/next/data-modeling-item/next-data-modeling-item";
+import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
@@ -460,17 +460,29 @@ export namespace Components {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode": boolean;
+        "actionsVisible": boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
         "captions": DataModelItemLabels;
         /**
+          * Check errors in the item when `level !== 0`
+         */
+        "checkErrors": (errors: "yes" | "no" | "unknown", event: CustomEvent | UIEvent) => Promise<void>;
+        /**
+          * Remove the value of the input when mode === "add" | "edit"
+         */
+        "clearInput": () => Promise<void>;
+        /**
           * The dataType of the field.
          */
         "dataType": string;
+        /**
+          * Deletes the field.
+         */
+        "delete": (event: UIEvent) => Promise<void>;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
@@ -484,7 +496,7 @@ export namespace Components {
          */
         "errorTexts": { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames": string[];
         /**
@@ -500,9 +512,21 @@ export namespace Components {
          */
         "maxAtts": number;
         /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode": Mode;
+        /**
           * The name of the field.
          */
         "name": string;
+        /**
+          * Set the adding mode for the first field of the entity.
+         */
+        "setAddingMode": () => Promise<void>;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn": boolean;
         /**
           * The type of the field.
          */
@@ -1741,9 +1765,9 @@ declare namespace LocalJSX {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode"?: boolean;
+        "actionsVisible"?: boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
@@ -1765,7 +1789,7 @@ declare namespace LocalJSX {
          */
         "errorTexts"?: { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames"?: string[];
         /**
@@ -1776,6 +1800,10 @@ declare namespace LocalJSX {
           * Determine the maximum amount of ATTs displayed per entity.
          */
         "maxAtts"?: number;
+        /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode"?: Mode;
         /**
           * The name of the field.
          */
@@ -1789,9 +1817,25 @@ declare namespace LocalJSX {
          */
         "onEditField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
         /**
-          * Fired when a new file is comitted to be added
+          * Fired when a new file is committed to be added when adding a new entity (level === 0)
+         */
+        "onFirstNewField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
+        /**
+          * Fired when the new field of the new entity tries to commits the adding operation, but fails because it has errors
+         */
+        "onFirstNewFieldErrors"?: (event: ChNextDataModelingItemCustomEvent<any>) => void;
+        /**
+          * Fired when a new entity is committed to be added
+         */
+        "onNewEntity"?: (event: ChNextDataModelingItemCustomEvent<EntityInfo>) => void;
+        /**
+          * Fired when a new file is committed to be added
          */
         "onNewField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn"?: boolean;
         /**
           * The type of the field.
          */

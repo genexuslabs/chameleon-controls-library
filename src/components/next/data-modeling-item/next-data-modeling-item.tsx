@@ -64,7 +64,7 @@ type ActionsMetadataFunction = (
   disabledPart: string
 ) => ActionsMetadata;
 
-type Mode = "delete" | "edit" | "normal";
+export type Mode = "add" | "delete" | "edit" | "normal";
 type WaitingMode = "adding" | "deleting" | "editing" | "none";
 
 const NAME = "name";
@@ -97,6 +97,23 @@ export class NextDataModelingSubitem implements ChComponent {
     captions: DataModelItemLabels,
     disabledPart: string
   ) => ({
+    add: [
+      {
+        // Confirm add
+        label: captions.confirm,
+        class: CONFIRM_CLASS,
+        part: BUTTON_CONFIRM_PART(disabledPart),
+        event: this.confirmAction("new")
+      },
+      {
+        // Cancel add
+        label: captions.cancel,
+        class: CANCEL_CLASS,
+        part: BUTTON_CANCEL_PART(disabledPart),
+        event: this.toggleShowNewField
+      }
+    ],
+
     delete: [
       {
         // Confirm delete
@@ -162,14 +179,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   // Modes
   @State() errorType: ErrorType = "None";
-  @State() mode: Mode = "normal";
   @State() waitingMode: WaitingMode = "none";
-
-  /**
-   * `true` to only show the component that comes with the default slot. Useful
-   * when the item is the last one of the list.
-   */
-  @Prop() readonly addNewFieldMode: boolean = false;
 
   /**
    * The labels used in the buttons of the items. Important for accessibility.
@@ -214,6 +224,11 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly maxAtts: number = 3;
 
   /**
+   * This attribute specifies the operating mode of the control
+   */
+  @Prop({ mutable: true }) mode: Mode = "normal";
+
+  /**
    * The name of the field.
    */
   @Prop() readonly name: string = "";
@@ -248,7 +263,9 @@ export class NextDataModelingSubitem implements ChComponent {
    */
   @Method()
   async hideWaitingMode() {
-    this.mode = "normal";
+    if (this.mode !== "add") {
+      this.mode = "normal";
+    }
     this.waitingMode = "none";
   }
 
@@ -486,7 +503,7 @@ export class NextDataModelingSubitem implements ChComponent {
     captions: DataModelItemLabels,
     errorPart: string,
     disabledPart: string,
-    addNewField: boolean
+    actions: ActionMetadata[]
   ) =>
     this.showNewFieldBtn ? (
       <button
@@ -501,10 +518,7 @@ export class NextDataModelingSubitem implements ChComponent {
     ) : (
       <div
         slot={this.level === 0 ? "header" : undefined}
-        class={{
-          "add-new-field": addNewField && this.level !== 2,
-          "add-new-field-level-2": addNewField && this.level === 2
-        }}
+        class={`add-new-field--level-${this.level}`}
         part={`${PART_PREFIX}header-content`}
         tabindex={this.level !== 0 ? "0" : undefined}
       >
@@ -523,21 +537,21 @@ export class NextDataModelingSubitem implements ChComponent {
         {this.editableContent("new", captions, disabledPart, errorPart)}
 
         <button
-          aria-label={captions.confirm}
-          class={CONFIRM_CLASS}
-          part={BUTTON_CONFIRM_PART(disabledPart)}
+          aria-label={actions[0].label}
+          class={actions[0].class}
+          part={actions[0].part}
           disabled={this.disabled}
           type="button"
-          onClick={this.confirmAction("new")}
+          onClick={actions[0].event}
         ></button>
 
         <button
-          aria-label={captions.cancel}
-          class={CANCEL_CLASS}
-          part={BUTTON_CANCEL_PART(disabledPart)}
+          aria-label={actions[1].label}
+          class={actions[1].class}
+          part={actions[1].part}
           disabled={this.disabled}
           type="button"
-          onClick={this.toggleShowNewField}
+          onClick={actions[1].event}
         ></button>
       </div>
     );
@@ -632,14 +646,14 @@ export class NextDataModelingSubitem implements ChComponent {
   }
 
   render() {
-    const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;
-    const captions = this.captions;
-
     // Parts
     const disabledPart = this.disabled ? " disabled" : "";
     const waitingModePart =
       this.waitingMode === "none" ? "" : ` ${PART_PREFIX}waiting-mode`;
     const errorPart = this.errorType !== "None" ? " error" : "";
+
+    const captions = this.captions;
+    const actions = this.actions(captions, disabledPart)[this.mode];
 
     const showWaitingModeTexts =
       this.waitingMode === "editing" || this.waitingMode === "adding";
@@ -654,8 +668,8 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
-          this.addNewFieldMode && this.waitingMode !== "adding" ? (
-            this.newFieldMode(captions, errorPart, disabledPart, addNewField)
+          this.mode === "add" && this.waitingMode !== "adding" ? (
+            this.newFieldMode(captions, errorPart, disabledPart, actions)
           ) : this.level === 0 ? ( // Normal mode. Level === 0
             <ch-accordion
               class="accordion"
@@ -669,7 +683,7 @@ export class NextDataModelingSubitem implements ChComponent {
                 errorPart,
                 disabledPart,
                 waitingModePart,
-                this.actions(captions, disabledPart)[this.mode],
+                actions,
                 showWaitingModeTexts
               )}
             </ch-accordion>
@@ -680,7 +694,7 @@ export class NextDataModelingSubitem implements ChComponent {
               errorPart,
               disabledPart,
               waitingModePart,
-              this.actions(captions, disabledPart)[this.mode],
+              actions,
               showWaitingModeTexts
             )
           )

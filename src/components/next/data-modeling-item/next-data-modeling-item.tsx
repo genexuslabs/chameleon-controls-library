@@ -65,6 +65,7 @@ type ActionsMetadataFunction = (
 ) => ActionsMetadata;
 
 type Mode = "delete" | "edit" | "normal";
+type WaitingMode = "adding" | "deleting" | "editing" | "none";
 
 const NAME = "name";
 const PART_PREFIX = "dm-item__";
@@ -148,6 +149,7 @@ export class NextDataModelingSubitem implements ChComponent {
 
   private errorName: string;
   private lastEditInfo: ItemInfo = { name: "", type: "ATT" };
+  private focusInputInNextRender = false;
 
   // Refs
   private inputName: HTMLElement;
@@ -161,7 +163,7 @@ export class NextDataModelingSubitem implements ChComponent {
   // Modes
   @State() errorType: ErrorType = "None";
   @State() mode: Mode = "normal";
-  @State() waitingMode: "adding" | "deleting" | "editing" | "none" = "none";
+  @State() waitingMode: WaitingMode = "none";
 
   /**
    * `true` to only show the component that comes with the default slot. Useful
@@ -287,6 +289,8 @@ export class NextDataModelingSubitem implements ChComponent {
   private toggleMode = (mode: Mode) => (event: UIEvent) => {
     event.stopPropagation();
     this.mode = this.mode === "normal" ? mode : "normal";
+
+    this.focusInputInNextRender = mode === "edit";
   };
 
   private toggleShowNewField = (event: UIEvent) => {
@@ -612,6 +616,18 @@ export class NextDataModelingSubitem implements ChComponent {
         <slot />
       ))
   ];
+
+  componentDidUpdate() {
+    // Focus the edit input when the render method has finished
+    if (this.focusInputInNextRender && this.inputName) {
+      this.focusInputInNextRender = false;
+
+      // Wait until the gx-edit control has render
+      requestAnimationFrame(() => {
+        this.inputName.click(); // The click method focuses the inner input of the gx-edit
+      });
+    }
+  }
 
   render() {
     const addNewField = this.addNewFieldMode && !this.showNewFieldBtn;

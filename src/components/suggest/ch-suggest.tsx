@@ -62,6 +62,36 @@ https://stenciljs.com/docs/style-guide#code-organization
 
   private timeoutReference;
 
+  private keyEventsDictionary: {
+    [key in ChSuggestKeyDownEvents]: (
+      eventData?: focusChangeAttemptEventData
+    ) => void;
+  } = {
+    ArrowDown: (e: focusChangeAttemptEventData) => {
+      if (e.currentFocusedItemIndex < e.chSuggestListItemsArray.length + 1) {
+        e.newItemToSetFocusOn =
+          e.chSuggestListItemsArray[e.currentFocusedItemIndex + 1];
+        if (
+          e.currentFocusedItemIndex ===
+          e.chSuggestListItemsArray.length - 2
+        ) {
+          this.scrollListToBottom();
+        }
+      }
+      e.newItemToSetFocusOn && e.newItemToSetFocusOn.focus();
+    },
+    ArrowUp: (e: focusChangeAttemptEventData) => {
+      if (e.currentFocusedItemIndex === 0) {
+        e.newItemToSetFocusOn = this.textInput;
+        this.scrollListToTop();
+      } else {
+        e.newItemToSetFocusOn =
+          e.chSuggestListItemsArray[e.currentFocusedItemIndex - 1];
+      }
+      e.newItemToSetFocusOn && e.newItemToSetFocusOn.focus();
+    }
+  };
+
   /** *****************************
    * 2. REFERENCE TO ELEMENTS
    ********************************/
@@ -103,30 +133,28 @@ https://stenciljs.com/docs/style-guide#code-organization
 
   @Listen("focusChangeAttempt")
   focusChangeAttemptHandler(event: CustomEvent<focusChangeAttempt>) {
-    const currentFocusedItem = event.detail.el;
-    const chSuggestListItemsArray = this.getChSuggestListItems();
-    const currentFocusedItemIndex = chSuggestListItemsArray.findIndex(item => {
-      return item === currentFocusedItem;
-    });
-    let newItemToSetFocusOn = null;
-    if (event.detail.setFocusOnPrev) {
-      if (currentFocusedItemIndex === 0) {
-        newItemToSetFocusOn = this.textInput;
-        this.scrollListToTop();
-      } else {
-        newItemToSetFocusOn =
-          chSuggestListItemsArray[currentFocusedItemIndex - 1];
-      }
-    } else {
-      if (currentFocusedItemIndex < chSuggestListItemsArray.length + 1) {
-        newItemToSetFocusOn =
-          chSuggestListItemsArray[currentFocusedItemIndex + 1];
-        if (currentFocusedItemIndex === chSuggestListItemsArray.length - 2) {
-          this.scrollListToBottom();
+    const keyEventHandler:
+      | ((event?: focusChangeAttemptEventData) => void)
+      | undefined = this.keyEventsDictionary[event.detail.code];
+
+    if (keyEventHandler) {
+      const currentFocusedItem = event.detail.el;
+      const chSuggestListItemsArray = this.getChSuggestListItems();
+      const currentFocusedItemIndex = chSuggestListItemsArray.findIndex(
+        item => {
+          return item === currentFocusedItem;
         }
-      }
+      );
+      const newItemToSetFocusOn = null;
+
+      keyEventHandler({
+        event: event.detail,
+        currentFocusedItem: currentFocusedItem,
+        chSuggestListItemsArray: chSuggestListItemsArray,
+        currentFocusedItemIndex: currentFocusedItemIndex,
+        newItemToSetFocusOn: newItemToSetFocusOn
+      });
     }
-    newItemToSetFocusOn && newItemToSetFocusOn.focus();
   }
 
   /** *****************************
@@ -270,4 +298,11 @@ https://stenciljs.com/docs/style-guide#code-organization
   }
 }
 
-export type ChSuggestKeyDownEvents = "ArrowDown" | "ArrowUp" | "Escape";
+export type ChSuggestKeyDownEvents = "ArrowDown" | "ArrowUp";
+type focusChangeAttemptEventData = {
+  event: focusChangeAttempt;
+  currentFocusedItem: HTMLChSuggestListItemElement;
+  chSuggestListItemsArray: HTMLChSuggestListItemElement[];
+  currentFocusedItemIndex: number;
+  newItemToSetFocusOn: HTMLElement | null;
+};

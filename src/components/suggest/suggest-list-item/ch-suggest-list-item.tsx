@@ -1,3 +1,4 @@
+/* STENCIL IMPORTS */
 import {
   Component,
   Host,
@@ -7,6 +8,9 @@ import {
   EventEmitter,
   Element
 } from "@stencil/core";
+/* OTHER LIBRARIES IMPORTS */
+/* CUSTOM IMPORTS */
+import { ChSuggestKeyDownEvents } from "../ch-suggest";
 
 @Component({
   tag: "ch-suggest-list-item",
@@ -99,7 +103,7 @@ https://stenciljs.com/docs/style-guide#code-organization
       e.preventDefault();
       this.focusChangeAttempt.emit({
         el: this.el,
-        setFocusOnPrev: e.code === "ArrowUp" ? true : false
+        code: e.code
       });
     }
   };
@@ -132,5 +136,5 @@ export type itemSelected = {
 
 export type focusChangeAttempt = {
   el: HTMLChSuggestListItemElement;
-  setFocusOnPrev: boolean;
+  code: ChSuggestKeyDownEvents;
 };

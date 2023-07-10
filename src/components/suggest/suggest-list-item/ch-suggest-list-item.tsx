@@ -67,7 +67,14 @@ https://stenciljs.com/docs/style-guide#code-organization
    *  5.EVENTS (EMMIT)
    ********************************/
 
+  /*
+   * This event is emmited every time the item is selected, either by clicking on it, or by pressing Enter.
+   */
   @Event() itemSelected: EventEmitter<itemSelected>;
+
+  /*
+   * This event is emmited every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+   */
   @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
 
   /** *****************************

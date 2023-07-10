@@ -16,6 +16,7 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
+import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -2017,10 +2018,11 @@ declare namespace LocalJSX {
           * The icon url
          */
         "iconSrc"?: string;
+        "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
         /**
           * ***************************** 5.EVENTS (EMMIT) ******************************
          */
-        "onItemClicked"?: (event: CustomEvent<boolean>) => void;
+        "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
         /**
           * The presence of this property adds a class to the item, indicating that is currently selected.
          */

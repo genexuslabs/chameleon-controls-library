@@ -15,9 +15,10 @@
 
 ## Events
 
-| Event         | Description                                                                   | Type                   |
-| ------------- | ----------------------------------------------------------------------------- | ---------------------- |
-| `itemClicked` | ***************************** 5.EVENTS (EMMIT) ****************************** | `CustomEvent<boolean>` |
+| Event                | Description                                                                   | Type                                                                          |
+| -------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `focusChangeAttempt` |                                                                               | `CustomEvent<{ el: HTMLChSuggestListItemElement; setFocusOnPrev: boolean; }>` |
+| `itemSelected`       | ***************************** 5.EVENTS (EMMIT) ****************************** | `CustomEvent<{ el: HTMLChSuggestListItemElement; value: any; }>`              |
 
 
 ----------------------------------------------

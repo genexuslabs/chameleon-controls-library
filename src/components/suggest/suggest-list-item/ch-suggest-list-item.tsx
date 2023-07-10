@@ -1,4 +1,12 @@
-import { Component, Host, h, Prop, Event, EventEmitter } from "@stencil/core";
+import {
+  Component,
+  Host,
+  h,
+  Prop,
+  Event,
+  EventEmitter,
+  Element
+} from "@stencil/core";
 
 @Component({
   tag: "ch-suggest-list-item",
@@ -35,11 +43,13 @@ https://stenciljs.com/docs/style-guide#code-organization
   /**
    * The presence of this property adds a class to the item, indicating that is currently selected.
    */
-  @Prop() readonly selected: boolean;
+  @Prop({ reflect: true }) readonly selected: boolean;
 
   /** *****************************
    * 2. REFERENCE TO ELEMENTS
    ********************************/
+
+  @Element() el: HTMLChSuggestListItemElement;
 
   /** *****************************
    *  3.STATE() VARIABLES
@@ -53,7 +63,8 @@ https://stenciljs.com/docs/style-guide#code-organization
    *  5.EVENTS (EMMIT)
    ********************************/
 
-  @Event() itemClicked: EventEmitter<boolean>;
+  @Event() itemSelected: EventEmitter<itemSelected>;
+  @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
 
   /** *****************************
    *  6.COMPONENT LIFECYCLE EVENTS
@@ -72,7 +83,25 @@ https://stenciljs.com/docs/style-guide#code-organization
    ********************************/
 
   private handleClick = () => {
-    this.itemClicked.emit(true);
+    this.itemSelected.emit({
+      el: this.el,
+      value: this.el.innerText
+    });
+  };
+
+  private handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === "Enter") {
+      this.itemSelected.emit({
+        el: this.el,
+        value: this.el.innerText
+      });
+    } else if (e.code === "ArrowUp" || e.code === "ArrowDown") {
+      e.preventDefault();
+      this.focusChangeAttempt.emit({
+        el: this.el,
+        setFocusOnPrev: e.code === "ArrowUp" ? true : false
+      });
+    }
   };
 
   /** *****************************
@@ -84,8 +113,8 @@ https://stenciljs.com/docs/style-guide#code-organization
       <Host
         role="listitem"
         tabindex="0"
-        class={{ "ch-suggest-list-item--selected": this.selected }}
         onClick={this.handleClick}
+        onKeyDown={this.handleKeyDown}
       >
         <slot name="icon"></slot>
         <div class="content-wrapper">
@@ -95,3 +124,13 @@ https://stenciljs.com/docs/style-guide#code-organization
     );
   }
 }
+
+export type itemSelected = {
+  el: HTMLChSuggestListItemElement;
+  value: any;
+};
+
+export type focusChangeAttempt = {
+  el: HTMLChSuggestListItemElement;
+  setFocusOnPrev: boolean;
+};

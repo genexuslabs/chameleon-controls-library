@@ -1,3 +1,4 @@
+/* STENCIL IMPORTS */
 import {
   Component,
   Host,
@@ -6,9 +7,16 @@ import {
   Element,
   Event,
   EventEmitter,
-  Listen
+  Listen,
+  Watch,
+  State
 } from "@stencil/core";
-
+/* OTHER LIBRARIES IMPORTS */
+/* CUSTOM IMPORTS */
+import {
+  itemSelected,
+  focusChangeAttempt
+} from "./suggest-list-item/ch-suggest-list-item";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
@@ -24,9 +32,10 @@ INDEX:
 5.EVENTS (EMMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
-8.PUBLIC METHODS API
-9.LOCAL METHODS
-10.RENDER() FUNCTION
+8.WATCHS
+9.PUBLIC METHODS API
+10.LOCAL METHODS
+11.RENDER() FUNCTION
 
 Code organization suggested by StencilJs:
 https://stenciljs.com/docs/style-guide#code-organization
@@ -64,6 +73,8 @@ https://stenciljs.com/docs/style-guide#code-organization
    *  3.STATE() VARIABLES
    ********************************/
 
+  @State() selectedItem: HTMLChSuggestListItemElement;
+
   /** *****************************
    4.PUBLIC PROPERTY API
    ********************************/
@@ -81,131 +92,127 @@ https://stenciljs.com/docs/style-guide#code-organization
   /** *****************************
    *  7.LISTENERS
    ********************************/
-  @Listen("keydown")
-  keydownHandler(event: KeyboardEvent) {
-    const tagName = (event.target as HTMLElement).tagName;
-    if (
-      event.code === "ArrowUp" ||
-      event.code === "ArrowDown" ||
-      event.code === "Enter" ||
-      event.code === "Tab"
-    ) {
-      if (event.code === "ArrowUp" || event.code === "ArrowDown") {
-        event.preventDefault();
-      }
-      const availableListItems = this.el.querySelectorAll(
-        "ch-suggest-list-item"
-      );
-      if (availableListItems.length) {
-        /*Only do something if there are ch-suggest-list-items to navigate*/
-        if (tagName === "CH-SUGGEST-LIST-ITEM") {
-          if (event.code === "Enter") {
-            this.unselectCurrentItem();
-            this.value = (event.target as HTMLElement).innerText;
-            this.closeWindow();
-          } else {
-            const selectedItemIndex = Array.from(availableListItems).findIndex(
-              item => {
-                return item.hasAttribute("selected");
-              }
-            );
-            if (selectedItemIndex !== -1) {
-              if (event.code === "ArrowUp") {
-                this.unselectCurrentItem();
-                if (selectedItemIndex === 1) {
-                  this.scrollListToTop();
-                }
-                if (selectedItemIndex === 0) {
-                  this.textInput.focus();
-                } else {
-                  availableListItems[selectedItemIndex - 1].focus();
-                  availableListItems[selectedItemIndex - 1].setAttribute(
-                    "selected",
-                    ""
-                  );
-                }
-              } else if (event.code === "ArrowDown") {
-                if (selectedItemIndex + 1 < availableListItems.length) {
-                  this.unselectCurrentItem();
-                  availableListItems[selectedItemIndex + 1].focus();
-                  availableListItems[selectedItemIndex + 1].setAttribute(
-                    "selected",
-                    ""
-                  );
-                }
-              }
-            }
-          }
-        } else if (tagName === "CH-SUGGEST") {
-          if (event.code === "ArrowDown" || event.code === "Tab") {
-            event.preventDefault();
-            availableListItems[0].focus();
-            availableListItems[0].setAttribute("selected", "");
-          }
-        }
-      }
-    }
-  }
 
-  @Listen("itemClicked")
-  itemClickedHandler(event: CustomEvent<boolean>) {
-    this.unselectCurrentItem();
-    const target = event.target;
-    (target as unknown as HTMLElement).setAttribute("selected", "");
-    this.value = (event.target as HTMLElement).innerText;
+  @Listen("itemSelected")
+  itemSelectedHandler(event: CustomEvent<itemSelected>) {
+    this.selectedItem = event.detail.el;
+    this.selectedItem.selected = true;
+    this.value = event.detail.value;
     this.closeWindow();
   }
 
-  /** *****************************
-   *  8.PUBLIC METHODS API
-   ********************************/
-
-  /** *****************************
-   *  9.LOCAL METHODS
-   ********************************/
-
-  private unselectCurrentItem = () => {
-    const currentSelectedItem = this.el.querySelector(
-      "ch-suggest-list-item[selected]"
-    );
-    if (currentSelectedItem) {
-      currentSelectedItem.removeAttribute("selected");
+  @Listen("focusChangeAttempt")
+  focusChangeAttemptHandler(event: CustomEvent<focusChangeAttempt>) {
+    const currentFocusedItem = event.detail.el;
+    const chSuggestListItemsArray = this.getChSuggestListItems();
+    const currentFocusedItemIndex = chSuggestListItemsArray.findIndex(item => {
+      return item === currentFocusedItem;
+    });
+    let newItemToSetFocusOn = null;
+    if (event.detail.setFocusOnPrev) {
+      if (currentFocusedItemIndex === 0) {
+        newItemToSetFocusOn = this.textInput;
+        this.scrollListToTop();
+      } else {
+        newItemToSetFocusOn =
+          chSuggestListItemsArray[currentFocusedItemIndex - 1];
+      }
+    } else {
+      if (currentFocusedItemIndex < chSuggestListItemsArray.length + 1) {
+        newItemToSetFocusOn =
+          chSuggestListItemsArray[currentFocusedItemIndex + 1];
+        if (currentFocusedItemIndex === chSuggestListItemsArray.length - 2) {
+          this.scrollListToBottom();
+        }
+      }
     }
+    newItemToSetFocusOn && newItemToSetFocusOn.focus();
+  }
+
+  /** *****************************
+   *  8.WATCHS
+   ********************************/
+
+  @Watch("value")
+  watchValueHandler() {
+    this.unselectItems();
+    this.selectSelectedItem();
+  }
+
+  /** *****************************
+   *  9.PUBLIC METHODS API
+   ********************************/
+
+  /** *****************************
+   *  10.LOCAL METHODS
+   ********************************/
+
+  private unselectItems = (): void => {
+    const selectedItems = this.el.querySelectorAll("ch-suggest-list-item");
+    selectedItems.length &&
+      selectedItems.forEach(selectedItem => {
+        (selectedItem as HTMLChSuggestListItemElement).selected = false;
+      });
+  };
+
+  private selectSelectedItem = (): void => {
+    this.selectedItem && (this.selectedItem.selected = true);
+  };
+
+  private setFocusOnFirstItem = (): void => {
+    const firstItem = this.el.querySelector("ch-suggest-list-item");
+    firstItem && firstItem.focus();
+  };
+
+  private getChSuggestListItems = (): HTMLChSuggestListItemElement[] => {
+    return Array.from(this.el.querySelectorAll("ch-suggest-list-item"));
   };
 
   private renderId = (): string => {
     return this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
   };
 
-  private handleInput = (e): void => {
+  private handleInput = (e: InputEvent): void => {
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
-    const targetValue = e.target.value;
+    const value = (e.target as HTMLInputElement).value;
     this.timeoutReference = setTimeout(() => {
-      this.setTimeoutHandler(targetValue);
+      this.setTimeoutHandler(value);
     }, this.debounce);
   };
 
-  private evaluateWindowMaxHeight = () => {
+  private handleKeyDown = (e: KeyboardEvent): void => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      this.setFocusOnFirstItem();
+    }
+  };
+
+  private evaluateWindowMaxHeight = (): void => {
     const viewportHeight = window.innerHeight;
     const documentHeight = document.body.scrollHeight;
     const height =
       documentHeight >= viewportHeight ? documentHeight : viewportHeight;
-    const gap = 50;
     const inputBottomPosition =
       this.textInput.getBoundingClientRect().bottom + window.scrollY;
-    const windowMaxHeight = height - inputBottomPosition - gap + "px";
+    const windowMaxHeight = height - inputBottomPosition + "px";
     this.el.style.setProperty("--window-max-height", windowMaxHeight);
   };
 
-  private scrollListToTop = () => {
+  private scrollListToTop = (): void => {
     const partWindow =
       this.chWindow.shadowRoot.querySelector("[part='window']");
     partWindow.scrollTop = 0;
   };
 
-  private setTimeoutHandler = targetValue => {
+  private scrollListToBottom = (): void => {
+    const partWindow =
+      this.chWindow.shadowRoot.querySelector("[part='window']");
+    partWindow.scrollTop = partWindow.scrollHeight;
+  };
+
+  private setTimeoutHandler = (targetValue: string): void => {
     this.evaluateWindowMaxHeight();
     this.chWindow.hidden = false;
     const value = targetValue;
@@ -213,13 +220,13 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.value = value;
   };
 
-  private closeWindow = () => {
+  private closeWindow = (): void => {
     this.chWindow.hidden = true;
     this.textInput.focus();
   };
 
   /** *****************************
-   *  10.RENDER() FUNCTION
+   *  11.RENDER() FUNCTION
    ********************************/
 
   render() {
@@ -236,6 +243,7 @@ https://stenciljs.com/docs/style-guide#code-organization
           part="input"
           ref={el => (this.textInput = el as HTMLInputElement)}
           onInput={this.handleInput}
+          onKeyDown={this.handleKeyDown}
           value={this.value}
           autocomplete="off"
         ></input>
@@ -261,3 +269,5 @@ https://stenciljs.com/docs/style-guide#code-organization
     );
   }
 }
+
+export type ChSuggestKeyDownEvents = "ArrowDown" | "ArrowUp" | "Escape";

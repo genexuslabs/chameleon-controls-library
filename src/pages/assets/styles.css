@@ -4,6 +4,7 @@
   --ch-color--dark-900: #1b1f23;
   --ch-color--dark-800: #3b4044;
   --ch-color--dark-700: #5a5f63;
+  --ch-color--dark-600: #787979;
   --ch-color--dark-300: #d9d9d9;
   --ch-color--dark-100: #f2f2f2;
   --ch-color--violet-100: #e4d8ff;
@@ -274,7 +275,7 @@ CUSTOM STYLES (HOME) : index.html
   color: var(--ch-color--white);
 }
 .list li a:visited {
-  color: var(--ch-color--dark-700);
+  color: var(--ch-color--dark-600);
   border-color: var(--ch-color--dark-700);
 }
 .list li a:visited:hover {

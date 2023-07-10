@@ -446,7 +446,7 @@ export class NextDataModelingSubitem implements ChComponent {
       <div class="select-wrapper">
         <select
           class="select"
-          part={`${PART_PREFIX}input${errorPart}${disabledPart} select`}
+          part={`${PART_PREFIX}input${disabledPart} select`}
           disabled={this.disabled}
           ref={el => (this.inputType = el)}
         >

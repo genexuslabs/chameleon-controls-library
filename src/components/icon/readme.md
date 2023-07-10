@@ -28,6 +28,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 
 ### Used by
 
+ - [ch-entity-selector](../entity-selector)
  - [ch-select](../select)
  - [ch-select-option](../select-item)
  - [ch-sidebar-menu-list-item](../sidebar-menu-list-item)
@@ -36,6 +37,7 @@ A component for displaying SVG icons that allows overriding the `fill` property 
 ### Graph
 ```mermaid
 graph TD;
+  ch-entity-selector --> ch-icon
   ch-select --> ch-icon
   ch-select-option --> ch-icon
   ch-sidebar-menu-list-item --> ch-icon

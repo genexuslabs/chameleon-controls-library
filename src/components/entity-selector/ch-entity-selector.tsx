@@ -1,0 +1,169 @@
+/* STENCIL IMPORTS */
+import { Component, Host, h, Prop } from "@stencil/core";
+/* OTHER LIBRARIES IMPORTS */
+/* CUSTOM IMPORTS */
+
+@Component({
+  tag: "ch-entity-selector",
+  styleUrl: "ch-entity-selector.scss",
+  shadow: true
+})
+export class ChEntitySelector {
+  /*
+INDEX:
+1.OWN PROPERTIES
+2.REFERENCE TO ELEMENTS
+3.STATE() VARIABLES
+4.PUBLIC PROPERTY API
+5.EVENTS (EMMIT)
+6.COMPONENT LIFECYCLE EVENTS
+7.LISTENERS
+8.WATCHS
+9.PUBLIC METHODS API
+10.LOCAL METHODS
+11.RENDER() FUNCTION
+
+Code organization suggested by StencilJs:
+https://stenciljs.com/docs/style-guide#code-organization
+*/
+
+  /********************************
+   *  1.OWN PROPERTIES
+   ********************************/
+
+  /**
+   *  Default value to be assigned as the component's value. This value should always be used when the 'X' button is pressed.
+   */
+  @Prop() readonly defaultValue?: EntityData | null | undefined;
+
+  /**
+   * Optional label (same as the label of an input).
+   */
+  @Prop() readonly label: string;
+
+  /**
+   * Callback that will be called when the user presses the action button. Returns the new value assigned to the component.
+   */
+  @Prop() readonly onSelectEntity: () => Promise<EntityData>;
+
+  /**
+   * Value currently assigned.
+   */
+  @Prop({ mutable: true }) value: EntityData | null | undefined;
+
+  /*******************************
+   * 2. REFERENCE TO ELEMENTS
+   ********************************/
+
+  /*******************************
+   *  3.STATE() VARIABLES
+   ********************************/
+
+  /*******************************
+   4.PUBLIC PROPERTY API
+   ********************************/
+
+  /*******************************
+   *  5.EVENTS (EMMIT)
+   ********************************/
+
+  /*******************************
+   *  6.COMPONENT LIFECYCLE EVENTS
+   ********************************/
+
+  /*******************************
+   *  7.LISTENERS
+   ********************************/
+
+  /*******************************
+   *  8.WATCHS
+   ********************************/
+
+  /*******************************
+   *  9.PUBLIC METHODS API
+   ********************************/
+
+  /*******************************
+   *  10.LOCAL METHODS
+   ********************************/
+
+  private btnClearClickHandler = () => {
+    this.value = null;
+  };
+
+  private btnSelectClickHandler = () => {
+    this.onSelectEntity()
+      .then(result => {
+        this.value = result;
+      })
+      .catch(error => {
+        console.log("Promise rejected:", error);
+      });
+  };
+
+  private iconAutoColor = (): boolean => {
+    if (this.value) {
+      return this.value.iconAutocolor;
+    } else if (this.defaultValue) {
+      return this.defaultValue.iconAutocolor;
+    }
+    return false;
+  };
+
+  private iconSrc = (): string | undefined => {
+    if (this.value) {
+      return this.value.iconSrc;
+    } else if (this.defaultValue) {
+      return this.defaultValue.iconSrc;
+    }
+    return undefined;
+  };
+
+  /*******************************
+   *  11.RENDER() FUNCTION
+   ********************************/
+
+  render() {
+    return (
+      <Host>
+        {this.label && <label part="label">{this.label}</label>}
+        <div part="wrapper" tabindex="0">
+          {this.iconSrc && (
+            <ch-icon
+              autoColor={this.iconAutoColor()}
+              src={this.iconSrc()}
+              part="icon"
+              aria-hidden="true"
+            ></ch-icon>
+          )}
+          <input
+            type="text"
+            readonly
+            part="input input-entity"
+            value={this.value?.name || this.defaultValue?.name}
+            tabindex="-1"
+            aria-readonly="true"
+            aria-hidden="true"
+          />
+          <button
+            part="button button-clear"
+            onClick={this.btnClearClickHandler}
+            aria-label="clear the value, and apply the default value if provided"
+          ></button>
+          <button
+            part="button button-select"
+            onClick={this.btnSelectClickHandler}
+            aria-label="displays the entity selector"
+          ></button>
+        </div>
+      </Host>
+    );
+  }
+}
+
+export type EntityData = {
+  id: string; // Internal ID of the entity
+  name: string; // Name that will be displayed in the interface
+  iconSrc?: string; // The icon url src
+  iconAutocolor?: boolean; // Indicates if the icon color is automatic or not. If it is, it ignores the value of '--icon-color'
+};

@@ -89,9 +89,9 @@ INDEX:
 
   /*** 2. REFERENCE TO ELEMENTS ***/
 
-  @Element() el: HTMLChSuggestElement;
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
+  @Element() el: HTMLChSuggestElement;
 
   /*** 3.STATE() VARIABLES ***/
 

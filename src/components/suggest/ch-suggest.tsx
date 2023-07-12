@@ -32,10 +32,10 @@ INDEX:
 2.REFERENCE TO ELEMENTS
 3.STATE() VARIABLES
 4.PUBLIC PROPERTY API
-5.EVENTS (EMMIT)
+5.EVENTS (EMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
-8.WATCHS
+8.WATCH
 9.PUBLIC METHODS API
 10.LOCAL METHODS
 11.RENDER() FUNCTION
@@ -66,27 +66,31 @@ INDEX:
     ) => void;
   } = {
     ArrowDown: (e: focusChangeAttemptEventData) => {
-      if (e.currentFocusedItemIndex < e.chSuggestListItemsArray.length + 1) {
-        e.newItemToSetFocusOn =
-          e.chSuggestListItemsArray[e.currentFocusedItemIndex + 1];
-        if (
-          e.currentFocusedItemIndex ===
-          e.chSuggestListItemsArray.length - 2
-        ) {
-          this.scrollListToBottom();
-        }
+      const newFocusedItem = this.getNewFocusedItem(
+        e.currentFocusedItem,
+        ARROW_DOWN
+      );
+      const nextFocusedItem = this.getNewFocusedItem(
+        newFocusedItem,
+        ARROW_DOWN
+      );
+      newFocusedItem && newFocusedItem.focus();
+      if (!nextFocusedItem) {
+        /*This is the last item. Adjust window scroll to be at the very bottom*/
+        this.scrollListToBottom();
       }
-      e.newItemToSetFocusOn && e.newItemToSetFocusOn.focus();
     },
     ArrowUp: (e: focusChangeAttemptEventData) => {
-      if (e.currentFocusedItemIndex === 0) {
-        e.newItemToSetFocusOn = this.textInput;
+      const newFocusedItem = this.getNewFocusedItem(
+        e.currentFocusedItem,
+        ARROW_UP
+      );
+      const nextFocusedItem = this.getNewFocusedItem(newFocusedItem, ARROW_UP);
+      newFocusedItem && newFocusedItem.focus();
+      if (!nextFocusedItem) {
+        /*This is the first item. Adjust window scroll to be at the very top*/
         this.scrollListToTop();
-      } else {
-        e.newItemToSetFocusOn =
-          e.chSuggestListItemsArray[e.currentFocusedItemIndex - 1];
       }
-      e.newItemToSetFocusOn && e.newItemToSetFocusOn.focus();
     }
   };
 
@@ -184,6 +188,69 @@ INDEX:
 
   private getChSuggestListItems = (): HTMLChSuggestListItemElement[] =>
     Array.from(this.el.querySelectorAll("ch-suggest-list-item"));
+
+  private getNewFocusedItem = (
+    currentFocusedItem: HTMLChSuggestListItemElement,
+    direction: typeof ARROW_DOWN | typeof ARROW_UP
+  ): HTMLChSuggestListItemElement => {
+    /*Helper function that returns the list item that should get focus (the first one, or the last one)*/
+    const getListChild = (list: HTMLChSuggestListElement) => {
+      const listItems = list.querySelectorAll("ch-suggest-list-item");
+      let listChild = listItems && listItems[listItems.length - 1];
+      if (direction === ARROW_DOWN) {
+        listChild = list.querySelector("ch-suggest-list-item");
+      } else {
+        const parentListItems = list.querySelectorAll("ch-suggest-list-item");
+        listChild =
+          parentListItems && parentListItems[parentListItems.length - 1];
+      }
+      return listChild;
+    };
+
+    if (!currentFocusedItem) return;
+    let newFocusedItem =
+      direction === ARROW_DOWN
+        ? currentFocusedItem.nextElementSibling
+        : currentFocusedItem.previousElementSibling;
+    if (newFocusedItem?.nodeName === "CH-SUGGEST-LIST") {
+      newFocusedItem = getListChild(newFocusedItem as HTMLChSuggestListElement);
+    } else if (!newFocusedItem) {
+      /*this could be the last item of a list, but not the last item*/
+      const parent = currentFocusedItem.parentElement;
+      const sibling =
+        direction === ARROW_DOWN
+          ? parent.nextElementSibling
+          : parent.previousElementSibling;
+      const parentIsList = parent.nodeName === "CH-SUGGEST-LIST" ? true : false;
+      if (
+        parentIsList &&
+        sibling &&
+        sibling.nodeName === "CH-SUGGEST-LIST-ITEM"
+      ) {
+        newFocusedItem =
+          direction === ARROW_DOWN
+            ? parent.nextElementSibling
+            : parent.previousElementSibling;
+      } else if (
+        parentIsList &&
+        sibling &&
+        sibling.nodeName === "CH-SUGGEST-LIST"
+      ) {
+        const parentList =
+          direction === ARROW_DOWN
+            ? parent.nextElementSibling
+            : parent.previousElementSibling;
+        let listChild;
+        if (direction === ARROW_DOWN) {
+          listChild = parentList.querySelector("ch-suggest-list-item");
+        } else {
+          listChild = getListChild(parentList as HTMLChSuggestListElement);
+        }
+        newFocusedItem = listChild ? listChild : null;
+      }
+    }
+    return newFocusedItem as HTMLChSuggestListItemElement;
+  };
 
   private renderId = (): string =>
     this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;

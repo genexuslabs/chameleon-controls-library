@@ -157,6 +157,11 @@ https://stenciljs.com/docs/style-guide#code-organization
     }
   }
 
+  @Listen("windowClosed")
+  windowClosedHandler() {
+    this.textInput.focus();
+  }
+
   /** *****************************
    *  8.WATCHS
    ********************************/
@@ -250,7 +255,6 @@ https://stenciljs.com/docs/style-guide#code-organization
 
   private closeWindow = (): void => {
     this.chWindow.hidden = true;
-    this.textInput.focus();
   };
 
   /** *****************************

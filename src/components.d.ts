@@ -742,10 +742,6 @@ export namespace Components {
           * The icon url
          */
         "iconSrc": string;
-        /**
-          * The presence of this property adds a class to the item, indicating that is currently selected.
-         */
-        "selected": boolean;
     }
     interface ChTree {
         /**
@@ -2026,10 +2022,6 @@ declare namespace LocalJSX {
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
         "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
-        /**
-          * The presence of this property adds a class to the item, indicating that is currently selected.
-         */
-        "selected"?: boolean;
     }
     interface ChTree {
         /**

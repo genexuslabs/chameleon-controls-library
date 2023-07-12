@@ -102,8 +102,6 @@ INDEX:
 
   /*** 3.STATE() VARIABLES ***/
 
-  @State() selectedItem: HTMLChSuggestListItemElement;
-
   /*** 4.PUBLIC PROPERTY API ***/
 
   /*** 5.EVENTS (EMIT) ***/
@@ -119,8 +117,6 @@ INDEX:
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<itemSelected>) {
-    this.selectedItem = event.detail.el;
-    this.selectedItem.selected = true;
     this.value = event.detail.value;
     this.closeWindow();
   }
@@ -160,26 +156,12 @@ INDEX:
 
   @Watch("value")
   watchValueHandler(newValue: string) {
-    this.unselectItems();
-    this.selectSelectedItem();
     this.inputChanged.emit(newValue);
   }
 
   /*** 9.PUBLIC METHODS API ***/
 
   /*** 10.LOCAL METHODS ***/
-
-  private unselectItems = () => {
-    const selectedItems = this.el.querySelectorAll("ch-suggest-list-item");
-    selectedItems.length &&
-      selectedItems.forEach(selectedItem => {
-        (selectedItem as HTMLChSuggestListItemElement).selected = false;
-      });
-  };
-
-  private selectSelectedItem = () => {
-    this.selectedItem && (this.selectedItem.selected = true);
-  };
 
   private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");

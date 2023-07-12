@@ -41,11 +41,6 @@ INDEX:
    */
   @Prop() readonly iconSrc: string;
 
-  /**
-   * The presence of this property adds a class to the item, indicating that is currently selected.
-   */
-  @Prop({ reflect: true }) readonly selected: boolean;
-
   /*** 2.REFERENCE TO ELEMENTS ***/
 
   @Element() el: HTMLChSuggestListItemElement;

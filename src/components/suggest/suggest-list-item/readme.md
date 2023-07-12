@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property   | Attribute  | Description                                                                                    | Type      | Default     |
-| ---------- | ---------- | ---------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `iconSrc`  | `icon-src` | The icon url                                                                                   | `string`  | `undefined` |
-| `selected` | `selected` | The presence of this property adds a class to the item, indicating that is currently selected. | `boolean` | `undefined` |
+| Property  | Attribute  | Description  | Type     | Default     |
+| --------- | ---------- | ------------ | -------- | ----------- |
+| `iconSrc` | `icon-src` | The icon url | `string` | `undefined` |
 
 
 ## Events

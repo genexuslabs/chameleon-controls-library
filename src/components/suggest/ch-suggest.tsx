@@ -161,7 +161,7 @@ INDEX:
 
   /*** 10.LOCAL METHODS ***/
 
-  private unselectItems = (): void => {
+  private unselectItems = () => {
     const selectedItems = this.el.querySelectorAll("ch-suggest-list-item");
     selectedItems.length &&
       selectedItems.forEach(selectedItem => {
@@ -169,11 +169,11 @@ INDEX:
       });
   };
 
-  private selectSelectedItem = (): void => {
+  private selectSelectedItem = () => {
     this.selectedItem && (this.selectedItem.selected = true);
   };
 
-  private setFocusOnFirstItem = (): void => {
+  private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");
     firstItem && firstItem.focus();
   };
@@ -184,7 +184,7 @@ INDEX:
   private renderId = (): string =>
     this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
 
-  private handleInput = (e: InputEvent): void => {
+  private handleInput = (e: InputEvent) => {
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
@@ -194,14 +194,14 @@ INDEX:
     }, this.debounce);
   };
 
-  private handleKeyDown = (e: KeyboardEvent): void => {
+  private handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       this.setFocusOnFirstItem();
     }
   };
 
-  private evaluateWindowMaxHeight = (): void => {
+  private evaluateWindowMaxHeight = () => {
     const viewportHeight = window.innerHeight;
     const documentHeight = document.body.scrollHeight;
     const height =
@@ -212,19 +212,19 @@ INDEX:
     this.el.style.setProperty("--window-max-height", windowMaxHeight);
   };
 
-  private scrollListToTop = (): void => {
+  private scrollListToTop = () => {
     const partWindow =
       this.chWindow.shadowRoot.querySelector("[part='window']");
     partWindow.scrollTop = 0;
   };
 
-  private scrollListToBottom = (): void => {
+  private scrollListToBottom = () => {
     const partWindow =
       this.chWindow.shadowRoot.querySelector("[part='window']");
     partWindow.scrollTop = partWindow.scrollHeight;
   };
 
-  private setTimeoutHandler = (targetValue: string): void => {
+  private setTimeoutHandler = (targetValue: string) => {
     this.evaluateWindowMaxHeight();
     this.chWindow.hidden = false;
     const value = targetValue;
@@ -232,7 +232,7 @@ INDEX:
     this.value = value;
   };
 
-  private closeWindow = (): void => {
+  private closeWindow = () => {
     this.chWindow.hidden = true;
   };
 

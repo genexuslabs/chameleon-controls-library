@@ -99,8 +99,11 @@ INDEX:
 
   /*** 4.PUBLIC PROPERTY API ***/
 
-  /*** 5.EVENTS (EMMIT) ***/
+  /*** 5.EVENTS (EMIT) ***/
 
+  /**
+   * This event is emitted every time there input events fires, and it emits the actual input value.
+   */
   @Event() inputChanged: EventEmitter<string>;
 
   /*** 6.COMPONENT LIFECYCLE EVENTS ***/

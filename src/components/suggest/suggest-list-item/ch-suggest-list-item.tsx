@@ -52,15 +52,15 @@ INDEX:
 
   /*** 4.PUBLIC PROPERTY API ***/
 
-  /*** 5.EVENTS (EMMIT) ***/
+  /*** 5.EVENTS (EMIT) ***/
 
   /*
-   * This event is emmited every time the item is selected, either by clicking on it, or by pressing Enter.
+   * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
    */
   @Event() itemSelected: EventEmitter<itemSelected>;
 
   /*
-   * This event is emmited every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+   * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
    */
   @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
 

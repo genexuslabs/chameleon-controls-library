@@ -307,11 +307,11 @@ INDEX:
   render() {
     return (
       <Host>
-        {this.label ? (
+        {this.label && (
           <label htmlFor={this.renderId()} part="label">
             {this.label}
           </label>
-        ) : null}
+        )}
         <input
           type="text"
           id={this.renderId()}

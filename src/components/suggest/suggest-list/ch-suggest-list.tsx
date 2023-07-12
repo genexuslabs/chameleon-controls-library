@@ -43,20 +43,21 @@ INDEX:
 
   /*** 9.LOCAL METHODS ***/
 
-  private renderId = (): string =>
-    this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
-
   /*** 10.RENDER() FUNCTION ***/
 
   render() {
     return (
-      <Host role="list">
-        {this.label ? (
-          <h2 id={this.renderId()} part="title" class="title">
+      <Host>
+        {this.label && (
+          <h2 id="heading" part="title" class="title">
             {this.label}
           </h2>
-        ) : null}
-        <ul aria-labelledby={this.renderId()} part="list" class="list">
+        )}
+        <ul
+          aria-labelledby={this.label ? "heading" : undefined}
+          part="list"
+          class="list"
+        >
           <slot></slot>
         </ul>
       </Host>

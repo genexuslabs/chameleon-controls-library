@@ -12,6 +12,8 @@ import {
 /* CUSTOM IMPORTS */
 import { ChSuggestKeyDownEvents } from "../ch-suggest";
 
+const ARROW_DOWN = "ArrowDown";
+const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest-list-item",
   styleUrl: "ch-suggest-list-item.scss",
@@ -85,7 +87,7 @@ INDEX:
         el: this.el,
         value: this.el.innerText
       });
-    } else if (e.code === "ArrowUp" || e.code === "ArrowDown") {
+    } else if (e.code === ARROW_UP || e.code === ARROW_DOWN) {
       e.preventDefault();
       this.focusChangeAttempt.emit({
         el: this.el,

@@ -17,6 +17,9 @@ import {
   itemSelected,
   focusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+
+const ARROW_DOWN = "ArrowDown";
+const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
@@ -199,7 +202,7 @@ INDEX:
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "ArrowDown") {
+    if (e.key === ARROW_DOWN) {
       e.preventDefault();
       this.setFocusOnFirstItem();
     }
@@ -281,7 +284,7 @@ INDEX:
   }
 }
 
-export type ChSuggestKeyDownEvents = "ArrowDown" | "ArrowUp";
+export type ChSuggestKeyDownEvents = typeof ARROW_DOWN | typeof ARROW_UP;
 type focusChangeAttemptEventData = {
   event: focusChangeAttempt;
   currentFocusedItem: HTMLChSuggestListItemElement;

@@ -193,7 +193,7 @@ INDEX:
     }
     const value = (e.target as HTMLInputElement).value;
     this.timeoutReference = setTimeout(() => {
-      this.setTimeoutHandler(value);
+      this.processInputEvent(value);
     }, this.debounce);
   };
 
@@ -227,12 +227,11 @@ INDEX:
     partWindow.scrollTop = partWindow.scrollHeight;
   };
 
-  private setTimeoutHandler = (targetValue: string) => {
+  private processInputEvent = (targetValue: string) => {
     this.evaluateWindowMaxHeight();
     this.chWindow.hidden = false;
-    const value = targetValue;
-    this.inputChanged.emit(value);
-    this.value = value;
+    this.value = targetValue;
+    this.inputChanged.emit(this.value);
   };
 
   private closeWindow = () => {

@@ -16,9 +16,9 @@
 
 ## Events
 
-| Event          | Description           | Type                  |
-| -------------- | --------------------- | --------------------- |
-| `inputChanged` | * 5.EVENTS (EMMIT) ** | `CustomEvent<string>` |
+| Event          | Description                                                                                     | Type                  |
+| -------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
+| `inputChanged` | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>` |
 
 
 ## Shadow Parts

@@ -1999,7 +1999,7 @@ declare namespace LocalJSX {
          */
         "label"?: string;
         /**
-          * * 5.EVENTS (EMMIT) **
+          * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onInputChanged"?: (event: CustomEvent<string>) => void;
         /**
@@ -2018,9 +2018,12 @@ declare namespace LocalJSX {
           * The icon url
          */
         "iconSrc"?: string;
+        /**
+          * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+         */
         "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
         /**
-          * * 5.EVENTS (EMMIT) **
+          * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
         "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
         /**

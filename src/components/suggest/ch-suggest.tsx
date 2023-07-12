@@ -184,6 +184,9 @@ INDEX:
   private renderId = (): string =>
     this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
 
+  /**
+   * Every time the input event is triggered, the value of the input is sent to processInputEvent, which is responsible for displaying a window with the suggested options. this.debounce is a delay that, along with clearTimeout, ensures that the window is only shown after the user has stopped typing.
+   */
   private handleInput = (e: InputEvent) => {
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);

@@ -20,30 +20,30 @@ INDEX:
 10.RENDER() FUNCTION
 */
 
-  /*** 1.OWN PROPERTIES ***/
+  /// 1.OWN PROPERTIES ///
 
   /**
    * The label
    */
   @Prop() readonly label: string;
 
-  /*** 2.REFERENCE TO ELEMENTS ***/
+  /// 2.REFERENCE TO ELEMENTS ///
 
-  /*** 3.STATE() VARIABLES ***/
+  /// 3.STATE() VARIABLES ///
 
-  /*** 4.PUBLIC PROPERTY API ***/
+  /// 4.PUBLIC PROPERTY API ///
 
-  /*** 5.EVENTS (EMIT) ***/
+  /// 5.EVENTS (EMIT) ///
 
-  /*** 6.COMPONENT LIFECYCLE EVENTS ***/
+  /// 6.COMPONENT LIFECYCLE EVENTS ///
 
-  /*** 7.LISTENERS ***/
+  /// 7.LISTENERS ///
 
-  /*** 8.PUBLIC METHODS API ***/
+  /// 8.PUBLIC METHODS API ///
 
-  /*** 9.LOCAL METHODS ***/
+  /// 9.LOCAL METHODS ///
 
-  /*** 10.RENDER() FUNCTION ***/
+  /// 10.RENDER() FUNCTION ///
 
   render() {
     return (

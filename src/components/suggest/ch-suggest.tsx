@@ -152,9 +152,10 @@ INDEX:
   /*** 8.WATCHS ***/
 
   @Watch("value")
-  watchValueHandler() {
+  watchValueHandler(newValue: string) {
     this.unselectItems();
     this.selectSelectedItem();
+    this.inputChanged.emit(newValue);
   }
 
   /*** 9.PUBLIC METHODS API ***/
@@ -231,7 +232,6 @@ INDEX:
     this.evaluateWindowMaxHeight();
     this.chWindow.hidden = false;
     this.value = targetValue;
-    this.inputChanged.emit(this.value);
   };
 
   private closeWindow = () => {

@@ -18,59 +18,36 @@ INDEX:
 8.PUBLIC METHODS API
 9.LOCAL METHODS
 10.RENDER() FUNCTION
-
-Code organization suggested by StencilJs:
-https://stenciljs.com/docs/style-guide#code-organization
 */
 
-  /** ******************************
-   *  1.OWN PROPERTIES
-   ********************************/
+  /*** 1.OWN PROPERTIES ***/
 
   /**
    * The label
    */
   @Prop() readonly label: string;
 
-  /** *****************************
-   * 2. REFERENCE TO ELEMENTS
-   ********************************/
+  /*** 2.REFERENCE TO ELEMENTS ***/
 
-  /** *****************************
-   *  3.STATE() VARIABLES
-   ********************************/
+  /*** 3.STATE() VARIABLES ***/
 
-  /** *****************************
-   4.PUBLIC PROPERTY API
-   ********************************/
+  /*** 4.PUBLIC PROPERTY API ***/
 
-  /** *****************************
-   *  5.EVENTS (EMMIT)
-   ********************************/
+  /*** 5.EVENTS (EMMIT) ***/
 
-  /** *****************************
-   *  6.COMPONENT LIFECYCLE EVENTS
-   ********************************/
+  /*** 6.COMPONENT LIFECYCLE EVENTS ***/
 
-  /** *****************************
-   *  7.LISTENERS
-   ********************************/
+  /*** 7.LISTENERS ***/
 
-  /** *****************************
-   *  8.PUBLIC METHODS API
-   ********************************/
+  /*** 8.PUBLIC METHODS API ***/
 
-  /** *****************************
-   *  9.LOCAL METHODS
-   ********************************/
+  /*** 9.LOCAL METHODS ***/
 
   private renderId = (): string => {
     return this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
   };
 
-  /** *****************************
-   *  10.RENDER() FUNCTION
-   ********************************/
+  /*** 10.RENDER() FUNCTION ***/
 
   render() {
     return (

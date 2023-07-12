@@ -15,10 +15,10 @@
 
 ## Events
 
-| Event                | Description                                                                   | Type                                                                               |
-| -------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `focusChangeAttempt` |                                                                               | `CustomEvent<{ el: HTMLChSuggestListItemElement; code: ChSuggestKeyDownEvents; }>` |
-| `itemSelected`       | ***************************** 5.EVENTS (EMMIT) ****************************** | `CustomEvent<{ el: HTMLChSuggestListItemElement; value: any; }>`                   |
+| Event                | Description           | Type                                                                               |
+| -------------------- | --------------------- | ---------------------------------------------------------------------------------- |
+| `focusChangeAttempt` |                       | `CustomEvent<{ el: HTMLChSuggestListItemElement; code: ChSuggestKeyDownEvents; }>` |
+| `itemSelected`       | * 5.EVENTS (EMMIT) ** | `CustomEvent<{ el: HTMLChSuggestListItemElement; value: any; }>`                   |
 
 
 ----------------------------------------------

@@ -1999,7 +1999,7 @@ declare namespace LocalJSX {
          */
         "label"?: string;
         /**
-          * ***************************** 5.EVENTS (EMMIT) ******************************
+          * * 5.EVENTS (EMMIT) **
          */
         "onInputChanged"?: (event: CustomEvent<string>) => void;
         /**
@@ -2020,7 +2020,7 @@ declare namespace LocalJSX {
         "iconSrc"?: string;
         "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
         /**
-          * ***************************** 5.EVENTS (EMMIT) ******************************
+          * * 5.EVENTS (EMMIT) **
          */
         "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
         /**

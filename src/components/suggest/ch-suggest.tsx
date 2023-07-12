@@ -36,14 +36,9 @@ INDEX:
 9.PUBLIC METHODS API
 10.LOCAL METHODS
 11.RENDER() FUNCTION
-
-Code organization suggested by StencilJs:
-https://stenciljs.com/docs/style-guide#code-organization
 */
 
-  /** ******************************
-   *  1.OWN PROPERTIES
-   ********************************/
+  /*** 1.OWN PROPERTIES ***/
 
   /**
    * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
@@ -92,36 +87,25 @@ https://stenciljs.com/docs/style-guide#code-organization
     }
   };
 
-  /** *****************************
-   * 2. REFERENCE TO ELEMENTS
-   ********************************/
+  /*** 2. REFERENCE TO ELEMENTS ***/
+
   @Element() el: HTMLChSuggestElement;
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
 
-  /** *****************************
-   *  3.STATE() VARIABLES
-   ********************************/
+  /*** 3.STATE() VARIABLES ***/
 
   @State() selectedItem: HTMLChSuggestListItemElement;
 
-  /** *****************************
-   4.PUBLIC PROPERTY API
-   ********************************/
+  /*** 4.PUBLIC PROPERTY API ***/
 
-  /** *****************************
-   *  5.EVENTS (EMMIT)
-   ********************************/
+  /*** 5.EVENTS (EMMIT) ***/
 
   @Event() inputChanged: EventEmitter<string>;
 
-  /** *****************************
-   *  6.COMPONENT LIFECYCLE EVENTS
-   ********************************/
+  /*** 6.COMPONENT LIFECYCLE EVENTS ***/
 
-  /** *****************************
-   *  7.LISTENERS
-   ********************************/
+  /*** 7.LISTENERS ***/
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<itemSelected>) {
@@ -162,9 +146,7 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.textInput.focus();
   }
 
-  /** *****************************
-   *  8.WATCHS
-   ********************************/
+  /*** 8.WATCHS ***/
 
   @Watch("value")
   watchValueHandler() {
@@ -172,13 +154,9 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.selectSelectedItem();
   }
 
-  /** *****************************
-   *  9.PUBLIC METHODS API
-   ********************************/
+  /*** 9.PUBLIC METHODS API ***/
 
-  /** *****************************
-   *  10.LOCAL METHODS
-   ********************************/
+  /*** 10.LOCAL METHODS ***/
 
   private unselectItems = (): void => {
     const selectedItems = this.el.querySelectorAll("ch-suggest-list-item");
@@ -257,9 +235,7 @@ https://stenciljs.com/docs/style-guide#code-organization
     this.chWindow.hidden = true;
   };
 
-  /** *****************************
-   *  11.RENDER() FUNCTION
-   ********************************/
+  /*** 10.RENDER() FUNCTION ***/
 
   render() {
     return (

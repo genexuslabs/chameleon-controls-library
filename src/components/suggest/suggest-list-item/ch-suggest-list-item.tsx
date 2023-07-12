@@ -30,14 +30,9 @@ INDEX:
 8.PUBLIC METHODS API
 9.LOCAL METHODS
 10.RENDER() FUNCTION
-
-Code organization suggested by StencilJs:
-https://stenciljs.com/docs/style-guide#code-organization
 */
 
-  /** ******************************
-   *  1.OWN PROPERTIES
-   ********************************/
+  /*** 1.OWN PROPERTIES ***/
 
   /**
    * The icon url
@@ -49,23 +44,15 @@ https://stenciljs.com/docs/style-guide#code-organization
    */
   @Prop({ reflect: true }) readonly selected: boolean;
 
-  /** *****************************
-   * 2. REFERENCE TO ELEMENTS
-   ********************************/
+  /*** 2.REFERENCE TO ELEMENTS ***/
 
   @Element() el: HTMLChSuggestListItemElement;
 
-  /** *****************************
-   *  3.STATE() VARIABLES
-   ********************************/
+  /*** 3.STATE() VARIABLES ***/
 
-  /** *****************************
-   4.PUBLIC PROPERTY API
-   ********************************/
+  /*** 4.PUBLIC PROPERTY API ***/
 
-  /** *****************************
-   *  5.EVENTS (EMMIT)
-   ********************************/
+  /*** 5.EVENTS (EMMIT) ***/
 
   /*
    * This event is emmited every time the item is selected, either by clicking on it, or by pressing Enter.
@@ -77,21 +64,13 @@ https://stenciljs.com/docs/style-guide#code-organization
    */
   @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
 
-  /** *****************************
-   *  6.COMPONENT LIFECYCLE EVENTS
-   ********************************/
+  /*** 6.COMPONENT LIFECYCLE EVENTS ***/
 
-  /** *****************************
-   *  7.LISTENERS
-   ********************************/
+  /*** 7.LISTENERS ***/
 
-  /** *****************************
-   *  8.PUBLIC METHODS API
-   ********************************/
+  /*** 8.PUBLIC METHODS API ***/
 
-  /** *****************************
-   *  9.LOCAL METHODS
-   ********************************/
+  /*** 9.LOCAL METHODS ***/
 
   private handleClick = () => {
     this.itemSelected.emit({
@@ -115,9 +94,7 @@ https://stenciljs.com/docs/style-guide#code-organization
     }
   };
 
-  /** *****************************
-   *  10.RENDER() FUNCTION
-   ********************************/
+  /*** 10.RENDER() FUNCTION ***/
 
   render() {
     return (

@@ -1,9 +1,8 @@
 # ch-suggest
 
-
+The ch-suggest component is an input (text field) with the additional functionality of suggesting autocomplete options (ch-suggest-list-item) as the user modifies the text. The options can be displayed as a simple list or grouped into categories (ch-suggest-list).
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -13,13 +12,11 @@
 | `label`    | `label`    | The label                                                                                                                            | `string` | `undefined` |
 | `value`    | `value`    | The input value                                                                                                                      | `string` | `undefined` |
 
-
 ## Events
 
-| Event          | Description                                                                   | Type                  |
-| -------------- | ----------------------------------------------------------------------------- | --------------------- |
-| `inputChanged` | ***************************** 5.EVENTS (EMMIT) ****************************** | `CustomEvent<string>` |
-
+| Event          | Description                                                                      | Type                  |
+| -------------- | -------------------------------------------------------------------------------- | --------------------- |
+| `inputChanged` | **************\*************** 5.EVENTS (EMMIT) **************\*\*************** | `CustomEvent<string>` |
 
 ## Shadow Parts
 
@@ -28,7 +25,6 @@
 | `"input"` |             |
 | `"label"` |             |
 
-
 ## Dependencies
 
 ### Depends on
@@ -36,6 +32,7 @@
 - [ch-window](../window)
 
 ### Graph
+
 ```mermaid
 graph TD;
   ch-suggest --> ch-window
@@ -43,6 +40,6 @@ graph TD;
   style ch-suggest fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

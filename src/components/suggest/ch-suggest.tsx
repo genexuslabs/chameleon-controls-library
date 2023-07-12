@@ -178,13 +178,11 @@ INDEX:
     firstItem && firstItem.focus();
   };
 
-  private getChSuggestListItems = (): HTMLChSuggestListItemElement[] => {
-    return Array.from(this.el.querySelectorAll("ch-suggest-list-item"));
-  };
+  private getChSuggestListItems = (): HTMLChSuggestListItemElement[] =>
+    Array.from(this.el.querySelectorAll("ch-suggest-list-item"));
 
-  private renderId = (): string => {
-    return this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
-  };
+  private renderId = (): string =>
+    this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
 
   private handleInput = (e: InputEvent): void => {
     if (this.timeoutReference) {

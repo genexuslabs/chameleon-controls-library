@@ -43,9 +43,8 @@ INDEX:
 
   /*** 9.LOCAL METHODS ***/
 
-  private renderId = (): string => {
-    return this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
-  };
+  private renderId = (): string =>
+    this.label ? this.label.toLocaleLowerCase().replace(" ", "-") : null;
 
   /*** 10.RENDER() FUNCTION ***/
 

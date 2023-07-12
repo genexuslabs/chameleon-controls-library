@@ -44,7 +44,7 @@ INDEX:
   /*** 1.OWN PROPERTIES ***/
 
   /**
-   * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+   * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
   @Prop() readonly debounce = 500;
 
@@ -101,6 +101,7 @@ INDEX:
   @Element() el: HTMLChSuggestElement;
 
   /*** 3.STATE() VARIABLES ***/
+  @State() windowHidden = true;
 
   /*** 4.PUBLIC PROPERTY API ***/
 
@@ -150,9 +151,18 @@ INDEX:
   @Listen("windowClosed")
   windowClosedHandler() {
     this.textInput.focus();
+    this.windowHidden = true;
   }
 
-  /*** 8.WATCHS ***/
+  /*** 8.WATCH ***/
+  @Watch("windowHidden")
+  windowHiddenHandler(newValue: boolean) {
+    if (newValue) {
+      this.chWindow.hidden = true;
+    } else {
+      this.chWindow.hidden = false;
+    }
+  }
 
   @Watch("value")
   watchValueHandler(newValue: string) {
@@ -282,12 +292,14 @@ INDEX:
 
   private processInputEvent = (targetValue: string) => {
     this.evaluateWindowMaxHeight();
-    this.chWindow.hidden = false;
+    if (this.windowHidden) {
+      this.windowHidden = false;
+    }
     this.value = targetValue;
   };
 
   private closeWindow = () => {
-    this.chWindow.hidden = true;
+    this.windowHidden = true;
   };
 
   /*** 10.RENDER() FUNCTION ***/
@@ -309,8 +321,11 @@ INDEX:
           onKeyDown={this.handleKeyDown}
           value={this.value}
           autocomplete="off"
+          aria-controls="ch-window"
+          aria-label="suggest input"
         ></input>
         <ch-window
+          id="ch-window"
           container={this.textInput}
           close-on-outside-click
           close-on-escape
@@ -325,6 +340,7 @@ INDEX:
             main:ch-window-main,
             mask:ch-window-mask,
             window:ch-window-window"
+          aria-expanded={this.windowHidden ? "false" : "true"}
         >
           <slot></slot>
         </ch-window>

@@ -719,7 +719,7 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
-          * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": 500;
         /**
@@ -1987,7 +1987,7 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
-          * The debounce amount in miliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce"?: 500;
         /**

@@ -23,7 +23,7 @@ const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
-  shadow: { delegatesFocus: true }
+  shadow: true
 })
 export class ChSuggest {
   /*

@@ -994,6 +994,14 @@ export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChStepListItemElement;
 }
+export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSuggestElement;
+}
+export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSuggestListItemElement;
+}
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTreeItemElement;
@@ -2153,7 +2161,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputChanged"?: (event: CustomEvent<string>) => void;
+        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Whether or not to display the label
          */
@@ -2177,11 +2185,11 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
          */
-        "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
+        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<focusChangeAttempt>) => void;
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<itemSelected>) => void;
     }
     interface ChTree {
         /**

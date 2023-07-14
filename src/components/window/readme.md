@@ -47,6 +47,7 @@
 
  - [ch-grid-column-settings](../grid/grid-column/grid-column-settings)
  - [ch-grid-settings](../grid/grid-settings)
+ - [ch-suggest](../suggest)
 
 ### Depends on
 
@@ -58,6 +59,7 @@ graph TD;
   ch-window --> ch-window-close
   ch-grid-column-settings --> ch-window
   ch-grid-settings --> ch-window
+  ch-suggest --> ch-window
   style ch-window fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

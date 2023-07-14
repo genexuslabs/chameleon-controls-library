@@ -16,6 +16,7 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
+import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -740,6 +741,36 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce": number;
+        /**
+          * The label
+         */
+        "label": string;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel": boolean;
+        /**
+          * The input value
+         */
+        "value": string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label": string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc": string;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -1214,6 +1245,24 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
+    }
+    var HTMLChSuggestElement: {
+        prototype: HTMLChSuggestElement;
+        new (): HTMLChSuggestElement;
+    };
+    interface HTMLChSuggestListElement extends Components.ChSuggestList, HTMLStencilElement {
+    }
+    var HTMLChSuggestListElement: {
+        prototype: HTMLChSuggestListElement;
+        new (): HTMLChSuggestListElement;
+    };
+    interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
+    }
+    var HTMLChSuggestListItemElement: {
+        prototype: HTMLChSuggestListItemElement;
+        new (): HTMLChSuggestListItemElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1290,6 +1339,9 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-suggest": HTMLChSuggestElement;
+        "ch-suggest-list": HTMLChSuggestListElement;
+        "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
@@ -2089,6 +2141,48 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
     }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce"?: number;
+        /**
+          * The label
+         */
+        "label"?: string;
+        /**
+          * This event is emitted every time there input events fires, and it emits the actual input value.
+         */
+        "onInputChanged"?: (event: CustomEvent<string>) => void;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel"?: boolean;
+        /**
+          * The input value
+         */
+        "value"?: string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label"?: string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc"?: string;
+        /**
+          * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+         */
+        "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
+        /**
+          * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
+         */
+        "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -2274,6 +2368,9 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-suggest": ChSuggest;
+        "ch-suggest-list": ChSuggestList;
+        "ch-suggest-list-item": ChSuggestListItem;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
@@ -2325,6 +2422,9 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
+            "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
+            "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;

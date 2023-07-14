@@ -46,12 +46,17 @@ INDEX:
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
-  @Prop() readonly debounce = 500;
+  @Prop() readonly debounce: number = 500;
 
   /**
    * The label
    */
   @Prop() readonly label: string;
+
+  /**
+   * Whether or not to display the label
+   */
+  @Prop() readonly showLabel: boolean = false;
 
   /**
    * The input value
@@ -304,7 +309,7 @@ INDEX:
   render() {
     return (
       <Host>
-        {this.label && (
+        {this.showLabel && this.label && (
           <label id="label" htmlFor="input" part="label">
             {this.label}
           </label>
@@ -313,14 +318,16 @@ INDEX:
           type="text"
           id="input"
           part="input"
+          class="input"
           ref={el => (this.textInput = el as HTMLInputElement)}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           value={this.value}
           autocomplete="off"
           aria-controls="ch-window"
-          aria-label="suggest input"
-          aria-labelledby={this.label ? "label" : undefined}
+          aria-label={!this.showLabel && this.label ? this.label : undefined}
+          aria-labelledby={this.showLabel && this.label ? "label" : undefined}
+          aria-expanded={this.windowHidden.toString()}
         ></input>
         <ch-window
           id="ch-window"
@@ -338,7 +345,6 @@ INDEX:
             main:ch-window-main,
             mask:ch-window-mask,
             window:ch-window-window"
-          aria-expanded={this.windowHidden ? "false" : "true"}
         >
           <slot></slot>
         </ch-window>

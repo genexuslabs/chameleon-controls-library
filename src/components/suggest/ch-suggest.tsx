@@ -346,6 +346,7 @@ INDEX:
             mask:ch-window-mask,
             window:ch-window-window"
         >
+          <div slot="header" class="dummy-header"></div>
           <slot></slot>
         </ch-window>
       </Host>

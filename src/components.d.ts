@@ -721,11 +721,15 @@ export namespace Components {
         /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
-        "debounce": 500;
+        "debounce": number;
         /**
           * The label
          */
         "label": string;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel": boolean;
         /**
           * The input value
          */
@@ -1989,7 +1993,7 @@ declare namespace LocalJSX {
         /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
-        "debounce"?: 500;
+        "debounce"?: number;
         /**
           * The label
          */
@@ -1998,6 +2002,10 @@ declare namespace LocalJSX {
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onInputChanged"?: (event: CustomEvent<string>) => void;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel"?: boolean;
         /**
           * The input value
          */

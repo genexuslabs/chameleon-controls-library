@@ -6,145 +6,145 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-tree | Chameleon</title>
+    <title>ch-tree</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./assets/styles.css" />
   </head>
   <body>
-    <header class="header-dev">
-      <span class="tag-name">ch-tree</span
-      ><button id="toggle-dir-btn">Toggle dir</button>
-    </header>
     <div class="container">
-      <ch-tree
-        id="ch-treeview"
-        toggle-checkboxes="false"
-        single-selection="true"
-      >
-        <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
-          Meats
-          <ch-tree checkbox slot="tree">
-            <ch-tree-item left-icon="/build/ch-icon-assets/patterns.svg">
-              White meats
-              <ch-tree checkbox slot="tree">
-                <ch-tree-item left-icon="/build/ch-icon-assets/csharp.svg">
-                  Chicken
-                </ch-tree-item>
-                <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
-                  Turkey
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Duck
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-            <ch-tree-item left-icon="/build/ch-icon-assets/knowledge-base.svg">
-              Red meats
-              <ch-tree checkbox slot="tree">
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Beef
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Lamb and mutton
-                </ch-tree-item>
-                <ch-tree-item left-icon="general/knowledge-base">
-                  Pork
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-          </ch-tree>
-        </ch-tree-item>
-        <ch-tree-item
-          id="fish"
-          left-icon="general/patterns"
-          checkbox
-          opened
-          download
-          disabled
-          right-icon="/build/tree-item-assets/download.svg"
+      <section class="section-dev" data-title="ch-tree">
+        <ch-tree
+          id="ch-treeview"
+          toggle-checkboxes="false"
+          single-selection="true"
         >
-          Fish
-        </ch-tree-item>
-        <ch-tree-item checkbox opened left-icon="objects/module">
-          Fruits
-          <ch-tree slot="tree">
-            <ch-tree-item checkbox left-icon="objects/module">
-              Orange
-            </ch-tree-item>
-            <ch-tree-item checkbox left-icon="objects/module" opened>
-              Banana
-              <ch-tree slot="tree">
-                <ch-tree-item left-icon="objects/module" checkbox>
-                  Pisang
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Red Banana
-                </ch-tree-item>
-                <ch-tree-item left-icon="objects/module" checkbox>
-                  Cavendish
-                  <ch-tree slot="tree">
-                    <ch-tree-item left-icon="objects/module" checkbox>
-                      Big
-                    </ch-tree-item>
-                    <ch-tree-item left-icon="objects/module" checkbox>
-                      Small
-                    </ch-tree-item>
-                    <ch-tree-item checkbox left-icon="objects/module">
-                      Mini
-                    </ch-tree-item>
-                  </ch-tree>
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-            <ch-tree-item checkbox opened left-icon="objects/module">
-              Strawberry
-              <ch-tree slot="tree">
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Albion
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module" opened>
-                  Tillamook
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/module">
-                  Northeaster
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-          </ch-tree>
-        </ch-tree-item>
-        <ch-tree-item opened checkbox left-icon="objects/document" empty-tree>
-          Nuts
-          <ch-tree slot="tree">
-            <ch-tree-item opened checkbox left-icon="objects/document">
-              Almonds
-              <ch-tree slot="tree">
-                <ch-tree-item checkbox left-icon="objects/document" opened>
-                  Mollar de Tarragona
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/document">
-                  Ferragnès
-                </ch-tree-item>
-                <ch-tree-item checkbox left-icon="objects/document">
-                  Verdal
-                </ch-tree-item>
-              </ch-tree>
-            </ch-tree-item>
-            <ch-tree-item checkbox left-icon="objects/document" opened>
-              Brazil nuts
-            </ch-tree-item>
-            <ch-tree-item checkbox left-icon="objects/document">
-              Cashews
-            </ch-tree-item>
-            <ch-tree-item checkbox left-icon="objects/document">
-              Chestnuts
-            </ch-tree-item>
-          </ch-tree>
-        </ch-tree-item>
-      </ch-tree>
+          <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
+            Meats
+            <ch-tree checkbox slot="tree">
+              <ch-tree-item left-icon="/build/ch-icon-assets/patterns.svg">
+                White meats
+                <ch-tree checkbox slot="tree">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/csharp.svg">
+                    Chicken
+                  </ch-tree-item>
+                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
+                    Turkey
+                  </ch-tree-item>
+                  <ch-tree-item left-icon="general/knowledge-base">
+                    Duck
+                  </ch-tree-item>
+                </ch-tree>
+              </ch-tree-item>
+              <ch-tree-item
+                left-icon="/build/ch-icon-assets/knowledge-base.svg"
+              >
+                Red meats
+                <ch-tree checkbox slot="tree">
+                  <ch-tree-item left-icon="general/knowledge-base">
+                    Beef
+                  </ch-tree-item>
+                  <ch-tree-item left-icon="general/knowledge-base">
+                    Lamb and mutton
+                  </ch-tree-item>
+                  <ch-tree-item left-icon="general/knowledge-base">
+                    Pork
+                  </ch-tree-item>
+                </ch-tree>
+              </ch-tree-item>
+            </ch-tree>
+          </ch-tree-item>
+          <ch-tree-item
+            id="fish"
+            left-icon="general/patterns"
+            checkbox
+            opened
+            download
+            disabled
+            right-icon="/build/tree-item-assets/download.svg"
+          >
+            Fish
+          </ch-tree-item>
+          <ch-tree-item checkbox opened left-icon="objects/module">
+            Fruits
+            <ch-tree slot="tree">
+              <ch-tree-item checkbox left-icon="objects/module">
+                Orange
+              </ch-tree-item>
+              <ch-tree-item checkbox left-icon="objects/module" opened>
+                Banana
+                <ch-tree slot="tree">
+                  <ch-tree-item left-icon="objects/module" checkbox>
+                    Pisang
+                  </ch-tree-item>
+                  <ch-tree-item checkbox left-icon="objects/module">
+                    Red Banana
+                  </ch-tree-item>
+                  <ch-tree-item left-icon="objects/module" checkbox>
+                    Cavendish
+                    <ch-tree slot="tree">
+                      <ch-tree-item left-icon="objects/module" checkbox>
+                        Big
+                      </ch-tree-item>
+                      <ch-tree-item left-icon="objects/module" checkbox>
+                        Small
+                      </ch-tree-item>
+                      <ch-tree-item checkbox left-icon="objects/module">
+                        Mini
+                      </ch-tree-item>
+                    </ch-tree>
+                  </ch-tree-item>
+                </ch-tree>
+              </ch-tree-item>
+              <ch-tree-item checkbox opened left-icon="objects/module">
+                Strawberry
+                <ch-tree slot="tree">
+                  <ch-tree-item checkbox left-icon="objects/module">
+                    Albion
+                  </ch-tree-item>
+                  <ch-tree-item checkbox left-icon="objects/module" opened>
+                    Tillamook
+                  </ch-tree-item>
+                  <ch-tree-item checkbox left-icon="objects/module">
+                    Northeaster
+                  </ch-tree-item>
+                </ch-tree>
+              </ch-tree-item>
+            </ch-tree>
+          </ch-tree-item>
+          <ch-tree-item opened checkbox left-icon="objects/document" empty-tree>
+            Nuts
+            <ch-tree slot="tree">
+              <ch-tree-item opened checkbox left-icon="objects/document">
+                Almonds
+                <ch-tree slot="tree">
+                  <ch-tree-item checkbox left-icon="objects/document" opened>
+                    Mollar de Tarragona
+                  </ch-tree-item>
+                  <ch-tree-item checkbox left-icon="objects/document">
+                    Ferragnès
+                  </ch-tree-item>
+                  <ch-tree-item checkbox left-icon="objects/document">
+                    Verdal
+                  </ch-tree-item>
+                </ch-tree>
+              </ch-tree-item>
+              <ch-tree-item checkbox left-icon="objects/document" opened>
+                Brazil nuts
+              </ch-tree-item>
+              <ch-tree-item checkbox left-icon="objects/document">
+                Cashews
+              </ch-tree-item>
+              <ch-tree-item checkbox left-icon="objects/document">
+                Chestnuts
+              </ch-tree-item>
+            </ch-tree>
+          </ch-tree-item>
+        </ch-tree>
+      </section>
     </div>
 
-    <script src="common.js"></script>
+    <script src="./assets/common.js"></script>
   </body>
 </html>

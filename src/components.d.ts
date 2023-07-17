@@ -10,13 +10,14 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { DataModelItemLabels, ErrorText, ItemInfo } from "./components/next/data-modeling-item/next-data-modeling-item";
+import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
+import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -483,17 +484,29 @@ export namespace Components {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode": boolean;
+        "actionsVisible": boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
         "captions": DataModelItemLabels;
         /**
+          * Check errors in the item when `level !== 0`
+         */
+        "checkErrors": (errors: "yes" | "no" | "unknown", event: CustomEvent | UIEvent) => Promise<void>;
+        /**
+          * Remove the value of the input when mode === "add" | "edit"
+         */
+        "clearInput": () => Promise<void>;
+        /**
           * The dataType of the field.
          */
         "dataType": string;
+        /**
+          * Deletes the field.
+         */
+        "delete": (event: UIEvent) => Promise<void>;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
@@ -507,7 +520,7 @@ export namespace Components {
          */
         "errorTexts": { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames": string[];
         /**
@@ -523,9 +536,21 @@ export namespace Components {
          */
         "maxAtts": number;
         /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode": Mode;
+        /**
           * The name of the field.
          */
         "name": string;
+        /**
+          * Set the adding mode for the first field of the entity.
+         */
+        "setAddingMode": () => Promise<void>;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn": boolean;
         /**
           * The type of the field.
          */
@@ -739,6 +764,36 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce": number;
+        /**
+          * The label
+         */
+        "label": string;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel": boolean;
+        /**
+          * The input value
+         */
+        "value": string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label": string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc": string;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -869,6 +924,122 @@ export namespace Components {
         "greater": string;
         "less": string;
     }
+}
+export interface ChAccordionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAccordionElement;
+}
+export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChDropdownElement;
+}
+export interface ChDropdownItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChDropdownItemElement;
+}
+export interface ChFormCheckboxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChFormCheckboxElement;
+}
+export interface ChGridCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridElement;
+}
+export interface ChGridActionRefreshCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridActionRefreshElement;
+}
+export interface ChGridActionSettingsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridActionSettingsElement;
+}
+export interface ChGridColumnCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridColumnElement;
+}
+export interface ChGridColumnResizeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridColumnResizeElement;
+}
+export interface ChGridRowsetLegendCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridRowsetLegendElement;
+}
+export interface ChGridSettingsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridSettingsElement;
+}
+export interface ChGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridVirtualScrollerElement;
+}
+export interface ChIntersectionObserverCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChIntersectionObserverElement;
+}
+export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChNextDataModelingItemElement;
+}
+export interface ChNotificationsItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChNotificationsItemElement;
+}
+export interface ChPaginatorCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPaginatorElement;
+}
+export interface ChPaginatorNavigateCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPaginatorNavigateElement;
+}
+export interface ChPaginatorPagesCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPaginatorPagesElement;
+}
+export interface ChSelectCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSelectElement;
+}
+export interface ChSelectOptionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSelectOptionElement;
+}
+export interface ChSidebarMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSidebarMenuElement;
+}
+export interface ChSidebarMenuListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSidebarMenuListItemElement;
+}
+export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChStepListItemElement;
+}
+export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSuggestElement;
+}
+export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSuggestListItemElement;
+}
+export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTreeItemElement;
+}
+export interface ChWindowCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChWindowElement;
+}
+export interface ChWindowCloseCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChWindowCloseElement;
+}
+export interface GxGridChameleonColumnFilterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLGxGridChameleonColumnFilterElement;
 }
 declare global {
     interface HTMLChAccordionElement extends Components.ChAccordion, HTMLStencilElement {
@@ -1111,6 +1282,24 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
+    }
+    var HTMLChSuggestElement: {
+        prototype: HTMLChSuggestElement;
+        new (): HTMLChSuggestElement;
+    };
+    interface HTMLChSuggestListElement extends Components.ChSuggestList, HTMLStencilElement {
+    }
+    var HTMLChSuggestListElement: {
+        prototype: HTMLChSuggestListElement;
+        new (): HTMLChSuggestListElement;
+    };
+    interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
+    }
+    var HTMLChSuggestListItemElement: {
+        prototype: HTMLChSuggestListItemElement;
+        new (): HTMLChSuggestListItemElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1188,6 +1377,9 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-suggest": HTMLChSuggestElement;
+        "ch-suggest-list": HTMLChSuggestListElement;
+        "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
@@ -1213,7 +1405,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the content is expanded or collapsed
          */
-        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+        "onExpandedChange"?: (event: ChAccordionCustomEvent<boolean>) => void;
     }
     interface ChDragBar {
         /**
@@ -1257,7 +1449,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the visibility of the dropdown section is changed
          */
-        "onExpandedChange"?: (event: CustomEvent<boolean>) => void;
+        "onExpandedChange"?: (event: ChDropdownCustomEvent<boolean>) => void;
         /**
           * Determine if the dropdown section should be opened when the expandable button of the control is focused.
          */
@@ -1283,11 +1475,11 @@ declare namespace LocalJSX {
         /**
           * Fires when the control's anchor or button is clicked.
          */
-        "onActionClick"?: (event: CustomEvent<string>) => void;
+        "onActionClick"?: (event: ChDropdownItemCustomEvent<string>) => void;
         /**
           * Fires when the control's anchor or button is in focus.
          */
-        "onFocusChange"?: (event: CustomEvent<any>) => void;
+        "onFocusChange"?: (event: ChDropdownItemCustomEvent<any>) => void;
         /**
           * Specifies the src for the right img.
          */
@@ -1342,7 +1534,7 @@ declare namespace LocalJSX {
           * The checkbox name
          */
         "name"?: string;
-        "onChange"?: (event: CustomEvent<any>) => void;
+        "onChange"?: (event: ChFormCheckboxCustomEvent<any>) => void;
         /**
           * The checkbox value
          */
@@ -1356,19 +1548,19 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the cell selection is changed.
          */
-        "onCellSelectionChanged"?: (event: CustomEvent<ChGridCellSelectionChangedEvent>) => void;
+        "onCellSelectionChanged"?: (event: ChGridCustomEvent<ChGridCellSelectionChangedEvent>) => void;
         /**
           * Event emitted when a row is clicked.
          */
-        "onRowClicked"?: (event: CustomEvent<ChGridRowClickedEvent>) => void;
+        "onRowClicked"?: (event: ChGridCustomEvent<ChGridRowClickedEvent>) => void;
         /**
           * Event emitted when the row marking is changed.
          */
-        "onRowMarkingChanged"?: (event: CustomEvent<ChGridMarkingChangedEvent>) => void;
+        "onRowMarkingChanged"?: (event: ChGridCustomEvent<ChGridMarkingChangedEvent>) => void;
         /**
           * Event emitted when the row selection is changed.
          */
-        "onSelectionChanged"?: (event: CustomEvent<ChGridSelectionChangedEvent>) => void;
+        "onSelectionChanged"?: (event: ChGridCustomEvent<ChGridSelectionChangedEvent>) => void;
         /**
           * A CSS class name applied to a row when it is focused.
          */
@@ -1402,7 +1594,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the refresh button is clicked.
          */
-        "onRefreshClicked"?: (event: CustomEvent<any>) => void;
+        "onRefreshClicked"?: (event: ChGridActionRefreshCustomEvent<any>) => void;
     }
     interface ChGridActionSettings {
         /**
@@ -1412,7 +1604,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the settings button is clicked.
          */
-        "onSettingsShowClicked"?: (event: CustomEvent<any>) => void;
+        "onSettingsShowClicked"?: (event: ChGridActionSettingsCustomEvent<any>) => void;
     }
     interface ChGridActionbar {
     }
@@ -1456,43 +1648,43 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the user stops dragging the column header to move it.
          */
-        "onColumnDragEnded"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnDragEnded"?: (event: ChGridColumnCustomEvent<ChGridColumnDragEvent>) => void;
         /**
           * Event emitted when the user is dragging the column header to move it.
          */
-        "onColumnDragStarted"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnDragStarted"?: (event: ChGridColumnCustomEvent<ChGridColumnDragEvent>) => void;
         /**
           * Event emitted when the user is dragging the column header to move it.
          */
-        "onColumnDragging"?: (event: CustomEvent<ChGridColumnDragEvent>) => void;
+        "onColumnDragging"?: (event: ChGridColumnCustomEvent<ChGridColumnDragEvent>) => void;
         /**
           * Event emitted when the `freeze` property is changed.
          */
-        "onColumnFreezeChanged"?: (event: CustomEvent<ChGridColumnFreezeChangedEvent>) => void;
+        "onColumnFreezeChanged"?: (event: ChGridColumnCustomEvent<ChGridColumnFreezeChangedEvent>) => void;
         /**
           * Event emitted when the `hidden` property is changed.
          */
-        "onColumnHiddenChanged"?: (event: CustomEvent<ChGridColumnHiddenChangedEvent>) => void;
+        "onColumnHiddenChanged"?: (event: ChGridColumnCustomEvent<ChGridColumnHiddenChangedEvent>) => void;
         /**
           * Event emitted when the `order` property is changed.
          */
-        "onColumnOrderChanged"?: (event: CustomEvent<ChGridColumnOrderChangedEvent>) => void;
+        "onColumnOrderChanged"?: (event: ChGridColumnCustomEvent<ChGridColumnOrderChangedEvent>) => void;
         /**
           * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
          */
-        "onColumnSelectorClicked"?: (event: CustomEvent<ChGridColumnSelectorClickedEvent>) => void;
+        "onColumnSelectorClicked"?: (event: ChGridColumnCustomEvent<ChGridColumnSelectorClickedEvent>) => void;
         /**
           * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
          */
-        "onColumnSizeChanged"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+        "onColumnSizeChanged"?: (event: ChGridColumnCustomEvent<ChGridColumnSizeChangedEvent>) => void;
         /**
           * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
          */
-        "onColumnSizeChanging"?: (event: CustomEvent<ChGridColumnSizeChangedEvent>) => void;
+        "onColumnSizeChanging"?: (event: ChGridColumnCustomEvent<ChGridColumnSizeChangedEvent>) => void;
         /**
           * Event emitted when the `sortDirection` property is changed.
          */
-        "onColumnSortChanged"?: (event: CustomEvent<ChGridColumnSortChangedEvent>) => void;
+        "onColumnSortChanged"?: (event: ChGridColumnCustomEvent<ChGridColumnSortChangedEvent>) => void;
         /**
           * A number indicating the order in which the column should appear.
          */
@@ -1566,11 +1758,11 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the user finishes resizing the column.
          */
-        "onColumnResizeFinished"?: (event: CustomEvent<any>) => void;
+        "onColumnResizeFinished"?: (event: ChGridColumnResizeCustomEvent<any>) => void;
         /**
           * Event emitted when the user starts resizing the column.
          */
-        "onColumnResizeStarted"?: (event: CustomEvent<any>) => void;
+        "onColumnResizeStarted"?: (event: ChGridColumnResizeCustomEvent<any>) => void;
     }
     interface ChGridColumnSettings {
         /**
@@ -1592,7 +1784,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the legend is clicked.
          */
-        "onRowsetLegendClicked"?: (event: CustomEvent<CustomEvent>) => void;
+        "onRowsetLegendClicked"?: (event: ChGridRowsetLegendCustomEvent<CustomEvent>) => void;
     }
     interface ChGridSettings {
         /**
@@ -1602,7 +1794,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the close button of the settings window is clicked.
          */
-        "onSettingsCloseClicked"?: (event: CustomEvent<any>) => void;
+        "onSettingsCloseClicked"?: (event: ChGridSettingsCustomEvent<any>) => void;
         /**
           * Indicates whether the settings window is currently shown or not.
          */
@@ -1622,7 +1814,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the list of visible items in the grid changes.
          */
-        "onViewPortItemsChanged"?: (event: CustomEvent<any>) => void;
+        "onViewPortItemsChanged"?: (event: ChGridVirtualScrollerCustomEvent<any>) => void;
         /**
           * The list of items to display within the current viewport.
          */
@@ -1663,7 +1855,7 @@ declare namespace LocalJSX {
           * Emitted whenever the control reaches a threshold specified by the threshold property
           * @param IntersectionObserverEntry Details of intersection object.
          */
-        "onIntersectionUpdate"?: (event: CustomEvent<IntersectionObserverEntry>) => void;
+        "onIntersectionUpdate"?: (event: ChIntersectionObserverCustomEvent<IntersectionObserverEntry>) => void;
         /**
           * Right margin around the root element
          */
@@ -1685,9 +1877,9 @@ declare namespace LocalJSX {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode"?: boolean;
+        "actionsVisible"?: boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
@@ -1709,7 +1901,7 @@ declare namespace LocalJSX {
          */
         "errorTexts"?: { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames"?: string[];
         /**
@@ -1721,21 +1913,41 @@ declare namespace LocalJSX {
          */
         "maxAtts"?: number;
         /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode"?: Mode;
+        /**
           * The name of the field.
          */
         "name"?: string;
         /**
           * Fired when the item is confirmed to be deleted
          */
-        "onDeleteField"?: (event: CustomEvent<any>) => void;
+        "onDeleteField"?: (event: ChNextDataModelingItemCustomEvent<any>) => void;
         /**
           * Fired when the item is edited
          */
-        "onEditField"?: (event: CustomEvent<ItemInfo>) => void;
+        "onEditField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
         /**
-          * Fired when a new file is comitted to be added
+          * Fired when a new file is committed to be added when adding a new entity (level === 0)
          */
-        "onNewField"?: (event: CustomEvent<ItemInfo>) => void;
+        "onFirstNewField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
+        /**
+          * Fired when the new field of the new entity tries to commits the adding operation, but fails because it has errors
+         */
+        "onFirstNewFieldErrors"?: (event: ChNextDataModelingItemCustomEvent<any>) => void;
+        /**
+          * Fired when a new entity is committed to be added
+         */
+        "onNewEntity"?: (event: ChNextDataModelingItemCustomEvent<EntityInfo>) => void;
+        /**
+          * Fired when a new file is committed to be added
+         */
+        "onNewField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn"?: boolean;
         /**
           * The type of the field.
          */
@@ -1778,8 +1990,8 @@ declare namespace LocalJSX {
         "buttonImgSrc"?: string;
         "closeButtonLabel"?: string;
         "leftImgSrc"?: string;
-        "onNotificationClick"?: (event: CustomEvent<number>) => void;
-        "onNotificationDismiss"?: (event: CustomEvent<number>) => void;
+        "onNotificationClick"?: (event: ChNotificationsItemCustomEvent<number>) => void;
+        "onNotificationDismiss"?: (event: ChNotificationsItemCustomEvent<number>) => void;
         /**
           * `true` to show the close notification button
          */
@@ -1798,11 +2010,11 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the active page changes.
          */
-        "onActivePageChanged"?: (event: CustomEvent<ChPaginatorActivePageChangedEvent>) => void;
+        "onActivePageChanged"?: (event: ChPaginatorCustomEvent<ChPaginatorActivePageChangedEvent>) => void;
         /**
           * Event emitted when the navigation is requested.
          */
-        "onPageNavigationRequested"?: (event: CustomEvent<ChPaginatorPageNavigationRequestedEvent>) => void;
+        "onPageNavigationRequested"?: (event: ChPaginatorCustomEvent<ChPaginatorPageNavigationRequestedEvent>) => void;
         /**
           * The total number of pages. Use -1 if not known and 'hasNextPage' property to indicate that the end has been reached.
          */
@@ -1816,7 +2028,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the navigation button is pressed.
          */
-        "onNavigateClicked"?: (event: CustomEvent<ChPaginatorNavigateClickedEvent>) => void;
+        "onNavigateClicked"?: (event: ChPaginatorNavigateCustomEvent<ChPaginatorNavigateClickedEvent>) => void;
         /**
           * The type of navigation button.
          */
@@ -1830,7 +2042,7 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the page changes.
          */
-        "onPageChanged"?: (event: CustomEvent<ChPaginatorPagesPageChangedEvent>) => void;
+        "onPageChanged"?: (event: ChPaginatorPagesCustomEvent<ChPaginatorPagesPageChangedEvent>) => void;
         /**
           * The active page number.
          */
@@ -1887,11 +2099,11 @@ declare namespace LocalJSX {
         /**
           * @type EventEmitter * Track component events (I.e. activation of dropdown component)
          */
-        "onOnToggle"?: (event: CustomEvent<any>) => void;
+        "onOnToggle"?: (event: ChSelectCustomEvent<any>) => void;
         /**
           * Emmits the item id
          */
-        "onOptionClickedEvent"?: (event: CustomEvent<any>) => void;
+        "onOptionClickedEvent"?: (event: ChSelectCustomEvent<any>) => void;
         "width"?: string;
     }
     interface ChSelectOption {
@@ -1911,7 +2123,7 @@ declare namespace LocalJSX {
         /**
           * Emits the item id
          */
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
+        "onItemClicked"?: (event: ChSelectOptionCustomEvent<any>) => void;
         /**
           * Set the right side icon
          */
@@ -1950,8 +2162,8 @@ declare namespace LocalJSX {
           * The menu title
          */
         "menuTitle"?: string;
-        "onCollapseBtnClicked"?: (event: CustomEvent<any>) => void;
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
+        "onCollapseBtnClicked"?: (event: ChSidebarMenuCustomEvent<any>) => void;
+        "onItemClicked"?: (event: ChSidebarMenuCustomEvent<any>) => void;
         /**
           * The presence of this attribute allows the menu to have only one list opened at the same time
          */
@@ -1971,7 +2183,7 @@ declare namespace LocalJSX {
         /**
           * Emmits the item id
          */
-        "onItemClickedEvent"?: (event: CustomEvent<any>) => void;
+        "onItemClickedEvent"?: (event: ChSidebarMenuListItemCustomEvent<any>) => void;
         /**
           * If this attribute is present the item will be initially uncollapsed
          */
@@ -1987,7 +2199,49 @@ declare namespace LocalJSX {
         /**
           * Emits the item id
          */
-        "onItemClicked"?: (event: CustomEvent<any>) => void;
+        "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
+    }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce"?: number;
+        /**
+          * The label
+         */
+        "label"?: string;
+        /**
+          * This event is emitted every time there input events fires, and it emits the actual input value.
+         */
+        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel"?: boolean;
+        /**
+          * The input value
+         */
+        "value"?: string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label"?: string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc"?: string;
+        /**
+          * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+         */
+        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<focusChangeAttempt>) => void;
+        /**
+          * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
+         */
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<itemSelected>) => void;
     }
     interface ChTree {
         /**
@@ -2040,9 +2294,9 @@ declare namespace LocalJSX {
           * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "leftIcon"?: string;
-        "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
-        "onLiItemClicked"?: (event: CustomEvent<any>) => void;
-        "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
+        "onCheckboxClickedEvent"?: (event: ChTreeItemCustomEvent<any>) => void;
+        "onLiItemClicked"?: (event: ChTreeItemCustomEvent<any>) => void;
+        "onToggleIconClicked"?: (event: ChTreeItemCustomEvent<any>) => void;
         /**
           * If this tree-item has a nested tree, set this attribute to make the tree open by default
          */
@@ -2096,11 +2350,11 @@ declare namespace LocalJSX {
         /**
           * Emitted when the window is closed.
          */
-        "onWindowClosed"?: (event: CustomEvent<any>) => void;
+        "onWindowClosed"?: (event: ChWindowCustomEvent<any>) => void;
         /**
           * Emitted when the window is opened.
          */
-        "onWindowOpened"?: (event: CustomEvent<any>) => void;
+        "onWindowOpened"?: (event: ChWindowCustomEvent<any>) => void;
         /**
           * The horizontal alignment of the window.
          */
@@ -2118,7 +2372,7 @@ declare namespace LocalJSX {
         /**
           * Emitted when the close button is clicked.
          */
-        "onWindowCloseClicked"?: (event: CustomEvent<any>) => void;
+        "onWindowCloseClicked"?: (event: ChWindowCloseCustomEvent<any>) => void;
     }
     interface GxGridChameleon {
         "grid"?: GxGrid;
@@ -2132,7 +2386,7 @@ declare namespace LocalJSX {
         "equal"?: string;
         "greater"?: string;
         "less"?: string;
-        "onColumnSettingsChanged"?: (event: CustomEvent<GridChameleonColumnFilterChanged>) => void;
+        "onColumnSettingsChanged"?: (event: GxGridChameleonColumnFilterCustomEvent<GridChameleonColumnFilterChanged>) => void;
     }
     interface IntrinsicElements {
         "ch-accordion": ChAccordion;
@@ -2175,6 +2429,9 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-suggest": ChSuggest;
+        "ch-suggest-list": ChSuggestList;
+        "ch-suggest-list-item": ChSuggestListItem;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
@@ -2227,6 +2484,9 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
+            "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
+            "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;

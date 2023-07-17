@@ -6,19 +6,210 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-suggest | Chameleon</title>
+    <title>ch-suggest</title>
+    <link rel="icon" type="image/ico" href="./assets/ch.ico" />
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+      /*general*/
+      :root {
+        --highlight-color: rgb(163, 25, 161);
+      }
+      body {
+        font-family: "Rubik", sans-serif;
+        font-size: 14px;
+      }
+      ul {
+        margin: 0 0 16px 0;
+        padding-left: 16px;
+      }
+      li {
+        margin-bottom: 2px;
+      }
+      code {
+        color: rgb(156, 30, 156);
+        background-color: rgba(255, 193, 203, 0.469);
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      /*ch-suggest*/
+      body.styles ch-suggest {
+        font-family: "Rubik", sans-serif;
+        font-size: 14px;
+      }
+      body.styles ch-suggest:focus {
+      }
+      body.styles ch-suggest::part(label) {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      body.styles ch-suggest::part(input) {
+        padding: 4px 8px;
+        border: 1px solid black;
+      }
+      body.styles ch-suggest::part(input):focus {
+        outline: 2px solid var(--highlight-color);
+        border-color: var(--highlight-color);
+      }
+      /*ch-suggest-list*/
+      body.styles ch-suggest-list {
+        background-color: rgba(234, 234, 234, 0.224);
+        border: 1px solid rgba(128, 128, 128, 0.275);
+        border-radius: 4px;
+        padding: 8px;
+        margin-bottom: 4px;
+      }
+      body.styles ch-suggest-list::part(title) {
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 4px 0 8px 0;
+      }
+      /*ch-suggest-list-item*/
+      body.styles ch-suggest-list-item {
+        padding: 4px 8px;
+        cursor: pointer;
+      }
+      body.styles ch-suggest-list-item ch-icon {
+        --icon-size: 16px;
+        margin-right: 2px;
+      }
+      body.styles ch-suggest-list-item:hover {
+        background-color: var(--ch-color--violet-100);
+      }
+      body.styles ch-suggest-list-item:focus,
+      body.styles ch-suggest-list-item[selected]:focus {
+        outline: 2px solid var(--highlight-color);
+      }
+      body.styles ch-suggest-list-item[selected] {
+        background-color: rgba(241, 184, 243, 0.42);
+        outline: none;
+      }
+      /*ch-window*/
+      body.styles ch-suggest::part(ch-window-window) {
+        margin-top: 4px;
+        border: 1px solid black;
+        background-color: white;
+        padding: 8px;
+      }
+    </style>
   </head>
-  <body>
-    <header class="header-dev">
-      <span class="tag-name">ch-suggest</span
-      ><button id="toggle-dir-btn">Toggle dir</button>
-    </header>
-    <div class="container">To be done.</div>
+  <body class="styles">
+    <!-- Here goes the .header-dev (common.js)-->
 
-    <script src="common.js"></script>
+    <div class="container">
+      <button id="set-focus">Set focus on suggest</button> <br /><br />
+
+      <!-- frutas -->
+      <span><strong>frutas</strong></span>
+      <ul data-category="frutas" class="data-list">
+        <li>manzanas</li>
+        <li>bananas</li>
+        <li>naranjas</li>
+        <li>uvas</li>
+        <li>frutillas</li>
+      </ul>
+      <!-- granos -->
+      <span><strong>(sin categoría)</strong></span>
+      <ul class="data-list">
+        <li>porotos</li>
+        <li>garbanzos</li>
+        <li>lentejas</li>
+        <li>chia</li>
+      </ul>
+      <!-- verduras -->
+      <span><strong>verduras</strong></span>
+      <ul data-category="verduras" class="data-list">
+        <li>lecuhgas</li>
+        <li>tomates</li>
+        <li>cebollas</li>
+        <li>apio</li>
+        <li>papas</li>
+      </ul>
+
+      <!-- ch-suggest -->
+      <section class="section-dev" data-title="ch-suggest">
+        <ch-suggest label="nombre"></ch-suggest>
+      </section>
+
+      <!-- ch-suggest-list -->
+      <section class="section-dev" data-title="ch-suggest-list">
+        <ch-suggest-list label="fruits">
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            apple
+          </ch-suggest-list-item>
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            banana
+          </ch-suggest-list-item>
+          <ch-suggest-list-item>
+            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            orange
+          </ch-suggest-list-item>
+        </ch-suggest-list>
+      </section>
+
+      <!-- ch-suggest-list-item -->
+      <section class="section-dev" data-title="ch-suggest-list-item">
+        <ch-suggest-list-item>
+          <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+          apple
+        </ch-suggest-list-item>
+      </section>
+    </div>
+
+    <script>
+      const chSuggest = document.querySelector("ch-suggest");
+      const lists = document.querySelectorAll(".data-list");
+      chSuggest.addEventListener("inputChanged", e => {
+        let counter = 0;
+        chSuggest.innerHTML = "";
+        lists.forEach(list => {
+          const category = list.getAttribute("data-category");
+          const items = list.querySelectorAll("li");
+          const filteredItems = Array.from(items).filter(item => {
+            return item.innerText.toLowerCase().includes(e.detail);
+          });
+          if (filteredItems.length) {
+            const chSuggestList = document.createElement("ch-suggest-list");
+            if (category) {
+              chSuggestList.setAttribute("label", category);
+            }
+            filteredItems.forEach(item => {
+              const chSuggestListItem = document.createElement(
+                "ch-suggest-list-item"
+              );
+              chSuggestListItem.innerText = item.innerText;
+              if (category) {
+                chSuggestList.appendChild(chSuggestListItem);
+                counter++;
+              } else {
+                chSuggest.appendChild(chSuggestListItem);
+                counter++;
+              }
+            });
+            if (category) {
+              chSuggest.appendChild(chSuggestList);
+            }
+          }
+        });
+        if (e.detail !== "" && counter === 0) {
+          /*no hay coincidencias*/
+          chSuggest.innerHTML = "<p style='margin:0'>No hay coincidencias</p>";
+        }
+      });
+    </script>
+
+    <script>
+      const setFocusBtn = document.getElementById("set-focus");
+      setFocusBtn.addEventListener("click", function () {
+        chSuggest.focus();
+      });
+    </script>
+    <script src="assets/common.js"></script>
   </body>
 </html>

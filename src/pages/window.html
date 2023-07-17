@@ -6,11 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-window | Chameleon</title>
+    <title>ch-window</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./assets/styles.css" />
     <style>
       /* ch-window {
         --x-align: outside-start;
@@ -20,39 +20,31 @@
           --x-align: outside-end;
         }
       } */
-      ch-window::part(mask) {
+      body.styles ch-window::part(mask) {
         background-color: rgba(0, 0, 0, 0.3);
       }
-      ch-window::part(window) {
+      body.styles ch-window::part(window) {
         min-width: 20vw;
         min-height: 30vh;
         background-color: gray;
       }
-      ch-window::part(header) {
+      body.styles ch-window::part(header) {
         display: flex;
         justify-content: space-between;
         background-color: wheat;
       }
-      ch-window::part(close) {
+      body.styles ch-window::part(close) {
         width: 10px;
         height: 20px;
         background-color: blueviolet;
       }
     </style>
-    <script>
-      function openDialog() {
-        document.querySelector("ch-window").hidden = false;
-      }
-    </script>
   </head>
   <body>
-    <header class="header-dev">
-      <span class="tag-name">ch-window</span
-      ><button id="toggle-dir-btn">Toggle dir</button>
-    </header>
     <div class="container">
-      <button onclick="openDialog()">
-        Open
+      <section class="section-dev" data-title="ch-window">
+        <br />
+        <button onclick="openDialog()">Open</button>
         <ch-window
           caption="Options"
           close-tooltip="Cerrar"
@@ -64,14 +56,18 @@
         >
           <div>Hola Mundo!</div>
         </ch-window>
-      </button>
+      </section>
     </div>
+
     <script>
+      function openDialog() {
+        document.querySelector("ch-window").hidden = false;
+      }
       var windowEl = document.querySelector("ch-window");
       var buttonEl = document.querySelector("button");
 
       windowEl.container = buttonEl;
     </script>
-    <script src="common.js"></script>
+    <script src="./assets/common.js"></script>
   </body>
 </html>

@@ -60,7 +60,7 @@ https://stenciljs.com/docs/style-guide#code-organization
    ********************************/
 
   /**
-   * This variable adds or removes a CSS class on the host and is used to remove focus styles from the host in * case it has focus-within and any of the buttons have focus
+   * This variable adds or removes a CSS class on the host, and it can be used to remove the focus-within styles from the host in the case the focus is on a button.
    */
 
   @State() buttonHasFocus = false;

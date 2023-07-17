@@ -30,6 +30,14 @@ https://stenciljs.com/docs/style-guide#code-organization
   /// 1.OWN PROPERTIES ///
 
   /**
+   *  This property provides the user a way to define custom aria-label descriptions.
+   */
+  @Prop() readonly accessibilityLabels?: EntitySelectorLabels = {
+    buttonClearLabel: "clears the actual value",
+    buttonSelectLabel: "displays the entity selector"
+  };
+
+  /**
    *  Default value to be assigned as the component's value. This value should always be used when the 'X' button is pressed.
    */
   @Prop() readonly defaultValue?: EntityData | null | undefined;
@@ -150,14 +158,14 @@ https://stenciljs.com/docs/style-guide#code-organization
           <button
             part="button button-clear"
             onClick={this.btnClearClickHandler}
-            aria-label="clear the value, and apply the default value if provided"
+            aria-label={this.accessibilityLabels?.buttonClearLabel}
             onFocus={this.buttonFocusHandler}
             onBlur={this.buttonFocusHandler}
           ></button>
           <button
             part="button button-select"
             onClick={this.btnSelectClickHandler}
-            aria-label="displays the entity selector"
+            aria-label={this.accessibilityLabels?.buttonSelectLabel}
             onFocus={this.buttonFocusHandler}
             onBlur={this.buttonFocusHandler}
           ></button>
@@ -172,4 +180,9 @@ export type EntityData = {
   name: string; // Name that will be displayed in the interface
   iconSrc?: string; // The icon url src
   iconAutocolor?: boolean; // Indicates if the icon color is automatic or not. If it is, it ignores the value of '--icon-color'
+};
+
+export type EntitySelectorLabels = {
+  buttonClearLabel: string;
+  buttonSelectLabel: string;
 };

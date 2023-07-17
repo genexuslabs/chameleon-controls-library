@@ -1,5 +1,5 @@
 /* STENCIL IMPORTS */
-import { Component, Host, h, Prop } from "@stencil/core";
+import { Component, Host, h, Prop, State } from "@stencil/core";
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
 
@@ -58,6 +58,12 @@ https://stenciljs.com/docs/style-guide#code-organization
   /*******************************
    *  3.STATE() VARIABLES
    ********************************/
+
+  /**
+   * This variable adds or removes a CSS class on the host and is used to remove focus styles from the host in * case it has focus-within and any of the buttons have focus
+   */
+
+  @State() buttonHasFocus = false;
 
   /*******************************
    4.PUBLIC PROPERTY API
@@ -119,13 +125,23 @@ https://stenciljs.com/docs/style-guide#code-organization
     return undefined;
   };
 
+  private buttonFocusHandler = (e: FocusEvent) => {
+    if (e.type === "focus") {
+      this.buttonHasFocus = true;
+    } else if (e.type === "blur") {
+      this.buttonHasFocus = false;
+    }
+  };
+
   /*******************************
    *  11.RENDER() FUNCTION
    ********************************/
 
   render() {
     return (
-      <Host>
+      <Host
+        class={{ "ch-entity-selector--button-has-focus": this.buttonHasFocus }}
+      >
         {this.label && <label part="label">{this.label}</label>}
         <div part="wrapper" tabindex="0">
           {this.iconSrc && (
@@ -149,11 +165,15 @@ https://stenciljs.com/docs/style-guide#code-organization
             part="button button-clear"
             onClick={this.btnClearClickHandler}
             aria-label="clear the value, and apply the default value if provided"
+            onFocus={this.buttonFocusHandler}
+            onBlur={this.buttonFocusHandler}
           ></button>
           <button
             part="button button-select"
             onClick={this.btnSelectClickHandler}
             aria-label="displays the entity selector"
+            onFocus={this.buttonFocusHandler}
+            onBlur={this.buttonFocusHandler}
           ></button>
         </div>
       </Host>

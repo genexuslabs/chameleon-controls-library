@@ -40,7 +40,8 @@
         border: 1px solid black;
         padding: 4px;
       }
-      body.styles ch-entity-selector::part(wrapper):focus-within {
+      body.styles
+        ch-entity-selector:not(.ch-entity-selector--button-has-focus)::part(wrapper):focus-within {
         border-color: var(--focus-color);
         outline: 1px solid var(--focus-color);
       }

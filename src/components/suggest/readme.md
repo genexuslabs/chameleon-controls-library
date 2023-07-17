@@ -23,10 +23,11 @@
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"input"` |             |
-| `"label"` |             |
+| Part          | Description |
+| ------------- | ----------- |
+| `"ch-window"` |             |
+| `"input"`     |             |
+| `"label"`     |             |
 
 
 ## Dependencies

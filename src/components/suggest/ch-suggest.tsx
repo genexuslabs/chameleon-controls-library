@@ -330,6 +330,7 @@ INDEX:
           xAlign="inside-start"
           yAlign="outside-end"
           ref={el => (this.chWindow = el as HTMLChWindowElement)}
+          part="ch-window"
           exportparts="
             caption:ch-window-caption, 
             close:ch-window-close,

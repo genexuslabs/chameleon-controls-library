@@ -15,10 +15,10 @@ INDEX:
 2.REFERENCE TO ELEMENTS
 3.STATE() VARIABLES
 4.PUBLIC PROPERTY API
-5.EVENTS (EMMIT)
+5.EVENTS (EMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
-8.WATCHS
+8.WATCH
 9.PUBLIC METHODS API
 10.LOCAL METHODS
 11.RENDER() FUNCTION
@@ -27,9 +27,7 @@ Code organization suggested by StencilJs:
 https://stenciljs.com/docs/style-guide#code-organization
 */
 
-  /********************************
-   *  1.OWN PROPERTIES
-   ********************************/
+  /// 1.OWN PROPERTIES ///
 
   /**
    *  Default value to be assigned as the component's value. This value should always be used when the 'X' button is pressed.
@@ -51,13 +49,9 @@ https://stenciljs.com/docs/style-guide#code-organization
    */
   @Prop({ mutable: true }) value: EntityData | null | undefined;
 
-  /*******************************
-   * 2. REFERENCE TO ELEMENTS
-   ********************************/
+  /// 2. REFERENCE TO ELEMENTS ///
 
-  /*******************************
-   *  3.STATE() VARIABLES
-   ********************************/
+  /// 3.STATE() VARIABLES ///
 
   /**
    * This variable adds or removes a CSS class on the host, and it can be used to remove the focus-within styles from the host in the case the focus is on a button.
@@ -65,33 +59,19 @@ https://stenciljs.com/docs/style-guide#code-organization
 
   @State() buttonHasFocus = false;
 
-  /*******************************
-   4.PUBLIC PROPERTY API
-   ********************************/
+  /// 4.PUBLIC PROPERTY API ///
 
-  /*******************************
-   *  5.EVENTS (EMMIT)
-   ********************************/
+  /// 5.EVENTS (EMIT) ///
 
-  /*******************************
-   *  6.COMPONENT LIFECYCLE EVENTS
-   ********************************/
+  /// 6.COMPONENT LIFECYCLE EVENTS ///
 
-  /*******************************
-   *  7.LISTENERS
-   ********************************/
+  /// 7.LISTENERS ///
 
-  /*******************************
-   *  8.WATCHS
-   ********************************/
+  /// 8.WATCH ///
 
-  /*******************************
-   *  9.PUBLIC METHODS API
-   ********************************/
+  /// 9.PUBLIC METHODS API ///
 
-  /*******************************
-   *  10.LOCAL METHODS
-   ********************************/
+  /// 10.LOCAL METHODS ///
 
   private btnClearClickHandler = () => {
     this.value = null;
@@ -141,9 +121,7 @@ https://stenciljs.com/docs/style-guide#code-organization
       );
   };
 
-  /*******************************
-   *  11.RENDER() FUNCTION
-   ********************************/
+  /// 11.RENDER() FUNCTION ///
 
   render() {
     return (

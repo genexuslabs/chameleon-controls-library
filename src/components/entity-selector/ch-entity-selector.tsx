@@ -130,7 +130,7 @@ https://stenciljs.com/docs/style-guide#code-organization
       >
         {this.label && <label part="label">{this.label}</label>}
         <div part="wrapper">
-          {this.iconSrc && (
+          {this.iconSrc() && (
             <ch-icon
               autoColor={this.iconAutoColor()}
               src={this.iconSrc()}

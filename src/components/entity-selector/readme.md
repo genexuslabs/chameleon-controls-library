@@ -29,6 +29,14 @@
 | `"wrapper"`       |             |
 
 
+## CSS Custom Properties
+
+| Name           | Description                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------- |
+| `--icon-color` | The icon color that gets applied on the ch-icon                                                   |
+| `--icon-size`  | Indicates if the icon color is automatic or not. If it is, it ignores the value of '--icon-color' |
+
+
 ## Dependencies
 
 ### Depends on

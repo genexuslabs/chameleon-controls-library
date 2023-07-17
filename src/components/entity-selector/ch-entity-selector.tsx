@@ -121,14 +121,6 @@ https://stenciljs.com/docs/style-guide#code-organization
     }
   };
 
-  private wrapperHandleKeyDown = (e: KeyboardEvent) => {
-    e.code === "KeyC" &&
-      e.ctrlKey &&
-      navigator.clipboard.writeText(
-        this.value?.name || this.defaultValue?.name
-      );
-  };
-
   /// 11.RENDER() FUNCTION ///
 
   render() {
@@ -137,7 +129,7 @@ https://stenciljs.com/docs/style-guide#code-organization
         class={{ "ch-entity-selector--button-has-focus": this.buttonHasFocus }}
       >
         {this.label && <label part="label">{this.label}</label>}
-        <div part="wrapper" tabindex="0" onKeyDown={this.wrapperHandleKeyDown}>
+        <div part="wrapper">
           {this.iconSrc && (
             <ch-icon
               autoColor={this.iconAutoColor()}
@@ -151,9 +143,6 @@ https://stenciljs.com/docs/style-guide#code-organization
             readonly
             part="input input-entity"
             value={this.value?.name || this.defaultValue?.name}
-            tabindex="-1"
-            aria-readonly="true"
-            aria-hidden="true"
           />
           <button
             part="button button-clear"

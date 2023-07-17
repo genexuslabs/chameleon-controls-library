@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { EntityData } from "./components/entity-selector/ch-entity-selector";
+import { EntityData, EntitySelectorLabels } from "./components/entity-selector/ch-entity-selector";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -109,6 +109,10 @@ export namespace Components {
     interface ChDropdownItemSeparator {
     }
     interface ChEntitySelector {
+        /**
+          * This property provides the user a way to define custom aria-label descriptions.
+         */
+        "accessibilityLabels"?: EntitySelectorLabels;
         /**
           * Default value to be assigned as the component's value. This value should always be used when the 'X' button is pressed.
          */
@@ -1292,6 +1296,10 @@ declare namespace LocalJSX {
     interface ChDropdownItemSeparator {
     }
     interface ChEntitySelector {
+        /**
+          * This property provides the user a way to define custom aria-label descriptions.
+         */
+        "accessibilityLabels"?: EntitySelectorLabels;
         /**
           * Default value to be assigned as the component's value. This value should always be used when the 'X' button is pressed.
          */

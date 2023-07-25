@@ -337,10 +337,9 @@ INDEX:
           xAlign="inside-start"
           yAlign="outside-end"
           ref={el => (this.chWindow = el as HTMLChWindowElement)}
-          part="dropdown"
           exportparts="
           mask:dropdown-mask,
-          window:dropdown-container,
+          window:dropdown,
           close:dropdown-close-button,
           main:dropdown-main"
         >

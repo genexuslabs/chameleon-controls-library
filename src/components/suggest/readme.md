@@ -24,10 +24,11 @@
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"input"` |             |
-| `"label"` |             |
+| Part         | Description |
+| ------------ | ----------- |
+| `"dropdown"` |             |
+| `"input"`    |             |
+| `"label"`    |             |
 
 
 ## Dependencies

@@ -7,7 +7,7 @@ import {
   Prop,
   h
 } from "@stencil/core";
-import { Component as ChComponent } from "../../common/interfaces";
+import { Component as ChComponent } from "../../../common/interfaces";
 
 @Component({
   shadow: true,

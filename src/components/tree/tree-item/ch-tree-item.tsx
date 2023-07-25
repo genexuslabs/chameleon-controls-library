@@ -10,8 +10,8 @@ import {
   Watch,
   Method
 } from "@stencil/core";
-import { Color } from "../icon/icon";
-import { ChTree } from "../tree/ch-tree";
+import { Color } from "../../icon/icon";
+import { ChTree } from "../ch-tree";
 @Component({
   tag: "ch-tree-item",
   styleUrl: "ch-tree-item.scss",

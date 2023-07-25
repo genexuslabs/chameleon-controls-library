@@ -1,5 +1,5 @@
 import { Component, Element, State, h, Prop, Listen } from "@stencil/core";
-import { ChTreeItem } from "../tree-item/ch-tree-item";
+import { ChTreeItem } from "./tree-item/ch-tree-item";
 
 @Component({
   tag: "ch-tree",

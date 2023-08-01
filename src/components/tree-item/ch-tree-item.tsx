@@ -596,6 +596,7 @@ export class ChTreeItem {
             onDblClick={this.liTextDoubleClicked.bind(this)}
             onKeyDown={this.liTextKeyDownPressed.bind(this)}
             tabIndex={this.liTextTabIndex()}
+            part="wrapper"
           >
             {!this.isLeaf || this.download
               ? [

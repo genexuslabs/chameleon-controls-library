@@ -53,19 +53,9 @@ export class ChTreeItem {
   @Prop() readonly leftIcon: string;
 
   /**
-   * Set the left side icon part class name
-   */
-  @Prop() readonly leftIconClass: string;
-
-  /**
    * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
    */
   @Prop() readonly rightIcon: string;
-
-  /**
-   * Set the right side icon part class name
-   */
-  @Prop() readonly rightIconClass: string;
 
   /**
    * If this tree-item has a nested tree, set this attribute to make the tree open by default
@@ -649,9 +639,7 @@ export class ChTreeItem {
                 onClick={this.checkboxClicked.bind(this)}
               ></ch-form-checkbox>
             ) : null}
-            {this.leftIconClass ? (
-              <span part="left-icon" class={this.leftIconClass}></span>
-            ) : null}
+            <span part="left-icon"></span>
             {this.leftIcon ? (
               <ch-icon
                 src={this.resolveLeftIcon()}
@@ -675,9 +663,7 @@ export class ChTreeItem {
                 }}
               ></ch-icon>
             ) : null}
-            {this.rightIconClass ? (
-              <span part="right-icon" class={this.rightIconClass}></span>
-            ) : null}
+            <span part="right-icon"></span>
             {this.download ? <span class={{ loading: true }}></span> : null}
           </div>
           <slot name="tree"></slot>

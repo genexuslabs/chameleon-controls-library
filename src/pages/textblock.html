@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-grid</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+      .section-dev {
+        display: flex;
+        position: relative;
+        min-height: 70px;
+        padding-block-start: 50px;
+      }
+
+      .section-dev__title {
+        position: absolute;
+        inset-block-start: 10px;
+      }
+
+      .section-resize {
+        resize: vertical;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="Format = Text, No line clamp">
+        <ch-textblock>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia quod
+          ratione vero placeat a labore quia facilis et inventore. Ipsum minus,
+          debitis dicta doloremque quasi sint. Accusantium itaque quis
+          perspiciatis. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Molestias, ullam blanditiis. Architecto quos dolorum deserunt
+          cupiditate cum voluptas officiis magnam illo reiciendis molestiae
+          aspernatur sit repudiandae natus, nesciunt quisquam consectetur! Lorem
+          ipsum dolor sit amet consectetur, adipisicing elit. Laborum quo neque
+          eius reiciendis officia, accusamus ea doloribus. Expedita,
+          reprehenderit assumenda accusamus cum doloribus repellat maiores nihil
+          sequi, eaque atque quibusdam?
+        </ch-textblock>
+      </section>
+
+      <section
+        class="section-dev section-resize"
+        data-title="Format = Text, Line clamp"
+      >
+        <ch-textblock line-clamp>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia quod
+          ratione vero placeat a labore quia facilis et inventore. Ipsum minus,
+          debitis dicta doloremque quasi sint. Accusantium itaque quis
+          perspiciatis. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Molestias, ullam blanditiis. Architecto quos dolorum deserunt
+          cupiditate cum voluptas officiis magnam illo reiciendis molestiae
+          aspernatur sit repudiandae natus, nesciunt quisquam consectetur! Lorem
+          ipsum dolor sit amet consectetur, adipisicing elit. Laborum quo neque
+          eius reiciendis officia, accusamus ea doloribus. Expedita,
+          reprehenderit assumenda accusamus cum doloribus repellat maiores nihil
+          sequi, eaque atque quibusdam?
+        </ch-textblock>
+      </section>
+
+      <section class="section-dev" data-title="Format = HTML">
+        <ch-textblock format="HTML">
+          <i>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia
+            quod ratione vero placeat a labore quia facilis et inventore. Ipsum
+            minus, debitis dicta doloremque quasi sint. Accusantium itaque quis
+            perspiciatis. Lorem ipsum dolor sit amet consectetur adipisicing
+            elit. Molestias, ullam blanditiis. Architecto quos dolorum deserunt
+            cupiditate cum voluptas officiis magnam illo reiciendis molestiae
+            aspernatur sit repudiandae natus, nesciunt quisquam consectetur!
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Laborum
+            quo neque eius reiciendis officia, accusamus ea doloribus. Expedita,
+            reprehenderit assumenda accusamus cum doloribus repellat maiores
+            nihil sequi, <b>eaque atque quibusdam?</b>
+          </i>
+          <ul>
+            <li>Option 1</li>
+            <li>Option 2</li>
+            <li>Option 3</li>
+          </ul>
+        </ch-textblock>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener("rowClicked", eventInfo =>
+        console.log(
+          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}`
+        )
+      );
+      document.addEventListener("selectionChanged", eventInfo =>
+        console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`)
+      );
+    </script>
+    <script src="./assets/common.js"></script>
+  </body>
+</html>

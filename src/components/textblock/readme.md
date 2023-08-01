@@ -22,9 +22,9 @@
 
 ## Shadow Parts
 
-| Part        | Description                                                                             |
-| ----------- | --------------------------------------------------------------------------------------- |
-| `"content"` | The main content displayed in the control. This part only applies when `format="Text"`. |
+| Part        | Description                                                                                                  |
+| ----------- | ------------------------------------------------------------------------------------------------------------ |
+| `"content"` | The main content displayed in the control. This part only applies when `format="Text"` and lineClamp="true". |
 
 
 ----------------------------------------------

@@ -12,7 +12,7 @@ import {
 } from "../../common/reserverd-names";
 
 /**
- * @part content - The main content displayed in the control. This part only applies when `format="Text"`.
+ * @part content - The main content displayed in the control. This part only applies when `format="Text"` and lineClamp="true".
  *
  * @slot - The slot for the content.
  */

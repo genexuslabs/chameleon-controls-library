@@ -823,6 +823,10 @@ export namespace Components {
          */
         "leftIcon": string;
         /**
+          * Set the left side icon part class name
+         */
+        "leftIconClass": string;
+        /**
           * If this tree-item has a nested tree, set this attribute to make the tree open by default
          */
         "opened": boolean;
@@ -830,6 +834,10 @@ export namespace Components {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon": string;
+        /**
+          * Set the right side icon part class name
+         */
+        "rightIconClass": string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */
@@ -2126,6 +2134,10 @@ declare namespace LocalJSX {
           * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "leftIcon"?: string;
+        /**
+          * Set the left side icon part class name
+         */
+        "leftIconClass"?: string;
         "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
         "onLiItemClicked"?: (event: CustomEvent<any>) => void;
         "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
@@ -2137,6 +2149,10 @@ declare namespace LocalJSX {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon"?: string;
+        /**
+          * Set the right side icon part class name
+         */
+        "rightIconClass"?: string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */

@@ -327,7 +327,7 @@ export class ChGrid {
     if (
       (this.rowHighlightEnabled === "auto" &&
         this.rowSelectionMode !== "none") ||
-      this.rowHighlightEnabled == true
+      this.rowHighlightEnabled === true
     ) {
       this.rowHighlighted =
         this.manager.getRowEventTarget(eventInfo) ||
@@ -829,7 +829,7 @@ export class ChGrid {
 
   render() {
     return (
-      <Host tabindex={this.rowSelectionMode != "none" ? "0" : false}>
+      <Host tabindex={this.rowSelectionMode !== "none" ? "0" : false}>
         <header part="header">
           <slot name="header"></slot>
         </header>

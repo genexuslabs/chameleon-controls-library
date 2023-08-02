@@ -73,7 +73,7 @@ export class ChGridManager {
     return this.grid.manager.columns
       .getColumns(true)
       .reduce((offsetRight, column) => {
-        return column.freeze == "start" && !column.hidden
+        return column.freeze === "start" && !column.hidden
           ? offsetRight + column.offsetWidth
           : offsetRight;
       }, 0);
@@ -83,7 +83,7 @@ export class ChGridManager {
     return this.grid.manager.columns
       .getColumns(true)
       .reduce((offsetRight, column) => {
-        return column.freeze == "end" && !column.hidden
+        return column.freeze === "end" && !column.hidden
           ? offsetRight + column.offsetWidth
           : offsetRight;
       }, 0);
@@ -541,7 +541,7 @@ export class ChGridManager {
   private getColumnIndentStyle(column: HTMLChGridColumnElement): CSSProperties {
     return {
       [`--ch-grid-column-${column.physicalOrder}-content`]:
-        column.order == 1 ? "''" : "none"
+        column.order === 1 ? "''" : "none"
     };
   }
 

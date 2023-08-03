@@ -11,10 +11,102 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles.css" />
+
+    <style>
+      .dropdown::part(expandable-button) {
+        background-color: aliceblue;
+        border: 1px solid;
+        border-radius: 4px;
+        padding-block: 4px;
+        padding-inline: 16px;
+      }
+
+      .dropdown::part(expandable-button):focus {
+        box-shadow: 0 0 0 1px black;
+      }
+
+      .dropdown::part(section) {
+        background-color: rgb(237, 234, 255);
+        padding: 8px;
+        box-shadow: 0 4px 8px 1px #22222220;
+      }
+
+      .dropdown::part(list) {
+        row-gap: 8px;
+        margin-block: 8px;
+      }
+
+      .dropdown-item::part(action) {
+        background-color: rgb(243, 208, 195);
+        border-radius: 4px;
+        padding-inline: 16px;
+        padding-block: 8px;
+      }
+
+      .dropdown-item::part(action):hover {
+        background-color: rgb(211, 177, 164);
+      }
+
+      .dropdown-item::part(action):focus-within {
+        outline: 1px solid;
+      }
+
+      .dropdown-container {
+        width: max-content;
+        height: 30px;
+        margin: auto;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">To be done.</div>
+    <div class="container">WIP</div>
 
     <script src="./assets/common.js"></script>
+
+    <div class="dropdown-container">
+      <ch-dropdown
+        align="Center"
+        class="dropdown"
+        dropdown-separation="5"
+        expand-behavior="Click or Hover"
+        open-on-focus="false"
+        position="Bottom"
+      >
+        <span slot="action">User info</span>
+
+        <div slot="header">
+          <h1>John Doe</h1>
+          <span>johndoe@example.com</span>
+        </div>
+
+        <ch-dropdown-item
+          slot="items"
+          class="dropdown-item"
+          href="https://www.google.com.uy"
+          leftImgSrc="./MyProfile.svg"
+          rightImgSrc="AnotherImg"
+        >
+          Google
+        </ch-dropdown-item>
+
+        <ch-dropdown-item-separator slot="items"></ch-dropdown-item-separator>
+
+        <ch-dropdown-item
+          slot="items"
+          class="dropdown-item"
+          id="2"
+          leftImgSrc="./Logout.svg"
+          rightImgSrc="item.RightImage"
+        >
+          Logout
+        </ch-dropdown-item>
+
+        <div slot="footer">Footer</div>
+      </ch-dropdown>
+    </div>
   </body>
 </html>

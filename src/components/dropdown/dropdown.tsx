@@ -395,7 +395,7 @@ export class ChDropDown implements ChComponent {
           yAlign="outside-end"
         >
           {this.showHeader && (
-            <div class="dummy-wrapper">
+            <div class="dummy-wrapper" slot="header">
               <slot name="header" />
             </div>
           )}
@@ -405,7 +405,7 @@ export class ChDropDown implements ChComponent {
           </div>
 
           {this.showFooter && (
-            <div class="dummy-wrapper">
+            <div class="dummy-wrapper" slot="footer">
               <slot name="footer" />
             </div>
           )}

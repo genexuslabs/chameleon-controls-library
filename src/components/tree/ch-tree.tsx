@@ -26,11 +26,6 @@ export class ChTree {
    */
   @Prop({ mutable: true }) toggleCheckboxes = false;
 
-  /**
-   * Allows to select only one item
-   */
-  @Prop() readonly singleSelection: boolean;
-
   //STATE
   @State() nestedTree = false;
   @State() mainTree = false;

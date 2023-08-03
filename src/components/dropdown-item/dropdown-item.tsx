@@ -60,14 +60,14 @@ export class ChDropDownItem implements ChComponent {
       <img
         aria-hidden="true"
         class="left-img"
-        part="dropdown-item__left-img"
+        part="left-img"
         alt=""
         src={this.leftImgSrc}
         loading="lazy"
       />
     ),
 
-    <span class="content" part="dropdown-item__content">
+    <span class="content" part="content">
       <slot />
     </span>,
 
@@ -75,7 +75,7 @@ export class ChDropDownItem implements ChComponent {
       <img
         aria-hidden="true"
         class="right-img"
-        part="dropdown-item__right-img"
+        part="right-img"
         alt=""
         src={this.rightImgSrc}
         loading="lazy"
@@ -97,7 +97,7 @@ export class ChDropDownItem implements ChComponent {
         {this.href ? (
           <a
             class="action"
-            part="dropdown-item__target"
+            part="target"
             href={this.href}
             onClick={this.handleActionClick}
             onFocus={this.handleFocus}
@@ -108,7 +108,7 @@ export class ChDropDownItem implements ChComponent {
         ) : (
           <button
             class="action"
-            part="dropdown-item__button"
+            part="button"
             type="button"
             onClick={this.handleActionClick}
             onFocus={this.handleFocus}

@@ -10,166 +10,51 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-  </head>  <style>
-    body {
-      margin: 0;
-    }
-    .main {
-      /* flex-direction: row-reverse; */
-    }
-    .container {
-      position: relative;
-    }
-   /*  ch-dropdown {
-  position: inherit;
-} */
-   
-  </style>
-
-  <script type="text/javascript">
-    window.addEventListener(
-      'load',
-      () => {
-        const actionGroup = document.querySelector('ch-action-group');
-        document.addEventListener('actionGroupItemSelected', ev => {
-          console.log(ev);
-        });
-
-        actionGroup.addEventListener('displayedItemsCountChange', ev => {
-         
-          // const itemsMenu = actionGroup.querySelectorAll(":scope > ch-action-group-item[slot='more-button-item']");
-          // itemsMenu.forEach(item => item.remove());
-
-          const items = actionGroup.querySelectorAll(":scope > ch-action-group-item[slot='list-item']");
-          const moreButton = actionGroup.querySelectorAll(":scope > ch-action-group-item[slot='more-button-item']");
-
-          // items.forEach((item, ind) =>{
-          //   console.log(ind)
-          //   if(ind >= ev.detail){
-          //     itemClone = item.cloneNode(true);
-          //     itemClone.setAttribute("slot","more-button-item");
-          //     actionGroup.appendChild(itemClone);
-          //   }
-          // });
-          items.forEach((item, ind) => {
-            console.log(ind);
-            if (ind >= ev.detail) {
-              item.setAttribute('slot', 'more-button-item');
-              item.setAttribute('disposed-top', false);
-            }
-          });
-
-          if (moreButton.length > 0) {
-            for (let index = 0; index < ev.detail - items.length; index++) {
-              moreButton[index].setAttribute('slot', 'list-item');
-              moreButton[index].setAttribute('disposed-top', true);
-              moreButton[index].classList.add("first-level-action")
-            }
-          }
-        });
-      },
-      false,
-    );
-
-    function incrementItem(id) {
-      const item = document.getElementById(id);
-      // item.setAttribute('style', "padding-left: 80px");
-      item.innerHTML = 'Un texto grande por aca para aumentar el tamaño';
-    }
-  </script>
-</head>
-
-<body>
-  <div class="main">
-    <!-- <div style="height: 300px;width: 400px;" >hola</div> -->
+    <link rel="stylesheet" href="./pages/assets/styles.css" />
+    <script>
+      const components = [
+        "accordion",
+        "drag-bar",
+        "dropdown",
+        "checkbox",
+        "grid",
+        "icon",
+        "notifications",
+        "paginator",
+        "qr",
+        "select",
+        "sidebar",
+        "step-list",
+        "textblock",
+        "tree",
+        "window",
+        "suggest",
+        "step-list"
+      ];
+    </script>
+  </head>
+  <body class="home dark">
     <div class="container">
-      <ch-action-group css-class="action-group-fancy" items-overflow-behavior="Responsive Collapse" more-actions-button-position="Start">
-        <ch-action-group-item slot="list-item" id="item1" link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-
-        <ch-action-group-item slot="list-item" id="item2" css-class="itemClass1" grouped-class="itemClass1--grouped">
-          <ch-dropdown
-          align="Right"
-          class="Class"
-          dropdown-separation="5"
-          expand-behavior="Click or hover"
-          open-on-focus="false"
-          position="Bottom"
-          
-        >
-          <span slot="action">User info</span>
-          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-        </ch-dropdown>
-        </ch-action-group-item>
-      
-        
-
-        <ch-action-group-item slot="list-item" id="item3">
-         
-          <ch-dropdown
-          align="Right"
-          class="Class"
-          dropdown-separation="5"
-          expand-behavior="Click or hover"
-          open-on-focus="false"
-          position="Bottom"
-          
-        >
-          <span slot="action"> Abre un submenu</span>
-          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-        </ch-dropdown>
-        </ch-action-group-item>
-
-        <ch-action-group-item slot="list-item" id="item4">
-          
-          <ch-dropdown
-          align="Right"
-          class="Class"
-          dropdown-separation="5"
-          expand-behavior="Click or hover"
-          open-on-focus="false"
-          position="Bottom"
-          
-        >
-          <span slot="action">Abre un submenu 4</span>
-          <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> Navegar a zzz </ch-action-group-item>
-          <ch-action-group-item slot = "items"  css-class="itemClass1">    <ch-dropdown
-            align="Center"
-            class="Class"
-            dropdown-separation="5"
-            expand-behavior="Click or hover"
-            open-on-focus="false"
-            position="Bottom"
-            
-          >
-            <span slot="action">Sub</span>
-            <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> SubSub1</ch-action-group-item>
-            <ch-action-group-item slot = "items"  link="http://google.com" css-class="itemClass1"> SubSub2</ch-action-group-item>
-          </ch-dropdown> </ch-action-group-item>
-        </ch-dropdown>
-        </ch-action-group-item>
-
-        <!-- <ch-action-group-item slot="more-button-item" id="item5">
-        Abre un submenu 5
-        <ch-action-group-menu slot="menu">
-
-          <ch-action-group-item id="item5-1" link="http://google.com" css-class="itemClass1">
-            Navegar a ooo
-          </ch-action-group-item>
-
-          <ch-action-group-item id="item5-2" css-class="itemClass1">
-            Dispara el evento desde submenu
-          </ch-action-group-item>
-
-        </ch-action-group-menu>
-      </ch-action-group-item> -->
-      </ch-action-group>
+      <h1 class="title h2">Chameleon</h1>
+      <p>
+        About A library of white-label, highly-customizable and reusable web
+        components.
+      </p>
+      <ul class="list unstyled" id="componentsList">
+        <!-- populated dinamically with javascript -->
+      </ul>
     </div>
-
-    <!-- <div style="height: 300px;width: 400px;" >hola</div> -->
-  </div>
-
-  <button onclick="incrementItem('item1')">Hola</button>
-</body>
+    <script>
+      //Completed
+      const componentsList = document.getElementById("componentsList");
+      components.sort().forEach(el => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.setAttribute("href", `/pages/${el}.html`);
+        a.innerText = el;
+        li.appendChild(a);
+        componentsList.appendChild(li);
+      });
+    </script>
+  </body>
 </html>

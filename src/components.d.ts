@@ -10,13 +10,14 @@ import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
-import { DataModelItemLabels, ErrorText, ItemInfo } from "./components/next/data-modeling-item/next-data-modeling-item";
+import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
+import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -561,17 +562,29 @@ export namespace Components {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode": boolean;
+        "actionsVisible": boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
         "captions": DataModelItemLabels;
         /**
+          * Check errors in the item when `level !== 0`
+         */
+        "checkErrors": (errors: "yes" | "no" | "unknown", event: CustomEvent | UIEvent) => Promise<void>;
+        /**
+          * Remove the value of the input when mode === "add" | "edit"
+         */
+        "clearInput": () => Promise<void>;
+        /**
           * The dataType of the field.
          */
         "dataType": string;
+        /**
+          * Deletes the field.
+         */
+        "delete": (event: UIEvent) => Promise<void>;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
@@ -585,7 +598,7 @@ export namespace Components {
          */
         "errorTexts": { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames": string[];
         /**
@@ -601,9 +614,21 @@ export namespace Components {
          */
         "maxAtts": number;
         /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode": Mode;
+        /**
           * The name of the field.
          */
         "name": string;
+        /**
+          * Set the adding mode for the first field of the entity.
+         */
+        "setAddingMode": () => Promise<void>;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn": boolean;
         /**
           * The type of the field.
          */
@@ -817,6 +842,36 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce": number;
+        /**
+          * The label
+         */
+        "label": string;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel": boolean;
+        /**
+          * The input value
+         */
+        "value": string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label": string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc": string;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -869,6 +924,10 @@ export namespace Components {
          */
         "leftIcon": string;
         /**
+          * Set the left side icon part class name
+         */
+        "leftIconClass": string;
+        /**
           * If this tree-item has a nested tree, set this attribute to make the tree open by default
          */
         "opened": boolean;
@@ -876,6 +935,10 @@ export namespace Components {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon": string;
+        /**
+          * Set the right side icon part class name
+         */
+        "rightIconClass": string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */
@@ -1201,6 +1264,24 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
+    }
+    var HTMLChSuggestElement: {
+        prototype: HTMLChSuggestElement;
+        new (): HTMLChSuggestElement;
+    };
+    interface HTMLChSuggestListElement extends Components.ChSuggestList, HTMLStencilElement {
+    }
+    var HTMLChSuggestListElement: {
+        prototype: HTMLChSuggestListElement;
+        new (): HTMLChSuggestListElement;
+    };
+    interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
+    }
+    var HTMLChSuggestListItemElement: {
+        prototype: HTMLChSuggestListItemElement;
+        new (): HTMLChSuggestListItemElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1280,6 +1361,9 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-suggest": HTMLChSuggestElement;
+        "ch-suggest-list": HTMLChSuggestListElement;
+        "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
@@ -1871,9 +1955,9 @@ declare namespace LocalJSX {
     }
     interface ChNextDataModelingItem {
         /**
-          * `true` to only show the component that comes with the default slot. Useful when the item is the last one of the list.
+          * This attribute lets you specify if the actions in the `mode === "add"` are visible.
          */
-        "addNewFieldMode"?: boolean;
+        "actionsVisible"?: boolean;
         /**
           * The labels used in the buttons of the items. Important for accessibility.
          */
@@ -1895,7 +1979,7 @@ declare namespace LocalJSX {
          */
         "errorTexts"?: { [key in ErrorText]: string };
         /**
-          * This property specifies the defined field names of the current entity.
+          * This property specifies the defined field names of the entity parent.
          */
         "fieldNames"?: string[];
         /**
@@ -1906,6 +1990,10 @@ declare namespace LocalJSX {
           * Determine the maximum amount of ATTs displayed per entity.
          */
         "maxAtts"?: number;
+        /**
+          * This attribute specifies the operating mode of the control
+         */
+        "mode"?: Mode;
         /**
           * The name of the field.
          */
@@ -1919,9 +2007,25 @@ declare namespace LocalJSX {
          */
         "onEditField"?: (event: CustomEvent<ItemInfo>) => void;
         /**
-          * Fired when a new file is comitted to be added
+          * Fired when a new file is committed to be added when adding a new entity (level === 0)
+         */
+        "onFirstNewField"?: (event: CustomEvent<ItemInfo>) => void;
+        /**
+          * Fired when the new field of the new entity tries to commits the adding operation, but fails because it has errors
+         */
+        "onFirstNewFieldErrors"?: (event: CustomEvent<any>) => void;
+        /**
+          * Fired when a new entity is committed to be added
+         */
+        "onNewEntity"?: (event: CustomEvent<EntityInfo>) => void;
+        /**
+          * Fired when a new file is committed to be added
          */
         "onNewField"?: (event: CustomEvent<ItemInfo>) => void;
+        /**
+          * `true` to show the new field button when `mode === "add"`
+         */
+        "showNewFieldBtn"?: boolean;
         /**
           * The type of the field.
          */
@@ -2175,6 +2279,48 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: CustomEvent<any>) => void;
     }
+    interface ChSuggest {
+        /**
+          * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+         */
+        "debounce"?: number;
+        /**
+          * The label
+         */
+        "label"?: string;
+        /**
+          * This event is emitted every time there input events fires, and it emits the actual input value.
+         */
+        "onInputChanged"?: (event: CustomEvent<string>) => void;
+        /**
+          * Whether or not to display the label
+         */
+        "showLabel"?: boolean;
+        /**
+          * The input value
+         */
+        "value"?: string;
+    }
+    interface ChSuggestList {
+        /**
+          * The label
+         */
+        "label"?: string;
+    }
+    interface ChSuggestListItem {
+        /**
+          * The icon url
+         */
+        "iconSrc"?: string;
+        /**
+          * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
+         */
+        "onFocusChangeAttempt"?: (event: CustomEvent<focusChangeAttempt>) => void;
+        /**
+          * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
+         */
+        "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -2226,6 +2372,10 @@ declare namespace LocalJSX {
           * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "leftIcon"?: string;
+        /**
+          * Set the left side icon part class name
+         */
+        "leftIconClass"?: string;
         "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
         "onLiItemClicked"?: (event: CustomEvent<any>) => void;
         "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
@@ -2237,6 +2387,10 @@ declare namespace LocalJSX {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon"?: string;
+        /**
+          * Set the right side icon part class name
+         */
+        "rightIconClass"?: string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */
@@ -2363,6 +2517,9 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-suggest": ChSuggest;
+        "ch-suggest-list": ChSuggestList;
+        "ch-suggest-list-item": ChSuggestListItem;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
@@ -2417,6 +2574,9 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
+            "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
+            "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;

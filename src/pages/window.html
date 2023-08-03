@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-window</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+      /* ch-window {
+        --x-align: outside-start;
+      }
+      @media (max-width: 600px) {
+        ch-window {
+          --x-align: outside-end;
+        }
+      } */
+      body.styles ch-window::part(mask) {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
+      body.styles ch-window::part(window) {
+        min-width: 20vw;
+        min-height: 30vh;
+        background-color: gray;
+      }
+      body.styles ch-window::part(header) {
+        display: flex;
+        justify-content: space-between;
+        background-color: wheat;
+      }
+      body.styles ch-window::part(close) {
+        width: 10px;
+        height: 20px;
+        background-color: blueviolet;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="ch-window">
+        <br />
+        <button onclick="openDialog()">Open</button>
+        <ch-window
+          caption="Options"
+          close-tooltip="Cerrar"
+          close-on-outside-click
+          close-on-escape
+          x-align="inside-start"
+          y-align="inside-start"
+          allow-drag="header"
+        >
+          <div>Hola Mundo!</div>
+        </ch-window>
+      </section>
+    </div>
+
+    <script>
+      function openDialog() {
+        document.querySelector("ch-window").hidden = false;
+      }
+      var windowEl = document.querySelector("ch-window");
+      var buttonEl = document.querySelector("button");
+
+      windowEl.container = buttonEl;
+    </script>
+    <script src="./assets/common.js"></script>
+  </body>
+</html>

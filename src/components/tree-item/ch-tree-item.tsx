@@ -639,6 +639,7 @@ export class ChTreeItem {
                 onClick={this.checkboxClicked.bind(this)}
               ></ch-form-checkbox>
             ) : null}
+            <span part="left-icon"></span>
             {this.leftIcon ? (
               <ch-icon
                 src={this.resolveLeftIcon()}
@@ -662,6 +663,7 @@ export class ChTreeItem {
                 }}
               ></ch-icon>
             ) : null}
+            <span part="right-icon"></span>
             {this.download ? <span class={{ loading: true }}></span> : null}
           </div>
           <slot name="tree"></slot>

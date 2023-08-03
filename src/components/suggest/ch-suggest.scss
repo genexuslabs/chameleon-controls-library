@@ -1,0 +1,26 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  --window-max-height: none;
+  --window-gap: 50px;
+}
+.ch-window-container {
+  position: relative;
+}
+.dummy-header {
+  display: none;
+}
+.input {
+  background-color: unset;
+  border: none;
+  color: inherit;
+  font: inherit;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+}
+ch-window::part(window) {
+  width: 100%;
+  max-height: calc(var(--window-max-height) - var(--window-gap));
+  overflow-y: auto;
+}

@@ -1,0 +1,25 @@
+@import "../../common/_base";
+
+@include box-sizing();
+@include line-clamp();
+
+:host {
+  display: flex;
+  align-items: flex-start;
+  justify-items: flex-start;
+  align-self: stretch;
+  position: relative;
+  width: 100%;
+  text-align: start; // Default alignment which supports RTL
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//      Format = "Text" and lineClamp
+// - - - - - - - - - - - - - - - - - - - -
+.content {
+  @include reset-browser-defaults-properties-1();
+
+  position: absolute;
+  inset-inline: 0;
+  padding-inline: inherit;
+}

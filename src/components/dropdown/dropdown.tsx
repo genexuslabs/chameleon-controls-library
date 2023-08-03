@@ -18,6 +18,8 @@ const SECTION_ID = "section";
 const DROPDOWN_ITEM_TAG_NAME = "ch-dropdown-item";
 const DROPDOWN_ITEM_SELECTOR = `:scope > ${DROPDOWN_ITEM_TAG_NAME}`;
 
+const EXPORT_PARTS = "window:section,mask,header,footer";
+
 // Keys
 const TAB_KEY = "Tab";
 type DropDownKeyDownEvents = "ArrowDown" | "ArrowUp" | "Escape";
@@ -385,35 +387,31 @@ export class ChDropDown implements ChComponent {
           ></div>
         )}
 
-        <section
-          id={SECTION_ID}
-          aria-labelledby={EXPANDABLE_BUTTON_ID}
-          class={{
-            section: true,
-            [`position--${this.position.toLowerCase()}`]: true,
-
-            [`align--${this.align.toLowerCase()}`]: hasVerticalPosition,
-            [`valign--${this.valign.toLowerCase()}`]: !hasVerticalPosition
-          }}
-          part="dropdown__section"
+        <ch-window
+          exportparts={EXPORT_PARTS}
+          container={this.element}
           hidden={!isExpanded}
+          modal={false}
+          showFooter={this.showFooter}
+          showHeader={this.showHeader}
+          yAlign="outside-end"
         >
           {this.showHeader && (
-            <header class="header" part="dropdown__header">
+            <div class="dummy-wrapper">
               <slot name="header" />
-            </header>
+            </div>
           )}
 
-          <div role="list" class="list" part="dropdown__list">
+          <div role="list" class="list" part="list">
             <slot name="items" />
           </div>
 
           {this.showFooter && (
-            <footer class="footer" part="dropdown__footer">
+            <div class="dummy-wrapper">
               <slot name="footer" />
-            </footer>
+            </div>
           )}
-        </section>
+        </ch-window>
       </Host>
     );
   }

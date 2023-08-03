@@ -235,10 +235,10 @@ export class ChWindow {
     const style = getComputedStyle(this.el);
     const container = style.getPropertyValue("--ch-window-container").trim();
     const xAlign = style
-      .getPropertyValue("--ch-window-x-align")
+      .getPropertyValue("--ch-window-align-x")
       .trim() as ChWindowAlign;
     const yAlign = style
-      .getPropertyValue("--ch-window-y-align")
+      .getPropertyValue("--ch-window-align-y")
       .trim() as ChWindowAlign;
 
     this.isContainerCssOverride = container.includes("window");

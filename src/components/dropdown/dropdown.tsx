@@ -356,7 +356,7 @@ export class ChDropDown implements ChComponent {
           aria-haspopup="true"
           aria-label={this.buttonLabel}
           class="expandable-button"
-          part="dropdown__expandable-button"
+          part="expandable-button"
           type="button"
           onClick={this.handleButtonClick}
           onFocus={this.openOnFocus ? this.handleButtonFocus : undefined}
@@ -381,7 +381,7 @@ export class ChDropDown implements ChComponent {
               "dummy-separation--vertical": hasVerticalPosition,
               "dummy-separation--horizontal": !hasVerticalPosition
             }}
-            part="dropdown__separation"
+            part="separation"
           ></div>
         )}
 

@@ -550,6 +550,14 @@ export class ChTreeItem {
         this.checkboxClickedEvent.emit(true);
       }
     }
+    if (treeRef.toggleCheckboxes) {
+      const children = this.el.querySelectorAll("ch-tree-item");
+      children.forEach(item => {
+        item = item as HTMLChTreeItemElement;
+        console.log(item);
+        item.checkbox && (item.checked = !item.checked);
+      });
+    }
   }
 
   toggleTreeItemsCheckboxes(checked) {

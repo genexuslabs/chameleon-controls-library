@@ -1,5 +1,3 @@
-@import "../dropdown/dropdown-tokens";
-
 $img-size: 24px;
 
 :where(a, button) {
@@ -12,32 +10,6 @@ $img-size: 24px;
   box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: light) {
-  .action {
-    &:focus,
-    &:hover {
-      background-color: $background-color--focus-hover--light-scheme;
-    }
-
-    &:active {
-      background-color: $background-color--active-selected--light-scheme;
-    }
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .action {
-    &:focus,
-    &:hover {
-      background-color: $background-color--focus-hover--dark-scheme;
-    }
-
-    &:active {
-      background-color: $background-color--active-selected--dark-scheme;
-    }
-  }
-}
-
 :host {
   display: flex;
   width: 100%;
@@ -47,13 +19,9 @@ $img-size: 24px;
 .action {
   display: flex;
   align-items: center;
-  column-gap: 8px; // Separation between images and content
   width: 100%;
   height: 100%;
   cursor: pointer;
-  padding-block: 8px;
-  padding-inline: 16px;
-  font-size: 0.875em;
   text-align: start;
   transition-property: background-color, border-color, box-shadow, color, filter,
     opacity;

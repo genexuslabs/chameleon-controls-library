@@ -27,7 +27,7 @@ export class ChGridManagerColumns {
   }
 
   public getColumn(columnId: string): HTMLChGridColumnElement {
-    return this.columns.find(column => column.columnId == columnId);
+    return this.columns.find(column => column.columnId === columnId);
   }
 
   public getColumns(sorted = false): HTMLChGridColumnElement[] {
@@ -65,19 +65,19 @@ export class ChGridManagerColumns {
 
   public getColumnSelector(): HTMLChGridColumnElement {
     return this.columns.find(
-      column => column.columnType == "rich" && column.richRowSelector
+      column => column.columnType === "rich" && column.richRowSelector
     );
   }
 
   public adjustFreezeOrder() {
     const freezeStart = this.columns
-      .filter(column => column.freeze == "start")
+      .filter(column => column.freeze === "start")
       .sort(this.fnSortByOrder);
     const noFreeze = this.columns
-      .filter(column => column.freeze != "start" && column.freeze != "end")
+      .filter(column => column.freeze !== "start" && column.freeze !== "end")
       .sort(this.fnSortByOrder);
     const freezeEnd = this.columns
-      .filter(column => column.freeze == "end")
+      .filter(column => column.freeze === "end")
       .sort(this.fnSortByOrder);
     let order = 1;
 
@@ -210,7 +210,7 @@ export class ChGridManagerColumns {
     columns.forEach(column => {
       this.columnResizeObserver.unobserve(column);
       this.columnsDisplay
-        .filter(columnDisplay => columnDisplay.column == column)
+        .filter(columnDisplay => columnDisplay.column === column)
         .forEach(item => {
           item.remove();
         });

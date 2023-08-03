@@ -264,9 +264,9 @@ export class ChWindow {
                 </ch-window-close>
               </slot>
             </header>
-            <main part="main">
+            <div part="main">
               <slot></slot>
-            </main>
+            </div>
             <footer part="footer">
               <slot name="footer"></slot>
             </footer>

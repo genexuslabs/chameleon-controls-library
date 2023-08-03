@@ -63,26 +63,6 @@ export class ChTree {
     }
   }
 
-  componentDidLoad() {
-    if (this.checkbox) {
-      //Add a checkbox to all this tree direct tree-items children
-      const directTreeItemChildren = this.el.querySelectorAll("ch-tree-item");
-      directTreeItemChildren.forEach(treeItem => {
-        treeItem.setAttribute("checkbox", "checkbox");
-        //If checked attribute is present, also set the checkboxes to be checked
-        if (this.checked) {
-          treeItem.setAttribute("checked", "checked");
-        }
-      });
-      //Finally, also check the parent tree-item that is above this tree
-      const treeItemAboveTree = this.el.parentElement;
-      treeItemAboveTree.setAttribute("checkbox", "checkbox");
-      if (this.checked) {
-        treeItemAboveTree.setAttribute("checked", "checked");
-      }
-    }
-  }
-
   @Listen("liItemClicked")
   liItemClickedHandler() {
     //Remove 'selected' state from previous selected item

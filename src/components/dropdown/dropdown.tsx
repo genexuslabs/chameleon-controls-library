@@ -82,7 +82,7 @@ export class ChDropDown implements ChComponent {
   // Refs
   private expandableButton: HTMLButtonElement;
 
-  @Element() element: HTMLChDropdownElement;
+  @Element() el: HTMLChDropdownElement;
 
   @State() expanded = false;
   @State() expandedWithHover = false;
@@ -190,9 +190,7 @@ export class ChDropDown implements ChComponent {
   }
 
   private focusFirstDropDownItem() {
-    this.currentFocusedItem = this.element.querySelector(
-      DROPDOWN_ITEM_SELECTOR
-    );
+    this.currentFocusedItem = this.el.querySelector(DROPDOWN_ITEM_SELECTOR);
 
     if (this.currentFocusedItem) {
       this.currentFocusedItem.handleFocusElement();
@@ -254,7 +252,7 @@ export class ChDropDown implements ChComponent {
   }
 
   private closeDropdownWhenClickingOutside = (event: MouseEvent) => {
-    if (event.composedPath().find(el => el === this.element) === undefined) {
+    if (event.composedPath().find(el => el === this.el) === undefined) {
       this.closeDropdown();
     }
   };
@@ -279,7 +277,7 @@ export class ChDropDown implements ChComponent {
     const nextFocusedElement = event.target as HTMLElement;
 
     const isChildElement =
-      nextFocusedElement.closest("ch-dropdown") === this.element;
+      nextFocusedElement.closest("ch-dropdown") === this.el;
     if (isChildElement) {
       return;
     }
@@ -289,7 +287,7 @@ export class ChDropDown implements ChComponent {
 
   private handleMouseLeave = () => {
     const focusedElementIsInsideDropDown =
-      document.activeElement.closest("ch-dropdown") === this.element;
+      document.activeElement.closest("ch-dropdown") === this.el;
 
     if (focusedElementIsInsideDropDown) {
       this.expanded = true;
@@ -329,8 +327,8 @@ export class ChDropDown implements ChComponent {
   };
 
   componentWillLoad() {
-    this.showHeader = !!this.element.querySelector(':scope > [slot="header"]');
-    this.showFooter = !!this.element.querySelector(':scope > [slot="footer"]');
+    this.showHeader = !!this.el.querySelector(':scope > [slot="header"]');
+    this.showFooter = !!this.el.querySelector(':scope > [slot="footer"]');
   }
 
   render() {
@@ -389,7 +387,7 @@ export class ChDropDown implements ChComponent {
 
         <ch-window
           exportparts={EXPORT_PARTS}
-          container={this.element}
+          container={this.el}
           hidden={!isExpanded}
           modal={false}
           showFooter={this.showFooter}

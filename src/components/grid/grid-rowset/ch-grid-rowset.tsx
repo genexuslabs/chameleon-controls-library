@@ -68,7 +68,7 @@ export default class HTMLChGridRowsetElement
         .querySelector(".main")
         .getBoundingClientRect();
       rect = new DOMRect(mainRect.x, mainRect.y, mainRect.width, 0);
-    } else if (this.firstElementChild == this.lastElementChild) {
+    } else if (this.firstElementChild === this.lastElementChild) {
       const firstRowRect = this.firstElementChild.getBoundingClientRect();
 
       rect = new DOMRect(
@@ -115,17 +115,17 @@ export default class HTMLChGridRowsetElement
   }
 
   private hasLegend(): boolean {
-    return this.firstElementChild?.tagName == ChGridRowsetLegend.TAG_NAME;
+    return this.firstElementChild?.tagName === ChGridRowsetLegend.TAG_NAME;
   }
 
   private isNestedRow(): boolean {
-    return this.parentElement.tagName == HTMLChGridRowElement.TAG_NAME;
+    return this.parentElement.tagName === HTMLChGridRowElement.TAG_NAME;
   }
 
   private getParentRowset(): HTMLChGridRowsetElement {
     const node = this.parentElement.closest("ch-grid-rowset, ch-grid");
 
-    if (node.tagName == HTMLChGridRowsetElement.TAG_NAME) {
+    if (node.tagName === HTMLChGridRowsetElement.TAG_NAME) {
       return node as HTMLChGridRowsetElement;
     }
   }

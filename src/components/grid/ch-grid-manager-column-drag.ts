@@ -12,7 +12,7 @@ export class ChGridManagerColumnDrag {
       translateX: 0,
       order: column.order
     }));
-    this.column = this.columns.find(item => item.column.columnId == columnId);
+    this.column = this.columns.find(item => item.column.columnId === columnId);
 
     this.columns.forEach(this.setColumnHiddenRect.bind(this));
   }
@@ -25,7 +25,7 @@ export class ChGridManagerColumnDrag {
 
     this.column.translateX = 0;
     this.columns
-      .filter(item => item.column.freeze == sourceFreeze)
+      .filter(item => item.column.freeze === sourceFreeze)
       .forEach(item => {
         const columnOrder = item.column.order;
         const dragDirection = sourceOrder > columnOrder ? -1 : 1;
@@ -34,7 +34,7 @@ export class ChGridManagerColumnDrag {
         if (
           item.rect.left < position &&
           position < item.rect.right &&
-          columnOrder != sourceOrder
+          columnOrder !== sourceOrder
         ) {
           item.translateX = this.column.rect.width * shiftDirection;
           item.order = item.column.order + shiftDirection;
@@ -49,14 +49,14 @@ export class ChGridManagerColumnDrag {
           item.translateX = this.column.rect.width * shiftDirection;
           item.order = item.column.order + shiftDirection;
           this.column.translateX += item.rect.width * dragDirection;
-        } else if (columnOrder != sourceOrder) {
+        } else if (columnOrder !== sourceOrder) {
           item.translateX = 0;
           item.order = item.column.order;
         }
       });
     this.column.order = targetOrder ? targetOrder : this.column.column.order;
 
-    targetOrderChanged = targetOrder != this.lastTargetOrder;
+    targetOrderChanged = targetOrder !== this.lastTargetOrder;
     this.lastTargetOrder = targetOrder;
 
     return targetOrderChanged;

@@ -96,6 +96,17 @@ export class ChWindow {
   /** Specifies the drag behavior of the window. */
   @Prop() readonly allowDrag: "no" | "header" | "box" = "no";
 
+  /**
+   * This attribute lets you specify if a footer is rendered at the bottom of the
+   * window.
+   */
+  @Prop() readonly showFooter: boolean = true;
+
+  /**
+   * This attribute lets you specify if a header is rendered on top of the window.
+   */
+  @Prop() readonly showHeader: boolean = true;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -256,20 +267,26 @@ export class ChWindow {
           onClick={this.maskClickHandler}
         >
           <section class="window" part="window" ref={el => (this.window = el)}>
-            <header part="header" ref={el => (this.header = el)}>
-              <slot name="header">
-                <span part="caption">{this.caption}</span>
-                <ch-window-close part="close" title={this.closeTooltip}>
-                  {this.closeText}
-                </ch-window-close>
-              </slot>
-            </header>
+            {this.showHeader && (
+              <header part="header" ref={el => (this.header = el)}>
+                <slot name="header">
+                  <span part="caption">{this.caption}</span>
+                  <ch-window-close part="close" title={this.closeTooltip}>
+                    {this.closeText}
+                  </ch-window-close>
+                </slot>
+              </header>
+            )}
+
             <div part="main">
               <slot></slot>
             </div>
-            <footer part="footer">
-              <slot name="footer"></slot>
-            </footer>
+
+            {this.showFooter && (
+              <footer part="footer">
+                <slot name="footer"></slot>
+              </footer>
+            )}
           </section>
         </div>
       </Host>

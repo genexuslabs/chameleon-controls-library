@@ -55,6 +55,11 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   }
 }
 
+// Remove focus of the button content
+::slotted([slot="action"]) {
+  pointer-events: none;
+}
+
 // - - - - - - - - - - - - - - - -
 //        Dummy separation
 // - - - - - - - - - - - - - - - -

@@ -393,6 +393,10 @@ export class ChDropDown implements ChComponent {
           showFooter={this.showFooter}
           showHeader={this.showHeader}
           yAlign="outside-end"
+          style={{
+            "--ch-window-offset-x": `${this.dropdownSeparation}px`,
+            "--ch-window-offset-y": `${this.dropdownSeparation}px`
+          }}
         >
           {this.showHeader && (
             <div class="dummy-wrapper" slot="header">

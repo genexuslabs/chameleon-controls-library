@@ -122,6 +122,7 @@ export class ChWindow {
 
   @Listen("resize", { target: "window", passive: true })
   windowResizeHandler() {
+    this.updatePosition();
     this.watchCSSAlign();
   }
 

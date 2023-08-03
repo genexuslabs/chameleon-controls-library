@@ -224,7 +224,7 @@ export class ChWindow {
       .getPropertyValue("--ch-window-y-align")
       .trim() as ChWindowAlign;
 
-    this.isContainerCssOverride = container.includes("window") ? true : false;
+    this.isContainerCssOverride = container.includes("window");
 
     if (this.validCssAligns.includes(xAlign)) {
       this.xAlign = xAlign;

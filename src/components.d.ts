@@ -771,6 +771,16 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChTextblock {
+        /**
+          * It specifies the format that will have the textblock control.    - If `format` = `HTML`, the textblock control works as an HTML div and     the innerHTML will be taken from the default slot.    - If `format` = `Text`, the control works as a normal textblock control     and it is affected by most of the defined properties.
+         */
+        "format": "Text" | "HTML";
+        /**
+          * True to cut text when it overflows, showing an ellipsis.
+         */
+        "lineClamp": boolean;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -780,10 +790,6 @@ export namespace Components {
           * Set this attribute if you want all this tree tree-items to have the checkbox checked
          */
         "checked": boolean;
-        /**
-          * Allows to select only one item
-         */
-        "singleSelection": boolean;
         /**
           * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
          */
@@ -823,10 +829,6 @@ export namespace Components {
          */
         "leftIcon": string;
         /**
-          * Set the left side icon part class name
-         */
-        "leftIconClass": string;
-        /**
           * If this tree-item has a nested tree, set this attribute to make the tree open by default
          */
         "opened": boolean;
@@ -834,10 +836,6 @@ export namespace Components {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon": string;
-        /**
-          * Set the right side icon part class name
-         */
-        "rightIconClass": string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */
@@ -881,6 +879,14 @@ export namespace Components {
           * Specifies whether the window should be displayed as a modal.
          */
         "modal": boolean;
+        /**
+          * This attribute lets you specify if a footer is rendered at the bottom of the window.
+         */
+        "showFooter": boolean;
+        /**
+          * This attribute lets you specify if a header is rendered on top of the window.
+         */
+        "showHeader": boolean;
         /**
           * The horizontal alignment of the window.
          */
@@ -1163,6 +1169,12 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChTextblockElement extends Components.ChTextblock, HTMLStencilElement {
+    }
+    var HTMLChTextblockElement: {
+        prototype: HTMLChTextblockElement;
+        new (): HTMLChTextblockElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1242,6 +1254,7 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-textblock": HTMLChTextblockElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-window": HTMLChWindowElement;
@@ -2083,6 +2096,16 @@ declare namespace LocalJSX {
          */
         "onItemSelected"?: (event: CustomEvent<itemSelected>) => void;
     }
+    interface ChTextblock {
+        /**
+          * It specifies the format that will have the textblock control.    - If `format` = `HTML`, the textblock control works as an HTML div and     the innerHTML will be taken from the default slot.    - If `format` = `Text`, the control works as a normal textblock control     and it is affected by most of the defined properties.
+         */
+        "format"?: "Text" | "HTML";
+        /**
+          * True to cut text when it overflows, showing an ellipsis.
+         */
+        "lineClamp"?: boolean;
+    }
     interface ChTree {
         /**
           * Set this attribute if you want all this tree tree-items to have a checkbox
@@ -2092,10 +2115,6 @@ declare namespace LocalJSX {
           * Set this attribute if you want all this tree tree-items to have the checkbox checked
          */
         "checked"?: boolean;
-        /**
-          * Allows to select only one item
-         */
-        "singleSelection"?: boolean;
         /**
           * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
          */
@@ -2134,10 +2153,6 @@ declare namespace LocalJSX {
           * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "leftIcon"?: string;
-        /**
-          * Set the left side icon part class name
-         */
-        "leftIconClass"?: string;
         "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
         "onLiItemClicked"?: (event: CustomEvent<any>) => void;
         "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
@@ -2149,10 +2164,6 @@ declare namespace LocalJSX {
           * Set thhe right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightIcon"?: string;
-        /**
-          * Set the right side icon part class name
-         */
-        "rightIconClass"?: string;
         /**
           * The presence of this attribute sets the tree-item as selected
          */
@@ -2203,6 +2214,14 @@ declare namespace LocalJSX {
           * Emitted when the window is opened.
          */
         "onWindowOpened"?: (event: CustomEvent<any>) => void;
+        /**
+          * This attribute lets you specify if a footer is rendered at the bottom of the window.
+         */
+        "showFooter"?: boolean;
+        /**
+          * This attribute lets you specify if a header is rendered on top of the window.
+         */
+        "showHeader"?: boolean;
         /**
           * The horizontal alignment of the window.
          */
@@ -2279,6 +2298,7 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-textblock": ChTextblock;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-window": ChWindow;
@@ -2333,6 +2353,7 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;

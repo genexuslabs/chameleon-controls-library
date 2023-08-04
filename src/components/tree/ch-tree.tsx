@@ -79,7 +79,7 @@ export class ChTree {
     if (allTreeItems.length) {
       allTreeItems.forEach(treeItem => {
         if (treeItem.checked) {
-          checkedTreeItems.push({ id: treeItem.id, name: treeItem.innerText });
+          checkedTreeItems.push({ id: treeItem.id });
         }
       });
     }
@@ -117,5 +117,4 @@ export class ChTree {
 
 export type checkedChTreeItem = {
   id: string;
-  name: string;
 };

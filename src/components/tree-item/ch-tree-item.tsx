@@ -27,7 +27,7 @@ export class ChTreeItem {
   /**
    * Set this attribute if you want the ch-tree-item to display a checkbox
    */
-  @Prop() checkbox: boolean = false;
+  @Prop({ mutable: true }) checkbox: boolean = false;
 
   /**
    * Set this attribute if you want the ch-tree-item checkbox to be checked by default
@@ -157,9 +157,9 @@ export class ChTreeItem {
     //CONFIGURATIONS THAT COME FROM FROM MASTER TREE
     if (treeRef.checkbox) {
       this.checkbox = true;
-    }
-    if (treeRef.checked) {
-      this.checked = true;
+      if (treeRef.checked) {
+        this.checked = true;
+      }
     }
   }
 
@@ -551,11 +551,11 @@ export class ChTreeItem {
       }
     }
     if (treeRef.toggleCheckboxes) {
-      const children = this.el.querySelectorAll("ch-tree-item");
-      children.forEach(item => {
-        item = item as HTMLChTreeItemElement;
-        console.log(item);
-        item.checkbox && (item.checked = !item.checked);
+      const items = this.el.querySelectorAll("ch-tree-item");
+      items.forEach(item => {
+        if (item.checkbox) {
+          item.checked = !item.checked;
+        }
       });
     }
   }

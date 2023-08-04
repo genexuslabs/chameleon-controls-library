@@ -40,13 +40,7 @@
   <body>
     <div class="container">
       <section class="section-dev" data-title="ch-tree">
-        <ch-tree
-          id="ch-treeview"
-          togglees="false"
-          checkbox
-          checked
-          toggle-checkboxes
-        >
+        <ch-tree id="ch-treeview" togglees="false" checkbox toggle-checkboxes>
           <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
             Meats
             <ch-tree slot="tree">
@@ -59,7 +53,9 @@
                   <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                     Turkey
                   </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/knowledge-base.svg"
+                  >
                     Duck
                   </ch-tree-item>
                 </ch-tree>
@@ -69,13 +65,19 @@
               >
                 Red meats
                 <ch-tree slot="tree">
-                  <ch-tree-item left-icon="general/knowledge-base">
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/knowledge-base.svg"
+                  >
                     Beef
                   </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/knowledge-base.svg"
+                  >
                     Lamb and mutton
                   </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/knowledge-base.svg"
+                  >
                     Pork
                   </ch-tree-item>
                 </ch-tree>
@@ -84,7 +86,7 @@
           </ch-tree-item>
           <ch-tree-item
             id="fish"
-            left-icon="general/patterns"
+            left-icon="/build/ch-icon-assets/patterns.svg"
             opened
             download
             disabled
@@ -92,82 +94,121 @@
           >
             Fish
           </ch-tree-item>
-          <ch-tree-item opened left-icon="objects/module">
+          <ch-tree-item opened left-icon="/build/ch-icon-assets/java.svg">
             Fruits
             <ch-tree slot="tree">
-              <ch-tree-item left-icon="objects/module"> Orange </ch-tree-item>
-              <ch-tree-item left-icon="objects/module" opened>
+              <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
+                Orange
+              </ch-tree-item>
+              <ch-tree-item left-icon="/build/ch-icon-assets/java.svg" opened>
                 Banana
                 <ch-tree slot="tree">
-                  <ch-tree-item left-icon="objects/module">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                     Pisang
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/module">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                     Red Banana
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/module">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                     Cavendish
                     <ch-tree slot="tree">
-                      <ch-tree-item left-icon="objects/module">
+                      <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                         Big
                       </ch-tree-item>
-                      <ch-tree-item left-icon="objects/module">
+                      <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                         Small
                       </ch-tree-item>
-                      <ch-tree-item left-icon="objects/module">
+                      <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                         Mini
                       </ch-tree-item>
                     </ch-tree>
                   </ch-tree-item>
                 </ch-tree>
               </ch-tree-item>
-              <ch-tree-item opened left-icon="objects/module">
+              <ch-tree-item opened left-icon="/build/ch-icon-assets/java.svg">
                 Strawberry
                 <ch-tree slot="tree">
-                  <ch-tree-item left-icon="objects/module">
+                  <ch-tree-item
+                    id="albion"
+                    left-icon="/build/ch-icon-assets/java.svg"
+                  >
                     Albion
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/module" opened>
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/java.svg"
+                    opened
+                  >
                     Tillamook
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/module">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
                     Northeaster
                   </ch-tree-item>
                 </ch-tree>
               </ch-tree-item>
             </ch-tree>
           </ch-tree-item>
-          <ch-tree-item opened left-icon="objects/document" empty-tree>
+          <ch-tree-item
+            opened
+            left-icon="/build/ch-icon-assets/generator.svg"
+            empty-tree
+          >
             Nuts
             <ch-tree slot="tree">
-              <ch-tree-item opened left-icon="objects/document">
+              <ch-tree-item
+                opened
+                left-icon="/build/ch-icon-assets/generator.svg"
+              >
                 Almonds
                 <ch-tree slot="tree">
-                  <ch-tree-item left-icon="objects/document" opened>
+                  <ch-tree-item
+                    left-icon="/build/ch-icon-assets/generator.svg"
+                    opened
+                  >
                     Mollar de Tarragona
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/document">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/generator.svg">
                     Ferragnès
                   </ch-tree-item>
-                  <ch-tree-item left-icon="objects/document">
+                  <ch-tree-item left-icon="/build/ch-icon-assets/generator.svg">
                     Verdal
                   </ch-tree-item>
                 </ch-tree>
               </ch-tree-item>
-              <ch-tree-item left-icon="objects/document" opened>
+              <ch-tree-item
+                left-icon="/build/ch-icon-assets/generator.svg"
+                opened
+              >
                 Brazil nuts
               </ch-tree-item>
-              <ch-tree-item left-icon="objects/document">
+              <ch-tree-item left-icon="/build/ch-icon-assets/generator.svg">
                 Cashews
               </ch-tree-item>
-              <ch-tree-item left-icon="objects/document">
+              <ch-tree-item left-icon="/build/ch-icon-assets/generator.svg">
                 Chestnuts
               </ch-tree-item>
             </ch-tree>
           </ch-tree-item>
         </ch-tree>
       </section>
+      <button id="getTreeCheckedItems">Get Tree Checked Items</button>
     </div>
+
+    <script>
+      const tree = document.getElementById("ch-treeview");
+      tree.addEventListener("checkboxClickedEvent", function (e) {
+        console.log(e.detail);
+      });
+
+      const getTreeCheckedItems = document.getElementById(
+        "getTreeCheckedItems"
+      );
+      getTreeCheckedItems.addEventListener("click", function () {
+        (async () => {
+          const checkedItems = await tree.getChecked("todo-list");
+          console.log("checkedItems", checkedItems);
+        })();
+      });
+    </script>
 
     <script src="./assets/common.js"></script>
   </body>

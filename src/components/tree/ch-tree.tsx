@@ -26,11 +26,6 @@ export class ChTree {
    */
   @Prop({ mutable: true }) toggleCheckboxes = false;
 
-  /**
-   * Allows to select only one item
-   */
-  @Prop() readonly singleSelection: boolean;
-
   //STATE
   @State() nestedTree = false;
   @State() mainTree = false;
@@ -45,41 +40,6 @@ export class ChTree {
     const parentTreeTagName = this.el.parentElement.tagName;
     if (parentTreeTagName !== "CH-TREE-ITEM") {
       this.mainTree = true;
-    }
-
-    if (this.toggleCheckboxes) {
-      //This property should be set one time on the mainTree by the developer using the component. If present, apply to all the child trees.
-      const childrenTrees = this.el.querySelectorAll("ch-tree");
-      childrenTrees.forEach(function (tree) {
-        (tree as unknown as ChTree).toggleCheckboxes = true;
-      });
-    }
-    //If this tree has been added with appendChild, set toggleCheckboxes to true if the parent tree toggleCheckboxes property is set to true
-    const closestTree = this.el.parentElement.parentElement;
-    if (closestTree !== null && closestTree.tagName === "CH-TREE") {
-      if ((closestTree as unknown as ChTree).toggleCheckboxes) {
-        this.toggleCheckboxes = true;
-      }
-    }
-  }
-
-  componentDidLoad() {
-    if (this.checkbox) {
-      //Add a checkbox to all this tree direct tree-items children
-      const directTreeItemChildren = this.el.querySelectorAll("ch-tree-item");
-      directTreeItemChildren.forEach(treeItem => {
-        treeItem.setAttribute("checkbox", "checkbox");
-        //If checked attribute is present, also set the checkboxes to be checked
-        if (this.checked) {
-          treeItem.setAttribute("checked", "checked");
-        }
-      });
-      //Finally, also check the parent tree-item that is above this tree
-      const treeItemAboveTree = this.el.parentElement;
-      treeItemAboveTree.setAttribute("checkbox", "checkbox");
-      if (this.checked) {
-        treeItemAboveTree.setAttribute("checked", "checked");
-      }
     }
   }
 
@@ -99,36 +59,6 @@ export class ChTree {
     treeItems.forEach(treeItem => {
       (treeItem as unknown as ChTreeItem).updateTreeVerticalLineHeight();
     });
-  }
-
-  @Listen("checkboxClickedEvent")
-  checkboxClickedEventHandler() {
-    if (this.toggleCheckboxes) {
-      const childTreeItems = this.el.querySelectorAll("ch-tree-item");
-      let allCheckboxesChecked = true;
-      let allCheckboxesUnchecked = true;
-      childTreeItems.forEach(function (treeItem) {
-        if (treeItem.checked) {
-          allCheckboxesUnchecked = false;
-        } else {
-          allCheckboxesChecked = false;
-        }
-      });
-      const parentTreeItem = this.el.parentElement as unknown as ChTreeItem;
-      const tagName = (parentTreeItem as unknown as HTMLElement).tagName;
-      if (tagName === "CH-TREE-ITEM") {
-        if (allCheckboxesChecked) {
-          parentTreeItem.checked = true;
-          parentTreeItem.indeterminate = false;
-        } else if (allCheckboxesUnchecked) {
-          parentTreeItem.checked = false;
-          parentTreeItem.indeterminate = false;
-        } else if (!allCheckboxesChecked && !allCheckboxesUnchecked) {
-          parentTreeItem.checked = true;
-          parentTreeItem.indeterminate = true;
-        }
-      }
-    }
   }
 
   render() {

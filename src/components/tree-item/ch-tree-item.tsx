@@ -12,6 +12,8 @@ import {
 } from "@stencil/core";
 import { Color } from "../icon/icon";
 import { ChTree } from "../tree/ch-tree";
+
+let treeRef: HTMLChTreeElement;
 @Component({
   tag: "ch-tree-item",
   styleUrl: "ch-tree-item.scss",
@@ -25,7 +27,7 @@ export class ChTreeItem {
   /**
    * Set this attribute if you want the ch-tree-item to display a checkbox
    */
-  @Prop() readonly checkbox: boolean = false;
+  @Prop({ mutable: true }) checkbox: boolean = false;
 
   /**
    * Set this attribute if you want the ch-tree-item checkbox to be checked by default
@@ -97,6 +99,10 @@ export class ChTreeItem {
   @Element() el: HTMLChTreeItemElement;
 
   componentWillLoad() {
+    if (!treeRef) {
+      treeRef = this.el.parentElement as HTMLChTreeElement;
+    }
+
     //Count number of parent trees in order to set the apporpiate padding-left
     this.numberOfParentTrees = this.getParents(this.el);
 
@@ -146,6 +152,12 @@ export class ChTreeItem {
       this.hasChildTree = true;
       this.isLeaf = false;
       this.opened = false;
+    }
+
+    //CONFIGURATIONS THAT COME FROM FROM MASTER TREE
+    if (treeRef.checkbox) {
+      this.checkbox = true;
+      this.checked = treeRef.checked;
     }
   }
 
@@ -535,6 +547,14 @@ export class ChTreeItem {
         this.toggleTreeItemsCheckboxes(true);
         this.checkboxClickedEvent.emit(true);
       }
+    }
+    if (treeRef.toggleCheckboxes) {
+      const items = this.el.querySelectorAll("ch-tree-item");
+      items.forEach(item => {
+        if (item.checkbox) {
+          item.checked = !item.checked;
+        }
+      });
     }
   }
 

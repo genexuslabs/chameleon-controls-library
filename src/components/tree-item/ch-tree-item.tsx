@@ -94,7 +94,11 @@ export class ChTreeItem {
   //EVENTS
   @Event() liItemClicked: EventEmitter;
   @Event() toggleIconClicked: EventEmitter;
-  @Event() checkboxClickedEvent: EventEmitter;
+
+  /**
+   * Emits the checkbox information (chTreeItemData) that includes: the id, name(innerText) and checkbox value.
+   */
+  @Event() checkboxClickedEvent: EventEmitter<chTreeItemData>;
 
   @Element() el: HTMLChTreeItemElement;
 
@@ -538,15 +542,12 @@ export class ChTreeItem {
 
   checkboxClicked() {
     if (this.checkbox) {
-      if (this.checked) {
-        this.checked = false;
-        this.toggleTreeItemsCheckboxes(false);
-        this.checkboxClickedEvent.emit(false);
-      } else {
-        this.checked = true;
-        this.toggleTreeItemsCheckboxes(true);
-        this.checkboxClickedEvent.emit(true);
-      }
+      this.checked = !this.checked;
+      this.toggleTreeItemsCheckboxes(this.checked);
+      this.checkboxClickedEvent.emit({
+        checked: this.checked,
+        id: this.el.id
+      });
     }
     if (treeRef.toggleCheckboxes) {
       const items = this.el.querySelectorAll("ch-tree-item");
@@ -692,3 +693,8 @@ export class ChTreeItem {
     );
   }
 }
+
+export type chTreeItemData = {
+  checked: boolean;
+  id: string;
+};

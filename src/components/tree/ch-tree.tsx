@@ -1,4 +1,12 @@
-import { Component, Element, State, h, Prop, Listen } from "@stencil/core";
+import {
+  Component,
+  Element,
+  State,
+  h,
+  Prop,
+  Listen,
+  Method
+} from "@stencil/core";
 import { ChTreeItem } from "../tree-item/ch-tree-item";
 
 @Component({
@@ -61,6 +69,23 @@ export class ChTree {
     });
   }
 
+  /**
+   * @returns an array of the ch-tree-items that are checked. Each array item is an object with "id" and "innerText".
+   */
+  @Method()
+  async getChecked(): Promise<checkedChTreeItem[]> {
+    const allTreeItems = this.el.querySelectorAll("ch-tree-item");
+    const checkedTreeItems: checkedChTreeItem[] = [];
+    if (allTreeItems.length) {
+      allTreeItems.forEach(treeItem => {
+        if (treeItem.checked) {
+          checkedTreeItems.push({ id: treeItem.id });
+        }
+      });
+    }
+    return checkedTreeItems;
+  }
+
   render() {
     return this.mainTree ? (
       <div
@@ -89,3 +114,7 @@ export class ChTree {
     );
   }
 }
+
+export type checkedChTreeItem = {
+  id: string;
+};

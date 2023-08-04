@@ -11,7 +11,7 @@
 | `page`                 | `page`                    | The active page number.                                   | `number`  | `1`     |
 | `renderFirstLastPages` | `render-first-last-pages` | Flag to render the first and last pages.                  | `boolean` | `true`  |
 | `textDots`             | `text-dots`               | The text to display for the dots.                         | `string`  | `"..."` |
-| `totalPages`           | `total-pages`             | The total number of pages.                                | `number`  | `1`     |
+| `totalPages`           | `total-pages`             | The total number of pages.                                | `1`       | `1`     |
 
 
 ## Events

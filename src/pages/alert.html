@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-alert</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+      ch-alert::part(alert__container) {
+        border: solid;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+      .second::part(alert__progress-bar) {
+        height: 8px;
+        background-color: thistle;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ch-alert
+        close-button-accesible-name="close"
+        dismiss-timeout="5000"
+        left-img-src="./assets/apple.svg"
+        presented="true"
+        show-close-button="true"
+        show-timeout-bar="true"
+        class="first"
+      >
+        <div slot="content">Alert with icon, and 5s timeout</div>
+      </ch-alert>
+
+      <ch-alert
+        close-button-accesible-name="close"
+        dismiss-timeout="50000"
+        presented="true"
+        show-close-button="true"
+        show-timeout-bar="true"
+        class="second"
+      >
+        <div slot="button">Close</div>
+        <div slot="content">Alert with no icon, close button slot as text, 50s timeout</div>
+      </ch-alert>
+
+      <ch-alert
+        close-button-accesible-name="close"
+        dismiss-timeout="0"
+        left-img-src="./assets/apple.svg"
+        presented="true"
+        show-close-button="false"
+      >
+        <div slot="button">Dismiss</div>
+        <div slot="content">Alert with icon, without close button, no timeout, no bar</div>
+      </ch-alert>
+
+      <ch-alert
+        close-button-accesible-name="close"
+        dismiss-timeout="0"
+        left-img-src="./assets/apple.svg"
+        presented="true"
+        show-close-button="true"
+      >
+        <div slot="content">Alert with icon, close button, no timeout, no bar, 
+          with <a href="#">a link</a>
+          <h3>A heading</h3> 
+          <ul>
+            <li>and a small</li>
+            <li>very tiny</li>
+            <li>list</li>
+          </ul>
+        </div>
+      </ch-alert>
+    </div>
+    <script src="./assets/common.js"></script>
+  </body>
+</html>

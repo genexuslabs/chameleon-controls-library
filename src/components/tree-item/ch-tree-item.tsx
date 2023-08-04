@@ -157,9 +157,7 @@ export class ChTreeItem {
     //CONFIGURATIONS THAT COME FROM FROM MASTER TREE
     if (treeRef.checkbox) {
       this.checkbox = true;
-      if (treeRef.checked) {
-        this.checked = true;
-      }
+      this.checked = treeRef.checked;
     }
   }
 

@@ -26,7 +26,7 @@ export class ChWindowClose {
   @Listen("keydown", { passive: true })
   @Listen("click", { passive: true })
   pressedHandler(eventInfo: any) {
-    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+    if (!eventInfo.key || eventInfo.key === "Enter" || eventInfo.key === " ") {
       this.windowCloseClicked.emit();
       eventInfo.stopPropagation();
     }

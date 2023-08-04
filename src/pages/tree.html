@@ -40,13 +40,7 @@
   <body>
     <div class="container">
       <section class="section-dev" data-title="ch-tree">
-        <ch-tree
-          id="ch-treeview"
-          togglees="false"
-          checkbox
-          checked
-          toggle-checkboxes
-        >
+        <ch-tree id="ch-treeview" togglees="false" checkbox toggle-checkboxes>
           <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
             Meats
             <ch-tree slot="tree">
@@ -121,7 +115,7 @@
                   </ch-tree-item>
                 </ch-tree>
               </ch-tree-item>
-              <ch-tree-item opened left-icon="objects/module">
+              <ch-tree-item opened left-icon="objects/module" id="straw">
                 Strawberry
                 <ch-tree slot="tree">
                   <ch-tree-item left-icon="objects/module">
@@ -167,7 +161,19 @@
           </ch-tree-item>
         </ch-tree>
       </section>
+      <button id="get-tree-info">get checked tree items</button>
     </div>
+
+    <script>
+      const getTreeInfo = document.getElementById("get-tree-info");
+      const tree = document.getElementById("ch-treeview");
+      getTreeInfo.addEventListener("click", function () {
+        (async () => {
+          const checkedItems = await tree.getChecked();
+          console.log(checkedItems);
+        })();
+      });
+    </script>
 
     <script src="./assets/common.js"></script>
   </body>

@@ -11,7 +11,6 @@ import {
   Method
 } from "@stencil/core";
 import { Color } from "../icon/icon";
-import { ChTree } from "../tree/ch-tree";
 
 let treeRef: HTMLChTreeElement;
 @Component({
@@ -561,18 +560,13 @@ export class ChTreeItem {
 
   toggleTreeItemsCheckboxes(checked) {
     //Only do if toggleCheckboxes property exists in parent tree
-    const parentTree = this.el.parentElement as unknown as ChTree;
-    if (parentTree.toggleCheckboxes) {
+    if (treeRef.toggleCheckboxes) {
       this.indeterminate = false;
       const childTree = this.el.querySelector("ch-tree");
       if (childTree !== null) {
         const childTreeItems = childTree.querySelectorAll("ch-tree-item");
         childTreeItems.forEach(function (treeItem) {
-          if (checked) {
-            treeItem.checked = true;
-          } else {
-            treeItem.checked = false;
-          }
+          treeItem.checked = !checked;
         });
       }
     }

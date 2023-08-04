@@ -17,6 +17,8 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { checkedChTreeItem } from "./components/tree/ch-tree";
+import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -620,7 +622,7 @@ export namespace Components {
         /**
           * The total number of pages.
          */
-        "totalPages": number;
+        "totalPages": 1;
     }
     interface ChQr {
         /**
@@ -790,6 +792,10 @@ export namespace Components {
           * Set this attribute if you want all this tree tree-items to have the checkbox checked
          */
         "checked": boolean;
+        /**
+          * @returns an array of the ch-tree-items that are checked. Each array item is an object with "id" and "innerText".
+         */
+        "getChecked": () => Promise<checkedChTreeItem[]>;
         /**
           * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
          */
@@ -1911,7 +1917,7 @@ declare namespace LocalJSX {
         /**
           * The total number of pages.
          */
-        "totalPages"?: number;
+        "totalPages"?: 1;
     }
     interface ChQr {
         /**
@@ -2153,7 +2159,10 @@ declare namespace LocalJSX {
           * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "leftIcon"?: string;
-        "onCheckboxClickedEvent"?: (event: CustomEvent<any>) => void;
+        /**
+          * Emits the checkbox information (chTreeItemData) that includes: the id, name(innerText) and checkbox value.
+         */
+        "onCheckboxClickedEvent"?: (event: CustomEvent<chTreeItemData>) => void;
         "onLiItemClicked"?: (event: CustomEvent<any>) => void;
         "onToggleIconClicked"?: (event: CustomEvent<any>) => void;
         /**

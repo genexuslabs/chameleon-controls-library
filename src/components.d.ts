@@ -792,10 +792,12 @@ export namespace Components {
          */
         "checked": boolean;
         /**
+
           * @returns an array of the ch-tree-items that are checked. Each array item is an object with "id" and "innerText".
          */
         "getChecked": () => Promise<checkedChTreeItem[]>;
         /**
+
           * Set this attribute if you want all the childen item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unckecked.
          */
         "toggleCheckboxes": boolean;

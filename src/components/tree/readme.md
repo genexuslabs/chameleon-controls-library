@@ -19,12 +19,9 @@
 ### `getChecked() => Promise<checkedChTreeItem[]>`
 
 
-
 #### Returns
 
 Type: `Promise<checkedChTreeItem[]>`
-
-
 
 
 ----------------------------------------------

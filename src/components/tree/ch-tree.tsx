@@ -16,7 +16,6 @@ import { ChTreeItem } from "../tree-item/ch-tree-item";
 })
 export class ChTree {
   @Element() el: HTMLChTreeElement;
-  private ulTree!: HTMLElement;
 
   // PROPS
   /**

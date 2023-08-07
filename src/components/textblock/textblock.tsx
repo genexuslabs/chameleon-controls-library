@@ -25,6 +25,7 @@ export class TextBlock implements LineClampComponent {
   constructor() {
     makeLinesClampable(
       this,
+      "." + LINE_CLAMP,
       "." + HEIGHT_MEASURING,
       "." + LINE_MEASURING,
       true
@@ -33,6 +34,7 @@ export class TextBlock implements LineClampComponent {
 
   @Element() element: HTMLChTextblockElement;
 
+  @State() contentLines = 0;
   @State() maxLines = 0;
 
   /**
@@ -51,12 +53,34 @@ export class TextBlock implements LineClampComponent {
    */
   @Prop() readonly lineClamp: boolean = false;
 
+  /**
+   * Determine the tooltip text that will be displayed when the pointer is over
+   * the control
+   */
+  @Prop() readonly tooltip: string;
+
+  /**
+   * Determine the way that the tooltip text will be displayed
+   */
+  @Prop() readonly tooltipShowMode: "always" | "line-clamp" = "always";
+
+  private getTooltip() {
+    const noNeedToDisplayTooltip =
+      !this.tooltip ||
+      (this.tooltipShowMode === "line-clamp" &&
+        this.lineClamp &&
+        this.contentLines <= this.maxLines);
+
+    return noNeedToDisplayTooltip ? null : this.tooltip;
+  }
+
   render() {
     const justRenderTheSlot = this.format === "HTML" || !this.lineClamp;
 
     return (
       <Host
         role={this.format === "Text" && !this.lineClamp ? "paragraph" : null}
+        title={this.getTooltip()}
       >
         {justRenderTheSlot ? (
           <slot />

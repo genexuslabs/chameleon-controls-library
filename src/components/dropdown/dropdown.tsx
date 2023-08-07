@@ -11,6 +11,24 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { ChWindowAlign } from "../window/ch-window";
+
+export type DropdownAlign =
+  | "OutsideStart"
+  | "InsideStart"
+  | "Center"
+  | "InsideEnd"
+  | "OutsideEnd";
+
+const mapDropdownAlignToChWindowAlign: {
+  [key in DropdownAlign]: ChWindowAlign;
+} = {
+  OutsideStart: "outside-start",
+  InsideStart: "inside-start",
+  Center: "center",
+  InsideEnd: "inside-end",
+  OutsideEnd: "outside-end"
+};
 
 const EXPANDABLE_BUTTON_ID = "expandable-button";
 const SECTION_ID = "section";
@@ -88,12 +106,6 @@ export class ChDropDown implements ChComponent {
   @State() expandedWithHover = false;
 
   /**
-   * Specifies the horizontal alignment the dropdown section has when using
-   * `position === "Top"` or `position === "Bottom"`.
-   */
-  @Prop() readonly align: "Left" | "Center" | "Right" = "Center";
-
-  /**
    * This attribute lets you specify the label for the expandable button.
    * Important for accessibility.
    */
@@ -116,19 +128,29 @@ export class ChDropDown implements ChComponent {
    * Specifies the position of the dropdown section that is placed relative to
    * the expandable button.
    */
-  @Prop() readonly position: "Top" | "Right" | "Bottom" | "Left" = "Bottom";
+  @Prop() readonly position:
+    | "OutsideStart_OutsideStart"
+    | "InsideStart_OutsideStart"
+    | "Center_OutsideStart"
+    | "InsideEnd_OutsideStart"
+    | "OutsideEnd_OutsideStart"
+    | "OutsideStart_InsideStart"
+    | "OutsideEnd_InsideStart"
+    | "OutsideStart_Center"
+    | "OutsideEnd_Center"
+    | "OutsideStart_InsideEnd"
+    | "OutsideEnd_InsideEnd"
+    | "OutsideStart_OutsideEnd"
+    | "InsideStart_OutsideEnd"
+    | "Center_OutsideEnd"
+    | "InsideEnd_OutsideEnd"
+    | "OutsideEnd_OutsideEnd";
 
   /**
    * Specifies the separation (in pixels) between the expandable button and the
    * dropdown section of the control.
    */
   @Prop() readonly dropdownSeparation: number = 12;
-
-  /**
-   * Specifies the vertical alignment the dropdown section has when using
-   * `position === "Right"` or `position === "Left"`.
-   */
-  @Prop() readonly valign: "Top" | "Middle" | "Bottom" = "Middle";
 
   /**
    * Fired when the visibility of the dropdown section is changed
@@ -332,8 +354,12 @@ export class ChDropDown implements ChComponent {
   }
 
   render() {
+    const aligns = this.position.split("_");
+    const alignX = aligns[0] as DropdownAlign;
+    const alignY = aligns[1] as DropdownAlign;
+
     const hasVerticalPosition =
-      this.position === "Bottom" || this.position === "Top";
+      alignY === "OutsideStart" || alignY === "OutsideEnd";
 
     const isExpanded = this.expanded || this.expandedWithHover;
 
@@ -392,7 +418,8 @@ export class ChDropDown implements ChComponent {
           modal={false}
           showFooter={this.showFooter}
           showHeader={this.showHeader}
-          yAlign="outside-end"
+          xAlign={mapDropdownAlignToChWindowAlign[alignX]}
+          yAlign={mapDropdownAlignToChWindowAlign[alignY]}
           style={{
             "--ch-window-offset-x": `${this.dropdownSeparation}px`,
             "--ch-window-offset-y": `${this.dropdownSeparation}px`

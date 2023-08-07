@@ -31,15 +31,15 @@ export class ChGridManagerRowDrag {
 
     if (
       rowHover &&
-      rowHover.parentElement == this.row.parentElement &&
-      rowHover.grid == this.grid.el
+      rowHover.parentElement === this.row.parentElement &&
+      rowHover.grid === this.grid.el
     ) {
       const rowHoverIndex = this.grid.manager.getGridRowIndex(rowHover);
       const rowHoverGridPosition = rowHoverIndex + 2; // +1 RowHeaderColumn, +1 array start at 1
       const offsetPosition = this.rowIndex < rowHoverIndex ? -1 : 1;
 
       if (
-        this.rowShadow.style.getPropertyValue("--row-shadow-row-start") !=
+        this.rowShadow.style.getPropertyValue("--row-shadow-row-start") !==
         `${rowHoverGridPosition}`
       ) {
         this.rowShadow.style.setProperty(

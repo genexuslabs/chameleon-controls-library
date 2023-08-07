@@ -25,6 +25,20 @@ export class ChGridSettingsColumns {
     eventInfo.stopPropagation();
   };
 
+  private getColumnsSorted(): HTMLChGridColumnElement[] {
+    return [...this.columns].sort(
+      (a: HTMLChGridColumnElement, b: HTMLChGridColumnElement) => {
+        if (a.order < b.order) {
+          return -1;
+        }
+        if (a.order > b.order) {
+          return 1;
+        }
+        return 0;
+      }
+    );
+  }
+
   render() {
     const columnsSorted = this.getColumnsSorted();
 
@@ -50,20 +64,6 @@ export class ChGridSettingsColumns {
           </li>
         ))}
       </ul>
-    );
-  }
-
-  private getColumnsSorted(): HTMLChGridColumnElement[] {
-    return [...this.columns].sort(
-      (a: HTMLChGridColumnElement, b: HTMLChGridColumnElement) => {
-        if (a.order < b.order) {
-          return -1;
-        }
-        if (a.order > b.order) {
-          return 1;
-        }
-        return 0;
-      }
     );
   }
 }

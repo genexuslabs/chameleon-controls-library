@@ -39,7 +39,7 @@ export class ChPaginatorNavigate {
   @Listen("keydown", { passive: true })
   @Listen("click", { passive: true })
   pressedHandler(eventInfo) {
-    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+    if (!eventInfo.key || eventInfo.key === "Enter" || eventInfo.key === " ") {
       this.navigateClicked.emit({ type: this.type });
       eventInfo.stopPropagation();
     }

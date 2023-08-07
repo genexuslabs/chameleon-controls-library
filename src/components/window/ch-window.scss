@@ -1,3 +1,8 @@
+:host {
+  --ch-window-offset-x: 0;
+  --ch-window-offset-y: 0;
+}
+
 :host(:not([hidden])) {
   display: contents;
 }
@@ -13,6 +18,12 @@
   display: flex;
   position: fixed;
   inset: 0;
+  inset-inline-start: calc(
+    var(--ch-window-inset-inline-start) + var(--ch-window-offset-x)
+  );
+  inset-block-start: calc(
+    var(--ch-window-inset-block-start) + var(--ch-window-offset-y)
+  );
   z-index: var(--ch-window-mask-z-index, 1000);
 
   :host(:is([x-align="outside-start"], [x-align="inside-start"])) & {

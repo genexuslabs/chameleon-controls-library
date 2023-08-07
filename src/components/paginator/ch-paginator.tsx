@@ -94,7 +94,7 @@ export class ChPaginator {
   pageChangedHandler(eventInfo: CustomEvent<ChPaginatorPagesPageChangedEvent>) {
     eventInfo.stopPropagation();
     const emitPageNavigationRequested =
-      this.activePage != eventInfo.detail.page;
+      this.activePage !== eventInfo.detail.page;
     this.activePage = eventInfo.detail.page;
 
     if (emitPageNavigationRequested) {
@@ -159,19 +159,19 @@ export class ChPaginator {
       this.elPages.page = this.activePage;
     }
     if (this.elFirst) {
-      this.elFirst.disabled = this.activePage == 1;
+      this.elFirst.disabled = this.activePage === 1;
     }
     if (this.elPrevious) {
-      this.elPrevious.disabled = this.activePage == 1;
+      this.elPrevious.disabled = this.activePage === 1;
     }
     if (this.elNext) {
       this.elNext.disabled =
-        this.activePage == this.totalPages ||
+        this.activePage === this.totalPages ||
         (this.totalPages < 0 && !this.hasNextPage);
     }
     if (this.elLast) {
       this.elLast.disabled =
-        this.activePage == this.totalPages ||
+        this.activePage === this.totalPages ||
         (this.totalPages < 0 && !this.hasNextPage);
     }
   }

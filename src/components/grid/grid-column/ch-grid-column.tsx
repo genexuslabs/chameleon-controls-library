@@ -263,7 +263,7 @@ export class ChGridColumn {
   clickHandler() {
     if (!this.dragging) {
       if (this.sortable) {
-        this.sortDirection = this.sortDirection == "asc" ? "desc" : "asc";
+        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
       }
     } else {
       this.dragging = false;
@@ -379,13 +379,13 @@ export class ChGridColumn {
       <li
         class="selector"
         part="bar-selector"
-        hidden={!(this.columnType == "rich" && this.richRowSelector)}
+        hidden={!(this.columnType === "rich" && this.richRowSelector)}
       >
         <label part="selector-label">
           <input
             type="checkbox"
             part={["selector", this.richRowSelectorState]
-              .filter(part => part != "")
+              .filter(part => part !== "")
               .join(" ")}
             onClick={this.selectorClickHandler}
             checked={this.richRowSelectorState === "checked"}
@@ -401,7 +401,7 @@ export class ChGridColumn {
       <li
         class="name"
         part="bar-name"
-        title={this.columnNamePosition == "title" ? this.columnName : null}
+        title={this.columnNamePosition === "title" ? this.columnName : null}
       >
         {this.columnIconUrl ? (
           <img
@@ -415,7 +415,7 @@ export class ChGridColumn {
         <span
           class="name-text"
           part="bar-name-text"
-          hidden={this.columnNamePosition != "text"}
+          hidden={this.columnNamePosition !== "text"}
         >
           {this.columnName}
         </span>

@@ -180,8 +180,8 @@ export default class HTMLChGridCellElement extends HTMLElement {
     );
   }
 
-  private actionClickHandler(eventInfo: MouseEvent) {
-    console.log(eventInfo);
+  private actionClickHandler() {
+    // TODO
   }
 
   private definePlain() {
@@ -192,7 +192,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
     let html = "";
     this.cellType = ChGridCellType.Rich;
 
-    if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
+    if (!this.shadowRoot || this.shadowRoot.innerHTML === "") {
       this.attachShadow({ mode: "open" });
 
       if (this.rowDrag) {
@@ -261,7 +261,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
   private defineTreeNode() {
     this.cellType = ChGridCellType.TreeNode;
 
-    if (!this.shadowRoot || this.shadowRoot.innerHTML == "") {
+    if (!this.shadowRoot || this.shadowRoot.innerHTML === "") {
       this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `
         <style>:host::before {content: none !important}</style>

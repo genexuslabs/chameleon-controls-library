@@ -11,16 +11,16 @@ import { Component, Element, Prop } from "@stencil/core";
   shadow: false
 })
 export class ChGridColumnDisplay {
+  private observer = new IntersectionObserver(() => {
+    this.column.hidden = getComputedStyle(this.el).display === "none";
+  });
+
   @Element() el: HTMLChGridColumnDisplayElement;
 
   /**
    * The column element that is being monitored.
    */
   @Prop() readonly column!: HTMLChGridColumnElement;
-
-  private observer = new IntersectionObserver(() => {
-    this.column.hidden = getComputedStyle(this.el).display === "none";
-  });
 
   componentWillLoad() {
     this.observer.observe(this.el);

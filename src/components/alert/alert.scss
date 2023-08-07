@@ -1,28 +1,36 @@
 :host {
-  display: block;
-  /**
-  * @prop --icon-color: The color of the item's icon
-  */
-  --icon-color: var(--black);
-  /**
-    * @prop --icon-size: The size of the item's icon
-    */
-  --icon-size: 20px;
+  display: grid;
+  grid-template-columns: min-content 1fr min-content;
+  grid-template-rows: 1fr min-content;
+  grid-template-areas: 
+    "img content button"
+    "progress-bar progress-bar progress-bar"
 }
 
-.alert {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  flex: 0 0 auto;
 
-  .progress-bar_container {
-    flex: 0 0 100%;
-  }
+:host::part(alert__img) {
+  max-width: 20px;
+  height: 20px;
+  grid-area: img;
+}
+
+:host::part(alert__content) {
+  grid-area: content;
 }
 
 :host::part(alert__close-button) {
-  align-self: flex-start;
+  grid-area: button;
+}
+
+.progress-bar_container {
+  grid-area: progress-bar;
+}
+
+
+.close-button-img {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.875 18L6.75 16.875L11.25 12.375L6.75 7.875L7.875 6.75L12.375 11.25L16.875 6.75L18 7.875L13.5 12.375L18 16.875L16.875 18L12.375 13.5L7.875 18Z'/%3E%3C/svg%3E")
+    50% 50% / 24px 24px no-repeat;
+  width: 10px;
+  height: 10px;
+  background-color: currentColor;
 }

@@ -1,7 +1,6 @@
-:host {
-}
-
-:host::part(alert__progress-bar) {
+:host::part(indicator) {
   height: 5px;
   background-color: #cdcd44; 
+
+  transition: width var(--animation-time) linear;  
 }

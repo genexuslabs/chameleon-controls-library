@@ -1,4 +1,4 @@
-import { Component, Host, h, Prop, Watch, Element } from "@stencil/core";
+import { Component, Host, h, Prop } from "@stencil/core";
 
 @Component({
   tag: "ch-progress-bar",
@@ -6,26 +6,40 @@ import { Component, Host, h, Prop, Watch, Element } from "@stencil/core";
   shadow: true
 })
 export class ChProgressBar {
-  @Element() element: HTMLChProgressBarElement;
-  private el = null;
-
   /**
-   * Sets the progress propiety and watches its changes to set the progress bar width.
+   * Sets the progress propiety to determine the width of the bar.
    */
   @Prop() readonly progress: number = 0;
-  @Watch("progress")
-  progressWatcher(newValue) {
-    this.el.style.width = newValue + "%";
-  }
 
-  componentDidLoad() {
-    this.el = this.element.shadowRoot.getElementById("progress-bar");
-  }
+  /**
+   * Sets the accesible name of the progress bar.
+   */
+  @Prop() readonly accessibleName: string = "progress";
+
+  /**
+   * Sets the animationTime to set the custom var for the css animation.
+   */
+  @Prop() readonly animationTime: number = 0;
 
   render() {
+    const accessibilityAttributes = {
+      role: "progressbar",
+      "aria-labelledby": this.accessibleName,
+      "aria-valuemin": "0",
+      "aria-valuemax": "100",
+      "aria-valuenow": this.progress
+    };
+
     return (
       <Host>
-        <div part="alert__progress-bar" id="progress-bar"></div>
+        <div
+          {...accessibilityAttributes}
+          part="indicator"
+          style={{
+            width: `${this.progress}%`,
+            "--animation-time": `${this.animationTime}ms`
+          }}
+        ></div>
       </Host>
     );
   }

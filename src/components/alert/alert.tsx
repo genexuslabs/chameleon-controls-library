@@ -1,4 +1,4 @@
-import { Component, Host, h, Prop, Listen, Watch, State } from "@stencil/core";
+import { Component, Host, h, Prop, Watch } from "@stencil/core";
 
 @Component({
   tag: "ch-alert",
@@ -6,6 +6,10 @@ import { Component, Host, h, Prop, Listen, Watch, State } from "@stencil/core";
   shadow: true
 })
 export class ChAlert {
+  /** Sets the timer id and the desired interval */
+  private timerId = null;
+  timerInterval = 50;
+
   /**
    * Determine the accessible name of the close button.
    * Important for accessibility.
@@ -41,18 +45,14 @@ export class ChAlert {
    */
   @Prop() readonly showTimeoutBar: boolean = false;
 
-  /** Listens when the ch-window-close button is clicked and closes the alert. */
-  @Listen("windowCloseClicked")
-  windowCloseClickedHandler() {
+  /** Closes the alert when the close button is clicked. */
+  private handleAlertClose = () => {
+    clearInterval(this.timerId);
     this.presented = false;
-  }
-
-  /** Sets the timer id and the desired interval */
-  private timerId = null;
-  private timerInterval = 10;
+  };
 
   /** Countdown which initial state is dismissTimeout ms. */
-  @State() countdown: number = this.dismissTimeout;
+  @Prop({ mutable: true }) countdown: number = this.dismissTimeout;
 
   /** Countdown watcher that hides the alert if the dismissTimeout is reached
    * and stops the countdown. */
@@ -83,51 +83,55 @@ export class ChAlert {
   };
 
   componentDidLoad() {
-    this.start();
+    if (this.presented && this.dismissTimeout !== 0) {
+      this.start();
+    }
   }
 
   render() {
     return (
-      <Host>
-        {this.presented && (
-          <div
-            class="alert"
-            role="alert"
-            onMouseEnter={this.handleMouseEnter}
-            onMouseLeave={this.handleMouseLeave}
-            part="alert__container"
-          >
-            {this.leftImgSrc && (
-              <ch-icon
-                src={this.leftImgSrc}
-                style={{
-                  "--select-icon-size": "var(--icon-size)",
-                  "--select-icon-color": `var(--icon-color)`
-                }}
-              ></ch-icon>
-            )}
-            <div part="alert__content">
-              <slot name="content"></slot>
-            </div>
-            {this.showCloseButton && (
-              <ch-window-close
-                part="alert__close-button"
-                title={this.closeButtonAccessibleName}
-                disabled={false}
-              >
-                <slot name="button">×</slot>
-              </ch-window-close>
-            )}
-            {this.showTimeoutBar && (
-              <div class="progress-bar_container">
-                <ch-progress-bar
-                  progress={(this.countdown / this.dismissTimeout) * 100}
-                  exportparts="alert__progress-bar"
-                ></ch-progress-bar>
-              </div>
-            )}
-          </div>
-        )}
+      <Host
+        role="alert"
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        part="alert__container"
+        aria-hidden={!this.presented ? "true" : "false"}
+      >
+        {this.presented && [
+          this.leftImgSrc && (
+            <img
+              part="alert__img"
+              src={this.leftImgSrc}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+            />
+          ),
+          <div part="alert__content">
+            <slot name="content"></slot>
+          </div>,
+          this.showCloseButton && (
+            <button
+              part="alert__close-button"
+              type="button"
+              class="close-button-img"
+              aria-label={this.closeButtonAccessibleName}
+              disabled={false}
+              onClick={this.handleAlertClose}
+            >
+              <slot name="button" aria-hidden="true"></slot>
+            </button>
+          ),
+          this.showTimeoutBar && (
+            <ch-progress-bar
+              exportparts="indicator"
+              progress={(this.countdown / this.dismissTimeout) * 100}
+              accessibleName="alert"
+              class="progress-bar_container"
+              animation-time={this.timerInterval}
+            ></ch-progress-bar>
+          )
+        ]}
       </Host>
     );
   }

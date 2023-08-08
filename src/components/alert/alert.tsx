@@ -6,9 +6,11 @@ import { Component, Host, h, Prop, Watch } from "@stencil/core";
   shadow: true
 })
 export class ChAlert {
-  /** Sets the timer id and the desired interval */
+  /** Sets the timer id */
   private timerId = null;
-  timerInterval = 50;
+
+  /** Sets the desired interval */
+  @Prop() readonly timerInterval = 50;
 
   /**
    * Determine the accessible name of the close button.
@@ -31,7 +33,7 @@ export class ChAlert {
   /**
    * Determine if the element is displayed or not.
    */
-  @Prop({ mutable: true }) presented = false;
+  @Prop({ reflect: true, mutable: true }) presented = false;
 
   /**
    * Determine if the closeButton is displayed or not.
@@ -44,6 +46,9 @@ export class ChAlert {
    * The progress stops when the element is hovered.
    */
   @Prop() readonly showTimeoutBar: boolean = false;
+
+  /** Toggles the Pause on Hover functionality */
+  @Prop() readonly pauseOnHover: boolean = true;
 
   /** Closes the alert when the close button is clicked. */
   private handleAlertClose = () => {
@@ -58,7 +63,7 @@ export class ChAlert {
    * and stops the countdown. */
   @Watch("countdown")
   countdownWatcher(newValue) {
-    if (newValue === 0) {
+    if (newValue <= 0) {
       this.presented = false;
       clearInterval(this.timerId);
     }
@@ -66,10 +71,12 @@ export class ChAlert {
 
   /** Starts a new countdown which interval is set in timerInterval */
   private start = () => {
-    clearInterval(this.timerId);
-    this.timerId = setInterval(() => {
-      this.countdown -= this.timerInterval;
-    }, this.timerInterval);
+    if (this.presented && this.dismissTimeout !== 0) {
+      clearInterval(this.timerId);
+      this.timerId = setInterval(() => {
+        this.countdown -= this.timerInterval;
+      }, this.timerInterval);
+    }
   };
 
   /** Pauses the countdown */
@@ -83,17 +90,15 @@ export class ChAlert {
   };
 
   componentDidLoad() {
-    if (this.presented && this.dismissTimeout !== 0) {
-      this.start();
-    }
+    this.start();
   }
 
   render() {
     return (
       <Host
         role="alert"
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+        onMouseEnter={this.pauseOnHover && this.handleMouseEnter}
+        onMouseLeave={this.pauseOnHover && this.handleMouseLeave}
         part="alert__container"
         aria-hidden={!this.presented ? "true" : "false"}
       >

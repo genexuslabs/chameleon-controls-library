@@ -43,6 +43,7 @@ export class ChGridColumn {
   @Prop() readonly columnType: "plain" | "rich" | "tree" = "plain";
 
   /**
+   * @deprecated Use "columnImage" or "columnImageSet" instead.
    * A URL to an icon to display in the column header.
    */
   @Prop() readonly columnIconUrl: string;
@@ -53,7 +54,9 @@ export class ChGridColumn {
   @Prop() readonly columnName: string;
 
   /**
-   * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+  /**
+   * @deprecated Use "columnTooltip" and "columnNameHidden" instead.
+   * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column image.
    */
   @Prop() readonly columnNamePosition: "text" | "title" = "text";
 

@@ -22,6 +22,8 @@
 | ---------------------- | ------------------------------------------------- | ---------------------------------------------- |
 | `cellSelectionChanged` | Event emitted when the cell selection is changed. | `CustomEvent<ChGridCellSelectionChangedEvent>` |
 | `rowClicked`           | Event emitted when a row is clicked.              | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowDoubleClicked`     | Event emitted when a row is double clicked.       | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowEnterPressed`      | Event emitted when Enter is pressed on a row.     | `CustomEvent<ChGridRowPressedEvent>`           |
 | `rowMarkingChanged`    | Event emitted when the row marking is changed.    | `CustomEvent<ChGridMarkingChangedEvent>`       |
 | `selectionChanged`     | Event emitted when the row selection is changed.  | `CustomEvent<ChGridSelectionChangedEvent>`     |
 

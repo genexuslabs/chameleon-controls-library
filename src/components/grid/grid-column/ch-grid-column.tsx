@@ -69,6 +69,11 @@ export class ChGridColumn {
   @Prop() readonly columnNameHidden: boolean;
 
   /**
+   * The text to display when the cursor is placed over the column header.
+   */
+  @Prop() readonly columnTooltip: string;
+
+  /**
    * @deprecated Use "columnTooltip" and "columnNameHidden" instead.
    * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column image.
    */

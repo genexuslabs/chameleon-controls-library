@@ -307,18 +307,24 @@ export class ChGridColumn {
     });
   }
 
+  private allowColumnReorder(): boolean {
+    return this.el.closest("ch-grid").allowColumnReorder;
+  }
+
   private mousedownHandler(eventInfo: MouseEvent) {
     eventInfo.preventDefault();
     eventInfo.stopPropagation();
 
-    this.dragMouseDownHandler(eventInfo);
+    if (this.allowColumnReorder()) {
+      this.dragMouseDownHandler(eventInfo);
 
-    document.addEventListener("mousemove", this.dragMouseMoveFn, {
-      passive: true
-    });
-    document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), {
-      once: true
-    });
+      document.addEventListener("mousemove", this.dragMouseMoveFn, {
+        passive: true
+      });
+      document.addEventListener("mouseup", this.dragMouseUpHandler.bind(this), {
+        once: true
+      });
+    }
   }
 
   private dragMouseDownHandler(eventInfo: MouseEvent) {

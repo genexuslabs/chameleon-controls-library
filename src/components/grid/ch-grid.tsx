@@ -126,6 +126,11 @@ export class ChGrid {
   @Prop() readonly rowMarkedClass: string;
 
   /**
+   * A boolean indicating whether the user can drag column headers to reorder columns.
+   */
+  @Prop() readonly allowColumnReorder: boolean = true;
+
+  /**
    * An object that contains localized strings for the grid.
    */
   @Prop() readonly localization: GridLocalization;

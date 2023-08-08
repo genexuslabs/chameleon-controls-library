@@ -49,7 +49,17 @@ export class ChGridColumn {
   @Prop() readonly columnIconUrl: string;
 
   /**
-   * The text to display in the column header.
+   * A URL to an icon to display in the column header.
+   */
+  @Prop() readonly columnImage: string;
+
+  /**
+   * A URL to an icon to display in the column header.
+   */
+  @Prop() readonly columnImageSet: string;
+
+  /**
+   * The text to display in the column header and settings.
    */
   @Prop() readonly columnName: string;
 

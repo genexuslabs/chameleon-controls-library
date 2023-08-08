@@ -1,6 +1,6 @@
 :host {
-  --ch-window-offset-x: 0;
-  --ch-window-offset-y: 0;
+  --ch-window-offset-x: 0px;
+  --ch-window-offset-y: 0px;
 }
 
 :host(:not([hidden])) {

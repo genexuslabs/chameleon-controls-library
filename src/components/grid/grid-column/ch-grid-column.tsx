@@ -30,6 +30,10 @@ import {
   shadow: true
 })
 export class ChGridColumn {
+  private dragging = false;
+  private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
+  private dragMouseMoveStartPositionX: number;
+
   @Element() el: HTMLChGridColumnElement;
 
   /**
@@ -43,17 +47,39 @@ export class ChGridColumn {
   @Prop() readonly columnType: "plain" | "rich" | "tree" = "plain";
 
   /**
+   * @deprecated Use "columnImage" or "columnImageSet" instead.
    * A URL to an icon to display in the column header.
    */
   @Prop() readonly columnIconUrl: string;
 
   /**
-   * The text to display in the column header.
+   * A URL to an icon to display in the column header.
+   */
+  @Prop() readonly columnImage: string;
+
+  /**
+   * A URL to an icon to display in the column header.
+   */
+  @Prop() readonly columnImageSet: string;
+
+  /**
+   * The text to display in the column header and settings.
    */
   @Prop() readonly columnName: string;
 
   /**
-   * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column icon.
+   * Indicates whether the text in the column header is visible or not
+   */
+  @Prop() readonly columnNameHidden: boolean;
+
+  /**
+   * The text to display when the cursor is placed over the column header.
+   */
+  @Prop() readonly columnTooltip: string;
+
+  /**
+   * @deprecated Use "columnTooltip" and "columnNameHidden" instead.
+   * One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column image.
    */
   @Prop() readonly columnNamePosition: "text" | "title" = "text";
 
@@ -100,11 +126,27 @@ export class ChGridColumn {
    */
   @Prop() readonly freeze?: ChGridColumnFreeze;
 
+  @Watch("freeze")
+  freezeHandler() {
+    this.columnFreezeChanged.emit({
+      columnId: this.columnId,
+      freeze: this.freeze
+    });
+  }
+
   /**
    * A boolean indicating whether the column should be hidden.
    * The user can display it from the grid settings.
    */
   @Prop({ reflect: true }) readonly hidden: boolean = false;
+
+  @Watch("hidden")
+  hiddenHandler() {
+    this.columnHiddenChanged.emit({
+      columnId: this.columnId,
+      hidden: this.hidden
+    });
+  }
 
   /**
    * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
@@ -116,6 +158,14 @@ export class ChGridColumn {
    */
   @Prop({ reflect: true }) readonly order: number;
 
+  @Watch("order")
+  orderHandler() {
+    this.columnOrderChanged.emit({
+      columnId: this.columnId,
+      order: this.order
+    });
+  }
+
   /**
    * A number indicating the physical order of the column (i.e. its position in the DOM).
    */
@@ -126,6 +176,14 @@ export class ChGridColumn {
    * Any value supported by the "grid-template-columns" CSS property is valid.
    */
   @Prop() readonly size: string;
+
+  @Watch("size")
+  sizeHandler() {
+    this.columnSizeChanging.emit({
+      columnId: this.columnId,
+      size: this.size
+    });
+  }
 
   /**
    * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
@@ -152,6 +210,16 @@ export class ChGridColumn {
    */
   @Prop({ mutable: true, reflect: true })
   sortDirection?: ChGridColumnSortDirection;
+
+  @Watch("sortDirection")
+  sortDirectionHandler() {
+    if (this.sortDirection) {
+      this.columnSortChanged.emit({
+        columnId: this.columnId,
+        sortDirection: this.sortDirection
+      });
+    }
+  }
 
   /**
    * A boolean indicating whether the settings panel for the column should be visible.
@@ -209,54 +277,8 @@ export class ChGridColumn {
   @Event()
   columnSelectorClicked: EventEmitter<ChGridColumnSelectorClickedEvent>;
 
-  private dragging = false;
-  private dragMouseMoveFn = this.dragMouseMoveHandler.bind(this);
-  private dragMouseMoveStartPositionX: number;
-
   componentDidLoad() {
     this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
-  }
-
-  @Watch("size")
-  sizeHandler() {
-    this.columnSizeChanging.emit({
-      columnId: this.columnId,
-      size: this.size
-    });
-  }
-
-  @Watch("hidden")
-  hiddenHandler() {
-    this.columnHiddenChanged.emit({
-      columnId: this.columnId,
-      hidden: this.hidden
-    });
-  }
-
-  @Watch("order")
-  orderHandler() {
-    this.columnOrderChanged.emit({
-      columnId: this.columnId,
-      order: this.order
-    });
-  }
-
-  @Watch("freeze")
-  freezeHandler() {
-    this.columnFreezeChanged.emit({
-      columnId: this.columnId,
-      freeze: this.freeze
-    });
-  }
-
-  @Watch("sortDirection")
-  sortDirectionHandler() {
-    if (this.sortDirection) {
-      this.columnSortChanged.emit({
-        columnId: this.columnId,
-        sortDirection: this.sortDirection
-      });
-    }
   }
 
   @Listen("click", { passive: true })
@@ -401,13 +423,17 @@ export class ChGridColumn {
       <li
         class="name"
         part="bar-name"
-        title={this.columnNamePosition === "title" ? this.columnName : null}
+        title={
+          this.columnTooltip ||
+          (this.columnNamePosition === "title" ? this.columnName : null)
+        }
       >
-        {this.columnIconUrl ? (
+        {this.columnIconUrl || this.columnImage || this.columnImageSet ? (
           <img
             class="name-icon"
             part="bar-name-icon"
-            src={this.columnIconUrl}
+            src={this.columnImage || this.columnIconUrl}
+            srcSet={this.columnImageSet}
           />
         ) : (
           <div class="name-icon" part="bar-name-icon"></div>
@@ -415,7 +441,7 @@ export class ChGridColumn {
         <span
           class="name-text"
           part="bar-name-text"
-          hidden={this.columnNamePosition !== "text"}
+          hidden={this.columnNameHidden || this.columnNamePosition !== "text"}
         >
           {this.columnName}
         </span>

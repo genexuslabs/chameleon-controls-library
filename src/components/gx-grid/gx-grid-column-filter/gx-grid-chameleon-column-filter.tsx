@@ -18,26 +18,58 @@ import {
 
 declare let gx: Gx;
 
+/**
+ * Represents a component that provides filtering controls for a grid column.
+ */
 @Component({
   tag: "gx-grid-chameleon-column-filter",
   styleUrl: "gx-grid-chameleon-column-filter.scss",
   shadow: true
 })
 export class GridChameleonColumnFilter {
-  @Element() el: HTMLGxGridChameleonColumnFilterElement;
-  @Prop() readonly column: GxGridColumn;
-  @Prop() readonly buttonApplyText: string;
-  @Prop() readonly buttonResetText: string;
-  @Prop({ mutable: true }) equal: string;
-  @Prop({ mutable: true }) less: string;
-  @Prop({ mutable: true }) greater: string;
-  @Event()
-  columnSettingsChanged: EventEmitter<GridChameleonColumnFilterChanged>;
-
   private filterEnum: GridChameleonColumnFilterEnum[] = [];
   private inputEqual: HTMLInputElement | HTMLSelectElement;
   private inputLess: HTMLInputElement | HTMLSelectElement;
   private inputGreater: HTMLInputElement | HTMLSelectElement;
+
+  @Element() el: HTMLGxGridChameleonColumnFilterElement;
+
+  /**
+   * The grid column associated with this filter.
+   */
+  @Prop() readonly column!: GxGridColumn;
+
+  /**
+   * The text to display on the "Apply" button.
+   */
+  @Prop() readonly buttonApplyText: string;
+
+  /**
+   * The text to display on the "Reset" button.
+   */
+  @Prop() readonly buttonResetText: string;
+
+  /**
+   * The value to filter for equality comparison.
+   */
+  @Prop({ mutable: true }) equal: string;
+
+  /**
+   * The value to filter for less-than comparison.
+   */
+  @Prop({ mutable: true }) less: string;
+
+  /**
+   * The value to filter for greater-than comparison.
+   */
+  @Prop({ mutable: true }) greater: string;
+
+  /**
+   * Emitted when the filter settings for the column have changed.
+   * This event carries the updated filter values.
+   */
+  @Event()
+  columnSettingsChanged: EventEmitter<GridChameleonColumnFilterChanged>;
 
   componentWillLoad() {
     if (
@@ -79,8 +111,8 @@ export class GridChameleonColumnFilter {
     let dataType = this.column.gxControl.dataType;
 
     if (
-      dataType == GxControlDataType.DATETIME &&
-      this.column.FilterDateTimeAsDate == -1
+      dataType === GxControlDataType.DATETIME &&
+      this.column.FilterDateTimeAsDate === -1
     ) {
       dataType = GxControlDataType.DATE;
     }
@@ -103,8 +135,8 @@ export class GridChameleonColumnFilter {
     }
 
     if (
-      dataType == GxControlDataType.DATETIME &&
-      this.column.FilterDateTimeAsDate == -1
+      dataType === GxControlDataType.DATETIME &&
+      this.column.FilterDateTimeAsDate === -1
     ) {
       dataType = GxControlDataType.DATE;
     }
@@ -157,51 +189,6 @@ export class GridChameleonColumnFilter {
     }
   }
 
-  render() {
-    return (
-      <Host>
-        <fieldset part="main">
-          <caption part="caption">{this.column.FilterCaption}</caption>
-          {this.column.FilterMode == "single" &&
-            this.renderColumnFilterControl(
-              "inputEqual",
-              this.column.gxControl.type,
-              this.column.gxControl.dataType,
-              this.column.gxControl.possibleValues,
-              this.column.FilterLabelEqual,
-              this.equal
-            )}
-          {this.column.FilterMode == "range" &&
-            this.renderColumnFilterControl(
-              "inputGreater",
-              this.column.gxControl.type,
-              this.column.gxControl.dataType,
-              this.column.gxControl.possibleValues,
-              this.column.FilterLabelGreater,
-              this.greater
-            )}
-          {this.column.FilterMode == "range" &&
-            this.renderColumnFilterControl(
-              "inputLess",
-              this.column.gxControl.type,
-              this.column.gxControl.dataType,
-              this.column.gxControl.possibleValues,
-              this.column.FilterLabelLess,
-              this.less
-            )}
-        </fieldset>
-        <section part="footer">
-          <button part="button reset" onClick={this.resetClickHandler}>
-            {this.buttonResetText}
-          </button>
-          <button part="button apply" onClick={this.applyClickHandler}>
-            {this.buttonApplyText}
-          </button>
-        </section>
-      </Host>
-    );
-  }
-
   private renderColumnFilterControl(
     input: string,
     type: GxControlType,
@@ -221,8 +208,8 @@ export class GridChameleonColumnFilter {
     }
 
     if (
-      dataType == GxControlDataType.DATETIME &&
-      this.column.FilterDateTimeAsDate == -1
+      dataType === GxControlDataType.DATETIME &&
+      this.column.FilterDateTimeAsDate === -1
     ) {
       dataType = GxControlDataType.DATE;
     }
@@ -247,7 +234,7 @@ export class GridChameleonColumnFilter {
             {label}
             <select ref={el => (this[input] = el)} part={`field ${part}`}>
               {possibleValues.map(([optionValue, optionDescription]) => (
-                <option value={optionValue} selected={optionValue == value}>
+                <option value={optionValue} selected={optionValue === value}>
                   {optionDescription}
                 </option>
               ))}
@@ -255,6 +242,51 @@ export class GridChameleonColumnFilter {
           </label>
         );
     }
+  }
+
+  render() {
+    return (
+      <Host>
+        <fieldset part="main">
+          <caption part="caption">{this.column.FilterCaption}</caption>
+          {this.column.FilterMode === "single" &&
+            this.renderColumnFilterControl(
+              "inputEqual",
+              this.column.gxControl.type,
+              this.column.gxControl.dataType,
+              this.column.gxControl.possibleValues,
+              this.column.FilterLabelEqual,
+              this.equal
+            )}
+          {this.column.FilterMode === "range" &&
+            this.renderColumnFilterControl(
+              "inputGreater",
+              this.column.gxControl.type,
+              this.column.gxControl.dataType,
+              this.column.gxControl.possibleValues,
+              this.column.FilterLabelGreater,
+              this.greater
+            )}
+          {this.column.FilterMode === "range" &&
+            this.renderColumnFilterControl(
+              "inputLess",
+              this.column.gxControl.type,
+              this.column.gxControl.dataType,
+              this.column.gxControl.possibleValues,
+              this.column.FilterLabelLess,
+              this.less
+            )}
+        </fieldset>
+        <section part="footer">
+          <button part="button reset" onClick={this.resetClickHandler}>
+            {this.buttonResetText}
+          </button>
+          <button part="button apply" onClick={this.applyClickHandler}>
+            {this.buttonApplyText}
+          </button>
+        </section>
+      </Host>
+    );
   }
 }
 

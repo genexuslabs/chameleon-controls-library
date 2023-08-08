@@ -142,6 +142,10 @@ export namespace Components {
     }
     interface ChGrid {
         /**
+          * A boolean indicating whether the user can drag column headers to reorder columns.
+         */
+        "allowColumnReorder": boolean;
+        /**
           * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
           * @param cellId - The cellId of the cell to ensure visibility.
          */
@@ -1540,6 +1544,10 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface ChGrid {
+        /**
+          * A boolean indicating whether the user can drag column headers to reorder columns.
+         */
+        "allowColumnReorder"?: boolean;
         /**
           * An object that contains localized strings for the grid.
          */

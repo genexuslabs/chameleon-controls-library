@@ -937,16 +937,43 @@ export namespace Components {
         "disabled": boolean;
     }
     interface GxGridChameleon {
+        /**
+          * The GxGrid instance representing the data to be displayed in the grid.
+         */
         "grid": GxGrid;
+        /**
+          * The timestamp indicating the time when the grid was last updated.
+         */
         "gridTimestamp": number;
+        /**
+          * The UI state of the Grid.
+         */
         "state": GridChameleonState;
     }
     interface GxGridChameleonColumnFilter {
+        /**
+          * The text to display on the "Apply" button.
+         */
         "buttonApplyText": string;
+        /**
+          * The text to display on the "Reset" button.
+         */
         "buttonResetText": string;
+        /**
+          * The grid column associated with this filter.
+         */
         "column": GxGridColumn;
+        /**
+          * The value to filter for equality comparison.
+         */
         "equal": string;
+        /**
+          * The value to filter for greater-than comparison.
+         */
         "greater": string;
+        /**
+          * The value to filter for less-than comparison.
+         */
         "less": string;
     }
 }
@@ -2431,17 +2458,47 @@ declare namespace LocalJSX {
         "onWindowCloseClicked"?: (event: ChWindowCloseCustomEvent<any>) => void;
     }
     interface GxGridChameleon {
-        "grid"?: GxGrid;
+        /**
+          * The GxGrid instance representing the data to be displayed in the grid.
+         */
+        "grid": GxGrid;
+        /**
+          * The timestamp indicating the time when the grid was last updated.
+         */
         "gridTimestamp"?: number;
+        /**
+          * The UI state of the Grid.
+         */
         "state"?: GridChameleonState;
     }
     interface GxGridChameleonColumnFilter {
+        /**
+          * The text to display on the "Apply" button.
+         */
         "buttonApplyText"?: string;
+        /**
+          * The text to display on the "Reset" button.
+         */
         "buttonResetText"?: string;
-        "column"?: GxGridColumn;
+        /**
+          * The grid column associated with this filter.
+         */
+        "column": GxGridColumn;
+        /**
+          * The value to filter for equality comparison.
+         */
         "equal"?: string;
+        /**
+          * The value to filter for greater-than comparison.
+         */
         "greater"?: string;
+        /**
+          * The value to filter for less-than comparison.
+         */
         "less"?: string;
+        /**
+          * Emitted when the filter settings for the column have changed. This event carries the updated filter values.
+         */
         "onColumnSettingsChanged"?: (event: GxGridChameleonColumnFilterCustomEvent<GridChameleonColumnFilterChanged>) => void;
     }
     interface IntrinsicElements {

@@ -78,7 +78,7 @@ export class GridChameleonManagerState {
 
   private static getColumn(name: string): GridChameleonStateColumn {
     let column = this.state.Columns.find(
-      column => column.Name.localeCompare(name) == 0
+      column => column.Name.localeCompare(name) === 0
     );
 
     if (!column) {
@@ -104,10 +104,11 @@ export class GridChameleonManagerState {
   private static updateIsFiltering(columnId: string) {
     const column = this.grid.getColumnByHtmlName(columnId);
 
-    column.isFiltering =
-      column.filterEqual || column.filterGreater || column.filterGreater
-        ? true
-        : false;
+    column.isFiltering = !!(
+      column.filterEqual ||
+      column.filterGreater ||
+      column.filterGreater
+    );
   }
 }
 

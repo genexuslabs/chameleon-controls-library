@@ -5,18 +5,17 @@
 
 ## Properties
 
-| Property        | Attribute        | Description | Type                 | Default     |
-| --------------- | ---------------- | ----------- | -------------------- | ----------- |
-| `grid`          | --               |             | `GxGrid`             | `undefined` |
-| `gridTimestamp` | `grid-timestamp` |             | `number`             | `undefined` |
-| `state`         | --               |             | `GridChameleonState` | `undefined` |
+| Property            | Attribute        | Description                                                            | Type                 | Default     |
+| ------------------- | ---------------- | ---------------------------------------------------------------------- | -------------------- | ----------- |
+| `grid` _(required)_ | --               | The GxGrid instance representing the data to be displayed in the grid. | `GxGrid`             | `undefined` |
+| `gridTimestamp`     | `grid-timestamp` | The timestamp indicating the time when the grid was last updated.      | `number`             | `undefined` |
+| `state`             | --               | The UI state of the Grid.                                              | `GridChameleonState` | `undefined` |
 
 
 ## Dependencies
 
 ### Depends on
 
-- [ch-grid](../grid)
 - [ch-grid-actionbar](../grid/grid-actionbar)
 - [ch-grid-action-refresh](../grid/grid-actionbar/grid-action-refresh)
 - [ch-grid-action-settings](../grid/grid-actionbar/grid-action-settings)
@@ -25,11 +24,11 @@
 - [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
 - [ch-paginator-navigate](../paginator/paginator-navigate)
+- [ch-grid](../grid)
 
 ### Graph
 ```mermaid
 graph TD;
-  gx-grid-chameleon --> ch-grid
   gx-grid-chameleon --> ch-grid-actionbar
   gx-grid-chameleon --> ch-grid-action-refresh
   gx-grid-chameleon --> ch-grid-action-settings
@@ -38,13 +37,14 @@ graph TD;
   gx-grid-chameleon --> gx-grid-chameleon-column-filter
   gx-grid-chameleon --> ch-paginator
   gx-grid-chameleon --> ch-paginator-navigate
-  ch-grid --> ch-grid-settings
-  ch-grid --> ch-grid-settings-columns
-  ch-grid-settings --> ch-window
-  ch-window --> ch-window-close
+  gx-grid-chameleon --> ch-grid
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window
+  ch-window --> ch-window-close
+  ch-grid --> ch-grid-settings
+  ch-grid --> ch-grid-settings-columns
+  ch-grid-settings --> ch-window
   style gx-grid-chameleon fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

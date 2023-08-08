@@ -423,13 +423,17 @@ export class ChGridColumn {
       <li
         class="name"
         part="bar-name"
-        title={this.columnNamePosition === "title" ? this.columnName : null}
+        title={
+          this.columnTooltip ||
+          (this.columnNamePosition === "title" ? this.columnName : null)
+        }
       >
-        {this.columnIconUrl ? (
+        {this.columnIconUrl || this.columnImage || this.columnImageSet ? (
           <img
             class="name-icon"
             part="bar-name-icon"
-            src={this.columnIconUrl}
+            src={this.columnImage || this.columnIconUrl}
+            srcSet={this.columnImageSet}
           />
         ) : (
           <div class="name-icon" part="bar-name-icon"></div>
@@ -437,7 +441,7 @@ export class ChGridColumn {
         <span
           class="name-text"
           part="bar-name-text"
-          hidden={this.columnNamePosition !== "text"}
+          hidden={this.columnNameHidden || this.columnNamePosition !== "text"}
         >
           {this.columnName}
         </span>

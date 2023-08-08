@@ -7,7 +7,8 @@ import {
   ChGridSelectionChangedEvent,
   ChGridRowClickedEvent,
   ChGridMarkingChangedEvent,
-  ChGridCellSelectionChangedEvent
+  ChGridCellSelectionChangedEvent,
+  ChGridRowPressedEvent
 } from "./ch-grid-types";
 import {
   Component,
@@ -66,6 +67,16 @@ export class ChGrid {
    * Event emitted when a row is clicked.
    */
   @Event() rowClicked: EventEmitter<ChGridRowClickedEvent>;
+
+  /**
+   * Event emitted when a row is double clicked.
+   */
+  @Event() rowDoubleClicked: EventEmitter<ChGridRowClickedEvent>;
+
+  /**
+   * Event emitted when Enter is pressed on a row.
+   */
+  @Event() rowEnterPressed: EventEmitter<ChGridRowPressedEvent>;
 
   @State() rowFocused: HTMLChGridRowElement;
   @State() rowHighlighted: HTMLChGridRowElement;
@@ -327,6 +338,9 @@ export class ChGrid {
             eventInfo.shiftKey
           );
           break;
+        case "Enter":
+          this.enterPressedHandler();
+          break;
       }
     }
   }
@@ -401,6 +415,20 @@ export class ChGrid {
     this.manager.selection.selecting = false;
     this.manager.selection.selectingRow = null;
     this.manager.selection.selectingCell = null;
+  }
+
+  @Listen("dblclick", { passive: true })
+  dblclickHandler(eventInfo: MouseEvent) {
+    const row = this.manager.getRowEventTarget(eventInfo);
+    const cell = this.manager.getCellEventTarget(eventInfo);
+
+    if (row) {
+      this.rowDoubleClicked.emit({
+        rowId: row.rowId,
+        cellId: cell?.cellId,
+        columnId: cell?.column.columnId
+      });
+    }
   }
 
   @Listen("columnSelectorClicked", { passive: true })
@@ -727,6 +755,19 @@ export class ChGrid {
       rowId: nextCell ? nextCell.row.rowId : null,
       columnId: nextCell ? nextCell.column.columnId : null
     };
+  }
+
+  private enterPressedHandler() {
+    if (this.rowFocused) {
+      const cellFocused =
+        this.cellSelected?.row === this.rowFocused ? this.cellSelected : null;
+
+      this.rowEnterPressed.emit({
+        rowId: this.rowFocused.rowId,
+        cellId: cellFocused ? cellFocused.cellId : null,
+        columnId: cellFocused ? cellFocused.column.columnId : null
+      });
+    }
   }
 
   private toggleRowsMarked() {

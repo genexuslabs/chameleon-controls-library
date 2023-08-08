@@ -73,6 +73,12 @@ export class ChGrid {
   @State() rowsSelected: HTMLChGridRowElement[] = [];
   @State() cellSelected: HTMLChGridCellElement;
   @State() gridStyle: CSSProperties;
+  @State() baseLayer: number;
+
+  @Watch("baseLayer")
+  baseLayerHandler(value: number) {
+    this.styleSheet.replace(`:host { --ch-grid-base-layer: ${value} ;}`);
+  }
 
   /**
    * One of "none", "single" or "multiple", indicating how rows can be selected.
@@ -118,11 +124,14 @@ export class ChGrid {
   gridRowActionsEl: HTMLElement;
   gridRowActionsEnabled: boolean;
   gridSettingsUI: HTMLChGridSettingsElement;
+  styleSheet: CSSStyleSheet = new CSSStyleSheet();
 
   componentWillLoad() {
     this.manager = new ChGridManager(this);
     this.gridStyle = this.manager.getGridStyle();
     this.rowsSelected = this.manager.getRowsSelected();
+
+    this.el.shadowRoot.adoptedStyleSheets.push(this.styleSheet);
   }
 
   componentDidLoad() {

@@ -15,6 +15,7 @@ import {
 } from "../paginator/paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
 import {
+  ChGridColumnFreezeChangedEvent,
   ChGridColumnHiddenChangedEvent,
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
@@ -123,6 +124,7 @@ export class GridChameleon {
     );
   }
 
+  @Listen("columnSizeChanging")
   @Listen("columnSizeChanged")
   columnSizeChangedHandler(
     eventInfo: CustomEvent<ChGridColumnSizeChangedEvent>
@@ -130,6 +132,16 @@ export class GridChameleon {
     GridChameleonManagerState.setColumnSize(
       eventInfo.detail.columnId,
       eventInfo.detail.size
+    );
+  }
+
+  @Listen("columnFreezeChanged")
+  columnFreezeChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnFreezeChangedEvent>
+  ) {
+    GridChameleonManagerState.setColumnFreeze(
+      eventInfo.detail.columnId,
+      eventInfo.detail.freeze
     );
   }
 
@@ -322,6 +334,7 @@ export class GridChameleon {
                 columnName={column.title}
                 columnNamePosition={column.NamePosition}
                 size={this.getColumnSize(column)}
+                order={column.order ? column.order : null}
                 displayObserverClass={column.gxColumnClass}
                 class={`${this.grid.ColumnClass} ${column.HeaderClass} ${
                   column.isFiltering ? "grid-column-filtering" : ""

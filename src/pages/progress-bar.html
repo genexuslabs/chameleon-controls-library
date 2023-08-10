@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-progress-bar</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h3>Custom Progress Bar</h3>
+      <label for="timeout_i">Timeout</label><br>
+      <input type="number" id="timeout_i" name="timeout_i" value="4000"><br><br>
+      <button onclick="updateProgressBar()">Update</button>
+      <br><br>
+      <ch-progress-bar progress="0"></ch-progress-bar>
+    </div>
+    <script src="./assets/common.js"></script>
+    <script>
+        const barElement = document.querySelector('ch-progress-bar');
+        const timeoutEl = document.getElementById("timeout_i");
+        let timerId = null;
+
+        function updateProgressBar() {
+            let countdown = timeoutEl.value
+            barElement.progress = countdown;
+            barElement.animationTime = countdown;
+            clearInterval(timerId);
+            timerId = setInterval(() => {
+              if (barElement.progress <= 0) {
+                  clearInterval(timerId);
+                } else {
+                  countdown -= 100;
+                  barElement.progress = (countdown * 100) / timeoutEl.value;
+                }
+            }, 100);
+        };
+    </script>
+  </body>
+</html>

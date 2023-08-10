@@ -1,36 +1,47 @@
 :host {
   display: grid;
-  grid-template-columns: min-content 1fr min-content;
-  grid-template-rows: 1fr min-content;
-  grid-template-areas: 
-    "img content button"
-    "progress-bar progress-bar progress-bar"
+  grid-template:
+    "img content button" 1fr
+    "progress-bar progress-bar progress-bar" min-content
+  / min-content 1fr min-content;
+}
+:host(.pause-on-hover:hover){
+  ::part(indicator) {
+    -webkit-animation-play-state:paused;
+    -moz-animation-play-state:paused;
+    -o-animation-play-state:paused;
+    animation-play-state:paused;
+  }
 }
 
-
-:host::part(alert__img) {
+.image {
   max-width: 20px;
   height: 20px;
   grid-area: img;
 }
 
-:host::part(alert__content) {
+.content {
   grid-area: content;
 }
 
-:host::part(alert__close-button) {
+.close-button {
   grid-area: button;
+  .close-button-img {
+    -webkit-mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.875 18L6.75 16.875L11.25 12.375L6.75 7.875L7.875 6.75L12.375 11.25L16.875 6.75L18 7.875L13.5 12.375L18 16.875L16.875 18L12.375 13.5L7.875 18Z'/%3E%3C/svg%3E")
+    50% 50% / 24px 24px no-repeat;
+    width: 24px;
+    height: 24px;
+    background-color: currentColor;
+  }
 }
 
-.progress-bar_container {
+.indicator_container {
   grid-area: progress-bar;
 }
 
-
-.close-button-img {
-  -webkit-mask: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.875 18L6.75 16.875L11.25 12.375L6.75 7.875L7.875 6.75L12.375 11.25L16.875 6.75L18 7.875L13.5 12.375L18 16.875L16.875 18L12.375 13.5L7.875 18Z'/%3E%3C/svg%3E")
-    50% 50% / 24px 24px no-repeat;
-  width: 10px;
-  height: 10px;
-  background-color: currentColor;
+:where(button) {
+  all: unset;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }

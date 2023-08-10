@@ -29,12 +29,12 @@ export class ChProgressBar {
       "aria-valuemax": "100",
       "aria-valuenow": this.progress
     };
-
     return (
       <Host>
         <div
           {...accessibilityAttributes}
           part="indicator"
+          class="indicator"
           style={{
             width: `${this.progress}%`,
             "--animation-time": `${this.animationTime}ms`

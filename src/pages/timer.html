@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-timer</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h3>Custom timer</h3>
+      <label for="timeout_i">Timeout</label><br>
+      <input type="number" id="timeout_i" name="timeout_i" value="4000"><br><br>
+      <button onclick="updateTimer()">Update</button>
+      <br><br>
+      <ch-timer progress="0"></ch-timer>
+    </div>
+    <script src="./assets/common.js"></script>
+    <script>
+        const timerElement = document.querySelector('ch-timer');
+        const timeoutEl = document.getElementById("timeout_i");
+        let timerId = null;
+        function updateTimer() {
+            timerElement.progress = timeoutEl.value;
+            clearInterval(timerId);
+            timerId = setInterval(() => {
+                if (timerElement.progress <= 0) {
+                    clearInterval(timerId);
+                } else {
+                    timerElement.progress -= 50;
+                }
+            }, 50);
+        }
+    </script>
+  </body>
+</html>

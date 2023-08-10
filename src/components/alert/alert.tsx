@@ -99,43 +99,52 @@ export class ChAlert {
         role="alert"
         onMouseEnter={this.pauseOnHover && this.handleMouseEnter}
         onMouseLeave={this.pauseOnHover && this.handleMouseLeave}
-        part="alert__container"
         aria-hidden={!this.presented ? "true" : "false"}
+        class={this.pauseOnHover && "pause-on-hover"}
       >
         {this.presented && [
           this.leftImgSrc && (
             <img
-              part="alert__img"
+              part="image"
+              class="image"
               src={this.leftImgSrc}
               alt=""
               aria-hidden="true"
               loading="lazy"
             />
           ),
-          <div part="alert__content">
+          <div part="content" class="content">
             <slot name="content"></slot>
           </div>,
           this.showCloseButton && (
             <button
-              part="alert__close-button"
+              part="close-button"
+              class="close-button"
               type="button"
-              class="close-button-img"
               aria-label={this.closeButtonAccessibleName}
-              disabled={false}
               onClick={this.handleAlertClose}
             >
-              <slot name="button" aria-hidden="true"></slot>
+              <slot name="button" aria-hidden="true">
+                <div aria-hidden="true" class="close-button-img"></div>
+              </slot>
             </button>
           ),
           this.showTimeoutBar && (
             <ch-progress-bar
+              part="indicator_container"
+              class="indicator_container"
               exportparts="indicator"
-              progress={(this.countdown / this.dismissTimeout) * 100}
-              accessibleName="alert"
-              class="progress-bar_container"
-              animation-time={this.timerInterval}
+              progress={(this.countdown * 100) / this.dismissTimeout}
+              accessibleName={`${this.countdown / 1000} seconds left`}
+              animation-time={this.dismissTimeout}
             ></ch-progress-bar>
-          )
+          ),
+          <ch-timer
+            exportparts="indicator"
+            class="timer"
+            accessibleName={`${this.countdown / 1000} seconds left`}
+            progress={(this.countdown * 100) / this.dismissTimeout}
+          ></ch-timer>
         ]}
       </Host>
     );

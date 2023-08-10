@@ -1,6 +1,10 @@
-:host::part(indicator) {
-  height: 5px;
-  background-color: #cdcd44; 
+@keyframes transition {
+  0% { width: 100% }
+  100% { width: 0 } 
+}
 
-  transition: width var(--animation-time) linear;  
+.indicator {
+  height: 5px;
+  background-color: #cdcd44;
+  animation: transition var(--animation-time) linear;
 }

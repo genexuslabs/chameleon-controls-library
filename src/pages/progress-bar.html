@@ -19,28 +19,28 @@
       <input type="number" id="timeout_i" name="timeout_i" value="4000"><br><br>
       <button onclick="updateProgressBar()">Update</button>
       <br><br>
-      <ch-progress-bar progress="0"></ch-progress-bar>
+      <ch-progress-bar></ch-progress-bar>
     </div>
     <script src="./assets/common.js"></script>
     <script>
-        const barElement = document.querySelector('ch-progress-bar');
-        const timeoutEl = document.getElementById("timeout_i");
-        let timerId = null;
+      const barElement = document.querySelector('ch-progress-bar');
+      const timeoutEl = document.getElementById("timeout_i");
 
-        function updateProgressBar() {
-            let countdown = timeoutEl.value
-            barElement.progress = countdown;
-            barElement.animationTime = countdown;
+      let timerId = null;
+
+      function updateProgressBar() {
+        clearInterval(timerId);
+        let countdown = timeoutEl.value;
+        timerId = setInterval(() => {
+          barElement.animationTime = timeoutEl.value;
+          if (countdown <= 0) {
             clearInterval(timerId);
-            timerId = setInterval(() => {
-              if (barElement.progress <= 0) {
-                  clearInterval(timerId);
-                } else {
-                  countdown -= 100;
-                  barElement.progress = (countdown * 100) / timeoutEl.value;
-                }
-            }, 100);
-        };
+          } else {
+            countdown -= 20;
+            barElement.progress = (countdown * 100) / timeoutEl.value;
+          }
+        }, 20);
+      };
     </script>
   </body>
 </html>

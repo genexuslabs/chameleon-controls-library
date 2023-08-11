@@ -65,17 +65,19 @@ export class ChAlert {
   countdownWatcher(newValue) {
     if (newValue <= 0) {
       this.presented = false;
-      clearInterval(this.timerId);
     }
   }
 
+  private counter = () => {
+    this.countdown -= this.timerInterval;
+  };
+
   /** Starts a new countdown which interval is set in timerInterval */
   private start = () => {
+    clearInterval(this.timerId);
     if (this.presented && this.dismissTimeout !== 0) {
-      clearInterval(this.timerId);
-      this.timerId = setInterval(() => {
-        this.countdown -= this.timerInterval;
-      }, this.timerInterval);
+      this.counter;
+      this.timerId = setInterval(this.counter, this.timerInterval);
     }
   };
 
@@ -114,7 +116,16 @@ export class ChAlert {
             />
           ),
           <div part="content" class="content">
-            <slot name="content"></slot>
+            <slot name="content">
+              <small>Remaining time: </small>
+              <ch-timer
+                exportparts="indicator"
+                class="timer"
+                accessibleName={`${this.countdown / 1000} seconds left`}
+                progress={Math.trunc(this.countdown / 1000)}
+              ></ch-timer>
+              <small> seconds left.</small>
+            </slot>
           </div>,
           this.showCloseButton && (
             <button
@@ -138,13 +149,7 @@ export class ChAlert {
               accessibleName={`${this.countdown / 1000} seconds left`}
               animation-time={this.dismissTimeout}
             ></ch-progress-bar>
-          ),
-          <ch-timer
-            exportparts="indicator"
-            class="timer"
-            accessibleName={`${this.countdown / 1000} seconds left`}
-            progress={(this.countdown * 100) / this.dismissTimeout}
-          ></ch-timer>
+          )
         ]}
       </Host>
     );

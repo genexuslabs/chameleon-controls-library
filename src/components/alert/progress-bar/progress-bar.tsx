@@ -7,7 +7,7 @@ import { Component, Host, h, Prop } from "@stencil/core";
 })
 export class ChProgressBar {
   /**
-   * Sets the progress propiety to determine the width of the bar.
+   * Sets the progress propiety to determine the width of the bar (as a percentage)
    */
   @Prop() readonly progress: number = 0;
 
@@ -36,7 +36,7 @@ export class ChProgressBar {
           part="indicator"
           class="indicator"
           style={{
-            width: `${this.progress}%`,
+            "--width": `${this.progress}%`,
             "--animation-time": `${this.animationTime}ms`
           }}
         ></div>

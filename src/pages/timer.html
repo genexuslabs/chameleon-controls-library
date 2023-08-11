@@ -19,24 +19,28 @@
       <input type="number" id="timeout_i" name="timeout_i" value="4000"><br><br>
       <button onclick="updateTimer()">Update</button>
       <br><br>
-      <ch-timer progress="0"></ch-timer>
+      <span>Remaining time: </span>
+      <ch-timer></ch-timer>
+      <span> seconds left.</span>
     </div>
     <script src="./assets/common.js"></script>
     <script>
-        const timerElement = document.querySelector('ch-timer');
-        const timeoutEl = document.getElementById("timeout_i");
-        let timerId = null;
-        function updateTimer() {
-            timerElement.progress = timeoutEl.value;
+      const timerElement = document.querySelector('ch-timer');
+      const timeoutEl = document.getElementById("timeout_i");
+      let timerId = null;
+      function updateTimer() {
+        let progress = timeoutEl.value
+        timerElement.progress = progress / 1000;
+        clearInterval(timerId);
+        timerId = setInterval(() => {
+          if (progress <= 0) {
             clearInterval(timerId);
-            timerId = setInterval(() => {
-                if (timerElement.progress <= 0) {
-                    clearInterval(timerId);
-                } else {
-                    timerElement.progress -= 50;
-                }
-            }, 50);
-        }
+          } else {
+            progress -= 50;
+            timerElement.progress = progress / 1000;
+          }
+        }, 50);
+      }
     </script>
   </body>
 </html>

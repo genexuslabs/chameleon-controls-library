@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-tooltip</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <style>
+      
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="ch-tooltip">
+        <br>
+        <button onmouseover="toggleTooltip()" onmouseleave="toggleTooltip()" aria-describedby="tooltip">Open</button>
+        <ch-tooltip
+            id="tooltip"
+            caption="Test tooltip"
+            hidden
+            position="InsideStart_OutsideStart"
+        >
+            <span>This is my test tooltip</span>
+        </ch-tooltip>
+
+        <h3>Custom tooltip</h3>
+        <label for="caption_i">Caption & Content</label><br>
+        <input type="text" id="caption_i" name="caption_i" value="This is my test tooltip"><br><br>
+        <label for="position">Position x y </label><br>
+        <select name="position" id="position">
+            <option value="OutsideStart_OutsideStart">OutsideStart OutsideStart</option>
+            <option value="InsideStart_OutsideStart">InsideStart OutsideStart</option>
+            <option value="Center_OutsideStart">Center OutsideStart</option>
+            <option value="InsideEnd_OutsideStart">InsideEnd OutsideStart</option>
+            <option value="OutsideEnd_OutsideStart">OutsideEnd OutsideStart</option>
+            <option value="OutsideStart_InsideStart">OutsideStart InsideStart</option>
+            <option value="OutsideEnd_InsideStart">OutsideEnd InsideStart</option>
+            <option value="OutsideStart_Center">OutsideStart Center</option>
+            <option value="OutsideEnd_Center">OutsideEnd Center</option>
+            <option value="OutsideStart_InsideEnd">OutsideStart InsideEnd</option>
+            <option value="OutsideEnd_InsideEnd">OutsideEnd InsideEnd</option>
+            <option value="OutsideStart_OutsideEnd">OutsideStart OutsideEnd</option>
+            <option value="InsideStart_OutsideEnd">InsideStart OutsideEnd</option>
+            <option value="Center_OutsideEnd">Center OutsideEnd</option>
+            <option value="InsideEnd_OutsideEnd">InsideEnd OutsideEnd</option>
+            <option value="OutsideEnd_OutsideEnd">OutsideEnd OutsideEnd</option>
+        </select>
+
+      </section>
+    </div>
+
+    <script>
+        function toggleTooltip() {
+            const tooltipEl = document.querySelector("ch-tooltip");
+            if (tooltipEl.hidden) {
+                tooltipEl.hidden = false
+                tooltipEl.caption = document.getElementById("caption_i").value;
+                tooltipEl.position = document.getElementById("position").value;
+            } else { tooltipEl.hidden = true }
+        }
+        var windowEl = document.querySelector("ch-tooltip");
+        var buttonEl = document.querySelector("button");
+        windowEl.container = buttonEl;
+      </script>
+  
+
+    <script src="./assets/common.js"></script>
+  </body>
+</html>

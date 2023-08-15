@@ -9,7 +9,7 @@ export class ChProgressBar {
   /**
    * Sets the progress propiety to determine the width of the bar (as a percentage)
    */
-  @Prop() readonly progress: number = 0;
+  @Prop() readonly progress: number = 100;
 
   /**
    * Sets the accesible name of the progress bar.
@@ -21,6 +21,11 @@ export class ChProgressBar {
    */
   @Prop() readonly animationTime: number = 0;
 
+  /**
+   * Sets the presented property to handle the component presentation.
+   */
+  @Prop() readonly presented: boolean = false;
+
   render() {
     const accessibilityAttributes = {
       role: "progressbar",
@@ -31,15 +36,16 @@ export class ChProgressBar {
     };
     return (
       <Host>
-        <div
-          {...accessibilityAttributes}
-          part="indicator"
-          class="indicator"
-          style={{
-            "--width": `${this.progress}%`,
-            "--animation-time": `${this.animationTime}ms`
-          }}
-        ></div>
+        {this.presented && this.progress >= 0 && (
+          <div
+            {...accessibilityAttributes}
+            part="indicator"
+            class="indicator"
+            style={{
+              "--animation-time": `${this.animationTime}ms`
+            }}
+          ></div>
+        )}
       </Host>
     );
   }

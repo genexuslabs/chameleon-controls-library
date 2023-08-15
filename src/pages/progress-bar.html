@@ -17,7 +17,7 @@
       <h3>Custom Progress Bar</h3>
       <label for="timeout_i">Timeout</label><br>
       <input type="number" id="timeout_i" name="timeout_i" value="4000"><br><br>
-      <button onclick="updateProgressBar()">Update</button>
+      <button id="btn" onclick="updateProgressBar()">Update</button>
       <br><br>
       <ch-progress-bar></ch-progress-bar>
     </div>
@@ -25,21 +25,25 @@
     <script>
       const barElement = document.querySelector('ch-progress-bar');
       const timeoutEl = document.getElementById("timeout_i");
-
+      
       let timerId = null;
+      let countdown = 0;
 
       function updateProgressBar() {
-        clearInterval(timerId);
-        let countdown = timeoutEl.value;
+        document.querySelector('#btn').disabled = true;
+        countdown = timeoutEl.value
+        barElement.animationTime = timeoutEl.value
+        barElement.presented = true
         timerId = setInterval(() => {
-          barElement.animationTime = timeoutEl.value;
-          if (countdown <= 0) {
-            clearInterval(timerId);
-          } else {
-            countdown -= 20;
-            barElement.progress = (countdown * 100) / timeoutEl.value;
-          }
-        }, 20);
+            if (countdown <= 0) {
+              clearInterval(timerId);
+              barElement.presented = false
+              document.querySelector('#btn').disabled = false;
+            } else {
+              countdown -= 20;
+              barElement.progress = (countdown * 100) / timeoutEl.value;
+            }
+          }, 20);
       };
     </script>
   </body>

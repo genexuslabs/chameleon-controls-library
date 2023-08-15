@@ -6,5 +6,5 @@
 .indicator {
   height: 5px;
   background-color: #cdcd44;
-  animation: transition var(--animation-time) linear;
+  animation: var(--animation-time) linear 1 forwards transition;
 }

@@ -148,6 +148,7 @@ export class ChAlert {
               progress={(this.countdown * 100) / this.dismissTimeout}
               accessibleName={`${this.countdown / 1000} seconds left`}
               animation-time={this.dismissTimeout}
+              presented={this.presented}
             ></ch-progress-bar>
           )
         ]}

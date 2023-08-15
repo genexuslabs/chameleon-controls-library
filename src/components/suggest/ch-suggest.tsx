@@ -23,7 +23,7 @@ const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChSuggest {
   /*
@@ -41,7 +41,7 @@ INDEX:
 11.RENDER() FUNCTION
 */
 
-  /// 1.OWN PROPERTIES ///
+  // / 1.OWN PROPERTIES ///
 
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
@@ -81,7 +81,7 @@ INDEX:
       );
       newFocusedItem && newFocusedItem.focus();
       if (!nextFocusedItem) {
-        /*This is the last item. Adjust window scroll to be at the very bottom*/
+        /* This is the last item. Adjust window scroll to be at the very bottom*/
         this.scrollListToBottom();
       }
     },
@@ -93,33 +93,33 @@ INDEX:
       const nextFocusedItem = this.getNewFocusedItem(newFocusedItem, ARROW_UP);
       newFocusedItem && newFocusedItem.focus();
       if (!nextFocusedItem) {
-        /*This is the first item. Adjust window scroll to be at the very top*/
+        /* This is the first item. Adjust window scroll to be at the very top*/
         this.scrollListToTop();
       }
     }
   };
 
-  /// 2. REFERENCE TO ELEMENTS ///
+  // / 2. REFERENCE TO ELEMENTS ///
 
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
   @Element() el: HTMLChSuggestElement;
 
-  /// 3.STATE() VARIABLES ///
+  // / 3.STATE() VARIABLES ///
   @State() windowHidden = true;
 
-  /// 4.PUBLIC PROPERTY API ///
+  // / 4.PUBLIC PROPERTY API ///
 
-  /// 5.EVENTS (EMIT) ///
+  // / 5.EVENTS (EMIT) ///
 
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
   @Event() inputChanged: EventEmitter<string>;
 
-  /// 6.COMPONENT LIFECYCLE EVENTS ///
+  // / 6.COMPONENT LIFECYCLE EVENTS ///
 
-  /// 7.LISTENERS ///
+  // / 7.LISTENERS ///
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<itemSelected>) {
@@ -159,7 +159,7 @@ INDEX:
     this.windowHidden = true;
   }
 
-  /// 8.WATCH ///
+  // / 8.WATCH ///
   @Watch("windowHidden")
   windowHiddenHandler(newValue: boolean) {
     if (newValue) {
@@ -174,9 +174,9 @@ INDEX:
     this.inputChanged.emit(newValue);
   }
 
-  /// 9.PUBLIC METHODS API ///
+  // / 9.PUBLIC METHODS API ///
 
-  /// 10.LOCAL METHODS ///
+  // / 10.LOCAL METHODS ///
 
   private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");
@@ -190,7 +190,7 @@ INDEX:
     currentFocusedItem: HTMLChSuggestListItemElement,
     direction: typeof ARROW_DOWN | typeof ARROW_UP
   ): HTMLChSuggestListItemElement => {
-    /*Helper function that returns the list item that should get focus (the first one, or the last one)*/
+    /* Helper function that returns the list item that should get focus (the first one, or the last one)*/
     const getListChild = (list: HTMLChSuggestListElement) => {
       const listItems = list.querySelectorAll("ch-suggest-list-item");
       let listChild = listItems && listItems[listItems.length - 1];
@@ -204,7 +204,9 @@ INDEX:
       return listChild;
     };
 
-    if (!currentFocusedItem) return;
+    if (!currentFocusedItem) {
+      return;
+    }
     let newFocusedItem =
       direction === ARROW_DOWN
         ? currentFocusedItem.nextElementSibling
@@ -212,13 +214,13 @@ INDEX:
     if (newFocusedItem?.nodeName === "CH-SUGGEST-LIST") {
       newFocusedItem = getListChild(newFocusedItem as HTMLChSuggestListElement);
     } else if (!newFocusedItem) {
-      /*this could be the last item of a list, but not the last item*/
+      /* this could be the last item of a list, but not the last item*/
       const parent = currentFocusedItem.parentElement;
       const sibling =
         direction === ARROW_DOWN
           ? parent.nextElementSibling
           : parent.previousElementSibling;
-      const parentIsList = parent.nodeName === "CH-SUGGEST-LIST" ? true : false;
+      const parentIsList = parent.nodeName === "CH-SUGGEST-LIST";
       if (
         parentIsList &&
         sibling &&
@@ -304,7 +306,7 @@ INDEX:
     this.windowHidden = true;
   };
 
-  /// 10.RENDER() FUNCTION ///
+  // / 10.RENDER() FUNCTION ///
 
   render() {
     return (

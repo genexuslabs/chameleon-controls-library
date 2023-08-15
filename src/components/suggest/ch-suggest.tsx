@@ -41,7 +41,7 @@ INDEX:
 11.RENDER() FUNCTION
 */
 
-  // / 1.OWN PROPERTIES ///
+  // 1.OWN PROPERTIES //
 
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
@@ -99,27 +99,27 @@ INDEX:
     }
   };
 
-  // / 2. REFERENCE TO ELEMENTS ///
+  // 2. REFERENCE TO ELEMENTS //
 
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
   @Element() el: HTMLChSuggestElement;
 
-  // / 3.STATE() VARIABLES ///
+  // 3.STATE() VARIABLES //
   @State() windowHidden = true;
 
-  // / 4.PUBLIC PROPERTY API ///
+  // 4.PUBLIC PROPERTY API //
 
-  // / 5.EVENTS (EMIT) ///
+  // 5.EVENTS (EMIT) //
 
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
   @Event() inputChanged: EventEmitter<string>;
 
-  // / 6.COMPONENT LIFECYCLE EVENTS ///
+  // 6.COMPONENT LIFECYCLE EVENTS //
 
-  // / 7.LISTENERS ///
+  // 7.LISTENERS //
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<itemSelected>) {
@@ -159,7 +159,7 @@ INDEX:
     this.windowHidden = true;
   }
 
-  // / 8.WATCH ///
+  // 8.WATCH //
   @Watch("windowHidden")
   windowHiddenHandler(newValue: boolean) {
     if (newValue) {
@@ -174,9 +174,9 @@ INDEX:
     this.inputChanged.emit(newValue);
   }
 
-  // / 9.PUBLIC METHODS API ///
+  // 9.PUBLIC METHODS API //
 
-  // / 10.LOCAL METHODS ///
+  // 10.LOCAL METHODS //
 
   private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");
@@ -306,7 +306,7 @@ INDEX:
     this.windowHidden = true;
   };
 
-  // / 10.RENDER() FUNCTION ///
+  // 10.RENDER() FUNCTION //
 
   render() {
     return (

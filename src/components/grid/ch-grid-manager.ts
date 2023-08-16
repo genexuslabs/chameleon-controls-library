@@ -70,23 +70,19 @@ export class ChGridManager {
   }
 
   getScrollOffsetLeft(): number {
-    return this.grid.manager.columns
-      .getColumns(true)
-      .reduce((offsetRight, column) => {
-        return column.freeze == "start" && !column.hidden
-          ? offsetRight + column.offsetWidth
-          : offsetRight;
-      }, 0);
+    return this.columns.getColumns(true).reduce((offsetRight, column) => {
+      return column.freeze === "start" && !column.hidden
+        ? offsetRight + column.offsetWidth
+        : offsetRight;
+    }, 0);
   }
 
   getScrollOffsetRight(): number {
-    return this.grid.manager.columns
-      .getColumns(true)
-      .reduce((offsetRight, column) => {
-        return column.freeze == "end" && !column.hidden
-          ? offsetRight + column.offsetWidth
-          : offsetRight;
-      }, 0);
+    return this.columns.getColumns(true).reduce((offsetRight, column) => {
+      return column.freeze === "end" && !column.hidden
+        ? offsetRight + column.offsetWidth
+        : offsetRight;
+    }, 0);
   }
 
   getPreviousRow(current: HTMLChGridRowElement): HTMLChGridRowElement {
@@ -114,7 +110,7 @@ export class ChGridManager {
 
   getPreviousCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
     const columnOrder = current.column.order;
-    const previousColumn = this.grid.manager.columns
+    const previousColumn = this.columns
       .getColumns()
       .reduce((previous, column) => {
         return column.order < columnOrder &&
@@ -133,15 +129,13 @@ export class ChGridManager {
 
   getNextCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
     const columnOrder = current.column.order;
-    const nextColumn = this.grid.manager.columns
-      .getColumns()
-      .reduce((previous, column) => {
-        return column.order > columnOrder &&
-          !column.hidden &&
-          (!previous || column.order < previous.order)
-          ? column
-          : previous;
-      }, null);
+    const nextColumn = this.columns.getColumns().reduce((previous, column) => {
+      return column.order > columnOrder &&
+        !column.hidden &&
+        (!previous || column.order < previous.order)
+        ? column
+        : previous;
+    }, null);
 
     if (nextColumn) {
       return current.row.querySelector(
@@ -261,7 +255,8 @@ export class ChGridManager {
   columnDragStart(columnId: string) {
     this.columnDragManager = new ChGridManagerColumnDrag(
       columnId,
-      this.columnsManager.getColumns()
+      this.columnsManager.getColumns(),
+      this.isRTLDirection()
     );
   }
 
@@ -541,7 +536,7 @@ export class ChGridManager {
   private getColumnIndentStyle(column: HTMLChGridColumnElement): CSSProperties {
     return {
       [`--ch-grid-column-${column.physicalOrder}-content`]:
-        column.order == 1 ? "''" : "none"
+        column.order === 1 ? "''" : "none"
     };
   }
 
@@ -555,5 +550,9 @@ export class ChGridManager {
         ),
       { passive: true }
     );
+  }
+
+  private isRTLDirection(): boolean {
+    return getComputedStyle(this.grid.el).direction === "rtl";
   }
 }

@@ -7,7 +7,8 @@ import {
   ChGridSelectionChangedEvent,
   ChGridRowClickedEvent,
   ChGridMarkingChangedEvent,
-  ChGridCellSelectionChangedEvent
+  ChGridCellSelectionChangedEvent,
+  ChGridRowPressedEvent
 } from "./ch-grid-types";
 import {
   Component,
@@ -45,34 +46,106 @@ import { ManagerSelectionState } from "./ch-grid-manager-selection";
   shadow: true
 })
 export class ChGrid {
+  manager: ChGridManager;
+  gridMainEl: HTMLElement;
+  gridRowActionsEl: HTMLElement;
+  gridRowActionsEnabled: boolean;
+  private settingsUI: HTMLChGridSettingsElement;
+  private styleSheet: CSSStyleSheet = new CSSStyleSheet();
+
   @Element() el: HTMLChGridElement;
 
-  /**
-   * Event emitted when the row selection is changed.
-   */
-  @Event() selectionChanged: EventEmitter<ChGridSelectionChangedEvent>;
-
-  /**
-   * Event emitted when the row marking is changed.
-   */
-  @Event() rowMarkingChanged: EventEmitter<ChGridMarkingChangedEvent>;
-
-  /**
-   * Event emitted when the cell selection is changed.
-   */
-  @Event() cellSelectionChanged: EventEmitter<ChGridCellSelectionChangedEvent>;
-
-  /**
-   * Event emitted when a row is clicked.
-   */
-  @Event() rowClicked: EventEmitter<ChGridRowClickedEvent>;
-
   @State() rowFocused: HTMLChGridRowElement;
+
+  @Watch("rowFocused")
+  rowFocusedHandler(row: HTMLChGridRowElement, previous: HTMLChGridRowElement) {
+    if (row) {
+      row.focused = true;
+    }
+    if (previous) {
+      previous.focused = false;
+    }
+  }
+
   @State() rowHighlighted: HTMLChGridRowElement;
+
+  @Watch("rowHighlighted")
+  rowHighlightedHandler(
+    row: HTMLChGridRowElement,
+    previous: HTMLChGridRowElement
+  ) {
+    if (row) {
+      row.highlighted = true;
+    }
+    if (previous) {
+      previous.highlighted = false;
+    }
+
+    if (this.gridRowActionsEnabled) {
+      this.manager.setRowActionsPosition(row);
+    }
+  }
+
   @State() rowsMarked: HTMLChGridRowElement[] = [];
+
+  @Watch("rowsMarked")
+  rowsMarkedHandler(
+    rows: HTMLChGridRowElement[],
+    previous: HTMLChGridRowElement[]
+  ) {
+    this.manager.selection.syncRowSelector(rows, previous, "mark");
+    this.rowMarkingChanged.emit({ rowsId: rows.map(row => row.rowId) });
+  }
+
   @State() rowsSelected: HTMLChGridRowElement[] = [];
+
+  @Watch("rowsSelected")
+  rowsSelectedHandler(
+    rows: HTMLChGridRowElement[],
+    previous: HTMLChGridRowElement[]
+  ) {
+    if (previous) {
+      previous
+        .filter(row => !rows.includes(row))
+        .forEach(row => (row.selected = false));
+    }
+    if (rows) {
+      rows.forEach(row => (row.selected = true));
+    }
+
+    this.manager.selection.syncRowSelector(rows, previous, "select");
+    this.selectionChanged.emit({ rowsId: rows.map(row => row.rowId) });
+  }
+
   @State() cellSelected: HTMLChGridCellElement;
+
+  @Watch("cellSelected")
+  cellSelectedHandler(
+    cell: HTMLChGridCellElement,
+    previous: HTMLChGridCellElement
+  ) {
+    if (cell) {
+      cell.selected = true;
+    }
+    if (previous) {
+      previous.selected = false;
+    }
+
+    this.cellSelectionChanged.emit({
+      cellId: this.cellSelected ? this.cellSelected.cellId : null,
+      rowId: this.cellSelected ? this.cellSelected.row.rowId : null,
+      columnId: this.cellSelected ? this.cellSelected.column.columnId : null
+    });
+  }
+
   @State() gridStyle: CSSProperties;
+
+  @State() baseLayer: number;
+
+  @Watch("baseLayer")
+  baseLayerHandler(value: number) {
+    this.styleSheet.replace(`:host { --ch-grid-base-layer: ${value} ;}`);
+  }
 
   /**
    * One of "none", "single" or "multiple", indicating how rows can be selected.
@@ -109,20 +182,51 @@ export class ChGrid {
   @Prop() readonly rowMarkedClass: string;
 
   /**
+   * A boolean indicating whether the user can drag column headers to reorder columns.
+   */
+  @Prop() readonly allowColumnReorder: boolean = true;
+
+  /**
    * An object that contains localized strings for the grid.
    */
   @Prop() readonly localization: GridLocalization;
 
-  manager: ChGridManager;
-  gridMainEl: HTMLElement;
-  gridRowActionsEl: HTMLElement;
-  gridRowActionsEnabled: boolean;
-  gridSettingsUI: HTMLChGridSettingsElement;
+  /**
+   * Event emitted when the row selection is changed.
+   */
+  @Event() selectionChanged: EventEmitter<ChGridSelectionChangedEvent>;
+
+  /**
+   * Event emitted when the row marking is changed.
+   */
+  @Event() rowMarkingChanged: EventEmitter<ChGridMarkingChangedEvent>;
+
+  /**
+   * Event emitted when the cell selection is changed.
+   */
+  @Event() cellSelectionChanged: EventEmitter<ChGridCellSelectionChangedEvent>;
+
+  /**
+   * Event emitted when a row is clicked.
+   */
+  @Event() rowClicked: EventEmitter<ChGridRowClickedEvent>;
+
+  /**
+   * Event emitted when a row is double clicked.
+   */
+  @Event() rowDoubleClicked: EventEmitter<ChGridRowClickedEvent>;
+
+  /**
+   * Event emitted when Enter is pressed on a row.
+   */
+  @Event() rowEnterPressed: EventEmitter<ChGridRowPressedEvent>;
 
   componentWillLoad() {
     this.manager = new ChGridManager(this);
     this.gridStyle = this.manager.getGridStyle();
     this.rowsSelected = this.manager.getRowsSelected();
+
+    this.el.shadowRoot.adoptedStyleSheets.push(this.styleSheet);
   }
 
   componentDidLoad() {
@@ -140,79 +244,6 @@ export class ChGrid {
     ) {
       return false;
     }
-  }
-
-  @Watch("rowHighlighted")
-  rowHighlightedHandler(
-    row: HTMLChGridRowElement,
-    previous: HTMLChGridRowElement
-  ) {
-    if (row) {
-      row.highlighted = true;
-    }
-    if (previous) {
-      previous.highlighted = false;
-    }
-
-    if (this.gridRowActionsEnabled) {
-      this.manager.setRowActionsPosition(row);
-    }
-  }
-
-  @Watch("rowFocused")
-  rowFocusedHandler(row: HTMLChGridRowElement, previous: HTMLChGridRowElement) {
-    if (row) {
-      row.focused = true;
-    }
-    if (previous) {
-      previous.focused = false;
-    }
-  }
-
-  @Watch("rowsSelected")
-  rowsSelectedHandler(
-    rows: HTMLChGridRowElement[],
-    previous: HTMLChGridRowElement[]
-  ) {
-    if (previous) {
-      previous
-        .filter(row => !rows.includes(row))
-        .forEach(row => (row.selected = false));
-    }
-    if (rows) {
-      rows.forEach(row => (row.selected = true));
-    }
-
-    this.manager.selection.syncRowSelector(rows, previous, "select");
-    this.selectionChanged.emit({ rowsId: rows.map(row => row.rowId) });
-  }
-
-  @Watch("rowsMarked")
-  rowsMarkedHandler(
-    rows: HTMLChGridRowElement[],
-    previous: HTMLChGridRowElement[]
-  ) {
-    this.manager.selection.syncRowSelector(rows, previous, "mark");
-    this.rowMarkingChanged.emit({ rowsId: rows.map(row => row.rowId) });
-  }
-
-  @Watch("cellSelected")
-  cellSelectedHandler(
-    cell: HTMLChGridCellElement,
-    previous: HTMLChGridCellElement
-  ) {
-    if (cell) {
-      cell.selected = true;
-    }
-    if (previous) {
-      previous.selected = false;
-    }
-
-    this.cellSelectionChanged.emit({
-      cellId: this.cellSelected ? this.cellSelected.cellId : null,
-      rowId: this.cellSelected ? this.cellSelected.row.rowId : null,
-      columnId: this.cellSelected ? this.cellSelected.column.columnId : null
-    });
   }
 
   @Listen("focus", { passive: true })
@@ -318,6 +349,9 @@ export class ChGrid {
             eventInfo.shiftKey
           );
           break;
+        case "Enter":
+          this.enterPressedHandler();
+          break;
       }
     }
   }
@@ -327,7 +361,7 @@ export class ChGrid {
     if (
       (this.rowHighlightEnabled === "auto" &&
         this.rowSelectionMode !== "none") ||
-      this.rowHighlightEnabled == true
+      this.rowHighlightEnabled === true
     ) {
       this.rowHighlighted =
         this.manager.getRowEventTarget(eventInfo) ||
@@ -392,6 +426,20 @@ export class ChGrid {
     this.manager.selection.selecting = false;
     this.manager.selection.selectingRow = null;
     this.manager.selection.selectingCell = null;
+  }
+
+  @Listen("dblclick", { passive: true })
+  dblclickHandler(eventInfo: MouseEvent) {
+    const row = this.manager.getRowEventTarget(eventInfo);
+    const cell = this.manager.getCellEventTarget(eventInfo);
+
+    if (row) {
+      this.rowDoubleClicked.emit({
+        rowId: row.rowId,
+        cellId: cell?.cellId,
+        columnId: cell?.column.columnId
+      });
+    }
   }
 
   @Listen("columnSelectorClicked", { passive: true })
@@ -482,12 +530,12 @@ export class ChGrid {
 
   @Listen("settingsShowClicked")
   settingsShowClickedHandler() {
-    this.gridSettingsUI.show = true;
+    this.settingsUI.show = true;
   }
 
   @Listen("settingsCloseClicked")
   settingsCloseClickedHandler() {
-    this.gridSettingsUI.show = false;
+    this.settingsUI.show = false;
   }
 
   /**
@@ -720,6 +768,19 @@ export class ChGrid {
     };
   }
 
+  private enterPressedHandler() {
+    if (this.rowFocused) {
+      const cellFocused =
+        this.cellSelected?.row === this.rowFocused ? this.cellSelected : null;
+
+      this.rowEnterPressed.emit({
+        rowId: this.rowFocused.rowId,
+        cellId: cellFocused ? cellFocused.cellId : null,
+        columnId: cellFocused ? cellFocused.column.columnId : null
+      });
+    }
+  }
+
   private toggleRowsMarked() {
     const columnSelector = this.manager.columns.getColumnSelector();
 
@@ -827,37 +888,11 @@ export class ChGrid {
     }
   }
 
-  render() {
-    return (
-      <Host tabindex={this.rowSelectionMode != "none" ? "0" : false}>
-        <header part="header">
-          <slot name="header"></slot>
-        </header>
-        <section
-          class="main"
-          style={this.gridStyle}
-          part="main"
-          ref={el => (this.gridMainEl = el)}
-        >
-          <slot></slot>
-        </section>
-        <aside>
-          {this.renderSettings()}
-          <slot name="column-display"></slot>
-          {this.renderRowActions()}
-        </aside>
-        <footer part="footer">
-          <slot name="footer"></slot>
-        </footer>
-      </Host>
-    );
-  }
-
   private renderSettings() {
     return (
       <ch-grid-settings
         grid={this.el}
-        ref={el => (this.gridSettingsUI = el)}
+        ref={el => (this.settingsUI = el)}
         exportparts="
           mask:settings-mask,
           window:settings-window,
@@ -893,6 +928,32 @@ export class ChGrid {
       >
         <slot name="row-actions"></slot>
       </section>
+    );
+  }
+
+  render() {
+    return (
+      <Host tabindex={this.rowSelectionMode !== "none" ? "0" : false}>
+        <header part="header">
+          <slot name="header"></slot>
+        </header>
+        <section
+          class="main"
+          style={this.gridStyle}
+          part="main"
+          ref={el => (this.gridMainEl = el)}
+        >
+          <slot></slot>
+        </section>
+        <aside>
+          {this.renderSettings()}
+          <slot name="column-display"></slot>
+          {this.renderRowActions()}
+        </aside>
+        <footer part="footer">
+          <slot name="footer"></slot>
+        </footer>
+      </Host>
     );
   }
 }

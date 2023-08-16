@@ -3,10 +3,11 @@
   position: relative;
   flex-direction: column;
 
-  --ch-grid-column-header-layer: 1000;
-  --ch-grid-column-freeze-layer: 2000;
-  --ch-grid-column-active-layer: 4000;
-  --ch-grid-settings-layer: 8000;
+  --ch-grid-cell-active-layer: calc(var(--ch-grid-base-layer) * 1);
+  --ch-grid-column-header-layer: calc(var(--ch-grid-base-layer) * 2);
+  --ch-grid-column-freeze-layer: calc(var(--ch-grid-base-layer) * 4);
+  --ch-grid-column-active-layer: calc(var(--ch-grid-base-layer) * 8);
+  --ch-grid-settings-layer: calc(var(--ch-grid-base-layer) * 16);
 }
 .main {
   display: none;

@@ -35,7 +35,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
       range = false;
     }
@@ -144,7 +144,7 @@ export class ChGridManagerSelection {
     } else {
       rowsSelected = !rowsSelected.includes(row)
         ? rowsSelected
-        : rowsSelected.filter(rowSelected => rowSelected != row);
+        : rowsSelected.filter(rowSelected => rowSelected !== row);
       cellSelected = null;
     }
 
@@ -157,7 +157,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -191,7 +191,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -234,7 +234,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -280,7 +280,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -314,7 +314,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -354,7 +354,7 @@ export class ChGridManagerSelection {
   ): ManagerSelectionState {
     if (this.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode != "multiple") {
+    } else if (this.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
@@ -492,7 +492,7 @@ export class ChGridManagerSelection {
   ) {
     const columnSelector = this.grid.manager.columns.getColumnSelector();
 
-    if (columnSelector?.richRowSelectorMode == selectorMode) {
+    if (columnSelector?.richRowSelectorMode === selectorMode) {
       const indexColumnSelector = columnSelector.physicalOrder - 1;
 
       previous
@@ -506,8 +506,7 @@ export class ChGridManagerSelection {
         });
 
       rows?.forEach(row => {
-        row.marked =
-          columnSelector.richRowSelectorMode === "mark" ? true : false;
+        row.marked = columnSelector.richRowSelectorMode === "mark";
         const cell = row.children[indexColumnSelector] as HTMLChGridCellElement;
         cell.setSelectorChecked(true);
       });

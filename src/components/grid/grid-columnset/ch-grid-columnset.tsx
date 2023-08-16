@@ -21,7 +21,7 @@ export class ChGridColumnset {
     );
 
     columns.forEach(column => {
-      if (column.columnId != eventInfo.detail.columnId) {
+      if (column.columnId !== eventInfo.detail.columnId) {
         column.sortDirection = null;
       }
     });

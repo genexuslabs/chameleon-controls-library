@@ -19,17 +19,21 @@ import { mouseEventModifierKey } from "../../../common/helpers";
   shadow: true
 })
 export class ChGridColumnResize {
-  @Element() el: HTMLChGridColumnResizeElement;
+  private startPageX: number;
+  private startColumnWidth: number;
+  private mousemoveFn = this.mousemoveHandler.bind(this);
 
-  /**
-   * The column element that is being resized.
-   */
-  @Prop() readonly column!: HTMLChGridColumnElement;
+  @Element() el: HTMLChGridColumnResizeElement;
 
   /**
    * Whether the component is currently resizing the column.
    */
   @State() resizing = false;
+
+  /**
+   * The column element that is being resized.
+   */
+  @Prop() readonly column!: HTMLChGridColumnElement;
 
   /**
    * Event emitted when the user starts resizing the column.
@@ -41,12 +45,34 @@ export class ChGridColumnResize {
    */
   @Event() columnResizeFinished: EventEmitter;
 
-  private startPageX: number;
-  private startColumnWidth: number;
-  private mousemoveFn = this.mousemoveHandler.bind(this);
-
   componentDidLoad() {
     this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
+  }
+
+  @Listen("click", { passive: true })
+  clickHandler(eventInfo: MouseEvent) {
+    eventInfo.stopPropagation();
+  }
+
+  @Listen("dblclick")
+  dblclickHandler(eventInfo: MouseEvent) {
+    eventInfo.stopPropagation();
+
+    if (mouseEventModifierKey(eventInfo)) {
+      this.column.size = "auto";
+    } else {
+      this.column.size = "max-content";
+    }
+  }
+
+  @Listen("columnResizeStarted")
+  columnResizeStartedHandler() {
+    this.resizing = true;
+  }
+
+  @Listen("columnResizeFinished")
+  columnResizeFinishedHandler() {
+    this.resizing = false;
   }
 
   private mousedownHandler(eventInfo: MouseEvent) {
@@ -76,32 +102,6 @@ export class ChGridColumnResize {
   private mouseupHandler() {
     document.removeEventListener("mousemove", this.mousemoveFn);
     this.columnResizeFinished.emit();
-  }
-
-  @Listen("click", { passive: true })
-  clickHandler(eventInfo: MouseEvent) {
-    eventInfo.stopPropagation();
-  }
-
-  @Listen("dblclick")
-  dblclickHandler(eventInfo: MouseEvent) {
-    eventInfo.stopPropagation();
-
-    if (mouseEventModifierKey(eventInfo)) {
-      this.column.size = "auto";
-    } else {
-      this.column.size = "max-content";
-    }
-  }
-
-  @Listen("columnResizeStarted")
-  columnResizeStartedHandler() {
-    this.resizing = true;
-  }
-
-  @Listen("columnResizeFinished")
-  columnResizeFinishedHandler() {
-    this.resizing = false;
   }
 
   render() {

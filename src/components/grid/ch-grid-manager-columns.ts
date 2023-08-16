@@ -24,10 +24,11 @@ export class ChGridManagerColumns {
     this.defineColumnsVariables();
 
     this.adjustFreezeOrder();
+    this.adjustBaseLayer();
   }
 
   public getColumn(columnId: string): HTMLChGridColumnElement {
-    return this.columns.find(column => column.columnId == columnId);
+    return this.columns.find(column => column.columnId === columnId);
   }
 
   public getColumns(sorted = false): HTMLChGridColumnElement[] {
@@ -65,19 +66,19 @@ export class ChGridManagerColumns {
 
   public getColumnSelector(): HTMLChGridColumnElement {
     return this.columns.find(
-      column => column.columnType == "rich" && column.richRowSelector
+      column => column.columnType === "rich" && column.richRowSelector
     );
   }
 
   public adjustFreezeOrder() {
     const freezeStart = this.columns
-      .filter(column => column.freeze == "start")
+      .filter(column => column.freeze === "start")
       .sort(this.fnSortByOrder);
     const noFreeze = this.columns
-      .filter(column => column.freeze != "start" && column.freeze != "end")
+      .filter(column => column.freeze !== "start" && column.freeze !== "end")
       .sort(this.fnSortByOrder);
     const freezeEnd = this.columns
-      .filter(column => column.freeze == "end")
+      .filter(column => column.freeze === "end")
       .sort(this.fnSortByOrder);
     let order = 1;
 
@@ -182,10 +183,15 @@ export class ChGridManagerColumns {
                         transform: var(--ch-grid-column-${i}-transform);
                         left: var(--ch-grid-column-${i}-left-freeze);
                         right: var(--ch-grid-column-${i}-right-freeze);
-                        z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-column-z-index-head, 0)  + var(--ch-grid-column-z-index-active, 0));
+                    }
+                    ch-grid-column:nth-child(${i}) {
+                      z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-column-z-index-head, 0)  + var(--ch-grid-column-z-index-active, 0));
+                    }
+                    ch-grid-cell:nth-child(${i}) {
+                      z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-cell-z-index-active, 0));
                     }
                     ch-grid-cell:nth-child(${i})::before {
-                        content: var(--ch-grid-column-${i}-content);
+                      content: var(--ch-grid-column-${i}-content);
                     }
                 `;
       }
@@ -210,7 +216,7 @@ export class ChGridManagerColumns {
     columns.forEach(column => {
       this.columnResizeObserver.unobserve(column);
       this.columnsDisplay
-        .filter(columnDisplay => columnDisplay.column == column)
+        .filter(columnDisplay => columnDisplay.column === column)
         .forEach(item => {
           item.remove();
         });
@@ -241,6 +247,7 @@ export class ChGridManagerColumns {
       this.defineColumnsVariables();
 
       this.adjustOrders();
+      this.adjustBaseLayer();
     }
   }
 
@@ -269,6 +276,10 @@ export class ChGridManagerColumns {
     [...this.columns].sort(this.fnSortByOrder).forEach((column, i) => {
       column.order = i + 1;
     });
+  }
+
+  private adjustBaseLayer() {
+    this.grid.baseLayer = this.columns.length;
   }
 
   private fnSortByOrder(

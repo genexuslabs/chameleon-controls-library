@@ -96,6 +96,17 @@ export class ChWindow {
   /** Specifies the drag behavior of the window. */
   @Prop() readonly allowDrag: "no" | "header" | "box" = "no";
 
+  /**
+   * This attribute lets you specify if a footer is rendered at the bottom of the
+   * window.
+   */
+  @Prop() readonly showFooter: boolean = true;
+
+  /**
+   * This attribute lets you specify if a header is rendered on top of the window.
+   */
+  @Prop() readonly showHeader: boolean = true;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -111,6 +122,7 @@ export class ChWindow {
 
   @Listen("resize", { target: "window", passive: true })
   windowResizeHandler() {
+    this.updatePosition();
     this.watchCSSAlign();
   }
 
@@ -185,13 +197,19 @@ export class ChWindow {
       const rect = this.container.getBoundingClientRect();
 
       // TODO: RTL positioning bug
-      this.mask.style.setProperty("inset-inline-start", `${rect.left}px`);
-      this.mask.style.setProperty("inset-block-start", `${rect.top}px`);
+      this.mask.style.setProperty(
+        "--ch-window-inset-inline-start",
+        `${rect.left}px`
+      );
+      this.mask.style.setProperty(
+        "--ch-window-inset-block-start",
+        `${rect.top}px`
+      );
       this.mask.style.width = `${rect.width}px`;
       this.mask.style.height = `${rect.height}px`;
     } else if (this.isContainerCssOverride || !this.container) {
-      this.mask.style.removeProperty("inset-inline-start");
-      this.mask.style.removeProperty("inset-block-start");
+      this.mask.style.removeProperty("--ch-window-inset-inline-start");
+      this.mask.style.removeProperty("--ch-window-inset-block-start");
       this.mask.style.removeProperty("width");
       this.mask.style.removeProperty("height");
     }
@@ -218,13 +236,13 @@ export class ChWindow {
     const style = getComputedStyle(this.el);
     const container = style.getPropertyValue("--ch-window-container").trim();
     const xAlign = style
-      .getPropertyValue("--ch-window-x-align")
+      .getPropertyValue("--ch-window-align-x")
       .trim() as ChWindowAlign;
     const yAlign = style
-      .getPropertyValue("--ch-window-y-align")
+      .getPropertyValue("--ch-window-align-y")
       .trim() as ChWindowAlign;
 
-    this.isContainerCssOverride = container.includes("window") ? true : false;
+    this.isContainerCssOverride = container.includes("window");
 
     if (this.validCssAligns.includes(xAlign)) {
       this.xAlign = xAlign;
@@ -256,20 +274,26 @@ export class ChWindow {
           onClick={this.maskClickHandler}
         >
           <section class="window" part="window" ref={el => (this.window = el)}>
-            <header part="header" ref={el => (this.header = el)}>
-              <slot name="header">
-                <span part="caption">{this.caption}</span>
-                <ch-window-close part="close" title={this.closeTooltip}>
-                  {this.closeText}
-                </ch-window-close>
-              </slot>
-            </header>
-            <main part="main">
+            {this.showHeader && (
+              <header part="header" ref={el => (this.header = el)}>
+                <slot name="header">
+                  <span part="caption">{this.caption}</span>
+                  <ch-window-close part="close" title={this.closeTooltip}>
+                    {this.closeText}
+                  </ch-window-close>
+                </slot>
+              </header>
+            )}
+
+            <div part="main">
               <slot></slot>
-            </main>
-            <footer part="footer">
-              <slot name="footer"></slot>
-            </footer>
+            </div>
+
+            {this.showFooter && (
+              <footer part="footer">
+                <slot name="footer"></slot>
+              </footer>
+            )}
           </section>
         </div>
       </Host>

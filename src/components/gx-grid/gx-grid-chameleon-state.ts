@@ -1,4 +1,7 @@
-import { ChGridColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
+import {
+  ChGridColumnFreeze,
+  ChGridColumnSortDirection
+} from "../grid/grid-column/ch-grid-column-types";
 import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {
@@ -10,6 +13,7 @@ export class GridChameleonManagerState {
     this.state = state ?? {};
     this.state.Columns = this.state.Columns ?? [];
 
+    this.loadLocal();
     this.apply();
   }
 
@@ -23,14 +27,22 @@ export class GridChameleonManagerState {
 
   static setColumnHidden(columnId: string, hidden: boolean): void {
     this.getColumn(columnId).Hidden = hidden;
+    this.saveLocal();
   }
 
   static setColumnSize(columnId: string, size: string): void {
     this.getColumn(columnId).Size = size;
+    this.saveLocal();
+  }
+
+  static setColumnFreeze(columnId: string, freeze: ChGridColumnFreeze): void {
+    this.getColumn(columnId).Freeze = freeze;
+    this.saveLocal();
   }
 
   static setColumnOrder(columnId: string, order: number): void {
     this.getColumn(columnId).Order = order;
+    this.saveLocal();
   }
 
   static setColumnFilterEqual(columnId: string, value: string): void {
@@ -64,6 +76,16 @@ export class GridChameleonManagerState {
 
       if (column) {
         column.Hidden = stateColumn.Hidden ? -1 : 0;
+
+        if (stateColumn.Size) {
+          column.Size = "length";
+          column.SizeLength = stateColumn.Size;
+        }
+
+        if (stateColumn.Order) {
+          column.order = stateColumn.Order;
+        }
+
         column.filterEqual =
           (stateColumn.Filter ?? {}).Equal ?? column.filterEqual;
         column.filterLess =
@@ -76,9 +98,41 @@ export class GridChameleonManagerState {
     });
   }
 
+  private static loadLocal() {
+    this.grid.columns.forEach(column => {
+      const columnSettings = localStorage
+        .getItem(`${this.grid.ControlName}-${column.htmlName}`)
+        ?.split("|");
+
+      if (columnSettings) {
+        if (columnSettings[0] !== "") {
+          this.getColumn(column.htmlName).Hidden = columnSettings[0] === "true";
+        }
+        if (columnSettings[1] !== "") {
+          this.getColumn(column.htmlName).Size = columnSettings[1];
+        }
+        if (columnSettings[2] !== "") {
+          this.getColumn(column.htmlName).Order = parseInt(columnSettings[2]);
+        }
+        if (columnSettings[3] !== "") {
+          this.getColumn(column.htmlName).Freeze = columnSettings[3];
+        }
+      }
+    });
+  }
+
+  private static saveLocal() {
+    this.state.Columns.forEach(column => {
+      localStorage.setItem(
+        `${this.grid.ControlName}-${column.Name}`,
+        [column.Hidden, column.Size, column.Order, column.Freeze].join("|")
+      );
+    });
+  }
+
   private static getColumn(name: string): GridChameleonStateColumn {
     let column = this.state.Columns.find(
-      column => column.Name.localeCompare(name) == 0
+      column => column.Name.localeCompare(name) === 0
     );
 
     if (!column) {
@@ -104,10 +158,11 @@ export class GridChameleonManagerState {
   private static updateIsFiltering(columnId: string) {
     const column = this.grid.getColumnByHtmlName(columnId);
 
-    column.isFiltering =
-      column.filterEqual || column.filterGreater || column.filterGreater
-        ? true
-        : false;
+    column.isFiltering = !!(
+      column.filterEqual ||
+      column.filterGreater ||
+      column.filterGreater
+    );
   }
 }
 
@@ -121,6 +176,7 @@ export interface GridChameleonStateColumn {
   Name: string;
   Hidden?: boolean;
   Size?: string;
+  Freeze?: string;
   Order?: number;
   Filter?: GridChameleonStateColumnFilter;
 }

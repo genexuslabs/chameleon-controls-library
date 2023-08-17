@@ -25,8 +25,8 @@ INDEX:
 1.OWN PROPERTIES
 2.REFERENCE TO ELEMENTS
 3.STATE() VARIABLES
-4.PUBLIC PROPERTY API
-5.EVENTS (EMMIT)
+4.PUBLIC PROPERTY API / WATCH'S
+5.EVENTS (EMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
 8.PUBLIC METHODS API
@@ -34,22 +34,22 @@ INDEX:
 10.RENDER() FUNCTION
 */
 
-  /// 1.OWN PROPERTIES ///
+  // 1.OWN PROPERTIES //
 
   /**
    * The icon url
    */
   @Prop() readonly iconSrc: string;
 
-  /// 2.REFERENCE TO ELEMENTS ///
+  // 2.REFERENCE TO ELEMENTS //
 
   @Element() el: HTMLChSuggestListItemElement;
 
-  /// 3.STATE() VARIABLES ///
+  // 3.STATE() VARIABLES //
 
-  /// 4.PUBLIC PROPERTY API ///
+  // 4.PUBLIC PROPERTY API / WATCH'S //
 
-  /// 5.EVENTS (EMIT) ///
+  // 5.EVENTS (EMIT) //
 
   /**
    * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
@@ -61,13 +61,13 @@ INDEX:
    */
   @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
 
-  /// 6.COMPONENT LIFECYCLE EVENTS ///
+  // 6.COMPONENT LIFECYCLE EVENTS //
 
-  /// 7.LISTENERS ///
+  // 7.LISTENERS //
 
-  /// 8.PUBLIC METHODS API ///
+  // 8.PUBLIC METHODS API //
 
-  /// 9.LOCAL METHODS ///
+  // 9.LOCAL METHODS //
 
   private handleClick = () => {
     this.itemSelected.emit({
@@ -91,7 +91,7 @@ INDEX:
     }
   };
 
-  /// 10.RENDER() FUNCTION ///
+  // 10.RENDER() FUNCTION //
 
   render() {
     return (

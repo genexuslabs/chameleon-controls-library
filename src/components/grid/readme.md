@@ -151,6 +151,26 @@ Type: `Promise<string[]>`
 
 
 
+### `markAllRows(marked?: boolean) => Promise<void>`
+
+Mark or unmark all rows.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `markRow(rowId: string, marked?: boolean) => Promise<void>`
+
+Mark or unmark a row.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `rowEnsureVisible(rowId: string) => Promise<void>`
 
 Ensures that the row is visible within the control, scrolling the contents of the control if necessary.

@@ -201,6 +201,17 @@ export namespace Components {
          */
         "localization": GridLocalization;
         /**
+          * Mark or unmark all rows.
+          * @param marked - A boolean indicating whether to mark or unmark all rows.
+         */
+        "markAllRows": (marked?: boolean) => Promise<void>;
+        /**
+          * Mark or unmark a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param marked - A boolean indicating whether to mark or unmark the row.
+         */
+        "markRow": (rowId: string, marked?: boolean) => Promise<void>;
+        /**
           * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
           * @param rowId - The rowId of the row to ensure visibility.
          */

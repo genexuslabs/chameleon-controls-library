@@ -29,7 +29,6 @@ export default class HTMLChGridCellElement extends HTMLElement {
   private selector: HTMLInputElement;
   private selectorLabel: HTMLLabelElement;
 
-  public static readonly TAG_NAME = "CH-GRID-CELL";
   public rowDrag: boolean;
   public rowSelector: boolean;
   public rowActions: boolean;
@@ -181,7 +180,12 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   private actionClickHandler() {
-    // TODO
+    this.dispatchEvent(
+      new CustomEvent("cellRowActionClicked", {
+        bubbles: true,
+        composed: true
+      })
+    );
   }
 
   private definePlain() {
@@ -238,10 +242,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
       }
 
       if (this.rowSelector) {
-        this.addEventListener("mousedown", (eventInfo: MouseEvent) =>
+        this.selector = this.shadowRoot.querySelector("[part='selector']");
+        this.selector.addEventListener("mousedown", (eventInfo: MouseEvent) =>
           eventInfo.stopPropagation()
         );
-        this.selector = this.shadowRoot.querySelector("[part='selector']");
         this.selector.addEventListener(
           "click",
           this.selectorClickHandler.bind(this)
@@ -249,6 +253,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
         this.selectorLabel = this.shadowRoot.querySelector(
           "[part='selector-label']"
+        );
+        this.selectorLabel.addEventListener(
+          "mousedown",
+          (eventInfo: MouseEvent) => eventInfo.stopPropagation()
         );
         this.selectorLabel.addEventListener(
           "click",

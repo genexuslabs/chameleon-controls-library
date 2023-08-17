@@ -1,6 +1,6 @@
 import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 import HTMLChGridRowElement from "./grid-row/ch-grid-row";
-import { ChGrid } from "./ch-grid";
+import { ChGridManager } from "./ch-grid-manager";
 
 export type ManagerSelectionState = {
   rowFocused: HTMLChGridRowElement;
@@ -9,10 +9,7 @@ export type ManagerSelectionState = {
 };
 
 export class ChGridManagerSelection {
-  public selecting: boolean;
-  public selectingRow: HTMLChGridRowElement;
-  public selectingCell: HTMLChGridCellElement;
-  private grid: ChGrid;
+  private manager: ChGridManager;
   private rangeStart: HTMLChGridRowElement;
   private rangeValue: boolean;
   private lastRowMarked: HTMLChGridRowElement;
@@ -22,8 +19,12 @@ export class ChGridManagerSelection {
     cellSelected: null
   };
 
-  constructor(grid: ChGrid) {
-    this.grid = grid;
+  selecting: boolean;
+  selectingRow: HTMLChGridRowElement;
+  selectingCell: HTMLChGridCellElement;
+
+  constructor(manager: ChGridManager) {
+    this.manager = manager;
   }
 
   select(
@@ -33,9 +34,9 @@ export class ChGridManagerSelection {
     append: boolean,
     range: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
       range = false;
     }
@@ -46,10 +47,7 @@ export class ChGridManagerSelection {
 
     rowFocused = row;
     if (range) {
-      const rangeRows = this.grid.manager.getRowsRange(
-        this.rangeStart ?? row,
-        row
-      );
+      const rangeRows = this.manager.getRowsRange(this.rangeStart ?? row, row);
 
       if (this.rangeValue) {
         if (append) {
@@ -60,9 +58,7 @@ export class ChGridManagerSelection {
         }
         cellSelected =
           cell ||
-          row.getCell(
-            cellSelected?.column || this.grid.manager.getFirstColumn()
-          );
+          row.getCell(cellSelected?.column || this.manager.getFirstColumn());
       } else {
         rowsSelected = rowsSelected.filter(
           rowSelected => !rangeRows.includes(rowSelected)
@@ -80,9 +76,7 @@ export class ChGridManagerSelection {
         rowsSelected = [...rowsSelected, row];
         cellSelected =
           cell ||
-          row.getCell(
-            cellSelected?.column || this.grid.manager.getFirstColumn()
-          );
+          row.getCell(cellSelected?.column || this.manager.getFirstColumn());
       }
     } else {
       this.rangeStart = row;
@@ -94,30 +88,30 @@ export class ChGridManagerSelection {
           : [row];
       cellSelected =
         cell ||
-        row.getCell(cellSelected?.column || this.grid.manager.getFirstColumn());
+        row.getCell(cellSelected?.column || this.manager.getFirstColumn());
     }
 
     return { rowFocused, rowsSelected, cellSelected };
   }
 
   selectAll(state: ManagerSelectionState, value = true): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
     }
 
-    const rows = this.grid.manager.getRows();
+    const rows = this.manager.getRows();
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
     if (value) {
-      rowFocused = rowFocused ?? this.grid.manager.getFirstRow();
+      rowFocused = rowFocused ?? this.manager.getFirstRow();
       rowsSelected = rows;
       cellSelected = rowFocused.getCell(
-        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+        state.cellSelected?.column || this.manager.getFirstColumn()
       );
     } else {
-      rowFocused = rowFocused ?? this.grid.manager.getFirstRow();
+      rowFocused = rowFocused ?? this.manager.getFirstRow();
       rowsSelected = [];
       cellSelected = null;
     }
@@ -155,20 +149,20 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const firstRow = this.grid.manager.getFirstRow();
+    const firstRow = this.manager.getFirstRow();
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
     if (firstRow) {
       if (append) {
-        const rangeRows = this.grid.manager.getRowsRange(
+        const rangeRows = this.manager.getRowsRange(
           rowFocused ?? firstRow,
           firstRow
         );
@@ -178,7 +172,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = firstRow;
       cellSelected = firstRow.getCell(
-        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+        state.cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -189,13 +183,13 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const previousRow = this.grid.manager.getPreviousRow(state.rowFocused);
+    const previousRow = this.manager.getPreviousRow(state.rowFocused);
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
@@ -221,7 +215,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = previousRow;
       cellSelected = previousRow.getCell(
-        cellSelected?.column || this.grid.manager.getFirstColumn()
+        cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -232,13 +226,13 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const nextRow = this.grid.manager.getNextRow(state.rowFocused);
+    const nextRow = this.manager.getNextRow(state.rowFocused);
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
@@ -267,7 +261,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = nextRow;
       cellSelected = nextRow.getCell(
-        cellSelected?.column || this.grid.manager.getFirstColumn()
+        cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -278,20 +272,20 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const firstRow = this.grid.manager.getLastRow();
+    const firstRow = this.manager.getLastRow();
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
     if (firstRow) {
       if (append) {
-        const rangeRows = this.grid.manager.getRowsRange(
+        const rangeRows = this.manager.getRowsRange(
           rowFocused ?? firstRow,
           firstRow
         );
@@ -301,7 +295,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = firstRow;
       cellSelected = firstRow.getCell(
-        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+        state.cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -312,14 +306,14 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const rows = this.grid.manager.getRows();
-    const rowsPerPage = this.grid.manager.getRowsPerPage();
+    const rows = this.manager.getRows();
+    const rowsPerPage = this.manager.getRowsPerPage();
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
@@ -328,7 +322,7 @@ export class ChGridManagerSelection {
       rows[Math.max(rows.indexOf(rowFocused) - rowsPerPage, 0)];
     if (previousPageRow) {
       if (append) {
-        const rangeRows = this.grid.manager.getRowsRange(
+        const rangeRows = this.manager.getRowsRange(
           rowFocused ?? previousPageRow,
           previousPageRow
         );
@@ -341,7 +335,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = previousPageRow;
       cellSelected = previousPageRow.getCell(
-        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+        state.cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -352,14 +346,14 @@ export class ChGridManagerSelection {
     state: ManagerSelectionState,
     append: boolean
   ): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
-    } else if (this.grid.rowSelectionMode !== "multiple") {
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
       append = false;
     }
 
-    const rows = this.grid.manager.getRows();
-    const rowsPerPage = this.grid.manager.getRowsPerPage();
+    const rows = this.manager.getRows();
+    const rowsPerPage = this.manager.getRowsPerPage();
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
@@ -368,7 +362,7 @@ export class ChGridManagerSelection {
       rows[Math.min(rows.indexOf(rowFocused) + rowsPerPage, rows.length - 1)];
     if (nextPageRow) {
       if (append) {
-        const rangeRows = this.grid.manager.getRowsRange(
+        const rangeRows = this.manager.getRowsRange(
           rowFocused ?? nextPageRow,
           nextPageRow
         );
@@ -381,7 +375,7 @@ export class ChGridManagerSelection {
       }
       rowFocused = nextPageRow;
       cellSelected = nextPageRow.getCell(
-        state.cellSelected?.column || this.grid.manager.getFirstColumn()
+        state.cellSelected?.column || this.manager.getFirstColumn()
       );
     }
 
@@ -389,7 +383,7 @@ export class ChGridManagerSelection {
   }
 
   selectPreviousCell(state: ManagerSelectionState): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
     }
 
@@ -398,7 +392,7 @@ export class ChGridManagerSelection {
     let cellSelected = state.cellSelected;
 
     if (cellSelected) {
-      const nextCell = this.grid.manager.getPreviousCell(cellSelected);
+      const nextCell = this.manager.getPreviousCell(cellSelected);
       if (nextCell) {
         cellSelected = nextCell;
       }
@@ -407,7 +401,7 @@ export class ChGridManagerSelection {
         rowsSelected = [...rowsSelected, rowFocused];
       }
       if (!cellSelected) {
-        cellSelected = rowFocused.getCell(this.grid.manager.getFirstColumn());
+        cellSelected = rowFocused.getCell(this.manager.getFirstColumn());
       }
     }
 
@@ -415,7 +409,7 @@ export class ChGridManagerSelection {
   }
 
   selectNextCell(state: ManagerSelectionState): ManagerSelectionState {
-    if (this.grid.rowSelectionMode === "none") {
+    if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
     }
 
@@ -424,7 +418,7 @@ export class ChGridManagerSelection {
     let cellSelected = state.cellSelected;
 
     if (cellSelected) {
-      const nextCell = this.grid.manager.getNextCell(cellSelected);
+      const nextCell = this.manager.getNextCell(cellSelected);
       if (nextCell) {
         cellSelected = nextCell;
       }
@@ -433,7 +427,7 @@ export class ChGridManagerSelection {
         rowsSelected = [...rowsSelected, rowFocused];
       }
       if (!cellSelected) {
-        cellSelected = rowFocused.getCell(this.grid.manager.getFirstColumn());
+        cellSelected = rowFocused.getCell(this.manager.getFirstColumn());
       }
     }
 
@@ -449,10 +443,7 @@ export class ChGridManagerSelection {
     if (row) {
       if (range) {
         const value = !row.marked;
-        const rows = this.grid.manager.getRowsRange(
-          this.lastRowMarked ?? row,
-          row
-        );
+        const rows = this.manager.getRowsRange(this.lastRowMarked ?? row, row);
 
         this.lastRowMarked = row;
 
@@ -479,7 +470,7 @@ export class ChGridManagerSelection {
 
   markAllRows(value = true): HTMLChGridRowElement[] {
     if (value) {
-      return this.grid.manager.getRows();
+      return this.manager.getRows();
     } else {
       return [];
     }
@@ -490,7 +481,7 @@ export class ChGridManagerSelection {
     previous: HTMLChGridRowElement[] = [],
     selectorMode: "select" | "mark"
   ) {
-    const columnSelector = this.grid.manager.columns.getColumnSelector();
+    const columnSelector = this.manager.columns.getColumnSelector();
 
     if (columnSelector?.richRowSelectorMode === selectorMode) {
       const indexColumnSelector = columnSelector.physicalOrder - 1;
@@ -513,7 +504,7 @@ export class ChGridManagerSelection {
 
       if (rows.length === 0) {
         columnSelector.richRowSelectorState = "";
-      } else if (rows.length === this.grid.manager.getRows().length) {
+      } else if (rows.length === this.manager.getRows().length) {
         columnSelector.richRowSelectorState = "checked";
       } else {
         columnSelector.richRowSelectorState = "indeterminate";
@@ -525,7 +516,7 @@ export class ChGridManagerSelection {
     rowsSelected: HTMLChGridRowElement[]
   ): HTMLChGridRowElement[] {
     const rows = Array.from(
-      this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}`)
+      this.manager.grid.querySelectorAll("ch-grid-row")
     ) as HTMLChGridRowElement[];
 
     return rowsSelected.sort((rowA, rowB) => {
@@ -546,7 +537,7 @@ export class ChGridManagerSelection {
   ): boolean {
     const rows = (
       Array.from(
-        this.grid.el.querySelectorAll(`${HTMLChGridRowElement.TAG_NAME}`)
+        this.manager.grid.querySelectorAll("ch-grid-row")
       ) as HTMLChGridRowElement[]
     ).filter(row => row.isVisible());
 

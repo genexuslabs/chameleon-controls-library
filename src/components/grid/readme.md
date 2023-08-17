@@ -201,7 +201,6 @@ Type: `Promise<void>`
 | `"footer"`           |             |
 | `"header"`           |             |
 | `"main"`             |             |
-| `"row-actions"`      |             |
 | `"settings-columns"` |             |
 
 

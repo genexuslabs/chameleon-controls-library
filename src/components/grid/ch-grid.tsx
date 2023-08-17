@@ -662,6 +662,39 @@ export class ChGrid {
   }
 
   /**
+   * Mark or unmark a row.
+   * @param rowId - The rowId of the row to select or deselect.
+   * @param marked - A boolean indicating whether to mark or unmark the row.
+   */
+  @Method()
+  async markRow(rowId: string, marked = true): Promise<void> {
+    const columnSelector = this.manager.columns.getColumnSelector();
+    const row = this.manager.getRow(rowId);
+
+    if (row && columnSelector?.richRowSelectorMode === "mark") {
+      this.rowsMarked = this.manager.selection.markRow(
+        row,
+        marked,
+        false,
+        this.rowsMarked
+      );
+    }
+  }
+
+  /**
+   * Mark or unmark all rows.
+   * @param marked - A boolean indicating whether to mark or unmark all rows.
+   */
+  @Method()
+  async markAllRows(marked = true): Promise<void> {
+    const columnSelector = this.manager.columns.getColumnSelector();
+
+    if (columnSelector?.richRowSelectorMode === "mark") {
+      this.rowsMarked = this.manager.selection.markAllRows(marked);
+    }
+  }
+
+  /**
    * Expands a row, showing its children.
    * @param rowId - The rowId of the row to expand.
    */

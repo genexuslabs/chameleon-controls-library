@@ -31,38 +31,16 @@ INDEX:
 1.OWN PROPERTIES
 2.REFERENCE TO ELEMENTS
 3.STATE() VARIABLES
-4.PUBLIC PROPERTY API
+4.PUBLIC PROPERTY API / WATCH'S
 5.EVENTS (EMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
-8.WATCH
-9.PUBLIC METHODS API
-10.LOCAL METHODS
-11.RENDER() FUNCTION
+8.PUBLIC METHODS API
+9.LOCAL METHODS
+10.RENDER() FUNCTION
 */
 
   // 1.OWN PROPERTIES //
-
-  /**
-   * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
-   */
-  @Prop() readonly debounce: number = 500;
-
-  /**
-   * The label
-   */
-  @Prop() readonly label: string;
-
-  /**
-   * Whether or not to display the label
-   */
-  @Prop() readonly showLabel: boolean = false;
-
-  /**
-   * The input value
-   */
-  @Prop({ mutable: true }) value: string;
-
   private timeoutReference;
 
   private keyEventsDictionary: {
@@ -108,7 +86,41 @@ INDEX:
   // 3.STATE() VARIABLES //
   @State() windowHidden = true;
 
-  // 4.PUBLIC PROPERTY API //
+  // 4.PUBLIC PROPERTY API / WATCH'S //
+
+  /**
+   * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
+   */
+  @Prop() readonly debounce: number = 500;
+
+  /**
+   * The label
+   */
+  @Prop() readonly label: string;
+
+  /**
+   * Whether or not to display the label
+   */
+  @Prop() readonly showLabel: boolean = false;
+
+  /**
+   * The input value
+   */
+  @Prop({ mutable: true }) value: string;
+
+  @Watch("windowHidden")
+  windowHiddenHandler(newValue: boolean) {
+    if (newValue) {
+      this.chWindow.hidden = true;
+    } else {
+      this.chWindow.hidden = false;
+    }
+  }
+
+  @Watch("value")
+  watchValueHandler(newValue: string) {
+    this.inputChanged.emit(newValue);
+  }
 
   // 5.EVENTS (EMIT) //
 
@@ -157,21 +169,6 @@ INDEX:
   windowClosedHandler() {
     this.textInput.focus();
     this.windowHidden = true;
-  }
-
-  // 8.WATCH //
-  @Watch("windowHidden")
-  windowHiddenHandler(newValue: boolean) {
-    if (newValue) {
-      this.chWindow.hidden = true;
-    } else {
-      this.chWindow.hidden = false;
-    }
-  }
-
-  @Watch("value")
-  watchValueHandler(newValue: string) {
-    this.inputChanged.emit(newValue);
   }
 
   // 9.PUBLIC METHODS API //
@@ -311,35 +308,36 @@ INDEX:
   render() {
     return (
       <Host>
-        {this.showLabel && this.label && (
-          <label id="label" htmlFor="input" part="label">
-            {this.label}
-          </label>
-        )}
-        <input
-          type="text"
-          id="input"
-          part="input"
-          class="input"
-          ref={el => (this.textInput = el as HTMLInputElement)}
-          onInput={this.handleInput}
-          onKeyDown={this.handleKeyDown}
-          value={this.value}
-          autocomplete="off"
-          aria-controls="ch-window"
-          aria-label={!this.showLabel && this.label ? this.label : undefined}
-          aria-labelledby={this.showLabel && this.label ? "label" : undefined}
-          aria-expanded={this.windowHidden.toString()}
-        ></input>
-        <ch-window
-          id="ch-window"
-          container={this.textInput}
-          close-on-outside-click
-          close-on-escape
-          xAlign="inside-start"
-          yAlign="outside-end"
-          ref={el => (this.chWindow = el as HTMLChWindowElement)}
-          exportparts="
+        <div class="wrapper">
+          {this.showLabel && this.label && (
+            <label id="label" htmlFor="input" part="label">
+              {this.label}
+            </label>
+          )}
+          <input
+            type="text"
+            id="input"
+            part="input"
+            class="input"
+            ref={el => (this.textInput = el as HTMLInputElement)}
+            onInput={this.handleInput}
+            onKeyDown={this.handleKeyDown}
+            value={this.value}
+            autocomplete="off"
+            aria-controls="ch-window"
+            aria-label={!this.showLabel && this.label ? this.label : undefined}
+            aria-labelledby={this.showLabel && this.label ? "label" : undefined}
+            aria-expanded={this.windowHidden.toString()}
+          ></input>
+          <ch-window
+            id="ch-window"
+            container={this.textInput}
+            close-on-outside-click
+            close-on-escape
+            xAlign="inside-start"
+            yAlign="outside-end"
+            ref={el => (this.chWindow = el as HTMLChWindowElement)}
+            exportparts="
             caption:ch-window-caption, 
             close:ch-window-close,
             footer:ch-window-footer,
@@ -347,10 +345,11 @@ INDEX:
             main:ch-window-main,
             mask:ch-window-mask,
             window:ch-window-window"
-        >
-          <div slot="header" class="dummy-header"></div>
-          <slot></slot>
-        </ch-window>
+          >
+            <div slot="header" class="dummy-header"></div>
+            <slot></slot>
+          </ch-window>
+        </div>
       </Host>
     );
   }

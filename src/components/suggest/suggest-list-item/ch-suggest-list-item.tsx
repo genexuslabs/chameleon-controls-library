@@ -17,7 +17,7 @@ const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest-list-item",
   styleUrl: "ch-suggest-list-item.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChSuggestListItem {
   /*
@@ -97,13 +97,14 @@ INDEX:
     return (
       <Host
         role="listitem"
-        tabindex="0"
         onClick={this.handleClick}
         onKeyDown={this.handleKeyDown}
       >
-        <slot name="icon"></slot>
-        <div class="content-wrapper">
-          <slot></slot>
+        <div class="wrapper" tabindex="0" part="wrapper">
+          <slot name="icon"></slot>
+          <div class="content-wrapper">
+            <slot></slot>
+          </div>
         </div>
       </Host>
     );

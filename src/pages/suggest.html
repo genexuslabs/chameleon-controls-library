@@ -40,8 +40,6 @@
         font-family: "Rubik", sans-serif;
         font-size: 14px;
       }
-      body.styles ch-suggest:focus {
-      }
       body.styles ch-suggest::part(label) {
         font-weight: 700;
         margin-bottom: 4px;
@@ -69,7 +67,7 @@
         margin: 4px 0 8px 0;
       }
       /*ch-suggest-list-item*/
-      body.styles ch-suggest-list-item {
+      body.styles ch-suggest-list-item::part(wrapper) {
         padding: 4px 8px;
         cursor: pointer;
       }
@@ -88,12 +86,20 @@
         background-color: rgba(241, 184, 243, 0.42);
         outline: none;
       }
+      body.styles ch-suggest-list-item::part(wrapper):focus {
+        outline: 2px solid var(--highlight-color);
+        border-color: var(--highlight-color);
+      }
       /*ch-window*/
       body.styles ch-suggest::part(ch-window-window) {
         margin-top: 4px;
         border: 1px solid black;
         background-color: white;
         padding: 8px;
+      }
+      /*focus*/
+      :focus {
+        outline-style: none !important;
       }
     </style>
   </head>

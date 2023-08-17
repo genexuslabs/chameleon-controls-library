@@ -46,12 +46,9 @@ import { ManagerSelectionState } from "./ch-grid-manager-selection";
   shadow: true
 })
 export class ChGrid {
-  manager: ChGridManager;
-  gridMainEl: HTMLElement;
-  gridRowActionsEl: HTMLElement;
-  gridRowActionsEnabled: boolean;
+  private manager: ChGridManager;
+  private gridLayoutElement: HTMLElement;
   private settingsUI: HTMLChGridSettingsElement;
-  private styleSheet: CSSStyleSheet = new CSSStyleSheet();
 
   @Element() el: HTMLChGridElement;
 
@@ -74,6 +71,7 @@ export class ChGrid {
     row: HTMLChGridRowElement,
     previous: HTMLChGridRowElement
   ) {
+    // highlight
     if (row) {
       row.highlighted = true;
     }
@@ -81,8 +79,11 @@ export class ChGrid {
       previous.highlighted = false;
     }
 
-    if (this.gridRowActionsEnabled) {
-      this.manager.setRowActionsPosition(row);
+    // actions
+    if (row) {
+      this.manager.rowActions.showOnRowHover?.openRowHover(row);
+    } else {
+      this.manager.rowActions.showOnRowHover?.close();
     }
   }
 
@@ -139,13 +140,6 @@ export class ChGrid {
   }
 
   @State() gridStyle: CSSProperties;
-
-  @State() baseLayer: number;
-
-  @Watch("baseLayer")
-  baseLayerHandler(value: number) {
-    this.styleSheet.replace(`:host { --ch-grid-base-layer: ${value} ;}`);
-  }
 
   /**
    * One of "none", "single" or "multiple", indicating how rows can be selected.
@@ -222,16 +216,13 @@ export class ChGrid {
   @Event() rowEnterPressed: EventEmitter<ChGridRowPressedEvent>;
 
   componentWillLoad() {
-    this.manager = new ChGridManager(this);
+    this.manager = new ChGridManager(this.el);
     this.gridStyle = this.manager.getGridStyle();
     this.rowsSelected = this.manager.getRowsSelected();
-
-    this.el.shadowRoot.adoptedStyleSheets.push(this.styleSheet);
   }
 
   componentDidLoad() {
-    this.manager.gridDidLoad();
-    this.gridRowActionsEnabled = this.manager.isRowActionsEnabled();
+    this.manager.componentDidLoad(this.gridLayoutElement);
   }
 
   componentShouldUpdate(_newValue, _oldValue, name: string) {
@@ -478,6 +469,12 @@ export class ChGrid {
         this.rowsMarked
       );
     }
+  }
+
+  @Listen("cellRowActionClicked", { passive: true })
+  cellRowActionClickedHandler(eventInfo: CustomEvent) {
+    const cell = eventInfo.target as HTMLChGridCellElement;
+    this.manager.rowActions.showOnRowActions?.openRowActions(cell);
   }
 
   @Listen("columnHiddenChanged")
@@ -919,18 +916,6 @@ export class ChGrid {
     );
   }
 
-  private renderRowActions() {
-    return (
-      <section
-        class="row-actions"
-        part="row-actions"
-        ref={el => (this.gridRowActionsEl = el)}
-      >
-        <slot name="row-actions"></slot>
-      </section>
-    );
-  }
-
   render() {
     return (
       <Host tabindex={this.rowSelectionMode !== "none" ? "0" : false}>
@@ -941,14 +926,14 @@ export class ChGrid {
           class="main"
           style={this.gridStyle}
           part="main"
-          ref={el => (this.gridMainEl = el)}
+          ref={el => (this.gridLayoutElement = el)}
         >
           <slot></slot>
         </section>
         <aside>
           {this.renderSettings()}
           <slot name="column-display"></slot>
-          {this.renderRowActions()}
+          <slot name="row-actions"></slot>
         </aside>
         <footer part="footer">
           <slot name="footer"></slot>

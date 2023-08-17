@@ -400,6 +400,30 @@ export namespace Components {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        /**
+          * Closes the row actions window.
+         */
+        "close": () => Promise<void>;
+        /**
+          * Opens the row actions on the row-actions-button cell.
+         */
+        "openRowActions": (cell: HTMLElement) => Promise<void>;
+        /**
+          * Opens the row actions on row hover.
+         */
+        "openRowHover": (row: HTMLElement) => Promise<void>;
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions": boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext": boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover": boolean;
     }
     interface ChGridRowsetEmpty {
     }
@@ -1835,6 +1859,18 @@ declare namespace LocalJSX {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions"?: boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext"?: boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover"?: boolean;
     }
     interface ChGridRowsetEmpty {
     }

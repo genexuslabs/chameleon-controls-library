@@ -15,12 +15,3 @@
   overflow-x: auto;
   user-select: none;
 }
-.row-actions {
-  position: absolute;
-  top: calc(
-    var(--ch-grid-row-highlighted-top, 0px) - var(--ch-grid-scroll-v, 0px)
-  );
-}
-.row-actions:not([show]) {
-  display: none;
-}

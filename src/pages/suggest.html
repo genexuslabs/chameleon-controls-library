@@ -37,12 +37,40 @@
       }
       /*ch-suggest*/
       body.styles ch-suggest {
-        font-family: "Rubik", sans-serif;
-        font-size: 14px;
+        display: block;
+      }
+      body.styles ch-suggest::part(title) {
+        display: block;
+        font-weight: bold;
       }
       body.styles ch-suggest::part(label) {
         font-weight: 700;
         margin-bottom: 4px;
+      }
+      body.styles ch-suggest::part(close-button) {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+      body.styles ch-suggest::part(close-button)::after {
+        content: "✖";
+        line-height: 8px;
+        height: 100%;
+        display: block;
+        border: 1px solid black;
+        cursor: pointer;
+        text-align: center;
+        line-height: 16px;
+      }
+      body.styles ch-suggest::part(header) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+      body.styles ch-suggest::part(ch-window-close) {
+        width: 10px;
+        height: 10px;
       }
       body.styles ch-suggest::part(input) {
         padding: 4px 8px;
@@ -91,7 +119,7 @@
         border-color: var(--highlight-color);
       }
       /*ch-window*/
-      body.styles ch-suggest::part(ch-window-window) {
+      body.styles ch-suggest::part(dropdown) {
         margin-top: 4px;
         border: 1px solid black;
         background-color: white;
@@ -138,7 +166,8 @@
 
       <!-- ch-suggest -->
       <section class="section-dev" data-title="ch-suggest">
-        <ch-suggest label="nombre"></ch-suggest>
+        <ch-suggest label="nombre" suggest-title="Select your food">
+        </ch-suggest>
       </section>
 
       <!-- ch-suggest-list -->
@@ -203,10 +232,6 @@
             }
           }
         });
-        if (e.detail !== "" && counter === 0) {
-          /*no hay coincidencias*/
-          chSuggest.innerHTML = "<p style='margin:0'>No hay coincidencias</p>";
-        }
       });
     </script>
 

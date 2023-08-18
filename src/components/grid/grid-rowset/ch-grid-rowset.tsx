@@ -111,7 +111,7 @@ export default class HTMLChGridRowsetElement
   }
 
   private hasLegend(): boolean {
-    return this.firstElementChild?.tagName === "ch-grid-rowset-legend";
+    return this.firstElementChild?.tagName === "CH-GRID-ROWSET-LEGEND";
   }
 
   private isNestedRow(): boolean {

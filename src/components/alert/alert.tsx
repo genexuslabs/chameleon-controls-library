@@ -1,4 +1,12 @@
-import { Component, Host, h, Prop, Watch } from "@stencil/core";
+import {
+  Component,
+  Host,
+  h,
+  Prop,
+  Watch,
+  Event,
+  EventEmitter
+} from "@stencil/core";
 
 @Component({
   tag: "ch-alert",
@@ -25,6 +33,14 @@ export class ChAlert {
    */
   @Prop() readonly dismissTimeout = 0;
 
+  @Watch("dismissTimeout")
+  timeoutWatcher(newValue) {
+    if (newValue) {
+      this.countdown = newValue;
+      this.start();
+    }
+  }
+
   /**
    * Determine src of the left image.
    */
@@ -50,32 +66,44 @@ export class ChAlert {
   /** Toggles the Pause on Hover functionality */
   @Prop() readonly pauseOnHover: boolean = true;
 
-  /** Closes the alert when the close button is clicked. */
+  /** Closes the alert when the close button is clicked.
+   * Also restarts the counter and sets its value to match dismissTimeout.
+   */
   private handleAlertClose = () => {
     clearInterval(this.timerId);
     this.presented = false;
+    this.close.emit();
+    this.countdown = this.dismissTimeout;
   };
 
   /** Countdown which initial state is dismissTimeout ms. */
   @Prop({ mutable: true }) countdown: number = this.dismissTimeout;
 
-  /** Countdown watcher that hides the alert if the dismissTimeout is reached
-   * and stops the countdown. */
+  /** Countdown watcher that hides the alert if dismissTimeout is reached
+   * and stops the countdown.
+   * See handleAlertClose for more details. */
   @Watch("countdown")
   countdownWatcher(newValue) {
     if (newValue <= 0) {
-      this.presented = false;
+      this.handleAlertClose();
     }
   }
 
+  /** Fires close event */
+  @Event() close: EventEmitter;
+
+  /** Counter decremental function */
   private counter = () => {
     this.countdown -= this.timerInterval;
   };
 
-  /** Starts a new countdown which interval is set in timerInterval */
+  /** Starts a new countdown which interval is set in timerInterval,
+   * Only if is presented, dismissTimeout is greater than 0,
+   * and countdown is still running.
+   */
   private start = () => {
     clearInterval(this.timerId);
-    if (this.presented && this.dismissTimeout !== 0) {
+    if (this.presented && this.dismissTimeout !== 0 && this.countdown >= 0) {
       this.counter;
       this.timerId = setInterval(this.counter, this.timerInterval);
     }

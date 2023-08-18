@@ -190,7 +190,6 @@ INDEX:
 
   private evaluateSlotIsEmpty = () => {
     this.slot.addEventListener("slotchange", () => {
-      console.log(this.slot.assignedNodes().length);
       this.slotIsEmpty = this.slot.assignedNodes().length === 0;
     });
   };

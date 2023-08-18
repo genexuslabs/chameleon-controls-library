@@ -342,21 +342,13 @@ INDEX:
             xAlign="inside-start"
             yAlign="outside-end"
             ref={el => (this.chWindow = el as HTMLChWindowElement)}
+            caption={this.suggestTitle}
             exportparts="
-            caption:ch-window-caption, 
-            close:ch-window-close,
-            footer:ch-window-footer,
-            header:title,
-            main:ch-window-main,
-            mask:ch-window-mask,
-            window:ch-window-window"
+            header:header, 
+            caption:title, 
+            close:close-button,
+            window:dropdown"
           >
-            {this.suggestTitle ? (
-              <div role="heading" slot="header">
-                {this.suggestTitle}
-              </div>
-            ) : null}
-
             <slot></slot>
           </ch-window>
         </div>

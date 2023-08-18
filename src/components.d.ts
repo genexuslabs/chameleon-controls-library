@@ -812,6 +812,10 @@ export namespace Components {
          */
         "showLabel": boolean;
         /**
+          * The suggest title (optional)
+         */
+        "suggestTitle": string;
+        /**
           * The input value
          */
         "value": string;
@@ -2323,6 +2327,10 @@ declare namespace LocalJSX {
           * Whether or not to display the label
          */
         "showLabel"?: boolean;
+        /**
+          * The suggest title (optional)
+         */
+        "suggestTitle"?: string;
         /**
           * The input value
          */

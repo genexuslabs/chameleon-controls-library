@@ -108,6 +108,11 @@ INDEX:
    */
   @Prop({ mutable: true }) value: string;
 
+  /**
+   * The suggest title (optional)
+   */
+  @Prop() readonly suggestTitle: string;
+
   @Watch("windowHidden")
   windowHiddenHandler(newValue: boolean) {
     if (newValue) {
@@ -341,12 +346,17 @@ INDEX:
             caption:ch-window-caption, 
             close:ch-window-close,
             footer:ch-window-footer,
-            header:ch-window-header,
+            header:title,
             main:ch-window-main,
             mask:ch-window-mask,
             window:ch-window-window"
           >
-            <div slot="header" class="dummy-header"></div>
+            {this.suggestTitle ? (
+              <div role="heading" slot="header">
+                {this.suggestTitle}
+              </div>
+            ) : null}
+
             <slot></slot>
           </ch-window>
         </div>

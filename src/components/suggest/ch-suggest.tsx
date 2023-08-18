@@ -81,10 +81,14 @@ INDEX:
 
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
+  private slot!: HTMLSlotElement;
   @Element() el: HTMLChSuggestElement;
 
   // 3.STATE() VARIABLES //
   @State() windowHidden = true;
+
+  /* slotIsEmpty has to be false initially, because otherwise it is not possible to get a reference to the slot, on componentDidLoad*/
+  @State() slotIsEmpty = false;
 
   // 4.PUBLIC PROPERTY API / WATCH'S //
 
@@ -136,6 +140,10 @@ INDEX:
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
+  componentDidLoad() {
+    this.evaluateSlotIsEmpty();
+  }
+
   // 7.LISTENERS //
 
   @Listen("itemSelected")
@@ -179,6 +187,13 @@ INDEX:
   // 9.PUBLIC METHODS API //
 
   // 10.LOCAL METHODS //
+
+  private evaluateSlotIsEmpty = () => {
+    this.slot.addEventListener("slotchange", () => {
+      console.log(this.slot.assignedNodes().length);
+      this.slotIsEmpty = this.slot.assignedNodes().length === 0;
+    });
+  };
 
   private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");
@@ -334,23 +349,25 @@ INDEX:
             aria-labelledby={this.showLabel && this.label ? "label" : undefined}
             aria-expanded={this.windowHidden.toString()}
           ></input>
-          <ch-window
-            id="ch-window"
-            container={this.textInput}
-            close-on-outside-click
-            close-on-escape
-            xAlign="inside-start"
-            yAlign="outside-end"
-            ref={el => (this.chWindow = el as HTMLChWindowElement)}
-            caption={this.suggestTitle}
-            exportparts="
+          {!this.slotIsEmpty ? (
+            <ch-window
+              id="ch-window"
+              container={this.textInput}
+              close-on-outside-click
+              close-on-escape
+              xAlign="inside-start"
+              yAlign="outside-end"
+              ref={el => (this.chWindow = el as HTMLChWindowElement)}
+              caption={this.suggestTitle}
+              exportparts="
             header:header, 
             caption:title, 
             close:close-button,
             window:dropdown"
-          >
-            <slot></slot>
-          </ch-window>
+            >
+              <slot ref={el => (this.slot = el as HTMLSlotElement)}></slot>
+            </ch-window>
+          ) : null}
         </div>
       </Host>
     );

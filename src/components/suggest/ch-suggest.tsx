@@ -86,9 +86,7 @@ INDEX:
 
   // 3.STATE() VARIABLES //
   @State() windowHidden = true;
-
-  /* slotIsEmpty has to be false initially, because otherwise it is not possible to get a reference to the slot, on componentDidLoad*/
-  @State() slotIsEmpty = false;
+  @State() slotIsEmpty = true;
 
   // 4.PUBLIC PROPERTY API / WATCH'S //
 
@@ -116,15 +114,6 @@ INDEX:
    * The suggest title (optional)
    */
   @Prop() readonly suggestTitle: string;
-
-  @Watch("windowHidden")
-  windowHiddenHandler(newValue: boolean) {
-    if (newValue) {
-      this.chWindow.hidden = true;
-    } else {
-      this.chWindow.hidden = false;
-    }
-  }
 
   @Watch("value")
   watchValueHandler(newValue: string) {
@@ -271,12 +260,12 @@ INDEX:
    * Every time the input event is triggered, the value of the input is sent to processInputEvent, which is responsible for displaying a window with the suggested options. this.debounce is a delay that, along with clearTimeout, ensures that the window is only shown after the user has stopped typing.
    */
   private handleInput = (e: InputEvent) => {
+    this.value = (e.target as HTMLInputElement).value;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
-    const value = (e.target as HTMLInputElement).value;
     this.timeoutReference = setTimeout(() => {
-      this.processInputEvent(value);
+      this.processInputEvent();
     }, this.debounce);
   };
 
@@ -310,16 +299,17 @@ INDEX:
     partWindow.scrollTop = partWindow.scrollHeight;
   };
 
-  private processInputEvent = (targetValue: string) => {
+  private processInputEvent = () => {
     this.evaluateWindowMaxHeight();
-    if (this.windowHidden) {
-      this.windowHidden = false;
+    if (this.slotIsEmpty) {
+      this.chWindow.hidden = true;
+    } else {
+      this.chWindow.hidden = false;
     }
-    this.value = targetValue;
   };
 
   private closeWindow = () => {
-    this.windowHidden = true;
+    this.chWindow.hidden = true;
   };
 
   // 10.RENDER() FUNCTION //
@@ -348,25 +338,23 @@ INDEX:
             aria-labelledby={this.showLabel && this.label ? "label" : undefined}
             aria-expanded={this.windowHidden.toString()}
           ></input>
-          {!this.slotIsEmpty ? (
-            <ch-window
-              id="ch-window"
-              container={this.textInput}
-              close-on-outside-click
-              close-on-escape
-              xAlign="inside-start"
-              yAlign="outside-end"
-              ref={el => (this.chWindow = el as HTMLChWindowElement)}
-              caption={this.suggestTitle}
-              exportparts="
+          <ch-window
+            id="ch-window"
+            container={this.textInput}
+            close-on-outside-click
+            close-on-escape
+            xAlign="inside-start"
+            yAlign="outside-end"
+            ref={el => (this.chWindow = el as HTMLChWindowElement)}
+            caption={this.suggestTitle}
+            exportparts="
             header:header, 
             caption:title, 
             close:close-button,
             window:dropdown"
-            >
-              <slot ref={el => (this.slot = el as HTMLSlotElement)}></slot>
-            </ch-window>
-          ) : null}
+          >
+            <slot ref={el => (this.slot = el as HTMLSlotElement)}></slot>
+          </ch-window>
         </div>
       </Host>
     );

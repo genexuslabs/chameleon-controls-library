@@ -17,6 +17,7 @@ import {
   itemSelected,
   focusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
@@ -101,9 +102,14 @@ INDEX:
   @Prop() readonly label: string;
 
   /**
+   * The label position
+   */
+  @Prop({ reflect: true }) readonly labelPosition: LabelPosition = "start";
+
+  /**
    * Whether or not to display the label
    */
-  @Prop() readonly showLabel: boolean = false;
+  @Prop() readonly showLabel: boolean = true;
 
   /**
    * The input value
@@ -317,27 +323,34 @@ INDEX:
   render() {
     return (
       <Host>
-        <div class="wrapper">
-          {this.showLabel && this.label && (
-            <label id="label" htmlFor="input" part="label">
-              {this.label}
-            </label>
-          )}
-          <input
-            type="text"
-            id="input"
-            part="input"
-            class="input"
-            ref={el => (this.textInput = el as HTMLInputElement)}
-            onInput={this.handleInput}
-            onKeyDown={this.handleKeyDown}
-            value={this.value}
-            autocomplete="off"
-            aria-controls="ch-window"
-            aria-label={!this.showLabel && this.label ? this.label : undefined}
-            aria-labelledby={this.showLabel && this.label ? "label" : undefined}
-            aria-expanded={this.windowHidden.toString()}
-          ></input>
+        <div class="main-wrapper" part="main-wrapper">
+          <div class="label-input-wrapper" part="label-input-wrapper">
+            {this.showLabel && this.label && (
+              <label id="label" htmlFor="input" part="label">
+                {this.label}
+              </label>
+            )}
+            <input
+              type="text"
+              id="input"
+              part="input"
+              class="input"
+              ref={el => (this.textInput = el as HTMLInputElement)}
+              onInput={this.handleInput}
+              onKeyDown={this.handleKeyDown}
+              value={this.value}
+              autocomplete="off"
+              aria-controls="ch-window"
+              aria-label={
+                !this.showLabel && this.label ? this.label : undefined
+              }
+              aria-labelledby={
+                this.showLabel && this.label ? "label" : undefined
+              }
+              aria-expanded={this.windowHidden.toString()}
+            ></input>
+          </div>
+
           <ch-window
             id="ch-window"
             container={this.textInput}

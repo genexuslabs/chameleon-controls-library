@@ -54,12 +54,12 @@ INDEX:
   /**
    * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
    */
-  @Event() itemSelected: EventEmitter<itemSelected>;
+  @Event() itemSelected: EventEmitter<ItemSelected>;
 
   /**
    * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
    */
-  @Event() focusChangeAttempt: EventEmitter<focusChangeAttempt>;
+  @Event() focusChangeAttempt: EventEmitter<FocusChangeAttempt>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -117,21 +117,13 @@ export type SuggestItemData = {
   icon?: string;
   description?: string;
 };
-export type SuggestListData = {
-  label: string;
-  items: SuggestItemData[];
-};
-export type SuggestData = {
-  suggestItems: SuggestItemData[];
-  suggestLists: SuggestListData[];
-};
 
-export type itemSelected = {
+export type ItemSelected = {
   el: HTMLChSuggestListItemElement;
   value: any;
 };
 
-export type focusChangeAttempt = {
+export type FocusChangeAttempt = {
   el: HTMLChSuggestListItemElement;
   code: ChSuggestKeyDownEvents;
 };

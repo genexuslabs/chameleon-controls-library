@@ -111,6 +111,21 @@ INDEX:
   }
 }
 
+export type SuggestItemData = {
+  id: string;
+  label: string;
+  icon?: string;
+  description?: string;
+};
+export type SuggestListData = {
+  label: string;
+  items: SuggestItemData[];
+};
+export type SuggestData = {
+  suggestItems: SuggestItemData[];
+  suggestLists: SuggestListData[];
+};
+
 export type itemSelected = {
   el: HTMLChSuggestListItemElement;
   value: any;

@@ -16,6 +16,7 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
+import { LabelPosition } from "./common/types";
 import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -807,6 +808,10 @@ export namespace Components {
           * The label
          */
         "label": string;
+        /**
+          * The label position
+         */
+        "labelPosition": LabelPosition;
         /**
           * Whether or not to display the label
          */
@@ -2319,6 +2324,10 @@ declare namespace LocalJSX {
           * The label
          */
         "label"?: string;
+        /**
+          * The label position
+         */
+        "labelPosition"?: LabelPosition;
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */

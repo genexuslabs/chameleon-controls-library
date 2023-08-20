@@ -1,4 +1,5 @@
 import { Component, Host, h, Prop } from "@stencil/core";
+import { SuggestItemData } from "../suggest-list-item/ch-suggest-list-item";
 
 @Component({
   tag: "ch-suggest-list",
@@ -64,3 +65,12 @@ INDEX:
     );
   }
 }
+
+export type SuggestListData = {
+  label: string;
+  items: SuggestItemData[];
+};
+export type SuggestData = {
+  suggestItems: SuggestItemData[];
+  suggestLists: SuggestListData[];
+};

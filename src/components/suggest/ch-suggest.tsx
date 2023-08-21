@@ -183,7 +183,7 @@ INDEX:
   // 10.LOCAL METHODS //
 
   private evaluateSlotIsEmpty = () => {
-    this.slotIsEmpty = this.el.querySelector(":scope>*") == null;
+    this.slotIsEmpty = !this.el.firstElementChild;
   };
 
   private setFocusOnFirstItem = () => {

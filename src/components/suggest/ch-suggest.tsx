@@ -135,7 +135,7 @@ INDEX:
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
-  componentDidLoad() {
+  componentWillLoad() {
     this.evaluateSlotIsEmpty();
   }
 
@@ -184,7 +184,7 @@ INDEX:
   // 10.LOCAL METHODS //
 
   private evaluateSlotIsEmpty = () => {
-    this.slotIsEmpty = this.slot.assignedNodes().length === 0;
+    this.slotIsEmpty = this.el.querySelector(":scope>*") == null;
   };
 
   private setFocusOnFirstItem = () => {

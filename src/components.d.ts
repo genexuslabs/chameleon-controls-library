@@ -17,7 +17,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { LabelPosition } from "./common/types";
-import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, ItemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { ChWindowAlign } from "./components/window/ch-window";
@@ -2359,11 +2359,11 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
          */
-        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<focusChangeAttempt>) => void;
+        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<FocusChangeAttempt>) => void;
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<itemSelected>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<ItemSelected>) => void;
     }
     interface ChTextblock {
         /**

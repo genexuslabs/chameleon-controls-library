@@ -95,17 +95,13 @@ INDEX:
 
   render() {
     return (
-      <Host
-        role="listitem"
-        onClick={this.handleClick}
-        onKeyDown={this.handleKeyDown}
-      >
-        <div class="wrapper" tabindex="0" part="wrapper">
+      <Host role="listitem" onKeyDown={this.handleKeyDown}>
+        <button part="button" onClick={this.handleClick}>
           <slot name="icon"></slot>
           <div class="content-wrapper">
             <slot></slot>
           </div>
-        </div>
+        </button>
       </Host>
     );
   }

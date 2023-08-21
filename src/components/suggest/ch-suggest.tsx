@@ -184,9 +184,7 @@ INDEX:
   // 10.LOCAL METHODS //
 
   private evaluateSlotIsEmpty = () => {
-    this.slot.addEventListener("slotchange", () => {
-      this.slotIsEmpty = this.slot.assignedNodes().length === 0;
-    });
+    this.slotIsEmpty = this.slot.assignedNodes().length === 0;
   };
 
   private setFocusOnFirstItem = () => {
@@ -366,7 +364,10 @@ INDEX:
             close:close-button,
             window:dropdown"
           >
-            <slot ref={el => (this.slot = el as HTMLSlotElement)}></slot>
+            <slot
+              onSlotchange={this.evaluateSlotIsEmpty}
+              ref={el => (this.slot = el as HTMLSlotElement)}
+            ></slot>
           </ch-window>
         </div>
       </Host>

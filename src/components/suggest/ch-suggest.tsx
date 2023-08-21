@@ -82,7 +82,6 @@ INDEX:
 
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
-  private slot!: HTMLSlotElement;
   @Element() el: HTMLChSuggestElement;
 
   // 3.STATE() VARIABLES //
@@ -360,10 +359,7 @@ INDEX:
             close:close-button,
             window:dropdown"
           >
-            <slot
-              onSlotchange={this.evaluateSlotIsEmpty}
-              ref={el => (this.slot = el as HTMLSlotElement)}
-            ></slot>
+            <slot onSlotchange={this.evaluateSlotIsEmpty}></slot>
           </ch-window>
         </div>
       </Host>

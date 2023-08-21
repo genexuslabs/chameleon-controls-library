@@ -14,8 +14,8 @@ import {
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
 import {
-  itemSelected,
-  focusChangeAttempt
+  ItemSelected,
+  FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
 import { LabelPosition } from "../../common/types";
 
@@ -46,10 +46,10 @@ INDEX:
 
   private keyEventsDictionary: {
     [key in ChSuggestKeyDownEvents]: (
-      eventData?: focusChangeAttemptEventData
+      eventData?: FocusChangeAttemptEventData
     ) => void;
   } = {
-    ArrowDown: (e: focusChangeAttemptEventData) => {
+    ArrowDown: (e: FocusChangeAttemptEventData) => {
       const newFocusedItem = this.getNewFocusedItem(
         e.currentFocusedItem,
         ARROW_DOWN
@@ -64,7 +64,7 @@ INDEX:
         this.scrollListToBottom();
       }
     },
-    ArrowUp: (e: focusChangeAttemptEventData) => {
+    ArrowUp: (e: FocusChangeAttemptEventData) => {
       const newFocusedItem = this.getNewFocusedItem(
         e.currentFocusedItem,
         ARROW_UP
@@ -142,15 +142,15 @@ INDEX:
   // 7.LISTENERS //
 
   @Listen("itemSelected")
-  itemSelectedHandler(event: CustomEvent<itemSelected>) {
+  itemSelectedHandler(event: CustomEvent<ItemSelected>) {
     this.value = event.detail.value;
     this.closeWindow();
   }
 
   @Listen("focusChangeAttempt")
-  focusChangeAttemptHandler(event: CustomEvent<focusChangeAttempt>) {
+  focusChangeAttemptHandler(event: CustomEvent<FocusChangeAttempt>) {
     const keyEventHandler:
-      | ((event?: focusChangeAttemptEventData) => void)
+      | ((event?: FocusChangeAttemptEventData) => void)
       | undefined = this.keyEventsDictionary[event.detail.code];
 
     if (keyEventHandler) {
@@ -376,8 +376,8 @@ INDEX:
 }
 
 export type ChSuggestKeyDownEvents = typeof ARROW_DOWN | typeof ARROW_UP;
-type focusChangeAttemptEventData = {
-  event: focusChangeAttempt;
+type FocusChangeAttemptEventData = {
+  event: FocusChangeAttempt;
   currentFocusedItem: HTMLChSuggestListItemElement;
   chSuggestListItemsArray: HTMLChSuggestListItemElement[];
   currentFocusedItemIndex: number;

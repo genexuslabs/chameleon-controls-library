@@ -305,11 +305,7 @@ INDEX:
 
   private processInputEvent = () => {
     this.evaluateWindowMaxHeight();
-    if (this.slotIsEmpty) {
-      this.chWindow.hidden = true;
-    } else {
-      this.chWindow.hidden = false;
-    }
+    this.chWindow.hidden = this.slotIsEmpty;
   };
 
   private closeWindow = () => {

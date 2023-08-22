@@ -83,13 +83,7 @@ INDEX:
   };
 
   private handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === "Enter") {
-      this.itemSelected.emit({
-        el: this.el,
-        caption: this.el.innerText,
-        value: this.value || this.el.innerText
-      });
-    } else if (e.code === ARROW_UP || e.code === ARROW_DOWN) {
+    if (e.code === ARROW_UP || e.code === ARROW_DOWN) {
       e.preventDefault();
       this.focusChangeAttempt.emit({
         el: this.el,

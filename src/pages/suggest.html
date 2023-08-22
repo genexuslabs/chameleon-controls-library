@@ -147,7 +147,7 @@
       <!-- frutas -->
       <span><strong>frutas</strong></span>
       <ul data-category="frutas" class="data-list">
-        <li>manzanas</li>
+        <li data-value="manzana-123">manzanas</li>
         <li>bananas</li>
         <li>naranjas</li>
         <li>uvas</li>
@@ -230,6 +230,7 @@
                 "ch-suggest-list-item"
               );
               chSuggestListItem.innerText = item.innerText;
+              chSuggestListItem.value = item.getAttribute("data-value");
               if (category) {
                 chSuggestList.appendChild(chSuggestListItem);
                 counter++;

@@ -813,6 +813,10 @@ export namespace Components {
          */
         "labelPosition": LabelPosition;
         /**
+          * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+         */
+        "showHeader": false;
+        /**
           * Whether or not to display the label
          */
         "showLabel": boolean;
@@ -2340,6 +2344,10 @@ declare namespace LocalJSX {
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        /**
+          * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+         */
+        "showHeader"?: false;
         /**
           * Whether or not to display the label
          */

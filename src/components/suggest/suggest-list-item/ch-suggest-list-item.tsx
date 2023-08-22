@@ -42,6 +42,16 @@ INDEX:
   @Prop() readonly iconSrc: string;
 
   /**
+   * The identifier
+   */
+  @Prop() readonly itemId: string;
+
+  /**
+   * The description
+   */
+  @Prop() readonly description: string;
+
+  /**
    * The item value
    */
   @Prop() readonly value;
@@ -59,7 +69,7 @@ INDEX:
   /**
    * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
    */
-  @Event() itemSelected: EventEmitter<ItemSelected>;
+  @Event() itemSelected: EventEmitter<SuggestItemData>;
 
   /**
    * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
@@ -76,9 +86,10 @@ INDEX:
 
   private handleClick = () => {
     this.itemSelected.emit({
-      el: this.el,
-      caption: this.el.innerText,
-      value: this.value || this.el.innerText
+      itemId: this.itemId,
+      value: this.value || this.el.innerText,
+      icon: this.iconSrc,
+      description: this.description
     });
   };
 
@@ -99,8 +110,11 @@ INDEX:
       <Host role="listitem" onKeyDown={this.handleKeyDown}>
         <button part="button" onClick={this.handleClick}>
           <slot name="icon"></slot>
-          <div class="content-wrapper">
+          <div class="content-wrapper" part="content-wrapper">
             <slot></slot>
+            {this.description ? (
+              <span part="description">{this.description}</span>
+            ) : null}
           </div>
         </button>
       </Host>
@@ -109,16 +123,10 @@ INDEX:
 }
 
 export type SuggestItemData = {
-  id: string;
-  label: string;
+  itemId: string;
+  value: any;
   icon?: string;
   description?: string;
-};
-
-export type ItemSelected = {
-  el: HTMLChSuggestListItemElement;
-  caption: string;
-  value: any;
 };
 
 export type FocusChangeAttempt = {

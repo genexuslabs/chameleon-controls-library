@@ -42,11 +42,6 @@ INDEX:
   @Prop() readonly iconSrc: string;
 
   /**
-   * The identifier
-   */
-  @Prop() readonly itemId: string;
-
-  /**
    * The description
    */
   @Prop() readonly description: string;
@@ -86,9 +81,7 @@ INDEX:
 
   private handleClick = () => {
     this.itemSelected.emit({
-      itemId: this.itemId,
       value: this.value || this.el.innerText,
-      icon: this.iconSrc,
       description: this.description
     });
   };
@@ -123,9 +116,7 @@ INDEX:
 }
 
 export type SuggestItemData = {
-  itemId: string;
   value: any;
-  icon?: string;
   description?: string;
 };
 

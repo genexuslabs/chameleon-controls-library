@@ -122,7 +122,7 @@ INDEX:
 
   @Watch("value")
   watchValueHandler(newValue: string) {
-    this.inputChanged.emit(newValue);
+    this.valueChanged.emit(newValue);
   }
 
   // 5.EVENTS (EMIT) //
@@ -130,7 +130,7 @@ INDEX:
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
-  @Event() inputChanged: EventEmitter<string>;
+  @Event() valueChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 

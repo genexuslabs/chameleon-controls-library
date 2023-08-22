@@ -105,9 +105,9 @@ INDEX:
           <slot name="icon"></slot>
           <div class="content-wrapper" part="content-wrapper">
             <slot></slot>
-            {this.description ? (
+            {this.description && (
               <span part="description">{this.description}</span>
-            ) : null}
+            )}
           </div>
         </button>
       </Host>

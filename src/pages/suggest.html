@@ -197,7 +197,7 @@
           label="This is the label"
           suggest-title="Select your food"
           label-position="start"
-          value="hello"
+          value="man"
         >
         </ch-suggest>
       </section>
@@ -232,7 +232,7 @@
     <script>
       const chSuggest = document.querySelector("ch-suggest");
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("inputChanged", e => {
+      chSuggest.addEventListener("valueChanged", e => {
         let counter = 0;
         chSuggest.innerHTML = "";
         lists.forEach(list => {

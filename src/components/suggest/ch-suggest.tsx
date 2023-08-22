@@ -116,6 +116,11 @@ INDEX:
   @Prop({ mutable: true }) value: string;
 
   /**
+   * This is the input caption that appears visible on the input (not the the same as value)
+   */
+  @Prop({ mutable: true }) caption: string;
+
+  /**
    * The suggest title (optional)
    */
   @Prop() readonly suggestTitle: string;
@@ -142,6 +147,7 @@ INDEX:
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<ItemSelected>) {
+    this.caption = event.detail.caption;
     this.value = event.detail.value;
     this.closeWindow();
   }
@@ -331,7 +337,7 @@ INDEX:
               ref={el => (this.textInput = el as HTMLInputElement)}
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
-              value={this.value}
+              value={this.caption}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={

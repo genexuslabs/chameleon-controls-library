@@ -41,6 +41,11 @@ INDEX:
    */
   @Prop() readonly iconSrc: string;
 
+  /**
+   * The item value
+   */
+  @Prop() readonly value;
+
   // 2.REFERENCE TO ELEMENTS //
 
   @Element() el: HTMLChSuggestListItemElement;
@@ -72,7 +77,8 @@ INDEX:
   private handleClick = () => {
     this.itemSelected.emit({
       el: this.el,
-      value: this.el.innerText
+      caption: this.el.innerText,
+      value: this.value || this.el.innerText
     });
   };
 
@@ -80,7 +86,8 @@ INDEX:
     if (e.code === "Enter") {
       this.itemSelected.emit({
         el: this.el,
-        value: this.el.innerText
+        caption: this.el.innerText,
+        value: this.value || this.el.innerText
       });
     } else if (e.code === ARROW_UP || e.code === ARROW_DOWN) {
       e.preventDefault();
@@ -116,6 +123,7 @@ export type SuggestItemData = {
 
 export type ItemSelected = {
   el: HTMLChSuggestListItemElement;
+  caption: string;
   value: any;
 };
 

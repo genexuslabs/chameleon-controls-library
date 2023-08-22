@@ -116,6 +116,11 @@ INDEX:
   @Prop({ mutable: true }) value: string;
 
   /**
+   * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+   */
+  @Prop() readonly showHeader = false;
+
+  /**
    * The suggest title (optional)
    */
   @Prop() readonly suggestTitle: string;
@@ -352,6 +357,7 @@ INDEX:
             xAlign="inside-start"
             yAlign="outside-end"
             ref={el => (this.chWindow = el as HTMLChWindowElement)}
+            showHeader={this.showHeader}
             caption={this.suggestTitle}
             exportparts="
             header:header, 

@@ -17,7 +17,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { LabelPosition } from "./common/types";
-import { FocusChangeAttempt, ItemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, SuggestItemData } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { ChWindowAlign } from "./components/window/ch-window";
@@ -801,10 +801,6 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
-          * This is the input caption that appears visible on the input (not the the same as value)
-         */
-        "caption": string;
-        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": number;
@@ -836,6 +832,10 @@ export namespace Components {
         "label": string;
     }
     interface ChSuggestListItem {
+        /**
+          * The description
+         */
+        "description": string;
         /**
           * The icon url
          */
@@ -2325,10 +2325,6 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
-          * This is the input caption that appears visible on the input (not the the same as value)
-         */
-        "caption"?: string;
-        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce"?: number;
@@ -2343,7 +2339,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Whether or not to display the label
          */
@@ -2365,6 +2361,10 @@ declare namespace LocalJSX {
     }
     interface ChSuggestListItem {
         /**
+          * The description
+         */
+        "description"?: string;
+        /**
           * The icon url
          */
         "iconSrc"?: string;
@@ -2375,7 +2375,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<ItemSelected>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemData>) => void;
         /**
           * The item value
          */

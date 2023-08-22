@@ -1,7 +1,5 @@
 @import "../../../common/_base";
 
-@include box-sizing();
-
 :host {
   display: block;
 }
@@ -11,3 +9,5 @@
   width: 100%;
   cursor: pointer;
 }
+
+@include box-sizing();

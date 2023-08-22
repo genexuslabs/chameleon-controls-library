@@ -9,6 +9,7 @@
 
 | Property        | Attribute        | Description                                                                                                                           | Type                 | Default     |
 | --------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ----------- |
+| `caption`       | `caption`        | This is the input caption that appears visible on the input (not the the same as value)                                               | `string`             | `undefined` |
 | `debounce`      | `debounce`       | The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions). | `number`             | `500`       |
 | `label`         | `label`          | The label                                                                                                                             | `string`             | `undefined` |
 | `labelPosition` | `label-position` | The label position                                                                                                                    | `"above" \| "start"` | `"start"`   |

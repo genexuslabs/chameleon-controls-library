@@ -23,7 +23,7 @@
       }
       ul {
         margin: 0 0 16px 0;
-        padding-left: 16px;
+        padding-inline-start: 16px;
       }
       li {
         margin-bottom: 2px;
@@ -37,14 +37,47 @@
       }
       /*ch-suggest*/
       body.styles ch-suggest {
-        font-family: "Rubik", sans-serif;
-        font-size: 14px;
+        display: block;
       }
-      body.styles ch-suggest:focus {
+      body.styles ch-suggest::part(title) {
+        display: block;
+        font-weight: bold;
       }
       body.styles ch-suggest::part(label) {
-        font-weight: 700;
-        margin-bottom: 4px;
+        font-weight: 500;
+      }
+      body.styles ch-suggest[label-position="start"]::part(label) {
+        margin-inline-end: 8px;
+        display: flex;
+        align-items: center;
+      }
+      body.styles ch-suggest[label-position="above"]::part(label) {
+        margin-block-end: 4px;
+      }
+      body.styles ch-suggest::part(close-button) {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+      body.styles ch-suggest::part(close-button)::after {
+        content: "✖";
+        line-height: 8px;
+        height: 100%;
+        display: block;
+        border: 1px solid black;
+        cursor: pointer;
+        text-align: center;
+        line-height: 16px;
+      }
+      body.styles ch-suggest::part(header) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-block-end: 8px;
+      }
+      body.styles ch-suggest::part(ch-window-close) {
+        width: 10px;
+        height: 10px;
       }
       body.styles ch-suggest::part(input) {
         padding: 4px 8px;
@@ -60,7 +93,7 @@
         border: 1px solid rgba(128, 128, 128, 0.275);
         border-radius: 4px;
         padding: 8px;
-        margin-bottom: 4px;
+        margin-block-end: 4px;
       }
       body.styles ch-suggest-list::part(title) {
         font-size: 14px;
@@ -69,13 +102,13 @@
         margin: 4px 0 8px 0;
       }
       /*ch-suggest-list-item*/
-      body.styles ch-suggest-list-item {
+      body.styles ch-suggest-list-item::part(button) {
         padding: 4px 8px;
         cursor: pointer;
       }
       body.styles ch-suggest-list-item ch-icon {
         --icon-size: 16px;
-        margin-right: 2px;
+        margin-inline-end: 2px;
       }
       body.styles ch-suggest-list-item:hover {
         background-color: var(--ch-color--violet-100);
@@ -88,12 +121,20 @@
         background-color: rgba(241, 184, 243, 0.42);
         outline: none;
       }
+      body.styles ch-suggest-list-item::part(button):focus {
+        outline: 2px solid var(--highlight-color);
+        border-color: var(--highlight-color);
+      }
       /*ch-window*/
-      body.styles ch-suggest::part(ch-window-window) {
-        margin-top: 4px;
+      body.styles ch-suggest::part(dropdown) {
+        margin-block-start: 4px;
         border: 1px solid black;
         background-color: white;
         padding: 8px;
+      }
+      /*focus*/
+      :focus {
+        outline-style: none !important;
       }
     </style>
   </head>
@@ -106,7 +147,7 @@
       <!-- frutas -->
       <span><strong>frutas</strong></span>
       <ul data-category="frutas" class="data-list">
-        <li>manzanas</li>
+        <li data-value="manzana-123">manzanas</li>
         <li>bananas</li>
         <li>naranjas</li>
         <li>uvas</li>
@@ -132,7 +173,12 @@
 
       <!-- ch-suggest -->
       <section class="section-dev" data-title="ch-suggest">
-        <ch-suggest label="nombre"></ch-suggest>
+        <ch-suggest
+          label="This is the label"
+          suggest-title="Select your food"
+          label-position="start"
+        >
+        </ch-suggest>
       </section>
 
       <!-- ch-suggest-list -->
@@ -184,6 +230,7 @@
                 "ch-suggest-list-item"
               );
               chSuggestListItem.innerText = item.innerText;
+              chSuggestListItem.value = item.getAttribute("data-value");
               if (category) {
                 chSuggestList.appendChild(chSuggestListItem);
                 counter++;
@@ -197,10 +244,6 @@
             }
           }
         });
-        if (e.detail !== "" && counter === 0) {
-          /*no hay coincidencias*/
-          chSuggest.innerHTML = "<p style='margin:0'>No hay coincidencias</p>";
-        }
       });
     </script>
 

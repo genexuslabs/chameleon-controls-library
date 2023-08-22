@@ -1,3 +1,9 @@
 :host {
+  display: block;
+}
+:where(button) {
+  all: unset;
   display: flex;
+  width: 100%;
+  cursor: pointer;
 }

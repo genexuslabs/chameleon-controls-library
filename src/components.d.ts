@@ -16,7 +16,8 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
-import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { LabelPosition } from "./common/types";
+import { FocusChangeAttempt, ItemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { ChWindowAlign } from "./components/window/ch-window";
@@ -200,6 +201,17 @@ export namespace Components {
           * An object that contains localized strings for the grid.
          */
         "localization": GridLocalization;
+        /**
+          * Mark or unmark all rows.
+          * @param marked - A boolean indicating whether to mark or unmark all rows.
+         */
+        "markAllRows": (marked?: boolean) => Promise<void>;
+        /**
+          * Mark or unmark a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param marked - A boolean indicating whether to mark or unmark the row.
+         */
+        "markRow": (rowId: string, marked?: boolean) => Promise<void>;
         /**
           * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
           * @param rowId - The rowId of the row to ensure visibility.
@@ -789,6 +801,10 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
+          * This is the input caption that appears visible on the input (not the the same as value)
+         */
+        "caption": string;
+        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": number;
@@ -797,9 +813,17 @@ export namespace Components {
          */
         "label": string;
         /**
+          * The label position
+         */
+        "labelPosition": LabelPosition;
+        /**
           * Whether or not to display the label
          */
         "showLabel": boolean;
+        /**
+          * The suggest title (optional)
+         */
+        "suggestTitle": string;
         /**
           * The input value
          */
@@ -816,6 +840,10 @@ export namespace Components {
           * The icon url
          */
         "iconSrc": string;
+        /**
+          * The item value
+         */
+        "value": any;
     }
     interface ChTextblock {
         /**
@@ -2297,6 +2325,10 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
+          * This is the input caption that appears visible on the input (not the the same as value)
+         */
+        "caption"?: string;
+        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce"?: number;
@@ -2305,6 +2337,10 @@ declare namespace LocalJSX {
          */
         "label"?: string;
         /**
+          * The label position
+         */
+        "labelPosition"?: LabelPosition;
+        /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
@@ -2312,6 +2348,10 @@ declare namespace LocalJSX {
           * Whether or not to display the label
          */
         "showLabel"?: boolean;
+        /**
+          * The suggest title (optional)
+         */
+        "suggestTitle"?: string;
         /**
           * The input value
          */
@@ -2331,11 +2371,15 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
          */
-        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<focusChangeAttempt>) => void;
+        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<FocusChangeAttempt>) => void;
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<itemSelected>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<ItemSelected>) => void;
+        /**
+          * The item value
+         */
+        "value"?: any;
     }
     interface ChTextblock {
         /**

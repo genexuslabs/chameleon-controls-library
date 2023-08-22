@@ -12,6 +12,7 @@
 | `debounce`      | `debounce`       | The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions). | `number`             | `500`       |
 | `label`         | `label`          | The label                                                                                                                             | `string`             | `undefined` |
 | `labelPosition` | `label-position` | The label position                                                                                                                    | `"above" \| "start"` | `"start"`   |
+| `showHeader`    | `show-header`    | Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.                      | `boolean`            | `false`     |
 | `showLabel`     | `show-label`     | Whether or not to display the label                                                                                                   | `boolean`            | `true`      |
 | `suggestTitle`  | `suggest-title`  | The suggest title (optional)                                                                                                          | `string`             | `undefined` |
 | `value`         | `value`          | The input value                                                                                                                       | `string`             | `undefined` |

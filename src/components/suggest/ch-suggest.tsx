@@ -14,7 +14,7 @@ import {
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
 import {
-  ItemSelected,
+  SuggestItemData,
   FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
 import { LabelPosition } from "../../common/types";
@@ -116,11 +116,6 @@ INDEX:
   @Prop({ mutable: true }) value: string;
 
   /**
-   * This is the input caption that appears visible on the input (not the the same as value)
-   */
-  @Prop({ mutable: true }) caption: string;
-
-  /**
    * The suggest title (optional)
    */
   @Prop() readonly suggestTitle: string;
@@ -146,8 +141,7 @@ INDEX:
   // 7.LISTENERS //
 
   @Listen("itemSelected")
-  itemSelectedHandler(event: CustomEvent<ItemSelected>) {
-    this.caption = event.detail.caption;
+  itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
     this.value = event.detail.value;
     this.closeWindow();
   }
@@ -337,7 +331,7 @@ INDEX:
               ref={el => (this.textInput = el as HTMLInputElement)}
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
-              value={this.caption}
+              value={this.value}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={

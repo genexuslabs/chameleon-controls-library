@@ -105,6 +105,7 @@
       body.styles ch-suggest-list-item::part(button) {
         padding: 4px 8px;
         cursor: pointer;
+        gap: 4px;
       }
       body.styles ch-suggest-list-item ch-icon {
         --icon-size: 16px;
@@ -124,6 +125,18 @@
       body.styles ch-suggest-list-item::part(button):focus {
         outline: 2px solid var(--highlight-color);
         border-color: var(--highlight-color);
+      }
+      /*content-wrapper*/
+      body.styles ch-suggest-list-item::part(content-wrapper) {
+        display: flex;
+        gap: 8px;
+      }
+      /*description*/
+      body.styles ch-suggest-list-item::part(description) {
+        font-style: italic;
+      }
+      body.styles ch-suggest-list-item::part(description):before {
+        content: " - ";
       }
       /*ch-window*/
       body.styles ch-suggest::part(dropdown) {
@@ -147,7 +160,14 @@
       <!-- frutas -->
       <span><strong>frutas</strong></span>
       <ul data-category="frutas" class="data-list">
-        <li data-value="manzana-123">manzanas</li>
+        <li
+          data-value="manzana-123"
+          data-description="manzana description"
+          data-icon="./assets/apple.svg"
+          data-id="my-manzana-id"
+        >
+          manzanas
+        </li>
         <li>bananas</li>
         <li>naranjas</li>
         <li>uvas</li>
@@ -177,6 +197,7 @@
           label="This is the label"
           suggest-title="Select your food"
           label-position="start"
+          value="man"
         >
         </ch-suggest>
       </section>
@@ -211,7 +232,7 @@
     <script>
       const chSuggest = document.querySelector("ch-suggest");
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("inputChanged", e => {
+      chSuggest.addEventListener("valueChanged", e => {
         let counter = 0;
         chSuggest.innerHTML = "";
         lists.forEach(list => {
@@ -231,12 +252,22 @@
               );
               chSuggestListItem.innerText = item.innerText;
               chSuggestListItem.value = item.getAttribute("data-value");
+              chSuggestListItem.itemId = item.getAttribute("data-id");
+              chSuggestListItem.description =
+                item.getAttribute("data-description");
               if (category) {
                 chSuggestList.appendChild(chSuggestListItem);
                 counter++;
               } else {
                 chSuggest.appendChild(chSuggestListItem);
                 counter++;
+              }
+              const iconSrc = item.getAttribute("data-icon");
+              if (iconSrc) {
+                const icon = document.createElement("ch-icon");
+                icon.setAttribute("src", iconSrc);
+                icon.setAttribute("slot", "icon");
+                chSuggestListItem.appendChild(icon);
               }
             });
             if (category) {
@@ -251,6 +282,9 @@
       const setFocusBtn = document.getElementById("set-focus");
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
+      });
+      chSuggest.addEventListener("valueChanged", e => {
+        console.log(e);
       });
     </script>
     <script src="assets/common.js"></script>

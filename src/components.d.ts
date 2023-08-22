@@ -801,6 +801,10 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
+          * This is the input caption that appears visible on the input (not the the same as value)
+         */
+        "caption": string;
+        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": number;
@@ -836,6 +840,10 @@ export namespace Components {
           * The icon url
          */
         "iconSrc": string;
+        /**
+          * The item value
+         */
+        "value": any;
     }
     interface ChTextblock {
         /**
@@ -2317,6 +2325,10 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
+          * This is the input caption that appears visible on the input (not the the same as value)
+         */
+        "caption"?: string;
+        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce"?: number;
@@ -2364,6 +2376,10 @@ declare namespace LocalJSX {
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
         "onItemSelected"?: (event: ChSuggestListItemCustomEvent<ItemSelected>) => void;
+        /**
+          * The item value
+         */
+        "value"?: any;
     }
     interface ChTextblock {
         /**

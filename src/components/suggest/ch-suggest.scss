@@ -1,3 +1,7 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
 :host {
   --window-max-height: none;
   --window-gap: 50px;

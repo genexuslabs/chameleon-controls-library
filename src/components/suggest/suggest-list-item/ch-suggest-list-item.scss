@@ -1,3 +1,7 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
 :host {
   display: block;
 }
@@ -6,5 +10,4 @@
   display: flex;
   width: 100%;
   cursor: pointer;
-  box-sizing: border-box;
 }

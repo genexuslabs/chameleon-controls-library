@@ -201,6 +201,23 @@
         >
         </ch-suggest>
       </section>
+      <button id="select-text-button">Select text</button>
+      <button id="focus-button">Focus</button>
+
+      <script>
+        const chSuggest = document.querySelector("ch-suggest");
+        chSuggest.cursorEnd = true;
+        /*Select text button*/
+        const selectTextButton = document.getElementById("select-text-button");
+        selectTextButton.addEventListener("click", async e => {
+          await chSuggest.selectInputText();
+        });
+        /*Focus button*/
+        const focusButton = document.getElementById("focus-button");
+        focusButton.addEventListener("click", e => {
+          chSuggest.focus();
+        });
+      </script>
 
       <!-- ch-suggest-list -->
       <section class="section-dev" data-title="ch-suggest-list">
@@ -230,7 +247,6 @@
     </div>
 
     <script>
-      const chSuggest = document.querySelector("ch-suggest");
       const lists = document.querySelectorAll(".data-list");
       chSuggest.addEventListener("valueChanged", e => {
         let counter = 0;

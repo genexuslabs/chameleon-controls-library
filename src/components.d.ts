@@ -801,6 +801,10 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
+          * If true, it will position the cursor at the end when the input is focused.
+         */
+        "cursorEnd": false;
+        /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": number;
@@ -812,6 +816,10 @@ export namespace Components {
           * The label position
          */
         "labelPosition": LabelPosition;
+        /**
+          * @description It selects/highlights the input text.
+         */
+        "selectInputText": () => Promise<void>;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
@@ -2328,6 +2336,10 @@ declare namespace LocalJSX {
         "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
     }
     interface ChSuggest {
+        /**
+          * If true, it will position the cursor at the end when the input is focused.
+         */
+        "cursorEnd"?: false;
         /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */

@@ -118,6 +118,7 @@ INDEX:
 export type SuggestItemData = {
   value: any;
   description?: string;
+  icon?: string;
 };
 
 export type FocusChangeAttempt = {

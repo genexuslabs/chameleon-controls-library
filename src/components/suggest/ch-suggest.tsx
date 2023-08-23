@@ -9,7 +9,8 @@ import {
   EventEmitter,
   Listen,
   Watch,
-  State
+  State,
+  Method
 } from "@stencil/core";
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
@@ -125,6 +126,11 @@ INDEX:
    */
   @Prop() readonly suggestTitle: string;
 
+  /**
+   * If true, it will position the cursor at the end when the input is focused.
+   */
+  @Prop() readonly cursorEnd = false;
+
   @Watch("value")
   watchValueHandler(newValue: string) {
     this.valueChanged.emit(newValue);
@@ -184,6 +190,15 @@ INDEX:
   }
 
   // 9.PUBLIC METHODS API //
+
+  /**
+   * @description It selects/highlights the input text.
+   */
+  @Method()
+  async selectInputText() {
+    this.textInput.focus();
+    this.textInput.select();
+  }
 
   // 10.LOCAL METHODS //
 
@@ -316,6 +331,15 @@ INDEX:
     this.chWindow.hidden = true;
   };
 
+  private onFocusHandler = () => {
+    if (this.cursorEnd) {
+      this.textInput.setSelectionRange(
+        this.textInput.value.length,
+        this.textInput.value.length
+      );
+    }
+  };
+
   // 10.RENDER() FUNCTION //
 
   render() {
@@ -336,6 +360,7 @@ INDEX:
               ref={el => (this.textInput = el as HTMLInputElement)}
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
+              onFocus={this.onFocusHandler}
               value={this.value}
               autocomplete="off"
               aria-controls="ch-window"

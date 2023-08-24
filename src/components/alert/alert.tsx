@@ -51,6 +51,13 @@ export class ChAlert {
    */
   @Prop({ reflect: true, mutable: true }) presented = false;
 
+  @Watch("presented")
+  presentedWatcher(newValue) {
+    if (newValue) {
+      this.start();
+    }
+  }
+
   /**
    * Determine if the closeButton is displayed or not.
    */
@@ -104,7 +111,6 @@ export class ChAlert {
   private start = () => {
     clearInterval(this.timerId);
     if (this.presented && this.dismissTimeout !== 0 && this.countdown >= 0) {
-      this.counter;
       this.timerId = setInterval(this.counter, this.timerInterval);
     }
   };

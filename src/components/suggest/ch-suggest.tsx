@@ -22,7 +22,6 @@ import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
-const ENTER = "Enter";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",

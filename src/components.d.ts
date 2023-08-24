@@ -2237,10 +2237,6 @@ declare namespace LocalJSX {
          */
         "labelPosition"?: LabelPosition;
         /**
-          * This event is emitted every when the user presses the Enter key on the suggest input. I emits the actual input value.
-         */
-        "onEnterPressed"?: (event: CustomEvent<string>) => void;
-        /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onValueChanged"?: (event: CustomEvent<string>) => void;

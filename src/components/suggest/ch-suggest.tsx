@@ -22,6 +22,7 @@ import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
+const ENTER = "Enter";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
@@ -142,6 +143,11 @@ INDEX:
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
   @Event() valueChanged: EventEmitter<string>;
+
+  /**
+   * This event is emitted every when the user presses the Enter key on the suggest input. I emits the actual input value.
+   */
+  @Event() enterPressed: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -296,6 +302,9 @@ INDEX:
     if (e.key === ARROW_DOWN) {
       e.preventDefault();
       this.setFocusOnFirstItem();
+    }
+    if (e.key === ENTER) {
+      this.enterPressed.emit(this.value);
     }
   };
 

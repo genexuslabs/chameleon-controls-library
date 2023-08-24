@@ -24,7 +24,7 @@
 
 Type: `Promise<checkedChTreeItem[]>`
 
-an array of the ch-tree-items that are checked. Each array item is an object with "id" and "innerText".
+
 
 
 ----------------------------------------------

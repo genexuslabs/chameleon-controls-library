@@ -117,6 +117,7 @@ INDEX:
 
 export type SuggestItemData = {
   value: any;
+  label?: string;
   description?: string;
   icon?: string;
 };

@@ -21,9 +21,10 @@
 
 ## Events
 
-| Event          | Description                                                                                     | Type                  |
-| -------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
-| `valueChanged` | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>` |
+| Event          | Description                                                                                                           | Type                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `enterPressed` | This event is emitted every when the user presses the Enter key on the suggest input. I emits the actual input value. | `CustomEvent<string>` |
+| `valueChanged` | This event is emitted every time there input events fires, and it emits the actual input value.                       | `CustomEvent<string>` |
 
 
 ## Methods

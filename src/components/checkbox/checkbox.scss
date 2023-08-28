@@ -46,6 +46,10 @@ $space-between-container-and-label: min(0.35em, 7px);
   &--checked {
     background-color: $option-checked-background-color;
   }
+
+  &:focus-within {
+    box-shadow: 0 0 1px 1px #00000040;
+  }
 }
 
 .input {

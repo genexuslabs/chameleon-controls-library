@@ -241,22 +241,30 @@ END OF BOOTSTRAP
 /********************************
 CUSTOM STYLES (HOME) : index.html
 *********************************/
-.title {
+.home .title {
   margin-bottom: 0;
   margin-top: var(--ch-space--m);
 }
-.list {
+.home section {
+  margin: 42px 0;
+}
+.home h2 {
+  margin-bottom: 8px;
+  font-size: 20px;
+  color: var(--ch-color--dark-700);
+}
+.home .list {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-auto-rows: 1fr;
   grid-gap: var(--ch-space--xs);
-  margin-top: var(--ch-space--m);
+  margin-top: 22px;
   font-weight: var(--ch-font-weight--regular);
   padding: 0;
   margin-bottom: var(--ch-space--s);
   list-style-type: none;
 }
-.list li a {
+.home .list li a {
   display: block;
   border-radius: var(--ch-radius--xxs);
   border: 1px solid var(--ch-color--dark-700);
@@ -270,21 +278,21 @@ CUSTOM STYLES (HOME) : index.html
   justify-content: center;
   box-sizing: border-box;
 }
-.list li a:hover {
+.home .list li a:hover {
   background-color: var(--ch-color--violet-500);
   color: var(--ch-color--white);
 }
-.list li a:visited {
+.home .list li a:visited {
   color: var(--ch-color--dark-600);
   border-color: var(--ch-color--dark-700);
 }
-.list li a:visited:hover {
+.home .list li a:visited:hover {
   color: var(--ch-color--white);
   border-color: var(--ch-color--dark-700);
   background-color: var(--ch-color--dark-800);
 }
 /*SEARCH INPUT*/
-.search-components {
+.home .search-components {
   background-color: transparent;
 }
 

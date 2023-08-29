@@ -144,31 +144,31 @@
             rich-row-selector-mode="mark"
           ></ch-grid-column>
           <ch-grid-column
-            column-name="Property"
+            column-name="Propiedad"
             settingable="false"
           ></ch-grid-column>
           <ch-grid-column
-            column-name="Value"
+            column-name="Valor"
             settingable="false"
           ></ch-grid-column>
         </ch-grid-columnset>
 
-        <ch-grid-rowset>
-          <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+        <ch-grid-rowset id="ch-grid-rowset">
+          <ch-grid-rowset-legend>Lápiz</ch-grid-rowset-legend>
           <ch-grid-row rowid="first-row">
             <ch-grid-cell></ch-grid-cell>
-            <ch-grid-cell>Nombre</ch-grid-cell>
-            <ch-grid-cell>Productos</ch-grid-cell>
+            <ch-grid-cell>Color</ch-grid-cell>
+            <ch-grid-cell>Azul</ch-grid-cell>
           </ch-grid-row>
           <ch-grid-row>
             <ch-grid-cell></ch-grid-cell>
-            <ch-grid-cell>English</ch-grid-cell>
-            <ch-grid-cell>Products</ch-grid-cell>
+            <ch-grid-cell>Tamaño</ch-grid-cell>
+            <ch-grid-cell>Largo</ch-grid-cell>
           </ch-grid-row>
           <ch-grid-row>
             <ch-grid-cell></ch-grid-cell>
-            <ch-grid-cell>Português</ch-grid-cell>
-            <ch-grid-cell>Produtos</ch-grid-cell>
+            <ch-grid-cell>Marca</ch-grid-cell>
+            <ch-grid-cell>Faber</ch-grid-cell>
           </ch-grid-row>
         </ch-grid-rowset>
       </ch-grid>
@@ -176,9 +176,12 @@
 
       <button id="mark-row">markRow</button>
       <button id="mark-all-rows">markAllRows</button>
+      <button id="add-new-rows">Add new rows</button>
       <script>
         /*grid*/
         const chGrid = document.getElementById("ch-grid");
+        /*grid rowser*/
+        const chGridRowset = document.getElementById("ch-grid-rowset");
         /*mark row*/
         const markRow = document.getElementById("mark-row");
         markRow.addEventListener("click", () => {
@@ -187,6 +190,30 @@
         const markAllRows = document.getElementById("mark-all-rows");
         markAllRows.addEventListener("click", () => {
           chGrid.markAllRows(true);
+        });
+        /*add new rows*/
+        const addNewRows = document.getElementById("add-new-rows");
+        addNewRows.addEventListener("click", () => {
+          //grid row
+          const gridRow = document.createElement("ch-grid-row");
+          //grid column
+          const gridColumn = document.createElement("ch-grid-column");
+          gridColumn.setAttribute("column-name", "Año");
+          gridColumn.setAttribute("settingable", "false");
+          //grid cells
+          //1
+          const gridCell1 = document.createElement("ch-grid-cell");
+          //2
+          const gridCell2 = document.createElement("ch-grid-cell");
+          gridCell2.innerText = "Año";
+          //3
+          const gridCell3 = document.createElement("ch-grid-cell");
+          gridCell3.innerText = "2005";
+          //Appends
+          gridRow.appendChild(gridCell3);
+          gridRow.appendChild(gridCell2);
+          gridRow.appendChild(gridCell1);
+          chGridRowset.appendChild(gridRow);
         });
       </script>
     </div>

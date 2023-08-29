@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>test name</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/styles.css" />
+    <style>
+      .header,
+      .footer {
+        background-color: black;
+        color: white;
+      }
+
+      .group {
+        display: flex;
+      }
+      .group ch-grid {
+        flex: 1;
+      }
+
+      ch-grid {
+        border: 1px solid red;
+      }
+      ch-grid-columnset {
+        background-color: grey;
+      }
+
+      ch-grid::part(settings-mask),
+      ch-grid-column::part(settings-mask) {
+        background-color: rgba(255, 0, 0, 0.3);
+      }
+      ch-grid-row {
+        background-color: white;
+      }
+
+      ch-grid-row[highlighted] {
+        background-color: lightgoldenrodyellow;
+      }
+      ch-grid-row[selected] {
+        background-color: yellow;
+      }
+
+      ch-grid-rowset-legend {
+        background-color: lightgrey;
+      }
+
+      ch-grid-cell::part(drag-icon) {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        background-position: center;
+        background-image: url("http://localhost/images/drag.svg");
+      }
+
+      ch-grid-cell::part(actions-icon) {
+        padding: 0px;
+        border: 0px none transparent;
+        background-color: transparent;
+        box-sizing: content-box;
+        font-family: inherit;
+        font-size: 100%;
+
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 10px 10px;
+        background-position: center;
+        background-image: url("http://localhost/images/view-more.svg");
+      }
+
+      .group.scroll ch-grid {
+        height: 150px;
+      }
+
+      .group.tree ch-grid-cell::part(node-icon) {
+        width: 16px;
+        height: 16px;
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center;
+      }
+
+      .group.tree
+        ch-grid-row:has(> ch-grid-rowset)
+        > ch-grid-cell::part(node-icon) {
+        background-image: url("http://localhost/images/folder.svg");
+      }
+      .group.tree ch-grid-cell::part(node-icon) {
+        background-image: url("http://localhost/images/file.svg");
+      }
+
+      .group.tree ch-grid-rowset-legend::part(icon) {
+        width: 16px;
+        height: 16px;
+        background-image: url("http://localhost/images/group.svg");
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        background-position: center;
+      }
+
+      /* caret */
+      ch-grid-row > ch-grid-cell::part(caret),
+      ch-grid-rowset > ch-grid-rowset-legend::part(caret) {
+        width: 16px;
+        height: 16px;
+        background-image: url("http://localhost/images/node_collapse.gif");
+      }
+
+      ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset)))
+        > ch-grid-cell::part(caret),
+      ch-grid-rowset[collapsed] > ch-grid-rowset-legend::part(caret) {
+        background-image: url("http://localhost/images/node_expand.gif");
+      }
+
+      /* indentation */
+      ch-grid {
+        --indent: 16px;
+      }
+
+      /* row-actions */
+      ch-grid::part(row-actions) {
+        right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <ch-grid id="ch-grid">
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Property"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Value"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
+
+          <ch-grid-row row-id="first-row">
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>Products</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>Produtos</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid-rowset>
+
+        <ch-grid-rowset>
+          <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
+          <ch-grid-row>
+            <ch-grid-cell>Url amigable</ch-grid-cell>
+            <ch-grid-cell>productos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>English</ch-grid-cell>
+            <ch-grid-cell>products</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell>produtos</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
+            <ch-grid-row>
+              <ch-grid-cell>Id</ch-grid-cell>
+              <ch-grid-cell>7867</ch-grid-cell>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-rowset>
+      </ch-grid>
+      <br />
+
+      <button id="mark-row">markRow</button>
+      <button id="mark-all-rows">markAllRows</button>
+      <script>
+        /*grid*/
+        const chGrid = document.getElementById("ch-grid");
+        /*mark row*/
+        const markRow = document.getElementById("mark-row");
+        markRow.addEventListener("click", () => {
+          chGrid.markRow("first-row", true);
+        });
+        const markAllRows = document.getElementById("mark-all-rows");
+        markAllRows.addEventListener("click", () => {
+          chGrid.markAllRows(true);
+        });
+      </script>
+    </div>
+
+    <script src="../assets/common.js"></script>
+  </body>
+</html>

@@ -133,8 +133,16 @@
   </head>
   <body>
     <div class="container">
-      <ch-grid id="ch-grid">
+      <ch-grid id="ch-grid" row-selection-mode="multiple">
         <ch-grid-columnset>
+          <ch-grid-column
+            column-name=""
+            settingable="false"
+            column-type="rich"
+            rich-row-selector
+            size="min-content"
+            rich-row-selector-mode="mark"
+          ></ch-grid-column>
           <ch-grid-column
             column-name="Property"
             settingable="false"
@@ -147,56 +155,21 @@
 
         <ch-grid-rowset>
           <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-
-          <ch-grid-row row-id="first-row">
+          <ch-grid-row rowid="first-row">
+            <ch-grid-cell></ch-grid-cell>
             <ch-grid-cell>Nombre</ch-grid-cell>
             <ch-grid-cell>Productos</ch-grid-cell>
           </ch-grid-row>
           <ch-grid-row>
+            <ch-grid-cell></ch-grid-cell>
             <ch-grid-cell>English</ch-grid-cell>
             <ch-grid-cell>Products</ch-grid-cell>
           </ch-grid-row>
           <ch-grid-row>
+            <ch-grid-cell></ch-grid-cell>
             <ch-grid-cell>Português</ch-grid-cell>
             <ch-grid-cell>Produtos</ch-grid-cell>
           </ch-grid-row>
-        </ch-grid-rowset>
-
-        <ch-grid-rowset>
-          <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-
-          <ch-grid-row>
-            <ch-grid-cell>Redireccionar a</ch-grid-cell>
-            <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-          </ch-grid-row>
-          <ch-grid-row>
-            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-            <ch-grid-cell>Found</ch-grid-cell>
-          </ch-grid-row>
-        </ch-grid-rowset>
-
-        <ch-grid-rowset>
-          <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-          <ch-grid-row>
-            <ch-grid-cell>Url amigable</ch-grid-cell>
-            <ch-grid-cell>productos</ch-grid-cell>
-          </ch-grid-row>
-          <ch-grid-row>
-            <ch-grid-cell>English</ch-grid-cell>
-            <ch-grid-cell>products</ch-grid-cell>
-          </ch-grid-row>
-          <ch-grid-row>
-            <ch-grid-cell>Português</ch-grid-cell>
-            <ch-grid-cell>produtos</ch-grid-cell>
-          </ch-grid-row>
-          <ch-grid-rowset>
-            <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-            <ch-grid-row>
-              <ch-grid-cell>Id</ch-grid-cell>
-              <ch-grid-cell>7867</ch-grid-cell>
-            </ch-grid-row>
-          </ch-grid-rowset>
         </ch-grid-rowset>
       </ch-grid>
       <br />

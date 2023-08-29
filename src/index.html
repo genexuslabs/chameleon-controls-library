@@ -31,6 +31,7 @@
         "suggest",
         "step-list"
       ];
+      const tests = ["ch-grid-mark-rows"];
     </script>
   </head>
   <body class="home dark">
@@ -40,20 +41,44 @@
         About A library of white-label, highly-customizable and reusable web
         components.
       </p>
-      <ul class="list unstyled" id="componentsList">
-        <!-- populated dinamically with javascript -->
-      </ul>
+
+      <!--Components-->
+      <section>
+        <h2>Components</h2>
+        <ul class="list unstyled" id="componentsList">
+          <!-- populated dinamically with javascript -->
+        </ul>
+      </section>
+
+      <!--Tests-->
+      <section>
+        <h2>Tests</h2>
+        <ul class="list unstyled" id="testsList">
+          <!-- populated dinamically with javascript -->
+        </ul>
+      </section>
     </div>
     <script>
-      //Completed
+      //Components
       const componentsList = document.getElementById("componentsList");
       components.sort().forEach(el => {
         const li = document.createElement("li");
         const a = document.createElement("a");
-        a.setAttribute("href", `/pages/${el}.html`);
+        a.setAttribute("href", `/pages/components/${el}.html`);
         a.innerText = el;
         li.appendChild(a);
         componentsList.appendChild(li);
+      });
+
+      //Tests
+      const testsList = document.getElementById("testsList");
+      tests.sort().forEach(el => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.setAttribute("href", `/pages/tests/${el}.html`);
+        a.innerText = el;
+        li.appendChild(a);
+        testsList.appendChild(li);
       });
     </script>
   </body>

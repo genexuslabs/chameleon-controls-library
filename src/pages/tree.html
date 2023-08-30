@@ -14,136 +14,739 @@
   </head>
   <body>
     <div class="container">
-      <section class="section-dev" data-title="ch-tree">
-        <ch-tree
-          id="ch-treeview"
+      <section
+        class="section-dev"
+        style="
+          display: grid;
+          grid-template-columns: min-content min-content;
+          gap: 32px;
+        "
+      >
+        <ch-tree-x
+          id="markup-tree"
           toggle-checkboxes="false"
-          single-selection="true"
+          show-lines
+          multi-selection
         >
-          <ch-tree-item opened left-icon="/build/ch-icon-assets/generator.svg">
-            Meats
-            <ch-tree checkbox slot="tree">
-              <ch-tree-item left-icon="/build/ch-icon-assets/patterns.svg">
-                White meats
-                <ch-tree checkbox slot="tree">
-                  <ch-tree-item left-icon="/build/ch-icon-assets/csharp.svg">
-                    Chicken
-                  </ch-tree-item>
-                  <ch-tree-item left-icon="/build/ch-icon-assets/java.svg">
-                    Turkey
-                  </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
-                    Duck
-                  </ch-tree-item>
-                </ch-tree>
-              </ch-tree-item>
-              <ch-tree-item
-                left-icon="/build/ch-icon-assets/knowledge-base.svg"
-              >
-                Red meats
-                <ch-tree checkbox slot="tree">
-                  <ch-tree-item left-icon="general/knowledge-base">
-                    Beef
-                  </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
-                    Lamb and mutton
-                  </ch-tree-item>
-                  <ch-tree-item left-icon="general/knowledge-base">
-                    Pork
-                  </ch-tree-item>
-                </ch-tree>
-              </ch-tree-item>
-            </ch-tree>
-          </ch-tree-item>
-          <ch-tree-item
-            id="fish"
-            left-icon="general/patterns"
-            checkbox
-            opened
-            download
-            disabled
-            right-icon="/build/tree-item-assets/download.svg"
-          >
-            Fish
-          </ch-tree-item>
-          <ch-tree-item checkbox opened left-icon="objects/module">
-            Fruits
-            <ch-tree slot="tree">
-              <ch-tree-item checkbox left-icon="objects/module">
-                Orange
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/module" opened>
-                Banana
-                <ch-tree slot="tree">
-                  <ch-tree-item left-icon="objects/module" checkbox>
-                    Pisang
-                  </ch-tree-item>
-                  <ch-tree-item checkbox left-icon="objects/module">
-                    Red Banana
-                  </ch-tree-item>
-                  <ch-tree-item left-icon="objects/module" checkbox>
-                    Cavendish
-                    <ch-tree slot="tree">
-                      <ch-tree-item left-icon="objects/module" checkbox>
-                        Big
-                      </ch-tree-item>
-                      <ch-tree-item left-icon="objects/module" checkbox>
-                        Small
-                      </ch-tree-item>
-                      <ch-tree-item checkbox left-icon="objects/module">
-                        Mini
-                      </ch-tree-item>
-                    </ch-tree>
-                  </ch-tree-item>
-                </ch-tree>
-              </ch-tree-item>
-              <ch-tree-item checkbox opened left-icon="objects/module">
-                Strawberry
-                <ch-tree slot="tree">
-                  <ch-tree-item checkbox left-icon="objects/module">
-                    Albion
-                  </ch-tree-item>
-                  <ch-tree-item checkbox left-icon="objects/module" opened>
-                    Tillamook
-                  </ch-tree-item>
-                  <ch-tree-item checkbox left-icon="objects/module">
-                    Northeaster
-                  </ch-tree-item>
-                </ch-tree>
-              </ch-tree-item>
-            </ch-tree>
-          </ch-tree-item>
-          <ch-tree-item opened checkbox left-icon="objects/document" empty-tree>
-            Nuts
-            <ch-tree slot="tree">
-              <ch-tree-item opened checkbox left-icon="objects/document">
-                Almonds
-                <ch-tree slot="tree">
-                  <ch-tree-item checkbox left-icon="objects/document" opened>
-                    Mollar de Tarragona
-                  </ch-tree-item>
-                  <ch-tree-item checkbox left-icon="objects/document">
-                    Ferragnès
-                  </ch-tree-item>
-                  <ch-tree-item checkbox left-icon="objects/document">
-                    Verdal
-                  </ch-tree-item>
-                </ch-tree>
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/document" opened>
-                Brazil nuts
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/document">
-                Cashews
-              </ch-tree-item>
-              <ch-tree-item checkbox left-icon="objects/document">
-                Chestnuts
-              </ch-tree-item>
-            </ch-tree>
-          </ch-tree-item>
-        </ch-tree>
+          <ch-tree-x-list>
+            <ch-tree-x-list-item
+              opened
+              left-img-src="/build/ch-icon-assets/generator.svg"
+              caption="Meats"
+              checkbox
+            >
+              <ch-tree-x-list slot="tree">
+                <ch-tree-x-list-item
+                  checkbox
+                  checked
+                  toggle-checkboxes
+                  left-img-src="/build/ch-icon-assets/patterns.svg"
+                  caption="White meats"
+                >
+                  <ch-tree-x-list slot="tree">
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="/build/ch-icon-assets/csharp.svg"
+                      caption="Chicken"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="/build/ch-icon-assets/java.svg"
+                      caption="Turkey"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="general/knowledge-base"
+                      caption="Duck"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                  </ch-tree-x-list>
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                  caption="Red meats"
+                >
+                  <ch-tree-x-list checkbox slot="tree">
+                    <ch-tree-x-list-item
+                      left-img-src="general/knowledge-base"
+                      caption="Beef"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      left-img-src="general/knowledge-base"
+                      caption="Lamb and mutton"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      left-img-src="general/knowledge-base"
+                      caption="Pork"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                  </ch-tree-x-list>
+                </ch-tree-x-list-item>
+              </ch-tree-x-list>
+            </ch-tree-x-list-item>
+            <ch-tree-x-list-item
+              id="fish"
+              left-img-src="general/patterns"
+              checkbox
+              checked="false"
+              disabled
+              right-img-src="/build/tree-item-assets/download.svg"
+              caption="Fish"
+            >
+            </ch-tree-x-list-item>
+            <ch-tree-x-list-item
+              left-img-src="objects/module"
+              caption="Fruits"
+              checked="false"
+            >
+              <ch-tree-x-list slot="tree">
+                <ch-tree-x-list-item
+                  checkbox
+                  left-img-src="objects/module"
+                  caption="Orange"
+                  leaf
+                >
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  checkbox
+                  left-img-src="objects/module"
+                  opened
+                  caption="Banana"
+                >
+                  <ch-tree-x-list slot="tree">
+                    <ch-tree-x-list-item
+                      left-img-src="objects/module"
+                      checkbox
+                      caption="Pisang"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="objects/module"
+                      caption="Red Banana"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      left-img-src="objects/module"
+                      caption="Cavendish"
+                      show-expandable-button="false"
+                    >
+                      <ch-tree-x-list slot="tree">
+                        <ch-tree-x-list-item
+                          caption="Big"
+                          leaf
+                          show-expandable-button="false"
+                        >
+                        </ch-tree-x-list-item>
+                        <ch-tree-x-list-item
+                          left-img-src="objects/module"
+                          caption="Small"
+                          leaf
+                        >
+                        </ch-tree-x-list-item>
+                        <ch-tree-x-list-item
+                          left-img-src="objects/module"
+                          caption="Mini (empty items)"
+                        >
+                          <ch-tree-x-list>
+                          </ch-tree-x-list>
+                        </ch-tree-x-list-item>
+                      </ch-tree-x-list>
+                    </ch-tree-x-list-item>
+                  </ch-tree-x-list>
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  checkbox
+                  left-img-src="objects/module"
+                  caption="Strawberry"
+                  expanded
+                  show-expandable-button="false"
+                >
+                  <ch-tree-x-list slot="tree">
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="objects/module"
+                      caption="Albion"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="objects/module"
+                      opened
+                      caption="Tillamook"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="objects/module"
+                      caption="Northeaster"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                  </ch-tree-x-list>
+                </ch-tree-x-list-item>
+              </ch-tree-x-list>
+            </ch-tree-x-list-item>
+            <ch-tree-x-list-item
+              opened
+              expanded
+              left-img-src="patterns.svg"
+              empty-tree
+              caption="Nuts"
+              show-expandable-button="false"
+            >
+              <ch-tree-x-list slot="tree">
+                <ch-tree-x-list-item
+                  opened
+                  checkbox
+                  left-img-src="patterns.svg"
+                  caption="Almonds"
+                >
+                  <ch-tree-x-list slot="tree">
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="patterns.svg"
+                      opened
+                      caption="Mollar de Tarragona"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="patterns.svg"
+                      caption="Ferragnès"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                    <ch-tree-x-list-item
+                      checkbox
+                      left-img-src="patterns.svg"
+                      caption="Verdal"
+                      leaf
+                    >
+                    </ch-tree-x-list-item>
+                  </ch-tree-x-list>
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  left-img-src="patterns.svg"
+                  opened
+                  caption="Brazil nuts"
+                  leaf
+                >
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  checkbox
+                  left-img-src="patterns.svg"
+                  caption="Cashews (lazy)"
+                  lazy-load
+                >
+                </ch-tree-x-list-item>
+                <ch-tree-x-list-item
+                  checkbox
+                  left-img-src="patterns.svg"
+                  caption="Chestnuts (lazy)"
+                  lazy-load
+                >
+                </ch-tree-x-list-item>
+              </ch-tree-x-list>
+            </ch-tree-x-list-item>
+          </ch-tree-x-list>
+        </ch-tree-x>
+
+        <ch-test-tree-x>
+        </ch-test-tree-x>
       </section>
     </div>
+
+    <button type="outlined" id="get-selected-markup"
+  
+    >Get Selected Items
+    </button
+  >
+  <button type="outlined" id="get-checked-markup"
+    >Get Checked Items</button
+  >
+  <button type="outlined" id="open-goat-b">Open Goat B</button>
+  <button type="outlined" id="close-goat-b">Close Goat B</button>
+  <button type="outlined" id="toggle-goat-b">Toggle Goat B</button>
+
+  <script>
+    const markUpTree = document.getElementById("markup-tree");
+
+    /*selectionChanged event*/
+    markUpTree.addEventListener("selectionChanged", (e) => {
+      console.log(e.detail);
+    });
+
+    /*checkboxToggled event*/
+    markUpTree.addEventListener("checkboxToggled", (e) => {
+      console.log(e.detail);
+    });
+
+    /*loadLazyChildren event*/
+    markUpTree.addEventListener("loadLazyChildren", (e) => {
+      const itemId = e.detail.id;
+      setTimeout(() => {
+        appendLazyLoadItems(itemId);
+      }, 1000);
+    });
+
+    /*Selected items*/
+    const getSelectedMarkup = document.getElementById(
+      "get-selected-markup"
+    );
+    getSelectedMarkup.addEventListener("click", () => {
+      const selectedPromise = markUpTree.getSelectedItems();
+      selectedPromise.then(function (value) {
+        console.log(value);
+      });
+    });
+
+    getSelectedMarkup.addEventListener("click", () => {
+      const selectedPromise = markUpTree.getSelectedItems();
+      selectedPromise.then(function (value) {
+        console.log(value);
+      });
+    });
+
+    /*Checked items*/
+    const getCheckedMarkup = document.getElementById("get-checked-markup");
+    getCheckedMarkup.addEventListener("click", () => {
+      const checkedPromise = markUpTree.getCheckedItems();
+      checkedPromise.then(function (value) {
+        console.log(value);
+      });
+    });
+    /*Open Goat B*/
+    const openGoatB = document.getElementById("open-goat-b");
+    openGoatB.addEventListener("click", () => {
+      markUpTree.toggleItems(["goat-b"], true);
+    });
+    /*Close Goat B*/
+    const closeGoatB = document.getElementById("close-goat-b");
+    closeGoatB.addEventListener("click", () => {
+      markUpTree.toggleItems(["goat-b"], false);
+    });
+    /*Toggle Goat B*/
+    const toggleGoatB = document.getElementById("toggle-goat-b");
+    toggleGoatB.addEventListener("click", () => {
+      markUpTree.toggleItems(["goat-b"]);
+    });
+
+    const appendLazyLoadItems = (itemId) => {
+      const item = document.querySelector(`gxg-tree-item[id='${itemId}']`);
+      const innerText = item.innerText;
+      const lazyLoadedItems = `
+        ${innerText}
+        <gxg-tree slot="tree">
+          <gxg-tree-item icon="general/generator" leaf id="goat-c2.1">
+            Goat C2.1
+          </gxg-tree-item>
+          <gxg-tree-item icon="general/patterns" leaf id="goat-c2.2">
+            Goat C2.2
+          </gxg-tree-item>
+          <gxg-tree-item icon="general/patterns" leaf id="goat-c2.3">
+            Goat C2.3
+        </gxg-tree-item>
+      `;
+      item.innerHTML = lazyLoadedItems;
+    };
+  </script>
+</div>
+
+<br />
+<!-- Model Tree -->
+
+<hr />
+<h2>Model Tree</h2>
+
+<div class="buttons-wrapper">
+  <button id="load-model-btn">Load model (click first)</button>
+  <button id="update-model-btn">Update model (click second)</button>
+  <button id="update-model-again-btn">
+    Update model again (click third)
+  </button>
+</div>
+
+<script>
+  const modelTiny = [
+    {
+      id: "number-1",
+      caption: "number-1 label",
+      leftImgSrc: "knowledge-base.svg",
+    },
+    {
+      id: "number-2",
+      caption: "number-2",
+      leftImgSrc: "./datastore.svg",
+      items: [
+        {
+          id: "number-2.1",
+          caption: "number-2.1",
+          leftImgSrc: "knowledge-base.svg",
+        },
+      ],
+    },
+    {
+      id: "number-3",
+      caption: "number-3",
+      leftImgSrc: "knowledge-base.svg",
+      items: [
+        {
+          id: "number-3.1",
+          caption: "number-3.1",
+          leftImgSrc: "knowledge-base.svg",
+        },
+      ],
+    },
+  ];
+  const modelTinyUpdated = [
+    {
+      id: "number-1",
+      caption: "number-1",
+      leftImgSrc: "./datastore.svg",
+    },
+    {
+      id: "number-2",
+      caption: "number-2",
+      leftImgSrc: "./datastore.svg",
+      items: [
+        {
+          id: "number-2.1",
+          caption: "number-2.1",
+          leftImgSrc: "./datastore.svg",
+          items: [
+            {
+              id: "number-2.1.1",
+              caption: "number-2.1.1",
+              leftImgSrc: "./datastore.svg",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "number-3",
+      caption: "number-3",
+      leftImgSrc: "./datastore.svg",
+      items: [
+        {
+          id: "number-3.1",
+          caption: "number-3.1",
+          leftImgSrc: "./datastore.svg",
+        },
+      ],
+    },
+  ];
+  
+  const modelTinyUpdatedAgain = [
+    {
+      id: "number-1",
+      caption: "number-1",
+      leaf: true,
+      leftImgSrc: "./assets/apple.svg",
+    },
+    {
+      id: "number-2",
+      caption: "number-2",
+      leaf: false,
+      leftImgSrc: "./assets/apple.svg",
+      items: [
+        {
+          id: "number-2.1",
+          caption: "number-2.1",
+          leaf: false,
+          leftImgSrc: "./assets/apple.svg",
+          items: [
+            {
+              id: "number-2.1.1",
+              caption: "number-2.1.1",
+              leaf: false,
+              leftImgSrc: "./assets/apple.svg",
+              items: [
+                {
+                  id: "number-2.1.1.1",
+                  caption: "number-2.1.1.1",
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: "number-3",
+      caption: "number-3",
+      leaf: true,
+      leftImgSrc: "knowledge-base.svg",
+    },
+  ];
+
+  const model = [
+    {
+      id: "number-1",
+      caption: "number-1 label",
+      leaf: false,
+      leftImgSrc: "./datastore.svg",
+      items: [
+        {
+          id: "number-1-1",
+          caption: "number-1-1",
+          leaf: false,
+          leftImgSrc: "knowledge-base.svg",
+          items: [
+            {
+              id: "number-1-1-1",
+              caption: "number-1-1-1",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg",
+            },
+            {
+              id: "number-1-1-2",
+              caption: "number-1-1-2",
+              leaf: false,
+              leftImgSrc: "knowledge-base.svg",
+              items: [
+                {
+                  id: "number-1-1-2-1",
+                  caption: "number-1-1-2-1 (lazy)",
+                  leaf: false,
+                  leftImgSrc: "knowledge-base.svg",
+                  lazy: true,
+                  checkbox: true,
+                  toggleCheckboxes: true
+                },
+                {
+                  id: "number-1-1-2-2",
+                  caption: "number-1-1-2-2",
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "number-1-2",
+          caption: "number-1-2",
+          leaf: true,
+          leftImgSrc: "knowledge-base.svg",
+        },
+      ],
+    },
+    {
+      id: "number-2",
+      caption: "number-2",
+      leaf: false,
+      leftImgSrc: "datastore.svg",
+      items: [
+        {
+          id: "number-2-1",
+          caption: "number-2-1",
+          leaf: true,
+          leftImgSrc: "knowledge-base.svg",
+        },
+        {
+          id: "number-2-2",
+          caption: "number-2-2",
+          leaf: true,
+          leftImgSrc: "knowledge-base.svg",
+        },
+      ],
+    },
+  ];
+
+
+  const updatedModel = [
+    {
+      id: "number-1",
+      caption: "number-1",
+      leaf: false,
+      leftImgSrc: "knowledge-base.svg",
+      items: [
+        {
+          id: "number-1-1",
+          caption: "number-1-1",
+          leaf: false,
+          leftImgSrc: "knowledge-base.svg",
+          items: [
+            {
+              id: "number-1-1-1",
+              caption: "number-1-1-1",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg",
+            },
+            {
+              id: "number-1-1-2",
+              caption: "number-1-1-2",
+              leaf: false,
+              leftImgSrc: "knowledge-base.svg",
+              items: [
+                {
+                  id: "number-1-1-2-1",
+                  caption: "number-1-1-2-1",
+                  leaf: false,
+                  leftImgSrc: "knowledge-base.svg",
+                  items: [
+                    {
+                      id: "new-item-added-1",
+                      caption: "new-item-added-1",
+                      leaf: true,
+                      leftImgSrc: "knowledge-base.svg",
+                    },
+                    {
+                      id: "new-item-added-2",
+                      caption: "new-item-added-2",
+                      leaf: true,
+                      leftImgSrc: "knowledge-base.svg",
+                    },
+                  ],
+                },
+                {
+                  id: "number-1-1-2-2",
+                  caption: "number-1-1-2-2",
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "number-1-2",
+          caption: "number-1-2",
+          leaf: true,
+          leftImgSrc: "knowledge-base.svg",
+        },
+      ],
+    },
+    {
+      id: "number-2",
+      caption: "number-2",
+      leaf: false,
+      leftImgSrc: "datastore",
+      items: [
+        {
+          id: "number-2-1",
+          caption: "number-2-1",
+          leaf: true,
+          leftImgSrc: "knowledge-base.svg",
+        },
+        {
+          id: "number-2-2",
+          caption: "number-2-2",
+          leaf: true,
+          leftImgSrc: "patterns.svg",
+        },
+      ],
+    },
+  ];
+  const modelLazyUpdated1 = [
+    {
+      id: "lazy-loaded-1",
+      caption: "Lazy Loaded 1",
+      leaf: true,
+      leftImgSrc: "patterns.svg",
+      checkbox: true
+    },
+    {
+      id: "lazy-loaded-2",
+      caption: "Lazy Loaded 2 (lazy)",
+      leaf: false,
+      lazy: true,
+      leftImgSrc: "patterns.svg",
+      checkbox: true,
+      toggleCheckboxes: true
+    },
+  ];
+
+  const modelLazyUpdated2 = [
+    {
+      id: "lazy-loaded-3",
+      caption: "Lazy Loaded 3",
+      leaf: true,
+      leftImgSrc: "patterns.svg",
+      checkbox: true
+    },
+    {
+      id: "lazy-loaded-4",
+      caption: "Lazy Loaded 4",
+      leaf: true,
+      leftImgSrc: "patterns.svg",
+      checkbox: true
+    },
+  ];
+  
+</script>
+<br />
+
+<script>
+  const modelMinimal = [
+    {
+      id: "number-2-2",
+      caption: "number-2-2",
+      leftImgSrc: "knowledge-base.svg",
+    },
+  ];
+
+  
+
+  window.addEventListener("appload", () => {
+    const testTreeX = document.querySelector("ch-test-tree-x");
+
+    testTreeX.treeModel = {
+      items: model
+    };
+
+    const loadModelBtn = document.getElementById("load-model-btn");
+    loadModelBtn.addEventListener("click", () => {
+      testTreeX.treeModel = {
+        items: model
+      };
+    });
+
+    const updateModelBtn = document.getElementById("update-model-btn");
+    updateModelBtn.addEventListener("click", () => {
+      testTreeX.treeModel = {
+        items: updatedModel
+      };
+    });
+
+    const updateModelAgainBtn = document.getElementById(
+      "update-model-again-btn"
+    );
+    updateModelAgainBtn.addEventListener("click", () => {
+      testTreeX.treeModel = {
+        items: modelTinyUpdatedAgain
+      };
+    });
+
+    /*Lazy Load Promise*/
+    testTreeX.lazyLoadTreeItemsCallback = (modelId) => new Promise((resolve, reject) => {
+      const lazyModel = modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
+      
+      setTimeout(() => {
+        resolve(lazyModel);
+      }, 1000); // Resolves or rejects after 1 second
+    });
+  })
+</script>
 
     <script src="./assets/common.js"></script>
   </body>

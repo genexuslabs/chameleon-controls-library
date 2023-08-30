@@ -1,0 +1,10 @@
+ch-test-tree-x {
+  display: grid;
+  grid-template-columns: 300px max-content;
+}
+
+.tree-buttons {
+  display: grid;
+  grid-auto-rows: max-content;
+  row-gap: 8px;
+}

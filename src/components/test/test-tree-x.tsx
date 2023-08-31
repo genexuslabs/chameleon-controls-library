@@ -77,15 +77,15 @@ export class ChTestTreeX {
   }
 
   private closeTreeNodeHandler = () => {
-    this.tree.toggleItems(["number-1-1-2"], false);
+    // this.tree.toggleItems(["number-1-1-2"], false);
   };
 
   private openTreeNodeHandler = () => {
-    this.tree.toggleItems(["number-1-1-2"], true);
+    // this.tree.toggleItems(["number-1-1-2"], true);
   };
 
   private toggleTreeNodeHandler = () => {
-    this.tree.toggleItems(["number-1-1-2"]);
+    // this.tree.toggleItems(["number-1-1-2"]);
   };
 
   private handleSelectedItemsChange = (
@@ -95,8 +95,8 @@ export class ChTestTreeX {
   };
 
   private getCheckedItemsHandler = async () => {
-    const checked = await this.tree.getCheckedItems();
-    console.log(checked);
+    // const checked = await this.tree.getCheckedItems();
+    // console.log(checked);
   };
 
   // private deleteNodeHandler = () => {

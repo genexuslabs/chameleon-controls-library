@@ -197,7 +197,6 @@
           label="This is the label"
           suggest-title="Select your food"
           label-position="start"
-          value="man"
         >
         </ch-suggest>
       </section>
@@ -302,8 +301,8 @@
       chSuggest.addEventListener("valueChanged", e => {
         console.log("value changed", e);
       });
-      chSuggest.addEventListener("enterPressed", e => {
-        console.log("enter pressed", e);
+      chSuggest.addEventListener("itemSelected", e => {
+        console.log("item selected", e.detail);
       });
     </script>
     <script src="assets/common.js"></script>

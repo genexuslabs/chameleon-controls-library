@@ -12,7 +12,6 @@ import {
   h,
   writeTask
 } from "@stencil/core";
-import { makeDraggable } from "./draggable";
 
 export type TreeXListItemSelectedInfo = {
   expanded: boolean;
@@ -21,6 +20,10 @@ export type TreeXListItemSelectedInfo = {
   lazy: boolean;
   selected: boolean;
 };
+
+export type DragState = "enter" | "none" | "start";
+
+const resetDragImage = new Image();
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
@@ -55,6 +58,8 @@ export class ChTreeXListItem {
   private inputRef: HTMLInputElement;
 
   @Element() el: HTMLChTreeXListItemElement;
+
+  @State() dragState: DragState = "none";
 
   @State() downloading = false;
 
@@ -185,6 +190,16 @@ export class ChTreeXListItem {
    * items of the control. Only works if `leaf === false`.
    */
   @Prop() readonly showExpandableButton: boolean = true;
+
+  /**
+   * Fired when the item is being dragged.
+   */
+  @Event() itemDragStart: EventEmitter;
+
+  /**
+   * Fired when the item is no longer being dragged.
+   */
+  @Event() itemDragEnd: EventEmitter;
 
   /**
    * Fired when the control is selected.
@@ -576,9 +591,45 @@ export class ChTreeXListItem {
     }
   }
 
-  componentDidLoad() {
-    makeDraggable(this.buttonRef);
-  }
+  private handleDragStart = (event: DragEvent) => {
+    // event.preventDefault();
+    console.log("Drag Start", event);
+
+    event.dataTransfer.setDragImage(resetDragImage, 0, 0);
+
+    // this.el.style.cursor = "move";
+    this.dragState = "start";
+    this.itemDragStart.emit();
+  };
+
+  private handleDragEnd = (event: DragEvent) => {
+    // event.preventDefault();
+    console.log("Drag End", event);
+
+    // this.el.style.cursor = null;
+    this.dragState = "none";
+    this.itemDragEnd.emit();
+  };
+
+  private handleDragEnter = (event: DragEvent) => {
+    event.stopPropagation();
+    // console.log("Drag Enter", event);
+    this.dragState = "enter";
+  };
+
+  private handleDragLeave = (event: DragEvent) => {
+    event.stopPropagation();
+    // console.log("Drag Leave", event);
+
+    this.dragState = "none";
+  };
+
+  private handleDrop = (event: DragEvent) => {
+    console.log("Drag Drop", event);
+
+    this.dragState = "none";
+    this.itemDragEnd.emit();
+  };
 
   disconnectedCallback() {
     // If it was disconnected on edit mode, remove the body event handler
@@ -594,13 +645,24 @@ export class ChTreeXListItem {
     const expandableButtonVisible = !this.leaf && this.showExpandableButton;
     const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
 
+    console.log("Render...");
+
+    const acceptDrop = !this.leaf && this.dragState !== "start";
+
     return (
       <Host
         role="treeitem"
         class={{
           [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
-          [TREE_ITEM_TAG_NAME + "--editing"]: this.editing
+          [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
+          [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
+            this.dragState !== "none" && this.dragState !== "start"
         }}
+        style={{ "--level": `${this.level}` }}
+        // Drag and drop
+        onDragEnter={acceptDrop ? this.handleDragEnter : null}
+        onDragLeave={acceptDrop ? this.handleDragLeave : null}
+        onDrop={acceptDrop ? this.handleDrop : null}
       >
         <div
           class={{
@@ -618,7 +680,10 @@ export class ChTreeXListItem {
             "header--level-0": this.level === 0
           }}
           part={`header${this.disabled ? " disabled" : ""}`}
-          style={{ "--level": `${this.level}` }}
+          // Drag and drop
+          draggable
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
           ref={el => (this.headerRef = el)}
         >
           {this.showLines && this.level !== 0 && (
@@ -665,7 +730,6 @@ export class ChTreeXListItem {
               "readonly-mode": !this.editing
             }}
             disabled={this.disabled}
-            draggable
             type="button"
             onClick={this.handleActionClick}
             onDblClick={!this.leaf ? this.handleActionDblClick : null}

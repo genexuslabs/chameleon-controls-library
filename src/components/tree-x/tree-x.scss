@@ -1,3 +1,11 @@
 ch-tree-x {
   display: contents;
 }
+
+.ch-tree-x-dragging-item {
+  position: fixed;
+  inset-block-start: calc(var(--ch-tree-x-dragging-item-block-start) + 16px);
+  inset-inline-start: calc(var(--ch-tree-x-dragging-item-inline-start) + 16px);
+  pointer-events: none;
+  background-color: #69a5d6;
+}

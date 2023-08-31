@@ -3,9 +3,11 @@ import {
   Element,
   Event,
   EventEmitter,
+  Host,
   Listen,
   // Method,
   Prop,
+  State,
   Watch,
   h
 } from "@stencil/core";
@@ -37,6 +39,9 @@ const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
 
 const treeItemIsInEditMode = () =>
   (document.activeElement as HTMLChTreeXListItemElement).editing;
+
+const INLINE_START_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-inline-start";
+const BLOCK_START_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-block-start";
 
 @Component({
   tag: "ch-tree-x",
@@ -90,10 +95,16 @@ export class ChTreeX {
     }
   };
 
+  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  private lastPageX = 0;
+  private lastPageY = 0;
+
   private selectedItems: Set<HTMLChTreeXListItemElement> = new Set();
   private selectedItemsInfo: Map<string, SelectedTreeItemInfo> = new Map();
 
   @Element() el: HTMLChTreeXElement;
+
+  @State() draggingItem = false;
 
   /**
    * This property specifies if the ctrl key is pressed
@@ -187,6 +198,24 @@ export class ChTreeX {
   //   }));
   // }
 
+  @Listen("itemDragStart")
+  handleItemDragStart() {
+    this.draggingItem = true;
+
+    document.body.addEventListener("dragover", this.trackItemDrag, {
+      capture: true
+    });
+  }
+
+  @Listen("itemDragEnd")
+  handleItemDragEnd() {
+    this.draggingItem = false;
+
+    document.body.removeEventListener("dragover", this.trackItemDrag, {
+      capture: true
+    });
+  }
+
   @Listen("selectedItemChange")
   handleSelectedItemChange(event: CustomEvent<TreeXListItemSelectedInfo>) {
     const selectedItemInfo = event.detail;
@@ -196,6 +225,33 @@ export class ChTreeX {
 
     this.handleItemLazyLoad(selectedItemInfo);
   }
+
+  private trackItemDrag = (event: MouseEvent) => {
+    event.preventDefault();
+    this.lastPageX = event.pageX;
+    this.lastPageY = event.pageY;
+
+    if (!this.needForRAF) {
+      return;
+    }
+    this.needForRAF = false; // No need to call RAF up until next frame
+
+    requestAnimationFrame(() => {
+      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+
+      // console.log(event.clientX, event.clientY, event);
+      console.log("trackItemDrag");
+
+      this.el.style.setProperty(
+        INLINE_START_DRAG_CUSTOM_VAR,
+        `${this.lastPageX}px`
+      );
+      this.el.style.setProperty(
+        BLOCK_START_DRAG_CUSTOM_VAR,
+        `${this.lastPageY}px`
+      );
+    });
+  };
 
   private handleItemSelection(
     selectedItemEl: HTMLChTreeXListItemElement,
@@ -270,9 +326,26 @@ export class ChTreeX {
   disconnectedCallback() {
     this.el.removeEventListener("keydown", this.handleKeyDownEvents);
     this.el.removeEventListener("keyup", this.handleKeyUpEvents);
+
+    // Remove dragover body event
+    this.handleItemDragEnd();
   }
 
   render() {
-    return <slot />;
+    const selectedItems = [...this.selectedItemsInfo.values()];
+    const selectedItemCount = selectedItems.length;
+
+    return (
+      <Host>
+        <slot />
+        {this.draggingItem && (
+          <span aria-hidden="true" class="ch-tree-x-dragging-item">
+            {selectedItemCount === 1
+              ? selectedItems[0].caption
+              : selectedItemCount}
+          </span>
+        )}
+      </Host>
+    );
   }
 }

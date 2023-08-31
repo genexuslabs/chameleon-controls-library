@@ -38,6 +38,11 @@ $own-offset: calc(
 
   display: grid;
   grid-template-rows: min-content;
+  z-index: var(--level);
+}
+
+:host(.ch-tree-x-list-item--drag-enter) {
+  background-color: #eee;
 }
 
 .header {
@@ -159,6 +164,7 @@ $own-offset: calc(
 
   border: 0 dashed #a9a9a9;
   border-block-end-width: 1px;
+  pointer-events: none; // Improve drag and drop
 }
 
 // Last dashed line of the tree
@@ -167,6 +173,7 @@ $own-offset: calc(
   height: calc(100% - var(--distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
+  pointer-events: none; // Improve drag and drop
 }
 
 // - - - - - - - - - - - - - - - -

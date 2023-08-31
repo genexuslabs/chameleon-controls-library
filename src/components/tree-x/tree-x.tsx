@@ -15,7 +15,9 @@ import { TreeXListItemSelectedInfo } from "../tree-x-list-item/tree-x-list-item"
 import {
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
-  SelectedTreeItemInfo
+  SelectedTreeItemInfo,
+  TreeXItemDragStartInfo,
+  TreeXItemDropInfo
 } from "./types";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
@@ -40,8 +42,8 @@ const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
 const treeItemIsInEditMode = () =>
   (document.activeElement as HTMLChTreeXListItemElement).editing;
 
-const INLINE_START_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-inline-start";
-const BLOCK_START_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-block-start";
+const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-x";
+const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-y";
 
 @Component({
   tag: "ch-tree-x",
@@ -101,6 +103,15 @@ export class ChTreeX {
 
   private selectedItems: Set<HTMLChTreeXListItemElement> = new Set();
   private selectedItemsInfo: Map<string, SelectedTreeItemInfo> = new Map();
+
+  private currentDraggedItem: HTMLChTreeXListItemElement;
+
+  /**
+   * Text displayed when dragging an item.
+   */
+  private dragInfo: string;
+  private draggedIds: string[] = [];
+  private draggedParentIds: string[] = [];
 
   @Element() el: HTMLChTreeXElement;
 
@@ -199,12 +210,28 @@ export class ChTreeX {
   // }
 
   @Listen("itemDragStart")
-  handleItemDragStart() {
-    this.draggingItem = true;
-
+  handleItemDragStart(event: CustomEvent<TreeXItemDragStartInfo>) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
     });
+
+    this.currentDraggedItem = event.target as HTMLChTreeXListItemElement;
+    this.updateDragInfo(event.detail);
+
+    this.el.addEventListener("dragenter", this.trackItemDragEnter, {
+      capture: true,
+      passive: true
+    });
+
+    this.el.addEventListener("dragleave", this.trackItemDragLeave, {
+      capture: true,
+      passive: true
+    });
+
+    // Wait until the custom var values are updated to avoid flickering
+    setTimeout(() => {
+      this.draggingItem = true;
+    }, 10);
   }
 
   @Listen("itemDragEnd")
@@ -214,6 +241,23 @@ export class ChTreeX {
     document.body.removeEventListener("dragover", this.trackItemDrag, {
       capture: true
     });
+
+    this.el.removeEventListener("dragenter", this.trackItemDragEnter, {
+      capture: true
+    });
+
+    this.el.removeEventListener("dragleave", this.trackItemDragLeave, {
+      capture: true
+    });
+
+    // Reset not allowed droppable ids
+    this.draggedIds = [];
+    this.draggedParentIds = [];
+  }
+
+  @Listen("itemDrop")
+  handleItemDrop(event: CustomEvent<TreeXItemDropInfo>) {
+    console.log("itemDrop", event);
   }
 
   @Listen("selectedItemChange")
@@ -226,7 +270,34 @@ export class ChTreeX {
     this.handleItemLazyLoad(selectedItemInfo);
   }
 
-  private trackItemDrag = (event: MouseEvent) => {
+  private trackItemDragEnter = (event: DragEvent) => {
+    event.stopPropagation();
+    const currentTarget = event.target as HTMLElement;
+
+    console.log("CURRENT TARGET", currentTarget);
+
+    // Don't mark droppable zones if they are the dragged items or their direct parents
+    if (
+      this.draggedIds.includes(currentTarget.id) ||
+      this.draggedParentIds.includes(currentTarget.id)
+    ) {
+      return;
+    }
+
+    if (currentTarget.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+      (currentTarget as HTMLChTreeXListItemElement).dragState = "enter";
+    }
+  };
+
+  private trackItemDragLeave = (event: DragEvent) => {
+    const currentTarget = event.target as HTMLElement;
+
+    if (currentTarget.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+      (currentTarget as HTMLChTreeXListItemElement).dragState = "none";
+    }
+  };
+
+  private trackItemDrag = (event: DragEvent) => {
     event.preventDefault();
     this.lastPageX = event.pageX;
     this.lastPageY = event.pageY;
@@ -240,18 +311,77 @@ export class ChTreeX {
       this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
       // console.log(event.clientX, event.clientY, event);
-      console.log("trackItemDrag");
+      // console.log("trackItemDrag");
 
       this.el.style.setProperty(
-        INLINE_START_DRAG_CUSTOM_VAR,
+        POSITION_X_DRAG_CUSTOM_VAR,
         `${this.lastPageX}px`
       );
       this.el.style.setProperty(
-        BLOCK_START_DRAG_CUSTOM_VAR,
+        POSITION_Y_DRAG_CUSTOM_VAR,
         `${this.lastPageY}px`
       );
     });
   };
+
+  /**
+   * Update the dataTransfer in the drag event to store the ids of the dragged
+   * items. Also it updates the visual information of the dragged items.
+   */
+  private updateDragInfo(dragInfo: TreeXItemDragStartInfo) {
+    const draggedElement = dragInfo.elem;
+
+    const isDraggingSelectedItems = this.selectedItemsInfo.has(
+      draggedElement.id
+    );
+
+    let joinedDraggedIds: string;
+
+    if (isDraggingSelectedItems) {
+      const selectedItemKeys = [...this.selectedItemsInfo.keys()];
+      const selectedItemCount = selectedItemKeys.length;
+
+      this.draggedIds = selectedItemKeys;
+      joinedDraggedIds = selectedItemKeys.join(",");
+
+      this.dragInfo =
+        selectedItemCount === 1
+          ? draggedElement.caption
+          : selectedItemCount.toString();
+    } else {
+      joinedDraggedIds = draggedElement.id;
+      this.draggedIds = [joinedDraggedIds];
+      this.dragInfo = draggedElement.caption;
+    }
+
+    this.getDirectParentsOfDraggableItems(isDraggingSelectedItems);
+
+    dragInfo.dataTransfer.setData("text/plain", joinedDraggedIds);
+
+    console.log("draggedIds", joinedDraggedIds);
+  }
+
+  private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
+    if (!draggingSelectedItems) {
+      const parentTreeItemElem =
+        this.currentDraggedItem.parentElement.parentElement;
+
+      if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+        this.draggedParentIds.push(parentTreeItemElem.id);
+      }
+
+      return;
+    }
+
+    // Dragging selected items
+    this.selectedItems.forEach(selectedItem => {
+      const parentTreeItemElem = selectedItem.parentElement.parentElement;
+
+      if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+        this.draggedParentIds.push(parentTreeItemElem.id);
+      }
+    });
+  }
 
   private handleItemSelection(
     selectedItemEl: HTMLChTreeXListItemElement,
@@ -332,17 +462,13 @@ export class ChTreeX {
   }
 
   render() {
-    const selectedItems = [...this.selectedItemsInfo.values()];
-    const selectedItemCount = selectedItems.length;
-
     return (
-      <Host>
+      <Host class={{ "ch-tree-x-remove-drop": this.draggingItem }}>
         <slot />
+
         {this.draggingItem && (
           <span aria-hidden="true" class="ch-tree-x-dragging-item">
-            {selectedItemCount === 1
-              ? selectedItems[0].caption
-              : selectedItemCount}
+            {this.dragInfo}
           </span>
         )}
       </Host>

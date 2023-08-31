@@ -12,6 +12,7 @@ import {
   h,
   writeTask
 } from "@stencil/core";
+import { TreeXItemDragStartInfo, TreeXItemDropInfo } from "../tree-x/types";
 
 export type TreeXListItemSelectedInfo = {
   expanded: boolean;
@@ -21,15 +22,18 @@ export type TreeXListItemSelectedInfo = {
   selected: boolean;
 };
 
+// Drag and drop
 export type DragState = "enter" | "none" | "start";
 
 const resetDragImage = new Image();
 
+// Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
 const DIRECT_TREE_ITEM_CHILDREN = `:scope>*>${TREE_ITEM_TAG_NAME}`;
 const LAST_SUB_ITEM = `:scope>*>${TREE_ITEM_TAG_NAME}:last-child`;
 
+// Keys
 const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
@@ -58,8 +62,6 @@ export class ChTreeXListItem {
   private inputRef: HTMLInputElement;
 
   @Element() el: HTMLChTreeXListItemElement;
-
-  @State() dragState: DragState = "none";
 
   @State() downloading = false;
 
@@ -98,6 +100,12 @@ export class ChTreeXListItem {
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * This property lets you define the current state of the item when it's
+   * being dragged.
+   */
+  @Prop({ mutable: true }) dragState: DragState = "none";
 
   /**
    * Set this attribute when the item is in edit mode
@@ -177,7 +185,7 @@ export class ChTreeXListItem {
   /**
    * This attribute lets you specify if the item is selected
    */
-  @Prop({ mutable: true }) selected = false;
+  @Prop({ mutable: true, reflect: true }) selected = false;
 
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
@@ -194,12 +202,17 @@ export class ChTreeXListItem {
   /**
    * Fired when the item is being dragged.
    */
-  @Event() itemDragStart: EventEmitter;
+  @Event() itemDragStart: EventEmitter<TreeXItemDragStartInfo>;
 
   /**
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
+
+  /**
+   * Fired when an element commits to drop in the control.
+   */
+  @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
 
   /**
    * Fired when the control is selected.
@@ -565,6 +578,41 @@ export class ChTreeXListItem {
     <img aria-hidden="true" class={cssClass} alt="" src={src} loading="lazy" />
   );
 
+  private handleDragStart = (event: DragEvent) => {
+    // event.preventDefault();
+    event.stopPropagation();
+    console.log("Drag Start", event, this.el);
+
+    event.dataTransfer.setDragImage(resetDragImage, 0, 0);
+
+    // this.el.style.cursor = "move";
+
+    this.dragState = "start";
+    this.itemDragStart.emit({
+      elem: this.el,
+      dataTransfer: event.dataTransfer
+    });
+  };
+
+  private handleDragEnd = () => {
+    // event.preventDefault();
+    console.log("Drag End");
+
+    // this.el.style.cursor = null;
+    this.dragState = "none";
+    this.itemDragEnd.emit();
+  };
+
+  private handleDrop = (event: DragEvent) => {
+    console.log("Drag Drop", event);
+
+    this.dragState = "none";
+    this.itemDrop.emit({
+      dropItemId: this.el.id,
+      dataTransfer: event.dataTransfer
+    });
+  };
+
   componentWillLoad() {
     const parentElement = this.el.parentElement as HTMLChTreeXListElement;
 
@@ -591,46 +639,6 @@ export class ChTreeXListItem {
     }
   }
 
-  private handleDragStart = (event: DragEvent) => {
-    // event.preventDefault();
-    console.log("Drag Start", event);
-
-    event.dataTransfer.setDragImage(resetDragImage, 0, 0);
-
-    // this.el.style.cursor = "move";
-    this.dragState = "start";
-    this.itemDragStart.emit();
-  };
-
-  private handleDragEnd = (event: DragEvent) => {
-    // event.preventDefault();
-    console.log("Drag End", event);
-
-    // this.el.style.cursor = null;
-    this.dragState = "none";
-    this.itemDragEnd.emit();
-  };
-
-  private handleDragEnter = (event: DragEvent) => {
-    event.stopPropagation();
-    // console.log("Drag Enter", event);
-    this.dragState = "enter";
-  };
-
-  private handleDragLeave = (event: DragEvent) => {
-    event.stopPropagation();
-    // console.log("Drag Leave", event);
-
-    this.dragState = "none";
-  };
-
-  private handleDrop = (event: DragEvent) => {
-    console.log("Drag Drop", event);
-
-    this.dragState = "none";
-    this.itemDragEnd.emit();
-  };
-
   disconnectedCallback() {
     // If it was disconnected on edit mode, remove the body event handler
     if (this.editing) {
@@ -645,7 +653,7 @@ export class ChTreeXListItem {
     const expandableButtonVisible = !this.leaf && this.showExpandableButton;
     const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
 
-    console.log("Render...");
+    console.log("Render...", this.dragState);
 
     const acceptDrop = !this.leaf && this.dragState !== "start";
 
@@ -656,17 +664,17 @@ export class ChTreeXListItem {
           [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
           [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
-            this.dragState !== "none" && this.dragState !== "start"
+            this.dragState !== "none" && this.dragState !== "start",
+          [TREE_ITEM_TAG_NAME + "--accept-drop"]: acceptDrop
         }}
         style={{ "--level": `${this.level}` }}
         // Drag and drop
-        onDragEnter={acceptDrop ? this.handleDragEnter : null}
-        onDragLeave={acceptDrop ? this.handleDragLeave : null}
         onDrop={acceptDrop ? this.handleDrop : null}
       >
         <div
           class={{
             header: true,
+            "header--selected": this.selected,
             "header--disabled": this.disabled,
 
             "header--expandable-offset": expandableButtonVisible,
@@ -726,7 +734,6 @@ export class ChTreeXListItem {
             aria-expanded={!this.leaf ? this.expanded.toString() : null}
             class={{
               action: true,
-              "action--selected": this.selected,
               "readonly-mode": !this.editing
             }}
             disabled={this.disabled}

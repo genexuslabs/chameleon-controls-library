@@ -1,11 +1,25 @@
 ch-tree-x {
   display: contents;
+
+  // Remove un-useful droppable areas
+  &.ch-tree-x-remove-drop :not(.ch-tree-x-list-item--accept-drop) {
+    pointer-events: none;
+  }
+
+  // Reset useful droppable areas
+  &.ch-tree-x-remove-drop .ch-tree-x-list-item--accept-drop {
+    pointer-events: all;
+  }
 }
 
 .ch-tree-x-dragging-item {
   position: fixed;
-  inset-block-start: calc(var(--ch-tree-x-dragging-item-block-start) + 16px);
-  inset-inline-start: calc(var(--ch-tree-x-dragging-item-inline-start) + 16px);
+  left: 0; // Necessary since the custom vars are physical values
+  top: 0; // Necessary since the custom vars are physical values
+  transform: translate(
+    calc(var(--ch-tree-x-dragging-item-x) + 16px),
+    calc(var(--ch-tree-x-dragging-item-y) + 16px)
+  );
   pointer-events: none;
   background-color: #69a5d6;
 }

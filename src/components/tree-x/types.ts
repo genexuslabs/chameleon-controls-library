@@ -38,3 +38,13 @@ export type SelectedTreeItemInfo = {
   caption: string;
   checked: boolean;
 };
+
+export type TreeXItemDragStartInfo = {
+  elem: HTMLChTreeXListItemElement;
+  dataTransfer: DataTransfer;
+};
+
+export type TreeXItemDropInfo = {
+  dropItemId: string;
+  dataTransfer: DataTransfer;
+};

@@ -38,7 +38,6 @@ $own-offset: calc(
 
   display: grid;
   grid-template-rows: min-content;
-  z-index: var(--level);
 }
 
 :host(.ch-tree-x-list-item--drag-enter) {
@@ -52,6 +51,10 @@ $own-offset: calc(
   align-items: center;
   min-height: calc(1em + 6px);
   padding-inline-start: var(--padding-inline-start);
+
+  &--selected {
+    background-color: #ddd;
+  }
 
   &--disabled {
     opacity: 0.5;
@@ -164,7 +167,6 @@ $own-offset: calc(
 
   border: 0 dashed #a9a9a9;
   border-block-end-width: 1px;
-  pointer-events: none; // Improve drag and drop
 }
 
 // Last dashed line of the tree
@@ -173,7 +175,6 @@ $own-offset: calc(
   height: calc(100% - var(--distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
-  pointer-events: none; // Improve drag and drop
 }
 
 // - - - - - - - - - - - - - - - -
@@ -223,10 +224,6 @@ $own-offset: calc(
   align-items: center;
   height: 100%;
   flex: 1;
-
-  &--selected {
-    background-color: #ddd;
-  }
 
   :host(:not(.ch-tree-x-list-item--editing)) &:focus-visible {
     outline: 1px solid currentColor;

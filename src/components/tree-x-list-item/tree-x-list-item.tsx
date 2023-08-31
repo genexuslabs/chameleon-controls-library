@@ -15,10 +15,8 @@ import {
 import { TreeXItemDragStartInfo, TreeXItemDropInfo } from "../tree-x/types";
 
 export type TreeXListItemSelectedInfo = {
-  expanded: boolean;
   goToReference: boolean;
   id: string;
-  lazy: boolean;
   selected: boolean;
 };
 
@@ -136,6 +134,10 @@ export class ChTreeXListItem {
    * displayed.
    */
   @Prop({ mutable: true }) expanded = false;
+  @Watch("expanded")
+  handleExpandedChange(isExpanded: boolean) {
+    this.lazyLoadItems(isExpanded);
+  }
 
   /**
    * This attribute specifies if the control is the last items in its subtree
@@ -213,6 +215,11 @@ export class ChTreeXListItem {
    * Fired when an element commits to drop in the control.
    */
   @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
+
+  /**
+   * Fired when the lazy control is expanded an its content must be loaded.
+   */
+  @Event() loadLazyContent: EventEmitter<string>;
 
   /**
    * Fired when the control is selected.
@@ -452,29 +459,28 @@ export class ChTreeXListItem {
   };
 
   private toggleExpand = () => {
-    const newExpanded = !this.leaf ? !this.expanded : this.expanded;
-    this.expanded = newExpanded;
+    if (!this.leaf) {
+      this.expanded = !this.expanded;
+    }
 
     this.selected = true;
     this.selectedItemChange.emit({
-      expanded: newExpanded,
       goToReference: false,
       id: this.el.id,
-      lazy: this.lazyLoad,
       selected: true
     });
-
-    this.lazyLoadItems();
   };
 
-  private lazyLoadItems() {
-    if (!this.lazyLoad || !this.expanded) {
+  private lazyLoadItems(expanded: boolean) {
+    if (!this.lazyLoad || !expanded) {
       return;
     }
 
     // Load items
     this.downloading = true;
     this.lazyLoad = false;
+
+    this.loadLazyContent.emit(this.el.id);
   }
 
   private toggleSelected() {
@@ -482,10 +488,8 @@ export class ChTreeXListItem {
     this.selected = selected;
 
     this.selectedItemChange.emit({
-      expanded: this.expanded,
       goToReference: false,
       id: this.el.id,
-      lazy: false,
       selected: selected
     });
   }
@@ -495,10 +499,8 @@ export class ChTreeXListItem {
 
     this.selected = true;
     this.selectedItemChange.emit({
-      expanded: this.expanded,
       goToReference: goToReference,
       id: this.el.id,
-      lazy: false,
       selected: true
     });
   }
@@ -624,6 +626,9 @@ export class ChTreeXListItem {
     }
 
     this.showLines = mainTreeRef.showLines;
+
+    // Check if must lazy load
+    this.lazyLoadItems(this.expanded);
 
     // No need to update more the status
     if (this.level === 0) {

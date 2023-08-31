@@ -160,11 +160,6 @@ export class ChTreeX {
    */
   @Event() selectedItemsChange: EventEmitter<SelectedTreeItemInfo[]>;
 
-  /**
-   * Fired when a lazy item is expanded an its content must be loaded.
-   */
-  @Event() loadLazyChildren: EventEmitter<string>;
-
   // /**
   //  * This method is used to toggle a tree item by the tree item id/ids.
   //  *
@@ -275,8 +270,6 @@ export class ChTreeX {
     const selectedItemEl = event.target as HTMLChTreeXListItemElement;
 
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
-
-    this.handleItemLazyLoad(selectedItemInfo);
   }
 
   private trackItemDragEnter = (event: DragEvent) => {
@@ -459,12 +452,6 @@ export class ChTreeX {
 
     // Sync with UI model
     this.selectedItemsChange.emit([...this.selectedItemsInfo.values()]);
-  }
-
-  private handleItemLazyLoad(selectedItemInfo: TreeXListItemSelectedInfo) {
-    if (selectedItemInfo.expanded && selectedItemInfo.lazy) {
-      this.loadLazyChildren.emit(selectedItemInfo.id);
-    }
   }
 
   private handleKeyDownEvents = (event: KeyboardEvent) => {

@@ -1,7 +1,4 @@
-export function mouseEventModifierKey(eventInfo: MouseEvent): boolean {
-  if (navigator.userAgent.includes("Mac")) {
-    return eventInfo.metaKey;
-  } else {
-    return eventInfo.ctrlKey;
-  }
-}
+export const mouseEventModifierKey = (
+  eventInfo: MouseEvent | KeyboardEvent
+): boolean =>
+  navigator.userAgent.includes("Mac") ? eventInfo.metaKey : eventInfo.ctrlKey;

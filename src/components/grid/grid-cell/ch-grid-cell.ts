@@ -14,8 +14,7 @@ import HTMLChGridRowElement from "../grid-row/ch-grid-row";
 export enum ChGridCellType {
   Plain = "plain",
   Rich = "rich",
-  TreeNode = "node",
-  RowAction = "action"
+  TreeNode = "node"
 }
 
 /**
@@ -33,8 +32,32 @@ export default class HTMLChGridCellElement extends HTMLElement {
   public rowSelector: boolean;
   public rowActions: boolean;
 
+  static get observedAttributes() {
+    return ["type"];
+  }
+
   constructor() {
     super();
+  }
+
+  attributeChangedCallback(
+    _name: string,
+    _oldValue: string,
+    value: ChGridCellType
+  ) {
+    if (value === ChGridCellType.Rich) {
+      if (this.hasAttribute("row-drag")) {
+        this.rowDrag = this.getAttribute("row-drag") !== "false";
+      }
+      if (this.hasAttribute("row-selector")) {
+        this.rowSelector = this.getAttribute("row-selector") !== "false";
+      }
+      if (this.hasAttribute("row-actions")) {
+        this.rowActions = this.getAttribute("row-actions") !== "false";
+      }
+    }
+
+    this.type = value as ChGridCellType;
   }
 
   /**
@@ -45,17 +68,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   set type(value: ChGridCellType) {
-    switch (value) {
-      case ChGridCellType.Plain:
-        this.definePlain();
-        break;
-      case ChGridCellType.Rich:
-        this.defineRich();
-        break;
-      case ChGridCellType.TreeNode:
-        this.defineTreeNode();
-        break;
-    }
+    this.define(value);
   }
 
   /**
@@ -188,13 +201,23 @@ export default class HTMLChGridCellElement extends HTMLElement {
     );
   }
 
-  private definePlain() {
-    this.cellType = ChGridCellType.Plain;
+  private define(value: ChGridCellType) {
+    if (this.cellType !== value) {
+      this.cellType = value;
+
+      switch (this.cellType) {
+        case ChGridCellType.Rich:
+          this.defineRich();
+          break;
+        case ChGridCellType.TreeNode:
+          this.defineTreeNode();
+          break;
+      }
+    }
   }
 
   private defineRich() {
     let html = "";
-    this.cellType = ChGridCellType.Rich;
 
     if (!this.shadowRoot || this.shadowRoot.innerHTML === "") {
       this.attachShadow({ mode: "open" });
@@ -267,8 +290,6 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   private defineTreeNode() {
-    this.cellType = ChGridCellType.TreeNode;
-
     if (!this.shadowRoot || this.shadowRoot.innerHTML === "") {
       this.attachShadow({ mode: "open" });
       this.shadowRoot.innerHTML = `

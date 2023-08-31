@@ -8,7 +8,6 @@ import {
   Event,
   EventEmitter,
   Listen,
-  Watch,
   State,
   Method
 } from "@stencil/core";
@@ -131,11 +130,6 @@ INDEX:
    */
   @Prop() readonly cursorEnd = false;
 
-  @Watch("value")
-  watchValueHandler(newValue: string) {
-    this.valueChanged.emit(newValue);
-  }
-
   // 5.EVENTS (EMIT) //
 
   /**
@@ -144,10 +138,6 @@ INDEX:
   @Event() valueChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
-
-  componentWillLoad() {
-    this.evaluateSlotIsEmpty();
-  }
 
   // 7.LISTENERS //
 
@@ -203,7 +193,7 @@ INDEX:
   // 10.LOCAL METHODS //
 
   private evaluateSlotIsEmpty = () => {
-    this.slotIsEmpty = !this.el.firstElementChild;
+    this.chWindow.hidden = !this.el.firstElementChild;
   };
 
   private setFocusOnFirstItem = () => {
@@ -324,7 +314,7 @@ INDEX:
 
   private processInputEvent = () => {
     this.evaluateWindowMaxHeight();
-    this.chWindow.hidden = this.slotIsEmpty;
+    this.valueChanged.emit(this.value);
   };
 
   private closeWindow = () => {

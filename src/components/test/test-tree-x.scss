@@ -9,7 +9,7 @@ ch-test-tree-x {
   row-gap: 8px;
 }
 
-ch-tree-x-list-item::part(header):hover {
+:not(.ch-tree-x-dragging-item) ch-tree-x-list-item::part(header):hover {
   background-color: rgb(232, 232, 233);
 }
 
@@ -22,7 +22,7 @@ ch-tree-x-list-item[selected]::part(header) {
   border-color: rgb(2, 102, 160);
 }
 
-.ch-tree-x-dragging-item {
+.ch-tree-x-drag-info {
   padding-inline: 6px;
   padding-block: 2px;
   background-color: rgb(207, 222, 230);

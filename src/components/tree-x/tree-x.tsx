@@ -101,10 +101,13 @@ export class ChTreeX {
   private lastPageX = 0;
   private lastPageY = 0;
 
+  private openSubTreeTimeout: NodeJS.Timeout;
+
   private selectedItems: Set<HTMLChTreeXListItemElement> = new Set();
   private selectedItemsInfo: Map<string, SelectedTreeItemInfo> = new Map();
 
   private currentDraggedItem: HTMLChTreeXListItemElement;
+  private lastOpenSubTreeItem: HTMLChTreeXListItemElement;
 
   /**
    * Text displayed when dragging an item.
@@ -131,6 +134,12 @@ export class ChTreeX {
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;
+
+  /**
+   * This property lets you specify the time (in ms) that the mouse must be
+   * over in a subtree to open it when dragging.
+   */
+  @Prop() readonly openSubTreeCountdown: number = 750;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -284,18 +293,50 @@ export class ChTreeX {
       return;
     }
 
-    if (currentTarget.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (currentTarget as HTMLChTreeXListItemElement).dragState = "enter";
+    // Check if it is a valid item
+    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      return;
     }
+
+    const treeItem = currentTarget as HTMLChTreeXListItemElement;
+    treeItem.dragState = "enter";
+    this.openSubTreeAfterCountdown(treeItem);
   };
+
+  private openSubTreeAfterCountdown(treeItem: HTMLChTreeXListItemElement) {
+    this.cancelSubTreeOpening(treeItem);
+
+    if (treeItem.leaf || treeItem.expanded) {
+      return;
+    }
+
+    this.lastOpenSubTreeItem = treeItem;
+
+    this.openSubTreeTimeout = setTimeout(() => {
+      treeItem.expanded = true;
+    }, this.openSubTreeCountdown);
+  }
 
   private trackItemDragLeave = (event: DragEvent) => {
     const currentTarget = event.target as HTMLElement;
+    console.log("Drag Leave", currentTarget);
 
-    if (currentTarget.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (currentTarget as HTMLChTreeXListItemElement).dragState = "none";
+    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      return;
     }
+
+    const treeItem = currentTarget as HTMLChTreeXListItemElement;
+    treeItem.dragState = "none";
+    this.cancelSubTreeOpening(treeItem);
   };
+
+  private cancelSubTreeOpening(treeItem: HTMLChTreeXListItemElement) {
+    if (this.lastOpenSubTreeItem !== treeItem) {
+      return;
+    }
+
+    clearTimeout(this.openSubTreeTimeout);
+  }
 
   private trackItemDrag = (event: DragEvent) => {
     event.preventDefault();
@@ -463,11 +504,11 @@ export class ChTreeX {
 
   render() {
     return (
-      <Host class={{ "ch-tree-x-remove-drop": this.draggingItem }}>
+      <Host class={{ "ch-tree-x-dragging-item": this.draggingItem }}>
         <slot />
 
         {this.draggingItem && (
-          <span aria-hidden="true" class="ch-tree-x-dragging-item">
+          <span aria-hidden="true" class="ch-tree-x-drag-info">
             {this.dragInfo}
           </span>
         )}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html dir="ltr" lang="en" class="ch-scrollbar-custom">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -11,1011 +11,1092 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles.css" />
-    <style>
-      .header,
-      .footer {
-        background-color: black;
-        color: white;
-      }
-
-      .group {
-        display: flex;
-      }
-      .group ch-grid {
-        flex: 1;
-      }
-
-      ch-grid {
-        border: 1px solid red;
-      }
-      ch-grid-columnset {
-        background-color: grey;
-      }
-
-      ch-grid::part(settings-mask),
-      ch-grid-column::part(settings-mask) {
-        background-color: rgba(255, 0, 0, 0.3);
-      }
-      ch-grid-row {
-        background-color: white;
-      }
-
-      ch-grid-row[highlighted] {
-        background-color: lightgoldenrodyellow;
-      }
-      ch-grid-row[selected] {
-        background-color: yellow;
-      }
-
-      ch-grid-rowset-legend {
-        background-color: lightgrey;
-      }
-
-      ch-grid-cell::part(drag-icon) {
-        width: 16px;
-        height: 16px;
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-        background-position: center;
-        background-image: url("http://localhost/images/drag.svg");
-      }
-
-      ch-grid-cell::part(actions-icon) {
-        padding: 0px;
-        border: 0px none transparent;
-        background-color: transparent;
-        box-sizing: content-box;
-        font-family: inherit;
-        font-size: 100%;
-
-        width: 16px;
-        height: 16px;
-        background-repeat: no-repeat;
-        background-size: 10px 10px;
-        background-position: center;
-        background-image: url("http://localhost/images/view-more.svg");
-      }
-
-      .group.scroll ch-grid {
-        height: 150px;
-      }
-
-      .group.tree ch-grid-cell::part(node-icon) {
-        width: 16px;
-        height: 16px;
-        background-repeat: no-repeat;
-        background-size: 12px 12px;
-        background-position: center;
-      }
-
-      .group.tree
-        ch-grid-row:has(> ch-grid-rowset)
-        > ch-grid-cell::part(node-icon) {
-        background-image: url("http://localhost/images/folder.svg");
-      }
-      .group.tree ch-grid-cell::part(node-icon) {
-        background-image: url("http://localhost/images/file.svg");
-      }
-
-      .group.tree ch-grid-rowset-legend::part(icon) {
-        width: 16px;
-        height: 16px;
-        background-image: url("http://localhost/images/group.svg");
-        background-repeat: no-repeat;
-        background-size: 12px 12px;
-        background-position: center;
-      }
-
-      /* caret */
-      ch-grid-row > ch-grid-cell::part(caret),
-      ch-grid-rowset > ch-grid-rowset-legend::part(caret) {
-        width: 16px;
-        height: 16px;
-        background-image: url("http://localhost/images/node_collapse.gif");
-      }
-
-      ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset)))
-        > ch-grid-cell::part(caret),
-      ch-grid-rowset[collapsed] > ch-grid-rowset-legend::part(caret) {
-        background-image: url("http://localhost/images/node_expand.gif");
-      }
-
-      /* indentation */
-      ch-grid {
-        --indent: 16px;
-      }
-
-      /* row-actions */
-      ch-grid::part(row-actions) {
-        right: 20px;
-      }
-    </style>
+    <link rel="stylesheet" href="./grid.css" />
   </head>
   <body>
     <div class="container">
-      <!--group scroll-->
-      <section class="section-dev" data-title="group scroll">
-        <div class="group scroll">
-          <ch-grid id="virtual-scroller" row-selection-mode="multiple">
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name=""
-                settingable="false"
-                column-type="rich"
-                rich-row-drag
-                size="min-content"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name=""
-                settingable="false"
-                column-type="rich"
-                rich-row-selector
-                size="min-content"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
+      <section class="section-dev basic" data-title="basic">
+        <ch-grid row-selection-mode="none">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
 
-            <ch-grid-row selected>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Nombre</ch-grid-cell>
-              <ch-grid-cell>Productos</ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev group" data-title="group">
+        <ch-grid row-selection-mode="none">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>América del Norte</ch-grid-rowset-legend>
+            <ch-grid-row rowid="ca">
+              <ch-grid-cell>CA</ch-grid-cell>
+              <ch-grid-cell>Canadá</ch-grid-cell>
+              <ch-grid-cell>38.000.000</ch-grid-cell>
               <ch-grid-cell>English</ch-grid-cell>
-              <ch-grid-cell>Products</ch-grid-cell>
             </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Português</ch-grid-cell>
-              <ch-grid-cell>Produtos</ch-grid-cell>
+            <ch-grid-row rowid="mx">
+              <ch-grid-cell>MX</ch-grid-cell>
+              <ch-grid-cell>México</ch-grid-cell>
+              <ch-grid-cell>126.000.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
             </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Redireccionar a</ch-grid-cell>
-              <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
+            <ch-grid-row rowid="us">
+              <ch-grid-cell>US</ch-grid-cell>
+              <ch-grid-cell>Estados Unidos</ch-grid-cell>
+              <ch-grid-cell>331.000.000</ch-grid-cell>
+              <ch-grid-cell>English</ch-grid-cell>
             </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-              <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-rowset>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>América del Sur</ch-grid-rowset-legend>
+            <ch-grid-row rowid="bo">
+              <ch-grid-cell>BO</ch-grid-cell>
+              <ch-grid-cell>Bolivia</ch-grid-cell>
+              <ch-grid-cell>11.800.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
             </ch-grid-row>
+            <ch-grid-row rowid="cl">
+              <ch-grid-cell>CL</ch-grid-cell>
+              <ch-grid-cell>Chile</ch-grid-cell>
+              <ch-grid-cell>19.500.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row rowid="ec">
+              <ch-grid-cell>EC</ch-grid-cell>
+              <ch-grid-cell>Ecuador</ch-grid-cell>
+              <ch-grid-cell>17.600.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row rowid="py">
+              <ch-grid-cell>PY</ch-grid-cell>
+              <ch-grid-cell>Paraguay</ch-grid-cell>
+              <ch-grid-cell>7.500.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row rowid="pe">
+              <ch-grid-cell>PE</ch-grid-cell>
+              <ch-grid-cell>Perú</ch-grid-cell>
+              <ch-grid-cell>32.800.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row rowid="ve">
+              <ch-grid-cell>VE</ch-grid-cell>
+              <ch-grid-cell>Venezuela</ch-grid-cell>
+              <ch-grid-cell>28.500.000</ch-grid-cell>
+              <ch-grid-cell>Español</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Campeones del mundo</ch-grid-rowset-legend>
+              <ch-grid-row rowid="ar">
+                <ch-grid-cell>AR</ch-grid-cell>
+                <ch-grid-cell>Argentina</ch-grid-cell>
+                <ch-grid-cell>45.400.000</ch-grid-cell>
+                <ch-grid-cell>Español</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row rowid="br">
+                <ch-grid-cell>BR</ch-grid-cell>
+                <ch-grid-cell>Brasil</ch-grid-cell>
+                <ch-grid-cell>212.600.000</ch-grid-cell>
+                <ch-grid-cell>Português</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row rowid="uy">
+                <ch-grid-cell>UY</ch-grid-cell>
+                <ch-grid-cell>Uruguay</ch-grid-cell>
+                <ch-grid-cell>3.500.000</ch-grid-cell>
+                <ch-grid-cell>Español</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid>
+      </section>
+
+      <section
+        class="section-dev selection-simple"
+        data-title="selection-simple"
+      >
+        <ch-grid row-selection-mode="simple">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section
+        class="section-dev selection-multiple"
+        data-title="selection-multiple"
+      >
+        <ch-grid row-selection-mode="multiple">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              column-type="rich"
+              rich-row-selector
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev row-mark" data-title="row-mark">
+        <ch-grid row-selection-mode="multiple">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              column-type="rich"
+              rich-row-selector
+              rich-row-selector-mode="mark"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev row-reorder" data-title="row-reorder">
+        <ch-grid row-selection-mode="multiple">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              column-type="rich"
+              rich-row-drag
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev row-action" data-title="row-action">
+        <ch-grid>
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="actions"
+              column-name="Actions"
+              column-name-hidden="true"
+              size="min-content"
+              column-type="rich"
+              rich-row-actions="true"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-row-actions show-on-row-hover>
+            <button>Action A</button>
+            <button>Action B</button>
+          </ch-grid-row-actions>
+          <ch-grid-row-actions show-on-row-actions>
+            <button>Action C</button>
+            <button>Action D</button>
+            <button>Action E</button>
+          </ch-grid-row-actions>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev column-freeze" data-title="column-freeze">
+        <ch-grid>
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+              size="calc(20% - 20px)"
+              freeze="start"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+              size="80%"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="actions"
+              column-name="Actions"
+              column-name-hidden="true"
+              size="20px"
+              column-type="rich"
+              rich-row-actions="true"
+              settingable="false"
+              freeze="end"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-row-actions show-on-row-actions>
+            <button>Action C</button>
+            <button>Action D</button>
+            <button>Action E</button>
+          </ch-grid-row-actions>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev config" data-title="config">
+        <ch-grid row-selection-mode="none">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              sort-direction="asc"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>        
+            </ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-actionbar slot="footer">
+            <ch-grid-action-refresh title="Refresh"></ch-grid-action-refresh>
+            <ch-grid-action-settings title="Settings"></ch-grid-action-settings>
+          </ch-grid-actionbar>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev tree-grid" data-title="tree-grid">
+        <ch-grid>
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-name="Name"
+              settingable="false"
+              column-type="tree"
+              freeze="start"
+              size="20%"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-name="Type"
+              settingable="false"
+              size="80%"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-name="Description"
+              settingable="false"
+              size="500px"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-name="Is Collection"
+              settingable="false"
+              size="100px"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row>
+            <ch-grid-cell>Target</ch-grid-cell>
+            <ch-grid-cell></ch-grid-cell>
+            <ch-grid-cell>Target</ch-grid-cell>
+            <ch-grid-cell>false</ch-grid-cell>
+
+            <ch-grid-rowset>
+              <ch-grid-row leaf="false">
+                <ch-grid-cell>TargetType</ch-grid-cell>
+                <ch-grid-cell
+                  >TargetType, GeneXus.Common.Notifications</ch-grid-cell
+                >
+                <ch-grid-cell>Target Type (required)</ch-grid-cell>
+                <ch-grid-cell>false</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Devices</ch-grid-cell>
+                <ch-grid-cell></ch-grid-cell>
+                <ch-grid-cell>Devices List</ch-grid-cell>
+                <ch-grid-cell>true</ch-grid-cell>
+
+                <ch-grid-rowset>
+                  <ch-grid-row>
+                    <ch-grid-cell>Device</ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+
+                    <ch-grid-rowset>
+                      <ch-grid-row>
+                        <ch-grid-cell>DeviceToken</ch-grid-cell>
+                        <ch-grid-cell>Character(500)</ch-grid-cell>
+                        <ch-grid-cell>DeviceToken</ch-grid-cell>
+                        <ch-grid-cell>false</ch-grid-cell>
+                      </ch-grid-row>
+                    </ch-grid-rowset>
+                  </ch-grid-row>
+                </ch-grid-rowset>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Groups</ch-grid-cell>
+                <ch-grid-cell></ch-grid-cell>
+                <ch-grid-cell>Groups</ch-grid-cell>
+                <ch-grid-cell>true</ch-grid-cell>
+
+                <ch-grid-rowset>
+                  <ch-grid-row>
+                    <ch-grid-cell>Group</ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+
+                    <ch-grid-rowset>
+                      <ch-grid-row>
+                        <ch-grid-cell>Name</ch-grid-cell>
+                        <ch-grid-cell>Character(100)</ch-grid-cell>
+                        <ch-grid-cell>Name</ch-grid-cell>
+                        <ch-grid-cell>false</ch-grid-cell>
+                      </ch-grid-row>
+                    </ch-grid-rowset>
+                  </ch-grid-row>
+                </ch-grid-rowset>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Targets</ch-grid-cell>
+                <ch-grid-cell></ch-grid-cell>
+                <ch-grid-cell>Targets</ch-grid-cell>
+                <ch-grid-cell>true</ch-grid-cell>
+
+                <ch-grid-rowset>
+                  <ch-grid-row>
+                    <ch-grid-cell>Filter</ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+                    <ch-grid-cell></ch-grid-cell>
+
+                    <ch-grid-rowset>
+                      <ch-grid-row>
+                        <ch-grid-cell>Name</ch-grid-cell>
+                        <ch-grid-cell>Character(100)</ch-grid-cell>
+                        <ch-grid-cell>Name</ch-grid-cell>
+                        <ch-grid-cell>false</ch-grid-cell>
+                      </ch-grid-row>
+                      <ch-grid-row>
+                        <ch-grid-cell>Value</ch-grid-cell>
+                        <ch-grid-cell>Character(100)</ch-grid-cell>
+                        <ch-grid-cell>Name</ch-grid-cell>
+                        <ch-grid-cell>false</ch-grid-cell>
+                      </ch-grid-row>
+                    </ch-grid-rowset>
+                  </ch-grid-row>
+                </ch-grid-rowset>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev property-grid" data-title="property-grid">
+        <ch-grid>
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-name="Property"
+              settingable="false"
+              column-type="tree"
+              size="50%"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-name="Value"
+              settingable="false"
+              size="minmax(auto, calc(100% - var(--ch-grid-column-1-width)))"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row>
+            <ch-grid-cell>Nombre</ch-grid-cell>
+            <ch-grid-cell>Productos</ch-grid-cell>
+
+            <ch-grid-rowset>
+              <ch-grid-row>
+                <ch-grid-cell>English</ch-grid-cell>
+                <ch-grid-cell>Products</ch-grid-cell>
+              </ch-grid-row>
+              <ch-grid-row>
+                <ch-grid-cell>Português</ch-grid-cell>
+                <ch-grid-cell>Produtos</ch-grid-cell>
+              </ch-grid-row>
+            </ch-grid-rowset>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Redireccionar a</ch-grid-cell>
+            <ch-grid-cell>
+              <div style="width: 100%;">
+                <div style="white-space: nowrap; overflow: hidden;">
+                  Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas; Tecnologías soportadas;
+                </div>
+              </div>
+            </ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row>
+            <ch-grid-cell>Tipo de redirección</ch-grid-cell>
+            <ch-grid-cell>Found</ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
+
             <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
               <ch-grid-cell>Url amigable</ch-grid-cell>
               <ch-grid-cell>productos</ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>English</ch-grid-cell>
-              <ch-grid-cell>products</ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Português</ch-grid-cell>
-              <ch-grid-cell>produtos</ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Id</ch-grid-cell>
-              <ch-grid-cell>7867</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>English</ch-grid-cell>
+                  <ch-grid-cell>products</ch-grid-cell>
+                </ch-grid-row>
+                <ch-grid-row>
+                  <ch-grid-cell>Português</ch-grid-cell>
+                  <ch-grid-cell>produtos</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
             </ch-grid-row>
 
-            <div class="header" slot="header">
-              <span>HEADER</span>
-            </div>
-            <div class="footer" slot="footer">
-              <span>FOOTER</span>
-            </div>
-            <div slot="row-actions">
-              <button>Action A</button>
-              <button>Action B</button>
-            </div>
-          </ch-grid>
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
 
-          <ch-grid row-selection-mode="multiple" id="vs">
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name=""
-                settingable="false"
-                size="min-content"
-                column-type="rich"
-                rich-row-actions
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset id="vs-rowset" virtual-box>
-              <ch-grid-row>
-                <ch-grid-cell>Nombre</ch-grid-cell>
-                <ch-grid-cell>Productos</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>English</ch-grid-cell>
-                <ch-grid-cell>Products</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Português</ch-grid-cell>
-                <ch-grid-cell>Produtos</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                <ch-grid-cell>Found</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Url amigable</ch-grid-cell>
-                <ch-grid-cell>productos</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>English</ch-grid-cell>
-                <ch-grid-cell>products</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Português</ch-grid-cell>
-                <ch-grid-cell>produtos</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Id</ch-grid-cell>
+              <ch-grid-row rowid="row-permalink">
+                <ch-grid-cell cellid="cell-permalink-label-id">Id</ch-grid-cell>
                 <ch-grid-cell>7867</ch-grid-cell>
-                <ch-grid-cell></ch-grid-cell>
               </ch-grid-row>
-            </ch-grid-rowset>
 
-            <div class="header" slot="header">
-              <span>HEADER</span>
-            </div>
-            <div class="footer" slot="footer">
-              <span>FOOTER</span>
-            </div>
-            <div slot="row-actions">
-              <button>Action A</button>
-              <button>Action B</button>
-            </div>
-          </ch-grid>
-        </div>
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Guid</ch-grid-cell>
+                  <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid>
       </section>
 
-      <!-- group -->
-      <section class="section-dev" data-title="group">
-        <div class="group">
+      <section class="section-dev empty" data-title="empty">
           <ch-grid>
             <ch-grid-columnset>
               <ch-grid-column
-                column-name="Property"
+                column-id="code"
+                column-name="Country Code"
                 settingable="false"
               ></ch-grid-column>
               <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-
-              <ch-grid-row>
-                <ch-grid-cell>Nombre</ch-grid-cell>
-                <ch-grid-cell>Productos</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>English</ch-grid-cell>
-                <ch-grid-cell>Products</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Português</ch-grid-cell>
-                <ch-grid-cell>Produtos</ch-grid-cell>
-              </ch-grid-row>
-            </ch-grid-rowset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-
-              <ch-grid-row>
-                <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                <ch-grid-cell>Found</ch-grid-cell>
-              </ch-grid-row>
-            </ch-grid-rowset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-              <ch-grid-row>
-                <ch-grid-cell>Url amigable</ch-grid-cell>
-                <ch-grid-cell>productos</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>English</ch-grid-cell>
-                <ch-grid-cell>products</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Português</ch-grid-cell>
-                <ch-grid-cell>produtos</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Id</ch-grid-cell>
-                  <ch-grid-cell>7867</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
+                column-id="name"
+                column-name="Country Name"
                 settingable="false"
               ></ch-grid-column>
               <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Nombre</ch-grid-cell>
-                  <ch-grid-cell>Productos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>English</ch-grid-cell>
-                  <ch-grid-cell>Products</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Português</ch-grid-cell>
-                  <ch-grid-cell>Produtos</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                  <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                  <ch-grid-cell>Found</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Url amigable</ch-grid-cell>
-                  <ch-grid-cell>productos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>English</ch-grid-cell>
-                  <ch-grid-cell>products</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Português</ch-grid-cell>
-                  <ch-grid-cell>produtos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-rowset>
-                  <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-                  <ch-grid-row>
-                    <ch-grid-cell>Id</ch-grid-cell>
-                    <ch-grid-cell>7867</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-
-          <ch-grid row-selection-mode="multiple">
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-                column-type="rich"
-                rich-row-selector
-                rich-row-drag
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Nombre</ch-grid-cell>
-                  <ch-grid-cell>Productos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>English</ch-grid-cell>
-                  <ch-grid-cell>Products</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Português</ch-grid-cell>
-                  <ch-grid-cell>Produtos</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                  <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                  <ch-grid-cell>Found</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Url amigable</ch-grid-cell>
-                  <ch-grid-cell>productos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>English</ch-grid-cell>
-                  <ch-grid-cell>products</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Português</ch-grid-cell>
-                  <ch-grid-cell>produtos</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-rowset>
-                  <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-                  <ch-grid-row>
-                    <ch-grid-cell>Id</ch-grid-cell>
-                    <ch-grid-cell>7867</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-        </div>
-      </section>
-
-      <!-- group tree -->
-      <section class="section-dev" data-title="group tree">
-        <div class="group tree">
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Name"
-                settingable="false"
-                column-type="tree"
-                freeze="start"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Type"
-                settingable="false"
-                size="80%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Description"
-                settingable="false"
-                size="500px"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Is Collection"
-                settingable="false"
-                size="100px"
-                freeze="end"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-row>
-              <ch-grid-cell>Target</ch-grid-cell>
-              <ch-grid-cell></ch-grid-cell>
-              <ch-grid-cell>Target</ch-grid-cell>
-              <ch-grid-cell>false</ch-grid-cell>
-
-              <ch-grid-rowset>
-                <ch-grid-row leaf="false">
-                  <ch-grid-cell>TargetType</ch-grid-cell>
-                  <ch-grid-cell
-                    >TargetType, GeneXus.Common.Notifications</ch-grid-cell
-                  >
-                  <ch-grid-cell>Target Type (required)</ch-grid-cell>
-                  <ch-grid-cell>false</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Devices</ch-grid-cell>
-                  <ch-grid-cell></ch-grid-cell>
-                  <ch-grid-cell>Devices List</ch-grid-cell>
-                  <ch-grid-cell>true</ch-grid-cell>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>Device</ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-
-                      <ch-grid-rowset>
-                        <ch-grid-row>
-                          <ch-grid-cell>DeviceToken</ch-grid-cell>
-                          <ch-grid-cell>Character(500)</ch-grid-cell>
-                          <ch-grid-cell>DeviceToken</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                      </ch-grid-rowset>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Groups</ch-grid-cell>
-                  <ch-grid-cell></ch-grid-cell>
-                  <ch-grid-cell>Groups</ch-grid-cell>
-                  <ch-grid-cell>true</ch-grid-cell>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>Group</ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-
-                      <ch-grid-rowset>
-                        <ch-grid-row>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>Character(100)</ch-grid-cell>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                      </ch-grid-rowset>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Targets</ch-grid-cell>
-                  <ch-grid-cell></ch-grid-cell>
-                  <ch-grid-cell>Targets</ch-grid-cell>
-                  <ch-grid-cell>true</ch-grid-cell>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>Filter</ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-                      <ch-grid-cell></ch-grid-cell>
-
-                      <ch-grid-rowset>
-                        <ch-grid-row>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>Character(100)</ch-grid-cell>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                        <ch-grid-row>
-                          <ch-grid-cell>Value</ch-grid-cell>
-                          <ch-grid-cell>Character(100)</ch-grid-cell>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                        <ch-grid-row>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>Character(100)</ch-grid-cell>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                        <ch-grid-row>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>Character(100)</ch-grid-cell>
-                          <ch-grid-cell>Name</ch-grid-cell>
-                          <ch-grid-cell>false</ch-grid-cell>
-                        </ch-grid-row>
-                      </ch-grid-rowset>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-row>
-              </ch-grid-rowset>
-            </ch-grid-row>
-          </ch-grid>
-
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Column A"
-                size="20%"
-                freeze="start"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column B"
-                size="20%"
-                freeze="start"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column C"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column D"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column E"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column F"
-                size="20%"
-                freeze="end"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column G"
-                size="20%"
-                freeze="end"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-row>
-                <ch-grid-cell>A</ch-grid-cell>
-                <ch-grid-cell>B</ch-grid-cell>
-                <ch-grid-cell>C</ch-grid-cell>
-                <ch-grid-cell>D</ch-grid-cell>
-                <ch-grid-cell>E</ch-grid-cell>
-                <ch-grid-cell>F</ch-grid-cell>
-                <ch-grid-cell>G</ch-grid-cell>
-              </ch-grid-row>
-            </ch-grid-rowset>
-
-            <ch-grid-actionbar slot="footer">
-              <ch-grid-action-settings>Settings</ch-grid-action-settings>
-            </ch-grid-actionbar>
-          </ch-grid>
-
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Column A"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column B"
-                size="20%"
-                freeze="start"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column C"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column D"
-                size="20%"
-                freeze="start"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column E"
-                size="20%"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column F"
-                size="20%"
-                freeze="end"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Column G"
-                size="20%"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-row>
-                <ch-grid-cell>A</ch-grid-cell>
-                <ch-grid-cell>B</ch-grid-cell>
-                <ch-grid-cell>C</ch-grid-cell>
-                <ch-grid-cell>D</ch-grid-cell>
-                <ch-grid-cell>E</ch-grid-cell>
-                <ch-grid-cell>F</ch-grid-cell>
-                <ch-grid-cell>G</ch-grid-cell>
-              </ch-grid-row>
-            </ch-grid-rowset>
-          </ch-grid>
-        </div>
-      </section>
-
-      <!-- group tree -->
-      <section class="section-dev" data-title="group tree">
-        <div class="group tree">
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-                column-type="tree"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-row>
-              <ch-grid-cell>Nombre</ch-grid-cell>
-              <ch-grid-cell>Productos</ch-grid-cell>
-
-              <ch-grid-rowset>
-                <ch-grid-row>
-                  <ch-grid-cell>English</ch-grid-cell>
-                  <ch-grid-cell>Products</ch-grid-cell>
-                </ch-grid-row>
-                <ch-grid-row>
-                  <ch-grid-cell>Português</ch-grid-cell>
-                  <ch-grid-cell>Produtos</ch-grid-cell>
-                </ch-grid-row>
-              </ch-grid-rowset>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell>Redireccionar a</ch-grid-cell>
-              <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-            </ch-grid-row>
-            <ch-grid-row>
-              <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-              <ch-grid-cell>Found</ch-grid-cell>
-            </ch-grid-row>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-              <ch-grid-row>
-                <ch-grid-cell>Url amigable</ch-grid-cell>
-                <ch-grid-cell>productos</ch-grid-cell>
-
-                <ch-grid-rowset>
-                  <ch-grid-row>
-                    <ch-grid-cell>English</ch-grid-cell>
-                    <ch-grid-cell>products</ch-grid-cell>
-                  </ch-grid-row>
-                  <ch-grid-row>
-                    <ch-grid-cell>Português</ch-grid-cell>
-                    <ch-grid-cell>produtos</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-row>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-
-                <ch-grid-row rowid="row-permalink">
-                  <ch-grid-cell cellid="cell-permalink-label-id"
-                    >Id</ch-grid-cell
-                  >
-                  <ch-grid-cell>7867</ch-grid-cell>
-                </ch-grid-row>
-
-                <ch-grid-rowset>
-                  <ch-grid-row>
-                    <ch-grid-cell>Guid</ch-grid-cell>
-                    <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-                column-type="tree"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-row>
-                <ch-grid-cell>Nombre</ch-grid-cell>
-                <ch-grid-cell>Productos</ch-grid-cell>
-
-                <ch-grid-rowset>
-                  <ch-grid-row>
-                    <ch-grid-cell>English</ch-grid-cell>
-                    <ch-grid-cell>Products</ch-grid-cell>
-                  </ch-grid-row>
-                  <ch-grid-row>
-                    <ch-grid-cell>Português</ch-grid-cell>
-                    <ch-grid-cell>Produtos</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                <ch-grid-cell>Found</ch-grid-cell>
-              </ch-grid-row>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Url amigable</ch-grid-cell>
-                  <ch-grid-cell>productos</ch-grid-cell>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>English</ch-grid-cell>
-                      <ch-grid-cell>products</ch-grid-cell>
-                    </ch-grid-row>
-                    <ch-grid-row>
-                      <ch-grid-cell>Português</ch-grid-cell>
-                      <ch-grid-cell>produtos</ch-grid-cell>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-row>
-
-                <ch-grid-rowset>
-                  <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-
-                  <ch-grid-row rowid="row-permalink">
-                    <ch-grid-cell cellid="cell-permalink-label-id"
-                      >Id</ch-grid-cell
-                    >
-                    <ch-grid-cell>7867</ch-grid-cell>
-                  </ch-grid-row>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>Guid</ch-grid-cell>
-                      <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-                column-type="tree"
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset-legend>Página</ch-grid-rowset-legend>
-
-              <ch-grid-row>
-                <ch-grid-cell>Nombre</ch-grid-cell>
-                <ch-grid-cell>Productos</ch-grid-cell>
-
-                <ch-grid-rowset>
-                  <ch-grid-row>
-                    <ch-grid-cell>English</ch-grid-cell>
-                    <ch-grid-cell>Products</ch-grid-cell>
-                  </ch-grid-row>
-                  <ch-grid-row>
-                    <ch-grid-cell>Português</ch-grid-cell>
-                    <ch-grid-cell>Produtos</ch-grid-cell>
-                  </ch-grid-row>
-                </ch-grid-rowset>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Redireccionar a</ch-grid-cell>
-                <ch-grid-cell>Tecnologías soportadas</ch-grid-cell>
-              </ch-grid-row>
-              <ch-grid-row>
-                <ch-grid-cell>Tipo de redirección</ch-grid-cell>
-                <ch-grid-cell>Found</ch-grid-cell>
-              </ch-grid-row>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-                <ch-grid-row>
-                  <ch-grid-cell>Url amigable</ch-grid-cell>
-                  <ch-grid-cell>productos</ch-grid-cell>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>English</ch-grid-cell>
-                      <ch-grid-cell>products</ch-grid-cell>
-                    </ch-grid-row>
-                    <ch-grid-row>
-                      <ch-grid-cell>Português</ch-grid-cell>
-                      <ch-grid-cell>produtos</ch-grid-cell>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-row>
-
-                <ch-grid-rowset>
-                  <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-
-                  <ch-grid-row rowid="row-permalink">
-                    <ch-grid-cell cellid="cell-permalink-label-id"
-                      >Id</ch-grid-cell
-                    >
-                    <ch-grid-cell>7867</ch-grid-cell>
-                  </ch-grid-row>
-
-                  <ch-grid-rowset>
-                    <ch-grid-row>
-                      <ch-grid-cell>Guid</ch-grid-cell>
-                      <ch-grid-cell>abcdef-peodfg-293845-3947</ch-grid-cell>
-                    </ch-grid-row>
-                  </ch-grid-rowset>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-          </ch-grid>
-        </div>
-      </section>
-
-      <!--group empty -->
-      <section class="section-dev" data-title="group empty">
-        <div class="group empty">
-          <ch-grid>
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
+                column-id="population"
+                column-name="Country Population"
                 settingable="false"
               ></ch-grid-column>
               <ch-grid-column
-                column-name="Value"
+                column-id="language"
+                column-name="Country Language"
                 settingable="false"
               ></ch-grid-column>
             </ch-grid-columnset>
@@ -1023,65 +1104,47 @@
             <ch-grid-rowset>
               <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
             </ch-grid-rowset>
-
-            <div class="header" slot="header">
-              <span>HEADER</span>
-            </div>
-            <div class="footer" slot="footer">
-              <span>FOOTER</span>
-            </div>
-          </ch-grid>
-
-          <ch-grid row-selection-mode="multiple">
-            <ch-grid-columnset>
-              <ch-grid-column
-                column-name="Property"
-                settingable="false"
-                column-type="rich"
-                rich-row-selector
-              ></ch-grid-column>
-              <ch-grid-column
-                column-name="Value"
-                settingable="false"
-              ></ch-grid-column>
-            </ch-grid-columnset>
-
-            <ch-grid-rowset>
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Identidad</ch-grid-rowset-legend>
-
-                <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Redirección</ch-grid-rowset-legend>
-
-                <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
-              </ch-grid-rowset>
-
-              <ch-grid-rowset>
-                <ch-grid-rowset-legend>Url</ch-grid-rowset-legend>
-
-                <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
-
-                <ch-grid-rowset>
-                  <ch-grid-rowset-legend>Permalink</ch-grid-rowset-legend>
-                  <ch-grid-rowset-empty>
-                    No hay registros
-                  </ch-grid-rowset-empty>
-                </ch-grid-rowset>
-              </ch-grid-rowset>
-            </ch-grid-rowset>
-
-            <div class="header" slot="header">
-              <span>HEADER</span>
-            </div>
-            <div class="footer" slot="footer">
-              <span>FOOTER</span>
-            </div>
-          </ch-grid>
-        </div>
       </section>
+
+      <section class="section-dev group-empty" data-title="group-empty">
+        <ch-grid row-selection-mode="none">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>América del Norte</ch-grid-rowset-legend>
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+          </ch-grid-rowset>
+          <ch-grid-rowset>
+            <ch-grid-rowset-legend>América del Sur</ch-grid-rowset-legend>
+            <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>            
+            <ch-grid-rowset>
+              <ch-grid-rowset-legend>Campeones del mundo</ch-grid-rowset-legend>
+              <ch-grid-rowset-empty> No hay registros </ch-grid-rowset-empty>
+            </ch-grid-rowset>
+          </ch-grid-rowset>
+        </ch-grid>
+    </section>
     </div>
 
     <script>

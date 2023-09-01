@@ -612,6 +612,7 @@ export class ChTreeXListItem {
   };
 
   private handleDrop = (event: DragEvent) => {
+    event.stopPropagation();
     console.log("Drag Drop", event);
 
     this.dragState = "none";

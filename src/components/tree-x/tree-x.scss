@@ -10,6 +10,18 @@ ch-tree-x {
   &.ch-tree-x-dragging-item .ch-tree-x-list-item--accept-drop {
     pointer-events: all;
   }
+
+  // Remove mouse actions when processing the drop of items
+  // @todo: Remove keyboard actions
+  &.ch-tree-x-waiting-drop-processing {
+    > ch-tree-x-list {
+      cursor: wait;
+
+      > ch-tree-x-list-item {
+        pointer-events: none;
+      }
+    }
+  }
 }
 
 .ch-tree-x-drag-info {
@@ -20,10 +32,9 @@ ch-tree-x {
   top: 0; // Necessary since the custom vars are physical values
   transform: translate(
     calc(var(--ch-tree-x-dragging-item-x) + var(--rtl-offset)),
-    calc(var(--ch-tree-x-dragging-item-y) + 16px)
+    calc(var(--ch-tree-x-dragging-item-y) + 8px)
   );
   pointer-events: none;
-  background-color: #69a5d6;
 }
 
 html[dir="rtl"] .ch-tree-x-drag-info {

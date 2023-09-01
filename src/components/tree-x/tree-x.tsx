@@ -141,9 +141,20 @@ export class ChTreeX {
   }
 
   /**
+   * This property lets you specify if the tree is waiting to process the drop
+   * of items.
+   */
+  @Prop() readonly waitDropProcessing: boolean = false;
+
+  /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<SelectedTreeItemInfo[]>;
+
+  /**
+   * Fired when the dragged items are dropped in another item of the tree.
+   */
+  @Event() itemsDropped: EventEmitter<TreeXItemDropInfo>;
 
   // /**
   //  * This method is used to toggle a tree item by the tree item id/ids.
@@ -245,8 +256,10 @@ export class ChTreeX {
 
   @Listen("itemDrop")
   handleItemDrop(event: CustomEvent<TreeXItemDropInfo>) {
-    console.log("itemDrop", event);
+    event.stopPropagation();
+
     this.cancelSubTreeOpening(null, true);
+    this.itemsDropped.emit(event.detail);
   }
 
   @Listen("selectedItemChange")
@@ -471,7 +484,12 @@ export class ChTreeX {
 
   render() {
     return (
-      <Host class={{ "ch-tree-x-dragging-item": this.draggingItem }}>
+      <Host
+        class={{
+          "ch-tree-x-dragging-item": this.draggingItem,
+          "ch-tree-x-waiting-drop-processing": this.waitingDropProcessing
+        }}
+      >
         <slot />
 
         {this.draggingItem && (

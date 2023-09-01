@@ -12,13 +12,11 @@ import {
   h,
   writeTask
 } from "@stencil/core";
-import { TreeXItemDragStartInfo, TreeXItemDropInfo } from "../tree-x/types";
-
-export type TreeXListItemSelectedInfo = {
-  goToReference: boolean;
-  id: string;
-  selected: boolean;
-};
+import {
+  TreeXItemDragStartInfo,
+  TreeXItemDropInfo,
+  TreeXListItemSelectedInfo
+} from "../tree-x/types";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -202,31 +200,6 @@ export class ChTreeXListItem {
   @Prop() readonly showExpandableButton: boolean = true;
 
   /**
-   * Fired when the item is being dragged.
-   */
-  @Event() itemDragStart: EventEmitter<TreeXItemDragStartInfo>;
-
-  /**
-   * Fired when the item is no longer being dragged.
-   */
-  @Event() itemDragEnd: EventEmitter;
-
-  /**
-   * Fired when an element commits to drop in the control.
-   */
-  @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
-
-  /**
-   * Fired when the lazy control is expanded an its content must be loaded.
-   */
-  @Event() loadLazyContent: EventEmitter<string>;
-
-  /**
-   * Fired when the control is selected.
-   */
-  @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
-
-  /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
@@ -251,6 +224,31 @@ export class ChTreeXListItem {
    * Fired when the checkbox value of the control is changed.
    */
   @Event() checkboxChange: EventEmitter<boolean>;
+
+  /**
+   * Fired when the item is being dragged.
+   */
+  @Event() itemDragStart: EventEmitter<TreeXItemDragStartInfo>;
+
+  /**
+   * Fired when the item is no longer being dragged.
+   */
+  @Event() itemDragEnd: EventEmitter;
+
+  /**
+   * Fired when an element commits to drop in the control.
+   */
+  @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
+
+  /**
+   * Fired when the lazy control is expanded an its content must be loaded.
+   */
+  @Event() loadLazyContent: EventEmitter<string>;
+
+  /**
+   * Fired when the control is selected.
+   */
+  @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(event: CustomEvent<boolean>) {

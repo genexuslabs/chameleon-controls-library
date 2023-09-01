@@ -39,6 +39,12 @@ export type SelectedTreeItemInfo = {
   checked: boolean;
 };
 
+export type TreeXListItemSelectedInfo = {
+  goToReference: boolean;
+  id: string;
+  selected: boolean;
+};
+
 export type TreeXItemDragStartInfo = {
   elem: HTMLChTreeXListItemElement;
   dataTransfer: DataTransfer;

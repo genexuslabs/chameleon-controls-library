@@ -11,13 +11,14 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { TreeXListItemSelectedInfo } from "../tree-x-list-item/tree-x-list-item";
+
 import {
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   SelectedTreeItemInfo,
   TreeXItemDragStartInfo,
-  TreeXItemDropInfo
+  TreeXItemDropInfo,
+  TreeXListItemSelectedInfo
 } from "./types";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";

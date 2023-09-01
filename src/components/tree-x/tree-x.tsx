@@ -246,6 +246,7 @@ export class ChTreeX {
   @Listen("itemDrop")
   handleItemDrop(event: CustomEvent<TreeXItemDropInfo>) {
     console.log("itemDrop", event);
+    this.cancelSubTreeOpening(null, true);
   }
 
   @Listen("selectedItemChange")
@@ -307,12 +308,13 @@ export class ChTreeX {
     this.cancelSubTreeOpening(treeItem);
   };
 
-  private cancelSubTreeOpening(treeItem: HTMLChTreeXListItemElement) {
-    if (this.lastOpenSubTreeItem !== treeItem) {
-      return;
+  private cancelSubTreeOpening(
+    treeItem: HTMLChTreeXListItemElement,
+    forceClear = false
+  ) {
+    if (this.lastOpenSubTreeItem === treeItem || forceClear) {
+      clearTimeout(this.openSubTreeTimeout);
     }
-
-    clearTimeout(this.openSubTreeTimeout);
   }
 
   private trackItemDrag = (event: DragEvent) => {

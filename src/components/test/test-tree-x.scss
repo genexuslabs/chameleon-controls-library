@@ -13,6 +13,11 @@ ch-test-tree-x {
   background-color: rgb(232, 232, 233);
 }
 
+.ch-tree-x-list-item--drag-enter {
+  background-color: #eee;
+  outline: 1px solid black;
+}
+
 ch-tree-x-list-item::part(header) {
   border: 1px solid transparent;
 }

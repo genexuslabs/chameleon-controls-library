@@ -40,10 +40,6 @@ $own-offset: calc(
   grid-template-rows: min-content;
 }
 
-:host(.ch-tree-x-list-item--drag-enter) {
-  background-color: #eee;
-}
-
 .header {
   --own-offset: 0px;
 

@@ -125,15 +125,27 @@ export class ChGridManagerSelection {
     cell: HTMLChGridCellElement,
     value = true
   ): ManagerSelectionState {
+    let append = true;
+
+    if (this.manager.grid.rowSelectionMode === "none") {
+      return this.selectionStateNone;
+    } else if (this.manager.grid.rowSelectionMode !== "multiple") {
+      append = false;
+    }
+
     let rowFocused = state.rowFocused;
     let rowsSelected = state.rowsSelected;
     let cellSelected = state.cellSelected;
 
     rowFocused = row;
     if (value) {
-      rowsSelected = rowsSelected.includes(row)
-        ? rowsSelected
-        : [...rowsSelected, row];
+      if (append) {
+        rowsSelected = rowsSelected.includes(row)
+          ? rowsSelected
+          : [...rowsSelected, row];
+      } else {
+        rowsSelected = rowsSelected.includes(row) ? rowsSelected : [row];
+      }
       cellSelected = cell;
     } else {
       rowsSelected = !rowsSelected.includes(row)

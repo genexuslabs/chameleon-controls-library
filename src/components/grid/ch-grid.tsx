@@ -249,6 +249,14 @@ export class ChGrid {
     this.rowFocused = null;
   }
 
+  @Listen("cellFocused", { passive: true })
+  cellFocusedHandler(eventInfo: CustomEvent) {
+    const cell = eventInfo.target as HTMLChGridCellElement;
+    if (this.rowSelectionMode !== "none" && !cell.selected) {
+      this.setCellSelected(cell);
+    }
+  }
+
   @Listen("keydown", { target: "window" })
   windowKeyDownHandler(eventInfo: KeyboardEvent) {
     if (
@@ -641,23 +649,7 @@ export class ChGrid {
     const cell = this.manager.getCell(cellId, rowId, columnId);
 
     if (cell) {
-      const { rowFocused, rowsSelected, cellSelected } =
-        this.manager.selection.selectSet(
-          {
-            rowFocused: this.rowFocused,
-            rowsSelected: this.rowsSelected,
-            cellSelected: this.cellSelected
-          },
-          cell.row,
-          cell,
-          selected
-        );
-
-      this.rowFocused = rowFocused;
-      this.rowsSelected = rowsSelected;
-      this.cellSelected = cellSelected;
-
-      rowFocused?.ensureVisible();
+      this.setCellSelected(cell, selected);
     }
   }
 
@@ -916,6 +908,26 @@ export class ChGrid {
     } else if (row && !collapsed) {
       row.collapsed = false;
     }
+  }
+
+  private setCellSelected(cell: HTMLChGridCellElement, selected = true) {
+    const { rowFocused, rowsSelected, cellSelected } =
+      this.manager.selection.selectSet(
+        {
+          rowFocused: this.rowFocused,
+          rowsSelected: this.rowsSelected,
+          cellSelected: this.cellSelected
+        },
+        cell.row,
+        cell,
+        selected
+      );
+
+    this.rowFocused = rowFocused;
+    this.rowsSelected = rowsSelected;
+    this.cellSelected = cellSelected;
+
+    rowFocused?.ensureVisible();
   }
 
   private renderSettings() {

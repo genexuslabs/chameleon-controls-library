@@ -38,6 +38,7 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
   constructor() {
     super();
+    this.defineFocusHandler();
   }
 
   connectedCallback() {
@@ -151,6 +152,14 @@ export default class HTMLChGridCellElement extends HTMLElement {
     } else {
       this.selector.setAttribute("part", "selector");
     }
+  }
+
+  private defineFocusHandler() {
+    this.addEventListener("focusin", () => {
+      this.dispatchEvent(
+        new CustomEvent("cellFocused", { bubbles: true, composed: true })
+      );
+    });
   }
 
   private caretMouseDownHandler(eventInfo: Event) {

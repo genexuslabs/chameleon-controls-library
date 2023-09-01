@@ -33,31 +33,32 @@ export default class HTMLChGridCellElement extends HTMLElement {
   public rowActions: boolean;
 
   static get observedAttributes() {
-    return ["type"];
+    return ["cell-type", "row-drag", "row-selector", "row-actions"];
   }
 
   constructor() {
     super();
   }
 
-  attributeChangedCallback(
-    _name: string,
-    _oldValue: string,
-    value: ChGridCellType
-  ) {
-    if (value === ChGridCellType.Rich) {
-      if (this.hasAttribute("row-drag")) {
-        this.rowDrag = this.getAttribute("row-drag") !== "false";
-      }
-      if (this.hasAttribute("row-selector")) {
-        this.rowSelector = this.getAttribute("row-selector") !== "false";
-      }
-      if (this.hasAttribute("row-actions")) {
-        this.rowActions = this.getAttribute("row-actions") !== "false";
-      }
+  connectedCallback() {
+    if (this.cellType !== ChGridCellType.Plain) {
+      this.define();
     }
+  }
 
-    this.type = value as ChGridCellType;
+  attributeChangedCallback(name: string, _oldValue: string, value: string) {
+    if (name === "cell-type") {
+      this.cellType = value as ChGridCellType;
+    }
+    if (name === "row-drag") {
+      this.rowDrag = value !== null ? value !== "false" : false;
+    }
+    if (name === "row-selector") {
+      this.rowSelector = value !== null ? value !== "false" : false;
+    }
+    if (name === "row-actions") {
+      this.rowActions = value !== null ? value !== "false" : false;
+    }
   }
 
   /**
@@ -68,7 +69,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
   }
 
   set type(value: ChGridCellType) {
-    this.define(value);
+    if (this.cellType !== value) {
+      this.cellType = value;
+      this.define();
+    }
   }
 
   /**
@@ -201,18 +205,14 @@ export default class HTMLChGridCellElement extends HTMLElement {
     );
   }
 
-  private define(value: ChGridCellType) {
-    if (this.cellType !== value) {
-      this.cellType = value;
-
-      switch (this.cellType) {
-        case ChGridCellType.Rich:
-          this.defineRich();
-          break;
-        case ChGridCellType.TreeNode:
-          this.defineTreeNode();
-          break;
-      }
+  private define() {
+    switch (this.cellType) {
+      case ChGridCellType.Rich:
+        this.defineRich();
+        break;
+      case ChGridCellType.TreeNode:
+        this.defineTreeNode();
+        break;
     }
   }
 

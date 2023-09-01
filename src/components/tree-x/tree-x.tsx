@@ -20,6 +20,7 @@ import {
   TreeXItemDropInfo,
   TreeXListItemSelectedInfo
 } from "./types";
+import { mouseEventModifierKey } from "../common/helpers";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
@@ -28,14 +29,9 @@ const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
 const ARROW_DOWN_KEY = "ArrowDown";
 const ARROW_UP_KEY = "ArrowUp";
-const CONTROL_KEY = "Control";
 const EDIT_KEY = "F2";
 
-type KeyEvents =
-  | typeof ARROW_DOWN_KEY
-  | typeof ARROW_UP_KEY
-  | typeof CONTROL_KEY
-  | typeof EDIT_KEY;
+type KeyEvents = typeof ARROW_DOWN_KEY | typeof ARROW_UP_KEY | typeof EDIT_KEY;
 
 const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
   event.composedPath().includes(el);
@@ -63,7 +59,7 @@ export class ChTreeX {
       event.preventDefault();
 
       const treeItem = document.activeElement as HTMLChTreeXListItemElement;
-      treeItem.focusNextItem();
+      treeItem.focusNextItem(mouseEventModifierKey(event));
     },
 
     [ARROW_UP_KEY]: event => {
@@ -73,12 +69,7 @@ export class ChTreeX {
       event.preventDefault();
 
       const treeItem = document.activeElement as HTMLChTreeXListItemElement;
-      treeItem.focusPreviousItem();
-    },
-
-    [CONTROL_KEY]: event => {
-      event.preventDefault();
-      this.ctrlKeyPressed = true;
+      treeItem.focusPreviousItem(mouseEventModifierKey(event));
     },
 
     [EDIT_KEY]: event => {
@@ -88,13 +79,6 @@ export class ChTreeX {
 
       event.preventDefault();
       (document.activeElement as HTMLChTreeXListItemElement).editing = true;
-    }
-  };
-
-  private keyUpEvents = {
-    [CONTROL_KEY]: (event: KeyboardEvent) => {
-      event.preventDefault();
-      this.ctrlKeyPressed = false;
     }
   };
 
@@ -120,11 +104,6 @@ export class ChTreeX {
   @Element() el: HTMLChTreeXElement;
 
   @State() draggingItem = false;
-
-  /**
-   * This property specifies if the ctrl key is pressed
-   */
-  @Prop({ mutable: true }) ctrlKeyPressed = false;
 
   /**
    * Level in the tree at which the control is placed.
@@ -428,7 +407,7 @@ export class ChTreeX {
   ) {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
-    if (!this.ctrlKeyPressed || !this.multiSelection) {
+    if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
       this.selectedItems.forEach(treeItem => {
         treeItem.selected = false;
       });
@@ -467,28 +446,15 @@ export class ChTreeX {
     }
   };
 
-  private handleKeyUpEvents = (event: KeyboardEvent) => {
-    const keyHandler = this.keyUpEvents[event.key];
-
-    if (keyHandler) {
-      keyHandler(event);
-    }
-  };
-
   connectedCallback() {
     // Set edit mode in items
     this.el.addEventListener("keydown", this.handleKeyDownEvents, {
-      capture: true
-    });
-
-    this.el.addEventListener("keyup", this.handleKeyUpEvents, {
       capture: true
     });
   }
 
   disconnectedCallback() {
     this.el.removeEventListener("keydown", this.handleKeyDownEvents);
-    this.el.removeEventListener("keyup", this.handleKeyUpEvents);
 
     this.resetVariables();
 

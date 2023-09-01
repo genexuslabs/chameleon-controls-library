@@ -40,6 +40,7 @@ export type SelectedTreeItemInfo = {
 };
 
 export type TreeXListItemSelectedInfo = {
+  ctrlKeyPressed: boolean;
   goToReference: boolean;
   id: string;
   selected: boolean;

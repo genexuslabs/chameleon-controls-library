@@ -17,6 +17,7 @@ import {
   TreeXItemDropInfo,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
+import { mouseEventModifierKey } from "../common/helpers";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -275,7 +276,7 @@ export class ChTreeXListItem {
    * the first subitem in its tree.
    */
   @Method()
-  async focusNextItem() {
+  async focusNextItem(ctrlKeyPressed: boolean) {
     // Focus the first subitem if expanded
     if (!this.leaf && this.expanded) {
       const subItem = this.el.querySelector(TREE_ITEM_TAG_NAME);
@@ -283,26 +284,26 @@ export class ChTreeXListItem {
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
       if (subItem) {
-        subItem.setFocus();
+        subItem.setFocus(ctrlKeyPressed);
         return;
       }
     }
 
     // Otherwise, focus the next sibling
-    this.focusNextSibling();
+    this.focusNextSibling(ctrlKeyPressed);
   }
 
   /**
    * Focus the next sibling item in the tree.
    */
   @Method()
-  async focusNextSibling() {
+  async focusNextSibling(ctrlKeyPressed: boolean) {
     const nextSiblingItem = this.el
       .nextElementSibling as HTMLChTreeXListItemElement;
 
     // Focus the next sibling
     if (nextSiblingItem) {
-      nextSiblingItem.setFocus();
+      nextSiblingItem.setFocus(ctrlKeyPressed);
       return;
     }
 
@@ -314,7 +315,7 @@ export class ChTreeXListItem {
     // Otherwise, ask the parent to focus the next sibling
     const parentItem = this.el.parentElement
       .parentElement as HTMLChTreeXListItemElement;
-    parentItem.focusNextSibling();
+    parentItem.focusNextSibling(ctrlKeyPressed);
   }
 
   /**
@@ -322,13 +323,13 @@ export class ChTreeXListItem {
    * the last subitem in its tree.
    */
   @Method()
-  async focusPreviousItem() {
+  async focusPreviousItem(ctrlKeyPressed: boolean) {
     const previousSiblingItem = this.el
       .previousElementSibling as HTMLChTreeXListItemElement;
 
     // Focus last item of the previous sibling
     if (previousSiblingItem) {
-      previousSiblingItem.focusLastItem();
+      previousSiblingItem.focusLastItem(ctrlKeyPressed);
       return;
     }
 
@@ -340,7 +341,7 @@ export class ChTreeXListItem {
     // Otherwise, set focus in the parent element
     const parentItem = this.el.parentElement
       .parentElement as HTMLChTreeXListItemElement;
-    parentItem.setFocus();
+    parentItem.setFocus(ctrlKeyPressed);
   }
 
   /**
@@ -348,7 +349,7 @@ export class ChTreeXListItem {
    * focus the control
    */
   @Method()
-  async focusLastItem() {
+  async focusLastItem(ctrlKeyPressed: boolean) {
     // Focus the last subitem if expanded and not lazy loading
     if (!this.leaf && this.expanded) {
       const lastSubItem = this.el.querySelector(
@@ -360,24 +361,24 @@ export class ChTreeXListItem {
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
       if (lastSubItem) {
-        lastSubItem.focusLastItem();
+        lastSubItem.focusLastItem(ctrlKeyPressed);
         return;
       }
     }
 
     // Otherwise, it focuses the control
-    this.setFocus();
+    this.setFocus(ctrlKeyPressed);
   }
 
   /**
    * Set focus in the control
    */
   @Method()
-  async setFocus() {
+  async setFocus(ctrlKeyPressed: boolean) {
     this.buttonRef.focus();
 
     // Normal navigation auto selects the item.
-    if (!mainTreeRef.ctrlKeyPressed) {
+    if (!ctrlKeyPressed) {
       this.setSelected(false);
     }
   }
@@ -456,13 +457,14 @@ export class ChTreeXListItem {
     });
   };
 
-  private toggleExpand = () => {
+  private toggleExpand = (event: MouseEvent) => {
     if (!this.leaf) {
       this.expanded = !this.expanded;
     }
 
     this.selected = true;
     this.selectedItemChange.emit({
+      ctrlKeyPressed: mouseEventModifierKey(event),
       goToReference: false,
       id: this.el.id,
       selected: true
@@ -486,6 +488,7 @@ export class ChTreeXListItem {
     this.selected = selected;
 
     this.selectedItemChange.emit({
+      ctrlKeyPressed: true,
       goToReference: false,
       id: this.el.id,
       selected: selected
@@ -497,14 +500,15 @@ export class ChTreeXListItem {
 
     this.selected = true;
     this.selectedItemChange.emit({
+      ctrlKeyPressed: false,
       goToReference: goToReference,
       id: this.el.id,
       selected: true
     });
   }
 
-  private toggleOrSelect() {
-    if (mainTreeRef.ctrlKeyPressed) {
+  private toggleOrSelect(event: MouseEvent) {
+    if (mouseEventModifierKey(event)) {
       this.toggleSelected();
     } else {
       this.setSelected(true);
@@ -514,13 +518,13 @@ export class ChTreeXListItem {
   private handleActionDblClick = (event: PointerEvent) => {
     event.stopPropagation();
 
-    if (mainTreeRef.ctrlKeyPressed) {
+    if (mouseEventModifierKey(event)) {
       this.toggleSelected();
       return;
     }
 
     // The Control key is not pressed, so the control can be expanded
-    this.toggleExpand();
+    this.toggleExpand(event);
   };
 
   /**
@@ -541,12 +545,12 @@ export class ChTreeXListItem {
 
     // Click event
     if (event.pointerType) {
-      this.toggleOrSelect();
+      this.toggleOrSelect(event);
       return;
     }
 
     // Enter or space
-    this.toggleExpand();
+    this.toggleExpand(event);
   };
 
   /**
@@ -556,7 +560,7 @@ export class ChTreeXListItem {
     console.log("handleActionKeyDown", event);
 
     // Only toggle if the Enter key was pressed with the Ctrl key
-    if (mainTreeRef.ctrlKeyPressed && event.code === ENTER_KEY) {
+    if (mouseEventModifierKey(event) && event.code === ENTER_KEY) {
       event.stopPropagation();
       this.toggleSelected();
     }

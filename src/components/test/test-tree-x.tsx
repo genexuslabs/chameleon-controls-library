@@ -1,6 +1,7 @@
-import { Component, h, Prop, Listen, Host, Watch } from "@stencil/core";
+import { Component, h, Prop, Listen, Host, Watch, State } from "@stencil/core";
 import {
   SelectedTreeItemInfo,
+  TreeXItemDropInfo,
   TreeXItemModel,
   TreeXModel
 } from "../tree-x/types";
@@ -20,6 +21,21 @@ export class ChTestTreeX {
   // UI Model
   private flattenedTreeModel: Map<string, TreeXItemModel> = new Map();
   private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
+
+  /**
+   * This property lets you specify if the tree is waiting to process the drop
+   * of items.
+   */
+  @State() waitDropProcessing = false;
+
+  /**
+   * Callback that is executed when a list of items request to be dropped into
+   * another item.
+   */
+  @Prop() readonly dropItemsCallback: (
+    dropItemId: string,
+    draggedIds: string[]
+  ) => Promise<TreeXItemModel[]>;
 
   /**
    * This property lets you define the model of the ch-tree-x control.
@@ -53,6 +69,49 @@ export class ChTestTreeX {
    * lines.
    */
   @Prop({ mutable: true }) showLines = true;
+
+  @Listen("itemsDropped")
+  handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
+    const detail = event.detail;
+    const dropItemId = detail.dropItemId;
+
+    // Check if the parent exists in the UI Model
+    if (!this.flattenedTreeModel.get(dropItemId)) {
+      return;
+    }
+
+    const data = detail.dataTransfer.getData("text/plain");
+    const draggedIds = data?.split(",") ?? [];
+
+    if (draggedIds.length === 0 || !this.dropItemsCallback) {
+      return;
+    }
+
+    const promise = this.dropItemsCallback(dropItemId, draggedIds);
+    this.waitDropProcessing = true;
+
+    promise.then(acceptDrop => {
+      this.waitDropProcessing = false;
+
+      if (!acceptDrop) {
+        return;
+      }
+
+      const draggedItemsContainer = this.flattenedTreeModel.get(dropItemId);
+
+      // Add the UI models to the new container
+      draggedIds.forEach(itemId => {
+        const itemUIModel = this.flattenedTreeModel.get(itemId);
+        draggedItemsContainer.items.push(itemUIModel);
+      });
+
+      // Open the item to visualize the new subitems
+      draggedItemsContainer.expanded = true;
+
+      // Force re-render by making a shallow copy of the model
+      this.treeModel = { ...this.treeModel };
+    });
+  }
 
   @Listen("loadLazyContent")
   loadLazyChildrenHandler(event: CustomEvent<string>) {
@@ -177,6 +236,7 @@ export class ChTestTreeX {
         <ch-tree-x
           multiSelection={this.multiSelection}
           showLines={this.showLines}
+          waitDropProcessing={this.waitDropProcessing}
           onSelectedItemsChange={this.handleSelectedItemsChange}
         >
           <ch-tree-x-list>

@@ -455,14 +455,14 @@
   
   const modelTinyUpdatedAgain = [
     {
-      id: "number-1",
-      caption: "number-1",
+      id: "number-a",
+      caption: "number-a",
       leaf: true,
       leftImgSrc: "./assets/apple.svg",
     },
     {
-      id: "number-2",
-      caption: "number-2",
+      id: "number-b",
+      caption: "number-b",
       leaf: false,
       leftImgSrc: "./assets/apple.svg",
       items: [
@@ -654,6 +654,12 @@
           leaf: true,
           leftImgSrc: "patterns.svg",
         },
+        {
+          id: "number-2-3",
+          caption: "number-2-3",
+          leaf: true,
+          leftImgSrc: "patterns.svg",
+        },
       ],
     },
   ];
@@ -744,6 +750,12 @@
       setTimeout(() => {
         resolve(lazyModel);
       }, 1000); // Resolves or rejects after 1 second
+    });
+
+    testTreeX.dropItemsCallback = () => new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(true);
+      }, 1000); // Resolves after 100 ms
     });
   })
 </script>

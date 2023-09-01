@@ -487,7 +487,7 @@ export class ChTreeX {
       <Host
         class={{
           "ch-tree-x-dragging-item": this.draggingItem,
-          "ch-tree-x-waiting-drop-processing": this.waitingDropProcessing
+          "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
         <slot />

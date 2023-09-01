@@ -646,6 +646,12 @@ export class ChTreeXListItem {
     }
   }
 
+  componentDidLoad() {
+    if (this.lastItem && this.showLines) {
+      this.setResizeObserver();
+    }
+  }
+
   disconnectedCallback() {
     // If it was disconnected on edit mode, remove the body event handler
     if (this.editing) {

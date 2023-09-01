@@ -42,11 +42,12 @@ export class ChTreeListX {
       return;
     }
 
-    treeItems.forEach(treeItem => {
-      treeItem.lastItem = false;
-    });
+    const lastItemIndex = treeItems.length - 1;
 
-    treeItems[treeItems.length - 1].lastItem = true;
+    for (let i = 0; i < lastItemIndex; i++) {
+      treeItems[i].lastItem = false;
+    }
+    treeItems[lastItemIndex].lastItem = true;
   };
 
   componentWillLoad() {

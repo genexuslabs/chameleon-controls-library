@@ -50,7 +50,7 @@ export class ChTestTreeX {
    */
   @Prop({ mutable: true }) multiSelection = false;
 
-  @Listen("loadLazyChildren")
+  @Listen("loadLazyContent")
   loadLazyChildrenHandler(event: CustomEvent<string>) {
     event.stopPropagation();
     const treeItemId = event.detail;

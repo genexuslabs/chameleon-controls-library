@@ -212,6 +212,10 @@ export class ChTreeXListItem {
     } else {
       this.disconnectObserver();
     }
+
+    // @todo BUG: showLines does not update in the mainTreeRef, so we have to
+    // sync the ref with the new value
+    mainTreeRef.showLines = newShowLines;
   }
 
   /**

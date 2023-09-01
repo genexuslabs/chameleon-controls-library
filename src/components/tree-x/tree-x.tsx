@@ -23,8 +23,11 @@ import {
 import { mouseEventModifierKey } from "../common/helpers";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
+const TREE_LIST_TAG_NAME = "ch-tree-x-list";
 
 // Selectors
+const TREE_LIST_AND_ITEM_SELECTOR =
+  TREE_LIST_TAG_NAME + "," + TREE_ITEM_TAG_NAME;
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
 
 const ARROW_DOWN_KEY = "ArrowDown";
@@ -128,7 +131,9 @@ export class ChTreeX {
   @Prop() readonly showLines: boolean = false;
   @Watch("showLines")
   handleShowLinesChange(newShowLines: boolean) {
-    const treeItems = this.el.querySelectorAll(TREE_ITEM_TAG_NAME);
+    const treeItems = this.el.querySelectorAll(
+      TREE_LIST_AND_ITEM_SELECTOR
+    ) as NodeListOf<HTMLChTreeXListElement | HTMLChTreeXListItemElement>;
 
     treeItems.forEach(item => {
       item.showLines = newShowLines;

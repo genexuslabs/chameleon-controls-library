@@ -256,8 +256,7 @@ export class ChTreeX {
     });
 
     // Reset not allowed droppable ids
-    this.draggedIds = [];
-    this.draggedParentIds = [];
+    this.resetVariables();
   }
 
   @Listen("itemDrop")
@@ -358,6 +357,11 @@ export class ChTreeX {
       );
     });
   };
+
+  private resetVariables() {
+    this.draggedIds = [];
+    this.draggedParentIds = [];
+  }
 
   /**
    * Update the dataTransfer in the drag event to store the ids of the dragged
@@ -485,6 +489,8 @@ export class ChTreeX {
   disconnectedCallback() {
     this.el.removeEventListener("keydown", this.handleKeyDownEvents);
     this.el.removeEventListener("keyup", this.handleKeyUpEvents);
+
+    this.resetVariables();
 
     // Remove dragover body event
     this.handleItemDragEnd();

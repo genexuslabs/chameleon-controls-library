@@ -11,8 +11,6 @@ import {
   shadow: false // Necessary to avoid focus capture
 })
 export class ChTestTreeX {
-  private tree!: HTMLChTreeXElement;
-
   /**
    * Useful to ignore the tree model change when it was committed from lazy
    * loading items.
@@ -49,6 +47,12 @@ export class ChTestTreeX {
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop({ mutable: true }) multiSelection = false;
+
+  /**
+   * Set this attribute if you want to display the relation between tree items and tree lists using
+   * lines.
+   */
+  @Prop({ mutable: true }) showLines = true;
 
   @Listen("loadLazyContent")
   loadLazyChildrenHandler(event: CustomEvent<string>) {
@@ -158,6 +162,11 @@ export class ChTestTreeX {
     this.multiSelection = checked;
   };
 
+  private handleShowLinesChange = (event: CustomEvent) => {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.showLines = checked;
+  };
+
   componentWillLoad() {
     this.flattenModel();
   }
@@ -167,6 +176,7 @@ export class ChTestTreeX {
       <Host>
         <ch-tree-x
           multiSelection={this.multiSelection}
+          showLines={this.showLines}
           onSelectedItemsChange={this.handleSelectedItemsChange}
         >
           <ch-tree-x-list>
@@ -199,6 +209,14 @@ export class ChTestTreeX {
             value={this.multiSelection.toString()}
             caption="Multi selection"
             onInput={this.handleMultiSelectionChange}
+          ></ch-checkbox>
+
+          <ch-checkbox
+            checkedValue="true"
+            unCheckedValue="false"
+            value={this.showLines.toString()}
+            caption="Show lines"
+            onInput={this.handleShowLinesChange}
           ></ch-checkbox>
 
           {/* <button type="button" onClick={this.deleteNodeHandler}>

@@ -35,6 +35,7 @@ ch-tree-x {
     calc(var(--ch-tree-x-dragging-item-y) + 8px)
   );
   pointer-events: none;
+  z-index: 1; // Necessary to show the element above the expandable buttons
 }
 
 html[dir="rtl"] .ch-tree-x-drag-info {

@@ -5,6 +5,7 @@ import {
   TreeXItemModel,
   TreeXModel
 } from "../tree-x/types";
+import { TreeXItemModelExtended } from "./types";
 
 @Component({
   tag: "ch-test-tree-x",
@@ -19,8 +20,9 @@ export class ChTestTreeX {
   private ignoreTreeModelChange = false;
 
   // UI Model
-  private flattenedTreeModel: Map<string, TreeXItemModel> = new Map();
-  private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
+  private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
+  private flattenedLazyTreeModel: Map<string, TreeXItemModelExtended> =
+    new Map();
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -97,16 +99,29 @@ export class ChTestTreeX {
         return;
       }
 
-      const draggedItemsContainer = this.flattenedTreeModel.get(dropItemId);
+      const newParentItem = this.flattenedTreeModel.get(dropItemId).item;
 
-      // Add the UI models to the new container
+      // Add the UI models to the new container and remove the UI models from
+      // the old containers
       draggedIds.forEach(itemId => {
-        const itemUIModel = this.flattenedTreeModel.get(itemId);
-        draggedItemsContainer.items.push(itemUIModel);
+        const itemUIModelExtended = this.flattenedTreeModel.get(itemId);
+        const item = itemUIModelExtended.item;
+        const oldParentItem = itemUIModelExtended.parentItem;
+
+        // Remove the UI model from the previous parent
+        oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
+
+        // Add the UI Model to the new parent
+        newParentItem.items.push(item);
+
+        // Reference the new parent in the item
+        itemUIModelExtended.parentItem = newParentItem;
       });
 
       // Open the item to visualize the new subitems
-      draggedItemsContainer.expanded = true;
+      newParentItem.expanded = true;
+
+      this.ignoreTreeModelChange = true;
 
       // Force re-render by making a shallow copy of the model
       this.treeModel = { ...this.treeModel };
@@ -126,10 +141,9 @@ export class ChTestTreeX {
           this.flattenedLazyTreeModel.get(treeItemId);
         this.flattenedLazyTreeModel.delete(treeItemId);
 
-        itemToLazyLoadContent.items = result;
+        itemToLazyLoadContent.item.items = result;
 
-        this.flattenSubModel(result);
-        console.log("NEW Flattened lazy model:", this.flattenedLazyTreeModel);
+        this.flattenSubModel(itemToLazyLoadContent.item);
 
         this.ignoreTreeModelChange = true;
 
@@ -191,27 +205,35 @@ export class ChTestTreeX {
     </ch-tree-x-list-item>
   );
 
-  private flattenSubModel(subModel: TreeXItemModel[]) {
-    if (!subModel) {
+  private flattenSubModel(model: TreeXModel | TreeXItemModel) {
+    const items = model.items;
+
+    if (!items) {
       return;
     }
 
-    subModel.forEach(item => {
-      this.flattenedTreeModel.set(item.id, item);
+    items.forEach(item => {
+      this.flattenedTreeModel.set(item.id, {
+        parentItem: model,
+        item: item
+      });
 
       if (item.lazy) {
-        this.flattenedLazyTreeModel.set(item.id, item);
+        this.flattenedLazyTreeModel.set(item.id, {
+          parentItem: model,
+          item: item
+        });
       }
 
-      this.flattenSubModel(item.items);
+      this.flattenSubModel(item);
     });
   }
 
   private flattenModel() {
-    this.flattenSubModel(this.treeModel.items);
+    this.flattenedTreeModel.clear();
+    this.flattenedLazyTreeModel.clear();
 
-    console.log("Flattened model:", this.flattenedTreeModel);
-    console.log("Flattened lazy model:", this.flattenedLazyTreeModel);
+    this.flattenSubModel(this.treeModel);
   }
 
   private handleMultiSelectionChange = (event: CustomEvent) => {

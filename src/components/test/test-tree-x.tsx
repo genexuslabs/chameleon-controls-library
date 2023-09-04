@@ -42,14 +42,9 @@ export class ChTestTreeX {
   /**
    * This property lets you define the model of the ch-tree-x control.
    */
-  @Prop({ mutable: true }) treeModel: TreeXModel = { items: [] };
+  @Prop() readonly treeModel: TreeXModel = { items: [] };
   @Watch("treeModel")
   handleTreeModelChange() {
-    if (this.ignoreTreeModelChange) {
-      this.ignoreTreeModelChange = false;
-      return;
-    }
-
     this.flattenModel();
     console.log("handleTreeModelChange - - - - - - - - - -");
   }
@@ -121,10 +116,8 @@ export class ChTestTreeX {
       // Open the item to visualize the new subitems
       newParentItem.expanded = true;
 
-      this.ignoreTreeModelChange = true;
-
-      // Force re-render by making a shallow copy of the model
-      this.treeModel = { ...this.treeModel };
+      // Force re-render
+      this.render();
     });
   }
 
@@ -145,10 +138,8 @@ export class ChTestTreeX {
 
         this.flattenSubModel(itemToLazyLoadContent.item);
 
-        this.ignoreTreeModelChange = true;
-
-        // Force re-render by making a shallow copy of the model
-        this.treeModel = { ...this.treeModel };
+        // Force re-render
+        this.render();
       });
     }
   }

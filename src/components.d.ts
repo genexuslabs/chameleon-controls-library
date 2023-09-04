@@ -799,6 +799,12 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChStyle {
+        /**
+          * Specifies the location of the stylesheet document
+         */
+        "href": string;
+    }
     interface ChSuggest {
         /**
           * If true, it will position the cursor at the end when the input is focused.
@@ -1392,6 +1398,12 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChStyleElement extends Components.ChStyle, HTMLStencilElement {
+    }
+    var HTMLChStyleElement: {
+        prototype: HTMLChStyleElement;
+        new (): HTMLChStyleElement;
+    };
     interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
     }
     var HTMLChSuggestElement: {
@@ -1492,6 +1504,7 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-style": HTMLChStyleElement;
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
@@ -2335,6 +2348,12 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
     }
+    interface ChStyle {
+        /**
+          * Specifies the location of the stylesheet document
+         */
+        "href"?: string;
+    }
     interface ChSuggest {
         /**
           * If true, it will position the cursor at the end when the input is focused.
@@ -2641,6 +2660,7 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-style": ChStyle;
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
@@ -2696,6 +2716,7 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-style": LocalJSX.ChStyle & JSXBase.HTMLAttributes<HTMLChStyleElement>;
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;

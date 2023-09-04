@@ -9,6 +9,7 @@ import {
   Listen,
   Element
 } from "@stencil/core";
+import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
 
 export type ChWindowAlign =
   | "outside-start"
@@ -121,6 +122,7 @@ export class ChWindow {
 
     this.containerResizeObserverHandler(this.container);
     this.watchCSSAlign();
+    this.loadGlobalStyleSheet();
   }
 
   @Listen("mousedown", { passive: true })
@@ -295,6 +297,10 @@ export class ChWindow {
       this.hidden = true;
     }
   };
+
+  private loadGlobalStyleSheet() {
+    this.el.shadowRoot.adoptedStyleSheets.push(CH_GLOBAL_STYLESHEET);
+  }
 
   render() {
     return (

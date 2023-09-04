@@ -120,36 +120,6 @@ export class ChWindow {
     this.watchCSSAlign();
   }
 
-  @Listen("resize", { target: "window", passive: true })
-  windowResizeHandler() {
-    this.updatePosition();
-    this.watchCSSAlign();
-  }
-
-  @Listen("click", { target: "document", capture: true })
-  documentClickHandler(eventInfo: PointerEvent) {
-    if (
-      this.closeOnOutsideClick &&
-      !eventInfo.composedPath().includes(this.window)
-    ) {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("keydown ", { target: "document", capture: true })
-  documentKeyDownHandler(eventInfo: KeyboardEvent) {
-    if (!this.hidden && this.closeOnEscape && eventInfo.key === "Escape") {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("scroll", { target: "document", capture: true, passive: true })
-  windowScrollHandler() {
-    if (this.container) {
-      this.updatePosition();
-    }
-  }
-
   @Listen("mousedown", { passive: true })
   mousedownHandler(eventInfo: MouseEvent) {
     if (this.isDraggable(eventInfo.composedPath())) {

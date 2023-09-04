@@ -72,6 +72,7 @@ export class ChWindow {
       this.windowClosed.emit();
     } else {
       this.updatePosition();
+      this.watchCSSAlign();
       this.addListeners();
       this.windowOpened.emit();
     }

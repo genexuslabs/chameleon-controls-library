@@ -86,7 +86,6 @@ INDEX:
 
   // 3.STATE() VARIABLES //
   @State() windowHidden = true;
-  @State() slotIsEmpty = true;
 
   // 4.PUBLIC PROPERTY API / WATCH'S //
 

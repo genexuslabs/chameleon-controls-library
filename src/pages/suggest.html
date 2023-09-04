@@ -246,17 +246,18 @@
     </div>
 
     <script>
+      let fragment;
       const lists = document.querySelectorAll(".data-list");
       chSuggest.addEventListener("valueChanged", e => {
-        let counter = 0;
-        chSuggest.innerHTML = "";
+        let filteredItems = [];
+        fragment = document.createDocumentFragment();
         lists.forEach(list => {
           const category = list.getAttribute("data-category");
           const items = list.querySelectorAll("li");
-          const filteredItems = Array.from(items).filter(item => {
+          filteredItems = Array.from(items).filter(item => {
             return item.innerText.toLowerCase().includes(e.detail);
           });
-          if (filteredItems.length) {
+          if (filteredItems.length > 0) {
             const chSuggestList = document.createElement("ch-suggest-list");
             if (category) {
               chSuggestList.setAttribute("label", category);
@@ -272,10 +273,9 @@
                 item.getAttribute("data-description");
               if (category) {
                 chSuggestList.appendChild(chSuggestListItem);
-                counter++;
               } else {
-                chSuggest.appendChild(chSuggestListItem);
-                counter++;
+                //chSuggest.appendChild(chSuggestListItem);
+                fragment.appendChild(chSuggestListItem);
               }
               const iconSrc = item.getAttribute("data-icon");
               if (iconSrc) {
@@ -286,10 +286,16 @@
               }
             });
             if (category) {
-              chSuggest.appendChild(chSuggestList);
+              //chSuggest.appendChild(chSuggestList);
+              fragment.appendChild(chSuggestList);
             }
           }
         });
+        setTimeout(() => {
+          chSuggest.innerHTML = "";
+          chSuggest.appendChild(fragment);
+          fragment = null;
+        }, 1000);
       });
     </script>
 
@@ -297,9 +303,6 @@
       const setFocusBtn = document.getElementById("set-focus");
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
-      });
-      chSuggest.addEventListener("valueChanged", e => {
-        console.log("value changed", e);
       });
       chSuggest.addEventListener("itemSelected", e => {
         console.log("item selected", e.detail);

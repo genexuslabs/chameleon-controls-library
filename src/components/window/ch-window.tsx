@@ -68,9 +68,12 @@ export class ChWindow {
   hiddenHandler() {
     if (this.hidden) {
       this.resetDrag();
+      this.removeListeners();
       this.windowClosed.emit();
     } else {
       this.updatePosition();
+      this.watchCSSAlign();
+      this.addListeners();
       this.windowOpened.emit();
     }
   }
@@ -118,36 +121,6 @@ export class ChWindow {
 
     this.containerResizeObserverHandler(this.container);
     this.watchCSSAlign();
-  }
-
-  @Listen("resize", { target: "window", passive: true })
-  windowResizeHandler() {
-    this.updatePosition();
-    this.watchCSSAlign();
-  }
-
-  @Listen("click", { target: "document", capture: true })
-  documentClickHandler(eventInfo: PointerEvent) {
-    if (
-      this.closeOnOutsideClick &&
-      !eventInfo.composedPath().includes(this.window)
-    ) {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("keydown ", { target: "document", capture: true })
-  documentKeyDownHandler(eventInfo: KeyboardEvent) {
-    if (!this.hidden && this.closeOnEscape && eventInfo.key === "Escape") {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("scroll", { target: "document", capture: true, passive: true })
-  windowScrollHandler() {
-    if (this.container) {
-      this.updatePosition();
-    }
   }
 
   @Listen("mousedown", { passive: true })
@@ -263,6 +236,65 @@ export class ChWindow {
       this.containerResizeObserver.unobserve(unobserve);
     }
   }
+
+  private addListeners() {
+    window.addEventListener("resize", this.windowResizeHandler, {
+      passive: true
+    });
+
+    if (this.container) {
+      document.addEventListener("scroll", this.windowScrollHandler, {
+        capture: true,
+        passive: true
+      });
+    }
+
+    if (this.closeOnOutsideClick) {
+      document.addEventListener("click", this.closeOnOutsideClickHandler, {
+        capture: true
+      });
+    }
+
+    if (this.closeOnEscape) {
+      document.addEventListener("keydown", this.closeOnEscapeHandler, {
+        capture: true
+      });
+    }
+  }
+
+  private removeListeners() {
+    window.removeEventListener("resize", this.windowResizeHandler);
+    document.removeEventListener("scroll", this.windowScrollHandler, {
+      capture: true
+    });
+    document.removeEventListener("click", this.closeOnOutsideClickHandler, {
+      capture: true
+    });
+    document.removeEventListener("keydown", this.closeOnEscapeHandler, {
+      capture: true
+    });
+  }
+
+  private windowResizeHandler = () => {
+    this.updatePosition();
+    this.watchCSSAlign();
+  };
+
+  private windowScrollHandler = () => {
+    this.updatePosition();
+  };
+
+  private closeOnOutsideClickHandler = (eventInfo: PointerEvent) => {
+    if (!eventInfo.composedPath().includes(this.window)) {
+      this.hidden = true;
+    }
+  };
+
+  private closeOnEscapeHandler = (eventInfo: KeyboardEvent) => {
+    if (eventInfo.key === "Escape") {
+      this.hidden = true;
+    }
+  };
 
   render() {
     return (

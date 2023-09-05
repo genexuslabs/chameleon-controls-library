@@ -259,6 +259,11 @@ export class ChTreeX {
     event.stopPropagation();
 
     this.cancelSubTreeOpening(null, true);
+    const selectedItemEl = event.target as HTMLChTreeXListItemElement;
+
+    if (!this.validDroppableZone(selectedItemEl.id)) {
+      return;
+    }
     this.itemsDropped.emit(event.detail);
   }
 
@@ -274,13 +279,8 @@ export class ChTreeX {
     event.stopPropagation();
     const currentTarget = event.target as HTMLElement;
 
-    console.log("CURRENT TARGET", currentTarget);
-
     // Don't mark droppable zones if they are the dragged items or their direct parents
-    if (
-      this.draggedIds.includes(currentTarget.id) ||
-      this.draggedParentIds.includes(currentTarget.id)
-    ) {
+    if (!this.validDroppableZone(currentTarget.id)) {
       return;
     }
 
@@ -293,6 +293,10 @@ export class ChTreeX {
     treeItem.dragState = "enter";
     this.openSubTreeAfterCountdown(treeItem);
   };
+
+  private validDroppableZone = (draggedItemId: string) =>
+    !this.draggedIds.includes(draggedItemId) &&
+    !this.draggedParentIds.includes(draggedItemId);
 
   private openSubTreeAfterCountdown(treeItem: HTMLChTreeXListItemElement) {
     this.cancelSubTreeOpening(treeItem);
@@ -432,8 +436,7 @@ export class ChTreeX {
         treeItem.selected = false;
       });
 
-      this.selectedItems.clear();
-      this.selectedItemsInfo.clear();
+      this.clearSelectedItems();
 
       // Re-select the item
       selectedItemEl.selected = selectedItemInfo.selected;
@@ -456,6 +459,11 @@ export class ChTreeX {
 
     // Sync with UI model
     this.selectedItemsChange.emit([...this.selectedItemsInfo.values()]);
+  }
+
+  private clearSelectedItems() {
+    this.selectedItems.clear();
+    this.selectedItemsInfo.clear();
   }
 
   private handleKeyDownEvents = (event: KeyboardEvent) => {

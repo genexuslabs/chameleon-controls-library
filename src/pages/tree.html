@@ -397,19 +397,19 @@
         {
           id: "number-2.1",
           caption: "number-2.1",
-          leftImgSrc: "knowledge-base.svg",
+          leftImgSrc: "/build/ch-icon-assets/csharp.svg",
         },
       ],
     },
     {
       id: "number-3",
       caption: "number-3",
-      leftImgSrc: "knowledge-base.svg",
+      leftImgSrc: "/build/ch-icon-assets/patterns.svg",
       items: [
         {
           id: "number-3.1",
           caption: "number-3.1",
-          leftImgSrc: "knowledge-base.svg",
+          leftImgSrc: "/build/ch-icon-assets/java.svg",
         },
       ],
     },
@@ -418,7 +418,7 @@
     {
       id: "number-1",
       caption: "number-1",
-      leftImgSrc: "./datastore.svg",
+      leftImgSrc: "./build/ch-icon-assets/csharp.svg.svg",
     },
     {
       id: "number-2",
@@ -428,12 +428,12 @@
         {
           id: "number-2.1",
           caption: "number-2.1",
-          leftImgSrc: "./datastore.svg",
+          leftImgSrc: "./build/ch-icon-assets/patterns.svg.svg",
           items: [
             {
               id: "number-2.1.1",
               caption: "number-2.1.1",
-              leftImgSrc: "./datastore.svg",
+              leftImgSrc: "/build/ch-icon-assets/java.svg",
             },
           ],
         },
@@ -464,25 +464,25 @@
       id: "number-b",
       caption: "number-b",
       leaf: false,
-      leftImgSrc: "./assets/apple.svg",
+      leftImgSrc: "/build/ch-icon-assets/csharp.svg",
       items: [
         {
           id: "number-2.1",
           caption: "number-2.1",
           leaf: false,
-          leftImgSrc: "./assets/apple.svg",
+          leftImgSrc: "/build/ch-icon-assets/patterns.svg",
           items: [
             {
               id: "number-2.1.1",
               caption: "number-2.1.1",
               leaf: false,
-              leftImgSrc: "./assets/apple.svg",
+              leftImgSrc: "/build/ch-icon-assets/java.svg",
               items: [
                 {
                   id: "number-2.1.1.1",
                   caption: "number-2.1.1.1",
                   leaf: true,
-                  leftImgSrc: "knowledge-base.svg",
+                  leftImgSrc: "/build/tree-item-assets/download.svg",
                 },
               ],
             },
@@ -711,9 +711,16 @@
     },
   ];
 
-  
+  // WA to remove extra handlers in appload event
+  let appLoadFinish = false;
 
   window.addEventListener("appload", () => {
+    if (appLoadFinish) {
+      return;
+    }
+
+    appLoadFinish = true;
+
     const testTreeX = document.querySelector("ch-test-tree-x");
 
     testTreeX.treeModel = {
@@ -755,7 +762,7 @@
     testTreeX.dropItemsCallback = () => new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(true);
-      }, 1000); // Resolves after 100 ms
+      }, 25); // Resolves after 25 ms
     });
   })
 </script>

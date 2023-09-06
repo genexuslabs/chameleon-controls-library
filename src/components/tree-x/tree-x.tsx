@@ -15,7 +15,6 @@ import {
 import {
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
-  SelectedTreeItemInfo,
   TreeXItemDragStartInfo,
   TreeXItemDropInfo,
   TreeXListItemSelectedInfo
@@ -91,8 +90,7 @@ export class ChTreeX {
 
   private openSubTreeTimeout: NodeJS.Timeout;
 
-  private selectedItems: Set<HTMLChTreeXListItemElement> = new Set();
-  private selectedItemsInfo: Map<string, SelectedTreeItemInfo> = new Map();
+  private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
 
   private currentDraggedItem: HTMLChTreeXListItemElement;
   private lastOpenSubTreeItem: HTMLChTreeXListItemElement;
@@ -149,7 +147,9 @@ export class ChTreeX {
   /**
    * Fired when the selected items change.
    */
-  @Event() selectedItemsChange: EventEmitter<SelectedTreeItemInfo[]>;
+  @Event() selectedItemsChange: EventEmitter<
+    Map<string, TreeXListItemSelectedInfo>
+  >;
 
   /**
    * Fired when the dragged items are dropped in another item of the tree.
@@ -269,6 +269,7 @@ export class ChTreeX {
 
   @Listen("selectedItemChange")
   handleSelectedItemChange(event: CustomEvent<TreeXListItemSelectedInfo>) {
+    event.stopPropagation();
     const selectedItemInfo = event.detail;
     const selectedItemEl = event.target as HTMLChTreeXListItemElement;
 
@@ -416,11 +417,12 @@ export class ChTreeX {
     }
 
     // Dragging selected items
-    this.selectedItems.forEach(selectedItem => {
-      const parentTreeItemElem = selectedItem.parentElement.parentElement;
+    this.selectedItemsInfo.forEach(selectedItem => {
+      const parentId = selectedItem.parentId;
 
-      if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-        this.draggedParentIds.push(parentTreeItemElem.id);
+      // parentId === "" when the item is in the first level of the tree
+      if (parentId !== "") {
+        this.draggedParentIds.push(parentId);
       }
     });
   }
@@ -432,8 +434,8 @@ export class ChTreeX {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
-      this.selectedItems.forEach(treeItem => {
-        treeItem.selected = false;
+      this.selectedItemsInfo.forEach(treeItem => {
+        treeItem.itemRef.selected = false;
       });
 
       this.clearSelectedItems();
@@ -446,23 +448,16 @@ export class ChTreeX {
     if (selectedItemInfo.selected) {
       console.log("Add item to de list");
 
-      this.selectedItems.add(selectedItemEl);
-      this.selectedItemsInfo.set(selectedItemInfo.id, {
-        id: selectedItemInfo.id,
-        caption: selectedItemEl.caption,
-        checked: selectedItemEl.checked
-      });
+      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
     } else {
-      this.selectedItems.delete(selectedItemEl);
       this.selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model
-    this.selectedItemsChange.emit([...this.selectedItemsInfo.values()]);
+    this.selectedItemsChange.emit(this.selectedItemsInfo);
   }
 
   private clearSelectedItems() {
-    this.selectedItems.clear();
     this.selectedItemsInfo.clear();
   }
 

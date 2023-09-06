@@ -469,8 +469,11 @@ export class ChTreeXListItem {
     this.selected = true;
     this.selectedItemChange.emit({
       ctrlKeyPressed: mouseEventModifierKey(event),
+      expanded: this.expanded,
       goToReference: false,
       id: this.el.id,
+      itemRef: this.el,
+      parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
   };
@@ -493,8 +496,11 @@ export class ChTreeXListItem {
 
     this.selectedItemChange.emit({
       ctrlKeyPressed: true,
+      expanded: this.expanded,
       goToReference: false,
       id: this.el.id,
+      itemRef: this.el,
+      parentId: this.el.parentElement.parentElement.id,
       selected: selected
     });
   }
@@ -505,8 +511,11 @@ export class ChTreeXListItem {
     this.selected = true;
     this.selectedItemChange.emit({
       ctrlKeyPressed: false,
+      expanded: this.expanded,
       goToReference: goToReference,
       id: this.el.id,
+      itemRef: this.el,
+      parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
   }

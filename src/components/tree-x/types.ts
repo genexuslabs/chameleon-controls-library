@@ -33,16 +33,13 @@ export type ExpandedTreeItemInfo = {
   expanded: boolean;
 };
 
-export type SelectedTreeItemInfo = {
-  id: string;
-  caption: string;
-  checked: boolean;
-};
-
 export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
+  expanded: boolean;
   goToReference: boolean;
   id: string;
+  itemRef: HTMLChTreeXListItemElement;
+  parentId: string;
   selected: boolean;
 };
 

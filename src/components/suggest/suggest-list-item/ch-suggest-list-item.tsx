@@ -82,6 +82,7 @@ INDEX:
   private handleClick = () => {
     this.itemSelected.emit({
       value: this.value || this.el.innerText,
+      label: this.el.innerText,
       description: this.description
     });
   };

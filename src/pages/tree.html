@@ -444,7 +444,7 @@
             {
               id: "number-2.1",
               caption: "number-2.1",
-              leftImgSrc: "./build/ch-icon-assets/patterns.svg.svg",
+              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
               items: [
                 {
                   id: "number-2.1.1",
@@ -510,7 +510,7 @@
           id: "number-3",
           caption: "number-3",
           leaf: true,
-          leftImgSrc: "knowledge-base.svg"
+          leftImgSrc: "/build/ch-icon-assets/patterns.svg"
         }
       ];
 
@@ -525,7 +525,7 @@
               id: "number-1-1",
               caption: "number-1-1",
               leaf: false,
-              leftImgSrc: "knowledge-base.svg",
+              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
               items: [
                 {
                   id: "number-1-1-1",
@@ -552,7 +552,7 @@
                       id: "number-1-1-2-2",
                       caption: "number-1-1-2-2",
                       leaf: true,
-                      leftImgSrc: "knowledge-base.svg"
+                      leftImgSrc: "/build/ch-icon-assets/java.svg"
                     }
                   ]
                 }
@@ -576,7 +576,7 @@
               id: "number-2-1",
               caption: "number-2-1",
               leaf: true,
-              leftImgSrc: "knowledge-base.svg"
+              leftImgSrc: "/build/ch-icon-assets/java.svg"
             },
             {
               id: "number-2-2",
@@ -661,7 +661,7 @@
               id: "number-2-1",
               caption: "number-2-1",
               leaf: true,
-              leftImgSrc: "knowledge-base.svg"
+              leftImgSrc: "/build/ch-icon-assets/patterns.svg"
             },
             {
               id: "number-2-2",
@@ -782,6 +782,22 @@
             setTimeout(() => {
               resolve(true);
             }, 25); // Resolves after 25 ms
+          });
+
+        let randomSuccess = true;
+
+        testTreeX.modifyItemCaptionCallback = (treeItemId, newCaption) =>
+          new Promise((resolve, reject) => {
+            const status = newCaption.trim() !== "" && randomSuccess;
+            randomSuccess = !randomSuccess;
+
+            setTimeout(() => {
+              resolve({
+                success: status,
+                errorMessage:
+                  "Apologies, an error ocurred while changing the item caption."
+              });
+            }, 1000); // Resolves after 1000 ms
           });
       });
     </script>

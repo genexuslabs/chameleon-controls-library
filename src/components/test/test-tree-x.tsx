@@ -2,11 +2,18 @@ import { Component, h, Prop, Listen, Host, Watch, State } from "@stencil/core";
 import {
   TreeXItemDropInfo,
   TreeXItemModel,
+  TreeXListItemNewCaption,
   TreeXListItemSelectedInfo,
   TreeXModel
 } from "../tree-x/types";
-import { TreeXItemModelExtended } from "./types";
-import { ChTreeXCustomEvent } from "../../components";
+import {
+  TreeXItemModelExtended,
+  TreeXOperationStatusModifyCaption
+} from "./types";
+import {
+  ChTreeXCustomEvent,
+  ChTreeXListItemCustomEvent
+} from "../../components";
 
 @Component({
   tag: "ch-test-tree-x",
@@ -43,7 +50,7 @@ export class ChTestTreeX {
   /**
    * This property lets you define the model of the ch-tree-x control.
    */
-  @Prop() readonly treeModel: TreeXModel = { items: [] };
+  @Prop({ mutable: true }) treeModel: TreeXModel = { items: [] };
   @Watch("treeModel")
   handleTreeModelChange() {
     this.flattenModel();
@@ -56,6 +63,14 @@ export class ChTestTreeX {
   @Prop() readonly lazyLoadTreeItemsCallback: (
     treeItemId: string
   ) => Promise<TreeXItemModel[]>;
+
+  /**
+   * Callback that is executed when a item request to modify its caption.
+   */
+  @Prop() readonly modifyItemCaptionCallback: (
+    treeItemId: string,
+    newCaption: string
+  ) => Promise<TreeXOperationStatusModifyCaption>;
 
   /**
    * Set this attribute if you want to allow multi selection of the items.
@@ -143,6 +158,42 @@ export class ChTestTreeX {
         this.render();
       });
     }
+  }
+
+  @Listen("modifyCaption")
+  handleCaptionModification(
+    event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>
+  ) {
+    event.stopPropagation();
+
+    if (!this.modifyItemCaptionCallback) {
+      return;
+    }
+
+    const itemRef = event.target;
+    const itemId = event.detail.id;
+    const itemInfo = this.flattenedTreeModel.get(itemId).item;
+    const newCaption = event.detail.caption;
+    const oldCaption = itemInfo.caption;
+
+    // Optimistic UI: Update the caption in the UI Model before the change is
+    // completed in the server
+    itemInfo.caption = newCaption;
+
+    // Due to performance reasons, we don't make a shallow copy of the
+    // treeModel to force a re-render
+    itemRef.caption = newCaption;
+
+    const promise = this.modifyItemCaptionCallback(itemId, newCaption);
+
+    promise.then(status => {
+      if (!status.success) {
+        itemRef.caption = oldCaption;
+        itemInfo.caption = oldCaption;
+
+        // Do something with the error message
+      }
+    });
   }
 
   private closeTreeNodeHandler = () => {

@@ -21,12 +21,6 @@ import {
   shadow: false // Necessary to avoid focus capture
 })
 export class ChTestTreeX {
-  /**
-   * Useful to ignore the tree model change when it was committed from lazy
-   * loading items.
-   */
-  private ignoreTreeModelChange = false;
-
   // UI Model
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
   private selectedItems: Set<string> = new Set();
@@ -151,11 +145,12 @@ export class ChTestTreeX {
         this.flattenedLazyTreeModel.delete(treeItemId);
 
         itemToLazyLoadContent.items = result;
+        itemToLazyLoadContent.lazy = false;
 
         this.flattenSubModel(itemToLazyLoadContent);
 
         // Force re-render
-        this.render();
+        this.treeModel = { ...this.treeModel };
       });
     }
   }

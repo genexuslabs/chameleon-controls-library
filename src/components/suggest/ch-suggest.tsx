@@ -111,9 +111,14 @@ INDEX:
   @Prop() readonly showLabel: boolean = true;
 
   /**
-   * The input value
+   * This is the input value. it is what the user sees on the input.
    */
-  @Prop({ mutable: true }) value: string;
+  @Prop({ mutable: true }) inputValue: string;
+
+  /**
+   * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
+   */
+  @Prop({ mutable: true }) suggestValue: string;
 
   /**
    * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
@@ -121,7 +126,7 @@ INDEX:
   @Prop() readonly showHeader = false;
 
   /**
-   * The suggest title (optional)
+   * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
    */
   @Prop() readonly suggestTitle: string;
 
@@ -135,7 +140,7 @@ INDEX:
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
-  @Event() valueChanged: EventEmitter<string>;
+  @Event() inputValueChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -143,7 +148,8 @@ INDEX:
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
-    this.value = event.detail.value;
+    this.suggestValue = event.detail.value;
+    this.inputValue = event.detail.label;
     this.closeWindow();
   }
 
@@ -273,12 +279,12 @@ INDEX:
    * Every time the input event is triggered, the value of the input is sent to processInputEvent, which is responsible for displaying a window with the suggested options. this.debounce is a delay that, along with clearTimeout, ensures that the window is only shown after the user has stopped typing.
    */
   private handleInput = (e: InputEvent) => {
-    this.value = (e.target as HTMLInputElement).value;
+    const inputValue = (e.target as HTMLInputElement).value;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
     this.timeoutReference = setTimeout(() => {
-      this.processInputEvent();
+      this.processInputEvent(inputValue);
     }, this.debounce);
   };
 
@@ -312,9 +318,11 @@ INDEX:
     partWindow.scrollTop = partWindow.scrollHeight;
   };
 
-  private processInputEvent = () => {
+  private processInputEvent = (inputValue: string) => {
+    this.inputValueChanged.emit(inputValue);
+    this.suggestValue = inputValue;
+    this.inputValue = inputValue;
     this.evaluateWindowMaxHeight();
-    this.valueChanged.emit(this.value);
   };
 
   private closeWindow = () => {
@@ -351,7 +359,7 @@ INDEX:
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
               onFocus={this.onFocusHandler}
-              value={this.value}
+              value={this.inputValue}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={

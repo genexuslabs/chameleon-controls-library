@@ -314,6 +314,7 @@
         <button id="update-model-again-btn">
           Update model again (click third)
         </button>
+        <button id="update-big-model-btn">Set big model</button>
       </div>
     </div>
 
@@ -713,6 +714,22 @@
           checkbox: true
         }
       ];
+
+      const bigModel = [];
+
+      const FIRST_LEVEL_SIZE = 50;
+      const SECOND_LEVEL_SIZE = 50;
+
+      for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+        bigModel.push({
+          id: "item-" + i,
+          caption: "item-" + i,
+          lazy: true,
+          leaf: false,
+          leftImgSrc: "patterns.svg",
+          items: []
+        });
+      }
     </script>
     <br />
 
@@ -764,13 +781,35 @@
           };
         });
 
+        const updateBigModelBtn = document.getElementById(
+          "update-big-model-btn"
+        );
+        updateBigModelBtn.addEventListener("click", () => {
+          testTreeX.treeModel = {
+            items: bigModel
+          };
+        });
+
         /*Lazy Load Promise*/
         testTreeX.lazyLoadTreeItemsCallback = modelId =>
           new Promise((resolve, reject) => {
-            const lazyModel =
+            let lazyModel =
               modelId === "lazy-loaded-2"
                 ? modelLazyUpdated2
                 : modelLazyUpdated1;
+
+            if (modelId.startsWith("item-")) {
+              lazyModel = [];
+
+              for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+                lazyModel.push({
+                  id: modelId + "-" + j,
+                  caption: modelId + "-" + j,
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg"
+                });
+              }
+            }
 
             setTimeout(() => {
               resolve(lazyModel);

@@ -1,5 +1,5 @@
 ch-tree-x {
-  display: contents;
+  display: flex;
 
   // Remove un-useful droppable areas
   &.ch-tree-x-dragging-item :not(.ch-tree-x-list-item--accept-drop) {
@@ -14,12 +14,10 @@ ch-tree-x {
   // Remove mouse actions when processing the drop of items
   // @todo: Remove keyboard actions
   &.ch-tree-x-waiting-drop-processing {
-    > ch-tree-x-list {
-      cursor: wait;
+    cursor: wait;
 
-      > ch-tree-x-list-item {
-        pointer-events: none;
-      }
+    > ch-tree-x-list {
+      pointer-events: none;
     }
   }
 }

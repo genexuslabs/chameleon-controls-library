@@ -1,11 +1,12 @@
 import { Component, h, Prop, Listen, Host, Watch, State } from "@stencil/core";
 import {
-  SelectedTreeItemInfo,
   TreeXItemDropInfo,
   TreeXItemModel,
+  TreeXListItemSelectedInfo,
   TreeXModel
 } from "../tree-x/types";
 import { TreeXItemModelExtended } from "./types";
+import { ChTreeXCustomEvent } from "../../components";
 
 @Component({
   tag: "ch-test-tree-x",
@@ -21,8 +22,8 @@ export class ChTestTreeX {
 
   // UI Model
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
-  private flattenedLazyTreeModel: Map<string, TreeXItemModelExtended> =
-    new Map();
+  private selectedItems: Set<string> = new Set();
+  private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -134,9 +135,9 @@ export class ChTestTreeX {
           this.flattenedLazyTreeModel.get(treeItemId);
         this.flattenedLazyTreeModel.delete(treeItemId);
 
-        itemToLazyLoadContent.item.items = result;
+        itemToLazyLoadContent.items = result;
 
-        this.flattenSubModel(itemToLazyLoadContent.item);
+        this.flattenSubModel(itemToLazyLoadContent);
 
         // Force re-render
         this.render();
@@ -157,9 +158,35 @@ export class ChTestTreeX {
   };
 
   private handleSelectedItemsChange = (
-    event: CustomEvent<SelectedTreeItemInfo[]>
+    event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
-    console.log(event.detail);
+    const itemsToProcess = new Map(event.detail);
+
+    // Remove no longer selected items
+    this.selectedItems.forEach(selectedItemId => {
+      const itemUIModel = this.flattenedTreeModel.get(selectedItemId).item;
+      const itemIsStillSelected = itemsToProcess.get(selectedItemId);
+
+      // The item does not need to be added. Remove it from the processed list
+      if (itemIsStillSelected) {
+        itemUIModel.expanded = itemIsStillSelected.expanded; // Update expanded state
+        itemsToProcess.delete(selectedItemId);
+      }
+      // The item must be un-selected in the UI Model
+      else {
+        itemUIModel.selected = false;
+        this.selectedItems.delete(selectedItemId);
+      }
+    });
+
+    // Add new selected items
+    itemsToProcess.forEach((newSelectedItemInfo, itemId) => {
+      const newSelectedItem = this.flattenedTreeModel.get(itemId).item;
+      newSelectedItem.selected = true;
+      newSelectedItem.expanded = newSelectedItemInfo.expanded;
+
+      this.selectedItems.add(itemId);
+    });
   };
 
   private getCheckedItemsHandler = async () => {
@@ -210,10 +237,11 @@ export class ChTestTreeX {
       });
 
       if (item.lazy) {
-        this.flattenedLazyTreeModel.set(item.id, {
-          parentItem: model,
-          item: item
-        });
+        this.flattenedLazyTreeModel.set(item.id, item);
+      }
+
+      if (item.selected) {
+        this.selectedItems.add(item.id);
       }
 
       this.flattenSubModel(item);

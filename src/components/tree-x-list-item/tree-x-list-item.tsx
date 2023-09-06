@@ -612,8 +612,14 @@ export class ChTreeXListItem {
   );
 
   private handleDragStart = (event: DragEvent) => {
-    // event.preventDefault();
     event.stopPropagation();
+
+    // Disallow drag when editing the caption
+    if (this.editing) {
+      event.preventDefault();
+      return;
+    }
+
     console.log("Drag Start", event, this.el);
 
     event.dataTransfer.setDragImage(resetDragImage, 0, 0);

@@ -166,7 +166,7 @@
           data-icon="./assets/apple.svg"
           data-id="my-manzana-id"
         >
-          manzanas
+          Manzanas Label
         </li>
         <li>bananas</li>
         <li>naranjas</li>
@@ -197,6 +197,8 @@
           label="This is the label"
           suggest-title="Select your food"
           label-position="start"
+          suggest-value="una-descripción-inicial"
+          input-value="Una descripción inicial"
         >
         </ch-suggest>
       </section>
@@ -247,7 +249,8 @@
 
     <script>
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("valueChanged", e => {
+      chSuggest.addEventListener("inputChanged", e => {
+        console.log(e);
         let counter = 0;
         chSuggest.innerHTML = "";
         lists.forEach(list => {
@@ -298,8 +301,8 @@
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
       });
-      chSuggest.addEventListener("valueChanged", e => {
-        console.log("value changed", e);
+      chSuggest.addEventListener("inputChanged", e => {
+        console.log("value changed", e.detail);
       });
       chSuggest.addEventListener("itemSelected", e => {
         console.log("item selected", e.detail);

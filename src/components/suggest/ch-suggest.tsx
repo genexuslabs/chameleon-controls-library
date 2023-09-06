@@ -111,14 +111,14 @@ INDEX:
   @Prop() readonly showLabel: boolean = true;
 
   /**
-   * This is the input value. it is what the user sees on the input.
+   * This is the suggest value.
    */
-  @Prop({ mutable: true }) inputValue: string;
+  @Prop({ mutable: true }) value: string;
 
   /**
-   * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
+   * This is the suggest caption. Is what the user sees on the input.
    */
-  @Prop({ mutable: true }) suggestValue: string;
+  @Prop({ mutable: true }) caption: string;
 
   /**
    * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
@@ -140,7 +140,7 @@ INDEX:
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
-  @Event() inputValueChanged: EventEmitter<string>;
+  @Event() inputChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -148,8 +148,8 @@ INDEX:
 
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
-    this.suggestValue = event.detail.value;
-    this.inputValue = event.detail.label;
+    this.value = event.detail.value;
+    this.caption = event.detail.caption;
     this.closeWindow();
   }
 
@@ -319,9 +319,9 @@ INDEX:
   };
 
   private processInputEvent = (inputValue: string) => {
-    this.inputValueChanged.emit(inputValue);
-    this.suggestValue = inputValue;
-    this.inputValue = inputValue;
+    this.inputChanged.emit(inputValue);
+    this.caption = inputValue;
+    this.value = undefined;
     this.evaluateWindowMaxHeight();
   };
 
@@ -359,7 +359,7 @@ INDEX:
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
               onFocus={this.onFocusHandler}
-              value={this.inputValue}
+              value={this.caption}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={

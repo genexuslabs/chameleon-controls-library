@@ -249,7 +249,7 @@
 
     <script>
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("inputValueChanged", e => {
+      chSuggest.addEventListener("inputChanged", e => {
         console.log(e);
         let counter = 0;
         chSuggest.innerHTML = "";
@@ -301,7 +301,7 @@
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
       });
-      chSuggest.addEventListener("inputValueChanged", e => {
+      chSuggest.addEventListener("inputChanged", e => {
         console.log("value changed", e.detail);
       });
       chSuggest.addEventListener("itemSelected", e => {

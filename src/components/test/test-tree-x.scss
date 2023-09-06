@@ -1,6 +1,19 @@
 ch-test-tree-x {
   display: grid;
   grid-template-columns: 300px max-content;
+  grid-template-rows: 1fr;
+  height: 100%;
+
+  > .test-tree-x-scroll {
+    position: relative;
+    overflow-y: auto;
+    margin-inline-end: 16px;
+
+    > ch-tree-x {
+      position: absolute;
+      margin: 2px;
+    }
+  }
 }
 
 .tree-buttons {

@@ -11,14 +11,43 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles.css" />
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      .main-container {
+        display: grid;
+        grid-auto-rows: min-content;
+        align-self: stretch;
+        width: 100%;
+        padding-inline: 16px;
+      }
+
+      .section-dev {
+        height: 55vh;
+      }
+
+      .scroll {
+        overflow-y: auto;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">
+    <div class="main-container">
       <section
         class="section-dev"
         style="
           display: grid;
-          grid-template-columns: min-content min-content;
+          grid-template-columns: 250px max-content;
           gap: 32px;
         "
       >
@@ -160,8 +189,7 @@
                           left-img-src="objects/module"
                           caption="Mini (empty items)"
                         >
-                          <ch-tree-x-list>
-                          </ch-tree-x-list>
+                          <ch-tree-x-list> </ch-tree-x-list>
                         </ch-tree-x-list-item>
                       </ch-tree-x-list>
                     </ch-tree-x-list-item>
@@ -267,505 +295,496 @@
           </ch-tree-x-list>
         </ch-tree-x>
 
-        <ch-test-tree-x>
-        </ch-test-tree-x>
+        <div class="scroll">
+          <ch-test-tree-x></ch-test-tree-x>
+        </div>
       </section>
+
+      <button type="outlined" id="get-selected-markup">
+        Get Selected Items
+      </button>
+      <button type="outlined" id="get-checked-markup">Get Checked Items</button>
+      <button type="outlined" id="open-goat-b">Open Goat B</button>
+      <button type="outlined" id="close-goat-b">Close Goat B</button>
+      <button type="outlined" id="toggle-goat-b">Toggle Goat B</button>
+
+      <div class="buttons-wrapper">
+        <button id="load-model-btn">Load model (click first)</button>
+        <button id="update-model-btn">Update model (click second)</button>
+        <button id="update-model-again-btn">
+          Update model again (click third)
+        </button>
+      </div>
     </div>
 
-    <button type="outlined" id="get-selected-markup"
-  
-    >Get Selected Items
-    </button
-  >
-  <button type="outlined" id="get-checked-markup"
-    >Get Checked Items</button
-  >
-  <button type="outlined" id="open-goat-b">Open Goat B</button>
-  <button type="outlined" id="close-goat-b">Close Goat B</button>
-  <button type="outlined" id="toggle-goat-b">Toggle Goat B</button>
+    <script>
+      const markUpTree = document.getElementById("markup-tree");
 
-  <script>
-    const markUpTree = document.getElementById("markup-tree");
-
-    /*selectionChanged event*/
-    markUpTree.addEventListener("selectionChanged", (e) => {
-      console.log(e.detail);
-    });
-
-    /*checkboxToggled event*/
-    markUpTree.addEventListener("checkboxToggled", (e) => {
-      console.log(e.detail);
-    });
-
-    /*loadLazyChildren event*/
-    markUpTree.addEventListener("loadLazyChildren", (e) => {
-      const itemId = e.detail.id;
-      setTimeout(() => {
-        appendLazyLoadItems(itemId);
-      }, 1000);
-    });
-
-    /*Selected items*/
-    const getSelectedMarkup = document.getElementById(
-      "get-selected-markup"
-    );
-    getSelectedMarkup.addEventListener("click", () => {
-      const selectedPromise = markUpTree.getSelectedItems();
-      selectedPromise.then(function (value) {
-        console.log(value);
+      /*selectionChanged event*/
+      markUpTree.addEventListener("selectionChanged", e => {
+        console.log(e.detail);
       });
-    });
 
-    getSelectedMarkup.addEventListener("click", () => {
-      const selectedPromise = markUpTree.getSelectedItems();
-      selectedPromise.then(function (value) {
-        console.log(value);
+      /*checkboxToggled event*/
+      markUpTree.addEventListener("checkboxToggled", e => {
+        console.log(e.detail);
       });
-    });
 
-    /*Checked items*/
-    const getCheckedMarkup = document.getElementById("get-checked-markup");
-    getCheckedMarkup.addEventListener("click", () => {
-      const checkedPromise = markUpTree.getCheckedItems();
-      checkedPromise.then(function (value) {
-        console.log(value);
+      /*loadLazyChildren event*/
+      markUpTree.addEventListener("loadLazyChildren", e => {
+        const itemId = e.detail.id;
+        setTimeout(() => {
+          appendLazyLoadItems(itemId);
+        }, 1000);
       });
-    });
-    /*Open Goat B*/
-    const openGoatB = document.getElementById("open-goat-b");
-    openGoatB.addEventListener("click", () => {
-      markUpTree.toggleItems(["goat-b"], true);
-    });
-    /*Close Goat B*/
-    const closeGoatB = document.getElementById("close-goat-b");
-    closeGoatB.addEventListener("click", () => {
-      markUpTree.toggleItems(["goat-b"], false);
-    });
-    /*Toggle Goat B*/
-    const toggleGoatB = document.getElementById("toggle-goat-b");
-    toggleGoatB.addEventListener("click", () => {
-      markUpTree.toggleItems(["goat-b"]);
-    });
 
-    const appendLazyLoadItems = (itemId) => {
-      const item = document.querySelector(`gxg-tree-item[id='${itemId}']`);
-      const innerText = item.innerText;
-      const lazyLoadedItems = `
-        ${innerText}
-        <gxg-tree slot="tree">
-          <gxg-tree-item icon="general/generator" leaf id="goat-c2.1">
-            Goat C2.1
-          </gxg-tree-item>
-          <gxg-tree-item icon="general/patterns" leaf id="goat-c2.2">
-            Goat C2.2
-          </gxg-tree-item>
-          <gxg-tree-item icon="general/patterns" leaf id="goat-c2.3">
-            Goat C2.3
+      /*Selected items*/
+      const getSelectedMarkup = document.getElementById("get-selected-markup");
+      getSelectedMarkup.addEventListener("click", () => {
+        const selectedPromise = markUpTree.getSelectedItems();
+        selectedPromise.then(function (value) {
+          console.log(value);
+        });
+      });
+
+      getSelectedMarkup.addEventListener("click", () => {
+        const selectedPromise = markUpTree.getSelectedItems();
+        selectedPromise.then(function (value) {
+          console.log(value);
+        });
+      });
+
+      /*Checked items*/
+      const getCheckedMarkup = document.getElementById("get-checked-markup");
+      getCheckedMarkup.addEventListener("click", () => {
+        const checkedPromise = markUpTree.getCheckedItems();
+        checkedPromise.then(function (value) {
+          console.log(value);
+        });
+      });
+      /*Open Goat B*/
+      const openGoatB = document.getElementById("open-goat-b");
+      openGoatB.addEventListener("click", () => {
+        markUpTree.toggleItems(["goat-b"], true);
+      });
+      /*Close Goat B*/
+      const closeGoatB = document.getElementById("close-goat-b");
+      closeGoatB.addEventListener("click", () => {
+        markUpTree.toggleItems(["goat-b"], false);
+      });
+      /*Toggle Goat B*/
+      const toggleGoatB = document.getElementById("toggle-goat-b");
+      toggleGoatB.addEventListener("click", () => {
+        markUpTree.toggleItems(["goat-b"]);
+      });
+
+      const appendLazyLoadItems = itemId => {
+        const item = document.querySelector(`gxg-tree-item[id='${itemId}']`);
+        const innerText = item.innerText;
+        const lazyLoadedItems = `
+      ${innerText}
+      <gxg-tree slot="tree">
+        <gxg-tree-item icon="general/generator" leaf id="goat-c2.1">
+          Goat C2.1
         </gxg-tree-item>
-      `;
-      item.innerHTML = lazyLoadedItems;
-    };
-  </script>
-</div>
+        <gxg-tree-item icon="general/patterns" leaf id="goat-c2.2">
+          Goat C2.2
+        </gxg-tree-item>
+        <gxg-tree-item icon="general/patterns" leaf id="goat-c2.3">
+          Goat C2.3
+      </gxg-tree-item>
+    `;
+        item.innerHTML = lazyLoadedItems;
+      };
+    </script>
 
-<br />
-<!-- Model Tree -->
-
-<hr />
-<h2>Model Tree</h2>
-
-<div class="buttons-wrapper">
-  <button id="load-model-btn">Load model (click first)</button>
-  <button id="update-model-btn">Update model (click second)</button>
-  <button id="update-model-again-btn">
-    Update model again (click third)
-  </button>
-</div>
-
-<script>
-  const modelTiny = [
-    {
-      id: "number-1",
-      caption: "number-1 label",
-      leftImgSrc: "knowledge-base.svg",
-    },
-    {
-      id: "number-2",
-      caption: "number-2",
-      leftImgSrc: "./datastore.svg",
-      items: [
+    <script>
+      const modelTiny = [
         {
-          id: "number-2.1",
-          caption: "number-2.1",
-          leftImgSrc: "/build/ch-icon-assets/csharp.svg",
+          id: "number-1",
+          caption: "number-1 label",
+          leftImgSrc: "knowledge-base.svg"
         },
-      ],
-    },
-    {
-      id: "number-3",
-      caption: "number-3",
-      leftImgSrc: "/build/ch-icon-assets/patterns.svg",
-      items: [
         {
-          id: "number-3.1",
-          caption: "number-3.1",
-          leftImgSrc: "/build/ch-icon-assets/java.svg",
-        },
-      ],
-    },
-  ];
-  const modelTinyUpdated = [
-    {
-      id: "number-1",
-      caption: "number-1",
-      leftImgSrc: "./build/ch-icon-assets/csharp.svg.svg",
-    },
-    {
-      id: "number-2",
-      caption: "number-2",
-      leftImgSrc: "./datastore.svg",
-      items: [
-        {
-          id: "number-2.1",
-          caption: "number-2.1",
-          leftImgSrc: "./build/ch-icon-assets/patterns.svg.svg",
+          id: "number-2",
+          caption: "number-2",
+          leftImgSrc: "./datastore.svg",
           items: [
             {
-              id: "number-2.1.1",
-              caption: "number-2.1.1",
-              leftImgSrc: "/build/ch-icon-assets/java.svg",
-            },
-          ],
+              id: "number-2.1",
+              caption: "number-2.1",
+              leftImgSrc: "/build/ch-icon-assets/csharp.svg"
+            }
+          ]
         },
-      ],
-    },
-    {
-      id: "number-3",
-      caption: "number-3",
-      leftImgSrc: "./datastore.svg",
-      items: [
         {
-          id: "number-3.1",
-          caption: "number-3.1",
-          leftImgSrc: "./datastore.svg",
-        },
-      ],
-    },
-  ];
-  
-  const modelTinyUpdatedAgain = [
-    {
-      id: "number-a",
-      caption: "number-a",
-      leaf: true,
-      leftImgSrc: "./assets/apple.svg",
-    },
-    {
-      id: "number-b",
-      caption: "number-b",
-      leaf: false,
-      leftImgSrc: "/build/ch-icon-assets/csharp.svg",
-      items: [
-        {
-          id: "number-2.1",
-          caption: "number-2.1",
-          leaf: false,
+          id: "number-3",
+          caption: "number-3",
           leftImgSrc: "/build/ch-icon-assets/patterns.svg",
           items: [
             {
-              id: "number-2.1.1",
-              caption: "number-2.1.1",
-              leaf: false,
-              leftImgSrc: "/build/ch-icon-assets/java.svg",
-              items: [
-                {
-                  id: "number-2.1.1.1",
-                  caption: "number-2.1.1.1",
-                  leaf: true,
-                  leftImgSrc: "/build/tree-item-assets/download.svg",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: "number-3",
-      caption: "number-3",
-      leaf: true,
-      leftImgSrc: "knowledge-base.svg",
-    },
-  ];
-
-  const model = [
-    {
-      id: "number-1",
-      caption: "number-1 label",
-      leaf: false,
-      leftImgSrc: "./datastore.svg",
-      items: [
+              id: "number-3.1",
+              caption: "number-3.1",
+              leftImgSrc: "/build/ch-icon-assets/java.svg"
+            }
+          ]
+        }
+      ];
+      const modelTinyUpdated = [
         {
-          id: "number-1-1",
-          caption: "number-1-1",
-          leaf: false,
-          leftImgSrc: "knowledge-base.svg",
+          id: "number-1",
+          caption: "number-1",
+          leftImgSrc: "./build/ch-icon-assets/csharp.svg.svg"
+        },
+        {
+          id: "number-2",
+          caption: "number-2",
+          leftImgSrc: "./datastore.svg",
           items: [
             {
-              id: "number-1-1-1",
-              caption: "number-1-1-1",
-              leaf: true,
-              leftImgSrc: "knowledge-base.svg",
-            },
-            {
-              id: "number-1-1-2",
-              caption: "number-1-1-2",
-              leaf: false,
-              leftImgSrc: "knowledge-base.svg",
+              id: "number-2.1",
+              caption: "number-2.1",
+              leftImgSrc: "./build/ch-icon-assets/patterns.svg.svg",
               items: [
                 {
-                  id: "number-1-1-2-1",
-                  caption: "number-1-1-2-1 (lazy)",
+                  id: "number-2.1.1",
+                  caption: "number-2.1.1",
+                  leftImgSrc: "/build/ch-icon-assets/java.svg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "number-3",
+          caption: "number-3",
+          leftImgSrc: "./datastore.svg",
+          items: [
+            {
+              id: "number-3.1",
+              caption: "number-3.1",
+              leftImgSrc: "./datastore.svg"
+            }
+          ]
+        }
+      ];
+
+      const modelTinyUpdatedAgain = [
+        {
+          id: "number-a",
+          caption: "number-a",
+          leaf: true,
+          leftImgSrc: "./assets/apple.svg"
+        },
+        {
+          id: "number-b",
+          caption: "number-b",
+          leaf: false,
+          leftImgSrc: "/build/ch-icon-assets/csharp.svg",
+          items: [
+            {
+              id: "number-2.1",
+              caption: "number-2.1",
+              leaf: false,
+              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+              items: [
+                {
+                  id: "number-2.1.1",
+                  caption: "number-2.1.1",
                   leaf: false,
-                  leftImgSrc: "knowledge-base.svg",
-                  lazy: true,
-                  checkbox: true,
-                  toggleCheckboxes: true
-                },
-                {
-                  id: "number-1-1-2-2",
-                  caption: "number-1-1-2-2",
-                  leaf: true,
-                  leftImgSrc: "knowledge-base.svg",
-                },
-              ],
-            },
-          ],
+                  leftImgSrc: "/build/ch-icon-assets/java.svg",
+                  items: [
+                    {
+                      id: "number-2.1.1.1",
+                      caption: "number-2.1.1.1",
+                      leaf: true,
+                      leftImgSrc: "/build/tree-item-assets/download.svg"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
         },
         {
-          id: "number-1-2",
-          caption: "number-1-2",
+          id: "number-3",
+          caption: "number-3",
           leaf: true,
-          leftImgSrc: "knowledge-base.svg",
-        },
-      ],
-    },
-    {
-      id: "number-2",
-      caption: "number-2",
-      leaf: false,
-      leftImgSrc: "datastore.svg",
-      items: [
-        {
-          id: "number-2-1",
-          caption: "number-2-1",
-          leaf: true,
-          leftImgSrc: "knowledge-base.svg",
-        },
-        {
-          id: "number-2-2",
-          caption: "number-2-2",
-          leaf: true,
-          leftImgSrc: "knowledge-base.svg",
-        },
-      ],
-    },
-  ];
+          leftImgSrc: "knowledge-base.svg"
+        }
+      ];
 
-
-  const updatedModel = [
-    {
-      id: "number-1",
-      caption: "number-1",
-      leaf: false,
-      leftImgSrc: "knowledge-base.svg",
-      items: [
+      const model = [
         {
-          id: "number-1-1",
-          caption: "number-1-1",
+          id: "number-1",
+          caption: "number-1 label",
           leaf: false,
-          leftImgSrc: "knowledge-base.svg",
+          leftImgSrc: "./datastore.svg",
           items: [
             {
-              id: "number-1-1-1",
-              caption: "number-1-1-1",
-              leaf: true,
-              leftImgSrc: "knowledge-base.svg",
-            },
-            {
-              id: "number-1-1-2",
-              caption: "number-1-1-2",
+              id: "number-1-1",
+              caption: "number-1-1",
               leaf: false,
               leftImgSrc: "knowledge-base.svg",
               items: [
                 {
-                  id: "number-1-1-2-1",
-                  caption: "number-1-1-2-1",
+                  id: "number-1-1-1",
+                  caption: "number-1-1-1",
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg"
+                },
+                {
+                  id: "number-1-1-2",
+                  caption: "number-1-1-2",
                   leaf: false,
                   leftImgSrc: "knowledge-base.svg",
                   items: [
                     {
-                      id: "new-item-added-1",
-                      caption: "new-item-added-1",
-                      leaf: true,
+                      id: "number-1-1-2-1",
+                      caption: "number-1-1-2-1 (lazy)",
+                      leaf: false,
                       leftImgSrc: "knowledge-base.svg",
+                      lazy: true,
+                      checkbox: true,
+                      toggleCheckboxes: true
                     },
                     {
-                      id: "new-item-added-2",
-                      caption: "new-item-added-2",
+                      id: "number-1-1-2-2",
+                      caption: "number-1-1-2-2",
                       leaf: true,
-                      leftImgSrc: "knowledge-base.svg",
-                    },
-                  ],
+                      leftImgSrc: "knowledge-base.svg"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              id: "number-1-2",
+              caption: "number-1-2",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg"
+            }
+          ]
+        },
+        {
+          id: "number-2",
+          caption: "number-2",
+          leaf: false,
+          leftImgSrc: "datastore.svg",
+          items: [
+            {
+              id: "number-2-1",
+              caption: "number-2-1",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg"
+            },
+            {
+              id: "number-2-2",
+              caption: "number-2-2",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg"
+            }
+          ]
+        }
+      ];
+
+      const updatedModel = [
+        {
+          id: "number-1",
+          caption: "number-1",
+          leaf: false,
+          leftImgSrc: "knowledge-base.svg",
+          items: [
+            {
+              id: "number-1-1",
+              caption: "number-1-1",
+              leaf: false,
+              leftImgSrc: "knowledge-base.svg",
+              items: [
+                {
+                  id: "number-1-1-1",
+                  caption: "number-1-1-1",
+                  leaf: true,
+                  leftImgSrc: "knowledge-base.svg"
                 },
                 {
-                  id: "number-1-1-2-2",
-                  caption: "number-1-1-2-2",
-                  leaf: true,
+                  id: "number-1-1-2",
+                  caption: "number-1-1-2",
+                  leaf: false,
                   leftImgSrc: "knowledge-base.svg",
-                },
-              ],
+                  items: [
+                    {
+                      id: "number-1-1-2-1",
+                      caption: "number-1-1-2-1",
+                      leaf: false,
+                      leftImgSrc: "knowledge-base.svg",
+                      items: [
+                        {
+                          id: "new-item-added-1",
+                          caption: "new-item-added-1",
+                          leaf: true,
+                          leftImgSrc: "knowledge-base.svg"
+                        },
+                        {
+                          id: "new-item-added-2",
+                          caption: "new-item-added-2",
+                          leaf: true,
+                          leftImgSrc: "knowledge-base.svg"
+                        }
+                      ]
+                    },
+                    {
+                      id: "number-1-1-2-2",
+                      caption: "number-1-1-2-2",
+                      leaf: true,
+                      leftImgSrc: "knowledge-base.svg"
+                    }
+                  ]
+                }
+              ]
             },
-          ],
+            {
+              id: "number-1-2",
+              caption: "number-1-2",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg"
+            }
+          ]
         },
         {
-          id: "number-1-2",
-          caption: "number-1-2",
-          leaf: true,
-          leftImgSrc: "knowledge-base.svg",
-        },
-      ],
-    },
-    {
-      id: "number-2",
-      caption: "number-2",
-      leaf: false,
-      leftImgSrc: "datastore",
-      items: [
+          id: "number-2",
+          caption: "number-2",
+          leaf: false,
+          leftImgSrc: "datastore",
+          items: [
+            {
+              id: "number-2-1",
+              caption: "number-2-1",
+              leaf: true,
+              leftImgSrc: "knowledge-base.svg"
+            },
+            {
+              id: "number-2-2",
+              caption: "number-2-2",
+              leaf: true,
+              leftImgSrc: "patterns.svg"
+            },
+            {
+              id: "number-2-3",
+              caption: "number-2-3",
+              leaf: true,
+              leftImgSrc: "patterns.svg"
+            }
+          ]
+        }
+      ];
+      const modelLazyUpdated1 = [
         {
-          id: "number-2-1",
-          caption: "number-2-1",
+          id: "lazy-loaded-1",
+          caption: "Lazy Loaded 1",
           leaf: true,
-          leftImgSrc: "knowledge-base.svg",
+          leftImgSrc: "patterns.svg",
+          checkbox: true
         },
+        {
+          id: "lazy-loaded-2",
+          caption: "Lazy Loaded 2 (lazy)",
+          leaf: false,
+          lazy: true,
+          leftImgSrc: "patterns.svg",
+          checkbox: true,
+          toggleCheckboxes: true
+        }
+      ];
+
+      const modelLazyUpdated2 = [
+        {
+          id: "lazy-loaded-3",
+          caption: "Lazy Loaded 3",
+          leaf: true,
+          leftImgSrc: "patterns.svg",
+          checkbox: true
+        },
+        {
+          id: "lazy-loaded-4",
+          caption: "Lazy Loaded 4",
+          leaf: true,
+          leftImgSrc: "patterns.svg",
+          checkbox: true
+        }
+      ];
+    </script>
+    <br />
+
+    <script>
+      const modelMinimal = [
         {
           id: "number-2-2",
           caption: "number-2-2",
-          leaf: true,
-          leftImgSrc: "patterns.svg",
-        },
-        {
-          id: "number-2-3",
-          caption: "number-2-3",
-          leaf: true,
-          leftImgSrc: "patterns.svg",
-        },
-      ],
-    },
-  ];
-  const modelLazyUpdated1 = [
-    {
-      id: "lazy-loaded-1",
-      caption: "Lazy Loaded 1",
-      leaf: true,
-      leftImgSrc: "patterns.svg",
-      checkbox: true
-    },
-    {
-      id: "lazy-loaded-2",
-      caption: "Lazy Loaded 2 (lazy)",
-      leaf: false,
-      lazy: true,
-      leftImgSrc: "patterns.svg",
-      checkbox: true,
-      toggleCheckboxes: true
-    },
-  ];
+          leftImgSrc: "knowledge-base.svg"
+        }
+      ];
 
-  const modelLazyUpdated2 = [
-    {
-      id: "lazy-loaded-3",
-      caption: "Lazy Loaded 3",
-      leaf: true,
-      leftImgSrc: "patterns.svg",
-      checkbox: true
-    },
-    {
-      id: "lazy-loaded-4",
-      caption: "Lazy Loaded 4",
-      leaf: true,
-      leftImgSrc: "patterns.svg",
-      checkbox: true
-    },
-  ];
-  
-</script>
-<br />
+      // WA to remove extra handlers in appload event
+      let appLoadFinish = false;
 
-<script>
-  const modelMinimal = [
-    {
-      id: "number-2-2",
-      caption: "number-2-2",
-      leftImgSrc: "knowledge-base.svg",
-    },
-  ];
+      window.addEventListener("appload", () => {
+        if (appLoadFinish) {
+          return;
+        }
 
-  // WA to remove extra handlers in appload event
-  let appLoadFinish = false;
+        appLoadFinish = true;
 
-  window.addEventListener("appload", () => {
-    if (appLoadFinish) {
-      return;
-    }
+        const testTreeX = document.querySelector("ch-test-tree-x");
 
-    appLoadFinish = true;
+        testTreeX.treeModel = {
+          items: model
+        };
 
-    const testTreeX = document.querySelector("ch-test-tree-x");
+        const loadModelBtn = document.getElementById("load-model-btn");
+        loadModelBtn.addEventListener("click", () => {
+          testTreeX.treeModel = {
+            items: model
+          };
+        });
 
-    testTreeX.treeModel = {
-      items: model
-    };
+        const updateModelBtn = document.getElementById("update-model-btn");
+        updateModelBtn.addEventListener("click", () => {
+          testTreeX.treeModel = {
+            items: updatedModel
+          };
+        });
 
-    const loadModelBtn = document.getElementById("load-model-btn");
-    loadModelBtn.addEventListener("click", () => {
-      testTreeX.treeModel = {
-        items: model
-      };
-    });
+        const updateModelAgainBtn = document.getElementById(
+          "update-model-again-btn"
+        );
+        updateModelAgainBtn.addEventListener("click", () => {
+          testTreeX.treeModel = {
+            items: modelTinyUpdatedAgain
+          };
+        });
 
-    const updateModelBtn = document.getElementById("update-model-btn");
-    updateModelBtn.addEventListener("click", () => {
-      testTreeX.treeModel = {
-        items: updatedModel
-      };
-    });
+        /*Lazy Load Promise*/
+        testTreeX.lazyLoadTreeItemsCallback = modelId =>
+          new Promise((resolve, reject) => {
+            const lazyModel =
+              modelId === "lazy-loaded-2"
+                ? modelLazyUpdated2
+                : modelLazyUpdated1;
 
-    const updateModelAgainBtn = document.getElementById(
-      "update-model-again-btn"
-    );
-    updateModelAgainBtn.addEventListener("click", () => {
-      testTreeX.treeModel = {
-        items: modelTinyUpdatedAgain
-      };
-    });
+            setTimeout(() => {
+              resolve(lazyModel);
+            }, 1000); // Resolves or rejects after 1 second
+          });
 
-    /*Lazy Load Promise*/
-    testTreeX.lazyLoadTreeItemsCallback = (modelId) => new Promise((resolve, reject) => {
-      const lazyModel = modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
-      
-      setTimeout(() => {
-        resolve(lazyModel);
-      }, 1000); // Resolves or rejects after 1 second
-    });
-
-    testTreeX.dropItemsCallback = () => new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(true);
-      }, 25); // Resolves after 25 ms
-    });
-  })
-</script>
+        testTreeX.dropItemsCallback = () =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve(true);
+            }, 25); // Resolves after 25 ms
+          });
+      });
+    </script>
 
     <script src="./assets/common.js"></script>
   </body>

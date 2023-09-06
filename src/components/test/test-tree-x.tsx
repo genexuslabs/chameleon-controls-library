@@ -274,16 +274,18 @@ export class ChTestTreeX {
   render() {
     return (
       <Host>
-        <ch-tree-x
-          multiSelection={this.multiSelection}
-          showLines={this.showLines}
-          waitDropProcessing={this.waitDropProcessing}
-          onSelectedItemsChange={this.handleSelectedItemsChange}
-        >
-          <ch-tree-x-list>
-            {this.treeModel.items.map(this.renderSubModel)}
-          </ch-tree-x-list>
-        </ch-tree-x>
+        <div class="test-tree-x-scroll">
+          <ch-tree-x
+            multiSelection={this.multiSelection}
+            showLines={this.showLines}
+            waitDropProcessing={this.waitDropProcessing}
+            onSelectedItemsChange={this.handleSelectedItemsChange}
+          >
+            <ch-tree-x-list>
+              {this.treeModel.items.map(this.renderSubModel)}
+            </ch-tree-x-list>
+          </ch-tree-x>
+        </div>
 
         <div class="tree-buttons">
           <button type="button" onClick={this.closeTreeNodeHandler}>

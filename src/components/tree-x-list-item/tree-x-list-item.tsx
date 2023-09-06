@@ -15,6 +15,7 @@ import {
 import {
   TreeXItemDragStartInfo,
   TreeXItemDropInfo,
+  TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
 import { mouseEventModifierKey } from "../common/helpers";
@@ -251,6 +252,11 @@ export class ChTreeXListItem {
   @Event() loadLazyContent: EventEmitter<string>;
 
   /**
+   * Fired when the item is asking to modify its caption.
+   */
+  @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
+
+  /**
    * Fired when the control is selected.
    */
   @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
@@ -430,7 +436,8 @@ export class ChTreeXListItem {
     }
 
     event.preventDefault();
-    this.removeEditMode(true)();
+    const commitEdition = event.code === ENTER_KEY;
+    this.removeEditMode(true, commitEdition)();
   };
 
   private removeEditModeOnClick = (event: PointerEvent) => {
@@ -441,25 +448,34 @@ export class ChTreeXListItem {
     }
   };
 
-  private removeEditMode = (shouldFocusHeader: boolean) => () => {
-    if (shouldFocusHeader) {
-      this.buttonRef.focus();
-    }
+  private removeEditMode =
+    (shouldFocusHeader: boolean, commitEdition = false) =>
+    () => {
+      // When pressing the enter key in the input, the removeEditMode event is
+      // triggered twice (due to the buttonRef.focus()), so we need to check
+      // if the edit mode was disabled
+      if (!this.editing) {
+        return;
+      }
+      this.editing = false;
 
-    // When pressing the enter key in the input, the removeEditMode event is
-    // triggered twice, so we need to check if the edit mode was disabled
-    if (!this.editing) {
-      return;
-    }
+      document.body.removeEventListener("click", this.removeEditModeOnClick, {
+        capture: true
+      });
 
-    console.log("REMOVE EDIT MODE . . . . . . . . . . . .");
+      const newCaption = this.inputRef.value;
 
-    this.caption = this.inputRef.value;
-    this.editing = false;
-    document.body.removeEventListener("click", this.removeEditModeOnClick, {
-      capture: true
-    });
-  };
+      if (commitEdition && newCaption.trim() !== "") {
+        this.modifyCaption.emit({
+          id: this.el.id,
+          caption: newCaption
+        });
+      }
+
+      if (shouldFocusHeader) {
+        this.buttonRef.focus();
+      }
+    };
 
   private toggleExpand = (event: MouseEvent) => {
     if (!this.leaf) {

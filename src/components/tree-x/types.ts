@@ -43,6 +43,11 @@ export type TreeXListItemSelectedInfo = {
   selected: boolean;
 };
 
+export type TreeXListItemNewCaption = {
+  id: string;
+  caption: string;
+};
+
 export type TreeXItemDragStartInfo = {
   elem: HTMLChTreeXListItemElement;
   dataTransfer: DataTransfer;

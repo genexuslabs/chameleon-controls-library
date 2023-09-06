@@ -815,6 +815,10 @@ export namespace Components {
          */
         "debounce": number;
         /**
+          * This is the input value. it is what the user sees on the input.
+         */
+        "inputValue": string;
+        /**
           * The label
          */
         "label": string;
@@ -829,19 +833,19 @@ export namespace Components {
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
-        "showHeader": false;
+        "showHeader": true;
         /**
           * Whether or not to display the label
          */
         "showLabel": boolean;
         /**
-          * The suggest title (optional)
+          * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
          */
         "suggestTitle": string;
         /**
-          * The input value
+          * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
          */
-        "value": string;
+        "suggestValue": string;
     }
     interface ChSuggestList {
         /**
@@ -2364,6 +2368,10 @@ declare namespace LocalJSX {
          */
         "debounce"?: number;
         /**
+          * This is the input value. it is what the user sees on the input.
+         */
+        "inputValue"?: string;
+        /**
           * The label
          */
         "label"?: string;
@@ -2374,23 +2382,23 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onInputValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
-        "showHeader"?: false;
+        "showHeader"?: true;
         /**
           * Whether or not to display the label
          */
         "showLabel"?: boolean;
         /**
-          * The suggest title (optional)
+          * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
          */
         "suggestTitle"?: string;
         /**
-          * The input value
+          * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
          */
-        "value"?: string;
+        "suggestValue"?: string;
     }
     interface ChSuggestList {
         /**

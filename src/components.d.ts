@@ -807,6 +807,10 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
+          * This is the suggest caption. Is what the user sees on the input.
+         */
+        "caption": string;
+        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd": false;
@@ -814,10 +818,6 @@ export namespace Components {
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce": number;
-        /**
-          * This is the input value. it is what the user sees on the input.
-         */
-        "inputValue": string;
         /**
           * The label
          */
@@ -833,7 +833,7 @@ export namespace Components {
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
-        "showHeader": true;
+        "showHeader": false;
         /**
           * Whether or not to display the label
          */
@@ -843,9 +843,9 @@ export namespace Components {
          */
         "suggestTitle": string;
         /**
-          * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
+          * This is the suggest value.
          */
-        "suggestValue": string;
+        "value": string;
     }
     interface ChSuggestList {
         /**
@@ -2360,6 +2360,10 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
+          * This is the suggest caption. Is what the user sees on the input.
+         */
+        "caption"?: string;
+        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd"?: false;
@@ -2367,10 +2371,6 @@ declare namespace LocalJSX {
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
         "debounce"?: number;
-        /**
-          * This is the input value. it is what the user sees on the input.
-         */
-        "inputValue"?: string;
         /**
           * The label
          */
@@ -2382,11 +2382,11 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
-        "showHeader"?: true;
+        "showHeader"?: false;
         /**
           * Whether or not to display the label
          */
@@ -2396,9 +2396,9 @@ declare namespace LocalJSX {
          */
         "suggestTitle"?: string;
         /**
-          * This is the suggest actual value. When the user selects an item from the list, the selected list value is assigned to the suggest value.
+          * This is the suggest value.
          */
-        "suggestValue"?: string;
+        "value"?: string;
     }
     interface ChSuggestList {
         /**

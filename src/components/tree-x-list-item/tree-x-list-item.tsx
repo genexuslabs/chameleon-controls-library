@@ -814,7 +814,7 @@ export class ChTreeXListItem {
           )}
         </div>
 
-        {!this.leaf && (
+        {!this.leaf && !this.lazyLoad && (
           <div
             aria-busy={this.downloading.toString()}
             aria-live={this.downloading ? "polite" : null}

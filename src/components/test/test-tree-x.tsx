@@ -264,11 +264,13 @@ export class ChTestTreeX {
       showExpandableButton={treeSubModel.showExpandableButton}
       toggleCheckboxes={treeSubModel.toggleCheckboxes}
     >
-      {!!treeSubModel.items && (
-        <ch-tree-x-list slot="tree">
-          {treeSubModel.items.map(this.renderSubModel)}
-        </ch-tree-x-list>
-      )}
+      {!treeSubModel.leaf &&
+        treeSubModel.items != null &&
+        treeSubModel.items.length !== 0 && (
+          <ch-tree-x-list slot="tree">
+            {treeSubModel.items.map(this.renderSubModel)}
+          </ch-tree-x-list>
+        )}
     </ch-tree-x-list-item>
   );
 

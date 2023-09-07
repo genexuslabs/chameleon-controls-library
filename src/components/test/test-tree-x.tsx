@@ -1,4 +1,13 @@
-import { Component, h, Prop, Listen, Host, Watch, State } from "@stencil/core";
+import {
+  Component,
+  h,
+  Prop,
+  Listen,
+  Host,
+  Watch,
+  State,
+  forceUpdate
+} from "@stencil/core";
 import {
   TreeXItemDropInfo,
   TreeXItemModel,
@@ -126,8 +135,8 @@ export class ChTestTreeX {
       // Open the item to visualize the new subitems
       newParentItem.expanded = true;
 
-      // Force re-render
-      this.render();
+      // There is no need to force and update, since the waitDropProcessing
+      // prop was modified
     });
   }
 
@@ -153,7 +162,7 @@ export class ChTestTreeX {
         this.flattenSubModel(itemToLazyLoadContent);
 
         // Force re-render
-        this.treeModel = { ...this.treeModel };
+        forceUpdate(this);
       });
     }
   }

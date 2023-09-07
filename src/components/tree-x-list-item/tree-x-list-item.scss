@@ -48,10 +48,6 @@ $own-offset: calc(
   min-height: calc(1em + 6px);
   padding-inline-start: var(--padding-inline-start);
 
-  &--selected {
-    background-color: #ddd;
-  }
-
   &--disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -222,11 +218,6 @@ $own-offset: calc(
   align-items: center;
   height: 100%;
   flex: 1;
-
-  :host(:not(.ch-tree-x-list-item--editing)) &:focus-visible {
-    outline: 1px solid currentColor;
-    z-index: 1; // Place the outline above the content
-  }
 }
 
 .readonly-mode {

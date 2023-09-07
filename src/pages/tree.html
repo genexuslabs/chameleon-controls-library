@@ -89,7 +89,7 @@
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="general/knowledge-base"
+                      left-img-src="/build/ch-icon-assets/csharp.svg"
                       caption="Duck"
                       leaf
                     >
@@ -102,19 +102,19 @@
                 >
                   <ch-tree-x-list checkbox slot="tree">
                     <ch-tree-x-list-item
-                      left-img-src="general/knowledge-base"
+                      left-img-src="objects/module"
                       caption="Beef"
                       leaf
                     >
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
-                      left-img-src="general/knowledge-base"
+                      left-img-src="/build/ch-icon-assets/csharp.svg"
                       caption="Lamb and mutton"
                       leaf
                     >
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
-                      left-img-src="general/knowledge-base"
+                      left-img-src="/build/tree-item-assets/download.svg"
                       caption="Pork"
                       leaf
                     >
@@ -571,7 +571,7 @@
           id: "number-2",
           caption: "number-2",
           leaf: false,
-          leftImgSrc: "datastore.svg",
+          leftImgSrc: "./datastore.svg",
           items: [
             {
               id: "number-2-1",
@@ -623,14 +623,119 @@
                         {
                           id: "new-item-added-1",
                           caption: "new-item-added-1",
+                          disabled: true,
                           leaf: true,
                           leftImgSrc: "knowledge-base.svg"
                         },
                         {
                           id: "new-item-added-2",
                           caption: "new-item-added-2",
+                          disabled: false,
                           leaf: true,
                           leftImgSrc: "knowledge-base.svg"
+                        },
+                        {
+                          id: "new-item-added-3",
+                          caption: "new-item-added-3",
+                          disabled: true,
+                          leaf: true,
+                          leftImgSrc: "knowledge-base.svg"
+                        },
+                        {
+                          id: "new-item-added-4",
+                          caption: "new-item-added-4",
+                          disabled: false,
+                          expanded: true,
+                          leaf: false,
+                          leftImgSrc: "knowledge-base.svg",
+                          items: [
+                            {
+                              id: "new-item-added-4-1",
+                              caption: "new-item-added-4-1",
+                              disabled: false,
+                              leaf: true,
+                              leftImgSrc: "knowledge-base.svg"
+                            },
+                            {
+                              id: "new-item-added-4-2",
+                              caption: "new-item-added-4-2",
+                              disabled: true,
+                              expanded: true,
+                              leaf: false,
+                              leftImgSrc: "knowledge-base.svg",
+                              items: [
+                                {
+                                  id: "new-item-added-4-2-1",
+                                  caption: "new-item-added-4-2-1",
+                                  disabled: true,
+                                  expanded: true,
+                                  leaf: false,
+                                  leftImgSrc: "knowledge-base.svg",
+                                  items: [
+                                    {
+                                      id: "new-item-added-4-2-1-1",
+                                      caption: "new-item-added-4-2-1-1",
+                                      disabled: false,
+                                      leaf: true,
+                                      leftImgSrc: "knowledge-base.svg"
+                                    },
+                                    {
+                                      id: "new-item-added-4-2-1-2",
+                                      caption: "new-item-added-4-2-1-2",
+                                      disabled: false,
+                                      leaf: true,
+                                      leftImgSrc: "knowledge-base.svg"
+                                    },
+                                    {
+                                      id: "new-item-added-4-2-1-3",
+                                      caption: "new-item-added-4-2-1-3",
+                                      disabled: true,
+                                      leaf: true,
+                                      leftImgSrc: "knowledge-base.svg"
+                                    },
+                                    {
+                                      id: "new-item-added-4-2-1-4",
+                                      caption: "new-item-added-4-2-1-4",
+                                      disabled: false,
+                                      leaf: true,
+                                      leftImgSrc: "knowledge-base.svg"
+                                    }
+                                  ]
+                                },
+                                {
+                                  id: "new-item-added-4-2-2",
+                                  caption: "new-item-added-4-2-2",
+                                  disabled: true,
+                                  leaf: true,
+                                  leftImgSrc: "knowledge-base.svg"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          id: "new-item-added-5",
+                          caption: "new-item-added-5",
+                          disabled: true,
+                          expanded: true,
+                          leaf: false,
+                          leftImgSrc: "knowledge-base.svg",
+                          items: [
+                            {
+                              id: "new-item-added-5-1",
+                              caption: "new-item-added-5-1",
+                              disabled: false,
+                              leaf: true,
+                              leftImgSrc: "knowledge-base.svg"
+                            },
+                            {
+                              id: "new-item-added-5-2",
+                              caption: "new-item-added-5-2",
+                              disabled: true,
+                              leaf: true,
+                              leftImgSrc: "knowledge-base.svg"
+                            }
+                          ]
                         }
                       ]
                     },
@@ -656,7 +761,7 @@
           id: "number-2",
           caption: "number-2",
           leaf: false,
-          leftImgSrc: "datastore",
+          leftImgSrc: "./datastore.svg",
           items: [
             {
               id: "number-2-1",
@@ -673,6 +778,36 @@
             {
               id: "number-2-3",
               caption: "number-2-3",
+              disabled: true,
+              leaf: true,
+              leftImgSrc: "patterns.svg"
+            }
+          ]
+        },
+        {
+          id: "number-3",
+          caption: "number-3",
+          leaf: false,
+          disabled: true,
+          expanded: true,
+          leftImgSrc: "./datastore.svg",
+          items: [
+            {
+              id: "number-3-1",
+              caption: "number-3-1",
+              leaf: true,
+              leftImgSrc: "/build/ch-icon-assets/patterns.svg"
+            },
+            {
+              id: "number-3-2",
+              caption: "number-3-2",
+              disabled: true,
+              leaf: true,
+              leftImgSrc: "patterns.svg"
+            },
+            {
+              id: "number-3-3",
+              caption: "number-3-3",
               leaf: true,
               leftImgSrc: "patterns.svg"
             }
@@ -717,8 +852,8 @@
 
       const bigModel = [];
 
-      const FIRST_LEVEL_SIZE = 50;
-      const SECOND_LEVEL_SIZE = 50;
+      const FIRST_LEVEL_SIZE = 400;
+      const SECOND_LEVEL_SIZE = 25;
 
       for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
         bigModel.push({

@@ -1,6 +1,6 @@
 ch-test-tree-x {
   display: grid;
-  grid-template-columns: 300px max-content;
+  grid-template-columns: 350px max-content;
   grid-template-rows: 1fr;
   height: 100%;
 
@@ -32,8 +32,15 @@ ch-test-tree-x {
   outline: 1px solid black;
 }
 
-ch-tree-x-list-item::part(header) {
-  border: 1px solid transparent;
+ch-tree-x-list-item {
+  &::part(header) {
+    border: 1px solid transparent;
+  }
+
+  &:not(.ch-tree-x-list-item--editing)::part(header):focus-visible {
+    outline: 1px solid currentColor;
+    z-index: 1; // Place the outline above the content
+  }
 }
 
 ch-tree-x-list-item[selected]::part(header) {

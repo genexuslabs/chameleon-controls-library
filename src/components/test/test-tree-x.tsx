@@ -132,12 +132,14 @@ export class ChTestTreeX {
   }
 
   @Listen("loadLazyContent")
-  loadLazyChildrenHandler(event: CustomEvent<string>) {
+  loadLazyChildrenHandler(event: ChTreeXListItemCustomEvent<string>) {
     event.stopPropagation();
     const treeItemId = event.detail;
 
     if (this.lazyLoadTreeItemsCallback) {
       const promise = this.lazyLoadTreeItemsCallback(treeItemId);
+      const itemRef = event.target;
+      itemRef.downloading = true;
 
       promise.then(result => {
         const itemToLazyLoadContent =
@@ -146,6 +148,7 @@ export class ChTestTreeX {
 
         itemToLazyLoadContent.items = result;
         itemToLazyLoadContent.lazy = false;
+        itemRef.downloading = false;
 
         this.flattenSubModel(itemToLazyLoadContent);
 

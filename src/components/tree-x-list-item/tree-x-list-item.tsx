@@ -7,7 +7,6 @@ import {
   Listen,
   Method,
   Prop,
-  State,
   Watch,
   h,
   writeTask
@@ -61,8 +60,6 @@ export class ChTreeXListItem {
 
   @Element() el: HTMLChTreeXListItemElement;
 
-  @State() downloading = false;
-
   /**
    * This attributes specifies the caption of the control
    */
@@ -104,6 +101,12 @@ export class ChTreeXListItem {
    * being dragged.
    */
   @Prop({ mutable: true }) dragState: DragState = "none";
+
+  /**
+   * This attribute lets you specify when items are being lazy loaded in the
+   * control.
+   */
+  @Prop() readonly downloading: boolean = false;
 
   /**
    * Set this attribute when the item is in edit mode
@@ -500,7 +503,6 @@ export class ChTreeXListItem {
     }
 
     // Load items
-    this.downloading = true;
     this.lazyLoad = false;
 
     this.loadLazyContent.emit(this.el.id);
@@ -601,10 +603,6 @@ export class ChTreeXListItem {
     const checked = (event.target as HTMLChCheckboxElement).checked;
     this.checked = checked;
     this.checkboxChange.emit(checked);
-  };
-
-  private handleLazyLoadEnd = () => {
-    this.downloading = false;
   };
 
   private renderImg = (cssClass: string, src: string) => (
@@ -823,10 +821,7 @@ export class ChTreeXListItem {
             id={EXPANDABLE_ID}
             class={{ expandable: true, expanded: this.expanded }}
           >
-            <slot
-              name="tree"
-              onSlotchange={!this.leaf ? this.handleLazyLoadEnd : null}
-            />
+            <slot name="tree" />
           </div>
         )}
       </Host>

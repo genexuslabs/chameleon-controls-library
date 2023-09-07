@@ -28,6 +28,7 @@ const resetDragImage = new Image();
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
 const DIRECT_TREE_ITEM_CHILDREN = `:scope>*>${TREE_ITEM_TAG_NAME}`;
+const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
 const LAST_SUB_ITEM = `:scope>*>${TREE_ITEM_TAG_NAME}:last-child`;
 
 // Keys
@@ -54,8 +55,7 @@ export class ChTreeXListItem {
   private ignoreCheckboxChange = false;
 
   // Refs
-  private buttonRef: HTMLButtonElement;
-  private headerRef: HTMLDivElement;
+  private headerRef: HTMLButtonElement;
   private inputRef: HTMLInputElement;
 
   @Element() el: HTMLChTreeXListItemElement;
@@ -94,7 +94,7 @@ export class ChTreeXListItem {
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
    */
-  @Prop() readonly disabled: boolean = false;
+  @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
    * This property lets you define the current state of the item when it's
@@ -292,7 +292,9 @@ export class ChTreeXListItem {
   async focusNextItem(ctrlKeyPressed: boolean) {
     // Focus the first subitem if expanded
     if (!this.leaf && this.expanded) {
-      const subItem = this.el.querySelector(TREE_ITEM_TAG_NAME);
+      const subItem = this.el.querySelector(
+        FIRST_ENABLED_SUB_ITEM
+      ) as HTMLChTreeXListItemElement;
 
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
@@ -314,9 +316,14 @@ export class ChTreeXListItem {
     const nextSiblingItem = this.el
       .nextElementSibling as HTMLChTreeXListItemElement;
 
-    // Focus the next sibling
+    // Focus the next sibling, if exists
     if (nextSiblingItem) {
-      nextSiblingItem.setFocus(ctrlKeyPressed);
+      // If the next sibling is disabled, ask for its next sibling
+      if (nextSiblingItem.disabled) {
+        nextSiblingItem.focusNextItem(ctrlKeyPressed);
+      } else {
+        nextSiblingItem.setFocus(ctrlKeyPressed);
+      }
       return;
     }
 
@@ -354,6 +361,13 @@ export class ChTreeXListItem {
     // Otherwise, set focus in the parent element
     const parentItem = this.el.parentElement
       .parentElement as HTMLChTreeXListItemElement;
+
+    // Check if the parent is not disabled
+    if (parentItem.disabled) {
+      parentItem.focusPreviousItem(ctrlKeyPressed);
+      return;
+    }
+
     parentItem.setFocus(ctrlKeyPressed);
   }
 
@@ -379,6 +393,12 @@ export class ChTreeXListItem {
       }
     }
 
+    // If the last item is disabled, try to focus the previous sibling
+    if (this.disabled) {
+      this.focusPreviousItem(ctrlKeyPressed);
+      return;
+    }
+
     // Otherwise, it focuses the control
     this.setFocus(ctrlKeyPressed);
   }
@@ -388,7 +408,7 @@ export class ChTreeXListItem {
    */
   @Method()
   async setFocus(ctrlKeyPressed: boolean) {
-    this.buttonRef.focus();
+    this.headerRef.focus();
 
     // Normal navigation auto selects the item.
     if (!ctrlKeyPressed) {
@@ -455,8 +475,8 @@ export class ChTreeXListItem {
     (shouldFocusHeader: boolean, commitEdition = false) =>
     () => {
       // When pressing the enter key in the input, the removeEditMode event is
-      // triggered twice (due to the buttonRef.focus()), so we need to check
-      // if the edit mode was disabled
+      // triggered twice (due to the headerRef.focus() triggering the onBlur
+      // event in the input), so we need to check if the edit mode was disabled
       if (!this.editing) {
         return;
       }
@@ -476,11 +496,13 @@ export class ChTreeXListItem {
       }
 
       if (shouldFocusHeader) {
-        this.buttonRef.focus();
+        this.headerRef.focus();
       }
     };
 
   private toggleExpand = (event: MouseEvent) => {
+    event.stopPropagation();
+
     if (!this.leaf) {
       this.expanded = !this.expanded;
     }
@@ -703,6 +725,7 @@ export class ChTreeXListItem {
     console.log("Render...", this.dragState);
 
     const acceptDrop = !this.leaf && this.dragState !== "start";
+    const hasContent = !this.leaf && !this.lazyLoad;
 
     return (
       <Host
@@ -718,7 +741,9 @@ export class ChTreeXListItem {
         // Drag and drop
         onDrop={acceptDrop ? this.handleDrop : null}
       >
-        <div
+        <button
+          aria-controls={hasContent ? EXPANDABLE_ID : null}
+          aria-expanded={hasContent ? this.expanded.toString() : null}
           class={{
             header: true,
             "header--selected": this.selected,
@@ -735,6 +760,10 @@ export class ChTreeXListItem {
             "header--level-0": this.level === 0
           }}
           part={`header${this.disabled ? " disabled" : ""}`}
+          type="button"
+          disabled={this.disabled}
+          onClick={this.handleActionClick}
+          onKeyDown={!this.editing ? this.handleActionKeyDown : null}
           // Drag and drop
           draggable
           onDragStart={this.handleDragStart}
@@ -776,19 +805,12 @@ export class ChTreeXListItem {
             ></ch-checkbox>
           )}
 
-          <button
-            aria-controls={!this.leaf ? EXPANDABLE_ID : null}
-            aria-expanded={!this.leaf ? this.expanded.toString() : null}
+          <div
             class={{
               action: true,
               "readonly-mode": !this.editing
             }}
-            disabled={this.disabled}
-            type="button"
-            onClick={this.handleActionClick}
             onDblClick={!this.leaf ? this.handleActionDblClick : null}
-            onKeyDown={!this.editing ? this.handleActionKeyDown : null}
-            ref={el => (this.buttonRef = el)}
           >
             {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 
@@ -807,14 +829,14 @@ export class ChTreeXListItem {
             )}
 
             {this.rightImgSrc && this.renderImg("right-img", this.rightImgSrc)}
-          </button>
+          </div>
 
           {this.showDownloadingSpinner && !this.leaf && this.downloading && (
             <div class="downloading" part="downloading"></div>
           )}
-        </div>
+        </button>
 
-        {!this.leaf && !this.lazyLoad && (
+        {hasContent && (
           <div
             aria-busy={this.downloading.toString()}
             aria-live={this.downloading ? "polite" : null}

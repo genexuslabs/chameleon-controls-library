@@ -102,7 +102,7 @@
                 >
                   <ch-tree-x-list checkbox slot="tree">
                     <ch-tree-x-list-item
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/csharp.svg"
                       caption="Beef"
                       leaf
                     >
@@ -125,7 +125,7 @@
             </ch-tree-x-list-item>
             <ch-tree-x-list-item
               id="fish"
-              left-img-src="general/patterns"
+              left-img-src="/build/ch-icon-assets/csharp.svg"
               checkbox
               checked="false"
               disabled
@@ -134,27 +134,27 @@
             >
             </ch-tree-x-list-item>
             <ch-tree-x-list-item
-              left-img-src="objects/module"
+              left-img-src="/build/tree-item-assets/download.svg"
               caption="Fruits"
               checked="false"
             >
               <ch-tree-x-list slot="tree">
                 <ch-tree-x-list-item
                   checkbox
-                  left-img-src="objects/module"
+                  left-img-src="/build/ch-icon-assets/java.svg"
                   caption="Orange"
                   leaf
                 >
                 </ch-tree-x-list-item>
                 <ch-tree-x-list-item
                   checkbox
-                  left-img-src="objects/module"
+                  left-img-src="/build/ch-icon-assets/csharp.svg"
                   opened
                   caption="Banana"
                 >
                   <ch-tree-x-list slot="tree">
                     <ch-tree-x-list-item
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
                       checkbox
                       caption="Pisang"
                       leaf
@@ -162,13 +162,13 @@
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/java.svg"
                       caption="Red Banana"
                       leaf
                     >
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
                       caption="Cavendish"
                       show-expandable-button="false"
                     >
@@ -180,13 +180,13 @@
                         >
                         </ch-tree-x-list-item>
                         <ch-tree-x-list-item
-                          left-img-src="objects/module"
+                          left-img-src="patterns.svg"
                           caption="Small"
                           leaf
                         >
                         </ch-tree-x-list-item>
                         <ch-tree-x-list-item
-                          left-img-src="objects/module"
+                          left-img-src="/build/ch-icon-assets/knowledge-base.svg"
                           caption="Mini (empty items)"
                         >
                           <ch-tree-x-list> </ch-tree-x-list>
@@ -197,7 +197,7 @@
                 </ch-tree-x-list-item>
                 <ch-tree-x-list-item
                   checkbox
-                  left-img-src="objects/module"
+                  left-img-src="/build/ch-icon-assets/csharp.svg"
                   caption="Strawberry"
                   expanded
                   show-expandable-button="false"
@@ -205,14 +205,14 @@
                   <ch-tree-x-list slot="tree">
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/java.svg"
                       caption="Albion"
                       leaf
                     >
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/java.svg"
                       opened
                       caption="Tillamook"
                       leaf
@@ -220,7 +220,7 @@
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="objects/module"
+                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
                       caption="Northeaster"
                       leaf
                     >
@@ -232,7 +232,7 @@
             <ch-tree-x-list-item
               opened
               expanded
-              left-img-src="patterns.svg"
+              left-img-src="/build/ch-icon-assets/java.svg"
               empty-tree
               caption="Nuts"
               show-expandable-button="false"
@@ -255,7 +255,7 @@
                     </ch-tree-x-list-item>
                     <ch-tree-x-list-item
                       checkbox
-                      left-img-src="patterns.svg"
+                      left-img-src="/build/ch-icon-assets/java.svg"
                       caption="Ferragnès"
                       leaf
                     >
@@ -973,6 +973,20 @@
               });
             }, 1000); // Resolves after 1000 ms
           });
+
+        /**
+         * @typedef TreeXItemModel
+         * @type {object}
+         * @property {string} id
+         * @property {string} caption
+         */
+        /**
+         * @param {TreeXItemModel[]} subModel
+         */
+        const sortItems = subModel =>
+          subModel.sort((a, b) => (a.caption < b.caption ? -1 : 0));
+
+        testTreeX.sortItemsCallback = sortItems;
       });
     </script>
 

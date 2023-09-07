@@ -86,6 +86,11 @@ export class ChTestTreeX {
    */
   @Prop({ mutable: true }) showLines = true;
 
+  /**
+   * Callback that is executed when the treeModel is changed to order its items.
+   */
+  @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
   @Listen("itemsDropped")
   handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
     const detail = event.detail;
@@ -132,6 +137,8 @@ export class ChTestTreeX {
         itemUIModelExtended.parentItem = newParentItem;
       });
 
+      this.sortItems(newParentItem.items);
+
       // Open the item to visualize the new subitems
       newParentItem.expanded = true;
 
@@ -154,6 +161,8 @@ export class ChTestTreeX {
         const itemToLazyLoadContent =
           this.flattenedLazyTreeModel.get(treeItemId);
         this.flattenedLazyTreeModel.delete(treeItemId);
+
+        this.sortItems(result);
 
         itemToLazyLoadContent.items = result;
         itemToLazyLoadContent.lazy = false;
@@ -179,7 +188,8 @@ export class ChTestTreeX {
 
     const itemRef = event.target;
     const itemId = event.detail.id;
-    const itemInfo = this.flattenedTreeModel.get(itemId).item;
+    const itemUIModel = this.flattenedTreeModel.get(itemId);
+    const itemInfo = itemUIModel.item;
     const newCaption = event.detail.caption;
     const oldCaption = itemInfo.caption;
 
@@ -194,7 +204,12 @@ export class ChTestTreeX {
     const promise = this.modifyItemCaptionCallback(itemId, newCaption);
 
     promise.then(status => {
-      if (!status.success) {
+      if (status.success) {
+        this.sortItems(itemUIModel.parentItem.items);
+
+        // Force re-render
+        forceUpdate(this);
+      } else {
         itemRef.caption = oldCaption;
         itemInfo.caption = oldCaption;
 
@@ -290,6 +305,8 @@ export class ChTestTreeX {
       return;
     }
 
+    this.sortItems(items);
+
     items.forEach(item => {
       this.flattenedTreeModel.set(item.id, {
         parentItem: model,
@@ -306,6 +323,13 @@ export class ChTestTreeX {
 
       this.flattenSubModel(item);
     });
+  }
+
+  private sortItems(items: TreeXItemModel[]) {
+    // Ensure that items are sorted
+    if (this.sortItemsCallback) {
+      this.sortItemsCallback(items);
+    }
   }
 
   private flattenModel() {

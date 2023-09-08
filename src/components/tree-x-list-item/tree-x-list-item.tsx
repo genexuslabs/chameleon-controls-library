@@ -768,13 +768,6 @@ export class ChTreeXListItem {
           onDragEnd={this.handleDragEnd}
           ref={el => (this.headerRef = el)}
         >
-          {this.showLines && this.level !== 0 && (
-            <div
-              class={{ "dashed-line": true, "last-dashed-line": this.lastItem }}
-              part={"dashed-line" + this.lastItem ? " last-dashed-line" : ""}
-            ></div>
-          )}
-
           {!this.leaf && this.showExpandableButton && (
             <button
               type="button"
@@ -831,6 +824,13 @@ export class ChTreeXListItem {
 
           {this.showDownloadingSpinner && !this.leaf && this.downloading && (
             <div class="downloading" part="downloading"></div>
+          )}
+
+          {this.showLines && this.level !== 0 && (
+            <div
+              class={{ "dashed-line": true, "last-dashed-line": this.lastItem }}
+              part={"dashed-line" + this.lastItem ? " last-dashed-line" : ""}
+            ></div>
           )}
         </button>
 

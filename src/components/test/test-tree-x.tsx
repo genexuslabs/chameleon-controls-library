@@ -348,6 +348,10 @@ export class ChTestTreeX {
     const items = model.items;
 
     if (!items) {
+      // Make sure that subtrees don't have an undefined array
+      if ((model as TreeXItemModel).leaf === false) {
+        model.items = [];
+      }
       return;
     }
 

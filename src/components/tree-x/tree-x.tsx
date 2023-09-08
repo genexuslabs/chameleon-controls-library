@@ -341,7 +341,6 @@ export class ChTreeX {
 
   private trackItemDragLeave = (event: DragEvent) => {
     const currentTarget = event.target as HTMLElement;
-    console.log("Drag Leave", currentTarget);
 
     if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
       return;
@@ -373,9 +372,6 @@ export class ChTreeX {
 
     requestAnimationFrame(() => {
       this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
-
-      // console.log(event.clientX, event.clientY, event);
-      // console.log("trackItemDrag");
 
       this.el.style.setProperty(
         POSITION_X_DRAG_CUSTOM_VAR,
@@ -426,8 +422,6 @@ export class ChTreeX {
     this.getDirectParentsOfDraggableItems(isDraggingSelectedItems);
 
     dragInfo.dataTransfer.setData("text/plain", joinedDraggedIds);
-
-    console.log("draggedIds", joinedDraggedIds);
   }
 
   private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
@@ -472,8 +466,6 @@ export class ChTreeX {
 
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
-      console.log("Add item to de list");
-
       this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
     } else {
       this.selectedItemsInfo.delete(selectedItemInfo.id);

@@ -383,8 +383,6 @@ export class ChTreeXListItem {
         LAST_SUB_ITEM
       ) as HTMLChTreeXListItemElement;
 
-      console.log("focusLastItem", lastSubItem);
-
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
       if (lastSubItem) {
@@ -432,13 +430,10 @@ export class ChTreeXListItem {
         "--distance-to-checkbox",
         distanceToCheckbox + "px"
       );
-      console.log("Interrupt");
     });
 
     this.watcher.observe(this.el);
     this.watcher.observe(this.headerRef);
-
-    console.log("CONNECT...", this.caption, this.el);
   }
 
   private disconnectObserver() {
@@ -447,8 +442,6 @@ export class ChTreeXListItem {
     }
     this.watcher.disconnect();
     this.watcher = null;
-
-    console.log("DISCONNECT...", this.caption, this.el);
   }
 
   private checkIfShouldRemoveEditMode = (event: KeyboardEvent) => {
@@ -546,8 +539,6 @@ export class ChTreeXListItem {
   }
 
   private setSelected(goToReference: boolean) {
-    console.log("SET SELECTED");
-
     this.selected = true;
     this.selectedItemChange.emit({
       ctrlKeyPressed: false,
@@ -610,8 +601,6 @@ export class ChTreeXListItem {
    * Event triggered by key events on the main button.
    */
   private handleActionKeyDown = (event: KeyboardEvent) => {
-    console.log("handleActionKeyDown", event);
-
     // Only toggle if the Enter key was pressed with the Ctrl key
     if (mouseEventModifierKey(event) && event.code === ENTER_KEY) {
       event.stopPropagation();
@@ -647,8 +636,6 @@ export class ChTreeXListItem {
       return;
     }
 
-    console.log("Drag Start", event, this.el);
-
     event.dataTransfer.setDragImage(resetDragImage, 0, 0);
 
     // this.el.style.cursor = "move";
@@ -662,7 +649,6 @@ export class ChTreeXListItem {
 
   private handleDragEnd = () => {
     // event.preventDefault();
-    console.log("Drag End");
 
     // this.el.style.cursor = null;
     this.dragState = "none";
@@ -671,7 +657,6 @@ export class ChTreeXListItem {
 
   private handleDrop = (event: DragEvent) => {
     event.stopPropagation();
-    console.log("Drag Drop", event);
 
     this.dragState = "none";
     this.itemDrop.emit({

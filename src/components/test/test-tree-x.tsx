@@ -24,6 +24,10 @@ import {
   ChTreeXListItemCustomEvent
 } from "../../components";
 
+const DEFAULT_EXPANDED_VALUE = false;
+const DEFAULT_LAZY_VALUE = false;
+const DEFAULT_SELECTED_VALUE = false;
+
 @Component({
   tag: "ch-test-tree-x",
   styleUrl: "test-tree-x.scss",
@@ -312,6 +316,12 @@ export class ChTestTreeX {
         parentItem: model,
         item: item
       });
+
+      // Make sure the properties are with their default values to avoid issues
+      // when reusing DOM nodes
+      item.expanded ??= DEFAULT_EXPANDED_VALUE;
+      item.lazy ??= DEFAULT_LAZY_VALUE;
+      item.selected ??= DEFAULT_SELECTED_VALUE;
 
       if (item.lazy) {
         this.flattenedLazyTreeModel.set(item.id, item);

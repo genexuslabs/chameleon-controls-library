@@ -300,6 +300,12 @@
         </div>
       </section>
 
+      <div>
+        <input id="input-scroll-into-visible" type="text" />
+        <button id="btn-scroll-into-visible" type="button">
+          Scroll into visible
+        </button>
+      </div>
       <button type="outlined" id="get-selected-markup">
         Get Selected Items
       </button>
@@ -852,8 +858,9 @@
 
       const bigModel = [];
 
-      const FIRST_LEVEL_SIZE = 400;
-      const SECOND_LEVEL_SIZE = 25;
+      const FIRST_LEVEL_SIZE = 10;
+      const SECOND_LEVEL_SIZE = 10;
+      const THIRD_LEVEL_SIZE = 50;
 
       for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
         bigModel.push({
@@ -863,6 +870,47 @@
           leaf: false,
           leftImgSrc: "patterns.svg",
           items: []
+        });
+      }
+
+      const eagerLargeModel = [];
+
+      for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+        const subEagerLargeModel = [];
+        const modelId = "item-" + i;
+
+        for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+          const subModelId = modelId + "-" + j;
+          const subSubEagerLargeModel = [];
+
+          for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+            const subSubModelId = subModelId + "-" + k;
+
+            subSubEagerLargeModel.push({
+              id: subSubModelId,
+              caption: subSubModelId,
+              leaf: true,
+              leftImgSrc: "/build/ch-icon-assets/csharp.svg"
+            });
+          }
+
+          subEagerLargeModel.push({
+            id: subModelId,
+            caption: subModelId,
+            expanded: true,
+            leaf: false,
+            leftImgSrc: "knowledge-base.svg",
+            items: subSubEagerLargeModel
+          });
+        }
+
+        eagerLargeModel.push({
+          id: modelId,
+          caption: modelId,
+          expanded: true,
+          leaf: false,
+          leftImgSrc: "patterns.svg",
+          items: subEagerLargeModel
         });
       }
     </script>
@@ -925,6 +973,18 @@
           };
         });
 
+        const scrollIntoVisibleBtn = document.getElementById(
+          "btn-scroll-into-visible"
+        );
+        const scrollIntoVisibleInput = document.getElementById(
+          "input-scroll-into-visible"
+        );
+
+        scrollIntoVisibleBtn.addEventListener("click", () => {
+          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value);
+          scrollIntoVisibleInput.value = "";
+        });
+
         /*Lazy Load Promise*/
         testTreeX.lazyLoadTreeItemsCallback = modelId =>
           new Promise((resolve, reject) => {
@@ -937,11 +997,25 @@
               lazyModel = [];
 
               for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+                const subModelId = modelId + "-" + j;
+                const subModelItems = [];
+
+                for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+                  subModelItems.push({
+                    id: subModelId + "-" + k,
+                    caption: subModelId + "-" + k,
+                    leaf: true,
+                    leftImgSrc: "/build/ch-icon-assets/csharp.svg"
+                  });
+                }
+
                 lazyModel.push({
-                  id: modelId + "-" + j,
-                  caption: modelId + "-" + j,
-                  leaf: true,
-                  leftImgSrc: "knowledge-base.svg"
+                  id: subModelId,
+                  caption: subModelId,
+                  expanded: true,
+                  leaf: false,
+                  leftImgSrc: "knowledge-base.svg",
+                  items: subModelItems
                 });
               }
             }
@@ -963,7 +1037,7 @@
         testTreeX.modifyItemCaptionCallback = (treeItemId, newCaption) =>
           new Promise((resolve, reject) => {
             const status = newCaption.trim() !== "" && randomSuccess;
-            randomSuccess = !randomSuccess;
+            // randomSuccess = !randomSuccess;
 
             setTimeout(() => {
               resolve({
@@ -971,7 +1045,7 @@
                 errorMessage:
                   "Apologies, an error ocurred while changing the item caption."
               });
-            }, 1000); // Resolves after 1000 ms
+            }, 15); // Resolves after 15 ms
           });
 
         /**
@@ -987,6 +1061,11 @@
           subModel.sort((a, b) => (a.caption < b.caption ? -1 : 0));
 
         testTreeX.sortItemsCallback = sortItems;
+
+        // Eager large model
+        // testTreeX.treeModel = {
+        //   items: eagerLargeModel
+        // };
       });
     </script>
 

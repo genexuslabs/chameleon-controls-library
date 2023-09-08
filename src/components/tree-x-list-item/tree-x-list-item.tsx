@@ -735,6 +735,7 @@ export class ChTreeXListItem {
     return (
       <Host
         role="treeitem"
+        aria-selected={this.selected ? "true" : null}
         class={{
           [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,

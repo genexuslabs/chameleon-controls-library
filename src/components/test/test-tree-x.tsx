@@ -199,14 +199,21 @@ export class ChTestTreeX {
       promise.then(result => {
         const itemToLazyLoadContent =
           this.flattenedLazyTreeModel.get(treeItemId);
+
+        // Establish that the content was lazy loaded
         this.flattenedLazyTreeModel.delete(treeItemId);
-
-        this.sortItems(result);
-
-        itemToLazyLoadContent.items = result;
         itemToLazyLoadContent.lazy = false;
         itemRef.downloading = false;
 
+        // Check if there is items to add
+        if (result == null) {
+          return;
+        }
+
+        // @todo What happens in the server when dropping items on a lazy node?
+        itemToLazyLoadContent.items = result;
+
+        this.sortItems(itemToLazyLoadContent.items);
         this.flattenSubModel(itemToLazyLoadContent);
 
         // Force re-render

@@ -628,7 +628,14 @@ export class ChTreeXListItem {
   };
 
   private renderImg = (cssClass: string, src: string) => (
-    <img aria-hidden="true" class={cssClass} alt="" src={src} loading="lazy" />
+    <img
+      aria-hidden="true"
+      class={cssClass}
+      part={cssClass}
+      alt=""
+      src={src}
+      loading="lazy"
+    />
   );
 
   private handleDragStart = (event: DragEvent) => {
@@ -757,7 +764,9 @@ export class ChTreeXListItem {
             "header--odd-expandable": !evenLevel && expandableButtonVisible,
             "header--level-0": this.level === 0
           }}
-          part={`header${this.disabled ? " disabled" : ""}`}
+          part={`header${this.disabled ? " disabled" : ""}${
+            this.selected ? " selected" : ""
+          }`}
           type="button"
           disabled={this.disabled}
           onClick={this.handleActionClick}
@@ -776,7 +785,9 @@ export class ChTreeXListItem {
                 "expandable-button--expanded": this.expanded,
                 "expandable-button--collapsed": !this.expanded
               }}
-              part={`expandable-button${this.disabled ? " disabled" : ""}`}
+              part={`expandable-button${this.disabled ? " disabled" : ""}${
+                this.expanded ? " expanded" : " collapsed"
+              }`}
               disabled={this.disabled}
               onClick={this.toggleExpand}
             ></button>
@@ -786,7 +797,9 @@ export class ChTreeXListItem {
             <ch-checkbox
               accessibleName={this.caption}
               class="checkbox"
-              part={`checkbox${this.disabled ? " disabled" : ""}`}
+              part={`checkbox${this.disabled ? " disabled" : ""}${
+                this.checked ? " checked" : ""
+              }${this.indeterminate ? " indeterminate" : ""}`}
               checkedValue="true"
               disabled={this.disabled}
               indeterminate={this.indeterminate}
@@ -808,6 +821,7 @@ export class ChTreeXListItem {
             {this.editing ? (
               <input
                 class="edit-name"
+                part="edit-name"
                 disabled={this.disabled}
                 type="text"
                 value={this.caption}
@@ -829,7 +843,7 @@ export class ChTreeXListItem {
           {this.showLines && this.level !== 0 && (
             <div
               class={{ "dashed-line": true, "last-dashed-line": this.lastItem }}
-              part={"dashed-line" + this.lastItem ? " last-dashed-line" : ""}
+              part={`dashed-line${this.lastItem ? " last-dashed-line" : ""}`}
             ></div>
           )}
         </button>
@@ -840,6 +854,7 @@ export class ChTreeXListItem {
             aria-live={this.downloading ? "polite" : null}
             id={EXPANDABLE_ID}
             class={{ expandable: true, expanded: this.expanded }}
+            part={`expandable${this.expanded ? " expanded" : ""}`}
           >
             <slot name="tree" />
           </div>

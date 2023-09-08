@@ -63,7 +63,7 @@ export class ChTreeXListItem {
   /**
    * This attributes specifies the caption of the control
    */
-  @Prop({ mutable: true }) caption: string;
+  @Prop() readonly caption: string;
 
   /**
    * Set this attribute if you want display a checkbox in the control.
@@ -721,8 +721,6 @@ export class ChTreeXListItem {
     const evenLevel = this.level % 2 === 0;
     const expandableButtonVisible = !this.leaf && this.showExpandableButton;
     const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
-
-    console.log("Render...", this.dragState);
 
     const acceptDrop = !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;

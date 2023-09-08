@@ -23,13 +23,18 @@ ch-test-tree-x {
   row-gap: 8px;
 }
 
-:not(.ch-tree-x-dragging-item) ch-tree-x-list-item::part(header):hover {
+:not(.ch-tree-x-dragging-item)
+  ch-tree-x-list-item:not([selected])::part(header):hover {
   background-color: rgb(232, 232, 233);
 }
 
 .ch-tree-x-list-item--drag-enter {
   background-color: #eee;
-  outline: 1px solid black;
+  box-shadow: inset 0 0 1px 0px black;
+
+  &[selected]::part(header) {
+    background-color: #eee;
+  }
 }
 
 ch-tree-x-list-item {
@@ -37,15 +42,20 @@ ch-tree-x-list-item {
     border: 1px solid transparent;
   }
 
+  &[selected]::part(header) {
+    background-color: rgb(207, 222, 230);
+    border-color: rgb(2, 102, 160);
+  }
+
+  &.ch-tree-x-list-item--editing::part(header) {
+    background-color: rgb(207, 222, 230, 0.5);
+    border-color: transparent;
+  }
+
   &:not(.ch-tree-x-list-item--editing)::part(header):focus-visible {
-    outline: 1px solid currentColor;
+    border-color: black;
     z-index: 1; // Place the outline above the content
   }
-}
-
-ch-tree-x-list-item[selected]::part(header) {
-  background-color: rgb(207, 222, 230);
-  border-color: rgb(2, 102, 160);
 }
 
 .ch-tree-x-drag-info {

@@ -800,7 +800,9 @@ export class ChTreeXListItem {
               action: true,
               "readonly-mode": !this.editing
             }}
-            onDblClick={!this.leaf ? this.handleActionDblClick : null}
+            onDblClick={
+              !this.leaf && !this.editing ? this.handleActionDblClick : null
+            }
           >
             {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 

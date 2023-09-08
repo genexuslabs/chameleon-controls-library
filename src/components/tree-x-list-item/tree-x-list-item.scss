@@ -29,7 +29,7 @@ $own-offset: calc(
 
 :host {
   --checkbox-size: 1em;
-  --expandable-button-width: 12px;
+  --expandable-button-width: 0.75em;
 
   --tab-width: calc(
     var(--checkbox-size) + var(--expandable-button-width) +

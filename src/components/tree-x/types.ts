@@ -9,7 +9,7 @@ export type TreeXItemModel = {
   caption: string;
   checkbox?: boolean;
   checked?: boolean;
-  cssClass?: string;
+  class?: string;
   disabled?: boolean;
   expanded?: boolean;
   lazy?: boolean;

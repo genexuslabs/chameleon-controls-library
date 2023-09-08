@@ -6,7 +6,8 @@ import {
   Host,
   Watch,
   State,
-  forceUpdate
+  forceUpdate,
+  Method
 } from "@stencil/core";
 import {
   TreeXItemDropInfo,
@@ -34,10 +35,13 @@ const DEFAULT_SELECTED_VALUE = false;
   shadow: false // Necessary to avoid focus capture
 })
 export class ChTestTreeX {
-  // UI Model
+  // UI Models
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
   private selectedItems: Set<string> = new Set();
   private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
+
+  // Refs
+  private treeRef: HTMLChTreeXElement;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -94,6 +98,37 @@ export class ChTestTreeX {
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
+  /**
+   * Given an item id, it displays and scrolls into the item view.
+   */
+  @Method()
+  async scrollIntoVisible(treeItemId: string) {
+    const itemUIModel = this.flattenedTreeModel.get(treeItemId);
+
+    if (!itemUIModel) {
+      // @todo Check if the item is on the server?
+      return;
+    }
+
+    let visitedNode = itemUIModel.parentItem as TreeXItemModel;
+
+    // While the parent is not the root, update the UI Models
+    while (visitedNode && visitedNode.id != null) {
+      // Expand the item
+      visitedNode.expanded = true;
+
+      const visitedNodeUIModel = this.flattenedTreeModel.get(visitedNode.id);
+      visitedNode = visitedNodeUIModel.parentItem as TreeXItemModel;
+    }
+
+    forceUpdate(this);
+
+    // @todo For some reason, when the model is created using the "big model" option,
+    // this implementation does not work when only the UI Model is updated. So, to
+    // expand the items, we have to delegate the responsibility to the tree-x
+    this.treeRef.scrollIntoVisible(treeItemId);
+  }
 
   @Listen("itemsDropped")
   handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
@@ -281,7 +316,7 @@ export class ChTestTreeX {
       caption={treeSubModel.caption}
       checkbox={treeSubModel.checkbox}
       checked={treeSubModel.checked}
-      class={treeSubModel.cssClass}
+      class={treeSubModel.class}
       disabled={treeSubModel.disabled}
       expanded={treeSubModel.expanded}
       lazyLoad={treeSubModel.lazy}
@@ -374,6 +409,7 @@ export class ChTestTreeX {
             showLines={this.showLines}
             waitDropProcessing={this.waitDropProcessing}
             onSelectedItemsChange={this.handleSelectedItemsChange}
+            ref={el => (this.treeRef = el)}
           >
             <ch-tree-x-list>
               {this.treeModel.items.map(this.renderSubModel)}

@@ -5,7 +5,7 @@ import {
   EventEmitter,
   Host,
   Listen,
-  // Method,
+  Method,
   Prop,
   State,
   Watch,
@@ -155,6 +155,32 @@ export class ChTreeX {
    * Fired when the dragged items are dropped in another item of the tree.
    */
   @Event() itemsDropped: EventEmitter<TreeXItemDropInfo>;
+
+  /**
+   * Given an item id, it displays and scrolls into the item view.
+   */
+  @Method()
+  async scrollIntoVisible(treeItemId: string) {
+    const itemRef = this.el.querySelector(
+      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
+    );
+    if (!itemRef) {
+      return;
+    }
+
+    let parentItem = itemRef.parentElement.parentElement;
+
+    // Expand all parents
+    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+      (parentItem as HTMLChTreeXListItemElement).expanded = true;
+      parentItem = parentItem.parentElement.parentElement;
+    }
+
+    // Wait until the parents are expanded
+    requestAnimationFrame(() => {
+      itemRef.scrollIntoView();
+    });
+  }
 
   // /**
   //  * This method is used to toggle a tree item by the tree item id/ids.

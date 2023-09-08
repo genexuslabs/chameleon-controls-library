@@ -15,6 +15,7 @@ import {
 } from "../paginator/paginator-navigate/ch-paginator-navigate-types";
 import { gridRefresh, gridSort } from "./gx-grid-chameleon-actions";
 import {
+  ChGridColumnFreezeChangedEvent,
   ChGridColumnHiddenChangedEvent,
   ChGridColumnOrderChangedEvent,
   ChGridColumnSizeChangedEvent,
@@ -35,9 +36,38 @@ declare let gx: Gx;
   tag: "gx-grid-chameleon"
 })
 export class GridChameleon {
-  @Prop() readonly grid: GxGrid;
+  /**
+   * The GxGrid instance representing the data to be displayed in the grid.
+   */
+  @Prop() readonly grid!: GxGrid;
+
+  /**
+   * The timestamp indicating the time when the grid was last updated.
+   */
   @Prop({ mutable: true }) gridTimestamp: number;
+
+  /**
+   * The UI state of the Grid.
+   */
   @Prop() readonly state: GridChameleonState;
+
+  @Watch("state")
+  controlStateHandler() {
+    this.loadState();
+  }
+
+  componentWillLoad() {
+    this.loadState();
+  }
+
+  componentWillRender() {
+    this.defineColumnRender();
+  }
+
+  componentDidLoad() {
+    this.setCurrentRow();
+    this.notifyResizePopup();
+  }
 
   @Listen("selectionChanged")
   selectionChangedHandler(eventInfo: CustomEvent<ChGridSelectionChangedEvent>) {
@@ -94,6 +124,7 @@ export class GridChameleon {
     );
   }
 
+  @Listen("columnSizeChanging")
   @Listen("columnSizeChanged")
   columnSizeChangedHandler(
     eventInfo: CustomEvent<ChGridColumnSizeChangedEvent>
@@ -101,6 +132,16 @@ export class GridChameleon {
     GridChameleonManagerState.setColumnSize(
       eventInfo.detail.columnId,
       eventInfo.detail.size
+    );
+  }
+
+  @Listen("columnFreezeChanged")
+  columnFreezeChangedHandler(
+    eventInfo: CustomEvent<ChGridColumnFreezeChangedEvent>
+  ) {
+    GridChameleonManagerState.setColumnFreeze(
+      eventInfo.detail.columnId,
+      eventInfo.detail.freeze
     );
   }
 
@@ -164,44 +205,68 @@ export class GridChameleon {
     gridRefresh(this.grid);
   }
 
-  @Watch("state")
-  controlStateHandler() {
-    this.loadState();
+  private getColumnSize(column: GxGridColumn): string {
+    let size: string;
+
+    switch (column.Size) {
+      case "auto":
+        size = "auto";
+        break;
+      case "css":
+        size = `var(--${column.SizeVariableName}, min-content)`;
+        break;
+      case "length":
+        size = column.SizeLength;
+        break;
+      case "max":
+        size = "max-content";
+        break;
+      case "min":
+        size = "min-content";
+        break;
+      case "minmax":
+        size = `minmax(${column.SizeMinLength || "min-content"}, ${
+          column.SizeMaxLength || "auto"
+        })`;
+        break;
+      default:
+        size = "min-content";
+        break;
+    }
+
+    return size || "min-content";
   }
 
-  componentWillLoad() {
-    this.loadState();
+  private defineColumnRender(): void {
+    const properties = this.grid.properties;
+
+    this.grid.columns.forEach((column, i) => {
+      column.render =
+        (properties.length === 0 && column.visible) ||
+        properties.some(row => row[i].visible);
+    });
   }
 
-  componentWillRender() {
-    this.defineColumnRender();
+  private getRowIndexByGxId(rowId: string): number {
+    return this.grid.rows.findIndex(row => row.gxId === rowId);
   }
 
-  componentDidLoad() {
-    this.setCurrentRow();
-    this.notifyResizePopup();
+  private notifyResizePopup() {
+    if (gx.popup.ispopup()) {
+      gx.fx.obs.notify("gx.onafterevent");
+    }
   }
 
-  render() {
-    return (
-      <Host>
-        <ch-grid
-          class={this.grid.Class}
-          rowSelectionMode={this.grid.gxAllowSelection ? "single" : "none"}
-          rowSelectedClass={this.grid.RowSelectedClass.trim()}
-          rowHighlightedClass={this.grid.RowHighlightedClass.trim()}
-        >
-          {this.grid.header && this.renderTitle()}
-          {this.renderActionbar("header", this.grid.ActionbarHeaderClass)}
-          {this.renderActionbar("footer", this.grid.ActionbarFooterClass)}
-          {this.renderColumns()}
-          {this.renderRows()}
-          {this.grid.PaginatorShow &&
-            this.grid.pageSize > 0 &&
-            this.renderPaginator()}
-        </ch-grid>
-      </Host>
-    );
+  private setCurrentRow() {
+    const firstRow = this.grid.rows[0];
+
+    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) {
+      gx.fn.setCurrentGridRow(this.grid.gxId, firstRow.gxId);
+    }
+  }
+
+  private loadState() {
+    GridChameleonManagerState.load(this.grid, this.state);
   }
 
   private renderTitle() {
@@ -209,8 +274,8 @@ export class GridChameleon {
   }
 
   private renderActionbar(position: "header" | "footer", className: string) {
-    const refresh = this.grid.ActionRefreshPosition == position,
-      settings = this.grid.ActionSettingsPosition == position;
+    const refresh = this.grid.ActionRefreshPosition === position,
+      settings = this.grid.ActionSettingsPosition === position;
 
     if (refresh || settings) {
       return (
@@ -227,12 +292,12 @@ export class GridChameleon {
       <ch-grid-action-refresh
         class={this.grid.ActionRefreshClass}
         title={
-          this.grid.ActionRefreshTextPosition == "title"
+          this.grid.ActionRefreshTextPosition === "title"
             ? gx.getMessage("GX_BtnRefresh")
             : ""
         }
       >
-        {this.grid.ActionRefreshTextPosition == "text"
+        {this.grid.ActionRefreshTextPosition === "text"
           ? gx.getMessage("GX_BtnRefresh")
           : ""}
       </ch-grid-action-refresh>
@@ -244,12 +309,12 @@ export class GridChameleon {
       <ch-grid-action-settings
         class={this.grid.ActionSettingsClass}
         title={
-          this.grid.ActionSettingsTextPosition == "title"
+          this.grid.ActionSettingsTextPosition === "title"
             ? gx.getMessage("GXM_Settings")
             : ""
         }
       >
-        {this.grid.ActionSettingsTextPosition == "text"
+        {this.grid.ActionSettingsTextPosition === "text"
           ? gx.getMessage("GXM_Settings")
           : ""}
       </ch-grid-action-settings>
@@ -269,18 +334,19 @@ export class GridChameleon {
                 columnName={column.title}
                 columnNamePosition={column.NamePosition}
                 size={this.getColumnSize(column)}
+                order={column.order ? column.order : null}
                 displayObserverClass={column.gxColumnClass}
                 class={`${this.grid.ColumnClass} ${column.HeaderClass} ${
                   column.isFiltering ? "grid-column-filtering" : ""
                 }`}
-                hidden={column.Hidden == -1}
-                hideable={column.Hideable == -1}
-                resizable={column.Resizeable == -1}
-                sortable={column.Sortable == -1}
-                settingable={column.Filterable == -1}
+                hidden={column.Hidden === -1}
+                hideable={column.Hideable === -1}
+                resizable={column.Resizeable === -1}
+                sortable={column.Sortable === -1}
+                settingable={column.Filterable === -1}
                 sortDirection={column.SortDirection}
               >
-                {column.Filterable == -1 && this.renderColumnFilter(column)}
+                {column.Filterable === -1 && this.renderColumnFilter(column)}
               </ch-grid-column>
             );
           }
@@ -392,74 +458,32 @@ export class GridChameleon {
         type={type}
         disabled={disabled}
         class={className}
-        title={textPosition == "title" ? text : ""}
+        title={textPosition === "title" ? text : ""}
       >
-        {textPosition == "text" ? text : ""}
+        {textPosition === "text" ? text : ""}
       </ch-paginator-navigate>
     );
   }
 
-  private getColumnSize(column: GxGridColumn): string {
-    let size: string;
-
-    switch (column.Size) {
-      case "auto":
-        size = "auto";
-        break;
-      case "css":
-        size = `var(--${column.SizeVariableName}, min-content)`;
-        break;
-      case "length":
-        size = column.SizeLength;
-        break;
-      case "max":
-        size = "max-content";
-        break;
-      case "min":
-        size = "min-content";
-        break;
-      case "minmax":
-        size = `minmax(${column.SizeMinLength || "min-content"}, ${
-          column.SizeMaxLength || "auto"
-        })`;
-        break;
-      default:
-        size = "min-content";
-        break;
-    }
-
-    return size || "min-content";
-  }
-
-  private defineColumnRender(): void {
-    const properties = this.grid.properties;
-
-    this.grid.columns.forEach((column, i) => {
-      column.render =
-        (properties.length == 0 && column.visible) ||
-        properties.some(row => row[i].visible);
-    });
-  }
-
-  private getRowIndexByGxId(rowId: string): number {
-    return this.grid.rows.findIndex(row => row.gxId == rowId);
-  }
-
-  private notifyResizePopup() {
-    if (gx.popup.ispopup()) {
-      gx.fx.obs.notify("gx.onafterevent");
-    }
-  }
-
-  private setCurrentRow() {
-    const firstRow = this.grid.rows[0];
-
-    if (firstRow && !gx.fn.currentGridRowImpl(this.grid.gxId)) {
-      gx.fn.setCurrentGridRow(this.grid.gxId, firstRow.gxId);
-    }
-  }
-
-  private loadState() {
-    GridChameleonManagerState.load(this.grid, this.state);
+  render() {
+    return (
+      <Host>
+        <ch-grid
+          class={this.grid.Class}
+          rowSelectionMode={this.grid.gxAllowSelection ? "single" : "none"}
+          rowSelectedClass={this.grid.RowSelectedClass.trim()}
+          rowHighlightedClass={this.grid.RowHighlightedClass.trim()}
+        >
+          {this.grid.header && this.renderTitle()}
+          {this.renderActionbar("header", this.grid.ActionbarHeaderClass)}
+          {this.renderActionbar("footer", this.grid.ActionbarFooterClass)}
+          {this.renderColumns()}
+          {this.renderRows()}
+          {this.grid.PaginatorShow &&
+            this.grid.pageSize > 0 &&
+            this.renderPaginator()}
+        </ch-grid>
+      </Host>
+    );
   }
 }

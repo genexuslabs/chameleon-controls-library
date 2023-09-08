@@ -7,6 +7,10 @@
     @include column-drag-transition;
   }
 
+  ch-grid-cell[selected] {
+    --ch-grid-cell-z-index-active: var(--ch-grid-cell-active-layer);
+  }
+
   ch-grid-cell,
   ch-grid-row[selected] > ch-grid-cell,
   ch-grid-row[highlighted] > ch-grid-cell {

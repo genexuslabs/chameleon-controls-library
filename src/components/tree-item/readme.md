@@ -27,11 +27,11 @@
 
 ## Events
 
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `checkboxClickedEvent` |             | `CustomEvent<any>` |
-| `liItemClicked`        |             | `CustomEvent<any>` |
-| `toggleIconClicked`    |             | `CustomEvent<any>` |
+| Event                  | Description                                                                                                | Type                                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `checkboxClickedEvent` | Emits the checkbox information (chTreeItemData) that includes: the id, name(innerText) and checkbox value. | `CustomEvent<{ checked: boolean; id: string; }>` |
+| `liItemClicked`        |                                                                                                            | `CustomEvent<any>`                               |
+| `toggleIconClicked`    |                                                                                                            | `CustomEvent<any>`                               |
 
 
 ## Methods
@@ -49,9 +49,12 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part         | Description |
-| ------------ | ----------- |
-| `"checkbox"` |             |
+| Part           | Description |
+| -------------- | ----------- |
+| `"checkbox"`   |             |
+| `"left-icon"`  |             |
+| `"list-item"`  |             |
+| `"right-icon"` |             |
 
 
 ## CSS Custom Properties

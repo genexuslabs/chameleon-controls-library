@@ -35,7 +35,7 @@ export class ChPaginatorPages {
   /**
    * The total number of pages.
    */
-  @Prop({ mutable: true, reflect: true }) totalPages = 1;
+  @Prop({ reflect: true }) readonly totalPages = 1;
 
   /**
    * The maximum number of items to display in the pagination.
@@ -68,7 +68,7 @@ export class ChPaginatorPages {
   @Event() pageChanged: EventEmitter<ChPaginatorPagesPageChangedEvent>;
 
   componentDidUpdate() {
-    if (document.activeElement == this.el) {
+    if (document.activeElement === this.el) {
       this.buttonActive.focus();
     }
   }
@@ -101,7 +101,7 @@ export class ChPaginatorPages {
     let fillLeft: number, fillStart: (number | string)[];
     let fillRight: number, fillEnd: (number | string)[];
 
-    if (this.maxSize == 0 || this.maxSize >= this.totalPages) {
+    if (this.maxSize === 0 || this.maxSize >= this.totalPages) {
       fillStart = this.fillStart(false);
       fillLeft = this.page - 1;
       fillRight = this.totalPages - this.page;
@@ -177,12 +177,12 @@ export class ChPaginatorPages {
             return (
               <li>
                 <button
-                  part={`page button ${i == activeIndex ? "active" : ""}`}
+                  part={`page button ${i === activeIndex ? "active" : ""}`}
                   value={item}
                   onClick={this.clickHandler}
                   ref={el =>
                     (this.buttonActive =
-                      i == activeIndex ? el : this.buttonActive)
+                      i === activeIndex ? el : this.buttonActive)
                   }
                 >
                   {item}

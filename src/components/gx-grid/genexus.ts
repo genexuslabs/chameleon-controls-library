@@ -130,6 +130,7 @@ export interface GxGridColumn {
   readonly FilterLabelGreater: string;
   SortDirection: "asc" | "desc";
 
+  order: number;
   filterEqual: string;
   filterLess: string;
   filterGreater: string;

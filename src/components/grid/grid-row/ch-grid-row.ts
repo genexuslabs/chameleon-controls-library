@@ -9,7 +9,6 @@ export default class HTMLChGridRowElement
   implements IChGridCollapsible
 {
   private parentGrid: HTMLChGridElement;
-  public static readonly TAG_NAME = "CH-GRID-ROW";
 
   constructor() {
     super();
@@ -129,7 +128,7 @@ export default class HTMLChGridRowElement
    * A boolean value indicating whether the grid row has child rows.
    */
   get hasChildRows(): boolean {
-    return this.querySelector("ch-grid-rowset") ? true : false;
+    return !!this.querySelector("ch-grid-rowset");
   }
 
   /**
@@ -140,7 +139,7 @@ export default class HTMLChGridRowElement
   }
 
   set collapsed(value: boolean) {
-    const dispatchEvent = this.collapsed != value;
+    const dispatchEvent = this.collapsed !== value;
 
     if (value) {
       this.setAttribute("collapsed", "");
@@ -206,7 +205,7 @@ export default class HTMLChGridRowElement
 
     if (!this.firstElementChild) {
       rect = new DOMRect();
-    } else if (this.firstElementChild == this.lastElementChild) {
+    } else if (this.firstElementChild === this.lastElementChild) {
       rect = this.firstElementChild.getBoundingClientRect();
     } else {
       const firstCellRect = this.firstElementChild.getBoundingClientRect();

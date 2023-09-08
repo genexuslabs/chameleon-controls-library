@@ -30,7 +30,7 @@ export class ChGridActionRefresh {
   @Listen("keydown", { passive: true })
   @Listen("click", { passive: true })
   pressedHandler(eventInfo: any) {
-    if (!eventInfo.key || eventInfo.key == "Enter" || eventInfo.key == " ") {
+    if (!eventInfo.key || eventInfo.key === "Enter" || eventInfo.key === " ") {
       this.refreshClicked.emit();
       eventInfo.stopPropagation();
     }

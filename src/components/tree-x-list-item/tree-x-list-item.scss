@@ -160,6 +160,8 @@ $own-offset: calc(
   border: 0 dashed #a9a9a9;
   border-block-end-width: 1px;
   pointer-events: none; // Improve hover effect
+  content-visibility: hidden;
+  contain-intrinsic-size: auto 100px;
 }
 
 // Last dashed line of the tree

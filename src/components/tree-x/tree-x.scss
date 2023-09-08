@@ -1,0 +1,41 @@
+ch-tree-x {
+  display: flex;
+
+  // Remove un-useful droppable areas
+  &.ch-tree-x-dragging-item :not(.ch-tree-x-list-item--accept-drop) {
+    pointer-events: none;
+  }
+
+  // Reset useful droppable areas
+  &.ch-tree-x-dragging-item .ch-tree-x-list-item--accept-drop {
+    pointer-events: all;
+  }
+
+  // Remove mouse actions when processing the drop of items
+  // @todo: Remove keyboard actions
+  &.ch-tree-x-waiting-drop-processing {
+    cursor: wait;
+
+    > ch-tree-x-list {
+      pointer-events: none;
+    }
+  }
+}
+
+.ch-tree-x-drag-info {
+  --rtl-offset: 16px;
+
+  position: fixed;
+  left: 0; // Necessary since the custom vars are physical values
+  top: 0; // Necessary since the custom vars are physical values
+  transform: translate(
+    calc(var(--ch-tree-x-dragging-item-x) + var(--rtl-offset)),
+    calc(var(--ch-tree-x-dragging-item-y) + 8px)
+  );
+  pointer-events: none;
+  z-index: 1; // Necessary to show the element above the expandable buttons
+}
+
+html[dir="rtl"] .ch-tree-x-drag-info {
+  --rtl-offset: -100%;
+}

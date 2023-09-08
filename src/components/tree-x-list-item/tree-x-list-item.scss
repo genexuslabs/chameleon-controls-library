@@ -286,6 +286,8 @@ $own-offset: calc(
 
   display: grid;
   grid-template-rows: 0fr;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
 }
 
 .expanded {
@@ -295,4 +297,5 @@ $own-offset: calc(
 :not(.expanded) ::slotted([slot="tree"]) {
   display: none;
   overflow: hidden;
+  content-visibility: hidden;
 }

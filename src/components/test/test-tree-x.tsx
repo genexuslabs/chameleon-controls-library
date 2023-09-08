@@ -65,7 +65,6 @@ export class ChTestTreeX {
   @Watch("treeModel")
   handleTreeModelChange() {
     this.flattenModel();
-    console.log("handleTreeModelChange - - - - - - - - - -");
   }
 
   /**
@@ -310,7 +309,6 @@ export class ChTestTreeX {
 
   private getCheckedItemsHandler = async () => {
     // const checked = await this.tree.getCheckedItems();
-    // console.log(checked);
   };
 
   // private deleteNodeHandler = () => {
@@ -397,7 +395,6 @@ export class ChTestTreeX {
 
   private handleMultiSelectionChange = (event: CustomEvent) => {
     const checked = (event.target as HTMLInputElement).checked;
-    console.log("handleMultiSelectionChange", checked);
 
     this.multiSelection = checked;
   };

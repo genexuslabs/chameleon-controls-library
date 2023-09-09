@@ -17,6 +17,7 @@ import {
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
   TreeXItemDropInfo,
+  TreeXLines,
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
@@ -126,9 +127,9 @@ export class ChTreeX {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop() readonly showLines: boolean = false;
+  @Prop() readonly showLines: TreeXLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: boolean) {
+  handleShowLinesChange(newShowLines: TreeXLines) {
     const treeItems = this.el.querySelectorAll(
       TREE_LIST_AND_ITEM_SELECTOR
     ) as NodeListOf<HTMLChTreeXListElement | HTMLChTreeXListItemElement>;

@@ -14,6 +14,7 @@ import {
 import {
   TreeXItemDragStartInfo,
   TreeXItemDropInfo,
+  TreeXLines,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
@@ -208,9 +209,9 @@ export class ChTreeXListItem {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines = true;
+  @Prop({ mutable: true }) showLines: TreeXLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: boolean) {
+  handleShowLinesChange(newShowLines: TreeXLines) {
     if (newShowLines && this.lastItem) {
       this.setResizeObserver();
     } else {
@@ -716,6 +717,9 @@ export class ChTreeXListItem {
 
     const acceptDrop = !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
+    const showAllLines = this.showLines === "all" && this.level !== 0;
+    const showLastLine =
+      this.showLines === "last" && this.level !== 0 && this.lastItem;
 
     return (
       <Host
@@ -828,10 +832,14 @@ export class ChTreeXListItem {
             <div class="downloading" part="downloading"></div>
           )}
 
-          {this.showLines && this.level !== 0 && (
+          {(showAllLines || showLastLine) && (
             <div
-              class={{ "dashed-line": true, "last-dashed-line": this.lastItem }}
-              part={`dashed-line${this.lastItem ? " last-dashed-line" : ""}`}
+              class={{
+                "dashed-line": true,
+                "last-all-line": showAllLines && this.lastItem,
+                "last-line": showLastLine
+              }}
+              part={`dashed-line${this.lastItem ? " last-all-line" : ""}`}
             ></div>
           )}
         </button>

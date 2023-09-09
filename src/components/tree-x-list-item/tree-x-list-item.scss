@@ -162,15 +162,23 @@ $own-offset: calc(
   pointer-events: none; // Improve hover effect
   content-visibility: hidden;
   contain-intrinsic-size: auto 100px;
+  z-index: 1;
 }
 
 // Last dashed line of the tree
-.last-dashed-line {
+.last-all-line {
   inset-block-start: 0;
   height: calc(100% - var(--distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
-  pointer-events: none; // Improve hover effect
+}
+
+.last-line {
+  inset-block-start: 0;
+  height: 100%;
+  border-inline-start-width: 1px;
+  border-style: solid;
+  border-block-end: unset;
 }
 
 // - - - - - - - - - - - - - - - -

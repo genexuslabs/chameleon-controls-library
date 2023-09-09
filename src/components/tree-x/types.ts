@@ -57,3 +57,5 @@ export type TreeXItemDropInfo = {
   dropItemId: string;
   dataTransfer: DataTransfer;
 };
+
+export type TreeXLines = "all" | "last" | "none";

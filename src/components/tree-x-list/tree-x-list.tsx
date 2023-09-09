@@ -1,4 +1,5 @@
 import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
+import { TreeXLines } from "../tree-x/types";
 
 /**
  * This variable specifies a reference to the main ch-tree-x element
@@ -24,12 +25,12 @@ export class ChTreeListX {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines = true;
+  @Prop({ mutable: true }) showLines: TreeXLines = "none";
 
   @Watch("showLines")
-  handleShowLinesChange(newValue: boolean) {
+  handleShowLinesChange(newValue: TreeXLines) {
     // Displayed items may have changed since the last time that `showLines === true`
-    if (newValue) {
+    if (newValue !== "none" && this.level !== 0) {
       this.updateLastItemDashedLine();
     }
   }
@@ -73,7 +74,7 @@ export class ChTreeListX {
       <Host role={this.level === 0 ? "tree" : "group"}>
         <slot
           onSlotchange={
-            this.showLines && this.level !== 0
+            this.showLines !== "none" && this.level !== 0
               ? this.updateLastItemDashedLine
               : null
           }

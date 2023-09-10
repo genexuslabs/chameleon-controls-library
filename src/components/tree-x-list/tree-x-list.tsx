@@ -36,6 +36,12 @@ export class ChTreeListX {
   }
 
   private updateLastItemDashedLine = () => {
+    // @todo WA to avoid StencilJS' bug. The showLines Watch is dispatched
+    // before the componentDidLoad lifecycle method completes
+    if (!this.slotRef) {
+      return;
+    }
+
     const treeItems =
       this.slotRef.assignedElements() as HTMLChTreeXListItemElement[];
 

@@ -191,6 +191,8 @@ $own-offset: calc(
   height: var(--expandable-button-width);
   margin-inline-end: $separation-between-actions;
   z-index: 1;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
 
   &::before {
     content: "";
@@ -239,6 +241,8 @@ $own-offset: calc(
   display: block;
   width: 0.875em;
   height: 0.875em;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
 }
 
 .left-img {

@@ -637,9 +637,9 @@ export class ChTreeXListItem {
       return;
     }
 
+    // Remove drag image
     event.dataTransfer.setDragImage(resetDragImage, 0, 0);
-
-    // this.el.style.cursor = "move";
+    event.dataTransfer.effectAllowed = "move";
 
     this.dragState = "start";
     this.itemDragStart.emit({

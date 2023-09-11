@@ -804,6 +804,7 @@ export class ChTreeXListItem {
               action: true,
               "readonly-mode": !this.editing
             }}
+            part={`action ${!this.editing ? "readonly-mode" : ""}`}
             onDblClick={
               !this.leaf && !this.editing ? this.handleActionDblClick : null
             }

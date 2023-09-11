@@ -39,6 +39,20 @@
         overflow-y: auto;
         height: 100%;
       }
+
+      .ch-tree-x-list-item--success::part(action)::before {
+        grid-area: first-img;
+        content: "";
+        width: 12px;
+        height: 12px;
+        margin-inline-end: 4px;
+        background-color: rgb(69, 150, 96);
+        border-radius: 50%;
+      }
+
+      .ch-tree-x-list-item--success::part(action) {
+        grid-template: "first-img left-img text right-img" / max-content max-content 1fr max-content;
+      }
     </style>
   </head>
   <body>
@@ -606,6 +620,7 @@
             {
               id: "number-1-1",
               caption: "number-1-1",
+              class: "ch-tree-x-list-item--success",
               leaf: false,
               leftImgSrc: "./assets/icons/knowledge-base.svg",
               items: [
@@ -866,8 +881,8 @@
       const bigModel = [];
 
       const FIRST_LEVEL_SIZE = 10;
-      const SECOND_LEVEL_SIZE = 10;
-      const THIRD_LEVEL_SIZE = 10;
+      const SECOND_LEVEL_SIZE = 20;
+      const THIRD_LEVEL_SIZE = 20;
 
       for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
         bigModel.push({

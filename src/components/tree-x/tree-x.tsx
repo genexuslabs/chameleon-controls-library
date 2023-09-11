@@ -86,6 +86,7 @@ export class ChTreeX {
     }
   };
 
+  private draggingSelectedItems = false;
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
   private lastDragEvent: MouseEvent;
 
@@ -93,6 +94,7 @@ export class ChTreeX {
 
   private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
 
+  // Refs
   private currentDraggedItem: HTMLChTreeXListItemElement;
   private lastOpenSubTreeItem: HTMLChTreeXListItemElement;
 
@@ -408,6 +410,7 @@ export class ChTreeX {
     const isDraggingSelectedItems = this.selectedItemsInfo.has(
       draggedElement.id
     );
+    this.draggingSelectedItems = isDraggingSelectedItems;
 
     let joinedDraggedIds: string;
 
@@ -529,6 +532,8 @@ export class ChTreeX {
       <Host
         class={{
           "ch-tree-x-dragging-item": this.draggingItem,
+          "ch-tree-x--dragging-selected-items":
+            this.draggingItem && this.draggingSelectedItems,
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >

@@ -730,7 +730,7 @@ export class ChTreeXListItem {
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
           [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
             this.dragState !== "none" && this.dragState !== "start",
-          [TREE_ITEM_TAG_NAME + "--accept-drop"]: acceptDrop
+          [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}
         // Drag and drop

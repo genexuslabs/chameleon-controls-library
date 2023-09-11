@@ -8,14 +8,22 @@ ch-tree-x {
     inset: 0;
   }
 
-  // Remove un-useful droppable areas
-  &.ch-tree-x-dragging-item :not(.ch-tree-x-list-item--accept-drop) {
-    pointer-events: none;
+  // Reset useful droppable areas
+  &.ch-tree-x-dragging-item ch-tree-x-list-item {
+    pointer-events: var(--ch-tree-x-pointer-events, all);
   }
 
-  // Reset useful droppable areas
-  &.ch-tree-x-dragging-item .ch-tree-x-list-item--accept-drop {
-    pointer-events: all;
+  // Remove un-useful droppable areas
+  &.ch-tree-x-dragging-item {
+    .ch-tree-x-list-item--deny-drop,
+    ch-tree-x-list {
+      pointer-events: none;
+    }
+  }
+
+  // Remove droppable areas on selected items
+  &.ch-tree-x--dragging-selected-items ch-tree-x-list-item[selected] {
+    --ch-tree-x-pointer-events: none;
   }
 
   // Remove mouse actions when processing the drop of items

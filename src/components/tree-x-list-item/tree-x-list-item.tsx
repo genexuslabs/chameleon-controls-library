@@ -91,6 +91,12 @@ export class ChTreeXListItem {
   }
 
   /**
+   * Set this attribute if you want to set a custom render for the control, by
+   * passing a slot.
+   */
+  @Prop() readonly customRender: boolean = false;
+
+  /**
    * This attribute lets you specify if the element is disabled.
    * If disabled, it will not fire any user interaction related event
    * (for example, click event).
@@ -799,38 +805,45 @@ export class ChTreeXListItem {
             ></ch-checkbox>
           )}
 
-          <div
-            class={{
-              action: true,
-              "readonly-mode": !this.editing
-            }}
-            part={`action ${!this.editing ? "readonly-mode" : ""}`}
-            onDblClick={
-              !this.leaf && !this.editing ? this.handleActionDblClick : null
-            }
-          >
-            {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
+          {this.customRender ? (
+            <slot name="custom-content" />
+          ) : (
+            [
+              <div
+                class={{
+                  action: true,
+                  "readonly-mode": !this.editing
+                }}
+                part={`action ${!this.editing ? "readonly-mode" : ""}`}
+                onDblClick={
+                  !this.leaf && !this.editing ? this.handleActionDblClick : null
+                }
+              >
+                {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 
-            {this.editing ? (
-              <input
-                class="edit-name"
-                part="edit-name"
-                disabled={this.disabled}
-                type="text"
-                value={this.caption}
-                onBlur={this.removeEditMode(false)}
-                onKeyDown={this.checkIfShouldRemoveEditMode}
-                ref={el => (this.inputRef = el)}
-              />
-            ) : (
-              this.caption
-            )}
+                {this.editing ? (
+                  <input
+                    class="edit-name"
+                    part="edit-name"
+                    disabled={this.disabled}
+                    type="text"
+                    value={this.caption}
+                    onBlur={this.removeEditMode(false)}
+                    onKeyDown={this.checkIfShouldRemoveEditMode}
+                    ref={el => (this.inputRef = el)}
+                  />
+                ) : (
+                  this.caption
+                )}
 
-            {this.rightImgSrc && this.renderImg("right-img", this.rightImgSrc)}
-          </div>
+                {this.rightImgSrc &&
+                  this.renderImg("right-img", this.rightImgSrc)}
+              </div>,
 
-          {this.showDownloadingSpinner && !this.leaf && this.downloading && (
-            <div class="downloading" part="downloading"></div>
+              this.showDownloadingSpinner && !this.leaf && this.downloading && (
+                <div class="downloading" part="downloading"></div>
+              )
+            ]
           )}
 
           {(showAllLines || showLastLine) && (

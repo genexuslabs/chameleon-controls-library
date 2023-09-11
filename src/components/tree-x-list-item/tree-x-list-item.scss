@@ -220,9 +220,12 @@ $own-offset: calc(
 }
 
 .checkbox {
-  // width: var(--checkbox-size);
-  // height: var(--checkbox-size);
   margin-inline-end: $separation-between-actions;
+
+  &::part(container) {
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+  }
 }
 
 // - - - - - - - - - - - - - - - -
@@ -251,12 +254,12 @@ $own-offset: calc(
 
 .left-img {
   grid-area: left-img;
-  margin-inline-end: 6px;
+  margin-inline-end: $separation-between-actions;
 }
 
 .right-img {
   grid-area: right-img;
-  margin-inline-start: 6px;
+  margin-inline-start: $separation-between-actions;
 }
 
 .edit-name {

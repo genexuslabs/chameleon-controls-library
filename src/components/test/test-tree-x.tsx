@@ -12,6 +12,7 @@ import {
 import {
   TreeXItemDropInfo,
   TreeXItemModel,
+  TreeXLines,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo,
   TreeXModel
@@ -88,10 +89,10 @@ export class ChTestTreeX {
   @Prop({ mutable: true }) multiSelection = false;
 
   /**
-   * Set this attribute if you want to display the relation between tree items and tree lists using
+   * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines = true;
+  @Prop({ mutable: true }) showLines: TreeXLines = "none";
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -400,8 +401,8 @@ export class ChTestTreeX {
   };
 
   private handleShowLinesChange = (event: CustomEvent) => {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.showLines = checked;
+    const selectedOption = (event.target as HTMLSelectElement).value;
+    this.showLines = selectedOption as TreeXLines;
   };
 
   componentWillLoad() {
@@ -411,19 +412,17 @@ export class ChTestTreeX {
   render() {
     return (
       <Host>
-        <div class="test-tree-x-scroll">
-          <ch-tree-x
-            multiSelection={this.multiSelection}
-            showLines={this.showLines}
-            waitDropProcessing={this.waitDropProcessing}
-            onSelectedItemsChange={this.handleSelectedItemsChange}
-            ref={el => (this.treeRef = el)}
-          >
-            <ch-tree-x-list>
-              {this.treeModel.items.map(this.renderSubModel)}
-            </ch-tree-x-list>
-          </ch-tree-x>
-        </div>
+        <ch-tree-x
+          multiSelection={this.multiSelection}
+          showLines={this.showLines}
+          waitDropProcessing={this.waitDropProcessing}
+          onSelectedItemsChange={this.handleSelectedItemsChange}
+          ref={el => (this.treeRef = el)}
+        >
+          <ch-tree-x-list>
+            {this.treeModel.items.map(this.renderSubModel)}
+          </ch-tree-x-list>
+        </ch-tree-x>
 
         <div class="tree-buttons">
           <button type="button" onClick={this.closeTreeNodeHandler}>
@@ -452,14 +451,20 @@ export class ChTestTreeX {
             onInput={this.handleMultiSelectionChange}
           ></ch-checkbox>
 
-          <ch-checkbox
-            checkedValue="true"
-            unCheckedValue="false"
-            value={this.showLines.toString()}
-            caption="Show lines"
-            onInput={this.handleShowLinesChange}
-          ></ch-checkbox>
-
+          <label>
+            Lines
+            <select name="lines" onInput={this.handleShowLinesChange}>
+              <option value="all" selected={this.showLines === "all"}>
+                All lines
+              </option>
+              <option value="last" selected={this.showLines === "last"}>
+                Last line
+              </option>
+              <option value="none" selected={this.showLines === "none"}>
+                None
+              </option>
+            </select>
+          </label>
           {/* <button type="button" onClick={this.deleteNodeHandler}>
           Delete Tree
         </button> */}

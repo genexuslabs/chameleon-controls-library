@@ -21,6 +21,7 @@ import {
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
+import { scrollToEdge } from "../../common/scroll-to-edge";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_LIST_TAG_NAME = "ch-tree-x-list";
@@ -86,8 +87,7 @@ export class ChTreeX {
   };
 
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
-  private lastPageX = 0;
-  private lastPageY = 0;
+  private lastDragEvent: MouseEvent;
 
   private openSubTreeTimeout: NodeJS.Timeout;
 
@@ -122,6 +122,12 @@ export class ChTreeX {
    * over in a subtree to open it when dragging.
    */
   @Prop() readonly openSubTreeCountdown: number = 750;
+
+  /**
+   * `true` to scroll in the tree when dragging an item near the edges of the
+   * tree.
+   */
+  @Prop() readonly scrollToEdgeOnDrag: boolean = true;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -258,6 +264,10 @@ export class ChTreeX {
     // Wait until the custom var values are updated to avoid flickering
     setTimeout(() => {
       this.draggingItem = true;
+
+      if (this.scrollToEdgeOnDrag) {
+        this.fixScrollPositionOnDrag();
+      }
     }, 10);
   }
 
@@ -363,8 +373,7 @@ export class ChTreeX {
 
   private trackItemDrag = (event: DragEvent) => {
     event.preventDefault();
-    this.lastPageX = event.pageX;
-    this.lastPageY = event.pageY;
+    this.lastDragEvent = event;
 
     if (!this.needForRAF) {
       return;
@@ -376,11 +385,11 @@ export class ChTreeX {
 
       this.el.style.setProperty(
         POSITION_X_DRAG_CUSTOM_VAR,
-        `${this.lastPageX}px`
+        `${this.lastDragEvent.pageX}px`
       );
       this.el.style.setProperty(
         POSITION_Y_DRAG_CUSTOM_VAR,
-        `${this.lastPageY}px`
+        `${this.lastDragEvent.pageY}px`
       );
     });
   };
@@ -424,6 +433,18 @@ export class ChTreeX {
 
     dragInfo.dataTransfer.setData("text/plain", joinedDraggedIds);
   }
+
+  private fixScrollPositionOnDrag = () => {
+    if (!this.draggingItem || !this.lastDragEvent) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      scrollToEdge(this.lastDragEvent, this.el, 10, 30);
+
+      requestAnimationFrame(this.fixScrollPositionOnDrag);
+    });
+  };
 
   private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
     if (!draggingSelectedItems) {

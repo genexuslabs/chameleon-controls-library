@@ -1,5 +1,12 @@
 ch-tree-x {
   display: flex;
+  position: relative;
+  overflow: auto;
+
+  & > ch-tree-x-list {
+    position: absolute;
+    inset: 0;
+  }
 
   // Remove un-useful droppable areas
   &.ch-tree-x-dragging-item :not(.ch-tree-x-list-item--accept-drop) {

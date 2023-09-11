@@ -131,6 +131,42 @@ export class ChTestTreeX {
     this.treeRef.scrollIntoVisible(treeItemId);
   }
 
+  /**
+   * This method is used to toggle a tree item by the tree item id/ids.
+   *
+   * @param treeItemIds An array id the tree items to be toggled.
+   * @param expand A boolean indicating that the tree item should be expanded or collapsed. (optional)
+   * @returns The modified items after the method was called.
+   */
+  @Method()
+  async toggleItems(
+    treeItemIds: string[],
+    expand?: boolean
+  ): Promise<TreeXListItemExpandedInfo[]> {
+    if (!treeItemIds) {
+      return [];
+    }
+
+    const modifiedTreeItems: TreeXListItemExpandedInfo[] = [];
+
+    treeItemIds.forEach(treeItemId => {
+      const itemInfo = this.flattenedTreeModel.get(treeItemId).item;
+
+      if (itemInfo) {
+        itemInfo.expanded = expand ?? !itemInfo.expanded;
+
+        modifiedTreeItems.push({
+          id: itemInfo.id,
+          expanded: itemInfo.expanded
+        });
+      }
+    });
+    // Force re-render
+    forceUpdate(this);
+
+    return modifiedTreeItems;
+  }
+
   @Listen("itemsDropped")
   handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
     const detail = event.detail;
@@ -414,6 +450,14 @@ export class ChTestTreeX {
     this.showLines = selectedOption as TreeXLines;
   };
 
+  private handleExpandOrCollapseAll = (expand: boolean) => () => {
+    [...this.flattenedTreeModel.values()].forEach(itemUIModel => {
+      itemUIModel.item.expanded = expand;
+    });
+
+    forceUpdate(this);
+  };
+
   componentWillLoad() {
     this.flattenModel();
   }
@@ -445,6 +489,14 @@ export class ChTestTreeX {
 
           <button type="button" onClick={this.toggleTreeNodeHandler}>
             Toggle 1-1-2
+          </button>
+
+          <button type="button" onClick={this.handleExpandOrCollapseAll(true)}>
+            Expand All
+          </button>
+
+          <button type="button" onClick={this.handleExpandOrCollapseAll(false)}>
+            Collapse All
           </button>
 
           <button type="button" onClick={this.getCheckedItemsHandler}>

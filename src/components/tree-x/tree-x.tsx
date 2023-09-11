@@ -198,42 +198,6 @@ export class ChTreeX {
   }
 
   // /**
-  //  * This method is used to toggle a tree item by the tree item id/ids.
-  //  *
-  //  * @param treeItemIds An array id the tree items to be toggled.
-  //  * @param expand A boolean indicating that the tree item should be expanded or collapsed. (optional)
-  //  * @returns The modified items after the method was called.
-  //  */
-  // @Method()
-  // async toggleItems(
-  //   treeItemIds: string[],
-  //   expand?: boolean
-  // ): Promise<ExpandedTreeItemInfo[]> {
-  //   if (!treeItemIds) {
-  //     return [];
-  //   }
-
-  //   const allTreeItems = Array.from(
-  //     this.el.querySelectorAll(TREE_ITEM_TAG_NAME)
-  //   );
-  //   const modifiedTreeItems: ExpandedTreeItemInfo[] = [];
-
-  //   treeItemIds.forEach(treeItemId => {
-  //     const treeItem = allTreeItems.find(item => treeItemId === item.id);
-
-  //     if (treeItem) {
-  //       treeItem.expanded = expand ?? !treeItem.expanded;
-
-  //       modifiedTreeItems.push({
-  //         id: treeItem.id,
-  //         expanded: treeItem.expanded
-  //       });
-  //     }
-  //   });
-  //   return modifiedTreeItems;
-  // }
-
-  // /**
   //  * Returns an array of the selected tree items, providing the id, caption and
   //  * selected status.
   //  */

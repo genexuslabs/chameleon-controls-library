@@ -18,6 +18,7 @@ import {
   TreeXItemDragStartInfo,
   TreeXItemDropInfo,
   TreeXLines,
+  TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
@@ -152,6 +153,11 @@ export class ChTreeX {
    * of items.
    */
   @Prop() readonly waitDropProcessing: boolean = false;
+
+  /**
+   * Fired when an item is expanded or collapsed.
+   */
+  @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
 
   /**
    * Fired when the selected items change.
@@ -348,6 +354,7 @@ export class ChTreeX {
 
     this.openSubTreeTimeout = setTimeout(() => {
       treeItem.expanded = true;
+      this.expandedItemChange.emit({ id: treeItem.id, expanded: true });
     }, this.openSubTreeCountdown);
   }
 

@@ -28,7 +28,7 @@ export type CheckedTreeItemInfo = {
   selected: boolean;
 };
 
-export type ExpandedTreeItemInfo = {
+export type TreeXListItemExpandedInfo = {
   id: string;
   expanded: boolean;
 };

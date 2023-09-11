@@ -13,6 +13,7 @@ import {
   TreeXItemDropInfo,
   TreeXItemModel,
   TreeXLines,
+  TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo,
   TreeXModel
@@ -308,6 +309,14 @@ export class ChTestTreeX {
     });
   };
 
+  private handleExpandedItemChange = (
+    event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>
+  ) => {
+    const detail = event.detail;
+    const itemInfo = this.flattenedTreeModel.get(detail.id).item;
+    itemInfo.expanded = detail.expanded;
+  };
+
   private getCheckedItemsHandler = async () => {
     // const checked = await this.tree.getCheckedItems();
   };
@@ -417,6 +426,7 @@ export class ChTestTreeX {
           showLines={this.showLines}
           waitDropProcessing={this.waitDropProcessing}
           onSelectedItemsChange={this.handleSelectedItemsChange}
+          onExpandedItemChange={this.handleExpandedItemChange}
           ref={el => (this.treeRef = el)}
         >
           <ch-tree-x-list>

@@ -67,16 +67,16 @@ ch-grid-cell::part(node-icon) {
 }
 
 ch-grid-row:has(> ch-grid-rowset) > ch-grid-cell::part(node-icon) {
-  background-image: url("assets/folder.svg");
+  background-image: url("../icons/folder.svg");
 }
 ch-grid-cell::part(node-icon) {
-  background-image: url("assets/file.svg");
+  background-image: url("../icons/file.svg");
 }
 
 ch-grid-rowset-legend::part(icon) {
   width: 16px;
   height: 16px;
-  background-image: url("assets/group.svg");
+  background-image: url("../icons/group.svg");
   background-repeat: no-repeat;
   background-size: 12px 12px;
   background-position: center;
@@ -92,7 +92,7 @@ ch-grid-cell::part(drag-icon) {
   background-repeat: no-repeat;
   background-size: 16px 16px;
   background-position: center;
-  background-image: url("assets/drag.svg");
+  background-image: url("../icons/drag.svg");
 }
 
 ch-grid-cell::part(actions-icon) {
@@ -108,7 +108,7 @@ ch-grid-cell::part(actions-icon) {
   background-repeat: no-repeat;
   background-size: 10px 10px;
   background-position: center;
-  background-image: url("assets/view-more.svg");
+  background-image: url("../icons/view-more.svg");
 }
 
 /* caret */
@@ -116,13 +116,13 @@ ch-grid-row > ch-grid-cell::part(caret),
 ch-grid-rowset > ch-grid-rowset-legend::part(caret) {
   width: 16px;
   height: 16px;
-  background-image: url("assets/node_collapse.gif");
+  background-image: url("../icons/node_collapse.gif");
 }
 
 ch-grid-row:is([collapsed], [leaf="false"]:not(:has(> ch-grid-rowset)))
   > ch-grid-cell::part(caret),
 ch-grid-rowset[collapsed] > ch-grid-rowset-legend::part(caret) {
-  background-image: url("assets/node_expand.gif");
+  background-image: url("../icons/node_expand.gif");
 }
 
 ch-grid-actionbar {
@@ -137,7 +137,7 @@ ch-grid-action-refresh {
   background-repeat: no-repeat;
   background-size: 24px 24px;
   background-position: center;
-  background-image: url("assets/refresh.svg");
+  background-image: url("../icons/refresh.svg");
 }
 
 ch-grid-action-settings {
@@ -147,7 +147,7 @@ ch-grid-action-settings {
   background-repeat: no-repeat;
   background-size: 24px 24px;
   background-position: center;
-  background-image: url("assets/settings.svg");
+  background-image: url("../icons/settings.svg");
 }
 
 ch-grid-column::part(bar-settings-button) {
@@ -157,7 +157,7 @@ ch-grid-column::part(bar-settings-button) {
   background-repeat: no-repeat;
   background-size: 16px 16px;
   background-position: center;
-  background-image: url("assets/settings.svg");
+  background-image: url("../icons/settings.svg");
 }
 
 ch-grid-column::part(bar-sort-ascending) {
@@ -166,7 +166,7 @@ ch-grid-column::part(bar-sort-ascending) {
   background-repeat: no-repeat;
   background-size: 16px 16px;
   background-position: center;
-  background-image: url("assets/sort-asc.svg");
+  background-image: url("../icons/sort-asc.svg");
 }
 
 ch-grid-column::part(bar-sort-descending) {
@@ -175,7 +175,7 @@ ch-grid-column::part(bar-sort-descending) {
   background-repeat: no-repeat;
   background-size: 16px 16px;
   background-position: center;
-  background-image: url("assets/sort-desc.svg");
+  background-image: url("../icons/sort-desc.svg");
 }
 
 /* grid settings window */

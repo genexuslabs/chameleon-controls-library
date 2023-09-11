@@ -314,6 +314,7 @@ export class ChTreeX {
   }
 
   private trackItemDragEnter = (event: DragEvent) => {
+    this.cancelSubTreeOpening(null, true);
     event.stopPropagation();
     const currentTarget = event.target as HTMLElement;
 
@@ -322,22 +323,20 @@ export class ChTreeX {
       return;
     }
 
-    // Check if it is a valid item
-    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
-      return;
-    }
-
-    const treeItem = currentTarget as HTMLChTreeXListItemElement;
-    treeItem.dragState = "enter";
-    this.openSubTreeAfterCountdown(treeItem);
+    this.openSubTreeAfterCountdown(currentTarget);
   };
 
   private validDroppableZone = (draggedItemId: string) =>
     !this.draggedIds.includes(draggedItemId) &&
     !this.draggedParentIds.includes(draggedItemId);
 
-  private openSubTreeAfterCountdown(treeItem: HTMLChTreeXListItemElement) {
-    this.cancelSubTreeOpening(treeItem);
+  private openSubTreeAfterCountdown(currentTarget: HTMLElement) {
+    // Check if it is a valid item
+    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      return;
+    }
+    const treeItem = currentTarget as HTMLChTreeXListItemElement;
+    treeItem.dragState = "enter";
 
     if (treeItem.leaf || treeItem.expanded) {
       return;

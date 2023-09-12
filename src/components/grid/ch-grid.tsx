@@ -8,7 +8,8 @@ import {
   ChGridRowClickedEvent,
   ChGridMarkingChangedEvent,
   ChGridCellSelectionChangedEvent,
-  ChGridRowPressedEvent
+  ChGridRowPressedEvent,
+  ChGridRowContextMenuEvent
 } from "./ch-grid-types";
 import {
   Component,
@@ -219,6 +220,11 @@ export class ChGrid {
    * Event emitted when Enter is pressed on a row.
    */
   @Event() rowEnterPressed: EventEmitter<ChGridRowPressedEvent>;
+
+  /**
+   * Event emitted when attempts to open a context menu on a row.
+   */
+  @Event() rowContextMenu: EventEmitter<ChGridRowContextMenuEvent>;
 
   componentWillLoad() {
     this.manager = new ChGridManager(this.el);
@@ -451,6 +457,43 @@ export class ChGrid {
         cellId: cell?.cellId,
         columnId: cell?.column.columnId
       });
+    }
+  }
+
+  @Listen("contextmenu")
+  contextmenuHandler(eventInfo: MouseEvent) {
+    let targetRow: HTMLChGridRowElement;
+
+    if (eventInfo.target === this.el) {
+      targetRow = this.rowFocused;
+    } else {
+      targetRow = this.manager.getRowEventTarget(eventInfo);
+    }
+
+    if (targetRow) {
+      const cellFocused =
+        this.cellSelected?.row === targetRow ? this.cellSelected : null;
+
+      const rowContextMenuEventInfo = this.rowContextMenu.emit({
+        rowId: targetRow.rowId,
+        cellId: cellFocused.cellId,
+        columnId: cellFocused.column.columnId,
+        selectedRowsId: this.rowsSelected.map(row => row.rowId),
+        clientX: eventInfo.clientX,
+        clientY: eventInfo.clientY
+      });
+
+      this.manager.rowActions.showOnRowContext?.openRowContext(
+        eventInfo.clientX,
+        eventInfo.clientY
+      );
+
+      if (
+        rowContextMenuEventInfo.defaultPrevented ||
+        this.manager.rowActions.showOnRowContext
+      ) {
+        eventInfo.preventDefault();
+      }
     }
   }
 

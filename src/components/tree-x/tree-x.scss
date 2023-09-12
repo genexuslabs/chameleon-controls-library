@@ -6,6 +6,7 @@ ch-tree-x {
   & > ch-tree-x-list {
     position: absolute;
     inset: 0;
+    min-width: max-content;
   }
 
   // Reset useful droppable areas

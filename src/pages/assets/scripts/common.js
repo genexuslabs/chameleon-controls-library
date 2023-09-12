@@ -2,7 +2,7 @@ const html = document.querySelector("html");
 const body = document.querySelector("body");
 const head = document.querySelector("head");
 
-/**************
+/** ************
 HEAD
 ***************/
 function setFavicon(favImgSrc) {
@@ -13,17 +13,17 @@ function setFavicon(favImgSrc) {
 }
 setFavicon("./assets/ch.ico");
 
-/**************
+/** ************
 HEADER
 ***************/
 const noPartSelected = "No part selected.";
-/*header*/
+/* header*/
 const headerDev = document.createElement("header");
 headerDev.classList.add("header-dev");
-/*header main*/
+/* header main*/
 const headerMain = document.createElement("div");
 headerMain.classList.add("header-dev__main");
-/*header parts*/
+/* header parts*/
 const headerParts = document.createElement("div");
 headerParts.classList.add("header-dev__parts");
 headerPartsTitle = document.createElement("span");
@@ -32,7 +32,7 @@ headerPartsTitle.innerText = "Select a part:";
 headerPartsSelected = document.createElement("span");
 headerPartsSelected.classList.add("header-dev__parts-selected");
 headerPartsSelected.innerText = noPartSelected;
-/*header title*/
+/* header title*/
 const headerTitle = document.createElement("span");
 headerTitle.classList.add("header-dev__title");
 const htmlTitle = document.title;
@@ -41,11 +41,11 @@ if (htmlTitle) {
 } else {
   headerTitle.innerText = 'Please, add a "title" to the page.';
 }
-/*buttons group*/
+/* buttons group*/
 const headerButtonsGroup = document.createElement("div");
 headerButtonsGroup.classList.add("header-dev__buttons-group");
 
-/*************************
+/** ***********************
 HEADER > Toggle RTL Button
 /*************************/
 const toggleRtlBtn = document.createElement("button");
@@ -70,7 +70,7 @@ const toggleRtl = () => {
 };
 toggleRtlBtn.addEventListener("click", toggleRtl);
 
-/****************************
+/** **************************
 HEADER > Toggle Styles Button
 /****************************/
 body.classList.add("styles");
@@ -90,7 +90,7 @@ toggleStylesBtn.addEventListener("click", function () {
   toggleStylesBtnActiveClass();
 });
 
-/***************************
+/** *************************
 HEADER > Toggle Parts Button
 /***************************/
 const togglePartsBtn = document.createElement("button");
@@ -113,21 +113,21 @@ const chComponents = Array.from(document.getElementsByTagName("*")).filter(
   element => element.tagName.toLowerCase().includes(partialTagName)
 );
 
-/*APPEND ELEMENTS*/
-/*Header main*/
+/* APPEND ELEMENTS*/
+/* Header main*/
 headerMain.appendChild(headerTitle);
 headerButtonsGroup.appendChild(toggleRtlBtn);
 headerButtonsGroup.appendChild(togglePartsBtn);
 headerButtonsGroup.appendChild(toggleStylesBtn);
 headerMain.appendChild(headerButtonsGroup);
-/*Header parts*/
+/* Header parts*/
 headerParts.appendChild(headerPartsTitle);
 headerParts.appendChild(headerPartsSelected);
 headerDev.appendChild(headerMain);
 headerDev.appendChild(headerParts);
 body.prepend(headerDev);
 
-/*********************************************
+/** *******************************************
 PARTS (Add 'part' part) to add styles to parts
 /********************************************/
 window.addEventListener("appload", () => {
@@ -160,14 +160,14 @@ window.addEventListener("appload", () => {
   });
 });
 
-/**************
+/** ************
 SECTIONS
 ***************/
-/*.section-dev's provide an appealing way to visualize different separate cases of use for a component*/
+/* .section-dev's provide an appealing way to visualize different separate cases of use for a component*/
 const chSections = document.querySelectorAll(".section-dev");
 if (chSections.length) {
   chSections.forEach(chSection => {
-    /*title*/
+    /* title*/
     const title = chSection.getAttribute("data-title");
     if (title && title.length) {
       const titleEl = document.createElement("h2");
@@ -175,7 +175,7 @@ if (chSections.length) {
       titleEl.innerText = title;
       chSection.prepend(titleEl);
     }
-    /*set id*/
+    /* set id*/
     chSection.setAttribute("id", title.replace(/\s+/g, "-").toLowerCase());
   });
 }

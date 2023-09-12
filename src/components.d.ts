@@ -16,9 +16,13 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
-import { focusChangeAttempt, itemSelected } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { LabelPosition } from "./common/types";
+import { FocusChangeAttempt, SuggestItemData } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { TreeXItemDragStartInfo, TreeXItemDropInfo, TreeXItemModel, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
+import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
+import { DragState } from "./components/tree-x-list-item/tree-x-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -37,6 +41,48 @@ export namespace Components {
           * `true` if the accordion is expanded.
          */
         "expanded": boolean;
+    }
+    interface ChCheckbox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies the label of the checkbox.
+         */
+        "caption": string;
+        /**
+          * Indicates that the control is selected by default.
+         */
+        "checked": boolean;
+        /**
+          * The value when the checkbox is 'on'
+         */
+        "checkedValue": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * True to highlight control when an action is fired.
+         */
+        "highlightable": boolean;
+        /**
+          * `true` if the control's value is indeterminate.
+         */
+        "indeterminate": boolean;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * The value when the checkbox is 'off'
+         */
+        "unCheckedValue": string;
+        /**
+          * The value of the control.
+         */
+        "value": string;
     }
     interface ChDragBar {
         /**
@@ -200,6 +246,17 @@ export namespace Components {
           * An object that contains localized strings for the grid.
          */
         "localization": GridLocalization;
+        /**
+          * Mark or unmark all rows.
+          * @param marked - A boolean indicating whether to mark or unmark all rows.
+         */
+        "markAllRows": (marked?: boolean) => Promise<void>;
+        /**
+          * Mark or unmark a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param marked - A boolean indicating whether to mark or unmark the row.
+         */
+        "markRow": (rowId: string, marked?: boolean) => Promise<void>;
         /**
           * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
           * @param rowId - The rowId of the row to ensure visibility.
@@ -400,6 +457,30 @@ export namespace Components {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        /**
+          * Closes the row actions window.
+         */
+        "close": () => Promise<void>;
+        /**
+          * Opens the row actions on the row-actions-button cell.
+         */
+        "openRowActions": (cell: HTMLElement) => Promise<void>;
+        /**
+          * Opens the row actions on row hover.
+         */
+        "openRowHover": (row: HTMLElement) => Promise<void>;
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions": boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext": boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover": boolean;
     }
     interface ChGridRowsetEmpty {
     }
@@ -763,7 +844,21 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    interface ChStyle {
+        /**
+          * Specifies the location of the stylesheet document
+         */
+        "href": string;
+    }
     interface ChSuggest {
+        /**
+          * This is the suggest caption. Is what the user sees on the input.
+         */
+        "caption": string;
+        /**
+          * If true, it will position the cursor at the end when the input is focused.
+         */
+        "cursorEnd": false;
         /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
@@ -773,11 +868,27 @@ export namespace Components {
          */
         "label": string;
         /**
+          * The label position
+         */
+        "labelPosition": LabelPosition;
+        /**
+          * @description It selects/highlights the input text.
+         */
+        "selectInputText": () => Promise<void>;
+        /**
+          * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+         */
+        "showHeader": false;
+        /**
           * Whether or not to display the label
          */
         "showLabel": boolean;
         /**
-          * The input value
+          * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
+         */
+        "suggestTitle": string;
+        /**
+          * This is the suggest value.
          */
         "value": string;
     }
@@ -789,9 +900,59 @@ export namespace Components {
     }
     interface ChSuggestListItem {
         /**
+          * The description
+         */
+        "description": string;
+        /**
           * The icon url
          */
         "iconSrc": string;
+        /**
+          * The item value
+         */
+        "value": any;
+    }
+    interface ChTestTreeX {
+        /**
+          * Callback that is executed when a list of items request to be dropped into another item.
+         */
+        "dropItemsCallback": (
+    dropItemId: string,
+    draggedIds: string[]
+  ) => Promise<TreeXItemModel[]>;
+        /**
+          * Callback that is executed when a item request to load its subitems.
+         */
+        "lazyLoadTreeItemsCallback": (
+    treeItemId: string
+  ) => Promise<TreeXItemModel[]>;
+        /**
+          * Callback that is executed when a item request to modify its caption.
+         */
+        "modifyItemCaptionCallback": (
+    treeItemId: string,
+    newCaption: string
+  ) => Promise<TreeXOperationStatusModifyCaption>;
+        /**
+          * Set this attribute if you want to allow multi selection of the items.
+         */
+        "multiSelection": boolean;
+        /**
+          * Given an item id, it displays and scrolls into the item view.
+         */
+        "scrollIntoVisible": (treeItemId: string) => Promise<void>;
+        /**
+          * Set this attribute if you want to display the relation between tree items and tree lists using lines.
+         */
+        "showLines": boolean;
+        /**
+          * Callback that is executed when the treeModel is changed to order its items.
+         */
+        "sortItemsCallback": (subModel: TreeXItemModel[]) => void;
+        /**
+          * This property lets you define the model of the ch-tree-x control.
+         */
+        "treeModel": TreeXModel;
     }
     interface ChTextblock {
         /**
@@ -875,6 +1036,144 @@ export namespace Components {
          */
         "selected": boolean;
         "updateTreeVerticalLineHeight": () => Promise<void>;
+    }
+    interface ChTreeX {
+        /**
+          * Level in the tree at which the control is placed.
+         */
+        "level": number;
+        /**
+          * Set this attribute if you want to allow multi selection of the items.
+         */
+        "multiSelection": boolean;
+        /**
+          * This property lets you specify the time (in ms) that the mouse must be over in a subtree to open it when dragging.
+         */
+        "openSubTreeCountdown": number;
+        /**
+          * Given an item id, it displays and scrolls into the item view.
+         */
+        "scrollIntoVisible": (treeItemId: string) => Promise<void>;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines": boolean;
+        /**
+          * This property lets you specify if the tree is waiting to process the drop of items.
+         */
+        "waitDropProcessing": boolean;
+    }
+    interface ChTreeXList {
+        /**
+          * Level in the tree at which the control is placed.
+         */
+        "level": number;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines": boolean;
+    }
+    interface ChTreeXListItem {
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption": string;
+        /**
+          * Set this attribute if you want display a checkbox in the control.
+         */
+        "checkbox": boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
+         */
+        "checked": boolean;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading": boolean;
+        /**
+          * This property lets you define the current state of the item when it's being dragged.
+         */
+        "dragState": DragState;
+        /**
+          * Set this attribute when the item is in edit mode
+         */
+        "editing": boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded": boolean;
+        /**
+          * Focus the last item in its subtree. If the control is not expanded, it focus the control
+         */
+        "focusLastItem": (ctrlKeyPressed: boolean) => Promise<void>;
+        /**
+          * Focus the next item in the tree. If the control is expanded, it focuses the first subitem in its tree.
+         */
+        "focusNextItem": (ctrlKeyPressed: boolean) => Promise<void>;
+        /**
+          * Focus the next sibling item in the tree.
+         */
+        "focusNextSibling": (ctrlKeyPressed: boolean) => Promise<void>;
+        /**
+          * Focus the previous item in the tree. If the previous item is expanded, it focuses the last subitem in its tree.
+         */
+        "focusPreviousItem": (ctrlKeyPressed: boolean) => Promise<void>;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate": boolean;
+        /**
+          * This attribute specifies if the control is the last items in its subtree
+         */
+        "lastItem": boolean;
+        /**
+          * Determine if the items are lazy loaded when opening the first time the control.
+         */
+        "lazyLoad": boolean;
+        /**
+          * The presence of this attribute determine whether the item contains a subtree. `true` if the item does not have a subtree.
+         */
+        "leaf": boolean;
+        /**
+          * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+         */
+        "leftImgSrc": string;
+        /**
+          * Level in the tree at which the item is placed.
+         */
+        "level": number;
+        /**
+          * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+         */
+        "rightImgSrc": string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected": boolean;
+        /**
+          * Set focus in the control
+         */
+        "setFocus": (ctrlKeyPressed: boolean) => Promise<void>;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner": boolean;
+        /**
+          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
+         */
+        "showExpandableButton": boolean;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines": boolean;
+        /**
+          * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
+         */
+        "toggleCheckboxes": boolean;
     }
     interface ChWindow {
         /**
@@ -981,6 +1280,10 @@ export interface ChAccordionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAccordionElement;
 }
+export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChCheckboxElement;
+}
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
@@ -1081,6 +1384,14 @@ export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTreeItemElement;
 }
+export interface ChTreeXCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTreeXElement;
+}
+export interface ChTreeXListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTreeXListItemElement;
+}
 export interface ChWindowCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChWindowElement;
@@ -1099,6 +1410,12 @@ declare global {
     var HTMLChAccordionElement: {
         prototype: HTMLChAccordionElement;
         new (): HTMLChAccordionElement;
+    };
+    interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
+    }
+    var HTMLChCheckboxElement: {
+        prototype: HTMLChCheckboxElement;
+        new (): HTMLChCheckboxElement;
     };
     interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
     }
@@ -1328,6 +1645,12 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    interface HTMLChStyleElement extends Components.ChStyle, HTMLStencilElement {
+    }
+    var HTMLChStyleElement: {
+        prototype: HTMLChStyleElement;
+        new (): HTMLChStyleElement;
+    };
     interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
     }
     var HTMLChSuggestElement: {
@@ -1346,6 +1669,12 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChTestTreeXElement extends Components.ChTestTreeX, HTMLStencilElement {
+    }
+    var HTMLChTestTreeXElement: {
+        prototype: HTMLChTestTreeXElement;
+        new (): HTMLChTestTreeXElement;
+    };
     interface HTMLChTextblockElement extends Components.ChTextblock, HTMLStencilElement {
     }
     var HTMLChTextblockElement: {
@@ -1363,6 +1692,24 @@ declare global {
     var HTMLChTreeItemElement: {
         prototype: HTMLChTreeItemElement;
         new (): HTMLChTreeItemElement;
+    };
+    interface HTMLChTreeXElement extends Components.ChTreeX, HTMLStencilElement {
+    }
+    var HTMLChTreeXElement: {
+        prototype: HTMLChTreeXElement;
+        new (): HTMLChTreeXElement;
+    };
+    interface HTMLChTreeXListElement extends Components.ChTreeXList, HTMLStencilElement {
+    }
+    var HTMLChTreeXListElement: {
+        prototype: HTMLChTreeXListElement;
+        new (): HTMLChTreeXListElement;
+    };
+    interface HTMLChTreeXListItemElement extends Components.ChTreeXListItem, HTMLStencilElement {
+    }
+    var HTMLChTreeXListItemElement: {
+        prototype: HTMLChTreeXListItemElement;
+        new (): HTMLChTreeXListItemElement;
     };
     interface HTMLChWindowElement extends Components.ChWindow, HTMLStencilElement {
     }
@@ -1390,6 +1737,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "ch-accordion": HTMLChAccordionElement;
+        "ch-checkbox": HTMLChCheckboxElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
@@ -1428,12 +1776,17 @@ declare global {
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
+        "ch-style": HTMLChStyleElement;
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-test-tree-x": HTMLChTestTreeXElement;
         "ch-textblock": HTMLChTextblockElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
+        "ch-tree-x": HTMLChTreeXElement;
+        "ch-tree-x-list": HTMLChTreeXListElement;
+        "ch-tree-x-list-item": HTMLChTreeXListItemElement;
         "ch-window": HTMLChWindowElement;
         "ch-window-close": HTMLChWindowCloseElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
@@ -1458,6 +1811,56 @@ declare namespace LocalJSX {
           * Fired when the content is expanded or collapsed
          */
         "onExpandedChange"?: (event: ChAccordionCustomEvent<boolean>) => void;
+    }
+    interface ChCheckbox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies the label of the checkbox.
+         */
+        "caption"?: string;
+        /**
+          * Indicates that the control is selected by default.
+         */
+        "checked"?: boolean;
+        /**
+          * The value when the checkbox is 'on'
+         */
+        "checkedValue"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * True to highlight control when an action is fired.
+         */
+        "highlightable"?: boolean;
+        /**
+          * `true` if the control's value is indeterminate.
+         */
+        "indeterminate"?: boolean;
+        /**
+          * Emitted when the element is clicked or the space key is pressed and released.
+         */
+        "onClick"?: (event: ChCheckboxCustomEvent<any>) => void;
+        /**
+          * The `input` event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChCheckboxCustomEvent<any>) => void;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * The value when the checkbox is 'off'
+         */
+        "unCheckedValue"?: string;
+        /**
+          * The value of the control.
+         */
+        "value"?: string;
     }
     interface ChDragBar {
         /**
@@ -1835,6 +2238,18 @@ declare namespace LocalJSX {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions"?: boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext"?: boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover"?: boolean;
     }
     interface ChGridRowsetEmpty {
     }
@@ -2259,7 +2674,21 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
     }
+    interface ChStyle {
+        /**
+          * Specifies the location of the stylesheet document
+         */
+        "href"?: string;
+    }
     interface ChSuggest {
+        /**
+          * This is the suggest caption. Is what the user sees on the input.
+         */
+        "caption"?: string;
+        /**
+          * If true, it will position the cursor at the end when the input is focused.
+         */
+        "cursorEnd"?: false;
         /**
           * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
          */
@@ -2269,15 +2698,27 @@ declare namespace LocalJSX {
          */
         "label"?: string;
         /**
+          * The label position
+         */
+        "labelPosition"?: LabelPosition;
+        /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
         "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        /**
+          * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+         */
+        "showHeader"?: false;
         /**
           * Whether or not to display the label
          */
         "showLabel"?: boolean;
         /**
-          * The input value
+          * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
+         */
+        "suggestTitle"?: string;
+        /**
+          * This is the suggest value.
          */
         "value"?: string;
     }
@@ -2289,17 +2730,63 @@ declare namespace LocalJSX {
     }
     interface ChSuggestListItem {
         /**
+          * The description
+         */
+        "description"?: string;
+        /**
           * The icon url
          */
         "iconSrc"?: string;
         /**
           * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
          */
-        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<focusChangeAttempt>) => void;
+        "onFocusChangeAttempt"?: (event: ChSuggestListItemCustomEvent<FocusChangeAttempt>) => void;
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<itemSelected>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemData>) => void;
+        /**
+          * The item value
+         */
+        "value"?: any;
+    }
+    interface ChTestTreeX {
+        /**
+          * Callback that is executed when a list of items request to be dropped into another item.
+         */
+        "dropItemsCallback"?: (
+    dropItemId: string,
+    draggedIds: string[]
+  ) => Promise<TreeXItemModel[]>;
+        /**
+          * Callback that is executed when a item request to load its subitems.
+         */
+        "lazyLoadTreeItemsCallback"?: (
+    treeItemId: string
+  ) => Promise<TreeXItemModel[]>;
+        /**
+          * Callback that is executed when a item request to modify its caption.
+         */
+        "modifyItemCaptionCallback"?: (
+    treeItemId: string,
+    newCaption: string
+  ) => Promise<TreeXOperationStatusModifyCaption>;
+        /**
+          * Set this attribute if you want to allow multi selection of the items.
+         */
+        "multiSelection"?: boolean;
+        /**
+          * Set this attribute if you want to display the relation between tree items and tree lists using lines.
+         */
+        "showLines"?: boolean;
+        /**
+          * Callback that is executed when the treeModel is changed to order its items.
+         */
+        "sortItemsCallback"?: (subModel: TreeXItemModel[]) => void;
+        /**
+          * This property lets you define the model of the ch-tree-x control.
+         */
+        "treeModel"?: TreeXModel;
     }
     interface ChTextblock {
         /**
@@ -2384,6 +2871,156 @@ declare namespace LocalJSX {
           * The presence of this attribute sets the tree-item as selected
          */
         "selected"?: boolean;
+    }
+    interface ChTreeX {
+        /**
+          * Level in the tree at which the control is placed.
+         */
+        "level"?: number;
+        /**
+          * Set this attribute if you want to allow multi selection of the items.
+         */
+        "multiSelection"?: boolean;
+        /**
+          * Fired when the dragged items are dropped in another item of the tree.
+         */
+        "onItemsDropped"?: (event: ChTreeXCustomEvent<TreeXItemDropInfo>) => void;
+        /**
+          * Fired when the selected items change.
+         */
+        "onSelectedItemsChange"?: (event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>) => void;
+        /**
+          * This property lets you specify the time (in ms) that the mouse must be over in a subtree to open it when dragging.
+         */
+        "openSubTreeCountdown"?: number;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines"?: boolean;
+        /**
+          * This property lets you specify if the tree is waiting to process the drop of items.
+         */
+        "waitDropProcessing"?: boolean;
+    }
+    interface ChTreeXList {
+        /**
+          * Level in the tree at which the control is placed.
+         */
+        "level"?: number;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines"?: boolean;
+    }
+    interface ChTreeXListItem {
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption"?: string;
+        /**
+          * Set this attribute if you want display a checkbox in the control.
+         */
+        "checkbox"?: boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
+         */
+        "checked"?: boolean;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading"?: boolean;
+        /**
+          * This property lets you define the current state of the item when it's being dragged.
+         */
+        "dragState"?: DragState;
+        /**
+          * Set this attribute when the item is in edit mode
+         */
+        "editing"?: boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate"?: boolean;
+        /**
+          * This attribute specifies if the control is the last items in its subtree
+         */
+        "lastItem"?: boolean;
+        /**
+          * Determine if the items are lazy loaded when opening the first time the control.
+         */
+        "lazyLoad"?: boolean;
+        /**
+          * The presence of this attribute determine whether the item contains a subtree. `true` if the item does not have a subtree.
+         */
+        "leaf"?: boolean;
+        /**
+          * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+         */
+        "leftImgSrc"?: string;
+        /**
+          * Level in the tree at which the item is placed.
+         */
+        "level"?: number;
+        /**
+          * Fired when the checkbox value of the control is changed.
+         */
+        "onCheckboxChange"?: (event: ChTreeXListItemCustomEvent<boolean>) => void;
+        /**
+          * Fired when the item is no longer being dragged.
+         */
+        "onItemDragEnd"?: (event: ChTreeXListItemCustomEvent<any>) => void;
+        /**
+          * Fired when the item is being dragged.
+         */
+        "onItemDragStart"?: (event: ChTreeXListItemCustomEvent<TreeXItemDragStartInfo>) => void;
+        /**
+          * Fired when an element commits to drop in the control.
+         */
+        "onItemDrop"?: (event: ChTreeXListItemCustomEvent<TreeXItemDropInfo>) => void;
+        /**
+          * Fired when the lazy control is expanded an its content must be loaded.
+         */
+        "onLoadLazyContent"?: (event: ChTreeXListItemCustomEvent<string>) => void;
+        /**
+          * Fired when the item is asking to modify its caption.
+         */
+        "onModifyCaption"?: (event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>) => void;
+        /**
+          * Fired when the control is selected.
+         */
+        "onSelectedItemChange"?: (event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>) => void;
+        /**
+          * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
+         */
+        "rightImgSrc"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected"?: boolean;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner"?: boolean;
+        /**
+          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
+         */
+        "showExpandableButton"?: boolean;
+        /**
+          * `true` to display the relation between tree items and tree lists using lines.
+         */
+        "showLines"?: boolean;
+        /**
+          * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
+         */
+        "toggleCheckboxes"?: boolean;
     }
     interface ChWindow {
         /**
@@ -2503,6 +3140,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "ch-accordion": ChAccordion;
+        "ch-checkbox": ChCheckbox;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
@@ -2541,12 +3179,17 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
+        "ch-style": ChStyle;
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-test-tree-x": ChTestTreeX;
         "ch-textblock": ChTextblock;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
+        "ch-tree-x": ChTreeX;
+        "ch-tree-x-list": ChTreeXList;
+        "ch-tree-x-list-item": ChTreeXListItem;
         "ch-window": ChWindow;
         "ch-window-close": ChWindowClose;
         "gx-grid-chameleon": GxGridChameleon;
@@ -2558,6 +3201,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
+            "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
@@ -2596,12 +3240,17 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            "ch-style": LocalJSX.ChStyle & JSXBase.HTMLAttributes<HTMLChStyleElement>;
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            "ch-test-tree-x": LocalJSX.ChTestTreeX & JSXBase.HTMLAttributes<HTMLChTestTreeXElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
+            "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;
+            "ch-tree-x-list": LocalJSX.ChTreeXList & JSXBase.HTMLAttributes<HTMLChTreeXListElement>;
+            "ch-tree-x-list-item": LocalJSX.ChTreeXListItem & JSXBase.HTMLAttributes<HTMLChTreeXListItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
             "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;
             "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;

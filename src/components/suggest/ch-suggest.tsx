@@ -8,22 +8,23 @@ import {
   Event,
   EventEmitter,
   Listen,
-  Watch,
-  State
+  State,
+  Method
 } from "@stencil/core";
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
 import {
-  itemSelected,
-  focusChangeAttempt
+  SuggestItemData,
+  FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChSuggest {
   /*
@@ -31,17 +32,62 @@ INDEX:
 1.OWN PROPERTIES
 2.REFERENCE TO ELEMENTS
 3.STATE() VARIABLES
-4.PUBLIC PROPERTY API
+4.PUBLIC PROPERTY API / WATCH'S
 5.EVENTS (EMIT)
 6.COMPONENT LIFECYCLE EVENTS
 7.LISTENERS
-8.WATCH
-9.PUBLIC METHODS API
-10.LOCAL METHODS
-11.RENDER() FUNCTION
+8.PUBLIC METHODS API
+9.LOCAL METHODS
+10.RENDER() FUNCTION
 */
 
-  /// 1.OWN PROPERTIES ///
+  // 1.OWN PROPERTIES //
+  private timeoutReference;
+
+  private keyEventsDictionary: {
+    [key in ChSuggestKeyDownEvents]: (
+      eventData?: FocusChangeAttemptEventData
+    ) => void;
+  } = {
+    ArrowDown: (e: FocusChangeAttemptEventData) => {
+      const newFocusedItem = this.getNewFocusedItem(
+        e.currentFocusedItem,
+        ARROW_DOWN
+      );
+      const nextFocusedItem = this.getNewFocusedItem(
+        newFocusedItem,
+        ARROW_DOWN
+      );
+      newFocusedItem && newFocusedItem.focus();
+      if (!nextFocusedItem) {
+        /* This is the last item. Adjust window scroll to be at the very bottom*/
+        this.scrollListToBottom();
+      }
+    },
+    ArrowUp: (e: FocusChangeAttemptEventData) => {
+      const newFocusedItem = this.getNewFocusedItem(
+        e.currentFocusedItem,
+        ARROW_UP
+      );
+      const nextFocusedItem = this.getNewFocusedItem(newFocusedItem, ARROW_UP);
+      newFocusedItem && newFocusedItem.focus();
+      if (!nextFocusedItem) {
+        /* This is the first item. Adjust window scroll to be at the very top*/
+        this.scrollListToTop();
+      }
+    }
+  };
+
+  // 2. REFERENCE TO ELEMENTS //
+
+  private textInput!: HTMLInputElement;
+  private chWindow!: HTMLChWindowElement;
+  @Element() el: HTMLChSuggestElement;
+
+  // 3.STATE() VARIABLES //
+  @State() windowHidden = true;
+
+  // 4.PUBLIC PROPERTY API / WATCH'S //
 
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
@@ -54,83 +100,62 @@ INDEX:
   @Prop() readonly label: string;
 
   /**
-   * Whether or not to display the label
+   * The label position
    */
-  @Prop() readonly showLabel: boolean = false;
+  @Prop({ reflect: true }) readonly labelPosition: LabelPosition = "start";
 
   /**
-   * The input value
+   * Whether or not to display the label
+   */
+  @Prop() readonly showLabel: boolean = true;
+
+  /**
+   * This is the suggest value.
    */
   @Prop({ mutable: true }) value: string;
 
-  private timeoutReference;
+  /**
+   * This is the suggest caption. Is what the user sees on the input.
+   */
+  @Prop({ mutable: true }) caption: string;
 
-  private keyEventsDictionary: {
-    [key in ChSuggestKeyDownEvents]: (
-      eventData?: focusChangeAttemptEventData
-    ) => void;
-  } = {
-    ArrowDown: (e: focusChangeAttemptEventData) => {
-      const newFocusedItem = this.getNewFocusedItem(
-        e.currentFocusedItem,
-        ARROW_DOWN
-      );
-      const nextFocusedItem = this.getNewFocusedItem(
-        newFocusedItem,
-        ARROW_DOWN
-      );
-      newFocusedItem && newFocusedItem.focus();
-      if (!nextFocusedItem) {
-        /*This is the last item. Adjust window scroll to be at the very bottom*/
-        this.scrollListToBottom();
-      }
-    },
-    ArrowUp: (e: focusChangeAttemptEventData) => {
-      const newFocusedItem = this.getNewFocusedItem(
-        e.currentFocusedItem,
-        ARROW_UP
-      );
-      const nextFocusedItem = this.getNewFocusedItem(newFocusedItem, ARROW_UP);
-      newFocusedItem && newFocusedItem.focus();
-      if (!nextFocusedItem) {
-        /*This is the first item. Adjust window scroll to be at the very top*/
-        this.scrollListToTop();
-      }
-    }
-  };
+  /**
+   * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
+   */
+  @Prop() readonly showHeader = false;
 
-  /// 2. REFERENCE TO ELEMENTS ///
+  /**
+   * The suggest title (optional). This is not the same as the "label", rather, this is the title that will appear inside the dropdown. This title will only be visible if "showHeader" is set to true.
+   */
+  @Prop() readonly suggestTitle: string;
 
-  private textInput!: HTMLInputElement;
-  private chWindow!: HTMLChWindowElement;
-  @Element() el: HTMLChSuggestElement;
+  /**
+   * If true, it will position the cursor at the end when the input is focused.
+   */
+  @Prop() readonly cursorEnd = false;
 
-  /// 3.STATE() VARIABLES ///
-  @State() windowHidden = true;
-
-  /// 4.PUBLIC PROPERTY API ///
-
-  /// 5.EVENTS (EMIT) ///
+  // 5.EVENTS (EMIT) //
 
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
   @Event() inputChanged: EventEmitter<string>;
 
-  /// 6.COMPONENT LIFECYCLE EVENTS ///
+  // 6.COMPONENT LIFECYCLE EVENTS //
 
-  /// 7.LISTENERS ///
+  // 7.LISTENERS //
 
   @Listen("itemSelected")
-  itemSelectedHandler(event: CustomEvent<itemSelected>) {
+  itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
     this.value = event.detail.value;
+    this.caption = event.detail.caption;
     this.closeWindow();
   }
 
   @Listen("focusChangeAttempt")
-  focusChangeAttemptHandler(event: CustomEvent<focusChangeAttempt>) {
+  focusChangeAttemptHandler(event: CustomEvent<FocusChangeAttempt>) {
     const keyEventHandler:
-      | ((event?: focusChangeAttemptEventData) => void)
+      | ((event?: FocusChangeAttemptEventData) => void)
       | undefined = this.keyEventsDictionary[event.detail.code];
 
     if (keyEventHandler) {
@@ -159,24 +184,22 @@ INDEX:
     this.windowHidden = true;
   }
 
-  /// 8.WATCH ///
-  @Watch("windowHidden")
-  windowHiddenHandler(newValue: boolean) {
-    if (newValue) {
-      this.chWindow.hidden = true;
-    } else {
-      this.chWindow.hidden = false;
-    }
+  // 9.PUBLIC METHODS API //
+
+  /**
+   * @description It selects/highlights the input text.
+   */
+  @Method()
+  async selectInputText() {
+    this.textInput.focus();
+    this.textInput.select();
   }
 
-  @Watch("value")
-  watchValueHandler(newValue: string) {
-    this.inputChanged.emit(newValue);
-  }
+  // 10.LOCAL METHODS //
 
-  /// 9.PUBLIC METHODS API ///
-
-  /// 10.LOCAL METHODS ///
+  private evaluateSlotIsEmpty = () => {
+    this.chWindow.hidden = !this.el.firstElementChild;
+  };
 
   private setFocusOnFirstItem = () => {
     const firstItem = this.el.querySelector("ch-suggest-list-item");
@@ -190,7 +213,7 @@ INDEX:
     currentFocusedItem: HTMLChSuggestListItemElement,
     direction: typeof ARROW_DOWN | typeof ARROW_UP
   ): HTMLChSuggestListItemElement => {
-    /*Helper function that returns the list item that should get focus (the first one, or the last one)*/
+    /* Helper function that returns the list item that should get focus (the first one, or the last one)*/
     const getListChild = (list: HTMLChSuggestListElement) => {
       const listItems = list.querySelectorAll("ch-suggest-list-item");
       let listChild = listItems && listItems[listItems.length - 1];
@@ -204,7 +227,9 @@ INDEX:
       return listChild;
     };
 
-    if (!currentFocusedItem) return;
+    if (!currentFocusedItem) {
+      return;
+    }
     let newFocusedItem =
       direction === ARROW_DOWN
         ? currentFocusedItem.nextElementSibling
@@ -212,13 +237,13 @@ INDEX:
     if (newFocusedItem?.nodeName === "CH-SUGGEST-LIST") {
       newFocusedItem = getListChild(newFocusedItem as HTMLChSuggestListElement);
     } else if (!newFocusedItem) {
-      /*this could be the last item of a list, but not the last item*/
+      /* this could be the last item of a list, but not the last item*/
       const parent = currentFocusedItem.parentElement;
       const sibling =
         direction === ARROW_DOWN
           ? parent.nextElementSibling
           : parent.previousElementSibling;
-      const parentIsList = parent.nodeName === "CH-SUGGEST-LIST" ? true : false;
+      const parentIsList = parent.nodeName === "CH-SUGGEST-LIST";
       if (
         parentIsList &&
         sibling &&
@@ -253,12 +278,12 @@ INDEX:
    * Every time the input event is triggered, the value of the input is sent to processInputEvent, which is responsible for displaying a window with the suggested options. this.debounce is a delay that, along with clearTimeout, ensures that the window is only shown after the user has stopped typing.
    */
   private handleInput = (e: InputEvent) => {
+    const inputValue = (e.target as HTMLInputElement).value;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
-    const value = (e.target as HTMLInputElement).value;
     this.timeoutReference = setTimeout(() => {
-      this.processInputEvent(value);
+      this.processInputEvent(inputValue);
     }, this.debounce);
   };
 
@@ -292,71 +317,87 @@ INDEX:
     partWindow.scrollTop = partWindow.scrollHeight;
   };
 
-  private processInputEvent = (targetValue: string) => {
+  private processInputEvent = (inputValue: string) => {
+    this.inputChanged.emit(inputValue);
+    this.caption = inputValue;
+    this.value = undefined;
     this.evaluateWindowMaxHeight();
-    if (this.windowHidden) {
-      this.windowHidden = false;
-    }
-    this.value = targetValue;
   };
 
   private closeWindow = () => {
-    this.windowHidden = true;
+    this.chWindow.hidden = true;
   };
 
-  /// 10.RENDER() FUNCTION ///
+  private onFocusHandler = () => {
+    if (this.cursorEnd) {
+      this.textInput.setSelectionRange(
+        this.textInput.value.length,
+        this.textInput.value.length
+      );
+    }
+  };
+
+  // 10.RENDER() FUNCTION //
 
   render() {
     return (
       <Host>
-        {this.showLabel && this.label && (
-          <label id="label" htmlFor="input" part="label">
-            {this.label}
-          </label>
-        )}
-        <input
-          type="text"
-          id="input"
-          part="input"
-          class="input"
-          ref={el => (this.textInput = el as HTMLInputElement)}
-          onInput={this.handleInput}
-          onKeyDown={this.handleKeyDown}
-          value={this.value}
-          autocomplete="off"
-          aria-controls="ch-window"
-          aria-label={!this.showLabel && this.label ? this.label : undefined}
-          aria-labelledby={this.showLabel && this.label ? "label" : undefined}
-          aria-expanded={this.windowHidden.toString()}
-        ></input>
-        <ch-window
-          id="ch-window"
-          container={this.textInput}
-          close-on-outside-click
-          close-on-escape
-          xAlign="inside-start"
-          yAlign="outside-end"
-          ref={el => (this.chWindow = el as HTMLChWindowElement)}
-          exportparts="
-            caption:ch-window-caption, 
-            close:ch-window-close,
-            footer:ch-window-footer,
-            header:ch-window-header,
-            main:ch-window-main,
-            mask:ch-window-mask,
-            window:ch-window-window"
-        >
-          <div slot="header" class="dummy-header"></div>
-          <slot></slot>
-        </ch-window>
+        <div class="main-wrapper" part="main-wrapper">
+          <div class="label-input-wrapper" part="label-input-wrapper">
+            {this.showLabel && this.label && (
+              <label id="label" htmlFor="input" part="label">
+                {this.label}
+              </label>
+            )}
+            <input
+              type="text"
+              id="input"
+              part="input"
+              class="input"
+              ref={el => (this.textInput = el as HTMLInputElement)}
+              onInput={this.handleInput}
+              onKeyDown={this.handleKeyDown}
+              onFocus={this.onFocusHandler}
+              value={this.caption}
+              autocomplete="off"
+              aria-controls="ch-window"
+              aria-label={
+                !this.showLabel && this.label ? this.label : undefined
+              }
+              aria-labelledby={
+                this.showLabel && this.label ? "label" : undefined
+              }
+              aria-expanded={this.windowHidden.toString()}
+            ></input>
+          </div>
+
+          <ch-window
+            id="ch-window"
+            container={this.textInput}
+            close-on-outside-click
+            close-on-escape
+            xAlign="inside-start"
+            yAlign="outside-end"
+            ref={el => (this.chWindow = el as HTMLChWindowElement)}
+            showHeader={this.showHeader}
+            caption={this.suggestTitle}
+            exportparts="
+            header:header, 
+            caption:title, 
+            close:close-button,
+            window:dropdown"
+          >
+            <slot onSlotchange={this.evaluateSlotIsEmpty}></slot>
+          </ch-window>
+        </div>
       </Host>
     );
   }
 }
 
 export type ChSuggestKeyDownEvents = typeof ARROW_DOWN | typeof ARROW_UP;
-type focusChangeAttemptEventData = {
-  event: focusChangeAttempt;
+type FocusChangeAttemptEventData = {
+  event: FocusChangeAttempt;
   currentFocusedItem: HTMLChSuggestListItemElement;
   chSuggestListItemsArray: HTMLChSuggestListItemElement[];
   currentFocusedItemIndex: number;

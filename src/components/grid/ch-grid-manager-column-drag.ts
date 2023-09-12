@@ -3,58 +3,126 @@ import { CSSProperties } from "./ch-grid-types";
 export class ChGridManagerColumnDrag {
   private column: ChGridManagerColumnDragItem;
   private columns: ChGridManagerColumnDragItem[];
+  private isRTL: boolean;
   private lastTargetOrder = 0;
 
-  constructor(columnId: string, columns: HTMLChGridColumnElement[]) {
+  constructor(
+    columnId: string,
+    columns: HTMLChGridColumnElement[],
+    isRTL: boolean
+  ) {
+    this.isRTL = isRTL;
     this.columns = columns.map(column => ({
-      column,
+      element: column,
       rect: column.getBoundingClientRect(),
       translateX: 0,
       order: column.order
     }));
-    this.column = this.columns.find(item => item.column.columnId === columnId);
+    this.column = this.columns.find(item => item.element.columnId === columnId);
 
     this.columns.forEach(this.setColumnHiddenRect.bind(this));
   }
 
   dragging(position: number): boolean {
-    const sourceOrder = this.column.column.order;
-    const sourceFreeze = this.column.column.freeze;
+    /**
+     * Indica el orden inicial de la columna que se está arrastrando
+     */
+    const sourceOrder = this.column.element.order;
+
+    /**
+     * Indica a qué grupo de fijación pertenece la columna que se está arrastrando
+     */
+    const sourceFreeze = this.column.element.freeze;
+
     let targetOrder = 0;
     let targetOrderChanged = false;
 
     this.column.translateX = 0;
     this.columns
-      .filter(item => item.column.freeze === sourceFreeze)
-      .forEach(item => {
-        const columnOrder = item.column.order;
-        const dragDirection = sourceOrder > columnOrder ? -1 : 1;
-        const shiftDirection = sourceOrder > columnOrder ? 1 : -1;
+      .filter(column => column.element.freeze === sourceFreeze)
+      .forEach(column => {
+        /**
+         * Indica el orden de la columna actual
+         */
+        const columnOrder = column.element.order;
+
+        /**
+         * Indica si la columna que se está arrastrando estaba a la derecha o
+         * a la izquierda de la actual cuando se inició el arrastre para
+         * incrementar el orden según corresponda.
+         */
+        const dragDirection = sourceOrder > columnOrder ? 1 : -1;
+
+        /**
+         * Indica si la columna actual hay que desplazarla a la derecha o
+         * a la izquierda cuando se cruce con la columna arrastrada.
+         */
+        const shiftDirection =
+          (sourceOrder > columnOrder ? 1 : -1) * (this.isRTL ? -1 : 1);
 
         if (
-          item.rect.left < position &&
-          position < item.rect.right &&
+          column.rect.left < position &&
+          position < column.rect.right &&
           columnOrder !== sourceOrder
         ) {
-          item.translateX = this.column.rect.width * shiftDirection;
-          item.order = item.column.order + shiftDirection;
-          this.column.translateX += item.rect.width * dragDirection;
+          /*
+            La posicion actual del mouse está dentro de la columna actual y
+            no es la columna que se está arrastrando
+          */
+          this.swapColumnPosition(column, shiftDirection);
+
+          // actualizo el orden de la columna actual
+          column.order = column.element.order + dragDirection;
 
           targetOrder = columnOrder;
-        } else if (position < item.rect.left && columnOrder < sourceOrder) {
-          item.translateX = this.column.rect.width * shiftDirection;
-          item.order = item.column.order + shiftDirection;
-          this.column.translateX += item.rect.width * dragDirection;
-        } else if (position > item.rect.right && columnOrder > sourceOrder) {
-          item.translateX = this.column.rect.width * shiftDirection;
-          item.order = item.column.order + shiftDirection;
-          this.column.translateX += item.rect.width * dragDirection;
+        } else if (
+          position < column.rect.left &&
+          (this.isRTL ? columnOrder > sourceOrder : columnOrder < sourceOrder)
+        ) {
+          /*
+            La posicion actual del mouse está a la izquierda de la columna actual
+            haciendo que la columna arrastrada cruce la actual.
+          */
+          this.swapColumnPosition(column, shiftDirection);
+
+          // actualizo el orden de la columna actual
+          column.order = column.element.order + dragDirection;
+
+          if (
+            !targetOrder ||
+            (this.isRTL ? columnOrder > targetOrder : columnOrder < targetOrder)
+          ) {
+            targetOrder = columnOrder;
+          }
+        } else if (
+          position > column.rect.right &&
+          (this.isRTL ? columnOrder < sourceOrder : columnOrder > sourceOrder)
+        ) {
+          /*
+            La posicion actual del mouse está a la derecha de la columna actual
+            haciendo que la columna arrastrada cruce la actual.
+          */
+          this.swapColumnPosition(column, shiftDirection);
+
+          // actualizo el orden de la columna actual
+          column.order = column.element.order + dragDirection;
+
+          if (
+            !targetOrder ||
+            (this.isRTL ? columnOrder < targetOrder : columnOrder > targetOrder)
+          ) {
+            targetOrder = columnOrder;
+          }
         } else if (columnOrder !== sourceOrder) {
-          item.translateX = 0;
-          item.order = item.column.order;
+          /*
+            La posicion actual del mouse NO está dentro de la columna actual ni
+            la cruza.
+          */
+          this.resetColumnPosition(column);
         }
       });
-    this.column.order = targetOrder ? targetOrder : this.column.column.order;
+
+    this.column.order = targetOrder ? targetOrder : this.column.element.order;
 
     targetOrderChanged = targetOrder !== this.lastTargetOrder;
     this.lastTargetOrder = targetOrder;
@@ -63,16 +131,17 @@ export class ChGridManagerColumnDrag {
   }
 
   dragEnd() {
-    this.columns.forEach(item => {
-      item.column.order = item.order;
-      item.translateX = 0;
+    this.columns.forEach(column => {
+      column.element.order = column.order;
+      column.translateX = 0;
     });
   }
 
   getColumnStyle(column: HTMLChGridColumnElement): CSSProperties {
     return {
       [`--ch-grid-column-${column.physicalOrder}-transform`]: `translateX(${
-        this.columns[column.physicalOrder - 1].translateX
+        this.columns.find(columnItem => columnItem.element === column)
+          .translateX
       }px)`
     };
   }
@@ -85,28 +154,52 @@ export class ChGridManagerColumnDrag {
     let itemLast: ChGridManagerColumnDragItem;
 
     this.columns.forEach(item => {
-      if (!item.column.hidden && (!itemFirst || item.order < itemFirst.order)) {
+      if (
+        !item.element.hidden &&
+        (!itemFirst || item.order < itemFirst.order)
+      ) {
         itemFirst = item;
       }
-      if (!item.column.hidden && (!itemLast || item.order > itemLast.order)) {
+      if (!item.element.hidden && (!itemLast || item.order > itemLast.order)) {
         itemLast = item;
       }
     });
 
     return {
-      columnFirst: itemFirst.column,
-      columnLast: itemLast.column
+      columnFirst: itemFirst.element,
+      columnLast: itemLast.element
     };
   }
 
-  private setColumnHiddenRect(item: ChGridManagerColumnDragItem) {
-    if (item.column.hidden) {
-      const columnSibling =
-        this.getPreviousSiblingVisible(item) ||
-        this.getNextSiblingVisible(item);
+  private swapColumnPosition(
+    column: ChGridManagerColumnDragItem,
+    shiftDirection: number
+  ) {
+    // desplazo la columna actual para ocupar el espacio que dejó
+    // la columna arrastrada
+    column.translateX = this.column.rect.width * shiftDirection;
 
-      item.rect = new DOMRect(
-        item.column.order < columnSibling.column.order
+    // desplazo la columna que se está arrastrando para que ocupe el
+    // espacio que dejó la columna actual
+    this.column.translateX += column.rect.width * (shiftDirection * -1);
+  }
+
+  private resetColumnPosition(column: ChGridManagerColumnDragItem) {
+    // no desplazo la columna actual
+    column.translateX = 0;
+
+    // asigno su posición original
+    column.order = column.element.order;
+  }
+
+  private setColumnHiddenRect(column: ChGridManagerColumnDragItem) {
+    if (column.element.hidden) {
+      const columnSibling =
+        this.getPreviousSiblingVisible(column) ||
+        this.getNextSiblingVisible(column);
+
+      column.rect = new DOMRect(
+        column.element.order < columnSibling.element.order
           ? columnSibling.rect.left
           : columnSibling.rect.right,
         columnSibling.rect.y,
@@ -121,13 +214,13 @@ export class ChGridManagerColumnDrag {
   ): ChGridManagerColumnDragItem {
     let previous: ChGridManagerColumnDragItem;
 
-    this.columns.forEach(item => {
+    this.columns.forEach(column => {
       if (
-        !item.column.hidden &&
-        item.column.order < hidden.column.order &&
-        (!previous || item.column.order > previous.column.order)
+        !column.element.hidden &&
+        column.element.order < hidden.element.order &&
+        (!previous || column.element.order > previous.element.order)
       ) {
-        previous = item;
+        previous = column;
       }
     });
 
@@ -139,13 +232,13 @@ export class ChGridManagerColumnDrag {
   ): ChGridManagerColumnDragItem {
     let next: ChGridManagerColumnDragItem;
 
-    this.columns.forEach(item => {
+    this.columns.forEach(column => {
       if (
-        !item.column.hidden &&
-        item.column.order > hidden.column.order &&
-        (!next || item.column.order < next.column.order)
+        !column.element.hidden &&
+        column.element.order > hidden.element.order &&
+        (!next || column.element.order < next.element.order)
       ) {
-        next = item;
+        next = column;
       }
     });
 
@@ -154,7 +247,7 @@ export class ChGridManagerColumnDrag {
 }
 
 interface ChGridManagerColumnDragItem {
-  column: HTMLChGridColumnElement;
+  element: HTMLChGridColumnElement;
   rect: DOMRect;
   translateX: number;
   order: number;

@@ -1,5 +1,3 @@
-import HTMLChGridRowElement from "../grid-row/ch-grid-row";
-import { ChGridRowsetLegend } from "./grid-rowset-legend/ch-grid-rowset-legend";
 import { IChGridCollapsible } from "../ch-grid-types";
 
 /**
@@ -11,8 +9,6 @@ export default class HTMLChGridRowsetElement
 {
   private computedLevel = 0;
   private grid: HTMLChGridElement;
-
-  public static readonly TAG_NAME = "CH-GRID-ROWSET";
 
   constructor() {
     super();
@@ -115,17 +111,17 @@ export default class HTMLChGridRowsetElement
   }
 
   private hasLegend(): boolean {
-    return this.firstElementChild?.tagName === ChGridRowsetLegend.TAG_NAME;
+    return this.firstElementChild?.tagName === "CH-GRID-ROWSET-LEGEND";
   }
 
   private isNestedRow(): boolean {
-    return this.parentElement.tagName === HTMLChGridRowElement.TAG_NAME;
+    return this.parentElement.tagName === "CH-GRID-ROW";
   }
 
   private getParentRowset(): HTMLChGridRowsetElement {
     const node = this.parentElement.closest("ch-grid-rowset, ch-grid");
 
-    if (node.tagName === HTMLChGridRowsetElement.TAG_NAME) {
+    if (node.tagName === "CH-GRID-ROWSET") {
       return node as HTMLChGridRowsetElement;
     }
   }

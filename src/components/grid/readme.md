@@ -7,6 +7,7 @@
 
 | Property              | Attribute               | Description                                                                                                                                                                                                                                      | Type                               | Default     |
 | --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- | ----------- |
+| `allowColumnReorder`  | `allow-column-reorder`  | A boolean indicating whether the user can drag column headers to reorder columns.                                                                                                                                                                | `boolean`                          | `true`      |
 | `localization`        | --                      | An object that contains localized strings for the grid.                                                                                                                                                                                          | `GridLocalization`                 | `undefined` |
 | `rowFocusedClass`     | `row-focused-class`     | A CSS class name applied to a row when it is focused.                                                                                                                                                                                            | `string`                           | `undefined` |
 | `rowHighlightEnabled` | `row-highlight-enabled` | One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".                                                        | `"auto" \| boolean`                | `"auto"`    |
@@ -18,12 +19,15 @@
 
 ## Events
 
-| Event                  | Description                                       | Type                                           |
-| ---------------------- | ------------------------------------------------- | ---------------------------------------------- |
-| `cellSelectionChanged` | Event emitted when the cell selection is changed. | `CustomEvent<ChGridCellSelectionChangedEvent>` |
-| `rowClicked`           | Event emitted when a row is clicked.              | `CustomEvent<ChGridRowClickedEvent>`           |
-| `rowMarkingChanged`    | Event emitted when the row marking is changed.    | `CustomEvent<ChGridMarkingChangedEvent>`       |
-| `selectionChanged`     | Event emitted when the row selection is changed.  | `CustomEvent<ChGridSelectionChangedEvent>`     |
+| Event                  | Description                                                  | Type                                           |
+| ---------------------- | ------------------------------------------------------------ | ---------------------------------------------- |
+| `cellSelectionChanged` | Event emitted when the cell selection is changed.            | `CustomEvent<ChGridCellSelectionChangedEvent>` |
+| `rowClicked`           | Event emitted when a row is clicked.                         | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowContextMenu`       | Event emitted when attempts to open a context menu on a row. | `CustomEvent<ChGridRowContextMenuEvent>`       |
+| `rowDoubleClicked`     | Event emitted when a row is double clicked.                  | `CustomEvent<ChGridRowClickedEvent>`           |
+| `rowEnterPressed`      | Event emitted when Enter is pressed on a row.                | `CustomEvent<ChGridRowPressedEvent>`           |
+| `rowMarkingChanged`    | Event emitted when the row marking is changed.               | `CustomEvent<ChGridMarkingChangedEvent>`       |
+| `selectionChanged`     | Event emitted when the row selection is changed.             | `CustomEvent<ChGridSelectionChangedEvent>`     |
 
 
 ## Methods
@@ -148,6 +152,26 @@ Type: `Promise<string[]>`
 
 
 
+### `markAllRows(marked?: boolean) => Promise<void>`
+
+Mark or unmark all rows.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `markRow(rowId: string, marked?: boolean) => Promise<void>`
+
+Mark or unmark a row.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `rowEnsureVisible(rowId: string) => Promise<void>`
 
 Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
@@ -198,7 +222,6 @@ Type: `Promise<void>`
 | `"footer"`           |             |
 | `"header"`           |             |
 | `"main"`             |             |
-| `"row-actions"`      |             |
 | `"settings-columns"` |             |
 
 

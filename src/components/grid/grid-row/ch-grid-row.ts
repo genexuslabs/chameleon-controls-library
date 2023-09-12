@@ -9,7 +9,6 @@ export default class HTMLChGridRowElement
   implements IChGridCollapsible
 {
   private parentGrid: HTMLChGridElement;
-  public static readonly TAG_NAME = "CH-GRID-ROW";
 
   constructor() {
     super();

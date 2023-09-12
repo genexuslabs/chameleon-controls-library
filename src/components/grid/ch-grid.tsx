@@ -34,7 +34,12 @@ import {
   ChGridColumnDragEvent,
   ChGridColumnSelectorClickedEvent
 } from "./grid-column/ch-grid-column-types";
-import { mouseEventModifierKey } from "../common/helpers";
+import {
+  MouseEventButton,
+  MouseEventButtons,
+  mouseEventHasButtonPressed,
+  mouseEventModifierKey
+} from "../common/helpers";
 import { ManagerSelectionState } from "./ch-grid-manager-selection";
 
 /**
@@ -378,11 +383,18 @@ export class ChGrid {
         (this.manager.selection.selectingRow !== row ||
           this.manager.selection.selectingCell !== cell)
       ) {
+        const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
+        const isMouseButtonRightPressed = mouseEventHasButtonPressed(
+          eventInfo,
+          MouseEventButtons.RIGHT
+        );
+
         this.selectByPointerEvent(
           row,
           cell,
-          mouseEventModifierKey(eventInfo),
-          true
+          isKeyModifierPressed && !isMouseButtonRightPressed,
+          !isMouseButtonRightPressed,
+          isMouseButtonRightPressed
         );
 
         this.manager.selection.selectingRow = row;
@@ -415,7 +427,8 @@ export class ChGrid {
         row,
         cell,
         mouseEventModifierKey(eventInfo),
-        eventInfo.shiftKey
+        eventInfo.shiftKey,
+        eventInfo.button === MouseEventButton.RIGHT
       );
     }
   }
@@ -467,7 +480,8 @@ export class ChGrid {
         this.manager.getRowEventTarget(eventInfo),
         this.manager.getCellEventTarget(eventInfo),
         true,
-        eventInfo.detail.range
+        eventInfo.detail.range,
+        false
       );
     } else if (columnSelector?.richRowSelectorMode === "mark") {
       this.rowsMarked = this.manager.selection.markRow(
@@ -825,7 +839,8 @@ export class ChGrid {
     row: HTMLChGridRowElement,
     cell: HTMLChGridCellElement,
     append: boolean,
-    range: boolean
+    range: boolean,
+    context: boolean
   ) {
     const { rowFocused, rowsSelected, cellSelected } =
       this.manager.selection.select(
@@ -837,7 +852,8 @@ export class ChGrid {
         row,
         cell,
         append,
-        range
+        range,
+        context
       );
 
     this.rowFocused = rowFocused;

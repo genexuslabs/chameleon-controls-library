@@ -165,7 +165,6 @@ $own-offset: calc(
   border-block-end-width: 1px;
   pointer-events: none; // Improve hover effect
   content-visibility: hidden;
-  contain-intrinsic-size: auto 100px;
   z-index: 1;
 }
 
@@ -196,7 +195,7 @@ $own-offset: calc(
   margin-inline-end: $separation-between-actions;
   z-index: 1;
   content-visibility: auto;
-  contain-intrinsic-size: auto 100px;
+  contain-intrinsic-size: auto var(--expandable-button-width);
 
   &::before {
     content: "";
@@ -249,7 +248,7 @@ $own-offset: calc(
   width: 0.875em;
   height: 0.875em;
   content-visibility: auto;
-  contain-intrinsic-size: auto 100px;
+  contain-intrinsic-size: auto 0.875em;
 }
 
 .left-img {

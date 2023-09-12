@@ -6,7 +6,7 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { GridLocalization } from "./components/grid/ch-grid";
-import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
+import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { Color, Size } from "./components/icon/icon";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -465,6 +465,10 @@ export namespace Components {
           * Opens the row actions on the row-actions-button cell.
          */
         "openRowActions": (cell: HTMLElement) => Promise<void>;
+        /**
+          * Opens the row actions on the row-actions-button cell.
+         */
+        "openRowContext": (clientX: number, clientY: number) => Promise<void>;
         /**
           * Opens the row actions on row hover.
          */
@@ -1316,6 +1320,10 @@ export interface ChGridColumnResizeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChGridColumnResizeElement;
 }
+export interface ChGridRowActionsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridRowActionsElement;
+}
 export interface ChGridRowsetLegendCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChGridRowsetLegendElement;
@@ -1991,6 +1999,10 @@ declare namespace LocalJSX {
          */
         "onRowClicked"?: (event: ChGridCustomEvent<ChGridRowClickedEvent>) => void;
         /**
+          * Event emitted when attempts to open a context menu on a row.
+         */
+        "onRowContextMenu"?: (event: ChGridCustomEvent<ChGridRowContextMenuEvent>) => void;
+        /**
           * Event emitted when a row is double clicked.
          */
         "onRowDoubleClicked"?: (event: ChGridCustomEvent<ChGridRowClickedEvent>) => void;
@@ -2238,6 +2250,7 @@ declare namespace LocalJSX {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        "onRowActionOpened"?: (event: ChGridRowActionsCustomEvent<any>) => void;
         /**
           * Indicates that the row actions are displayed when the row-actions-button is pressed.
          */

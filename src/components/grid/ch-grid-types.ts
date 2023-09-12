@@ -24,6 +24,15 @@ export interface ChGridRowPressedEvent {
   columnId?: string;
 }
 
+export interface ChGridRowContextMenuEvent {
+  rowId: string;
+  cellId?: string;
+  columnId?: string;
+  selectedRowsId?: string[];
+  clientX: number;
+  clientY: number;
+}
+
 export type CSSProperties = {
   [key: string]: string;
 };

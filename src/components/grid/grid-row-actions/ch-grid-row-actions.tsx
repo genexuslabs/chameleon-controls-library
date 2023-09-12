@@ -1,4 +1,12 @@
-import { Component, h, Host, Method, Prop } from "@stencil/core";
+import {
+  Component,
+  h,
+  Host,
+  Method,
+  Prop,
+  Event,
+  EventEmitter
+} from "@stencil/core";
 
 /**
  * The `ch-grid-row-actions` component represents a group row actions.
@@ -10,6 +18,7 @@ import { Component, h, Host, Method, Prop } from "@stencil/core";
 })
 export class ChGridRowActions {
   private window: HTMLChWindowElement;
+  private mousePosition: HTMLDivElement;
 
   /**
    * Indicates to show row actions when hovering over row.
@@ -27,10 +36,17 @@ export class ChGridRowActions {
   @Prop({ reflect: true }) readonly showOnRowContext: boolean;
 
   /**
+   * Event emitted when row actions is opened.
+   */
+  @Event() rowActionOpened: EventEmitter;
+
+  /**
    * Opens the row actions on row hover.
    */
   @Method()
   async openRowHover(row: HTMLElement) {
+    this.rowActionOpened.emit();
+
     this.window.container = row;
     this.window.xAlign = "inside-end";
     this.window.yAlign = "center";
@@ -43,11 +59,36 @@ export class ChGridRowActions {
    */
   @Method()
   async openRowActions(cell: HTMLElement) {
+    this.rowActionOpened.emit();
+
     this.window.container = cell;
     this.window.xAlign = "outside-start";
     this.window.yAlign = "outside-end";
     this.window.closeOnOutsideClick = true;
+    this.window.closeOnEscape = true;
     this.window.hidden = false;
+  }
+
+  /**
+   * Opens the row actions on the row-actions-button cell.
+   */
+  @Method()
+  async openRowContext(clientX: number, clientY: number) {
+    const eventInfo = this.rowActionOpened.emit();
+
+    if (!eventInfo.defaultPrevented) {
+      this.window.hidden = true;
+      this.mousePosition.style.top = `${clientY}px`;
+      this.mousePosition.style.left = `${clientX}px`;
+      this.mousePosition.hidden = false;
+
+      this.window.container = this.mousePosition;
+      this.window.xAlign = "outside-end";
+      this.window.yAlign = "outside-end";
+      this.window.closeOnOutsideClick = true;
+      this.window.closeOnEscape = true;
+      this.window.hidden = false;
+    }
   }
 
   /**
@@ -56,6 +97,7 @@ export class ChGridRowActions {
   @Method()
   async close() {
     this.window.hidden = true;
+    this.mousePosition.hidden = true;
   }
 
   render() {
@@ -67,10 +109,15 @@ export class ChGridRowActions {
           modal={false}
           showHeader={false}
           showFooter={false}
-          exportparts="main:box"
+          exportparts="mask,window,header,caption,close,main,footer"
         >
           <slot></slot>
         </ch-window>
+        <div
+          class="mouse-position"
+          hidden
+          ref={el => (this.mousePosition = el)}
+        ></div>
       </Host>
     );
   }

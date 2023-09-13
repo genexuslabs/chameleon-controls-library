@@ -4,6 +4,9 @@ export interface ChGridSelectionChangedEvent {
 
 export interface ChGridMarkingChangedEvent {
   rowsId: string[];
+  addedRowsId: string[];
+  removedRowsId: string[];
+  unalteredRowsId: string[];
 }
 
 export interface ChGridCellSelectionChangedEvent {

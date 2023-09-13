@@ -102,7 +102,16 @@ export class ChGrid {
   ) {
     this.manager.selection.syncRowSelector(rows, previous, "mark");
     this.rowMarkingChanged.emit({
-      rowsId: rows.map(row => row.rowId)
+      rowsId: rows.map(row => row.rowId),
+      addedRowsId: rows
+        .filter(row => !previous.includes(row))
+        .map(row => row.rowId),
+      removedRowsId: rows
+        .filter(row => !rows.includes(row))
+        .map(row => row.rowId),
+      unalteredRowsId: rows
+        .filter(row => previous.includes(row))
+        .map(row => row.rowId)
     });
   }
 

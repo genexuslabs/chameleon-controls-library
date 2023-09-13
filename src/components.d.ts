@@ -2250,6 +2250,9 @@ declare namespace LocalJSX {
     interface ChGridColumnset {
     }
     interface ChGridRowActions {
+        /**
+          * Event emitted when row actions is opened.
+         */
         "onRowActionOpened"?: (event: ChGridRowActionsCustomEvent<any>) => void;
         /**
           * Indicates that the row actions are displayed when the row-actions-button is pressed.

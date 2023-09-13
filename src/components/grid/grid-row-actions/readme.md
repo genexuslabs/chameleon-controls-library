@@ -16,9 +16,9 @@
 
 ## Events
 
-| Event             | Description | Type               |
-| ----------------- | ----------- | ------------------ |
-| `rowActionOpened` |             | `CustomEvent<any>` |
+| Event             | Description                               | Type               |
+| ----------------- | ----------------------------------------- | ------------------ |
+| `rowActionOpened` | Event emitted when row actions is opened. | `CustomEvent<any>` |
 
 
 ## Methods

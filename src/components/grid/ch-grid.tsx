@@ -106,7 +106,7 @@ export class ChGrid {
       addedRowsId: rows
         .filter(row => !previous.includes(row))
         .map(row => row.rowId),
-      removedRowsId: rows
+      removedRowsId: previous
         .filter(row => !rows.includes(row))
         .map(row => row.rowId),
       unalteredRowsId: rows

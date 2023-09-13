@@ -4,6 +4,7 @@ export interface ChGridSelectionChangedEvent {
 
 export interface ChGridMarkingChangedEvent {
   rowsId: string[];
+  toggledRowId: string;
 }
 
 export interface ChGridCellSelectionChangedEvent {

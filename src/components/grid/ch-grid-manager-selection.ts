@@ -568,4 +568,22 @@ export class ChGridManagerSelection {
       return endIndex - startIndex + 1 === sortedRowsSelected.length;
     }
   }
+
+  getToggledMarkRow(
+    rows: HTMLChGridRowElement[],
+    previous: HTMLChGridRowElement[]
+  ): HTMLChGridRowElement | null {
+    let toggledMarkRow = null;
+    if (rows?.length !== previous?.length) {
+      toggledMarkRow = rows.filter(row => !previous.includes(row));
+      if (toggledMarkRow.length === 0) {
+        /* row was unmarked*/
+        toggledMarkRow = previous.filter(row => !rows.includes(row));
+      }
+      if (toggledMarkRow.length === 1) {
+        return toggledMarkRow[0];
+      }
+    }
+    return null;
+  }
 }

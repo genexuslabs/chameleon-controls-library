@@ -100,14 +100,18 @@ export class ChGrid {
     rows: HTMLChGridRowElement[],
     previous: HTMLChGridRowElement[]
   ) {
-    const getToggledMarkRow = this.manager.selection.getToggledMarkRow(
-      rows,
-      previous
-    );
     this.manager.selection.syncRowSelector(rows, previous, "mark");
     this.rowMarkingChanged.emit({
       rowsId: rows.map(row => row.rowId),
-      toggledRowId: getToggledMarkRow?.rowId
+      addedRowsId: rows
+        .filter(row => !previous.includes(row))
+        .map(row => row.rowId),
+      removedRowsId: rows
+        .filter(row => !rows.includes(row))
+        .map(row => row.rowId),
+      unalteredRowsId: rows
+        .filter(row => previous.includes(row))
+        .map(row => row.rowId)
     });
   }
 

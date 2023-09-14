@@ -171,7 +171,6 @@ export class ChWindow {
     if (!this.isContainerCssOverride && this.container && this.mask) {
       const rect = this.container.getBoundingClientRect();
 
-      // TODO: RTL positioning bug
       this.mask.style.setProperty(
         "--ch-window-inset-inline-start",
         `${rect.left}px`

@@ -19,33 +19,39 @@ const mapTooltipAlignToChWindowAlign: {
   OutsideEnd: "outside-end"
 };
 
-const EXPORT_PARTS = "window:section,mask,header,footer";
+const EXPORT_PARTS = "window:section,mask";
 
 @Component({
   tag: "ch-tooltip",
   styleUrl: "tooltip.scss",
-  shadow: true
+  shadow: false
 })
 export class ChTooltip implements ChComponent {
   /**
    * Specifies the tooltip description.
    */
-  @Prop() readonly caption: string = "Tooltip";
+  @Prop() readonly tooltipId: string = "Tooltip";
+  /**
+   * Specifies the tooltip content.
+   */
+  @Prop() readonly content: string = "";
   /**
    * Specifies the separation (in px)
    * between the tooltip and the container element.
    */
   @Prop() readonly separation: number = 12;
-
+  /**
+   * Specifies the delay (in ms)
+   * for the tooltip to be displayed.
+   */
+  @Prop() readonly delay: number = 100;
   /** Determines if the window and the tooltip is hidden or visible.
    * Inherited from ch-window.
    */
   @Prop({ reflect: true, mutable: true }) hidden = true;
-
-  /** The container element for the window.
-   * Inherited from ch-window.
+  /** The container element for ch-window.
    */
-  @Prop() readonly container?: HTMLElement;
+  private container!: HTMLDivElement;
 
   /**
    * Specifies the position of the tooltip relative to
@@ -69,38 +75,75 @@ export class ChTooltip implements ChComponent {
     | "InsideEnd_OutsideEnd"
     | "OutsideEnd_OutsideEnd" = "OutsideStart_Center";
 
+  private showWithDelay = () => {
+    setTimeout(() => {
+      this.hidden = false;
+    }, this.delay);
+  };
+
+  private handleEnter = () => {
+    if (!this.hidden) {
+      return;
+    }
+    this.showWithDelay();
+  };
+
+  private handleLeave = () => {
+    if (this.container === document.activeElement) {
+      this.hidden = false;
+    }
+    this.hidden = true;
+  };
+
   render() {
     const aligns = this.position.split("_");
     const alignX = aligns[0] as TooltipAlign;
     const alignY = aligns[1] as TooltipAlign;
-    const accessibilityAttributes = {
-      role: "tooltip",
-      "aria-labelledby": this.caption
-    };
+
+    const isSide = alignX === "OutsideStart" || alignX === "OutsideEnd";
+    const isTop = alignY === "OutsideStart";
+    const isBottom = alignY === "OutsideEnd";
+
+    const offsetX =
+      isSide && !isTop && !isBottom ? `${this.separation}px` : null;
+
+    let offsetY = null;
+    if (!isSide) {
+      offsetY = isTop ? `-${this.separation}px` : `${this.separation}px`;
+    }
 
     return (
-      <Host
-        {...accessibilityAttributes}
-        style={{
-          "--separation-between-button": `-${this.separation}px`,
-          "--separation-between-button-size": `${this.separation}px`
-        }}
-      >
+      <Host>
+        <div
+          class="slot-container"
+          tabindex="0"
+          onFocus={this.handleEnter}
+          onMouseEnter={this.handleEnter}
+          ref={el => (this.container = el as HTMLDivElement)}
+          onMouseLeave={this.handleLeave}
+          onFocusout={this.handleLeave}
+        >
+          <slot name="container"></slot>
+        </div>
         <ch-window
           exportparts={EXPORT_PARTS}
           show-header={false}
           show-footer={false}
           modal={false}
+          close-on-escape
           hidden={this.hidden}
           container={this.container}
+          // ref={el => (this.chWindow = el as HTMLChWindowElement)}
           xAlign={mapTooltipAlignToChWindowAlign[alignX]}
           yAlign={mapTooltipAlignToChWindowAlign[alignY]}
           style={{
-            "--ch-window-offset-x": `${this.separation}px`,
-            "--ch-window-offset-y": `${this.separation}px`
+            "--ch-window-offset-x": offsetX,
+            "--ch-window-offset-y": offsetY
           }}
         >
-          <slot>{this.caption}</slot>
+          <div role="tooltip" id={this.tooltipId}>
+            <slot name="content"></slot>
+          </div>
         </ch-window>
       </Host>
     );

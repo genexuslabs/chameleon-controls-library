@@ -10,30 +10,41 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
     <style>
-      
+      #caption {
+        background-color: rgba(0, 0, 0, 0.3);
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <section class="section-dev" data-title="ch-tooltip">
-        <br>
-        <button onmouseover="toggleTooltip()" onmouseleave="toggleTooltip()" aria-describedby="tooltip">Open</button>
+        <br>        
         <ch-tooltip
-            id="tooltip"
-            caption="Test tooltip"
-            hidden
-            position="InsideStart_OutsideStart"
+          id="tooltip"
+          tooltip-id="tooltip"
+          hidden
         >
-            <span>This is my test tooltip</span>
+          <div slot="container">
+            <button
+              aria-describedby="tooltip"
+            >
+              Hover or Focus
+            </button>
+          </div>
+          <div slot="content" id="caption">Test caption</div>
         </ch-tooltip>
 
         <h3>Custom tooltip</h3>
         <label for="caption_i">Caption & Content</label><br>
-        <input type="text" id="caption_i" name="caption_i" value="This is my test tooltip"><br><br>
+        <input type="text" onchange="changeTooltip()" id="caption_i" name="caption_i" value="This is my test tooltip"><br><br>
+        <label for="separation_i">Separation</label><br>
+        <input type="number" onchange="changeTooltip()" id="separation_i" name="separation_i" value="0"><br><br>
+        <label for="delay_i">Delay</label><br>
+        <input type="number" onchange="changeTooltip()" id="delay_i" name="delay_i" value="0"><br><br>
         <label for="position">Position x y </label><br>
-        <select name="position" id="position">
+        <select name="position" id="position" onchange="changeTooltip()">
             <option value="OutsideStart_OutsideStart">OutsideStart OutsideStart</option>
             <option value="InsideStart_OutsideStart">InsideStart OutsideStart</option>
             <option value="Center_OutsideStart">Center OutsideStart</option>
@@ -56,20 +67,15 @@
     </div>
 
     <script>
-        function toggleTooltip() {
-            const tooltipEl = document.querySelector("ch-tooltip");
-            if (tooltipEl.hidden) {
-                tooltipEl.hidden = false
-                tooltipEl.caption = document.getElementById("caption_i").value;
-                tooltipEl.position = document.getElementById("position").value;
-            } else { tooltipEl.hidden = true }
-        }
-        var windowEl = document.querySelector("ch-tooltip");
-        var buttonEl = document.querySelector("button");
-        windowEl.container = buttonEl;
-      </script>
-  
-
-    <script src="./assets/common.js"></script>
+      function changeTooltip() {
+        var tooltipEl = document.querySelector("ch-tooltip");
+        const captionEl = document.querySelector("#caption");
+        captionEl.innerHTML = document.getElementById("caption_i").value;
+        tooltipEl.position = document.getElementById("position").value;
+        tooltipEl.separation = document.getElementById("separation_i").value;
+        tooltipEl.delay = document.getElementById("delay_i").value;
+      }
+    </script>
+    <script src="./assets/scripts/common.js"></script>
   </body>
 </html>

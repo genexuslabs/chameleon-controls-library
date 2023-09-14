@@ -11,13 +11,9 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 :host {
-  --ch-dropdown-rtl-initial-X: 1;
-
-  // Default translate X
-  --ch-dropdown-translateX: 0;
-
-  // Default translate Y
-  --ch-dropdown-translateY: 0;
+  --separation: 0px;
+  --separation-x: var(--separation);
+  --separation-y: var(--separation);
 
   display: flex;
   position: relative;
@@ -46,38 +42,54 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 // - - - - - - - - - - - - - - - -
 //        Dummy separation
 // - - - - - - - - - - - - - - - -
-// Dummy separation to keep opened the popup when expand-behavior === "hover"
-.dummy-separation {
+// Dummy separation to keep opened the popup when expand-behavior === "Click or Hover"
+.separation {
   display: flex;
   position: absolute;
   z-index: $z-index-gx-navbar-item;
 
   // Top or Bottom
-  &--vertical {
+  &--y {
     width: 100%;
-    height: var(--separation-between-button-size);
+    height: var(--separation-y);
   }
 
-  &--top {
-    inset-block-start: var(--separation-between-button);
+  &--y-outside-start {
+    inset-block-start: calc(var(--separation-y) * -1);
+
+    + ch-window {
+      --ch-window-offset-y: calc(var(--separation-y) * -1);
+    }
   }
 
-  &--bottom {
-    inset-block-end: var(--separation-between-button);
+  &--y-outside-end {
+    inset-block-end: calc(var(--separation-y) * -1);
+
+    + ch-window {
+      --ch-window-offset-y: var(--separation-y);
+    }
   }
 
   // Left or Right
-  &--horizontal {
-    width: var(--separation-between-button-size);
+  &--x {
+    width: var(--separation-x);
     height: 100%;
   }
 
-  &--left {
-    inset-inline-start: var(--separation-between-button);
+  &--x-outside-start {
+    inset-inline-start: calc(var(--separation-x) * -1);
+
+    + ch-window {
+      --ch-window-offset-x: calc(var(--separation-x) * -1);
+    }
   }
 
-  &--right {
-    inset-inline-end: var(--separation-between-button);
+  &--x-outside-end {
+    inset-inline-end: calc(var(--separation-x) * -1);
+
+    + ch-window {
+      --ch-window-offset-x: var(--separation-x);
+    }
   }
 }
 

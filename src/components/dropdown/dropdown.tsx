@@ -13,6 +13,8 @@ import {
 import { Component as ChComponent } from "../../common/interfaces";
 import { ChWindowAlign } from "../window/ch-window";
 
+import { DropdownPosition } from "./types";
+
 export type DropdownAlign =
   | "OutsideStart"
   | "InsideStart"
@@ -35,8 +37,6 @@ const SECTION_ID = "section";
 
 const DROPDOWN_ITEM_TAG_NAME = "ch-dropdown-item";
 const DROPDOWN_ITEM_SELECTOR = `:scope > ${DROPDOWN_ITEM_TAG_NAME}`;
-
-const EXPORT_PARTS = "window:section,mask,header,footer";
 
 // Keys
 const TAB_KEY = "Tab";
@@ -128,29 +128,13 @@ export class ChDropDown implements ChComponent {
    * Specifies the position of the dropdown section that is placed relative to
    * the expandable button.
    */
-  @Prop() readonly position:
-    | "OutsideStart_OutsideStart"
-    | "InsideStart_OutsideStart"
-    | "Center_OutsideStart"
-    | "InsideEnd_OutsideStart"
-    | "OutsideEnd_OutsideStart"
-    | "OutsideStart_InsideStart"
-    | "OutsideEnd_InsideStart"
-    | "OutsideStart_Center"
-    | "OutsideEnd_Center"
-    | "OutsideStart_InsideEnd"
-    | "OutsideEnd_InsideEnd"
-    | "OutsideStart_OutsideEnd"
-    | "InsideStart_OutsideEnd"
-    | "Center_OutsideEnd"
-    | "InsideEnd_OutsideEnd"
-    | "OutsideEnd_OutsideEnd";
+  @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
-   * Specifies the separation (in pixels) between the expandable button and the
-   * dropdown section of the control.
+   * This attribute lets you specify if the control is positioned relative to
+   * another containing block than the document.
    */
-  @Prop() readonly dropdownSeparation: number = 12;
+  @Prop() readonly relativeWindow: boolean = false;
 
   /**
    * Fired when the visibility of the dropdown section is changed
@@ -360,6 +344,8 @@ export class ChDropDown implements ChComponent {
 
     const hasVerticalPosition =
       alignY === "OutsideStart" || alignY === "OutsideEnd";
+    const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
+    const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
     const isExpanded = this.expanded || this.expandedWithHover;
 
@@ -370,10 +356,6 @@ export class ChDropDown implements ChComponent {
             ? this.handleMouseLeave
             : undefined
         }
-        style={{
-          "--separation-between-button": `-${this.dropdownSeparation}px`,
-          "--separation-between-button-size": `${this.dropdownSeparation}px`
-        }}
       >
         <button
           id={EXPANDABLE_BUTTON_ID}
@@ -396,34 +378,32 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "Click or Hover" && this.expandedWithHover && (
+        {this.expandBehavior === "Click or Hover" && (
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
           <div
             aria-hidden="true"
             class={{
-              "dummy-separation": true,
-              [`dummy-separation--${this.position.toLowerCase()}`]: true,
-              "dummy-separation--vertical": hasVerticalPosition,
-              "dummy-separation--horizontal": !hasVerticalPosition
+              separation: true,
+              [`separation--y separation--y-${yAlignMapping}`]:
+                hasVerticalPosition,
+              [`separation--x separation--x-${xAlignMapping}`]:
+                !hasVerticalPosition
             }}
             part="separation"
           ></div>
         )}
 
         <ch-window
-          exportparts={EXPORT_PARTS}
+          exportparts="window:section,mask,header,footer"
           container={this.el}
           hidden={!isExpanded}
           modal={false}
+          relativeWindow={this.relativeWindow}
           showFooter={this.showFooter}
           showHeader={this.showHeader}
-          xAlign={mapDropdownAlignToChWindowAlign[alignX]}
-          yAlign={mapDropdownAlignToChWindowAlign[alignY]}
-          style={{
-            "--ch-window-offset-x": `${this.dropdownSeparation}px`,
-            "--ch-window-offset-y": `${this.dropdownSeparation}px`
-          }}
+          xAlign={xAlignMapping}
+          yAlign={yAlignMapping}
         >
           {this.showHeader && (
             <div class="dummy-wrapper" slot="header">

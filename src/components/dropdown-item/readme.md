@@ -7,11 +7,13 @@
 
 ## Properties
 
-| Property      | Attribute       | Description                                                                                                                                                       | Type     | Default     |
-| ------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
-| `href`        | `href`          | Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag. | `string` | `undefined` |
-| `leftImgSrc`  | `left-img-src`  | Specifies the src for the left img.                                                                                                                               | `string` | `undefined` |
-| `rightImgSrc` | `right-img-src` | Specifies the src for the right img.                                                                                                                              | `string` | `undefined` |
+| Property         | Attribute         | Description                                                                                                                                                       | Type                          | Default            |
+| ---------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ------------------ |
+| `expandBehavior` | `expand-behavior` | Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.                                            | `"Click or Hover" \| "Click"` | `"Click or Hover"` |
+| `href`           | `href`            | Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag. | `string`                      | `undefined`        |
+| `leftImgSrc`     | `left-img-src`    | Specifies the src for the left img.                                                                                                                               | `string`                      | `undefined`        |
+| `openOnFocus`    | `open-on-focus`   | Determine if the dropdown section should be opened when the expandable button of the control is focused. Only works if the control has subitems.                  | `boolean`                     | `false`            |
+| `rightImgSrc`    | `right-img-src`   | Specifies the src for the right img.                                                                                                                              | `string`                      | `undefined`        |
 
 
 ## Events
@@ -37,14 +39,35 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part                         | Description |
-| ---------------------------- | ----------- |
-| `"dropdown-item__button"`    |             |
-| `"dropdown-item__content"`   |             |
-| `"dropdown-item__left-img"`  |             |
-| `"dropdown-item__right-img"` |             |
-| `"dropdown-item__target"`    |             |
+| Part          | Description |
+| ------------- | ----------- |
+| `"action"`    |             |
+| `"button"`    |             |
+| `"content"`   |             |
+| `"left-img"`  |             |
+| `"right-img"` |             |
+| `"target"`    |             |
 
+
+## Dependencies
+
+### Used by
+
+ - [ch-test-dropdown](../test/test-dropdown)
+
+### Depends on
+
+- [ch-dropdown](../dropdown)
+
+### Graph
+```mermaid
+graph TD;
+  ch-dropdown-item --> ch-dropdown
+  ch-dropdown --> ch-window
+  ch-window --> ch-window-close
+  ch-test-dropdown --> ch-dropdown-item
+  style ch-dropdown-item fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

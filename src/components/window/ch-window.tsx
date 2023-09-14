@@ -18,6 +18,8 @@ export type ChWindowAlign =
   | "inside-end"
   | "outside-end";
 
+const CONTAINING_BLOCK_RESET_CUSTOM_VAR = "--ch-window-relative-position";
+
 /**
  * The 'ch-window' component represents a popup container that is positioned
  * relative to an element or the screen.
@@ -29,6 +31,7 @@ export type ChWindowAlign =
 })
 export class ChWindow {
   private isContainerCssOverride = false;
+  private relativeWindow = false;
   private containerResizeObserver: ResizeObserver;
   private mask: HTMLElement;
   private header: HTMLElement;
@@ -52,6 +55,7 @@ export class ChWindow {
 
   @Watch("container")
   containerHandler(value: HTMLElement, oldValue: HTMLElement) {
+    this.checkRelativePosition();
     this.containerResizeObserverHandler(value, oldValue);
     this.updatePosition();
   }
@@ -72,6 +76,7 @@ export class ChWindow {
       this.removeListeners();
       this.windowClosed.emit();
     } else {
+      this.checkRelativePosition();
       this.updatePosition();
       this.watchCSSAlign();
       this.addListeners();
@@ -167,9 +172,25 @@ export class ChWindow {
     eventInfo.stopPropagation();
   };
 
+  private checkRelativePosition() {
+    const computed = getComputedStyle(this.el);
+    this.relativeWindow = !!computed.getPropertyValue(
+      CONTAINING_BLOCK_RESET_CUSTOM_VAR
+    );
+  }
+
   private updatePosition = () => {
     if (!this.isContainerCssOverride && this.container && this.mask) {
       const rect = this.container.getBoundingClientRect();
+
+      this.mask.style.width = `${rect.width}px`;
+      this.mask.style.height = `${rect.height}px`;
+
+      // Nested windows are positioned relative to its initial containing block,
+      // so there is no need to align them relative to the document
+      if (this.relativeWindow) {
+        return;
+      }
 
       // TODO: RTL positioning bug
       this.mask.style.setProperty(
@@ -180,13 +201,15 @@ export class ChWindow {
         "--ch-window-inset-block-start",
         `${rect.top}px`
       );
-      this.mask.style.width = `${rect.width}px`;
-      this.mask.style.height = `${rect.height}px`;
     } else if (this.isContainerCssOverride || !this.container) {
-      this.mask.style.removeProperty("--ch-window-inset-inline-start");
-      this.mask.style.removeProperty("--ch-window-inset-block-start");
       this.mask.style.removeProperty("width");
       this.mask.style.removeProperty("height");
+
+      if (this.relativeWindow) {
+        return;
+      }
+      this.mask.style.removeProperty("--ch-window-inset-inline-start");
+      this.mask.style.removeProperty("--ch-window-inset-block-start");
     }
   };
 
@@ -308,6 +331,12 @@ export class ChWindow {
         <div
           class="mask"
           part="mask"
+          style={
+            this.relativeWindow && {
+              "--ch-window-inset-inline-start": "0px",
+              "--ch-window-inset-block-start": "0px"
+            }
+          }
           ref={el => (this.mask = el)}
           onClick={this.maskClickHandler}
         >

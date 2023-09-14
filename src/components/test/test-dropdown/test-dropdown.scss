@@ -14,6 +14,8 @@
 
 .dropdown-item {
   &::part(action) {
+    --separation: 8px;
+
     background-color: rgb(243, 208, 195);
     border-radius: 4px;
     padding-inline: 16px;

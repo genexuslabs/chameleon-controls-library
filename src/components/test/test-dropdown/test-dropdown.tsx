@@ -39,12 +39,6 @@ export class ChTestDropdownX {
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
-   * This attribute lets you specify if the control is positioned relative to
-   * another containing block than the document.
-   */
-  @Prop() readonly relativeWindow: boolean = false;
-
-  /**
    * Specifies the separation (in pixels) between the expandable button and the
    * dropdown section of the control.
    */
@@ -60,8 +54,10 @@ export class ChTestDropdownX {
       slot="items"
       id={item.id}
       class={item.class}
+      expandBehavior={this.expandBehavior}
       href={item.target}
       leftImgSrc={item.leftIcon}
+      openOnFocus={this.openOnFocus}
       rightImgSrc={item.rightIcon}
     >
       {item.title}
@@ -85,7 +81,6 @@ export class ChTestDropdownX {
           expandBehavior={this.expandBehavior}
           openOnFocus={this.openOnFocus}
           position={this.position}
-          relativeWindow={this.relativeWindow}
           style={{
             "--separation": `${this.separation}px`
           }}

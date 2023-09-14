@@ -14,6 +14,7 @@ $img-size: 24px;
   display: flex;
   width: 100%;
   height: 100%;
+  transform: translateX(0); // Make the ch-dropdown control relative to the item
 }
 
 .action {
@@ -38,4 +39,8 @@ $img-size: 24px;
 
 .content {
   width: 100%;
+}
+
+.dummy-wrapper {
+  display: contents;
 }

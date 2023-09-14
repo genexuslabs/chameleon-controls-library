@@ -6,9 +6,12 @@ import {
   Host,
   Method,
   Prop,
+  State,
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+
+const DROPDOWN_ITEM = "ch-dropdown-item";
 
 @Component({
   shadow: true,
@@ -19,6 +22,8 @@ export class ChDropDownItem implements ChComponent {
   private mainElement: HTMLButtonElement | HTMLAnchorElement;
 
   @Element() element: HTMLChDropdownItemElement;
+
+  @State() hasItems = false;
 
   /**
    * Specifies the hyperlink of the item. If this property is defined, the
@@ -83,6 +88,58 @@ export class ChDropDownItem implements ChComponent {
     )
   ];
 
+  private checkItems = () => {
+    this.hasItems = !!this.element.querySelector(`:scope>${DROPDOWN_ITEM}`);
+  };
+
+  private noItemsRender = () =>
+    this.href ? (
+      <a
+        class="action"
+        part="action target"
+        href={this.href}
+        onClick={this.handleActionClick}
+        onFocus={this.handleFocus}
+        ref={el => (this.mainElement = el)}
+      >
+        {this.dropDownItemContent()}
+
+        <slot name="items" onSlotchange={this.checkItems} />
+      </a>
+    ) : (
+      <button
+        class="action"
+        part="action button"
+        type="button"
+        onClick={this.handleActionClick}
+        onFocus={this.handleFocus}
+        ref={el => (this.mainElement = el)}
+      >
+        {this.dropDownItemContent()}
+
+        <slot name="items" onSlotchange={this.checkItems} />
+      </button>
+    );
+
+  private itemsRender = () => (
+    <ch-dropdown
+      class="action"
+      part="action button"
+      exportparts="expandable-button,separation,list,section,mask,header,footer"
+      openOnFocus={true}
+      position="OutsideEnd_InsideStart"
+      relativeWindow={true}
+    >
+      <div class="dummy-wrapper" slot="action">
+        {this.dropDownItemContent()}
+      </div>
+
+      <div class="dummy-wrapper" slot="items">
+        <slot name="items" onSlotchange={this.checkItems} />
+      </div>
+    </ch-dropdown>
+  );
+
   private handleActionClick = () => {
     this.actionClick.emit(this.element.id);
   };
@@ -91,32 +148,14 @@ export class ChDropDownItem implements ChComponent {
     this.focusChange.emit();
   };
 
+  componentWillLoad() {
+    this.checkItems();
+  }
+
   render() {
     return (
       <Host role="listitem">
-        {this.href ? (
-          <a
-            class="action"
-            part="action target"
-            href={this.href}
-            onClick={this.handleActionClick}
-            onFocus={this.handleFocus}
-            ref={el => (this.mainElement = el)}
-          >
-            {this.dropDownItemContent()}
-          </a>
-        ) : (
-          <button
-            class="action"
-            part="action button"
-            type="button"
-            onClick={this.handleActionClick}
-            onFocus={this.handleFocus}
-            ref={el => (this.mainElement = el)}
-          >
-            {this.dropDownItemContent()}
-          </button>
-        )}
+        {this.hasItems ? this.itemsRender() : this.noItemsRender()}
       </Host>
     );
   }

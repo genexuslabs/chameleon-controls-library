@@ -18,6 +18,12 @@ export interface ChGridRowClickedEvent {
   columnId?: string;
 }
 
+export interface ChGridRowPressedEvent {
+  rowId: string;
+  cellId?: string;
+  columnId?: string;
+}
+
 export type CSSProperties = {
   [key: string]: string;
 };

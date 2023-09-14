@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-window</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+
+    <link rel="stylesheet" href="./grid.css" />
+    <style>
+      ch-grid {
+        height: 200px;
+      }
+      ch-grid-column::part(settings-main) {
+        height: 70px;
+        overflow: auto;
+      }
+    </style>
+
+    <ch-style href="./assets/styles/scroll-bar.css"> </ch-style>
+    <!--
+    <ch-style>
+      :host {
+        scrollbar-color: red green;
+      }
+      
+      ::-webkit-scrollbar {
+        width: 12px; /* width of the entire scrollbar */
+      }
+      
+      /* Track of the scrollbar */
+      ::-webkit-scrollbar-track {
+        background: red; /* color of the tracking area */
+      }
+      
+      /* Handle (or "thumb") of the scrollbar */
+      ::-webkit-scrollbar-thumb {
+        background: green; /* color of the scroll thumb */
+      }
+      
+      /* Handle on hover */
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555; /* color of the scroll thumb on hover */
+      }      
+    </ch-style>
+    -->
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="grid scrollbar">
+        <ch-grid row-selection-mode="none">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              sort-direction="asc"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column column-id="name" column-name="Country Name">
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+            >
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+            <ch-grid-column column-id="language" column-name="Country Language">
+              <div class="column-settings" slot="settings">
+                Column Settings !!
+              </div>
+            </ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+
+          <ch-grid-actionbar slot="footer">
+            <ch-grid-action-refresh title="Refresh"></ch-grid-action-refresh>
+            <ch-grid-action-settings title="Settings"></ch-grid-action-settings>
+          </ch-grid-actionbar>
+        </ch-grid>
+      </section>
+    </div>
+
+    <script src="./assets/scripts/common.js"></script>
+  </body>
+</html>

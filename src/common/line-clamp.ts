@@ -3,6 +3,7 @@ import { Component } from "./interfaces";
 
 export function makeLinesClampable(
   component: LineClampComponent,
+  contentElementSelector: string,
   contentContainerElementSelector: string,
   lineMeasuringElementSelector: string,
   componentHasShadowDOM = false
@@ -11,6 +12,9 @@ export function makeLinesClampable(
     return;
   }
 
+  // Used to know the sizes of the `content`
+  let contentElement: HTMLElement;
+
   // Used to know the sizes of the `content-container`
   let contentContainerElement: HTMLElement;
 
@@ -18,6 +22,7 @@ export function makeLinesClampable(
   let lineMeasuringElement: HTMLElement;
 
   // Used to keep the state of the component
+  let contentHeight = -1;
   let contentContainerHeight = -1;
   let lineMeasuringHeight = -1;
 
@@ -30,12 +35,14 @@ export function makeLinesClampable(
         return;
       }
 
+      const currentContentHeight = contentElement.scrollHeight;
       const currentLineMeasuringHeight = lineMeasuringElement.clientHeight;
 
       /*  If the container height and the line height have not been changed,
           there is not need to update `component.maxLines`
       */
       if (
+        contentHeight === currentContentHeight &&
         contentContainerHeight === currentContentContainerHeight &&
         lineMeasuringHeight === currentLineMeasuringHeight
       ) {
@@ -43,8 +50,15 @@ export function makeLinesClampable(
       }
 
       // Stores the current height of the content container and line measurement
+      contentHeight = currentContentHeight;
       contentContainerHeight = currentContentContainerHeight;
       lineMeasuringHeight = currentLineMeasuringHeight;
+
+      // Set how much lines needs the control to not overflow its content
+      component.contentLines = Math.max(
+        Math.trunc(currentContentHeight / lineMeasuringHeight),
+        1
+      );
 
       // At least, one line will be displayed
       component.maxLines = Math.max(
@@ -61,6 +75,10 @@ export function makeLinesClampable(
       const componentElement = component.element;
 
       if (componentHasShadowDOM) {
+        contentElement = componentElement.shadowRoot.querySelector(
+          contentElementSelector
+        ) as HTMLElement;
+
         contentContainerElement = componentElement.shadowRoot.querySelector(
           contentContainerElementSelector
         ) as HTMLElement;
@@ -69,6 +87,10 @@ export function makeLinesClampable(
           lineMeasuringElementSelector
         ) as HTMLElement;
       } else {
+        contentElement = componentElement.querySelector(
+          contentElementSelector
+        ) as HTMLElement;
+
         contentContainerElement = componentElement.querySelector(
           contentContainerElementSelector
         ) as HTMLElement;
@@ -89,8 +111,9 @@ export function makeLinesClampable(
         applyLineClamp();
       });
 
-      // Observe the `content-container` and line height
-      resizeObserverContainer.observe(componentElement);
+      // Observe the content, content-container and line height
+      resizeObserverContainer.observe(contentElement);
+      resizeObserverContainer.observe(contentContainerElement);
       resizeObserverContainer.observe(lineMeasuringElement);
     }
   });
@@ -111,5 +134,6 @@ export function makeLinesClampable(
 
 export interface LineClampComponent extends Component {
   lineClamp: boolean;
+  contentLines: number;
   maxLines: number;
 }

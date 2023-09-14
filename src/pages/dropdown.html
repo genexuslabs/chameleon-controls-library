@@ -10,11 +10,374 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles.css" />
+
+    <style>
+      body {
+        min-height: 100vh;
+      }
+
+      .dropdown-container {
+        width: max-content;
+        height: 30px;
+        margin: auto;
+      }
+    </style>
     <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
   <body>
-    <div class="container">To be done.</div>
+    <div class="container">WIP</div>
 
-    <script src="./assets/scripts/common.js"></script>
+    <div class="dropdown-container">
+      <ch-test-dropdown></ch-test-dropdown>
+    </div>
+
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        row-gap: 16px;
+        margin-block-start: 100px;
+      "
+    >
+      <label>
+        Position
+        <select name="DropdownPosition" id="dropdown-position">
+          <option value="OutsideStart_OutsideStart">
+            OutsideStart_OutsideStart
+          </option>
+          <option value="InsideStart_OutsideStart">
+            InsideStart_OutsideStart
+          </option>
+          <option value="Center_OutsideStart">Center_OutsideStart</option>
+          <option value="InsideEnd_OutsideStart">InsideEnd_OutsideStart</option>
+          <option value="OutsideEnd_OutsideStart">
+            OutsideEnd_OutsideStart
+          </option>
+          <option value="OutsideStart_InsideStart">
+            OutsideStart_InsideStart
+          </option>
+          <option value="OutsideEnd_InsideStart">OutsideEnd_InsideStart</option>
+          <option value="OutsideStart_Center">OutsideStart_Center</option>
+          <option value="OutsideEnd_Center">OutsideEnd_Center</option>
+          <option value="OutsideStart_InsideEnd">OutsideStart_InsideEnd</option>
+          <option value="OutsideEnd_InsideEnd">OutsideEnd_InsideEnd</option>
+          <option value="OutsideStart_OutsideEnd">
+            OutsideStart_OutsideEnd
+          </option>
+          <option value="InsideStart_OutsideEnd">InsideStart_OutsideEnd</option>
+          <option value="Center_OutsideEnd" selected>Center_OutsideEnd</option>
+          <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
+          <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
+        </select>
+      </label>
+
+      <label>
+        Expand behavior
+        <select name="Expand Behavior" id="dropdown-expand-behavior">
+          <option value="Click">Click</option>
+          <option value="Click or Hover" selected>Click or Hover</option>
+        </select>
+      </label>
+
+      <button id="medium-model">Medium model</button>
+
+      <label>
+        Separation
+        <input id="separation" type="number" value="0" />
+      </label>
+
+      <ch-checkbox
+        id="open-on-focus"
+        checkedValue="true"
+        unCheckedValue="false"
+        checked-value="false"
+        caption="Open on focus"
+      ></ch-checkbox>
+    </div>
+
+    <script src="./assets/common.js"></script>
+    <script>
+      const modelMinimal = [
+        {
+          id: "item-1",
+          class: "dropdown-item",
+          leftIcon: "assets/icons/patterns.svg",
+          rightIcon: "./assets/icons/knowledge-base.svg",
+          items: [
+            {
+              id: "item-2-2",
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              items: [],
+              target: "https://www.google.com.uy",
+              title: "Google",
+              showSeparator: false,
+              separatorClass: ""
+            },
+            {
+              id: "item-1-3",
+              class: "dropdown-item",
+              leftIcon: "./assets/icons/file.svg",
+              items: [],
+              target: "",
+              title: "Item 1-3",
+              showSeparator: false,
+              separatorClass: ""
+            }
+          ],
+          target: "",
+          title: "Item 1",
+          showSeparator: false,
+          separatorClass: ""
+        },
+        {
+          id: "item-2",
+          class: "dropdown-item",
+          leftIcon: "assets/icons/patterns.svg",
+          items: [],
+          target: "https://www.google.com.uy",
+          title: "Google",
+          showSeparator: false,
+          separatorClass: ""
+        },
+        {
+          id: "item-3",
+          class: "dropdown-item",
+          leftIcon: "./assets/icons/file.svg",
+          items: [
+            {
+              id: "item-3-1",
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              rightIcon: "./assets/icons/knowledge-base.svg",
+              items: [
+                {
+                  id: "item-3-1-1",
+                  class: "dropdown-item",
+                  leftIcon: "assets/icons/patterns.svg",
+                  rightIcon: "./assets/icons/knowledge-base.svg",
+                  items: [],
+                  target: "",
+                  title: "Item 3-1-1",
+                  showSeparator: false,
+                  separatorClass: ""
+                },
+                {
+                  id: "item-3-1-2",
+                  class: "dropdown-item",
+                  leftIcon: "assets/icons/patterns.svg",
+                  items: [],
+                  target: "https://www.google.com.uy",
+                  title: "Google",
+                  showSeparator: false,
+                  separatorClass: ""
+                },
+                {
+                  id: "item-3-1-3",
+                  class: "dropdown-item",
+                  leftIcon: "./assets/icons/file.svg",
+                  items: [],
+                  target: "",
+                  title: "Item 3-1-3",
+                  showSeparator: false,
+                  separatorClass: ""
+                }
+              ],
+              target: "",
+              title: "Item 1-1",
+              showSeparator: false,
+              separatorClass: ""
+            },
+            {
+              id: "item-3-2",
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              items: [],
+              target: "https://www.google.com.uy",
+              title: "Google",
+              showSeparator: false,
+              separatorClass: ""
+            },
+            {
+              id: "item-3-3",
+              class: "dropdown-item",
+              leftIcon: "./assets/icons/file.svg",
+              items: [],
+              target: "",
+              title: "Item 3-3",
+              showSeparator: false,
+              separatorClass: ""
+            }
+          ],
+          target: "",
+          title: "Item 3",
+          showSeparator: false,
+          separatorClass: ""
+        }
+      ];
+
+      const modelMediumMinimal = [
+        {
+          id: "item-1",
+          class: "dropdown-item",
+          leftIcon: "assets/icons/patterns.svg",
+          rightIcon: "./assets/icons/knowledge-base.svg",
+          target: "https://github.com",
+          title: "GitHub",
+          showSeparator: false,
+          separatorClass: ""
+        },
+        {
+          id: "item-2",
+          class: "dropdown-item",
+          leftIcon: "assets/icons/patterns.svg",
+          items: [
+            {
+              id: "item-2-1",
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              rightIcon: "./assets/icons/knowledge-base.svg",
+              items: [],
+              target: "",
+              title: "Item 1-1",
+              showSeparator: false,
+              separatorClass: ""
+            },
+            {
+              id: "item-2-2",
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              items: [],
+              target: "https://www.google.com.uy",
+              title: "Google",
+              showSeparator: false,
+              separatorClass: ""
+            },
+            {
+              id: "item-2-3",
+              class: "dropdown-item",
+              leftIcon: "./assets/icons/file.svg",
+              items: [],
+              target: "",
+              title: "Item 3-3",
+              showSeparator: false,
+              separatorClass: ""
+            }
+          ],
+          title: "Item 2",
+          showSeparator: false,
+          separatorClass: ""
+        },
+        {
+          id: "item-3",
+          class: "dropdown-item",
+          leftIcon: "./assets/icons/file.svg",
+          target: "https://www.google.com.uy",
+          title: "Google",
+          showSeparator: false,
+          separatorClass: ""
+        }
+      ];
+
+      const FIRST_LEVEL_SIZE = 10;
+      const SECOND_LEVEL_SIZE = 10;
+      const THIRD_LEVEL_SIZE = 50;
+
+      const eagerLargeModel = [];
+
+      for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+        const subEagerLargeModel = [];
+        const modelId = "item-" + i;
+
+        for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+          const subModelId = modelId + "-" + j;
+          const subSubEagerLargeModel = [];
+
+          for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+            const subSubModelId = subModelId + "-" + k;
+
+            subSubEagerLargeModel.push({
+              id: subSubModelId,
+              class: "dropdown-item",
+              leftIcon: "assets/icons/patterns.svg",
+              rightIcon: "./assets/icons/knowledge-base.svg",
+              target: "",
+              title: subSubModelId,
+              showSeparator: false,
+              separatorClass: ""
+            });
+          }
+
+          subEagerLargeModel.push({
+            id: subModelId,
+            class: "dropdown-item",
+            leftIcon: "assets/icons/patterns.svg",
+            rightIcon: "./assets/icons/knowledge-base.svg",
+            items: subSubEagerLargeModel,
+            target: "",
+            title: subModelId,
+            showSeparator: false,
+            separatorClass: ""
+          });
+        }
+
+        eagerLargeModel.push({
+          id: modelId,
+          class: "dropdown-item",
+          leftIcon: "assets/icons/patterns.svg",
+          rightIcon: "./assets/icons/knowledge-base.svg",
+          items: subEagerLargeModel,
+          target: "",
+          title: modelId,
+          showSeparator: false,
+          separatorClass: ""
+        });
+      }
+
+      // WA to remove extra handlers in appload event
+      let appLoadFinish = false;
+
+      window.addEventListener("appload", () => {
+        if (appLoadFinish) {
+          return;
+        }
+
+        const dropdownTest = document.querySelector("ch-test-dropdown");
+        dropdownTest.itemsModel = modelMinimal;
+
+        const openOnFocusElem = document.getElementById("open-on-focus");
+        openOnFocusElem.addEventListener("input", event => {
+          console.log(event.target.checked);
+
+          dropdownTest.openOnFocus = event.target.checked;
+        });
+
+        const selectPositionElem = document.getElementById("dropdown-position");
+        selectPositionElem.addEventListener("change", event => {
+          dropdownTest.position = event.target.value;
+        });
+
+        const expandBehaviorElem = document.getElementById(
+          "dropdown-expand-behavior"
+        );
+        expandBehaviorElem.addEventListener("change", event => {
+          dropdownTest.expandBehavior = event.target.value;
+        });
+
+        const separationElem = document.getElementById("separation");
+        separationElem.addEventListener("input", event => {
+          dropdownTest.separation = event.target.value;
+        });
+
+        const mediumModelBtn = document.getElementById("medium-model");
+        mediumModelBtn.addEventListener("click", () => {
+          dropdownTest.itemsModel = modelMediumMinimal;
+        });
+
+        // Eager large model
+        // dropdownTest.itemsModel = eagerLargeModel;
+      });
+    </script>
   </body>
 </html>

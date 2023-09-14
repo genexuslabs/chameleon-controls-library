@@ -150,16 +150,7 @@ export class ChAlert {
             />
           ),
           <div part="content" class="content">
-            <slot name="content">
-              <small>Remaining time: </small>
-              <ch-timer
-                exportparts="indicator"
-                class="timer"
-                accessibleName={`${this.countdown / 1000} seconds left`}
-                progress={Math.trunc(this.countdown / 1000)}
-              ></ch-timer>
-              <small> seconds left.</small>
-            </slot>
+            <slot name="content"></slot>
           </div>,
           this.showCloseButton && (
             <button
@@ -175,15 +166,15 @@ export class ChAlert {
             </button>
           ),
           this.showTimeoutBar && (
-            <ch-progress-bar
-              part="indicator_container"
-              class="indicator_container"
+            <ch-timer
+              part="indicator-container"
+              class="indicator-container"
               exportparts="indicator"
               progress={(this.countdown * 100) / this.dismissTimeout}
               accessibleName={`${this.countdown / 1000} seconds left`}
               animation-time={this.dismissTimeout}
               presented={this.presented}
-            ></ch-progress-bar>
+            ></ch-timer>
           )
         ]}
       </Host>

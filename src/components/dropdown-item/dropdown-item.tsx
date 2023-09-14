@@ -26,6 +26,14 @@ export class ChDropDownItem implements ChComponent {
   @State() hasItems = false;
 
   /**
+   * Determine which actions on the expandable button display the dropdown
+   * section.
+   * Only works if the control has subitems.
+   */
+  @Prop() readonly expandBehavior: "Click" | "Click or Hover" =
+    "Click or Hover";
+
+  /**
    * Specifies the hyperlink of the item. If this property is defined, the
    * control will render an anchor tag with this `href`. Otherwise, it will
    * render a button tag.
@@ -36,6 +44,13 @@ export class ChDropDownItem implements ChComponent {
    * Specifies the src for the left img.
    */
   @Prop() readonly leftImgSrc: string;
+
+  /**
+   * Determine if the dropdown section should be opened when the expandable
+   * button of the control is focused.
+   * Only works if the control has subitems.
+   */
+  @Prop() readonly openOnFocus: boolean = false;
 
   /**
    * Specifies the src for the right img.
@@ -126,9 +141,10 @@ export class ChDropDownItem implements ChComponent {
       class="action"
       part="action button"
       exportparts="expandable-button,separation,list,section,mask,header,footer"
-      openOnFocus={true}
+      expandBehavior={this.expandBehavior}
+      nestedDropdown={true}
+      openOnFocus={this.openOnFocus}
       position="OutsideEnd_InsideStart"
-      relativeWindow={true}
     >
       <div class="dummy-wrapper" slot="action">
         {this.dropDownItemContent()}

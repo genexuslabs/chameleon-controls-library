@@ -17,7 +17,7 @@ $img-size: 24px;
 
   // Make the ch-dropdown control relative to the item
   transform: translateX(0);
-  --ch-window-reset-position: true;
+  --ch-window-relative-position: true;
 }
 
 .action {

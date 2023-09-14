@@ -119,6 +119,12 @@ export class ChDropDown implements ChComponent {
     "Click or Hover";
 
   /**
+   * This attribute lets you specify if the control is nested in another
+   * dropdown. Useful to manage keyboard interaction.
+   */
+  @Prop() readonly nestedDropdown: boolean = false;
+
+  /**
    * Determine if the dropdown section should be opened when the expandable
    * button of the control is focused.
    */
@@ -129,12 +135,6 @@ export class ChDropDown implements ChComponent {
    * the expandable button.
    */
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
-
-  /**
-   * This attribute lets you specify if the control is positioned relative to
-   * another containing block than the document.
-   */
-  @Prop() readonly relativeWindow: boolean = false;
 
   /**
    * Fired when the visibility of the dropdown section is changed
@@ -156,9 +156,12 @@ export class ChDropDown implements ChComponent {
       );
 
       // Keyboard events
-      document.body.addEventListener("keydown", this.handleKeyDownEvents, {
-        capture: true
-      });
+      if (!this.nestedDropdown) {
+        document.body.addEventListener("keydown", this.handleKeyDownEvents, {
+          capture: true
+        });
+      }
+
       document.body.addEventListener("keyup", this.handleKeyUpEvents, {
         capture: true
       });
@@ -173,9 +176,12 @@ export class ChDropDown implements ChComponent {
       );
 
       // Keyboard events
-      document.body.removeEventListener("keydown", this.handleKeyDownEvents, {
-        capture: true
-      });
+      if (!this.nestedDropdown) {
+        document.body.removeEventListener("keydown", this.handleKeyDownEvents, {
+          capture: true
+        });
+      }
+
       document.body.removeEventListener("keyup", this.handleKeyUpEvents, {
         capture: true
       });
@@ -252,7 +258,7 @@ export class ChDropDown implements ChComponent {
    * works if `openOnFocus = "false"`
    */
   private returnFocusToButton() {
-    if (!this.openOnFocus) {
+    if (!this.openOnFocus && !this.nestedDropdown) {
       this.expandableButton.focus();
     }
   }
@@ -280,10 +286,8 @@ export class ChDropDown implements ChComponent {
     if (event.code !== TAB_KEY) {
       return;
     }
-    const nextFocusedElement = event.target as HTMLElement;
 
-    const isChildElement =
-      nextFocusedElement.closest("ch-dropdown") === this.el;
+    const isChildElement = event.composedPath().includes(this.el);
     if (isChildElement) {
       return;
     }
@@ -314,12 +318,16 @@ export class ChDropDown implements ChComponent {
     }
   };
 
-  private handleButtonClick = () => {
+  private handleButtonClick = (event: MouseEvent) => {
+    event.stopPropagation();
+
     this.expandedChange.emit(!this.expanded);
     this.expanded = !this.expanded;
   };
 
-  private handleButtonFocus = () => {
+  private handleButtonFocus = (event: FocusEvent) => {
+    event.stopPropagation();
+
     if (this.expanded) {
       return;
     }
@@ -399,7 +407,6 @@ export class ChDropDown implements ChComponent {
           container={this.el}
           hidden={!isExpanded}
           modal={false}
-          relativeWindow={this.relativeWindow}
           showFooter={this.showFooter}
           showHeader={this.showHeader}
           xAlign={xAlignMapping}

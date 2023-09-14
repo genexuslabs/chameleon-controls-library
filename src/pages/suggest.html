@@ -11,7 +11,7 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
     <style>
       /*general*/
       :root {
@@ -23,7 +23,7 @@
       }
       ul {
         margin: 0 0 16px 0;
-        padding-left: 16px;
+        padding-inline-start: 16px;
       }
       li {
         margin-bottom: 2px;
@@ -37,14 +37,47 @@
       }
       /*ch-suggest*/
       body.styles ch-suggest {
-        font-family: "Rubik", sans-serif;
-        font-size: 14px;
+        display: block;
       }
-      body.styles ch-suggest:focus {
+      body.styles ch-suggest::part(title) {
+        display: block;
+        font-weight: bold;
       }
       body.styles ch-suggest::part(label) {
-        font-weight: 700;
-        margin-bottom: 4px;
+        font-weight: 500;
+      }
+      body.styles ch-suggest[label-position="start"]::part(label) {
+        margin-inline-end: 8px;
+        display: flex;
+        align-items: center;
+      }
+      body.styles ch-suggest[label-position="above"]::part(label) {
+        margin-block-end: 4px;
+      }
+      body.styles ch-suggest::part(close-button) {
+        display: block;
+        width: 16px;
+        height: 16px;
+      }
+      body.styles ch-suggest::part(close-button)::after {
+        content: "✖";
+        line-height: 8px;
+        height: 100%;
+        display: block;
+        border: 1px solid black;
+        cursor: pointer;
+        text-align: center;
+        line-height: 16px;
+      }
+      body.styles ch-suggest::part(header) {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-block-end: 8px;
+      }
+      body.styles ch-suggest::part(ch-window-close) {
+        width: 10px;
+        height: 10px;
       }
       body.styles ch-suggest::part(input) {
         padding: 4px 8px;
@@ -60,7 +93,7 @@
         border: 1px solid rgba(128, 128, 128, 0.275);
         border-radius: 4px;
         padding: 8px;
-        margin-bottom: 4px;
+        margin-block-end: 4px;
       }
       body.styles ch-suggest-list::part(title) {
         font-size: 14px;
@@ -69,13 +102,14 @@
         margin: 4px 0 8px 0;
       }
       /*ch-suggest-list-item*/
-      body.styles ch-suggest-list-item {
+      body.styles ch-suggest-list-item::part(button) {
         padding: 4px 8px;
         cursor: pointer;
+        gap: 4px;
       }
       body.styles ch-suggest-list-item ch-icon {
         --icon-size: 16px;
-        margin-right: 2px;
+        margin-inline-end: 2px;
       }
       body.styles ch-suggest-list-item:hover {
         background-color: var(--ch-color--violet-100);
@@ -88,12 +122,32 @@
         background-color: rgba(241, 184, 243, 0.42);
         outline: none;
       }
+      body.styles ch-suggest-list-item::part(button):focus {
+        outline: 2px solid var(--highlight-color);
+        border-color: var(--highlight-color);
+      }
+      /*content-wrapper*/
+      body.styles ch-suggest-list-item::part(content-wrapper) {
+        display: flex;
+        gap: 8px;
+      }
+      /*description*/
+      body.styles ch-suggest-list-item::part(description) {
+        font-style: italic;
+      }
+      body.styles ch-suggest-list-item::part(description):before {
+        content: " - ";
+      }
       /*ch-window*/
-      body.styles ch-suggest::part(ch-window-window) {
-        margin-top: 4px;
+      body.styles ch-suggest::part(dropdown) {
+        margin-block-start: 4px;
         border: 1px solid black;
         background-color: white;
         padding: 8px;
+      }
+      /*focus*/
+      :focus {
+        outline-style: none !important;
       }
     </style>
   </head>
@@ -106,7 +160,14 @@
       <!-- frutas -->
       <span><strong>frutas</strong></span>
       <ul data-category="frutas" class="data-list">
-        <li>manzanas</li>
+        <li
+          data-value="manzana-123"
+          data-description="manzana description"
+          data-icon="./assets/icons/apple.svg"
+          data-id="my-manzana-id"
+        >
+          Manzanas Label
+        </li>
         <li>bananas</li>
         <li>naranjas</li>
         <li>uvas</li>
@@ -132,22 +193,58 @@
 
       <!-- ch-suggest -->
       <section class="section-dev" data-title="ch-suggest">
-        <ch-suggest label="nombre"></ch-suggest>
+        <ch-suggest
+          label="This is the label"
+          suggest-title="Select your food"
+          label-position="start"
+          suggest-value="una-descripción-inicial"
+          input-value="Una descripción inicial"
+        >
+        </ch-suggest>
       </section>
+      <button id="select-text-button">Select text</button>
+      <button id="focus-button">Focus</button>
+
+      <script>
+        const chSuggest = document.querySelector("ch-suggest");
+        chSuggest.cursorEnd = true;
+        /*Select text button*/
+        const selectTextButton = document.getElementById("select-text-button");
+        selectTextButton.addEventListener("click", async e => {
+          await chSuggest.selectInputText();
+        });
+        /*Focus button*/
+        const focusButton = document.getElementById("focus-button");
+        focusButton.addEventListener("click", e => {
+          chSuggest.focus();
+        });
+      </script>
 
       <!-- ch-suggest-list -->
       <section class="section-dev" data-title="ch-suggest-list">
         <ch-suggest-list label="fruits">
           <ch-suggest-list-item>
-            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            <ch-icon
+              auto-color
+              src="./assets/icons/apple.svg"
+              slot="icon"
+            ></ch-icon>
             apple
           </ch-suggest-list-item>
           <ch-suggest-list-item>
-            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            <ch-icon
+              auto-color
+              src="./assets/icons/apple.svg"
+              slot="icon"
+            ></ch-icon>
             banana
           </ch-suggest-list-item>
           <ch-suggest-list-item>
-            <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+            <ch-icon
+              auto-color
+              src="./assets/icons/apple.svg"
+              slot="icon"
+            ></ch-icon>
             orange
           </ch-suggest-list-item>
         </ch-suggest-list>
@@ -156,25 +253,29 @@
       <!-- ch-suggest-list-item -->
       <section class="section-dev" data-title="ch-suggest-list-item">
         <ch-suggest-list-item>
-          <ch-icon auto-color src="./assets/apple.svg" slot="icon"></ch-icon>
+          <ch-icon
+            auto-color
+            src="./assets/icons/apple.svg"
+            slot="icon"
+          ></ch-icon>
           apple
         </ch-suggest-list-item>
       </section>
     </div>
 
     <script>
-      const chSuggest = document.querySelector("ch-suggest");
+      let fragment;
       const lists = document.querySelectorAll(".data-list");
       chSuggest.addEventListener("inputChanged", e => {
-        let counter = 0;
-        chSuggest.innerHTML = "";
+        let filteredItems = [];
+        fragment = document.createDocumentFragment();
         lists.forEach(list => {
           const category = list.getAttribute("data-category");
           const items = list.querySelectorAll("li");
-          const filteredItems = Array.from(items).filter(item => {
+          filteredItems = Array.from(items).filter(item => {
             return item.innerText.toLowerCase().includes(e.detail);
           });
-          if (filteredItems.length) {
+          if (filteredItems.length > 0) {
             const chSuggestList = document.createElement("ch-suggest-list");
             if (category) {
               chSuggestList.setAttribute("label", category);
@@ -184,23 +285,35 @@
                 "ch-suggest-list-item"
               );
               chSuggestListItem.innerText = item.innerText;
+              chSuggestListItem.value = item.getAttribute("data-value");
+              chSuggestListItem.itemId = item.getAttribute("data-id");
+              chSuggestListItem.description =
+                item.getAttribute("data-description");
               if (category) {
                 chSuggestList.appendChild(chSuggestListItem);
-                counter++;
               } else {
-                chSuggest.appendChild(chSuggestListItem);
-                counter++;
+                //chSuggest.appendChild(chSuggestListItem);
+                fragment.appendChild(chSuggestListItem);
+              }
+              const iconSrc = item.getAttribute("data-icon");
+              if (iconSrc) {
+                const icon = document.createElement("ch-icon");
+                icon.setAttribute("src", iconSrc);
+                icon.setAttribute("slot", "icon");
+                chSuggestListItem.appendChild(icon);
               }
             });
             if (category) {
-              chSuggest.appendChild(chSuggestList);
+              //chSuggest.appendChild(chSuggestList);
+              fragment.appendChild(chSuggestList);
             }
           }
         });
-        if (e.detail !== "" && counter === 0) {
-          /*no hay coincidencias*/
-          chSuggest.innerHTML = "<p style='margin:0'>No hay coincidencias</p>";
-        }
+        setTimeout(() => {
+          chSuggest.innerHTML = "";
+          chSuggest.appendChild(fragment);
+          fragment = null;
+        }, 1000);
       });
     </script>
 
@@ -208,6 +321,13 @@
       const setFocusBtn = document.getElementById("set-focus");
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
+      });
+      chSuggest.addEventListener("inputChanged", e => {
+        console.log("inputChanged event:", e.detail);
+      });
+
+      chSuggest.addEventListener("itemSelected", e => {
+        console.log("itemSelected event:", e.detail);
       });
     </script>
     <script src="assets/common.js"></script>

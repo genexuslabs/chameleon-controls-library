@@ -1,3 +1,11 @@
+:host {
+  --ch-window-offset-x: 0px;
+  --ch-window-offset-y: 0px;
+
+  --ch-window-x-outside: 0px;
+  --ch-window-y-outside: 0px;
+}
+
 :host(:not([hidden])) {
   display: contents;
 }
@@ -13,6 +21,12 @@
   display: flex;
   position: fixed;
   inset: 0;
+  inset-inline-start: calc(
+    var(--ch-window-inset-inline-start) + var(--ch-window-offset-x)
+  );
+  inset-block-start: calc(
+    var(--ch-window-inset-block-start) + var(--ch-window-offset-y)
+  );
   z-index: var(--ch-window-mask-z-index, 1000);
 
   :host(:is([x-align="outside-start"], [x-align="inside-start"])) & {
@@ -38,10 +52,7 @@
 .window {
   display: flex;
   flex-direction: column;
-  transform: translate(
-      var(--ch-window-x-outside, 0px),
-      var(--ch-window-y-outside, 0px)
-    )
+  transform: translate(var(--ch-window-x-outside), var(--ch-window-y-outside))
     translate(var(--ch-window-x-drag, 0px), var(--ch-window-y-drag, 0px));
 
   :host([x-align="outside-start"]) & {

@@ -142,7 +142,7 @@ export class ChGridVirtualScrollerLegend {
 
     if (this.rowHeight > 0) {
       this.hasGridScroll =
-        this.gridMainEl.scrollHeight != this.gridMainEl.clientHeight;
+        this.gridMainEl.scrollHeight !== this.gridMainEl.clientHeight;
       this.hasWindowScroll =
         !this.hasGridScroll &&
         this.gridMainEl.clientHeight > this.browserHeight;

@@ -12,5 +12,5 @@ export function gridSort(
 ) {
   const column = grid.getColumnByHtmlName(columnId);
 
-  grid.setSort(column.index, sortDirection == "desc" ? false : true);
+  grid.setSort(column.index, sortDirection !== "desc");
 }

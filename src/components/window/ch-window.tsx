@@ -9,6 +9,7 @@ import {
   Listen,
   Element
 } from "@stencil/core";
+import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
 
 export type ChWindowAlign =
   | "outside-start"
@@ -16,6 +17,8 @@ export type ChWindowAlign =
   | "center"
   | "inside-end"
   | "outside-end";
+
+const CONTAINING_BLOCK_RESET_CUSTOM_VAR = "--ch-window-relative-position";
 
 /**
  * The 'ch-window' component represents a popup container that is positioned
@@ -28,6 +31,7 @@ export type ChWindowAlign =
 })
 export class ChWindow {
   private isContainerCssOverride = false;
+  private relativeWindow = false;
   private containerResizeObserver: ResizeObserver;
   private mask: HTMLElement;
   private header: HTMLElement;
@@ -51,6 +55,7 @@ export class ChWindow {
 
   @Watch("container")
   containerHandler(value: HTMLElement, oldValue: HTMLElement) {
+    this.checkRelativePosition();
     this.containerResizeObserverHandler(value, oldValue);
     this.updatePosition();
   }
@@ -68,9 +73,13 @@ export class ChWindow {
   hiddenHandler() {
     if (this.hidden) {
       this.resetDrag();
+      this.removeListeners();
       this.windowClosed.emit();
     } else {
+      this.checkRelativePosition();
       this.updatePosition();
+      this.watchCSSAlign();
+      this.addListeners();
       this.windowOpened.emit();
     }
   }
@@ -96,6 +105,17 @@ export class ChWindow {
   /** Specifies the drag behavior of the window. */
   @Prop() readonly allowDrag: "no" | "header" | "box" = "no";
 
+  /**
+   * This attribute lets you specify if a footer is rendered at the bottom of the
+   * window.
+   */
+  @Prop() readonly showFooter: boolean = true;
+
+  /**
+   * This attribute lets you specify if a header is rendered on top of the window.
+   */
+  @Prop() readonly showHeader: boolean = true;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -107,35 +127,7 @@ export class ChWindow {
 
     this.containerResizeObserverHandler(this.container);
     this.watchCSSAlign();
-  }
-
-  @Listen("resize", { target: "window", passive: true })
-  windowResizeHandler() {
-    this.watchCSSAlign();
-  }
-
-  @Listen("click", { target: "document", capture: true })
-  documentClickHandler(eventInfo: PointerEvent) {
-    if (
-      this.closeOnOutsideClick &&
-      !eventInfo.composedPath().includes(this.window)
-    ) {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("keydown ", { target: "document", capture: true })
-  documentKeyDownHandler(eventInfo: KeyboardEvent) {
-    if (!this.hidden && this.closeOnEscape && eventInfo.key === "Escape") {
-      this.hidden = true;
-    }
-  }
-
-  @Listen("scroll", { target: "document", capture: true, passive: true })
-  windowScrollHandler() {
-    if (this.container) {
-      this.updatePosition();
-    }
+    this.loadGlobalStyleSheet();
   }
 
   @Listen("mousedown", { passive: true })
@@ -180,20 +172,44 @@ export class ChWindow {
     eventInfo.stopPropagation();
   };
 
+  private checkRelativePosition() {
+    const computed = getComputedStyle(this.el);
+    this.relativeWindow = !!computed.getPropertyValue(
+      CONTAINING_BLOCK_RESET_CUSTOM_VAR
+    );
+  }
+
   private updatePosition = () => {
     if (!this.isContainerCssOverride && this.container && this.mask) {
       const rect = this.container.getBoundingClientRect();
 
-      // TODO: RTL positioning bug
-      this.mask.style.setProperty("inset-inline-start", `${rect.left}px`);
-      this.mask.style.setProperty("inset-block-start", `${rect.top}px`);
       this.mask.style.width = `${rect.width}px`;
       this.mask.style.height = `${rect.height}px`;
+
+      // Nested windows are positioned relative to its initial containing block,
+      // so there is no need to align them relative to the document
+      if (this.relativeWindow) {
+        return;
+      }
+
+      // TODO: RTL positioning bug
+      this.mask.style.setProperty(
+        "--ch-window-inset-inline-start",
+        `${rect.left}px`
+      );
+      this.mask.style.setProperty(
+        "--ch-window-inset-block-start",
+        `${rect.top}px`
+      );
     } else if (this.isContainerCssOverride || !this.container) {
-      this.mask.style.removeProperty("inset-inline-start");
-      this.mask.style.removeProperty("inset-block-start");
       this.mask.style.removeProperty("width");
       this.mask.style.removeProperty("height");
+
+      if (this.relativeWindow) {
+        return;
+      }
+      this.mask.style.removeProperty("--ch-window-inset-inline-start");
+      this.mask.style.removeProperty("--ch-window-inset-block-start");
     }
   };
 
@@ -218,13 +234,13 @@ export class ChWindow {
     const style = getComputedStyle(this.el);
     const container = style.getPropertyValue("--ch-window-container").trim();
     const xAlign = style
-      .getPropertyValue("--ch-window-x-align")
+      .getPropertyValue("--ch-window-align-x")
       .trim() as ChWindowAlign;
     const yAlign = style
-      .getPropertyValue("--ch-window-y-align")
+      .getPropertyValue("--ch-window-align-y")
       .trim() as ChWindowAlign;
 
-    this.isContainerCssOverride = container.includes("window") ? true : false;
+    this.isContainerCssOverride = container.includes("window");
 
     if (this.validCssAligns.includes(xAlign)) {
       this.xAlign = xAlign;
@@ -246,30 +262,105 @@ export class ChWindow {
     }
   }
 
+  private addListeners() {
+    window.addEventListener("resize", this.windowResizeHandler, {
+      passive: true
+    });
+
+    if (this.container) {
+      document.addEventListener("scroll", this.windowScrollHandler, {
+        capture: true,
+        passive: true
+      });
+    }
+
+    if (this.closeOnOutsideClick) {
+      document.addEventListener("click", this.closeOnOutsideClickHandler, {
+        capture: true
+      });
+    }
+
+    if (this.closeOnEscape) {
+      document.addEventListener("keydown", this.closeOnEscapeHandler, {
+        capture: true
+      });
+    }
+  }
+
+  private removeListeners() {
+    window.removeEventListener("resize", this.windowResizeHandler);
+    document.removeEventListener("scroll", this.windowScrollHandler, {
+      capture: true
+    });
+    document.removeEventListener("click", this.closeOnOutsideClickHandler, {
+      capture: true
+    });
+    document.removeEventListener("keydown", this.closeOnEscapeHandler, {
+      capture: true
+    });
+  }
+
+  private windowResizeHandler = () => {
+    this.updatePosition();
+    this.watchCSSAlign();
+  };
+
+  private windowScrollHandler = () => {
+    this.updatePosition();
+  };
+
+  private closeOnOutsideClickHandler = (eventInfo: PointerEvent) => {
+    if (!eventInfo.composedPath().includes(this.window)) {
+      this.hidden = true;
+    }
+  };
+
+  private closeOnEscapeHandler = (eventInfo: KeyboardEvent) => {
+    if (eventInfo.key === "Escape") {
+      this.hidden = true;
+    }
+  };
+
+  private loadGlobalStyleSheet() {
+    this.el.shadowRoot.adoptedStyleSheets.push(CH_GLOBAL_STYLESHEET);
+  }
+
   render() {
     return (
       <Host>
         <div
           class="mask"
           part="mask"
+          style={
+            this.relativeWindow && {
+              "--ch-window-inset-inline-start": "0px",
+              "--ch-window-inset-block-start": "0px"
+            }
+          }
           ref={el => (this.mask = el)}
           onClick={this.maskClickHandler}
         >
           <section class="window" part="window" ref={el => (this.window = el)}>
-            <header part="header" ref={el => (this.header = el)}>
-              <slot name="header">
-                <span part="caption">{this.caption}</span>
-                <ch-window-close part="close" title={this.closeTooltip}>
-                  {this.closeText}
-                </ch-window-close>
-              </slot>
-            </header>
-            <main part="main">
+            {this.showHeader && (
+              <header part="header" ref={el => (this.header = el)}>
+                <slot name="header">
+                  <span part="caption">{this.caption}</span>
+                  <ch-window-close part="close" title={this.closeTooltip}>
+                    {this.closeText}
+                  </ch-window-close>
+                </slot>
+              </header>
+            )}
+
+            <div part="main">
               <slot></slot>
-            </main>
-            <footer part="footer">
-              <slot name="footer"></slot>
-            </footer>
+            </div>
+
+            {this.showFooter && (
+              <footer part="footer">
+                <slot name="footer"></slot>
+              </footer>
+            )}
           </section>
         </div>
       </Host>

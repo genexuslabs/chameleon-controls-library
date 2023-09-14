@@ -101,7 +101,18 @@ export class ChGrid {
     previous: HTMLChGridRowElement[]
   ) {
     this.manager.selection.syncRowSelector(rows, previous, "mark");
-    this.rowMarkingChanged.emit({ rowsId: rows.map(row => row.rowId) });
+    this.rowMarkingChanged.emit({
+      rowsId: rows.map(row => row.rowId),
+      addedRowsId: rows
+        .filter(row => !previous.includes(row))
+        .map(row => row.rowId),
+      removedRowsId: previous
+        .filter(row => !rows.includes(row))
+        .map(row => row.rowId),
+      unalteredRowsId: rows
+        .filter(row => previous.includes(row))
+        .map(row => row.rowId)
+    });
   }
 
   @State() rowsSelected: HTMLChGridRowElement[] = [];

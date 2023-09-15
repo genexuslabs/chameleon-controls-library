@@ -115,8 +115,7 @@ export class ChDropDown implements ChComponent {
    * Determine which actions on the expandable button display the dropdown
    * section.
    */
-  @Prop() readonly expandBehavior: "Click" | "Click or Hover" =
-    "Click or Hover";
+  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
    * This attribute lets you specify if the control is nested in another
@@ -360,7 +359,7 @@ export class ChDropDown implements ChComponent {
     return (
       <Host
         onMouseLeave={
-          this.expandBehavior === "Click or Hover"
+          this.expandBehavior === "ClickOrHover"
             ? this.handleMouseLeave
             : undefined
         }
@@ -377,7 +376,7 @@ export class ChDropDown implements ChComponent {
           onClick={this.handleButtonClick}
           onFocus={this.openOnFocus ? this.handleButtonFocus : undefined}
           onMouseEnter={
-            this.expandBehavior === "Click or Hover"
+            this.expandBehavior === "ClickOrHover"
               ? this.handleMouseEnter
               : undefined
           }
@@ -386,7 +385,7 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "Click or Hover" && (
+        {this.expandBehavior === "ClickOrHover" && (
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
           <div
@@ -413,21 +412,13 @@ export class ChDropDown implements ChComponent {
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >
-          {this.showHeader && (
-            <div class="dummy-wrapper" slot="header">
-              <slot name="header" />
-            </div>
-          )}
+          {this.showHeader && <slot name="header" slot="header" />}
 
           <div role="list" class="list" part="list">
             <slot name="items" />
           </div>
 
-          {this.showFooter && (
-            <div class="dummy-wrapper" slot="footer">
-              <slot name="footer" />
-            </div>
-          )}
+          {this.showFooter && <slot name="footer" slot="footer" />}
         </ch-window>
       </Host>
     );

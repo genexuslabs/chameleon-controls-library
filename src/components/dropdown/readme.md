@@ -47,6 +47,7 @@ and the last one for the dropdown footer.
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property         | Attribute         | Description                                                                                                          | Type                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default               |
@@ -57,11 +58,13 @@ and the last one for the dropdown footer.
 | `openOnFocus`    | `open-on-focus`   | Determine if the dropdown section should be opened when the expandable button of the control is focused.             | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`               |
 | `position`       | `position`        | Specifies the position of the dropdown section that is placed relative to the expandable button.                     | `"Center_OutsideEnd" \| "Center_OutsideStart" \| "InsideEnd_OutsideEnd" \| "InsideEnd_OutsideStart" \| "InsideStart_OutsideEnd" \| "InsideStart_OutsideStart" \| "OutsideEnd_Center" \| "OutsideEnd_InsideEnd" \| "OutsideEnd_InsideStart" \| "OutsideEnd_OutsideEnd" \| "OutsideEnd_OutsideStart" \| "OutsideStart_Center" \| "OutsideStart_InsideEnd" \| "OutsideStart_InsideStart" \| "OutsideStart_OutsideEnd" \| "OutsideStart_OutsideStart"` | `"Center_OutsideEnd"` |
 
+
 ## Events
 
 | Event            | Description                                                  | Type                   |
 | ---------------- | ------------------------------------------------------------ | ---------------------- |
 | `expandedChange` | Fired when the visibility of the dropdown section is changed | `CustomEvent<boolean>` |
+
 
 ## Shadow Parts
 
@@ -72,28 +75,30 @@ and the last one for the dropdown footer.
 | `"separation"`        |             |
 | `"window"`            |             |
 
+
 ## Dependencies
 
 ### Used by
 
-- [ch-dropdown-item](../dropdown-item)
-- [ch-test-dropdown](../test/test-dropdown)
+ - [ch-action-group](../action-group)
+ - [ch-dropdown-item](../dropdown-item)
+ - [ch-test-dropdown](../test/test-dropdown)
 
 ### Depends on
 
 - [ch-window](../window)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-dropdown --> ch-window
   ch-window --> ch-window-close
+  ch-action-group --> ch-dropdown
   ch-dropdown-item --> ch-dropdown
   ch-test-dropdown --> ch-dropdown
   style ch-dropdown fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
+*Built with [StencilJS](https://stenciljs.com/)*

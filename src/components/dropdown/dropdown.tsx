@@ -405,6 +405,7 @@ export class ChDropDown implements ChComponent {
           part="window"
           exportparts="window:section,mask,header,footer"
           container={this.el}
+          closeOnEscape={true}
           hidden={!isExpanded}
           modal={false}
           showFooter={this.showFooter}

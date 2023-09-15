@@ -58,6 +58,7 @@ export class ChTestDropdownX {
       href={item.target}
       leftImgSrc={item.leftIcon}
       openOnFocus={this.openOnFocus}
+      position="OutsideEnd_InsideStart"
       rightImgSrc={item.rightIcon}
     >
       {item.title}

@@ -78,6 +78,10 @@ export namespace Components {
     }
     interface ChActionGroupItem {
         /**
+          * `true` to ignore the floating property value.
+         */
+        "avoidFloating": boolean;
+        /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating": boolean;
@@ -1991,6 +1995,10 @@ declare namespace LocalJSX {
         "openOnFocus"?: boolean;
     }
     interface ChActionGroupItem {
+        /**
+          * `true` to ignore the floating property value.
+         */
+        "avoidFloating"?: boolean;
         /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */

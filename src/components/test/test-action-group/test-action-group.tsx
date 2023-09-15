@@ -162,7 +162,7 @@ export class ChTestActionGroup {
                   index >= this.displayedItemsCount
               )
               .map(item => (
-                <ch-action-group-item slot="more-items">
+                <ch-action-group-item slot="more-items" avoidFloating={true}>
                   {this.firstLevelRenderCollapsedItem(item)}
                 </ch-action-group-item>
               ))}

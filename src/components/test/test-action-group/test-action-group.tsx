@@ -22,8 +22,7 @@ export class ChTestActionGroup {
    * Determine which actions on the expandable button display the dropdown
    * section.
    */
-  @Prop() readonly expandBehavior: "Click" | "Click or Hover" =
-    "Click or Hover";
+  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
    * This property lets you define the model of the ch-dropdown control.

@@ -31,8 +31,7 @@ export class ChDropDownItem implements ChComponent {
    * section.
    * Only works if the control has subitems.
    */
-  @Prop() readonly expandBehavior: "Click" | "Click or Hover" =
-    "Click or Hover";
+  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
    * `true` to force the control to make its own containing block.

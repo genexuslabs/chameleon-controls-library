@@ -58,7 +58,7 @@ export namespace Components {
         /**
           * Determine which mouse actions on the expandable button display the dropdown section.
          */
-        "expandBehavior": "Click" | "Click or Hover";
+        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
          */
@@ -154,7 +154,7 @@ export namespace Components {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior": "Click" | "Click or Hover";
+        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
          */
@@ -172,7 +172,7 @@ export namespace Components {
         /**
           * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
          */
-        "expandBehavior": "Click" | "Click or Hover";
+        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * `true` to force the control to make its own containing block.
          */
@@ -972,7 +972,7 @@ export namespace Components {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior": "Click" | "Click or Hover";
+        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This property lets you define the model of the ch-dropdown control.
          */
@@ -1002,7 +1002,7 @@ export namespace Components {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior": "Click" | "Click or Hover";
+        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This property lets you define the model of the ch-dropdown control.
          */
@@ -1968,7 +1968,7 @@ declare namespace LocalJSX {
         /**
           * Determine which mouse actions on the expandable button display the dropdown section.
          */
-        "expandBehavior"?: "Click" | "Click or Hover";
+        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
          */
@@ -2076,7 +2076,7 @@ declare namespace LocalJSX {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior"?: "Click" | "Click or Hover";
+        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
          */
@@ -2098,7 +2098,7 @@ declare namespace LocalJSX {
         /**
           * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
          */
-        "expandBehavior"?: "Click" | "Click or Hover";
+        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * `true` to force the control to make its own containing block.
          */
@@ -2958,7 +2958,7 @@ declare namespace LocalJSX {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior"?: "Click" | "Click or Hover";
+        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This property lets you define the model of the ch-dropdown control.
          */
@@ -2988,7 +2988,7 @@ declare namespace LocalJSX {
         /**
           * Determine which actions on the expandable button display the dropdown section.
          */
-        "expandBehavior"?: "Click" | "Click or Hover";
+        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This property lets you define the model of the ch-dropdown control.
          */

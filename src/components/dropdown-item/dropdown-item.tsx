@@ -162,9 +162,7 @@ export class ChDropDownItem implements ChComponent {
         {this.dropDownItemContent()}
       </div>
 
-      <div class="dummy-wrapper" slot="items">
-        <slot name="items" onSlotchange={this.checkItems} />
-      </div>
+      <slot name="items" slot="items" onSlotchange={this.checkItems} />
     </ch-dropdown>
   );
 

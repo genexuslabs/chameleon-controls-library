@@ -23,6 +23,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .expandable-button {
   display: flex;
+  align-items: center;
   position: relative;
   width: 100%;
   height: 100%;
@@ -91,10 +92,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
       --ch-window-offset-x: var(--separation-x);
     }
   }
-}
-
-.dummy-wrapper {
-  display: contents;
 }
 
 .list {

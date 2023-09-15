@@ -413,21 +413,13 @@ export class ChDropDown implements ChComponent {
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >
-          {this.showHeader && (
-            <div class="dummy-wrapper" slot="header">
-              <slot name="header" />
-            </div>
-          )}
+          {this.showHeader && <slot name="header" slot="header" />}
 
           <div role="list" class="list" part="list">
             <slot name="items" />
           </div>
 
-          {this.showFooter && (
-            <div class="dummy-wrapper" slot="footer">
-              <slot name="footer" />
-            </div>
-          )}
+          {this.showFooter && <slot name="footer" slot="footer" />}
         </ch-window>
       </Host>
     );

@@ -4,8 +4,10 @@
 
 :host {
   display: grid;
+  position: relative;
   width: 100%;
   grid-template: "more-actions actions" 1fr / min-content 1fr;
+  overflow: hidden;
 }
 
 .more-actions {
@@ -23,15 +25,23 @@
 
 .actions {
   grid-area: actions;
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
   width: 100%;
   max-width: 100%;
+
+  &--responsive {
+    position: absolute;
+    inset: 0;
+  }
 
   &--scroll {
     overflow-x: auto;
   }
 
   &--multiline {
+    display: flex;
     flex-wrap: wrap;
   }
 }

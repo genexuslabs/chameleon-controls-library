@@ -257,7 +257,9 @@ export class ChActionGroup {
           class={{
             actions: true,
             "actions--scroll": this.itemsOverflowBehavior === "AddScroll",
-            "actions--multiline": this.itemsOverflowBehavior === "Multiline"
+            "actions--multiline": this.itemsOverflowBehavior === "Multiline",
+            "actions--responsive":
+              this.itemsOverflowBehavior === "ResponsiveCollapse"
           }}
           part="actions"
           ref={el => (this.actionsContainer = el)}

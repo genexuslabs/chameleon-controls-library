@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property   | Attribute  | Description                                                                                                                                                      | Type      | Default |
-| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| `floating` | `floating` | `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control. | `boolean` | `false` |
+| Property        | Attribute        | Description                                                                                                                                                      | Type      | Default |
+| --------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
+| `avoidFloating` | `avoid-floating` | `true` to ignore the floating property value.                                                                                                                    | `boolean` | `false` |
+| `floating`      | `floating`       | `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control. | `boolean` | `false` |
 
 
 ## Slots

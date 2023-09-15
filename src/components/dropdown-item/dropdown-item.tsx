@@ -10,6 +10,7 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { DropdownPosition } from "../dropdown/types";
 
 const DROPDOWN_ITEM = "ch-dropdown-item";
 
@@ -34,6 +35,11 @@ export class ChDropDownItem implements ChComponent {
     "Click or Hover";
 
   /**
+   * `true` to force the control to make its own containing block.
+   */
+  @Prop({ reflect: true }) readonly forceContainingBlock: boolean = true;
+
+  /**
    * Specifies the hyperlink of the item. If this property is defined, the
    * control will render an anchor tag with this `href`. Otherwise, it will
    * render a button tag.
@@ -51,6 +57,12 @@ export class ChDropDownItem implements ChComponent {
    * Only works if the control has subitems.
    */
   @Prop() readonly openOnFocus: boolean = false;
+
+  /**
+   * Specifies the position of the dropdown section that is placed relative to
+   * the expandable button.
+   */
+  @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
    * Specifies the src for the right img.
@@ -144,7 +156,7 @@ export class ChDropDownItem implements ChComponent {
       expandBehavior={this.expandBehavior}
       nestedDropdown={true}
       openOnFocus={this.openOnFocus}
-      position="OutsideEnd_InsideStart"
+      position={this.position}
     >
       <div class="dummy-wrapper" slot="action">
         {this.dropDownItemContent()}

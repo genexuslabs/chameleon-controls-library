@@ -91,6 +91,7 @@ export class ChDropDown implements ChComponent {
 
   private showHeader = false;
   private showFooter = false;
+  private firstExpanded = false;
 
   /**
    * Determine the current dropdown-item that is focused
@@ -355,6 +356,7 @@ export class ChDropDown implements ChComponent {
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
     const isExpanded = this.expanded || this.expandedWithHover;
+    this.firstExpanded ||= isExpanded;
 
     return (
       <Host
@@ -413,13 +415,15 @@ export class ChDropDown implements ChComponent {
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >
-          {this.showHeader && <slot name="header" slot="header" />}
+          {this.firstExpanded && [
+            this.showHeader && <slot name="header" slot="header" />,
 
-          <div role="list" class="list" part="list">
-            <slot name="items" />
-          </div>
+            <div role="list" class="list" part="list">
+              <slot name="items" />
+            </div>,
 
-          {this.showFooter && <slot name="footer" slot="footer" />}
+            this.showFooter && <slot name="footer" slot="footer" />
+          ]}
         </ch-window>
       </Host>
     );

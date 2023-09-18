@@ -89,6 +89,7 @@ export class ChDropDownItem implements ChComponent {
   private dropDownItemContent = () => [
     !!this.leftImgSrc && (
       <img
+        slot="action"
         aria-hidden="true"
         class="left-img"
         part="left-img"
@@ -98,12 +99,13 @@ export class ChDropDownItem implements ChComponent {
       />
     ),
 
-    <span class="content" part="content">
+    <span slot="action" class="content" part="content">
       <slot />
     </span>,
 
     !!this.rightImgSrc && (
       <img
+        slot="action"
         aria-hidden="true"
         class="right-img"
         part="right-img"
@@ -156,9 +158,7 @@ export class ChDropDownItem implements ChComponent {
       openOnFocus={this.openOnFocus}
       position={this.position}
     >
-      <div class="dummy-wrapper" slot="action">
-        {this.dropDownItemContent()}
-      </div>
+      {this.dropDownItemContent()}
 
       <slot name="items" slot="items" onSlotchange={this.checkItems} />
     </ch-dropdown>

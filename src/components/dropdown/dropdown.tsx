@@ -385,7 +385,7 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "ClickOrHover" && (
+        {this.expandBehavior === "ClickOrHover" && this.expandedWithHover && (
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
           <div

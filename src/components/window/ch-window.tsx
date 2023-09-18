@@ -1,7 +1,6 @@
 import {
   Component,
   h,
-  Host,
   Prop,
   Event,
   EventEmitter,
@@ -327,43 +326,41 @@ export class ChWindow {
 
   render() {
     return (
-      <Host>
-        <div
-          class="mask"
-          part="mask"
-          style={
-            this.relativeWindow && {
-              "--ch-window-inset-inline-start": "0px",
-              "--ch-window-inset-block-start": "0px"
-            }
+      <div
+        class="mask"
+        part="mask"
+        style={
+          this.relativeWindow && {
+            "--ch-window-inset-inline-start": "0px",
+            "--ch-window-inset-block-start": "0px"
           }
-          ref={el => (this.mask = el)}
-          onClick={this.maskClickHandler}
-        >
-          <section class="window" part="window" ref={el => (this.window = el)}>
-            {this.showHeader && (
-              <header part="header" ref={el => (this.header = el)}>
-                <slot name="header">
-                  <span part="caption">{this.caption}</span>
-                  <ch-window-close part="close" title={this.closeTooltip}>
-                    {this.closeText}
-                  </ch-window-close>
-                </slot>
-              </header>
-            )}
+        }
+        ref={el => (this.mask = el)}
+        onClick={this.maskClickHandler}
+      >
+        <section class="window" part="window" ref={el => (this.window = el)}>
+          {this.showHeader && (
+            <header part="header" ref={el => (this.header = el)}>
+              <slot name="header">
+                <span part="caption">{this.caption}</span>
+                <ch-window-close part="close" title={this.closeTooltip}>
+                  {this.closeText}
+                </ch-window-close>
+              </slot>
+            </header>
+          )}
 
-            <div part="main">
-              <slot></slot>
-            </div>
+          <div part="main">
+            <slot></slot>
+          </div>
 
-            {this.showFooter && (
-              <footer part="footer">
-                <slot name="footer"></slot>
-              </footer>
-            )}
-          </section>
-        </div>
-      </Host>
+          {this.showFooter && (
+            <footer part="footer">
+              <slot name="footer"></slot>
+            </footer>
+          )}
+        </section>
+      </div>
     );
   }
 }

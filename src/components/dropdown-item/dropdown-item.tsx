@@ -22,7 +22,7 @@ const DROPDOWN_ITEM = "ch-dropdown-item";
 export class ChDropDownItem implements ChComponent {
   private mainElement: HTMLButtonElement | HTMLAnchorElement;
 
-  @Element() element: HTMLChDropdownItemElement;
+  @Element() el: HTMLChDropdownItemElement;
 
   @State() hasItems = false;
 
@@ -115,7 +115,7 @@ export class ChDropDownItem implements ChComponent {
   ];
 
   private checkItems = () => {
-    this.hasItems = !!this.element.querySelector(`:scope>${DROPDOWN_ITEM}`);
+    this.hasItems = !!this.el.querySelector(`:scope>${DROPDOWN_ITEM}`);
   };
 
   private noItemsRender = () =>
@@ -165,7 +165,7 @@ export class ChDropDownItem implements ChComponent {
   );
 
   private handleActionClick = () => {
-    this.actionClick.emit(this.element.id);
+    this.actionClick.emit(this.el.id);
   };
 
   private handleFocus = () => {

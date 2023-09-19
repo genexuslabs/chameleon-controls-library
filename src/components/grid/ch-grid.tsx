@@ -8,7 +8,8 @@ import {
   ChGridRowClickedEvent,
   ChGridMarkingChangedEvent,
   ChGridCellSelectionChangedEvent,
-  ChGridRowPressedEvent
+  ChGridRowPressedEvent,
+  ChGridRowContextMenuEvent
 } from "./ch-grid-types";
 import {
   Component,
@@ -34,7 +35,12 @@ import {
   ChGridColumnDragEvent,
   ChGridColumnSelectorClickedEvent
 } from "./grid-column/ch-grid-column-types";
-import { mouseEventModifierKey } from "../common/helpers";
+import {
+  MouseEventButton,
+  MouseEventButtons,
+  mouseEventHasButtonPressed,
+  mouseEventModifierKey
+} from "../common/helpers";
 import { ManagerSelectionState } from "./ch-grid-manager-selection";
 
 /**
@@ -95,7 +101,18 @@ export class ChGrid {
     previous: HTMLChGridRowElement[]
   ) {
     this.manager.selection.syncRowSelector(rows, previous, "mark");
-    this.rowMarkingChanged.emit({ rowsId: rows.map(row => row.rowId) });
+    this.rowMarkingChanged.emit({
+      rowsId: rows.map(row => row.rowId),
+      addedRowsId: rows
+        .filter(row => !previous.includes(row))
+        .map(row => row.rowId),
+      removedRowsId: previous
+        .filter(row => !rows.includes(row))
+        .map(row => row.rowId),
+      unalteredRowsId: rows
+        .filter(row => previous.includes(row))
+        .map(row => row.rowId)
+    });
   }
 
   @State() rowsSelected: HTMLChGridRowElement[] = [];
@@ -214,6 +231,11 @@ export class ChGrid {
    * Event emitted when Enter is pressed on a row.
    */
   @Event() rowEnterPressed: EventEmitter<ChGridRowPressedEvent>;
+
+  /**
+   * Event emitted when attempts to open a context menu on a row.
+   */
+  @Event() rowContextMenu: EventEmitter<ChGridRowContextMenuEvent>;
 
   componentWillLoad() {
     this.manager = new ChGridManager(this.el);
@@ -378,11 +400,18 @@ export class ChGrid {
         (this.manager.selection.selectingRow !== row ||
           this.manager.selection.selectingCell !== cell)
       ) {
+        const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
+        const isMouseButtonRightPressed = mouseEventHasButtonPressed(
+          eventInfo,
+          MouseEventButtons.RIGHT
+        );
+
         this.selectByPointerEvent(
           row,
           cell,
-          mouseEventModifierKey(eventInfo),
-          true
+          isKeyModifierPressed && !isMouseButtonRightPressed,
+          !isMouseButtonRightPressed,
+          isMouseButtonRightPressed
         );
 
         this.manager.selection.selectingRow = row;
@@ -415,7 +444,8 @@ export class ChGrid {
         row,
         cell,
         mouseEventModifierKey(eventInfo),
-        eventInfo.shiftKey
+        eventInfo.shiftKey,
+        eventInfo.button === MouseEventButton.RIGHT
       );
     }
   }
@@ -438,6 +468,43 @@ export class ChGrid {
         cellId: cell?.cellId,
         columnId: cell?.column.columnId
       });
+    }
+  }
+
+  @Listen("contextmenu")
+  contextmenuHandler(eventInfo: MouseEvent) {
+    let targetRow: HTMLChGridRowElement;
+
+    if (eventInfo.target === this.el) {
+      targetRow = this.rowFocused;
+    } else {
+      targetRow = this.manager.getRowEventTarget(eventInfo);
+    }
+
+    if (targetRow) {
+      const cellFocused =
+        this.cellSelected?.row === targetRow ? this.cellSelected : null;
+
+      const rowContextMenuEventInfo = this.rowContextMenu.emit({
+        rowId: targetRow.rowId,
+        cellId: cellFocused.cellId,
+        columnId: cellFocused.column.columnId,
+        selectedRowsId: this.rowsSelected.map(row => row.rowId),
+        clientX: eventInfo.clientX,
+        clientY: eventInfo.clientY
+      });
+
+      this.manager.rowActions.showOnRowContext?.openRowContext(
+        eventInfo.clientX,
+        eventInfo.clientY
+      );
+
+      if (
+        rowContextMenuEventInfo.defaultPrevented ||
+        this.manager.rowActions.showOnRowContext
+      ) {
+        eventInfo.preventDefault();
+      }
     }
   }
 
@@ -467,7 +534,8 @@ export class ChGrid {
         this.manager.getRowEventTarget(eventInfo),
         this.manager.getCellEventTarget(eventInfo),
         true,
-        eventInfo.detail.range
+        eventInfo.detail.range,
+        false
       );
     } else if (columnSelector?.richRowSelectorMode === "mark") {
       this.rowsMarked = this.manager.selection.markRow(
@@ -825,7 +893,8 @@ export class ChGrid {
     row: HTMLChGridRowElement,
     cell: HTMLChGridCellElement,
     append: boolean,
-    range: boolean
+    range: boolean,
+    context: boolean
   ) {
     const { rowFocused, rowsSelected, cellSelected } =
       this.manager.selection.select(
@@ -837,7 +906,8 @@ export class ChGrid {
         row,
         cell,
         append,
-        range
+        range,
+        context
       );
 
     this.rowFocused = rowFocused;

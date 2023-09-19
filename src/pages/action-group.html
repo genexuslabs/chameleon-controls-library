@@ -22,6 +22,12 @@
         height: 30px;
         margin: auto;
       }
+
+      *,
+      ::after,
+      ::before {
+        box-sizing: border-box;
+      }
     </style>
     <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
@@ -29,7 +35,7 @@
     <div class="container">WIP</div>
 
     <div class="dropdown-container">
-      <ch-test-dropdown></ch-test-dropdown>
+      <ch-test-action-group></ch-test-action-group>
     </div>
 
     <div
@@ -77,6 +83,20 @@
         <select name="Expand Behavior" id="dropdown-expand-behavior">
           <option value="Click">Click</option>
           <option value="ClickOrHover" selected>ClickOrHover</option>
+        </select>
+      </label>
+
+      <label>
+        Items Overflow Behavior
+        <select
+          name="Items Overflow Behavior"
+          id="dropdown-items-overflow-behavior"
+        >
+          <option value="AddScroll">AddScroll</option>
+          <option value="Multiline">Multiline</option>
+          <option value="ResponsiveCollapse" selected>
+            ResponsiveCollapse
+          </option>
         </select>
       </label>
 
@@ -210,6 +230,7 @@
               separatorClass: ""
             }
           ],
+          position: "OutsideStart_InsideStart",
           target: "",
           title: "Item 3",
           showSeparator: false,
@@ -265,12 +286,24 @@
               separatorClass: ""
             }
           ],
-          title: "Item 2",
+          position: "InsideStart_OutsideEnd",
+          responsiveCollapsePosition: "OutsideEnd_InsideStart",
+          title: "More Actionsssssss",
           showSeparator: false,
           separatorClass: ""
         },
         {
           id: "item-3",
+          class: "dropdown-item",
+          leftIcon: "./assets/icons/file.svg",
+          target: "https://www.google.com.uy",
+          title: "Googleeeeeeee",
+          showSeparator: false,
+          separatorClass: ""
+        },
+        ,
+        {
+          id: "item-4",
           class: "dropdown-item",
           leftIcon: "./assets/icons/file.svg",
           target: "https://www.google.com.uy",
@@ -343,36 +376,44 @@
           return;
         }
 
-        const dropdownTest = document.querySelector("ch-test-dropdown");
-        dropdownTest.itemsModel = modelMinimal;
+        const actionGroupTest = document.querySelector("ch-test-action-group");
+        actionGroupTest.itemsModel = modelMinimal;
 
         const openOnFocusElem = document.getElementById("open-on-focus");
         openOnFocusElem.addEventListener("input", event => {
           console.log(event.target.checked);
 
-          dropdownTest.openOnFocus = event.target.checked;
+          actionGroupTest.openOnFocus = event.target.checked;
         });
 
         const selectPositionElem = document.getElementById("dropdown-position");
         selectPositionElem.addEventListener("change", event => {
-          dropdownTest.position = event.target.value;
+          actionGroupTest.moreActionsDropdownPosition = event.target.value;
         });
 
         const expandBehaviorElem = document.getElementById(
           "dropdown-expand-behavior"
         );
         expandBehaviorElem.addEventListener("change", event => {
-          dropdownTest.expandBehavior = event.target.value;
+          actionGroupTest.expandBehavior = event.target.value;
+        });
+
+        const itemsOverflowBehaviorElem = document.getElementById(
+          "dropdown-items-overflow-behavior"
+        );
+        itemsOverflowBehaviorElem.addEventListener("change", event => {
+          console.log("Holaaa", event.target.value);
+          actionGroupTest.itemsOverflowBehavior = event.target.value;
         });
 
         const separationElem = document.getElementById("separation");
         separationElem.addEventListener("input", event => {
-          dropdownTest.separation = event.target.value;
+          actionGroupTest.separation = event.target.value;
         });
 
         const mediumModelBtn = document.getElementById("medium-model");
         mediumModelBtn.addEventListener("click", () => {
-          dropdownTest.itemsModel = modelMediumMinimal;
+          actionGroupTest.itemsModel = modelMediumMinimal;
         });
 
         // Eager large model

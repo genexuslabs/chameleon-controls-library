@@ -215,3 +215,7 @@ ch-grid {
   width: 300px;
   height: 100px;
 }
+
+ch-grid-row-actions[show-on-row-hover]::part(window) {
+  margin-right: 19px;
+}

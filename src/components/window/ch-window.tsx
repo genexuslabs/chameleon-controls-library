@@ -192,7 +192,6 @@ export class ChWindow {
         return;
       }
 
-      // TODO: RTL positioning bug
       this.mask.style.setProperty(
         "--ch-window-inset-inline-start",
         `${rect.left}px`

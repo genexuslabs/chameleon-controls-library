@@ -28,6 +28,7 @@ import {
 } from "../../components";
 
 const DEFAULT_EXPANDED_VALUE = false;
+const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_SELECTED_VALUE = false;
 
@@ -165,6 +166,57 @@ export class ChTestTreeX {
     forceUpdate(this);
 
     return modifiedTreeItems;
+  }
+
+  /**
+   * Given a subset of item's properties, it updates all item UI models.
+   */
+  @Method()
+  async updateAllItemsProperties(properties: {
+    expanded?: boolean;
+    checked?: boolean;
+  }) {
+    [...this.flattenedTreeModel.values()].forEach(itemUIModel => {
+      if (properties.expanded != null) {
+        itemUIModel.item.expanded = properties.expanded;
+      }
+
+      if (properties.checked != null) {
+        itemUIModel.item.checked = properties.checked;
+        itemUIModel.item.indeterminate = false;
+      }
+    });
+
+    forceUpdate(this);
+  }
+
+  /**
+   * Given a item list and the properties to update, it updates the properties
+   * of the items in the list.
+   */
+  @Method()
+  async updateItemsProperties(items: string[], properties: TreeXItemModel) {
+    items.forEach(item => {
+      const itemUIModel = this.flattenedTreeModel.get(item);
+      this.updateItemProperty(itemUIModel, properties);
+    });
+
+    forceUpdate(this);
+  }
+
+  private updateItemProperty(
+    itemUIModel: TreeXItemModelExtended | undefined,
+    properties: TreeXItemModel
+  ) {
+    if (!itemUIModel) {
+      return;
+    }
+
+    const itemInfo = itemUIModel.item;
+
+    Object.keys(properties).forEach(propertyName => {
+      itemInfo[propertyName] = properties[propertyName];
+    });
   }
 
   @Listen("itemsDropped")
@@ -350,6 +402,7 @@ export class ChTestTreeX {
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
       expanded={treeSubModel.expanded}
+      indeterminate={treeSubModel.indeterminate}
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
@@ -390,6 +443,7 @@ export class ChTestTreeX {
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
+      item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;
       item.selected ??= DEFAULT_SELECTED_VALUE;
 

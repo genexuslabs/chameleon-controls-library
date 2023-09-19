@@ -15,6 +15,7 @@ export type TreeXItemModel = {
   lazy?: boolean;
   leaf?: boolean;
   leftImgSrc?: string;
+  indeterminate?: boolean;
   items?: TreeXItemModel[];
   rightImgSrc?: string;
   selected?: boolean;

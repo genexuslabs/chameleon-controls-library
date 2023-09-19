@@ -53,6 +53,13 @@
       .ch-tree-x-list-item--success::part(action) {
         grid-template: "first-img left-img text right-img" / max-content max-content 1fr max-content;
       }
+
+      .configuration {
+        display: grid;
+        grid-template-columns: max-content max-content max-content max-content;
+        grid-template-rows: min-content min-content min-content min-content;
+        gap: 12px 24px;
+      }
     </style>
   </head>
   <body>
@@ -315,12 +322,44 @@
         </div>
       </section>
 
-      <div>
-        <input id="input-scroll-into-visible" type="text" />
-        <button id="btn-scroll-into-visible" type="button">
-          Scroll into visible
-        </button>
+      <div class="configuration">
+        <div>
+          <input id="input-scroll-into-visible" type="text" />
+          <button id="btn-scroll-into-visible" type="button">
+            Scroll into visible
+          </button>
+        </div>
+
+        <ch-checkbox
+          id="multi-selection"
+          checkedValue="true"
+          unCheckedValue="false"
+          value="false"
+          caption="Multi selection"
+        ></ch-checkbox>
+
+        <ch-checkbox
+          id="check-all"
+          checkedValue="true"
+          unCheckedValue="false"
+          value="false"
+          caption="Check / uncheck all"
+        ></ch-checkbox>
+
+        <label>
+          Lines
+          <select name="lines" id="lines">
+            <option value="all">All lines</option>
+            <option value="last">Last line</option>
+            <option value="none" selected>None</option>
+          </select>
+        </label>
+
+        <button id="expand-all" type="button">Expand All</button>
+
+        <button id="collapse-all" type="button">Collapse All</button>
       </div>
+
       <button type="outlined" id="get-selected-markup">
         Get Selected Items
       </button>
@@ -962,6 +1001,35 @@
         testTreeX.treeModel = {
           items: model
         };
+
+        const multiSelectionCheckbox =
+          document.getElementById("multi-selection");
+        multiSelectionCheckbox.addEventListener("input", event => {
+          testTreeX.multiSelection = event.target.checked;
+        });
+
+        const checkAllCheckbox = document.getElementById("check-all");
+        checkAllCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+
+          testTreeX.updateAllItemsProperties({ checked: checked });
+        });
+
+        const expandAllBtn = document.getElementById("expand-all");
+        expandAllBtn.addEventListener("click", event => {
+          testTreeX.updateAllItemsProperties({ expanded: true });
+        });
+
+        const collapseAllBtn = document.getElementById("collapse-all");
+        collapseAllBtn.addEventListener("click", event => {
+          testTreeX.updateAllItemsProperties({ expanded: false });
+        });
+
+        const linesSelect = document.getElementById("lines");
+        linesSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          testTreeX.showLines = selectedOption;
+        });
 
         const loadModelBtn = document.getElementById("load-model-btn");
         loadModelBtn.addEventListener("click", () => {

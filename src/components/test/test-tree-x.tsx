@@ -301,18 +301,6 @@ export class ChTestTreeX {
     });
   }
 
-  private closeTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"], false);
-  };
-
-  private openTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"], true);
-  };
-
-  private toggleTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"]);
-  };
-
   private handleSelectedItemsChange = (
     event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
@@ -352,14 +340,6 @@ export class ChTestTreeX {
     const itemInfo = this.flattenedTreeModel.get(detail.id).item;
     itemInfo.expanded = detail.expanded;
   };
-
-  private getCheckedItemsHandler = async () => {
-    // const checked = await this.tree.getCheckedItems();
-  };
-
-  // private deleteNodeHandler = () => {
-  //   this.treeItemsModel = [];
-  // };
 
   private renderSubModel = (treeSubModel: TreeXItemModel) => (
     <ch-tree-x-list-item
@@ -439,25 +419,6 @@ export class ChTestTreeX {
     this.flattenSubModel(this.treeModel);
   }
 
-  private handleMultiSelectionChange = (event: CustomEvent) => {
-    const checked = (event.target as HTMLInputElement).checked;
-
-    this.multiSelection = checked;
-  };
-
-  private handleShowLinesChange = (event: CustomEvent) => {
-    const selectedOption = (event.target as HTMLSelectElement).value;
-    this.showLines = selectedOption as TreeXLines;
-  };
-
-  private handleExpandOrCollapseAll = (expand: boolean) => () => {
-    [...this.flattenedTreeModel.values()].forEach(itemUIModel => {
-      itemUIModel.item.expanded = expand;
-    });
-
-    forceUpdate(this);
-  };
-
   componentWillLoad() {
     this.flattenModel();
   }
@@ -479,54 +440,6 @@ export class ChTestTreeX {
         </ch-tree-x>
 
         <div class="tree-buttons">
-          <button type="button" onClick={this.closeTreeNodeHandler}>
-            Close 1-1-2
-          </button>
-
-          <button type="button" onClick={this.openTreeNodeHandler}>
-            Open 1-1-2
-          </button>
-
-          <button type="button" onClick={this.toggleTreeNodeHandler}>
-            Toggle 1-1-2
-          </button>
-
-          <button type="button" onClick={this.handleExpandOrCollapseAll(true)}>
-            Expand All
-          </button>
-
-          <button type="button" onClick={this.handleExpandOrCollapseAll(false)}>
-            Collapse All
-          </button>
-
-          <button type="button" onClick={this.getCheckedItemsHandler}>
-            Get Checked Items
-          </button>
-
-          <ch-checkbox caption="Check / uncheck all"></ch-checkbox>
-
-          <ch-checkbox
-            checkedValue="true"
-            unCheckedValue="false"
-            value={this.multiSelection.toString()}
-            caption="Multi selection"
-            onInput={this.handleMultiSelectionChange}
-          ></ch-checkbox>
-
-          <label>
-            Lines
-            <select name="lines" onInput={this.handleShowLinesChange}>
-              <option value="all" selected={this.showLines === "all"}>
-                All lines
-              </option>
-              <option value="last" selected={this.showLines === "last"}>
-                Last line
-              </option>
-              <option value="none" selected={this.showLines === "none"}>
-                None
-              </option>
-            </select>
-          </label>
           {/* <button type="button" onClick={this.deleteNodeHandler}>
           Delete Tree
         </button> */}

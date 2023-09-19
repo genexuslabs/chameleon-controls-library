@@ -11,6 +11,26 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { ChWindowAlign } from "../window/ch-window";
+
+import { DropdownPosition } from "./types";
+
+export type DropdownAlign =
+  | "OutsideStart"
+  | "InsideStart"
+  | "Center"
+  | "InsideEnd"
+  | "OutsideEnd";
+
+const mapDropdownAlignToChWindowAlign: {
+  [key in DropdownAlign]: ChWindowAlign;
+} = {
+  OutsideStart: "outside-start",
+  InsideStart: "inside-start",
+  Center: "center",
+  InsideEnd: "inside-end",
+  OutsideEnd: "outside-end"
+};
 
 const EXPANDABLE_BUTTON_ID = "expandable-button";
 const SECTION_ID = "section";
@@ -80,16 +100,10 @@ export class ChDropDown implements ChComponent {
   // Refs
   private expandableButton: HTMLButtonElement;
 
-  @Element() element: HTMLChDropdownElement;
+  @Element() el: HTMLChDropdownElement;
 
   @State() expanded = false;
   @State() expandedWithHover = false;
-
-  /**
-   * Specifies the horizontal alignment the dropdown section has when using
-   * `position === "Top"` or `position === "Bottom"`.
-   */
-  @Prop() readonly align: "Left" | "Center" | "Right" = "Center";
 
   /**
    * This attribute lets you specify the label for the expandable button.
@@ -101,8 +115,13 @@ export class ChDropDown implements ChComponent {
    * Determine which actions on the expandable button display the dropdown
    * section.
    */
-  @Prop() readonly expandBehavior: "Click" | "Click or Hover" =
-    "Click or Hover";
+  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
+
+  /**
+   * This attribute lets you specify if the control is nested in another
+   * dropdown. Useful to manage keyboard interaction.
+   */
+  @Prop() readonly nestedDropdown: boolean = false;
 
   /**
    * Determine if the dropdown section should be opened when the expandable
@@ -114,19 +133,7 @@ export class ChDropDown implements ChComponent {
    * Specifies the position of the dropdown section that is placed relative to
    * the expandable button.
    */
-  @Prop() readonly position: "Top" | "Right" | "Bottom" | "Left" = "Bottom";
-
-  /**
-   * Specifies the separation (in pixels) between the expandable button and the
-   * dropdown section of the control.
-   */
-  @Prop() readonly dropdownSeparation: number = 12;
-
-  /**
-   * Specifies the vertical alignment the dropdown section has when using
-   * `position === "Right"` or `position === "Left"`.
-   */
-  @Prop() readonly valign: "Top" | "Middle" | "Bottom" = "Middle";
+  @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
    * Fired when the visibility of the dropdown section is changed
@@ -148,9 +155,12 @@ export class ChDropDown implements ChComponent {
       );
 
       // Keyboard events
-      document.body.addEventListener("keydown", this.handleKeyDownEvents, {
-        capture: true
-      });
+      if (!this.nestedDropdown) {
+        document.body.addEventListener("keydown", this.handleKeyDownEvents, {
+          capture: true
+        });
+      }
+
       document.body.addEventListener("keyup", this.handleKeyUpEvents, {
         capture: true
       });
@@ -165,9 +175,12 @@ export class ChDropDown implements ChComponent {
       );
 
       // Keyboard events
-      document.body.removeEventListener("keydown", this.handleKeyDownEvents, {
-        capture: true
-      });
+      if (!this.nestedDropdown) {
+        document.body.removeEventListener("keydown", this.handleKeyDownEvents, {
+          capture: true
+        });
+      }
+
       document.body.removeEventListener("keyup", this.handleKeyUpEvents, {
         capture: true
       });
@@ -188,9 +201,7 @@ export class ChDropDown implements ChComponent {
   }
 
   private focusFirstDropDownItem() {
-    this.currentFocusedItem = this.element.querySelector(
-      DROPDOWN_ITEM_SELECTOR
-    );
+    this.currentFocusedItem = this.el.querySelector(DROPDOWN_ITEM_SELECTOR);
 
     if (this.currentFocusedItem) {
       this.currentFocusedItem.handleFocusElement();
@@ -246,13 +257,13 @@ export class ChDropDown implements ChComponent {
    * works if `openOnFocus = "false"`
    */
   private returnFocusToButton() {
-    if (!this.openOnFocus) {
+    if (!this.openOnFocus && !this.nestedDropdown) {
       this.expandableButton.focus();
     }
   }
 
   private closeDropdownWhenClickingOutside = (event: MouseEvent) => {
-    if (event.composedPath().find(el => el === this.element) === undefined) {
+    if (event.composedPath().find(el => el === this.el) === undefined) {
       this.closeDropdown();
     }
   };
@@ -274,10 +285,8 @@ export class ChDropDown implements ChComponent {
     if (event.code !== TAB_KEY) {
       return;
     }
-    const nextFocusedElement = event.target as HTMLElement;
 
-    const isChildElement =
-      nextFocusedElement.closest("ch-dropdown") === this.element;
+    const isChildElement = event.composedPath().includes(this.el);
     if (isChildElement) {
       return;
     }
@@ -287,7 +296,7 @@ export class ChDropDown implements ChComponent {
 
   private handleMouseLeave = () => {
     const focusedElementIsInsideDropDown =
-      document.activeElement.closest("ch-dropdown") === this.element;
+      document.activeElement.closest("ch-dropdown") === this.el;
 
     if (focusedElementIsInsideDropDown) {
       this.expanded = true;
@@ -308,12 +317,16 @@ export class ChDropDown implements ChComponent {
     }
   };
 
-  private handleButtonClick = () => {
+  private handleButtonClick = (event: MouseEvent) => {
+    event.stopPropagation();
+
     this.expandedChange.emit(!this.expanded);
     this.expanded = !this.expanded;
   };
 
-  private handleButtonFocus = () => {
+  private handleButtonFocus = (event: FocusEvent) => {
+    event.stopPropagation();
+
     if (this.expanded) {
       return;
     }
@@ -327,27 +340,29 @@ export class ChDropDown implements ChComponent {
   };
 
   componentWillLoad() {
-    this.showHeader = !!this.element.querySelector(':scope > [slot="header"]');
-    this.showFooter = !!this.element.querySelector(':scope > [slot="footer"]');
+    this.showHeader = !!this.el.querySelector(':scope > [slot="header"]');
+    this.showFooter = !!this.el.querySelector(':scope > [slot="footer"]');
   }
 
   render() {
+    const aligns = this.position.split("_");
+    const alignX = aligns[0] as DropdownAlign;
+    const alignY = aligns[1] as DropdownAlign;
+
     const hasVerticalPosition =
-      this.position === "Bottom" || this.position === "Top";
+      alignY === "OutsideStart" || alignY === "OutsideEnd";
+    const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
+    const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
     const isExpanded = this.expanded || this.expandedWithHover;
 
     return (
       <Host
         onMouseLeave={
-          this.expandBehavior === "Click or Hover"
+          this.expandBehavior === "ClickOrHover"
             ? this.handleMouseLeave
             : undefined
         }
-        style={{
-          "--separation-between-button": `-${this.dropdownSeparation}px`,
-          "--separation-between-button-size": `${this.dropdownSeparation}px`
-        }}
       >
         <button
           id={EXPANDABLE_BUTTON_ID}
@@ -356,12 +371,12 @@ export class ChDropDown implements ChComponent {
           aria-haspopup="true"
           aria-label={this.buttonLabel}
           class="expandable-button"
-          part="dropdown__expandable-button"
+          part="expandable-button"
           type="button"
           onClick={this.handleButtonClick}
           onFocus={this.openOnFocus ? this.handleButtonFocus : undefined}
           onMouseEnter={
-            this.expandBehavior === "Click or Hover"
+            this.expandBehavior === "ClickOrHover"
               ? this.handleMouseEnter
               : undefined
           }
@@ -370,50 +385,42 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "Click or Hover" && this.expandedWithHover && (
+        {this.expandBehavior === "ClickOrHover" && (
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
           <div
             aria-hidden="true"
             class={{
-              "dummy-separation": true,
-              [`dummy-separation--${this.position.toLowerCase()}`]: true,
-              "dummy-separation--vertical": hasVerticalPosition,
-              "dummy-separation--horizontal": !hasVerticalPosition
+              separation: true,
+              [`separation--y separation--y-${yAlignMapping}`]:
+                hasVerticalPosition,
+              [`separation--x separation--x-${xAlignMapping}`]:
+                !hasVerticalPosition
             }}
-            part="dropdown__separation"
+            part="separation"
           ></div>
         )}
 
-        <section
-          id={SECTION_ID}
-          aria-labelledby={EXPANDABLE_BUTTON_ID}
-          class={{
-            section: true,
-            [`position--${this.position.toLowerCase()}`]: true,
-
-            [`align--${this.align.toLowerCase()}`]: hasVerticalPosition,
-            [`valign--${this.valign.toLowerCase()}`]: !hasVerticalPosition
-          }}
-          part="dropdown__section"
+        <ch-window
+          part="window"
+          exportparts="window:section,mask,header,footer"
+          container={this.el}
+          closeOnEscape={true}
           hidden={!isExpanded}
+          modal={false}
+          showFooter={this.showFooter}
+          showHeader={this.showHeader}
+          xAlign={xAlignMapping}
+          yAlign={yAlignMapping}
         >
-          {this.showHeader && (
-            <header class="header" part="dropdown__header">
-              <slot name="header" />
-            </header>
-          )}
+          {this.showHeader && <slot name="header" slot="header" />}
 
-          <div role="list" class="list" part="dropdown__list">
+          <div role="list" class="list" part="list">
             <slot name="items" />
           </div>
 
-          {this.showFooter && (
-            <footer class="footer" part="dropdown__footer">
-              <slot name="footer" />
-            </footer>
-          )}
-        </section>
+          {this.showFooter && <slot name="footer" slot="footer" />}
+        </ch-window>
       </Host>
     );
   }

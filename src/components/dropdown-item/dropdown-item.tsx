@@ -6,9 +6,13 @@ import {
   Host,
   Method,
   Prop,
+  State,
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { DropdownPosition } from "../dropdown/types";
+
+const DROPDOWN_ITEM = "ch-dropdown-item";
 
 @Component({
   shadow: true,
@@ -19,6 +23,20 @@ export class ChDropDownItem implements ChComponent {
   private mainElement: HTMLButtonElement | HTMLAnchorElement;
 
   @Element() element: HTMLChDropdownItemElement;
+
+  @State() hasItems = false;
+
+  /**
+   * Determine which actions on the expandable button display the dropdown
+   * section.
+   * Only works if the control has subitems.
+   */
+  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
+
+  /**
+   * `true` to force the control to make its own containing block.
+   */
+  @Prop({ reflect: true }) readonly forceContainingBlock: boolean = true;
 
   /**
    * Specifies the hyperlink of the item. If this property is defined, the
@@ -31,6 +49,19 @@ export class ChDropDownItem implements ChComponent {
    * Specifies the src for the left img.
    */
   @Prop() readonly leftImgSrc: string;
+
+  /**
+   * Determine if the dropdown section should be opened when the expandable
+   * button of the control is focused.
+   * Only works if the control has subitems.
+   */
+  @Prop() readonly openOnFocus: boolean = false;
+
+  /**
+   * Specifies the position of the dropdown section that is placed relative to
+   * the expandable button.
+   */
+  @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
    * Specifies the src for the right img.
@@ -60,14 +91,14 @@ export class ChDropDownItem implements ChComponent {
       <img
         aria-hidden="true"
         class="left-img"
-        part="dropdown-item__left-img"
+        part="left-img"
         alt=""
         src={this.leftImgSrc}
         loading="lazy"
       />
     ),
 
-    <span class="content" part="dropdown-item__content">
+    <span class="content" part="content">
       <slot />
     </span>,
 
@@ -75,13 +106,63 @@ export class ChDropDownItem implements ChComponent {
       <img
         aria-hidden="true"
         class="right-img"
-        part="dropdown-item__right-img"
+        part="right-img"
         alt=""
         src={this.rightImgSrc}
         loading="lazy"
       />
     )
   ];
+
+  private checkItems = () => {
+    this.hasItems = !!this.element.querySelector(`:scope>${DROPDOWN_ITEM}`);
+  };
+
+  private noItemsRender = () =>
+    this.href ? (
+      <a
+        class="action"
+        part="action target"
+        href={this.href}
+        onClick={this.handleActionClick}
+        onFocus={this.handleFocus}
+        ref={el => (this.mainElement = el)}
+      >
+        {this.dropDownItemContent()}
+
+        <slot name="items" onSlotchange={this.checkItems} />
+      </a>
+    ) : (
+      <button
+        class="action"
+        part="action button"
+        type="button"
+        onClick={this.handleActionClick}
+        onFocus={this.handleFocus}
+        ref={el => (this.mainElement = el)}
+      >
+        {this.dropDownItemContent()}
+
+        <slot name="items" onSlotchange={this.checkItems} />
+      </button>
+    );
+
+  private itemsRender = () => (
+    <ch-dropdown
+      class="action"
+      exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,section,mask,header,footer,window"
+      expandBehavior={this.expandBehavior}
+      nestedDropdown={true}
+      openOnFocus={this.openOnFocus}
+      position={this.position}
+    >
+      <div class="dummy-wrapper" slot="action">
+        {this.dropDownItemContent()}
+      </div>
+
+      <slot name="items" slot="items" onSlotchange={this.checkItems} />
+    </ch-dropdown>
+  );
 
   private handleActionClick = () => {
     this.actionClick.emit(this.element.id);
@@ -91,32 +172,14 @@ export class ChDropDownItem implements ChComponent {
     this.focusChange.emit();
   };
 
+  componentWillLoad() {
+    this.checkItems();
+  }
+
   render() {
     return (
       <Host role="listitem">
-        {this.href ? (
-          <a
-            class="action"
-            part="dropdown-item__target"
-            href={this.href}
-            onClick={this.handleActionClick}
-            onFocus={this.handleFocus}
-            ref={el => (this.mainElement = el)}
-          >
-            {this.dropDownItemContent()}
-          </a>
-        ) : (
-          <button
-            class="action"
-            part="dropdown-item__button"
-            type="button"
-            onClick={this.handleActionClick}
-            onFocus={this.handleFocus}
-            ref={el => (this.mainElement = el)}
-          >
-            {this.dropDownItemContent()}
-          </button>
-        )}
+        {this.hasItems ? this.itemsRender() : this.noItemsRender()}
       </Host>
     );
   }

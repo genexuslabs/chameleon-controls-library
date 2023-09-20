@@ -115,6 +115,12 @@ export class ChWindow {
    */
   @Prop() readonly showHeader: boolean = true;
 
+  /**
+   * This attribute lets you specify if a div wrapper is rendered for the
+   * default slot.
+   */
+  @Prop() readonly showMain: boolean = true;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -350,9 +356,13 @@ export class ChWindow {
             </header>
           )}
 
-          <div part="main">
+          {this.showMain ? (
+            <div part="main">
+              <slot></slot>
+            </div>
+          ) : (
             <slot></slot>
-          </div>
+          )}
 
           {this.showFooter && (
             <footer part="footer">

@@ -1333,6 +1333,10 @@ export namespace Components {
          */
         "showHeader": boolean;
         /**
+          * This attribute lets you specify if a div wrapper is rendered for the default slot.
+         */
+        "showMain": boolean;
+        /**
           * The horizontal alignment of the window.
          */
         "xAlign": ChWindowAlign;
@@ -3339,6 +3343,10 @@ declare namespace LocalJSX {
           * This attribute lets you specify if a header is rendered on top of the window.
          */
         "showHeader"?: boolean;
+        /**
+          * This attribute lets you specify if a div wrapper is rendered for the default slot.
+         */
+        "showMain"?: boolean;
         /**
           * The horizontal alignment of the window.
          */

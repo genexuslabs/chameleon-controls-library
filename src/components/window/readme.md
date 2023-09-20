@@ -18,6 +18,7 @@
 | `modal`               | `modal`                  | Specifies whether the window should be displayed as a modal.                         | `boolean`                                                                        | `true`      |
 | `showFooter`          | `show-footer`            | This attribute lets you specify if a footer is rendered at the bottom of the window. | `boolean`                                                                        | `true`      |
 | `showHeader`          | `show-header`            | This attribute lets you specify if a header is rendered on top of the window.        | `boolean`                                                                        | `true`      |
+| `showMain`            | `show-main`              | This attribute lets you specify if a div wrapper is rendered for the default slot.   | `boolean`                                                                        | `true`      |
 | `xAlign`              | `x-align`                | The horizontal alignment of the window.                                              | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`  |
 | `yAlign`              | `y-align`                | The vertical alignment of the window.                                                | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`  |
 

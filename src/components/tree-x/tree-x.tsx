@@ -109,7 +109,9 @@ export class ChTreeX {
 
   @Element() el: HTMLChTreeXElement;
 
-  @State() draggingItem = false;
+  @State() draggingInTheDocument = false;
+
+  @State() draggingInTree = false;
 
   /**
    * Level in the tree at which the control is placed.
@@ -215,6 +217,16 @@ export class ChTreeX {
   //   }));
   // }
 
+  @Listen("dragstart", { capture: true, passive: true, target: "window" })
+  handleDragStart() {
+    this.draggingInTheDocument = true;
+  }
+
+  @Listen("dragend", { capture: true, passive: true, target: "window" })
+  handleDragEnd() {
+    this.draggingInTheDocument = false;
+  }
+
   @Listen("dragenter", { capture: true, passive: true })
   handleDragEnter(event: DragEvent) {
     this.cancelSubTreeOpening(null, true);
@@ -222,7 +234,7 @@ export class ChTreeX {
     const currentTarget = event.target as HTMLElement;
 
     // Don't mark droppable zones if they are the dragged items or their direct parents
-    if (this.draggingItem && !this.validDroppableZone(currentTarget.id)) {
+    if (this.draggingInTree && !this.validDroppableZone(currentTarget.id)) {
       return;
     }
 
@@ -268,7 +280,7 @@ export class ChTreeX {
     this.itemsDropped.emit({
       newContainer: { id: newContainer.id, metadata: newContainer.metadata },
       draggedItems: draggedItems,
-      dropInTheSameTree: this.draggingItem
+      dropInTheSameTree: this.draggingInTree
     });
   }
 
@@ -283,7 +295,7 @@ export class ChTreeX {
 
     // Wait until the custom var values are updated to avoid flickering
     setTimeout(() => {
-      this.draggingItem = true;
+      this.draggingInTree = true;
 
       if (this.scrollToEdgeOnDrag) {
         this.fixScrollPositionOnDrag();
@@ -293,7 +305,7 @@ export class ChTreeX {
 
   @Listen("itemDragEnd")
   handleItemDragEnd() {
-    this.draggingItem = false;
+    this.draggingInTree = false;
 
     document.body.removeEventListener("dragover", this.trackItemDrag, {
       capture: true
@@ -409,7 +421,7 @@ export class ChTreeX {
   }
 
   private fixScrollPositionOnDrag = () => {
-    if (!this.draggingItem || !this.lastDragEvent) {
+    if (!this.draggingInTree || !this.lastDragEvent) {
       return;
     }
 
@@ -503,15 +515,15 @@ export class ChTreeX {
     return (
       <Host
         class={{
-          "ch-tree-x-dragging-item": this.draggingItem,
+          "ch-tree-x-dragging-item": this.draggingInTheDocument,
           "ch-tree-x--dragging-selected-items":
-            this.draggingItem && this.draggingSelectedItems,
+            this.draggingInTree && this.draggingSelectedItems,
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
         <slot />
 
-        {this.draggingItem && (
+        {this.draggingInTree && (
           <span aria-hidden="true" class="ch-tree-x-drag-info">
             {this.dragInfo}
           </span>

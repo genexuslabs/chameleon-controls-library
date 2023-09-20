@@ -14,6 +14,7 @@ import {
 
 import {
   TreeXDataTransferInfo,
+  TreeXDroppableZoneState,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
@@ -44,6 +45,9 @@ const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
 
 const treeItemIsInEditMode = () =>
   (document.activeElement as HTMLChTreeXListItemElement).editing;
+
+const droppableZoneKey = (newContainer: string, metadata: string) =>
+  `"newContainerId":"${newContainer}","metadata":"${metadata}"`;
 
 const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-x";
 const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-y";
@@ -95,6 +99,13 @@ export class ChTreeX {
   private openSubTreeTimeout: NodeJS.Timeout;
 
   private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
+
+  /**
+   * Cache to avoid duplicate requests when checking the droppable zone in the
+   * same drag event.
+   */
+  private validDroppableZoneCache: Map<string, TreeXDroppableZoneState> =
+    new Map();
 
   // Refs
   private currentDraggedItem: HTMLChTreeXListItemElement;
@@ -219,6 +230,7 @@ export class ChTreeX {
 
   @Listen("dragstart", { capture: true, passive: true, target: "window" })
   handleDragStart() {
+    this.validDroppableZoneCache.clear();
     this.draggingInTheDocument = true;
   }
 
@@ -231,14 +243,13 @@ export class ChTreeX {
   handleDragEnter(event: DragEvent) {
     this.cancelSubTreeOpening(null, true);
     event.stopPropagation();
-    const currentTarget = event.target as HTMLElement;
+    const containerTarget = event.target as HTMLElement;
 
-    // Don't mark droppable zones if they are the dragged items or their direct parents
-    if (this.draggingInTree && !this.validDroppableZone(currentTarget.id)) {
+    if (this.validDroppableZone(containerTarget.id, event) !== "valid") {
       return;
     }
 
-    this.openSubTreeAfterCountdown(currentTarget);
+    this.openSubTreeAfterCountdown(containerTarget);
   }
 
   @Listen("dragleave", { capture: true, passive: true })
@@ -274,9 +285,12 @@ export class ChTreeX {
       event.dataTransfer.getData("text/plain")
     );
 
-    if (!this.validDroppableZone(newContainer.id)) {
+    // The droppable zone must be checked, even if it was marked as not valid
+    // @todo Try to drop an item with high delays in droppable zone checking
+    if (this.validDroppableZone(newContainer.id, event) !== "valid") {
       return;
     }
+
     this.itemsDropped.emit({
       newContainer: { id: newContainer.id, metadata: newContainer.metadata },
       draggedItems: draggedItems,
@@ -324,9 +338,32 @@ export class ChTreeX {
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
   }
 
-  private validDroppableZone = (draggedItemId: string) =>
-    !this.draggedIds.includes(draggedItemId) &&
-    !this.draggedParentIds.includes(draggedItemId);
+  private validDroppableZone(
+    containerTargetId: string,
+    event: DragEvent
+  ): TreeXDroppableZoneState {
+    // When dragging in the same tree, don't mark droppable zones if they are
+    // the dragged items or their direct parents
+    if (
+      this.draggingInTree &&
+      (this.draggedIds.includes(containerTargetId) ||
+        this.draggedParentIds.includes(containerTargetId))
+    ) {
+      return "invalid";
+    }
+
+    const metadata = event.dataTransfer.getData("text/plain");
+    const cacheKey = droppableZoneKey(containerTargetId, metadata);
+    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    if (droppableZoneState != null) {
+      return droppableZoneState;
+    }
+
+    this.validDroppableZoneCache.set(cacheKey, "checking");
+    // @todo Emit event and update dragenter and drop events
+    return "valid"; // WA to test
+  }
 
   private openSubTreeAfterCountdown(currentTarget: HTMLElement) {
     // Check if it is a valid item

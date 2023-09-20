@@ -65,3 +65,5 @@ export type TreeXDataTransferInfo = {
   draggedItems: GxDataTransferInfo[];
   dropInTheSameTree?: boolean;
 };
+
+export type TreeXDroppableZoneState = "checking" | "invalid" | "valid";

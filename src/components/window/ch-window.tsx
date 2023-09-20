@@ -1,7 +1,6 @@
 import {
   Component,
   h,
-  Host,
   Prop,
   Event,
   EventEmitter,
@@ -115,6 +114,12 @@ export class ChWindow {
    * This attribute lets you specify if a header is rendered on top of the window.
    */
   @Prop() readonly showHeader: boolean = true;
+
+  /**
+   * This attribute lets you specify if a div wrapper is rendered for the
+   * default slot.
+   */
+  @Prop() readonly showMain: boolean = true;
 
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
@@ -326,43 +331,45 @@ export class ChWindow {
 
   render() {
     return (
-      <Host>
-        <div
-          class="mask"
-          part="mask"
-          style={
-            this.relativeWindow && {
-              "--ch-window-inset-inline-start": "0px",
-              "--ch-window-inset-block-start": "0px"
-            }
+      <div
+        class="mask"
+        part="mask"
+        style={
+          this.relativeWindow && {
+            "--ch-window-inset-inline-start": "0px",
+            "--ch-window-inset-block-start": "0px"
           }
-          ref={el => (this.mask = el)}
-          onClick={this.maskClickHandler}
-        >
-          <section class="window" part="window" ref={el => (this.window = el)}>
-            {this.showHeader && (
-              <header part="header" ref={el => (this.header = el)}>
-                <slot name="header">
-                  <span part="caption">{this.caption}</span>
-                  <ch-window-close part="close" title={this.closeTooltip}>
-                    {this.closeText}
-                  </ch-window-close>
-                </slot>
-              </header>
-            )}
+        }
+        ref={el => (this.mask = el)}
+        onClick={this.maskClickHandler}
+      >
+        <section class="window" part="window" ref={el => (this.window = el)}>
+          {this.showHeader && (
+            <header part="header" ref={el => (this.header = el)}>
+              <slot name="header">
+                <span part="caption">{this.caption}</span>
+                <ch-window-close part="close" title={this.closeTooltip}>
+                  {this.closeText}
+                </ch-window-close>
+              </slot>
+            </header>
+          )}
 
+          {this.showMain ? (
             <div part="main">
               <slot></slot>
             </div>
+          ) : (
+            <slot></slot>
+          )}
 
-            {this.showFooter && (
-              <footer part="footer">
-                <slot name="footer"></slot>
-              </footer>
-            )}
-          </section>
-        </div>
-      </Host>
+          {this.showFooter && (
+            <footer part="footer">
+              <slot name="footer"></slot>
+            </footer>
+          )}
+        </section>
+      </div>
     );
   }
 }

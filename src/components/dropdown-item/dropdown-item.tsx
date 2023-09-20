@@ -22,7 +22,7 @@ const DROPDOWN_ITEM = "ch-dropdown-item";
 export class ChDropDownItem implements ChComponent {
   private mainElement: HTMLButtonElement | HTMLAnchorElement;
 
-  @Element() element: HTMLChDropdownItemElement;
+  @Element() el: HTMLChDropdownItemElement;
 
   @State() hasItems = false;
 
@@ -89,6 +89,7 @@ export class ChDropDownItem implements ChComponent {
   private dropDownItemContent = () => [
     !!this.leftImgSrc && (
       <img
+        slot="action"
         aria-hidden="true"
         class="left-img"
         part="left-img"
@@ -98,12 +99,13 @@ export class ChDropDownItem implements ChComponent {
       />
     ),
 
-    <span class="content" part="content">
+    <span slot="action" class="content" part="content">
       <slot />
     </span>,
 
     !!this.rightImgSrc && (
       <img
+        slot="action"
         aria-hidden="true"
         class="right-img"
         part="right-img"
@@ -115,7 +117,7 @@ export class ChDropDownItem implements ChComponent {
   ];
 
   private checkItems = () => {
-    this.hasItems = !!this.element.querySelector(`:scope>${DROPDOWN_ITEM}`);
+    this.hasItems = !!this.el.querySelector(`:scope>${DROPDOWN_ITEM}`);
   };
 
   private noItemsRender = () =>
@@ -156,16 +158,14 @@ export class ChDropDownItem implements ChComponent {
       openOnFocus={this.openOnFocus}
       position={this.position}
     >
-      <div class="dummy-wrapper" slot="action">
-        {this.dropDownItemContent()}
-      </div>
+      {this.dropDownItemContent()}
 
       <slot name="items" slot="items" onSlotchange={this.checkItems} />
     </ch-dropdown>
   );
 
   private handleActionClick = () => {
-    this.actionClick.emit(this.element.id);
+    this.actionClick.emit(this.el.id);
   };
 
   private handleFocus = () => {

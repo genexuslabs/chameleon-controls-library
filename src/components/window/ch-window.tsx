@@ -338,34 +338,28 @@ export class ChWindow {
         ref={el => (this.mask = el)}
         onClick={this.maskClickHandler}
       >
-        {this.showHeader || this.showFooter ? (
-          <section class="window" part="window" ref={el => (this.window = el)}>
-            {this.showHeader && (
-              <header part="header" ref={el => (this.header = el)}>
-                <slot name="header">
-                  <span part="caption">{this.caption}</span>
-                  <ch-window-close part="close" title={this.closeTooltip}>
-                    {this.closeText}
-                  </ch-window-close>
-                </slot>
-              </header>
-            )}
+        <section class="window" part="window" ref={el => (this.window = el)}>
+          {this.showHeader && (
+            <header part="header" ref={el => (this.header = el)}>
+              <slot name="header">
+                <span part="caption">{this.caption}</span>
+                <ch-window-close part="close" title={this.closeTooltip}>
+                  {this.closeText}
+                </ch-window-close>
+              </slot>
+            </header>
+          )}
 
-            <div part="main">
-              <slot></slot>
-            </div>
-
-            {this.showFooter && (
-              <footer part="footer">
-                <slot name="footer"></slot>
-              </footer>
-            )}
-          </section>
-        ) : (
-          <div class="window" part="window" ref={el => (this.window = el)}>
+          <div part="main">
             <slot></slot>
           </div>
-        )}
+
+          {this.showFooter && (
+            <footer part="footer">
+              <slot name="footer"></slot>
+            </footer>
+          )}
+        </section>
       </div>
     );
   }

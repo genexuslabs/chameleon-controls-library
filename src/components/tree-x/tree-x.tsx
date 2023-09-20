@@ -251,6 +251,27 @@ export class ChTreeX {
     }
   }
 
+  @Listen("drop")
+  handleItemDrop(event: DragEvent) {
+    event.stopPropagation();
+
+    this.cancelSubTreeOpening(null, true);
+    const newContainer = event.target as HTMLChTreeXListItemElement;
+
+    const draggedItems: GxDataTransferInfo[] = JSON.parse(
+      event.dataTransfer.getData("text/plain")
+    );
+
+    if (!this.validDroppableZone(newContainer.id)) {
+      return;
+    }
+    this.itemsDropped.emit({
+      newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      draggedItems: draggedItems,
+      dropInTheSameTree: this.draggingItem
+    });
+  }
+
   @Listen("itemDragStart")
   handleItemDragStart(event: CustomEvent<TreeXItemDragStartInfo>) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
@@ -280,27 +301,6 @@ export class ChTreeX {
 
     // Reset not allowed droppable ids
     this.resetVariables();
-  }
-
-  @Listen("drop")
-  handleItemDrop(event: DragEvent) {
-    event.stopPropagation();
-
-    this.cancelSubTreeOpening(null, true);
-    const newContainer = event.target as HTMLChTreeXListItemElement;
-
-    const draggedItems: GxDataTransferInfo[] = JSON.parse(
-      event.dataTransfer.getData("text/plain")
-    );
-
-    if (!this.validDroppableZone(newContainer.id)) {
-      return;
-    }
-    this.itemsDropped.emit({
-      newContainer: { id: newContainer.id, metadata: newContainer.metadata },
-      draggedItems: draggedItems,
-      dropInTheSameTree: this.draggingItem
-    });
   }
 
   @Listen("selectedItemChange")

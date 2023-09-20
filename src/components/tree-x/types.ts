@@ -1,3 +1,5 @@
+import { GxDataTransferInfo } from "../../common/types";
+
 export type TreeXModel = {
   items: TreeXItemModel[];
   multiSelection?: boolean;
@@ -17,6 +19,7 @@ export type TreeXItemModel = {
   leftImgSrc?: string;
   indeterminate?: boolean;
   items?: TreeXItemModel[];
+  metadata?: string;
   rightImgSrc?: string;
   selected?: boolean;
   showExpandableButton?: boolean;
@@ -40,6 +43,7 @@ export type TreeXListItemSelectedInfo = {
   goToReference: boolean;
   id: string;
   itemRef: HTMLChTreeXListItemElement;
+  metadata: string;
   parentId: string;
   selected: boolean;
 };
@@ -54,9 +58,10 @@ export type TreeXItemDragStartInfo = {
   dataTransfer: DataTransfer;
 };
 
-export type TreeXItemDropInfo = {
-  dropItemId: string;
-  dataTransfer: DataTransfer;
-};
-
 export type TreeXLines = "all" | "last" | "none";
+
+export type TreeXDataTransferInfo = {
+  newContainer: GxDataTransferInfo;
+  draggedItems: GxDataTransferInfo[];
+  dropInTheSameTree?: boolean;
+};

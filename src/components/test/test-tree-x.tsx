@@ -10,7 +10,7 @@ import {
   Method
 } from "@stencil/core";
 import {
-  TreeXItemDropInfo,
+  TreeXDataTransferInfo,
   TreeXItemModel,
   TreeXLines,
   TreeXListItemExpandedInfo,
@@ -26,6 +26,7 @@ import {
   ChTreeXCustomEvent,
   ChTreeXListItemCustomEvent
 } from "../../components";
+import { GxDataTransferInfo } from "../../common/types";
 
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
@@ -57,9 +58,8 @@ export class ChTestTreeX {
    * another item.
    */
   @Prop() readonly dropItemsCallback: (
-    dropItemId: string,
-    draggedIds: string[]
-  ) => Promise<TreeXItemModel[]>;
+    dataTransferInfo: TreeXDataTransferInfo
+  ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
 
   /**
    * This property lets you define the model of the ch-tree-x control.
@@ -219,62 +219,6 @@ export class ChTestTreeX {
     });
   }
 
-  @Listen("itemsDropped")
-  handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
-    const detail = event.detail;
-    const dropItemId = detail.dropItemId;
-
-    // Check if the parent exists in the UI Model
-    if (!this.flattenedTreeModel.get(dropItemId)) {
-      return;
-    }
-
-    const data = detail.dataTransfer.getData("text/plain");
-    const draggedIds = data?.split(",") ?? [];
-
-    if (draggedIds.length === 0 || !this.dropItemsCallback) {
-      return;
-    }
-
-    const promise = this.dropItemsCallback(dropItemId, draggedIds);
-    this.waitDropProcessing = true;
-
-    promise.then(acceptDrop => {
-      this.waitDropProcessing = false;
-
-      if (!acceptDrop) {
-        return;
-      }
-
-      const newParentItem = this.flattenedTreeModel.get(dropItemId).item;
-
-      // Add the UI models to the new container and remove the UI models from
-      // the old containers
-      draggedIds.forEach(itemId => {
-        const itemUIModelExtended = this.flattenedTreeModel.get(itemId);
-        const item = itemUIModelExtended.item;
-        const oldParentItem = itemUIModelExtended.parentItem;
-
-        // Remove the UI model from the previous parent
-        oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
-
-        // Add the UI Model to the new parent
-        newParentItem.items.push(item);
-
-        // Reference the new parent in the item
-        itemUIModelExtended.parentItem = newParentItem;
-      });
-
-      this.sortItems(newParentItem.items);
-
-      // Open the item to visualize the new subitems
-      newParentItem.expanded = true;
-
-      // There is no need to force and update, since the waitDropProcessing
-      // prop was modified
-    });
-  }
-
   @Listen("loadLazyContent")
   loadLazyChildrenHandler(event: ChTreeXListItemCustomEvent<string>) {
     event.stopPropagation();
@@ -393,6 +337,84 @@ export class ChTestTreeX {
     itemInfo.expanded = detail.expanded;
   };
 
+  private handleItemsDropped = (
+    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+  ) => {
+    const dataTransferInfo = event.detail;
+    const newContainer = dataTransferInfo.newContainer;
+    const newParentId = newContainer.id;
+
+    // Check if the parent exists in the UI Model
+    if (!this.flattenedTreeModel.get(newParentId)) {
+      return;
+    }
+
+    const draggedItems: GxDataTransferInfo[] = dataTransferInfo.draggedItems;
+
+    if (draggedItems.length === 0 || !this.dropItemsCallback) {
+      return;
+    }
+
+    const promise = this.dropItemsCallback(dataTransferInfo);
+    this.waitDropProcessing = true;
+
+    promise.then(response => {
+      this.waitDropProcessing = false;
+
+      if (!response.acceptDrop) {
+        return;
+      }
+
+      const newParentUIModel = this.flattenedTreeModel.get(newParentId).item;
+
+      // Only move the items to the new parent, keeping the state
+      if (dataTransferInfo.dropInTheSameTree) {
+        // Add the UI models to the new container and remove the UI models from
+        // the old containers
+        draggedItems.forEach(this.moveItemToNewParent(newParentUIModel));
+      }
+      // Add the new items
+      else {
+        if (response.items == null) {
+          return;
+        }
+
+        // Add new items to the parent
+        newParentUIModel.items.push(...response.items);
+
+        // Flatten the new UI models
+        response.items.forEach(this.flattenItemUIModel(newParentUIModel));
+      }
+
+      this.sortItems(newParentUIModel.items);
+
+      // Open the item to visualize the new subitems
+      newParentUIModel.expanded = true;
+
+      // There is no need to force and update, since the waitDropProcessing
+      // prop was modified
+    });
+  };
+
+  private moveItemToNewParent =
+    (newParentUIModel: TreeXItemModel) =>
+    (dataTransferInfo: GxDataTransferInfo) => {
+      const itemUIModelExtended = this.flattenedTreeModel.get(
+        dataTransferInfo.id
+      );
+      const item = itemUIModelExtended.item;
+      const oldParentItem = itemUIModelExtended.parentItem;
+
+      // Remove the UI model from the previous parent
+      oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
+
+      // Add the UI Model to the new parent
+      newParentUIModel.items.push(item);
+
+      // Reference the new parent in the item
+      itemUIModelExtended.parentItem = newParentUIModel;
+    };
+
   private renderSubModel = (treeSubModel: TreeXItemModel) => (
     <ch-tree-x-list-item
       id={treeSubModel.id}
@@ -406,6 +428,7 @@ export class ChTestTreeX {
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
+      metadata={treeSubModel.metadata}
       rightImgSrc={treeSubModel.rightImgSrc}
       selected={treeSubModel.selected}
       showExpandableButton={treeSubModel.showExpandableButton}
@@ -434,9 +457,13 @@ export class ChTestTreeX {
 
     this.sortItems(items);
 
-    items.forEach(item => {
+    items.forEach(this.flattenItemUIModel(model));
+  }
+
+  private flattenItemUIModel =
+    (parentModel: TreeXModel | TreeXItemModel) => (item: TreeXItemModel) => {
       this.flattenedTreeModel.set(item.id, {
-        parentItem: model,
+        parentItem: parentModel,
         item: item
       });
 
@@ -456,8 +483,7 @@ export class ChTestTreeX {
       }
 
       this.flattenSubModel(item);
-    });
-  }
+    };
 
   private sortItems(items: TreeXItemModel[]) {
     // Ensure that items are sorted
@@ -486,6 +512,7 @@ export class ChTestTreeX {
           waitDropProcessing={this.waitDropProcessing}
           onSelectedItemsChange={this.handleSelectedItemsChange}
           onExpandedItemChange={this.handleExpandedItemChange}
+          onItemsDropped={this.handleItemsDropped}
           ref={el => (this.treeRef = el)}
         >
           <ch-tree-x-list>

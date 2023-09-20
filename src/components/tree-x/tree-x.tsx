@@ -13,16 +13,17 @@ import {
 } from "@stencil/core";
 
 import {
+  TreeXDataTransferInfo,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
-  TreeXItemDropInfo,
   TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
 import { scrollToEdge } from "../../common/scroll-to-edge";
+import { GxDataTransferInfo } from "../../common/types";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_LIST_TAG_NAME = "ch-tree-x-list";
@@ -169,7 +170,7 @@ export class ChTreeX {
   /**
    * Fired when the dragged items are dropped in another item of the tree.
    */
-  @Event() itemsDropped: EventEmitter<TreeXItemDropInfo>;
+  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
 
   /**
    * Given an item id, it displays and scrolls into the item view.
@@ -263,17 +264,25 @@ export class ChTreeX {
     this.resetVariables();
   }
 
-  @Listen("itemDrop")
-  handleItemDrop(event: CustomEvent<TreeXItemDropInfo>) {
+  @Listen("drop")
+  handleItemDrop(event: DragEvent) {
     event.stopPropagation();
 
     this.cancelSubTreeOpening(null, true);
-    const selectedItemEl = event.target as HTMLChTreeXListItemElement;
+    const newContainer = event.target as HTMLChTreeXListItemElement;
 
-    if (!this.validDroppableZone(selectedItemEl.id)) {
+    const draggedItems: GxDataTransferInfo[] = JSON.parse(
+      event.dataTransfer.getData("text/plain")
+    );
+
+    if (!this.validDroppableZone(newContainer.id)) {
       return;
     }
-    this.itemsDropped.emit(event.detail);
+    this.itemsDropped.emit({
+      newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      draggedItems: draggedItems,
+      dropInTheSameTree: this.draggingItem
+    });
   }
 
   @Listen("selectedItemChange")
@@ -372,8 +381,9 @@ export class ChTreeX {
   }
 
   /**
-   * Update the dataTransfer in the drag event to store the ids of the dragged
-   * items. Also it updates the visual information of the dragged items.
+   * Update the dataTransfer in the drag event to store the ids and metadata of
+   * the dragged items. Also it updates the visual information of the dragged
+   * items.
    */
   private updateDragInfo(dragInfo: TreeXItemDragStartInfo) {
     const draggedElement = dragInfo.elem;
@@ -383,28 +393,35 @@ export class ChTreeX {
     );
     this.draggingSelectedItems = isDraggingSelectedItems;
 
-    let joinedDraggedIds: string;
+    let dataTransferInfo: GxDataTransferInfo[] = [];
 
     if (isDraggingSelectedItems) {
       const selectedItemKeys = [...this.selectedItemsInfo.keys()];
       const selectedItemCount = selectedItemKeys.length;
 
       this.draggedIds = selectedItemKeys;
-      joinedDraggedIds = selectedItemKeys.join(",");
+      dataTransferInfo = [...this.selectedItemsInfo.values()].map(el => ({
+        id: el.id,
+        metadata: el.metadata
+      }));
 
       this.dragInfo =
         selectedItemCount === 1
           ? draggedElement.caption
           : selectedItemCount.toString();
     } else {
-      joinedDraggedIds = draggedElement.id;
-      this.draggedIds = [joinedDraggedIds];
+      dataTransferInfo = [
+        { id: draggedElement.id, metadata: draggedElement.metadata }
+      ];
+      this.draggedIds = [draggedElement.id];
       this.dragInfo = draggedElement.caption;
     }
 
     this.getDirectParentsOfDraggableItems(isDraggingSelectedItems);
 
-    dragInfo.dataTransfer.setData("text/plain", joinedDraggedIds);
+    // Update drag event info
+    const data = JSON.stringify(dataTransferInfo);
+    dragInfo.dataTransfer.setData("text/plain", data);
   }
 
   private fixScrollPositionOnDrag = () => {

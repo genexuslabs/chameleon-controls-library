@@ -13,7 +13,6 @@ import {
 } from "@stencil/core";
 import {
   TreeXItemDragStartInfo,
-  TreeXItemDropInfo,
   TreeXLines,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
@@ -190,6 +189,12 @@ export class ChTreeXListItem {
   @Prop({ mutable: true }) indeterminate = false;
 
   /**
+   * This attribute represents additional info for the control that is included
+   * when dragging the item.
+   */
+  @Prop() readonly metadata: string;
+
+  /**
    * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
    */
   @Prop() readonly rightImgSrc: string;
@@ -250,11 +255,6 @@ export class ChTreeXListItem {
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
-
-  /**
-   * Fired when an element commits to drop in the control.
-   */
-  @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
 
   /**
    * Fired when the lazy control is expanded an its content must be loaded.
@@ -514,6 +514,7 @@ export class ChTreeXListItem {
       goToReference: false,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
@@ -540,6 +541,7 @@ export class ChTreeXListItem {
       goToReference: false,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: selected
     });
@@ -553,6 +555,7 @@ export class ChTreeXListItem {
       goToReference: goToReference,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
@@ -662,14 +665,8 @@ export class ChTreeXListItem {
     this.itemDragEnd.emit();
   };
 
-  private handleDrop = (event: DragEvent) => {
-    event.stopPropagation();
-
+  private handleDrop = () => {
     this.dragState = "none";
-    this.itemDrop.emit({
-      dropItemId: this.el.id,
-      dataTransfer: event.dataTransfer
-    });
   };
 
   componentWillLoad() {

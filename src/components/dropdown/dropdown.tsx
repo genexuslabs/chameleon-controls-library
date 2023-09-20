@@ -412,6 +412,7 @@ export class ChDropDown implements ChComponent {
           modal={false}
           showFooter={this.showFooter}
           showHeader={this.showHeader}
+          showMain={false}
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >

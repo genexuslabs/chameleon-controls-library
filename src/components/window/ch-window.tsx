@@ -6,7 +6,8 @@ import {
   EventEmitter,
   Watch,
   Listen,
-  Element
+  Element,
+  Host
 } from "@stencil/core";
 import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
 
@@ -197,11 +198,11 @@ export class ChWindow {
         return;
       }
 
-      this.mask.style.setProperty(
+      this.el.style.setProperty(
         "--ch-window-inset-inline-start",
         `${rect.left}px`
       );
-      this.mask.style.setProperty(
+      this.el.style.setProperty(
         "--ch-window-inset-block-start",
         `${rect.top}px`
       );
@@ -212,8 +213,8 @@ export class ChWindow {
       if (this.relativeWindow) {
         return;
       }
-      this.mask.style.removeProperty("--ch-window-inset-inline-start");
-      this.mask.style.removeProperty("--ch-window-inset-block-start");
+      this.el.style.removeProperty("--ch-window-inset-inline-start");
+      this.el.style.removeProperty("--ch-window-inset-block-start");
     }
   };
 
@@ -331,45 +332,48 @@ export class ChWindow {
 
   render() {
     return (
-      <div
-        class="mask"
-        part="mask"
+      <Host
         style={
           this.relativeWindow && {
             "--ch-window-inset-inline-start": "0px",
             "--ch-window-inset-block-start": "0px"
           }
         }
-        ref={el => (this.mask = el)}
-        onClick={this.maskClickHandler}
       >
-        <section class="window" part="window" ref={el => (this.window = el)}>
-          {this.showHeader && (
-            <header part="header" ref={el => (this.header = el)}>
-              <slot name="header">
-                <span part="caption">{this.caption}</span>
-                <ch-window-close part="close" title={this.closeTooltip}>
-                  {this.closeText}
-                </ch-window-close>
-              </slot>
-            </header>
-          )}
+        <div
+          class="mask"
+          part="mask"
+          ref={el => (this.mask = el)}
+          onClick={this.maskClickHandler}
+        >
+          <section class="window" part="window" ref={el => (this.window = el)}>
+            {this.showHeader && (
+              <header part="header" ref={el => (this.header = el)}>
+                <slot name="header">
+                  <span part="caption">{this.caption}</span>
+                  <ch-window-close part="close" title={this.closeTooltip}>
+                    {this.closeText}
+                  </ch-window-close>
+                </slot>
+              </header>
+            )}
 
-          {this.showMain ? (
-            <div part="main">
-              <slot></slot>
-            </div>
-          ) : (
-            <slot></slot>
-          )}
+            {this.showMain ? (
+              <div part="main">
+                <slot />
+              </div>
+            ) : (
+              <slot />
+            )}
 
-          {this.showFooter && (
-            <footer part="footer">
-              <slot name="footer"></slot>
-            </footer>
-          )}
-        </section>
-      </div>
+            {this.showFooter && (
+              <footer part="footer">
+                <slot name="footer"></slot>
+              </footer>
+            )}
+          </section>
+        </div>
+      </Host>
     );
   }
 }

@@ -78,10 +78,6 @@ export namespace Components {
     }
     interface ChActionGroupItem {
         /**
-          * `true` to ignore the floating property value.
-         */
-        "avoidFloating": boolean;
-        /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating": boolean;
@@ -1337,6 +1333,10 @@ export namespace Components {
          */
         "showMain": boolean;
         /**
+          * This attribute lets you specify if a div between the container and the window space.
+         */
+        "showSeparation": boolean;
+        /**
           * The horizontal alignment of the window.
          */
         "xAlign": ChWindowAlign;
@@ -1999,10 +1999,6 @@ declare namespace LocalJSX {
         "openOnFocus"?: boolean;
     }
     interface ChActionGroupItem {
-        /**
-          * `true` to ignore the floating property value.
-         */
-        "avoidFloating"?: boolean;
         /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
@@ -3347,6 +3343,10 @@ declare namespace LocalJSX {
           * This attribute lets you specify if a div wrapper is rendered for the default slot.
          */
         "showMain"?: boolean;
+        /**
+          * This attribute lets you specify if a div between the container and the window space.
+         */
+        "showSeparation"?: boolean;
         /**
           * The horizontal alignment of the window.
          */

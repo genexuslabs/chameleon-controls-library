@@ -189,8 +189,8 @@ export class ChWindow {
     if (!this.isContainerCssOverride && this.container && this.mask) {
       const rect = this.container.getBoundingClientRect();
 
-      this.mask.style.width = `${rect.width}px`;
-      this.mask.style.height = `${rect.height}px`;
+      this.el.style.setProperty("--ch-window-mask-width", `${rect.width}px`);
+      this.el.style.setProperty("--ch-window-mask-height", `${rect.height}px`);
 
       // Nested windows are positioned relative to its initial containing block,
       // so there is no need to align them relative to the document
@@ -207,8 +207,8 @@ export class ChWindow {
         `${rect.top}px`
       );
     } else if (this.isContainerCssOverride || !this.container) {
-      this.mask.style.removeProperty("width");
-      this.mask.style.removeProperty("height");
+      this.el.style.removeProperty("--ch-window-mask-width");
+      this.el.style.removeProperty("--ch-window-mask-height");
 
       if (this.relativeWindow) {
         return;

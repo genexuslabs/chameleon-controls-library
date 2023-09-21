@@ -21,12 +21,12 @@
   display: flex;
   position: fixed;
   inset: 0;
-  left: calc(
-    var(--ch-window-inset-inline-start) + var(--ch-window-offset-x)
-  );
+  left: calc(var(--ch-window-inset-inline-start) + var(--ch-window-offset-x));
   inset-block-start: calc(
     var(--ch-window-inset-block-start) + var(--ch-window-offset-y)
   );
+  width: var(--ch-window-mask-width);
+  height: var(--ch-window-mask-height);
   z-index: var(--ch-window-mask-z-index, 1000);
 
   :host(:is([x-align="outside-start"], [x-align="inside-start"])) & {

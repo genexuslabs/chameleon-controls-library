@@ -13,11 +13,6 @@ export class ChActionGroupItem implements ChComponent {
   @Element() el: HTMLChActionGroupItemElement;
 
   /**
-   * `true` to ignore the floating property value.
-   */
-  @Prop() readonly avoidFloating: boolean = false;
-
-  /**
    * `true` if the control is floating. Useful to implement the
    * `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of
    * the ch-action-group control.
@@ -25,10 +20,6 @@ export class ChActionGroupItem implements ChComponent {
   @Prop({ reflect: true, mutable: true }) floating = false;
 
   componentWillLoad() {
-    if (this.avoidFloating) {
-      return;
-    }
-
     const parentAction = this.el.closest("ch-action-group");
 
     // Hide items at the start to improve CLS

@@ -19,6 +19,7 @@
 | `showFooter`          | `show-footer`            | This attribute lets you specify if a footer is rendered at the bottom of the window. | `boolean`                                                                        | `true`      |
 | `showHeader`          | `show-header`            | This attribute lets you specify if a header is rendered on top of the window.        | `boolean`                                                                        | `true`      |
 | `showMain`            | `show-main`              | This attribute lets you specify if a div wrapper is rendered for the default slot.   | `boolean`                                                                        | `true`      |
+| `showSeparation`      | `show-separation`        | This attribute lets you specify if a div between the container and the window space. | `boolean`                                                                        | `false`     |
 | `xAlign`              | `x-align`                | The horizontal alignment of the window.                                              | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`  |
 | `yAlign`              | `y-align`                | The vertical alignment of the window.                                                | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`  |
 
@@ -33,15 +34,16 @@
 
 ## Shadow Parts
 
-| Part        | Description |
-| ----------- | ----------- |
-| `"caption"` |             |
-| `"close"`   |             |
-| `"footer"`  |             |
-| `"header"`  |             |
-| `"main"`    |             |
-| `"mask"`    |             |
-| `"window"`  |             |
+| Part           | Description |
+| -------------- | ----------- |
+| `"caption"`    |             |
+| `"close"`      |             |
+| `"footer"`     |             |
+| `"header"`     |             |
+| `"main"`       |             |
+| `"mask"`       |             |
+| `"separation"` |             |
+| `"window"`     |             |
 
 
 ## Dependencies

@@ -2,6 +2,9 @@
   --ch-window-offset-x: 0px;
   --ch-window-offset-y: 0px;
 
+  --ch-window-separation-x: 0px;
+  --ch-window-separation-y: 0px;
+
   --ch-window-x-outside: 0px;
   --ch-window-y-outside: 0px;
 }
@@ -22,11 +25,15 @@
   position: fixed;
   inset: 0;
   left: calc(
-    var(--ch-window-inset-inline-start) + var(--ch-window-offset-x)
+    var(--ch-window-inset-inline-start) + var(--ch-window-offset-x) +
+      var(--ch-window-separation-x)
   );
   inset-block-start: calc(
-    var(--ch-window-inset-block-start) + var(--ch-window-offset-y)
+    var(--ch-window-inset-block-start) + var(--ch-window-offset-y) +
+      var(--ch-window-separation-y)
   );
+  width: var(--ch-window-mask-width);
+  height: var(--ch-window-mask-height);
   z-index: var(--ch-window-mask-z-index, 1000);
 
   :host(:is([x-align="outside-start"], [x-align="inside-start"])) & {
@@ -54,6 +61,7 @@
   flex-direction: column;
   transform: translate(var(--ch-window-x-outside), var(--ch-window-y-outside))
     translate(var(--ch-window-x-drag, 0px), var(--ch-window-y-drag, 0px));
+  z-index: inherit;
 
   :host([x-align="outside-start"]) & {
     --ch-window-x-outside: -100%;
@@ -66,5 +74,76 @@
   }
   :host([y-align="outside-end"]) & {
     --ch-window-y-outside: 100%;
+  }
+}
+
+.separation {
+  position: fixed;
+  inset: 0;
+  pointer-events: all;
+
+  &--x {
+    top: var(--ch-window-inset-block-start);
+    width: var(--ch-window-separation);
+    height: var(--ch-window-mask-height);
+  }
+
+  &--y {
+    left: var(--ch-window-inset-inline-start);
+    width: var(--ch-window-mask-width);
+    height: var(--ch-window-separation);
+  }
+
+  &--both {
+    width: calc(var(--ch-window-separation) * 4);
+    height: calc(var(--ch-window-separation) * 4);
+  }
+
+  :host([x-align="outside-start"]) & {
+    left: calc(
+      var(--ch-window-inset-inline-start) - var(--ch-window-separation)
+    );
+  }
+
+  :host([x-align="outside-start"]) &--both {
+    left: calc(
+      var(--ch-window-inset-inline-start) - var(--ch-window-separation) * 3
+    );
+  }
+
+  :host([x-align="outside-end"]) & {
+    left: calc(
+      var(--ch-window-inset-inline-start) + var(--ch-window-mask-width)
+    );
+  }
+
+  :host([x-align="outside-end"]) &--both {
+    left: calc(
+      var(--ch-window-inset-inline-start) + var(--ch-window-mask-width) -
+        var(--ch-window-separation)
+    );
+  }
+
+  :host([y-align="outside-start"]) & {
+    top: calc(var(--ch-window-inset-block-start) - var(--ch-window-separation));
+  }
+
+  :host([y-align="outside-start"]) &--both {
+    top: calc(
+      var(--ch-window-inset-block-start) - var(--ch-window-separation) * 3
+    );
+  }
+
+  :host([y-align="outside-end"]) & {
+    top: calc(
+      var(--ch-window-inset-block-start) + var(--ch-window-mask-height)
+    );
+  }
+
+  :host([y-align="outside-end"]) &--both {
+    top: calc(
+      var(--ch-window-inset-block-start) + var(--ch-window-mask-height) -
+        var(--ch-window-separation)
+    );
   }
 }

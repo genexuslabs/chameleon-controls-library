@@ -350,8 +350,6 @@ export class ChDropDown implements ChComponent {
     const alignX = aligns[0] as DropdownAlign;
     const alignY = aligns[1] as DropdownAlign;
 
-    const hasVerticalPosition =
-      alignY === "OutsideStart" || alignY === "OutsideEnd";
     const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
@@ -387,22 +385,6 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "ClickOrHover" && this.expandedWithHover && (
-          // Necessary since the separation between the button and the section
-          // triggers the onMouseLeave event
-          <div
-            aria-hidden="true"
-            class={{
-              separation: true,
-              [`separation--y separation--y-${yAlignMapping}`]:
-                hasVerticalPosition,
-              [`separation--x separation--x-${xAlignMapping}`]:
-                !hasVerticalPosition
-            }}
-            part="separation"
-          ></div>
-        )}
-
         <ch-window
           part="window"
           exportparts="window:section,mask,header,footer"
@@ -413,6 +395,9 @@ export class ChDropDown implements ChComponent {
           showFooter={this.showFooter}
           showHeader={this.showHeader}
           showMain={false}
+          // Necessary since the separation between the button and the section
+          // triggers the onMouseLeave event
+          showSeparation={this.expandBehavior === "ClickOrHover"}
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >

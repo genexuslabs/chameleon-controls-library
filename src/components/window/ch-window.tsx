@@ -122,6 +122,12 @@ export class ChWindow {
    */
   @Prop() readonly showMain: boolean = true;
 
+  /**
+   * This attribute lets you specify if a div between the container and the window
+   * space.
+   */
+  @Prop() readonly showSeparation: boolean = false;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -331,6 +337,11 @@ export class ChWindow {
   }
 
   render() {
+    const separationY =
+      this.yAlign === "outside-start" || this.yAlign === "outside-end";
+    const separationX =
+      this.xAlign === "outside-start" || this.xAlign === "outside-end";
+
     return (
       <Host
         style={
@@ -372,6 +383,18 @@ export class ChWindow {
               </footer>
             )}
           </section>
+
+          {this.showSeparation && (
+            <div
+              class={{
+                separation: true,
+                "separation--x": separationX && !separationY,
+                "separation--y": separationY && !separationX,
+                "separation--both": separationX && separationY
+              }}
+              part="separation"
+            ></div>
+          )}
         </div>
       </Host>
     );

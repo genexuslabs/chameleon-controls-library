@@ -1138,6 +1138,18 @@
             }, 15); // Resolves after 15 ms
           });
 
+        let randomAccept = true;
+
+        testTreeX.checkDroppableZoneCallback = () =>
+          new Promise((resolve, reject) => {
+            const accept = randomAccept;
+            // randomAccept = !randomAccept;
+
+            setTimeout(() => {
+              resolve(randomAccept);
+            }, 500); // Resolves after 500 ms
+          });
+
         /**
          * @typedef TreeXItemModel
          * @type {object}

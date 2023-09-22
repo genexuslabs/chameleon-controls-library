@@ -13,7 +13,7 @@ import {
 } from "@stencil/core";
 import {
   TreeXItemDragStartInfo,
-  TreeXItemDropInfo,
+  TreeXLines,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
@@ -88,6 +88,12 @@ export class ChTreeXListItem {
       treeItem.checked = newValue;
     });
   }
+
+  /**
+   * Set this attribute if you want to set a custom render for the control, by
+   * passing a slot.
+   */
+  @Prop() readonly customRender: boolean = false;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -183,6 +189,12 @@ export class ChTreeXListItem {
   @Prop({ mutable: true }) indeterminate = false;
 
   /**
+   * This attribute represents additional info for the control that is included
+   * when dragging the item.
+   */
+  @Prop() readonly metadata: string;
+
+  /**
    * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
    */
   @Prop() readonly rightImgSrc: string;
@@ -208,9 +220,9 @@ export class ChTreeXListItem {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines = true;
+  @Prop({ mutable: true }) showLines: TreeXLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: boolean) {
+  handleShowLinesChange(newShowLines: TreeXLines) {
     if (newShowLines && this.lastItem) {
       this.setResizeObserver();
     } else {
@@ -243,11 +255,6 @@ export class ChTreeXListItem {
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
-
-  /**
-   * Fired when an element commits to drop in the control.
-   */
-  @Event() itemDrop: EventEmitter<TreeXItemDropInfo>;
 
   /**
    * Fired when the lazy control is expanded an its content must be loaded.
@@ -507,6 +514,7 @@ export class ChTreeXListItem {
       goToReference: false,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
@@ -533,6 +541,7 @@ export class ChTreeXListItem {
       goToReference: false,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: selected
     });
@@ -546,6 +555,7 @@ export class ChTreeXListItem {
       goToReference: goToReference,
       id: this.el.id,
       itemRef: this.el,
+      metadata: this.metadata,
       parentId: this.el.parentElement.parentElement.id,
       selected: true
     });
@@ -628,17 +638,15 @@ export class ChTreeXListItem {
   );
 
   private handleDragStart = (event: DragEvent) => {
-    event.stopPropagation();
-
     // Disallow drag when editing the caption
     if (this.editing) {
       event.preventDefault();
       return;
     }
 
+    // Remove drag image
     event.dataTransfer.setDragImage(resetDragImage, 0, 0);
-
-    // this.el.style.cursor = "move";
+    event.dataTransfer.effectAllowed = "move";
 
     this.dragState = "start";
     this.itemDragStart.emit({
@@ -655,14 +663,8 @@ export class ChTreeXListItem {
     this.itemDragEnd.emit();
   };
 
-  private handleDrop = (event: DragEvent) => {
-    event.stopPropagation();
-
+  private handleDrop = () => {
     this.dragState = "none";
-    this.itemDrop.emit({
-      dropItemId: this.el.id,
-      dataTransfer: event.dataTransfer
-    });
   };
 
   componentWillLoad() {
@@ -716,6 +718,9 @@ export class ChTreeXListItem {
 
     const acceptDrop = !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
+    const showAllLines = this.showLines === "all" && this.level !== 0;
+    const showLastLine =
+      this.showLines === "last" && this.level !== 0 && this.lastItem;
 
     return (
       <Host
@@ -726,7 +731,7 @@ export class ChTreeXListItem {
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
           [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
             this.dragState !== "none" && this.dragState !== "start",
-          [TREE_ITEM_TAG_NAME + "--accept-drop"]: acceptDrop
+          [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}
         // Drag and drop
@@ -795,41 +800,55 @@ export class ChTreeXListItem {
             ></ch-checkbox>
           )}
 
-          <div
-            class={{
-              action: true,
-              "readonly-mode": !this.editing
-            }}
-            onDblClick={!this.leaf ? this.handleActionDblClick : null}
-          >
-            {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
+          {this.customRender ? (
+            <slot name="custom-content" />
+          ) : (
+            [
+              <div
+                class={{
+                  action: true,
+                  "readonly-mode": !this.editing
+                }}
+                part={`action ${!this.editing ? "readonly-mode" : ""}`}
+                onDblClick={
+                  !this.leaf && !this.editing ? this.handleActionDblClick : null
+                }
+              >
+                {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 
-            {this.editing ? (
-              <input
-                class="edit-name"
-                part="edit-name"
-                disabled={this.disabled}
-                type="text"
-                value={this.caption}
-                onBlur={this.removeEditMode(false)}
-                onKeyDown={this.checkIfShouldRemoveEditMode}
-                ref={el => (this.inputRef = el)}
-              />
-            ) : (
-              this.caption
-            )}
+                {this.editing ? (
+                  <input
+                    class="edit-name"
+                    part="edit-name"
+                    disabled={this.disabled}
+                    type="text"
+                    value={this.caption}
+                    onBlur={this.removeEditMode(false)}
+                    onKeyDown={this.checkIfShouldRemoveEditMode}
+                    ref={el => (this.inputRef = el)}
+                  />
+                ) : (
+                  this.caption
+                )}
 
-            {this.rightImgSrc && this.renderImg("right-img", this.rightImgSrc)}
-          </div>
+                {this.rightImgSrc &&
+                  this.renderImg("right-img", this.rightImgSrc)}
+              </div>,
 
-          {this.showDownloadingSpinner && !this.leaf && this.downloading && (
-            <div class="downloading" part="downloading"></div>
+              this.showDownloadingSpinner && !this.leaf && this.downloading && (
+                <div class="downloading" part="downloading"></div>
+              )
+            ]
           )}
 
-          {this.showLines && this.level !== 0 && (
+          {(showAllLines || showLastLine) && (
             <div
-              class={{ "dashed-line": true, "last-dashed-line": this.lastItem }}
-              part={`dashed-line${this.lastItem ? " last-dashed-line" : ""}`}
+              class={{
+                "dashed-line": true,
+                "last-all-line": showAllLines && this.lastItem,
+                "last-line": showLastLine
+              }}
+              part={`dashed-line${this.lastItem ? " last-all-line" : ""}`}
             ></div>
           )}
         </button>

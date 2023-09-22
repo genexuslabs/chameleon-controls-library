@@ -54,6 +54,14 @@ export class ChTestTreeX {
   @State() waitDropProcessing = false;
 
   /**
+   * Callback that is executed when an element tries to drop in another item of
+   * the tree. Returns whether the drop is valid.
+   */
+  @Prop() readonly checkDroppableZoneCallback: (
+    dropInformation: TreeXDataTransferInfo
+  ) => Promise<boolean>;
+
+  /**
    * Callback that is executed when a list of items request to be dropped into
    * another item.
    */
@@ -297,6 +305,28 @@ export class ChTestTreeX {
     });
   }
 
+  private handleDroppableZoneEnter = (
+    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+  ) => {
+    const dropInformation = event.detail;
+
+    if (!this.checkDroppableZoneCallback) {
+      return;
+    }
+
+    const requestTimestamp = new Date().getTime();
+    const promise = this.checkDroppableZoneCallback(dropInformation);
+
+    promise.then(validDrop => {
+      this.treeRef.updateValidDroppableZone(
+        requestTimestamp,
+        dropInformation.newContainer.id,
+        dropInformation.draggedItems,
+        validDrop
+      );
+    });
+  };
+
   private handleSelectedItemsChange = (
     event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
@@ -510,9 +540,10 @@ export class ChTestTreeX {
           multiSelection={this.multiSelection}
           showLines={this.showLines}
           waitDropProcessing={this.waitDropProcessing}
-          onSelectedItemsChange={this.handleSelectedItemsChange}
+          onDroppableZoneEnter={this.handleDroppableZoneEnter}
           onExpandedItemChange={this.handleExpandedItemChange}
           onItemsDropped={this.handleItemsDropped}
+          onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
           <ch-tree-x-list>

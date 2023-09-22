@@ -50,6 +50,15 @@ ch-tree-x {
   );
   pointer-events: none;
   z-index: 1; // Necessary to show the element above the expandable buttons
+  animation: ch-tree-x-drag-info-fade-in 10ms;
+}
+
+// Wait until the custom var values are updated to avoid flickering
+@keyframes ch-tree-x-drag-info-fade-in {
+  0%,
+  100% {
+    opacity: 0;
+  }
 }
 
 html[dir="rtl"] .ch-tree-x-drag-info {

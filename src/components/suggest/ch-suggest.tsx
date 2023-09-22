@@ -279,6 +279,7 @@ INDEX:
    */
   private handleInput = (e: InputEvent) => {
     const inputValue = (e.target as HTMLInputElement).value;
+    this.caption = inputValue;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }

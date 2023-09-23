@@ -25,6 +25,7 @@ import {
 import { mouseEventModifierKey } from "../common/helpers";
 import { scrollToEdge } from "../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../common/types";
+import { ChTreeXListItemCustomEvent } from "../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_LIST_TAG_NAME = "ch-tree-x-list";
@@ -362,13 +363,24 @@ export class ChTreeX {
   }
 
   @Listen("itemDragStart")
-  handleItemDragStart(event: CustomEvent<TreeXItemDragStartInfo>) {
+  handleItemDragStart(
+    event: ChTreeXListItemCustomEvent<TreeXItemDragStartInfo>
+  ) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
     });
 
-    this.currentDraggedItem = event.target as HTMLChTreeXListItemElement;
-    this.updateDragInfo(event.detail);
+    this.currentDraggedItem = event.target;
+    const allItemsCanBeDragged = this.checkDragValidityAndUpdateDragInfo(
+      event.detail
+    );
+
+    if (!allItemsCanBeDragged) {
+      // This effect disables drop interactions in all page elements, so there
+      // is no need to capture and prevent the drop event in the window
+      event.detail.dragEvent.dataTransfer.effectAllowed = "none";
+      return;
+    }
 
     this.draggingInTree = true;
 
@@ -401,12 +413,17 @@ export class ChTreeX {
   private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
     const containerTarget = event.target as HTMLChTreeXListItemElement;
 
-    // When dragging in the same tree, don't mark droppable zones if they are
-    // the dragged items or their direct parents
+    // Do not show drop zones if:
+    //   - The effect does not allow it.
+    //   - The drop is disabled in the container target.
+    //   - When dragging in the same tree, don't mark droppable zones if they are
+    //     the dragged items or their direct parents.
     if (
-      this.draggingInTree &&
-      (this.draggedIds.includes(containerTarget.id) ||
-        this.draggedParentIds.includes(containerTarget.id))
+      event.dataTransfer.effectAllowed === "none" ||
+      !containerTarget.dropEnabled ||
+      (this.draggingInTree &&
+        (this.draggedIds.includes(containerTarget.id) ||
+          this.draggedParentIds.includes(containerTarget.id)))
     ) {
       return "invalid";
     }
@@ -469,11 +486,15 @@ export class ChTreeX {
   }
 
   /**
-   * Update the dataTransfer in the drag event to store the ids and metadata of
-   * the dragged items. Also it updates the visual information of the dragged
+   * First, it check if all items can be dragged. If so, it updates the
+   * dataTransfer in the drag event to store the ids and metadata of the
+   * dragged items. Also it updates the visual information of the dragged
    * items.
+   * @returns If all selected items can be dragged.
    */
-  private updateDragInfo(dragInfo: TreeXItemDragStartInfo) {
+  private checkDragValidityAndUpdateDragInfo(
+    dragInfo: TreeXItemDragStartInfo
+  ): boolean {
     const draggedElement = dragInfo.elem;
 
     const isDraggingSelectedItems = this.selectedItemsInfo.has(
@@ -482,13 +503,19 @@ export class ChTreeX {
     this.draggingSelectedItems = isDraggingSelectedItems;
 
     let dataTransferInfo: GxDataTransferInfo[] = [];
+    let dragIsEnabledForAllItems: boolean;
 
     if (isDraggingSelectedItems) {
       const selectedItemKeys = [...this.selectedItemsInfo.keys()];
+      const selectedItemValues = [...this.selectedItemsInfo.values()];
       const selectedItemCount = selectedItemKeys.length;
 
+      dragIsEnabledForAllItems = selectedItemValues.every(
+        el => el.itemRef.dragEnabled
+      );
+
       this.draggedIds = selectedItemKeys;
-      dataTransferInfo = [...this.selectedItemsInfo.values()].map(el => ({
+      dataTransferInfo = selectedItemValues.map(el => ({
         id: el.id,
         metadata: el.metadata
       }));
@@ -498,6 +525,7 @@ export class ChTreeX {
           ? draggedElement.caption
           : selectedItemCount.toString();
     } else {
+      dragIsEnabledForAllItems = draggedElement.dragEnabled;
       dataTransferInfo = [
         { id: draggedElement.id, metadata: draggedElement.metadata }
       ];
@@ -509,7 +537,12 @@ export class ChTreeX {
 
     // Update drag event info
     const data = JSON.stringify(dataTransferInfo);
-    dragInfo.dataTransfer.setData(TEXT_FORMAT, data);
+    dragInfo.dragEvent.dataTransfer.setData(TEXT_FORMAT, data);
+
+    // We must keep the data binding and processing even if there is an item
+    // that can't be dragged, otherwise, other trees or element might behave
+    // unexpected when a dragstart event comes
+    return dragIsEnabledForAllItems;
   }
 
   private fixScrollPositionOnDrag = () => {

@@ -13,6 +13,8 @@ export type TreeXItemModel = {
   checked?: boolean;
   class?: string;
   disabled?: boolean;
+  dragEnabled?: boolean;
+  dropEnabled?: boolean;
   expanded?: boolean;
   lazy?: boolean;
   leaf?: boolean;
@@ -55,7 +57,7 @@ export type TreeXListItemNewCaption = {
 
 export type TreeXItemDragStartInfo = {
   elem: HTMLChTreeXListItemElement;
-  dataTransfer: DataTransfer;
+  dragEvent: DragEvent;
 };
 
 export type TreeXLines = "all" | "last" | "none";

@@ -28,6 +28,8 @@ import {
 } from "../../components";
 import { GxDataTransferInfo } from "../../common/types";
 
+const DEFAULT_DRAG_ENABLED_VALUE = true;
+const DEFAULT_DROP_ENABLED_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -453,6 +455,8 @@ export class ChTestTreeX {
       checked={treeSubModel.checked}
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
+      dragEnabled={treeSubModel.dragEnabled}
+      dropEnabled={treeSubModel.dropEnabled}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
       lazyLoad={treeSubModel.lazy}
@@ -499,6 +503,8 @@ export class ChTestTreeX {
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
+      item.dragEnabled ??= DEFAULT_DRAG_ENABLED_VALUE;
+      item.dropEnabled ??= DEFAULT_DROP_ENABLED_VALUE;
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;

@@ -413,6 +413,13 @@ export class ChTreeX {
   private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
     const containerTarget = event.target as HTMLChTreeXListItemElement;
 
+    const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
+    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    if (droppableZoneState != null) {
+      return droppableZoneState;
+    }
+
     // Do not show drop zones if:
     //   - The effect does not allow it.
     //   - The drop is disabled in the container target.
@@ -425,14 +432,8 @@ export class ChTreeX {
         (this.draggedIds.includes(containerTarget.id) ||
           this.draggedParentIds.includes(containerTarget.id)))
     ) {
+      this.validDroppableZoneCache.set(cacheKey, "invalid");
       return "invalid";
-    }
-
-    const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
-    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
-
-    if (droppableZoneState != null) {
-      return droppableZoneState;
     }
 
     this.validDroppableZoneCache.set(cacheKey, "checking");

@@ -188,7 +188,7 @@ export class ChTreeXListItem {
   /**
    * Level in the tree at which the item is placed.
    */
-  @Prop({ mutable: true }) level = 0;
+  @Prop() readonly level: number = 0;
 
   /**
    * `true` if the checkbox's value is indeterminate.
@@ -673,9 +673,6 @@ export class ChTreeXListItem {
 
   componentWillLoad() {
     const parentElement = this.el.parentElement as HTMLChTreeXListElement;
-
-    // Set item level
-    this.level = parentElement.level;
 
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);

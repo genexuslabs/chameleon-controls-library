@@ -12,23 +12,13 @@ export class ChTreeListX {
   /**
    * Level in the tree at which the control is placed.
    */
-  @Prop({ mutable: true }) level = 0;
+  @Prop() readonly level: number = 0;
 
   /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
   @Prop() readonly showLines: TreeXLines = "none";
-
-  componentWillLoad() {
-    // Set tree level
-    const parentElement = this.el.parentElement as
-      | HTMLChTreeXElement
-      | HTMLChTreeXListItemElement;
-
-    // Set item level
-    this.level = parentElement.level + 1;
-  }
 
   render() {
     return (

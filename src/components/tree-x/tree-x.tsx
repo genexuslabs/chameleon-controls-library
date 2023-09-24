@@ -131,11 +131,6 @@ export class ChTreeX {
   @State() draggingInTree = false;
 
   /**
-   * Level in the tree at which the control is placed.
-   */
-  @Prop() readonly level: number = -1;
-
-  /**
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;

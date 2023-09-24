@@ -449,7 +449,8 @@ export class ChTestTreeX {
 
   private renderSubModel = (
     treeSubModel: TreeXItemModel,
-    lastItem: boolean
+    lastItem: boolean,
+    level: number
   ) => (
     <ch-tree-x-list-item
       id={treeSubModel.id}
@@ -466,6 +467,7 @@ export class ChTestTreeX {
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
+      level={level}
       metadata={treeSubModel.metadata}
       rightImgSrc={treeSubModel.rightImgSrc}
       selected={treeSubModel.selected}
@@ -476,11 +478,16 @@ export class ChTestTreeX {
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
         treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list slot="tree" showLines={this.showLines}>
+          <ch-tree-x-list
+            slot="tree"
+            showLines={this.showLines}
+            level={level + 1}
+          >
             {treeSubModel.items.map((subModel, index) =>
               this.renderSubModel(
                 subModel,
-                this.showLines && index === treeSubModel.items.length - 1
+                this.showLines && index === treeSubModel.items.length - 1,
+                level + 1
               )
             )}
           </ch-tree-x-list>
@@ -561,11 +568,12 @@ export class ChTestTreeX {
           onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
-          <ch-tree-x-list showLines={this.showLines}>
+          <ch-tree-x-list showLines={this.showLines} level={0}>
             {this.treeModel.items.map((subModel, index) =>
               this.renderSubModel(
                 subModel,
-                this.showLines && index === this.treeModel.items.length - 1
+                this.showLines && index === this.treeModel.items.length - 1,
+                0
               )
             )}
           </ch-tree-x-list>

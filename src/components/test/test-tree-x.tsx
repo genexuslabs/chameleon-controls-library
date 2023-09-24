@@ -478,11 +478,7 @@ export class ChTestTreeX {
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
         treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list
-            slot="tree"
-            showLines={this.showLines}
-            level={level + 1}
-          >
+          <ch-tree-x-list slot="tree" level={level + 1}>
             {treeSubModel.items.map((subModel, index) =>
               this.renderSubModel(
                 subModel,
@@ -568,7 +564,7 @@ export class ChTestTreeX {
           onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
-          <ch-tree-x-list showLines={this.showLines} level={0}>
+          <ch-tree-x-list level={0}>
             {this.treeModel.items.map((subModel, index) =>
               this.renderSubModel(
                 subModel,

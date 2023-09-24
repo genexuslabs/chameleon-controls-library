@@ -1,5 +1,4 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
-import { TreeXLines } from "../tree-x/types";
 
 @Component({
   tag: "ch-tree-x-list",
@@ -13,12 +12,6 @@ export class ChTreeListX {
    * Level in the tree at which the control is placed.
    */
   @Prop() readonly level: number = 0;
-
-  /**
-   * `true` to display the relation between tree items and tree lists using
-   * lines.
-   */
-  @Prop() readonly showLines: TreeXLines = "none";
 
   render() {
     return (

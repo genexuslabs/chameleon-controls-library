@@ -104,7 +104,7 @@ export class ChTestTreeX {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeXLines = "none";
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -447,7 +447,10 @@ export class ChTestTreeX {
       itemUIModelExtended.parentItem = newParentUIModel;
     };
 
-  private renderSubModel = (treeSubModel: TreeXItemModel) => (
+  private renderSubModel = (
+    treeSubModel: TreeXItemModel,
+    lastItem: boolean
+  ) => (
     <ch-tree-x-list-item
       id={treeSubModel.id}
       caption={treeSubModel.caption}
@@ -459,6 +462,7 @@ export class ChTestTreeX {
       dropEnabled={treeSubModel.dropEnabled}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
+      lastItem={lastItem}
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
@@ -466,13 +470,19 @@ export class ChTestTreeX {
       rightImgSrc={treeSubModel.rightImgSrc}
       selected={treeSubModel.selected}
       showExpandableButton={treeSubModel.showExpandableButton}
+      showLines={this.showLines}
       toggleCheckboxes={treeSubModel.toggleCheckboxes}
     >
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
         treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list slot="tree">
-            {treeSubModel.items.map(this.renderSubModel)}
+          <ch-tree-x-list slot="tree" showLines={this.showLines}>
+            {treeSubModel.items.map((subModel, index) =>
+              this.renderSubModel(
+                subModel,
+                this.showLines && index === treeSubModel.items.length - 1
+              )
+            )}
           </ch-tree-x-list>
         )}
     </ch-tree-x-list-item>
@@ -544,7 +554,6 @@ export class ChTestTreeX {
       <Host>
         <ch-tree-x
           multiSelection={this.multiSelection}
-          showLines={this.showLines}
           waitDropProcessing={this.waitDropProcessing}
           onDroppableZoneEnter={this.handleDroppableZoneEnter}
           onExpandedItemChange={this.handleExpandedItemChange}
@@ -552,8 +561,13 @@ export class ChTestTreeX {
           onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
-          <ch-tree-x-list>
-            {this.treeModel.items.map(this.renderSubModel)}
+          <ch-tree-x-list showLines={this.showLines}>
+            {this.treeModel.items.map((subModel, index) =>
+              this.renderSubModel(
+                subModel,
+                this.showLines && index === this.treeModel.items.length - 1
+              )
+            )}
           </ch-tree-x-list>
         </ch-tree-x>
 

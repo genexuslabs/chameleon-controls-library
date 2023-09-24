@@ -36,11 +36,6 @@ const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
-/**
- * This variable specifies a reference to the main ch-tree-x element
- */
-let mainTreeRef: HTMLChTreeXElement;
-
 @Component({
   tag: "ch-tree-x-list-item",
   styleUrl: "tree-x-list-item.scss",
@@ -232,7 +227,7 @@ export class ChTreeXListItem {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeXLines = "none";
   @Watch("showLines")
   handleShowLinesChange(newShowLines: TreeXLines) {
     if (newShowLines && this.lastItem) {
@@ -240,10 +235,6 @@ export class ChTreeXListItem {
     } else {
       this.disconnectObserver();
     }
-
-    // @todo BUG: showLines does not update in the mainTreeRef, so we have to
-    // sync the ref with the new value
-    mainTreeRef.showLines = newShowLines;
   }
 
   /**
@@ -685,12 +676,6 @@ export class ChTreeXListItem {
 
     // Set item level
     this.level = parentElement.level;
-
-    if (!mainTreeRef) {
-      mainTreeRef = parentElement.parentElement as HTMLChTreeXElement;
-    }
-
-    this.showLines = mainTreeRef.showLines;
 
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);

@@ -8,7 +8,6 @@ import {
   Method,
   Prop,
   State,
-  Watch,
   h
 } from "@stencil/core";
 
@@ -18,7 +17,6 @@ import {
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
-  TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
@@ -28,12 +26,9 @@ import { GxDataTransferInfo } from "../../common/types";
 import { ChTreeXListItemCustomEvent } from "../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
-const TREE_LIST_TAG_NAME = "ch-tree-x-list";
 const TREE_TAG_NAME = "ch-tree-x";
 
 // Selectors
-const TREE_LIST_AND_ITEM_SELECTOR =
-  TREE_LIST_TAG_NAME + "," + TREE_ITEM_TAG_NAME;
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
 
 const TEXT_FORMAT = "text/plain";
@@ -156,22 +151,6 @@ export class ChTreeX {
    * tree.
    */
   @Prop() readonly scrollToEdgeOnDrag: boolean = true;
-
-  /**
-   * `true` to display the relation between tree items and tree lists using
-   * lines.
-   */
-  @Prop() readonly showLines: TreeXLines = "none";
-  @Watch("showLines")
-  handleShowLinesChange(newShowLines: TreeXLines) {
-    const treeItems = this.el.querySelectorAll(
-      TREE_LIST_AND_ITEM_SELECTOR
-    ) as NodeListOf<HTMLChTreeXListElement | HTMLChTreeXListItemElement>;
-
-    treeItems.forEach(item => {
-      item.showLines = newShowLines;
-    });
-  }
 
   /**
    * This property lets you specify if the tree is waiting to process the drop

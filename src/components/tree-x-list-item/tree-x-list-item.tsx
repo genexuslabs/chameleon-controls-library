@@ -653,6 +653,7 @@ export class ChTreeXListItem {
     // Disallow drag when editing the caption
     if (this.editing) {
       event.preventDefault();
+      event.stopPropagation();
       return;
     }
 

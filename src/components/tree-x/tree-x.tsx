@@ -29,6 +29,7 @@ import { ChTreeXListItemCustomEvent } from "../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_LIST_TAG_NAME = "ch-tree-x-list";
+const TREE_TAG_NAME = "ch-tree-x";
 
 // Selectors
 const TREE_LIST_AND_ITEM_SELECTOR =
@@ -462,6 +463,8 @@ export class ChTreeX {
     event.preventDefault();
     this.lastDragEvent = event;
 
+    this.updateDropEffect(event);
+
     if (!this.needForRAF) {
       return;
     }
@@ -480,6 +483,25 @@ export class ChTreeX {
       );
     });
   };
+
+  private updateDropEffect(event: DragEvent) {
+    const itemTarget = event.target as HTMLElement;
+
+    // Check if it is a valid item
+    if (
+      itemTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME ||
+      itemTarget.closest(TREE_TAG_NAME) !== this.el
+    ) {
+      return;
+    }
+
+    const cacheKey = getDroppableZoneKey(itemTarget.id, this.draggedItems);
+    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    if (droppableZoneState === "invalid") {
+      event.dataTransfer.dropEffect = "none";
+    }
+  }
 
   private resetVariables() {
     this.draggedIds = [];

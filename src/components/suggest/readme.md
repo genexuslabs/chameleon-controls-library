@@ -10,7 +10,7 @@
 | Property        | Attribute        | Description                                                                                                                                                                                        | Type                 | Default     |
 | --------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- | ----------- |
 | `cursorEnd`     | `cursor-end`     | If true, it will position the cursor at the end when the input is focused.                                                                                                                         | `boolean`            | `false`     |
-| `debounce`      | `debounce`       | The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).                                                              | `number`             | `500`       |
+| `debounce`      | `debounce`       | The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).                                                              | `number`             | `1500`      |
 | `label`         | `label`          | The label                                                                                                                                                                                          | `string`             | `undefined` |
 | `labelPosition` | `label-position` | The label position                                                                                                                                                                                 | `"above" \| "start"` | `"start"`   |
 | `showHeader`    | `show-header`    | Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.                                                                                   | `boolean`            | `false`     |
@@ -23,7 +23,7 @@
 
 | Event          | Description                                                                                     | Type                  |
 | -------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
-| `inputChanged` | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>` |
+| `valueChanged` | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>` |
 
 
 ## Methods

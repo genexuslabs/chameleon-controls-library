@@ -42,11 +42,6 @@ INDEX:
   @Prop() readonly iconSrc: string;
 
   /**
-   * The description
-   */
-  @Prop() readonly description: string;
-
-  /**
    * The item value
    */
   @Prop() readonly value;
@@ -82,8 +77,7 @@ INDEX:
   private handleClick = () => {
     this.itemSelected.emit({
       value: this.value || this.el.innerText,
-      caption: this.el.innerText,
-      description: this.description
+      caption: this.el.innerText
     });
   };
 
@@ -106,9 +100,6 @@ INDEX:
           <slot name="icon"></slot>
           <div class="content-wrapper" part="content-wrapper">
             <slot></slot>
-            {this.description && (
-              <span part="description">{this.description}</span>
-            )}
           </div>
         </button>
       </Host>

@@ -314,7 +314,6 @@ INDEX:
 
   private processInputEvent = (inputValue: string) => {
     this.inputChanged.emit(inputValue);
-    this.value = undefined;
     this.evaluateWindowMaxHeight();
   };
 

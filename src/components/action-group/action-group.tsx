@@ -186,7 +186,7 @@ export class ChActionGroup {
       this.updateDisplayedActionInFrame
     );
 
-    this.actionsContainerWatcher.observe(this.el);
+    this.actionsContainerWatcher.observe(this.actionsContainer);
   }
 
   private disconnectActionsObserver() {

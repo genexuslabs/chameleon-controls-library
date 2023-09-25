@@ -10,8 +10,10 @@ import {
   Method
 } from "@stencil/core";
 import {
-  TreeXItemDropInfo,
+  TreeXDataTransferInfo,
   TreeXItemModel,
+  TreeXLines,
+  TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo,
   TreeXModel
@@ -24,8 +26,10 @@ import {
   ChTreeXCustomEvent,
   ChTreeXListItemCustomEvent
 } from "../../components";
+import { GxDataTransferInfo } from "../../common/types";
 
 const DEFAULT_EXPANDED_VALUE = false;
+const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_SELECTED_VALUE = false;
 
@@ -50,13 +54,20 @@ export class ChTestTreeX {
   @State() waitDropProcessing = false;
 
   /**
+   * Callback that is executed when an element tries to drop in another item of
+   * the tree. Returns whether the drop is valid.
+   */
+  @Prop() readonly checkDroppableZoneCallback: (
+    dropInformation: TreeXDataTransferInfo
+  ) => Promise<boolean>;
+
+  /**
    * Callback that is executed when a list of items request to be dropped into
    * another item.
    */
   @Prop() readonly dropItemsCallback: (
-    dropItemId: string,
-    draggedIds: string[]
-  ) => Promise<TreeXItemModel[]>;
+    dataTransferInfo: TreeXDataTransferInfo
+  ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
 
   /**
    * This property lets you define the model of the ch-tree-x control.
@@ -88,10 +99,10 @@ export class ChTestTreeX {
   @Prop({ mutable: true }) multiSelection = false;
 
   /**
-   * Set this attribute if you want to display the relation between tree items and tree lists using
+   * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines = true;
+  @Prop({ mutable: true }) showLines: TreeXLines = "none";
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -129,59 +140,90 @@ export class ChTestTreeX {
     this.treeRef.scrollIntoVisible(treeItemId);
   }
 
-  @Listen("itemsDropped")
-  handleDrop(event: CustomEvent<TreeXItemDropInfo>) {
-    const detail = event.detail;
-    const dropItemId = detail.dropItemId;
-
-    // Check if the parent exists in the UI Model
-    if (!this.flattenedTreeModel.get(dropItemId)) {
-      return;
+  /**
+   * This method is used to toggle a tree item by the tree item id/ids.
+   *
+   * @param treeItemIds An array id the tree items to be toggled.
+   * @param expand A boolean indicating that the tree item should be expanded or collapsed. (optional)
+   * @returns The modified items after the method was called.
+   */
+  @Method()
+  async toggleItems(
+    treeItemIds: string[],
+    expand?: boolean
+  ): Promise<TreeXListItemExpandedInfo[]> {
+    if (!treeItemIds) {
+      return [];
     }
 
-    const data = detail.dataTransfer.getData("text/plain");
-    const draggedIds = data?.split(",") ?? [];
+    const modifiedTreeItems: TreeXListItemExpandedInfo[] = [];
 
-    if (draggedIds.length === 0 || !this.dropItemsCallback) {
-      return;
-    }
+    treeItemIds.forEach(treeItemId => {
+      const itemInfo = this.flattenedTreeModel.get(treeItemId).item;
 
-    const promise = this.dropItemsCallback(dropItemId, draggedIds);
-    this.waitDropProcessing = true;
+      if (itemInfo) {
+        itemInfo.expanded = expand ?? !itemInfo.expanded;
 
-    promise.then(acceptDrop => {
-      this.waitDropProcessing = false;
+        modifiedTreeItems.push({
+          id: itemInfo.id,
+          expanded: itemInfo.expanded
+        });
+      }
+    });
+    // Force re-render
+    forceUpdate(this);
 
-      if (!acceptDrop) {
-        return;
+    return modifiedTreeItems;
+  }
+
+  /**
+   * Given a subset of item's properties, it updates all item UI models.
+   */
+  @Method()
+  async updateAllItemsProperties(properties: {
+    expanded?: boolean;
+    checked?: boolean;
+  }) {
+    [...this.flattenedTreeModel.values()].forEach(itemUIModel => {
+      if (properties.expanded != null) {
+        itemUIModel.item.expanded = properties.expanded;
       }
 
-      const newParentItem = this.flattenedTreeModel.get(dropItemId).item;
+      if (properties.checked != null) {
+        itemUIModel.item.checked = properties.checked;
+        itemUIModel.item.indeterminate = false;
+      }
+    });
 
-      // Add the UI models to the new container and remove the UI models from
-      // the old containers
-      draggedIds.forEach(itemId => {
-        const itemUIModelExtended = this.flattenedTreeModel.get(itemId);
-        const item = itemUIModelExtended.item;
-        const oldParentItem = itemUIModelExtended.parentItem;
+    forceUpdate(this);
+  }
 
-        // Remove the UI model from the previous parent
-        oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
+  /**
+   * Given a item list and the properties to update, it updates the properties
+   * of the items in the list.
+   */
+  @Method()
+  async updateItemsProperties(items: string[], properties: TreeXItemModel) {
+    items.forEach(item => {
+      const itemUIModel = this.flattenedTreeModel.get(item);
+      this.updateItemProperty(itemUIModel, properties);
+    });
 
-        // Add the UI Model to the new parent
-        newParentItem.items.push(item);
+    forceUpdate(this);
+  }
 
-        // Reference the new parent in the item
-        itemUIModelExtended.parentItem = newParentItem;
-      });
+  private updateItemProperty(
+    itemUIModel: TreeXItemModelExtended | undefined,
+    properties: TreeXItemModel
+  ) {
+    if (!itemUIModel) {
+      return;
+    }
 
-      this.sortItems(newParentItem.items);
+    const itemInfo = itemUIModel.item;
 
-      // Open the item to visualize the new subitems
-      newParentItem.expanded = true;
-
-      // There is no need to force and update, since the waitDropProcessing
-      // prop was modified
+    Object.keys(properties).forEach(propertyName => {
+      itemInfo[propertyName] = properties[propertyName];
     });
   }
 
@@ -263,16 +305,26 @@ export class ChTestTreeX {
     });
   }
 
-  private closeTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"], false);
-  };
+  private handleDroppableZoneEnter = (
+    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+  ) => {
+    const dropInformation = event.detail;
 
-  private openTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"], true);
-  };
+    if (!this.checkDroppableZoneCallback) {
+      return;
+    }
 
-  private toggleTreeNodeHandler = () => {
-    // this.tree.toggleItems(["number-1-1-2"]);
+    const requestTimestamp = new Date().getTime();
+    const promise = this.checkDroppableZoneCallback(dropInformation);
+
+    promise.then(validDrop => {
+      this.treeRef.updateValidDroppableZone(
+        requestTimestamp,
+        dropInformation.newContainer.id,
+        dropInformation.draggedItems,
+        validDrop
+      );
+    });
   };
 
   private handleSelectedItemsChange = (
@@ -307,13 +359,91 @@ export class ChTestTreeX {
     });
   };
 
-  private getCheckedItemsHandler = async () => {
-    // const checked = await this.tree.getCheckedItems();
+  private handleExpandedItemChange = (
+    event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>
+  ) => {
+    const detail = event.detail;
+    const itemInfo = this.flattenedTreeModel.get(detail.id).item;
+    itemInfo.expanded = detail.expanded;
   };
 
-  // private deleteNodeHandler = () => {
-  //   this.treeItemsModel = [];
-  // };
+  private handleItemsDropped = (
+    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+  ) => {
+    const dataTransferInfo = event.detail;
+    const newContainer = dataTransferInfo.newContainer;
+    const newParentId = newContainer.id;
+
+    // Check if the parent exists in the UI Model
+    if (!this.flattenedTreeModel.get(newParentId)) {
+      return;
+    }
+
+    const draggedItems: GxDataTransferInfo[] = dataTransferInfo.draggedItems;
+
+    if (draggedItems.length === 0 || !this.dropItemsCallback) {
+      return;
+    }
+
+    const promise = this.dropItemsCallback(dataTransferInfo);
+    this.waitDropProcessing = true;
+
+    promise.then(response => {
+      this.waitDropProcessing = false;
+
+      if (!response.acceptDrop) {
+        return;
+      }
+
+      const newParentUIModel = this.flattenedTreeModel.get(newParentId).item;
+
+      // Only move the items to the new parent, keeping the state
+      if (dataTransferInfo.dropInTheSameTree) {
+        // Add the UI models to the new container and remove the UI models from
+        // the old containers
+        draggedItems.forEach(this.moveItemToNewParent(newParentUIModel));
+      }
+      // Add the new items
+      else {
+        if (response.items == null) {
+          return;
+        }
+
+        // Add new items to the parent
+        newParentUIModel.items.push(...response.items);
+
+        // Flatten the new UI models
+        response.items.forEach(this.flattenItemUIModel(newParentUIModel));
+      }
+
+      this.sortItems(newParentUIModel.items);
+
+      // Open the item to visualize the new subitems
+      newParentUIModel.expanded = true;
+
+      // There is no need to force and update, since the waitDropProcessing
+      // prop was modified
+    });
+  };
+
+  private moveItemToNewParent =
+    (newParentUIModel: TreeXItemModel) =>
+    (dataTransferInfo: GxDataTransferInfo) => {
+      const itemUIModelExtended = this.flattenedTreeModel.get(
+        dataTransferInfo.id
+      );
+      const item = itemUIModelExtended.item;
+      const oldParentItem = itemUIModelExtended.parentItem;
+
+      // Remove the UI model from the previous parent
+      oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
+
+      // Add the UI Model to the new parent
+      newParentUIModel.items.push(item);
+
+      // Reference the new parent in the item
+      itemUIModelExtended.parentItem = newParentUIModel;
+    };
 
   private renderSubModel = (treeSubModel: TreeXItemModel) => (
     <ch-tree-x-list-item
@@ -324,9 +454,11 @@ export class ChTestTreeX {
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
       expanded={treeSubModel.expanded}
+      indeterminate={treeSubModel.indeterminate}
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
+      metadata={treeSubModel.metadata}
       rightImgSrc={treeSubModel.rightImgSrc}
       selected={treeSubModel.selected}
       showExpandableButton={treeSubModel.showExpandableButton}
@@ -355,15 +487,20 @@ export class ChTestTreeX {
 
     this.sortItems(items);
 
-    items.forEach(item => {
+    items.forEach(this.flattenItemUIModel(model));
+  }
+
+  private flattenItemUIModel =
+    (parentModel: TreeXModel | TreeXItemModel) => (item: TreeXItemModel) => {
       this.flattenedTreeModel.set(item.id, {
-        parentItem: model,
+        parentItem: parentModel,
         item: item
       });
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
+      item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;
       item.selected ??= DEFAULT_SELECTED_VALUE;
 
@@ -376,8 +513,7 @@ export class ChTestTreeX {
       }
 
       this.flattenSubModel(item);
-    });
-  }
+    };
 
   private sortItems(items: TreeXItemModel[]) {
     // Ensure that items are sorted
@@ -393,17 +529,6 @@ export class ChTestTreeX {
     this.flattenSubModel(this.treeModel);
   }
 
-  private handleMultiSelectionChange = (event: CustomEvent) => {
-    const checked = (event.target as HTMLInputElement).checked;
-
-    this.multiSelection = checked;
-  };
-
-  private handleShowLinesChange = (event: CustomEvent) => {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.showLines = checked;
-  };
-
   componentWillLoad() {
     this.flattenModel();
   }
@@ -411,55 +536,22 @@ export class ChTestTreeX {
   render() {
     return (
       <Host>
-        <div class="test-tree-x-scroll">
-          <ch-tree-x
-            multiSelection={this.multiSelection}
-            showLines={this.showLines}
-            waitDropProcessing={this.waitDropProcessing}
-            onSelectedItemsChange={this.handleSelectedItemsChange}
-            ref={el => (this.treeRef = el)}
-          >
-            <ch-tree-x-list>
-              {this.treeModel.items.map(this.renderSubModel)}
-            </ch-tree-x-list>
-          </ch-tree-x>
-        </div>
+        <ch-tree-x
+          multiSelection={this.multiSelection}
+          showLines={this.showLines}
+          waitDropProcessing={this.waitDropProcessing}
+          onDroppableZoneEnter={this.handleDroppableZoneEnter}
+          onExpandedItemChange={this.handleExpandedItemChange}
+          onItemsDropped={this.handleItemsDropped}
+          onSelectedItemsChange={this.handleSelectedItemsChange}
+          ref={el => (this.treeRef = el)}
+        >
+          <ch-tree-x-list>
+            {this.treeModel.items.map(this.renderSubModel)}
+          </ch-tree-x-list>
+        </ch-tree-x>
 
         <div class="tree-buttons">
-          <button type="button" onClick={this.closeTreeNodeHandler}>
-            Close 1-1-2
-          </button>
-
-          <button type="button" onClick={this.openTreeNodeHandler}>
-            Open 1-1-2
-          </button>
-
-          <button type="button" onClick={this.toggleTreeNodeHandler}>
-            Toggle 1-1-2
-          </button>
-
-          <button type="button" onClick={this.getCheckedItemsHandler}>
-            Get Checked Items
-          </button>
-
-          <ch-checkbox caption="Check / uncheck all"></ch-checkbox>
-
-          <ch-checkbox
-            checkedValue="true"
-            unCheckedValue="false"
-            value={this.multiSelection.toString()}
-            caption="Multi selection"
-            onInput={this.handleMultiSelectionChange}
-          ></ch-checkbox>
-
-          <ch-checkbox
-            checkedValue="true"
-            unCheckedValue="false"
-            value={this.showLines.toString()}
-            caption="Show lines"
-            onInput={this.handleShowLinesChange}
-          ></ch-checkbox>
-
           {/* <button type="button" onClick={this.deleteNodeHandler}>
           Delete Tree
         </button> */}

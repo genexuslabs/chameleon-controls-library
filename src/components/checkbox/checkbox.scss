@@ -1,6 +1,4 @@
 $option-size: min(1em, 20px);
-$option-icon-size: min(0.5em, 10px);
-$option-icon-half-size: min(0.25em, 5px);
 
 $option-checked-background-color: var(--option-checked-color, #ffffff00);
 $option-checked-border-color: var(--option-border-color, #000);
@@ -63,9 +61,11 @@ $space-between-container-and-label: min(0.35em, 7px);
 
 .option {
   position: absolute;
-  inset: calc(50% - #{$option-icon-half-size});
-  width: $option-icon-size;
-  height: $option-icon-size;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  height: 50%;
   background-color: $option-checked-color;
   opacity: 0;
   pointer-events: none;

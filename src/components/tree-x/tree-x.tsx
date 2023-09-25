@@ -13,13 +13,18 @@ import {
 } from "@stencil/core";
 
 import {
+  TreeXDataTransferInfo,
+  TreeXDroppableZoneState,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
-  TreeXItemDropInfo,
+  TreeXLines,
+  TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
+import { scrollToEdge } from "../../common/scroll-to-edge";
+import { GxDataTransferInfo } from "../../common/types";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_LIST_TAG_NAME = "ch-tree-x-list";
@@ -28,6 +33,8 @@ const TREE_LIST_TAG_NAME = "ch-tree-x-list";
 const TREE_LIST_AND_ITEM_SELECTOR =
   TREE_LIST_TAG_NAME + "," + TREE_ITEM_TAG_NAME;
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
+
+const TEXT_FORMAT = "text/plain";
 
 const ARROW_DOWN_KEY = "ArrowDown";
 const ARROW_UP_KEY = "ArrowUp";
@@ -40,6 +47,14 @@ const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
 
 const treeItemIsInEditMode = () =>
   (document.activeElement as HTMLChTreeXListItemElement).editing;
+
+const getDroppableZoneKey = (
+  newContainerId: string,
+  draggedItems: GxDataTransferInfo[]
+) =>
+  `"newContainerId":"${newContainerId}","metadata":"${JSON.stringify(
+    draggedItems
+  )}"`;
 
 const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-x";
 const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-y";
@@ -84,14 +99,24 @@ export class ChTreeX {
     }
   };
 
+  private draggingSelectedItems = false;
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
-  private lastPageX = 0;
-  private lastPageY = 0;
+  private lastDragEvent: MouseEvent;
 
   private openSubTreeTimeout: NodeJS.Timeout;
 
   private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
 
+  /**
+   * Cache to avoid duplicate requests when checking the droppable zone in the
+   * same drag event.
+   */
+  private validDroppableZoneCache: Map<string, TreeXDroppableZoneState> =
+    new Map();
+  private dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
+  private draggedItems: GxDataTransferInfo[];
+
+  // Refs
   private currentDraggedItem: HTMLChTreeXListItemElement;
   private lastOpenSubTreeItem: HTMLChTreeXListItemElement;
 
@@ -104,7 +129,9 @@ export class ChTreeX {
 
   @Element() el: HTMLChTreeXElement;
 
-  @State() draggingItem = false;
+  @State() draggingInTheDocument = false;
+
+  @State() draggingInTree = false;
 
   /**
    * Level in the tree at which the control is placed.
@@ -123,12 +150,18 @@ export class ChTreeX {
   @Prop() readonly openSubTreeCountdown: number = 750;
 
   /**
+   * `true` to scroll in the tree when dragging an item near the edges of the
+   * tree.
+   */
+  @Prop() readonly scrollToEdgeOnDrag: boolean = true;
+
+  /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop() readonly showLines: boolean = false;
+  @Prop() readonly showLines: TreeXLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: boolean) {
+  handleShowLinesChange(newShowLines: TreeXLines) {
     const treeItems = this.el.querySelectorAll(
       TREE_LIST_AND_ITEM_SELECTOR
     ) as NodeListOf<HTMLChTreeXListElement | HTMLChTreeXListItemElement>;
@@ -145,6 +178,17 @@ export class ChTreeX {
   @Prop() readonly waitDropProcessing: boolean = false;
 
   /**
+   * Fired when an element attempts to enter in a droppable zone where the tree
+   * has no information about the validity of the drop.
+   */
+  @Event() droppableZoneEnter: EventEmitter<TreeXDataTransferInfo>;
+
+  /**
+   * Fired when an item is expanded or collapsed.
+   */
+  @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
+
+  /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
@@ -154,7 +198,7 @@ export class ChTreeX {
   /**
    * Fired when the dragged items are dropped in another item of the tree.
    */
-  @Event() itemsDropped: EventEmitter<TreeXItemDropInfo>;
+  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
 
   /**
    * Given an item id, it displays and scrolls into the item view.
@@ -182,42 +226,40 @@ export class ChTreeX {
     });
   }
 
-  // /**
-  //  * This method is used to toggle a tree item by the tree item id/ids.
-  //  *
-  //  * @param treeItemIds An array id the tree items to be toggled.
-  //  * @param expand A boolean indicating that the tree item should be expanded or collapsed. (optional)
-  //  * @returns The modified items after the method was called.
-  //  */
-  // @Method()
-  // async toggleItems(
-  //   treeItemIds: string[],
-  //   expand?: boolean
-  // ): Promise<ExpandedTreeItemInfo[]> {
-  //   if (!treeItemIds) {
-  //     return [];
-  //   }
+  /**
+   * Update the information about the valid droppable zones.
+   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+   * @param newContainerId ID of the container where the drag is trying to be made.
+   * @param draggedItems Information about the dragged items.
+   * @param validDrop Current state of the droppable zone.
+   */
+  @Method()
+  async updateValidDroppableZone(
+    requestTimestamp: number,
+    newContainerId: string,
+    draggedItems: GxDataTransferInfo[],
+    validDrop: boolean
+  ) {
+    if (
+      !this.draggingInTheDocument ||
+      requestTimestamp <= this.dragStartTimestamp
+    ) {
+      return;
+    }
 
-  //   const allTreeItems = Array.from(
-  //     this.el.querySelectorAll(TREE_ITEM_TAG_NAME)
-  //   );
-  //   const modifiedTreeItems: ExpandedTreeItemInfo[] = [];
+    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
+    this.validDroppableZoneCache.set(
+      droppableZoneKey,
+      validDrop ? "valid" : "invalid"
+    );
 
-  //   treeItemIds.forEach(treeItemId => {
-  //     const treeItem = allTreeItems.find(item => treeItemId === item.id);
+    const shouldUpdateDragEnterInCurrentContainer =
+      this.lastOpenSubTreeItem?.id === newContainerId;
 
-  //     if (treeItem) {
-  //       treeItem.expanded = expand ?? !treeItem.expanded;
-
-  //       modifiedTreeItems.push({
-  //         id: treeItem.id,
-  //         expanded: treeItem.expanded
-  //       });
-  //     }
-  //   });
-  //   return modifiedTreeItems;
-  // }
-
+    if (shouldUpdateDragEnterInCurrentContainer) {
+      this.lastOpenSubTreeItem.dragState = "enter";
+    }
+  }
   // /**
   //  * Returns an array of the selected tree items, providing the id, caption and
   //  * selected status.
@@ -235,6 +277,90 @@ export class ChTreeX {
   //   }));
   // }
 
+  // We can't use capture, because the dataTransfer info would not be defined
+  // Also, we cant use capture and setTimeout with 0 seconds, because the
+  // getData method can only be accessed during the dragstart and drop event
+  @Listen("dragstart", { passive: true, target: "window" })
+  handleDragStart(event: DragEvent) {
+    // Reset the validity of the droppable zones with each new drag start
+    this.validDroppableZoneCache.clear();
+
+    this.draggingInTheDocument = true;
+    this.dragStartTimestamp = new Date().getTime();
+    this.draggedItems = JSON.parse(event.dataTransfer.getData(TEXT_FORMAT));
+  }
+
+  @Listen("dragend", { capture: true, passive: true, target: "window" })
+  handleDragEnd() {
+    this.draggingInTheDocument = false;
+  }
+
+  @Listen("dragenter", { capture: true, passive: true })
+  handleDragEnter(event: DragEvent) {
+    this.cancelSubTreeOpening(null, true);
+    event.stopPropagation();
+    const containerTarget = event.target as HTMLChTreeXListItemElement;
+
+    // Check if it is a valid item
+    if (containerTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      return;
+    }
+
+    this.lastOpenSubTreeItem = containerTarget;
+    this.openSubTreeAfterCountdown(containerTarget);
+
+    if (this.validDroppableZone(event) === "valid") {
+      containerTarget.dragState = "enter";
+    }
+  }
+
+  @Listen("dragleave", { capture: true, passive: true })
+  handleDragLeave(event: DragEvent) {
+    const currentTarget = event.target as HTMLElement;
+
+    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      return;
+    }
+
+    const treeItem = currentTarget as HTMLChTreeXListItemElement;
+    treeItem.dragState = "none";
+    this.cancelSubTreeOpening(treeItem);
+  }
+
+  private cancelSubTreeOpening(
+    treeItem: HTMLChTreeXListItemElement,
+    forceClear = false
+  ) {
+    if (this.lastOpenSubTreeItem === treeItem || forceClear) {
+      clearTimeout(this.openSubTreeTimeout);
+      this.lastOpenSubTreeItem = null;
+    }
+  }
+
+  @Listen("drop")
+  handleItemDrop(event: DragEvent) {
+    event.stopPropagation();
+
+    this.cancelSubTreeOpening(null, true);
+    const newContainer = event.target as HTMLChTreeXListItemElement;
+
+    const draggedItems: GxDataTransferInfo[] = JSON.parse(
+      event.dataTransfer.getData(TEXT_FORMAT)
+    );
+
+    // The droppable zone must be checked, even if it was marked as not valid
+    // @todo Try to drop an item with high delays in droppable zone checking
+    if (this.validDroppableZone(event) !== "valid") {
+      return;
+    }
+
+    this.itemsDropped.emit({
+      newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      draggedItems: draggedItems,
+      dropInTheSameTree: this.draggingInTree
+    });
+  }
+
   @Listen("itemDragStart")
   handleItemDragStart(event: CustomEvent<TreeXItemDragStartInfo>) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
@@ -244,53 +370,23 @@ export class ChTreeX {
     this.currentDraggedItem = event.target as HTMLChTreeXListItemElement;
     this.updateDragInfo(event.detail);
 
-    this.el.addEventListener("dragenter", this.trackItemDragEnter, {
-      capture: true,
-      passive: true
-    });
+    this.draggingInTree = true;
 
-    this.el.addEventListener("dragleave", this.trackItemDragLeave, {
-      capture: true,
-      passive: true
-    });
-
-    // Wait until the custom var values are updated to avoid flickering
-    setTimeout(() => {
-      this.draggingItem = true;
-    }, 10);
+    if (this.scrollToEdgeOnDrag) {
+      this.fixScrollPositionOnDrag();
+    }
   }
 
   @Listen("itemDragEnd")
   handleItemDragEnd() {
-    this.draggingItem = false;
+    this.draggingInTree = false;
 
     document.body.removeEventListener("dragover", this.trackItemDrag, {
       capture: true
     });
 
-    this.el.removeEventListener("dragenter", this.trackItemDragEnter, {
-      capture: true
-    });
-
-    this.el.removeEventListener("dragleave", this.trackItemDragLeave, {
-      capture: true
-    });
-
     // Reset not allowed droppable ids
     this.resetVariables();
-  }
-
-  @Listen("itemDrop")
-  handleItemDrop(event: CustomEvent<TreeXItemDropInfo>) {
-    event.stopPropagation();
-
-    this.cancelSubTreeOpening(null, true);
-    const selectedItemEl = event.target as HTMLChTreeXListItemElement;
-
-    if (!this.validDroppableZone(selectedItemEl.id)) {
-      return;
-    }
-    this.itemsDropped.emit(event.detail);
   }
 
   @Listen("selectedItemChange")
@@ -302,68 +398,51 @@ export class ChTreeX {
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
   }
 
-  private trackItemDragEnter = (event: DragEvent) => {
-    event.stopPropagation();
-    const currentTarget = event.target as HTMLElement;
+  private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
+    const containerTarget = event.target as HTMLChTreeXListItemElement;
 
-    // Don't mark droppable zones if they are the dragged items or their direct parents
-    if (!this.validDroppableZone(currentTarget.id)) {
-      return;
+    // When dragging in the same tree, don't mark droppable zones if they are
+    // the dragged items or their direct parents
+    if (
+      this.draggingInTree &&
+      (this.draggedIds.includes(containerTarget.id) ||
+        this.draggedParentIds.includes(containerTarget.id))
+    ) {
+      return "invalid";
     }
 
-    // Check if it is a valid item
-    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
-      return;
+    const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
+    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    if (droppableZoneState != null) {
+      return droppableZoneState;
     }
 
-    const treeItem = currentTarget as HTMLChTreeXListItemElement;
-    treeItem.dragState = "enter";
-    this.openSubTreeAfterCountdown(treeItem);
-  };
-
-  private validDroppableZone = (draggedItemId: string) =>
-    !this.draggedIds.includes(draggedItemId) &&
-    !this.draggedParentIds.includes(draggedItemId);
-
-  private openSubTreeAfterCountdown(treeItem: HTMLChTreeXListItemElement) {
-    this.cancelSubTreeOpening(treeItem);
-
-    if (treeItem.leaf || treeItem.expanded) {
-      return;
-    }
-
-    this.lastOpenSubTreeItem = treeItem;
-
-    this.openSubTreeTimeout = setTimeout(() => {
-      treeItem.expanded = true;
-    }, this.openSubTreeCountdown);
+    this.validDroppableZoneCache.set(cacheKey, "checking");
+    this.droppableZoneEnter.emit({
+      newContainer: {
+        id: containerTarget.id,
+        metadata: containerTarget.metadata
+      },
+      draggedItems: this.draggedItems
+    });
+    return "checking";
   }
 
-  private trackItemDragLeave = (event: DragEvent) => {
-    const currentTarget = event.target as HTMLElement;
-
-    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+  private openSubTreeAfterCountdown(currentTarget: HTMLChTreeXListItemElement) {
+    if (currentTarget.leaf || currentTarget.expanded) {
       return;
     }
 
-    const treeItem = currentTarget as HTMLChTreeXListItemElement;
-    treeItem.dragState = "none";
-    this.cancelSubTreeOpening(treeItem);
-  };
-
-  private cancelSubTreeOpening(
-    treeItem: HTMLChTreeXListItemElement,
-    forceClear = false
-  ) {
-    if (this.lastOpenSubTreeItem === treeItem || forceClear) {
-      clearTimeout(this.openSubTreeTimeout);
-    }
+    this.openSubTreeTimeout = setTimeout(() => {
+      currentTarget.expanded = true;
+      this.expandedItemChange.emit({ id: currentTarget.id, expanded: true });
+    }, this.openSubTreeCountdown);
   }
 
   private trackItemDrag = (event: DragEvent) => {
     event.preventDefault();
-    this.lastPageX = event.pageX;
-    this.lastPageY = event.pageY;
+    this.lastDragEvent = event;
 
     if (!this.needForRAF) {
       return;
@@ -375,11 +454,11 @@ export class ChTreeX {
 
       this.el.style.setProperty(
         POSITION_X_DRAG_CUSTOM_VAR,
-        `${this.lastPageX}px`
+        `${this.lastDragEvent.pageX}px`
       );
       this.el.style.setProperty(
         POSITION_Y_DRAG_CUSTOM_VAR,
-        `${this.lastPageY}px`
+        `${this.lastDragEvent.pageY}px`
       );
     });
   };
@@ -390,8 +469,9 @@ export class ChTreeX {
   }
 
   /**
-   * Update the dataTransfer in the drag event to store the ids of the dragged
-   * items. Also it updates the visual information of the dragged items.
+   * Update the dataTransfer in the drag event to store the ids and metadata of
+   * the dragged items. Also it updates the visual information of the dragged
+   * items.
    */
   private updateDragInfo(dragInfo: TreeXItemDragStartInfo) {
     const draggedElement = dragInfo.elem;
@@ -399,30 +479,50 @@ export class ChTreeX {
     const isDraggingSelectedItems = this.selectedItemsInfo.has(
       draggedElement.id
     );
+    this.draggingSelectedItems = isDraggingSelectedItems;
 
-    let joinedDraggedIds: string;
+    let dataTransferInfo: GxDataTransferInfo[] = [];
 
     if (isDraggingSelectedItems) {
       const selectedItemKeys = [...this.selectedItemsInfo.keys()];
       const selectedItemCount = selectedItemKeys.length;
 
       this.draggedIds = selectedItemKeys;
-      joinedDraggedIds = selectedItemKeys.join(",");
+      dataTransferInfo = [...this.selectedItemsInfo.values()].map(el => ({
+        id: el.id,
+        metadata: el.metadata
+      }));
 
       this.dragInfo =
         selectedItemCount === 1
           ? draggedElement.caption
           : selectedItemCount.toString();
     } else {
-      joinedDraggedIds = draggedElement.id;
-      this.draggedIds = [joinedDraggedIds];
+      dataTransferInfo = [
+        { id: draggedElement.id, metadata: draggedElement.metadata }
+      ];
+      this.draggedIds = [draggedElement.id];
       this.dragInfo = draggedElement.caption;
     }
 
     this.getDirectParentsOfDraggableItems(isDraggingSelectedItems);
 
-    dragInfo.dataTransfer.setData("text/plain", joinedDraggedIds);
+    // Update drag event info
+    const data = JSON.stringify(dataTransferInfo);
+    dragInfo.dataTransfer.setData(TEXT_FORMAT, data);
   }
+
+  private fixScrollPositionOnDrag = () => {
+    if (!this.draggingInTree || !this.lastDragEvent) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      scrollToEdge(this.lastDragEvent, this.el, 10, 30);
+
+      requestAnimationFrame(this.fixScrollPositionOnDrag);
+    });
+  };
 
   private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
     if (!draggingSelectedItems) {
@@ -507,13 +607,15 @@ export class ChTreeX {
     return (
       <Host
         class={{
-          "ch-tree-x-dragging-item": this.draggingItem,
+          "ch-tree-x-dragging-item": this.draggingInTheDocument,
+          "ch-tree-x--dragging-selected-items":
+            this.draggingInTree && this.draggingSelectedItems,
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
         <slot />
 
-        {this.draggingItem && (
+        {this.draggingInTree && (
           <span aria-hidden="true" class="ch-tree-x-drag-info">
             {this.dragInfo}
           </span>

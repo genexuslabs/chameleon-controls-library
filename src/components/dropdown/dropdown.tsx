@@ -91,6 +91,7 @@ export class ChDropDown implements ChComponent {
 
   private showHeader = false;
   private showFooter = false;
+  private firstExpanded = false;
 
   /**
    * Determine the current dropdown-item that is focused
@@ -349,12 +350,11 @@ export class ChDropDown implements ChComponent {
     const alignX = aligns[0] as DropdownAlign;
     const alignY = aligns[1] as DropdownAlign;
 
-    const hasVerticalPosition =
-      alignY === "OutsideStart" || alignY === "OutsideEnd";
     const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
     const isExpanded = this.expanded || this.expandedWithHover;
+    this.firstExpanded ||= isExpanded;
 
     return (
       <Host
@@ -385,41 +385,31 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        {this.expandBehavior === "ClickOrHover" && (
-          // Necessary since the separation between the button and the section
-          // triggers the onMouseLeave event
-          <div
-            aria-hidden="true"
-            class={{
-              separation: true,
-              [`separation--y separation--y-${yAlignMapping}`]:
-                hasVerticalPosition,
-              [`separation--x separation--x-${xAlignMapping}`]:
-                !hasVerticalPosition
-            }}
-            part="separation"
-          ></div>
-        )}
-
         <ch-window
           part="window"
-          exportparts="window:section,mask,header,footer"
-          container={this.el}
+          exportparts="window:section,mask,header,footer,separation"
+          container={this.expandableButton}
           closeOnEscape={true}
           hidden={!isExpanded}
           modal={false}
           showFooter={this.showFooter}
           showHeader={this.showHeader}
+          showMain={false}
+          // Necessary since the separation between the button and the section
+          // triggers the onMouseLeave event
+          showSeparation={this.expandBehavior === "ClickOrHover"}
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >
-          {this.showHeader && <slot name="header" slot="header" />}
+          {this.firstExpanded && [
+            this.showHeader && <slot name="header" slot="header" />,
 
-          <div role="list" class="list" part="list">
-            <slot name="items" />
-          </div>
+            <div role="list" class="list" part="list">
+              <slot name="items" />
+            </div>,
 
-          {this.showFooter && <slot name="footer" slot="footer" />}
+            this.showFooter && <slot name="footer" slot="footer" />
+          ]}
         </ch-window>
       </Host>
     );

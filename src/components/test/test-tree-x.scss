@@ -3,18 +3,6 @@ ch-test-tree-x {
   grid-template-columns: 350px max-content;
   grid-template-rows: 1fr;
   height: 100%;
-
-  > .test-tree-x-scroll {
-    position: relative;
-    overflow-y: auto;
-    margin-inline-end: 16px;
-
-    > ch-tree-x {
-      position: absolute;
-      inset: 0;
-      margin: 2px;
-    }
-  }
 }
 
 .tree-buttons {

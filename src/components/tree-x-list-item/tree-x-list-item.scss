@@ -29,7 +29,8 @@ $own-offset: calc(
 
 :host {
   --checkbox-size: 1em;
-  --expandable-button-width: 12px;
+  --expandable-button-width: 0.75em;
+  --ch-tree-x-list-item-dashed-line--offset: 0px;
 
   --tab-width: calc(
     var(--checkbox-size) + var(--expandable-button-width) +
@@ -38,6 +39,7 @@ $own-offset: calc(
 
   display: grid;
   grid-template-rows: min-content;
+  overflow: hidden;
 }
 
 .header {
@@ -150,27 +152,37 @@ $own-offset: calc(
 // - - - - - - - - - - - - - - - -
 .dashed-line {
   position: absolute;
-  inset-inline-start: var(--inset-inline-start);
+  inset-inline-start: calc(
+    var(--inset-inline-start) + var(--ch-tree-x-list-item-dashed-line--offset)
+  );
   height: 1px;
   width: calc(
     var(--tab-width) - var(--parent-checkbox-offset) -
-      var(--parent-expandable-offset) - var(--own-offset) - 4px
+      var(--parent-expandable-offset) - var(--own-offset) -
+      var(--ch-tree-x-list-item-dashed-line--offset) - 4px
   );
 
   border: 0 dashed #a9a9a9;
   border-block-end-width: 1px;
   pointer-events: none; // Improve hover effect
   content-visibility: hidden;
-  contain-intrinsic-size: auto 100px;
+  z-index: 1;
 }
 
 // Last dashed line of the tree
-.last-dashed-line {
+.last-all-line {
   inset-block-start: 0;
   height: calc(100% - var(--distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
-  pointer-events: none; // Improve hover effect
+}
+
+.last-line {
+  inset-block-start: 0;
+  height: 100%;
+  border-inline-start-width: 1px;
+  border-style: solid;
+  border-block-end: unset;
 }
 
 // - - - - - - - - - - - - - - - -
@@ -183,6 +195,8 @@ $own-offset: calc(
   height: var(--expandable-button-width);
   margin-inline-end: $separation-between-actions;
   z-index: 1;
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--expandable-button-width);
 
   &::before {
     content: "";
@@ -206,9 +220,12 @@ $own-offset: calc(
 }
 
 .checkbox {
-  // width: var(--checkbox-size);
-  // height: var(--checkbox-size);
   margin-inline-end: $separation-between-actions;
+
+  &::part(container) {
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+  }
 }
 
 // - - - - - - - - - - - - - - - -
@@ -231,16 +248,18 @@ $own-offset: calc(
   display: block;
   width: 0.875em;
   height: 0.875em;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 0.875em;
 }
 
 .left-img {
   grid-area: left-img;
-  margin-inline-end: 6px;
+  margin-inline-end: $separation-between-actions;
 }
 
 .right-img {
   grid-area: right-img;
-  margin-inline-start: 6px;
+  margin-inline-start: $separation-between-actions;
 }
 
 .edit-name {

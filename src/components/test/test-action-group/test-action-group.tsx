@@ -110,6 +110,7 @@ export class ChTestActionGroup {
 
   private firstLevelRenderCollapsedItem = (item: ActionGroupItemModel) => (
     <ch-dropdown-item
+      slot="more-items"
       id={item.id}
       class={item.class}
       expandBehavior={this.expandBehavior}
@@ -161,11 +162,7 @@ export class ChTestActionGroup {
                   this.displayedItemsCount !== -1 &&
                   index >= this.displayedItemsCount
               )
-              .map(item => (
-                <ch-action-group-item slot="more-items" avoidFloating={true}>
-                  {this.firstLevelRenderCollapsedItem(item)}
-                </ch-action-group-item>
-              ))}
+              .map(this.firstLevelRenderCollapsedItem)}
         </ch-action-group>
       </Host>
     );

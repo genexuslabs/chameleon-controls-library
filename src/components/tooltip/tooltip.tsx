@@ -52,6 +52,10 @@ export class ChTooltip implements ChComponent {
   /** The container element for ch-window.
    */
   private container!: HTMLDivElement;
+  /**
+   * The color for the tooltip and its arrow. Transparent by default
+   */
+  @Prop({ reflect: true }) readonly color = "transparent";
 
   /**
    * Specifies the position of the tooltip relative to
@@ -100,7 +104,9 @@ export class ChTooltip implements ChComponent {
     const alignX = aligns[0] as TooltipAlign;
     const alignY = aligns[1] as TooltipAlign;
 
-    const isSide = alignX === "OutsideStart" || alignX === "OutsideEnd";
+    const isLeft = alignX === "OutsideStart";
+    const isRight = alignX === "OutsideEnd";
+    const isSide = isLeft || isRight;
     const isTop = alignY === "OutsideStart";
     const isBottom = alignY === "OutsideEnd";
 
@@ -141,7 +147,20 @@ export class ChTooltip implements ChComponent {
             "--ch-window-offset-y": offsetY
           }}
         >
-          <div role="tooltip" id={this.tooltipId}>
+          <div
+            role="tooltip"
+            style={{
+              "--ch-tooltip-color": this.color
+            }}
+            class={{
+              "tooltip-content": true,
+              "tooltip-content-top": isTop,
+              "tooltip-content-bottom": isBottom,
+              "tooltip-content-left": isLeft,
+              "tooltip-content-right": isRight
+            }}
+            id={this.tooltipId}
+          >
             <slot name="content"></slot>
           </div>
         </ch-window>

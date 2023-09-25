@@ -18,3 +18,38 @@ ch-tooltip:not([hidden]) {
 .slot-container {
   display: inline-block;
 }
+
+.tooltip-content {
+  background-color: var(--ch-tooltip-color);
+  &::after {
+    content: " ";
+    position: absolute;
+    border-style: solid;
+    border-width: 5px;
+  }
+}
+.tooltip-content-top::after {
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-color: var(--ch-tooltip-color) transparent transparent transparent;
+}
+.tooltip-content-bottom::after {
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-color: transparent transparent var(--ch-tooltip-color) transparent;
+}
+
+.tooltip-content-right::after {
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-color: transparent var(--ch-tooltip-color) transparent transparent;
+}
+.tooltip-content-left::after {
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-color: transparent transparent transparent var(--ch-tooltip-color);
+}

@@ -317,8 +317,8 @@
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
       });
-      chSuggest.addEventListener("inputChanged", e => {
-        console.log("inputChanged event:", e.detail);
+      chSuggest.addEventListener("valueChanged", e => {
+        console.log("valueChanged event:", e.detail);
       });
 
       chSuggest.addEventListener("itemSelected", e => {

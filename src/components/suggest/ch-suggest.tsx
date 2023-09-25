@@ -92,7 +92,7 @@ INDEX:
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
-  @Prop() readonly debounce: number = 500;
+  @Prop() readonly debounce: number = 1500;
 
   /**
    * The label
@@ -134,7 +134,7 @@ INDEX:
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
-  @Event() inputChanged: EventEmitter<string>;
+  @Event() valueChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -313,7 +313,7 @@ INDEX:
   };
 
   private processInputEvent = (inputValue: string) => {
-    this.inputChanged.emit(inputValue);
+    this.valueChanged.emit(inputValue);
     this.evaluateWindowMaxHeight();
   };
 

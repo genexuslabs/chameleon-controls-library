@@ -76,8 +76,7 @@ INDEX:
 
   private handleClick = () => {
     this.itemSelected.emit({
-      value: this.value || this.el.innerText,
-      caption: this.el.innerText
+      value: this.value || this.el.innerText
     });
   };
 
@@ -109,7 +108,6 @@ INDEX:
 
 export type SuggestItemData = {
   value: any;
-  caption: string;
   description?: string;
   icon?: string;
 };

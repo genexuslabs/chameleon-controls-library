@@ -115,11 +115,6 @@ INDEX:
   @Prop({ mutable: true }) value: string;
 
   /**
-   * This is the suggest caption. Is what the user sees on the input.
-   */
-  @Prop({ mutable: true }) caption: string;
-
-  /**
    * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
    */
   @Prop() readonly showHeader = false;
@@ -148,7 +143,6 @@ INDEX:
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
     this.value = event.detail.value;
-    this.caption = event.detail.caption;
     this.closeWindow();
   }
 
@@ -279,7 +273,7 @@ INDEX:
    */
   private handleInput = (e: InputEvent) => {
     const inputValue = (e.target as HTMLInputElement).value;
-    this.caption = inputValue;
+    this.value = inputValue;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
@@ -320,7 +314,6 @@ INDEX:
 
   private processInputEvent = (inputValue: string) => {
     this.inputChanged.emit(inputValue);
-    this.caption = inputValue;
     this.value = undefined;
     this.evaluateWindowMaxHeight();
   };
@@ -359,7 +352,7 @@ INDEX:
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
               onFocus={this.onFocusHandler}
-              value={this.caption}
+              value={this.value}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={

@@ -14,6 +14,13 @@
 | `showOnRowHover`   | `show-on-row-hover`   | Indicates to show row actions when hovering over row.                                | `boolean` | `undefined` |
 
 
+## Events
+
+| Event             | Description                               | Type               |
+| ----------------- | ----------------------------------------- | ------------------ |
+| `rowActionOpened` | Event emitted when row actions is opened. | `CustomEvent<any>` |
+
+
 ## Methods
 
 ### `close() => Promise<void>`
@@ -27,6 +34,16 @@ Type: `Promise<void>`
 
 
 ### `openRowActions(cell: HTMLElement) => Promise<void>`
+
+Opens the row actions on the row-actions-button cell.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `openRowContext(clientX: number, clientY: number) => Promise<void>`
 
 Opens the row actions on the row-actions-button cell.
 

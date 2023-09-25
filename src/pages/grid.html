@@ -382,7 +382,7 @@
         </ch-grid>
       </section>
 
-      <section class="section-dev row-mark" data-title="row-mark">
+      <section class="section-dev row-mark" data-title="row-mark" id="ch-grid-row-mark">
         <ch-grid row-selection-mode="multiple">
           <ch-grid-columnset>
             <ch-grid-column
@@ -465,6 +465,13 @@
             <ch-grid-cell>Español</ch-grid-cell>
           </ch-grid-row>
         </ch-grid>
+
+        <script>
+          const chGridRowMark = document.getElementById("ch-grid-row-mark");
+          chGridRowMark.addEventListener("rowMarkingChanged", e => {
+            console.log(e.detail);
+          })
+        </script>
       </section>
 
       <section class="section-dev row-reorder" data-title="row-reorder">
@@ -654,6 +661,13 @@
             <button>Action B</button>
           </ch-grid-row-actions>
           <ch-grid-row-actions show-on-row-actions>
+            <button>Action C</button>
+            <button>Action D</button>
+            <button>Action E</button>
+          </ch-grid-row-actions>
+          <ch-grid-row-actions show-on-row-context>
+            <button>Action A</button>
+            <button>Action B</button>
             <button>Action C</button>
             <button>Action D</button>
             <button>Action E</button>

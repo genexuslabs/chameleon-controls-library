@@ -32,7 +32,8 @@ export class ChGridManagerSelection {
     row: HTMLChGridRowElement,
     cell: HTMLChGridCellElement,
     append: boolean,
-    range: boolean
+    range: boolean,
+    context: boolean
   ): ManagerSelectionState {
     if (this.manager.grid.rowSelectionMode === "none") {
       return this.selectionStateNone;
@@ -82,10 +83,12 @@ export class ChGridManagerSelection {
       this.rangeStart = row;
       this.rangeValue = true;
 
-      rowsSelected =
-        rowsSelected.length === 1 && rowsSelected[0] === row
-          ? rowsSelected
-          : [row];
+      if (
+        !(rowsSelected.length === 1 && rowsSelected[0] === row) &&
+        !(context && rowsSelected.includes(row))
+      ) {
+        rowsSelected = [row];
+      }
       cellSelected =
         cell ||
         row.getCell(cellSelected?.column || this.manager.getFirstColumn());

@@ -99,15 +99,15 @@ export class ChTreeXListItem {
 
   /**
    * This attribute lets you specify if the drag operation is enabled in the
-   * control. If `false`, the control can't be dragged.
+   * control. If `true`, the control can't be dragged.
    */
-  @Prop() readonly dragEnabled: boolean = true;
+  @Prop() readonly dragDisabled: boolean = false;
 
   /**
    * This attribute lets you specify if the drop operation is enabled in the
-   * control. If `false`, the control won't accept any drops.
+   * control. If `true`, the control won't accept any drops.
    */
-  @Prop() readonly dropEnabled: boolean = true;
+  @Prop() readonly dropDisabled: boolean = false;
 
   /**
    * This property lets you define the current state of the item when it's
@@ -712,7 +712,7 @@ export class ChTreeXListItem {
     const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
 
     const acceptDrop =
-      this.dropEnabled && !this.leaf && this.dragState !== "start";
+      !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
     const showAllLines = this.showLines === "all" && this.level !== 0;
     const showLastLine =
@@ -759,9 +759,9 @@ export class ChTreeXListItem {
           onClick={this.handleActionClick}
           onKeyDown={!this.editing ? this.handleActionKeyDown : null}
           // Drag and drop
-          draggable={this.dragEnabled}
+          draggable={!this.dragDisabled}
           onDragStart={this.handleDragStart}
-          onDragEnd={this.dragEnabled ? this.handleDragEnd : null}
+          onDragEnd={!this.dragDisabled ? this.handleDragEnd : null}
           ref={el => (this.headerRef = el)}
         >
           {!this.leaf && this.showExpandableButton && (

@@ -402,7 +402,7 @@ export class ChTreeX {
     //     the dragged items or their direct parents.
     if (
       event.dataTransfer.effectAllowed === "none" ||
-      !containerTarget.dropEnabled ||
+      containerTarget.dropDisabled ||
       (this.draggingInTree &&
         (this.draggedIds.includes(containerTarget.id) ||
           this.draggedParentIds.includes(containerTarget.id)))
@@ -508,7 +508,7 @@ export class ChTreeX {
       const selectedItemCount = selectedItemKeys.length;
 
       dragIsEnabledForAllItems = selectedItemValues.every(
-        el => el.itemRef.dragEnabled
+        el => !el.itemRef.dragDisabled
       );
 
       this.draggedIds = selectedItemKeys;
@@ -522,7 +522,7 @@ export class ChTreeX {
           ? draggedElement.caption
           : selectedItemCount.toString();
     } else {
-      dragIsEnabledForAllItems = draggedElement.dragEnabled;
+      dragIsEnabledForAllItems = !draggedElement.dragDisabled;
       dataTransferInfo = [
         { id: draggedElement.id, metadata: draggedElement.metadata }
       ];

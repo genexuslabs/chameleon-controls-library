@@ -13,8 +13,8 @@ export type TreeXItemModel = {
   checked?: boolean;
   class?: string;
   disabled?: boolean;
-  dragEnabled?: boolean;
-  dropEnabled?: boolean;
+  dragDisabled?: boolean;
+  dropDisabled?: boolean;
   expanded?: boolean;
   lazy?: boolean;
   leaf?: boolean;

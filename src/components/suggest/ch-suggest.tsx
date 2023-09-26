@@ -93,7 +93,7 @@ INDEX:
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
-  @Prop() readonly debounce: number = 1500;
+  @Prop() readonly debounce: number = 300;
 
   /**
    * The label

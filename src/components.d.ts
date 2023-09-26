@@ -82,6 +82,44 @@ export namespace Components {
          */
         "floating": boolean;
     }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown": number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout": 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc": "";
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover": boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented": boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton": boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar": boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval": 50;
+    }
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -904,10 +942,6 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption": string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd": false;
@@ -951,10 +985,6 @@ export namespace Components {
         "label": string;
     }
     interface ChSuggestListItem {
-        /**
-          * The description
-         */
-        "description": string;
         /**
           * The icon url
          */
@@ -1099,6 +1129,24 @@ export namespace Components {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode": "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName": string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime": number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented": boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress": number;
     }
     interface ChTree {
         /**
@@ -1440,6 +1488,10 @@ export interface ChActionGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionGroupElement;
 }
+export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAlertElement;
+}
 export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
@@ -1586,6 +1638,12 @@ declare global {
     var HTMLChActionGroupItemElement: {
         prototype: HTMLChActionGroupItemElement;
         new (): HTMLChActionGroupItemElement;
+    };
+    interface HTMLChAlertElement extends Components.ChAlert, HTMLStencilElement {
+    }
+    var HTMLChAlertElement: {
+        prototype: HTMLChAlertElement;
+        new (): HTMLChAlertElement;
     };
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
     }
@@ -1869,6 +1927,12 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
+    }
+    var HTMLChTimerElement: {
+        prototype: HTMLChTimerElement;
+        new (): HTMLChTimerElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1927,6 +1991,7 @@ declare global {
         "ch-accordion": HTMLChAccordionElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
+        "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
@@ -1974,6 +2039,7 @@ declare global {
         "ch-test-dropdown": HTMLChTestDropdownElement;
         "ch-test-tree-x": HTMLChTestTreeXElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-timer": HTMLChTimerElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-tree-x": HTMLChTreeXElement;
@@ -2043,6 +2109,48 @@ declare namespace LocalJSX {
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating"?: boolean;
+    }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown"?: number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout"?: 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc"?: "";
+        /**
+          * Fires close event
+         */
+        "onClose"?: (event: ChAlertCustomEvent<any>) => void;
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover"?: boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented"?: boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton"?: boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar"?: boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval"?: 50;
     }
     interface ChCheckbox {
         /**
@@ -2930,10 +3038,6 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption"?: string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd"?: false;
@@ -2952,7 +3056,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
@@ -2977,10 +3081,6 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ChSuggestListItem {
-        /**
-          * The description
-         */
-        "description"?: string;
         /**
           * The icon url
          */
@@ -3114,6 +3214,24 @@ declare namespace LocalJSX {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode"?: "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName"?: string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime"?: number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented"?: boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress"?: number;
     }
     interface ChTree {
         /**
@@ -3475,6 +3593,7 @@ declare namespace LocalJSX {
         "ch-accordion": ChAccordion;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
+        "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
@@ -3522,6 +3641,7 @@ declare namespace LocalJSX {
         "ch-test-dropdown": ChTestDropdown;
         "ch-test-tree-x": ChTestTreeX;
         "ch-textblock": ChTextblock;
+        "ch-timer": ChTimer;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-tree-x": ChTreeX;
@@ -3540,6 +3660,7 @@ declare module "@stencil/core" {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
+            "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
@@ -3587,6 +3708,7 @@ declare module "@stencil/core" {
             "ch-test-dropdown": LocalJSX.ChTestDropdown & JSXBase.HTMLAttributes<HTMLChTestDropdownElement>;
             "ch-test-tree-x": LocalJSX.ChTestTreeX & JSXBase.HTMLAttributes<HTMLChTestTreeXElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;

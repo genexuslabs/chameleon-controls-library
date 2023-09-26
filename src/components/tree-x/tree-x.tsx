@@ -176,66 +176,6 @@ export class ChTreeX {
    */
   @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
 
-  /**
-   * Given an item id, it displays and scrolls into the item view.
-   */
-  @Method()
-  async scrollIntoVisible(treeItemId: string) {
-    const itemRef = this.el.querySelector(
-      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
-    );
-    if (!itemRef) {
-      return;
-    }
-
-    let parentItem = itemRef.parentElement.parentElement;
-
-    // Expand all parents
-    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (parentItem as HTMLChTreeXListItemElement).expanded = true;
-      parentItem = parentItem.parentElement.parentElement;
-    }
-
-    // Wait until the parents are expanded
-    requestAnimationFrame(() => {
-      itemRef.scrollIntoView();
-    });
-  }
-
-  /**
-   * Update the information about the valid droppable zones.
-   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
-   * @param newContainerId ID of the container where the drag is trying to be made.
-   * @param draggedItems Information about the dragged items.
-   * @param validDrop Current state of the droppable zone.
-   */
-  @Method()
-  async updateValidDroppableZone(
-    requestTimestamp: number,
-    newContainerId: string,
-    draggedItems: GxDataTransferInfo[],
-    validDrop: boolean
-  ) {
-    if (
-      !this.draggingInTheDocument ||
-      requestTimestamp <= this.dragStartTimestamp
-    ) {
-      return;
-    }
-
-    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
-    this.validDroppableZoneCache.set(
-      droppableZoneKey,
-      validDrop ? "valid" : "invalid"
-    );
-
-    const shouldUpdateDragEnterInCurrentContainer =
-      this.lastOpenSubTreeItem?.id === newContainerId;
-
-    if (shouldUpdateDragEnterInCurrentContainer) {
-      this.lastOpenSubTreeItem.dragState = "enter";
-    }
-  }
   // /**
   //  * Returns an array of the selected tree items, providing the id, caption and
   //  * selected status.
@@ -383,6 +323,67 @@ export class ChTreeX {
     const selectedItemEl = event.target as HTMLChTreeXListItemElement;
 
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
+  }
+
+  /**
+   * Given an item id, it displays and scrolls into the item view.
+   */
+  @Method()
+  async scrollIntoVisible(treeItemId: string) {
+    const itemRef = this.el.querySelector(
+      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
+    );
+    if (!itemRef) {
+      return;
+    }
+
+    let parentItem = itemRef.parentElement.parentElement;
+
+    // Expand all parents
+    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+      (parentItem as HTMLChTreeXListItemElement).expanded = true;
+      parentItem = parentItem.parentElement.parentElement;
+    }
+
+    // Wait until the parents are expanded
+    requestAnimationFrame(() => {
+      itemRef.scrollIntoView();
+    });
+  }
+
+  /**
+   * Update the information about the valid droppable zones.
+   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+   * @param newContainerId ID of the container where the drag is trying to be made.
+   * @param draggedItems Information about the dragged items.
+   * @param validDrop Current state of the droppable zone.
+   */
+  @Method()
+  async updateValidDroppableZone(
+    requestTimestamp: number,
+    newContainerId: string,
+    draggedItems: GxDataTransferInfo[],
+    validDrop: boolean
+  ) {
+    if (
+      !this.draggingInTheDocument ||
+      requestTimestamp <= this.dragStartTimestamp
+    ) {
+      return;
+    }
+
+    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
+    this.validDroppableZoneCache.set(
+      droppableZoneKey,
+      validDrop ? "valid" : "invalid"
+    );
+
+    const shouldUpdateDragEnterInCurrentContainer =
+      this.lastOpenSubTreeItem?.id === newContainerId;
+
+    if (shouldUpdateDragEnterInCurrentContainer) {
+      this.lastOpenSubTreeItem.dragState = "enter";
+    }
   }
 
   private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {

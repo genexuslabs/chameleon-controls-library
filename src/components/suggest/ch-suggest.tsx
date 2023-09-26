@@ -17,6 +17,7 @@ import {
   SuggestItemData,
   FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+import { SuggestListData } from "./suggest-list/ch-suggest-list";
 import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
@@ -395,4 +396,9 @@ type FocusChangeAttemptEventData = {
   chSuggestListItemsArray: HTMLChSuggestListItemElement[];
   currentFocusedItemIndex: number;
   newItemToSetFocusOn: HTMLElement | null;
+};
+
+export type SuggestData = {
+  suggestItems: SuggestItemData[];
+  suggestLists: SuggestListData[];
 };

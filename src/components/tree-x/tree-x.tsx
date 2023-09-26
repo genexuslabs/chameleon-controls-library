@@ -193,6 +193,16 @@ export class ChTreeX {
   //   }));
   // }
 
+  // Set edit mode in items
+  @Listen("keydown", { capture: true })
+  handleKeyDownEvents(event: KeyboardEvent) {
+    const keyHandler = this.keyDownEvents[event.key];
+
+    if (keyHandler) {
+      keyHandler(event);
+    }
+  }
+
   // We can't use capture, because the dataTransfer info would not be defined
   // Also, we cant use capture and setTimeout with 0 seconds, because the
   // getData method can only be accessed during the dragstart and drop event
@@ -610,24 +620,7 @@ export class ChTreeX {
     this.selectedItemsInfo.clear();
   }
 
-  private handleKeyDownEvents = (event: KeyboardEvent) => {
-    const keyHandler = this.keyDownEvents[event.key];
-
-    if (keyHandler) {
-      keyHandler(event);
-    }
-  };
-
-  connectedCallback() {
-    // Set edit mode in items
-    this.el.addEventListener("keydown", this.handleKeyDownEvents, {
-      capture: true
-    });
-  }
-
   disconnectedCallback() {
-    this.el.removeEventListener("keydown", this.handleKeyDownEvents);
-
     this.resetVariables();
 
     // Remove dragover body event

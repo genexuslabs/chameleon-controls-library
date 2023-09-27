@@ -1,4 +1,4 @@
-import { Component, Host, h, Prop } from "@stencil/core";
+import { Component, Host, h, Prop, State } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import { ChWindowAlign } from "../window/ch-window";
 
@@ -27,14 +27,17 @@ const EXPORT_PARTS = "window:section,mask";
   shadow: false
 })
 export class ChTooltip implements ChComponent {
+  /** The container element for ch-window.
+   */
+  private container!: HTMLDivElement;
+  /** Determines if the window and the tooltip is hidden or visible.
+   * Inherited from ch-window.
+   */
+  @State() hidden = true;
   /**
    * Specifies the tooltip description.
    */
   @Prop() readonly tooltipId: string = "Tooltip";
-  /**
-   * Specifies the tooltip content.
-   */
-  @Prop() readonly content: string = "";
   /**
    * Specifies the separation (in px)
    * between the tooltip and the container element.
@@ -45,18 +48,6 @@ export class ChTooltip implements ChComponent {
    * for the tooltip to be displayed.
    */
   @Prop() readonly delay: number = 100;
-  /** Determines if the window and the tooltip is hidden or visible.
-   * Inherited from ch-window.
-   */
-  @Prop({ reflect: true, mutable: true }) hidden = true;
-  /** The container element for ch-window.
-   */
-  private container!: HTMLDivElement;
-  /**
-   * The color for the tooltip and its arrow. Transparent by default
-   */
-  @Prop({ reflect: true }) readonly color = "transparent";
-
   /**
    * Specifies the position of the tooltip relative to
    * the container element.
@@ -99,6 +90,31 @@ export class ChTooltip implements ChComponent {
     this.hidden = true;
   };
 
+  private addListeners = () => {
+    this.container.addEventListener("focus", this.handleEnter);
+    this.container.addEventListener("focusout", this.handleLeave);
+    this.container.addEventListener("mouseover", this.handleEnter);
+    this.container.addEventListener("mouseleave", this.handleLeave);
+  };
+
+  private removeListeners = () => {
+    this.container.removeEventListener("focus", this.handleEnter);
+    this.container.removeEventListener("focusout", this.handleLeave);
+    this.container.removeEventListener("mouseover", this.handleEnter);
+    this.container.removeEventListener("mouseleave", this.handleLeave);
+  };
+
+  componentDidLoad() {
+    this.container = document.querySelector(
+      '[slot="container"] > :first-child'
+    );
+    this.addListeners();
+  }
+
+  disconnectedCallback() {
+    this.removeListeners();
+  }
+
   render() {
     const aligns = this.position.split("_");
     const alignX = aligns[0] as TooltipAlign;
@@ -110,8 +126,10 @@ export class ChTooltip implements ChComponent {
     const isTop = alignY === "OutsideStart";
     const isBottom = alignY === "OutsideEnd";
 
-    const offsetX =
-      isSide && !isTop && !isBottom ? `${this.separation}px` : null;
+    let offsetX = null;
+    if (isSide && !isTop && !isBottom) {
+      offsetX = isLeft ? `-${this.separation}px` : `${this.separation}px`;
+    }
 
     let offsetY = null;
     if (!isSide) {
@@ -120,17 +138,7 @@ export class ChTooltip implements ChComponent {
 
     return (
       <Host>
-        <div
-          class="slot-container"
-          tabindex="0"
-          onFocus={this.handleEnter}
-          onMouseEnter={this.handleEnter}
-          ref={el => (this.container = el as HTMLDivElement)}
-          onMouseLeave={this.handleLeave}
-          onFocusout={this.handleLeave}
-        >
-          <slot name="container"></slot>
-        </div>
+        <slot name="container"></slot>
         <ch-window
           exportparts={EXPORT_PARTS}
           show-header={false}
@@ -139,7 +147,6 @@ export class ChTooltip implements ChComponent {
           close-on-escape
           hidden={this.hidden}
           container={this.container}
-          // ref={el => (this.chWindow = el as HTMLChWindowElement)}
           xAlign={mapTooltipAlignToChWindowAlign[alignX]}
           yAlign={mapTooltipAlignToChWindowAlign[alignY]}
           style={{
@@ -149,15 +156,8 @@ export class ChTooltip implements ChComponent {
         >
           <div
             role="tooltip"
-            style={{
-              "--ch-tooltip-color": this.color
-            }}
             class={{
-              "tooltip-content": true,
-              "tooltip-content-top": isTop,
-              "tooltip-content-bottom": isBottom,
-              "tooltip-content-left": isLeft,
-              "tooltip-content-right": isRight
+              "tooltip-content": true
             }}
             id={this.tooltipId}
           >

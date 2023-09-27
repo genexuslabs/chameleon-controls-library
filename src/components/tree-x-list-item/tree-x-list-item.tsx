@@ -213,16 +213,13 @@ export class ChTreeXListItem {
 
   @Watch("selected")
   handleSelectedChange(newValue: boolean) {
-    this.selectedItemSync.emit({
-      ctrlKeyPressed: true, // Does not matter in this case
-      expanded: this.expanded,
-      goToReference: false, // Does not matter in this case
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: newValue
-    });
+    this.selectedItemSync.emit(
+      this.getSelectedInfo(
+        true, // Does not matter in this case
+        false, // Does not matter in this case
+        newValue
+      )
+    );
   }
 
   /**
@@ -533,16 +530,9 @@ export class ChTreeXListItem {
     }
 
     this.selected = true;
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: mouseEventModifierKey(event),
-      expanded: this.expanded,
-      goToReference: false,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: true
-    });
+    this.selectedItemChange.emit(
+      this.getSelectedInfo(mouseEventModifierKey(event), false, true)
+    );
   };
 
   private lazyLoadItems(expanded: boolean) {
@@ -560,30 +550,14 @@ export class ChTreeXListItem {
     const selected = !this.selected;
     this.selected = selected;
 
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: true,
-      expanded: this.expanded,
-      goToReference: false,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: selected
-    });
+    this.selectedItemChange.emit(this.getSelectedInfo(true, false, selected));
   }
 
   private setSelected(goToReference: boolean) {
     this.selected = true;
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: false,
-      expanded: this.expanded,
-      goToReference: goToReference,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: true
-    });
+    this.selectedItemChange.emit(
+      this.getSelectedInfo(false, goToReference, true)
+    );
   }
 
   private toggleOrSelect(event: MouseEvent) {
@@ -593,6 +567,21 @@ export class ChTreeXListItem {
       this.setSelected(true);
     }
   }
+
+  private getSelectedInfo = (
+    ctrlKeyPressed: boolean,
+    goToReference: boolean,
+    selected: boolean
+  ) => ({
+    ctrlKeyPressed: ctrlKeyPressed,
+    expanded: this.expanded,
+    goToReference: goToReference,
+    id: this.el.id,
+    itemRef: this.el,
+    metadata: this.metadata,
+    parentId: this.el.parentElement.parentElement.id,
+    selected: selected
+  });
 
   private handleActionDblClick = (event: PointerEvent) => {
     event.stopPropagation();
@@ -701,16 +690,7 @@ export class ChTreeXListItem {
 
     // Sync selected state with the main tree
     if (this.selected) {
-      this.selectedItemChange.emit({
-        ctrlKeyPressed: true,
-        expanded: this.expanded,
-        goToReference: false,
-        id: this.el.id,
-        itemRef: this.el,
-        metadata: this.metadata,
-        parentId: this.el.parentElement.parentElement.id,
-        selected: true
-      });
+      this.selectedItemChange.emit(this.getSelectedInfo(true, false, true));
     }
 
     // No need to update more the status

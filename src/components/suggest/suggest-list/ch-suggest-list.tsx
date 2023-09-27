@@ -70,7 +70,3 @@ export type SuggestListData = {
   label: string;
   items: SuggestItemData[];
 };
-export type SuggestData = {
-  suggestItems: SuggestItemData[];
-  suggestLists: SuggestListData[];
-};

@@ -120,6 +120,7 @@ INDEX:
     const indexes: SuggestItemIndexes = this.getItemIndexes();
     this.itemSelected.emit({
       value: this.value || this.el.innerText,
+      description: this.el.innerText,
       icon: this.iconSrc,
       indexes: indexes
     });
@@ -153,8 +154,9 @@ INDEX:
 
 export type SuggestItemData = {
   value: any;
-  icon?: string;
   indexes: SuggestItemIndexes;
+  description?: string;
+  icon?: string;
 };
 
 export type FocusChangeAttempt = {

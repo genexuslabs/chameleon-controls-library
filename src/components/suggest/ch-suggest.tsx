@@ -17,6 +17,7 @@ import {
   SuggestItemData,
   FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+import { SuggestListData } from "./suggest-list/ch-suggest-list";
 import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
@@ -92,7 +93,7 @@ INDEX:
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
-  @Prop() readonly debounce: number = 1500;
+  @Prop() readonly debounce: number = 300;
 
   /**
    * The label
@@ -395,4 +396,9 @@ type FocusChangeAttemptEventData = {
   chSuggestListItemsArray: HTMLChSuggestListItemElement[];
   currentFocusedItemIndex: number;
   newItemToSetFocusOn: HTMLElement | null;
+};
+
+export type SuggestData = {
+  suggestItems: SuggestItemData[];
+  suggestLists: SuggestListData[];
 };

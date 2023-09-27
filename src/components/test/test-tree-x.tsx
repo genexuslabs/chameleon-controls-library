@@ -11,6 +11,7 @@ import {
 } from "@stencil/core";
 import {
   TreeXDataTransferInfo,
+  TreeXDropCheckInfo,
   TreeXItemModel,
   TreeXLines,
   TreeXListItemExpandedInfo,
@@ -60,7 +61,7 @@ export class ChTestTreeX {
    * the tree. Returns whether the drop is valid.
    */
   @Prop() readonly checkDroppableZoneCallback: (
-    dropInformation: TreeXDataTransferInfo
+    dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
 
   /**
@@ -308,7 +309,7 @@ export class ChTestTreeX {
   }
 
   private handleDroppableZoneEnter = (
-    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+    event: ChTreeXCustomEvent<TreeXDropCheckInfo>
   ) => {
     const dropInformation = event.detail;
 
@@ -390,7 +391,7 @@ export class ChTestTreeX {
     const promise = this.dropItemsCallback(dataTransferInfo);
     this.waitDropProcessing = true;
 
-    promise.then(response => {
+    promise.then(async response => {
       this.waitDropProcessing = false;
 
       if (!response.acceptDrop) {
@@ -404,6 +405,12 @@ export class ChTestTreeX {
         // Add the UI models to the new container and remove the UI models from
         // the old containers
         draggedItems.forEach(this.moveItemToNewParent(newParentUIModel));
+
+        // When the selected items are moved, the tree must remove its internal
+        // state to not have undefined references
+        if (dataTransferInfo.draggingSelectedItems) {
+          await this.treeRef.clearSelectedItemsInfo();
+        }
       }
       // Add the new items
       else {

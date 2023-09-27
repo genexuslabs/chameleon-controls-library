@@ -13,6 +13,7 @@ import {
 
 import {
   TreeXDataTransferInfo,
+  TreeXDropCheckInfo,
   TreeXDroppableZoneState,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
@@ -157,7 +158,7 @@ export class ChTreeX {
    * Fired when an element attempts to enter in a droppable zone where the tree
    * has no information about the validity of the drop.
    */
-  @Event() droppableZoneEnter: EventEmitter<TreeXDataTransferInfo>;
+  @Event() droppableZoneEnter: EventEmitter<TreeXDropCheckInfo>;
 
   /**
    * Fired when an item is expanded or collapsed.
@@ -282,6 +283,7 @@ export class ChTreeX {
 
     this.itemsDropped.emit({
       newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      draggingSelectedItems: this.draggingSelectedItems,
       draggedItems: draggedItems,
       dropInTheSameTree: this.draggingInTree
     });
@@ -326,13 +328,44 @@ export class ChTreeX {
     this.resetVariables();
   }
 
+  /**
+   * Only sync the info about the selected items. It does not update the state
+   * of the previous selected items.
+   */
+  @Listen("selectedItemSync")
+  handleSelectedItemSync(
+    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+  ) {
+    event.stopPropagation();
+    const selectedItemInfo = event.detail;
+
+    // If the item is selected, add it to list
+    if (selectedItemInfo.selected) {
+      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+    } else {
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
+    }
+  }
+
   @Listen("selectedItemChange")
-  handleSelectedItemChange(event: CustomEvent<TreeXListItemSelectedInfo>) {
+  handleSelectedItemChange(
+    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+  ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
     const selectedItemEl = event.target as HTMLChTreeXListItemElement;
 
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
+  }
+
+  /**
+   * Clear all information about the selected items. This method is intended to
+   * be used when selected items are reordered and the selected references will
+   * no longer be useful.
+   */
+  @Method()
+  async clearSelectedItemsInfo() {
+    this.clearSelectedItems();
   }
 
   /**
@@ -595,6 +628,9 @@ export class ChTreeX {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
+      // Don't update the state of the selected item if no needed
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
+
       this.selectedItemsInfo.forEach(treeItem => {
         treeItem.itemRef.selected = false;
       });
@@ -608,8 +644,6 @@ export class ChTreeX {
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
       this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
-    } else {
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model

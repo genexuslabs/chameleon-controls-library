@@ -65,7 +65,13 @@ export type TreeXLines = "all" | "last" | "none";
 export type TreeXDataTransferInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];
-  dropInTheSameTree?: boolean;
+  draggingSelectedItems: boolean;
+  dropInTheSameTree: boolean;
+};
+
+export type TreeXDropCheckInfo = {
+  newContainer: GxDataTransferInfo;
+  draggedItems: GxDataTransferInfo[];
 };
 
 export type TreeXDroppableZoneState = "checking" | "invalid" | "valid";

@@ -211,6 +211,20 @@ export class ChTreeXListItem {
    */
   @Prop({ mutable: true, reflect: true }) selected = false;
 
+  @Watch("selected")
+  handleSelectedChange(newValue: boolean) {
+    this.selectedItemSync.emit({
+      ctrlKeyPressed: true, // Does not matter in this case
+      expanded: this.expanded,
+      goToReference: false, // Does not matter in this case
+      id: this.el.id,
+      itemRef: this.el,
+      metadata: this.metadata,
+      parentId: this.el.parentElement.parentElement.id,
+      selected: newValue
+    });
+  }
+
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
    * the control.
@@ -270,9 +284,17 @@ export class ChTreeXListItem {
   @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
 
   /**
-   * Fired when the control is selected.
+   * Fired when the selected state is updated by user interaction on the
+   * control.
    */
   @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
+
+  /**
+   * Fired when the selected state is updated through the interface and without
+   * user interaction. The purpose of this event is to better sync with the
+   * main tree.
+   */
+  @Event() selectedItemSync: EventEmitter<TreeXListItemSelectedInfo>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(event: CustomEvent<boolean>) {
@@ -676,6 +698,20 @@ export class ChTreeXListItem {
 
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
+
+    // Sync selected state with the main tree
+    if (this.selected) {
+      this.selectedItemChange.emit({
+        ctrlKeyPressed: true,
+        expanded: this.expanded,
+        goToReference: false,
+        id: this.el.id,
+        itemRef: this.el,
+        metadata: this.metadata,
+        parentId: this.el.parentElement.parentElement.id,
+        selected: true
+      });
+    }
 
     // No need to update more the status
     if (this.level === 0) {

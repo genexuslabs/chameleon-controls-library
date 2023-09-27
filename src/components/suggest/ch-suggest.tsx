@@ -17,6 +17,7 @@ import {
   SuggestItemData,
   FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
+import { SuggestListData } from "./suggest-list/ch-suggest-list";
 import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
@@ -92,7 +93,7 @@ INDEX:
   /**
    * The debounce amount in milliseconds (This is the time the suggest waits after the user has finished typing, to show the suggestions).
    */
-  @Prop() readonly debounce: number = 500;
+  @Prop() readonly debounce: number = 300;
 
   /**
    * The label
@@ -115,11 +116,6 @@ INDEX:
   @Prop({ mutable: true }) value: string;
 
   /**
-   * This is the suggest caption. Is what the user sees on the input.
-   */
-  @Prop({ mutable: true }) caption: string;
-
-  /**
    * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
    */
   @Prop() readonly showHeader = false;
@@ -139,7 +135,7 @@ INDEX:
   /**
    * This event is emitted every time there input events fires, and it emits the actual input value.
    */
-  @Event() inputChanged: EventEmitter<string>;
+  @Event() valueChanged: EventEmitter<string>;
 
   // 6.COMPONENT LIFECYCLE EVENTS //
 
@@ -148,7 +144,6 @@ INDEX:
   @Listen("itemSelected")
   itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
     this.value = event.detail.value;
-    this.caption = event.detail.caption;
     this.closeWindow();
   }
 
@@ -279,6 +274,7 @@ INDEX:
    */
   private handleInput = (e: InputEvent) => {
     const inputValue = (e.target as HTMLInputElement).value;
+    this.value = inputValue;
     if (this.timeoutReference) {
       clearTimeout(this.timeoutReference);
     }
@@ -318,9 +314,7 @@ INDEX:
   };
 
   private processInputEvent = (inputValue: string) => {
-    this.inputChanged.emit(inputValue);
-    this.caption = inputValue;
-    this.value = undefined;
+    this.valueChanged.emit(inputValue);
     this.evaluateWindowMaxHeight();
   };
 
@@ -358,7 +352,7 @@ INDEX:
               onInput={this.handleInput}
               onKeyDown={this.handleKeyDown}
               onFocus={this.onFocusHandler}
-              value={this.caption}
+              value={this.value}
               autocomplete="off"
               aria-controls="ch-window"
               aria-label={
@@ -402,4 +396,9 @@ type FocusChangeAttemptEventData = {
   chSuggestListItemsArray: HTMLChSuggestListItemElement[];
   currentFocusedItemIndex: number;
   newItemToSetFocusOn: HTMLElement | null;
+};
+
+export type SuggestData = {
+  suggestItems: SuggestItemData[];
+  suggestLists: SuggestListData[];
 };

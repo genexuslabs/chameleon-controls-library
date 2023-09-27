@@ -1,14 +1,30 @@
 ch-tree-x {
   display: flex;
+  position: relative;
+  overflow: auto;
 
-  // Remove un-useful droppable areas
-  &.ch-tree-x-dragging-item :not(.ch-tree-x-list-item--accept-drop) {
-    pointer-events: none;
+  & > ch-tree-x-list {
+    position: absolute;
+    inset: 0;
+    min-width: max-content;
   }
 
   // Reset useful droppable areas
-  &.ch-tree-x-dragging-item .ch-tree-x-list-item--accept-drop {
-    pointer-events: all;
+  &.ch-tree-x-dragging-item ch-tree-x-list-item {
+    pointer-events: var(--ch-tree-x-pointer-events, all);
+  }
+
+  // Remove un-useful droppable areas
+  &.ch-tree-x-dragging-item {
+    .ch-tree-x-list-item--deny-drop,
+    ch-tree-x-list {
+      pointer-events: none;
+    }
+  }
+
+  // Remove droppable areas on selected items
+  &.ch-tree-x--dragging-selected-items ch-tree-x-list-item[selected] {
+    --ch-tree-x-pointer-events: none;
   }
 
   // Remove mouse actions when processing the drop of items
@@ -34,6 +50,15 @@ ch-tree-x {
   );
   pointer-events: none;
   z-index: 1; // Necessary to show the element above the expandable buttons
+  animation: ch-tree-x-drag-info-fade-in 10ms;
+}
+
+// Wait until the custom var values are updated to avoid flickering
+@keyframes ch-tree-x-drag-info-fade-in {
+  0%,
+  100% {
+    opacity: 0;
+  }
 }
 
 html[dir="rtl"] .ch-tree-x-drag-info {

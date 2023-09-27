@@ -72,7 +72,6 @@ and the last one for the dropdown footer.
 | --------------------- | ----------- |
 | `"expandable-button"` |             |
 | `"list"`              |             |
-| `"separation"`        |             |
 | `"window"`            |             |
 
 

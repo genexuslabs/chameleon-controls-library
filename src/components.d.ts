@@ -18,11 +18,11 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
-import { LabelPosition } from "./common/types";
+import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { FocusChangeAttempt, SuggestItemData } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
-import { TreeXItemDragStartInfo, TreeXItemDropInfo, TreeXItemModel, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
+import { TreeXDataTransferInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
 import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -78,13 +78,47 @@ export namespace Components {
     }
     interface ChActionGroupItem {
         /**
-          * `true` to ignore the floating property value.
-         */
-        "avoidFloating": boolean;
-        /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating": boolean;
+    }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown": number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout": 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc": "";
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover": boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented": boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton": boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar": boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval": 50;
     }
     interface ChCheckbox {
         /**
@@ -908,10 +942,6 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption": string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd": false;
@@ -955,10 +985,6 @@ export namespace Components {
         "label": string;
     }
     interface ChSuggestListItem {
-        /**
-          * The description
-         */
-        "description": string;
         /**
           * The icon url
          */
@@ -1026,12 +1052,17 @@ export namespace Components {
     }
     interface ChTestTreeX {
         /**
+          * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
+         */
+        "checkDroppableZoneCallback": (
+    dropInformation: TreeXDataTransferInfo
+  ) => Promise<boolean>;
+        /**
           * Callback that is executed when a list of items request to be dropped into another item.
          */
         "dropItemsCallback": (
-    dropItemId: string,
-    draggedIds: string[]
-  ) => Promise<TreeXItemModel[]>;
+    dataTransferInfo: TreeXDataTransferInfo
+  ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
         /**
           * Callback that is executed when a item request to load its subitems.
          */
@@ -1054,17 +1085,32 @@ export namespace Components {
          */
         "scrollIntoVisible": (treeItemId: string) => Promise<void>;
         /**
-          * Set this attribute if you want to display the relation between tree items and tree lists using lines.
+          * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines": boolean;
+        "showLines": TreeXLines;
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback": (subModel: TreeXItemModel[]) => void;
         /**
+          * This method is used to toggle a tree item by the tree item id/ids.
+          * @param treeItemIds An array id the tree items to be toggled.
+          * @param expand A boolean indicating that the tree item should be expanded or collapsed. (optional)
+          * @returns The modified items after the method was called.
+         */
+        "toggleItems": (treeItemIds: string[], expand?: boolean) => Promise<TreeXListItemExpandedInfo[]>;
+        /**
           * This property lets you define the model of the ch-tree-x control.
          */
         "treeModel": TreeXModel;
+        /**
+          * Given a subset of item's properties, it updates all item UI models.
+         */
+        "updateAllItemsProperties": (properties: { expanded?: boolean; checked?: boolean; }) => Promise<void>;
+        /**
+          * Given a item list and the properties to update, it updates the properties of the items in the list.
+         */
+        "updateItemsProperties": (items: string[], properties: TreeXItemModel) => Promise<void>;
     }
     interface ChTextblock {
         /**
@@ -1083,6 +1129,24 @@ export namespace Components {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode": "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName": string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime": number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented": boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress": number;
     }
     interface ChTree {
         /**
@@ -1167,9 +1231,21 @@ export namespace Components {
          */
         "scrollIntoVisible": (treeItemId: string) => Promise<void>;
         /**
+          * `true` to scroll in the tree when dragging an item near the edges of the tree.
+         */
+        "scrollToEdgeOnDrag": boolean;
+        /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines": boolean;
+        "showLines": TreeXLines;
+        /**
+          * Update the information about the valid droppable zones.
+          * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+          * @param newContainerId ID of the container where the drag is trying to be made.
+          * @param draggedItems Information about the dragged items.
+          * @param validDrop Current state of the droppable zone.
+         */
+        "updateValidDroppableZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
         /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
@@ -1183,7 +1259,7 @@ export namespace Components {
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines": boolean;
+        "showLines": TreeXLines;
     }
     interface ChTreeXListItem {
         /**
@@ -1198,6 +1274,10 @@ export namespace Components {
           * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
          */
         "checked": boolean;
+        /**
+          * Set this attribute if you want to set a custom render for the control, by passing a slot.
+         */
+        "customRender": boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -1259,6 +1339,10 @@ export namespace Components {
          */
         "level": number;
         /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata": string;
+        /**
           * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightImgSrc": string;
@@ -1281,7 +1365,7 @@ export namespace Components {
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines": boolean;
+        "showLines": TreeXLines;
         /**
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
          */
@@ -1332,6 +1416,14 @@ export namespace Components {
           * This attribute lets you specify if a header is rendered on top of the window.
          */
         "showHeader": boolean;
+        /**
+          * This attribute lets you specify if a div wrapper is rendered for the default slot.
+         */
+        "showMain": boolean;
+        /**
+          * This attribute lets you specify if a div between the container and the window space.
+         */
+        "showSeparation": boolean;
         /**
           * The horizontal alignment of the window.
          */
@@ -1395,6 +1487,10 @@ export interface ChAccordionCustomEvent<T> extends CustomEvent<T> {
 export interface ChActionGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionGroupElement;
+}
+export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAlertElement;
 }
 export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1542,6 +1638,12 @@ declare global {
     var HTMLChActionGroupItemElement: {
         prototype: HTMLChActionGroupItemElement;
         new (): HTMLChActionGroupItemElement;
+    };
+    interface HTMLChAlertElement extends Components.ChAlert, HTMLStencilElement {
+    }
+    var HTMLChAlertElement: {
+        prototype: HTMLChAlertElement;
+        new (): HTMLChAlertElement;
     };
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
     }
@@ -1825,6 +1927,12 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
+    }
+    var HTMLChTimerElement: {
+        prototype: HTMLChTimerElement;
+        new (): HTMLChTimerElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1883,6 +1991,7 @@ declare global {
         "ch-accordion": HTMLChAccordionElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
+        "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
@@ -1930,6 +2039,7 @@ declare global {
         "ch-test-dropdown": HTMLChTestDropdownElement;
         "ch-test-tree-x": HTMLChTestTreeXElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-timer": HTMLChTimerElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-tree-x": HTMLChTreeXElement;
@@ -1996,13 +2106,51 @@ declare namespace LocalJSX {
     }
     interface ChActionGroupItem {
         /**
-          * `true` to ignore the floating property value.
-         */
-        "avoidFloating"?: boolean;
-        /**
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating"?: boolean;
+    }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown"?: number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout"?: 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc"?: "";
+        /**
+          * Fires close event
+         */
+        "onClose"?: (event: ChAlertCustomEvent<any>) => void;
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover"?: boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented"?: boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton"?: boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar"?: boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval"?: 50;
     }
     interface ChCheckbox {
         /**
@@ -2890,10 +3038,6 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption"?: string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd"?: false;
@@ -2912,7 +3056,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
@@ -2937,10 +3081,6 @@ declare namespace LocalJSX {
         "label"?: string;
     }
     interface ChSuggestListItem {
-        /**
-          * The description
-         */
-        "description"?: string;
         /**
           * The icon url
          */
@@ -3016,12 +3156,17 @@ declare namespace LocalJSX {
     }
     interface ChTestTreeX {
         /**
+          * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
+         */
+        "checkDroppableZoneCallback"?: (
+    dropInformation: TreeXDataTransferInfo
+  ) => Promise<boolean>;
+        /**
           * Callback that is executed when a list of items request to be dropped into another item.
          */
         "dropItemsCallback"?: (
-    dropItemId: string,
-    draggedIds: string[]
-  ) => Promise<TreeXItemModel[]>;
+    dataTransferInfo: TreeXDataTransferInfo
+  ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
         /**
           * Callback that is executed when a item request to load its subitems.
          */
@@ -3040,9 +3185,9 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
-          * Set this attribute if you want to display the relation between tree items and tree lists using lines.
+          * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines"?: boolean;
+        "showLines"?: TreeXLines;
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
@@ -3069,6 +3214,24 @@ declare namespace LocalJSX {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode"?: "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName"?: string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime"?: number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented"?: boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress"?: number;
     }
     interface ChTree {
         /**
@@ -3146,9 +3309,17 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
+          * Fired when an element attempts to enter in a droppable zone where the tree has no information about the validity of the drop.
+         */
+        "onDroppableZoneEnter"?: (event: ChTreeXCustomEvent<TreeXDataTransferInfo>) => void;
+        /**
+          * Fired when an item is expanded or collapsed.
+         */
+        "onExpandedItemChange"?: (event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>) => void;
+        /**
           * Fired when the dragged items are dropped in another item of the tree.
          */
-        "onItemsDropped"?: (event: ChTreeXCustomEvent<TreeXItemDropInfo>) => void;
+        "onItemsDropped"?: (event: ChTreeXCustomEvent<TreeXDataTransferInfo>) => void;
         /**
           * Fired when the selected items change.
          */
@@ -3158,9 +3329,13 @@ declare namespace LocalJSX {
          */
         "openSubTreeCountdown"?: number;
         /**
+          * `true` to scroll in the tree when dragging an item near the edges of the tree.
+         */
+        "scrollToEdgeOnDrag"?: boolean;
+        /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines"?: boolean;
+        "showLines"?: TreeXLines;
         /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
@@ -3174,7 +3349,7 @@ declare namespace LocalJSX {
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines"?: boolean;
+        "showLines"?: TreeXLines;
     }
     interface ChTreeXListItem {
         /**
@@ -3189,6 +3364,10 @@ declare namespace LocalJSX {
           * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
          */
         "checked"?: boolean;
+        /**
+          * Set this attribute if you want to set a custom render for the control, by passing a slot.
+         */
+        "customRender"?: boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -3234,6 +3413,10 @@ declare namespace LocalJSX {
          */
         "level"?: number;
         /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata"?: string;
+        /**
           * Fired when the checkbox value of the control is changed.
          */
         "onCheckboxChange"?: (event: ChTreeXListItemCustomEvent<boolean>) => void;
@@ -3245,10 +3428,6 @@ declare namespace LocalJSX {
           * Fired when the item is being dragged.
          */
         "onItemDragStart"?: (event: ChTreeXListItemCustomEvent<TreeXItemDragStartInfo>) => void;
-        /**
-          * Fired when an element commits to drop in the control.
-         */
-        "onItemDrop"?: (event: ChTreeXListItemCustomEvent<TreeXItemDropInfo>) => void;
         /**
           * Fired when the lazy control is expanded an its content must be loaded.
          */
@@ -3280,7 +3459,7 @@ declare namespace LocalJSX {
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
-        "showLines"?: boolean;
+        "showLines"?: TreeXLines;
         /**
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
          */
@@ -3339,6 +3518,14 @@ declare namespace LocalJSX {
           * This attribute lets you specify if a header is rendered on top of the window.
          */
         "showHeader"?: boolean;
+        /**
+          * This attribute lets you specify if a div wrapper is rendered for the default slot.
+         */
+        "showMain"?: boolean;
+        /**
+          * This attribute lets you specify if a div between the container and the window space.
+         */
+        "showSeparation"?: boolean;
         /**
           * The horizontal alignment of the window.
          */
@@ -3406,6 +3593,7 @@ declare namespace LocalJSX {
         "ch-accordion": ChAccordion;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
+        "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
@@ -3453,6 +3641,7 @@ declare namespace LocalJSX {
         "ch-test-dropdown": ChTestDropdown;
         "ch-test-tree-x": ChTestTreeX;
         "ch-textblock": ChTextblock;
+        "ch-timer": ChTimer;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-tree-x": ChTreeX;
@@ -3471,6 +3660,7 @@ declare module "@stencil/core" {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
+            "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
@@ -3518,6 +3708,7 @@ declare module "@stencil/core" {
             "ch-test-dropdown": LocalJSX.ChTestDropdown & JSXBase.HTMLAttributes<HTMLChTestDropdownElement>;
             "ch-test-tree-x": LocalJSX.ChTestTreeX & JSXBase.HTMLAttributes<HTMLChTestTreeXElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;

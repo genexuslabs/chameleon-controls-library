@@ -1,13 +1,13 @@
 import {
   Component,
   h,
-  Host,
   Prop,
   Event,
   EventEmitter,
   Watch,
   Listen,
-  Element
+  Element,
+  Host
 } from "@stencil/core";
 import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
 
@@ -116,6 +116,18 @@ export class ChWindow {
    */
   @Prop() readonly showHeader: boolean = true;
 
+  /**
+   * This attribute lets you specify if a div wrapper is rendered for the
+   * default slot.
+   */
+  @Prop() readonly showMain: boolean = true;
+
+  /**
+   * This attribute lets you specify if a div between the container and the window
+   * space.
+   */
+  @Prop() readonly showSeparation: boolean = false;
+
   /** Emitted when the window is opened. */
   @Event() windowOpened: EventEmitter;
 
@@ -183,8 +195,8 @@ export class ChWindow {
     if (!this.isContainerCssOverride && this.container && this.mask) {
       const rect = this.container.getBoundingClientRect();
 
-      this.mask.style.width = `${rect.width}px`;
-      this.mask.style.height = `${rect.height}px`;
+      this.el.style.setProperty("--ch-window-mask-width", `${rect.width}px`);
+      this.el.style.setProperty("--ch-window-mask-height", `${rect.height}px`);
 
       // Nested windows are positioned relative to its initial containing block,
       // so there is no need to align them relative to the document
@@ -192,24 +204,23 @@ export class ChWindow {
         return;
       }
 
-      // TODO: RTL positioning bug
-      this.mask.style.setProperty(
+      this.el.style.setProperty(
         "--ch-window-inset-inline-start",
         `${rect.left}px`
       );
-      this.mask.style.setProperty(
+      this.el.style.setProperty(
         "--ch-window-inset-block-start",
         `${rect.top}px`
       );
     } else if (this.isContainerCssOverride || !this.container) {
-      this.mask.style.removeProperty("width");
-      this.mask.style.removeProperty("height");
+      this.el.style.removeProperty("--ch-window-mask-width");
+      this.el.style.removeProperty("--ch-window-mask-height");
 
       if (this.relativeWindow) {
         return;
       }
-      this.mask.style.removeProperty("--ch-window-inset-inline-start");
-      this.mask.style.removeProperty("--ch-window-inset-block-start");
+      this.el.style.removeProperty("--ch-window-inset-inline-start");
+      this.el.style.removeProperty("--ch-window-inset-block-start");
     }
   };
 
@@ -326,17 +337,23 @@ export class ChWindow {
   }
 
   render() {
+    const separationY =
+      this.yAlign === "outside-start" || this.yAlign === "outside-end";
+    const separationX =
+      this.xAlign === "outside-start" || this.xAlign === "outside-end";
+
     return (
-      <Host>
+      <Host
+        style={
+          this.relativeWindow && {
+            "--ch-window-inset-inline-start": "0px",
+            "--ch-window-inset-block-start": "0px"
+          }
+        }
+      >
         <div
           class="mask"
           part="mask"
-          style={
-            this.relativeWindow && {
-              "--ch-window-inset-inline-start": "0px",
-              "--ch-window-inset-block-start": "0px"
-            }
-          }
           ref={el => (this.mask = el)}
           onClick={this.maskClickHandler}
         >
@@ -352,9 +369,13 @@ export class ChWindow {
               </header>
             )}
 
-            <div part="main">
-              <slot></slot>
-            </div>
+            {this.showMain ? (
+              <div part="main">
+                <slot />
+              </div>
+            ) : (
+              <slot />
+            )}
 
             {this.showFooter && (
               <footer part="footer">
@@ -362,6 +383,18 @@ export class ChWindow {
               </footer>
             )}
           </section>
+
+          {this.showSeparation && (
+            <div
+              class={{
+                separation: true,
+                "separation--x": separationX && !separationY,
+                "separation--y": separationY && !separationX,
+                "separation--both": separationX && separationY
+              }}
+              part="separation"
+            ></div>
+          )}
         </div>
       </Host>
     );

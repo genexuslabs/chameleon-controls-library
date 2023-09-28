@@ -19,7 +19,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
-import { FocusChangeAttempt, SuggestItemData } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { TreeXDataTransferInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
@@ -3092,7 +3092,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemData>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemSelectedEvent>) => void;
         /**
           * The item value
          */

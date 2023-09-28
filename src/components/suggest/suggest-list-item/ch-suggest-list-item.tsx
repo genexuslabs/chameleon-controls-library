@@ -59,7 +59,7 @@ INDEX:
   /**
    * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
    */
-  @Event() itemSelected: EventEmitter<SuggestItemData>;
+  @Event() itemSelected: EventEmitter<SuggestItemSelectedEvent>;
 
   /**
    * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
@@ -153,6 +153,12 @@ INDEX:
 }
 
 export type SuggestItemData = {
+  value: any;
+  description?: string;
+  icon?: string;
+};
+
+export type SuggestItemSelectedEvent = {
   value: any;
   indexes: SuggestItemIndexes;
   description?: string;

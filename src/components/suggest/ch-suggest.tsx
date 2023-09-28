@@ -14,6 +14,7 @@ import {
 /* OTHER LIBRARIES IMPORTS */
 /* CUSTOM IMPORTS */
 import {
+  SuggestItemSelectedEvent,
   SuggestItemData,
   FocusChangeAttempt
 } from "./suggest-list-item/ch-suggest-list-item";
@@ -142,7 +143,7 @@ INDEX:
   // 7.LISTENERS //
 
   @Listen("itemSelected")
-  itemSelectedHandler(event: CustomEvent<SuggestItemData>) {
+  itemSelectedHandler(event: CustomEvent<SuggestItemSelectedEvent>) {
     this.value = event.detail.value;
     this.closeWindow();
   }

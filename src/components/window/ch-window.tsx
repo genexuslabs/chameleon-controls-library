@@ -9,7 +9,7 @@ import {
   Element,
   Host
 } from "@stencil/core";
-import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
+import { adoptGlobalStyleSheet } from "../style/ch-global-stylesheet";
 
 export type ChWindowAlign =
   | "outside-start"
@@ -333,7 +333,7 @@ export class ChWindow {
   };
 
   private loadGlobalStyleSheet() {
-    this.el.shadowRoot.adoptedStyleSheets.push(CH_GLOBAL_STYLESHEET);
+    adoptGlobalStyleSheet(this.el.shadowRoot.adoptedStyleSheets);
   }
 
   render() {

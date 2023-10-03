@@ -98,13 +98,13 @@ export class ChTreeXListItem {
   @Prop({ reflect: true }) readonly disabled: boolean = false;
 
   /**
-   * This attribute lets you specify if the drag operation is enabled in the
+   * This attribute lets you specify if the drag operation is disabled in the
    * control. If `true`, the control can't be dragged.
    */
   @Prop() readonly dragDisabled: boolean = false;
 
   /**
-   * This attribute lets you specify if the drop operation is enabled in the
+   * This attribute lets you specify if the drop operation is disabled in the
    * control. If `true`, the control won't accept any drops.
    */
   @Prop() readonly dropDisabled: boolean = false;

@@ -13,7 +13,33 @@
     <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
   <body>
-    <div class="container">To be done.</div>
+    <div class="container">
+      <section class="section-dev" data-title="paginator">
+        <ch-paginator total-pages="15">
+          <ch-paginator-navigate type="first">First</ch-paginator-navigate>
+          <ch-paginator-navigate type="previous">
+            Previous
+          </ch-paginator-navigate>
+          <ch-paginator-pages></ch-paginator-pages>
+          <ch-paginator-navigate type="next">Next</ch-paginator-navigate>
+          <ch-paginator-navigate type="last">Last</ch-paginator-navigate>
+        </ch-paginator>
+      </section>
+      <section class="section-dev" data-title="paginator">
+        <ch-paginator>
+          <ch-paginator-navigate type="first">First</ch-paginator-navigate>
+          <ch-paginator-navigate type="previous">
+            Previous
+          </ch-paginator-navigate>
+          <ch-paginator-navigate type="next">Next</ch-paginator-navigate>
+          <ch-paginator-navigate type="last">Last</ch-paginator-navigate>
+        </ch-paginator>
+      </section>
+      <section class="section-dev" data-title="paginator">
+          <ch-paginator-pages total-pages="15"></ch-paginator-pages>
+      </section>
+    </section>
+    </div>
 
     <script src="./assets/scripts/common.js"></script>
   </body>

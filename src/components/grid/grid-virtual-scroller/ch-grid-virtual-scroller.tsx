@@ -19,22 +19,23 @@ import {
   shadow: false
 })
 export class ChGridVirtualScrollerLegend {
+  private gridMainEl: HTMLElement;
+  private resizeObserver = new ResizeObserver(this.resizeHandler.bind(this));
+  private timer: NodeJS.Timeout;
+
   @Element() el: HTMLChGridVirtualScrollerElement;
-
-  /**
-   * The list of items to be rendered in the grid.
-   */
-  @Prop() readonly items: any[];
-
-  /**
-   * The list of items to display within the current viewport.
-   */
-  @Prop({ mutable: true }) viewPortItems: any[];
 
   /**
    * Height of each row in pixels.
    */
   @State() rowHeight = 0;
+
+  @Watch("rowHeight")
+  rowHeightHandler() {
+    if (this.gridMainEl) {
+      this.updateViewPortItems();
+    }
+  }
 
   /**
    * Height of the browser window in pixels.
@@ -45,60 +46,6 @@ export class ChGridVirtualScrollerLegend {
    * Flag indicating whether the grid has a scrollbar.
    */
   @State() hasGridScroll = false;
-
-  /**
-   * Flag indicating whether the browser window has a scrollbar.
-   */
-  @State() hasWindowScroll = false;
-
-  /**
-   * The maximum number of items that can fit on the screen at any given time.
-   */
-  @State() maxViewPortItems = 1;
-
-  /**
-   *Event emitted when the list of visible items in the grid changes.
-   */
-  @Event() viewPortItemsChanged: EventEmitter;
-
-  private gridMainEl: HTMLElement;
-  private resizeObserver = new ResizeObserver(this.resizeHandler.bind(this));
-  private timer: NodeJS.Timeout;
-
-  componentWillLoad() {
-    this.gridMainEl = this.el.assignedSlot.parentElement;
-    this.resizeObserver.observe(this.gridMainEl);
-    this.resizeObserver.observe(document.documentElement);
-  }
-
-  componentDidLoad() {
-    this.updateViewPortItems();
-  }
-
-  disconnectedCallback() {
-    this.resizeObserver.disconnect();
-  }
-
-  @Watch("items")
-  itemsHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
-    }
-  }
-
-  @Watch("rowHeight")
-  rowHeightHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
-    }
-  }
-
-  @Watch("maxViewPortItems")
-  maxViewPortItemsHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
-    }
-  }
 
   @Watch("hasGridScroll")
   hasScrollHandler() {
@@ -117,6 +64,11 @@ export class ChGridVirtualScrollerLegend {
     this.updateViewPortItems();
   }
 
+  /**
+   * Flag indicating whether the browser window has a scrollbar.
+   */
+  @State() hasWindowScroll = false;
+
   @Watch("hasWindowScroll")
   hasWindowScrollHandler() {
     if (this.hasWindowScroll) {
@@ -130,6 +82,66 @@ export class ChGridVirtualScrollerLegend {
       );
     }
     this.updateViewPortItems();
+  }
+
+  /**
+   * The maximum number of items that can fit on the screen at any given time.
+   */
+  @State() maxViewPortItems = 1;
+
+  @Watch("maxViewPortItems")
+  maxViewPortItemsHandler() {
+    if (this.gridMainEl) {
+      this.updateViewPortItems();
+    }
+  }
+
+  /**
+   * The list of items to be rendered in the grid.
+   */
+  @Prop() readonly items: any[];
+
+  @Watch("items")
+  itemsHandler() {
+    if (this.gridMainEl) {
+      this.updateViewPortItems();
+    }
+  }
+
+  /**
+   * The number of elements in the items list.
+   * Use if the list changes, without recreating the array.
+   */
+  @Prop() readonly itemsCount: number;
+
+  @Watch("itemsCount")
+  itemsCountHandler() {
+    if (this.gridMainEl) {
+      this.updateViewPortItems();
+    }
+  }
+  /**
+   * The list of items to display within the current viewport.
+   */
+  @Prop({ mutable: true }) viewPortItems: any[];
+
+  /**
+   *Event emitted when the list of visible items in the grid changes.
+   */
+  @Event() viewPortItemsChanged: EventEmitter;
+
+  componentWillLoad() {
+    this.gridMainEl = this.el.assignedSlot.parentElement;
+    this.resizeObserver.observe(this.gridMainEl);
+    this.resizeObserver.observe(document.documentElement);
+  }
+
+  componentDidLoad() {
+    this.updateViewPortItems();
+  }
+
+  disconnectedCallback() {
+    this.resizeObserver.disconnect();
   }
 
   private resizeHandler() {

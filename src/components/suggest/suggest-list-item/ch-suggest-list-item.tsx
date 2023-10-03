@@ -42,11 +42,6 @@ INDEX:
   @Prop() readonly iconSrc: string;
 
   /**
-   * The description
-   */
-  @Prop() readonly description: string;
-
-  /**
    * The item value
    */
   @Prop() readonly value;
@@ -64,7 +59,7 @@ INDEX:
   /**
    * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
    */
-  @Event() itemSelected: EventEmitter<SuggestItemData>;
+  @Event() itemSelected: EventEmitter<SuggestItemSelectedEvent>;
 
   /**
    * This event is emitted every time the item is about to lose focus, by pressing the "ArrowUp" or "ArrowDown" keyboard keys.
@@ -79,11 +74,55 @@ INDEX:
 
   // 9.LOCAL METHODS //
 
+  private getItemIndexes = (): SuggestItemIndexes => {
+    const parentElement = this.el.parentElement;
+    if (parentElement.nodeName === "CH-SUGGEST") {
+      const chSuggest = parentElement;
+      let itemIndex = -1;
+      const suggestListItemsArray = Array.from(
+        chSuggest.querySelectorAll(":scope > ch-suggest-list-item")
+      );
+      for (let index = 0; index < suggestListItemsArray.length; index++) {
+        // Then get the item index
+        if (suggestListItemsArray[index] === this.el) {
+          itemIndex = index;
+          break;
+        }
+      }
+      return {
+        itemIndex: itemIndex,
+        listIndex: undefined // the items does not belongs to a list
+      };
+    } else if (parentElement.nodeName === "CH-SUGGEST-LIST") {
+      const chSuggestList = parentElement;
+      const chSuggestListsArray = Array.from(
+        chSuggestList.parentElement.querySelectorAll(":scope > ch-suggest-list")
+      );
+      const listIndex = chSuggestListsArray.findIndex(list => {
+        return list === chSuggestList;
+      });
+      if (listIndex !== -1) {
+        const listItemsArray = Array.from(
+          chSuggestList.querySelectorAll("ch-suggest-list-item")
+        );
+        const itemIndex = listItemsArray.findIndex(item => {
+          return item === this.el;
+        });
+        return {
+          itemIndex: itemIndex,
+          listIndex: listIndex
+        };
+      }
+    }
+  };
+
   private handleClick = () => {
+    const indexes: SuggestItemIndexes = this.getItemIndexes();
     this.itemSelected.emit({
       value: this.value || this.el.innerText,
-      caption: this.el.innerText,
-      description: this.description
+      description: this.el.innerText,
+      icon: this.iconSrc,
+      indexes: indexes
     });
   };
 
@@ -106,9 +145,6 @@ INDEX:
           <slot name="icon"></slot>
           <div class="content-wrapper" part="content-wrapper">
             <slot></slot>
-            {this.description && (
-              <span part="description">{this.description}</span>
-            )}
           </div>
         </button>
       </Host>
@@ -118,7 +154,13 @@ INDEX:
 
 export type SuggestItemData = {
   value: any;
-  caption: string;
+  description?: string;
+  icon?: string;
+};
+
+export type SuggestItemSelectedEvent = {
+  value: any;
+  indexes: SuggestItemIndexes;
   description?: string;
   icon?: string;
 };
@@ -126,4 +168,9 @@ export type SuggestItemData = {
 export type FocusChangeAttempt = {
   el: HTMLChSuggestListItemElement;
   code: ChSuggestKeyDownEvents;
+};
+
+export type SuggestItemIndexes = {
+  itemIndex: number;
+  listIndex: number | undefined;
 };

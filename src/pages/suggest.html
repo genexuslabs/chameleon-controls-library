@@ -131,13 +131,6 @@
         display: flex;
         gap: 8px;
       }
-      /*description*/
-      body.styles ch-suggest-list-item::part(description) {
-        font-style: italic;
-      }
-      body.styles ch-suggest-list-item::part(description):before {
-        content: " - ";
-      }
       /*ch-window*/
       body.styles ch-suggest::part(dropdown) {
         margin-block-start: 4px;
@@ -162,33 +155,32 @@
       <ul data-category="frutas" class="data-list">
         <li
           data-value="manzana-123"
-          data-description="manzana description"
           data-icon="./assets/icons/apple.svg"
           data-id="my-manzana-id"
         >
-          Manzanas Label
+          zManzanas Label
         </li>
-        <li>bananas</li>
-        <li>naranjas</li>
-        <li>uvas</li>
-        <li>frutillas</li>
+        <li>zbananas</li>
+        <li>znaranjas</li>
+        <li>zuvas</li>
+        <li>zfrutillas</li>
       </ul>
       <!-- granos -->
       <span><strong>(sin categoría)</strong></span>
       <ul class="data-list">
-        <li>porotos</li>
-        <li>garbanzos</li>
-        <li>lentejas</li>
-        <li>chia</li>
+        <li>zporotos</li>
+        <li>zgarbanzos</li>
+        <li>zlentejas</li>
+        <li>zchia</li>
       </ul>
       <!-- verduras -->
       <span><strong>verduras</strong></span>
       <ul data-category="verduras" class="data-list">
-        <li>lecuhgas</li>
-        <li>tomates</li>
-        <li>cebollas</li>
-        <li>apio</li>
-        <li>papas</li>
+        <li>zlecuhgas</li>
+        <li>ztomates</li>
+        <li>zcebollas</li>
+        <li>zapio</li>
+        <li>zpapas</li>
       </ul>
 
       <!-- ch-suggest -->
@@ -266,54 +258,57 @@
     <script>
       let fragment;
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("inputChanged", e => {
-        let filteredItems = [];
-        fragment = document.createDocumentFragment();
-        lists.forEach(list => {
-          const category = list.getAttribute("data-category");
-          const items = list.querySelectorAll("li");
-          filteredItems = Array.from(items).filter(item => {
-            return item.innerText.toLowerCase().includes(e.detail);
-          });
-          if (filteredItems.length > 0) {
-            const chSuggestList = document.createElement("ch-suggest-list");
-            if (category) {
-              chSuggestList.setAttribute("label", category);
-            }
-            filteredItems.forEach(item => {
-              const chSuggestListItem = document.createElement(
-                "ch-suggest-list-item"
-              );
-              chSuggestListItem.innerText = item.innerText;
-              chSuggestListItem.value = item.getAttribute("data-value");
-              chSuggestListItem.itemId = item.getAttribute("data-id");
-              chSuggestListItem.description =
-                item.getAttribute("data-description");
-              if (category) {
-                chSuggestList.appendChild(chSuggestListItem);
-              } else {
-                //chSuggest.appendChild(chSuggestListItem);
-                fragment.appendChild(chSuggestListItem);
-              }
-              const iconSrc = item.getAttribute("data-icon");
-              if (iconSrc) {
-                const icon = document.createElement("ch-icon");
-                icon.setAttribute("src", iconSrc);
-                icon.setAttribute("slot", "icon");
-                chSuggestListItem.appendChild(icon);
-              }
+      chSuggest.addEventListener("valueChanged", e => {
+        const inputValue = e.detail.trim();
+        if (inputValue) {
+          let filteredItems = [];
+          fragment = document.createDocumentFragment();
+          lists.forEach(list => {
+            const category = list.getAttribute("data-category");
+            const items = list.querySelectorAll("li");
+            filteredItems = Array.from(items).filter(item => {
+              return item.innerText.toLowerCase().includes(e.detail);
             });
-            if (category) {
-              //chSuggest.appendChild(chSuggestList);
-              fragment.appendChild(chSuggestList);
+            if (filteredItems.length > 0) {
+              const chSuggestList = document.createElement("ch-suggest-list");
+              if (category) {
+                chSuggestList.setAttribute("label", category);
+              }
+              filteredItems.forEach(item => {
+                const chSuggestListItem = document.createElement(
+                  "ch-suggest-list-item"
+                );
+                chSuggestListItem.innerText = item.innerText;
+                chSuggestListItem.value = item.getAttribute("data-value");
+                chSuggestListItem.itemId = item.getAttribute("data-id");
+                if (category) {
+                  chSuggestList.appendChild(chSuggestListItem);
+                } else {
+                  //chSuggest.appendChild(chSuggestListItem);
+                  fragment.appendChild(chSuggestListItem);
+                }
+                const iconSrc = item.getAttribute("data-icon");
+                if (iconSrc) {
+                  const icon = document.createElement("ch-icon");
+                  icon.setAttribute("src", iconSrc);
+                  icon.setAttribute("slot", "icon");
+                  chSuggestListItem.appendChild(icon);
+                }
+              });
+              if (category) {
+                //chSuggest.appendChild(chSuggestList);
+                fragment.appendChild(chSuggestList);
+              }
             }
-          }
-        });
-        setTimeout(() => {
+          });
+          setTimeout(() => {
+            chSuggest.innerHTML = "";
+            chSuggest.appendChild(fragment);
+            fragment = null;
+          }, 1000);
+        } else {
           chSuggest.innerHTML = "";
-          chSuggest.appendChild(fragment);
-          fragment = null;
-        }, 1000);
+        }
       });
     </script>
 
@@ -322,8 +317,8 @@
       setFocusBtn.addEventListener("click", function () {
         chSuggest.focus();
       });
-      chSuggest.addEventListener("inputChanged", e => {
-        console.log("inputChanged event:", e.detail);
+      chSuggest.addEventListener("valueChanged", e => {
+        console.log("valueChanged event:", e.detail);
       });
 
       chSuggest.addEventListener("itemSelected", e => {

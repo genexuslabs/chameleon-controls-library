@@ -10,6 +10,7 @@ import { DropdownPosition } from "./components/dropdown/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -19,7 +20,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
-import { FocusChangeAttempt, SuggestItemData } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { TreeXDataTransferInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
@@ -81,6 +82,44 @@ export namespace Components {
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating": boolean;
+    }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown": number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout": 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc": "";
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover": boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented": boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton": boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar": boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval": 50;
     }
     interface ChCheckbox {
         /**
@@ -504,6 +543,16 @@ export namespace Components {
     }
     interface ChGridColumnset {
     }
+    interface ChGridInfiniteScroll {
+        /**
+          * Indicates that the grid is already loaded.
+         */
+        "complete": () => Promise<void>;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status": ChGridInfiniteScrollState;
+    }
     interface ChGridRowActions {
         /**
           * Closes the row actions window.
@@ -559,6 +608,10 @@ export namespace Components {
           * The list of items to be rendered in the grid.
          */
         "items": any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount": number;
         /**
           * The list of items to display within the current viewport.
          */
@@ -904,10 +957,6 @@ export namespace Components {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption": string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd": false;
@@ -951,10 +1000,6 @@ export namespace Components {
         "label": string;
     }
     interface ChSuggestListItem {
-        /**
-          * The description
-         */
-        "description": string;
         /**
           * The icon url
          */
@@ -1099,6 +1144,24 @@ export namespace Components {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode": "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName": string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime": number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented": boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress": number;
     }
     interface ChTree {
         /**
@@ -1440,6 +1503,10 @@ export interface ChActionGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionGroupElement;
 }
+export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAlertElement;
+}
 export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
@@ -1475,6 +1542,10 @@ export interface ChGridColumnCustomEvent<T> extends CustomEvent<T> {
 export interface ChGridColumnResizeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChGridColumnResizeElement;
+}
+export interface ChGridInfiniteScrollCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridInfiniteScrollElement;
 }
 export interface ChGridRowActionsCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1587,6 +1658,12 @@ declare global {
         prototype: HTMLChActionGroupItemElement;
         new (): HTMLChActionGroupItemElement;
     };
+    interface HTMLChAlertElement extends Components.ChAlert, HTMLStencilElement {
+    }
+    var HTMLChAlertElement: {
+        prototype: HTMLChAlertElement;
+        new (): HTMLChAlertElement;
+    };
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
     }
     var HTMLChCheckboxElement: {
@@ -1676,6 +1753,12 @@ declare global {
     var HTMLChGridColumnsetElement: {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
+    };
+    interface HTMLChGridInfiniteScrollElement extends Components.ChGridInfiniteScroll, HTMLStencilElement {
+    }
+    var HTMLChGridInfiniteScrollElement: {
+        prototype: HTMLChGridInfiniteScrollElement;
+        new (): HTMLChGridInfiniteScrollElement;
     };
     interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
     }
@@ -1869,6 +1952,12 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
+    }
+    var HTMLChTimerElement: {
+        prototype: HTMLChTimerElement;
+        new (): HTMLChTimerElement;
+    };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
     var HTMLChTreeElement: {
@@ -1927,6 +2016,7 @@ declare global {
         "ch-accordion": HTMLChAccordionElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
+        "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
@@ -1942,6 +2032,7 @@ declare global {
         "ch-grid-column-resize": HTMLChGridColumnResizeElement;
         "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
         "ch-grid-columnset": HTMLChGridColumnsetElement;
+        "ch-grid-infinite-scroll": HTMLChGridInfiniteScrollElement;
         "ch-grid-row-actions": HTMLChGridRowActionsElement;
         "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
@@ -1974,6 +2065,7 @@ declare global {
         "ch-test-dropdown": HTMLChTestDropdownElement;
         "ch-test-tree-x": HTMLChTestTreeXElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-timer": HTMLChTimerElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-tree-x": HTMLChTreeXElement;
@@ -2043,6 +2135,48 @@ declare namespace LocalJSX {
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating"?: boolean;
+    }
+    interface ChAlert {
+        /**
+          * Determine the accessible name of the close button. Important for accessibility.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * Countdown which initial state is dismissTimeout ms.
+         */
+        "countdown"?: number;
+        /**
+          * Specifies the time (ms) for the alert to be displayed. if `dismissTimeout = 0`, the alert will be always visible (unless is dismissed by the closeButton).
+         */
+        "dismissTimeout"?: 0;
+        /**
+          * Determine src of the left image.
+         */
+        "leftImgSrc"?: "";
+        /**
+          * Fires close event
+         */
+        "onClose"?: (event: ChAlertCustomEvent<any>) => void;
+        /**
+          * Toggles the Pause on Hover functionality
+         */
+        "pauseOnHover"?: boolean;
+        /**
+          * Determine if the element is displayed or not.
+         */
+        "presented"?: boolean;
+        /**
+          * Determine if the closeButton is displayed or not.
+         */
+        "showCloseButton"?: boolean;
+        /**
+          * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element showing the time left for the alert to show. The progress stops when the element is hovered.
+         */
+        "showTimeoutBar"?: boolean;
+        /**
+          * Sets the desired interval
+         */
+        "timerInterval"?: 50;
     }
     interface ChCheckbox {
         /**
@@ -2481,6 +2615,16 @@ declare namespace LocalJSX {
     }
     interface ChGridColumnset {
     }
+    interface ChGridInfiniteScroll {
+        /**
+          * Event emitted when end is reached.
+         */
+        "onInfinite"?: (event: ChGridInfiniteScrollCustomEvent<any>) => void;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status"?: ChGridInfiniteScrollState;
+    }
     interface ChGridRowActions {
         /**
           * Event emitted when row actions is opened.
@@ -2532,6 +2676,10 @@ declare namespace LocalJSX {
           * The list of items to be rendered in the grid.
          */
         "items"?: any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount"?: number;
         /**
           * Event emitted when the list of visible items in the grid changes.
          */
@@ -2930,10 +3078,6 @@ declare namespace LocalJSX {
     }
     interface ChSuggest {
         /**
-          * This is the suggest caption. Is what the user sees on the input.
-         */
-        "caption"?: string;
-        /**
           * If true, it will position the cursor at the end when the input is focused.
          */
         "cursorEnd"?: false;
@@ -2952,7 +3096,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */
-        "onInputChanged"?: (event: ChSuggestCustomEvent<string>) => void;
+        "onValueChanged"?: (event: ChSuggestCustomEvent<string>) => void;
         /**
           * Wether or not the suggest has a header. The header will show the "suggestTitle" if provided, and a close button.
          */
@@ -2978,10 +3122,6 @@ declare namespace LocalJSX {
     }
     interface ChSuggestListItem {
         /**
-          * The description
-         */
-        "description"?: string;
-        /**
           * The icon url
          */
         "iconSrc"?: string;
@@ -2992,7 +3132,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemData>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemSelectedEvent>) => void;
         /**
           * The item value
          */
@@ -3114,6 +3254,24 @@ declare namespace LocalJSX {
           * Determine the way that the tooltip text will be displayed
          */
         "tooltipShowMode"?: "always" | "line-clamp";
+    }
+    interface ChTimer {
+        /**
+          * Sets the accesible name of the timer.
+         */
+        "accessibleName"?: string;
+        /**
+          * Sets the animationTime to set the custom var for the css animation.
+         */
+        "animationTime"?: number;
+        /**
+          * Sets the presented property to handle the component presentation.
+         */
+        "presented"?: boolean;
+        /**
+          * Sets the progress propiety to determine the progress.
+         */
+        "progress"?: number;
     }
     interface ChTree {
         /**
@@ -3475,6 +3633,7 @@ declare namespace LocalJSX {
         "ch-accordion": ChAccordion;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
+        "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
@@ -3490,6 +3649,7 @@ declare namespace LocalJSX {
         "ch-grid-column-resize": ChGridColumnResize;
         "ch-grid-column-settings": ChGridColumnSettings;
         "ch-grid-columnset": ChGridColumnset;
+        "ch-grid-infinite-scroll": ChGridInfiniteScroll;
         "ch-grid-row-actions": ChGridRowActions;
         "ch-grid-rowset-empty": ChGridRowsetEmpty;
         "ch-grid-rowset-legend": ChGridRowsetLegend;
@@ -3522,6 +3682,7 @@ declare namespace LocalJSX {
         "ch-test-dropdown": ChTestDropdown;
         "ch-test-tree-x": ChTestTreeX;
         "ch-textblock": ChTextblock;
+        "ch-timer": ChTimer;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-tree-x": ChTreeX;
@@ -3540,6 +3701,7 @@ declare module "@stencil/core" {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
+            "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
@@ -3555,6 +3717,7 @@ declare module "@stencil/core" {
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+            "ch-grid-infinite-scroll": LocalJSX.ChGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChGridInfiniteScrollElement>;
             "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
             "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
@@ -3587,6 +3750,7 @@ declare module "@stencil/core" {
             "ch-test-dropdown": LocalJSX.ChTestDropdown & JSXBase.HTMLAttributes<HTMLChTestDropdownElement>;
             "ch-test-tree-x": LocalJSX.ChTestTreeX & JSXBase.HTMLAttributes<HTMLChTestTreeXElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;

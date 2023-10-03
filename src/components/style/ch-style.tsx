@@ -1,5 +1,5 @@
 import { Component, Element, Prop } from "@stencil/core";
-import { CH_GLOBAL_STYLESHEET } from "./ch-global-stylesheet";
+import { appendStyle, enableStyleSheet } from "./ch-global-stylesheet";
 
 /**
  * It allows to include styles in the shadow-root of chameleon components,
@@ -25,14 +25,14 @@ export class ChStyle {
       fetch(this.href).then(response => {
         if (response.ok) {
           response.text().then(style => {
-            CH_GLOBAL_STYLESHEET.replace(style);
-            CH_GLOBAL_STYLESHEET.disabled = false;
+            appendStyle(style);
+            enableStyleSheet();
           });
         }
       });
     } else {
-      CH_GLOBAL_STYLESHEET.replace(this.el.innerText);
-      CH_GLOBAL_STYLESHEET.disabled = false;
+      appendStyle(this.el.innerText);
+      enableStyleSheet();
     }
   }
 }

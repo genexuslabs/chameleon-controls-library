@@ -10,6 +10,7 @@ import { DropdownPosition } from "./components/dropdown/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -542,6 +543,16 @@ export namespace Components {
     }
     interface ChGridColumnset {
     }
+    interface ChGridInfiniteScroll {
+        /**
+          * Indicates that the grid is already loaded.
+         */
+        "complete": () => Promise<void>;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status": ChGridInfiniteScrollState;
+    }
     interface ChGridRowActions {
         /**
           * Closes the row actions window.
@@ -597,6 +608,10 @@ export namespace Components {
           * The list of items to be rendered in the grid.
          */
         "items": any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount": number;
         /**
           * The list of items to display within the current viewport.
          */
@@ -1528,6 +1543,10 @@ export interface ChGridColumnResizeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChGridColumnResizeElement;
 }
+export interface ChGridInfiniteScrollCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChGridInfiniteScrollElement;
+}
 export interface ChGridRowActionsCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChGridRowActionsElement;
@@ -1734,6 +1753,12 @@ declare global {
     var HTMLChGridColumnsetElement: {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
+    };
+    interface HTMLChGridInfiniteScrollElement extends Components.ChGridInfiniteScroll, HTMLStencilElement {
+    }
+    var HTMLChGridInfiniteScrollElement: {
+        prototype: HTMLChGridInfiniteScrollElement;
+        new (): HTMLChGridInfiniteScrollElement;
     };
     interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
     }
@@ -2007,6 +2032,7 @@ declare global {
         "ch-grid-column-resize": HTMLChGridColumnResizeElement;
         "ch-grid-column-settings": HTMLChGridColumnSettingsElement;
         "ch-grid-columnset": HTMLChGridColumnsetElement;
+        "ch-grid-infinite-scroll": HTMLChGridInfiniteScrollElement;
         "ch-grid-row-actions": HTMLChGridRowActionsElement;
         "ch-grid-rowset-empty": HTMLChGridRowsetEmptyElement;
         "ch-grid-rowset-legend": HTMLChGridRowsetLegendElement;
@@ -2589,6 +2615,16 @@ declare namespace LocalJSX {
     }
     interface ChGridColumnset {
     }
+    interface ChGridInfiniteScroll {
+        /**
+          * Event emitted when end is reached.
+         */
+        "onInfinite"?: (event: ChGridInfiniteScrollCustomEvent<any>) => void;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status"?: ChGridInfiniteScrollState;
+    }
     interface ChGridRowActions {
         /**
           * Event emitted when row actions is opened.
@@ -2640,6 +2676,10 @@ declare namespace LocalJSX {
           * The list of items to be rendered in the grid.
          */
         "items"?: any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount"?: number;
         /**
           * Event emitted when the list of visible items in the grid changes.
          */
@@ -3609,6 +3649,7 @@ declare namespace LocalJSX {
         "ch-grid-column-resize": ChGridColumnResize;
         "ch-grid-column-settings": ChGridColumnSettings;
         "ch-grid-columnset": ChGridColumnset;
+        "ch-grid-infinite-scroll": ChGridInfiniteScroll;
         "ch-grid-row-actions": ChGridRowActions;
         "ch-grid-rowset-empty": ChGridRowsetEmpty;
         "ch-grid-rowset-legend": ChGridRowsetLegend;
@@ -3676,6 +3717,7 @@ declare module "@stencil/core" {
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+            "ch-grid-infinite-scroll": LocalJSX.ChGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChGridInfiniteScrollElement>;
             "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
             "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;

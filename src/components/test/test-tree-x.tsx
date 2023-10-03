@@ -65,6 +65,18 @@ export class ChTestTreeX {
   ) => Promise<boolean>;
 
   /**
+   * This attribute lets you specify if the drag operation is disabled in all
+   * items by default. If `true`, the control can't be dragged.
+   */
+  @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
+
+  /**
+   * This attribute lets you specify if the drop operation is disabled in all
+   * items by default. If `true`, the control won't accept any drops.
+   */
+  @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
+
+  /**
    * Callback that is executed when a list of items request to be dropped into
    * another item.
    */
@@ -466,8 +478,8 @@ export class ChTestTreeX {
       checked={treeSubModel.checked}
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
-      dragDisabled={treeSubModel.dragDisabled}
-      dropDisabled={treeSubModel.dropDisabled}
+      dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
+      dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
       lastItem={lastItem}
@@ -523,8 +535,6 @@ export class ChTestTreeX {
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
-      item.dragDisabled ??= DEFAULT_DRAG_DISABLED_VALUE;
-      item.dropDisabled ??= DEFAULT_DROP_DISABLED_VALUE;
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;

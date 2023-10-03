@@ -7,7 +7,7 @@ import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 import { ChGridManagerSelection } from "./ch-grid-manager-selection";
 import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
 import { ChGridManagerRowActions } from "./ch-grid-manager-row-actions";
-import { CH_GLOBAL_STYLESHEET } from "../style/ch-global-stylesheet";
+import { adoptGlobalStyleSheet } from "../style/ch-global-stylesheet";
 
 enum StyleRule {
   BASE_LAYER,
@@ -31,7 +31,7 @@ export class ChGridManager {
     this.styleSheet.insertRule(`:host {}`, StyleRule.BASE_LAYER);
     this.styleSheet.insertRule(".main {}", StyleRule.COLUMNS_WIDTH);
     this.grid.shadowRoot.adoptedStyleSheets.push(this.styleSheet);
-    this.grid.shadowRoot.adoptedStyleSheets.push(CH_GLOBAL_STYLESHEET);
+    adoptGlobalStyleSheet(this.grid.shadowRoot.adoptedStyleSheets);
 
     this.columns = new ChGridManagerColumns(this);
     this.selection = new ChGridManagerSelection(this);

@@ -324,25 +324,20 @@
       </section>
 
       <div class="configuration">
-        <div>
-          <input id="input-scroll-into-visible" type="text" />
-          <button id="btn-scroll-into-visible" type="button">
-            Scroll into visible
-          </button>
-        </div>
+        <button id="expand-all" type="button">Expand All</button>
 
         <ch-checkbox
           id="multi-selection"
-          checkedValue="true"
-          unCheckedValue="false"
+          checked-value="true"
+          un-checked-value="false"
           value="false"
           caption="Multi selection"
         ></ch-checkbox>
 
         <ch-checkbox
           id="check-all"
-          checkedValue="true"
-          unCheckedValue="false"
+          checked-value="true"
+          un-checked-value="false"
           value="false"
           caption="Check / uncheck all"
         ></ch-checkbox>
@@ -356,9 +351,30 @@
           </select>
         </label>
 
-        <button id="expand-all" type="button">Expand All</button>
-
         <button id="collapse-all" type="button">Collapse All</button>
+
+        <ch-checkbox
+          id="drag-enabled"
+          checked-value="true"
+          un-checked-value="false"
+          value="true"
+          caption="Drag Enabled"
+        ></ch-checkbox>
+
+        <ch-checkbox
+          id="drop-enabled"
+          checked-value="true"
+          un-checked-value="false"
+          value="true"
+          caption="Drop Enabled"
+        ></ch-checkbox>
+
+        <div>
+          <input id="input-scroll-into-visible" type="text" />
+          <button id="btn-scroll-into-visible" type="button">
+            Scroll into visible
+          </button>
+        </div>
       </div>
 
       <button type="outlined" id="get-selected-markup">
@@ -378,87 +394,6 @@
         <button id="update-big-model-btn">Set big model</button>
       </div>
     </div>
-
-    <script>
-      const markUpTree = document.getElementById("markup-tree");
-
-      /*selectionChanged event*/
-      markUpTree.addEventListener("selectionChanged", e => {
-        console.log(e.detail);
-      });
-
-      /*checkboxToggled event*/
-      markUpTree.addEventListener("checkboxToggled", e => {
-        console.log(e.detail);
-      });
-
-      /*loadLazyChildren event*/
-      markUpTree.addEventListener("loadLazyChildren", e => {
-        const itemId = e.detail.id;
-        setTimeout(() => {
-          appendLazyLoadItems(itemId);
-        }, 1000);
-      });
-
-      /*Selected items*/
-      const getSelectedMarkup = document.getElementById("get-selected-markup");
-      getSelectedMarkup.addEventListener("click", () => {
-        const selectedPromise = markUpTree.getSelectedItems();
-        selectedPromise.then(function (value) {
-          console.log(value);
-        });
-      });
-
-      getSelectedMarkup.addEventListener("click", () => {
-        const selectedPromise = markUpTree.getSelectedItems();
-        selectedPromise.then(function (value) {
-          console.log(value);
-        });
-      });
-
-      /*Checked items*/
-      const getCheckedMarkup = document.getElementById("get-checked-markup");
-      getCheckedMarkup.addEventListener("click", () => {
-        const checkedPromise = markUpTree.getCheckedItems();
-        checkedPromise.then(function (value) {
-          console.log(value);
-        });
-      });
-      /*Open Goat B*/
-      const openGoatB = document.getElementById("open-goat-b");
-      openGoatB.addEventListener("click", () => {
-        markUpTree.toggleItems(["goat-b"], true);
-      });
-      /*Close Goat B*/
-      const closeGoatB = document.getElementById("close-goat-b");
-      closeGoatB.addEventListener("click", () => {
-        markUpTree.toggleItems(["goat-b"], false);
-      });
-      /*Toggle Goat B*/
-      const toggleGoatB = document.getElementById("toggle-goat-b");
-      toggleGoatB.addEventListener("click", () => {
-        markUpTree.toggleItems(["goat-b"]);
-      });
-
-      const appendLazyLoadItems = itemId => {
-        const item = document.querySelector(`gxg-tree-item[id='${itemId}']`);
-        const innerText = item.innerText;
-        const lazyLoadedItems = `
-      ${innerText}
-      <gxg-tree slot="tree">
-        <gxg-tree-item icon="general/generator" leaf id="goat-c2.1">
-          Goat C2.1
-        </gxg-tree-item>
-        <gxg-tree-item icon="general/patterns" leaf id="goat-c2.2">
-          Goat C2.2
-        </gxg-tree-item>
-        <gxg-tree-item icon="general/patterns" leaf id="goat-c2.3">
-          Goat C2.3
-      </gxg-tree-item>
-    `;
-        item.innerHTML = lazyLoadedItems;
-      };
-    </script>
 
     <script>
       const modelTiny = [
@@ -1030,6 +965,20 @@
         const collapseAllBtn = document.getElementById("collapse-all");
         collapseAllBtn.addEventListener("click", event => {
           testTreeX.updateAllItemsProperties({ expanded: false });
+        });
+
+        const dragEnabledCheckbox = document.getElementById("drag-enabled");
+        dragEnabledCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+
+          testTreeX.dragDisabled = !checked;
+        });
+
+        const dropEnabledCheckbox = document.getElementById("drop-enabled");
+        dropEnabledCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+
+          testTreeX.dropDisabled = !checked;
         });
 
         const linesSelect = document.getElementById("lines");

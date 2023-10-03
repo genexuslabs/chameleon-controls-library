@@ -487,8 +487,8 @@ export class ChGrid {
 
       const rowContextMenuEventInfo = this.rowContextMenu.emit({
         rowId: targetRow.rowId,
-        cellId: cellFocused.cellId,
-        columnId: cellFocused.column.columnId,
+        cellId: cellFocused?.cellId,
+        columnId: cellFocused?.column.columnId,
         selectedRowsId: this.rowsSelected.map(row => row.rowId),
         clientX: eventInfo.clientX,
         clientY: eventInfo.clientY

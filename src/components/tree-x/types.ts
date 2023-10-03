@@ -13,6 +13,8 @@ export type TreeXItemModel = {
   checked?: boolean;
   class?: string;
   disabled?: boolean;
+  dragDisabled?: boolean;
+  dropDisabled?: boolean;
   expanded?: boolean;
   lazy?: boolean;
   leaf?: boolean;
@@ -55,7 +57,7 @@ export type TreeXListItemNewCaption = {
 
 export type TreeXItemDragStartInfo = {
   elem: HTMLChTreeXListItemElement;
-  dataTransfer: DataTransfer;
+  dragEvent: DragEvent;
 };
 
 export type TreeXLines = "all" | "last" | "none";
@@ -63,7 +65,13 @@ export type TreeXLines = "all" | "last" | "none";
 export type TreeXDataTransferInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];
-  dropInTheSameTree?: boolean;
+  draggingSelectedItems: boolean;
+  dropInTheSameTree: boolean;
+};
+
+export type TreeXDropCheckInfo = {
+  newContainer: GxDataTransferInfo;
+  draggedItems: GxDataTransferInfo[];
 };
 
 export type TreeXDroppableZoneState = "checking" | "invalid" | "valid";

@@ -23,7 +23,7 @@ import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { FocusChangeAttempt, SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
-import { TreeXDataTransferInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
+import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
 import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -1070,8 +1070,16 @@ export namespace Components {
           * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
          */
         "checkDroppableZoneCallback": (
-    dropInformation: TreeXDataTransferInfo
+    dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
+        /**
+          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
+         */
+        "dragDisabled": boolean;
+        /**
+          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the control won't accept any drops.
+         */
+        "dropDisabled": boolean;
         /**
           * Callback that is executed when a list of items request to be dropped into another item.
          */
@@ -1230,9 +1238,9 @@ export namespace Components {
     }
     interface ChTreeX {
         /**
-          * Level in the tree at which the control is placed.
+          * Clear all information about the selected items. This method is intended to be used when selected items are reordered and the selected references will no longer be useful.
          */
-        "level": number;
+        "clearSelectedItemsInfo": () => Promise<void>;
         /**
           * Set this attribute if you want to allow multi selection of the items.
          */
@@ -1249,10 +1257,6 @@ export namespace Components {
           * `true` to scroll in the tree when dragging an item near the edges of the tree.
          */
         "scrollToEdgeOnDrag": boolean;
-        /**
-          * `true` to display the relation between tree items and tree lists using lines.
-         */
-        "showLines": TreeXLines;
         /**
           * Update the information about the valid droppable zones.
           * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
@@ -1271,10 +1275,6 @@ export namespace Components {
           * Level in the tree at which the control is placed.
          */
         "level": number;
-        /**
-          * `true` to display the relation between tree items and tree lists using lines.
-         */
-        "showLines": TreeXLines;
     }
     interface ChTreeXListItem {
         /**
@@ -1302,9 +1302,17 @@ export namespace Components {
          */
         "downloading": boolean;
         /**
+          * This attribute lets you specify if the drag operation is disabled in the control. If `true`, the control can't be dragged.
+         */
+        "dragDisabled": boolean;
+        /**
           * This property lets you define the current state of the item when it's being dragged.
          */
         "dragState": DragState;
+        /**
+          * This attribute lets you specify if the drop operation is disabled in the control. If `true`, the control won't accept any drops.
+         */
+        "dropDisabled": boolean;
         /**
           * Set this attribute when the item is in edit mode
          */
@@ -3199,8 +3207,16 @@ declare namespace LocalJSX {
           * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
          */
         "checkDroppableZoneCallback"?: (
-    dropInformation: TreeXDataTransferInfo
+    dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
+        /**
+          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
+         */
+        "dragDisabled"?: boolean;
+        /**
+          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the control won't accept any drops.
+         */
+        "dropDisabled"?: boolean;
         /**
           * Callback that is executed when a list of items request to be dropped into another item.
          */
@@ -3341,17 +3357,13 @@ declare namespace LocalJSX {
     }
     interface ChTreeX {
         /**
-          * Level in the tree at which the control is placed.
-         */
-        "level"?: number;
-        /**
           * Set this attribute if you want to allow multi selection of the items.
          */
         "multiSelection"?: boolean;
         /**
           * Fired when an element attempts to enter in a droppable zone where the tree has no information about the validity of the drop.
          */
-        "onDroppableZoneEnter"?: (event: ChTreeXCustomEvent<TreeXDataTransferInfo>) => void;
+        "onDroppableZoneEnter"?: (event: ChTreeXCustomEvent<TreeXDropCheckInfo>) => void;
         /**
           * Fired when an item is expanded or collapsed.
          */
@@ -3373,10 +3385,6 @@ declare namespace LocalJSX {
          */
         "scrollToEdgeOnDrag"?: boolean;
         /**
-          * `true` to display the relation between tree items and tree lists using lines.
-         */
-        "showLines"?: TreeXLines;
-        /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
         "waitDropProcessing"?: boolean;
@@ -3386,10 +3394,6 @@ declare namespace LocalJSX {
           * Level in the tree at which the control is placed.
          */
         "level"?: number;
-        /**
-          * `true` to display the relation between tree items and tree lists using lines.
-         */
-        "showLines"?: TreeXLines;
     }
     interface ChTreeXListItem {
         /**
@@ -3417,9 +3421,17 @@ declare namespace LocalJSX {
          */
         "downloading"?: boolean;
         /**
+          * This attribute lets you specify if the drag operation is disabled in the control. If `true`, the control can't be dragged.
+         */
+        "dragDisabled"?: boolean;
+        /**
           * This property lets you define the current state of the item when it's being dragged.
          */
         "dragState"?: DragState;
+        /**
+          * This attribute lets you specify if the drop operation is disabled in the control. If `true`, the control won't accept any drops.
+         */
+        "dropDisabled"?: boolean;
         /**
           * Set this attribute when the item is in edit mode
          */
@@ -3477,9 +3489,13 @@ declare namespace LocalJSX {
          */
         "onModifyCaption"?: (event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>) => void;
         /**
-          * Fired when the control is selected.
+          * Fired when the selected state is updated by user interaction on the control.
          */
         "onSelectedItemChange"?: (event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>) => void;
+        /**
+          * Fired when the selected state is updated through the interface and without user interaction. The purpose of this event is to better sync with the main tree.
+         */
+        "onSelectedItemSync"?: (event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>) => void;
         /**
           * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */

@@ -671,7 +671,9 @@ export class ChTreeX {
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
-        <slot />
+        <div role="tree" class="ch-tree-x-container">
+          <slot />
+        </div>
 
         {this.draggingInTree && (
           <span aria-hidden="true" class="ch-tree-x-drag-info">

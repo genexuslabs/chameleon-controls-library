@@ -3,7 +3,7 @@ ch-tree-x {
   position: relative;
   overflow: auto;
 
-  & > ch-tree-x-list {
+  & > .ch-tree-x-container {
     position: absolute;
     inset: 0;
     min-width: max-content;

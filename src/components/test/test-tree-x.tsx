@@ -87,7 +87,7 @@ export class ChTestTreeX {
   /**
    * This property lets you define the model of the ch-tree-x control.
    */
-  @Prop({ mutable: true }) treeModel: TreeXModel = { items: [] };
+  @Prop() readonly treeModel: TreeXModel = { items: [] };
   @Watch("treeModel")
   handleTreeModelChange() {
     this.flattenModel();
@@ -111,7 +111,7 @@ export class ChTestTreeX {
   /**
    * Set this attribute if you want to allow multi selection of the items.
    */
-  @Prop({ mutable: true }) multiSelection = false;
+  @Prop() readonly multiSelection: boolean = false;
 
   /**
    * `true` to display the relation between tree items and tree lists using

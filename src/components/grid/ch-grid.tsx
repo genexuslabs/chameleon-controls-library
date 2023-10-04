@@ -38,6 +38,7 @@ import {
 import {
   MouseEventButton,
   MouseEventButtons,
+  focusComposedPath,
   mouseEventHasButtonPressed,
   mouseEventModifierKey
 } from "../common/helpers";
@@ -282,7 +283,7 @@ export class ChGrid {
   @Listen("keydown", { target: "window" })
   windowKeyDownHandler(eventInfo: KeyboardEvent) {
     if (
-      document.activeElement === this.el &&
+      focusComposedPath()[0] === this.el &&
       [
         " ",
         "+",
@@ -303,7 +304,7 @@ export class ChGrid {
 
   @Listen("keydown", { passive: true })
   keyDownHandler(eventInfo: KeyboardEvent) {
-    if (document.activeElement === this.el) {
+    if (focusComposedPath()[0] === this.el) {
       switch (eventInfo.key) {
         case " ":
           this.toggleRowsMarked();

@@ -244,49 +244,48 @@ export class ChTestTreeX {
 
   @Listen("loadLazyContent")
   loadLazyChildrenHandler(event: ChTreeXListItemCustomEvent<string>) {
-    event.stopPropagation();
-    const treeItemId = event.detail;
-
-    if (this.lazyLoadTreeItemsCallback) {
-      const promise = this.lazyLoadTreeItemsCallback(treeItemId);
-      const itemRef = event.target;
-      itemRef.downloading = true;
-
-      promise.then(result => {
-        const itemToLazyLoadContent =
-          this.flattenedLazyTreeModel.get(treeItemId);
-
-        // Establish that the content was lazy loaded
-        this.flattenedLazyTreeModel.delete(treeItemId);
-        itemToLazyLoadContent.lazy = false;
-        itemRef.downloading = false;
-
-        // Check if there is items to add
-        if (result == null) {
-          return;
-        }
-
-        // @todo What happens in the server when dropping items on a lazy node?
-        itemToLazyLoadContent.items = result;
-
-        this.sortItems(itemToLazyLoadContent.items);
-        this.flattenSubModel(itemToLazyLoadContent);
-
-        // Force re-render
-        forceUpdate(this);
-      });
+    if (!this.lazyLoadTreeItemsCallback) {
+      return;
     }
+    event.stopPropagation();
+
+    const treeItemId = event.detail;
+    const promise = this.lazyLoadTreeItemsCallback(treeItemId);
+    const itemRef = event.target;
+    itemRef.downloading = true;
+
+    promise.then(result => {
+      const itemToLazyLoadContent = this.flattenedLazyTreeModel.get(treeItemId);
+
+      // Establish that the content was lazy loaded
+      this.flattenedLazyTreeModel.delete(treeItemId);
+      itemToLazyLoadContent.lazy = false;
+      itemRef.downloading = false;
+
+      // Check if there is items to add
+      if (result == null) {
+        return;
+      }
+
+      // @todo What happens in the server when dropping items on a lazy node?
+      itemToLazyLoadContent.items = result;
+
+      this.sortItems(itemToLazyLoadContent.items);
+      this.flattenSubModel(itemToLazyLoadContent);
+
+      // Force re-render
+      forceUpdate(this);
+    });
   }
 
   @Listen("modifyCaption")
   handleCaptionModification(
     event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>
   ) {
-    event.stopPropagation();
-
     if (!this.modifyItemCaptionCallback) {
       return;
     }
+    event.stopPropagation();
 
     const itemRef = event.target;
     const itemId = event.detail.id;
@@ -323,12 +322,12 @@ export class ChTestTreeX {
   private handleDroppableZoneEnter = (
     event: ChTreeXCustomEvent<TreeXDropCheckInfo>
   ) => {
-    const dropInformation = event.detail;
-
     if (!this.checkDroppableZoneCallback) {
       return;
     }
+    event.stopPropagation();
 
+    const dropInformation = event.detail;
     const requestTimestamp = new Date().getTime();
     const promise = this.checkDroppableZoneCallback(dropInformation);
 
@@ -385,6 +384,11 @@ export class ChTestTreeX {
   private handleItemsDropped = (
     event: ChTreeXCustomEvent<TreeXDataTransferInfo>
   ) => {
+    if (!this.dropItemsCallback) {
+      return;
+    }
+    event.stopPropagation();
+
     const dataTransferInfo = event.detail;
     const newContainer = dataTransferInfo.newContainer;
     const newParentId = newContainer.id;
@@ -396,7 +400,7 @@ export class ChTestTreeX {
 
     const draggedItems: GxDataTransferInfo[] = dataTransferInfo.draggedItems;
 
-    if (draggedItems.length === 0 || !this.dropItemsCallback) {
+    if (draggedItems.length === 0) {
       return;
     }
 

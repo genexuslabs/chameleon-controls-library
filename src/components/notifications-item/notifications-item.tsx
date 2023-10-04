@@ -1,11 +1,12 @@
 import {
   Component,
-  Element,
+  Host,
+  h,
+  Prop,
+  Watch,
   Event,
   EventEmitter,
-  Host,
-  Prop,
-  h
+  Element
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 
@@ -19,109 +20,172 @@ export class ChNotificationsItem implements ChComponent {
    * Used to not fire an extra event when the control is dismissed before the
    * dismiss timeout is called.
    */
-  private timeout: NodeJS.Timeout;
+  private timerId: NodeJS.Timeout;
 
   @Element() element: HTMLChNotificationsItemElement;
 
-  /**
-   *
-   */
-  @Prop() readonly buttonImgSrc: string;
+  /** Sets the desired interval */
+  @Prop() readonly timerInterval = 50;
 
   /**
-   *
+   * Determine the accessible name of the close button.
+   * Important for accessibility.
    */
-  @Prop() readonly closeButtonLabel: string;
+  @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
-   *
+   * Specifies the time (ms) for the alert to be displayed.
+   * if `dismissTimeout = 0`, the alert will be always visible
+   * (unless is dismissed by the closeButton).
    */
-  @Prop() readonly leftImgSrc: string;
+  @Prop() readonly dismissTimeout = 0;
+
+  @Watch("dismissTimeout")
+  timeoutWatcher(newValue) {
+    if (newValue) {
+      this.countdown = newValue;
+      this.start();
+    }
+  }
 
   /**
-   * `true` to show the close notification button
+   * Determine src of the left image.
    */
-  @Prop() readonly showCloseButton: boolean = true;
+  @Prop() readonly leftImgSrc = "";
 
   /**
-   *
+   * Determine if the closeButton is displayed or not.
    */
-  @Prop() readonly timeToDismiss = 5000;
+  @Prop() readonly showCloseButton: boolean = false;
 
   /**
-   *
+   * If dismissTimeout > 0, a progress bar is displayed at the bottom of the element
+   * showing the time left for the alert to show.
+   * The progress stops when the element is hovered.
    */
-  @Event() notificationClick: EventEmitter<number>;
+  @Prop() readonly showTimeoutBar: boolean = false;
 
-  /**
-   *
+  /** Toggles the Pause on Hover functionality */
+  @Prop() readonly pauseOnHover: boolean = true;
+
+  /** Closes the alert when the close button is clicked.
+   * Also restarts the counter and sets its value to match dismissTimeout.
    */
-  @Event() notificationDismiss: EventEmitter<number>;
 
   private handleNotificationDismiss =
-    (mustClearTimeout = false) =>
+    (mustClearInterval = false) =>
     () => {
-      if (mustClearTimeout) {
-        clearTimeout(this.timeout);
+      if (mustClearInterval) {
+        clearInterval(this.timerId);
       }
-
       this.notificationDismiss.emit(Number(this.element.id));
     };
 
+  /** Handles the notification click */
   private handleNotificationClick =
-    (mustClearTimeout = false) =>
+    (mustClearInterval = false) =>
     () => {
-      if (mustClearTimeout) {
-        clearTimeout(this.timeout);
+      if (mustClearInterval) {
+        clearInterval(this.timerId);
       }
 
       this.notificationClick.emit(Number(this.element.id));
     };
 
-  componentDidLoad() {
-    this.timeout = setTimeout(
-      this.handleNotificationDismiss(false),
-      this.timeToDismiss
-    );
+  /** Countdown which initial state is dismissTimeout ms. */
+  @Prop({ mutable: true }) countdown: number = this.dismissTimeout;
+
+  /** Countdown watcher that hides the alert if dismissTimeout is reached
+   * and stops the countdown.
+   * See handleNotificationDismiss for more details. */
+  @Watch("countdown")
+  countdownWatcher(newValue) {
+    if (newValue <= 0) {
+      this.handleNotificationDismiss(true)();
+    }
   }
 
+  /** the notificationClick event */
+  @Event() notificationClick: EventEmitter<number>;
+
+  /** the notificationDismiss event */
+  @Event() notificationDismiss: EventEmitter<number>;
+
+  /** Counter decremental function */
+  private counter = () => {
+    this.countdown -= this.timerInterval;
+  };
+
+  /** Starts a new countdown which interval is set in timerInterval,
+   * Only if is presented, dismissTimeout is greater than 0,
+   * and countdown is still running.
+   */
+  private start = () => {
+    clearInterval(this.timerId);
+    if (this.dismissTimeout !== 0 && this.countdown >= 0) {
+      this.timerId = setInterval(this.counter, this.timerInterval);
+    }
+  };
+
+  /** Pauses the countdown */
+  private handleMouseEnter = () => {
+    clearInterval(this.timerId);
+  };
+
+  /** Resumes the countdown */
+  private handleMouseLeave = () => {
+    this.start();
+  };
+
+  componentDidLoad() {
+    this.start();
+  }
   render() {
     return (
-      <Host>
-        <button
-          class="main"
-          part="notification-item__main"
-          type="button"
-          onClick={this.handleNotificationClick(true)}
-        >
-          {this.leftImgSrc && (
-            <img
-              aria-hidden="true"
-              alt=""
-              src={this.leftImgSrc}
-              loading="lazy"
-            />
-          )}
-          <slot></slot>
-        </button>
-
+      <Host
+        role="alert"
+        onMouseEnter={this.pauseOnHover && this.handleMouseEnter}
+        onMouseLeave={this.pauseOnHover && this.handleMouseLeave}
+        aria-hidden="false"
+        class={this.pauseOnHover && "pause-on-hover"}
+        onClick={this.handleNotificationClick(true)}
+      >
+        {this.leftImgSrc && (
+          <img
+            part="image"
+            class="image"
+            src={this.leftImgSrc}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+          />
+        )}
+        <div part="content" class="content">
+          <slot name="content"></slot>
+        </div>
         {this.showCloseButton && (
           <button
-            aria-label={this.closeButtonLabel}
-            class={!this.buttonImgSrc ? "close-image" : undefined}
-            part="notification-item__close-button"
+            part="close-button"
+            class="close-button"
             type="button"
+            aria-label={this.closeButtonAccessibleName}
             onClick={this.handleNotificationDismiss(true)}
           >
-            {this.buttonImgSrc && (
-              <img
-                aria-hidden="true"
-                alt=""
-                src={this.buttonImgSrc}
-                loading="lazy"
-              />
-            )}
+            <slot name="button" aria-hidden="true">
+              <div aria-hidden="true" class="close-button-img"></div>
+            </slot>
           </button>
+        )}
+        {this.showTimeoutBar && (
+          <ch-timer
+            part="indicator-container"
+            class="indicator-container"
+            exportparts="indicator"
+            progress={(this.countdown * 100) / this.dismissTimeout}
+            accessibleName={`${this.countdown / 1000} seconds left`}
+            animation-time={this.dismissTimeout}
+            presented={true}
+          ></ch-timer>
         )}
       </Host>
     );

@@ -35,7 +35,13 @@ export class ChNotifications implements ChComponent {
   /**
    *
    */
-  @Prop() readonly position: "bottom-start" | "bottom-end" = "bottom-end";
+  @Prop() readonly position:
+    | "top-start"
+    | "top-center"
+    | "top-end"
+    | "bottom-start"
+    | "bottom-center"
+    | "bottom-end" = "bottom-center";
 
   /**
    *
@@ -76,7 +82,6 @@ export class ChNotifications implements ChComponent {
   @Listen("notificationDismiss")
   handleNotificationDismiss(event: CustomEvent<number>) {
     this.currentNotifications.delete(event.detail);
-
     // Trigger render
     this.notificationsSize--;
   }
@@ -129,23 +134,37 @@ export class ChNotifications implements ChComponent {
         aria-atomic="true"
         class={`ch-notifications-position--${this.position}`}
       >
-        {messages.map(({ Id, Value, Class, delayToAnimate }) => (
-          <ch-notifications-item
-            id={Id.toString()}
-            key={Id}
-            class={Class}
-            style={{
-              "--delay-to-animate": `${
+        {messages.map(
+          ({
+            Id,
+            Value,
+            Class,
+            delayToAnimate,
+            timerInterval,
+            dismissTimeout
+          }) => (
+            <ch-notifications-item
+              id={Id.toString()}
+              key={Id}
+              class={Class}
+              timer-interval={timerInterval}
+              delay-to-animate={
                 delayToAnimate * this.delayToAnimateNewNotifications
-              }ms`
-            }}
-            time-to-dismiss={
-              this.getTimeToDismiss() +
-              delayToAnimate * this.delayToAnimateNewNotifications
-            }
-            innerHTML={Value}
-          ></ch-notifications-item>
-        ))}
+              }
+              dismiss-timeout={
+                !dismissTimeout
+                  ? this.getTimeToDismiss() +
+                    delayToAnimate * this.delayToAnimateNewNotifications
+                  : dismissTimeout
+              }
+              show-close-button={true}
+              show-timeout-bar={true}
+              pause-on-hover={true}
+            >
+              <div slot="content">{Value}</div>
+            </ch-notifications-item>
+          )
+        )}
       </Host>
     );
   }

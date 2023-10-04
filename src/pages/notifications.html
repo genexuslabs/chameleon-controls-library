@@ -11,10 +11,96 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <style>
+      ch-notifications-item {
+        border: solid;
+        border-radius: 4px;
+        padding: 15px 10px;
+        position: relative;
+      }
+      ch-notifications-item::part(indicator) {
+        margin: 0 -10px;
+        position: absolute;
+        bottom: 0;
+      }
+      .second::part(indicator) {
+        height: 8px;
+        background-color: thistle;
+      }
+
+      .last::part(indicator) {
+        height: 12px;
+        background-color: greenyellow;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">To be done.</div>
+    <div class="container">
+      <section class="section-dev" data-title="ch-notifications">
+        <br />
+        <ch-notifications
+          position="bottom-start"
+        >
+        </ch-notifications>
+      </section>
+    </div>
 
+    <script>
+      var messages = [
+        {
+          "Id": 1,
+          "Value": "Meouw",
+          "Class": "custom-class",
+          "closeOnClick": true,
+          "delayToAnimate": 130,
+          "timerInterval": 100,
+          "closeButtonAccessibleName": "exit",
+          "dismissTimeout": 15000,
+          "showCloseButton": true,
+          "showTimeoutBar": false,
+          "pauseOnHover": false
+        },
+        {
+          "Id": 2,
+          "Value": "Woff",
+          "Class": "custom-class",
+          "closeOnClick": true,
+          "delayToAnimate": 330,
+          "timerInterval": 10,
+          "closeButtonAccessibleName": "close",
+          "dismissTimeout": 100000,
+          "showCloseButton": false,
+          "showTimeoutBar": true,
+          "pauseOnHover": true
+        },
+        {
+          "Id": 3,
+          "Value": "Auch",
+          "Class": "custom-class",
+          "closeOnClick": true,
+          "delayToAnimate": 50,
+          "timerInterval": 50,
+          "dismissTimeout": 800000,
+          "showCloseButton": false,
+          "showTimeoutBar": false,
+          "pauseOnHover": false
+        },
+        {
+          "Id": 4,
+          "Value": "Yay",
+          "Class": "custom-class",
+          "closeOnClick": true,
+          "delayToAnimate": 30,
+          "timerInterval": 5,
+          "closeButtonAccessibleName": "dismiss",
+          "dismissTimeout": 5000,
+          "showCloseButton": true,
+          "showTimeoutBar": true,
+          "pauseOnHover": true
+        }
+      ]
+      document.querySelector('ch-notifications').notifications = messages;
+    </script>
     <script src="./assets/scripts/common.js"></script>
   </body>
 </html>

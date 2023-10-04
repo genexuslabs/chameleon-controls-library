@@ -392,31 +392,38 @@ export class ChGrid {
           : null);
     }
 
-    if (this.manager.selection.selecting) {
-      const row = this.manager.getRowEventTarget(eventInfo);
-      const cell = this.manager.getCellEventTarget(eventInfo);
+    selectingBlock: {
+      if (this.manager.selection.selecting) {
+        if (focusComposedPath()[0] !== this.el) {
+          this.stopSelecting();
+          break selectingBlock;
+        }
 
-      if (
-        row &&
-        (this.manager.selection.selectingRow !== row ||
-          this.manager.selection.selectingCell !== cell)
-      ) {
-        const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
-        const isMouseButtonRightPressed = mouseEventHasButtonPressed(
-          eventInfo,
-          MouseEventButtons.RIGHT
-        );
+        const row = this.manager.getRowEventTarget(eventInfo);
+        const cell = this.manager.getCellEventTarget(eventInfo);
 
-        this.selectByPointerEvent(
-          row,
-          cell,
-          isKeyModifierPressed && !isMouseButtonRightPressed,
-          !isMouseButtonRightPressed,
-          isMouseButtonRightPressed
-        );
+        if (
+          row &&
+          (this.manager.selection.selectingRow !== row ||
+            this.manager.selection.selectingCell !== cell)
+        ) {
+          const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
+          const isMouseButtonRightPressed = mouseEventHasButtonPressed(
+            eventInfo,
+            MouseEventButtons.RIGHT
+          );
 
-        this.manager.selection.selectingRow = row;
-        this.manager.selection.selectingCell = cell;
+          this.selectByPointerEvent(
+            row,
+            cell,
+            isKeyModifierPressed && !isMouseButtonRightPressed,
+            !isMouseButtonRightPressed,
+            isMouseButtonRightPressed
+          );
+
+          this.manager.selection.selectingRow = row;
+          this.manager.selection.selectingCell = cell;
+        }
       }
     }
   }
@@ -453,9 +460,7 @@ export class ChGrid {
 
   @Listen("mouseup", { passive: true })
   mouseUpHandler() {
-    this.manager.selection.selecting = false;
-    this.manager.selection.selectingRow = null;
-    this.manager.selection.selectingCell = null;
+    this.stopSelecting();
   }
 
   @Listen("dblclick", { passive: true })
@@ -999,6 +1004,12 @@ export class ChGrid {
     this.cellSelected = cellSelected;
 
     rowFocused?.ensureVisible();
+  }
+
+  private stopSelecting() {
+    this.manager.selection.selecting = false;
+    this.manager.selection.selectingRow = null;
+    this.manager.selection.selectingCell = null;
   }
 
   private renderSettings() {

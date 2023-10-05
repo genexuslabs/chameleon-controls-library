@@ -124,6 +124,39 @@ export class ChTestTreeX {
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
 
   /**
+   * Given an item id, an array of items to add, the download status and the
+   * lazy state, updates the item's UI Model.
+   */
+  @Method()
+  async loadLazyContent(
+    itemId: string,
+    items?: TreeXItemModel[],
+    downloading = false,
+    lazy = false
+  ) {
+    const itemToLazyLoadContent = this.flattenedLazyTreeModel.get(itemId);
+
+    // Establish that the content was lazy loaded
+    this.flattenedLazyTreeModel.delete(itemId);
+    itemToLazyLoadContent.downloading = downloading;
+    itemToLazyLoadContent.lazy = lazy;
+
+    // Check if there is items to add
+    if (items == null) {
+      return;
+    }
+
+    // @todo What happens in the server when dropping items on a lazy node?
+    itemToLazyLoadContent.items = items;
+
+    this.sortItems(itemToLazyLoadContent.items);
+    this.flattenSubModel(itemToLazyLoadContent);
+
+    // Force re-render
+    forceUpdate(this);
+  }
+
+  /**
    * Given an item id, it displays and scrolls into the item view.
    */
   @Method()
@@ -250,30 +283,10 @@ export class ChTestTreeX {
 
     const treeItemId = event.detail;
     const promise = this.lazyLoadTreeItemsCallback(treeItemId);
-    const itemRef = event.target;
-    itemRef.downloading = true;
+    event.target.downloading = true;
 
     promise.then(result => {
-      const itemToLazyLoadContent = this.flattenedLazyTreeModel.get(treeItemId);
-
-      // Establish that the content was lazy loaded
-      this.flattenedLazyTreeModel.delete(treeItemId);
-      itemToLazyLoadContent.lazy = false;
-      itemRef.downloading = false;
-
-      // Check if there is items to add
-      if (result == null) {
-        return;
-      }
-
-      // @todo What happens in the server when dropping items on a lazy node?
-      itemToLazyLoadContent.items = result;
-
-      this.sortItems(itemToLazyLoadContent.items);
-      this.flattenSubModel(itemToLazyLoadContent);
-
-      // Force re-render
-      forceUpdate(this);
+      this.loadLazyContent(treeItemId, result);
     });
   }
 
@@ -481,6 +494,7 @@ export class ChTestTreeX {
       checked={treeSubModel.checked}
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
+      downloading={treeSubModel.downloading}
       dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
       dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
       expanded={treeSubModel.expanded}

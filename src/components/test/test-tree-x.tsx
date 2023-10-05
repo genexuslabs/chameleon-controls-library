@@ -16,8 +16,7 @@ import {
   TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
-  TreeXListItemSelectedInfo,
-  TreeXModel
+  TreeXListItemSelectedInfo
 } from "../tree-x/types";
 import {
   TreeXItemModelExtended,
@@ -87,7 +86,7 @@ export class ChTestTreeX {
   /**
    * This property lets you define the model of the ch-tree-x control.
    */
-  @Prop() readonly treeModel: TreeXModel = { items: [] };
+  @Prop() readonly treeModel: TreeXItemModel[] = [];
   @Watch("treeModel")
   handleTreeModelChange() {
     this.flattenModel();
@@ -514,12 +513,12 @@ export class ChTestTreeX {
     </ch-tree-x-list-item>
   );
 
-  private flattenSubModel(model: TreeXModel | TreeXItemModel) {
+  private flattenSubModel(model: TreeXItemModel) {
     const items = model.items;
 
     if (!items) {
       // Make sure that subtrees don't have an undefined array
-      if ((model as TreeXItemModel).leaf === false) {
+      if (model.leaf === false) {
         model.items = [];
       }
       return;
@@ -531,7 +530,7 @@ export class ChTestTreeX {
   }
 
   private flattenItemUIModel =
-    (parentModel: TreeXModel | TreeXItemModel) => (item: TreeXItemModel) => {
+    (parentModel: TreeXItemModel) => (item: TreeXItemModel) => {
       this.flattenedTreeModel.set(item.id, {
         parentItem: parentModel,
         item: item
@@ -566,7 +565,7 @@ export class ChTestTreeX {
     this.flattenedTreeModel.clear();
     this.flattenedLazyTreeModel.clear();
 
-    this.flattenSubModel(this.treeModel);
+    this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
   }
 
   componentWillLoad() {
@@ -585,10 +584,10 @@ export class ChTestTreeX {
           onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
-          {this.treeModel.items.map((subModel, index) =>
+          {this.treeModel.map((subModel, index) =>
             this.renderSubModel(
               subModel,
-              this.showLines && index === this.treeModel.items.length - 1,
+              this.showLines && index === this.treeModel.length - 1,
               0
             )
           )}

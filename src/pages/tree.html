@@ -940,9 +940,7 @@
 
         const testTreeX = document.querySelector("ch-test-tree-x");
 
-        testTreeX.treeModel = {
-          items: model
-        };
+        testTreeX.treeModel = model;
 
         const multiSelectionCheckbox =
           document.getElementById("multi-selection");
@@ -989,34 +987,26 @@
 
         const loadModelBtn = document.getElementById("load-model-btn");
         loadModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: model
-          };
+          testTreeX.treeModel = model;
         });
 
         const updateModelBtn = document.getElementById("update-model-btn");
         updateModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: updatedModel
-          };
+          testTreeX.treeModel = updatedModel;
         });
 
         const updateModelAgainBtn = document.getElementById(
           "update-model-again-btn"
         );
         updateModelAgainBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: modelTinyUpdatedAgain
-          };
+          testTreeX.treeModel = modelTinyUpdatedAgain;
         });
 
         const updateBigModelBtn = document.getElementById(
           "update-big-model-btn"
         );
         updateBigModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: bigModel
-          };
+          testTreeX.treeModel = bigModel;
         });
 
         const scrollIntoVisibleBtn = document.getElementById(
@@ -1121,9 +1111,7 @@
         testTreeX.sortItemsCallback = sortItems;
 
         // Eager large model
-        // testTreeX.treeModel = {
-        //   items: eagerLargeModel
-        // };
+        // testTreeX.treeModel = eagerLargeModel;
       });
     </script>
 

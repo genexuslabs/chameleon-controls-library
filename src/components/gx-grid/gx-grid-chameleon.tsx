@@ -27,6 +27,7 @@ import {
 } from "./gx-grid-chameleon-state";
 import { Gx, GxControl, GxGrid, GxGridColumn, GxGridRow } from "./genexus";
 import { GridChameleonColumnFilterChanged } from "./gx-grid-column-filter/gx-grid-chameleon-column-filter";
+import { ChPaginatorPageNavigationRequestedEvent } from "../paginator/ch-paginator";
 
 declare let gx: Gx;
 
@@ -89,9 +90,9 @@ export class GridChameleon {
     }
   }
 
-  @Listen("navigateClicked")
+  @Listen("pageNavigationRequested")
   navigateClickedHandler(
-    eventInfo: CustomEvent<ChPaginatorNavigateClickedEvent>
+    eventInfo: CustomEvent<ChPaginatorPageNavigationRequestedEvent>
   ) {
     switch (eventInfo.detail.type) {
       case "first":
@@ -105,6 +106,9 @@ export class GridChameleon {
         break;
       case "last":
         paginationGoToLastPage(this.grid);
+        break;
+      case "goto":
+        paginationGoToPage(this.grid, eventInfo.detail.page);
         break;
     }
   }

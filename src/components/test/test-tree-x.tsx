@@ -608,12 +608,6 @@ export class ChTestTreeX {
             )
           )}
         </ch-tree-x>
-
-        <div class="tree-buttons">
-          {/* <button type="button" onClick={this.deleteNodeHandler}>
-          Delete Tree
-        </button> */}
-        </div>
       </Host>
     );
   }

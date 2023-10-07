@@ -65,6 +65,11 @@ export class ChTestTreeX {
   ) => Promise<boolean>;
 
   /**
+   * A CSS class to set as the `ch-tree-x` element class.
+   */
+  @Prop() readonly cssClass: string;
+
+  /**
    * This attribute lets you specify if the drag operation is disabled in all
    * items by default. If `true`, the control can't be dragged.
    */
@@ -592,6 +597,7 @@ export class ChTestTreeX {
     return (
       <Host>
         <ch-tree-x
+          class={this.cssClass || null}
           multiSelection={this.multiSelection}
           waitDropProcessing={this.waitDropProcessing}
           onDroppableZoneEnter={this.handleDroppableZoneEnter}

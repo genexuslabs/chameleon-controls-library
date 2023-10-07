@@ -218,6 +218,12 @@
 								<Value id='text' desc='Text'/>
 							</Values>
 						</Prop>
+						<Prop>
+							<Id>PaginatorPagesMaxSize</Id>
+							<Name>PaginatorPagesMaxSize</Name>
+							<Type>Integer</Type>
+							<Default>6</Default>
+						</Prop>
 					</Childs>
 				</Group>
 			</Childs>

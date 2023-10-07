@@ -31,3 +31,15 @@ export function paginationGoToLastPage(grid: GxGrid) {
     grid.changeGridPage("LAST");
   }
 }
+
+export function paginationGoToPage(grid: GxGrid, page: number) {
+  if (page === 1) {
+    grid.changeGridPage("FIRST");
+  } else {
+    grid.firstRecordOnPage = (
+      grid.pageSize * (page - 1) -
+      grid.pageSize
+    ).toString();
+    grid.changeGridPage("NEXT");
+  }
+}

@@ -671,7 +671,11 @@ export class ChTreeX {
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
-        <div role="tree" class="ch-tree-x-container">
+        <div
+          role="tree"
+          aria-multiselectable={this.multiSelection.toString()}
+          class="ch-tree-x-container"
+        >
           <slot />
         </div>
 

@@ -30,6 +30,7 @@ import { GxDataTransferInfo } from "../../common/types";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
+const DEFAULT_CLASS_VALUE = "tree-view-item";
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -552,6 +553,7 @@ export class ChTestTreeX {
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
+      item.class ||= DEFAULT_CLASS_VALUE;
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;

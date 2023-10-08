@@ -24,6 +24,8 @@ export type DragState = "enter" | "none" | "start";
 
 const resetDragImage = new Image();
 
+const INITIAL_LEVEL = 0;
+
 // Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
@@ -188,7 +190,7 @@ export class ChTreeXListItem {
   /**
    * Level in the tree at which the item is placed.
    */
-  @Prop() readonly level: number = 0;
+  @Prop() readonly level: number = INITIAL_LEVEL;
 
   /**
    * `true` if the checkbox's value is indeterminate.
@@ -357,7 +359,7 @@ export class ChTreeXListItem {
     }
 
     // The item is the last one of the tree at the first level
-    if (this.level === 0) {
+    if (this.level === INITIAL_LEVEL) {
       return;
     }
 
@@ -383,7 +385,7 @@ export class ChTreeXListItem {
     }
 
     // The item is the first one of the tree at the first level
-    if (this.level === 0) {
+    if (this.level === INITIAL_LEVEL) {
       return;
     }
 
@@ -694,7 +696,7 @@ export class ChTreeXListItem {
     }
 
     // No need to update more the status
-    if (this.level === 0) {
+    if (this.level === INITIAL_LEVEL) {
       return;
     }
 
@@ -730,9 +732,12 @@ export class ChTreeXListItem {
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
-    const showAllLines = this.showLines === "all" && this.level !== 0;
+    const showAllLines =
+      this.showLines === "all" && this.level !== INITIAL_LEVEL;
     const showLastLine =
-      this.showLines === "last" && this.level !== 0 && this.lastItem;
+      this.showLines === "last" &&
+      this.level !== INITIAL_LEVEL &&
+      this.lastItem;
 
     return (
       <Host
@@ -765,7 +770,7 @@ export class ChTreeXListItem {
             "header--odd": !evenLevel,
             "header--even-expandable": evenLevel && expandableButtonVisible,
             "header--odd-expandable": !evenLevel && expandableButtonVisible,
-            "header--level-0": this.level === 0
+            "header--level-0": this.level === INITIAL_LEVEL
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""

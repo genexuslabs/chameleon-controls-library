@@ -443,7 +443,7 @@ export class GridChameleon {
           this.grid.pagingButtonPreviousClass,
           gx.getMessage("GXM_previous")
         )}
-        {recordCount !== 0 && (
+        {this.grid.PaginatorPagesShow && (
           <ch-paginator-pages
             maxSize={this.grid.PaginatorPagesMaxSize}
           ></ch-paginator-pages>

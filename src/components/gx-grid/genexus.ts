@@ -78,6 +78,7 @@ export interface GxGrid {
 
   readonly PaginatorShow: boolean;
   readonly PaginatorNavigationButtonTextPosition: "title" | "text";
+  readonly PaginatorPagesShow: boolean;
   readonly PaginatorPagesMaxSize: number;
 
   readonly ActionbarHeaderClass: string;

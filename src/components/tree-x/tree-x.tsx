@@ -402,7 +402,7 @@ export class ChTreeX {
    * @param validDrop Current state of the droppable zone.
    */
   @Method()
-  async updateValidDroppableZone(
+  async updateValidDropZone(
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],

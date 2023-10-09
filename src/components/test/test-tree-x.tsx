@@ -265,6 +265,28 @@ export class ChTestTreeX {
     forceUpdate(this);
   }
 
+  /**
+   * Update the information about the valid droppable zones.
+   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+   * @param newContainerId ID of the container where the drag is trying to be made.
+   * @param draggedItems Information about the dragged items.
+   * @param validDrop Current state of the droppable zone.
+   */
+  @Method()
+  async updateValidDropZone(
+    requestTimestamp: number,
+    newContainerId: string,
+    draggedItems: GxDataTransferInfo[],
+    validDrop: boolean
+  ) {
+    this.treeRef.updateValidDropZone(
+      requestTimestamp,
+      newContainerId,
+      draggedItems,
+      validDrop
+    );
+  }
+
   private updateItemProperty(
     itemUIModel: TreeXItemModelExtended | undefined,
     properties: TreeXItemModel
@@ -345,12 +367,14 @@ export class ChTestTreeX {
     }
     event.stopPropagation();
 
-    const dropInformation = event.detail;
+    // Suppose the request is made immediately by executing the callback
     const requestTimestamp = new Date().getTime();
+
+    const dropInformation = event.detail;
     const promise = this.checkDroppableZoneCallback(dropInformation);
 
     promise.then(validDrop => {
-      this.treeRef.updateValidDroppableZone(
+      this.updateValidDropZone(
         requestTimestamp,
         dropInformation.newContainer.id,
         dropInformation.draggedItems,

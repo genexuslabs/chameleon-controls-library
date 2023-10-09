@@ -219,6 +219,12 @@
 							</Values>
 						</Prop>
 						<Prop>
+							<Id>PaginatorPagesShow</Id>
+							<Name>PaginatorPagesShow</Name>
+							<Type>Boolean</Type>
+							<Default>true</Default>
+						</Prop>
+						<Prop>
 							<Id>PaginatorPagesMaxSize</Id>
 							<Name>PaginatorPagesMaxSize</Name>
 							<Type>Integer</Type>

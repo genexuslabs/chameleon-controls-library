@@ -666,6 +666,7 @@ export class ChTreeX {
       <Host
         class={{
           "ch-tree-x-dragging-item": this.draggingInTheDocument,
+          "ch-tree-x-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
           "ch-tree-x--dragging-selected-items":
             this.draggingInTree && this.draggingSelectedItems,
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing

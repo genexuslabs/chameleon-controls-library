@@ -747,6 +747,7 @@ export class ChTreeXListItem {
         class={{
           [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
+          [TREE_ITEM_TAG_NAME + "--not-editing"]: !this.editing, // WA for some bugs in GeneXus' DSO
           [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
             this.dragState !== "none" && this.dragState !== "start",
           [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf

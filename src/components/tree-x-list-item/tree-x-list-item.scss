@@ -9,7 +9,6 @@ $own-offset: calc(
 :where(button) {
   all: unset;
   display: flex;
-  cursor: pointer;
 
   // Disallow selecting the text
   user-select: none;
@@ -195,6 +194,7 @@ $own-offset: calc(
   height: var(--expandable-button-width);
   margin-inline-end: $separation-between-actions;
   z-index: 1;
+  cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto var(--expandable-button-width);
 
@@ -237,6 +237,7 @@ $own-offset: calc(
   align-items: center;
   height: 100%;
   flex: 1;
+  cursor: pointer;
 }
 
 .readonly-mode {

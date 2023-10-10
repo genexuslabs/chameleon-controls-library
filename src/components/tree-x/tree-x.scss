@@ -1,12 +1,12 @@
 ch-tree-x {
   display: flex;
   position: relative;
+  width: 100%;
   overflow: auto;
 
-  & > ch-tree-x-list {
+  & > .ch-tree-x-container {
     position: absolute;
     inset: 0;
-    min-width: max-content;
   }
 
   // Reset useful droppable areas

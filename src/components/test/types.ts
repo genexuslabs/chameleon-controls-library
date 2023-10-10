@@ -1,7 +1,7 @@
-import { TreeXItemModel, TreeXModel } from "../tree-x/types";
+import { TreeXItemModel } from "../tree-x/types";
 
 export type TreeXItemModelExtended = {
-  parentItem: TreeXModel | TreeXItemModel;
+  parentItem: TreeXItemModel;
   item: TreeXItemModel;
 };
 

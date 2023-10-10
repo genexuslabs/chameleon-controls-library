@@ -21,7 +21,7 @@ import {
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
-import { mouseEventModifierKey } from "../common/helpers";
+import { focusComposedPath, mouseEventModifierKey } from "../common/helpers";
 import { scrollToEdge } from "../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../common/types";
 import { ChTreeXListItemCustomEvent } from "../../components";
@@ -40,11 +40,14 @@ const EDIT_KEY = "F2";
 
 type KeyEvents = typeof ARROW_DOWN_KEY | typeof ARROW_UP_KEY | typeof EDIT_KEY;
 
-const isExecutedInTree = (event: KeyboardEvent, el: HTMLChTreeXElement) =>
-  event.composedPath().includes(el);
+const isTreeItem = (element: HTMLElement) =>
+  element.tagName.toLowerCase() === TREE_ITEM_TAG_NAME;
 
-const treeItemIsInEditMode = () =>
-  (document.activeElement as HTMLChTreeXListItemElement).editing;
+const getFocusedTreeItem = (): HTMLChTreeXListItemElement | undefined =>
+  focusComposedPath().find(isTreeItem) as HTMLChTreeXListItemElement;
+
+const canMoveTreeItemFocus = (treeItem: HTMLChTreeXListItemElement): boolean =>
+  treeItem && !treeItem.editing;
 
 const getDroppableZoneKey = (
   newContainerId: string,
@@ -68,32 +71,34 @@ export class ChTreeX {
     [key in KeyEvents]: (event: KeyboardEvent) => void;
   } = {
     [ARROW_DOWN_KEY]: event => {
-      if (!isExecutedInTree(event, this.el) || treeItemIsInEditMode()) {
+      const treeItem = getFocusedTreeItem();
+
+      if (!canMoveTreeItemFocus(treeItem)) {
         return;
       }
       event.preventDefault();
-
-      const treeItem = document.activeElement as HTMLChTreeXListItemElement;
       treeItem.focusNextItem(mouseEventModifierKey(event));
     },
 
     [ARROW_UP_KEY]: event => {
-      if (!isExecutedInTree(event, this.el) || treeItemIsInEditMode()) {
+      const treeItem = getFocusedTreeItem();
+
+      if (!canMoveTreeItemFocus(treeItem)) {
         return;
       }
       event.preventDefault();
-
-      const treeItem = document.activeElement as HTMLChTreeXListItemElement;
       treeItem.focusPreviousItem(mouseEventModifierKey(event));
     },
 
     [EDIT_KEY]: event => {
-      if (document.activeElement.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+      const treeItem = getFocusedTreeItem();
+
+      if (!treeItem) {
         return;
       }
 
       event.preventDefault();
-      (document.activeElement as HTMLChTreeXListItemElement).editing = true;
+      treeItem.editing = true;
     }
   };
 
@@ -402,7 +407,7 @@ export class ChTreeX {
    * @param validDrop Current state of the droppable zone.
    */
   @Method()
-  async updateValidDroppableZone(
+  async updateValidDropZone(
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],
@@ -666,12 +671,19 @@ export class ChTreeX {
       <Host
         class={{
           "ch-tree-x-dragging-item": this.draggingInTheDocument,
+          "ch-tree-x-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
           "ch-tree-x--dragging-selected-items":
             this.draggingInTree && this.draggingSelectedItems,
           "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
         }}
       >
-        <slot />
+        <div
+          role="tree"
+          aria-multiselectable={this.multiSelection.toString()}
+          class="ch-tree-x-container"
+        >
+          <slot />
+        </div>
 
         {this.draggingInTree && (
           <span aria-hidden="true" class="ch-tree-x-drag-info">

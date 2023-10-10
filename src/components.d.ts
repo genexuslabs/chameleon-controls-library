@@ -23,7 +23,7 @@ import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { FocusChangeAttempt, SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
-import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
+import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo } from "./components/tree-x/types";
 import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -1073,6 +1073,10 @@ export namespace Components {
     dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
         /**
+          * A CSS class to set as the `ch-tree-x` element class.
+         */
+        "cssClass": string;
+        /**
           * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
          */
         "dragDisabled": boolean;
@@ -1092,6 +1096,10 @@ export namespace Components {
         "lazyLoadTreeItemsCallback": (
     treeItemId: string
   ) => Promise<TreeXItemModel[]>;
+        /**
+          * Given an item id, an array of items to add, the download status and the lazy state, updates the item's UI Model.
+         */
+        "loadLazyContent": (itemId: string, items?: TreeXItemModel[], downloading?: boolean, lazy?: boolean) => Promise<void>;
         /**
           * Callback that is executed when a item request to modify its caption.
          */
@@ -1125,7 +1133,7 @@ export namespace Components {
         /**
           * This property lets you define the model of the ch-tree-x control.
          */
-        "treeModel": TreeXModel;
+        "treeModel": TreeXItemModel[];
         /**
           * Given a subset of item's properties, it updates all item UI models.
          */
@@ -1134,6 +1142,14 @@ export namespace Components {
           * Given a item list and the properties to update, it updates the properties of the items in the list.
          */
         "updateItemsProperties": (items: string[], properties: TreeXItemModel) => Promise<void>;
+        /**
+          * Update the information about the valid droppable zones.
+          * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+          * @param newContainerId ID of the container where the drag is trying to be made.
+          * @param draggedItems Information about the dragged items.
+          * @param validDrop Current state of the droppable zone.
+         */
+        "updateValidDropZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
     }
     interface ChTextblock {
         /**
@@ -1264,17 +1280,13 @@ export namespace Components {
           * @param draggedItems Information about the dragged items.
           * @param validDrop Current state of the droppable zone.
          */
-        "updateValidDroppableZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
+        "updateValidDropZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
         /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
         "waitDropProcessing": boolean;
     }
     interface ChTreeXList {
-        /**
-          * Level in the tree at which the control is placed.
-         */
-        "level": number;
     }
     interface ChTreeXListItem {
         /**
@@ -3210,6 +3222,10 @@ declare namespace LocalJSX {
     dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
         /**
+          * A CSS class to set as the `ch-tree-x` element class.
+         */
+        "cssClass"?: string;
+        /**
           * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
          */
         "dragDisabled"?: boolean;
@@ -3251,7 +3267,7 @@ declare namespace LocalJSX {
         /**
           * This property lets you define the model of the ch-tree-x control.
          */
-        "treeModel"?: TreeXModel;
+        "treeModel"?: TreeXItemModel[];
     }
     interface ChTextblock {
         /**
@@ -3390,10 +3406,6 @@ declare namespace LocalJSX {
         "waitDropProcessing"?: boolean;
     }
     interface ChTreeXList {
-        /**
-          * Level in the tree at which the control is placed.
-         */
-        "level"?: number;
     }
     interface ChTreeXListItem {
         /**

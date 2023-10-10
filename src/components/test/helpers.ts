@@ -1,4 +1,4 @@
-import { TreeXItemModel, TreeXModel } from "../tree-x/types";
+import { TreeXItemModel } from "../tree-x/types";
 
 export type TreeXItemSimplifiedModel = {
   id: string;
@@ -6,7 +6,7 @@ export type TreeXItemSimplifiedModel = {
 };
 
 export function simplifyModel(
-  model: TreeXModel | TreeXItemModel
+  model: TreeXItemModel
 ): TreeXItemSimplifiedModel[] {
   const items = model.items;
 

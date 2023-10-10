@@ -5,13 +5,6 @@
 <!-- Auto Generated Below -->
 
 
-## Properties
-
-| Property | Attribute | Description                                       | Type     | Default |
-| -------- | --------- | ------------------------------------------------- | -------- | ------- |
-| `level`  | `level`   | Level in the tree at which the control is placed. | `number` | `0`     |
-
-
 ## Dependencies
 
 ### Used by

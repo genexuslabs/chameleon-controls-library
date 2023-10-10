@@ -10,6 +10,7 @@
 | Property                     | Attribute         | Description                                                                                                                               | Type                                                                                                       | Default                       |
 | ---------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ----------------------------- |
 | `checkDroppableZoneCallback` | --                | Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.                   | `(dropInformation: TreeXDropCheckInfo) => Promise<boolean>`                                                | `undefined`                   |
+| `cssClass`                   | `css-class`       | A CSS class to set as the `ch-tree-x` element class.                                                                                      | `string`                                                                                                   | `undefined`                   |
 | `dragDisabled`               | `drag-disabled`   | This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.       | `boolean`                                                                                                  | `DEFAULT_DRAG_DISABLED_VALUE` |
 | `dropDisabled`               | `drop-disabled`   | This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the control won't accept any drops. | `boolean`                                                                                                  | `DEFAULT_DROP_DISABLED_VALUE` |
 | `dropItemsCallback`          | --                | Callback that is executed when a list of items request to be dropped into another item.                                                   | `(dataTransferInfo: TreeXDataTransferInfo) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[]; }>` | `undefined`                   |
@@ -18,10 +19,21 @@
 | `multiSelection`             | `multi-selection` | Set this attribute if you want to allow multi selection of the items.                                                                     | `boolean`                                                                                                  | `false`                       |
 | `showLines`                  | `show-lines`      | `true` to display the relation between tree items and tree lists using lines.                                                             | `"all" \| "last" \| "none"`                                                                                | `"none"`                      |
 | `sortItemsCallback`          | --                | Callback that is executed when the treeModel is changed to order its items.                                                               | `(subModel: TreeXItemModel[]) => void`                                                                     | `undefined`                   |
-| `treeModel`                  | --                | This property lets you define the model of the ch-tree-x control.                                                                         | `{ items: TreeXItemModel[]; multiSelection?: boolean; showLines?: boolean; }`                              | `{ items: [] }`               |
+| `treeModel`                  | --                | This property lets you define the model of the ch-tree-x control.                                                                         | `TreeXItemModel[]`                                                                                         | `[]`                          |
 
 
 ## Methods
+
+### `loadLazyContent(itemId: string, items?: TreeXItemModel[], downloading?: boolean, lazy?: boolean) => Promise<void>`
+
+Given an item id, an array of items to add, the download status and the
+lazy state, updates the item's UI Model.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
@@ -57,6 +69,16 @@ Type: `Promise<void>`
 
 Given a item list and the properties to update, it updates the properties
 of the items in the list.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
+
+Update the information about the valid droppable zones.
 
 #### Returns
 

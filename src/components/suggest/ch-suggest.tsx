@@ -138,14 +138,21 @@ INDEX:
    */
   @Event() valueChanged: EventEmitter<string>;
 
+  /**
+   * This event is emitted when an item was selected.
+   */
+  @Event() selectionChanged: EventEmitter<SuggestItemSelectedEvent>;
+
   // 6.COMPONENT LIFECYCLE EVENTS //
 
   // 7.LISTENERS //
 
-  @Listen("itemSelected")
+  @Listen("itemSelected", { capture: true })
   itemSelectedHandler(event: CustomEvent<SuggestItemSelectedEvent>) {
+    event.stopPropagation();
     this.value = event.detail.value;
     this.closeWindow();
+    this.selectionChanged.emit(event.detail);
   }
 
   @Listen("focusChangeAttempt")
@@ -178,6 +185,7 @@ INDEX:
   windowClosedHandler() {
     this.textInput.focus();
     this.windowHidden = true;
+    this.el.innerHTML = "";
   }
 
   // 9.PUBLIC METHODS API //

@@ -38,6 +38,7 @@ import {
 import {
   MouseEventButton,
   MouseEventButtons,
+  focusComposedPath,
   mouseEventHasButtonPressed,
   mouseEventModifierKey
 } from "../common/helpers";
@@ -282,7 +283,7 @@ export class ChGrid {
   @Listen("keydown", { target: "window" })
   windowKeyDownHandler(eventInfo: KeyboardEvent) {
     if (
-      document.activeElement === this.el &&
+      focusComposedPath()[0] === this.el &&
       [
         " ",
         "+",
@@ -303,7 +304,7 @@ export class ChGrid {
 
   @Listen("keydown", { passive: true })
   keyDownHandler(eventInfo: KeyboardEvent) {
-    if (document.activeElement === this.el) {
+    if (focusComposedPath()[0] === this.el) {
       switch (eventInfo.key) {
         case " ":
           this.toggleRowsMarked();
@@ -391,31 +392,38 @@ export class ChGrid {
           : null);
     }
 
-    if (this.manager.selection.selecting) {
-      const row = this.manager.getRowEventTarget(eventInfo);
-      const cell = this.manager.getCellEventTarget(eventInfo);
+    selectingBlock: {
+      if (this.manager.selection.selecting) {
+        if (focusComposedPath()[0] !== this.el) {
+          this.stopSelecting();
+          break selectingBlock;
+        }
 
-      if (
-        row &&
-        (this.manager.selection.selectingRow !== row ||
-          this.manager.selection.selectingCell !== cell)
-      ) {
-        const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
-        const isMouseButtonRightPressed = mouseEventHasButtonPressed(
-          eventInfo,
-          MouseEventButtons.RIGHT
-        );
+        const row = this.manager.getRowEventTarget(eventInfo);
+        const cell = this.manager.getCellEventTarget(eventInfo);
 
-        this.selectByPointerEvent(
-          row,
-          cell,
-          isKeyModifierPressed && !isMouseButtonRightPressed,
-          !isMouseButtonRightPressed,
-          isMouseButtonRightPressed
-        );
+        if (
+          row &&
+          (this.manager.selection.selectingRow !== row ||
+            this.manager.selection.selectingCell !== cell)
+        ) {
+          const isKeyModifierPressed = mouseEventModifierKey(eventInfo);
+          const isMouseButtonRightPressed = mouseEventHasButtonPressed(
+            eventInfo,
+            MouseEventButtons.RIGHT
+          );
 
-        this.manager.selection.selectingRow = row;
-        this.manager.selection.selectingCell = cell;
+          this.selectByPointerEvent(
+            row,
+            cell,
+            isKeyModifierPressed && !isMouseButtonRightPressed,
+            !isMouseButtonRightPressed,
+            isMouseButtonRightPressed
+          );
+
+          this.manager.selection.selectingRow = row;
+          this.manager.selection.selectingCell = cell;
+        }
       }
     }
   }
@@ -452,9 +460,7 @@ export class ChGrid {
 
   @Listen("mouseup", { passive: true })
   mouseUpHandler() {
-    this.manager.selection.selecting = false;
-    this.manager.selection.selectingRow = null;
-    this.manager.selection.selectingCell = null;
+    this.stopSelecting();
   }
 
   @Listen("dblclick", { passive: true })
@@ -487,8 +493,8 @@ export class ChGrid {
 
       const rowContextMenuEventInfo = this.rowContextMenu.emit({
         rowId: targetRow.rowId,
-        cellId: cellFocused.cellId,
-        columnId: cellFocused.column.columnId,
+        cellId: cellFocused?.cellId,
+        columnId: cellFocused?.column.columnId,
         selectedRowsId: this.rowsSelected.map(row => row.rowId),
         clientX: eventInfo.clientX,
         clientY: eventInfo.clientY
@@ -998,6 +1004,12 @@ export class ChGrid {
     this.cellSelected = cellSelected;
 
     rowFocused?.ensureVisible();
+  }
+
+  private stopSelecting() {
+    this.manager.selection.selecting = false;
+    this.manager.selection.selectingRow = null;
+    this.manager.selection.selectingCell = null;
   }
 
   private renderSettings() {

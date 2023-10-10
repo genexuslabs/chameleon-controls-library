@@ -31,6 +31,19 @@
 | `"pages"`  |             |
 
 
+## Dependencies
+
+### Used by
+
+ - [gx-grid-chameleon](../../gx-grid)
+
+### Graph
+```mermaid
+graph TD;
+  gx-grid-chameleon --> ch-paginator-pages
+  style ch-paginator-pages fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

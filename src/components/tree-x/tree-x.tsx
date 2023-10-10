@@ -8,30 +8,28 @@ import {
   Method,
   Prop,
   State,
-  Watch,
   h
 } from "@stencil/core";
 
 import {
   TreeXDataTransferInfo,
+  TreeXDropCheckInfo,
   TreeXDroppableZoneState,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
-  TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
 import { mouseEventModifierKey } from "../common/helpers";
 import { scrollToEdge } from "../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../common/types";
+import { ChTreeXListItemCustomEvent } from "../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
-const TREE_LIST_TAG_NAME = "ch-tree-x-list";
+const TREE_TAG_NAME = "ch-tree-x";
 
 // Selectors
-const TREE_LIST_AND_ITEM_SELECTOR =
-  TREE_LIST_TAG_NAME + "," + TREE_ITEM_TAG_NAME;
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
 
 const TEXT_FORMAT = "text/plain";
@@ -134,11 +132,6 @@ export class ChTreeX {
   @State() draggingInTree = false;
 
   /**
-   * Level in the tree at which the control is placed.
-   */
-  @Prop() readonly level: number = -1;
-
-  /**
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;
@@ -156,22 +149,6 @@ export class ChTreeX {
   @Prop() readonly scrollToEdgeOnDrag: boolean = true;
 
   /**
-   * `true` to display the relation between tree items and tree lists using
-   * lines.
-   */
-  @Prop() readonly showLines: TreeXLines = "none";
-  @Watch("showLines")
-  handleShowLinesChange(newShowLines: TreeXLines) {
-    const treeItems = this.el.querySelectorAll(
-      TREE_LIST_AND_ITEM_SELECTOR
-    ) as NodeListOf<HTMLChTreeXListElement | HTMLChTreeXListItemElement>;
-
-    treeItems.forEach(item => {
-      item.showLines = newShowLines;
-    });
-  }
-
-  /**
    * This property lets you specify if the tree is waiting to process the drop
    * of items.
    */
@@ -181,7 +158,7 @@ export class ChTreeX {
    * Fired when an element attempts to enter in a droppable zone where the tree
    * has no information about the validity of the drop.
    */
-  @Event() droppableZoneEnter: EventEmitter<TreeXDataTransferInfo>;
+  @Event() droppableZoneEnter: EventEmitter<TreeXDropCheckInfo>;
 
   /**
    * Fired when an item is expanded or collapsed.
@@ -200,66 +177,6 @@ export class ChTreeX {
    */
   @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
 
-  /**
-   * Given an item id, it displays and scrolls into the item view.
-   */
-  @Method()
-  async scrollIntoVisible(treeItemId: string) {
-    const itemRef = this.el.querySelector(
-      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
-    );
-    if (!itemRef) {
-      return;
-    }
-
-    let parentItem = itemRef.parentElement.parentElement;
-
-    // Expand all parents
-    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (parentItem as HTMLChTreeXListItemElement).expanded = true;
-      parentItem = parentItem.parentElement.parentElement;
-    }
-
-    // Wait until the parents are expanded
-    requestAnimationFrame(() => {
-      itemRef.scrollIntoView();
-    });
-  }
-
-  /**
-   * Update the information about the valid droppable zones.
-   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
-   * @param newContainerId ID of the container where the drag is trying to be made.
-   * @param draggedItems Information about the dragged items.
-   * @param validDrop Current state of the droppable zone.
-   */
-  @Method()
-  async updateValidDroppableZone(
-    requestTimestamp: number,
-    newContainerId: string,
-    draggedItems: GxDataTransferInfo[],
-    validDrop: boolean
-  ) {
-    if (
-      !this.draggingInTheDocument ||
-      requestTimestamp <= this.dragStartTimestamp
-    ) {
-      return;
-    }
-
-    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
-    this.validDroppableZoneCache.set(
-      droppableZoneKey,
-      validDrop ? "valid" : "invalid"
-    );
-
-    const shouldUpdateDragEnterInCurrentContainer =
-      this.lastOpenSubTreeItem?.id === newContainerId;
-
-    if (shouldUpdateDragEnterInCurrentContainer) {
-      this.lastOpenSubTreeItem.dragState = "enter";
-    }
-  }
   // /**
   //  * Returns an array of the selected tree items, providing the id, caption and
   //  * selected status.
@@ -276,6 +193,16 @@ export class ChTreeX {
   //     selected: item.selected
   //   }));
   // }
+
+  // Set edit mode in items
+  @Listen("keydown", { capture: true })
+  handleKeyDownEvents(event: KeyboardEvent) {
+    const keyHandler = this.keyDownEvents[event.key];
+
+    if (keyHandler) {
+      keyHandler(event);
+    }
+  }
 
   // We can't use capture, because the dataTransfer info would not be defined
   // Also, we cant use capture and setTimeout with 0 seconds, because the
@@ -356,19 +283,31 @@ export class ChTreeX {
 
     this.itemsDropped.emit({
       newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      draggingSelectedItems: this.draggingSelectedItems,
       draggedItems: draggedItems,
       dropInTheSameTree: this.draggingInTree
     });
   }
 
   @Listen("itemDragStart")
-  handleItemDragStart(event: CustomEvent<TreeXItemDragStartInfo>) {
+  handleItemDragStart(
+    event: ChTreeXListItemCustomEvent<TreeXItemDragStartInfo>
+  ) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
     });
 
-    this.currentDraggedItem = event.target as HTMLChTreeXListItemElement;
-    this.updateDragInfo(event.detail);
+    this.currentDraggedItem = event.target;
+    const allItemsCanBeDragged = this.checkDragValidityAndUpdateDragInfo(
+      event.detail
+    );
+
+    if (!allItemsCanBeDragged) {
+      // This effect disables drop interactions in all page elements, so there
+      // is no need to capture and prevent the drop event in the window
+      event.detail.dragEvent.dataTransfer.effectAllowed = "none";
+      return;
+    }
 
     this.draggingInTree = true;
 
@@ -389,8 +328,29 @@ export class ChTreeX {
     this.resetVariables();
   }
 
+  /**
+   * Only sync the info about the selected items. It does not update the state
+   * of the previous selected items.
+   */
+  @Listen("selectedItemSync")
+  handleSelectedItemSync(
+    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+  ) {
+    event.stopPropagation();
+    const selectedItemInfo = event.detail;
+
+    // If the item is selected, add it to list
+    if (selectedItemInfo.selected) {
+      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+    } else {
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
+    }
+  }
+
   @Listen("selectedItemChange")
-  handleSelectedItemChange(event: CustomEvent<TreeXListItemSelectedInfo>) {
+  handleSelectedItemChange(
+    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+  ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
     const selectedItemEl = event.target as HTMLChTreeXListItemElement;
@@ -398,24 +358,101 @@ export class ChTreeX {
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
   }
 
+  /**
+   * Clear all information about the selected items. This method is intended to
+   * be used when selected items are reordered and the selected references will
+   * no longer be useful.
+   */
+  @Method()
+  async clearSelectedItemsInfo() {
+    this.clearSelectedItems();
+  }
+
+  /**
+   * Given an item id, it displays and scrolls into the item view.
+   */
+  @Method()
+  async scrollIntoVisible(treeItemId: string) {
+    const itemRef = this.el.querySelector(
+      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
+    );
+    if (!itemRef) {
+      return;
+    }
+
+    let parentItem = itemRef.parentElement.parentElement;
+
+    // Expand all parents
+    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
+      (parentItem as HTMLChTreeXListItemElement).expanded = true;
+      parentItem = parentItem.parentElement.parentElement;
+    }
+
+    // Wait until the parents are expanded
+    requestAnimationFrame(() => {
+      itemRef.scrollIntoView();
+    });
+  }
+
+  /**
+   * Update the information about the valid droppable zones.
+   * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
+   * @param newContainerId ID of the container where the drag is trying to be made.
+   * @param draggedItems Information about the dragged items.
+   * @param validDrop Current state of the droppable zone.
+   */
+  @Method()
+  async updateValidDroppableZone(
+    requestTimestamp: number,
+    newContainerId: string,
+    draggedItems: GxDataTransferInfo[],
+    validDrop: boolean
+  ) {
+    if (
+      !this.draggingInTheDocument ||
+      requestTimestamp <= this.dragStartTimestamp
+    ) {
+      return;
+    }
+
+    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
+    this.validDroppableZoneCache.set(
+      droppableZoneKey,
+      validDrop ? "valid" : "invalid"
+    );
+
+    const shouldUpdateDragEnterInCurrentContainer =
+      this.lastOpenSubTreeItem?.id === newContainerId;
+
+    if (shouldUpdateDragEnterInCurrentContainer) {
+      this.lastOpenSubTreeItem.dragState = "enter";
+    }
+  }
+
   private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
     const containerTarget = event.target as HTMLChTreeXListItemElement;
-
-    // When dragging in the same tree, don't mark droppable zones if they are
-    // the dragged items or their direct parents
-    if (
-      this.draggingInTree &&
-      (this.draggedIds.includes(containerTarget.id) ||
-        this.draggedParentIds.includes(containerTarget.id))
-    ) {
-      return "invalid";
-    }
 
     const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
     const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
 
     if (droppableZoneState != null) {
       return droppableZoneState;
+    }
+
+    // Do not show drop zones if:
+    //   - The effect does not allow it.
+    //   - The drop is disabled in the container target.
+    //   - When dragging in the same tree, don't mark droppable zones if they are
+    //     the dragged items or their direct parents.
+    if (
+      event.dataTransfer.effectAllowed === "none" ||
+      containerTarget.dropDisabled ||
+      (this.draggingInTree &&
+        (this.draggedIds.includes(containerTarget.id) ||
+          this.draggedParentIds.includes(containerTarget.id)))
+    ) {
+      this.validDroppableZoneCache.set(cacheKey, "invalid");
+      return "invalid";
     }
 
     this.validDroppableZoneCache.set(cacheKey, "checking");
@@ -444,6 +481,8 @@ export class ChTreeX {
     event.preventDefault();
     this.lastDragEvent = event;
 
+    this.updateDropEffect(event);
+
     if (!this.needForRAF) {
       return;
     }
@@ -463,17 +502,40 @@ export class ChTreeX {
     });
   };
 
+  private updateDropEffect(event: DragEvent) {
+    const itemTarget = event.target as HTMLElement;
+
+    // Check if it is a valid item
+    if (
+      itemTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME ||
+      itemTarget.closest(TREE_TAG_NAME) !== this.el
+    ) {
+      return;
+    }
+
+    const cacheKey = getDroppableZoneKey(itemTarget.id, this.draggedItems);
+    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    if (droppableZoneState === "invalid") {
+      event.dataTransfer.dropEffect = "none";
+    }
+  }
+
   private resetVariables() {
     this.draggedIds = [];
     this.draggedParentIds = [];
   }
 
   /**
-   * Update the dataTransfer in the drag event to store the ids and metadata of
-   * the dragged items. Also it updates the visual information of the dragged
+   * First, it check if all items can be dragged. If so, it updates the
+   * dataTransfer in the drag event to store the ids and metadata of the
+   * dragged items. Also it updates the visual information of the dragged
    * items.
+   * @returns If all selected items can be dragged.
    */
-  private updateDragInfo(dragInfo: TreeXItemDragStartInfo) {
+  private checkDragValidityAndUpdateDragInfo(
+    dragInfo: TreeXItemDragStartInfo
+  ): boolean {
     const draggedElement = dragInfo.elem;
 
     const isDraggingSelectedItems = this.selectedItemsInfo.has(
@@ -482,13 +544,19 @@ export class ChTreeX {
     this.draggingSelectedItems = isDraggingSelectedItems;
 
     let dataTransferInfo: GxDataTransferInfo[] = [];
+    let dragIsEnabledForAllItems: boolean;
 
     if (isDraggingSelectedItems) {
       const selectedItemKeys = [...this.selectedItemsInfo.keys()];
+      const selectedItemValues = [...this.selectedItemsInfo.values()];
       const selectedItemCount = selectedItemKeys.length;
 
+      dragIsEnabledForAllItems = selectedItemValues.every(
+        el => !el.itemRef.dragDisabled
+      );
+
       this.draggedIds = selectedItemKeys;
-      dataTransferInfo = [...this.selectedItemsInfo.values()].map(el => ({
+      dataTransferInfo = selectedItemValues.map(el => ({
         id: el.id,
         metadata: el.metadata
       }));
@@ -498,6 +566,7 @@ export class ChTreeX {
           ? draggedElement.caption
           : selectedItemCount.toString();
     } else {
+      dragIsEnabledForAllItems = !draggedElement.dragDisabled;
       dataTransferInfo = [
         { id: draggedElement.id, metadata: draggedElement.metadata }
       ];
@@ -509,7 +578,12 @@ export class ChTreeX {
 
     // Update drag event info
     const data = JSON.stringify(dataTransferInfo);
-    dragInfo.dataTransfer.setData(TEXT_FORMAT, data);
+    dragInfo.dragEvent.dataTransfer.setData(TEXT_FORMAT, data);
+
+    // We must keep the data binding and processing even if there is an item
+    // that can't be dragged, otherwise, other trees or element might behave
+    // unexpected when a dragstart event comes
+    return dragIsEnabledForAllItems;
   }
 
   private fixScrollPositionOnDrag = () => {
@@ -554,6 +628,9 @@ export class ChTreeX {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
+      // Don't update the state of the selected item if no needed
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
+
       this.selectedItemsInfo.forEach(treeItem => {
         treeItem.itemRef.selected = false;
       });
@@ -567,8 +644,6 @@ export class ChTreeX {
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
       this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
-    } else {
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model
@@ -579,24 +654,7 @@ export class ChTreeX {
     this.selectedItemsInfo.clear();
   }
 
-  private handleKeyDownEvents = (event: KeyboardEvent) => {
-    const keyHandler = this.keyDownEvents[event.key];
-
-    if (keyHandler) {
-      keyHandler(event);
-    }
-  };
-
-  connectedCallback() {
-    // Set edit mode in items
-    this.el.addEventListener("keydown", this.handleKeyDownEvents, {
-      capture: true
-    });
-  }
-
   disconnectedCallback() {
-    this.el.removeEventListener("keydown", this.handleKeyDownEvents);
-
     this.resetVariables();
 
     // Remove dragover body event

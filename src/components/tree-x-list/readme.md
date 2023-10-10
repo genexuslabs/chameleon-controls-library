@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property    | Attribute    | Description                                                                   | Type                        | Default  |
-| ----------- | ------------ | ----------------------------------------------------------------------------- | --------------------------- | -------- |
-| `level`     | `level`      | Level in the tree at which the control is placed.                             | `number`                    | `0`      |
-| `showLines` | `show-lines` | `true` to display the relation between tree items and tree lists using lines. | `"all" \| "last" \| "none"` | `"none"` |
+| Property | Attribute | Description                                       | Type     | Default |
+| -------- | --------- | ------------------------------------------------- | -------- | ------- |
+| `level`  | `level`   | Level in the tree at which the control is placed. | `number` | `0`     |
 
 
 ## Dependencies

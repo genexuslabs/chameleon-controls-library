@@ -71,69 +71,63 @@ export class ChPaginator {
     eventInfo: CustomEvent<ChPaginatorNavigateClickedEvent>
   ) {
     eventInfo.stopPropagation();
-
-    switch (eventInfo.detail.type) {
-      case "first":
-        this.first();
-        break;
-      case "previous":
-        this.previous();
-        break;
-      case "next":
-        this.next();
-        break;
-      case "last":
-        this.last();
-        break;
-    }
-
-    this.pageNavigationRequested.emit({ type: eventInfo.detail.type });
+    this.navigate(eventInfo.detail.type);
   }
 
   @Listen("pageChanged")
   pageChangedHandler(eventInfo: CustomEvent<ChPaginatorPagesPageChangedEvent>) {
     eventInfo.stopPropagation();
-    const emitPageNavigationRequested =
-      this.activePage !== eventInfo.detail.page;
-    this.activePage = eventInfo.detail.page;
-
-    if (emitPageNavigationRequested) {
-      this.pageNavigationRequested.emit({
-        type: "goto",
-        page: eventInfo.detail.page
-      });
-    }
-  }
-
-  private loadElements() {
-    this.elPages = this.el.querySelector("ch-paginator-pages");
-    this.elFirst = this.el.querySelector("ch-paginator-navigate[type='first']");
-    this.elPrevious = this.el.querySelector(
-      "ch-paginator-navigate[type='previous']"
-    );
-    this.elNext = this.el.querySelector("ch-paginator-navigate[type='next']");
-    this.elLast = this.el.querySelector("ch-paginator-navigate[type='last']");
+    this.navigate("goto", eventInfo.detail.page);
   }
 
   @Listen("keydown", { passive: true })
   keyDownHandler(eventInfo: KeyboardEvent) {
     switch (eventInfo.key) {
       case "Home":
-        this.first();
-        this.elFirst.focus();
+        this.navigate("first");
         break;
       case "PageUp":
-        this.previous();
-        this.elPrevious.focus();
+        this.navigate("previous");
         break;
       case "PageDown":
-        this.next();
-        this.elNext.focus();
+        this.navigate("next");
         break;
       case "End":
-        this.last();
-        this.elLast.focus();
+        this.navigate("last");
         break;
+    }
+  }
+
+  private navigate(
+    type: "first" | "previous" | "next" | "last" | "goto",
+    page?: number
+  ) {
+    const emitPageNavigationRequested = !page || page !== this.activePage;
+
+    switch (type) {
+      case "first":
+        this.first();
+        this.elFirst?.focus();
+        break;
+      case "previous":
+        this.previous();
+        this.elPrevious?.focus();
+        break;
+      case "next":
+        this.next();
+        this.elNext?.focus();
+        break;
+      case "last":
+        this.last();
+        this.elLast?.focus();
+        break;
+      case "goto":
+        this.goto(page);
+        break;
+    }
+
+    if (emitPageNavigationRequested) {
+      this.pageNavigationRequested.emit({ type, page });
     }
   }
 
@@ -151,6 +145,32 @@ export class ChPaginator {
   }
   private last() {
     this.activePage = this.totalPages;
+  }
+
+  private goto(page: number) {
+    this.activePage = Math.max(Math.min(page, this.totalPages), 1);
+  }
+
+  private loadElements() {
+    this.elPages = this.el.querySelector("ch-paginator-pages");
+    this.el
+      .querySelectorAll("ch-paginator-navigate")
+      .forEach((el: HTMLChPaginatorNavigateElement) => {
+        switch (el.type) {
+          case "first":
+            this.elFirst = el;
+            break;
+          case "previous":
+            this.elPrevious = el;
+            break;
+          case "next":
+            this.elNext = el;
+            break;
+          case "last":
+            this.elLast = el;
+            break;
+        }
+      });
   }
 
   render() {

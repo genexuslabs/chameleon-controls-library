@@ -258,7 +258,7 @@
     <script>
       let fragment;
       const lists = document.querySelectorAll(".data-list");
-      chSuggest.addEventListener("inputChanged", e => {
+      chSuggest.addEventListener("valueChanged", e => {
         const inputValue = e.detail.trim();
         if (inputValue) {
           let filteredItems = [];

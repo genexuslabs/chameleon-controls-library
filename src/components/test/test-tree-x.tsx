@@ -11,6 +11,7 @@ import {
 } from "@stencil/core";
 import {
   TreeXDataTransferInfo,
+  TreeXDropCheckInfo,
   TreeXItemModel,
   TreeXLines,
   TreeXListItemExpandedInfo,
@@ -28,6 +29,8 @@ import {
 } from "../../components";
 import { GxDataTransferInfo } from "../../common/types";
 
+const DEFAULT_DRAG_DISABLED_VALUE = false;
+const DEFAULT_DROP_DISABLED_VALUE = false;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -58,8 +61,20 @@ export class ChTestTreeX {
    * the tree. Returns whether the drop is valid.
    */
   @Prop() readonly checkDroppableZoneCallback: (
-    dropInformation: TreeXDataTransferInfo
+    dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
+
+  /**
+   * This attribute lets you specify if the drag operation is disabled in all
+   * items by default. If `true`, the control can't be dragged.
+   */
+  @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
+
+  /**
+   * This attribute lets you specify if the drop operation is disabled in all
+   * items by default. If `true`, the control won't accept any drops.
+   */
+  @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
 
   /**
    * Callback that is executed when a list of items request to be dropped into
@@ -102,7 +117,7 @@ export class ChTestTreeX {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeXLines = "none";
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -306,7 +321,7 @@ export class ChTestTreeX {
   }
 
   private handleDroppableZoneEnter = (
-    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+    event: ChTreeXCustomEvent<TreeXDropCheckInfo>
   ) => {
     const dropInformation = event.detail;
 
@@ -388,7 +403,7 @@ export class ChTestTreeX {
     const promise = this.dropItemsCallback(dataTransferInfo);
     this.waitDropProcessing = true;
 
-    promise.then(response => {
+    promise.then(async response => {
       this.waitDropProcessing = false;
 
       if (!response.acceptDrop) {
@@ -402,6 +417,12 @@ export class ChTestTreeX {
         // Add the UI models to the new container and remove the UI models from
         // the old containers
         draggedItems.forEach(this.moveItemToNewParent(newParentUIModel));
+
+        // When the selected items are moved, the tree must remove its internal
+        // state to not have undefined references
+        if (dataTransferInfo.draggingSelectedItems) {
+          await this.treeRef.clearSelectedItemsInfo();
+        }
       }
       // Add the new items
       else {
@@ -445,7 +466,11 @@ export class ChTestTreeX {
       itemUIModelExtended.parentItem = newParentUIModel;
     };
 
-  private renderSubModel = (treeSubModel: TreeXItemModel) => (
+  private renderSubModel = (
+    treeSubModel: TreeXItemModel,
+    lastItem: boolean,
+    level: number
+  ) => (
     <ch-tree-x-list-item
       id={treeSubModel.id}
       caption={treeSubModel.caption}
@@ -453,22 +478,33 @@ export class ChTestTreeX {
       checked={treeSubModel.checked}
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
+      dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
+      dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
+      lastItem={lastItem}
       lazyLoad={treeSubModel.lazy}
       leaf={treeSubModel.leaf}
       leftImgSrc={treeSubModel.leftImgSrc}
+      level={level}
       metadata={treeSubModel.metadata}
       rightImgSrc={treeSubModel.rightImgSrc}
       selected={treeSubModel.selected}
       showExpandableButton={treeSubModel.showExpandableButton}
+      showLines={this.showLines}
       toggleCheckboxes={treeSubModel.toggleCheckboxes}
     >
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
         treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list slot="tree">
-            {treeSubModel.items.map(this.renderSubModel)}
+          <ch-tree-x-list slot="tree" level={level + 1}>
+            {treeSubModel.items.map((subModel, index) =>
+              this.renderSubModel(
+                subModel,
+                this.showLines && index === treeSubModel.items.length - 1,
+                level + 1
+              )
+            )}
           </ch-tree-x-list>
         )}
     </ch-tree-x-list-item>
@@ -538,7 +574,6 @@ export class ChTestTreeX {
       <Host>
         <ch-tree-x
           multiSelection={this.multiSelection}
-          showLines={this.showLines}
           waitDropProcessing={this.waitDropProcessing}
           onDroppableZoneEnter={this.handleDroppableZoneEnter}
           onExpandedItemChange={this.handleExpandedItemChange}
@@ -546,8 +581,14 @@ export class ChTestTreeX {
           onSelectedItemsChange={this.handleSelectedItemsChange}
           ref={el => (this.treeRef = el)}
         >
-          <ch-tree-x-list>
-            {this.treeModel.items.map(this.renderSubModel)}
+          <ch-tree-x-list level={0}>
+            {this.treeModel.items.map((subModel, index) =>
+              this.renderSubModel(
+                subModel,
+                this.showLines && index === this.treeModel.items.length - 1,
+                0
+              )
+            )}
           </ch-tree-x-list>
         </ch-tree-x>
 

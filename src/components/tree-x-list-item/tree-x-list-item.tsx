@@ -36,11 +36,6 @@ const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
-/**
- * This variable specifies a reference to the main ch-tree-x element
- */
-let mainTreeRef: HTMLChTreeXElement;
-
 @Component({
   tag: "ch-tree-x-list-item",
   styleUrl: "tree-x-list-item.scss",
@@ -101,6 +96,18 @@ export class ChTreeXListItem {
    * (for example, click event).
    */
   @Prop({ reflect: true }) readonly disabled: boolean = false;
+
+  /**
+   * This attribute lets you specify if the drag operation is disabled in the
+   * control. If `true`, the control can't be dragged.
+   */
+  @Prop() readonly dragDisabled: boolean = false;
+
+  /**
+   * This attribute lets you specify if the drop operation is disabled in the
+   * control. If `true`, the control won't accept any drops.
+   */
+  @Prop() readonly dropDisabled: boolean = false;
 
   /**
    * This property lets you define the current state of the item when it's
@@ -181,7 +188,7 @@ export class ChTreeXListItem {
   /**
    * Level in the tree at which the item is placed.
    */
-  @Prop({ mutable: true }) level = 0;
+  @Prop() readonly level: number = 0;
 
   /**
    * `true` if the checkbox's value is indeterminate.
@@ -204,6 +211,17 @@ export class ChTreeXListItem {
    */
   @Prop({ mutable: true, reflect: true }) selected = false;
 
+  @Watch("selected")
+  handleSelectedChange(newValue: boolean) {
+    this.selectedItemSync.emit(
+      this.getSelectedInfo(
+        true, // Does not matter in this case
+        false, // Does not matter in this case
+        newValue
+      )
+    );
+  }
+
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
    * the control.
@@ -220,7 +238,7 @@ export class ChTreeXListItem {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop({ mutable: true }) showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeXLines = "none";
   @Watch("showLines")
   handleShowLinesChange(newShowLines: TreeXLines) {
     if (newShowLines && this.lastItem) {
@@ -228,10 +246,6 @@ export class ChTreeXListItem {
     } else {
       this.disconnectObserver();
     }
-
-    // @todo BUG: showLines does not update in the mainTreeRef, so we have to
-    // sync the ref with the new value
-    mainTreeRef.showLines = newShowLines;
   }
 
   /**
@@ -267,9 +281,17 @@ export class ChTreeXListItem {
   @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
 
   /**
-   * Fired when the control is selected.
+   * Fired when the selected state is updated by user interaction on the
+   * control.
    */
   @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
+
+  /**
+   * Fired when the selected state is updated through the interface and without
+   * user interaction. The purpose of this event is to better sync with the
+   * main tree.
+   */
+  @Event() selectedItemSync: EventEmitter<TreeXListItemSelectedInfo>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(event: CustomEvent<boolean>) {
@@ -508,16 +530,9 @@ export class ChTreeXListItem {
     }
 
     this.selected = true;
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: mouseEventModifierKey(event),
-      expanded: this.expanded,
-      goToReference: false,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: true
-    });
+    this.selectedItemChange.emit(
+      this.getSelectedInfo(mouseEventModifierKey(event), false, true)
+    );
   };
 
   private lazyLoadItems(expanded: boolean) {
@@ -535,30 +550,14 @@ export class ChTreeXListItem {
     const selected = !this.selected;
     this.selected = selected;
 
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: true,
-      expanded: this.expanded,
-      goToReference: false,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: selected
-    });
+    this.selectedItemChange.emit(this.getSelectedInfo(true, false, selected));
   }
 
   private setSelected(goToReference: boolean) {
     this.selected = true;
-    this.selectedItemChange.emit({
-      ctrlKeyPressed: false,
-      expanded: this.expanded,
-      goToReference: goToReference,
-      id: this.el.id,
-      itemRef: this.el,
-      metadata: this.metadata,
-      parentId: this.el.parentElement.parentElement.id,
-      selected: true
-    });
+    this.selectedItemChange.emit(
+      this.getSelectedInfo(false, goToReference, true)
+    );
   }
 
   private toggleOrSelect(event: MouseEvent) {
@@ -568,6 +567,21 @@ export class ChTreeXListItem {
       this.setSelected(true);
     }
   }
+
+  private getSelectedInfo = (
+    ctrlKeyPressed: boolean,
+    goToReference: boolean,
+    selected: boolean
+  ) => ({
+    ctrlKeyPressed: ctrlKeyPressed,
+    expanded: this.expanded,
+    goToReference: goToReference,
+    id: this.el.id,
+    itemRef: this.el,
+    metadata: this.metadata,
+    parentId: this.el.parentElement.parentElement.id,
+    selected: selected
+  });
 
   private handleActionDblClick = (event: PointerEvent) => {
     event.stopPropagation();
@@ -641,6 +655,7 @@ export class ChTreeXListItem {
     // Disallow drag when editing the caption
     if (this.editing) {
       event.preventDefault();
+      event.stopPropagation();
       return;
     }
 
@@ -651,7 +666,7 @@ export class ChTreeXListItem {
     this.dragState = "start";
     this.itemDragStart.emit({
       elem: this.el,
-      dataTransfer: event.dataTransfer
+      dragEvent: event
     });
   };
 
@@ -670,17 +685,13 @@ export class ChTreeXListItem {
   componentWillLoad() {
     const parentElement = this.el.parentElement as HTMLChTreeXListElement;
 
-    // Set item level
-    this.level = parentElement.level;
-
-    if (!mainTreeRef) {
-      mainTreeRef = parentElement.parentElement as HTMLChTreeXElement;
-    }
-
-    this.showLines = mainTreeRef.showLines;
-
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
+
+    // Sync selected state with the main tree
+    if (this.selected) {
+      this.selectedItemChange.emit(this.getSelectedInfo(true, false, true));
+    }
 
     // No need to update more the status
     if (this.level === 0) {
@@ -716,7 +727,8 @@ export class ChTreeXListItem {
     const expandableButtonVisible = !this.leaf && this.showExpandableButton;
     const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
 
-    const acceptDrop = !this.leaf && this.dragState !== "start";
+    const acceptDrop =
+      !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
     const showAllLines = this.showLines === "all" && this.level !== 0;
     const showLastLine =
@@ -763,9 +775,9 @@ export class ChTreeXListItem {
           onClick={this.handleActionClick}
           onKeyDown={!this.editing ? this.handleActionKeyDown : null}
           // Drag and drop
-          draggable
+          draggable={!this.dragDisabled}
           onDragStart={this.handleDragStart}
-          onDragEnd={this.handleDragEnd}
+          onDragEnd={!this.dragDisabled ? this.handleDragEnd : null}
           ref={el => (this.headerRef = el)}
         >
           {!this.leaf && this.showExpandableButton && (

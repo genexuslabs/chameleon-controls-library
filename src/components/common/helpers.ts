@@ -25,3 +25,15 @@ export enum MouseEventButtons {
   BACK = 8,
   FORWARD = 16
 }
+
+export function focusComposedPath(): HTMLElement[] {
+  const composedPath = [];
+  let root: Document | ShadowRoot = document;
+
+  while (root && root.activeElement) {
+    composedPath.push(root.activeElement);
+    root = root.activeElement.shadowRoot;
+  }
+
+  return composedPath.reverse();
+}

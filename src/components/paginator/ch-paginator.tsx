@@ -153,12 +153,24 @@ export class ChPaginator {
 
   private loadElements() {
     this.elPages = this.el.querySelector("ch-paginator-pages");
-    this.elFirst = this.el.querySelector("ch-paginator-navigate[type='first']");
-    this.elPrevious = this.el.querySelector(
-      "ch-paginator-navigate[type='previous']"
-    );
-    this.elNext = this.el.querySelector("ch-paginator-navigate[type='next']");
-    this.elLast = this.el.querySelector("ch-paginator-navigate[type='last']");
+    this.el
+      .querySelectorAll("ch-paginator-navigate")
+      .forEach((el: HTMLChPaginatorNavigateElement) => {
+        switch (el.type) {
+          case "first":
+            this.elFirst = el;
+            break;
+          case "previous":
+            this.elPrevious = el;
+            break;
+          case "next":
+            this.elNext = el;
+            break;
+          case "last":
+            this.elLast = el;
+            break;
+        }
+      });
   }
 
   render() {

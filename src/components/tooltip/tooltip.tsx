@@ -1,6 +1,7 @@
 import { Component, Host, h, Prop, State } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import { ChWindowAlign } from "../window/ch-window";
+import { focusComposedPath } from "../common/helpers";
 
 export type TooltipAlign =
   | "OutsideStart"
@@ -38,11 +39,6 @@ export class ChTooltip implements ChComponent {
    * Specifies the tooltip description.
    */
   @Prop() readonly tooltipId: string = "Tooltip";
-  /**
-   * Specifies the separation (in px)
-   * between the tooltip and the container element.
-   */
-  @Prop() readonly separation: number = 12;
   /**
    * Specifies the delay (in ms)
    * for the tooltip to be displayed.
@@ -84,7 +80,7 @@ export class ChTooltip implements ChComponent {
   };
 
   private handleLeave = () => {
-    if (this.container === document.activeElement) {
+    if (this.container === focusComposedPath()[0]) {
       this.hidden = false;
     }
     this.hidden = true;
@@ -93,14 +89,14 @@ export class ChTooltip implements ChComponent {
   private addListeners = () => {
     this.container.addEventListener("focus", this.handleEnter);
     this.container.addEventListener("focusout", this.handleLeave);
-    this.container.addEventListener("mouseover", this.handleEnter);
+    this.container.addEventListener("mouseenter", this.handleEnter);
     this.container.addEventListener("mouseleave", this.handleLeave);
   };
 
   private removeListeners = () => {
     this.container.removeEventListener("focus", this.handleEnter);
     this.container.removeEventListener("focusout", this.handleLeave);
-    this.container.removeEventListener("mouseover", this.handleEnter);
+    this.container.removeEventListener("mouseenter", this.handleEnter);
     this.container.removeEventListener("mouseleave", this.handleLeave);
   };
 
@@ -120,22 +116,6 @@ export class ChTooltip implements ChComponent {
     const alignX = aligns[0] as TooltipAlign;
     const alignY = aligns[1] as TooltipAlign;
 
-    const isLeft = alignX === "OutsideStart";
-    const isRight = alignX === "OutsideEnd";
-    const isSide = isLeft || isRight;
-    const isTop = alignY === "OutsideStart";
-    const isBottom = alignY === "OutsideEnd";
-
-    let offsetX = null;
-    if (isSide && !isTop && !isBottom) {
-      offsetX = isLeft ? `-${this.separation}px` : `${this.separation}px`;
-    }
-
-    let offsetY = null;
-    if (!isSide) {
-      offsetY = isTop ? `-${this.separation}px` : `${this.separation}px`;
-    }
-
     return (
       <Host>
         <slot name="container"></slot>
@@ -149,18 +129,8 @@ export class ChTooltip implements ChComponent {
           container={this.container}
           xAlign={mapTooltipAlignToChWindowAlign[alignX]}
           yAlign={mapTooltipAlignToChWindowAlign[alignY]}
-          style={{
-            "--ch-window-offset-x": offsetX,
-            "--ch-window-offset-y": offsetY
-          }}
         >
-          <div
-            role="tooltip"
-            class={{
-              "tooltip-content": true
-            }}
-            id={this.tooltipId}
-          >
+          <div role="tooltip" class="tooltip-content" id={this.tooltipId}>
             <slot name="content"></slot>
           </div>
         </ch-window>

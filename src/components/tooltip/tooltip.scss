@@ -3,6 +3,9 @@
 @include box-sizing();
 
 ch-tooltip {
+  --ch-tooltip-separation: 12px;
+  --ch-tooltip-separation-x: var(--ch-tooltip-separation);
+  --ch-tooltip-separation-y: var(--ch-tooltip-separation);
   --ch-tooltip-color: #333;
   --ch-tooltip-arrow-size: 10px;
   --ch-tooltip-based: calc( 1px - var(--ch-tooltip-arrow-size));
@@ -19,6 +22,34 @@ ch-tooltip:not([hidden]) {
   display: contents;
 }
 
+// - - - - - - - - - - - - - - - -
+//           Separation
+// - - - - - - - - - - - - - - - -
+ch-window[y-align="outside-start"] {
+  --ch-window-separation: var(--ch-tooltip-separation-y);
+  --ch-window-separation-y: calc(var(--ch-tooltip-separation-y) * -1);
+}
+
+ch-window[y-align="outside-end"] {
+  --ch-window-separation: var(--ch-tooltip-separation-y);
+  --ch-window-separation-y: var(--ch-tooltip-separation-y);
+}
+
+ch-window[x-align="outside-start"]
++ :not(ch-window[y-align="outside-start"], ch-window[y-align="outside-end"]) {
+  --ch-window-separation: var(--ch-tooltip-separation-x);
+  --ch-window-separation-x: calc(var(--ch-tooltip-separation-x) * -1);
+}
+
+ch-window[x-align="outside-end"]
++ :not(ch-window[y-align="outside-start"], ch-window[y-align="outside-end"]) {
+  --ch-window-separation: var(--ch-tooltip-separation-x);
+  --ch-window-separation-x: var(--ch-tooltip-separation-x);
+}
+
+// - - - - - - - - - - - - - - - -
+//           Tooltip Arrow
+// - - - - - - - - - - - - - - - -
 ch-window[y-align="outside-start"], 
 ch-window[y-align="outside-start"][x-align="outside-start"],
 ch-window[y-align="outside-start"][x-align="outside-end"] {
@@ -101,11 +132,6 @@ ch-window[y-align="inside-end"]  {
   .tooltip-content::after {
     inset-block-start: var(--ch-tooltip-25);
   }
-}
-
-
-.slot-container {
-  display: inline-block;
 }
 
 .tooltip-content {

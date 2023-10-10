@@ -23,6 +23,7 @@
 - [ch-grid-column](../grid/grid-column)
 - [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
+- [ch-paginator-pages](../paginator/paginator-pages)
 - [ch-paginator-navigate](../paginator/paginator-navigate)
 - [ch-grid](../grid)
 
@@ -36,6 +37,7 @@ graph TD;
   gx-grid-chameleon --> ch-grid-column
   gx-grid-chameleon --> gx-grid-chameleon-column-filter
   gx-grid-chameleon --> ch-paginator
+  gx-grid-chameleon --> ch-paginator-pages
   gx-grid-chameleon --> ch-paginator-navigate
   gx-grid-chameleon --> ch-grid
   ch-grid-column --> ch-grid-column-settings

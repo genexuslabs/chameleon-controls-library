@@ -178,6 +178,7 @@ INDEX:
   windowClosedHandler() {
     this.textInput.focus();
     this.windowHidden = true;
+    this.el.innerHTML = "";
   }
 
   // 9.PUBLIC METHODS API //

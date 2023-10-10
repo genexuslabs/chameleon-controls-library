@@ -36,6 +36,20 @@ const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
+// Export Parts
+const getCheckboxExportPart = (part: string): string =>
+  `${part}:checkbox__${part}`;
+
+const CHECKBOX_EXPORT_PARTS = [
+  "container",
+  "input",
+  "option",
+  "checked",
+  "indeterminate"
+]
+  .map(getCheckboxExportPart)
+  .join(",");
+
 @Component({
   tag: "ch-tree-x-list-item",
   styleUrl: "tree-x-list-item.scss",
@@ -800,6 +814,7 @@ export class ChTreeXListItem {
             <ch-checkbox
               accessibleName={this.caption}
               class="checkbox"
+              exportparts={CHECKBOX_EXPORT_PARTS}
               part={`checkbox${this.disabled ? " disabled" : ""}${
                 this.checked ? " checked" : ""
               }${this.indeterminate ? " indeterminate" : ""}`}

@@ -147,16 +147,12 @@ INDEX:
 
   // 7.LISTENERS //
 
-  @Listen("itemSelected")
+  @Listen("itemSelected", { capture: true })
   itemSelectedHandler(event: CustomEvent<SuggestItemSelectedEvent>) {
+    event.stopPropagation();
     this.value = event.detail.value;
     this.closeWindow();
-    this.selectionChanged.emit({
-      value: this.value,
-      description: event.detail.description,
-      icon: event.detail.icon,
-      indexes: event.detail.indexes
-    });
+    this.selectionChanged.emit(event.detail);
   }
 
   @Listen("focusChangeAttempt")

@@ -39,7 +39,7 @@ const DEFAULT_SELECTED_VALUE = false;
 @Component({
   tag: "ch-test-tree-x",
   styleUrl: "test-tree-x.scss",
-  shadow: false // Necessary to avoid focus capture
+  shadow: false
 })
 export class ChTestTreeX {
   // UI Models

@@ -281,6 +281,7 @@
                 chSuggestListItem.innerText = item.innerText;
                 chSuggestListItem.value = item.getAttribute("data-value");
                 chSuggestListItem.itemId = item.getAttribute("data-id");
+                chSuggestListItem.iconSrc = item.getAttribute("data-icon");
                 if (category) {
                   chSuggestList.appendChild(chSuggestListItem);
                 } else {
@@ -321,8 +322,8 @@
         console.log("valueChanged event:", e.detail);
       });
 
-      chSuggest.addEventListener("itemSelected", e => {
-        console.log("itemSelected event:", e.detail);
+      chSuggest.addEventListener("selectionChanged", e => {
+        console.log("selectionChanged event:", e.detail);
       });
     </script>
     <script src="assets/common.js"></script>

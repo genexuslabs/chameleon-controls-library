@@ -138,6 +138,11 @@ INDEX:
    */
   @Event() valueChanged: EventEmitter<string>;
 
+  /**
+   * This event is emitted when an item was selected.
+   */
+  @Event() selectionChanged: EventEmitter<SuggestItemSelectedEvent>;
+
   // 6.COMPONENT LIFECYCLE EVENTS //
 
   // 7.LISTENERS //
@@ -146,6 +151,12 @@ INDEX:
   itemSelectedHandler(event: CustomEvent<SuggestItemSelectedEvent>) {
     this.value = event.detail.value;
     this.closeWindow();
+    this.selectionChanged.emit({
+      value: this.value,
+      description: event.detail.description,
+      icon: event.detail.icon,
+      indexes: event.detail.indexes
+    });
   }
 
   @Listen("focusChangeAttempt")

@@ -21,9 +21,10 @@
 
 ## Events
 
-| Event          | Description                                                                                     | Type                  |
-| -------------- | ----------------------------------------------------------------------------------------------- | --------------------- |
-| `valueChanged` | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>` |
+| Event              | Description                                                                                     | Type                                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `selectionChanged` | This event is emitted when an item was selected.                                                | `CustomEvent<{ value: any; indexes: SuggestItemIndexes; description?: string; icon?: string; }>` |
+| `valueChanged`     | This event is emitted every time there input events fires, and it emits the actual input value. | `CustomEvent<string>`                                                                            |
 
 
 ## Methods

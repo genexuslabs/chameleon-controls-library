@@ -20,7 +20,8 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
-import { FocusChangeAttempt, SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo, TreeXModel } from "./components/tree-x/types";
@@ -3101,6 +3102,10 @@ declare namespace LocalJSX {
           * The label position
          */
         "labelPosition"?: LabelPosition;
+        /**
+          * This event is emitted when an item was selected.
+         */
+        "onSelectionChanged"?: (event: ChSuggestCustomEvent<SuggestItemSelectedEvent>) => void;
         /**
           * This event is emitted every time there input events fires, and it emits the actual input value.
          */

@@ -29,9 +29,9 @@ const INITIAL_LEVEL = 0;
 // Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
-const DIRECT_TREE_ITEM_CHILDREN = `:scope>*>${TREE_ITEM_TAG_NAME}`;
+const DIRECT_TREE_ITEM_CHILDREN = `:scope>${TREE_ITEM_TAG_NAME}`;
 const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
-const LAST_SUB_ITEM = `:scope>*>${TREE_ITEM_TAG_NAME}:last-child`;
+const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 
 // Keys
 const EXPANDABLE_ID = "expandable";
@@ -384,8 +384,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, ask the parent to focus the next sibling
-    const parentItem = this.el.parentElement
-      .parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
     parentItem.focusNextSibling(ctrlKeyPressed);
   }
 
@@ -410,8 +409,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, set focus in the parent element
-    const parentItem = this.el.parentElement
-      .parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
 
     // Check if the parent is not disabled
     if (parentItem.disabled) {
@@ -601,7 +599,7 @@ export class ChTreeXListItem {
     id: this.el.id,
     itemRef: this.el,
     metadata: this.metadata,
-    parentId: this.el.parentElement.parentElement.id,
+    parentId: this.el.parentElement.id,
     selected: selected
   });
 

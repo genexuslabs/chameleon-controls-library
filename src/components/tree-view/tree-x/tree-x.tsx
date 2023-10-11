@@ -385,12 +385,12 @@ export class ChTreeX {
       return;
     }
 
-    let parentItem = itemRef.parentElement.parentElement;
+    let parentItem = itemRef.parentElement;
 
     // Expand all parents
     while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
       (parentItem as HTMLChTreeXListItemElement).expanded = true;
-      parentItem = parentItem.parentElement.parentElement;
+      parentItem = parentItem.parentElement;
     }
 
     // Wait until the parents are expanded
@@ -605,8 +605,7 @@ export class ChTreeX {
 
   private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
     if (!draggingSelectedItems) {
-      const parentTreeItemElem =
-        this.currentDraggedItem.parentElement.parentElement;
+      const parentTreeItemElem = this.currentDraggedItem.parentElement;
 
       if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
         this.draggedParentIds.push(parentTreeItemElem.id);

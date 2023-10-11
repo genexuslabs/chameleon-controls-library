@@ -895,7 +895,7 @@ export class ChTreeXListItem {
               expandable: true,
               "expandable--collapsed": !this.expanded
             }}
-            part={`expandable${this.expanded ? " expanded" : ""}`}
+            part={`expandable${this.expanded ? " expanded" : " collapsed"}`}
           >
             <slot />
           </div>

@@ -55,6 +55,7 @@
  - [ch-grid-row-actions](../grid/grid-row-actions)
  - [ch-grid-settings](../grid/grid-settings)
  - [ch-suggest](../suggest)
+ - [ch-tooltip](../tooltip)
 
 ### Depends on
 
@@ -69,6 +70,7 @@ graph TD;
   ch-grid-row-actions --> ch-window
   ch-grid-settings --> ch-window
   ch-suggest --> ch-window
+  ch-tooltip --> ch-window
   style ch-window fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

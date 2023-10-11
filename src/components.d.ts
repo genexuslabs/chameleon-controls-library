@@ -24,6 +24,7 @@ import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
+import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo } from "./components/tree-x/types";
 import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
@@ -1066,6 +1067,14 @@ export namespace Components {
          */
         "separation": number;
     }
+    interface ChTestSuggest {
+        /**
+          * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
+         */
+        "selectorSourceCallback"?: (
+    prefix: string
+  ) => Promise<SelectorCategoryData[]>;
+    }
     interface ChTestTreeX {
         /**
           * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
@@ -1187,6 +1196,35 @@ export namespace Components {
           * Sets the progress propiety to determine the progress.
          */
         "progress": number;
+    }
+    interface ChTooltip {
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "delay": number;
+        /**
+          * Specifies the position of the tooltip relative to the container element.
+         */
+        "position": | "OutsideStart_OutsideStart"
+    | "InsideStart_OutsideStart"
+    | "Center_OutsideStart"
+    | "InsideEnd_OutsideStart"
+    | "OutsideEnd_OutsideStart"
+    | "OutsideStart_InsideStart"
+    | "OutsideEnd_InsideStart"
+    | "OutsideStart_Center"
+    | "OutsideEnd_Center"
+    | "OutsideStart_InsideEnd"
+    | "OutsideEnd_InsideEnd"
+    | "OutsideStart_OutsideEnd"
+    | "InsideStart_OutsideEnd"
+    | "Center_OutsideEnd"
+    | "InsideEnd_OutsideEnd"
+    | "OutsideEnd_OutsideEnd";
+        /**
+          * Specifies the tooltip description.
+         */
+        "tooltipId": string;
     }
     interface ChTree {
         /**
@@ -1961,6 +1999,12 @@ declare global {
         prototype: HTMLChTestDropdownElement;
         new (): HTMLChTestDropdownElement;
     };
+    interface HTMLChTestSuggestElement extends Components.ChTestSuggest, HTMLStencilElement {
+    }
+    var HTMLChTestSuggestElement: {
+        prototype: HTMLChTestSuggestElement;
+        new (): HTMLChTestSuggestElement;
+    };
     interface HTMLChTestTreeXElement extends Components.ChTestTreeX, HTMLStencilElement {
     }
     var HTMLChTestTreeXElement: {
@@ -1978,6 +2022,12 @@ declare global {
     var HTMLChTimerElement: {
         prototype: HTMLChTimerElement;
         new (): HTMLChTimerElement;
+    };
+    interface HTMLChTooltipElement extends Components.ChTooltip, HTMLStencilElement {
+    }
+    var HTMLChTooltipElement: {
+        prototype: HTMLChTooltipElement;
+        new (): HTMLChTooltipElement;
     };
     interface HTMLChTreeElement extends Components.ChTree, HTMLStencilElement {
     }
@@ -2084,9 +2134,11 @@ declare global {
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-test-action-group": HTMLChTestActionGroupElement;
         "ch-test-dropdown": HTMLChTestDropdownElement;
+        "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-test-tree-x": HTMLChTestTreeXElement;
         "ch-textblock": HTMLChTextblockElement;
         "ch-timer": HTMLChTimerElement;
+        "ch-tooltip": HTMLChTooltipElement;
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-tree-x": HTMLChTreeXElement;
@@ -3219,6 +3271,14 @@ declare namespace LocalJSX {
          */
         "separation"?: number;
     }
+    interface ChTestSuggest {
+        /**
+          * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
+         */
+        "selectorSourceCallback"?: (
+    prefix: string
+  ) => Promise<SelectorCategoryData[]>;
+    }
     interface ChTestTreeX {
         /**
           * Callback that is executed when an element tries to drop in another item of the tree. Returns whether the drop is valid.
@@ -3309,6 +3369,35 @@ declare namespace LocalJSX {
           * Sets the progress propiety to determine the progress.
          */
         "progress"?: number;
+    }
+    interface ChTooltip {
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "delay"?: number;
+        /**
+          * Specifies the position of the tooltip relative to the container element.
+         */
+        "position"?: | "OutsideStart_OutsideStart"
+    | "InsideStart_OutsideStart"
+    | "Center_OutsideStart"
+    | "InsideEnd_OutsideStart"
+    | "OutsideEnd_OutsideStart"
+    | "OutsideStart_InsideStart"
+    | "OutsideEnd_InsideStart"
+    | "OutsideStart_Center"
+    | "OutsideEnd_Center"
+    | "OutsideStart_InsideEnd"
+    | "OutsideEnd_InsideEnd"
+    | "OutsideStart_OutsideEnd"
+    | "InsideStart_OutsideEnd"
+    | "Center_OutsideEnd"
+    | "InsideEnd_OutsideEnd"
+    | "OutsideEnd_OutsideEnd";
+        /**
+          * Specifies the tooltip description.
+         */
+        "tooltipId"?: string;
     }
     interface ChTree {
         /**
@@ -3713,9 +3802,11 @@ declare namespace LocalJSX {
         "ch-suggest-list-item": ChSuggestListItem;
         "ch-test-action-group": ChTestActionGroup;
         "ch-test-dropdown": ChTestDropdown;
+        "ch-test-suggest": ChTestSuggest;
         "ch-test-tree-x": ChTestTreeX;
         "ch-textblock": ChTextblock;
         "ch-timer": ChTimer;
+        "ch-tooltip": ChTooltip;
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-tree-x": ChTreeX;
@@ -3781,9 +3872,11 @@ declare module "@stencil/core" {
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             "ch-test-action-group": LocalJSX.ChTestActionGroup & JSXBase.HTMLAttributes<HTMLChTestActionGroupElement>;
             "ch-test-dropdown": LocalJSX.ChTestDropdown & JSXBase.HTMLAttributes<HTMLChTestDropdownElement>;
+            "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-test-tree-x": LocalJSX.ChTestTreeX & JSXBase.HTMLAttributes<HTMLChTestTreeXElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
+            "ch-tooltip": LocalJSX.ChTooltip & JSXBase.HTMLAttributes<HTMLChTooltipElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;

@@ -52,6 +52,10 @@ Type: `Promise<void>`
 
 ## Dependencies
 
+### Used by
+
+ - [ch-test-suggest](../test/test-suggest)
+
 ### Depends on
 
 - [ch-window](../window)
@@ -61,6 +65,7 @@ Type: `Promise<void>`
 graph TD;
   ch-suggest --> ch-window
   ch-window --> ch-window-close
+  ch-test-suggest --> ch-suggest
   style ch-suggest fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

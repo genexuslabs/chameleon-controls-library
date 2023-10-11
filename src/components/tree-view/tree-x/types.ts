@@ -18,6 +18,12 @@ export type TreeXItemModel = {
   indeterminate?: boolean;
   items?: TreeXItemModel[];
   metadata?: string;
+
+  /**
+   * Establish the order at which the item will be placed in its parent.
+   * Multiple items can have the same `order` value.
+   */
+  order?: number;
   rightImgSrc?: string;
   selected?: boolean;
   showExpandableButton?: boolean;

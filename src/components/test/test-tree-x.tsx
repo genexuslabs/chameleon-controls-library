@@ -34,6 +34,7 @@ const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
+const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
 @Component({
@@ -587,6 +588,7 @@ export class ChTestTreeX {
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;
+      item.order ??= DEFAULT_ORDER_VALUE;
       item.selected ??= DEFAULT_SELECTED_VALUE;
 
       if (item.selected) {

@@ -309,16 +309,13 @@ $own-offset: calc(
   --parent-checkbox-offset: 0px;
 
   display: grid;
-  grid-template-rows: 0fr;
+  grid-auto-rows: min-content;
+  position: relative;
   content-visibility: auto;
   contain-intrinsic-size: auto 100px;
 }
 
-.expanded {
-  grid-template-rows: 1fr;
-}
-
-:not(.expanded) ::slotted([slot="tree"]) {
+.expandable--collapsed {
   display: none;
   overflow: hidden;
   content-visibility: hidden;

@@ -540,16 +540,12 @@ export class ChTestTreeX {
     >
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
-        treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list slot="tree">
-            {treeSubModel.items.map((subModel, index) =>
-              this.renderSubModel(
-                subModel,
-                this.showLines && index === treeSubModel.items.length - 1,
-                level + 1
-              )
-            )}
-          </ch-tree-x-list>
+        treeSubModel.items.map((subModel, index) =>
+          this.renderSubModel(
+            subModel,
+            this.showLines && index === treeSubModel.items.length - 1,
+            level + 1
+          )
         )}
     </ch-tree-x-list-item>
   );

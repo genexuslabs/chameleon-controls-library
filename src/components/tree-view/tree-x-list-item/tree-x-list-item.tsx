@@ -699,7 +699,8 @@ export class ChTreeXListItem {
   };
 
   componentWillLoad() {
-    const parentElement = this.el.parentElement as HTMLChTreeXListElement;
+    const parentElementItem = this.el
+      .parentElement as HTMLChTreeXListItemElement;
 
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
@@ -715,9 +716,6 @@ export class ChTreeXListItem {
     }
 
     // Update checkbox status
-    const parentElementItem =
-      parentElement.parentElement as HTMLChTreeXListItemElement;
-
     if (parentElementItem.checkbox) {
       this.checked = parentElementItem.checked;
     }
@@ -889,13 +887,17 @@ export class ChTreeXListItem {
 
         {hasContent && (
           <div
+            role="group"
             aria-busy={this.downloading.toString()}
             aria-live={this.downloading ? "polite" : null}
             id={EXPANDABLE_ID}
-            class={{ expandable: true, expanded: this.expanded }}
+            class={{
+              expandable: true,
+              "expandable--collapsed": !this.expanded
+            }}
             part={`expandable${this.expanded ? " expanded" : ""}`}
           >
-            <slot name="tree" />
+            <slot />
           </div>
         )}
       </Host>

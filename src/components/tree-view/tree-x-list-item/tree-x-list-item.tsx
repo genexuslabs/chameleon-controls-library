@@ -17,7 +17,7 @@ import {
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
-import { mouseEventModifierKey } from "../common/helpers";
+import { mouseEventModifierKey } from "../../common/helpers";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";

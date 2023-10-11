@@ -116,11 +116,11 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-tree-x](../test)
+ - [ch-test-tree-x](../../test)
 
 ### Depends on
 
-- [ch-checkbox](../checkbox)
+- [ch-checkbox](../../checkbox)
 
 ### Graph
 ```mermaid

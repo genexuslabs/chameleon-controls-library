@@ -16,7 +16,7 @@ import {
   TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
   TreeXListItemSelectedInfo
-} from "../tree-x/types";
+} from "../tree-view/tree-x/types";
 import {
   TreeXItemModelExtended,
   TreeXOperationStatusModifyCaption

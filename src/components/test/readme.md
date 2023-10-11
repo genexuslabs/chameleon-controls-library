@@ -91,9 +91,9 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [ch-tree-x-list-item](../tree-x-list-item)
-- [ch-tree-x-list](../tree-x-list)
-- [ch-tree-x](../tree-x)
+- [ch-tree-x-list-item](../tree-view/tree-x-list-item)
+- [ch-tree-x-list](../tree-view/tree-x-list)
+- [ch-tree-x](../tree-view/tree-x)
 
 ### Graph
 ```mermaid

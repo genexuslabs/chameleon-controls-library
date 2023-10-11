@@ -64,7 +64,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-tree-x](../test)
+ - [ch-test-tree-x](../../test)
 
 ### Graph
 ```mermaid

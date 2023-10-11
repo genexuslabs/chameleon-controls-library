@@ -21,10 +21,10 @@ import {
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
-import { focusComposedPath, mouseEventModifierKey } from "../common/helpers";
-import { scrollToEdge } from "../../common/scroll-to-edge";
-import { GxDataTransferInfo } from "../../common/types";
-import { ChTreeXListItemCustomEvent } from "../../components";
+import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
+import { scrollToEdge } from "../../../common/scroll-to-edge";
+import { GxDataTransferInfo } from "../../../common/types";
+import { ChTreeXListItemCustomEvent } from "../../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_TAG_NAME = "ch-tree-x";

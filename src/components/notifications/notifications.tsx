@@ -1,6 +1,19 @@
 import { Component, Host, Listen, Prop, Watch, State, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { NotificationMessageWithDelay } from "./notifications-types";
+import {
+  NotificationMessageWithDelay,
+  NotificationsPositions,
+  NotificationsAlign
+} from "./notifications-types";
+import { ChWindowAlign } from "../window/ch-window";
+
+const mapNotificationsAlignToChWindowAlign: {
+  [key in NotificationsAlign]: ChWindowAlign;
+} = {
+  OutsideStart: "outside-start",
+  Center: "center",
+  OutsideEnd: "outside-end"
+};
 
 @Component({
   shadow: false,
@@ -13,43 +26,50 @@ export class ChNotifications implements ChComponent {
    */
   private didLoad = false;
 
+  /**
+   * Saves the last notification ID
+   */
   private lastNotificationID = 0;
 
+  /**
+   * Notifications to be shown by the component loop
+   */
   private currentNotifications = new Map<
     number,
     NotificationMessageWithDelay
   >();
 
+  /**
+   * The notifications length
+   */
   @State() notificationsSize = 0;
 
   /**
-   *
+   * Delay to animate new notifications
    */
   @Prop() readonly delayToAnimateNewNotifications: number = 50;
 
   /**
-   *
+   * The notifications prop
    */
   @Prop() readonly notifications: NotificationMessageWithDelay[] = [];
 
   /**
-   *
+  /**
+   * Specifies the position of the whole notifications section 
+   * that is placed relative to the window.
    */
-  @Prop() readonly position:
-    | "top-start"
-    | "top-center"
-    | "top-end"
-    | "bottom-start"
-    | "bottom-center"
-    | "bottom-end" = "bottom-center";
+  @Prop() readonly position: NotificationsPositions = "Center_OutsideEnd";
 
   /**
-   *
+   * The default dismiss timeout as group
+   * if not set for each notification individually
    */
   @Prop() readonly timeToDismissNotifications: number = 5000;
 
   /**
-   *
+   * Time type only applies for timeToDismissNotifications,
+   * not for individual dismissTimeout
    */
   @Prop() readonly timeType: "Seconds" | "Milliseconds" = "Milliseconds";
 
@@ -104,7 +124,6 @@ export class ChNotifications implements ChComponent {
       notification["id"] = notificationID;
       notification["delayToAnimate"] = delayToAnimate;
       this.currentNotifications.set(notificationID, notification);
-
       delayToAnimate++;
     });
   }
@@ -127,12 +146,17 @@ export class ChNotifications implements ChComponent {
   render() {
     const messages = this.getMessages();
 
+    const aligns = this.position.split("_");
+    const alignX = aligns[0] as NotificationsAlign;
+    const alignY = aligns[1] as NotificationsAlign;
+
     return (
       <Host
         tabindex={messages.length > 0 ? "0" : undefined}
         role="alert"
         aria-atomic="true"
-        class={`ch-notifications-position--${this.position}`}
+        x-align={mapNotificationsAlignToChWindowAlign[alignX]}
+        y-align={mapNotificationsAlignToChWindowAlign[alignY]}
       >
         {messages.map(
           ({
@@ -148,9 +172,11 @@ export class ChNotifications implements ChComponent {
               key={Id}
               class={Class}
               timer-interval={timerInterval}
-              delay-to-animate={
-                delayToAnimate * this.delayToAnimateNewNotifications
-              }
+              style={{
+                "--delay-to-animate": `${
+                  delayToAnimate * this.delayToAnimateNewNotifications
+                }ms`
+              }}
               dismiss-timeout={
                 !dismissTimeout
                   ? this.getTimeToDismiss() +

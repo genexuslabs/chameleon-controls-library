@@ -12,30 +12,20 @@ ch-notifications {
   //     Notification's position
   // - - - - - - - - - - - - - - - -
   
-  &.ch-notifications-position--top-start,
-  &.ch-notifications-position--top-center,
-  &.ch-notifications-position--top-end {
+  &[y-align="outside-start"] {
     inset-block-start: var(--ch-notification-item-rtl-initial-Y);
   }
-  &.ch-notifications-position--top-start,
-  &.ch-notifications-position--bottom-start {
+  &[x-align="outside-start"] {
     inset-inline-start: var(--ch-notification-item-rtl-initial-X);
   }
-
-  &.ch-notifications-position--top-center,
-  &.ch-notifications-position--bottom-center {
+  &[x-align="center"] {
     inset-inline-start: 50%;
     transform: translateX(-50%);
   }
-
-  &.ch-notifications-position--top-end,
-  &.ch-notifications-position--bottom-end {
+  &[x-align="outside-end"] {
     inset-inline-end: var(--ch-notification-item-rtl-initial-X);
   }
-
-  &.ch-notifications-position--bottom-start,
-  &.ch-notifications-position--bottom-center,
-  &.ch-notifications-position--bottom-end {
+  &[y-align="outside-end"] {
     inset-block-end: var(--ch-notification-item-rtl-initial-Y);	
   }
 }

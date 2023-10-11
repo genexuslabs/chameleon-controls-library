@@ -68,30 +68,6 @@ export class ChNotificationsItem implements ChComponent {
   /** Toggles the Pause on Hover functionality */
   @Prop() readonly pauseOnHover: boolean = true;
 
-  /** Closes the alert when the close button is clicked.
-   * Also restarts the counter and sets its value to match dismissTimeout.
-   */
-
-  private handleNotificationDismiss =
-    (mustClearInterval = false) =>
-    () => {
-      if (mustClearInterval) {
-        clearInterval(this.timerId);
-      }
-      this.notificationDismiss.emit(Number(this.element.id));
-    };
-
-  /** Handles the notification click */
-  private handleNotificationClick =
-    (mustClearInterval = false) =>
-    () => {
-      if (mustClearInterval) {
-        clearInterval(this.timerId);
-      }
-
-      this.notificationClick.emit(Number(this.element.id));
-    };
-
   /** Countdown which initial state is dismissTimeout ms. */
   @Prop({ mutable: true }) countdown: number = this.dismissTimeout;
 
@@ -101,7 +77,7 @@ export class ChNotificationsItem implements ChComponent {
   @Watch("countdown")
   countdownWatcher(newValue) {
     if (newValue <= 0) {
-      this.handleNotificationDismiss(true)();
+      this.handleNotificationDismiss();
     }
   }
 
@@ -110,6 +86,22 @@ export class ChNotificationsItem implements ChComponent {
 
   /** the notificationDismiss event */
   @Event() notificationDismiss: EventEmitter<number>;
+
+  /** Closes the alert when the close button is clicked.
+   * Also restarts the counter and sets its value to match dismissTimeout.
+   */
+
+  private handleNotificationDismiss = () => {
+    clearInterval(this.timerId);
+    this.notificationDismiss.emit(Number(this.element.id));
+  };
+
+  /** Handles the notification click */
+  private handleNotificationClick = () => {
+    clearInterval(this.timerId);
+
+    this.notificationClick.emit(Number(this.element.id));
+  };
 
   /** Counter decremental function */
   private counter = () => {
@@ -143,12 +135,11 @@ export class ChNotificationsItem implements ChComponent {
   render() {
     return (
       <Host
-        role="alert"
         onMouseEnter={this.pauseOnHover && this.handleMouseEnter}
         onMouseLeave={this.pauseOnHover && this.handleMouseLeave}
         aria-hidden="false"
         class={this.pauseOnHover && "pause-on-hover"}
-        onClick={this.handleNotificationClick(true)}
+        onClick={this.handleNotificationClick}
       >
         {this.leftImgSrc && (
           <img
@@ -169,7 +160,7 @@ export class ChNotificationsItem implements ChComponent {
             class="close-button"
             type="button"
             aria-label={this.closeButtonAccessibleName}
-            onClick={this.handleNotificationDismiss(true)}
+            onClick={this.handleNotificationDismiss}
           >
             <slot name="button" aria-hidden="true">
               <div aria-hidden="true" class="close-button-img"></div>

@@ -20,3 +20,13 @@ export type NotificationMessageWithDelay = NotificationMessage & {
    */
   delayToAnimate: number;
 };
+
+export type NotificationsPositions =
+  | "OutsideStart_OutsideStart"
+  | "Center_OutsideStart"
+  | "OutsideEnd_OutsideStart"
+  | "OutsideStart_OutsideEnd"
+  | "Center_OutsideEnd"
+  | "OutsideEnd_OutsideEnd";
+
+export type NotificationsAlign = "OutsideStart" | "Center" | "OutsideEnd";

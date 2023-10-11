@@ -54,9 +54,31 @@
         grid-template: "first-img left-img text right-img" / max-content max-content 1fr max-content;
       }
 
+      .tree-view-item--success::part(action)::before {
+        grid-area: left-img;
+        content: "";
+        width: 10px;
+        height: 10px;
+        margin-inline-end: 4px;
+        background-color: rgb(69, 150, 96);
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .tree-view-item--custom-image::part(action)::before {
+        grid-area: left-img;
+        content: "";
+        width: 14px;
+        height: 14px;
+        margin-inline-end: 4px;
+        background-color: rgb(69, 84, 150);
+        border-radius: 50%;
+        z-index: 1;
+      }
+
       .configuration {
         display: grid;
-        grid-template-columns: max-content max-content max-content max-content;
+        grid-template-columns: repeat(5, max-content);
         grid-template-rows: min-content min-content min-content min-content;
         gap: 12px 24px;
       }
@@ -390,6 +412,14 @@
         ></ch-checkbox>
 
         <ch-checkbox
+          id="editable"
+          checked-value="true"
+          un-checked-value="false"
+          value="true"
+          caption="Editable Items"
+        ></ch-checkbox>
+
+        <ch-checkbox
           id="check-all"
           checked-value="true"
           un-checked-value="false"
@@ -454,13 +484,15 @@
       const modelTiny = [
         {
           id: "number-1",
-          caption: "number-1 label",
-          leftImgSrc: "./assets/icons/knowledge-base.svg"
+          caption: "number-1 label (always editable)",
+          leftImgSrc: "./assets/icons/knowledge-base.svg",
+          editable: true
         },
         {
           id: "number-2",
-          caption: "number-2",
+          caption: "number-2 (always editable)",
           leftImgSrc: "./assets/icons/datastore.svg",
+          editable: true,
           items: [
             {
               id: "number-2.1",
@@ -524,9 +556,10 @@
       const modelTinyUpdatedAgain = [
         {
           id: "number-a",
-          caption: "number-a",
+          caption: "number-a (always editable)",
           leaf: true,
-          leftImgSrc: "./assets/icons/apple.svg"
+          leftImgSrc: "./assets/icons/apple.svg",
+          editable: true
         },
         {
           id: "number-b",
@@ -569,15 +602,18 @@
       const model = [
         {
           id: "number-1",
-          caption: "number-1 label",
+          caption: "number-1 label (always editable)",
+          class: "tree-view-item tree-view-item--success",
           leaf: false,
           leftImgSrc: "./assets/icons/datastore.svg",
+          editable: true,
           items: [
             {
               id: "number-1-1",
-              caption: "number-1-1",
+              caption: "number-1-1 (always editable)",
               leaf: false,
               leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+              editable: true,
               items: [
                 {
                   id: "number-1-1-1",
@@ -622,8 +658,8 @@
         {
           id: "number-2",
           caption: "number-2",
+          class: "tree-view-item tree-view-item--custom-image",
           leaf: false,
-          leftImgSrc: "./assets/icons/datastore.svg",
           items: [
             {
               id: "number-2-1",
@@ -1001,6 +1037,11 @@
           document.getElementById("multi-selection");
         multiSelectionCheckbox.addEventListener("input", event => {
           testTreeX.multiSelection = event.target.checked;
+        });
+
+        const editableCheckbox = document.getElementById("editable");
+        editableCheckbox.addEventListener("input", event => {
+          testTreeX.editableItems = event.target.checked;
         });
 
         const checkAllCheckbox = document.getElementById("check-all");

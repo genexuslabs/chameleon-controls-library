@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="./assets/styles.css" />
 
     <style>
+      @font-face {
+        font-family: SourceSansPro_Regular;
+        src: url("assets/fonts/SourceSansPro_Regular.woff2");
+      }
+
       * {
         box-sizing: border-box;
       }
@@ -76,18 +81,51 @@
         z-index: 1;
       }
 
+      .tree-view-item--folder::part(action)::before,
+      .tree-view-item--module::part(action)::before {
+        grid-area: left-img;
+        content: "";
+        width: 14px;
+        height: 14px;
+        margin-inline-end: 4px;
+        background-repeat: no-repeat;
+      }
+
+      .tree-view-item--folder::part(action)::before {
+        background-image: url("assets/icons/folder.svg");
+      }
+
+      .tree-view-item--folder::part(action expanded)::before {
+        background-image: url("assets/icons/folder-open.svg");
+      }
+
+      .tree-view-item--module::part(action)::before {
+        background-image: url("assets/icons/module.svg");
+      }
+
+      .tree-view-item--module::part(action expanded)::before {
+        background-image: url("assets/icons/module-open.svg");
+      }
+
+      .tree-view-item--pending-commit::part(action)::before {
+        content: "";
+        position: relative;
+        z-index: 1;
+        grid-area: left-img;
+        width: 5px;
+        height: 5px;
+        align-self: end;
+        margin-block-end: 3px;
+        margin-inline-start: 1px;
+        background-color: rgb(44, 59, 146);
+        border-radius: 50%;
+      }
+
       .configuration {
         display: grid;
         grid-template-columns: repeat(5, max-content);
         grid-template-rows: min-content min-content min-content min-content;
         gap: 12px 24px;
-      }
-
-      ch-test-tree-x {
-        display: grid;
-        grid-template-columns: 500px max-content;
-        grid-template-rows: 1fr;
-        height: 100%;
       }
 
       .tree-buttons {
@@ -111,6 +149,8 @@
       }
 
       ch-tree-x-list-item {
+        font-family: SourceSansPro_Regular;
+
         &::part(header) {
           border: 1px solid transparent;
         }
@@ -462,14 +502,6 @@
         </div>
       </div>
 
-      <button type="outlined" id="get-selected-markup">
-        Get Selected Items
-      </button>
-      <button type="outlined" id="get-checked-markup">Get Checked Items</button>
-      <button type="outlined" id="open-goat-b">Open Goat B</button>
-      <button type="outlined" id="close-goat-b">Close Goat B</button>
-      <button type="outlined" id="toggle-goat-b">Toggle Goat B</button>
-
       <div class="buttons-wrapper">
         <button id="load-model-btn">Load model (click first)</button>
         <button id="update-model-btn">Update model (click second)</button>
@@ -477,6 +509,7 @@
           Update model again (click third)
         </button>
         <button id="update-big-model-btn">Set big model</button>
+        <button id="kb-explorer-model-btn">KB Explorer</button>
       </div>
     </div>
 
@@ -950,6 +983,363 @@
         }
       ];
 
+      const KB_EXPLORER_ORDER = {
+        module: 1,
+        folder: 2,
+        api: 3,
+        dso: 3,
+        stencil: 3,
+        sdPanel: 3,
+        masterPanel: 3,
+        procedure: 3,
+        webPanel: 3,
+        globalEvents: 4,
+        domain: 5,
+        files: 6,
+        images: 7
+      };
+
+      const kbExplorerModel = [
+        {
+          id: "root",
+          caption: "GeneXusNext Develop",
+          editable: false,
+          leaf: false,
+          leftImgSrc: "assets/icons/version.svg",
+          disabledDrop: true,
+          disabledDrag: true,
+          items: [
+            {
+              id: "Main_Programs",
+              caption: "Main Programs",
+              editable: false,
+              leftImgSrc: "assets/icons/category.svg",
+              disabledDrop: true,
+              disabledDrag: true,
+              lazy: true,
+              order: 0
+            },
+            {
+              id: "Root_Module",
+              caption: "Root Module",
+              editable: false,
+              class: "tree-view-item tree-view-item--module",
+              disabledDrop: true,
+              disabledDrag: true,
+              lazy: true,
+              order: 1
+            },
+            {
+              id: "References",
+              caption: "References",
+              editable: false,
+              leftImgSrc: "assets/icons/references.svg",
+              disabledDrop: true,
+              disabledDrag: true,
+              order: 2
+            },
+            {
+              id: "Customization",
+              caption: "Customization",
+              editable: false,
+              leftImgSrc: "assets/icons/customization.svg",
+              disabledDrop: true,
+              disabledDrag: true,
+              order: 3
+            },
+            {
+              id: "Documentation",
+              caption: "Documentation",
+              editable: false,
+              leftImgSrc: "assets/icons/document.svg",
+              disabledDrop: true,
+              disabledDrag: true,
+              order: 4
+            }
+          ]
+        }
+      ];
+
+      const kbExplorerModel_MainPrograms = [
+        {
+          id: "Main_Programs.Prompt",
+          caption: "Prompt",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/sd-panel.svg",
+          order: KB_EXPLORER_ORDER.sdPanel
+        },
+        {
+          id: "Main_Programs.ApiHealthCheck",
+          caption: "ApiHealthCheck",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/api.svg",
+          order: KB_EXPLORER_ORDER.api
+        },
+        {
+          id: "Main_Programs.BackHome",
+          caption: "BackHome",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/web-panel.svg",
+          order: KB_EXPLORER_ORDER.webPanel
+        },
+        {
+          id: "Main_Programs.Login",
+          caption: "Login",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/web-panel.svg",
+          order: KB_EXPLORER_ORDER.webPanel
+        },
+        {
+          id: "Main_Programs.ProvisioningServices",
+          caption: "ProvisioningServices",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/api.svg",
+          order: KB_EXPLORER_ORDER.api
+        },
+        {
+          id: "Main_Programs.VersionCheck",
+          caption: "VersionCheck",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/procedure.svg",
+          order: KB_EXPLORER_ORDER.procedure
+        }
+      ];
+
+      const kbExplorerModel_RootModule = [
+        {
+          id: "Root_Module.IDE",
+          caption: "IDE",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.BL",
+          caption: "BL",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General",
+          caption: "General",
+          class: "tree-view-item tree-view-item--module",
+          lazy: true,
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.AWS_internal",
+          caption: "AWS_internal",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.DataModel",
+          caption: "DataModel",
+          class: "tree-view-item tree-view-item--folder",
+          order: KB_EXPLORER_ORDER.folder
+        },
+        {
+          id: "Root_Module.Back",
+          caption: "Back",
+          class: "tree-view-item tree-view-item--folder",
+          order: KB_EXPLORER_ORDER.folder
+        },
+        {
+          id: "Root_Module.Tests",
+          caption: "Tests",
+          class: "tree-view-item tree-view-item--folder",
+          order: KB_EXPLORER_ORDER.folder
+        },
+        {
+          id: "Root_Module.Images",
+          caption: "Images",
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/image.svg",
+          order: KB_EXPLORER_ORDER.images
+        },
+        {
+          id: "Root_Module.GXNext",
+          caption: "GXNext",
+          leaf: true,
+          leftImgSrc: "assets/icons/dso.svg",
+          order: KB_EXPLORER_ORDER.dso
+        },
+        {
+          id: "Root_Module.GeneXusNext",
+          caption: "GeneXusNext",
+          leaf: true,
+          leftImgSrc: "assets/icons/dso.svg",
+          order: KB_EXPLORER_ORDER.dso
+        },
+        {
+          id: "Root_Module.Files",
+          caption: "Files",
+          editable: false,
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/file.svg",
+          order: KB_EXPLORER_ORDER.files
+        },
+        {
+          id: "Root_Module.Domain",
+          caption: "Domain",
+          editable: false,
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/domain.svg",
+          order: KB_EXPLORER_ORDER.domain
+        }
+      ];
+
+      const kbExplorerModel_RootModule_General = [
+        {
+          id: "Root_Module.General.Security",
+          caption: "Security",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General.Services",
+          caption: "Services",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General.UI",
+          caption: "UI",
+          class: "tree-view-item tree-view-item--module",
+          lazy: true,
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General.Domain",
+          caption: "Domain",
+          editable: false,
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/domain.svg",
+          order: KB_EXPLORER_ORDER.domain
+        },
+        {
+          id: "Root_Module.General.GlobalEvents",
+          caption: "GlobalEvents",
+          editable: false,
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/external-object.svg",
+          order: KB_EXPLORER_ORDER.globalEvents
+        }
+      ];
+
+      const kbExplorerModel_RootModule_General_UI = [
+        {
+          id: "Root_Module.General.UI.DesignSystem",
+          caption: "DesignSystem",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General.UI.Q2",
+          caption: "Q2",
+          class: "tree-view-item tree-view-item--folder",
+          lazy: true,
+          order: KB_EXPLORER_ORDER.folder
+        },
+        {
+          id: "Root_Module.General.UI.Popups",
+          caption: "Popups",
+          class: "tree-view-item tree-view-item--module",
+          order: KB_EXPLORER_ORDER.module
+        },
+        {
+          id: "Root_Module.General.UI.Stencils",
+          caption: "Stencils",
+          class: "tree-view-item tree-view-item--folder",
+          lazy: true,
+          order: KB_EXPLORER_ORDER.folder
+        },
+        {
+          id: "Root_Module.General.UI.Domain",
+          caption: "Domain",
+          editable: false,
+          disabledDrop: true,
+          disabledDrag: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/domain.svg",
+          order: KB_EXPLORER_ORDER.domain
+        },
+        {
+          id: "Root_Module.General.UI.Login",
+          caption: "Login",
+          class: "tree-view-item tree-view-item--pending-commit",
+          leaf: true,
+          leftImgSrc: "assets/icons/sd-panel.svg",
+          order: KB_EXPLORER_ORDER.sdPanel
+        }
+      ];
+
+      const kbExplorerModel_RootModule_General_UI_Q2 = [
+        {
+          id: "Root_Module.General.UI.Q2.ContactUs",
+          caption: "ContactUs",
+          leaf: true,
+          leftImgSrc: "assets/icons/sd-panel.svg",
+          order: KB_EXPLORER_ORDER.sdPanel
+        },
+        {
+          id: "Root_Module.General.UI.Q2.ProjectDetail",
+          caption: "ProjectDetail",
+          class: "tree-view-item tree-view-item--pending-commit",
+          leaf: true,
+          leftImgSrc: "assets/icons/sd-panel.svg",
+          order: KB_EXPLORER_ORDER.sdPanel
+        },
+        {
+          id: "Root_Module.General.UI.Q2.MyApps",
+          caption: "MyApps",
+          leaf: true,
+          leftImgSrc: "assets/icons/sd-panel.svg",
+          order: KB_EXPLORER_ORDER.sdPanel
+        }
+      ];
+
+      const kbExplorerModel_RootModule_General_UI_Stencils = [
+        {
+          id: "Root_Module.General.UI.Stencils.StencilPublishProject",
+          caption: "StencilPublishProject",
+          leaf: true,
+          leftImgSrc: "assets/icons/stencil.svg",
+          order: KB_EXPLORER_ORDER.stencil
+        }
+      ];
+
+      const lazyLoadItemsDictionary = {
+        Main_Programs: kbExplorerModel_MainPrograms,
+        Root_Module: kbExplorerModel_RootModule,
+        "Root_Module.General": kbExplorerModel_RootModule_General,
+        "Root_Module.General.UI": kbExplorerModel_RootModule_General_UI,
+        "Root_Module.General.UI.Q2": kbExplorerModel_RootModule_General_UI_Q2,
+        "Root_Module.General.UI.Stencils":
+          kbExplorerModel_RootModule_General_UI_Stencils
+      };
+
       const bigModel = [];
 
       const FIRST_LEVEL_SIZE = 10;
@@ -1105,6 +1495,11 @@
           testTreeX.treeModel = bigModel;
         });
 
+        const kbExplorerBtn = document.getElementById("kb-explorer-model-btn");
+        kbExplorerBtn.addEventListener("click", () => {
+          testTreeX.treeModel = kbExplorerModel;
+        });
+
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1152,6 +1547,13 @@
               }
             }
 
+            const lazyModelResultFromDictionary =
+              lazyLoadItemsDictionary[modelId];
+
+            if (lazyModelResultFromDictionary) {
+              lazyModel = lazyModelResultFromDictionary;
+            }
+
             setTimeout(() => {
               resolve(lazyModel);
             }, 1000); // Resolves or rejects after 1 second
@@ -1197,12 +1599,23 @@
          * @type {object}
          * @property {string} id
          * @property {string} caption
+         * @property {number} order
          */
         /**
          * @param {TreeXItemModel[]} subModel
          */
         const sortItems = subModel =>
-          subModel.sort((a, b) => (a.caption < b.caption ? -1 : 0));
+          subModel.sort((a, b) => {
+            if (a.order < b.order) {
+              return -1;
+            }
+
+            if (a.order > b.order) {
+              return 0;
+            }
+
+            return a.caption <= b.caption ? -1 : 0;
+          });
 
         testTreeX.sortItemsCallback = sortItems;
 

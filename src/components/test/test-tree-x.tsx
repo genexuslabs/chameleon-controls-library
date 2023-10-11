@@ -3,7 +3,6 @@ import {
   h,
   Prop,
   Listen,
-  Host,
   Watch,
   State,
   forceUpdate,
@@ -612,26 +611,24 @@ export class ChTestTreeX {
 
   render() {
     return (
-      <Host>
-        <ch-tree-x
-          class={this.cssClass || null}
-          multiSelection={this.multiSelection}
-          waitDropProcessing={this.waitDropProcessing}
-          onDroppableZoneEnter={this.handleDroppableZoneEnter}
-          onExpandedItemChange={this.handleExpandedItemChange}
-          onItemsDropped={this.handleItemsDropped}
-          onSelectedItemsChange={this.handleSelectedItemsChange}
-          ref={el => (this.treeRef = el)}
-        >
-          {this.treeModel.map((subModel, index) =>
-            this.renderSubModel(
-              subModel,
-              this.showLines && index === this.treeModel.length - 1,
-              0
-            )
-          )}
-        </ch-tree-x>
-      </Host>
+      <ch-tree-x
+        class={this.cssClass || null}
+        multiSelection={this.multiSelection}
+        waitDropProcessing={this.waitDropProcessing}
+        onDroppableZoneEnter={this.handleDroppableZoneEnter}
+        onExpandedItemChange={this.handleExpandedItemChange}
+        onItemsDropped={this.handleItemsDropped}
+        onSelectedItemsChange={this.handleSelectedItemsChange}
+        ref={el => (this.treeRef = el)}
+      >
+        {this.treeModel.map((subModel, index) =>
+          this.renderSubModel(
+            subModel,
+            this.showLines && index === this.treeModel.length - 1,
+            0
+          )
+        )}
+      </ch-tree-x>
     );
   }
 }

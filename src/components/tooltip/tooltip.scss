@@ -6,7 +6,6 @@ ch-tooltip {
   --ch-tooltip-separation: 12px;
   --ch-tooltip-separation-x: var(--ch-tooltip-separation);
   --ch-tooltip-separation-y: var(--ch-tooltip-separation);
-  --ch-tooltip-color: #333;
   --ch-tooltip-arrow-size: 10px;
   --ch-tooltip-based: calc( 1px - var(--ch-tooltip-arrow-size));
   --ch-tooltip-centered: calc( 50% - var(--ch-tooltip-arrow-size) / 2);
@@ -135,7 +134,6 @@ ch-window[y-align="inside-end"]  {
 }
 
 .tooltip-content {
-  background-color: var(--ch-tooltip-color);
   &::after {
     content: " ";
     position: absolute;

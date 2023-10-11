@@ -60,6 +60,63 @@
         grid-template-rows: min-content min-content min-content min-content;
         gap: 12px 24px;
       }
+
+      ch-test-tree-x {
+        display: grid;
+        grid-template-columns: 500px max-content;
+        grid-template-rows: 1fr;
+        height: 100%;
+      }
+
+      .tree-buttons {
+        display: grid;
+        grid-auto-rows: max-content;
+        row-gap: 8px;
+      }
+
+      :not(.ch-tree-x-dragging-item)
+        ch-tree-x-list-item:not([selected])::part(header):hover {
+        background-color: rgb(232, 232, 233);
+      }
+
+      .ch-tree-x-list-item--drag-enter {
+        background-color: #eee;
+        box-shadow: inset 0 0 1px 0px black;
+
+        &[selected]::part(header) {
+          background-color: #eee;
+        }
+      }
+
+      ch-tree-x-list-item {
+        &::part(header) {
+          border: 1px solid transparent;
+        }
+
+        &[selected]::part(header) {
+          background-color: rgb(207, 222, 230);
+          border-color: rgb(2, 102, 160);
+        }
+
+        &.ch-tree-x-list-item--editing::part(header) {
+          background-color: rgb(207, 222, 230, 0.5);
+          border-color: transparent;
+        }
+
+        &:not(.ch-tree-x-list-item--editing)::part(header):focus-visible {
+          border-color: black;
+          z-index: 1;
+        }
+      }
+
+      .ch-tree-x-drag-info {
+        padding-inline: 6px;
+        padding-block: 2px;
+        background-color: rgb(207, 222, 230);
+        border: 1px solid rgb(2, 102, 160);
+        border-radius: 10px;
+        font-size: 8px;
+      }
     </style>
   </head>
   <body>
@@ -68,7 +125,7 @@
         class="section-dev"
         style="
           display: grid;
-          grid-template-columns: 250px max-content;
+          grid-template-columns: 250px 500px;
           gap: 32px;
           margin: 50px;
         "
@@ -318,9 +375,7 @@
           </ch-tree-x-list>
         </ch-tree-x>
 
-        <div class="scroll">
-          <ch-test-tree-x></ch-test-tree-x>
-        </div>
+        <ch-test-tree-x></ch-test-tree-x>
       </section>
 
       <div class="configuration">
@@ -940,9 +995,7 @@
 
         const testTreeX = document.querySelector("ch-test-tree-x");
 
-        testTreeX.treeModel = {
-          items: model
-        };
+        testTreeX.treeModel = model;
 
         const multiSelectionCheckbox =
           document.getElementById("multi-selection");
@@ -989,34 +1042,26 @@
 
         const loadModelBtn = document.getElementById("load-model-btn");
         loadModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: model
-          };
+          testTreeX.treeModel = model;
         });
 
         const updateModelBtn = document.getElementById("update-model-btn");
         updateModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: updatedModel
-          };
+          testTreeX.treeModel = updatedModel;
         });
 
         const updateModelAgainBtn = document.getElementById(
           "update-model-again-btn"
         );
         updateModelAgainBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: modelTinyUpdatedAgain
-          };
+          testTreeX.treeModel = modelTinyUpdatedAgain;
         });
 
         const updateBigModelBtn = document.getElementById(
           "update-big-model-btn"
         );
         updateBigModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = {
-            items: bigModel
-          };
+          testTreeX.treeModel = bigModel;
         });
 
         const scrollIntoVisibleBtn = document.getElementById(
@@ -1121,9 +1166,7 @@
         testTreeX.sortItemsCallback = sortItems;
 
         // Eager large model
-        // testTreeX.treeModel = {
-        //   items: eagerLargeModel
-        // };
+        // testTreeX.treeModel = eagerLargeModel;
       });
     </script>
 

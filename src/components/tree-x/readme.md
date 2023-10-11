@@ -49,7 +49,7 @@ Type: `Promise<void>`
 
 
 
-### `updateValidDroppableZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
+### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
 

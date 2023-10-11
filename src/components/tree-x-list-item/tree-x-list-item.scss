@@ -9,7 +9,6 @@ $own-offset: calc(
 :where(button) {
   all: unset;
   display: flex;
-  cursor: pointer;
 
   // Disallow selecting the text
   user-select: none;
@@ -162,7 +161,7 @@ $own-offset: calc(
       var(--ch-tree-x-list-item-dashed-line--offset) - 4px
   );
 
-  border: 0 dashed #a9a9a9;
+  border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);
   border-block-end-width: 1px;
   pointer-events: none; // Improve hover effect
   content-visibility: hidden;
@@ -195,6 +194,7 @@ $own-offset: calc(
   height: var(--expandable-button-width);
   margin-inline-end: $separation-between-actions;
   z-index: 1;
+  cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto var(--expandable-button-width);
 
@@ -237,6 +237,7 @@ $own-offset: calc(
   align-items: center;
   height: 100%;
   flex: 1;
+  cursor: pointer;
 }
 
 .readonly-mode {
@@ -266,9 +267,10 @@ $own-offset: calc(
   grid-area: text;
   width: 100%;
   height: 100%;
-  background-color: unset;
   padding: 0;
   margin: 0;
+  background-color: unset;
+  color: unset;
   border: 1px solid currentColor;
   font: unset;
   outline: unset;

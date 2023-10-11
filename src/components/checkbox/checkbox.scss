@@ -1,9 +1,9 @@
 $option-size: min(1em, 20px);
 
 $option-checked-background-color: var(--option-checked-color, #ffffff00);
-$option-checked-border-color: var(--option-border-color, #000);
-$option-checked-color: #000;
-$option-checked-box-shadow: var(--option-highlight-color, #000);
+$option-checked-border-color: var(--option-border-color, currentColor);
+$option-checked-color: currentColor;
+$option-checked-box-shadow: var(--option-highlight-color, currentColor);
 $option-checked-box-shadow-size: min(0.15em, 2px);
 
 $space-between-container-and-label: min(0.35em, 7px);
@@ -46,7 +46,7 @@ $space-between-container-and-label: min(0.35em, 7px);
   }
 
   &:focus-within {
-    box-shadow: 0 0 1px 1px #00000040;
+    box-shadow: 0 0 1px 1px color-mix(in srgb, currentColor 25%, transparent);
   }
 }
 

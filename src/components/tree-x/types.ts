@@ -1,11 +1,5 @@
 import { GxDataTransferInfo } from "../../common/types";
 
-export type TreeXModel = {
-  items: TreeXItemModel[];
-  multiSelection?: boolean;
-  showLines?: boolean;
-};
-
 export type TreeXItemModel = {
   id: string;
   caption: string;
@@ -13,6 +7,7 @@ export type TreeXItemModel = {
   checked?: boolean;
   class?: string;
   disabled?: boolean;
+  downloading?: boolean;
   dragDisabled?: boolean;
   dropDisabled?: boolean;
   expanded?: boolean;

@@ -184,7 +184,7 @@
       </ul>
 
       <!-- ch-suggest -->
-      <section class="section-dev" data-title="ch-suggest">
+      <section class="section-dev" data-title="ch-suggest" id="section-dev">
         <ch-suggest
           label="This is the label"
           suggest-title="Select your food"
@@ -281,6 +281,7 @@
                 chSuggestListItem.innerText = item.innerText;
                 chSuggestListItem.value = item.getAttribute("data-value");
                 chSuggestListItem.itemId = item.getAttribute("data-id");
+                chSuggestListItem.iconSrc = item.getAttribute("data-icon");
                 if (category) {
                   chSuggestList.appendChild(chSuggestListItem);
                 } else {
@@ -320,7 +321,9 @@
       chSuggest.addEventListener("valueChanged", e => {
         console.log("valueChanged event:", e.detail);
       });
-
+      chSuggest.addEventListener("selectionChanged", e => {
+        console.log("selectionChanged event:", e.detail);
+      });
       chSuggest.addEventListener("itemSelected", e => {
         console.log("itemSelected event:", e.detail);
       });

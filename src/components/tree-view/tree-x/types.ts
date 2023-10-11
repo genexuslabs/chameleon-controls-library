@@ -10,6 +10,7 @@ export type TreeXItemModel = {
   downloading?: boolean;
   dragDisabled?: boolean;
   dropDisabled?: boolean;
+  editable?: boolean;
   expanded?: boolean;
   lazy?: boolean;
   leaf?: boolean;

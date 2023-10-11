@@ -30,6 +30,7 @@ import { GxDataTransferInfo } from "../../common/types";
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
 const DEFAULT_CLASS_VALUE = "tree-view-item";
+const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -69,13 +70,13 @@ export class ChTestTreeX {
 
   /**
    * This attribute lets you specify if the drag operation is disabled in all
-   * items by default. If `true`, the control can't be dragged.
+   * items by default. If `true`, the items can't be dragged.
    */
   @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
 
   /**
    * This attribute lets you specify if the drop operation is disabled in all
-   * items by default. If `true`, the control won't accept any drops.
+   * items by default. If `true`, the items won't accept any drops.
    */
   @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
 
@@ -115,6 +116,12 @@ export class ChTestTreeX {
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;
+
+  /**
+   * This attribute lets you specify if the edit operation is enabled in all
+   * items by default. If `true`, the items can edit its caption in place.
+   */
+  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -524,6 +531,7 @@ export class ChTestTreeX {
       downloading={treeSubModel.downloading}
       dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
       dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
+      editable={treeSubModel.editable ?? this.editableItems}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
       lastItem={lastItem}

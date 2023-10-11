@@ -93,7 +93,7 @@ export class ChTreeX {
     [EDIT_KEY]: event => {
       const treeItem = getFocusedTreeItem();
 
-      if (!treeItem) {
+      if (!treeItem || !treeItem.editable) {
         return;
       }
 

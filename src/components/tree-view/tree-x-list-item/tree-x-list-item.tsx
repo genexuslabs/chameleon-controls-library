@@ -138,6 +138,12 @@ export class ChTreeXListItem {
   @Prop() readonly downloading: boolean = false;
 
   /**
+   * This attribute lets you specify if the edit operation is enabled in the
+   * control. If `true`, the control can edit its caption in place.
+   */
+  @Prop() readonly editable: boolean;
+
+  /**
    * Set this attribute when the item is in edit mode
    */
   @Prop({ mutable: true }) editing = false;
@@ -848,7 +854,7 @@ export class ChTreeXListItem {
               >
                 {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 
-                {this.editing ? (
+                {this.editable && this.editing ? (
                   <input
                     class="edit-name"
                     part="edit-name"

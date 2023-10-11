@@ -45,7 +45,6 @@ export class ChTestTreeX {
   // UI Models
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
   private selectedItems: Set<string> = new Set();
-  private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
 
   // Refs
   private treeRef: HTMLChTreeXElement;
@@ -140,10 +139,9 @@ export class ChTestTreeX {
     downloading = false,
     lazy = false
   ) {
-    const itemToLazyLoadContent = this.flattenedLazyTreeModel.get(itemId);
+    const itemToLazyLoadContent = this.flattenedTreeModel.get(itemId).item;
 
     // Establish that the content was lazy loaded
-    this.flattenedLazyTreeModel.delete(itemId);
     itemToLazyLoadContent.downloading = downloading;
     itemToLazyLoadContent.lazy = lazy;
 
@@ -588,10 +586,6 @@ export class ChTestTreeX {
       item.lazy ??= DEFAULT_LAZY_VALUE;
       item.selected ??= DEFAULT_SELECTED_VALUE;
 
-      if (item.lazy) {
-        this.flattenedLazyTreeModel.set(item.id, item);
-      }
-
       if (item.selected) {
         this.selectedItems.add(item.id);
       }
@@ -608,7 +602,6 @@ export class ChTestTreeX {
 
   private flattenModel() {
     this.flattenedTreeModel.clear();
-    this.flattenedLazyTreeModel.clear();
 
     this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
   }

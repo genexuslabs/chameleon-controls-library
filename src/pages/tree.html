@@ -189,7 +189,7 @@
           display: grid;
           grid-template-columns: 250px 500px;
           gap: 32px;
-          margin: 50px;
+          margin: 12px;
         "
       >
         <ch-tree-x
@@ -995,8 +995,9 @@
         webPanel: 3,
         globalEvents: 4,
         domain: 5,
-        files: 6,
-        images: 7
+        localization: 6,
+        files: 7,
+        images: 8
       };
 
       const kbExplorerModel = [
@@ -1045,6 +1046,7 @@
               leftImgSrc: "assets/icons/customization.svg",
               disabledDrop: true,
               disabledDrag: true,
+              lazy: true,
               order: 3
             },
             {
@@ -1206,6 +1208,64 @@
         }
       ];
 
+      const kbExplorerModel_Customization = [
+        {
+          id: "Customization.Files",
+          caption: "Files",
+          leftImgSrc: "assets/icons/file.svg",
+          order: KB_EXPLORER_ORDER.files
+        },
+        {
+          id: "Customization.Images",
+          caption: "Images",
+          leftImgSrc: "assets/icons/image.svg",
+          order: KB_EXPLORER_ORDER.images
+        },
+        {
+          id: "Customization.Localization",
+          caption: "Localization",
+          lazy: true,
+          leftImgSrc: "assets/icons/lenguage.svg",
+          order: KB_EXPLORER_ORDER.localization
+        }
+      ];
+
+      const kbExplorerModel_Customization_Localization = [
+        {
+          id: "Customization.Localization.Arabic",
+          caption: "Arabic",
+          checkbox: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/lenguage.svg",
+          order: KB_EXPLORER_ORDER.localization
+        },
+        {
+          id: "Customization.Localization.English",
+          caption: "English",
+          checkbox: true,
+          checked: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/lenguage.svg",
+          order: KB_EXPLORER_ORDER.localization
+        },
+        {
+          id: "Customization.Localization.Spanish",
+          caption: "Spanish",
+          checkbox: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/lenguage.svg",
+          order: KB_EXPLORER_ORDER.localization
+        },
+        {
+          id: "Customization.Localization.Italian",
+          caption: "Italian",
+          checkbox: true,
+          leaf: true,
+          leftImgSrc: "assets/icons/lenguage.svg",
+          order: KB_EXPLORER_ORDER.localization
+        }
+      ];
+
       const kbExplorerModel_RootModule_General = [
         {
           id: "Root_Module.General.Security",
@@ -1333,6 +1393,9 @@
       const lazyLoadItemsDictionary = {
         Main_Programs: kbExplorerModel_MainPrograms,
         Root_Module: kbExplorerModel_RootModule,
+        Customization: kbExplorerModel_Customization,
+        "Customization.Localization":
+          kbExplorerModel_Customization_Localization,
         "Root_Module.General": kbExplorerModel_RootModule_General,
         "Root_Module.General.UI": kbExplorerModel_RootModule_General_UI,
         "Root_Module.General.UI.Q2": kbExplorerModel_RootModule_General_UI_Q2,
@@ -1421,7 +1484,7 @@
 
         const testTreeX = document.querySelector("ch-test-tree-x");
 
-        testTreeX.treeModel = model;
+        testTreeX.treeModel = kbExplorerModel;
 
         const multiSelectionCheckbox =
           document.getElementById("multi-selection");

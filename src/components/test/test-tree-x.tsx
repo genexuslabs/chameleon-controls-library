@@ -94,13 +94,10 @@ export class ChTestTreeX {
   ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
 
   /**
-   * This property lets you define the model of the ch-tree-x control.
+   * This attribute lets you specify if the edit operation is enabled in all
+   * items by default. If `true`, the items can edit its caption in place.
    */
-  @Prop() readonly treeModel: TreeXItemModel[] = [];
-  @Watch("treeModel")
-  handleTreeModelChange() {
-    this.flattenModel();
-  }
+  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
 
   /**
    * Callback that is executed when a item request to load its subitems.
@@ -123,12 +120,6 @@ export class ChTestTreeX {
   @Prop() readonly multiSelection: boolean = false;
 
   /**
-   * This attribute lets you specify if the edit operation is enabled in all
-   * items by default. If `true`, the items can edit its caption in place.
-   */
-  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
-
-  /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
@@ -138,6 +129,15 @@ export class ChTestTreeX {
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
+  /**
+   * This property lets you define the model of the ch-tree-x control.
+   */
+  @Prop() readonly treeModel: TreeXItemModel[] = [];
+  @Watch("treeModel")
+  handleTreeModelChange() {
+    this.flattenModel();
+  }
 
   /**
    * Fired when an element displays its contextmenu.

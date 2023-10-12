@@ -177,16 +177,16 @@ export class ChTreeX {
   @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
 
   /**
+   * Fired when the dragged items are dropped in another item of the tree.
+   */
+  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
+
+  /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
     Map<string, TreeXListItemSelectedInfo>
   >;
-
-  /**
-   * Fired when the dragged items are dropped in another item of the tree.
-   */
-  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
 
   // /**
   //  * Returns an array of the selected tree items, providing the id, caption and

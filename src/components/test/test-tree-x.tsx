@@ -18,6 +18,7 @@ import {
   TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
+  TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
 } from "../tree-view/tree-x/types";
 import {
@@ -142,6 +143,12 @@ export class ChTestTreeX {
    * Fired when an element displays its contextmenu.
    */
   @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+
+  /**
+   * Fired when the user interacts with an item in a way that its reference
+   * must be opened.
+   */
+  @Event() itemOpenReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -370,6 +377,14 @@ export class ChTestTreeX {
         // Do something with the error message
       }
     });
+  }
+
+  @Listen("openReference", { capture: true })
+  handleOpenReference(
+    event: ChTreeXListItemCustomEvent<TreeXListItemOpenReferenceInfo>
+  ) {
+    event.stopPropagation();
+    this.itemOpenReference.emit(event.detail);
   }
 
   private handleDroppableZoneEnter = (

@@ -15,6 +15,7 @@ import {
   TreeXItemDragStartInfo,
   TreeXLines,
   TreeXListItemNewCaption,
+  TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
 import { mouseEventModifierKey } from "../../common/helpers";
@@ -238,7 +239,6 @@ export class ChTreeXListItem {
     this.selectedItemSync.emit(
       this.getSelectedInfo(
         true, // Does not matter in this case
-        false, // Does not matter in this case
         newValue
       )
     );
@@ -301,6 +301,12 @@ export class ChTreeXListItem {
    * Fired when the item is asking to modify its caption.
    */
   @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
+
+  /**
+   * Fired when the user interacts with the control in a way that its reference
+   * must be opened.
+   */
+  @Event() openReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
 
   /**
    * Fired when the selected state is updated by user interaction on the
@@ -459,7 +465,7 @@ export class ChTreeXListItem {
 
     // Normal navigation auto selects the item.
     if (!ctrlKeyPressed) {
-      this.setSelected(false);
+      this.setSelected();
     }
   }
 
@@ -551,7 +557,7 @@ export class ChTreeXListItem {
 
     this.selected = true;
     this.selectedItemChange.emit(
-      this.getSelectedInfo(mouseEventModifierKey(event), false, true)
+      this.getSelectedInfo(mouseEventModifierKey(event), true)
     );
   };
 
@@ -570,32 +576,28 @@ export class ChTreeXListItem {
     const selected = !this.selected;
     this.selected = selected;
 
-    this.selectedItemChange.emit(this.getSelectedInfo(true, false, selected));
+    this.selectedItemChange.emit(this.getSelectedInfo(true, selected));
   }
 
-  private setSelected(goToReference: boolean) {
+  private setSelected() {
     this.selected = true;
-    this.selectedItemChange.emit(
-      this.getSelectedInfo(false, goToReference, true)
-    );
+    this.selectedItemChange.emit(this.getSelectedInfo(false, true));
   }
 
   private toggleOrSelect(event: MouseEvent) {
     if (mouseEventModifierKey(event)) {
       this.toggleSelected();
     } else {
-      this.setSelected(true);
+      this.setSelected();
     }
   }
 
   private getSelectedInfo = (
     ctrlKeyPressed: boolean,
-    goToReference: boolean,
     selected: boolean
-  ) => ({
+  ): TreeXListItemSelectedInfo => ({
     ctrlKeyPressed: ctrlKeyPressed,
     expanded: this.expanded,
-    goToReference: goToReference,
     id: this.el.id,
     itemRef: this.el,
     metadata: this.metadata,
@@ -611,8 +613,12 @@ export class ChTreeXListItem {
       return;
     }
 
+    this.emitOpenReference();
+
     // The Control key is not pressed, so the control can be expanded
-    this.toggleExpand(event);
+    if (!this.leaf) {
+      this.toggleExpand(event);
+    }
   };
 
   /**
@@ -637,6 +643,8 @@ export class ChTreeXListItem {
       return;
     }
 
+    this.emitOpenReference();
+
     // Enter or space
     this.toggleExpand(event);
   };
@@ -651,6 +659,14 @@ export class ChTreeXListItem {
       this.toggleSelected();
     }
   };
+
+  private emitOpenReference() {
+    this.openReference.emit({
+      id: this.el.id,
+      leaf: this.leaf,
+      metadata: this.metadata
+    });
+  }
 
   private handleCheckedChange = (event: CustomEvent) => {
     event.stopPropagation();
@@ -711,7 +727,7 @@ export class ChTreeXListItem {
 
     // Sync selected state with the main tree
     if (this.selected) {
-      this.selectedItemChange.emit(this.getSelectedInfo(true, false, true));
+      this.selectedItemChange.emit(this.getSelectedInfo(true, true));
     }
 
     // No need to update more the status
@@ -848,9 +864,7 @@ export class ChTreeXListItem {
                 part={`action${!this.editing ? " readonly-mode" : ""}${
                   !this.leaf && this.expanded ? " expanded" : ""
                 }`}
-                onDblClick={
-                  !this.leaf && !this.editing ? this.handleActionDblClick : null
-                }
+                onDblClick={!this.editing ? this.handleActionDblClick : null}
               >
                 {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 

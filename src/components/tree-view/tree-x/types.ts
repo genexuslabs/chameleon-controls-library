@@ -44,12 +44,17 @@ export type TreeXListItemExpandedInfo = {
 export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
-  goToReference: boolean;
   id: string;
   itemRef: HTMLChTreeXListItemElement;
   metadata: string;
   parentId: string;
   selected: boolean;
+};
+
+export type TreeXListItemOpenReferenceInfo = {
+  id: string;
+  leaf: boolean;
+  metadata: string;
 };
 
 export type TreeXListItemNewCaption = {

@@ -25,11 +25,11 @@ import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEven
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemSelectedInfo } from "./components/tree-x/types";
+import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemContextMenu, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemOpenReferenceInfo, TreeXListItemSelectedInfo } from "./components/tree-view/tree-x/types";
 import { TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
-import { DragState } from "./components/tree-x-list-item/tree-x-list-item";
+import { DragState } from "./components/tree-view/tree-x-list-item/tree-x-list-item";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -1087,11 +1087,11 @@ export namespace Components {
          */
         "cssClass": string;
         /**
-          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
+          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the items can't be dragged.
          */
         "dragDisabled": boolean;
         /**
-          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the control won't accept any drops.
+          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the items won't accept any drops.
          */
         "dropDisabled": boolean;
         /**
@@ -1100,6 +1100,10 @@ export namespace Components {
         "dropItemsCallback": (
     dataTransferInfo: TreeXDataTransferInfo
   ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
+         */
+        "editableItems": boolean;
         /**
           * Callback that is executed when a item request to load its subitems.
          */
@@ -1325,8 +1329,6 @@ export namespace Components {
          */
         "waitDropProcessing": boolean;
     }
-    interface ChTreeXList {
-    }
     interface ChTreeXListItem {
         /**
           * This attributes specifies the caption of the control
@@ -1364,6 +1366,10 @@ export namespace Components {
           * This attribute lets you specify if the drop operation is disabled in the control. If `true`, the control won't accept any drops.
          */
         "dropDisabled": boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable": boolean;
         /**
           * Set this attribute when the item is in edit mode
          */
@@ -1673,6 +1679,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChTestTreeXCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTestTreeXElement;
 }
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2047,12 +2057,6 @@ declare global {
         prototype: HTMLChTreeXElement;
         new (): HTMLChTreeXElement;
     };
-    interface HTMLChTreeXListElement extends Components.ChTreeXList, HTMLStencilElement {
-    }
-    var HTMLChTreeXListElement: {
-        prototype: HTMLChTreeXListElement;
-        new (): HTMLChTreeXListElement;
-    };
     interface HTMLChTreeXListItemElement extends Components.ChTreeXListItem, HTMLStencilElement {
     }
     var HTMLChTreeXListItemElement: {
@@ -2142,7 +2146,6 @@ declare global {
         "ch-tree": HTMLChTreeElement;
         "ch-tree-item": HTMLChTreeItemElement;
         "ch-tree-x": HTMLChTreeXElement;
-        "ch-tree-x-list": HTMLChTreeXListElement;
         "ch-tree-x-list-item": HTMLChTreeXListItemElement;
         "ch-window": HTMLChWindowElement;
         "ch-window-close": HTMLChWindowCloseElement;
@@ -3291,11 +3294,11 @@ declare namespace LocalJSX {
          */
         "cssClass"?: string;
         /**
-          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the control can't be dragged.
+          * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the items can't be dragged.
          */
         "dragDisabled"?: boolean;
         /**
-          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the control won't accept any drops.
+          * This attribute lets you specify if the drop operation is disabled in all items by default. If `true`, the items won't accept any drops.
          */
         "dropDisabled"?: boolean;
         /**
@@ -3304,6 +3307,10 @@ declare namespace LocalJSX {
         "dropItemsCallback"?: (
     dataTransferInfo: TreeXDataTransferInfo
   ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
+         */
+        "editableItems"?: boolean;
         /**
           * Callback that is executed when a item request to load its subitems.
          */
@@ -3321,6 +3328,18 @@ declare namespace LocalJSX {
           * Set this attribute if you want to allow multi selection of the items.
          */
         "multiSelection"?: boolean;
+        /**
+          * Fired when an element displays its contextmenu.
+         */
+        "onItemContextmenu"?: (event: ChTestTreeXCustomEvent<TreeXItemContextMenu>) => void;
+        /**
+          * Fired when the user interacts with an item in a way that its reference must be opened.
+         */
+        "onItemOpenReference"?: (event: ChTestTreeXCustomEvent<TreeXListItemOpenReferenceInfo>) => void;
+        /**
+          * Fired when the selected items change.
+         */
+        "onSelectedItemsChange"?: (event: ChTestTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>) => void;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
@@ -3479,6 +3498,10 @@ declare namespace LocalJSX {
          */
         "onExpandedItemChange"?: (event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>) => void;
         /**
+          * Fired when an element displays its contextmenu.
+         */
+        "onItemContextmenu"?: (event: ChTreeXCustomEvent<TreeXItemContextMenu>) => void;
+        /**
           * Fired when the dragged items are dropped in another item of the tree.
          */
         "onItemsDropped"?: (event: ChTreeXCustomEvent<TreeXDataTransferInfo>) => void;
@@ -3498,8 +3521,6 @@ declare namespace LocalJSX {
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
         "waitDropProcessing"?: boolean;
-    }
-    interface ChTreeXList {
     }
     interface ChTreeXListItem {
         /**
@@ -3538,6 +3559,10 @@ declare namespace LocalJSX {
           * This attribute lets you specify if the drop operation is disabled in the control. If `true`, the control won't accept any drops.
          */
         "dropDisabled"?: boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable"?: boolean;
         /**
           * Set this attribute when the item is in edit mode
          */
@@ -3594,6 +3619,10 @@ declare namespace LocalJSX {
           * Fired when the item is asking to modify its caption.
          */
         "onModifyCaption"?: (event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>) => void;
+        /**
+          * Fired when the user interacts with the control in a way that its reference must be opened.
+         */
+        "onOpenReference"?: (event: ChTreeXListItemCustomEvent<TreeXListItemOpenReferenceInfo>) => void;
         /**
           * Fired when the selected state is updated by user interaction on the control.
          */
@@ -3810,7 +3839,6 @@ declare namespace LocalJSX {
         "ch-tree": ChTree;
         "ch-tree-item": ChTreeItem;
         "ch-tree-x": ChTreeX;
-        "ch-tree-x-list": ChTreeXList;
         "ch-tree-x-list-item": ChTreeXListItem;
         "ch-window": ChWindow;
         "ch-window-close": ChWindowClose;
@@ -3880,7 +3908,6 @@ declare module "@stencil/core" {
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;
             "ch-tree-item": LocalJSX.ChTreeItem & JSXBase.HTMLAttributes<HTMLChTreeItemElement>;
             "ch-tree-x": LocalJSX.ChTreeX & JSXBase.HTMLAttributes<HTMLChTreeXElement>;
-            "ch-tree-x-list": LocalJSX.ChTreeXList & JSXBase.HTMLAttributes<HTMLChTreeXListElement>;
             "ch-tree-x-list-item": LocalJSX.ChTreeXListItem & JSXBase.HTMLAttributes<HTMLChTreeXListItemElement>;
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
             "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;

@@ -15,9 +15,10 @@ import {
   TreeXItemDragStartInfo,
   TreeXLines,
   TreeXListItemNewCaption,
+  TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
-import { mouseEventModifierKey } from "../common/helpers";
+import { mouseEventModifierKey } from "../../common/helpers";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -29,9 +30,9 @@ const INITIAL_LEVEL = 0;
 // Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 
-const DIRECT_TREE_ITEM_CHILDREN = `:scope>*>${TREE_ITEM_TAG_NAME}`;
+const DIRECT_TREE_ITEM_CHILDREN = `:scope>${TREE_ITEM_TAG_NAME}`;
 const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
-const LAST_SUB_ITEM = `:scope>*>${TREE_ITEM_TAG_NAME}:last-child`;
+const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 
 // Keys
 const EXPANDABLE_ID = "expandable";
@@ -138,6 +139,12 @@ export class ChTreeXListItem {
   @Prop() readonly downloading: boolean = false;
 
   /**
+   * This attribute lets you specify if the edit operation is enabled in the
+   * control. If `true`, the control can edit its caption in place.
+   */
+  @Prop() readonly editable: boolean;
+
+  /**
    * Set this attribute when the item is in edit mode
    */
   @Prop({ mutable: true }) editing = false;
@@ -232,7 +239,6 @@ export class ChTreeXListItem {
     this.selectedItemSync.emit(
       this.getSelectedInfo(
         true, // Does not matter in this case
-        false, // Does not matter in this case
         newValue
       )
     );
@@ -295,6 +301,12 @@ export class ChTreeXListItem {
    * Fired when the item is asking to modify its caption.
    */
   @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
+
+  /**
+   * Fired when the user interacts with the control in a way that its reference
+   * must be opened.
+   */
+  @Event() openReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
 
   /**
    * Fired when the selected state is updated by user interaction on the
@@ -378,8 +390,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, ask the parent to focus the next sibling
-    const parentItem = this.el.parentElement
-      .parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
     parentItem.focusNextSibling(ctrlKeyPressed);
   }
 
@@ -404,8 +415,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, set focus in the parent element
-    const parentItem = this.el.parentElement
-      .parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
 
     // Check if the parent is not disabled
     if (parentItem.disabled) {
@@ -455,7 +465,7 @@ export class ChTreeXListItem {
 
     // Normal navigation auto selects the item.
     if (!ctrlKeyPressed) {
-      this.setSelected(false);
+      this.setSelected();
     }
   }
 
@@ -547,7 +557,7 @@ export class ChTreeXListItem {
 
     this.selected = true;
     this.selectedItemChange.emit(
-      this.getSelectedInfo(mouseEventModifierKey(event), false, true)
+      this.getSelectedInfo(mouseEventModifierKey(event), true)
     );
   };
 
@@ -566,36 +576,32 @@ export class ChTreeXListItem {
     const selected = !this.selected;
     this.selected = selected;
 
-    this.selectedItemChange.emit(this.getSelectedInfo(true, false, selected));
+    this.selectedItemChange.emit(this.getSelectedInfo(true, selected));
   }
 
-  private setSelected(goToReference: boolean) {
+  private setSelected() {
     this.selected = true;
-    this.selectedItemChange.emit(
-      this.getSelectedInfo(false, goToReference, true)
-    );
+    this.selectedItemChange.emit(this.getSelectedInfo(false, true));
   }
 
   private toggleOrSelect(event: MouseEvent) {
     if (mouseEventModifierKey(event)) {
       this.toggleSelected();
     } else {
-      this.setSelected(true);
+      this.setSelected();
     }
   }
 
   private getSelectedInfo = (
     ctrlKeyPressed: boolean,
-    goToReference: boolean,
     selected: boolean
-  ) => ({
+  ): TreeXListItemSelectedInfo => ({
     ctrlKeyPressed: ctrlKeyPressed,
     expanded: this.expanded,
-    goToReference: goToReference,
     id: this.el.id,
     itemRef: this.el,
     metadata: this.metadata,
-    parentId: this.el.parentElement.parentElement.id,
+    parentId: this.el.parentElement.id,
     selected: selected
   });
 
@@ -607,8 +613,12 @@ export class ChTreeXListItem {
       return;
     }
 
+    this.emitOpenReference();
+
     // The Control key is not pressed, so the control can be expanded
-    this.toggleExpand(event);
+    if (!this.leaf) {
+      this.toggleExpand(event);
+    }
   };
 
   /**
@@ -633,6 +643,8 @@ export class ChTreeXListItem {
       return;
     }
 
+    this.emitOpenReference();
+
     // Enter or space
     this.toggleExpand(event);
   };
@@ -647,6 +659,14 @@ export class ChTreeXListItem {
       this.toggleSelected();
     }
   };
+
+  private emitOpenReference() {
+    this.openReference.emit({
+      id: this.el.id,
+      leaf: this.leaf,
+      metadata: this.metadata
+    });
+  }
 
   private handleCheckedChange = (event: CustomEvent) => {
     event.stopPropagation();
@@ -699,14 +719,15 @@ export class ChTreeXListItem {
   };
 
   componentWillLoad() {
-    const parentElement = this.el.parentElement as HTMLChTreeXListElement;
+    const parentElementItem = this.el
+      .parentElement as HTMLChTreeXListItemElement;
 
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
 
     // Sync selected state with the main tree
     if (this.selected) {
-      this.selectedItemChange.emit(this.getSelectedInfo(true, false, true));
+      this.selectedItemChange.emit(this.getSelectedInfo(true, true));
     }
 
     // No need to update more the status
@@ -715,9 +736,6 @@ export class ChTreeXListItem {
     }
 
     // Update checkbox status
-    const parentElementItem =
-      parentElement.parentElement as HTMLChTreeXListItemElement;
-
     if (parentElementItem.checkbox) {
       this.checked = parentElementItem.checked;
     }
@@ -843,14 +861,14 @@ export class ChTreeXListItem {
                   action: true,
                   "readonly-mode": !this.editing
                 }}
-                part={`action ${!this.editing ? "readonly-mode" : ""}`}
-                onDblClick={
-                  !this.leaf && !this.editing ? this.handleActionDblClick : null
-                }
+                part={`action${!this.editing ? " readonly-mode" : ""}${
+                  !this.leaf && this.expanded ? " expanded" : ""
+                }`}
+                onDblClick={!this.editing ? this.handleActionDblClick : null}
               >
                 {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
 
-                {this.editing ? (
+                {this.editable && this.editing ? (
                   <input
                     class="edit-name"
                     part="edit-name"
@@ -889,13 +907,17 @@ export class ChTreeXListItem {
 
         {hasContent && (
           <div
+            role="group"
             aria-busy={this.downloading.toString()}
             aria-live={this.downloading ? "polite" : null}
             id={EXPANDABLE_ID}
-            class={{ expandable: true, expanded: this.expanded }}
-            part={`expandable${this.expanded ? " expanded" : ""}`}
+            class={{
+              expandable: true,
+              "expandable--collapsed": !this.expanded
+            }}
+            part={`expandable${this.expanded ? " expanded" : " collapsed"}`}
           >
-            <slot name="tree" />
+            <slot />
           </div>
         )}
       </Host>

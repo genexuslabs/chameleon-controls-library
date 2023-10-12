@@ -1,4 +1,4 @@
-import { GxDataTransferInfo } from "../../common/types";
+import { GxDataTransferInfo } from "../../../common/types";
 
 export type TreeXItemModel = {
   id: string;
@@ -10,6 +10,7 @@ export type TreeXItemModel = {
   downloading?: boolean;
   dragDisabled?: boolean;
   dropDisabled?: boolean;
+  editable?: boolean;
   expanded?: boolean;
   lazy?: boolean;
   leaf?: boolean;
@@ -17,6 +18,12 @@ export type TreeXItemModel = {
   indeterminate?: boolean;
   items?: TreeXItemModel[];
   metadata?: string;
+
+  /**
+   * Establish the order at which the item will be placed in its parent.
+   * Multiple items can have the same `order` value.
+   */
+  order?: number;
   rightImgSrc?: string;
   selected?: boolean;
   showExpandableButton?: boolean;
@@ -37,12 +44,17 @@ export type TreeXListItemExpandedInfo = {
 export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
-  goToReference: boolean;
   id: string;
   itemRef: HTMLChTreeXListItemElement;
   metadata: string;
   parentId: string;
   selected: boolean;
+};
+
+export type TreeXListItemOpenReferenceInfo = {
+  id: string;
+  leaf: boolean;
+  metadata: string;
 };
 
 export type TreeXListItemNewCaption = {
@@ -56,6 +68,13 @@ export type TreeXItemDragStartInfo = {
 };
 
 export type TreeXLines = "all" | "last" | "none";
+
+export type TreeXItemContextMenu = {
+  id: string;
+  itemRef: HTMLChTreeXListItemElement;
+  metadata: string;
+  contextmenuEvent: PointerEvent;
+};
 
 export type TreeXDataTransferInfo = {
   newContainer: GxDataTransferInfo;

@@ -1,9 +1,10 @@
 import {
   Component,
+  Event,
+  EventEmitter,
   h,
   Prop,
   Listen,
-  Host,
   Watch,
   State,
   forceUpdate,
@@ -12,12 +13,14 @@ import {
 import {
   TreeXDataTransferInfo,
   TreeXDropCheckInfo,
+  TreeXItemContextMenu,
   TreeXItemModel,
   TreeXLines,
   TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
+  TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
-} from "../tree-x/types";
+} from "../tree-view/tree-x/types";
 import {
   TreeXItemModelExtended,
   TreeXOperationStatusModifyCaption
@@ -31,9 +34,11 @@ import { GxDataTransferInfo } from "../../common/types";
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
 const DEFAULT_CLASS_VALUE = "tree-view-item";
+const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
+const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
 @Component({
@@ -45,7 +50,6 @@ export class ChTestTreeX {
   // UI Models
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
   private selectedItems: Set<string> = new Set();
-  private flattenedLazyTreeModel: Map<string, TreeXItemModel> = new Map();
 
   // Refs
   private treeRef: HTMLChTreeXElement;
@@ -71,13 +75,13 @@ export class ChTestTreeX {
 
   /**
    * This attribute lets you specify if the drag operation is disabled in all
-   * items by default. If `true`, the control can't be dragged.
+   * items by default. If `true`, the items can't be dragged.
    */
   @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
 
   /**
    * This attribute lets you specify if the drop operation is disabled in all
-   * items by default. If `true`, the control won't accept any drops.
+   * items by default. If `true`, the items won't accept any drops.
    */
   @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
 
@@ -119,6 +123,12 @@ export class ChTestTreeX {
   @Prop() readonly multiSelection: boolean = false;
 
   /**
+   * This attribute lets you specify if the edit operation is enabled in all
+   * items by default. If `true`, the items can edit its caption in place.
+   */
+  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+
+  /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
@@ -128,6 +138,24 @@ export class ChTestTreeX {
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
+  /**
+   * Fired when an element displays its contextmenu.
+   */
+  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+
+  /**
+   * Fired when the user interacts with an item in a way that its reference
+   * must be opened.
+   */
+  @Event() itemOpenReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
+
+  /**
+   * Fired when the selected items change.
+   */
+  @Event() selectedItemsChange: EventEmitter<
+    Map<string, TreeXListItemSelectedInfo>
+  >;
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -140,10 +168,9 @@ export class ChTestTreeX {
     downloading = false,
     lazy = false
   ) {
-    const itemToLazyLoadContent = this.flattenedLazyTreeModel.get(itemId);
+    const itemToLazyLoadContent = this.flattenedTreeModel.get(itemId).item;
 
     // Establish that the content was lazy loaded
-    this.flattenedLazyTreeModel.delete(itemId);
     itemToLazyLoadContent.downloading = downloading;
     itemToLazyLoadContent.lazy = lazy;
 
@@ -359,6 +386,14 @@ export class ChTestTreeX {
     });
   }
 
+  @Listen("openReference", { capture: true })
+  handleOpenReference(
+    event: ChTreeXListItemCustomEvent<TreeXListItemOpenReferenceInfo>
+  ) {
+    event.stopPropagation();
+    this.itemOpenReference.emit(event.detail);
+  }
+
   private handleDroppableZoneEnter = (
     event: ChTreeXCustomEvent<TreeXDropCheckInfo>
   ) => {
@@ -386,6 +421,7 @@ export class ChTestTreeX {
   private handleSelectedItemsChange = (
     event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
+    event.stopPropagation();
     const itemsToProcess = new Map(event.detail);
 
     // Remove no longer selected items
@@ -413,6 +449,8 @@ export class ChTestTreeX {
 
       this.selectedItems.add(itemId);
     });
+
+    this.selectedItemsChange.emit(event.detail);
   };
 
   private handleExpandedItemChange = (
@@ -421,6 +459,13 @@ export class ChTestTreeX {
     const detail = event.detail;
     const itemInfo = this.flattenedTreeModel.get(detail.id).item;
     itemInfo.expanded = detail.expanded;
+  };
+
+  private handleItemContextmenu = (
+    event: ChTreeXCustomEvent<TreeXItemContextMenu>
+  ) => {
+    event.stopPropagation();
+    this.itemContextmenu.emit(event.detail);
   };
 
   private handleItemsDropped = (
@@ -527,6 +572,7 @@ export class ChTestTreeX {
       downloading={treeSubModel.downloading}
       dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
       dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
+      editable={treeSubModel.editable ?? this.editableItems}
       expanded={treeSubModel.expanded}
       indeterminate={treeSubModel.indeterminate}
       lastItem={lastItem}
@@ -543,16 +589,12 @@ export class ChTestTreeX {
     >
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&
-        treeSubModel.items.length !== 0 && (
-          <ch-tree-x-list slot="tree">
-            {treeSubModel.items.map((subModel, index) =>
-              this.renderSubModel(
-                subModel,
-                this.showLines && index === treeSubModel.items.length - 1,
-                level + 1
-              )
-            )}
-          </ch-tree-x-list>
+        treeSubModel.items.map((subModel, index) =>
+          this.renderSubModel(
+            subModel,
+            this.showLines && index === treeSubModel.items.length - 1,
+            level + 1
+          )
         )}
     </ch-tree-x-list-item>
   );
@@ -562,7 +604,7 @@ export class ChTestTreeX {
 
     if (!items) {
       // Make sure that subtrees don't have an undefined array
-      if (model.leaf === false) {
+      if (model.leaf !== true) {
         model.items = [];
       }
       return;
@@ -586,11 +628,8 @@ export class ChTestTreeX {
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;
+      item.order ??= DEFAULT_ORDER_VALUE;
       item.selected ??= DEFAULT_SELECTED_VALUE;
-
-      if (item.lazy) {
-        this.flattenedLazyTreeModel.set(item.id, item);
-      }
 
       if (item.selected) {
         this.selectedItems.add(item.id);
@@ -608,7 +647,6 @@ export class ChTestTreeX {
 
   private flattenModel() {
     this.flattenedTreeModel.clear();
-    this.flattenedLazyTreeModel.clear();
 
     this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
   }
@@ -619,26 +657,25 @@ export class ChTestTreeX {
 
   render() {
     return (
-      <Host>
-        <ch-tree-x
-          class={this.cssClass || null}
-          multiSelection={this.multiSelection}
-          waitDropProcessing={this.waitDropProcessing}
-          onDroppableZoneEnter={this.handleDroppableZoneEnter}
-          onExpandedItemChange={this.handleExpandedItemChange}
-          onItemsDropped={this.handleItemsDropped}
-          onSelectedItemsChange={this.handleSelectedItemsChange}
-          ref={el => (this.treeRef = el)}
-        >
-          {this.treeModel.map((subModel, index) =>
-            this.renderSubModel(
-              subModel,
-              this.showLines && index === this.treeModel.length - 1,
-              0
-            )
-          )}
-        </ch-tree-x>
-      </Host>
+      <ch-tree-x
+        class={this.cssClass || null}
+        multiSelection={this.multiSelection}
+        waitDropProcessing={this.waitDropProcessing}
+        onDroppableZoneEnter={this.handleDroppableZoneEnter}
+        onExpandedItemChange={this.handleExpandedItemChange}
+        onItemContextmenu={this.handleItemContextmenu}
+        onItemsDropped={this.handleItemsDropped}
+        onSelectedItemsChange={this.handleSelectedItemsChange}
+        ref={el => (this.treeRef = el)}
+      >
+        {this.treeModel.map((subModel, index) =>
+          this.renderSubModel(
+            subModel,
+            this.showLines && index === this.treeModel.length - 1,
+            0
+          )
+        )}
+      </ch-tree-x>
     );
   }
 }

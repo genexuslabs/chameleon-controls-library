@@ -1,4 +1,4 @@
-import { TreeXItemModel } from "../tree-x/types";
+import { TreeXItemModel } from "../tree-view/tree-x/types";
 
 export type TreeXItemSimplifiedModel = {
   id: string;

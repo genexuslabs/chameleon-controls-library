@@ -15,16 +15,17 @@ import {
   TreeXDataTransferInfo,
   TreeXDropCheckInfo,
   TreeXDroppableZoneState,
+  TreeXItemContextMenu,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
   TreeXListItemExpandedInfo,
   TreeXListItemSelectedInfo
 } from "./types";
-import { focusComposedPath, mouseEventModifierKey } from "../common/helpers";
-import { scrollToEdge } from "../../common/scroll-to-edge";
-import { GxDataTransferInfo } from "../../common/types";
-import { ChTreeXListItemCustomEvent } from "../../components";
+import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
+import { scrollToEdge } from "../../../common/scroll-to-edge";
+import { GxDataTransferInfo } from "../../../common/types";
+import { ChTreeXListItemCustomEvent } from "../../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
 const TREE_TAG_NAME = "ch-tree-x";
@@ -93,7 +94,7 @@ export class ChTreeX {
     [EDIT_KEY]: event => {
       const treeItem = getFocusedTreeItem();
 
-      if (!treeItem) {
+      if (!treeItem || !treeItem.editable) {
         return;
       }
 
@@ -171,6 +172,11 @@ export class ChTreeX {
   @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
 
   /**
+   * Fired when an element displays its contextmenu.
+   */
+  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+
+  /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
@@ -198,6 +204,23 @@ export class ChTreeX {
   //     selected: item.selected
   //   }));
   // }
+
+  @Listen("contextmenu", { capture: true })
+  handleContextMenuEvent(event: PointerEvent) {
+    const treeItem = (event.target as HTMLElement).closest(TREE_ITEM_TAG_NAME);
+
+    if (!treeItem) {
+      return;
+    }
+    event.preventDefault();
+
+    this.itemContextmenu.emit({
+      id: treeItem.id,
+      itemRef: treeItem,
+      metadata: treeItem.metadata,
+      contextmenuEvent: event
+    });
+  }
 
   // Set edit mode in items
   @Listen("keydown", { capture: true })
@@ -385,12 +408,12 @@ export class ChTreeX {
       return;
     }
 
-    let parentItem = itemRef.parentElement.parentElement;
+    let parentItem = itemRef.parentElement;
 
     // Expand all parents
     while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
       (parentItem as HTMLChTreeXListItemElement).expanded = true;
-      parentItem = parentItem.parentElement.parentElement;
+      parentItem = parentItem.parentElement;
     }
 
     // Wait until the parents are expanded
@@ -605,8 +628,7 @@ export class ChTreeX {
 
   private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
     if (!draggingSelectedItems) {
-      const parentTreeItemElem =
-        this.currentDraggedItem.parentElement.parentElement;
+      const parentTreeItemElem = this.currentDraggedItem.parentElement;
 
       if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
         this.draggedParentIds.push(parentTreeItemElem.id);

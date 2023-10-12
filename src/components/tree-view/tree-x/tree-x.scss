@@ -15,11 +15,8 @@ ch-tree-x {
   }
 
   // Remove un-useful droppable areas
-  &.ch-tree-x-dragging-item {
-    .ch-tree-x-list-item--deny-drop,
-    ch-tree-x-list {
-      pointer-events: none;
-    }
+  &.ch-tree-x-dragging-item .ch-tree-x-list-item--deny-drop {
+    pointer-events: none;
   }
 
   // Remove droppable areas on selected items
@@ -32,7 +29,7 @@ ch-tree-x {
   &.ch-tree-x-waiting-drop-processing {
     cursor: wait;
 
-    > ch-tree-x-list {
+    > .ch-tree-x-container {
       pointer-events: none;
     }
   }

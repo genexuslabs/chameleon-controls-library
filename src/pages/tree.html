@@ -40,7 +40,7 @@
 
       .section-dev {
         display: grid;
-        grid-template-columns: 250px 500px;
+        grid-template-columns: 250px 500px max-content;
         gap: 32px;
         height: 100%;
       }
@@ -435,6 +435,15 @@
         </ch-tree-x>
 
         <ch-test-tree-x></ch-test-tree-x>
+
+        <div>
+          <ch-textblock id="contextmenu-textblock"
+            >+ + + + + + + Context + + + + + + +</ch-textblock
+          >
+          <ch-textblock id="open-reference-textblock"
+            ><br />+ + + + + Open Reference + + + + +</ch-textblock
+          >
+        </div>
       </div>
 
       <div class="configuration">
@@ -1023,7 +1032,6 @@
               editable: false,
               class: "tree-view-item tree-view-item--module",
               dragDisabled: true,
-              dropDisabled: true,
               lazy: true,
               order: 1
             },
@@ -1570,6 +1578,31 @@
         scrollIntoVisibleBtn.addEventListener("click", () => {
           testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value);
           scrollIntoVisibleInput.value = "";
+        });
+
+        const contextMenuTextBlock = document.getElementById(
+          "contextmenu-textblock"
+        );
+
+        testTreeX.addEventListener("itemContextmenu", event => {
+          contextMenuTextBlock.innerHTML = `+ + + + + + + Context + + + + + + +<br>
+          ${event.detail.id}<br>
+          level: ${event.detail.itemRef.level}<br>
+          Drop Enabled: ${!event.detail.itemRef.dropDisabled}<br>
+          ScreenX: ${event.detail.contextmenuEvent.screenX}<br>
+          ScreenY: ${event.detail.contextmenuEvent.screenY}<br>
+          `;
+        });
+
+        const openReferenceTextBlock = document.getElementById(
+          "open-reference-textblock"
+        );
+
+        testTreeX.addEventListener("itemOpenReference", event => {
+          openReferenceTextBlock.innerHTML = `<br>+ + + + + Open Reference + + + + +<br>
+          Item ID: ${event.detail.id}<br>
+          Item Leaf: ${event.detail.leaf}<br>
+          Item Metadata: ${!event.detail.metadata}<br>`;
         });
 
         /*Lazy Load Promise*/

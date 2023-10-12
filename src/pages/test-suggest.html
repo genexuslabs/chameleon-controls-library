@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-suggest</title>
+    <link rel="icon" type="image/ico" href="./assets/ch.ico" />
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+  </head>
+  <body class="styles">
+    <!-- Here goes the .header-dev (common.js)-->
+
+    <div class="container">
+      <ch-test-suggest id="ch-test-suggest"></ch-test-suggest>
+    </div>
+
+    <script>
+      const chTestSuggest = document.getElementById("ch-test-suggest");
+
+      /*Array of all the options the suggest could list*/
+      const selectorCategoryObjects = [
+        {
+          name: "attributes",
+          items: [
+            {
+              id: "has-both-id",
+              icon: "general/db2",
+              name: "Has Both",
+              description: "Is Referenced By + Has References To"
+            },
+            {
+              id: "has-none-id",
+              icon: "general/db2",
+              name: "Has none",
+              description: "Is not Referenced By + Has no References To"
+            },
+            {
+              id: "referenced-by-id",
+              icon: "general/db2",
+              name: "Referenced By",
+              description: "Is Referenced By only"
+            },
+            {
+              id: "references-to-id",
+              icon: "general/db2",
+              name: "Has References To",
+              description: "Has References To only"
+            },
+            {
+              id: "referenced-by-error-id",
+              icon: "general/db2",
+              name: "Referenced By ERROR",
+              description: "Is Referenced By couldn't be retrieved"
+            },
+            {
+              id: "references-to-error-id",
+              icon: "general/db2",
+              name: "References To ERROR",
+              description: "References To couldn't be retrieved"
+            }
+          ]
+        },
+        {
+          name: "object",
+          items: [
+            {
+              id: "golosina-123-id",
+              icon: "general/knowledge-base",
+              name: "Golosina",
+              description: "Golosina description"
+            },
+            {
+              id: "countries-with-attractions-id",
+              icon: "general/references",
+              name: "CountriesWithAttractions",
+              description: "CountriesWithAttractions description"
+            }
+          ]
+        },
+        {
+          name: "tables",
+          items: [
+            {
+              id: "country-id",
+              icon: "general/customization",
+              name: "Country",
+              description: "Country description"
+            }
+          ]
+        },
+        {
+          name: "search",
+          items: [
+            {
+              id: "countries-with-attractions-countries-with-attractions-id",
+              icon: "general/launchpad",
+              name: "CountriesWithAttractions - Countries With Attractions",
+              description: "CountriesWithAttractions description"
+            },
+            {
+              id: "countryid-coundtryid-id",
+              icon: "general/generator",
+              name: "CountryId - CountryId",
+              description: "CountryId description"
+            }
+          ]
+        }
+      ];
+
+      /*Function that filters selectorCategoryObjects with the actual suggest value*/
+      function searchAndFilterArray(objectsArray, searchValue) {
+        const results = [];
+
+        objectsArray.filter(category => {
+          const filteredItems = category.items.filter(item => {
+            const lowerSearchValue = searchValue.toLowerCase();
+            const lowerName = item.name.toLowerCase();
+            const lowerDescription = item.description
+              ? item.description.toLowerCase()
+              : "";
+
+            return (
+              lowerName.includes(lowerSearchValue) ||
+              lowerDescription.includes(lowerSearchValue)
+            );
+          });
+
+          if (filteredItems.length > 0) {
+            results.push({
+              name: category.name,
+              items: filteredItems.map(item => ({
+                id: item.id,
+                icon: item.icon,
+                name: item.name,
+                description: item.description || ""
+              }))
+            });
+          }
+        });
+        return results;
+      }
+
+      /*selectorSourceCallback*/
+      chTestSuggest.selectorSourceCallback = function (prefix) {
+        let selectorSourceCallbackPromise = new Promise(function (
+          resolve,
+          reject
+        ) {
+          const selectorCategoryFilteredData = searchAndFilterArray(
+            selectorCategoryObjects,
+            prefix
+          );
+          if (selectorCategoryFilteredData) {
+            resolve(selectorCategoryFilteredData);
+          } else {
+            //reject(false);
+          }
+        });
+        return selectorSourceCallbackPromise;
+      };
+    </script>
+  </body>
+</html>

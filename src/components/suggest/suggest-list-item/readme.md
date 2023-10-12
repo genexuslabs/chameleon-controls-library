@@ -29,6 +29,19 @@
 | `"content-wrapper"` |             |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-test-suggest](../../test/test-suggest)
+
+### Graph
+```mermaid
+graph TD;
+  ch-test-suggest --> ch-suggest-list-item
+  style ch-suggest-list-item fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

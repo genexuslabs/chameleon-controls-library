@@ -84,6 +84,7 @@ INDEX:
 
   private textInput!: HTMLInputElement;
   private chWindow!: HTMLChWindowElement;
+  private slot!: HTMLSlotElement;
   @Element() el: HTMLChSuggestElement;
 
   // 3.STATE() VARIABLES //
@@ -185,7 +186,7 @@ INDEX:
   windowClosedHandler() {
     this.textInput.focus();
     this.windowHidden = true;
-    this.el.innerHTML = "";
+    this.slot.innerHTML = "";
   }
 
   // 9.PUBLIC METHODS API //
@@ -390,7 +391,10 @@ INDEX:
             close:close-button,
             window:dropdown"
           >
-            <slot onSlotchange={this.evaluateSlotIsEmpty}></slot>
+            <slot
+              onSlotchange={this.evaluateSlotIsEmpty}
+              ref={el => (this.slot = el as HTMLSlotElement)}
+            ></slot>
           </ch-window>
         </div>
       </Host>

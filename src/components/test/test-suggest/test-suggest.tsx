@@ -25,14 +25,7 @@ INDEX:
 
   // 1.OWN PROPERTIES //
 
-  /**
-   * The last SelectorCategoryData[] returned by selectorSourceCallback
-   */
-  private selectorCategoryData: SelectorCategoryData[] = [];
-
   // 2. REFERENCE TO ELEMENTS //
-
-  private selectObjectSuggestEl!: HTMLChSuggestElement;
 
   // 3.STATE() VARIABLES //
 
@@ -67,7 +60,6 @@ INDEX:
     const value = e.detail;
     this.selectorSourceCallback(value)
       .then(result => {
-        this.selectorCategoryData = result;
         /* show suggestions*/
         this.objectsSuggestions = convertObjectDataToSuggestData(result);
       })
@@ -83,7 +75,6 @@ INDEX:
       <Host>
         <ch-suggest
           onValueChanged={this.selectObjectValueChangedHandler}
-          ref={el => (this.selectObjectSuggestEl = el as HTMLChSuggestElement)}
           part="object-selector-suggest"
           exportparts="dropdown:select-object-dropdown"
         >

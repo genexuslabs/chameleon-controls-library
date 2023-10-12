@@ -151,6 +151,13 @@ export class ChTestTreeX {
   @Event() itemOpenReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
 
   /**
+   * Fired when the selected items change.
+   */
+  @Event() selectedItemsChange: EventEmitter<
+    Map<string, TreeXListItemSelectedInfo>
+  >;
+
+  /**
    * Given an item id, an array of items to add, the download status and the
    * lazy state, updates the item's UI Model.
    */
@@ -414,6 +421,7 @@ export class ChTestTreeX {
   private handleSelectedItemsChange = (
     event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
+    event.stopPropagation();
     const itemsToProcess = new Map(event.detail);
 
     // Remove no longer selected items
@@ -441,6 +449,8 @@ export class ChTestTreeX {
 
       this.selectedItems.add(itemId);
     });
+
+    this.selectedItemsChange.emit(event.detail);
   };
 
   private handleExpandedItemChange = (

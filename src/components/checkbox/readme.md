@@ -41,7 +41,7 @@
 
 ### Used by
 
- - [ch-tree-x-list-item](../tree-x-list-item)
+ - [ch-tree-x-list-item](../tree-view/tree-x-list-item)
 
 ### Graph
 ```mermaid

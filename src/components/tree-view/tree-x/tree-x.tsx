@@ -15,6 +15,7 @@ import {
   TreeXDataTransferInfo,
   TreeXDropCheckInfo,
   TreeXDroppableZoneState,
+  TreeXItemContextMenu,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
   TreeXItemDragStartInfo,
@@ -171,6 +172,11 @@ export class ChTreeX {
   @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
 
   /**
+   * Fired when an element displays its contextmenu.
+   */
+  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+
+  /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
@@ -198,6 +204,23 @@ export class ChTreeX {
   //     selected: item.selected
   //   }));
   // }
+
+  @Listen("contextmenu", { capture: true })
+  handleContextMenuEvent(event: PointerEvent) {
+    const treeItem = (event.target as HTMLElement).closest(TREE_ITEM_TAG_NAME);
+
+    if (!treeItem) {
+      return;
+    }
+    event.preventDefault();
+
+    this.itemContextmenu.emit({
+      id: treeItem.id,
+      itemRef: treeItem,
+      metadata: treeItem.metadata,
+      contextmenuEvent: event
+    });
+  }
 
   // Set edit mode in items
   @Listen("keydown", { capture: true })

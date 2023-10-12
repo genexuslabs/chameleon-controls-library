@@ -64,6 +64,13 @@ export type TreeXItemDragStartInfo = {
 
 export type TreeXLines = "all" | "last" | "none";
 
+export type TreeXItemContextMenu = {
+  id: string;
+  itemRef: HTMLChTreeXListItemElement;
+  metadata: string;
+  contextmenuEvent: PointerEvent;
+};
+
 export type TreeXDataTransferInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];

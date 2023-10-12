@@ -1,5 +1,7 @@
 import {
   Component,
+  Event,
+  EventEmitter,
   h,
   Prop,
   Listen,
@@ -11,6 +13,7 @@ import {
 import {
   TreeXDataTransferInfo,
   TreeXDropCheckInfo,
+  TreeXItemContextMenu,
   TreeXItemModel,
   TreeXLines,
   TreeXListItemExpandedInfo,
@@ -134,6 +137,11 @@ export class ChTestTreeX {
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
+  /**
+   * Fired when an element displays its contextmenu.
+   */
+  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -428,6 +436,13 @@ export class ChTestTreeX {
     itemInfo.expanded = detail.expanded;
   };
 
+  private handleItemContextmenu = (
+    event: ChTreeXCustomEvent<TreeXItemContextMenu>
+  ) => {
+    event.stopPropagation();
+    this.itemContextmenu.emit(event.detail);
+  };
+
   private handleItemsDropped = (
     event: ChTreeXCustomEvent<TreeXDataTransferInfo>
   ) => {
@@ -623,6 +638,7 @@ export class ChTestTreeX {
         waitDropProcessing={this.waitDropProcessing}
         onDroppableZoneEnter={this.handleDroppableZoneEnter}
         onExpandedItemChange={this.handleExpandedItemChange}
+        onItemContextmenu={this.handleItemContextmenu}
         onItemsDropped={this.handleItemsDropped}
         onSelectedItemsChange={this.handleSelectedItemsChange}
         ref={el => (this.treeRef = el)}

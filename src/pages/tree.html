@@ -440,8 +440,13 @@
           <ch-textblock id="contextmenu-textblock"
             >+ + + + + + + Context + + + + + + +</ch-textblock
           >
+
           <ch-textblock id="open-reference-textblock"
             ><br />+ + + + + Open Reference + + + + +</ch-textblock
+          >
+
+          <ch-textblock id="selected-items-textblock"
+            ><br />+ + + + + Selected items + + + + +</ch-textblock
           >
         </div>
       </div>
@@ -1603,6 +1608,15 @@
           Item ID: ${event.detail.id}<br>
           Item Leaf: ${event.detail.leaf}<br>
           Item Metadata: ${!event.detail.metadata}<br>`;
+        });
+
+        const selectedItemsTextBlock = document.getElementById(
+          "selected-items-textblock"
+        );
+
+        testTreeX.addEventListener("selectedItemsChange", event => {
+          selectedItemsTextBlock.innerHTML = `<br>+ + + + + SelectedItems + + + + +<br>
+          ${[...event.detail.keys()].join("<br>")}`;
         });
 
         /*Lazy Load Promise*/

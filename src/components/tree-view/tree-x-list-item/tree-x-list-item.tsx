@@ -751,25 +751,12 @@ export class ChTreeXListItem {
   };
 
   componentWillLoad() {
-    const parentElementItem = this.el
-      .parentElement as HTMLChTreeXListItemElement;
-
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
 
     // Sync selected state with the main tree
     if (this.selected) {
       this.selectedItemChange.emit(this.getSelectedInfo(true, true));
-    }
-
-    // No need to update more the status
-    if (this.level === INITIAL_LEVEL) {
-      return;
-    }
-
-    // Update checkbox status
-    if (parentElementItem.checkbox) {
-      this.checked = parentElementItem.checked;
     }
   }
 

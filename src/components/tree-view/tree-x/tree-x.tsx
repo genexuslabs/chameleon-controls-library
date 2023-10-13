@@ -461,7 +461,16 @@ export class ChTreeX {
     const containerTarget = event.target as HTMLChTreeXListItemElement;
 
     const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
-    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+    let droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+
+    // Invalidate the cache, because the item is no longer waiting for its content to be downloaded
+    if (
+      droppableZoneState === "temporal-invalid" &&
+      !containerTarget.lazyLoad &&
+      !containerTarget.downloading
+    ) {
+      droppableZoneState = null;
+    }
 
     if (droppableZoneState != null) {
       return droppableZoneState;
@@ -481,6 +490,12 @@ export class ChTreeX {
     ) {
       this.validDroppableZoneCache.set(cacheKey, "invalid");
       return "invalid";
+    }
+
+    // Disable drops when items need to lazy load their content first
+    if (containerTarget.lazyLoad || containerTarget.downloading) {
+      this.validDroppableZoneCache.set(cacheKey, "temporal-invalid");
+      return "temporal-invalid";
     }
 
     this.validDroppableZoneCache.set(cacheKey, "checking");
@@ -540,11 +555,12 @@ export class ChTreeX {
     ) {
       return;
     }
+    const droppableZoneState = this.validDroppableZone(event);
 
-    const cacheKey = getDroppableZoneKey(itemTarget.id, this.draggedItems);
-    const droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
-
-    if (droppableZoneState === "invalid") {
+    if (
+      droppableZoneState === "invalid" ||
+      droppableZoneState === "temporal-invalid"
+    ) {
       event.dataTransfer.dropEffect = "none";
     }
   }

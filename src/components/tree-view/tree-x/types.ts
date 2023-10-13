@@ -88,4 +88,8 @@ export type TreeXDropCheckInfo = {
   draggedItems: GxDataTransferInfo[];
 };
 
-export type TreeXDroppableZoneState = "checking" | "invalid" | "valid";
+export type TreeXDroppableZoneState =
+  | "checking"
+  | "invalid"
+  | "temporal-invalid"
+  | "valid";

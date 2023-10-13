@@ -9,7 +9,7 @@ import { ItemsOverflowBehavior } from "./components/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
-import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -290,6 +290,10 @@ export namespace Components {
           * @param rowId - The rowId of the row to collapse.
          */
         "collapseRow": (rowId: string) => Promise<void>;
+        /**
+          * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
+         */
+        "columnResizeMode": "single" | "splitter";
         /**
           * Expands a row, showing its children.
           * @param rowId - The rowId of the row to expand.
@@ -2441,6 +2445,10 @@ declare namespace LocalJSX {
          */
         "allowColumnReorder"?: boolean;
         /**
+          * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
+         */
+        "columnResizeMode"?: "single" | "splitter";
+        /**
           * An object that contains localized strings for the grid.
          */
         "localization"?: GridLocalization;
@@ -2685,11 +2693,15 @@ declare namespace LocalJSX {
         /**
           * Event emitted when the user finishes resizing the column.
          */
-        "onColumnResizeFinished"?: (event: ChGridColumnResizeCustomEvent<any>) => void;
+        "onColumnResizeFinished"?: (event: ChGridColumnResizeCustomEvent<ChGridColumnResizeEvent>) => void;
         /**
           * Event emitted when the user starts resizing the column.
          */
-        "onColumnResizeStarted"?: (event: ChGridColumnResizeCustomEvent<any>) => void;
+        "onColumnResizeStarted"?: (event: ChGridColumnResizeCustomEvent<ChGridColumnResizeEvent>) => void;
+        /**
+          * Event emitted when the user is resizing the column.
+         */
+        "onColumnResizing"?: (event: ChGridColumnResizeCustomEvent<ChGridColumnResizeEvent>) => void;
     }
     interface ChGridColumnSettings {
         /**

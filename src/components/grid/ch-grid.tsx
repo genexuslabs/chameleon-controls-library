@@ -33,6 +33,7 @@ import HTMLChGridCellElement, {
 import HTMLChGridRowElement from "./grid-row/ch-grid-row";
 import {
   ChGridColumnDragEvent,
+  ChGridColumnResizeEvent,
   ChGridColumnSelectorClickedEvent
 } from "./grid-column/ch-grid-column-types";
 import {
@@ -197,6 +198,14 @@ export class ChGrid {
    * A boolean indicating whether the user can drag column headers to reorder columns.
    */
   @Prop() readonly allowColumnReorder: boolean = true;
+
+  /**
+   * One of "single" or "splitter", indicating the behavior of column resizing.
+   * "single", resize a single column at a time.
+   * "splitter", when adjusts the width of one column, the neighboring columns
+   *    are also resized proportionally, maintaining the overall width.
+   */
+  @Prop() readonly columnResizeMode: "single" | "splitter" = "single";
 
   /**
    * An object that contains localized strings for the grid.
@@ -572,6 +581,21 @@ export class ChGrid {
   @Listen("columnFreezeChanged")
   columnFreezeChangedHandler() {
     this.manager.columns.adjustFreezeOrder();
+  }
+
+  @Listen("columnResizeStarted")
+  columnResizeStartedHandler(eventInfo: CustomEvent<ChGridColumnResizeEvent>) {
+    this.manager.columnResizeStart(eventInfo.detail.columnId);
+  }
+
+  @Listen("columnResizing")
+  columnResizingHandler(eventInfo: CustomEvent<ChGridColumnResizeEvent>) {
+    this.manager.columnResizing(eventInfo.detail.deltaWidth);
+  }
+
+  @Listen("columnResizeFinished")
+  columnResizeFinishedHandler() {
+    this.manager.columnResizeEnd();
   }
 
   @Listen("columnDragStarted")

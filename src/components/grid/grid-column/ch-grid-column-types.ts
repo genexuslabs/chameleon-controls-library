@@ -1,6 +1,11 @@
 export type ChGridColumnSortDirection = "asc" | "desc";
 export type ChGridColumnFreeze = "start" | "end";
 
+export interface ChGridColumnResizeEvent {
+  columnId: string;
+  deltaWidth?: number;
+}
+
 export interface ChGridColumnDragEvent {
   columnId: string;
   positionX?: number;

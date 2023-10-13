@@ -701,6 +701,7 @@ export class ChTreeX {
       >
         <div
           role="tree"
+          part="tree-x-container"
           aria-multiselectable={this.multiSelection.toString()}
           class="ch-tree-x-container"
         >

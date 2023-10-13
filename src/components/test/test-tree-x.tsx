@@ -165,7 +165,9 @@ export class ChTestTreeX {
   /**
    * Fired when the checked items change.
    */
-  @Event() checkedItemsChange: EventEmitter<TreeXListItemCheckedInfo[]>;
+  @Event() checkedItemsChange: EventEmitter<
+    Map<string, TreeXItemModelExtended>
+  >;
 
   /**
    * Fired when an element displays its contextmenu.
@@ -474,13 +476,15 @@ export class ChTestTreeX {
   };
 
   private emitCheckedItemsChange() {
-    const allItemsWithCheckbox: TreeXListItemCheckedInfo[] = [
-      ...this.flattenedCheckboxTreeModel.values()
-    ].map(itemUIModel => ({
-      id: itemUIModel.item.id,
-      checked: itemUIModel.item.checked ?? this.checked,
-      indeterminate: itemUIModel.item.indeterminate
-    }));
+    // New copy of the checked items
+    const allItemsWithCheckbox: Map<string, TreeXItemModelExtended> = new Map(
+      this.flattenedCheckboxTreeModel
+    );
+
+    // Update the checked value if not defined
+    allItemsWithCheckbox.forEach(itemUIModel => {
+      itemUIModel.item.checked ??= this.checked;
+    });
 
     this.checkedItemsChange.emit(allItemsWithCheckbox);
   }

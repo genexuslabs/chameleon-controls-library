@@ -213,6 +213,9 @@ export class ChTestTreeX {
     this.sortItems(itemToLazyLoadContent.items);
     this.flattenSubModel(itemToLazyLoadContent);
 
+    // Re-sync checked items
+    this.emitCheckedItemsChange();
+
     // Force re-render
     forceUpdate(this);
   }
@@ -378,15 +381,7 @@ export class ChTestTreeX {
     itemInfo.checked = detail.checked;
     itemInfo.indeterminate = detail.indeterminate;
 
-    const allItemsWithCheckbox: TreeXListItemCheckedInfo[] = [
-      ...this.flattenedCheckboxTreeModel.values()
-    ].map(itemUIModel => ({
-      id: itemUIModel.item.id,
-      checked: itemUIModel.item.checked ?? this.checked,
-      indeterminate: itemUIModel.item.indeterminate
-    }));
-
-    this.checkedItemsChange.emit(allItemsWithCheckbox);
+    this.emitCheckedItemsChange();
   }
 
   @Listen("loadLazyContent")
@@ -477,6 +472,18 @@ export class ChTestTreeX {
       );
     });
   };
+
+  private emitCheckedItemsChange() {
+    const allItemsWithCheckbox: TreeXListItemCheckedInfo[] = [
+      ...this.flattenedCheckboxTreeModel.values()
+    ].map(itemUIModel => ({
+      id: itemUIModel.item.id,
+      checked: itemUIModel.item.checked ?? this.checked,
+      indeterminate: itemUIModel.item.indeterminate
+    }));
+
+    this.checkedItemsChange.emit(allItemsWithCheckbox);
+  }
 
   private handleSelectedItemsChange = (
     event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
@@ -723,6 +730,9 @@ export class ChTestTreeX {
     }
 
     this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
+
+    // Re-sync checked items
+    this.emitCheckedItemsChange();
   }
 
   componentWillLoad() {

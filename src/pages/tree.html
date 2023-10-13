@@ -448,6 +448,11 @@
           <ch-textblock id="selected-items-textblock"
             ><br />+ + + + + Selected Items + + + + +</ch-textblock
           >
+
+          <ch-textblock id="checked-items-textblock"
+            ><br />+ + + + + Checked items + + + + +<br /><br />+ + + + +
+            Unchecked items + + + + +</ch-textblock
+          >
         </div>
       </div>
 
@@ -1012,7 +1017,7 @@
           ]
         },
         {
-          id: "Design_System",
+          id: "Design System",
           caption: "Design System (5)",
           leftImgSrc: "assets/icons/dso.svg",
           items: [
@@ -1095,7 +1100,7 @@
           ]
         },
         {
-          id: "Data_Provider",
+          id: "Data Provider",
           caption: "Data Provider (1)",
           leftImgSrc: "assets/icons/data-provider.svg",
           items: [
@@ -1743,24 +1748,75 @@
           Item Metadata: ${!event.detail.metadata}<br>`;
         });
 
-        testTreeX.addEventListener("checkedItemsChange", event => {
-          const allItemsWithCheckbox = event.detail;
+        const checkedItemsTextBlock = document.getElementById(
+          "checked-items-textblock"
+        );
 
-          if (event.detail == null || event.detail.length === 0) {
+        testTreeX.addEventListener("checkedItemsChange", event => {
+          if (event.detail == null) {
             checkAllCheckbox.checked = false;
             checkAllCheckbox.indeterminate = false;
+            return;
+          }
+          const allItemsWithCheckbox = [...event.detail.values()];
 
+          if (allItemsWithCheckbox.length === 0) {
+            checkAllCheckbox.checked = false;
+            checkAllCheckbox.indeterminate = false;
             return;
           }
 
-          const firstItemCheckedValue = allItemsWithCheckbox[0].checked;
+          const firstItemCheckedValue = allItemsWithCheckbox[0].item.checked;
 
           const allItemsHaveTheSameCheckedValue = allItemsWithCheckbox.every(
-            treeItem => treeItem.checked === firstItemCheckedValue
+            treeItem => treeItem.item.checked === firstItemCheckedValue
           );
 
           checkAllCheckbox.checked = firstItemCheckedValue;
           checkAllCheckbox.indeterminate = !allItemsHaveTheSameCheckedValue;
+
+          // Dummy way to check if the current treeModel is "Import Objects"
+          if (testTreeX.treeModel[0]?.id === "Category") {
+            allItemsWithCheckbox.forEach(itemUIModel => {
+              const itemInfo = itemUIModel.item;
+
+              // Update the amount of checked values
+              if (itemInfo.leaf !== true) {
+                const totalItems = itemInfo.items.length;
+                // console.log(itemInfo.items);
+
+                const totalItemsChecked = itemInfo.items.filter(
+                  itemUIModel => itemUIModel.checked
+                ).length;
+
+                const newItemCaption =
+                  totalItems !== totalItemsChecked
+                    ? `${itemInfo.id} (${totalItemsChecked}/${totalItems})`
+                    : `${itemInfo.id} (${totalItems})`;
+
+                // Only update the item caption if needed
+                if (newItemCaption !== itemInfo.caption) {
+                  testTreeX.updateItemsProperties([itemInfo.id], {
+                    caption: newItemCaption
+                  });
+                }
+              }
+            });
+          }
+
+          // Print checked items
+          checkedItemsTextBlock.innerHTML = `<br>+ + + + + Checked items + + + + +<br>
+          ${allItemsWithCheckbox
+            .filter(itemUIModel => itemUIModel.item.checked)
+            .map(itemUIModel => itemUIModel.item.id)
+            .join("<br>")}
+          <br>
+          <br>+ + + + + Unchecked items + + + + +<br>
+          ${allItemsWithCheckbox
+            .filter(itemUIModel => !itemUIModel.item.checked)
+            .map(itemUIModel => itemUIModel.item.id)
+            .join("<br>")}
+          `;
         });
 
         const selectedItemsTextBlock = document.getElementById(

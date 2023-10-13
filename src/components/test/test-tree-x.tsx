@@ -366,7 +366,14 @@ export class ChTestTreeX {
 
     const detail = event.detail;
     const treeItemId = detail.id;
-    const itemInfo = this.flattenedCheckboxTreeModel.get(treeItemId).item;
+    const itemUIModel = this.flattenedCheckboxTreeModel.get(treeItemId);
+
+    // In some cases, when the `treeModel` and `checked` properties are updated
+    // outside of the tree control, some events are fired with undefined references
+    if (!itemUIModel) {
+      return;
+    }
+    const itemInfo = itemUIModel.item;
 
     itemInfo.checked = detail.checked;
     itemInfo.indeterminate = detail.indeterminate;
@@ -708,6 +715,12 @@ export class ChTestTreeX {
   private flattenModel() {
     this.flattenedTreeModel.clear();
     this.flattenedCheckboxTreeModel.clear();
+    this.selectedItems.clear();
+
+    // The model was updated at runtime, so we need to clear the references
+    if (this.treeRef) {
+      this.treeRef.clearSelectedItemsInfo();
+    }
 
     this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
   }

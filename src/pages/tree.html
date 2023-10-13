@@ -1049,6 +1049,52 @@
           ]
         },
         {
+          id: "Module",
+          caption: "Module (4/6)",
+          leftImgSrc: "assets/icons/module.svg",
+          indeterminate: true,
+          items: [
+            {
+              id: "Module.General",
+              caption: "General",
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            },
+            {
+              id: "Module.General.UI",
+              caption: "General.UI",
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            },
+            {
+              id: "Module.General.Services",
+              caption: "General.Services",
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            },
+            {
+              id: "Module.GeneralReporting",
+              caption: "GeneralReporting",
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            },
+            {
+              id: "Module.GeneXusUnanimo",
+              caption: "GeneXusUnanimo",
+              checked: false,
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            },
+            {
+              id: "Module.GeneXus",
+              caption: "GeneXus",
+              checked: false,
+              leftImgSrc: "assets/icons/module.svg",
+              leaf: true
+            }
+          ]
+        },
+        {
           id: "Data_Provider",
           caption: "Data Provider (1)",
           leftImgSrc: "assets/icons/data-provider.svg",
@@ -1651,9 +1697,6 @@
           "import-objects-model-btn"
         );
         importObjectsBtn.addEventListener("click", () => {
-          checkAllCheckbox.indeterminate = false;
-          checkAllCheckbox.checked = true;
-
           testTreeX.checkbox = true;
           testTreeX.checked = true;
           testTreeX.toggleCheckboxes = true;
@@ -1702,6 +1745,14 @@
 
         testTreeX.addEventListener("checkedItemsChange", event => {
           const allItemsWithCheckbox = event.detail;
+
+          if (event.detail == null || event.detail.length === 0) {
+            checkAllCheckbox.checked = false;
+            checkAllCheckbox.indeterminate = false;
+
+            return;
+          }
+
           const firstItemCheckedValue = allItemsWithCheckbox[0].checked;
 
           const allItemsHaveTheSameCheckedValue = allItemsWithCheckbox.every(

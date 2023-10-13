@@ -16,6 +16,7 @@ import {
   TreeXItemContextMenu,
   TreeXItemModel,
   TreeXLines,
+  TreeXListItemCheckedInfo,
   TreeXListItemExpandedInfo,
   TreeXListItemNewCaption,
   TreeXListItemOpenReferenceInfo,
@@ -49,6 +50,8 @@ const DEFAULT_SELECTED_VALUE = false;
 export class ChTestTreeX {
   // UI Models
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
+  private flattenedCheckboxTreeModel: Map<string, TreeXItemModelExtended> =
+    new Map();
   private selectedItems: Set<string> = new Set();
 
   // Refs
@@ -158,6 +161,11 @@ export class ChTestTreeX {
   handleTreeModelChange() {
     this.flattenModel();
   }
+
+  /**
+   * Fired when the checked items change.
+   */
+  @Event() checkedItemsChange: EventEmitter<TreeXListItemCheckedInfo[]>;
 
   /**
    * Fired when an element displays its contextmenu.
@@ -347,6 +355,31 @@ export class ChTestTreeX {
     Object.keys(properties).forEach(propertyName => {
       itemInfo[propertyName] = properties[propertyName];
     });
+  }
+
+  @Listen("checkboxChange")
+  @Listen("checkboxToggleChange")
+  updateCheckboxValue(
+    event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>
+  ) {
+    event.stopPropagation();
+
+    const detail = event.detail;
+    const treeItemId = detail.id;
+    const itemInfo = this.flattenedCheckboxTreeModel.get(treeItemId).item;
+
+    itemInfo.checked = detail.checked;
+    itemInfo.indeterminate = detail.indeterminate;
+
+    const allItemsWithCheckbox: TreeXListItemCheckedInfo[] = [
+      ...this.flattenedCheckboxTreeModel.values()
+    ].map(itemUIModel => ({
+      id: itemUIModel.item.id,
+      checked: itemUIModel.item.checked ?? this.checked,
+      indeterminate: itemUIModel.item.indeterminate
+    }));
+
+    this.checkedItemsChange.emit(allItemsWithCheckbox);
   }
 
   @Listen("loadLazyContent")
@@ -629,7 +662,6 @@ export class ChTestTreeX {
       }
       return;
     }
-
     this.sortItems(items);
 
     items.forEach(this.flattenItemUIModel(model));
@@ -641,6 +673,14 @@ export class ChTestTreeX {
         parentItem: parentModel,
         item: item
       });
+
+      // Add the items that have a checkbox in a separate Map
+      if (item.checkbox ?? this.checkbox) {
+        this.flattenedCheckboxTreeModel.set(item.id, {
+          parentItem: parentModel,
+          item: item
+        });
+      }
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
@@ -667,6 +707,7 @@ export class ChTestTreeX {
 
   private flattenModel() {
     this.flattenedTreeModel.clear();
+    this.flattenedCheckboxTreeModel.clear();
 
     this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
   }

@@ -41,6 +41,12 @@ export type TreeXListItemExpandedInfo = {
   expanded: boolean;
 };
 
+export type TreeXListItemCheckedInfo = {
+  id: string;
+  checked: boolean;
+  indeterminate: boolean;
+};
+
 export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;

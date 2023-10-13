@@ -446,7 +446,7 @@
           >
 
           <ch-textblock id="selected-items-textblock"
-            ><br />+ + + + + Selected items + + + + +</ch-textblock
+            ><br />+ + + + + Selected Items + + + + +</ch-textblock
           >
         </div>
       </div>
@@ -521,6 +521,7 @@
         </button>
         <button id="update-big-model-btn">Set big model</button>
         <button id="kb-explorer-model-btn">KB Explorer</button>
+        <button id="import-objects-model-btn">Import Objects</button>
       </div>
     </div>
 
@@ -558,6 +559,7 @@
           ]
         }
       ];
+
       const modelTinyUpdated = [
         {
           id: "number-1",
@@ -953,6 +955,7 @@
           ]
         }
       ];
+
       const modelLazyUpdated1 = [
         {
           id: "lazy-loaded-1",
@@ -991,6 +994,72 @@
           leftImgSrc: "assets/icons/patterns.svg",
           checkbox: true,
           dragDisabled: true
+        }
+      ];
+
+      const importObjectsModel = [
+        {
+          id: "Category",
+          caption: "Category (1)",
+          leftImgSrc: "assets/icons/category.svg",
+          items: [
+            {
+              id: "Category.Main_Programs",
+              caption: "Main Programs",
+              leftImgSrc: "assets/icons/category.svg",
+              leaf: true
+            }
+          ]
+        },
+        {
+          id: "Design_System",
+          caption: "Design System (5)",
+          leftImgSrc: "assets/icons/dso.svg",
+          items: [
+            {
+              id: "Design_System.ActionGroup",
+              caption: "ActionGroup",
+              leftImgSrc: "assets/icons/dso.svg",
+              leaf: true
+            },
+            {
+              id: "Design_System.DynamicActionGroup",
+              caption: "DynamicActionGroup",
+              leftImgSrc: "assets/icons/dso.svg",
+              leaf: true
+            },
+            {
+              id: "Design_System.UserControls",
+              caption: "UserControls",
+              leftImgSrc: "assets/icons/dso.svg",
+              leaf: true
+            },
+            {
+              id: "Design_System.Dropdown",
+              caption: "Dropdown",
+              leftImgSrc: "assets/icons/dso.svg",
+              leaf: true
+            },
+            {
+              id: "Design_System.UnanimoAngularWithoutUserControls",
+              caption: "UnanimoAngularWithoutUserControls",
+              leftImgSrc: "assets/icons/dso.svg",
+              leaf: true
+            }
+          ]
+        },
+        {
+          id: "Data_Provider",
+          caption: "Data Provider (1)",
+          leftImgSrc: "assets/icons/data-provider.svg",
+          items: [
+            {
+              id: "Data_Provider.General.UI.SidebarItemsDP",
+              caption: "General.UI.SidebarItemsDP",
+              leftImgSrc: "assets/icons/data-provider.svg",
+              leaf: true
+            }
+          ]
         }
       ];
 
@@ -1511,6 +1580,7 @@
         checkAllCheckbox.addEventListener("input", event => {
           const checked = event.target.checked;
 
+          checkAllCheckbox.indeterminate = false;
           testTreeX.updateAllItemsProperties({ checked: checked });
         });
 
@@ -1570,7 +1640,27 @@
 
         const kbExplorerBtn = document.getElementById("kb-explorer-model-btn");
         kbExplorerBtn.addEventListener("click", () => {
+          testTreeX.checkbox = false;
+          testTreeX.checked = false;
+          testTreeX.toggleCheckboxes = false;
+
           testTreeX.treeModel = kbExplorerModel;
+        });
+
+        const importObjectsBtn = document.getElementById(
+          "import-objects-model-btn"
+        );
+        importObjectsBtn.addEventListener("click", () => {
+          checkAllCheckbox.indeterminate = false;
+          checkAllCheckbox.checked = true;
+
+          testTreeX.checkbox = true;
+          testTreeX.checked = true;
+          testTreeX.toggleCheckboxes = true;
+
+          // It must be the last property updated, since with HTML the
+          // properties change won't be queued to be updated in the same lifecycle
+          testTreeX.treeModel = importObjectsModel;
         });
 
         const scrollIntoVisibleBtn = document.getElementById(
@@ -1610,12 +1700,24 @@
           Item Metadata: ${!event.detail.metadata}<br>`;
         });
 
+        testTreeX.addEventListener("checkedItemsChange", event => {
+          const allItemsWithCheckbox = event.detail;
+          const firstItemCheckedValue = allItemsWithCheckbox[0].checked;
+
+          const allItemsHaveTheSameCheckedValue = allItemsWithCheckbox.every(
+            treeItem => treeItem.checked === firstItemCheckedValue
+          );
+
+          checkAllCheckbox.checked = firstItemCheckedValue;
+          checkAllCheckbox.indeterminate = !allItemsHaveTheSameCheckedValue;
+        });
+
         const selectedItemsTextBlock = document.getElementById(
           "selected-items-textblock"
         );
 
         testTreeX.addEventListener("selectedItemsChange", event => {
-          selectedItemsTextBlock.innerHTML = `<br>+ + + + + SelectedItems + + + + +<br>
+          selectedItemsTextBlock.innerHTML = `<br>+ + + + + Selected Items + + + + +<br>
           ${[...event.detail.keys()].join("<br>")}`;
         });
 
@@ -1663,7 +1765,7 @@
 
             setTimeout(() => {
               resolve(lazyModel);
-            }, 1000); // Resolves or rejects after 1 second
+            }, 2000); // Resolves or rejects after 1 second
           });
 
         testTreeX.dropItemsCallback = () =>

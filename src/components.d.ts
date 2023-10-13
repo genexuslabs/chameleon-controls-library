@@ -25,8 +25,8 @@ import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEven
 import { ActionGroupItemModel } from "./components/test/test-action-group/types";
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemContextMenu, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemOpenReferenceInfo, TreeXListItemSelectedInfo } from "./components/tree-view/tree-x/types";
-import { TreeXOperationStatusModifyCaption } from "./components/test/types";
+import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemContextMenu, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemCheckedInfo, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemOpenReferenceInfo, TreeXListItemSelectedInfo } from "./components/tree-view/tree-x/types";
+import { TreeXItemModelExtended, TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { DragState } from "./components/tree-view/tree-x-list-item/tree-x-list-item";
@@ -1083,6 +1083,14 @@ export namespace Components {
     dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
         /**
+          * Set this attribute if you want display a checkbox in all items by default.
+         */
+        "checkbox": boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
+         */
+        "checked": boolean;
+        /**
           * A CSS class to set as the `ch-tree-x` element class.
          */
         "cssClass": string;
@@ -1137,6 +1145,10 @@ export namespace Components {
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback": (subModel: TreeXItemModel[]) => void;
+        /**
+          * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked. This attribute will be used in all items by default.
+         */
+        "toggleCheckboxes": boolean;
         /**
           * This method is used to toggle a tree item by the tree item id/ids.
           * @param treeItemIds An array id the tree items to be toggled.
@@ -3290,6 +3302,14 @@ declare namespace LocalJSX {
     dropInformation: TreeXDropCheckInfo
   ) => Promise<boolean>;
         /**
+          * Set this attribute if you want display a checkbox in all items by default.
+         */
+        "checkbox"?: boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
+         */
+        "checked"?: boolean;
+        /**
           * A CSS class to set as the `ch-tree-x` element class.
          */
         "cssClass"?: string;
@@ -3329,6 +3349,10 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
+          * Fired when the checked items change.
+         */
+        "onCheckedItemsChange"?: (event: ChTestTreeXCustomEvent<Map<string, TreeXItemModelExtended>>) => void;
+        /**
           * Fired when an element displays its contextmenu.
          */
         "onItemContextmenu"?: (event: ChTestTreeXCustomEvent<TreeXItemContextMenu>) => void;
@@ -3348,6 +3372,10 @@ declare namespace LocalJSX {
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback"?: (subModel: TreeXItemModel[]) => void;
+        /**
+          * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked. This attribute will be used in all items by default.
+         */
+        "toggleCheckboxes"?: boolean;
         /**
           * This property lets you define the model of the ch-tree-x control.
          */
@@ -3602,7 +3630,11 @@ declare namespace LocalJSX {
         /**
           * Fired when the checkbox value of the control is changed.
          */
-        "onCheckboxChange"?: (event: ChTreeXListItemCustomEvent<boolean>) => void;
+        "onCheckboxChange"?: (event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>) => void;
+        /**
+          * Fired when the checkbox value of the control is changed. This event only applies when the control has `toggleCheckboxes = true`
+         */
+        "onCheckboxToggleChange"?: (event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>) => void;
         /**
           * Fired when the item is no longer being dragged.
          */

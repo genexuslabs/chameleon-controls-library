@@ -9,6 +9,7 @@ import {
   h
 } from "@stencil/core";
 import { mouseEventModifierKey } from "../../../common/helpers";
+import { ChGridColumnResizeEvent } from "../ch-grid-column-types";
 
 /**
  * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
@@ -20,7 +21,6 @@ import { mouseEventModifierKey } from "../../../common/helpers";
 })
 export class ChGridColumnResize {
   private startPageX: number;
-  private startColumnWidth: number;
   private mousemoveFn = this.mousemoveHandler.bind(this);
 
   @Element() el: HTMLChGridColumnResizeElement;
@@ -38,12 +38,17 @@ export class ChGridColumnResize {
   /**
    * Event emitted when the user starts resizing the column.
    */
-  @Event() columnResizeStarted: EventEmitter;
+  @Event() columnResizeStarted: EventEmitter<ChGridColumnResizeEvent>;
+
+  /**
+   * Event emitted when the user is resizing the column.
+   */
+  @Event() columnResizing: EventEmitter<ChGridColumnResizeEvent>;
 
   /**
    * Event emitted when the user finishes resizing the column.
    */
-  @Event() columnResizeFinished: EventEmitter;
+  @Event() columnResizeFinished: EventEmitter<ChGridColumnResizeEvent>;
 
   componentDidLoad() {
     this.el.addEventListener("mousedown", this.mousedownHandler.bind(this));
@@ -80,28 +85,25 @@ export class ChGridColumnResize {
     eventInfo.preventDefault();
 
     this.startPageX = eventInfo.pageX;
-    this.startColumnWidth = this.column.getBoundingClientRect().width;
 
     document.addEventListener("mousemove", this.mousemoveFn, { passive: true });
     document.addEventListener("mouseup", this.mouseupHandler.bind(this), {
       once: true
     });
 
-    this.columnResizeStarted.emit();
+    this.columnResizeStarted.emit({ columnId: this.column.columnId });
   }
 
   private mousemoveHandler(eventInfo: MouseEvent) {
-    const columnSize =
-      this.startColumnWidth - (this.startPageX - eventInfo.pageX);
-
-    if (columnSize >= 0) {
-      this.column.size = `minmax(min-content, ${columnSize}px)`;
-    }
+    this.columnResizing.emit({
+      columnId: this.column.columnId,
+      deltaWidth: this.startPageX - eventInfo.pageX
+    });
   }
 
   private mouseupHandler() {
     document.removeEventListener("mousemove", this.mousemoveFn);
-    this.columnResizeFinished.emit();
+    this.columnResizeFinished.emit({ columnId: this.column.columnId });
   }
 
   render() {

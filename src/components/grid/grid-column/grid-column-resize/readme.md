@@ -12,10 +12,11 @@
 
 ## Events
 
-| Event                  | Description                                               | Type               |
-| ---------------------- | --------------------------------------------------------- | ------------------ |
-| `columnResizeFinished` | Event emitted when the user finishes resizing the column. | `CustomEvent<any>` |
-| `columnResizeStarted`  | Event emitted when the user starts resizing the column.   | `CustomEvent<any>` |
+| Event                  | Description                                               | Type                                   |
+| ---------------------- | --------------------------------------------------------- | -------------------------------------- |
+| `columnResizeFinished` | Event emitted when the user finishes resizing the column. | `CustomEvent<ChGridColumnResizeEvent>` |
+| `columnResizeStarted`  | Event emitted when the user starts resizing the column.   | `CustomEvent<ChGridColumnResizeEvent>` |
+| `columnResizing`       | Event emitted when the user is resizing the column.       | `CustomEvent<ChGridColumnResizeEvent>` |
 
 
 ## Dependencies

@@ -175,7 +175,7 @@ export class ChGridColumn {
    * A string indicating the width of the column.
    * Any value supported by the "grid-template-columns" CSS property is valid.
    */
-  @Prop() readonly size: string;
+  @Prop({ reflect: true }) readonly size: string;
 
   @Watch("size")
   sizeHandler() {

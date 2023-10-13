@@ -61,6 +61,18 @@ export class ChTestTreeX {
   @State() waitDropProcessing = false;
 
   /**
+   * Set this attribute if you want display a checkbox in all items by default.
+   */
+  @Prop() readonly checkbox: boolean = false;
+
+  /**
+   * Set this attribute if you want the checkbox to be checked in all items by
+   * default.
+   * Only works if `checkbox = true`
+   */
+  @Prop() readonly checked: boolean = false;
+
+  /**
    * Callback that is executed when an element tries to drop in another item of
    * the tree. Returns whether the drop is valid.
    */
@@ -129,6 +141,14 @@ export class ChTestTreeX {
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+
+  /**
+   * Set this attribute if you want all the children item's checkboxes to be
+   * checked when the parent item checkbox is checked, or to be unchecked when
+   * the parent item checkbox is unchecked.
+   * This attribute will be used in all items by default.
+   */
+  @Prop() readonly toggleCheckboxes: boolean = false;
 
   /**
    * This property lets you define the model of the ch-tree-x control.
@@ -565,8 +585,8 @@ export class ChTestTreeX {
     <ch-tree-x-list-item
       id={treeSubModel.id}
       caption={treeSubModel.caption}
-      checkbox={treeSubModel.checkbox}
-      checked={treeSubModel.checked}
+      checkbox={treeSubModel.checkbox ?? this.checkbox}
+      checked={treeSubModel.checked ?? this.checked}
       class={treeSubModel.class}
       disabled={treeSubModel.disabled}
       downloading={treeSubModel.downloading}
@@ -585,7 +605,7 @@ export class ChTestTreeX {
       selected={treeSubModel.selected}
       showExpandableButton={treeSubModel.showExpandableButton}
       showLines={this.showLines}
-      toggleCheckboxes={treeSubModel.toggleCheckboxes}
+      toggleCheckboxes={treeSubModel.toggleCheckboxes ?? this.toggleCheckboxes}
     >
       {!treeSubModel.leaf &&
         treeSubModel.items != null &&

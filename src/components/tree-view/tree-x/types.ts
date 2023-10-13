@@ -41,6 +41,12 @@ export type TreeXListItemExpandedInfo = {
   expanded: boolean;
 };
 
+export type TreeXListItemCheckedInfo = {
+  id: string;
+  checked: boolean;
+  indeterminate: boolean;
+};
+
 export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
@@ -88,4 +94,8 @@ export type TreeXDropCheckInfo = {
   draggedItems: GxDataTransferInfo[];
 };
 
-export type TreeXDroppableZoneState = "checking" | "invalid" | "valid";
+export type TreeXDroppableZoneState =
+  | "checking"
+  | "invalid"
+  | "temporal-invalid"
+  | "valid";

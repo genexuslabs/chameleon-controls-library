@@ -14,11 +14,13 @@ import {
 import {
   TreeXItemDragStartInfo,
   TreeXLines,
+  TreeXListItemCheckedInfo,
   TreeXListItemNewCaption,
   TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
 } from "../tree-x/types";
 import { mouseEventModifierKey } from "../../common/helpers";
+import { ChTreeXListItemCustomEvent } from "../../../components";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -97,7 +99,18 @@ export class ChTreeXListItem {
     const treeItems = this.getDirectTreeItems();
 
     treeItems.forEach(treeItem => {
-      treeItem.checked = newValue;
+      if (treeItem.checked !== newValue || treeItem.indeterminate !== false) {
+        treeItem.checked = newValue;
+        treeItem.indeterminate = false;
+
+        // Emit the event to sync with the UI model, even if the item does not
+        // have toggleCheckboxes property
+        this.checkboxToggleChange.emit({
+          id: treeItem.id,
+          checked: newValue,
+          indeterminate: false
+        });
+      }
     });
   }
 
@@ -280,7 +293,13 @@ export class ChTreeXListItem {
   /**
    * Fired when the checkbox value of the control is changed.
    */
-  @Event() checkboxChange: EventEmitter<boolean>;
+  @Event() checkboxChange: EventEmitter<TreeXListItemCheckedInfo>;
+
+  /**
+   * Fired when the checkbox value of the control is changed. This event only
+   * applies when the control has `toggleCheckboxes = true`
+   */
+  @Event() checkboxToggleChange: EventEmitter<TreeXListItemCheckedInfo>;
 
   /**
    * Fired when the item is being dragged.
@@ -322,13 +341,15 @@ export class ChTreeXListItem {
   @Event() selectedItemSync: EventEmitter<TreeXListItemSelectedInfo>;
 
   @Listen("checkboxChange")
-  updateCheckboxValue(event: CustomEvent<boolean>) {
+  updateCheckboxValue(
+    event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>
+  ) {
     // No need to update the checkbox value based on the children checkbox
     if (!this.toggleCheckboxes) {
       return;
     }
 
-    const updatedCheck = event.detail;
+    const updatedCheck = event.detail.checked;
     const treeItems = this.getDirectTreeItems();
 
     // Check if all the items have the same value as the updated item
@@ -339,6 +360,13 @@ export class ChTreeXListItem {
     this.ignoreCheckboxChange = this.checked !== updatedCheck;
     this.checked = updatedCheck;
     this.indeterminate = !allItemsHaveTheSameCheckedValue;
+
+    // Sync with the UI Model
+    this.checkboxToggleChange.emit({
+      id: this.el.id,
+      checked: updatedCheck,
+      indeterminate: !allItemsHaveTheSameCheckedValue
+    });
   }
 
   /**
@@ -673,7 +701,11 @@ export class ChTreeXListItem {
 
     const checked = (event.target as HTMLChCheckboxElement).checked;
     this.checked = checked;
-    this.checkboxChange.emit(checked);
+    this.checkboxChange.emit({
+      id: this.el.id,
+      checked: this.checked,
+      indeterminate: this.indeterminate
+    });
   };
 
   private renderImg = (cssClass: string, src: string) => (
@@ -719,25 +751,12 @@ export class ChTreeXListItem {
   };
 
   componentWillLoad() {
-    const parentElementItem = this.el
-      .parentElement as HTMLChTreeXListItemElement;
-
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
 
     // Sync selected state with the main tree
     if (this.selected) {
       this.selectedItemChange.emit(this.getSelectedInfo(true, true));
-    }
-
-    // No need to update more the status
-    if (this.level === INITIAL_LEVEL) {
-      return;
-    }
-
-    // Update checkbox status
-    if (parentElementItem.checkbox) {
-      this.checked = parentElementItem.checked;
     }
   }
 

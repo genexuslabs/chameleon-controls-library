@@ -23,6 +23,9 @@ import {
   TreeXListItemSelectedInfo
 } from "../tree-view/tree-x/types";
 import {
+  TreeXFilterInfo,
+  TreeXFilterOptions,
+  TreeXFilterType,
   TreeXItemModelExtended,
   TreeXOperationStatusModifyCaption
 } from "./types";
@@ -31,6 +34,7 @@ import {
   ChTreeXListItemCustomEvent
 } from "../../components";
 import { GxDataTransferInfo } from "../../common/types";
+import { filterDictionary } from "./helpers";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
@@ -115,6 +119,63 @@ export class ChTestTreeX {
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
 
   /**
+   * This property lets you determine the expression that will be applied to the
+   * filter.
+   * Only works if `filterType = "caption" | "metadata"`.
+   */
+  @Prop() readonly filter: string;
+  @Watch("filter")
+  handleFilterChange() {
+    if (this.filterType === "caption" || this.filterType === "metadata") {
+      this.processFilters();
+    }
+  }
+
+  /**
+   * This property lets you determine the list of items that will be filtered.
+   * Only works if `filterType = "id-list"`.
+   */
+  @Prop() readonly filterList: string[] = [];
+  @Watch("filterList")
+  handleFilterListChange() {
+    if (this.filterType === "id-list") {
+      this.processFilters();
+    }
+  }
+
+  /**
+   * This property lets you determine the options that will be applied to the
+   * filter.
+   * Only works if `filterType = "caption" | "metadata"`.
+   */
+  @Prop() readonly filterOptions: TreeXFilterOptions = {};
+  @Watch("filterOptions")
+  handleFilterOptionsChange() {
+    if (this.filterType === "caption" || this.filterType === "metadata") {
+      this.processFilters();
+    }
+  }
+
+  /**
+   * This attribute lets you define what kind of filter is applied to items.
+   * Only items that satisfy the filter predicate will be displayed.
+   *
+   * | Value       | Details                                                                                        |
+   * | ----------- | ---------------------------------------------------------------------------------------------- |
+   * | `checked`   | Show only the items that have a checkbox and are checked.                                      |
+   * | `unchecked` | Show only the items that have a checkbox and are not checked.                                  |
+   * | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
+   * | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. |
+   * | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  |
+   * | `none`      | Show all items.                                                                                |
+   */
+  @Prop() readonly filterType: TreeXFilterType = "none";
+  @Watch("filterType")
+  handleFilterTypeChange() {
+    this.processFilters();
+  }
+
+  /**
    * Callback that is executed when a item request to load its subitems.
    */
   @Prop() readonly lazyLoadTreeItemsCallback: (
@@ -164,6 +225,7 @@ export class ChTestTreeX {
 
   /**
    * Fired when the checked items change.
+   * This event does not take into account the currently filtered items.
    */
   @Event() checkedItemsChange: EventEmitter<
     Map<string, TreeXItemModelExtended>
@@ -217,6 +279,9 @@ export class ChTestTreeX {
 
     // Re-sync checked items
     this.emitCheckedItemsChange();
+
+    // Update filters
+    this.processFilters();
 
     // Force re-render
     forceUpdate(this);
@@ -308,6 +373,11 @@ export class ChTestTreeX {
       }
     });
 
+    // Update filters
+    if (properties.checked != null) {
+      this.processFilters();
+    }
+
     forceUpdate(this);
   }
 
@@ -321,6 +391,9 @@ export class ChTestTreeX {
       const itemUIModel = this.flattenedTreeModel.get(item);
       this.updateItemProperty(itemUIModel, properties);
     });
+
+    // Update filters
+    this.processFilters();
 
     forceUpdate(this);
   }
@@ -384,6 +457,14 @@ export class ChTestTreeX {
     itemInfo.indeterminate = detail.indeterminate;
 
     this.emitCheckedItemsChange();
+
+    // Update filters
+    if (this.filterType === "checked" || this.filterType === "unchecked") {
+      this.processFilters();
+
+      // Force re-render
+      forceUpdate(this);
+    }
   }
 
   @Listen("loadLazyContent")
@@ -431,6 +512,9 @@ export class ChTestTreeX {
     promise.then(status => {
       if (status.success) {
         this.sortItems(itemUIModel.parentItem.items);
+
+        // Update filters
+        this.processFilters();
 
         // Force re-render
         forceUpdate(this);
@@ -604,6 +688,9 @@ export class ChTestTreeX {
       // Open the item to visualize the new subitems
       newParentUIModel.expanded = true;
 
+      // Update filters
+      this.processFilters();
+
       // There is no need to force and update, since the waitDropProcessing
       // prop was modified
     });
@@ -632,43 +719,46 @@ export class ChTestTreeX {
     treeSubModel: TreeXItemModel,
     lastItem: boolean,
     level: number
-  ) => (
-    <ch-tree-x-list-item
-      id={treeSubModel.id}
-      caption={treeSubModel.caption}
-      checkbox={treeSubModel.checkbox ?? this.checkbox}
-      checked={treeSubModel.checked ?? this.checked}
-      class={treeSubModel.class}
-      disabled={treeSubModel.disabled}
-      downloading={treeSubModel.downloading}
-      dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
-      dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
-      editable={treeSubModel.editable ?? this.editableItems}
-      expanded={treeSubModel.expanded}
-      indeterminate={treeSubModel.indeterminate}
-      lastItem={lastItem}
-      lazyLoad={treeSubModel.lazy}
-      leaf={treeSubModel.leaf}
-      leftImgSrc={treeSubModel.leftImgSrc}
-      level={level}
-      metadata={treeSubModel.metadata}
-      rightImgSrc={treeSubModel.rightImgSrc}
-      selected={treeSubModel.selected}
-      showExpandableButton={treeSubModel.showExpandableButton}
-      showLines={this.showLines}
-      toggleCheckboxes={treeSubModel.toggleCheckboxes ?? this.toggleCheckboxes}
-    >
-      {!treeSubModel.leaf &&
-        treeSubModel.items != null &&
-        treeSubModel.items.map((subModel, index) =>
-          this.renderSubModel(
-            subModel,
-            this.showLines && index === treeSubModel.items.length - 1,
-            level + 1
-          )
-        )}
-    </ch-tree-x-list-item>
-  );
+  ) =>
+    (this.filterType === "none" || treeSubModel.render !== false) && (
+      <ch-tree-x-list-item
+        id={treeSubModel.id}
+        caption={treeSubModel.caption}
+        checkbox={treeSubModel.checkbox ?? this.checkbox}
+        checked={treeSubModel.checked ?? this.checked}
+        class={treeSubModel.class}
+        disabled={treeSubModel.disabled}
+        downloading={treeSubModel.downloading}
+        dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
+        dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
+        editable={treeSubModel.editable ?? this.editableItems}
+        expanded={treeSubModel.expanded}
+        indeterminate={treeSubModel.indeterminate}
+        lastItem={lastItem}
+        lazyLoad={treeSubModel.lazy}
+        leaf={treeSubModel.leaf}
+        leftImgSrc={treeSubModel.leftImgSrc}
+        level={level}
+        metadata={treeSubModel.metadata}
+        rightImgSrc={treeSubModel.rightImgSrc}
+        selected={treeSubModel.selected}
+        showExpandableButton={treeSubModel.showExpandableButton}
+        showLines={this.showLines}
+        toggleCheckboxes={
+          treeSubModel.toggleCheckboxes ?? this.toggleCheckboxes
+        }
+      >
+        {!treeSubModel.leaf &&
+          treeSubModel.items != null &&
+          treeSubModel.items.map((subModel, index) =>
+            this.renderSubModel(
+              subModel,
+              this.showLines && index === treeSubModel.items.length - 1,
+              level + 1
+            )
+          )}
+      </ch-tree-x-list-item>
+    );
 
   private flattenSubModel(model: TreeXItemModel) {
     const items = model.items;
@@ -739,8 +829,53 @@ export class ChTestTreeX {
     this.emitCheckedItemsChange();
   }
 
+  private filterSubModel(
+    item: TreeXItemModel,
+    filterInfo: TreeXFilterInfo
+  ): boolean {
+    let aSubItemIsRendered = false;
+
+    // Check if a subitem is rendered
+    if (item.leaf !== true && item.items != null) {
+      item.items.forEach(subItem => {
+        const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);
+        aSubItemIsRendered ||= itemSatisfiesFilter;
+      });
+    }
+
+    // The current item is rendered if it satisfies the filter condition or a
+    // subitem exists that needs to be rendered
+    const satisfiesFilter =
+      filterDictionary[this.filterType](item, filterInfo) || aSubItemIsRendered;
+    item.render = satisfiesFilter; // Update item render
+
+    return satisfiesFilter;
+  }
+
+  private processFilters() {
+    if (this.filterType === "none") {
+      return;
+    }
+
+    this.filterSubModel(
+      {
+        id: null,
+        caption: null,
+        items: this.treeModel
+      },
+      {
+        defaultCheckbox: this.checkbox,
+        defaultChecked: this.checked,
+        filter: this.filter,
+        filterList: this.filterList,
+        filterOptions: this.filterOptions
+      }
+    );
+  }
+
   componentWillLoad() {
     this.flattenModel();
+    this.processFilters();
   }
 
   render() {

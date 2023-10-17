@@ -688,6 +688,9 @@ export class ChTestTreeX {
       // Open the item to visualize the new subitems
       newParentUIModel.expanded = true;
 
+      // Re-sync checked items
+      this.emitCheckedItemsChange();
+
       // Update filters
       this.processFilters();
 

@@ -201,7 +201,7 @@ export class NextDataModelingSubitem implements ChComponent {
    * This attribute lets you specify if the element is disabled.
    * If disabled, it will not fire any user interaction related event.
    */
-  @Prop() readonly disabled = false;
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * This property maps entities of the current dataModel with their

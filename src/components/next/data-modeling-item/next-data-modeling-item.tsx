@@ -201,7 +201,7 @@ export class NextDataModelingSubitem implements ChComponent {
    * This attribute lets you specify if the element is disabled.
    * If disabled, it will not fire any user interaction related event.
    */
-  @Prop() readonly disabled = false;
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * This property maps entities of the current dataModel with their
@@ -238,6 +238,13 @@ export class NextDataModelingSubitem implements ChComponent {
    * The name of the field.
    */
   @Prop() readonly name: string = "";
+
+  /**
+   * This attribute indicates that the user cannot modify the value of the control.
+   * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
+   * attribute for `input` elements.
+   */
+  @Prop() readonly readonly: boolean = false;
 
   /**
    * `true` to show the new field button when `mode === "add"`
@@ -748,7 +755,7 @@ export class NextDataModelingSubitem implements ChComponent {
             showWaitingModeTexts ? this.lastEditInfo.type : this.type
           )}
 
-      {this.actionsVisible && (
+      {!this.readonly && this.actionsVisible && (
         <div
           class={{
             "delete-mode": this.mode === "delete",

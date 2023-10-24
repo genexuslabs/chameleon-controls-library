@@ -240,6 +240,13 @@ export class NextDataModelingSubitem implements ChComponent {
   @Prop() readonly name: string = "";
 
   /**
+   * This attribute indicates that the user cannot modify the value of the control.
+   * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
+   * attribute for `input` elements.
+   */
+  @Prop() readonly readonly: boolean = false;
+
+  /**
    * `true` to show the new field button when `mode === "add"`
    */
   @Prop({ mutable: true }) showNewFieldBtn = true;
@@ -748,7 +755,7 @@ export class NextDataModelingSubitem implements ChComponent {
             showWaitingModeTexts ? this.lastEditInfo.type : this.type
           )}
 
-      {this.actionsVisible && (
+      {!this.readonly && this.actionsVisible && (
         <div
           class={{
             "delete-mode": this.mode === "delete",

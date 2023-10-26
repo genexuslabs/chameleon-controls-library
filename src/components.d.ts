@@ -27,7 +27,7 @@ import { ActionGroupItemModel } from "./components/test/test-action-group/types"
 import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { TreeXDataTransferInfo, TreeXDropCheckInfo, TreeXItemContextMenu, TreeXItemDragStartInfo, TreeXItemModel, TreeXLines, TreeXListItemCheckedInfo, TreeXListItemExpandedInfo, TreeXListItemNewCaption, TreeXListItemOpenReferenceInfo, TreeXListItemSelectedInfo } from "./components/tree-view/tree-x/types";
-import { TreeXItemModelExtended, TreeXOperationStatusModifyCaption } from "./components/test/types";
+import { TreeXFilterOptions, TreeXFilterType, TreeXItemModelExtended, TreeXOperationStatusModifyCaption } from "./components/test/types";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { DragState } from "./components/tree-view/tree-x-list-item/tree-x-list-item";
@@ -1207,6 +1207,22 @@ export namespace Components {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems": boolean;
+        /**
+          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filter": string;
+        /**
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
+         */
+        "filterList": string[];
+        /**
+          * This property lets you determine the options that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filterOptions": TreeXFilterOptions;
+        /**
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
+         */
+        "filterType": TreeXFilterType;
         /**
           * Callback that is executed when a item request to load its subitems.
          */
@@ -3544,6 +3560,22 @@ declare namespace LocalJSX {
          */
         "editableItems"?: boolean;
         /**
+          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filter"?: string;
+        /**
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
+         */
+        "filterList"?: string[];
+        /**
+          * This property lets you determine the options that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filterOptions"?: TreeXFilterOptions;
+        /**
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
+         */
+        "filterType"?: TreeXFilterType;
+        /**
           * Callback that is executed when a item request to load its subitems.
          */
         "lazyLoadTreeItemsCallback"?: (
@@ -3561,7 +3593,7 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
-          * Fired when the checked items change.
+          * Fired when the checked items change. This event does not take into account the currently filtered items.
          */
         "onCheckedItemsChange"?: (event: ChTestTreeXCustomEvent<Map<string, TreeXItemModelExtended>>) => void;
         /**

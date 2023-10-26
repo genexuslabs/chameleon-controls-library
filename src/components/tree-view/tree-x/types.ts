@@ -24,6 +24,11 @@ export type TreeXItemModel = {
    * Multiple items can have the same `order` value.
    */
   order?: number;
+
+  /**
+   * `false` to not render the item.
+   */
+  render?: boolean;
   rightImgSrc?: string;
   selected?: boolean;
   showExpandableButton?: boolean;

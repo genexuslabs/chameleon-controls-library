@@ -13,7 +13,8 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
-import { EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
+import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
+import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
@@ -701,7 +702,7 @@ export namespace Components {
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
-        "disabled": false;
+        "disabled": boolean;
         /**
           * This property maps entities of the current dataModel with their corresponding ATTs.
          */
@@ -735,6 +736,10 @@ export namespace Components {
          */
         "name": string;
         /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
           * Set the adding mode for the first field of the entity.
          */
         "setAddingMode": () => Promise<void>;
@@ -746,6 +751,92 @@ export namespace Components {
           * The type of the field.
          */
         "type": EntityItemType;
+    }
+    interface ChNextDataModelingRender {
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class when adding mode is enabled.
+         */
+        "addingModeCommonClass": string;
+        /**
+          * The labels used in the buttons of the items. Important for accessibility.
+         */
+        "captions": DataModelItemLabels1;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class.
+         */
+        "commonClass": string;
+        /**
+          * This callback is used to created a new SDT GxCollectionField based on the EntityItem type.
+         */
+        "createGxCollectionCallback": () => EntityItem[];
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class.
+         */
+        "cssClass": string;
+        /**
+          * This property represents the UI model that is currently rendered.
+         */
+        "dataModel": DataModel;
+        /**
+          * This property represents a copy of the UI model that is currently rendered. Useful for making changes that may or may not be accepted by the server.
+         */
+        "dataModelToEdit": DataModel;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled": boolean;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0"` and `mode === "add"`.
+         */
+        "entityAddingModeClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0"` and `mode !== "add"`.
+         */
+        "entityClass": string;
+        /**
+          * The error texts used for the new field input.
+         */
+        "errorTexts": { [key in ErrorText1]: string };
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0" | "1"` and `mode === "add"`.
+         */
+        "fieldAddingModeClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "1"` and `mode !== "add"`.
+         */
+        "fieldClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with (`level === "0"` and `mode !== "add"`) or `level === "1" | "2"`.
+         */
+        "fieldCommonClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class with `level === "1"`.
+         */
+        "fieldContainerClass": string;
+        /**
+          * This property is a WA due to Angular's bug not letting execute UC 2.0 methods on different layouts.
+         */
+        "hideLoading": any;
+        /**
+          * Determine the maximum amount of ATTs displayed per entity.
+         */
+        "maxAtts": number;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level = "2"` and `mode === "add"`.
+         */
+        "subFieldAddingModeClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level = "2"` and `mode !== "add"`.
+         */
+        "subFieldClass": string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class with `level === "2"`.
+         */
+        "subFieldContainerClass": string;
     }
     interface ChNextProgressBar {
         /**
@@ -1668,6 +1759,10 @@ export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChNextDataModelingItemElement;
 }
+export interface ChNextDataModelingRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChNextDataModelingRenderElement;
+}
 export interface ChNotificationsItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChNotificationsItemElement;
@@ -1921,6 +2016,12 @@ declare global {
         prototype: HTMLChNextDataModelingItemElement;
         new (): HTMLChNextDataModelingItemElement;
     };
+    interface HTMLChNextDataModelingRenderElement extends Components.ChNextDataModelingRender, HTMLStencilElement {
+    }
+    var HTMLChNextDataModelingRenderElement: {
+        prototype: HTMLChNextDataModelingRenderElement;
+        new (): HTMLChNextDataModelingRenderElement;
+    };
     interface HTMLChNextProgressBarElement extends Components.ChNextProgressBar, HTMLStencilElement {
     }
     var HTMLChNextProgressBarElement: {
@@ -2150,6 +2251,7 @@ declare global {
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
+        "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
         "ch-next-progress-bar": HTMLChNextProgressBarElement;
         "ch-notifications": HTMLChNotificationsElement;
         "ch-notifications-item": HTMLChNotificationsItemElement;
@@ -2876,7 +2978,7 @@ declare namespace LocalJSX {
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
          */
-        "disabled"?: false;
+        "disabled"?: boolean;
         /**
           * This property maps entities of the current dataModel with their corresponding ATTs.
          */
@@ -2930,6 +3032,10 @@ declare namespace LocalJSX {
          */
         "onNewField"?: (event: ChNextDataModelingItemCustomEvent<ItemInfo>) => void;
         /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
           * `true` to show the new field button when `mode === "add"`
          */
         "showNewFieldBtn"?: boolean;
@@ -2937,6 +3043,100 @@ declare namespace LocalJSX {
           * The type of the field.
          */
         "type"?: EntityItemType;
+    }
+    interface ChNextDataModelingRender {
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class when adding mode is enabled.
+         */
+        "addingModeCommonClass"?: string;
+        /**
+          * The labels used in the buttons of the items. Important for accessibility.
+         */
+        "captions"?: DataModelItemLabels1;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class.
+         */
+        "commonClass"?: string;
+        /**
+          * This callback is used to created a new SDT GxCollectionField based on the EntityItem type.
+         */
+        "createGxCollectionCallback"?: () => EntityItem[];
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * This property represents the UI model that is currently rendered.
+         */
+        "dataModel"?: DataModel;
+        /**
+          * This property represents a copy of the UI model that is currently rendered. Useful for making changes that may or may not be accepted by the server.
+         */
+        "dataModelToEdit"?: DataModel;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event.
+         */
+        "disabled"?: boolean;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0"` and `mode === "add"`.
+         */
+        "entityAddingModeClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0"` and `mode !== "add"`.
+         */
+        "entityClass"?: string;
+        /**
+          * The error texts used for the new field input.
+         */
+        "errorTexts"?: { [key in ErrorText1]: string };
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "0" | "1"` and `mode === "add"`.
+         */
+        "fieldAddingModeClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level === "1"` and `mode !== "add"`.
+         */
+        "fieldClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with (`level === "0"` and `mode !== "add"`) or `level === "1" | "2"`.
+         */
+        "fieldCommonClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class with `level === "1"`.
+         */
+        "fieldContainerClass"?: string;
+        /**
+          * This property is a WA due to Angular's bug not letting execute UC 2.0 methods on different layouts.
+         */
+        "hideLoading"?: any;
+        /**
+          * Determine the maximum amount of ATTs displayed per entity.
+         */
+        "maxAtts"?: number;
+        /**
+          * Emitted when a new field is added or edited.
+         */
+        "onFieldAdded"?: (event: ChNextDataModelingRenderCustomEvent<any>) => void;
+        /**
+          * Emitted when a new field is removed.
+         */
+        "onFieldRemoved"?: (event: ChNextDataModelingRenderCustomEvent<any>) => void;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level = "2"` and `mode === "add"`.
+         */
+        "subFieldAddingModeClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling-item` element class with `level = "2"` and `mode !== "add"`.
+         */
+        "subFieldClass"?: string;
+        /**
+          * A CSS class to set as the `ch-next-data-modeling` element class with `level === "2"`.
+         */
+        "subFieldContainerClass"?: string;
     }
     interface ChNextProgressBar {
         /**
@@ -3887,6 +4087,7 @@ declare namespace LocalJSX {
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
+        "ch-next-data-modeling-render": ChNextDataModelingRender;
         "ch-next-progress-bar": ChNextProgressBar;
         "ch-notifications": ChNotifications;
         "ch-notifications-item": ChNotificationsItem;
@@ -3956,6 +4157,7 @@ declare module "@stencil/core" {
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
+            "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;
             "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
             "ch-notifications": LocalJSX.ChNotifications & JSXBase.HTMLAttributes<HTMLChNotificationsElement>;
             "ch-notifications-item": LocalJSX.ChNotificationsItem & JSXBase.HTMLAttributes<HTMLChNotificationsItemElement>;

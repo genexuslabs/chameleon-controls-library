@@ -533,6 +533,14 @@
           Filter
           <input id="filter" value="" />
         </label>
+
+        <ch-checkbox
+          id="camel-case"
+          checked-value="true"
+          un-checked-value="false"
+          value="false"
+          caption="Apply camel casing to filter"
+        ></ch-checkbox>
       </div>
 
       <div class="buttons-wrapper">
@@ -1728,6 +1736,15 @@
         filterInput.addEventListener("input", event => {
           const filter = event.target.value;
           testTreeX.filter = filter;
+        });
+
+        const camelCaseCheckbox = document.getElementById("camel-case");
+        camelCaseCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+
+          const newOptions = { ...testTreeX.filterOptions };
+          newOptions.camelCase = checked;
+          testTreeX.filterOptions = newOptions;
         });
 
         const loadModelBtn = document.getElementById("load-model-btn");

@@ -20,6 +20,12 @@ export type TreeXFilterOptions = {
   autoExpand?: boolean;
 
   /**
+   * Determine if the filter takes into account the camel casing.
+   * Only works if `regularExpression !== true`
+   */
+  camelCase?: boolean;
+
+  /**
    * Don't render unmatched items.
    */
   hideUnmatchedItems?: boolean;

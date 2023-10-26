@@ -1,14 +1,23 @@
 import { TreeXItemModel } from "../tree-view/tree-x/types";
-import { TreeXFilterInfo, TreeXFilterType } from "./types";
+import { TreeXFilterInfo, TreeXFilterOptions, TreeXFilterType } from "./types";
+
+const filterWithCamelCase = (
+  stringToFilter: string,
+  filter: string,
+  camelCase?: boolean
+) =>
+  camelCase
+    ? stringToFilter.includes(filter)
+    : stringToFilter.toLowerCase().includes(filter.toLowerCase());
 
 const filterWithString = (
   stringToFilter: string,
   filter: string,
-  regularExpression?: boolean
+  filterOptions: TreeXFilterOptions
 ) =>
-  regularExpression
+  filterOptions.regularExpression
     ? stringToFilter.match(filter) !== null
-    : stringToFilter.includes(filter);
+    : filterWithCamelCase(stringToFilter, filter, filterOptions.camelCase);
 
 export const filterDictionary: {
   [key in TreeXFilterType]: (
@@ -21,7 +30,7 @@ export const filterDictionary: {
       ? filterWithString(
           item.caption ?? "",
           filterInfo.filter,
-          filterInfo.filterOptions.regularExpression
+          filterInfo.filterOptions
         )
       : true,
 
@@ -37,7 +46,7 @@ export const filterDictionary: {
       ? filterWithString(
           item.metadata ?? "",
           filterInfo.filter,
-          filterInfo.filterOptions.regularExpression
+          filterInfo.filterOptions
         )
       : true,
 

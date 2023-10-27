@@ -109,8 +109,8 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [ch-tree-view-item](../tree-view/tree-view-item)
-- [ch-tree-view](../tree-view/tree-view)
+- [ch-tree-view-item](../../tree-view/tree-view-item)
+- [ch-tree-view](../../tree-view/tree-view)
 
 ### Graph
 ```mermaid

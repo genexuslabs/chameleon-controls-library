@@ -21,7 +21,7 @@ import {
   TreeXListItemNewCaption,
   TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
-} from "../tree-view/tree-view/types";
+} from "../../tree-view/tree-view/types";
 import {
   TreeXFilterInfo,
   TreeXFilterOptions,
@@ -32,8 +32,8 @@ import {
 import {
   ChTreeViewCustomEvent,
   ChTreeViewItemCustomEvent
-} from "../../components";
-import { GxDataTransferInfo } from "../../common/types";
+} from "../../../components";
+import { GxDataTransferInfo } from "../../../common/types";
 import { filterDictionary } from "./helpers";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;

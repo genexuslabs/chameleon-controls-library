@@ -1,4 +1,4 @@
-import { TreeXItemModel } from "../tree-view/tree-view/types";
+import { TreeXItemModel } from "../../tree-view/tree-view/types";
 import { TreeXFilterInfo, TreeXFilterOptions, TreeXFilterType } from "./types";
 
 const filterWithCamelCase = (

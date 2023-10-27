@@ -119,7 +119,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-tree-view-render](../../test)
+ - [ch-tree-view-render](../../renders/tree-view)
 
 ### Depends on
 

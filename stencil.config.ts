@@ -34,7 +34,7 @@ export const config: Config = {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
     },
     {
-      components: ["ch-tree-view", "ch-tree-view-item"]
+      components: ["ch-tree-view", "ch-tree-view-item", "ch-tree-view-render"]
     }
   ]
 };

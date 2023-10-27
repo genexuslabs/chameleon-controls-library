@@ -718,45 +718,43 @@ export class ChTreeViewRender {
       itemUIModelExtended.parentItem = newParentUIModel;
     };
 
-  private renderSubModel = (
-    treeSubModel: TreeViewItemModel,
+  private renderItem = (
+    itemModel: TreeViewItemModel,
     lastItem: boolean,
     level: number
   ) =>
-    (this.filterType === "none" || treeSubModel.render !== false) && (
+    (this.filterType === "none" || itemModel.render !== false) && (
       <ch-tree-view-item
-        id={treeSubModel.id}
-        caption={treeSubModel.caption}
-        checkbox={treeSubModel.checkbox ?? this.checkbox}
-        checked={treeSubModel.checked ?? this.checked}
-        class={treeSubModel.class}
-        disabled={treeSubModel.disabled}
-        downloading={treeSubModel.downloading}
-        dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
-        dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
-        editable={treeSubModel.editable ?? this.editableItems}
-        expanded={treeSubModel.expanded}
-        indeterminate={treeSubModel.indeterminate}
+        id={itemModel.id}
+        caption={itemModel.caption}
+        checkbox={itemModel.checkbox ?? this.checkbox}
+        checked={itemModel.checked ?? this.checked}
+        class={itemModel.class}
+        disabled={itemModel.disabled}
+        downloading={itemModel.downloading}
+        dragDisabled={itemModel.dragDisabled ?? this.dragDisabled}
+        dropDisabled={itemModel.dropDisabled ?? this.dropDisabled}
+        editable={itemModel.editable ?? this.editableItems}
+        expanded={itemModel.expanded}
+        indeterminate={itemModel.indeterminate}
         lastItem={lastItem}
-        lazyLoad={treeSubModel.lazy}
-        leaf={treeSubModel.leaf}
-        leftImgSrc={treeSubModel.leftImgSrc}
+        lazyLoad={itemModel.lazy}
+        leaf={itemModel.leaf}
+        leftImgSrc={itemModel.leftImgSrc}
         level={level}
-        metadata={treeSubModel.metadata}
-        rightImgSrc={treeSubModel.rightImgSrc}
-        selected={treeSubModel.selected}
-        showExpandableButton={treeSubModel.showExpandableButton}
+        metadata={itemModel.metadata}
+        rightImgSrc={itemModel.rightImgSrc}
+        selected={itemModel.selected}
+        showExpandableButton={itemModel.showExpandableButton}
         showLines={this.showLines}
-        toggleCheckboxes={
-          treeSubModel.toggleCheckboxes ?? this.toggleCheckboxes
-        }
+        toggleCheckboxes={itemModel.toggleCheckboxes ?? this.toggleCheckboxes}
       >
-        {!treeSubModel.leaf &&
-          treeSubModel.items != null &&
-          treeSubModel.items.map((subModel, index) =>
-            this.renderSubModel(
+        {!itemModel.leaf &&
+          itemModel.items != null &&
+          itemModel.items.map((subModel, index) =>
+            this.renderItem(
               subModel,
-              this.showLines && index === treeSubModel.items.length - 1,
+              this.showLines && index === itemModel.items.length - 1,
               level + 1
             )
           )}
@@ -894,9 +892,9 @@ export class ChTreeViewRender {
         onSelectedItemsChange={this.handleSelectedItemsChange}
         ref={el => (this.treeRef = el)}
       >
-        {this.treeModel.map((subModel, index) =>
-          this.renderSubModel(
-            subModel,
+        {this.treeModel.map((itemModel, index) =>
+          this.renderItem(
+            itemModel,
             this.showLines && index === this.treeModel.length - 1,
             0
           )

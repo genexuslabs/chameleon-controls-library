@@ -136,7 +136,7 @@ export class ChTreeViewRender {
   ) => Promise<boolean>;
 
   /**
-   * A CSS class to set as the `ch-tree-x` element class.
+   * A CSS class to set as the `ch-tree-view` element class.
    */
   @Prop() readonly cssClass: string;
 

@@ -1,4 +1,4 @@
-# ch-test-tree-x
+# ch-tree-view-render-wrapper
 
 
 
@@ -108,23 +108,20 @@ Type: `Promise<void>`
 
 ## Dependencies
 
-### Used by
-
- - [ch-tree-view-render-wrapper](../../test/test-tree-view)
-
 ### Depends on
 
-- [ch-tree-view](../../tree-view/tree-view)
+- [ch-tree-view-render](../../renders/tree-view)
 - [ch-tree-view-item](../../tree-view/tree-view-item)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-tree-view-render-wrapper --> ch-tree-view-render
+  ch-tree-view-render-wrapper --> ch-tree-view-item
   ch-tree-view-render --> ch-tree-view
   ch-tree-view-render --> ch-tree-view-item
   ch-tree-view-item --> ch-checkbox
-  ch-tree-view-render-wrapper --> ch-tree-view-render
-  style ch-tree-view-render fill:#f9f,stroke:#333,stroke-width:4px
+  style ch-tree-view-render-wrapper fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

@@ -120,6 +120,7 @@ Type: `Promise<void>`
 ### Used by
 
  - [ch-tree-view-render](../../renders/tree-view)
+ - [ch-tree-view-render-wrapper](../../test/test-tree-view)
 
 ### Depends on
 
@@ -130,6 +131,7 @@ Type: `Promise<void>`
 graph TD;
   ch-tree-view-item --> ch-checkbox
   ch-tree-view-render --> ch-tree-view-item
+  ch-tree-view-render-wrapper --> ch-tree-view-item
   style ch-tree-view-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

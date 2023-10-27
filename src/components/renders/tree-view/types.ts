@@ -1,19 +1,19 @@
-import { TreeXItemModel } from "../../tree-view/tree-view/types";
+import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 
-export type TreeXItemModelExtended = {
-  parentItem: TreeXItemModel;
-  item: TreeXItemModel;
+export type TreeViewItemModelExtended = {
+  parentItem: TreeViewItemModel;
+  item: TreeViewItemModel;
 };
 
-export type TreeXOperationStatus = {
+export type TreeViewOperationStatus = {
   success: boolean;
 };
 
-export type TreeXOperationStatusModifyCaption = TreeXOperationStatus & {
+export type TreeViewOperationStatusModifyCaption = TreeViewOperationStatus & {
   errorMessage: string;
 };
 
-export type TreeXFilterOptions = {
+export type TreeViewFilterOptions = {
   /**
    * When applying a new filter, expand the matches.
    */
@@ -41,7 +41,7 @@ export type TreeXFilterOptions = {
   regularExpression?: boolean;
 };
 
-export type TreeXFilterType =
+export type TreeViewFilterType =
   | "checked"
   | "unchecked"
   | "caption"
@@ -49,9 +49,9 @@ export type TreeXFilterType =
   | "id-list"
   | "none";
 
-export type TreeXFilterInfo = {
+export type TreeViewFilterInfo = {
   filter: string;
-  filterOptions: TreeXFilterOptions;
+  filterOptions: TreeViewFilterOptions;
   filterList: string[];
   defaultCheckbox: boolean;
   defaultChecked: boolean;

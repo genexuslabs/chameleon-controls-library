@@ -12,12 +12,12 @@ import {
   writeTask
 } from "@stencil/core";
 import {
-  TreeXItemDragStartInfo,
-  TreeXLines,
-  TreeXListItemCheckedInfo,
-  TreeXListItemNewCaption,
-  TreeXListItemOpenReferenceInfo,
-  TreeXListItemSelectedInfo
+  TreeViewItemDragStartInfo,
+  TreeViewLines,
+  TreeViewItemCheckedInfo,
+  TreeViewItemNewCaption,
+  TreeViewItemOpenReferenceInfo,
+  TreeViewItemSelectedInfo
 } from "../tree-view/types";
 import { mouseEventModifierKey } from "../../common/helpers";
 import { ChTreeViewItemCustomEvent } from "../../../components";
@@ -273,9 +273,9 @@ export class ChTreeViewItem {
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop() readonly showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeViewLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: TreeXLines) {
+  handleShowLinesChange(newShowLines: TreeViewLines) {
     if (newShowLines && this.lastItem) {
       this.setResizeObserver();
     } else {
@@ -293,18 +293,18 @@ export class ChTreeViewItem {
   /**
    * Fired when the checkbox value of the control is changed.
    */
-  @Event() checkboxChange: EventEmitter<TreeXListItemCheckedInfo>;
+  @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
 
   /**
    * Fired when the checkbox value of the control is changed. This event only
    * applies when the control has `toggleCheckboxes = true`
    */
-  @Event() checkboxToggleChange: EventEmitter<TreeXListItemCheckedInfo>;
+  @Event() checkboxToggleChange: EventEmitter<TreeViewItemCheckedInfo>;
 
   /**
    * Fired when the item is being dragged.
    */
-  @Event() itemDragStart: EventEmitter<TreeXItemDragStartInfo>;
+  @Event() itemDragStart: EventEmitter<TreeViewItemDragStartInfo>;
 
   /**
    * Fired when the item is no longer being dragged.
@@ -319,30 +319,30 @@ export class ChTreeViewItem {
   /**
    * Fired when the item is asking to modify its caption.
    */
-  @Event() modifyCaption: EventEmitter<TreeXListItemNewCaption>;
+  @Event() modifyCaption: EventEmitter<TreeViewItemNewCaption>;
 
   /**
    * Fired when the user interacts with the control in a way that its reference
    * must be opened.
    */
-  @Event() openReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
+  @Event() openReference: EventEmitter<TreeViewItemOpenReferenceInfo>;
 
   /**
    * Fired when the selected state is updated by user interaction on the
    * control.
    */
-  @Event() selectedItemChange: EventEmitter<TreeXListItemSelectedInfo>;
+  @Event() selectedItemChange: EventEmitter<TreeViewItemSelectedInfo>;
 
   /**
    * Fired when the selected state is updated through the interface and without
    * user interaction. The purpose of this event is to better sync with the
    * main tree.
    */
-  @Event() selectedItemSync: EventEmitter<TreeXListItemSelectedInfo>;
+  @Event() selectedItemSync: EventEmitter<TreeViewItemSelectedInfo>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(
-    event: ChTreeViewItemCustomEvent<TreeXListItemCheckedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
   ) {
     // No need to update the checkbox value based on the children checkbox
     if (!this.toggleCheckboxes) {
@@ -623,7 +623,7 @@ export class ChTreeViewItem {
   private getSelectedInfo = (
     ctrlKeyPressed: boolean,
     selected: boolean
-  ): TreeXListItemSelectedInfo => ({
+  ): TreeViewItemSelectedInfo => ({
     ctrlKeyPressed: ctrlKeyPressed,
     expanded: this.expanded,
     id: this.el.id,

@@ -1,6 +1,6 @@
 import { GxDataTransferInfo } from "../../../common/types";
 
-export type TreeXItemModel = {
+export type TreeViewItemModel = {
   id: string;
   caption: string;
   checkbox?: boolean;
@@ -16,7 +16,7 @@ export type TreeXItemModel = {
   leaf?: boolean;
   leftImgSrc?: string;
   indeterminate?: boolean;
-  items?: TreeXItemModel[];
+  items?: TreeViewItemModel[];
   metadata?: string;
 
   /**
@@ -41,18 +41,18 @@ export type CheckedTreeItemInfo = {
   selected: boolean;
 };
 
-export type TreeXListItemExpandedInfo = {
+export type TreeViewItemExpandedInfo = {
   id: string;
   expanded: boolean;
 };
 
-export type TreeXListItemCheckedInfo = {
+export type TreeViewItemCheckedInfo = {
   id: string;
   checked: boolean;
   indeterminate: boolean;
 };
 
-export type TreeXListItemSelectedInfo = {
+export type TreeViewItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
   id: string;
@@ -62,44 +62,44 @@ export type TreeXListItemSelectedInfo = {
   selected: boolean;
 };
 
-export type TreeXListItemOpenReferenceInfo = {
+export type TreeViewItemOpenReferenceInfo = {
   id: string;
   leaf: boolean;
   metadata: string;
 };
 
-export type TreeXListItemNewCaption = {
+export type TreeViewItemNewCaption = {
   id: string;
   caption: string;
 };
 
-export type TreeXItemDragStartInfo = {
+export type TreeViewItemDragStartInfo = {
   elem: HTMLChTreeViewItemElement;
   dragEvent: DragEvent;
 };
 
-export type TreeXLines = "all" | "last" | "none";
+export type TreeViewLines = "all" | "last" | "none";
 
-export type TreeXItemContextMenu = {
+export type TreeViewItemContextMenu = {
   id: string;
   itemRef: HTMLChTreeViewItemElement;
   metadata: string;
   contextmenuEvent: PointerEvent;
 };
 
-export type TreeXDataTransferInfo = {
+export type TreeViewDataTransferInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];
   draggingSelectedItems: boolean;
   dropInTheSameTree: boolean;
 };
 
-export type TreeXDropCheckInfo = {
+export type TreeViewDropCheckInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];
 };
 
-export type TreeXDroppableZoneState =
+export type TreeViewDroppableZoneState =
   | "checking"
   | "invalid"
   | "temporal-invalid"

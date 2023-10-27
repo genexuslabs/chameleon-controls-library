@@ -12,15 +12,15 @@ import {
 } from "@stencil/core";
 
 import {
-  TreeXDataTransferInfo,
-  TreeXDropCheckInfo,
-  TreeXDroppableZoneState,
-  TreeXItemContextMenu,
+  TreeViewDataTransferInfo,
+  TreeViewDropCheckInfo,
+  TreeViewDroppableZoneState,
+  TreeViewItemContextMenu,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
-  TreeXItemDragStartInfo,
-  TreeXListItemExpandedInfo,
-  TreeXListItemSelectedInfo
+  TreeViewItemDragStartInfo,
+  TreeViewItemExpandedInfo,
+  TreeViewItemSelectedInfo
 } from "./types";
 import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
 import { scrollToEdge } from "../../../common/scroll-to-edge";
@@ -109,13 +109,13 @@ export class ChTreeView {
 
   private openSubTreeTimeout: NodeJS.Timeout;
 
-  private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
+  private selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
 
   /**
    * Cache to avoid duplicate requests when checking the droppable zone in the
    * same drag event.
    */
-  private validDroppableZoneCache: Map<string, TreeXDroppableZoneState> =
+  private validDroppableZoneCache: Map<string, TreeViewDroppableZoneState> =
     new Map();
   private dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
   private draggedItems: GxDataTransferInfo[];
@@ -164,28 +164,28 @@ export class ChTreeView {
    * Fired when an element attempts to enter in a droppable zone where the tree
    * has no information about the validity of the drop.
    */
-  @Event() droppableZoneEnter: EventEmitter<TreeXDropCheckInfo>;
+  @Event() droppableZoneEnter: EventEmitter<TreeViewDropCheckInfo>;
 
   /**
    * Fired when an item is expanded or collapsed.
    */
-  @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
+  @Event() expandedItemChange: EventEmitter<TreeViewItemExpandedInfo>;
 
   /**
    * Fired when an element displays its contextmenu.
    */
-  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+  @Event() itemContextmenu: EventEmitter<TreeViewItemContextMenu>;
 
   /**
    * Fired when the dragged items are dropped in another item of the tree.
    */
-  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
+  @Event() itemsDropped: EventEmitter<TreeViewDataTransferInfo>;
 
   /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeXListItemSelectedInfo>
+    Map<string, TreeViewItemSelectedInfo>
   >;
 
   // /**
@@ -319,7 +319,7 @@ export class ChTreeView {
 
   @Listen("itemDragStart")
   handleItemDragStart(
-    event: ChTreeViewItemCustomEvent<TreeXItemDragStartInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>
   ) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
@@ -362,7 +362,7 @@ export class ChTreeView {
    */
   @Listen("selectedItemSync")
   handleSelectedItemSync(
-    event: ChTreeViewItemCustomEvent<TreeXListItemSelectedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
@@ -377,7 +377,7 @@ export class ChTreeView {
 
   @Listen("selectedItemChange")
   handleSelectedItemChange(
-    event: ChTreeViewItemCustomEvent<TreeXListItemSelectedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
@@ -457,7 +457,7 @@ export class ChTreeView {
     }
   }
 
-  private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
+  private validDroppableZone(event: DragEvent): TreeViewDroppableZoneState {
     const containerTarget = event.target as HTMLChTreeViewItemElement;
 
     const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
@@ -578,7 +578,7 @@ export class ChTreeView {
    * @returns If all selected items can be dragged.
    */
   private checkDragValidityAndUpdateDragInfo(
-    dragInfo: TreeXItemDragStartInfo
+    dragInfo: TreeViewItemDragStartInfo
   ): boolean {
     const draggedElement = dragInfo.elem;
 
@@ -666,7 +666,7 @@ export class ChTreeView {
 
   private handleItemSelection(
     selectedItemEl: HTMLChTreeViewItemElement,
-    selectedItemInfo: TreeXListItemSelectedInfo
+    selectedItemInfo: TreeViewItemSelectedInfo
   ) {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items

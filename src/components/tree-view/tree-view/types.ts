@@ -56,7 +56,7 @@ export type TreeXListItemSelectedInfo = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
   id: string;
-  itemRef: HTMLChTreeXListItemElement;
+  itemRef: HTMLChTreeViewItemElement;
   metadata: string;
   parentId: string;
   selected: boolean;
@@ -74,7 +74,7 @@ export type TreeXListItemNewCaption = {
 };
 
 export type TreeXItemDragStartInfo = {
-  elem: HTMLChTreeXListItemElement;
+  elem: HTMLChTreeViewItemElement;
   dragEvent: DragEvent;
 };
 
@@ -82,7 +82,7 @@ export type TreeXLines = "all" | "last" | "none";
 
 export type TreeXItemContextMenu = {
   id: string;
-  itemRef: HTMLChTreeXListItemElement;
+  itemRef: HTMLChTreeViewItemElement;
   metadata: string;
   contextmenuEvent: PointerEvent;
 };

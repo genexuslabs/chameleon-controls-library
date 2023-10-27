@@ -21,7 +21,7 @@ import {
   TreeXListItemNewCaption,
   TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
-} from "../tree-view/tree-x/types";
+} from "../tree-view/tree-view/types";
 import {
   TreeXFilterInfo,
   TreeXFilterOptions,
@@ -30,8 +30,8 @@ import {
   TreeXOperationStatusModifyCaption
 } from "./types";
 import {
-  ChTreeXCustomEvent,
-  ChTreeXListItemCustomEvent
+  ChTreeViewCustomEvent,
+  ChTreeViewItemCustomEvent
 } from "../../components";
 import { GxDataTransferInfo } from "../../common/types";
 import { filterDictionary } from "./helpers";
@@ -47,11 +47,11 @@ const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
 @Component({
-  tag: "ch-test-tree-x",
-  styleUrl: "test-tree-x.scss",
+  tag: "ch-tree-view-render",
+  styleUrl: "tree-view-render.scss",
   shadow: false
 })
-export class ChTestTreeX {
+export class ChTreeViewRender {
   // UI Models
   private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
   private flattenedCheckboxTreeModel: Map<string, TreeXItemModelExtended> =
@@ -59,7 +59,7 @@ export class ChTestTreeX {
   private selectedItems: Set<string> = new Set();
 
   // Refs
-  private treeRef: HTMLChTreeXElement;
+  private treeRef: HTMLChTreeViewElement;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -438,7 +438,7 @@ export class ChTestTreeX {
   @Listen("checkboxChange")
   @Listen("checkboxToggleChange")
   updateCheckboxValue(
-    event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>
+    event: ChTreeViewItemCustomEvent<TreeXListItemCheckedInfo>
   ) {
     event.stopPropagation();
 
@@ -468,7 +468,7 @@ export class ChTestTreeX {
   }
 
   @Listen("loadLazyContent")
-  loadLazyChildrenHandler(event: ChTreeXListItemCustomEvent<string>) {
+  loadLazyChildrenHandler(event: ChTreeViewItemCustomEvent<string>) {
     if (!this.lazyLoadTreeItemsCallback) {
       return;
     }
@@ -485,7 +485,7 @@ export class ChTestTreeX {
 
   @Listen("modifyCaption")
   handleCaptionModification(
-    event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>
+    event: ChTreeViewItemCustomEvent<TreeXListItemNewCaption>
   ) {
     if (!this.modifyItemCaptionCallback) {
       return;
@@ -529,14 +529,14 @@ export class ChTestTreeX {
 
   @Listen("openReference", { capture: true })
   handleOpenReference(
-    event: ChTreeXListItemCustomEvent<TreeXListItemOpenReferenceInfo>
+    event: ChTreeViewItemCustomEvent<TreeXListItemOpenReferenceInfo>
   ) {
     event.stopPropagation();
     this.itemOpenReference.emit(event.detail);
   }
 
   private handleDroppableZoneEnter = (
-    event: ChTreeXCustomEvent<TreeXDropCheckInfo>
+    event: ChTreeViewCustomEvent<TreeXDropCheckInfo>
   ) => {
     if (!this.checkDroppableZoneCallback) {
       return;
@@ -574,7 +574,7 @@ export class ChTestTreeX {
   }
 
   private handleSelectedItemsChange = (
-    event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
+    event: ChTreeViewCustomEvent<Map<string, TreeXListItemSelectedInfo>>
   ) => {
     event.stopPropagation();
     const itemsToProcess = new Map(event.detail);
@@ -609,7 +609,7 @@ export class ChTestTreeX {
   };
 
   private handleExpandedItemChange = (
-    event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>
+    event: ChTreeViewCustomEvent<TreeXListItemExpandedInfo>
   ) => {
     const detail = event.detail;
     const itemInfo = this.flattenedTreeModel.get(detail.id).item;
@@ -617,14 +617,14 @@ export class ChTestTreeX {
   };
 
   private handleItemContextmenu = (
-    event: ChTreeXCustomEvent<TreeXItemContextMenu>
+    event: ChTreeViewCustomEvent<TreeXItemContextMenu>
   ) => {
     event.stopPropagation();
     this.itemContextmenu.emit(event.detail);
   };
 
   private handleItemsDropped = (
-    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+    event: ChTreeViewCustomEvent<TreeXDataTransferInfo>
   ) => {
     if (!this.dropItemsCallback) {
       return;
@@ -724,7 +724,7 @@ export class ChTestTreeX {
     level: number
   ) =>
     (this.filterType === "none" || treeSubModel.render !== false) && (
-      <ch-tree-x-list-item
+      <ch-tree-view-item
         id={treeSubModel.id}
         caption={treeSubModel.caption}
         checkbox={treeSubModel.checkbox ?? this.checkbox}
@@ -760,7 +760,7 @@ export class ChTestTreeX {
               level + 1
             )
           )}
-      </ch-tree-x-list-item>
+      </ch-tree-view-item>
     );
 
   private flattenSubModel(model: TreeXItemModel) {
@@ -883,7 +883,7 @@ export class ChTestTreeX {
 
   render() {
     return (
-      <ch-tree-x
+      <ch-tree-view
         class={this.cssClass || null}
         multiSelection={this.multiSelection}
         waitDropProcessing={this.waitDropProcessing}
@@ -901,7 +901,7 @@ export class ChTestTreeX {
             0
           )
         )}
-      </ch-tree-x>
+      </ch-tree-view>
     );
   }
 }

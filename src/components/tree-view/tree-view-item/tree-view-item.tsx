@@ -18,9 +18,9 @@ import {
   TreeXListItemNewCaption,
   TreeXListItemOpenReferenceInfo,
   TreeXListItemSelectedInfo
-} from "../tree-x/types";
+} from "../tree-view/types";
 import { mouseEventModifierKey } from "../../common/helpers";
-import { ChTreeXListItemCustomEvent } from "../../../components";
+import { ChTreeViewItemCustomEvent } from "../../../components";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -30,7 +30,7 @@ const resetDragImage = new Image();
 const INITIAL_LEVEL = 0;
 
 // Selectors
-const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
+const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
 
 const DIRECT_TREE_ITEM_CHILDREN = `:scope>${TREE_ITEM_TAG_NAME}`;
 const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
@@ -56,11 +56,11 @@ const CHECKBOX_EXPORT_PARTS = [
   .join(",");
 
 @Component({
-  tag: "ch-tree-x-list-item",
-  styleUrl: "tree-x-list-item.scss",
+  tag: "ch-tree-view-item",
+  styleUrl: "tree-view-item.scss",
   shadow: true
 })
-export class ChTreeXListItem {
+export class ChTreeViewItem {
   private watcher: ResizeObserver;
 
   /**
@@ -72,7 +72,7 @@ export class ChTreeXListItem {
   private headerRef: HTMLButtonElement;
   private inputRef: HTMLInputElement;
 
-  @Element() el: HTMLChTreeXListItemElement;
+  @Element() el: HTMLChTreeViewItemElement;
 
   /**
    * This attributes specifies the caption of the control
@@ -342,7 +342,7 @@ export class ChTreeXListItem {
 
   @Listen("checkboxChange")
   updateCheckboxValue(
-    event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>
+    event: ChTreeViewItemCustomEvent<TreeXListItemCheckedInfo>
   ) {
     // No need to update the checkbox value based on the children checkbox
     if (!this.toggleCheckboxes) {
@@ -379,7 +379,7 @@ export class ChTreeXListItem {
     if (!this.leaf && this.expanded) {
       const subItem = this.el.querySelector(
         FIRST_ENABLED_SUB_ITEM
-      ) as HTMLChTreeXListItemElement;
+      ) as HTMLChTreeViewItemElement;
 
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
@@ -399,7 +399,7 @@ export class ChTreeXListItem {
   @Method()
   async focusNextSibling(ctrlKeyPressed: boolean) {
     const nextSiblingItem = this.el
-      .nextElementSibling as HTMLChTreeXListItemElement;
+      .nextElementSibling as HTMLChTreeViewItemElement;
 
     // Focus the next sibling, if exists
     if (nextSiblingItem) {
@@ -418,7 +418,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, ask the parent to focus the next sibling
-    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeViewItemElement;
     parentItem.focusNextSibling(ctrlKeyPressed);
   }
 
@@ -429,7 +429,7 @@ export class ChTreeXListItem {
   @Method()
   async focusPreviousItem(ctrlKeyPressed: boolean) {
     const previousSiblingItem = this.el
-      .previousElementSibling as HTMLChTreeXListItemElement;
+      .previousElementSibling as HTMLChTreeViewItemElement;
 
     // Focus last item of the previous sibling
     if (previousSiblingItem) {
@@ -443,7 +443,7 @@ export class ChTreeXListItem {
     }
 
     // Otherwise, set focus in the parent element
-    const parentItem = this.el.parentElement as HTMLChTreeXListItemElement;
+    const parentItem = this.el.parentElement as HTMLChTreeViewItemElement;
 
     // Check if the parent is not disabled
     if (parentItem.disabled) {
@@ -464,7 +464,7 @@ export class ChTreeXListItem {
     if (!this.leaf && this.expanded) {
       const lastSubItem = this.el.querySelector(
         LAST_SUB_ITEM
-      ) as HTMLChTreeXListItemElement;
+      ) as HTMLChTreeViewItemElement;
 
       // The tree item could be empty or downloading subitem, so it is uncertain
       // if the query won't fail
@@ -497,10 +497,10 @@ export class ChTreeXListItem {
     }
   }
 
-  private getDirectTreeItems(): HTMLChTreeXListItemElement[] {
+  private getDirectTreeItems(): HTMLChTreeViewItemElement[] {
     return Array.from(
       this.el.querySelectorAll(DIRECT_TREE_ITEM_CHILDREN)
-    ) as HTMLChTreeXListItemElement[];
+    ) as HTMLChTreeViewItemElement[];
   }
 
   private setResizeObserver() {

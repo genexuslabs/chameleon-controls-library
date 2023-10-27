@@ -32,12 +32,12 @@
 
 ## Events
 
-| Event                 | Description                                                                                              | Type                                                                                                                  |
-| --------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `checkedItemsChange`  | Fired when the checked items change. This event does not take into account the currently filtered items. | `CustomEvent<Map<string, TreeXItemModelExtended>>`                                                                    |
-| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                          | `CustomEvent<{ id: string; itemRef: HTMLChTreeXListItemElement; metadata: string; contextmenuEvent: PointerEvent; }>` |
-| `itemOpenReference`   | Fired when the user interacts with an item in a way that its reference must be opened.                   | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                       |
-| `selectedItemsChange` | Fired when the selected items change.                                                                    | `CustomEvent<Map<string, TreeXListItemSelectedInfo>>`                                                                 |
+| Event                 | Description                                                                                              | Type                                                                                                                 |
+| --------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `checkedItemsChange`  | Fired when the checked items change. This event does not take into account the currently filtered items. | `CustomEvent<Map<string, TreeXItemModelExtended>>`                                                                   |
+| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                          | `CustomEvent<{ id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; contextmenuEvent: PointerEvent; }>` |
+| `itemOpenReference`   | Fired when the user interacts with an item in a way that its reference must be opened.                   | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                      |
+| `selectedItemsChange` | Fired when the selected items change.                                                                    | `CustomEvent<Map<string, TreeXListItemSelectedInfo>>`                                                                |
 
 
 ## Methods
@@ -109,16 +109,16 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [ch-tree-x-list-item](../tree-view/tree-x-list-item)
-- [ch-tree-x](../tree-view/tree-x)
+- [ch-tree-view-item](../tree-view/tree-view-item)
+- [ch-tree-view](../tree-view/tree-view)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-test-tree-x --> ch-tree-x-list-item
-  ch-test-tree-x --> ch-tree-x
-  ch-tree-x-list-item --> ch-checkbox
-  style ch-test-tree-x fill:#f9f,stroke:#333,stroke-width:4px
+  ch-tree-view-render --> ch-tree-view-item
+  ch-tree-view-render --> ch-tree-view
+  ch-tree-view-item --> ch-checkbox
+  style ch-tree-view-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

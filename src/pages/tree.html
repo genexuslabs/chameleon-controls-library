@@ -50,7 +50,7 @@
         height: 100%;
       }
 
-      .ch-tree-x-list-item--success::part(action)::before {
+      .ch-tree-view-item--success::part(action)::before {
         grid-area: first-img;
         content: "";
         width: 12px;
@@ -60,7 +60,7 @@
         border-radius: 50%;
       }
 
-      .ch-tree-x-list-item--success::part(action) {
+      .ch-tree-view-item--success::part(action) {
         grid-template: "first-img left-img text right-img" / max-content max-content 1fr max-content;
       }
 
@@ -139,12 +139,12 @@
         row-gap: 8px;
       }
 
-      .ch-tree-x-not-dragging-item
-        ch-tree-x-list-item:not([selected])::part(header):hover {
+      .ch-tree-view-not-dragging-item
+        .tree-view-item:not([selected])::part(header):hover {
         background-color: rgb(232, 232, 233);
       }
 
-      .ch-tree-x-list-item--drag-enter {
+      .ch-tree-view-item--drag-enter {
         background-color: #eee;
         box-shadow: inset 0 0 1px 0px black;
 
@@ -153,7 +153,7 @@
         }
       }
 
-      ch-tree-x-list-item {
+      .tree-view-item {
         font-family: SourceSansPro_Regular;
 
         &::part(header) {
@@ -165,18 +165,18 @@
           border-color: rgb(2, 102, 160);
         }
 
-        &.ch-tree-x-list-item--editing::part(header) {
+        &.ch-tree-view-item--editing::part(header) {
           background-color: rgb(207, 222, 230, 0.5);
           border-color: transparent;
         }
 
-        &:not(.ch-tree-x-list-item--editing)::part(header):focus-visible {
+        &:not(.ch-tree-view-item--editing)::part(header):focus-visible {
           border-color: black;
           z-index: 1;
         }
       }
 
-      .ch-tree-x-drag-info {
+      .ch-tree-view-drag-info {
         padding-inline: 6px;
         padding-block: 2px;
         background-color: rgb(207, 222, 230);
@@ -189,252 +189,231 @@
   <body>
     <div class="main-container">
       <div class="section-dev">
-        <ch-tree-x
+        <ch-tree-view
           id="markup-tree"
           toggle-checkboxes="false"
           show-lines
           multi-selection
         >
-          <ch-tree-x-list>
-            <ch-tree-x-list-item
-              opened
-              left-img-src="/build/ch-icon-assets/generator.svg"
-              caption="Meats"
+          <ch-tree-view-item
+            opened
+            left-img-src="/build/ch-icon-assets/generator.svg"
+            caption="Meats"
+            checkbox
+          >
+            <ch-tree-view-item
               checkbox
+              checked
+              toggle-checkboxes
+              left-img-src="/build/ch-icon-assets/patterns.svg"
+              caption="White meats"
             >
-              <ch-tree-x-list slot="tree">
-                <ch-tree-x-list-item
-                  checkbox
-                  checked
-                  toggle-checkboxes
-                  left-img-src="/build/ch-icon-assets/patterns.svg"
-                  caption="White meats"
-                >
-                  <ch-tree-x-list slot="tree">
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="./assets/icons/file.svg"
-                      caption="Chicken"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/java.svg"
-                      caption="Turkey"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="./assets/icons/file.svg"
-                      caption="Duck"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                  </ch-tree-x-list>
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  left-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                  caption="Red meats"
-                >
-                  <ch-tree-x-list checkbox slot="tree">
-                    <ch-tree-x-list-item
-                      left-img-src="./assets/icons/file.svg"
-                      caption="Beef"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      left-img-src="./assets/icons/file.svg"
-                      caption="Lamb and mutton"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      left-img-src="/build/tree-item-assets/download.svg"
-                      caption="Pork"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                  </ch-tree-x-list>
-                </ch-tree-x-list-item>
-              </ch-tree-x-list>
-            </ch-tree-x-list-item>
-            <ch-tree-x-list-item
-              id="fish"
+              <ch-tree-view-item
+                checkbox
+                left-img-src="./assets/icons/file.svg"
+                caption="Chicken"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/java.svg"
+                caption="Turkey"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="./assets/icons/file.svg"
+                caption="Duck"
+                leaf
+              >
+              </ch-tree-view-item>
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+              caption="Red meats"
+            >
+              <ch-tree-view-item
+                left-img-src="./assets/icons/file.svg"
+                caption="Beef"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                left-img-src="./assets/icons/file.svg"
+                caption="Lamb and mutton"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                left-img-src="/build/tree-item-assets/download.svg"
+                caption="Pork"
+                leaf
+              >
+              </ch-tree-view-item>
+            </ch-tree-view-item>
+          </ch-tree-view-item>
+          <ch-tree-view-item
+            id="fish"
+            left-img-src="./assets/icons/file.svg"
+            checkbox
+            checked="false"
+            disabled
+            right-img-src="/build/tree-item-assets/download.svg"
+            caption="Fish"
+          >
+          </ch-tree-view-item>
+          <ch-tree-view-item
+            left-img-src="/build/tree-item-assets/download.svg"
+            caption="Fruits"
+            checked="false"
+          >
+            <ch-tree-view-item
+              checkbox
+              left-img-src="/build/ch-icon-assets/java.svg"
+              caption="Orange"
+              leaf
+            >
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              checkbox
               left-img-src="./assets/icons/file.svg"
-              checkbox
-              checked="false"
-              disabled
-              right-img-src="/build/tree-item-assets/download.svg"
-              caption="Fish"
+              opened
+              caption="Banana"
             >
-            </ch-tree-x-list-item>
-            <ch-tree-x-list-item
-              left-img-src="/build/tree-item-assets/download.svg"
-              caption="Fruits"
-              checked="false"
-            >
-              <ch-tree-x-list slot="tree">
-                <ch-tree-x-list-item
-                  checkbox
-                  left-img-src="/build/ch-icon-assets/java.svg"
-                  caption="Orange"
+              <ch-tree-view-item
+                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                checkbox
+                caption="Pisang"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/java.svg"
+                caption="Red Banana"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                caption="Cavendish"
+                show-expandable-button="false"
+              >
+                <ch-tree-view-item
+                  caption="Big"
                   leaf
-                >
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  checkbox
-                  left-img-src="./assets/icons/file.svg"
-                  opened
-                  caption="Banana"
-                >
-                  <ch-tree-x-list slot="tree">
-                    <ch-tree-x-list-item
-                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                      checkbox
-                      caption="Pisang"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/java.svg"
-                      caption="Red Banana"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                      caption="Cavendish"
-                      show-expandable-button="false"
-                    >
-                      <ch-tree-x-list slot="tree">
-                        <ch-tree-x-list-item
-                          caption="Big"
-                          leaf
-                          show-expandable-button="false"
-                        >
-                        </ch-tree-x-list-item>
-                        <ch-tree-x-list-item
-                          left-img-src="assets/icons/patterns.svg"
-                          caption="Small"
-                          leaf
-                        >
-                        </ch-tree-x-list-item>
-                        <ch-tree-x-list-item
-                          left-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                          caption="Mini (empty items)"
-                        >
-                          <ch-tree-x-list> </ch-tree-x-list>
-                        </ch-tree-x-list-item>
-                      </ch-tree-x-list>
-                    </ch-tree-x-list-item>
-                  </ch-tree-x-list>
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  checkbox
-                  left-img-src="./assets/icons/file.svg"
-                  caption="Strawberry"
-                  expanded
                   show-expandable-button="false"
                 >
-                  <ch-tree-x-list slot="tree">
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/java.svg"
-                      caption="Albion"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/java.svg"
-                      opened
-                      caption="Tillamook"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                      caption="Northeaster"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                  </ch-tree-x-list>
-                </ch-tree-x-list-item>
-              </ch-tree-x-list>
-            </ch-tree-x-list-item>
-            <ch-tree-x-list-item
-              opened
-              expanded
-              left-img-src="/build/ch-icon-assets/java.svg"
-              empty-tree
-              caption="Nuts"
-              show-expandable-button="false"
-            >
-              <ch-tree-x-list slot="tree">
-                <ch-tree-x-list-item
-                  opened
-                  checkbox
+                </ch-tree-view-item>
+                <ch-tree-view-item
                   left-img-src="assets/icons/patterns.svg"
-                  caption="Almonds"
-                >
-                  <ch-tree-x-list slot="tree">
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="assets/icons/patterns.svg"
-                      opened
-                      caption="Mollar de Tarragona"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="/build/ch-icon-assets/java.svg"
-                      caption="Ferragnès"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                    <ch-tree-x-list-item
-                      checkbox
-                      left-img-src="assets/icons/patterns.svg"
-                      caption="Verdal"
-                      leaf
-                    >
-                    </ch-tree-x-list-item>
-                  </ch-tree-x-list>
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  left-img-src="assets/icons/patterns.svg"
-                  opened
-                  caption="Brazil nuts"
+                  caption="Small"
                   leaf
                 >
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  checkbox
-                  left-img-src="assets/icons/patterns.svg"
-                  caption="Cashews (lazy)"
-                  lazy-load
+                </ch-tree-view-item>
+                <ch-tree-view-item
+                  left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                  caption="Mini (empty items)"
                 >
-                </ch-tree-x-list-item>
-                <ch-tree-x-list-item
-                  checkbox
-                  left-img-src="assets/icons/patterns.svg"
-                  caption="Chestnuts (lazy)"
-                  lazy-load
-                  drag-enabled="false"
-                >
-                </ch-tree-x-list-item>
-              </ch-tree-x-list>
-            </ch-tree-x-list-item>
-          </ch-tree-x-list>
-        </ch-tree-x>
+                </ch-tree-view-item>
+              </ch-tree-view-item>
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              checkbox
+              left-img-src="./assets/icons/file.svg"
+              caption="Strawberry"
+              expanded
+              show-expandable-button="false"
+            >
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/java.svg"
+                caption="Albion"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/java.svg"
+                opened
+                caption="Tillamook"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                caption="Northeaster"
+                leaf
+              >
+              </ch-tree-view-item>
+            </ch-tree-view-item>
+          </ch-tree-view-item>
+          <ch-tree-view-item
+            opened
+            expanded
+            left-img-src="/build/ch-icon-assets/java.svg"
+            empty-tree
+            caption="Nuts"
+            show-expandable-button="false"
+          >
+            <ch-tree-view-item
+              opened
+              checkbox
+              left-img-src="assets/icons/patterns.svg"
+              caption="Almonds"
+            >
+              <ch-tree-view-item
+                checkbox
+                left-img-src="assets/icons/patterns.svg"
+                opened
+                caption="Mollar de Tarragona"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="/build/ch-icon-assets/java.svg"
+                caption="Ferragnès"
+                leaf
+              >
+              </ch-tree-view-item>
+              <ch-tree-view-item
+                checkbox
+                left-img-src="assets/icons/patterns.svg"
+                caption="Verdal"
+                leaf
+              >
+              </ch-tree-view-item>
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              left-img-src="assets/icons/patterns.svg"
+              opened
+              caption="Brazil nuts"
+              leaf
+            >
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              checkbox
+              left-img-src="assets/icons/patterns.svg"
+              caption="Cashews (lazy)"
+              lazy-load
+            >
+            </ch-tree-view-item>
+            <ch-tree-view-item
+              checkbox
+              left-img-src="assets/icons/patterns.svg"
+              caption="Chestnuts (lazy)"
+              lazy-load
+              drag-enabled="false"
+            >
+            </ch-tree-view-item>
+          </ch-tree-view-item>
+        </ch-tree-view>
 
-        <ch-test-tree-x></ch-test-tree-x>
+        <ch-tree-view-render></ch-tree-view-render>
 
         <div>
           <ch-textblock id="contextmenu-textblock"
@@ -763,7 +742,7 @@
             {
               id: "number-1-1",
               caption: "number-1-1",
-              class: "ch-tree-x-list-item--success",
+              class: "ch-tree-view-item--success",
               leaf: false,
               leftImgSrc: "./assets/icons/knowledge-base.svg",
               items: [
@@ -1673,7 +1652,7 @@
 
         appLoadFinish = true;
 
-        const testTreeX = document.querySelector("ch-test-tree-x");
+        const testTreeX = document.querySelector("ch-tree-view-render");
 
         testTreeX.treeModel = kbExplorerModel;
 

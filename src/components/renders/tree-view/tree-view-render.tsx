@@ -11,29 +11,29 @@ import {
   Method
 } from "@stencil/core";
 import {
-  TreeXDataTransferInfo,
-  TreeXDropCheckInfo,
-  TreeXItemContextMenu,
-  TreeXItemModel,
-  TreeXLines,
-  TreeXListItemCheckedInfo,
-  TreeXListItemExpandedInfo,
-  TreeXListItemNewCaption,
-  TreeXListItemOpenReferenceInfo,
-  TreeXListItemSelectedInfo
-} from "../tree-view/tree-x/types";
+  TreeViewDataTransferInfo,
+  TreeViewDropCheckInfo,
+  TreeViewItemContextMenu,
+  TreeViewItemModel,
+  TreeViewLines,
+  TreeViewItemCheckedInfo,
+  TreeViewItemExpandedInfo,
+  TreeViewItemNewCaption,
+  TreeViewItemOpenReferenceInfo,
+  TreeViewItemSelectedInfo
+} from "../../tree-view/tree-view/types";
 import {
-  TreeXFilterInfo,
-  TreeXFilterOptions,
-  TreeXFilterType,
-  TreeXItemModelExtended,
-  TreeXOperationStatusModifyCaption
+  TreeViewFilterInfo,
+  TreeViewFilterOptions,
+  TreeViewFilterType,
+  TreeViewItemModelExtended,
+  TreeViewOperationStatusModifyCaption
 } from "./types";
 import {
-  ChTreeXCustomEvent,
-  ChTreeXListItemCustomEvent
-} from "../../components";
-import { GxDataTransferInfo } from "../../common/types";
+  ChTreeViewCustomEvent,
+  ChTreeViewItemCustomEvent
+} from "../../../components";
+import { GxDataTransferInfo } from "../../../common/types";
 import { filterDictionary } from "./helpers";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
@@ -46,20 +46,68 @@ const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
+const defaultRenderItem = (
+  itemModel: TreeViewItemModel,
+  treeState: ChTreeViewRender,
+  lastItem: boolean,
+  level: number
+) =>
+  (treeState.filterType === "none" || itemModel.render !== false) && (
+    <ch-tree-view-item
+      id={itemModel.id}
+      caption={itemModel.caption}
+      checkbox={itemModel.checkbox ?? treeState.checkbox}
+      checked={itemModel.checked ?? treeState.checked}
+      class={itemModel.class}
+      disabled={itemModel.disabled}
+      downloading={itemModel.downloading}
+      dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
+      dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
+      editable={itemModel.editable ?? treeState.editableItems}
+      expanded={itemModel.expanded}
+      indeterminate={itemModel.indeterminate}
+      lastItem={lastItem}
+      lazyLoad={itemModel.lazy}
+      leaf={itemModel.leaf}
+      leftImgSrc={itemModel.leftImgSrc}
+      level={level}
+      metadata={itemModel.metadata}
+      rightImgSrc={itemModel.rightImgSrc}
+      selected={itemModel.selected}
+      showExpandableButton={itemModel.showExpandableButton}
+      showLines={treeState.showLines}
+      toggleCheckboxes={
+        itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+      }
+    >
+      {!itemModel.leaf &&
+        itemModel.items != null &&
+        itemModel.items.map((subModel, index) =>
+          defaultRenderItem(
+            subModel,
+            treeState,
+            treeState.showLines && index === itemModel.items.length - 1,
+            level + 1
+          )
+        )}
+    </ch-tree-view-item>
+  );
+
 @Component({
-  tag: "ch-test-tree-x",
-  styleUrl: "test-tree-x.scss",
+  tag: "ch-tree-view-render",
+  styleUrl: "tree-view-render.scss",
   shadow: false
 })
-export class ChTestTreeX {
+export class ChTreeViewRender {
   // UI Models
-  private flattenedTreeModel: Map<string, TreeXItemModelExtended> = new Map();
-  private flattenedCheckboxTreeModel: Map<string, TreeXItemModelExtended> =
+  private flattenedTreeModel: Map<string, TreeViewItemModelExtended> =
+    new Map();
+  private flattenedCheckboxTreeModel: Map<string, TreeViewItemModelExtended> =
     new Map();
   private selectedItems: Set<string> = new Set();
 
   // Refs
-  private treeRef: HTMLChTreeXElement;
+  private treeRef: HTMLChTreeViewElement;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -84,11 +132,11 @@ export class ChTestTreeX {
    * the tree. Returns whether the drop is valid.
    */
   @Prop() readonly checkDroppableZoneCallback: (
-    dropInformation: TreeXDropCheckInfo
+    dropInformation: TreeViewDropCheckInfo
   ) => Promise<boolean>;
 
   /**
-   * A CSS class to set as the `ch-tree-x` element class.
+   * A CSS class to set as the `ch-tree-view` element class.
    */
   @Prop() readonly cssClass: string;
 
@@ -109,8 +157,8 @@ export class ChTestTreeX {
    * another item.
    */
   @Prop() readonly dropItemsCallback: (
-    dataTransferInfo: TreeXDataTransferInfo
-  ) => Promise<{ acceptDrop: boolean; items?: TreeXItemModel[] }>;
+    dataTransferInfo: TreeViewDataTransferInfo
+  ) => Promise<{ acceptDrop: boolean; items?: TreeViewItemModel[] }>;
 
   /**
    * This attribute lets you specify if the edit operation is enabled in all
@@ -148,7 +196,7 @@ export class ChTestTreeX {
    * filter.
    * Only works if `filterType = "caption" | "metadata"`.
    */
-  @Prop() readonly filterOptions: TreeXFilterOptions = {};
+  @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
   handleFilterOptionsChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
@@ -169,7 +217,7 @@ export class ChTestTreeX {
    * | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  |
    * | `none`      | Show all items.                                                                                |
    */
-  @Prop() readonly filterType: TreeXFilterType = "none";
+  @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
   handleFilterTypeChange() {
     this.processFilters();
@@ -180,7 +228,7 @@ export class ChTestTreeX {
    */
   @Prop() readonly lazyLoadTreeItemsCallback: (
     treeItemId: string
-  ) => Promise<TreeXItemModel[]>;
+  ) => Promise<TreeViewItemModel[]>;
 
   /**
    * Callback that is executed when a item request to modify its caption.
@@ -188,7 +236,7 @@ export class ChTestTreeX {
   @Prop() readonly modifyItemCaptionCallback: (
     treeItemId: string,
     newCaption: string
-  ) => Promise<TreeXOperationStatusModifyCaption>;
+  ) => Promise<TreeViewOperationStatusModifyCaption>;
 
   /**
    * Set this attribute if you want to allow multi selection of the items.
@@ -196,15 +244,25 @@ export class ChTestTreeX {
   @Prop() readonly multiSelection: boolean = false;
 
   /**
+   * This property allows us to implement custom rendering of tree items.
+   */
+  @Prop() readonly renderItem: (
+    itemModel: TreeViewItemModel,
+    treeState: ChTreeViewRender,
+    lastItem: boolean,
+    level: number
+  ) => any = defaultRenderItem;
+
+  /**
    * `true` to display the relation between tree items and tree lists using
    * lines.
    */
-  @Prop() readonly showLines: TreeXLines = "none";
+  @Prop() readonly showLines: TreeViewLines = "none";
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
    */
-  @Prop() readonly sortItemsCallback: (subModel: TreeXItemModel[]) => void;
+  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void;
 
   /**
    * Set this attribute if you want all the children item's checkboxes to be
@@ -217,7 +275,7 @@ export class ChTestTreeX {
   /**
    * This property lets you define the model of the ch-tree-x control.
    */
-  @Prop() readonly treeModel: TreeXItemModel[] = [];
+  @Prop() readonly treeModel: TreeViewItemModel[] = [];
   @Watch("treeModel")
   handleTreeModelChange() {
     this.flattenModel();
@@ -228,25 +286,25 @@ export class ChTestTreeX {
    * This event does not take into account the currently filtered items.
    */
   @Event() checkedItemsChange: EventEmitter<
-    Map<string, TreeXItemModelExtended>
+    Map<string, TreeViewItemModelExtended>
   >;
 
   /**
    * Fired when an element displays its contextmenu.
    */
-  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+  @Event() itemContextmenu: EventEmitter<TreeViewItemContextMenu>;
 
   /**
    * Fired when the user interacts with an item in a way that its reference
    * must be opened.
    */
-  @Event() itemOpenReference: EventEmitter<TreeXListItemOpenReferenceInfo>;
+  @Event() itemOpenReference: EventEmitter<TreeViewItemOpenReferenceInfo>;
 
   /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeXListItemSelectedInfo>
+    Map<string, TreeViewItemSelectedInfo>
   >;
 
   /**
@@ -256,7 +314,7 @@ export class ChTestTreeX {
   @Method()
   async loadLazyContent(
     itemId: string,
-    items?: TreeXItemModel[],
+    items?: TreeViewItemModel[],
     downloading = false,
     lazy = false
   ) {
@@ -299,7 +357,7 @@ export class ChTestTreeX {
       return;
     }
 
-    let visitedNode = itemUIModel.parentItem as TreeXItemModel;
+    let visitedNode = itemUIModel.parentItem as TreeViewItemModel;
 
     // While the parent is not the root, update the UI Models
     while (visitedNode && visitedNode.id != null) {
@@ -307,7 +365,7 @@ export class ChTestTreeX {
       visitedNode.expanded = true;
 
       const visitedNodeUIModel = this.flattenedTreeModel.get(visitedNode.id);
-      visitedNode = visitedNodeUIModel.parentItem as TreeXItemModel;
+      visitedNode = visitedNodeUIModel.parentItem as TreeViewItemModel;
     }
 
     forceUpdate(this);
@@ -329,12 +387,12 @@ export class ChTestTreeX {
   async toggleItems(
     treeItemIds: string[],
     expand?: boolean
-  ): Promise<TreeXListItemExpandedInfo[]> {
+  ): Promise<TreeViewItemExpandedInfo[]> {
     if (!treeItemIds) {
       return [];
     }
 
-    const modifiedTreeItems: TreeXListItemExpandedInfo[] = [];
+    const modifiedTreeItems: TreeViewItemExpandedInfo[] = [];
 
     treeItemIds.forEach(treeItemId => {
       const itemInfo = this.flattenedTreeModel.get(treeItemId).item;
@@ -386,7 +444,7 @@ export class ChTestTreeX {
    * of the items in the list.
    */
   @Method()
-  async updateItemsProperties(items: string[], properties: TreeXItemModel) {
+  async updateItemsProperties(items: string[], properties: TreeViewItemModel) {
     items.forEach(item => {
       const itemUIModel = this.flattenedTreeModel.get(item);
       this.updateItemProperty(itemUIModel, properties);
@@ -421,8 +479,8 @@ export class ChTestTreeX {
   }
 
   private updateItemProperty(
-    itemUIModel: TreeXItemModelExtended | undefined,
-    properties: TreeXItemModel
+    itemUIModel: TreeViewItemModelExtended | undefined,
+    properties: TreeViewItemModel
   ) {
     if (!itemUIModel) {
       return;
@@ -438,7 +496,7 @@ export class ChTestTreeX {
   @Listen("checkboxChange")
   @Listen("checkboxToggleChange")
   updateCheckboxValue(
-    event: ChTreeXListItemCustomEvent<TreeXListItemCheckedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
   ) {
     event.stopPropagation();
 
@@ -468,7 +526,7 @@ export class ChTestTreeX {
   }
 
   @Listen("loadLazyContent")
-  loadLazyChildrenHandler(event: ChTreeXListItemCustomEvent<string>) {
+  loadLazyChildrenHandler(event: ChTreeViewItemCustomEvent<string>) {
     if (!this.lazyLoadTreeItemsCallback) {
       return;
     }
@@ -485,7 +543,7 @@ export class ChTestTreeX {
 
   @Listen("modifyCaption")
   handleCaptionModification(
-    event: ChTreeXListItemCustomEvent<TreeXListItemNewCaption>
+    event: ChTreeViewItemCustomEvent<TreeViewItemNewCaption>
   ) {
     if (!this.modifyItemCaptionCallback) {
       return;
@@ -529,14 +587,14 @@ export class ChTestTreeX {
 
   @Listen("openReference", { capture: true })
   handleOpenReference(
-    event: ChTreeXListItemCustomEvent<TreeXListItemOpenReferenceInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemOpenReferenceInfo>
   ) {
     event.stopPropagation();
     this.itemOpenReference.emit(event.detail);
   }
 
   private handleDroppableZoneEnter = (
-    event: ChTreeXCustomEvent<TreeXDropCheckInfo>
+    event: ChTreeViewCustomEvent<TreeViewDropCheckInfo>
   ) => {
     if (!this.checkDroppableZoneCallback) {
       return;
@@ -561,9 +619,8 @@ export class ChTestTreeX {
 
   private emitCheckedItemsChange() {
     // New copy of the checked items
-    const allItemsWithCheckbox: Map<string, TreeXItemModelExtended> = new Map(
-      this.flattenedCheckboxTreeModel
-    );
+    const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
+      new Map(this.flattenedCheckboxTreeModel);
 
     // Update the checked value if not defined
     allItemsWithCheckbox.forEach(itemUIModel => {
@@ -574,7 +631,7 @@ export class ChTestTreeX {
   }
 
   private handleSelectedItemsChange = (
-    event: ChTreeXCustomEvent<Map<string, TreeXListItemSelectedInfo>>
+    event: ChTreeViewCustomEvent<Map<string, TreeViewItemSelectedInfo>>
   ) => {
     event.stopPropagation();
     const itemsToProcess = new Map(event.detail);
@@ -609,7 +666,7 @@ export class ChTestTreeX {
   };
 
   private handleExpandedItemChange = (
-    event: ChTreeXCustomEvent<TreeXListItemExpandedInfo>
+    event: ChTreeViewCustomEvent<TreeViewItemExpandedInfo>
   ) => {
     const detail = event.detail;
     const itemInfo = this.flattenedTreeModel.get(detail.id).item;
@@ -617,14 +674,14 @@ export class ChTestTreeX {
   };
 
   private handleItemContextmenu = (
-    event: ChTreeXCustomEvent<TreeXItemContextMenu>
+    event: ChTreeViewCustomEvent<TreeViewItemContextMenu>
   ) => {
     event.stopPropagation();
     this.itemContextmenu.emit(event.detail);
   };
 
   private handleItemsDropped = (
-    event: ChTreeXCustomEvent<TreeXDataTransferInfo>
+    event: ChTreeViewCustomEvent<TreeViewDataTransferInfo>
   ) => {
     if (!this.dropItemsCallback) {
       return;
@@ -700,7 +757,7 @@ export class ChTestTreeX {
   };
 
   private moveItemToNewParent =
-    (newParentUIModel: TreeXItemModel) =>
+    (newParentUIModel: TreeViewItemModel) =>
     (dataTransferInfo: GxDataTransferInfo) => {
       const itemUIModelExtended = this.flattenedTreeModel.get(
         dataTransferInfo.id
@@ -718,52 +775,7 @@ export class ChTestTreeX {
       itemUIModelExtended.parentItem = newParentUIModel;
     };
 
-  private renderSubModel = (
-    treeSubModel: TreeXItemModel,
-    lastItem: boolean,
-    level: number
-  ) =>
-    (this.filterType === "none" || treeSubModel.render !== false) && (
-      <ch-tree-x-list-item
-        id={treeSubModel.id}
-        caption={treeSubModel.caption}
-        checkbox={treeSubModel.checkbox ?? this.checkbox}
-        checked={treeSubModel.checked ?? this.checked}
-        class={treeSubModel.class}
-        disabled={treeSubModel.disabled}
-        downloading={treeSubModel.downloading}
-        dragDisabled={treeSubModel.dragDisabled ?? this.dragDisabled}
-        dropDisabled={treeSubModel.dropDisabled ?? this.dropDisabled}
-        editable={treeSubModel.editable ?? this.editableItems}
-        expanded={treeSubModel.expanded}
-        indeterminate={treeSubModel.indeterminate}
-        lastItem={lastItem}
-        lazyLoad={treeSubModel.lazy}
-        leaf={treeSubModel.leaf}
-        leftImgSrc={treeSubModel.leftImgSrc}
-        level={level}
-        metadata={treeSubModel.metadata}
-        rightImgSrc={treeSubModel.rightImgSrc}
-        selected={treeSubModel.selected}
-        showExpandableButton={treeSubModel.showExpandableButton}
-        showLines={this.showLines}
-        toggleCheckboxes={
-          treeSubModel.toggleCheckboxes ?? this.toggleCheckboxes
-        }
-      >
-        {!treeSubModel.leaf &&
-          treeSubModel.items != null &&
-          treeSubModel.items.map((subModel, index) =>
-            this.renderSubModel(
-              subModel,
-              this.showLines && index === treeSubModel.items.length - 1,
-              level + 1
-            )
-          )}
-      </ch-tree-x-list-item>
-    );
-
-  private flattenSubModel(model: TreeXItemModel) {
+  private flattenSubModel(model: TreeViewItemModel) {
     const items = model.items;
 
     if (!items) {
@@ -779,7 +791,7 @@ export class ChTestTreeX {
   }
 
   private flattenItemUIModel =
-    (parentModel: TreeXItemModel) => (item: TreeXItemModel) => {
+    (parentModel: TreeViewItemModel) => (item: TreeViewItemModel) => {
       this.flattenedTreeModel.set(item.id, {
         parentItem: parentModel,
         item: item
@@ -809,7 +821,7 @@ export class ChTestTreeX {
       this.flattenSubModel(item);
     };
 
-  private sortItems(items: TreeXItemModel[]) {
+  private sortItems(items: TreeViewItemModel[]) {
     // Ensure that items are sorted
     if (this.sortItemsCallback) {
       this.sortItemsCallback(items);
@@ -833,8 +845,8 @@ export class ChTestTreeX {
   }
 
   private filterSubModel(
-    item: TreeXItemModel,
-    filterInfo: TreeXFilterInfo
+    item: TreeViewItemModel,
+    filterInfo: TreeViewFilterInfo
   ): boolean {
     let aSubItemIsRendered = false;
 
@@ -883,7 +895,7 @@ export class ChTestTreeX {
 
   render() {
     return (
-      <ch-tree-x
+      <ch-tree-view
         class={this.cssClass || null}
         multiSelection={this.multiSelection}
         waitDropProcessing={this.waitDropProcessing}
@@ -894,14 +906,15 @@ export class ChTestTreeX {
         onSelectedItemsChange={this.handleSelectedItemsChange}
         ref={el => (this.treeRef = el)}
       >
-        {this.treeModel.map((subModel, index) =>
-          this.renderSubModel(
-            subModel,
+        {this.treeModel.map((itemModel, index) =>
+          this.renderItem(
+            itemModel,
+            this,
             this.showLines && index === this.treeModel.length - 1,
             0
           )
         )}
-      </ch-tree-x>
+      </ch-tree-view>
     );
   }
 }

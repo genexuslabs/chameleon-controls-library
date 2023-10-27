@@ -12,23 +12,23 @@ import {
 } from "@stencil/core";
 
 import {
-  TreeXDataTransferInfo,
-  TreeXDropCheckInfo,
-  TreeXDroppableZoneState,
-  TreeXItemContextMenu,
+  TreeViewDataTransferInfo,
+  TreeViewDropCheckInfo,
+  TreeViewDroppableZoneState,
+  TreeViewItemContextMenu,
   // CheckedTreeItemInfo,
   // ExpandedTreeItemInfo,
-  TreeXItemDragStartInfo,
-  TreeXListItemExpandedInfo,
-  TreeXListItemSelectedInfo
+  TreeViewItemDragStartInfo,
+  TreeViewItemExpandedInfo,
+  TreeViewItemSelectedInfo
 } from "./types";
 import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
 import { scrollToEdge } from "../../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../../common/types";
-import { ChTreeXListItemCustomEvent } from "../../../components";
+import { ChTreeViewItemCustomEvent } from "../../../components";
 
-const TREE_ITEM_TAG_NAME = "ch-tree-x-list-item";
-const TREE_TAG_NAME = "ch-tree-x";
+const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
+const TREE_TAG_NAME = "ch-tree-view";
 
 // Selectors
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
@@ -44,10 +44,10 @@ type KeyEvents = typeof ARROW_DOWN_KEY | typeof ARROW_UP_KEY | typeof EDIT_KEY;
 const isTreeItem = (element: HTMLElement) =>
   element.tagName.toLowerCase() === TREE_ITEM_TAG_NAME;
 
-const getFocusedTreeItem = (): HTMLChTreeXListItemElement | undefined =>
-  focusComposedPath().find(isTreeItem) as HTMLChTreeXListItemElement;
+const getFocusedTreeItem = (): HTMLChTreeViewItemElement | undefined =>
+  focusComposedPath().find(isTreeItem) as HTMLChTreeViewItemElement;
 
-const canMoveTreeItemFocus = (treeItem: HTMLChTreeXListItemElement): boolean =>
+const canMoveTreeItemFocus = (treeItem: HTMLChTreeViewItemElement): boolean =>
   treeItem && !treeItem.editing;
 
 const getDroppableZoneKey = (
@@ -58,15 +58,15 @@ const getDroppableZoneKey = (
     draggedItems
   )}"`;
 
-const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-x";
-const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-x-dragging-item-y";
+const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-x";
+const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
 
 @Component({
-  tag: "ch-tree-x",
-  styleUrl: "tree-x.scss",
+  tag: "ch-tree-view",
+  styleUrl: "tree-view.scss",
   shadow: false
 })
-export class ChTreeX {
+export class ChTreeView {
   // @todo TODO: Check if key codes works in Safari
   private keyDownEvents: {
     [key in KeyEvents]: (event: KeyboardEvent) => void;
@@ -109,20 +109,20 @@ export class ChTreeX {
 
   private openSubTreeTimeout: NodeJS.Timeout;
 
-  private selectedItemsInfo: Map<string, TreeXListItemSelectedInfo> = new Map();
+  private selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
 
   /**
    * Cache to avoid duplicate requests when checking the droppable zone in the
    * same drag event.
    */
-  private validDroppableZoneCache: Map<string, TreeXDroppableZoneState> =
+  private validDroppableZoneCache: Map<string, TreeViewDroppableZoneState> =
     new Map();
   private dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
   private draggedItems: GxDataTransferInfo[];
 
   // Refs
-  private currentDraggedItem: HTMLChTreeXListItemElement;
-  private lastOpenSubTreeItem: HTMLChTreeXListItemElement;
+  private currentDraggedItem: HTMLChTreeViewItemElement;
+  private lastOpenSubTreeItem: HTMLChTreeViewItemElement;
 
   /**
    * Text displayed when dragging an item.
@@ -131,7 +131,7 @@ export class ChTreeX {
   private draggedIds: string[] = [];
   private draggedParentIds: string[] = [];
 
-  @Element() el: HTMLChTreeXElement;
+  @Element() el: HTMLChTreeViewElement;
 
   @State() draggingInTheDocument = false;
 
@@ -164,28 +164,28 @@ export class ChTreeX {
    * Fired when an element attempts to enter in a droppable zone where the tree
    * has no information about the validity of the drop.
    */
-  @Event() droppableZoneEnter: EventEmitter<TreeXDropCheckInfo>;
+  @Event() droppableZoneEnter: EventEmitter<TreeViewDropCheckInfo>;
 
   /**
    * Fired when an item is expanded or collapsed.
    */
-  @Event() expandedItemChange: EventEmitter<TreeXListItemExpandedInfo>;
+  @Event() expandedItemChange: EventEmitter<TreeViewItemExpandedInfo>;
 
   /**
    * Fired when an element displays its contextmenu.
    */
-  @Event() itemContextmenu: EventEmitter<TreeXItemContextMenu>;
+  @Event() itemContextmenu: EventEmitter<TreeViewItemContextMenu>;
 
   /**
    * Fired when the dragged items are dropped in another item of the tree.
    */
-  @Event() itemsDropped: EventEmitter<TreeXDataTransferInfo>;
+  @Event() itemsDropped: EventEmitter<TreeViewDataTransferInfo>;
 
   /**
    * Fired when the selected items change.
    */
   @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeXListItemSelectedInfo>
+    Map<string, TreeViewItemSelectedInfo>
   >;
 
   // /**
@@ -196,7 +196,7 @@ export class ChTreeX {
   // async getCheckedItems(): Promise<CheckedTreeItemInfo[]> {
   //   const checkedItems = Array.from(
   //     this.el.querySelectorAll(CHECKED_ITEMS)
-  //   ) as HTMLChTreeXListItemElement[];
+  //   ) as HTMLChTreeViewItemElement[];
 
   //   return checkedItems.map(item => ({
   //     id: item.id,
@@ -254,7 +254,7 @@ export class ChTreeX {
   handleDragEnter(event: DragEvent) {
     this.cancelSubTreeOpening(null, true);
     event.stopPropagation();
-    const containerTarget = event.target as HTMLChTreeXListItemElement;
+    const containerTarget = event.target as HTMLChTreeViewItemElement;
 
     // Check if it is a valid item
     if (containerTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
@@ -277,13 +277,13 @@ export class ChTreeX {
       return;
     }
 
-    const treeItem = currentTarget as HTMLChTreeXListItemElement;
+    const treeItem = currentTarget as HTMLChTreeViewItemElement;
     treeItem.dragState = "none";
     this.cancelSubTreeOpening(treeItem);
   }
 
   private cancelSubTreeOpening(
-    treeItem: HTMLChTreeXListItemElement,
+    treeItem: HTMLChTreeViewItemElement,
     forceClear = false
   ) {
     if (this.lastOpenSubTreeItem === treeItem || forceClear) {
@@ -297,7 +297,7 @@ export class ChTreeX {
     event.stopPropagation();
 
     this.cancelSubTreeOpening(null, true);
-    const newContainer = event.target as HTMLChTreeXListItemElement;
+    const newContainer = event.target as HTMLChTreeViewItemElement;
 
     const draggedItems: GxDataTransferInfo[] = JSON.parse(
       event.dataTransfer.getData(TEXT_FORMAT)
@@ -319,7 +319,7 @@ export class ChTreeX {
 
   @Listen("itemDragStart")
   handleItemDragStart(
-    event: ChTreeXListItemCustomEvent<TreeXItemDragStartInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>
   ) {
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
@@ -362,7 +362,7 @@ export class ChTreeX {
    */
   @Listen("selectedItemSync")
   handleSelectedItemSync(
-    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
@@ -377,11 +377,11 @@ export class ChTreeX {
 
   @Listen("selectedItemChange")
   handleSelectedItemChange(
-    event: ChTreeXListItemCustomEvent<TreeXListItemSelectedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
-    const selectedItemEl = event.target as HTMLChTreeXListItemElement;
+    const selectedItemEl = event.target as HTMLChTreeViewItemElement;
 
     this.handleItemSelection(selectedItemEl, selectedItemInfo);
   }
@@ -412,7 +412,7 @@ export class ChTreeX {
 
     // Expand all parents
     while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (parentItem as HTMLChTreeXListItemElement).expanded = true;
+      (parentItem as HTMLChTreeViewItemElement).expanded = true;
       parentItem = parentItem.parentElement;
     }
 
@@ -457,8 +457,8 @@ export class ChTreeX {
     }
   }
 
-  private validDroppableZone(event: DragEvent): TreeXDroppableZoneState {
-    const containerTarget = event.target as HTMLChTreeXListItemElement;
+  private validDroppableZone(event: DragEvent): TreeViewDroppableZoneState {
+    const containerTarget = event.target as HTMLChTreeViewItemElement;
 
     const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
     let droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
@@ -509,7 +509,7 @@ export class ChTreeX {
     return "checking";
   }
 
-  private openSubTreeAfterCountdown(currentTarget: HTMLChTreeXListItemElement) {
+  private openSubTreeAfterCountdown(currentTarget: HTMLChTreeViewItemElement) {
     if (currentTarget.leaf || currentTarget.expanded) {
       return;
     }
@@ -578,7 +578,7 @@ export class ChTreeX {
    * @returns If all selected items can be dragged.
    */
   private checkDragValidityAndUpdateDragInfo(
-    dragInfo: TreeXItemDragStartInfo
+    dragInfo: TreeViewItemDragStartInfo
   ): boolean {
     const draggedElement = dragInfo.elem;
 
@@ -665,8 +665,8 @@ export class ChTreeX {
   }
 
   private handleItemSelection(
-    selectedItemEl: HTMLChTreeXListItemElement,
-    selectedItemInfo: TreeXListItemSelectedInfo
+    selectedItemEl: HTMLChTreeViewItemElement,
+    selectedItemInfo: TreeViewItemSelectedInfo
   ) {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
@@ -708,24 +708,24 @@ export class ChTreeX {
     return (
       <Host
         class={{
-          "ch-tree-x-dragging-item": this.draggingInTheDocument,
-          "ch-tree-x-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
-          "ch-tree-x--dragging-selected-items":
+          "ch-tree-view-dragging-item": this.draggingInTheDocument,
+          "ch-tree-view-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
+          "ch-tree-view--dragging-selected-items":
             this.draggingInTree && this.draggingSelectedItems,
-          "ch-tree-x-waiting-drop-processing": this.waitDropProcessing
+          "ch-tree-view-waiting-drop-processing": this.waitDropProcessing
         }}
       >
         <div
           role="tree"
           part="tree-x-container"
           aria-multiselectable={this.multiSelection.toString()}
-          class="ch-tree-x-container"
+          class="ch-tree-view-container"
         >
           <slot />
         </div>
 
         {this.draggingInTree && (
-          <span aria-hidden="true" class="ch-tree-x-drag-info">
+          <span aria-hidden="true" class="ch-tree-view-drag-info">
             {this.dragInfo}
           </span>
         )}

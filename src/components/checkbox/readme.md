@@ -41,12 +41,12 @@
 
 ### Used by
 
- - [ch-tree-x-list-item](../tree-view/tree-x-list-item)
+ - [ch-tree-view-item](../tree-view/tree-view-item)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-tree-x-list-item --> ch-checkbox
+  ch-tree-view-item --> ch-checkbox
   style ch-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

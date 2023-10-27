@@ -38,17 +38,17 @@
 
 ## Events
 
-| Event                  | Description                                                                                                                                                  | Type                                                                                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `checkboxChange`       | Fired when the checkbox value of the control is changed.                                                                                                     | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                               |
-| `checkboxToggleChange` | Fired when the checkbox value of the control is changed. This event only applies when the control has `toggleCheckboxes = true`                              | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                               |
-| `itemDragEnd`          | Fired when the item is no longer being dragged.                                                                                                              | `CustomEvent<any>`                                                                                                                                                     |
-| `itemDragStart`        | Fired when the item is being dragged.                                                                                                                        | `CustomEvent<{ elem: HTMLChTreeXListItemElement; dragEvent: DragEvent; }>`                                                                                             |
-| `loadLazyContent`      | Fired when the lazy control is expanded an its content must be loaded.                                                                                       | `CustomEvent<string>`                                                                                                                                                  |
-| `modifyCaption`        | Fired when the item is asking to modify its caption.                                                                                                         | `CustomEvent<{ id: string; caption: string; }>`                                                                                                                        |
-| `openReference`        | Fired when the user interacts with the control in a way that its reference must be opened.                                                                   | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                                                                        |
-| `selectedItemChange`   | Fired when the selected state is updated by user interaction on the control.                                                                                 | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeXListItemElement; metadata: string; parentId: string; selected: boolean; }>` |
-| `selectedItemSync`     | Fired when the selected state is updated through the interface and without user interaction. The purpose of this event is to better sync with the main tree. | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeXListItemElement; metadata: string; parentId: string; selected: boolean; }>` |
+| Event                  | Description                                                                                                                                                  | Type                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `checkboxChange`       | Fired when the checkbox value of the control is changed.                                                                                                     | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
+| `checkboxToggleChange` | Fired when the checkbox value of the control is changed. This event only applies when the control has `toggleCheckboxes = true`                              | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
+| `itemDragEnd`          | Fired when the item is no longer being dragged.                                                                                                              | `CustomEvent<any>`                                                                                                                                                    |
+| `itemDragStart`        | Fired when the item is being dragged.                                                                                                                        | `CustomEvent<{ elem: HTMLChTreeViewItemElement; dragEvent: DragEvent; }>`                                                                                             |
+| `loadLazyContent`      | Fired when the lazy control is expanded an its content must be loaded.                                                                                       | `CustomEvent<string>`                                                                                                                                                 |
+| `modifyCaption`        | Fired when the item is asking to modify its caption.                                                                                                         | `CustomEvent<{ id: string; caption: string; }>`                                                                                                                       |
+| `openReference`        | Fired when the user interacts with the control in a way that its reference must be opened.                                                                   | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                                                                       |
+| `selectedItemChange`   | Fired when the selected state is updated by user interaction on the control.                                                                                 | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; parentId: string; selected: boolean; }>` |
+| `selectedItemSync`     | Fired when the selected state is updated through the interface and without user interaction. The purpose of this event is to better sync with the main tree. | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; parentId: string; selected: boolean; }>` |
 
 
 ## Methods
@@ -119,7 +119,8 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-tree-x](../../test)
+ - [ch-tree-view-render](../../renders/tree-view)
+ - [ch-tree-view-render-wrapper](../../test/test-tree-view)
 
 ### Depends on
 
@@ -128,9 +129,10 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  ch-tree-x-list-item --> ch-checkbox
-  ch-test-tree-x --> ch-tree-x-list-item
-  style ch-tree-x-list-item fill:#f9f,stroke:#333,stroke-width:4px
+  ch-tree-view-item --> ch-checkbox
+  ch-tree-view-render --> ch-tree-view-item
+  ch-tree-view-render-wrapper --> ch-tree-view-item
+  style ch-tree-view-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

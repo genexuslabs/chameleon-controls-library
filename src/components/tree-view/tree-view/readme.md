@@ -21,9 +21,9 @@
 | --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `droppableZoneEnter`  | Fired when an element attempts to enter in a droppable zone where the tree has no information about the validity of the drop. | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; }>`                                                             |
 | `expandedItemChange`  | Fired when an item is expanded or collapsed.                                                                                  | `CustomEvent<{ id: string; expanded: boolean; }>`                                                                                                    |
-| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                                               | `CustomEvent<{ id: string; itemRef: HTMLChTreeXListItemElement; metadata: string; contextmenuEvent: PointerEvent; }>`                                |
+| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                                               | `CustomEvent<{ id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; contextmenuEvent: PointerEvent; }>`                                 |
 | `itemsDropped`        | Fired when the dragged items are dropped in another item of the tree.                                                         | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; }>` |
-| `selectedItemsChange` | Fired when the selected items change.                                                                                         | `CustomEvent<Map<string, TreeXListItemSelectedInfo>>`                                                                                                |
+| `selectedItemsChange` | Fired when the selected items change.                                                                                         | `CustomEvent<Map<string, TreeViewItemSelectedInfo>>`                                                                                                 |
 
 
 ## Methods
@@ -61,17 +61,24 @@ Type: `Promise<void>`
 
 
 
+## Shadow Parts
+
+| Part                 | Description |
+| -------------------- | ----------- |
+| `"tree-x-container"` |             |
+
+
 ## Dependencies
 
 ### Used by
 
- - [ch-test-tree-x](../../test)
+ - [ch-tree-view-render](../../renders/tree-view)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-test-tree-x --> ch-tree-x
-  style ch-tree-x fill:#f9f,stroke:#333,stroke-width:4px
+  ch-tree-view-render --> ch-tree-view
+  style ch-tree-view fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

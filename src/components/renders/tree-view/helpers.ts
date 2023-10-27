@@ -1,5 +1,9 @@
-import { TreeXItemModel } from "../tree-view/tree-x/types";
-import { TreeXFilterInfo, TreeXFilterOptions, TreeXFilterType } from "./types";
+import { TreeViewItemModel } from "../../tree-view/tree-view/types";
+import {
+  TreeViewFilterInfo,
+  TreeViewFilterOptions,
+  TreeViewFilterType
+} from "./types";
 
 const filterWithCamelCase = (
   stringToFilter: string,
@@ -13,16 +17,16 @@ const filterWithCamelCase = (
 const filterWithString = (
   stringToFilter: string,
   filter: string,
-  filterOptions: TreeXFilterOptions
+  filterOptions: TreeViewFilterOptions
 ) =>
   filterOptions.regularExpression
     ? stringToFilter.match(filter) !== null
     : filterWithCamelCase(stringToFilter, filter, filterOptions.camelCase);
 
 export const filterDictionary: {
-  [key in TreeXFilterType]: (
-    item: TreeXItemModel,
-    filterInfo: TreeXFilterInfo
+  [key in TreeViewFilterType]: (
+    item: TreeViewItemModel,
+    filterInfo: TreeViewFilterInfo
   ) => boolean;
 } = {
   caption: (item, filterInfo) =>
@@ -58,21 +62,21 @@ export const filterDictionary: {
     !(item.checked ?? filterInfo.defaultChecked)
 };
 
-export type TreeXItemSimplifiedModel = {
+export type TreeViewItemSimplifiedModel = {
   id: string;
-  items: TreeXItemSimplifiedModel[];
+  items: TreeViewItemSimplifiedModel[];
 };
 
 export function simplifyModel(
-  model: TreeXItemModel
-): TreeXItemSimplifiedModel[] {
+  model: TreeViewItemModel
+): TreeViewItemSimplifiedModel[] {
   const items = model.items;
 
   if (!items) {
     return [];
   }
 
-  const simplifiedModel: TreeXItemSimplifiedModel[] = items.map(item => ({
+  const simplifiedModel: TreeViewItemSimplifiedModel[] = items.map(item => ({
     id: item.id,
     items: simplifyModel(item)
   }));

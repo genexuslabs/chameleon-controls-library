@@ -720,21 +720,22 @@ export class ChTreeViewRender {
 
   private renderItem = (
     itemModel: TreeViewItemModel,
+    treeState: ChTreeViewRender,
     lastItem: boolean,
     level: number
   ) =>
-    (this.filterType === "none" || itemModel.render !== false) && (
+    (treeState.filterType === "none" || itemModel.render !== false) && (
       <ch-tree-view-item
         id={itemModel.id}
         caption={itemModel.caption}
-        checkbox={itemModel.checkbox ?? this.checkbox}
-        checked={itemModel.checked ?? this.checked}
+        checkbox={itemModel.checkbox ?? treeState.checkbox}
+        checked={itemModel.checked ?? treeState.checked}
         class={itemModel.class}
         disabled={itemModel.disabled}
         downloading={itemModel.downloading}
-        dragDisabled={itemModel.dragDisabled ?? this.dragDisabled}
-        dropDisabled={itemModel.dropDisabled ?? this.dropDisabled}
-        editable={itemModel.editable ?? this.editableItems}
+        dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
+        dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
+        editable={itemModel.editable ?? treeState.editableItems}
         expanded={itemModel.expanded}
         indeterminate={itemModel.indeterminate}
         lastItem={lastItem}
@@ -746,15 +747,18 @@ export class ChTreeViewRender {
         rightImgSrc={itemModel.rightImgSrc}
         selected={itemModel.selected}
         showExpandableButton={itemModel.showExpandableButton}
-        showLines={this.showLines}
-        toggleCheckboxes={itemModel.toggleCheckboxes ?? this.toggleCheckboxes}
+        showLines={treeState.showLines}
+        toggleCheckboxes={
+          itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+        }
       >
         {!itemModel.leaf &&
           itemModel.items != null &&
           itemModel.items.map((subModel, index) =>
             this.renderItem(
               subModel,
-              this.showLines && index === itemModel.items.length - 1,
+              treeState,
+              treeState.showLines && index === itemModel.items.length - 1,
               level + 1
             )
           )}
@@ -895,6 +899,7 @@ export class ChTreeViewRender {
         {this.treeModel.map((itemModel, index) =>
           this.renderItem(
             itemModel,
+            this,
             this.showLines && index === this.treeModel.length - 1,
             0
           )

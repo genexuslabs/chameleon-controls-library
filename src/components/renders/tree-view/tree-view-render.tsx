@@ -46,6 +46,53 @@ const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
+const defaultRenderItem = (
+  itemModel: TreeViewItemModel,
+  treeState: ChTreeViewRender,
+  lastItem: boolean,
+  level: number
+) =>
+  (treeState.filterType === "none" || itemModel.render !== false) && (
+    <ch-tree-view-item
+      id={itemModel.id}
+      caption={itemModel.caption}
+      checkbox={itemModel.checkbox ?? treeState.checkbox}
+      checked={itemModel.checked ?? treeState.checked}
+      class={itemModel.class}
+      disabled={itemModel.disabled}
+      downloading={itemModel.downloading}
+      dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
+      dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
+      editable={itemModel.editable ?? treeState.editableItems}
+      expanded={itemModel.expanded}
+      indeterminate={itemModel.indeterminate}
+      lastItem={lastItem}
+      lazyLoad={itemModel.lazy}
+      leaf={itemModel.leaf}
+      leftImgSrc={itemModel.leftImgSrc}
+      level={level}
+      metadata={itemModel.metadata}
+      rightImgSrc={itemModel.rightImgSrc}
+      selected={itemModel.selected}
+      showExpandableButton={itemModel.showExpandableButton}
+      showLines={treeState.showLines}
+      toggleCheckboxes={
+        itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+      }
+    >
+      {!itemModel.leaf &&
+        itemModel.items != null &&
+        itemModel.items.map((subModel, index) =>
+          defaultRenderItem(
+            subModel,
+            treeState,
+            treeState.showLines && index === itemModel.items.length - 1,
+            level + 1
+          )
+        )}
+    </ch-tree-view-item>
+  );
+
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
@@ -195,6 +242,16 @@ export class ChTreeViewRender {
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;
+
+  /**
+   * This property allows us to implement custom rendering of tree items.
+   */
+  @Prop() readonly renderItem: (
+    itemModel: TreeViewItemModel,
+    treeState: ChTreeViewRender,
+    lastItem: boolean,
+    level: number
+  ) => any = defaultRenderItem;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -717,53 +774,6 @@ export class ChTreeViewRender {
       // Reference the new parent in the item
       itemUIModelExtended.parentItem = newParentUIModel;
     };
-
-  private renderItem = (
-    itemModel: TreeViewItemModel,
-    treeState: ChTreeViewRender,
-    lastItem: boolean,
-    level: number
-  ) =>
-    (treeState.filterType === "none" || itemModel.render !== false) && (
-      <ch-tree-view-item
-        id={itemModel.id}
-        caption={itemModel.caption}
-        checkbox={itemModel.checkbox ?? treeState.checkbox}
-        checked={itemModel.checked ?? treeState.checked}
-        class={itemModel.class}
-        disabled={itemModel.disabled}
-        downloading={itemModel.downloading}
-        dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
-        dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
-        editable={itemModel.editable ?? treeState.editableItems}
-        expanded={itemModel.expanded}
-        indeterminate={itemModel.indeterminate}
-        lastItem={lastItem}
-        lazyLoad={itemModel.lazy}
-        leaf={itemModel.leaf}
-        leftImgSrc={itemModel.leftImgSrc}
-        level={level}
-        metadata={itemModel.metadata}
-        rightImgSrc={itemModel.rightImgSrc}
-        selected={itemModel.selected}
-        showExpandableButton={itemModel.showExpandableButton}
-        showLines={treeState.showLines}
-        toggleCheckboxes={
-          itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
-        }
-      >
-        {!itemModel.leaf &&
-          itemModel.items != null &&
-          itemModel.items.map((subModel, index) =>
-            this.renderItem(
-              subModel,
-              treeState,
-              treeState.showLines && index === itemModel.items.length - 1,
-              level + 1
-            )
-          )}
-      </ch-tree-view-item>
-    );
 
   private flattenSubModel(model: TreeViewItemModel) {
     const items = model.items;

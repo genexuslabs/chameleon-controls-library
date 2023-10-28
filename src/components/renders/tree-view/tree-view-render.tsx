@@ -106,6 +106,8 @@ export class ChTreeViewRender {
     new Map();
   private selectedItems: Set<string> = new Set();
 
+  private applyFilters = false;
+
   // Refs
   private treeRef: HTMLChTreeViewElement;
 
@@ -868,6 +870,10 @@ export class ChTreeViewRender {
   }
 
   private processFilters() {
+    this.applyFilters = true;
+  }
+
+  private updateFilters() {
     if (this.filterType === "none") {
       return;
     }
@@ -890,7 +896,14 @@ export class ChTreeViewRender {
 
   componentWillLoad() {
     this.flattenModel();
-    this.processFilters();
+    this.updateFilters();
+  }
+
+  componentWillUpdate() {
+    if (this.applyFilters) {
+      this.updateFilters();
+      this.applyFilters = false;
+    }
   }
 
   render() {

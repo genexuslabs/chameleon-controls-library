@@ -336,7 +336,7 @@ export class ChTreeViewItem {
     event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
   ) {
     // No need to update the checkbox value based on the children checkbox
-    if (!this.toggleCheckboxes) {
+    if (!this.toggleCheckboxes || this.el === event.target) {
       return;
     }
 
@@ -709,10 +709,12 @@ export class ChTreeViewItem {
 
     const checked = (event.target as HTMLChCheckboxElement).checked;
     this.checked = checked;
+    this.indeterminate = false; // Changing the checked value makes it no longer indeterminate
+
     this.checkboxChange.emit({
       id: this.el.id,
       checked: this.checked,
-      indeterminate: this.indeterminate
+      indeterminate: false
     });
   };
 

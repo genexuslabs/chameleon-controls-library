@@ -348,16 +348,22 @@ export class ChTreeViewItem {
       treeItem => treeItem.checked === updatedCheck
     );
 
+    const eventMustBeEmitted =
+      this.checked !== updatedCheck ||
+      this.indeterminate !== !allItemsHaveTheSameCheckedValue;
+
     this.ignoreCheckboxChange = this.checked !== updatedCheck;
     this.checked = updatedCheck;
     this.indeterminate = !allItemsHaveTheSameCheckedValue;
 
     // Sync with the UI Model
-    this.checkboxToggleChange.emit({
-      id: this.el.id,
-      checked: updatedCheck,
-      indeterminate: !allItemsHaveTheSameCheckedValue
-    });
+    if (eventMustBeEmitted) {
+      this.checkboxToggleChange.emit({
+        id: this.el.id,
+        checked: updatedCheck,
+        indeterminate: !allItemsHaveTheSameCheckedValue
+      });
+    }
   }
 
   /**

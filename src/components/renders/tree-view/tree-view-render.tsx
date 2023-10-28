@@ -109,6 +109,8 @@ export class ChTreeViewRender {
   private applyFilters = false;
   private emitCheckedChange = false;
 
+  private filterTimeout: NodeJS.Timeout;
+
   // Refs
   private treeRef: HTMLChTreeViewElement;
 
@@ -177,6 +179,21 @@ export class ChTreeViewRender {
   @Prop() readonly filter: string;
   @Watch("filter")
   handleFilterChange() {
+    if (this.filterType === "caption" || this.filterType === "metadata") {
+      this.processFilters();
+    }
+  }
+
+  /**
+   * This property lets you determine the debounce time (in ms) that the
+   * control waits until it processes the changes to the filter property.
+   * Consecutive changes to the `filter` property between this range, reset the
+   * timeout to process the filter.
+   * Only works if `filterType = "caption" | "metadata"`.
+   */
+  @Prop() readonly filterDebounce: number = 250;
+  @Watch("filterDebounce")
+  handleFilterDebounceChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.processFilters();
     }
@@ -883,20 +900,38 @@ export class ChTreeViewRender {
       return;
     }
 
-    this.filterSubModel(
-      {
-        id: null,
-        caption: null,
-        items: this.treeModel
-      },
-      {
-        defaultCheckbox: this.checkbox,
-        defaultChecked: this.checked,
-        filter: this.filter,
-        filterList: this.filterList,
-        filterOptions: this.filterOptions
-      }
-    );
+    // Remove queued filter processing
+    clearTimeout(this.filterTimeout);
+
+    const processWithDebounce =
+      this.filterDebounce > 0 &&
+      (this.filterType === "caption" || this.filterType === "metadata");
+
+    const filterFunction = () =>
+      this.filterSubModel(
+        {
+          id: null,
+          caption: null,
+          items: this.treeModel
+        },
+        {
+          defaultCheckbox: this.checkbox,
+          defaultChecked: this.checked,
+          filter: this.filter,
+          filterList: this.filterList,
+          filterOptions: this.filterOptions
+        }
+      );
+
+    // Check if should filter with debounce
+    if (processWithDebounce) {
+      this.filterTimeout = setTimeout(() => {
+        filterFunction();
+        forceUpdate(this); // After the filter processing is completed, force a re-render
+      }, this.filterDebounce);
+    } else {
+      filterFunction();
+    }
   }
 
   componentWillLoad() {

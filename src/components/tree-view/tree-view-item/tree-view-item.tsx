@@ -100,16 +100,7 @@ export class ChTreeViewItem {
 
     treeItems.forEach(treeItem => {
       if (treeItem.checked !== newValue || treeItem.indeterminate !== false) {
-        treeItem.checked = newValue;
-        treeItem.indeterminate = false;
-
-        // Emit the event to sync with the UI model, even if the item does not
-        // have toggleCheckboxes property
-        this.checkboxToggleChange.emit({
-          id: treeItem.id,
-          checked: newValue,
-          indeterminate: false
-        });
+        treeItem.updateChecked(newValue, false);
       }
     });
   }
@@ -456,7 +447,7 @@ export class ChTreeViewItem {
 
   /**
    * Focus the last item in its subtree. If the control is not expanded, it
-   * focus the control
+   * focus the control.
    */
   @Method()
   async focusLastItem(ctrlKeyPressed: boolean) {
@@ -485,7 +476,7 @@ export class ChTreeViewItem {
   }
 
   /**
-   * Set focus in the control
+   * Set focus in the control.
    */
   @Method()
   async setFocus(ctrlKeyPressed: boolean) {
@@ -495,6 +486,23 @@ export class ChTreeViewItem {
     if (!ctrlKeyPressed) {
       this.setSelected();
     }
+  }
+
+  /**
+   * Update `checked` and `indeterminate` properties.
+   */
+  @Method()
+  async updateChecked(newChecked: boolean, newIndeterminate: boolean) {
+    this.checked = newChecked;
+    this.indeterminate = newIndeterminate;
+
+    // Emit the event to sync with the UI model, even if the item does not
+    // have toggleCheckboxes property
+    this.checkboxToggleChange.emit({
+      id: this.el.id,
+      checked: newChecked,
+      indeterminate: newIndeterminate
+    });
   }
 
   private getDirectTreeItems(): HTMLChTreeViewItemElement[] {

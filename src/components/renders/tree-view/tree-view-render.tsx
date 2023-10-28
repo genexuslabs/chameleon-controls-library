@@ -107,6 +107,7 @@ export class ChTreeViewRender {
   private selectedItems: Set<string> = new Set();
 
   private applyFilters = false;
+  private emitCheckedChange = false;
 
   // Refs
   private treeRef: HTMLChTreeViewElement;
@@ -521,10 +522,10 @@ export class ChTreeViewRender {
     // Update filters
     if (this.filterType === "checked" || this.filterType === "unchecked") {
       this.processFilters();
-
-      // Force re-render
-      forceUpdate(this);
     }
+
+    // Force re-render
+    forceUpdate(this);
   }
 
   @Listen("loadLazyContent")
@@ -618,19 +619,6 @@ export class ChTreeViewRender {
       );
     });
   };
-
-  private emitCheckedItemsChange() {
-    // New copy of the checked items
-    const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
-      new Map(this.flattenedCheckboxTreeModel);
-
-    // Update the checked value if not defined
-    allItemsWithCheckbox.forEach(itemUIModel => {
-      itemUIModel.item.checked ??= this.checked;
-    });
-
-    this.checkedItemsChange.emit(allItemsWithCheckbox);
-  }
 
   private handleSelectedItemsChange = (
     event: ChTreeViewCustomEvent<Map<string, TreeViewItemSelectedInfo>>
@@ -869,6 +857,23 @@ export class ChTreeViewRender {
     return satisfiesFilter;
   }
 
+  private emitCheckedItemsChange() {
+    this.emitCheckedChange = true;
+  }
+
+  private updateCheckedItems() {
+    // New copy of the checked items
+    const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
+      new Map(this.flattenedCheckboxTreeModel);
+
+    // Update the checked value if not defined
+    allItemsWithCheckbox.forEach(itemUIModel => {
+      itemUIModel.item.checked ??= this.checked;
+    });
+
+    this.checkedItemsChange.emit(allItemsWithCheckbox);
+  }
+
   private processFilters() {
     this.applyFilters = true;
   }
@@ -896,10 +901,16 @@ export class ChTreeViewRender {
 
   componentWillLoad() {
     this.flattenModel();
+    this.updateCheckedItems();
     this.updateFilters();
   }
 
   componentWillUpdate() {
+    if (this.emitCheckedChange) {
+      this.updateCheckedItems();
+      this.emitCheckedChange = false;
+    }
+
     if (this.applyFilters) {
       this.updateFilters();
       this.applyFilters = false;

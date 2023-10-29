@@ -231,6 +231,9 @@ $own-offset: calc(
 }
 
 .checkbox {
+  // Necessary to avoid CLS when the ch-checkbox control is downloaded after
+  // the tree-view-item did render
+  width: var(--ch-tree-view-view-checkbox-size);
   margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {

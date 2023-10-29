@@ -143,7 +143,7 @@ export class ChTreeViewRender {
   /**
    * A CSS class to set as the `ch-tree-view` element class.
    */
-  @Prop() readonly cssClass: string;
+  @Prop() readonly cssClass: string = "tree-view";
 
   /**
    * This attribute lets you specify if the drag operation is disabled in all

@@ -846,7 +846,7 @@ export class ChTreeViewItem {
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""
-          }`}
+          }${this.level === INITIAL_LEVEL ? " level-0" : ""}`}
           type="button"
           disabled={this.disabled}
           onClick={this.handleActionClick}

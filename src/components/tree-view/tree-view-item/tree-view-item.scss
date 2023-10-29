@@ -30,6 +30,7 @@ $own-offset: calc(
   --ch-tree-view-view-expandable-button-width: 0.75em;
   --ch-tree-view-item-dashed-line--offset: 0px;
   --ch-tree-view-item-gap: 5px;
+  --ch-tree-view-item-custom-padding-inline-start: 0px;
 
   --ch-tree-tab-width: calc(
     var(--ch-tree-view-view-checkbox-size) +
@@ -48,7 +49,10 @@ $own-offset: calc(
   display: flex;
   align-items: center;
   min-height: calc(1em + 6px);
-  padding-inline-start: var(--padding-inline-start);
+  padding-inline-start: calc(
+    var(--padding-inline-start) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
+  );
 
   &--disabled {
     opacity: 0.5;
@@ -161,7 +165,8 @@ $own-offset: calc(
 .dashed-line {
   position: absolute;
   inset-inline-start: calc(
-    var(--inset-inline-start) + var(--ch-tree-view-item-dashed-line--offset)
+    var(--inset-inline-start) + var(--ch-tree-view-item-dashed-line--offset) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
   );
   height: 1px;
   width: calc(

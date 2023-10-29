@@ -1,7 +1,5 @@
-$dashed-line-inset-inline-start: 7.5px;
-
 $own-offset: calc(
-  var(--ch-tree-view-view-expandable-button-width) +
+  var(--ch-tree-view-view__expandable-button-width) +
     var(--ch-tree-view-item-gap)
 );
 
@@ -26,16 +24,16 @@ $own-offset: calc(
 }
 
 :host {
-  --ch-tree-view-view-checkbox-size: 1em;
-  --ch-tree-view-view-expandable-button-width: 0.75em;
-  --ch-tree-view-item-dashed-line--offset: 0px;
-  --ch-tree-view-item-dashed-line--inset-inline-end: 4px;
+  --ch-tree-view-view__checkbox-size: 1em;
+  --ch-tree-view-view__expandable-button-width: 0.75em;
+  --ch-tree-view-item__dashed-line--inset-inline-start: 0px;
+  --ch-tree-view-item__dashed-line--inset-inline-end: 4px;
   --ch-tree-view-item-gap: 5px;
   --ch-tree-view-item-custom-padding-inline-start: 0px;
 
   --ch-tree-tab-width: calc(
-    var(--ch-tree-view-view-checkbox-size) +
-      var(--ch-tree-view-view-expandable-button-width) +
+    var(--ch-tree-view-view__checkbox-size) +
+      var(--ch-tree-view-view__expandable-button-width) +
       (var(--ch-tree-view-item-gap) * 2)
   );
 
@@ -142,7 +140,7 @@ $own-offset: calc(
     // This variable must be defined expandable content to not be overridden by each item
     + .expandable {
       --parent-expandable-offset: calc(
-        var(--ch-tree-view-view-expandable-button-width) / 2
+        var(--ch-tree-view-view__expandable-button-width) / 2
       );
     }
   }
@@ -151,10 +149,10 @@ $own-offset: calc(
     // Those variable must be defined expandable content to not be overridden by each item
     + .expandable {
       --parent-checkbox-offset: calc(
-        var(--ch-tree-view-view-checkbox-size) / 2
+        var(--ch-tree-view-view__checkbox-size) / 2
       );
       --parent-negative-checkbox-offset: calc(
-        var(--ch-tree-view-view-checkbox-size) / 2
+        var(--ch-tree-view-view__checkbox-size) / 2
       );
     }
   }
@@ -166,15 +164,16 @@ $own-offset: calc(
 .dashed-line {
   position: absolute;
   inset-inline-start: calc(
-    var(--inset-inline-start) + var(--ch-tree-view-item-dashed-line--offset) +
+    var(--inset-inline-start) +
+      var(--ch-tree-view-item__dashed-line--inset-inline-start) +
       var(--ch-tree-view-item-custom-padding-inline-start)
   );
   height: 1px;
   width: calc(
     var(--ch-tree-tab-width) - var(--parent-checkbox-offset) -
       var(--parent-expandable-offset) - var(--own-offset) -
-      var(--ch-tree-view-item-dashed-line--offset) -
-      var(--ch-tree-view-item-dashed-line--inset-inline-end)
+      var(--ch-tree-view-item__dashed-line--inset-inline-start) -
+      var(--ch-tree-view-item__dashed-line--inset-inline-end)
   );
 
   border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);
@@ -206,13 +205,13 @@ $own-offset: calc(
 .expandable-button {
   display: grid;
   place-items: center;
-  width: var(--ch-tree-view-view-expandable-button-width);
-  height: var(--ch-tree-view-view-expandable-button-width);
+  width: var(--ch-tree-view-view__expandable-button-width);
+  height: var(--ch-tree-view-view__expandable-button-width);
   margin-inline-end: var(--ch-tree-view-item-gap);
   z-index: 1;
   cursor: pointer;
   content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-tree-view-view-expandable-button-width);
+  contain-intrinsic-size: auto var(--ch-tree-view-view__expandable-button-width);
 
   &::before {
     content: "";
@@ -220,7 +219,7 @@ $own-offset: calc(
     height: calc(100% - 2px);
     background-color: currentColor;
     -webkit-mask-size: calc(
-      var(--ch-tree-view-view-expandable-button-width) - 2px
+      var(--ch-tree-view-view__expandable-button-width) - 2px
     );
   }
 
@@ -240,12 +239,12 @@ $own-offset: calc(
 .checkbox {
   // Necessary to avoid CLS when the ch-checkbox control is downloaded after
   // the tree-view-item did render
-  width: var(--ch-tree-view-view-checkbox-size);
+  width: var(--ch-tree-view-view__checkbox-size);
   margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {
-    width: var(--ch-tree-view-view-checkbox-size);
-    height: var(--ch-tree-view-view-checkbox-size);
+    width: var(--ch-tree-view-view__checkbox-size);
+    height: var(--ch-tree-view-view__checkbox-size);
   }
 }
 

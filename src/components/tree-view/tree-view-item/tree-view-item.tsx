@@ -27,6 +27,8 @@ export type DragState = "enter" | "none" | "start";
 
 const resetDragImage = new Image();
 
+const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
+  "--ch-tree-view-item-distance-to-checkbox";
 const INITIAL_LEVEL = 0;
 
 // Selectors
@@ -524,7 +526,7 @@ export class ChTreeViewItem {
         this.headerRef.getBoundingClientRect().height / 2;
 
       this.el.style.setProperty(
-        "--distance-to-checkbox",
+        DISTANCE_TO_CHECKBOX_CUSTOM_VAR,
         distanceToCheckbox + "px"
       );
     });

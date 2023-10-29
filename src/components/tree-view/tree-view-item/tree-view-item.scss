@@ -1,7 +1,8 @@
 $dashed-line-inset-inline-start: 7.5px;
 
 $own-offset: calc(
-  var(--expandable-button-width) + var(--ch-tree-view-item-gap)
+  var(--ch-tree-view-view-expandable-button-width) +
+    var(--ch-tree-view-item-gap)
 );
 
 :where(button) {
@@ -25,13 +26,14 @@ $own-offset: calc(
 }
 
 :host {
-  --checkbox-size: 1em;
-  --expandable-button-width: 0.75em;
+  --ch-tree-view-view-checkbox-size: 1em;
+  --ch-tree-view-view-expandable-button-width: 0.75em;
   --ch-tree-view-item-dashed-line--offset: 0px;
   --ch-tree-view-item-gap: 5px;
 
-  --tab-width: calc(
-    var(--checkbox-size) + var(--expandable-button-width) +
+  --ch-tree-tab-width: calc(
+    var(--ch-tree-view-view-checkbox-size) +
+      var(--ch-tree-view-view-expandable-button-width) +
       (var(--ch-tree-view-item-gap) * 2)
   );
 
@@ -55,7 +57,7 @@ $own-offset: calc(
 
   &--even {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--odd, 0px) + var(--tab-width)
+      var(--parent-padding-inline-start--odd, 0px) + var(--ch-tree-tab-width)
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -75,7 +77,8 @@ $own-offset: calc(
 
   &--even-expandable {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--odd, 0px) + var(--tab-width) - #{$own-offset}
+      var(--parent-padding-inline-start--odd, 0px) + var(--ch-tree-tab-width) -
+        #{$own-offset}
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -88,7 +91,7 @@ $own-offset: calc(
 
   &--odd {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--even, 0px) + var(--tab-width)
+      var(--parent-padding-inline-start--even, 0px) + var(--ch-tree-tab-width)
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -108,7 +111,8 @@ $own-offset: calc(
 
   &--odd-expandable {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--even, 0px) + var(--tab-width) - #{$own-offset}
+      var(--parent-padding-inline-start--even, 0px) + var(--ch-tree-tab-width) -
+        #{$own-offset}
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -132,15 +136,21 @@ $own-offset: calc(
 
     // This variable must be defined expandable content to not be overridden by each item
     + .expandable {
-      --parent-expandable-offset: calc(var(--expandable-button-width) / 2);
+      --parent-expandable-offset: calc(
+        var(--ch-tree-view-view-expandable-button-width) / 2
+      );
     }
   }
 
   &--checkbox-offset {
     // Those variable must be defined expandable content to not be overridden by each item
     + .expandable {
-      --parent-checkbox-offset: calc(var(--checkbox-size) / 2);
-      --parent-negative-checkbox-offset: calc(var(--checkbox-size) / 2);
+      --parent-checkbox-offset: calc(
+        var(--ch-tree-view-view-checkbox-size) / 2
+      );
+      --parent-negative-checkbox-offset: calc(
+        var(--ch-tree-view-view-checkbox-size) / 2
+      );
     }
   }
 }
@@ -155,7 +165,7 @@ $own-offset: calc(
   );
   height: 1px;
   width: calc(
-    var(--tab-width) - var(--parent-checkbox-offset) -
+    var(--ch-tree-tab-width) - var(--parent-checkbox-offset) -
       var(--parent-expandable-offset) - var(--own-offset) -
       var(--ch-tree-view-item-dashed-line--offset) - 4px
   );
@@ -170,7 +180,7 @@ $own-offset: calc(
 // Last dashed line of the tree
 .last-all-line {
   inset-block-start: 0;
-  height: calc(100% - var(--distance-to-checkbox));
+  height: calc(100% - var(--ch-tree-view-item-distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
 }
@@ -189,20 +199,22 @@ $own-offset: calc(
 .expandable-button {
   display: grid;
   place-items: center;
-  width: var(--expandable-button-width);
-  height: var(--expandable-button-width);
+  width: var(--ch-tree-view-view-expandable-button-width);
+  height: var(--ch-tree-view-view-expandable-button-width);
   margin-inline-end: var(--ch-tree-view-item-gap);
   z-index: 1;
   cursor: pointer;
   content-visibility: auto;
-  contain-intrinsic-size: auto var(--expandable-button-width);
+  contain-intrinsic-size: auto var(--ch-tree-view-view-expandable-button-width);
 
   &::before {
     content: "";
     width: calc(100% - 2px);
     height: calc(100% - 2px);
     background-color: currentColor;
-    -webkit-mask-size: calc(var(--expandable-button-width) - 2px);
+    -webkit-mask-size: calc(
+      var(--ch-tree-view-view-expandable-button-width) - 2px
+    );
   }
 
   &--collapsed::before {
@@ -222,8 +234,8 @@ $own-offset: calc(
   margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
+    width: var(--ch-tree-view-view-checkbox-size);
+    height: var(--ch-tree-view-view-checkbox-size);
   }
 }
 

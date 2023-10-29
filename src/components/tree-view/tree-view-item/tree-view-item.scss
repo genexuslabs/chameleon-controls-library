@@ -29,7 +29,7 @@ $own-offset: calc(
 :host {
   --checkbox-size: 1em;
   --expandable-button-width: 0.75em;
-  --ch-tree-x-list-item-dashed-line--offset: 0px;
+  --ch-tree-view-item-dashed-line--offset: 0px;
 
   --tab-width: calc(
     var(--checkbox-size) + var(--expandable-button-width) +
@@ -152,13 +152,13 @@ $own-offset: calc(
 .dashed-line {
   position: absolute;
   inset-inline-start: calc(
-    var(--inset-inline-start) + var(--ch-tree-x-list-item-dashed-line--offset)
+    var(--inset-inline-start) + var(--ch-tree-view-item-dashed-line--offset)
   );
   height: 1px;
   width: calc(
     var(--tab-width) - var(--parent-checkbox-offset) -
       var(--parent-expandable-offset) - var(--own-offset) -
-      var(--ch-tree-x-list-item-dashed-line--offset) - 4px
+      var(--ch-tree-view-item-dashed-line--offset) - 4px
   );
 
   border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);

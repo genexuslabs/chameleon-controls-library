@@ -12,6 +12,13 @@ export type TreeViewItemModel = {
   dropDisabled?: boolean;
   editable?: boolean;
   expanded?: boolean;
+
+  /**
+   * Used by the tree view to decide which is the last item in the list when
+   * filters are applied.
+   */
+  lastItemId?: string;
+
   lazy?: boolean;
   leaf?: boolean;
   leftImgSrc?: string;

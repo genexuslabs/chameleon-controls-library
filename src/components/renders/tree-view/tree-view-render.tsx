@@ -49,6 +49,7 @@ const DEFAULT_SELECTED_VALUE = false;
 const defaultRenderItem = (
   itemModel: TreeViewItemModel,
   treeState: ChTreeViewRender,
+  treeHasFilter: boolean,
   lastItem: boolean,
   level: number
 ) =>
@@ -86,7 +87,13 @@ const defaultRenderItem = (
           defaultRenderItem(
             subModel,
             treeState,
-            treeState.showLines && index === itemModel.items.length - 1,
+            treeHasFilter,
+            treeState.showLines &&
+              // If there is a filter applied in the current list, use the
+              // lastItemId value to calculate the last item
+              (treeHasFilter && itemModel.lastItemId !== ""
+                ? subModel.id === itemModel.lastItemId
+                : index === itemModel.items.length - 1),
             level + 1
           )
         )}
@@ -269,6 +276,7 @@ export class ChTreeViewRender {
   @Prop() readonly renderItem: (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any = defaultRenderItem;
@@ -859,10 +867,18 @@ export class ChTreeViewRender {
 
     // Check if a subitem is rendered
     if (item.leaf !== true && item.items != null) {
+      let lastItemId = "";
+
       item.items.forEach(subItem => {
         const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);
         aSubItemIsRendered ||= itemSatisfiesFilter;
+
+        if (itemSatisfiesFilter) {
+          lastItemId = subItem.id;
+        }
       });
+
+      item.lastItemId = lastItemId;
     }
 
     // The current item is rendered if it satisfies the filter condition or a
@@ -969,6 +985,8 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
+            (this.filterType === "caption" || this.filterType === "metadata") &&
+              this.filter != null,
             this.showLines && index === this.treeModel.length - 1,
             0
           )

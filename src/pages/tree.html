@@ -413,7 +413,7 @@
           </ch-tree-view-item>
         </ch-tree-view>
 
-        <ch-tree-view-render></ch-tree-view-render>
+        <ch-tree-view-render show-lines="all"></ch-tree-view-render>
 
         <div>
           <ch-textblock id="contextmenu-textblock"
@@ -465,9 +465,9 @@
         <label>
           Lines
           <select name="lines" id="lines">
-            <option value="all">All lines</option>
+            <option value="all" selected>All lines</option>
             <option value="last">Last line</option>
-            <option value="none" selected>None</option>
+            <option value="none">None</option>
           </select>
         </label>
 
@@ -1933,7 +1933,7 @@
 
             setTimeout(() => {
               resolve(lazyModel);
-            }, 1000); // Resolves or rejects after 1 second
+            }, 500); // Resolves or rejects after 1 second
           });
 
         testTreeX.dropItemsCallback = () =>

@@ -1,9 +1,7 @@
 $dashed-line-inset-inline-start: 7.5px;
 
-$separation-between-actions: 5px;
-
 $own-offset: calc(
-  var(--expandable-button-width) + #{$separation-between-actions}
+  var(--expandable-button-width) + var(--ch-tree-view-item-gap)
 );
 
 :where(button) {
@@ -30,10 +28,11 @@ $own-offset: calc(
   --checkbox-size: 1em;
   --expandable-button-width: 0.75em;
   --ch-tree-view-item-dashed-line--offset: 0px;
+  --ch-tree-view-item-gap: 5px;
 
   --tab-width: calc(
     var(--checkbox-size) + var(--expandable-button-width) +
-      (#{$separation-between-actions} * 2)
+      (var(--ch-tree-view-item-gap) * 2)
   );
 
   display: grid;
@@ -192,7 +191,7 @@ $own-offset: calc(
   place-items: center;
   width: var(--expandable-button-width);
   height: var(--expandable-button-width);
-  margin-inline-end: $separation-between-actions;
+  margin-inline-end: var(--ch-tree-view-item-gap);
   z-index: 1;
   cursor: pointer;
   content-visibility: auto;
@@ -220,7 +219,7 @@ $own-offset: calc(
 }
 
 .checkbox {
-  margin-inline-end: $separation-between-actions;
+  margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {
     width: var(--checkbox-size);
@@ -255,12 +254,12 @@ $own-offset: calc(
 
 .left-img {
   grid-area: left-img;
-  margin-inline-end: $separation-between-actions;
+  margin-inline-end: var(--ch-tree-view-item-gap);
 }
 
 .right-img {
   grid-area: right-img;
-  margin-inline-start: $separation-between-actions;
+  margin-inline-start: var(--ch-tree-view-item-gap);
 }
 
 .edit-name {

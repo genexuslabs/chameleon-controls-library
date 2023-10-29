@@ -142,7 +142,7 @@ export class ChTreeViewItem {
    * This attribute lets you specify when items are being lazy loaded in the
    * control.
    */
-  @Prop() readonly downloading: boolean = false;
+  @Prop({ mutable: true }) downloading = false;
 
   /**
    * This attribute lets you specify if the edit operation is enabled in the
@@ -612,6 +612,7 @@ export class ChTreeViewItem {
 
     // Load items
     this.lazyLoad = false;
+    this.downloading = true;
 
     this.loadLazyContent.emit(this.el.id);
   }
@@ -950,9 +951,12 @@ export class ChTreeViewItem {
             id={EXPANDABLE_ID}
             class={{
               expandable: true,
-              "expandable--collapsed": !this.expanded
+              "expandable--collapsed": !this.expanded,
+              "expandable--lazy-loaded": !this.downloading
             }}
-            part={`expandable${this.expanded ? " expanded" : " collapsed"}`}
+            part={`expandable${this.expanded ? " expanded" : " collapsed"}${
+              !this.downloading ? " lazy-loaded" : ""
+            }`}
           >
             <slot />
           </div>

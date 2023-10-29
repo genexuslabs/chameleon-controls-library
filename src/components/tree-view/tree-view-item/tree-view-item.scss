@@ -331,8 +331,11 @@ $own-offset: calc(
   display: grid;
   grid-auto-rows: min-content;
   position: relative;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 100px;
+
+  &--lazy-loaded {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
+  }
 }
 
 .expandable--collapsed {

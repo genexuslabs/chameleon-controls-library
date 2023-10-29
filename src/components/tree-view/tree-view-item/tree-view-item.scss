@@ -29,6 +29,7 @@ $own-offset: calc(
   --ch-tree-view-view-checkbox-size: 1em;
   --ch-tree-view-view-expandable-button-width: 0.75em;
   --ch-tree-view-item-dashed-line--offset: 0px;
+  --ch-tree-view-item-dashed-line--inset-inline-end: 4px;
   --ch-tree-view-item-gap: 5px;
   --ch-tree-view-item-custom-padding-inline-start: 0px;
 
@@ -172,7 +173,8 @@ $own-offset: calc(
   width: calc(
     var(--ch-tree-tab-width) - var(--parent-checkbox-offset) -
       var(--parent-expandable-offset) - var(--own-offset) -
-      var(--ch-tree-view-item-dashed-line--offset) - 4px
+      var(--ch-tree-view-item-dashed-line--offset) -
+      var(--ch-tree-view-item-dashed-line--inset-inline-end)
   );
 
   border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);

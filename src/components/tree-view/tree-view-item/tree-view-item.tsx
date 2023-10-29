@@ -943,7 +943,7 @@ export class ChTreeViewItem {
         {hasContent && (
           <div
             role="group"
-            aria-busy={this.downloading.toString()}
+            aria-busy={(!!this.downloading).toString()}
             aria-live={this.downloading ? "polite" : null}
             id={EXPANDABLE_ID}
             class={{

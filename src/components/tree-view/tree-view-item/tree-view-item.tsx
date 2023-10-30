@@ -27,6 +27,8 @@ export type DragState = "enter" | "none" | "start";
 
 const resetDragImage = new Image();
 
+const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
+  "--ch-tree-view-item-distance-to-checkbox";
 const INITIAL_LEVEL = 0;
 
 // Selectors
@@ -100,16 +102,7 @@ export class ChTreeViewItem {
 
     treeItems.forEach(treeItem => {
       if (treeItem.checked !== newValue || treeItem.indeterminate !== false) {
-        treeItem.checked = newValue;
-        treeItem.indeterminate = false;
-
-        // Emit the event to sync with the UI model, even if the item does not
-        // have toggleCheckboxes property
-        this.checkboxToggleChange.emit({
-          id: treeItem.id,
-          checked: newValue,
-          indeterminate: false
-        });
+        treeItem.updateChecked(newValue, false);
       }
     });
   }
@@ -149,7 +142,7 @@ export class ChTreeViewItem {
    * This attribute lets you specify when items are being lazy loaded in the
    * control.
    */
-  @Prop() readonly downloading: boolean = false;
+  @Prop({ mutable: true }) downloading = false;
 
   /**
    * This attribute lets you specify if the edit operation is enabled in the
@@ -345,7 +338,7 @@ export class ChTreeViewItem {
     event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
   ) {
     // No need to update the checkbox value based on the children checkbox
-    if (!this.toggleCheckboxes) {
+    if (!this.toggleCheckboxes || this.el === event.target) {
       return;
     }
 
@@ -357,16 +350,22 @@ export class ChTreeViewItem {
       treeItem => treeItem.checked === updatedCheck
     );
 
+    const eventMustBeEmitted =
+      this.checked !== updatedCheck ||
+      this.indeterminate !== !allItemsHaveTheSameCheckedValue;
+
     this.ignoreCheckboxChange = this.checked !== updatedCheck;
     this.checked = updatedCheck;
     this.indeterminate = !allItemsHaveTheSameCheckedValue;
 
     // Sync with the UI Model
-    this.checkboxToggleChange.emit({
-      id: this.el.id,
-      checked: updatedCheck,
-      indeterminate: !allItemsHaveTheSameCheckedValue
-    });
+    if (eventMustBeEmitted) {
+      this.checkboxToggleChange.emit({
+        id: this.el.id,
+        checked: updatedCheck,
+        indeterminate: !allItemsHaveTheSameCheckedValue
+      });
+    }
   }
 
   /**
@@ -456,7 +455,7 @@ export class ChTreeViewItem {
 
   /**
    * Focus the last item in its subtree. If the control is not expanded, it
-   * focus the control
+   * focus the control.
    */
   @Method()
   async focusLastItem(ctrlKeyPressed: boolean) {
@@ -485,7 +484,7 @@ export class ChTreeViewItem {
   }
 
   /**
-   * Set focus in the control
+   * Set focus in the control.
    */
   @Method()
   async setFocus(ctrlKeyPressed: boolean) {
@@ -495,6 +494,23 @@ export class ChTreeViewItem {
     if (!ctrlKeyPressed) {
       this.setSelected();
     }
+  }
+
+  /**
+   * Update `checked` and `indeterminate` properties.
+   */
+  @Method()
+  async updateChecked(newChecked: boolean, newIndeterminate: boolean) {
+    this.checked = newChecked;
+    this.indeterminate = newIndeterminate;
+
+    // Emit the event to sync with the UI model, even if the item does not
+    // have toggleCheckboxes property
+    this.checkboxToggleChange.emit({
+      id: this.el.id,
+      checked: newChecked,
+      indeterminate: newIndeterminate
+    });
   }
 
   private getDirectTreeItems(): HTMLChTreeViewItemElement[] {
@@ -510,7 +526,7 @@ export class ChTreeViewItem {
         this.headerRef.getBoundingClientRect().height / 2;
 
       this.el.style.setProperty(
-        "--distance-to-checkbox",
+        DISTANCE_TO_CHECKBOX_CUSTOM_VAR,
         distanceToCheckbox + "px"
       );
     });
@@ -596,6 +612,7 @@ export class ChTreeViewItem {
 
     // Load items
     this.lazyLoad = false;
+    this.downloading = true;
 
     this.loadLazyContent.emit(this.el.id);
   }
@@ -701,10 +718,12 @@ export class ChTreeViewItem {
 
     const checked = (event.target as HTMLChCheckboxElement).checked;
     this.checked = checked;
+    this.indeterminate = false; // Changing the checked value makes it no longer indeterminate
+
     this.checkboxChange.emit({
       id: this.el.id,
       checked: this.checked,
-      indeterminate: this.indeterminate
+      indeterminate: false
     });
   };
 
@@ -827,7 +846,7 @@ export class ChTreeViewItem {
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""
-          }`}
+          }${this.level === INITIAL_LEVEL ? " level-0" : ""}`}
           type="button"
           disabled={this.disabled}
           onClick={this.handleActionClick}
@@ -927,14 +946,17 @@ export class ChTreeViewItem {
         {hasContent && (
           <div
             role="group"
-            aria-busy={this.downloading.toString()}
+            aria-busy={(!!this.downloading).toString()}
             aria-live={this.downloading ? "polite" : null}
             id={EXPANDABLE_ID}
             class={{
               expandable: true,
-              "expandable--collapsed": !this.expanded
+              "expandable--collapsed": !this.expanded,
+              "expandable--lazy-loaded": !this.downloading
             }}
-            part={`expandable${this.expanded ? " expanded" : " collapsed"}`}
+            part={`expandable${this.expanded ? " expanded" : " collapsed"}${
+              !this.downloading ? " lazy-loaded" : ""
+            }`}
           >
             <slot />
           </div>

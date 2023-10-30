@@ -49,6 +49,7 @@ const DEFAULT_SELECTED_VALUE = false;
 const defaultRenderItem = (
   itemModel: TreeViewItemModel,
   treeState: ChTreeViewRender,
+  treeHasFilter: boolean,
   lastItem: boolean,
   level: number
 ) =>
@@ -86,7 +87,13 @@ const defaultRenderItem = (
           defaultRenderItem(
             subModel,
             treeState,
-            treeState.showLines && index === itemModel.items.length - 1,
+            treeHasFilter,
+            treeState.showLines &&
+              // If there is a filter applied in the current list, use the
+              // lastItemId value to calculate the last item
+              (treeHasFilter && itemModel.lastItemId !== ""
+                ? subModel.id === itemModel.lastItemId
+                : index === itemModel.items.length - 1),
             level + 1
           )
         )}
@@ -105,6 +112,11 @@ export class ChTreeViewRender {
   private flattenedCheckboxTreeModel: Map<string, TreeViewItemModelExtended> =
     new Map();
   private selectedItems: Set<string> = new Set();
+
+  private applyFilters = false;
+  private emitCheckedChange = false;
+
+  private filterTimeout: NodeJS.Timeout;
 
   // Refs
   private treeRef: HTMLChTreeViewElement;
@@ -138,7 +150,7 @@ export class ChTreeViewRender {
   /**
    * A CSS class to set as the `ch-tree-view` element class.
    */
-  @Prop() readonly cssClass: string;
+  @Prop() readonly cssClass: string = "tree-view";
 
   /**
    * This attribute lets you specify if the drag operation is disabled in all
@@ -174,6 +186,21 @@ export class ChTreeViewRender {
   @Prop() readonly filter: string;
   @Watch("filter")
   handleFilterChange() {
+    if (this.filterType === "caption" || this.filterType === "metadata") {
+      this.processFilters();
+    }
+  }
+
+  /**
+   * This property lets you determine the debounce time (in ms) that the
+   * control waits until it processes the changes to the filter property.
+   * Consecutive changes to the `filter` property between this range, reset the
+   * timeout to process the filter.
+   * Only works if `filterType = "caption" | "metadata"`.
+   */
+  @Prop() readonly filterDebounce: number = 250;
+  @Watch("filterDebounce")
+  handleFilterDebounceChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.processFilters();
     }
@@ -249,6 +276,7 @@ export class ChTreeViewRender {
   @Prop() readonly renderItem: (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any = defaultRenderItem;
@@ -519,10 +547,10 @@ export class ChTreeViewRender {
     // Update filters
     if (this.filterType === "checked" || this.filterType === "unchecked") {
       this.processFilters();
-
-      // Force re-render
-      forceUpdate(this);
     }
+
+    // Force re-render
+    forceUpdate(this);
   }
 
   @Listen("loadLazyContent")
@@ -616,19 +644,6 @@ export class ChTreeViewRender {
       );
     });
   };
-
-  private emitCheckedItemsChange() {
-    // New copy of the checked items
-    const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
-      new Map(this.flattenedCheckboxTreeModel);
-
-    // Update the checked value if not defined
-    allItemsWithCheckbox.forEach(itemUIModel => {
-      itemUIModel.item.checked ??= this.checked;
-    });
-
-    this.checkedItemsChange.emit(allItemsWithCheckbox);
-  }
 
   private handleSelectedItemsChange = (
     event: ChTreeViewCustomEvent<Map<string, TreeViewItemSelectedInfo>>
@@ -852,10 +867,18 @@ export class ChTreeViewRender {
 
     // Check if a subitem is rendered
     if (item.leaf !== true && item.items != null) {
+      let lastItemId = "";
+
       item.items.forEach(subItem => {
         const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);
         aSubItemIsRendered ||= itemSatisfiesFilter;
+
+        if (itemSatisfiesFilter) {
+          lastItemId = subItem.id;
+        }
       });
+
+      item.lastItemId = lastItemId;
     }
 
     // The current item is rendered if it satisfies the filter condition or a
@@ -867,30 +890,82 @@ export class ChTreeViewRender {
     return satisfiesFilter;
   }
 
+  private emitCheckedItemsChange() {
+    this.emitCheckedChange = true;
+  }
+
+  private updateCheckedItems() {
+    // New copy of the checked items
+    const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
+      new Map(this.flattenedCheckboxTreeModel);
+
+    // Update the checked value if not defined
+    allItemsWithCheckbox.forEach(itemUIModel => {
+      itemUIModel.item.checked ??= this.checked;
+    });
+
+    this.checkedItemsChange.emit(allItemsWithCheckbox);
+  }
+
   private processFilters() {
+    this.applyFilters = true;
+  }
+
+  private updateFilters() {
     if (this.filterType === "none") {
       return;
     }
 
-    this.filterSubModel(
-      {
-        id: null,
-        caption: null,
-        items: this.treeModel
-      },
-      {
-        defaultCheckbox: this.checkbox,
-        defaultChecked: this.checked,
-        filter: this.filter,
-        filterList: this.filterList,
-        filterOptions: this.filterOptions
-      }
-    );
+    // Remove queued filter processing
+    clearTimeout(this.filterTimeout);
+
+    const processWithDebounce =
+      this.filterDebounce > 0 &&
+      (this.filterType === "caption" || this.filterType === "metadata");
+
+    const filterFunction = () =>
+      this.filterSubModel(
+        {
+          id: null,
+          caption: null,
+          items: this.treeModel
+        },
+        {
+          defaultCheckbox: this.checkbox,
+          defaultChecked: this.checked,
+          filter: this.filter,
+          filterList: this.filterList,
+          filterOptions: this.filterOptions
+        }
+      );
+
+    // Check if should filter with debounce
+    if (processWithDebounce) {
+      this.filterTimeout = setTimeout(() => {
+        filterFunction();
+        forceUpdate(this); // After the filter processing is completed, force a re-render
+      }, this.filterDebounce);
+    } else {
+      filterFunction();
+    }
   }
 
   componentWillLoad() {
     this.flattenModel();
-    this.processFilters();
+    this.updateCheckedItems();
+    this.updateFilters();
+  }
+
+  componentWillUpdate() {
+    if (this.emitCheckedChange) {
+      this.updateCheckedItems();
+      this.emitCheckedChange = false;
+    }
+
+    if (this.applyFilters) {
+      this.updateFilters();
+      this.applyFilters = false;
+    }
   }
 
   render() {
@@ -910,6 +985,8 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
+            (this.filterType === "caption" || this.filterType === "metadata") &&
+              this.filter != null,
             this.showLines && index === this.treeModel.length - 1,
             0
           )

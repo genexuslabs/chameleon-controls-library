@@ -1,9 +1,6 @@
-$dashed-line-inset-inline-start: 7.5px;
-
-$separation-between-actions: 5px;
-
 $own-offset: calc(
-  var(--expandable-button-width) + #{$separation-between-actions}
+  var(--ch-tree-view-view__expandable-button-width) +
+    var(--ch-tree-view-item-gap)
 );
 
 :where(button) {
@@ -27,13 +24,17 @@ $own-offset: calc(
 }
 
 :host {
-  --checkbox-size: 1em;
-  --expandable-button-width: 0.75em;
-  --ch-tree-x-list-item-dashed-line--offset: 0px;
+  --ch-tree-view-view__checkbox-size: 1em;
+  --ch-tree-view-view__expandable-button-width: 0.75em;
+  --ch-tree-view-item__dashed-line--inset-inline-start: 0px;
+  --ch-tree-view-item__dashed-line--inset-inline-end: 4px;
+  --ch-tree-view-item-gap: 5px;
+  --ch-tree-view-item-custom-padding-inline-start: 0px;
 
-  --tab-width: calc(
-    var(--checkbox-size) + var(--expandable-button-width) +
-      (#{$separation-between-actions} * 2)
+  --ch-tree-tab-width: calc(
+    var(--ch-tree-view-view__checkbox-size) +
+      var(--ch-tree-view-view__expandable-button-width) +
+      (var(--ch-tree-view-item-gap) * 2)
   );
 
   display: grid;
@@ -47,7 +48,10 @@ $own-offset: calc(
   display: flex;
   align-items: center;
   min-height: calc(1em + 6px);
-  padding-inline-start: var(--padding-inline-start);
+  padding-inline-start: calc(
+    var(--padding-inline-start) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
+  );
 
   &--disabled {
     opacity: 0.5;
@@ -56,7 +60,7 @@ $own-offset: calc(
 
   &--even {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--odd, 0px) + var(--tab-width)
+      var(--parent-padding-inline-start--odd, 0px) + var(--ch-tree-tab-width)
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -76,7 +80,8 @@ $own-offset: calc(
 
   &--even-expandable {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--odd, 0px) + var(--tab-width) - #{$own-offset}
+      var(--parent-padding-inline-start--odd, 0px) + var(--ch-tree-tab-width) -
+        #{$own-offset}
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -89,7 +94,7 @@ $own-offset: calc(
 
   &--odd {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--even, 0px) + var(--tab-width)
+      var(--parent-padding-inline-start--even, 0px) + var(--ch-tree-tab-width)
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -109,7 +114,8 @@ $own-offset: calc(
 
   &--odd-expandable {
     $padding-inline-start: calc(
-      var(--parent-padding-inline-start--even, 0px) + var(--tab-width) - #{$own-offset}
+      var(--parent-padding-inline-start--even, 0px) + var(--ch-tree-tab-width) -
+        #{$own-offset}
     );
 
     --padding-inline-start: #{$padding-inline-start};
@@ -133,15 +139,21 @@ $own-offset: calc(
 
     // This variable must be defined expandable content to not be overridden by each item
     + .expandable {
-      --parent-expandable-offset: calc(var(--expandable-button-width) / 2);
+      --parent-expandable-offset: calc(
+        var(--ch-tree-view-view__expandable-button-width) / 2
+      );
     }
   }
 
   &--checkbox-offset {
     // Those variable must be defined expandable content to not be overridden by each item
     + .expandable {
-      --parent-checkbox-offset: calc(var(--checkbox-size) / 2);
-      --parent-negative-checkbox-offset: calc(var(--checkbox-size) / 2);
+      --parent-checkbox-offset: calc(
+        var(--ch-tree-view-view__checkbox-size) / 2
+      );
+      --parent-negative-checkbox-offset: calc(
+        var(--ch-tree-view-view__checkbox-size) / 2
+      );
     }
   }
 }
@@ -152,13 +164,16 @@ $own-offset: calc(
 .dashed-line {
   position: absolute;
   inset-inline-start: calc(
-    var(--inset-inline-start) + var(--ch-tree-x-list-item-dashed-line--offset)
+    var(--inset-inline-start) +
+      var(--ch-tree-view-item__dashed-line--inset-inline-start) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
   );
   height: 1px;
   width: calc(
-    var(--tab-width) - var(--parent-checkbox-offset) -
+    var(--ch-tree-tab-width) - var(--parent-checkbox-offset) -
       var(--parent-expandable-offset) - var(--own-offset) -
-      var(--ch-tree-x-list-item-dashed-line--offset) - 4px
+      var(--ch-tree-view-item__dashed-line--inset-inline-start) -
+      var(--ch-tree-view-item__dashed-line--inset-inline-end)
   );
 
   border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);
@@ -171,7 +186,7 @@ $own-offset: calc(
 // Last dashed line of the tree
 .last-all-line {
   inset-block-start: 0;
-  height: calc(100% - var(--distance-to-checkbox));
+  height: calc(100% - var(--ch-tree-view-item-distance-to-checkbox));
   border-inline-start-width: 1px;
   border-end-start-radius: 2px;
 }
@@ -190,20 +205,22 @@ $own-offset: calc(
 .expandable-button {
   display: grid;
   place-items: center;
-  width: var(--expandable-button-width);
-  height: var(--expandable-button-width);
-  margin-inline-end: $separation-between-actions;
+  width: var(--ch-tree-view-view__expandable-button-width);
+  height: var(--ch-tree-view-view__expandable-button-width);
+  margin-inline-end: var(--ch-tree-view-item-gap);
   z-index: 1;
   cursor: pointer;
   content-visibility: auto;
-  contain-intrinsic-size: auto var(--expandable-button-width);
+  contain-intrinsic-size: auto var(--ch-tree-view-view__expandable-button-width);
 
   &::before {
     content: "";
     width: calc(100% - 2px);
     height: calc(100% - 2px);
     background-color: currentColor;
-    -webkit-mask-size: calc(var(--expandable-button-width) - 2px);
+    -webkit-mask-size: calc(
+      var(--ch-tree-view-view__expandable-button-width) - 2px
+    );
   }
 
   &--collapsed::before {
@@ -220,11 +237,14 @@ $own-offset: calc(
 }
 
 .checkbox {
-  margin-inline-end: $separation-between-actions;
+  // Necessary to avoid CLS when the ch-checkbox control is downloaded after
+  // the tree-view-item did render
+  width: var(--ch-tree-view-view__checkbox-size);
+  margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
+    width: var(--ch-tree-view-view__checkbox-size);
+    height: var(--ch-tree-view-view__checkbox-size);
   }
 }
 
@@ -255,12 +275,12 @@ $own-offset: calc(
 
 .left-img {
   grid-area: left-img;
-  margin-inline-end: $separation-between-actions;
+  margin-inline-end: var(--ch-tree-view-item-gap);
 }
 
 .right-img {
   grid-area: right-img;
-  margin-inline-start: $separation-between-actions;
+  margin-inline-start: var(--ch-tree-view-item-gap);
 }
 
 .edit-name {
@@ -311,8 +331,11 @@ $own-offset: calc(
   display: grid;
   grid-auto-rows: min-content;
   position: relative;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 100px;
+
+  &--lazy-loaded {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
+  }
 }
 
 .expandable--collapsed {

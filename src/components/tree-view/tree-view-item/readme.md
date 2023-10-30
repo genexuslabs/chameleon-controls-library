@@ -56,7 +56,7 @@
 ### `focusLastItem(ctrlKeyPressed: boolean) => Promise<void>`
 
 Focus the last item in its subtree. If the control is not expanded, it
-focus the control
+focus the control.
 
 #### Returns
 
@@ -98,7 +98,17 @@ Type: `Promise<void>`
 
 ### `setFocus(ctrlKeyPressed: boolean) => Promise<void>`
 
-Set focus in the control
+Set focus in the control.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `updateChecked(newChecked: boolean, newIndeterminate: boolean) => Promise<void>`
+
+Update `checked` and `indeterminate` properties.
 
 #### Returns
 

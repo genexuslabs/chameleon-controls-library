@@ -1385,7 +1385,7 @@ export namespace Components {
          */
         "expanded": boolean;
         /**
-          * Focus the last item in its subtree. If the control is not expanded, it focus the control
+          * Focus the last item in its subtree. If the control is not expanded, it focus the control.
          */
         "focusLastItem": (ctrlKeyPressed: boolean) => Promise<void>;
         /**
@@ -1437,7 +1437,7 @@ export namespace Components {
          */
         "selected": boolean;
         /**
-          * Set focus in the control
+          * Set focus in the control.
          */
         "setFocus": (ctrlKeyPressed: boolean) => Promise<void>;
         /**
@@ -1456,6 +1456,10 @@ export namespace Components {
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
          */
         "toggleCheckboxes": boolean;
+        /**
+          * Update `checked` and `indeterminate` properties.
+         */
+        "updateChecked": (newChecked: boolean, newIndeterminate: boolean) => Promise<void>;
     }
     interface ChTreeViewRender {
         /**
@@ -1499,6 +1503,10 @@ export namespace Components {
          */
         "filter": string;
         /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filterDebounce": number;
+        /**
           * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
          */
         "filterList": string[];
@@ -1537,6 +1545,7 @@ export namespace Components {
         "renderItem": (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any;
@@ -1664,6 +1673,7 @@ export namespace Components {
         "renderItem": (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any;
@@ -4019,6 +4029,10 @@ declare namespace LocalJSX {
          */
         "filter"?: string;
         /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "metadata"`.
+         */
+        "filterDebounce"?: number;
+        /**
           * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
          */
         "filterList"?: string[];
@@ -4069,6 +4083,7 @@ declare namespace LocalJSX {
         "renderItem"?: (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any;
@@ -4181,6 +4196,7 @@ declare namespace LocalJSX {
         "renderItem"?: (
     itemModel: TreeViewItemModel,
     treeState: ChTreeViewRender,
+    treeHasFilter: boolean,
     lastItem: boolean,
     level: number
   ) => any;

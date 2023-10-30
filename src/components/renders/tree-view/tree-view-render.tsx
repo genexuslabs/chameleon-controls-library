@@ -88,7 +88,7 @@ const defaultRenderItem = (
             subModel,
             treeState,
             treeHasFilter,
-            treeState.showLines &&
+            treeState.showLines !== "none" &&
               // If there is a filter applied in the current list, use the
               // lastItemId value to calculate the last item
               (treeHasFilter && itemModel.lastItemId !== ""
@@ -987,7 +987,7 @@ export class ChTreeViewRender {
             this,
             (this.filterType === "caption" || this.filterType === "metadata") &&
               this.filter != null,
-            this.showLines && index === this.treeModel.length - 1,
+            this.showLines !== "none" && index === this.treeModel.length - 1,
             0
           )
         )}

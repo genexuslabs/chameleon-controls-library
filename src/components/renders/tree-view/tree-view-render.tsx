@@ -35,6 +35,10 @@ import {
 } from "../../../components";
 import { GxDataTransferInfo } from "../../../common/types";
 import { filterDictionary } from "./helpers";
+import {
+  TreeViewGXItemModel,
+  fromGxImageToURL
+} from "./genexus-implementation";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
@@ -85,6 +89,69 @@ const defaultRenderItem = (
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
           defaultRenderItem(
+            subModel,
+            treeState,
+            treeHasFilter,
+            treeState.showLines !== "none" &&
+              // If there is a filter applied in the current list, use the
+              // lastItemId value to calculate the last item
+              (treeHasFilter && itemModel.lastItemId !== ""
+                ? subModel.id === itemModel.lastItemId
+                : index === itemModel.items.length - 1),
+            level + 1
+          )
+        )}
+    </ch-tree-view-item>
+  );
+
+const GXRenderItem = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender,
+  treeHasFilter: boolean,
+  lastItem: boolean,
+  level: number
+) =>
+  (treeState.filterType === "none" || itemModel.render !== false) && (
+    <ch-tree-view-item
+      id={itemModel.id}
+      caption={itemModel.caption}
+      checkbox={itemModel.checkbox ?? treeState.checkbox}
+      checked={itemModel.checked ?? treeState.checked}
+      class={itemModel.class}
+      downloading={itemModel.downloading}
+      dragDisabled={
+        itemModel.dragEnabled != null
+          ? !itemModel.dragEnabled
+          : treeState.dragDisabled
+      }
+      dropDisabled={
+        itemModel.dropEnabled != null
+          ? !itemModel.dropEnabled
+          : treeState.dropDisabled
+      }
+      editable={itemModel.editable ?? treeState.editableItems}
+      expanded={itemModel.expanded}
+      indeterminate={itemModel.indeterminate}
+      lastItem={lastItem}
+      lazyLoad={itemModel.lazy}
+      leaf={itemModel.leaf}
+      leftImgSrc={fromGxImageToURL(
+        itemModel.leftImage,
+        treeState.gxSettings,
+        treeState.gxImageConstructor
+      )}
+      level={level}
+      metadata={itemModel.metadata}
+      selected={itemModel.selected}
+      showLines={treeState.showLines}
+      toggleCheckboxes={
+        itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+      }
+    >
+      {!itemModel.leaf &&
+        itemModel.items != null &&
+        itemModel.items.map((subModel, index) =>
+          GXRenderItem(
             subModel,
             treeState,
             treeHasFilter,
@@ -251,6 +318,16 @@ export class ChTreeViewRender {
   }
 
   /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxImageConstructor: (name: string) => any;
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxSettings: any;
+
+  /**
    * Callback that is executed when a item request to load its subitems.
    */
   @Prop() readonly lazyLoadTreeItemsCallback: (
@@ -273,8 +350,8 @@ export class ChTreeViewRender {
   /**
    * This property allows us to implement custom rendering of tree items.
    */
-  @Prop() readonly renderItem: (
-    itemModel: TreeViewItemModel,
+  @Prop({ mutable: true }) renderItem: (
+    itemModel: TreeViewItemModel | any,
     treeState: ChTreeViewRender,
     treeHasFilter: boolean,
     lastItem: boolean,
@@ -308,6 +385,11 @@ export class ChTreeViewRender {
   handleTreeModelChange() {
     this.flattenModel();
   }
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly useGxRender: boolean = false;
 
   /**
    * Fired when the checked items change.
@@ -951,6 +1033,10 @@ export class ChTreeViewRender {
   }
 
   componentWillLoad() {
+    if (this.useGxRender) {
+      this.renderItem = GXRenderItem;
+    }
+
     this.flattenModel();
     this.updateCheckedItems();
     this.updateFilters();

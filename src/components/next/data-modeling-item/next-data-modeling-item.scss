@@ -44,8 +44,8 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
   --chevron-color: #ccc;
 }
 
-:host(:hover),
-:host(:focus-within) {
+:host(:not(.gx-disabled):hover),
+:host(:not(.gx-disabled):focus-within) {
   .button-primary {
     display: grid;
 
@@ -57,6 +57,10 @@ gx-edit:is(.gx-edit--auto-fill, .gx-edit--auto-fill:focus-within, .gx-edit--auto
 
 :host(.gx-disabled) {
   pointer-events: none;
+
+  .accordion {
+    pointer-events: all;
+  }
 }
 
 // - - - - - - - - - - - - - - - -

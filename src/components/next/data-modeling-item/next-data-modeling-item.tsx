@@ -736,7 +736,9 @@ export class NextDataModelingSubitem implements ChComponent {
         header: true,
         "edit-mode": this.mode === "edit"
       }}
-      part={`${PART_PREFIX}header-content`}
+      part={`${PART_PREFIX}header-content ${
+        this.level !== 0 ? this.type.toLowerCase() : ""
+      }`}
       tabindex={this.level !== 0 ? "0" : undefined}
     >
       {this.level === 2 && (

@@ -167,6 +167,20 @@ const GXRenderItem = (
     </ch-tree-view-item>
   );
 
+const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
+  subModel.sort((a, b) => {
+    if (a.order < b.order) {
+      return -1;
+    }
+
+    if (a.order > b.order) {
+      return 0;
+    }
+
+    return a.caption <= b.caption ? -1 : 0;
+  });
+};
+
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
@@ -367,7 +381,8 @@ export class ChTreeViewRender {
   /**
    * Callback that is executed when the treeModel is changed to order its items.
    */
-  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void;
+  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void =
+    defaultSortItemsCallback;
 
   /**
    * Set this attribute if you want all the children item's checkboxes to be

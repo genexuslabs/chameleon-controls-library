@@ -19,9 +19,9 @@ const filterWithString = (
   filter: string,
   filterOptions: TreeViewFilterOptions
 ) =>
-  filterOptions.regularExpression
+  filterOptions?.regularExpression
     ? stringToFilter.match(filter) !== null
-    : filterWithCamelCase(stringToFilter, filter, filterOptions.camelCase);
+    : filterWithCamelCase(stringToFilter, filter, filterOptions?.camelCase);
 
 export const filterDictionary: {
   [key in TreeViewFilterType]: (

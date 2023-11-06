@@ -20,12 +20,6 @@ export type TreeViewFilterOptions = {
   autoExpand?: boolean;
 
   /**
-   * Determine if the filter takes into account the camel casing.
-   * Only works if `regularExpression !== true`
-   */
-  camelCase?: boolean;
-
-  /**
    * Don't render unmatched items.
    */
   hideUnmatchedItems?: boolean;
@@ -34,6 +28,12 @@ export type TreeViewFilterOptions = {
    * Only works if `regularExpression` is not used.
    */
   highlightMatchedItems?: boolean;
+
+  /**
+   * Determine if the filter takes into account the camel casing.
+   * Only works if `regularExpression !== true`
+   */
+  matchCase?: boolean;
 
   /**
    * Determine whether the filter works as a regular expression.

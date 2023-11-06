@@ -142,6 +142,12 @@ export class ChWindow {
     this.loadGlobalStyleSheet();
   }
 
+  componentDidLoad() {
+    if (!this.hidden) {
+      this.addListeners();
+    }
+  }
+
   @Listen("mousedown", { passive: true })
   mousedownHandler(eventInfo: MouseEvent) {
     if (this.isDraggable(eventInfo.composedPath())) {

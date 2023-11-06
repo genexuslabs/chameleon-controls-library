@@ -75,7 +75,9 @@ export class GridChameleonManagerState {
       );
 
       if (column) {
-        column.Hidden = stateColumn.Hidden ? -1 : 0;
+        if (typeof stateColumn.Hidden === "boolean") {
+          column.Hidden = stateColumn.Hidden ? -1 : 0;
+        }
 
         if (stateColumn.Size) {
           column.Size = "length";

@@ -15,6 +15,7 @@ gx.uc.chameleonGrid = function () {
     if (!this.IsPostBack) {
       if (_control) {
         _control.gridTimestamp = Date.now();
+        _control.state = { ..._controlState };
       } else {
         _control = document.createElement("gx-grid-chameleon");
         _control.grid = this;
@@ -26,6 +27,7 @@ gx.uc.chameleonGrid = function () {
       }
     } else {
       _control.gridTimestamp = Date.now();
+      _control.state = { ..._controlState };
     }
   };
 };

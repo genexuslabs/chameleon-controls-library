@@ -37,6 +37,7 @@ export interface GxGrid {
   readonly rows: GxGridRow[];
   readonly usePaging: boolean;
   firstRecordOnPage: string;
+  eof: number;
   readonly pageSize: number;
   readonly properties: GxGridCellProperties[][];
   readonly ParentObject: GxObject;
@@ -80,6 +81,10 @@ export interface GxGrid {
   readonly PaginatorNavigationButtonTextPosition: "title" | "text";
   readonly PaginatorPagesShow: boolean;
   readonly PaginatorPagesMaxSize: number;
+  readonly PaginatorInfoShow: boolean;
+  readonly PaginatorInfoClass: string;
+  readonly PaginatorInfoTextMask: string;
+  readonly PaginatorInfoEmptyTextMask: string;
 
   readonly ActionbarHeaderClass: string;
   readonly ActionbarFooterClass: string;

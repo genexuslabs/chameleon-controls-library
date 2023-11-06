@@ -480,6 +480,35 @@ export class GridChameleon {
     );
   }
 
+  private renderPaginationInfo() {
+    const recordCount =
+      this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`] ?? 0;
+    let mask = this.grid.PaginatorInfoEmptyTextMask;
+    let recordStart = 0;
+    let recordEnd = 0;
+
+    if (recordCount > 0) {
+      mask = this.grid.PaginatorInfoTextMask;
+      recordStart = parseInt(this.grid.firstRecordOnPage) + 1;
+      recordEnd = Math.min(recordStart + this.grid.pageSize - 1, recordCount);
+    }
+
+    const replacements = {
+      "record-count": recordCount,
+      "record-start": recordStart,
+      "record-end": recordEnd
+    };
+    const text = mask.replace(/\{([^}]+)\}/g, (_match, capture) => {
+      return replacements[capture] ?? capture;
+    });
+
+    return (
+      <div class={this.grid.PaginatorInfoClass} slot="footer">
+        {text}
+      </div>
+    );
+  }
+
   render() {
     return (
       <Host>
@@ -494,6 +523,10 @@ export class GridChameleon {
           {this.renderActionbar("footer", this.grid.ActionbarFooterClass)}
           {this.renderColumns()}
           {this.renderRows()}
+          {this.grid.PaginatorShow &&
+            this.grid.PaginatorInfoShow &&
+            this.grid.pageSize > 0 &&
+            this.renderPaginationInfo()}
           {this.grid.PaginatorShow &&
             this.grid.pageSize > 0 &&
             this.renderPaginator()}

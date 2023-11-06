@@ -5,12 +5,12 @@ import {
   TreeViewFilterType
 } from "./types";
 
-const filterWithCamelCase = (
+const filterWithCase = (
   stringToFilter: string,
   filter: string,
-  camelCase?: boolean
+  matchCase?: boolean
 ) =>
-  camelCase
+  matchCase
     ? stringToFilter.includes(filter)
     : stringToFilter.toLowerCase().includes(filter.toLowerCase());
 
@@ -19,9 +19,9 @@ const filterWithString = (
   filter: string,
   filterOptions: TreeViewFilterOptions
 ) =>
-  filterOptions.regularExpression
+  filterOptions?.regularExpression
     ? stringToFilter.match(filter) !== null
-    : filterWithCamelCase(stringToFilter, filter, filterOptions.camelCase);
+    : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 
 export const filterDictionary: {
   [key in TreeViewFilterType]: (

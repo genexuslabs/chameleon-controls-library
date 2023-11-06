@@ -1489,6 +1489,10 @@ export namespace Components {
          */
         "dropDisabled": boolean;
         /**
+          * Given the drop accepting, the data transfer info and the external items, it process the drops of the items in the tree.
+         */
+        "dropItems": (acceptDrop: boolean, dataTransferInfo: TreeViewDataTransferInfo, items?: TreeViewItemModel[]) => Promise<void>;
+        /**
           * Callback that is executed when a list of items request to be dropped into another item.
          */
         "dropItemsCallback": (
@@ -1519,6 +1523,14 @@ export namespace Components {
          */
         "filterType": TreeViewFilterType;
         /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor": (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings": any;
+        /**
           * Callback that is executed when a item request to load its subitems.
          */
         "lazyLoadTreeItemsCallback": (
@@ -1543,7 +1555,7 @@ export namespace Components {
           * This property allows us to implement custom rendering of tree items.
          */
         "renderItem": (
-    itemModel: TreeViewItemModel,
+    itemModel: TreeViewItemModel | any,
     treeState: ChTreeViewRender,
     treeHasFilter: boolean,
     lastItem: boolean,
@@ -1592,6 +1604,10 @@ export namespace Components {
           * @param validDrop Current state of the droppable zone.
          */
         "updateValidDropZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender": boolean;
     }
     interface ChTreeViewRenderWrapper {
         /**
@@ -4045,6 +4061,14 @@ declare namespace LocalJSX {
          */
         "filterType"?: TreeViewFilterType;
         /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor"?: (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings"?: any;
+        /**
           * Callback that is executed when a item request to load its subitems.
          */
         "lazyLoadTreeItemsCallback"?: (
@@ -4081,7 +4105,7 @@ declare namespace LocalJSX {
           * This property allows us to implement custom rendering of tree items.
          */
         "renderItem"?: (
-    itemModel: TreeViewItemModel,
+    itemModel: TreeViewItemModel | any,
     treeState: ChTreeViewRender,
     treeHasFilter: boolean,
     lastItem: boolean,
@@ -4103,6 +4127,10 @@ declare namespace LocalJSX {
           * This property lets you define the model of the ch-tree-x control.
          */
         "treeModel"?: TreeViewItemModel[];
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender"?: boolean;
     }
     interface ChTreeViewRenderWrapper {
         /**

@@ -93,15 +93,19 @@ function getImage(
 }
 
 export const fromGxImageToURL = (
-  image: any,
+  gxImage: any,
   Settings: any,
   gxImageConstructor: (name: string) => any
 ): string => {
+  if (!gxImage) {
+    return;
+  }
+
   let url = "";
-  if (image.id) {
-    url = getImage(image.id, gxImageConstructor).uri;
+  if (gxImage.id) {
+    url = getImage(gxImage.id, gxImageConstructor).uri;
   } else {
-    url = image.uri;
+    url = gxImage.uri;
   }
 
   if (!url) {

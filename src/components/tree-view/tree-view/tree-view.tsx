@@ -536,11 +536,11 @@ export class ChTreeView {
 
       this.el.style.setProperty(
         POSITION_X_DRAG_CUSTOM_VAR,
-        `${this.lastDragEvent.pageX}px`
+        `${this.lastDragEvent.clientX}px`
       );
       this.el.style.setProperty(
         POSITION_Y_DRAG_CUSTOM_VAR,
-        `${this.lastDragEvent.pageY}px`
+        `${this.lastDragEvent.clientY}px`
       );
     });
   };

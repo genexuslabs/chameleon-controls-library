@@ -167,6 +167,20 @@ const GXRenderItem = (
     </ch-tree-view-item>
   );
 
+const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
+  subModel.sort((a, b) => {
+    if (a.order < b.order) {
+      return -1;
+    }
+
+    if (a.order > b.order) {
+      return 0;
+    }
+
+    return a.caption <= b.caption ? -1 : 0;
+  });
+};
+
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
@@ -367,7 +381,8 @@ export class ChTreeViewRender {
   /**
    * Callback that is executed when the treeModel is changed to order its items.
    */
-  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void;
+  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void =
+    defaultSortItemsCallback;
 
   /**
    * Set this attribute if you want all the children item's checkboxes to be
@@ -416,6 +431,65 @@ export class ChTreeViewRender {
   @Event() selectedItemsChange: EventEmitter<
     Map<string, TreeViewItemSelectedInfo>
   >;
+
+  /**
+   * Given the drop accepting, the data transfer info and the external items,
+   * it process the drops of the items in the tree.
+   */
+  @Method()
+  async dropItems(
+    acceptDrop: boolean,
+    dataTransferInfo: TreeViewDataTransferInfo,
+    items?: TreeViewItemModel[]
+  ) {
+    if (!acceptDrop) {
+      return;
+    }
+
+    const newParentId = dataTransferInfo.newContainer.id;
+    const newParentUIModel = this.flattenedTreeModel.get(newParentId).item;
+
+    // Only move the items to the new parent, keeping the state
+    if (dataTransferInfo.dropInTheSameTree) {
+      // Add the UI models to the new container and remove the UI models from
+      // the old containers
+      dataTransferInfo.draggedItems.forEach(
+        this.moveItemToNewParent(newParentUIModel)
+      );
+
+      // When the selected items are moved, the tree must remove its internal
+      // state to not have undefined references
+      if (dataTransferInfo.draggingSelectedItems) {
+        await this.treeRef.clearSelectedItemsInfo();
+      }
+    }
+    // Add the new items
+    else {
+      if (items == null) {
+        return;
+      }
+
+      // Add new items to the parent
+      newParentUIModel.items.push(...items);
+
+      // Flatten the new UI models
+      items.forEach(this.flattenItemUIModel(newParentUIModel));
+    }
+
+    this.sortItems(newParentUIModel.items);
+
+    // Open the item to visualize the new subitems
+    newParentUIModel.expanded = true;
+
+    // Re-sync checked items
+    this.emitCheckedItemsChange();
+
+    // Update filters
+    this.processFilters();
+
+    // Force re-render
+    forceUpdate(this);
+  }
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -780,11 +854,6 @@ export class ChTreeViewRender {
   private handleItemsDropped = (
     event: ChTreeViewCustomEvent<TreeViewDataTransferInfo>
   ) => {
-    if (!this.dropItemsCallback) {
-      return;
-    }
-    event.stopPropagation();
-
     const dataTransferInfo = event.detail;
     const newContainer = dataTransferInfo.newContainer;
     const newParentId = newContainer.id;
@@ -796,60 +865,17 @@ export class ChTreeViewRender {
 
     const draggedItems: GxDataTransferInfo[] = dataTransferInfo.draggedItems;
 
-    if (draggedItems.length === 0) {
+    if (draggedItems.length === 0 || !this.dropItemsCallback) {
       return;
     }
+    event.stopPropagation();
 
     const promise = this.dropItemsCallback(dataTransferInfo);
     this.waitDropProcessing = true;
 
     promise.then(async response => {
+      this.dropItems(response.acceptDrop, dataTransferInfo, response.items);
       this.waitDropProcessing = false;
-
-      if (!response.acceptDrop) {
-        return;
-      }
-
-      const newParentUIModel = this.flattenedTreeModel.get(newParentId).item;
-
-      // Only move the items to the new parent, keeping the state
-      if (dataTransferInfo.dropInTheSameTree) {
-        // Add the UI models to the new container and remove the UI models from
-        // the old containers
-        draggedItems.forEach(this.moveItemToNewParent(newParentUIModel));
-
-        // When the selected items are moved, the tree must remove its internal
-        // state to not have undefined references
-        if (dataTransferInfo.draggingSelectedItems) {
-          await this.treeRef.clearSelectedItemsInfo();
-        }
-      }
-      // Add the new items
-      else {
-        if (response.items == null) {
-          return;
-        }
-
-        // Add new items to the parent
-        newParentUIModel.items.push(...response.items);
-
-        // Flatten the new UI models
-        response.items.forEach(this.flattenItemUIModel(newParentUIModel));
-      }
-
-      this.sortItems(newParentUIModel.items);
-
-      // Open the item to visualize the new subitems
-      newParentUIModel.expanded = true;
-
-      // Re-sync checked items
-      this.emitCheckedItemsChange();
-
-      // Update filters
-      this.processFilters();
-
-      // There is no need to force and update, since the waitDropProcessing
-      // prop was modified
     });
   };
 
@@ -862,8 +888,12 @@ export class ChTreeViewRender {
       const item = itemUIModelExtended.item;
       const oldParentItem = itemUIModelExtended.parentItem;
 
-      // Remove the UI model from the previous parent
-      oldParentItem.items.splice(oldParentItem.items.indexOf(item), 1);
+      // Remove the UI model from the previous parent. The equality function
+      // must be by index, not by object reference
+      oldParentItem.items.splice(
+        oldParentItem.items.findIndex(el => el.id === item.id),
+        1
+      );
 
       // Add the UI Model to the new parent
       newParentUIModel.items.push(item);

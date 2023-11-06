@@ -166,7 +166,10 @@ export class ChGridManagerColumns {
   }
 
   private defineColumnsVariables() {
-    const style = document.head.querySelector("#ch-grid-columns-variables");
+    const root: Document | ShadowRoot = this.manager.grid.getRootNode() as
+      | Document
+      | ShadowRoot;
+    const style = root.querySelector("#ch-grid-columns-variables");
 
     if (
       !style ||
@@ -206,11 +209,17 @@ export class ChGridManagerColumns {
       if (style) {
         style.setAttribute("data-columns", this.columns.length.toString());
         style.innerHTML = styleInnerHTML;
-      } else {
-        document.head.insertAdjacentHTML(
+      } else if (root instanceof Document) {
+        root.head.insertAdjacentHTML(
           "beforeend",
           `<style id="ch-grid-columns-variables" data-columns="${this.columns.length}">${styleInnerHTML}</style>`
         );
+      } else if (root instanceof ShadowRoot) {
+        const s = document.createElement("style");
+        s.id = "ch-grid-columns-variables";
+        s.dataset.columns = this.columns.length.toString();
+        s.innerText = styleInnerHTML;
+        root.appendChild(s);
       }
     }
   }

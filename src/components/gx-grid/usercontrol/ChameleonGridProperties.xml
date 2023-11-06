@@ -230,6 +230,30 @@
 							<Type>Integer</Type>
 							<Default>6</Default>
 						</Prop>
+						<Prop>
+							<Id>PaginatorInfoShow</Id>
+							<Name>PaginatorInfoShow</Name>
+							<Type>Boolean</Type>
+							<Default>true</Default>
+						</Prop>
+						<Prop>
+							<Id>PaginatorInfoClass</Id>
+							<Name>PaginatorInfoClass</Name>
+							<Type>Text</Type>
+							<Default>grid-paging-info</Default>
+						</Prop>
+						<Prop>
+							<Id>PaginatorInfoTextMask</Id>
+							<Name>PaginatorInfoTextMask</Name>
+							<Type>Text</Type>
+							<Default>{record-start} - {record-end} out of {record-count}</Default>
+						</Prop>
+						<Prop>
+							<Id>PaginatorInfoEmptyTextMask</Id>
+							<Name>PaginatorInfoEmptyTextMask</Name>
+							<Type>Text</Type>
+							<Default>{record-count} records</Default>
+						</Prop>
 					</Childs>
 				</Group>
 			</Childs>

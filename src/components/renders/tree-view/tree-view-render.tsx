@@ -496,14 +496,18 @@ export class ChTreeViewRender {
    * given list.
    */
   @Method()
-  async getItemsInfo(itemsId: string[]) {
-    const treeViewItemsInfo: TreeViewItemModel[] = [];
+  async getItemsInfo(itemsId: string[]): Promise<TreeViewItemModelExtended[]> {
+    return this._getItemsInfo(itemsId);
+  }
+
+  private _getItemsInfo(itemsId: string[]): TreeViewItemModelExtended[] {
+    const treeViewItemsInfo: TreeViewItemModelExtended[] = [];
 
     itemsId.forEach(itemId => {
       const itemUIModel = this.flattenedTreeModel.get(itemId);
 
       if (itemUIModel) {
-        treeViewItemsInfo.push(itemUIModel.item);
+        treeViewItemsInfo.push(itemUIModel);
       }
     });
 

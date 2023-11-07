@@ -492,6 +492,25 @@ export class ChTreeViewRender {
   }
 
   /**
+   * Given a list of ids, it returns an array of the items that exists in the
+   * given list.
+   */
+  @Method()
+  async getItemsInfo(itemsId: string[]) {
+    const treeViewItemsInfo: TreeViewItemModel[] = [];
+
+    itemsId.forEach(itemId => {
+      const itemUIModel = this.flattenedTreeModel.get(itemId);
+
+      if (itemUIModel) {
+        treeViewItemsInfo.push(itemUIModel.item);
+      }
+    });
+
+    return treeViewItemsInfo;
+  }
+
+  /**
    * Given an item id, an array of items to add, the download status and the
    * lazy state, updates the item's UI Model.
    */

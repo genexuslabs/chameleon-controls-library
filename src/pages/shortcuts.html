@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-shortcuts</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <style>
+      ch-shortcuts::part(tooltip) {
+        outline: 1px solid darkblue;
+        background-color: darkblue;
+        color: white;
+        padding: 3px;
+        font-size: 12px;
+      }
+      ch-shortcuts::part(element) {
+        outline: 1px solid darkblue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="section-dev" data-title="shortcut">
+        <h2>Formulario de Contacto</h2>
+
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" data-shortcut="Alt+N" />
+        </div>
+
+        <div>
+          <label for="email">Correo Electrónico:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            data-shortcut="Alt+E"
+            data-shortcut-prevent="Enter"
+            aria-keyshortcuts="Alt+E"
+          />
+        </div>
+
+        <div>
+          <label for="mensaje">Mensaje:</label>
+          <textarea
+            id="mensaje"
+            name="mensaje"
+            rows="4"
+            data-shortcut="Alt+M"
+          ></textarea>
+        </div>
+
+        <div>
+          <button
+            id="enviar"
+            data-shortcut="Enter"
+            data-shortcut-action="click"
+            onclick="alert('Enviado...')"
+          >
+            Enviar
+          </button>
+        </div>
+
+        <ch-shortcuts src="./assets/json/shortcuts.json"></ch-shortcuts>
+      </section>
+    </div>
+
+    <script src="./assets/scripts/common.js"></script>
+  </body>
+</html>

@@ -1121,8 +1121,7 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
-            (this.filterType === "caption" || this.filterType === "metadata") &&
-              this.filter != null,
+            this.filterType !== "none",
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0
           )

@@ -19,10 +19,16 @@ export type TreeViewFilterOptions = {
    */
   autoExpand?: boolean;
 
+  // /**
+  //  * Don't render unmatched items.
+  //  */
+  // hideUnmatchedItems?: boolean;
+
   /**
-   * Don't render unmatched items.
+   * `true` to render the items that don't satisfy the predicate condition and
+   * hide the items that satisfy the predicate.
    */
-  hideUnmatchedItems?: boolean;
+  hideMatchesAndShowNonMatches?: boolean;
 
   /**
    * Only works if `regularExpression` is not used.

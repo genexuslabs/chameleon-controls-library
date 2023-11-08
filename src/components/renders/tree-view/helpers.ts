@@ -23,7 +23,7 @@ const filterWithString = (
     ? stringToFilter.match(filter) !== null
     : filterWithCase(stringToFilter, filter, filterOptions?.matchCase);
 
-export const filterDictionary: {
+const filterDictionary: {
   [key in TreeViewFilterType]: (
     item: TreeViewItemModel,
     filterInfo: TreeViewFilterInfo
@@ -61,6 +61,15 @@ export const filterDictionary: {
     !item.indeterminate &&
     !(item.checked ?? filterInfo.defaultChecked)
 };
+
+export const computeFilter = (
+  filterType: TreeViewFilterType,
+  item: TreeViewItemModel,
+  filterInfo: TreeViewFilterInfo
+): boolean =>
+  filterInfo.filterOptions?.hideMatchesAndShowNonMatches === true
+    ? !filterDictionary[filterType](item, filterInfo)
+    : filterDictionary[filterType](item, filterInfo);
 
 export type TreeViewItemSimplifiedModel = {
   id: string;

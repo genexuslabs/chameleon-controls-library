@@ -34,7 +34,7 @@ import {
   ChTreeViewItemCustomEvent
 } from "../../../components";
 import { GxDataTransferInfo } from "../../../common/types";
-import { filterDictionary } from "./helpers";
+import { computeFilter } from "./helpers";
 import {
   TreeViewGXItemModel,
   fromGxImageToURL
@@ -302,14 +302,11 @@ export class ChTreeViewRender {
   /**
    * This property lets you determine the options that will be applied to the
    * filter.
-   * Only works if `filterType = "caption" | "metadata"`.
    */
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
   handleFilterOptionsChange() {
-    if (this.filterType === "caption" || this.filterType === "metadata") {
-      this.processFilters();
-    }
+    this.processFilters();
   }
 
   /**
@@ -1018,7 +1015,8 @@ export class ChTreeViewRender {
     // The current item is rendered if it satisfies the filter condition or a
     // subitem exists that needs to be rendered
     const satisfiesFilter =
-      filterDictionary[this.filterType](item, filterInfo) || aSubItemIsRendered;
+      computeFilter(this.filterType, item, filterInfo) || aSubItemIsRendered;
+
     item.render = satisfiesFilter; // Update item render
 
     return satisfiesFilter;

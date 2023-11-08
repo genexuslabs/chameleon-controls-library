@@ -1015,7 +1015,7 @@ export class ChTreeViewRender {
     // The current item is rendered if it satisfies the filter condition or a
     // subitem exists that needs to be rendered
     const satisfiesFilter =
-      computeFilter(this.filterType, item, filterInfo) || aSubItemIsRendered;
+      aSubItemIsRendered || computeFilter(this.filterType, item, filterInfo);
 
     item.render = satisfiesFilter; // Update item render
 

@@ -428,9 +428,7 @@ export class ChTreeViewRender {
   /**
    * Fired when the selected items change.
    */
-  @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeViewItemSelectedInfo>
-  >;
+  @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
 
   /**
    * Given the drop accepting, the data transfer info and the external items,
@@ -856,7 +854,8 @@ export class ChTreeViewRender {
       this.selectedItems.add(itemId);
     });
 
-    this.selectedItemsChange.emit(event.detail);
+    const selectedItemsInfo = this._getItemsInfo([...event.detail.keys()]);
+    this.selectedItemsChange.emit(selectedItemsInfo);
   };
 
   private handleExpandedItemChange = (

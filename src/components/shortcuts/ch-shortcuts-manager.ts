@@ -1,6 +1,6 @@
 import { focusComposedPath } from "../common/helpers";
 
-const CH_SHORTCUTS = new Map<string, ShortcutMap>();
+let LATEST_SHORTCUT: ShortcutMap;
 
 export function loadShortcuts(
   name: string,
@@ -75,7 +75,16 @@ function removeListener() {
 }
 
 function keydownHandler(eventInfo: KeyboardEvent) {
-  const shortcutMap = CH_SHORTCUTS.get(
+  if (
+    !eventInfo.repeat ||
+    (eventInfo.repeat && LATEST_SHORTCUT?.shortcut.conditions?.allowRepeat)
+  ) {
+    LATEST_SHORTCUT = triggerShortcut(eventInfo);
+  }
+}
+
+function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
+  const shortcutMap = SHORTCUTS.get(
     normalize(
       eventInfo.ctrlKey,
       eventInfo.altKey,
@@ -104,6 +113,8 @@ function keydownHandler(eventInfo: KeyboardEvent) {
       }
     }
   }
+
+  return shortcutMap;
 }
 
 function parseKeyShortcuts(value = ""): KeyShortcut[] {
@@ -244,10 +255,11 @@ export interface Shortcut {
   keyShortcuts: string;
   preventDefault?: boolean;
   conditions?: {
-    focusInclude: string;
-    focusExclude: string;
+    focusInclude?: string;
+    focusExclude?: string;
+    allowRepeat?: boolean;
   };
-  legendPosition: string;
+  legendPosition?: string;
   action?: "focus" | "click";
 }
 

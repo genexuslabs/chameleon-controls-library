@@ -108,19 +108,34 @@ function keydownHandler(eventInfo: KeyboardEvent) {
 
 function parseKeyShortcuts(value = ""): KeyShortcut[] {
   return value.split(" ").map(item => {
-    const match = item.match(
-      /(?:(?<ctrl>Ctrl)?(?<alt>Alt)?(?<shift>Shift)?(?<meta>Meta)?\+?)*(?<key>.*)?/i
+    return item.split("+").reduce(
+      (keyShortcut: KeyShortcut, key: string) => {
+        switch (key.toLowerCase()) {
+          case "ctrl":
+            keyShortcut.ctrl = true;
+            break;
+          case "alt":
+            keyShortcut.alt = true;
+            break;
+          case "shift":
+            keyShortcut.shift = true;
+            break;
+          case "meta":
+            keyShortcut.meta = true;
+            break;
+          default:
+            keyShortcut.key = key;
+        }
+        return keyShortcut;
+      },
+      {
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: false,
+        key: ""
+      } as KeyShortcut
     );
-
-    if (match.groups.key !== "") {
-      return {
-        ctrl: match.groups.ctrl !== undefined,
-        alt: match.groups.alt !== undefined,
-        shift: match.groups.shift !== undefined,
-        meta: match.groups.meta !== undefined,
-        key: match.groups.key
-      };
-    }
   });
 }
 

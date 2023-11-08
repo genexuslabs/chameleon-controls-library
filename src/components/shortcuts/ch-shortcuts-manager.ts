@@ -1,6 +1,7 @@
 import { focusComposedPath } from "../common/helpers";
 
-const CH_SHORTCUTS = new Map<string, ShortcutMap>();
+const SHORTCUTS = new Map<string, ShortcutMap>();
+let LATEST_SHORTCUT: ShortcutMap;
 
 export function loadShortcuts(
   name: string,
@@ -10,7 +11,7 @@ export function loadShortcuts(
   shortcuts.forEach(shortcut => {
     const keyShortcuts = parseKeyShortcuts(shortcut.keyShortcuts);
     keyShortcuts.forEach(keyShortcut => {
-      CH_SHORTCUTS.set(
+      SHORTCUTS.set(
         normalize(
           keyShortcut.ctrl,
           keyShortcut.alt,
@@ -33,13 +34,13 @@ export function loadShortcuts(
 export function unloadShortcuts(name: string) {
   const removeKeyShortcuts: string[] = [];
 
-  CH_SHORTCUTS.forEach((shortcutMap, key) => {
+  SHORTCUTS.forEach((shortcutMap, key) => {
     if (shortcutMap.name === name) {
       removeKeyShortcuts.push(key);
     }
   });
 
-  removeKeyShortcuts.forEach(key => CH_SHORTCUTS.delete(key));
+  removeKeyShortcuts.forEach(key => SHORTCUTS.delete(key));
   removeListener();
 }
 
@@ -48,7 +49,7 @@ export function getShortcuts(): {
   keyShortcuts: string;
   legendPosition: string;
 }[] {
-  return Array.from(CH_SHORTCUTS.values())
+  return Array.from(SHORTCUTS.values())
     .filter(shortcutMap => {
       return !shortcutMap.shortcut.conditions?.focusInclude;
     })
@@ -63,19 +64,28 @@ export function getShortcuts(): {
 }
 
 function addListener() {
-  if (CH_SHORTCUTS.size > 0) {
+  if (SHORTCUTS.size > 0) {
     window.addEventListener("keydown", keydownHandler, { capture: true });
   }
 }
 
 function removeListener() {
-  if (CH_SHORTCUTS.size === 0) {
+  if (SHORTCUTS.size === 0) {
     window.removeEventListener("keydown", keydownHandler, { capture: true });
   }
 }
 
 function keydownHandler(eventInfo: KeyboardEvent) {
-  const shortcutMap = CH_SHORTCUTS.get(
+  if (
+    !eventInfo.repeat ||
+    (eventInfo.repeat && LATEST_SHORTCUT?.shortcut.conditions?.allowRepeat)
+  ) {
+    LATEST_SHORTCUT = triggerShortcut(eventInfo);
+  }
+}
+
+function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
+  const shortcutMap = SHORTCUTS.get(
     normalize(
       eventInfo.ctrlKey,
       eventInfo.altKey,
@@ -104,23 +114,40 @@ function keydownHandler(eventInfo: KeyboardEvent) {
       }
     }
   }
+
+  return shortcutMap;
 }
 
 function parseKeyShortcuts(value = ""): KeyShortcut[] {
   return value.split(" ").map(item => {
-    const match = item.match(
-      /(?:(?<ctrl>Ctrl)?(?<alt>Alt)?(?<shift>Shift)?(?<meta>Meta)?\+?)*(?<key>.*)?/i
+    return item.split("+").reduce(
+      (keyShortcut: KeyShortcut, key: string) => {
+        switch (key.toLowerCase()) {
+          case "ctrl":
+            keyShortcut.ctrl = true;
+            break;
+          case "alt":
+            keyShortcut.alt = true;
+            break;
+          case "shift":
+            keyShortcut.shift = true;
+            break;
+          case "meta":
+            keyShortcut.meta = true;
+            break;
+          default:
+            keyShortcut.key = key;
+        }
+        return keyShortcut;
+      },
+      {
+        ctrl: false,
+        alt: false,
+        shift: false,
+        meta: false,
+        key: ""
+      } as KeyShortcut
     );
-
-    if (match.groups.key !== "") {
-      return {
-        ctrl: match.groups.ctrl !== undefined,
-        alt: match.groups.alt !== undefined,
-        shift: match.groups.shift !== undefined,
-        meta: match.groups.meta !== undefined,
-        key: match.groups.key
-      };
-    }
   });
 }
 
@@ -229,10 +256,11 @@ export interface Shortcut {
   keyShortcuts: string;
   preventDefault?: boolean;
   conditions?: {
-    focusInclude: string;
-    focusExclude: string;
+    focusInclude?: string;
+    focusExclude?: string;
+    allowRepeat?: boolean;
   };
-  legendPosition: string;
+  legendPosition?: string;
   action?: "focus" | "click";
 }
 

@@ -198,6 +198,7 @@ export class ChTreeViewRender {
   private emitCheckedChange = false;
 
   private filterTimeout: NodeJS.Timeout;
+  private filterListAsSet: Set<string>;
 
   // Refs
   private treeRef: HTMLChTreeViewElement;
@@ -294,6 +295,9 @@ export class ChTreeViewRender {
   @Prop() readonly filterList: string[] = [];
   @Watch("filterList")
   handleFilterListChange() {
+    // Use a Set to efficiently check for ids
+    this.filterListAsSet = new Set(this.filterList);
+
     if (this.filterType === "id-list") {
       this.processFilters();
     }
@@ -1066,8 +1070,8 @@ export class ChTreeViewRender {
           defaultCheckbox: this.checkbox,
           defaultChecked: this.checked,
           filter: this.filter,
-          filterList: this.filterList,
-          filterOptions: this.filterOptions
+          filterOptions: this.filterOptions,
+          filterSet: this.filterListAsSet
         }
       );
 

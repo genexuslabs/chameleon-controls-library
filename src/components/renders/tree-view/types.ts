@@ -58,7 +58,7 @@ export type TreeViewFilterType =
 export type TreeViewFilterInfo = {
   filter: string;
   filterOptions: TreeViewFilterOptions;
-  filterList: string[];
+  filterSet: Set<string>;
   defaultCheckbox: boolean;
   defaultChecked: boolean;
 };

@@ -43,7 +43,7 @@ const filterDictionary: {
     !item.indeterminate &&
     (item.checked ?? filterInfo.defaultChecked),
 
-  "id-list": (item, filterInfo) => filterInfo.filterList.includes(item.id),
+  "id-list": (item, filterInfo) => filterInfo.filterSet.has(item.id),
 
   metadata: (item, filterInfo) =>
     filterInfo.filter

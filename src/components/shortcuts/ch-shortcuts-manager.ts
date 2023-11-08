@@ -1,5 +1,6 @@
 import { focusComposedPath } from "../common/helpers";
 
+const SHORTCUTS = new Map<string, ShortcutMap>();
 let LATEST_SHORTCUT: ShortcutMap;
 
 export function loadShortcuts(
@@ -10,7 +11,7 @@ export function loadShortcuts(
   shortcuts.forEach(shortcut => {
     const keyShortcuts = parseKeyShortcuts(shortcut.keyShortcuts);
     keyShortcuts.forEach(keyShortcut => {
-      CH_SHORTCUTS.set(
+      SHORTCUTS.set(
         normalize(
           keyShortcut.ctrl,
           keyShortcut.alt,
@@ -33,13 +34,13 @@ export function loadShortcuts(
 export function unloadShortcuts(name: string) {
   const removeKeyShortcuts: string[] = [];
 
-  CH_SHORTCUTS.forEach((shortcutMap, key) => {
+  SHORTCUTS.forEach((shortcutMap, key) => {
     if (shortcutMap.name === name) {
       removeKeyShortcuts.push(key);
     }
   });
 
-  removeKeyShortcuts.forEach(key => CH_SHORTCUTS.delete(key));
+  removeKeyShortcuts.forEach(key => SHORTCUTS.delete(key));
   removeListener();
 }
 
@@ -48,7 +49,7 @@ export function getShortcuts(): {
   keyShortcuts: string;
   legendPosition: string;
 }[] {
-  return Array.from(CH_SHORTCUTS.values())
+  return Array.from(SHORTCUTS.values())
     .filter(shortcutMap => {
       return !shortcutMap.shortcut.conditions?.focusInclude;
     })
@@ -63,13 +64,13 @@ export function getShortcuts(): {
 }
 
 function addListener() {
-  if (CH_SHORTCUTS.size > 0) {
+  if (SHORTCUTS.size > 0) {
     window.addEventListener("keydown", keydownHandler, { capture: true });
   }
 }
 
 function removeListener() {
-  if (CH_SHORTCUTS.size === 0) {
+  if (SHORTCUTS.size === 0) {
     window.removeEventListener("keydown", keydownHandler, { capture: true });
   }
 }

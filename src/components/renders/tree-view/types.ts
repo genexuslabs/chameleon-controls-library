@@ -51,8 +51,8 @@ export type TreeViewFilterType =
   | "checked"
   | "unchecked"
   | "caption"
+  | "list"
   | "metadata"
-  | "id-list"
   | "none";
 
 export type TreeViewFilterInfo = {

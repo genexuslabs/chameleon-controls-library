@@ -290,7 +290,7 @@ export class ChTreeViewRender {
 
   /**
    * This property lets you determine the list of items that will be filtered.
-   * Only works if `filterType = "id-list"`.
+   * Only works if `filterType = "list"`.
    */
   @Prop() readonly filterList: string[] = [];
   @Watch("filterList")
@@ -298,7 +298,7 @@ export class ChTreeViewRender {
     // Use a Set to efficiently check for ids
     this.filterListAsSet = new Set(this.filterList);
 
-    if (this.filterType === "id-list") {
+    if (this.filterType === "list") {
       this.processFilters();
     }
   }
@@ -323,7 +323,7 @@ export class ChTreeViewRender {
    * | `unchecked` | Show only the items that have a checkbox and are not checked.                                  |
    * | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
    * | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. |
-   * | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  |
+   * | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     |
    * | `none`      | Show all items.                                                                                |
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";

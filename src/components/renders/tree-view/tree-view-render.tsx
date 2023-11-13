@@ -695,7 +695,9 @@ export class ChTreeViewRender {
     const itemInfo = itemUIModel.item;
 
     Object.keys(properties).forEach(propertyName => {
-      itemInfo[propertyName] = properties[propertyName];
+      if (properties[propertyName] !== undefined) {
+        itemInfo[propertyName] = properties[propertyName];
+      }
     });
   }
 

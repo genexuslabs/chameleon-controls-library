@@ -50,6 +50,13 @@ const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
 
+// There are a filter applied and, if the type is "caption" or
+// "metadata", the filter property must be set
+const treeViewHasFilters = (filterType: TreeViewFilterType, filter) =>
+  filterType !== "none" &&
+  ((filterType !== "caption" && filterType !== "metadata") ||
+    (filter != null && filter.trim() !== ""));
+
 const defaultRenderItem = (
   itemModel: TreeViewItemModel,
   treeState: ChTreeViewRender,
@@ -1127,7 +1134,7 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
-            this.filterType !== "none",
+            treeViewHasFilters(this.filterType, this.filter),
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0
           )

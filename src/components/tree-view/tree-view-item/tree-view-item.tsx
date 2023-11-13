@@ -181,7 +181,11 @@ export class ChTreeViewItem {
   @Prop({ mutable: true }) expanded = false;
   @Watch("expanded")
   handleExpandedChange(isExpanded: boolean) {
-    this.lazyLoadItems(isExpanded);
+    // Wait until all properties are updated before lazy loading. Otherwise, the
+    // lazyLoad property could be updated just after the executing of the function
+    setTimeout(() => {
+      this.lazyLoadItems(isExpanded);
+    });
   }
 
   /**

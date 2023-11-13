@@ -95,7 +95,7 @@ const defaultRenderItem = (
             treeState.showLines !== "none" &&
               // If there is a filter applied in the current list, use the
               // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== ""
+              (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1
@@ -158,7 +158,7 @@ const GXRenderItem = (
             treeState.showLines !== "none" &&
               // If there is a filter applied in the current list, use the
               // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== ""
+              (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1
@@ -1004,7 +1004,7 @@ export class ChTreeViewRender {
 
     // Check if a subitem is rendered
     if (item.leaf !== true && item.items != null) {
-      let lastItemId = "";
+      let lastItemId = undefined;
 
       item.items.forEach(subItem => {
         const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);

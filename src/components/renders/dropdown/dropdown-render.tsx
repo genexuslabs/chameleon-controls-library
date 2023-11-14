@@ -90,6 +90,8 @@ export class ChDropdownRender {
         openOnFocus={this.openOnFocus}
         position={this.position}
       >
+        <slot name="action" slot="action" />
+
         {this.showHeader && <slot name="header" slot="header" />}
 
         {this.itemsModel != null && this.itemsModel.map(this.renderItem)}

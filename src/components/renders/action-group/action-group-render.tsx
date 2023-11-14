@@ -4,6 +4,9 @@ import { DropdownPosition } from "../../dropdown/types";
 import { ChActionGroupCustomEvent } from "../../../components";
 import { ItemsOverflowBehavior } from "../../action-group/types";
 
+const DEFAULT_ACTION_CLASS = "action-group-item";
+const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";
+
 @Component({
   tag: "ch-action-group-render",
   styleUrl: "action-group-render.scss",
@@ -75,7 +78,7 @@ export class ChActionGroupRender {
     <ch-dropdown-item
       slot="items"
       id={item.id}
-      class={item.class}
+      class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
       leftImgSrc={item.startImage}
@@ -95,7 +98,7 @@ export class ChActionGroupRender {
   ) => (
     <ch-dropdown-item
       id={item.id}
-      class={item.class}
+      class={item.actionClass || DEFAULT_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       forceContainingBlock={false}
       href={item.target}
@@ -117,7 +120,7 @@ export class ChActionGroupRender {
     <ch-dropdown-item
       slot="more-items"
       id={item.id}
-      class={item.class}
+      class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
       leftImgSrc={item.startImage}

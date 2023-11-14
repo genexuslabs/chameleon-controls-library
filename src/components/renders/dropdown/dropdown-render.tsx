@@ -3,11 +3,11 @@ import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 
 @Component({
-  tag: "ch-test-dropdown",
-  styleUrl: "test-dropdown.scss",
+  tag: "ch-dropdown-render",
+  styleUrl: "dropdown-render.scss",
   shadow: false // Necessary to avoid focus capture
 })
-export class ChTestDropdownX {
+export class ChDropdownRender {
   /**
    * This attribute lets you specify the label for the expandable button.
    * Important for accessibility.

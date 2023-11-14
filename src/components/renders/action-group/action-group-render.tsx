@@ -1,4 +1,4 @@
-import { Component, h, Prop, Host, State } from "@stencil/core";
+import { Component, h, Prop, State } from "@stencil/core";
 import { ActionGroupItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { ChActionGroupCustomEvent } from "../../../components";
@@ -25,11 +25,6 @@ export class ChActionGroupRender {
   @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
-   * This property lets you define the model of the ch-dropdown control.
-   */
-  @Prop() readonly itemsModel: ActionGroupItemModel[];
-
-  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the Width of the container of ActionGroup.
    *
@@ -41,6 +36,11 @@ export class ChActionGroupRender {
    */
   @Prop() readonly itemsOverflowBehavior: ItemsOverflowBehavior =
     "ResponsiveCollapse";
+
+  /**
+   * This property lets you define the model of the ch-action-group control.
+   */
+  @Prop() readonly model: ActionGroupItemModel[];
 
   /**
    * Determine if the dropdown section should be opened when the expandable
@@ -143,16 +143,16 @@ export class ChActionGroupRender {
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
         onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
       >
-        {this.itemsModel != null &&
-          this.itemsModel.map((item, index) => (
+        {this.model != null &&
+          this.model.map((item, index) => (
             <ch-action-group-item slot="items">
               {this.firstLevelRenderItem(item, index)}
             </ch-action-group-item>
           ))}
 
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-          this.itemsModel != null &&
-          this.itemsModel
+          this.model != null &&
+          this.model
             .filter(
               (_, index) =>
                 this.displayedItemsCount !== -1 &&

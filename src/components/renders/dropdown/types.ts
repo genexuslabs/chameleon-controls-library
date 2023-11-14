@@ -8,7 +8,5 @@ export type DropdownItemModel = {
   items: DropdownItemModel[];
   position?: DropdownPosition;
   startImage?: string;
-  showSeparator?: boolean;
-  separatorClass?: string;
   target?: string;
 };

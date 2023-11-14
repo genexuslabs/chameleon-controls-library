@@ -73,12 +73,12 @@ export class ChActionGroupRender {
       class={item.class}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.leftIcon}
+      leftImgSrc={item.startImage}
       openOnFocus={this.openOnFocus}
       position={item.position || "OutsideEnd_InsideStart"}
-      rightImgSrc={item.rightIcon}
+      rightImgSrc={item.endImage}
     >
-      {item.title}
+      {item.caption}
 
       {item.items != null && item.items.map(this.renderItem)}
     </ch-dropdown-item>
@@ -94,12 +94,12 @@ export class ChActionGroupRender {
       expandBehavior={this.expandBehavior}
       forceContainingBlock={false}
       href={item.target}
-      leftImgSrc={item.leftIcon}
+      leftImgSrc={item.startImage}
       openOnFocus={this.openOnFocus}
       position={item.position || "Center_OutsideEnd"}
-      rightImgSrc={item.rightIcon}
+      rightImgSrc={item.endImage}
     >
-      {item.title}
+      {item.caption}
 
       {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
         (this.displayedItemsCount === -1 || index < this.displayedItemsCount) &&
@@ -115,12 +115,12 @@ export class ChActionGroupRender {
       class={item.class}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.leftIcon}
+      leftImgSrc={item.startImage}
       openOnFocus={this.openOnFocus}
       position={item.responsiveCollapsePosition || "OutsideEnd_InsideStart"}
-      rightImgSrc={item.rightIcon}
+      rightImgSrc={item.endImage}
     >
-      {item.title}
+      {item.caption}
 
       {item.items != null && item.items.map(this.renderItem)}
     </ch-dropdown-item>
@@ -142,9 +142,6 @@ export class ChActionGroupRender {
           itemsOverflowBehavior={this.itemsOverflowBehavior}
           openOnFocus={this.openOnFocus}
           moreActionsDropdownPosition={this.moreActionsDropdownPosition}
-          // style={{
-          //   "--separation": `${this.separation}px`
-          // }}
           onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
         >
           {this.itemsModel != null &&

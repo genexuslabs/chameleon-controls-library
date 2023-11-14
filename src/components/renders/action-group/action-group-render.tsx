@@ -19,6 +19,11 @@ export class ChActionGroupRender {
   @Prop() readonly buttonLabel: string = "Show options";
 
   /**
+   * A CSS class to set as the `ch-action-group` element class.
+   */
+  @Prop() readonly cssClass: string = "action-group";
+
+  /**
    * Determine which actions on the expandable button display the dropdown
    * section.
    */
@@ -136,7 +141,7 @@ export class ChActionGroupRender {
     return (
       <ch-action-group
         buttonLabel={this.buttonLabel}
-        class="action-group"
+        class={this.cssClass || null}
         expandBehavior={this.expandBehavior}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
         openOnFocus={this.openOnFocus}

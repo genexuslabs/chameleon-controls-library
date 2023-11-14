@@ -1,15 +1,11 @@
 import { DropdownPosition } from "../../dropdown/types";
+import { DropdownItemModel } from "../dropdown/types";
 
-export type ActionGroupItemModel = {
-  id?: string;
-  class?: string;
-  leftIcon?: string;
-  rightIcon?: string;
-  items: ActionGroupItemModel[];
-  position?: DropdownPosition;
+type ReducedDropdownItemModel = Exclude<DropdownItemModel, "items" | "class">;
+
+export type ActionGroupItemModel = ReducedDropdownItemModel & {
+  actionClass?: string;
+  subActionClass?: string;
+  items?: ActionGroupItemModel[];
   responsiveCollapsePosition?: DropdownPosition;
-  target?: string;
-  title: string;
-  showSeparator?: boolean;
-  separatorClass?: string;
 };

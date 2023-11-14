@@ -33,7 +33,7 @@ export class ChDropdownRender {
   /**
    * This property lets you define the model of the ch-dropdown control.
    */
-  @Prop() readonly itemsModel: DropdownItemModel[];
+  @Prop() readonly model: DropdownItemModel[];
 
   /**
    * Determine if the dropdown section should be opened when the expandable
@@ -94,7 +94,7 @@ export class ChDropdownRender {
 
         {this.showHeader && <slot name="header" slot="header" />}
 
-        {this.itemsModel != null && this.itemsModel.map(this.renderItem)}
+        {this.model != null && this.model.map(this.renderItem)}
 
         {this.showFooter && <slot name="footer" slot="footer" />}
       </ch-dropdown>

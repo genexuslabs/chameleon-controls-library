@@ -61,7 +61,7 @@ export class ChDropdownRender {
       href={item.target}
       leftImgSrc={item.startImage}
       openOnFocus={this.openOnFocus}
-      position="OutsideEnd_InsideStart"
+      position={item.position || "OutsideEnd_InsideStart"}
       rightImgSrc={item.endImage}
     >
       {item.caption}

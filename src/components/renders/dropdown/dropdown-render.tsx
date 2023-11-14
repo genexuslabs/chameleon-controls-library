@@ -59,12 +59,12 @@ export class ChDropdownRender {
       class={item.class}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.leftIcon}
+      leftImgSrc={item.startImage}
       openOnFocus={this.openOnFocus}
       position="OutsideEnd_InsideStart"
-      rightImgSrc={item.rightIcon}
+      rightImgSrc={item.endImage}
     >
-      {item.title}
+      {item.caption}
 
       {item.items != null && item.items.map(this.renderItem)}
     </ch-dropdown-item>,

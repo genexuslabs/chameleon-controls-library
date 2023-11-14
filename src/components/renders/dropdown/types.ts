@@ -1,11 +1,11 @@
 export type DropdownItemModel = {
   id?: string;
+  caption: string;
   class?: string;
-  leftIcon?: string;
-  rightIcon?: string;
+  endImage?: string;
   items: DropdownItemModel[];
   target?: string;
-  title: string;
+  startImage?: string;
   showSeparator?: boolean;
   separatorClass?: string;
 };

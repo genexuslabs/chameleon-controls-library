@@ -134,34 +134,32 @@ export class ChActionGroupRender {
 
   render() {
     return (
-      <Host>
-        <ch-action-group
-          buttonLabel={this.buttonLabel}
-          class="action-group"
-          expandBehavior={this.expandBehavior}
-          itemsOverflowBehavior={this.itemsOverflowBehavior}
-          openOnFocus={this.openOnFocus}
-          moreActionsDropdownPosition={this.moreActionsDropdownPosition}
-          onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
-        >
-          {this.itemsModel != null &&
-            this.itemsModel.map((item, index) => (
-              <ch-action-group-item slot="items">
-                {this.firstLevelRenderItem(item, index)}
-              </ch-action-group-item>
-            ))}
+      <ch-action-group
+        buttonLabel={this.buttonLabel}
+        class="action-group"
+        expandBehavior={this.expandBehavior}
+        itemsOverflowBehavior={this.itemsOverflowBehavior}
+        openOnFocus={this.openOnFocus}
+        moreActionsDropdownPosition={this.moreActionsDropdownPosition}
+        onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
+      >
+        {this.itemsModel != null &&
+          this.itemsModel.map((item, index) => (
+            <ch-action-group-item slot="items">
+              {this.firstLevelRenderItem(item, index)}
+            </ch-action-group-item>
+          ))}
 
-          {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-            this.itemsModel != null &&
-            this.itemsModel
-              .filter(
-                (_, index) =>
-                  this.displayedItemsCount !== -1 &&
-                  index >= this.displayedItemsCount
-              )
-              .map(this.firstLevelRenderCollapsedItem)}
-        </ch-action-group>
-      </Host>
+        {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+          this.itemsModel != null &&
+          this.itemsModel
+            .filter(
+              (_, index) =>
+                this.displayedItemsCount !== -1 &&
+                index >= this.displayedItemsCount
+            )
+            .map(this.firstLevelRenderCollapsedItem)}
+      </ch-action-group>
     );
   }
 }

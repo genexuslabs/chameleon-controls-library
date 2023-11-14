@@ -1,4 +1,4 @@
-import { Component, Element, h, Prop, Host } from "@stencil/core";
+import { Component, Element, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 
@@ -83,21 +83,19 @@ export class ChDropdownRender {
 
   render() {
     return (
-      <Host>
-        <ch-dropdown
-          buttonLabel={this.buttonLabel}
-          class={this.cssClass || null}
-          expandBehavior={this.expandBehavior}
-          openOnFocus={this.openOnFocus}
-          position={this.position}
-        >
-          {this.showHeader && <slot name="header" slot="header" />}
+      <ch-dropdown
+        buttonLabel={this.buttonLabel}
+        class={this.cssClass || null}
+        expandBehavior={this.expandBehavior}
+        openOnFocus={this.openOnFocus}
+        position={this.position}
+      >
+        {this.showHeader && <slot name="header" slot="header" />}
 
-          {this.itemsModel != null && this.itemsModel.map(this.renderItem)}
+        {this.itemsModel != null && this.itemsModel.map(this.renderItem)}
 
-          {this.showFooter && <slot name="footer" slot="footer" />}
-        </ch-dropdown>
-      </Host>
+        {this.showFooter && <slot name="footer" slot="footer" />}
+      </ch-dropdown>
     );
   }
 }

@@ -33,6 +33,15 @@ export class ChDropdownRender {
   @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
+   * This callback is executed when an item is clicked.
+   */
+  @Prop() readonly itemClickCallback: (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+
+  /**
    * This property lets you define the model of the ch-dropdown control.
    */
   @Prop() readonly model: DropdownItemModel[];
@@ -54,6 +63,11 @@ export class ChDropdownRender {
   //  */
   // @Event() expandedChange: EventEmitter<boolean>;
 
+  private handleItemClick =
+    (target: string, itemId: string) => (event: UIEvent) => {
+      this.itemClickCallback(event, target, itemId);
+    };
+
   private renderItem = (item: DropdownItemModel) => [
     <ch-dropdown-item
       slot="items"
@@ -65,6 +79,7 @@ export class ChDropdownRender {
       openOnFocus={this.openOnFocus}
       position={item.position || "OutsideEnd_InsideStart"}
       rightImgSrc={item.endImage}
+      onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
 

@@ -33,6 +33,15 @@ export class ChActionGroupRender {
   @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
+   * This callback is executed when an item is clicked.
+   */
+  @Prop() readonly itemClickCallback: (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+
+  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the Width of the container of ActionGroup.
    *
@@ -74,6 +83,11 @@ export class ChActionGroupRender {
   //  */
   // @Event() expandedChange: EventEmitter<boolean>;
 
+  private handleItemClick =
+    (target: string, itemId: string) => (event: UIEvent) => {
+      this.itemClickCallback(event, target, itemId);
+    };
+
   private renderItem = (item: ActionGroupItemModel) => (
     <ch-dropdown-item
       slot="items"
@@ -85,6 +99,7 @@ export class ChActionGroupRender {
       openOnFocus={this.openOnFocus}
       position={item.position || "OutsideEnd_InsideStart"}
       rightImgSrc={item.endImage}
+      onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
 
@@ -106,6 +121,7 @@ export class ChActionGroupRender {
       openOnFocus={this.openOnFocus}
       position={item.position || "Center_OutsideEnd"}
       rightImgSrc={item.endImage}
+      onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
 
@@ -138,6 +154,7 @@ export class ChActionGroupRender {
       openOnFocus={this.openOnFocus}
       position={item.responsiveCollapsePosition || "OutsideEnd_InsideStart"}
       rightImgSrc={item.endImage}
+      onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
 
@@ -158,8 +175,8 @@ export class ChActionGroupRender {
         class={this.cssClass || null}
         expandBehavior={this.expandBehavior}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
-        openOnFocus={this.openOnFocus}
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
+        openOnFocus={this.openOnFocus}
         onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
       >
         {this.model != null &&

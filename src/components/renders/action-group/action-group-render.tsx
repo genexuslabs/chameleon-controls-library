@@ -112,6 +112,7 @@ export class ChActionGroupRender {
     index: number
   ) => (
     <ch-dropdown-item
+      key={item.id || item.caption || index}
       id={item.id}
       class={item.actionClass || DEFAULT_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
@@ -143,9 +144,13 @@ export class ChActionGroupRender {
     </ch-dropdown-item>
   );
 
-  private firstLevelRenderCollapsedItem = (item: ActionGroupItemModel) => (
+  private firstLevelRenderCollapsedItem = (
+    item: ActionGroupItemModel,
+    index: number
+  ) => (
     <ch-dropdown-item
       slot="more-items"
+      key={item.id || item.caption || index}
       id={item.id}
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
@@ -181,7 +186,10 @@ export class ChActionGroupRender {
       >
         {this.model != null &&
           this.model.map((item, index) => (
-            <ch-action-group-item slot="items">
+            <ch-action-group-item
+              slot="items"
+              key={item.id || item.caption || index}
+            >
               {this.firstLevelRenderItem(item, index)}
             </ch-action-group-item>
           ))}

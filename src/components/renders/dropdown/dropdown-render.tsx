@@ -2,6 +2,8 @@ import { Component, Element, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 
+const DEFAULT_DROPDOWN_ITEM_CLASS = "dropdown-item";
+
 @Component({
   tag: "ch-dropdown-render",
   styleUrl: "dropdown-render.scss",
@@ -56,7 +58,7 @@ export class ChDropdownRender {
     <ch-dropdown-item
       slot="items"
       id={item.id}
-      class={item.class}
+      class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
       leftImgSrc={item.startImage}

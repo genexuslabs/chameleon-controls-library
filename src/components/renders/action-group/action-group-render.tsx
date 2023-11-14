@@ -113,6 +113,17 @@ export class ChActionGroupRender {
         (this.displayedItemsCount === -1 || index < this.displayedItemsCount) &&
         item.items != null &&
         item.items.map(this.renderItem)}
+
+      {
+        // Dummy dropdown item to avoid issues when removing all items from the
+        // first level. E. g., if the first level adds a chevron when the item is
+        // a dropdown, by removing all items the chevron won't be displayed
+        this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+          this.displayedItemsCount !== -1 &&
+          index >= this.displayedItemsCount &&
+          item.items != null &&
+          item.items.length !== 0 && <ch-dropdown-item></ch-dropdown-item>
+      }
     </ch-dropdown-item>
   );
 

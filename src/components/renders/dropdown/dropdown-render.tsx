@@ -67,13 +67,7 @@ export class ChDropdownRender {
       {item.caption}
 
       {item.items != null && item.items.map(this.renderItem)}
-    </ch-dropdown-item>,
-
-    item.showSeparator && (
-      <ch-dropdown-item-separator
-        class={item.separatorClass}
-      ></ch-dropdown-item-separator>
-    )
+    </ch-dropdown-item>
   ];
 
   componentWillLoad() {

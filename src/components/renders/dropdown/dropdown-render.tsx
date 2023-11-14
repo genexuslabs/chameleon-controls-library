@@ -37,12 +37,6 @@ export class ChDropdownRender {
    */
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
-  /**
-   * Specifies the separation (in pixels) between the expandable button and the
-   * dropdown section of the control.
-   */
-  @Prop() readonly separation: number = 0;
-
   // /**
   //  * Fired when the visibility of the dropdown section is changed
   //  */
@@ -81,9 +75,6 @@ export class ChDropdownRender {
           expandBehavior={this.expandBehavior}
           openOnFocus={this.openOnFocus}
           position={this.position}
-          style={{
-            "--separation": `${this.separation}px`
-          }}
         >
           <span slot="action">User info</span>
 

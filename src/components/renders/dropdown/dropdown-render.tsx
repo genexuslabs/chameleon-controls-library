@@ -1,4 +1,4 @@
-import { Component, h, Prop, Host } from "@stencil/core";
+import { Component, Element, h, Prop, Host } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 
@@ -8,11 +8,21 @@ import { DropdownPosition } from "../../dropdown/types";
   shadow: false // Necessary to avoid focus capture
 })
 export class ChDropdownRender {
+  private showHeader = false;
+  private showFooter = false;
+
+  @Element() el: HTMLChDropdownRenderElement;
+
   /**
    * This attribute lets you specify the label for the expandable button.
    * Important for accessibility.
    */
   @Prop() readonly buttonLabel: string = "Show options";
+
+  /**
+   * A CSS class to set as the `ch-dropdown` element class.
+   */
+  @Prop() readonly cssClass: string = "dropdown";
 
   /**
    * Determine which actions on the expandable button display the dropdown
@@ -66,26 +76,26 @@ export class ChDropdownRender {
     )
   ];
 
+  componentWillLoad() {
+    this.showHeader = !!this.el.querySelector(':scope>[slot="header"]');
+    this.showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
+  }
+
   render() {
     return (
       <Host>
         <ch-dropdown
           buttonLabel={this.buttonLabel}
-          class="dropdown"
+          class={this.cssClass || null}
           expandBehavior={this.expandBehavior}
           openOnFocus={this.openOnFocus}
           position={this.position}
         >
-          <span slot="action">User info</span>
-
-          <div slot="header">
-            <h1>John Doe</h1>
-            <span>johndoe@example.com</span>
-          </div>
+          {this.showHeader && <slot name="header" slot="header" />}
 
           {this.itemsModel != null && this.itemsModel.map(this.renderItem)}
 
-          <div slot="footer">Footer</div>
+          {this.showFooter && <slot name="footer" slot="footer" />}
         </ch-dropdown>
       </Host>
     );

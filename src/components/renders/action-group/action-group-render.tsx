@@ -5,11 +5,11 @@ import { ChActionGroupCustomEvent } from "../../../components";
 import { ItemsOverflowBehavior } from "../../action-group/types";
 
 @Component({
-  tag: "ch-test-action-group",
-  styleUrl: "test-action-group.scss",
+  tag: "ch-action-group-render",
+  styleUrl: "action-group-render.scss",
   shadow: false // Necessary to avoid focus capture
 })
-export class ChTestActionGroup {
+export class ChActionGroupRender {
   @State() displayedItemsCount = -1;
 
   /**

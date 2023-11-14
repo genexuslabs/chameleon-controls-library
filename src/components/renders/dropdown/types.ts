@@ -5,7 +5,7 @@ export type DropdownItemModel = {
   caption: string;
   class?: string;
   endImage?: string;
-  items: DropdownItemModel[];
+  items?: DropdownItemModel[];
   position?: DropdownPosition;
   startImage?: string;
   target?: string;

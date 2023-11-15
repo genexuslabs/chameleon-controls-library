@@ -3,6 +3,7 @@ import { ActionGroupItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { ChActionGroupCustomEvent } from "../../../components";
 import { ItemsOverflowBehavior } from "../../action-group/types";
+import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 const DEFAULT_ACTION_CLASS = "action-group-item";
 const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";
@@ -31,6 +32,16 @@ export class ChActionGroupRender {
    * section.
    */
   @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxImageConstructor: (name: string) => any;
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxSettings: any;
 
   /**
    * This callback is executed when an item is clicked.
@@ -78,6 +89,11 @@ export class ChActionGroupRender {
    */
   @Prop() readonly separation: number = 0;
 
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly useGxRender: boolean = false;
+
   // /**
   //  * Fired when the visibility of the dropdown section is changed
   //  */
@@ -88,6 +104,11 @@ export class ChActionGroupRender {
       this.itemClickCallback(event, target, itemId);
     };
 
+  private renderImg = (img: string) =>
+    this.useGxRender
+      ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
+      : img;
+
   private renderItem = (item: ActionGroupItemModel) => (
     <ch-dropdown-item
       slot="items"
@@ -95,10 +116,10 @@ export class ChActionGroupRender {
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.startImage}
+      leftImgSrc={this.renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
       position={item.position || "OutsideEnd_InsideStart"}
-      rightImgSrc={item.endImage}
+      rightImgSrc={this.renderImg(item.endImage)}
       onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
@@ -118,10 +139,10 @@ export class ChActionGroupRender {
       expandBehavior={this.expandBehavior}
       forceContainingBlock={false}
       href={item.target}
-      leftImgSrc={item.startImage}
+      leftImgSrc={this.renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
       position={item.position || "Center_OutsideEnd"}
-      rightImgSrc={item.endImage}
+      rightImgSrc={this.renderImg(item.endImage)}
       onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}
@@ -155,10 +176,10 @@ export class ChActionGroupRender {
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.startImage}
+      leftImgSrc={this.renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
       position={item.responsiveCollapsePosition || "OutsideEnd_InsideStart"}
-      rightImgSrc={item.endImage}
+      rightImgSrc={this.renderImg(item.endImage)}
       onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}

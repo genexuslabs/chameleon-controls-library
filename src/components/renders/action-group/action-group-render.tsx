@@ -109,9 +109,10 @@ export class ChActionGroupRender {
       ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
       : img;
 
-  private renderItem = (item: ActionGroupItemModel) => (
+  private renderItem = (item: ActionGroupItemModel, index: number) => (
     <ch-dropdown-item
       slot="items"
+      key={item.id || item.caption || index}
       id={item.id}
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}

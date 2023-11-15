@@ -7,6 +7,8 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
+import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -23,8 +25,6 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-import { ActionGroupItemModel } from "./components/test/test-action-group/types";
-import { DropdownItemModel } from "./components/test/test-dropdown/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -86,6 +86,60 @@ export namespace Components {
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating": boolean;
+    }
+    interface ChActionGroupRender {
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel": string;
+        /**
+          * A CSS class to set as the `ch-action-group` element class.
+         */
+        "cssClass": string;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior": "Click" | "ClickOrHover";
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor": (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings": any;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback": (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+        /**
+          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+         */
+        "itemsOverflowBehavior": ItemsOverflowBehavior;
+        /**
+          * This property lets you define the model of the ch-action-group control.
+         */
+        "model": ActionGroupItemModel[];
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the more actions button.
+         */
+        "moreActionsDropdownPosition": DropdownPosition;
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus": boolean;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "separation": number;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender": boolean;
     }
     interface ChAlert {
         /**
@@ -246,6 +300,52 @@ export namespace Components {
         "rightImgSrc": string;
     }
     interface ChDropdownItemSeparator {
+    }
+    interface ChDropdownRender {
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel": string;
+        /**
+          * A CSS class to set as the `ch-dropdown` element class.
+         */
+        "cssClass": string;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior": "Click" | "ClickOrHover";
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor": (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings": any;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback": (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+        /**
+          * This property lets you define the model of the ch-dropdown control.
+         */
+        "model": DropdownItemModel[];
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus": boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position": DropdownPosition;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender": boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -1114,62 +1214,6 @@ export namespace Components {
          */
         "value": any;
     }
-    interface ChTestActionGroup {
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel": string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
-        /**
-          * This property lets you define the model of the ch-dropdown control.
-         */
-        "itemsModel": ActionGroupItemModel[];
-        /**
-          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
-         */
-        "itemsOverflowBehavior": ItemsOverflowBehavior;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the more actions button.
-         */
-        "moreActionsDropdownPosition": DropdownPosition;
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus": boolean;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "separation": number;
-    }
-    interface ChTestDropdown {
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel": string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
-        /**
-          * This property lets you define the model of the ch-dropdown control.
-         */
-        "itemsModel": DropdownItemModel[];
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus": boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position": DropdownPosition;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "separation": number;
-    }
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -2028,6 +2072,12 @@ declare global {
         prototype: HTMLChActionGroupItemElement;
         new (): HTMLChActionGroupItemElement;
     };
+    interface HTMLChActionGroupRenderElement extends Components.ChActionGroupRender, HTMLStencilElement {
+    }
+    var HTMLChActionGroupRenderElement: {
+        prototype: HTMLChActionGroupRenderElement;
+        new (): HTMLChActionGroupRenderElement;
+    };
     interface HTMLChAlertElement extends Components.ChAlert, HTMLStencilElement {
     }
     var HTMLChAlertElement: {
@@ -2063,6 +2113,12 @@ declare global {
     var HTMLChDropdownItemSeparatorElement: {
         prototype: HTMLChDropdownItemSeparatorElement;
         new (): HTMLChDropdownItemSeparatorElement;
+    };
+    interface HTMLChDropdownRenderElement extends Components.ChDropdownRender, HTMLStencilElement {
+    }
+    var HTMLChDropdownRenderElement: {
+        prototype: HTMLChDropdownRenderElement;
+        new (): HTMLChDropdownRenderElement;
     };
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
     }
@@ -2310,18 +2366,6 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
-    interface HTMLChTestActionGroupElement extends Components.ChTestActionGroup, HTMLStencilElement {
-    }
-    var HTMLChTestActionGroupElement: {
-        prototype: HTMLChTestActionGroupElement;
-        new (): HTMLChTestActionGroupElement;
-    };
-    interface HTMLChTestDropdownElement extends Components.ChTestDropdown, HTMLStencilElement {
-    }
-    var HTMLChTestDropdownElement: {
-        prototype: HTMLChTestDropdownElement;
-        new (): HTMLChTestDropdownElement;
-    };
     interface HTMLChTestSuggestElement extends Components.ChTestSuggest, HTMLStencilElement {
     }
     var HTMLChTestSuggestElement: {
@@ -2410,12 +2454,14 @@ declare global {
         "ch-accordion": HTMLChAccordionElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
+        "ch-action-group-render": HTMLChActionGroupRenderElement;
         "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
+        "ch-dropdown-render": HTMLChDropdownRenderElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
         "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
@@ -2457,8 +2503,6 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
-        "ch-test-action-group": HTMLChTestActionGroupElement;
-        "ch-test-dropdown": HTMLChTestDropdownElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
         "ch-timer": HTMLChTimerElement;
@@ -2533,6 +2577,60 @@ declare namespace LocalJSX {
           * `true` if the control is floating. Useful to implement the `"ResponsiveCollapse"` value for the `itemsOverflowBehavior` property of the ch-action-group control.
          */
         "floating"?: boolean;
+    }
+    interface ChActionGroupRender {
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel"?: string;
+        /**
+          * A CSS class to set as the `ch-action-group` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior"?: "Click" | "ClickOrHover";
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor"?: (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings"?: any;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback"?: (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+        /**
+          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
+         */
+        "itemsOverflowBehavior"?: ItemsOverflowBehavior;
+        /**
+          * This property lets you define the model of the ch-action-group control.
+         */
+        "model"?: ActionGroupItemModel[];
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the more actions button.
+         */
+        "moreActionsDropdownPosition"?: DropdownPosition;
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus"?: boolean;
+        /**
+          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+         */
+        "separation"?: number;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender"?: boolean;
     }
     interface ChAlert {
         /**
@@ -2713,6 +2811,52 @@ declare namespace LocalJSX {
         "rightImgSrc"?: string;
     }
     interface ChDropdownItemSeparator {
+    }
+    interface ChDropdownRender {
+        /**
+          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+         */
+        "buttonLabel"?: string;
+        /**
+          * A CSS class to set as the `ch-dropdown` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Determine which actions on the expandable button display the dropdown section.
+         */
+        "expandBehavior"?: "Click" | "ClickOrHover";
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor"?: (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings"?: any;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback"?: (
+    event: UIEvent,
+    target: string,
+    itemId: string
+  ) => void;
+        /**
+          * This property lets you define the model of the ch-dropdown control.
+         */
+        "model"?: DropdownItemModel[];
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+         */
+        "openOnFocus"?: boolean;
+        /**
+          * Specifies the position of the dropdown section that is placed relative to the expandable button.
+         */
+        "position"?: DropdownPosition;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "useGxRender"?: boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -3653,62 +3797,6 @@ declare namespace LocalJSX {
          */
         "value"?: any;
     }
-    interface ChTestActionGroup {
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel"?: string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
-        /**
-          * This property lets you define the model of the ch-dropdown control.
-         */
-        "itemsModel"?: ActionGroupItemModel[];
-        /**
-          * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
-         */
-        "itemsOverflowBehavior"?: ItemsOverflowBehavior;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the more actions button.
-         */
-        "moreActionsDropdownPosition"?: DropdownPosition;
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus"?: boolean;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "separation"?: number;
-    }
-    interface ChTestDropdown {
-        /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel"?: string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
-        /**
-          * This property lets you define the model of the ch-dropdown control.
-         */
-        "itemsModel"?: DropdownItemModel[];
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus"?: boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position"?: DropdownPosition;
-        /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
-         */
-        "separation"?: number;
-    }
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -4394,12 +4482,14 @@ declare namespace LocalJSX {
         "ch-accordion": ChAccordion;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
+        "ch-action-group-render": ChActionGroupRender;
         "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
         "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
+        "ch-dropdown-render": ChDropdownRender;
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
         "ch-grid-action-refresh": ChGridActionRefresh;
@@ -4441,8 +4531,6 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
-        "ch-test-action-group": ChTestActionGroup;
-        "ch-test-dropdown": ChTestDropdown;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
         "ch-timer": ChTimer;
@@ -4466,12 +4554,14 @@ declare module "@stencil/core" {
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
+            "ch-action-group-render": LocalJSX.ChActionGroupRender & JSXBase.HTMLAttributes<HTMLChActionGroupRenderElement>;
             "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
+            "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
@@ -4513,8 +4603,6 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
-            "ch-test-action-group": LocalJSX.ChTestActionGroup & JSXBase.HTMLAttributes<HTMLChTestActionGroupElement>;
-            "ch-test-dropdown": LocalJSX.ChTestDropdown & JSXBase.HTMLAttributes<HTMLChTestDropdownElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;

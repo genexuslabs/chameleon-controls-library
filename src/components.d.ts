@@ -994,6 +994,9 @@ export namespace Components {
         "value": string;
     }
     interface ChShortcuts {
+        /**
+          * Key to show shortcut tooltips.
+         */
         "showKey": "F10";
         /**
           * The URL of the shortcut definitions.
@@ -3511,6 +3514,9 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     interface ChShortcuts {
+        /**
+          * Key to show shortcut tooltips.
+         */
         "showKey"?: "F10";
         /**
           * The URL of the shortcut definitions.

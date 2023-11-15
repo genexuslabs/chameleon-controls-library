@@ -1,6 +1,7 @@
 import { Component, Element, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
+import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
 const DEFAULT_DROPDOWN_ITEM_CLASS = "dropdown-item";
 
@@ -33,6 +34,16 @@ export class ChDropdownRender {
   @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxImageConstructor: (name: string) => any;
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxSettings: any;
+
+  /**
    * This callback is executed when an item is clicked.
    */
   @Prop() readonly itemClickCallback: (
@@ -58,6 +69,11 @@ export class ChDropdownRender {
    */
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly useGxRender: boolean = false;
+
   // /**
   //  * Fired when the visibility of the dropdown section is changed
   //  */
@@ -75,10 +91,26 @@ export class ChDropdownRender {
       class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.target}
-      leftImgSrc={item.startImage}
+      leftImgSrc={
+        this.useGxRender
+          ? fromGxImageToURL(
+              item.startImage,
+              this.gxSettings,
+              this.gxImageConstructor
+            )
+          : item.startImage
+      }
       openOnFocus={this.openOnFocus}
       position={item.position || "OutsideEnd_InsideStart"}
-      rightImgSrc={item.endImage}
+      rightImgSrc={
+        this.useGxRender
+          ? fromGxImageToURL(
+              item.endImage,
+              this.gxSettings,
+              this.gxImageConstructor
+            )
+          : item.endImage
+      }
       onClick={this.handleItemClick(item.target, item.id)}
     >
       {item.caption}

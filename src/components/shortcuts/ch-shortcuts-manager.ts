@@ -237,7 +237,7 @@ function querySelectorPlus(
     return null;
   };
 
-  if (selector.includes("::part")) {
+  if (selector?.includes("::part")) {
     const selectorItems = selector.match("(.*)::part\\(([^)]+)\\)");
     const entity = selectorItems[1];
     const partName = selectorItems[2];

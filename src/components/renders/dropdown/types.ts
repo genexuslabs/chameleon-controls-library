@@ -6,7 +6,11 @@ export type DropdownItemModel = {
   class?: string;
   endImage?: string;
   items?: DropdownItemModel[];
-  position?: DropdownPosition;
+  itemsPosition?: DropdownPosition;
+  link?: Link;
   startImage?: string;
-  target?: string;
+};
+
+type Link = {
+  url: string;
 };

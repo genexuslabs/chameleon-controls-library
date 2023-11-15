@@ -119,16 +119,16 @@ export class ChActionGroupRender {
           id={item.id}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           expandBehavior={this.expandBehavior}
-          href={item.target}
+          href={item.link?.url}
           leftImgSrc={this.renderImg(item.startImage)}
           openOnFocus={this.openOnFocus}
           position={
             (responsiveCollapse
-              ? item.responsiveCollapsePosition
-              : item.position) || "OutsideEnd_InsideStart"
+              ? item.itemsResponsiveCollapsePosition
+              : item.itemsPosition) || "OutsideEnd_InsideStart"
           }
           rightImgSrc={this.renderImg(item.endImage)}
-          onClick={this.handleItemClick(item.target, item.id)}
+          onClick={this.handleItemClick(item.link?.url, item.id)}
         >
           {item.caption}
 
@@ -147,12 +147,12 @@ export class ChActionGroupRender {
       class={item.actionClass || DEFAULT_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       forceContainingBlock={false}
-      href={item.target}
+      href={item.link?.url}
       leftImgSrc={this.renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
-      position={item.position || "Center_OutsideEnd"}
+      position={item.itemsPosition || "Center_OutsideEnd"}
       rightImgSrc={this.renderImg(item.endImage)}
-      onClick={this.handleItemClick(item.target, item.id)}
+      onClick={this.handleItemClick(item.link?.url, item.id)}
     >
       {item.caption}
 
@@ -184,12 +184,14 @@ export class ChActionGroupRender {
       id={item.id}
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
-      href={item.target}
+      href={item.link?.url}
       leftImgSrc={this.renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
-      position={item.responsiveCollapsePosition || "OutsideEnd_InsideStart"}
+      position={
+        item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
+      }
       rightImgSrc={this.renderImg(item.endImage)}
-      onClick={this.handleItemClick(item.target, item.id)}
+      onClick={this.handleItemClick(item.link?.url, item.id)}
     >
       {item.caption}
 

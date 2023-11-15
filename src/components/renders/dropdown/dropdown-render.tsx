@@ -90,7 +90,7 @@ export class ChDropdownRender {
       id={item.id}
       class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
       expandBehavior={this.expandBehavior}
-      href={item.target}
+      href={item.link?.url}
       leftImgSrc={
         this.useGxRender
           ? fromGxImageToURL(
@@ -101,7 +101,7 @@ export class ChDropdownRender {
           : item.startImage
       }
       openOnFocus={this.openOnFocus}
-      position={item.position || "OutsideEnd_InsideStart"}
+      position={item.itemsPosition || "OutsideEnd_InsideStart"}
       rightImgSrc={
         this.useGxRender
           ? fromGxImageToURL(
@@ -111,7 +111,7 @@ export class ChDropdownRender {
             )
           : item.endImage
       }
-      onClick={this.handleItemClick(item.target, item.id)}
+      onClick={this.handleItemClick(item.link?.url, item.id)}
     >
       {item.caption}
 

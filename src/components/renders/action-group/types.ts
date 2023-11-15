@@ -7,5 +7,5 @@ export type ActionGroupItemModel = ReducedDropdownItemModel & {
   actionClass?: string;
   subActionClass?: string;
   items?: ActionGroupItemModel[];
-  responsiveCollapsePosition?: DropdownPosition;
+  itemsResponsiveCollapsePosition?: DropdownPosition;
 };

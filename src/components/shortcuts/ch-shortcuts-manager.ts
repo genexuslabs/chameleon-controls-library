@@ -11,20 +11,19 @@ export function loadShortcuts(
   shortcuts.forEach(shortcut => {
     const keyShortcuts = parseKeyShortcuts(shortcut.keyShortcuts);
     keyShortcuts.forEach(keyShortcut => {
-      SHORTCUTS.set(
-        normalize(
-          keyShortcut.ctrl,
-          keyShortcut.alt,
-          keyShortcut.shift,
-          keyShortcut.meta,
-          keyShortcut.key
-        ),
-        {
-          name,
-          root,
-          shortcut
-        }
+      const normalizedKeyShortcut = normalize(
+        keyShortcut.ctrl,
+        keyShortcut.alt,
+        keyShortcut.shift,
+        keyShortcut.meta,
+        keyShortcut.key
       );
+
+      SHORTCUTS.set(normalizedKeyShortcut, {
+        name,
+        root,
+        shortcut
+      });
     });
   });
 
@@ -88,33 +87,37 @@ function keydownHandler(eventInfo: KeyboardEvent) {
 }
 
 function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
-  const shortcutMap = SHORTCUTS.get(
-    normalize(
-      eventInfo.ctrlKey,
-      eventInfo.altKey,
-      eventInfo.shiftKey,
-      eventInfo.metaKey,
-      eventInfo.key
-    )
+  const shortcut = normalize(
+    eventInfo.ctrlKey,
+    eventInfo.altKey,
+    eventInfo.shiftKey,
+    eventInfo.metaKey,
+    eventInfo.key
   );
+  const shortcutMap = SHORTCUTS.get(shortcut);
+  const focus = focusComposedPath();
 
-  if (shortcutMap && conditions(shortcutMap)) {
+  if (shortcutMap && conditions(shortcutMap, focus)) {
     const element = querySelectorPlus(
       shortcutMap.shortcut.selector,
       shortcutMap.root
     ) as HTMLElement;
-    if (element) {
+    const keyShortcutPressedEvent = createEvent(shortcut, element, focus);
+
+    if (shortcutMap.root.dispatchEvent(keyShortcutPressedEvent)) {
       switch (shortcutMap.shortcut.action) {
         case "click":
-          element.dispatchEvent(new Event("click"));
+          element?.dispatchEvent(new Event("click"));
           break;
         default:
-          element.focus();
+          element?.focus();
       }
 
       if (shortcutMap.shortcut.preventDefault !== false) {
         eventInfo.preventDefault();
       }
+    } else {
+      eventInfo.preventDefault();
     }
   }
 
@@ -189,6 +192,23 @@ function conditions(shortcutMap: ShortcutMap, focus: HTMLElement[]): boolean {
   }
 
   return true;
+}
+
+function createEvent(
+  keyShortcut: string,
+  target: HTMLElement,
+  focusComposedPath: HTMLElement[]
+): CustomEvent {
+  return new CustomEvent<KeyShortcutPressedEvent>("keyShortcutPressed", {
+    bubbles: true,
+    cancelable: true,
+    composed: false,
+    detail: {
+      keyShortcut,
+      target,
+      focusComposedPath
+    }
+  });
 }
 
 function querySelectorAllPlus(
@@ -288,3 +308,9 @@ export type KeyShortcut = {
   shift: boolean;
   meta: boolean;
 };
+
+export interface KeyShortcutPressedEvent {
+  keyShortcut: string;
+  target: HTMLElement;
+  focusComposedPath: HTMLElement[];
+}

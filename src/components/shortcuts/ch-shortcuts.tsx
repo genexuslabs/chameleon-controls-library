@@ -28,6 +28,9 @@ export class ChShortcuts {
    */
   @Prop() readonly src!: string;
 
+  /**
+   * Key to show shortcut tooltips.
+   */
   @Prop() readonly showKey = "F10";
 
   componentDidLoad() {

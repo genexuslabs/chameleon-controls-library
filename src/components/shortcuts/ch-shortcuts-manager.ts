@@ -174,25 +174,39 @@ function normalize(
     .join("+");
 }
 
-function conditions(shortcutMap: ShortcutMap): boolean {
-  const focus = focusComposedPath();
-
+function conditions(shortcutMap: ShortcutMap, focus: HTMLElement[]): boolean {
   if (shortcutMap.shortcut.conditions?.focusInclude) {
-    return Array.from(
-      shortcutMap.root.querySelectorAll(
-        shortcutMap.shortcut.conditions?.focusInclude
-      )
+    return querySelectorAllPlus(
+      shortcutMap.shortcut.conditions.focusInclude,
+      shortcutMap.root
     ).some((el: HTMLElement) => focus.includes(el));
   }
   if (shortcutMap.shortcut.conditions?.focusExclude) {
-    return !Array.from(
-      shortcutMap.root.querySelectorAll(
-        shortcutMap.shortcut.conditions?.focusExclude
-      )
+    return !querySelectorAllPlus(
+      shortcutMap.shortcut.conditions.focusExclude,
+      shortcutMap.root
     ).some((el: HTMLElement) => focus.includes(el));
   }
 
   return true;
+}
+
+function querySelectorAllPlus(
+  selector: string,
+  root: Document | ShadowRoot
+): HTMLElement[] {
+  return (
+    selector
+      ?.split(",")
+      .map(selectorItem => {
+        if (selector.includes("::part")) {
+          return querySelectorPlus(selectorItem, root);
+        } else {
+          return Array.from(root.querySelectorAll(selector)) as HTMLElement[];
+        }
+      })
+      .flat() ?? []
+  );
 }
 
 function querySelectorPlus(

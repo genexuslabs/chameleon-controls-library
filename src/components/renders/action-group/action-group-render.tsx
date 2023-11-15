@@ -109,25 +109,33 @@ export class ChActionGroupRender {
       ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
       : img;
 
-  private renderItem = (item: ActionGroupItemModel, index: number) => (
-    <ch-dropdown-item
-      slot="items"
-      key={item.id || item.caption || index}
-      id={item.id}
-      class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-      expandBehavior={this.expandBehavior}
-      href={item.target}
-      leftImgSrc={this.renderImg(item.startImage)}
-      openOnFocus={this.openOnFocus}
-      position={item.position || "OutsideEnd_InsideStart"}
-      rightImgSrc={this.renderImg(item.endImage)}
-      onClick={this.handleItemClick(item.target, item.id)}
-    >
-      {item.caption}
+  private renderItem =
+    (responsiveCollapse: boolean) =>
+    (item: ActionGroupItemModel, index: number) =>
+      (
+        <ch-dropdown-item
+          slot="items"
+          key={item.id || item.caption || index}
+          id={item.id}
+          class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
+          expandBehavior={this.expandBehavior}
+          href={item.target}
+          leftImgSrc={this.renderImg(item.startImage)}
+          openOnFocus={this.openOnFocus}
+          position={
+            (responsiveCollapse
+              ? item.responsiveCollapsePosition
+              : item.position) || "OutsideEnd_InsideStart"
+          }
+          rightImgSrc={this.renderImg(item.endImage)}
+          onClick={this.handleItemClick(item.target, item.id)}
+        >
+          {item.caption}
 
-      {item.items != null && item.items.map(this.renderItem)}
-    </ch-dropdown-item>
-  );
+          {item.items != null &&
+            item.items.map(this.renderItem(responsiveCollapse))}
+        </ch-dropdown-item>
+      );
 
   private firstLevelRenderItem = (
     item: ActionGroupItemModel,
@@ -151,7 +159,7 @@ export class ChActionGroupRender {
       {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
         (this.displayedItemsCount === -1 || index < this.displayedItemsCount) &&
         item.items != null &&
-        item.items.map(this.renderItem)}
+        item.items.map(this.renderItem(false))}
 
       {
         // Dummy dropdown item to avoid issues when removing all items from the
@@ -185,7 +193,7 @@ export class ChActionGroupRender {
     >
       {item.caption}
 
-      {item.items != null && item.items.map(this.renderItem)}
+      {item.items != null && item.items.map(this.renderItem(true))}
     </ch-dropdown-item>
   );
 

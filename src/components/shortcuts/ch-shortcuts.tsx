@@ -52,6 +52,11 @@ export class ChShortcuts {
     if (eventInfo.key === this.showKey) {
       this.showShortcuts = !this.showShortcuts;
       eventInfo.preventDefault();
+    } else if (
+      this.showShortcuts &&
+      !["Ctrl", "Alt", "Shift", "Meta"].includes(eventInfo.key)
+    ) {
+      this.showShortcuts = false;
     }
   }
 

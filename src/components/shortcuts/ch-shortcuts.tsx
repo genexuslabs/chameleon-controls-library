@@ -75,11 +75,21 @@ export class ChShortcuts {
         xAlign="outside-end"
         yAlign="inside-start"
         onWindowClosed={this.windowClosedHandler}
-        exportparts="mask:element"
+        exportparts="mask:element, main:tooltip"
       >
-        <span part="tooltip">{shortcut.keyShortcuts}</span>
+        {this.renderKeyShortcuts(shortcut.keyShortcuts)}
       </ch-window>
     ));
+  }
+
+  private renderKeyShortcuts(keyShortcuts: string) {
+    return keyShortcuts.split(/(?<!(?:[+]|^))([+])/).map((key, i, items) => {
+      if (key === "+" && i > 0 && items[i - 1] !== "+") {
+        return <span part="plus">+</span>;
+      } else {
+        return <kbd part={`key`}>{key}</kbd>;
+      }
+    });
   }
 
   render() {

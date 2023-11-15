@@ -44,14 +44,17 @@ export function unloadShortcuts(name: string) {
   removeListener();
 }
 
-export function getShortcuts(): {
+export function getShortcuts(name: string): {
   element: HTMLElement;
   keyShortcuts: string;
   legendPosition: string;
 }[] {
   return Array.from(SHORTCUTS.values())
     .filter(shortcutMap => {
-      return !shortcutMap.shortcut.conditions?.focusInclude;
+      return (
+        shortcutMap.name === name &&
+        !shortcutMap.shortcut.conditions?.focusInclude
+      );
     })
     .map(shortcutMap => ({
       element: querySelectorPlus(

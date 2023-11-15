@@ -65,7 +65,7 @@ export class ChShortcuts {
   };
 
   private renderShortcuts() {
-    return getShortcuts().map(shortcut => (
+    return getShortcuts(this.src).map(shortcut => (
       <ch-window
         container={shortcut.element}
         modal={false}

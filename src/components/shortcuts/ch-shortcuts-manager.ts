@@ -104,7 +104,7 @@ function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
     ) as HTMLElement;
     const keyShortcutPressedEvent = createEvent(
       shortcut,
-      shortcutMap.shortcut.name,
+      shortcutMap.shortcut.id,
       element,
       focus
     );
@@ -201,7 +201,7 @@ function conditions(shortcutMap: ShortcutMap, focus: HTMLElement[]): boolean {
 
 function createEvent(
   keyShortcut: string,
-  name: string,
+  id: string,
   target: HTMLElement,
   focusComposedPath: HTMLElement[]
 ): CustomEvent {
@@ -211,7 +211,7 @@ function createEvent(
     composed: false,
     detail: {
       keyShortcut,
-      name,
+      id: id,
       target,
       focusComposedPath
     }
@@ -297,7 +297,7 @@ interface ShortcutMap {
 
 export interface Shortcut {
   keyShortcuts: string;
-  name?: string;
+  id?: string;
   selector?: string;
   preventDefault?: boolean;
   conditions?: {
@@ -318,7 +318,7 @@ export type KeyShortcut = {
 };
 
 export interface KeyShortcutPressedEvent {
-  name: string;
+  id: string;
   keyShortcut: string;
   target: HTMLElement;
   focusComposedPath: HTMLElement[];

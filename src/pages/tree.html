@@ -520,6 +520,14 @@
           value="false"
           caption="Apply camel casing to filter"
         ></ch-checkbox>
+
+        <ch-checkbox
+          id="hide-matches"
+          checked-value="true"
+          un-checked-value="false"
+          value="false"
+          caption="Hide matches and show non-matches"
+        ></ch-checkbox>
       </div>
 
       <div class="buttons-wrapper">
@@ -1726,6 +1734,15 @@
           testTreeX.filterOptions = newOptions;
         });
 
+        const hideMatchesCheckbox = document.getElementById("hide-matches");
+        hideMatchesCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+
+          const newOptions = { ...testTreeX.filterOptions };
+          newOptions.hideMatchesAndShowNonMatches = checked;
+          testTreeX.filterOptions = newOptions;
+        });
+
         const loadModelBtn = document.getElementById("load-model-btn");
         loadModelBtn.addEventListener("click", () => {
           testTreeX.treeModel = model;
@@ -1886,7 +1903,7 @@
 
         testTreeX.addEventListener("selectedItemsChange", event => {
           selectedItemsTextBlock.innerHTML = `<br>+ + + + + Selected Items + + + + +<br>
-          ${[...event.detail.keys()].join("<br>")}`;
+          ${event.detail.map(el => el.item.id).join("<br>")}`;
         });
 
         /*Lazy Load Promise*/

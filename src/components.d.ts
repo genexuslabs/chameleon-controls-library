@@ -1565,17 +1565,21 @@ export namespace Components {
          */
         "filterDebounce": number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
          */
         "filterList": string[];
         /**
-          * This property lets you determine the options that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+          * This property lets you determine the options that will be applied to the filter.
          */
         "filterOptions": TreeViewFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     | | `none`      | Show all items.                                                                                |
          */
         "filterType": TreeViewFilterType;
+        /**
+          * Given a list of ids, it returns an array of the items that exists in the given list.
+         */
+        "getItemsInfo": (itemsId: string[]) => Promise<TreeViewItemModelExtended[]>;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -4164,15 +4168,15 @@ declare namespace LocalJSX {
          */
         "filterDebounce"?: number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "id-list"`.
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
          */
         "filterList"?: string[];
         /**
-          * This property lets you determine the options that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
+          * This property lets you determine the options that will be applied to the filter.
          */
         "filterOptions"?: TreeViewFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     | | `none`      | Show all items.                                                                                |
          */
         "filterType"?: TreeViewFilterType;
         /**
@@ -4215,7 +4219,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the selected items change.
          */
-        "onSelectedItemsChange"?: (event: ChTreeViewRenderCustomEvent<Map<string, TreeViewItemSelectedInfo>>) => void;
+        "onSelectedItemsChange"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemModelExtended[]>) => void;
         /**
           * This property allows us to implement custom rendering of tree items.
          */

@@ -34,7 +34,7 @@ import {
   ChTreeViewItemCustomEvent
 } from "../../../components";
 import { GxDataTransferInfo } from "../../../common/types";
-import { filterDictionary } from "./helpers";
+import { computeFilter } from "./helpers";
 import {
   TreeViewGXItemModel,
   fromGxImageToURL
@@ -49,6 +49,13 @@ const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
 const DEFAULT_ORDER_VALUE = 0;
 const DEFAULT_SELECTED_VALUE = false;
+
+// There are a filter applied and, if the type is "caption" or
+// "metadata", the filter property must be set
+const treeViewHasFilters = (filterType: TreeViewFilterType, filter) =>
+  filterType !== "none" &&
+  ((filterType !== "caption" && filterType !== "metadata") ||
+    (filter != null && filter.trim() !== ""));
 
 const defaultRenderItem = (
   itemModel: TreeViewItemModel,
@@ -95,7 +102,7 @@ const defaultRenderItem = (
             treeState.showLines !== "none" &&
               // If there is a filter applied in the current list, use the
               // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== ""
+              (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1
@@ -158,7 +165,7 @@ const GXRenderItem = (
             treeState.showLines !== "none" &&
               // If there is a filter applied in the current list, use the
               // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== ""
+              (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1
@@ -198,6 +205,7 @@ export class ChTreeViewRender {
   private emitCheckedChange = false;
 
   private filterTimeout: NodeJS.Timeout;
+  private filterListAsSet: Set<string>;
 
   // Refs
   private treeRef: HTMLChTreeViewElement;
@@ -289,12 +297,15 @@ export class ChTreeViewRender {
 
   /**
    * This property lets you determine the list of items that will be filtered.
-   * Only works if `filterType = "id-list"`.
+   * Only works if `filterType = "list"`.
    */
   @Prop() readonly filterList: string[] = [];
   @Watch("filterList")
   handleFilterListChange() {
-    if (this.filterType === "id-list") {
+    // Use a Set to efficiently check for ids
+    this.filterListAsSet = new Set(this.filterList);
+
+    if (this.filterType === "list") {
       this.processFilters();
     }
   }
@@ -302,14 +313,11 @@ export class ChTreeViewRender {
   /**
    * This property lets you determine the options that will be applied to the
    * filter.
-   * Only works if `filterType = "caption" | "metadata"`.
    */
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
   handleFilterOptionsChange() {
-    if (this.filterType === "caption" || this.filterType === "metadata") {
-      this.processFilters();
-    }
+    this.processFilters();
   }
 
   /**
@@ -322,7 +330,7 @@ export class ChTreeViewRender {
    * | `unchecked` | Show only the items that have a checkbox and are not checked.                                  |
    * | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
    * | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. |
-   * | `id-list`   | Show only the items that are contained in the array determinate by the `filterList` property.  |
+   * | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     |
    * | `none`      | Show all items.                                                                                |
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
@@ -428,9 +436,7 @@ export class ChTreeViewRender {
   /**
    * Fired when the selected items change.
    */
-  @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeViewItemSelectedInfo>
-  >;
+  @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
 
   /**
    * Given the drop accepting, the data transfer info and the external items,
@@ -489,6 +495,29 @@ export class ChTreeViewRender {
 
     // Force re-render
     forceUpdate(this);
+  }
+
+  /**
+   * Given a list of ids, it returns an array of the items that exists in the
+   * given list.
+   */
+  @Method()
+  async getItemsInfo(itemsId: string[]): Promise<TreeViewItemModelExtended[]> {
+    return this._getItemsInfo(itemsId);
+  }
+
+  private _getItemsInfo(itemsId: string[]): TreeViewItemModelExtended[] {
+    const treeViewItemsInfo: TreeViewItemModelExtended[] = [];
+
+    itemsId.forEach(itemId => {
+      const itemUIModel = this.flattenedTreeModel.get(itemId);
+
+      if (itemUIModel) {
+        treeViewItemsInfo.push(itemUIModel);
+      }
+    });
+
+    return treeViewItemsInfo;
   }
 
   /**
@@ -673,7 +702,9 @@ export class ChTreeViewRender {
     const itemInfo = itemUIModel.item;
 
     Object.keys(properties).forEach(propertyName => {
-      itemInfo[propertyName] = properties[propertyName];
+      if (properties[propertyName] !== undefined) {
+        itemInfo[propertyName] = properties[propertyName];
+      }
     });
   }
 
@@ -833,7 +864,8 @@ export class ChTreeViewRender {
       this.selectedItems.add(itemId);
     });
 
-    this.selectedItemsChange.emit(event.detail);
+    const selectedItemsInfo = this._getItemsInfo([...event.detail.keys()]);
+    this.selectedItemsChange.emit(selectedItemsInfo);
   };
 
   private handleExpandedItemChange = (
@@ -979,7 +1011,7 @@ export class ChTreeViewRender {
 
     // Check if a subitem is rendered
     if (item.leaf !== true && item.items != null) {
-      let lastItemId = "";
+      let lastItemId = undefined;
 
       item.items.forEach(subItem => {
         const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);
@@ -996,7 +1028,8 @@ export class ChTreeViewRender {
     // The current item is rendered if it satisfies the filter condition or a
     // subitem exists that needs to be rendered
     const satisfiesFilter =
-      filterDictionary[this.filterType](item, filterInfo) || aSubItemIsRendered;
+      aSubItemIsRendered || computeFilter(this.filterType, item, filterInfo);
+
     item.render = satisfiesFilter; // Update item render
 
     return satisfiesFilter;
@@ -1046,8 +1079,8 @@ export class ChTreeViewRender {
           defaultCheckbox: this.checkbox,
           defaultChecked: this.checked,
           filter: this.filter,
-          filterList: this.filterList,
-          filterOptions: this.filterOptions
+          filterOptions: this.filterOptions,
+          filterSet: this.filterListAsSet
         }
       );
 
@@ -1101,8 +1134,7 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
-            (this.filterType === "caption" || this.filterType === "metadata") &&
-              this.filter != null,
+            treeViewHasFilters(this.filterType, this.filter),
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0
           )

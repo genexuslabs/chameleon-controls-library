@@ -47,8 +47,8 @@ Type: `Promise<void>`
 | `"button"`    |             |
 | `"content"`   |             |
 | `"left-img"`  |             |
+| `"link"`      |             |
 | `"right-img"` |             |
-| `"target"`    |             |
 
 
 ## Dependencies

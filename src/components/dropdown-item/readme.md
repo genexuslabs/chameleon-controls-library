@@ -55,8 +55,8 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-action-group](../test/test-action-group)
- - [ch-test-dropdown](../test/test-dropdown)
+ - [ch-action-group-render](../renders/action-group)
+ - [ch-dropdown-render](../renders/dropdown)
 
 ### Depends on
 
@@ -68,8 +68,8 @@ graph TD;
   ch-dropdown-item --> ch-dropdown
   ch-dropdown --> ch-window
   ch-window --> ch-window-close
-  ch-test-action-group --> ch-dropdown-item
-  ch-test-dropdown --> ch-dropdown-item
+  ch-action-group-render --> ch-dropdown-item
+  ch-dropdown-render --> ch-dropdown-item
   style ch-dropdown-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

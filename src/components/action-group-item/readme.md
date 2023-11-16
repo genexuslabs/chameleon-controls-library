@@ -23,12 +23,12 @@
 
 ### Used by
 
- - [ch-test-action-group](../test/test-action-group)
+ - [ch-action-group-render](../renders/action-group)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-test-action-group --> ch-action-group-item
+  ch-action-group-render --> ch-action-group-item
   style ch-action-group-item fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

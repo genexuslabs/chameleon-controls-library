@@ -186,6 +186,7 @@ export class NextDataModeling implements ChComponent {
 
     if (this.entityWasAdded === "adding") {
       this.entityWasAdded = "finished";
+      this.processEntityAdding();
     }
   }
 
@@ -266,15 +267,16 @@ export class NextDataModeling implements ChComponent {
   private addEntity =
     (collection: any) =>
     (event: ChNextDataModelingItemCustomEvent<EntityInfo>) => {
+      this.entityWasAdded = "adding";
+
       const newItem: Entity = {
         Name: event.detail.name,
         Level: this.createGxCollectionCallback()
       };
       collection.push(newItem);
       this.addEntityItem(newItem.Level, event.detail.level[0]);
-      this.updateReferences(event, true);
 
-      this.entityWasAdded = "adding";
+      this.updateReferences(event, true);
     };
 
   private editEntity =

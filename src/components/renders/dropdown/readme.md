@@ -1,0 +1,44 @@
+# ch-test-dropdown
+
+
+
+<!-- Auto Generated Below -->
+
+
+## Properties
+
+| Property             | Attribute         | Description                                                                                              | Type                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default               |
+| -------------------- | ----------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `buttonLabel`        | `button-label`    | This attribute lets you specify the label for the expandable button. Important for accessibility.        | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `"Show options"`      |
+| `cssClass`           | `css-class`       | A CSS class to set as the `ch-dropdown` element class.                                                   | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `"dropdown"`          |
+| `expandBehavior`     | `expand-behavior` | Determine which actions on the expandable button display the dropdown section.                           | `"Click" \| "ClickOrHover"`                                                                                                                                                                                                                                                                                                                                                                                                                        | `"ClickOrHover"`      |
+| `gxImageConstructor` | --                | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                 | `(name: string) => any`                                                                                                                                                                                                                                                                                                                                                                                                                            | `undefined`           |
+| `gxSettings`         | `gx-settings`     | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                 | `any`                                                                                                                                                                                                                                                                                                                                                                                                                                              | `undefined`           |
+| `itemClickCallback`  | --                | This callback is executed when an item is clicked.                                                       | `(event: UIEvent, target: string, itemId: string) => void`                                                                                                                                                                                                                                                                                                                                                                                         | `undefined`           |
+| `model`              | --                | This property lets you define the model of the ch-dropdown control.                                      | `DropdownItemModel[]`                                                                                                                                                                                                                                                                                                                                                                                                                              | `undefined`           |
+| `openOnFocus`        | `open-on-focus`   | Determine if the dropdown section should be opened when the expandable button of the control is focused. | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`               |
+| `position`           | `position`        | Specifies the position of the dropdown section that is placed relative to the expandable button.         | `"Center_OutsideEnd" \| "Center_OutsideStart" \| "InsideEnd_OutsideEnd" \| "InsideEnd_OutsideStart" \| "InsideStart_OutsideEnd" \| "InsideStart_OutsideStart" \| "OutsideEnd_Center" \| "OutsideEnd_InsideEnd" \| "OutsideEnd_InsideStart" \| "OutsideEnd_OutsideEnd" \| "OutsideEnd_OutsideStart" \| "OutsideStart_Center" \| "OutsideStart_InsideEnd" \| "OutsideStart_InsideStart" \| "OutsideStart_OutsideEnd" \| "OutsideStart_OutsideStart"` | `"Center_OutsideEnd"` |
+| `useGxRender`        | `use-gx-render`   | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                 | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`               |
+
+
+## Dependencies
+
+### Depends on
+
+- [ch-dropdown-item](../../dropdown-item)
+- [ch-dropdown](../../dropdown)
+
+### Graph
+```mermaid
+graph TD;
+  ch-dropdown-render --> ch-dropdown-item
+  ch-dropdown-render --> ch-dropdown
+  ch-dropdown-item --> ch-dropdown
+  ch-dropdown --> ch-window
+  ch-window --> ch-window-close
+  style ch-dropdown-render fill:#f9f,stroke:#333,stroke-width:4px
+```
+
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

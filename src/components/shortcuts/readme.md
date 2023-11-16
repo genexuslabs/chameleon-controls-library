@@ -9,15 +9,15 @@
 
 | Property           | Attribute  | Description                          | Type     | Default     |
 | ------------------ | ---------- | ------------------------------------ | -------- | ----------- |
-| `showKey`          | `show-key` |                                      | `"F10"`  | `"F10"`     |
+| `showKey`          | `show-key` | Key to show shortcut tooltips.       | `"F10"`  | `"F10"`     |
 | `src` _(required)_ | `src`      | The URL of the shortcut definitions. | `string` | `undefined` |
 
 
 ## Shadow Parts
 
-| Part        | Description |
-| ----------- | ----------- |
-| `"tooltip"` |             |
+| Part     | Description |
+| -------- | ----------- |
+| `"plus"` |             |
 
 
 ## Dependencies

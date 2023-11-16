@@ -28,6 +28,9 @@ export class ChShortcuts {
    */
   @Prop() readonly src!: string;
 
+  /**
+   * Key to show shortcut tooltips.
+   */
   @Prop() readonly showKey = "F10";
 
   componentDidLoad() {
@@ -52,6 +55,11 @@ export class ChShortcuts {
     if (eventInfo.key === this.showKey) {
       this.showShortcuts = !this.showShortcuts;
       eventInfo.preventDefault();
+    } else if (
+      this.showShortcuts &&
+      !["Ctrl", "Alt", "Shift", "Meta"].includes(eventInfo.key)
+    ) {
+      this.showShortcuts = false;
     }
   }
 
@@ -60,7 +68,7 @@ export class ChShortcuts {
   };
 
   private renderShortcuts() {
-    return getShortcuts().map(shortcut => (
+    return getShortcuts(this.src).map(shortcut => (
       <ch-window
         container={shortcut.element}
         modal={false}
@@ -70,11 +78,21 @@ export class ChShortcuts {
         xAlign="outside-end"
         yAlign="inside-start"
         onWindowClosed={this.windowClosedHandler}
-        exportparts="mask:element"
+        exportparts="mask:element, main:tooltip"
       >
-        <span part="tooltip">{shortcut.keyShortcuts}</span>
+        {this.renderKeyShortcuts(shortcut.keyShortcuts)}
       </ch-window>
     ));
+  }
+
+  private renderKeyShortcuts(keyShortcuts: string) {
+    return keyShortcuts.split(/(?<!(?:[+]|^))([+])/).map((key, i, items) => {
+      if (key === "+" && i > 0 && items[i - 1] !== "+") {
+        return <span part="plus">+</span>;
+      } else {
+        return <kbd part={`key`}>{key}</kbd>;
+      }
+    });
   }
 
   render() {

@@ -13,16 +13,29 @@
     <link rel="stylesheet" href="./assets/styles/styles.css" />
     <style>
       ch-shortcuts::part(tooltip) {
-        outline: 1px solid darkblue;
-        background-color: darkblue;
+        padding-left: 5px;
+      }
+      ch-shortcuts::part(key) {
         color: white;
+        background-color: darkslategray;
+        border-radius: 3px;
+        font-size: 11px;
         padding: 3px;
-        font-size: 12px;
+      }
+      ch-shortcuts::part(plus) {
+        font-size: 11px;
+        color: darkslategray;
+        padding: 2px;
       }
       ch-shortcuts::part(element) {
         outline: 1px solid darkblue;
       }
     </style>
+    <script>
+      document.addEventListener("keyShortcutPressed", eventInfo => {
+        console.log(eventInfo.detail);
+      });
+    </script>
   </head>
   <body>
     <div class="container">
@@ -67,6 +80,7 @@
           </button>
         </div>
 
+        <ch-paginator-pages total-pages="5"></ch-paginator-pages>
         <ch-shortcuts src="./assets/json/shortcuts.json"></ch-shortcuts>
       </section>
     </div>

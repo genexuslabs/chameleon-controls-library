@@ -45,7 +45,7 @@
 
 ### Used by
 
- - [ch-test-action-group](../test/test-action-group)
+ - [ch-action-group-render](../renders/action-group)
 
 ### Depends on
 
@@ -57,7 +57,7 @@ graph TD;
   ch-action-group --> ch-dropdown
   ch-dropdown --> ch-window
   ch-window --> ch-window-close
-  ch-test-action-group --> ch-action-group
+  ch-action-group-render --> ch-action-group
   style ch-action-group fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

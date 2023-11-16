@@ -124,7 +124,7 @@ export class ChDropDownItem implements ChComponent {
     this.href ? (
       <a
         class="action"
-        part="action target"
+        part="action link"
         href={this.href}
         onClick={this.handleActionClick}
         onFocus={this.handleFocus}

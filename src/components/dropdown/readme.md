@@ -81,7 +81,7 @@ and the last one for the dropdown footer.
 
  - [ch-action-group](../action-group)
  - [ch-dropdown-item](../dropdown-item)
- - [ch-test-dropdown](../test/test-dropdown)
+ - [ch-dropdown-render](../renders/dropdown)
 
 ### Depends on
 
@@ -94,7 +94,7 @@ graph TD;
   ch-window --> ch-window-close
   ch-action-group --> ch-dropdown
   ch-dropdown-item --> ch-dropdown
-  ch-test-dropdown --> ch-dropdown
+  ch-dropdown-render --> ch-dropdown
   style ch-dropdown fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -120,6 +120,7 @@ const GXRenderItem = (
 ) =>
   (treeState.filterType === "none" || itemModel.render !== false) && (
     <ch-tree-view-item
+      key={itemModel.id}
       id={itemModel.id}
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? treeState.checkbox}

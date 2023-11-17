@@ -650,7 +650,7 @@ export class ChTreeViewItem {
     id: this.el.id,
     itemRef: this.el,
     metadata: this.metadata,
-    parentId: this.el.parentElement.id,
+    parentId: this.el.parentElement?.id, // TODO: Improve this
     selected: selected
   });
 

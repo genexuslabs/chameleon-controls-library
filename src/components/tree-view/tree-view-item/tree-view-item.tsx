@@ -795,6 +795,11 @@ export class ChTreeViewItem {
       this.removeEditMode(false);
     }
 
+    // Sync selected state with the main tree
+    if (this.selected) {
+      this.selectedItemChange.emit(this.getSelectedInfo(true, false));
+    }
+
     this.disconnectObserver();
   }
 

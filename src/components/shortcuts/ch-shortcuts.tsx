@@ -5,9 +5,11 @@ import {
   State,
   Host,
   h,
-  Element
+  Element,
+  Watch
 } from "@stencil/core";
 import {
+  Shortcut,
   getShortcuts,
   loadShortcuts,
   unloadShortcuts
@@ -23,6 +25,8 @@ const KEY_SYMBOL = {
   shadow: true
 })
 export class ChShortcuts {
+  private shortcuts: Shortcut[];
+
   @Element() el: HTMLChShortcutsElement;
 
   @State() showShortcuts = false;
@@ -37,13 +41,30 @@ export class ChShortcuts {
    */
   @Prop() readonly showKey = "F10";
 
+  /**
+   * Suspend shortcuts.
+   */
+  @Prop() readonly suspend = false;
+
+  @Watch("suspend")
+  suspendHandler() {
+    if (this.suspend) {
+      unloadShortcuts(this.src);
+    } else {
+      const root = this.el.getRootNode() as Document | ShadowRoot;
+      loadShortcuts(this.src, root, this.shortcuts);
+    }
+  }
+
   componentDidLoad() {
     if (this.src) {
       fetch(this.src).then(response => {
         if (response.ok) {
           response.json().then(json => {
             const root = this.el.getRootNode() as Document | ShadowRoot;
-            loadShortcuts(this.src, root, json);
+            this.shortcuts = json;
+
+            loadShortcuts(this.src, root, this.shortcuts);
           });
         }
       });
@@ -56,13 +77,16 @@ export class ChShortcuts {
 
   @Listen("keydown", { target: "window", capture: true })
   windowKeyDownHandler(eventInfo: KeyboardEvent) {
+    const modifierKeys = ["Ctrl", "Alt", "Shift", "Meta"];
+
+    if (eventInfo.repeat || this.suspend) {
+      return;
+    }
+
     if (eventInfo.key === this.showKey) {
       this.showShortcuts = !this.showShortcuts;
       eventInfo.preventDefault();
-    } else if (
-      this.showShortcuts &&
-      !["Ctrl", "Alt", "Shift", "Meta"].includes(eventInfo.key)
-    ) {
+    } else if (this.showShortcuts && !modifierKeys.includes(eventInfo.key)) {
       this.showShortcuts = false;
     }
   }

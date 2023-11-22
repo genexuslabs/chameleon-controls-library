@@ -7,17 +7,19 @@
 
 ## Properties
 
-| Property           | Attribute  | Description                          | Type     | Default     |
-| ------------------ | ---------- | ------------------------------------ | -------- | ----------- |
-| `showKey`          | `show-key` | Key to show shortcut tooltips.       | `"F10"`  | `"F10"`     |
-| `src` _(required)_ | `src`      | The URL of the shortcut definitions. | `string` | `undefined` |
+| Property           | Attribute  | Description                          | Type      | Default     |
+| ------------------ | ---------- | ------------------------------------ | --------- | ----------- |
+| `showKey`          | `show-key` | Key to show shortcut tooltips.       | `"F10"`   | `"F10"`     |
+| `src` _(required)_ | `src`      | The URL of the shortcut definitions. | `string`  | `undefined` |
+| `suspend`          | `suspend`  | Suspend shortcuts.                   | `boolean` | `false`     |
 
 
 ## Shadow Parts
 
-| Part     | Description |
-| -------- | ----------- |
-| `"plus"` |             |
+| Part      | Description |
+| --------- | ----------- |
+| `"plus"`  |             |
+| `"slash"` |             |
 
 
 ## Dependencies

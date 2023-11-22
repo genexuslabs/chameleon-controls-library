@@ -1102,6 +1102,10 @@ export namespace Components {
           * The URL of the shortcut definitions.
          */
         "src": string;
+        /**
+          * Suspend shortcuts.
+         */
+        "suspend": false;
     }
     interface ChSidebarMenu {
         /**
@@ -3670,6 +3674,10 @@ declare namespace LocalJSX {
           * The URL of the shortcut definitions.
          */
         "src": string;
+        /**
+          * Suspend shortcuts.
+         */
+        "suspend"?: false;
     }
     interface ChSidebarMenu {
         /**

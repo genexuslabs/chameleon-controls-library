@@ -44,7 +44,7 @@ export class ChShortcuts {
   /**
    * Suspend shortcuts.
    */
-  @Prop() readonly suspend = false;
+  @Prop() readonly suspend: boolean = false;
 
   @Watch("suspend")
   suspendHandler() {

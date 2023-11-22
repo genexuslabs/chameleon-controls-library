@@ -130,7 +130,7 @@ function triggerShortcut(eventInfo: KeyboardEvent): ShortcutMap {
 }
 
 function parseKeyShortcuts(value = ""): KeyShortcut[] {
-  return value.split(" ").map(item => {
+  return value.split(/(?<!(?:[+]|^))\s/).map(item => {
     return item.split(/(?<!(?:[+]|^))[+]/).reduce(
       (keyShortcut: KeyShortcut, key: string) => {
         switch (key.toLowerCase()) {

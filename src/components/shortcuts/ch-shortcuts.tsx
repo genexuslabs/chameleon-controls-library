@@ -5,13 +5,19 @@ import {
   State,
   Host,
   h,
-  Element
+  Element,
+  Watch
 } from "@stencil/core";
 import {
+  Shortcut,
   getShortcuts,
   loadShortcuts,
   unloadShortcuts
 } from "./ch-shortcuts-manager";
+
+const KEY_SYMBOL = {
+  " ": "\u2334"
+};
 
 @Component({
   tag: "ch-shortcuts",
@@ -19,6 +25,8 @@ import {
   shadow: true
 })
 export class ChShortcuts {
+  private shortcuts: Shortcut[];
+
   @Element() el: HTMLChShortcutsElement;
 
   @State() showShortcuts = false;
@@ -33,13 +41,30 @@ export class ChShortcuts {
    */
   @Prop() readonly showKey = "F10";
 
+  /**
+   * Suspend shortcuts.
+   */
+  @Prop() readonly suspend = false;
+
+  @Watch("suspend")
+  suspendHandler() {
+    if (this.suspend) {
+      unloadShortcuts(this.src);
+    } else {
+      const root = this.el.getRootNode() as Document | ShadowRoot;
+      loadShortcuts(this.src, root, this.shortcuts);
+    }
+  }
+
   componentDidLoad() {
     if (this.src) {
       fetch(this.src).then(response => {
         if (response.ok) {
           response.json().then(json => {
             const root = this.el.getRootNode() as Document | ShadowRoot;
-            loadShortcuts(this.src, root, json);
+            this.shortcuts = json;
+
+            loadShortcuts(this.src, root, this.shortcuts);
           });
         }
       });
@@ -52,13 +77,16 @@ export class ChShortcuts {
 
   @Listen("keydown", { target: "window", capture: true })
   windowKeyDownHandler(eventInfo: KeyboardEvent) {
+    const modifierKeys = ["Ctrl", "Alt", "Shift", "Meta"];
+
+    if (eventInfo.repeat || this.suspend) {
+      return;
+    }
+
     if (eventInfo.key === this.showKey) {
       this.showShortcuts = !this.showShortcuts;
       eventInfo.preventDefault();
-    } else if (
-      this.showShortcuts &&
-      !["Ctrl", "Alt", "Shift", "Meta"].includes(eventInfo.key)
-    ) {
+    } else if (this.showShortcuts && !modifierKeys.includes(eventInfo.key)) {
       this.showShortcuts = false;
     }
   }
@@ -68,29 +96,33 @@ export class ChShortcuts {
   };
 
   private renderShortcuts() {
-    return getShortcuts(this.src).map(shortcut => (
-      <ch-window
-        container={shortcut.element}
-        modal={false}
-        hidden={false}
-        closeOnEscape={true}
-        closeOnOutsideClick={true}
-        xAlign="outside-end"
-        yAlign="inside-start"
-        onWindowClosed={this.windowClosedHandler}
-        exportparts="mask:element, main:tooltip"
-      >
-        {this.renderKeyShortcuts(shortcut.keyShortcuts)}
-      </ch-window>
-    ));
+    return getShortcuts(this.src)
+      .filter(shortcut => shortcut.element)
+      .map(shortcut => (
+        <ch-window
+          container={shortcut.element}
+          modal={false}
+          hidden={false}
+          closeOnEscape={true}
+          closeOnOutsideClick={true}
+          xAlign="outside-end"
+          yAlign="inside-start"
+          onWindowClosed={this.windowClosedHandler}
+          exportparts="mask:element, main:tooltip"
+        >
+          {this.renderKeyShortcuts(shortcut.keyShortcuts)}
+        </ch-window>
+      ));
   }
 
   private renderKeyShortcuts(keyShortcuts: string) {
-    return keyShortcuts.split(/(?<!(?:[+]|^))([+])/).map((key, i, items) => {
+    return keyShortcuts.split(/(?<!(?:[+]|^))([+\s])/).map((key, i, items) => {
       if (key === "+" && i > 0 && items[i - 1] !== "+") {
         return <span part="plus">+</span>;
+      } else if (key === " " && i > 0 && items[i - 1] !== "+") {
+        return <span part="slash">/</span>;
       } else {
-        return <kbd part={`key`}>{key}</kbd>;
+        return <kbd part={`key`}>{KEY_SYMBOL[key] ?? key}</kbd>;
       }
     });
   }

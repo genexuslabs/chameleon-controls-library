@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="./assets/styles/styles.css" />
     <style>
       ch-shortcuts::part(tooltip) {
+        display: flex;
         padding-left: 5px;
       }
       ch-shortcuts::part(key) {
@@ -22,13 +23,15 @@
         font-size: 11px;
         padding: 3px;
       }
+      ch-shortcuts::part(slash),
       ch-shortcuts::part(plus) {
         font-size: 11px;
         color: darkslategray;
-        padding: 2px;
+        padding: 3px 2px;
       }
       ch-shortcuts::part(element) {
-        outline: 1px solid darkblue;
+        outline: 2px dotted darkblue;
+        outline-offset: -1px;
       }
     </style>
     <script>

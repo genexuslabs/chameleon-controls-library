@@ -72,21 +72,23 @@ export class ChShortcuts {
   };
 
   private renderShortcuts() {
-    return getShortcuts(this.src).map(shortcut => (
-      <ch-window
-        container={shortcut.element}
-        modal={false}
-        hidden={false}
-        closeOnEscape={true}
-        closeOnOutsideClick={true}
-        xAlign="outside-end"
-        yAlign="inside-start"
-        onWindowClosed={this.windowClosedHandler}
-        exportparts="mask:element, main:tooltip"
-      >
-        {this.renderKeyShortcuts(shortcut.keyShortcuts)}
-      </ch-window>
-    ));
+    return getShortcuts(this.src)
+      .filter(shortcut => shortcut.element)
+      .map(shortcut => (
+        <ch-window
+          container={shortcut.element}
+          modal={false}
+          hidden={false}
+          closeOnEscape={true}
+          closeOnOutsideClick={true}
+          xAlign="outside-end"
+          yAlign="inside-start"
+          onWindowClosed={this.windowClosedHandler}
+          exportparts="mask:element, main:tooltip"
+        >
+          {this.renderKeyShortcuts(shortcut.keyShortcuts)}
+        </ch-window>
+      ));
   }
 
   private renderKeyShortcuts(keyShortcuts: string) {

@@ -95,8 +95,10 @@ export class ChShortcuts {
     return keyShortcuts.split(/(?<!(?:[+]|^))([+\s])/).map((key, i, items) => {
       if (key === "+" && i > 0 && items[i - 1] !== "+") {
         return <span part="plus">+</span>;
+      } else if (key === " " && i > 0 && items[i - 1] !== "+") {
+        return <span part="slash">/</span>;
       } else {
-        return <kbd part={`key`}>{key}</kbd>;
+        return <kbd part={`key`}>{KEY_SYMBOL[key] ?? key}</kbd>;
       }
     });
   }

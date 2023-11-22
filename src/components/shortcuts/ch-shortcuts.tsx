@@ -13,6 +13,10 @@ import {
   unloadShortcuts
 } from "./ch-shortcuts-manager";
 
+const KEY_SYMBOL = {
+  " ": "\u2334"
+};
+
 @Component({
   tag: "ch-shortcuts",
   styleUrl: "ch-shortcuts.scss",
@@ -86,7 +90,7 @@ export class ChShortcuts {
   }
 
   private renderKeyShortcuts(keyShortcuts: string) {
-    return keyShortcuts.split(/(?<!(?:[+]|^))([+])/).map((key, i, items) => {
+    return keyShortcuts.split(/(?<!(?:[+]|^))([+\s])/).map((key, i, items) => {
       if (key === "+" && i > 0 && items[i - 1] !== "+") {
         return <span part="plus">+</span>;
       } else {

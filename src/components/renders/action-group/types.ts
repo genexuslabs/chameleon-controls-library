@@ -12,5 +12,10 @@ export type ActionGroupItemModel = ReducedDropdownItemModel & {
   /**
    * Only used for performance reasons. It is not used as public property
    */
+  wasExpandedInFirstLevel?: boolean;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
   wasExpandedInMoreActions?: boolean;
 };

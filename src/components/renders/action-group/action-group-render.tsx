@@ -142,39 +142,56 @@ export class ChActionGroupRender {
   private firstLevelRenderItem = (
     item: ActionGroupItemModel,
     index: number
-  ) => (
-    <ch-dropdown-item
-      key={item.id || item.caption || index}
-      id={item.id}
-      class={item.actionClass || DEFAULT_ACTION_CLASS}
-      expandBehavior={this.expandBehavior}
-      forceContainingBlock={false}
-      href={item.link?.url}
-      leftImgSrc={this.renderImg(item.startImage)}
-      openOnFocus={this.openOnFocus}
-      position={item.itemsPosition || "Center_OutsideEnd"}
-      rightImgSrc={this.renderImg(item.endImage)}
-      onClick={this.handleItemClick(item.link?.url, item.id)}
-    >
-      {item.caption}
-
-      {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-        (this.displayedItemsCount === -1 || index < this.displayedItemsCount) &&
-        item.items != null &&
-        item.items.map(this.renderItem(false))}
-
-      {
-        // Dummy dropdown item to avoid issues when removing all items from the
-        // first level. E. g., if the first level adds a chevron when the item is
-        // a dropdown, by removing all items the chevron won't be displayed
-        this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+  ) => {
+    // Dummy dropdown item to avoid issues when removing all items from the
+    // first level. E. g., if the first level adds a chevron when the item is
+    // a dropdown, by removing all items the chevron won't be displayed
+    const mustRenderDummySubElement =
+      item.items != null &&
+      item.items.length !== 0 && // Dropdown has items
+      (!item.wasExpanded || // Dropdown was not expanded and has items
+        (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
           this.displayedItemsCount !== -1 &&
-          index >= this.displayedItemsCount &&
+          index >= this.displayedItemsCount));
+
+    return (
+      <ch-dropdown-item
+        key={item.id || item.caption || index}
+        id={item.id}
+        class={item.actionClass || DEFAULT_ACTION_CLASS}
+        expandBehavior={this.expandBehavior}
+        forceContainingBlock={false}
+        href={item.link?.url}
+        leftImgSrc={this.renderImg(item.startImage)}
+        openOnFocus={this.openOnFocus}
+        position={item.itemsPosition || "Center_OutsideEnd"}
+        rightImgSrc={this.renderImg(item.endImage)}
+        onClick={this.handleItemClick(item.link?.url, item.id)}
+        onExpandedChange={
+          !item.wasExpandedInFirstLevel
+            ? this.handleFirstLevelItemExpandedChange(item)
+            : null
+        }
+      >
+        {item.caption}
+
+        {item.wasExpandedInFirstLevel &&
+          this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+          (this.displayedItemsCount === -1 ||
+            index < this.displayedItemsCount) &&
           item.items != null &&
-          item.items.length !== 0 && <ch-dropdown-item></ch-dropdown-item>
-      }
-    </ch-dropdown-item>
-  );
+          item.items.map(this.renderItem(false))}
+
+        {mustRenderDummySubElement && <ch-dropdown-item></ch-dropdown-item>}
+      </ch-dropdown-item>
+    );
+  };
+
+  private handleFirstLevelItemExpandedChange =
+    (item: ActionGroupItemModel) => () => {
+      item.wasExpandedInFirstLevel = true;
+      forceUpdate(this);
+    };
 
   private handleMoreActionsItemExpandedChange =
     (item: ActionGroupItemModel) => () => {

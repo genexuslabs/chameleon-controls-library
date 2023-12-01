@@ -69,6 +69,11 @@ export class ChDropDownItem implements ChComponent {
   @Prop() readonly rightImgSrc: string;
 
   /**
+   * Specifies the shortcut caption that the control will display.
+   */
+  @Prop() readonly shortcut: string;
+
+  /**
    * Fires when the control's anchor or button is clicked.
    */
   @Event() actionClick: EventEmitter<string>;
@@ -102,6 +107,12 @@ export class ChDropDownItem implements ChComponent {
     <span slot="action" class="content" part="content">
       <slot />
     </span>,
+
+    !!this.shortcut && (
+      <span aria-hidden="true" slot="action" part="shortcut">
+        {this.shortcut}
+      </span>
+    ),
 
     !!this.rightImgSrc && (
       <img

@@ -128,6 +128,7 @@ export class ChActionGroupRender {
               : item.itemsPosition) || "OutsideEnd_InsideStart"
           }
           rightImgSrc={this.renderImg(item.endImage)}
+          shortcut={item.shortcut}
           onClick={this.handleItemClick(item.link?.url, item.id)}
         >
           {item.caption}
@@ -191,6 +192,7 @@ export class ChActionGroupRender {
         item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
       }
       rightImgSrc={this.renderImg(item.endImage)}
+      shortcut={item.shortcut}
       onClick={this.handleItemClick(item.link?.url, item.id)}
     >
       {item.caption}

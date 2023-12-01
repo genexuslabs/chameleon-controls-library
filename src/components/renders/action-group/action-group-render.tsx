@@ -208,6 +208,11 @@ export class ChActionGroupRender {
   };
 
   render() {
+    const thereAreCollapsedItems =
+      this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+      this.model != null &&
+      this.displayedItemsCount !== -1;
+
     return (
       <ch-action-group
         buttonLabel={this.buttonLabel}
@@ -228,14 +233,9 @@ export class ChActionGroupRender {
             </ch-action-group-item>
           ))}
 
-        {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-          this.model != null &&
+        {thereAreCollapsedItems &&
           this.model
-            .filter(
-              (_, index) =>
-                this.displayedItemsCount !== -1 &&
-                index >= this.displayedItemsCount
-            )
+            .filter((_, index) => index >= this.displayedItemsCount)
             .map(this.firstLevelRenderCollapsedItem)}
       </ch-action-group>
     );

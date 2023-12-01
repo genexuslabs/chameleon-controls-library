@@ -96,8 +96,8 @@ export class ChDropDownItem implements ChComponent {
       <img
         slot="action"
         aria-hidden="true"
-        class="left-img"
-        part="left-img"
+        class="start-img"
+        part="start-img"
         alt=""
         src={this.leftImgSrc}
         loading="lazy"
@@ -118,8 +118,8 @@ export class ChDropDownItem implements ChComponent {
       <img
         slot="action"
         aria-hidden="true"
-        class="right-img"
-        part="right-img"
+        class="end-img"
+        part="end-img"
         alt=""
         src={this.rightImgSrc}
         loading="lazy"

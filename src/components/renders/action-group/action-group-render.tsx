@@ -131,11 +131,22 @@ export class ChActionGroupRender {
           rightImgSrc={this.renderImg(item.endImage)}
           shortcut={item.shortcut}
           onClick={this.handleItemClick(item.link?.url, item.id)}
+          onExpandedChange={
+            !item.wasExpanded ? this.handleItemExpandedChange(item) : null
+          }
         >
           {item.caption}
 
           {item.items != null &&
+            item.wasExpanded &&
             item.items.map(this.renderItem(responsiveCollapse))}
+
+          {
+            // Render a dummy element if the control was not expanded and has items
+            item.items != null && !item.wasExpanded && (
+              <ch-dropdown-item></ch-dropdown-item>
+            )
+          }
         </ch-dropdown-item>
       );
 
@@ -185,6 +196,11 @@ export class ChActionGroupRender {
         {mustRenderDummySubElement && <ch-dropdown-item></ch-dropdown-item>}
       </ch-dropdown-item>
     );
+  };
+
+  private handleItemExpandedChange = (item: ActionGroupItemModel) => () => {
+    item.wasExpanded = true;
+    forceUpdate(this);
   };
 
   private handleFirstLevelItemExpandedChange =

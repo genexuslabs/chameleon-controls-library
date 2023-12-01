@@ -10,6 +10,11 @@ export type DropdownItemModel = {
   link?: Link;
   shortcut?: string;
   startImage?: string;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
+  wasExpanded?: boolean;
 };
 
 type Link = {

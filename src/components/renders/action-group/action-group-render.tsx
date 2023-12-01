@@ -132,7 +132,9 @@ export class ChActionGroupRender {
           shortcut={item.shortcut}
           onClick={this.handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
-            !item.wasExpanded ? this.handleItemExpandedChange(item) : null
+            !item.wasExpanded
+              ? this.handleItemExpanded(item, "wasExpanded")
+              : null
           }
         >
           {item.caption}
@@ -180,7 +182,7 @@ export class ChActionGroupRender {
         onClick={this.handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
-            ? this.handleFirstLevelItemExpandedChange(item)
+            ? this.handleItemExpanded(item, "wasExpandedInFirstLevel")
             : null
         }
       >
@@ -198,20 +200,16 @@ export class ChActionGroupRender {
     );
   };
 
-  private handleItemExpandedChange = (item: ActionGroupItemModel) => () => {
-    item.wasExpanded = true;
-    forceUpdate(this);
-  };
-
-  private handleFirstLevelItemExpandedChange =
-    (item: ActionGroupItemModel) => () => {
-      item.wasExpandedInFirstLevel = true;
-      forceUpdate(this);
-    };
-
-  private handleMoreActionsItemExpandedChange =
-    (item: ActionGroupItemModel) => () => {
-      item.wasExpandedInMoreActions = true;
+  private handleItemExpanded =
+    (
+      item: ActionGroupItemModel,
+      propertyName: Extract<
+        keyof ActionGroupItemModel,
+        "wasExpanded" | "wasExpandedInFirstLevel" | "wasExpandedInMoreActions"
+      >
+    ) =>
+    () => {
+      item[propertyName] = true;
       forceUpdate(this);
     };
 
@@ -236,7 +234,7 @@ export class ChActionGroupRender {
       onClick={this.handleItemClick(item.link?.url, item.id)}
       onExpandedChange={
         !item.wasExpandedInMoreActions
-          ? this.handleMoreActionsItemExpandedChange(item)
+          ? this.handleItemExpanded(item, "wasExpandedInMoreActions")
           : null
       }
     >

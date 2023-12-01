@@ -15,6 +15,7 @@ const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";
 })
 export class ChActionGroupRender {
   @State() displayedItemsCount = -1;
+  @State() moreActionsButtonWasExpanded = false;
 
   /**
    * This attribute lets you specify the label for the expandable button.
@@ -207,9 +208,14 @@ export class ChActionGroupRender {
     this.displayedItemsCount = event.detail;
   };
 
+  private handleMoreActionButtonExpandedChange = () => {
+    this.moreActionsButtonWasExpanded = true;
+  };
+
   render() {
     const thereAreCollapsedItems =
       this.itemsOverflowBehavior === "ResponsiveCollapse" &&
+      this.moreActionsButtonWasExpanded &&
       this.model != null &&
       this.displayedItemsCount !== -1;
 
@@ -222,6 +228,11 @@ export class ChActionGroupRender {
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
         openOnFocus={this.openOnFocus}
         onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
+        onMoreActionsButtonExpandedChange={
+          !this.moreActionsButtonWasExpanded
+            ? this.handleMoreActionButtonExpandedChange
+            : null
+        }
       >
         {this.model != null &&
           this.model.map((item, index) => (

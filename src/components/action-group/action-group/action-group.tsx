@@ -11,6 +11,7 @@ import {
 } from "@stencil/core";
 import { DropdownPosition } from "../../dropdown/types";
 import { ItemsOverflowBehavior } from "./types";
+import { ChDropdownCustomEvent } from "../../../components";
 
 const FLOATING_POINT_ERROR = 1;
 
@@ -121,6 +122,11 @@ export class ChActionGroup {
   @Event() displayedItemsCountChange: EventEmitter<number>;
 
   /**
+   * Fired when the more actions button is expanded or collapsed.
+   */
+  @Event() moreActionsButtonExpandedChange: EventEmitter<boolean>;
+
+  /**
    * Update the visibility of the actions.
    * Only works if itemsOverflowBehavior === "ResponsiveCollapse"
    */
@@ -224,6 +230,13 @@ export class ChActionGroup {
     this.connectActionsObserver();
   };
 
+  private handleMoreActionButtonExpand = (
+    event: ChDropdownCustomEvent<boolean>
+  ) => {
+    event.stopPropagation();
+    this.moreActionsButtonExpandedChange.emit(event.detail);
+  };
+
   componentDidLoad() {
     this.setResponsiveCollapse();
   }
@@ -248,6 +261,7 @@ export class ChActionGroup {
               expandBehavior={this.expandBehavior}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
+              onExpandedChange={this.handleMoreActionButtonExpand}
             >
               <slot name="more-items" slot="items"></slot>
             </ch-dropdown>

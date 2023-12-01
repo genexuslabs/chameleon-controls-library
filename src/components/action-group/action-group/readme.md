@@ -45,11 +45,11 @@
 
 ### Used by
 
- - [ch-action-group-render](../renders/action-group)
+ - [ch-action-group-render](../../renders/action-group)
 
 ### Depends on
 
-- [ch-dropdown](../dropdown)
+- [ch-dropdown](../../dropdown)
 
 ### Graph
 ```mermaid

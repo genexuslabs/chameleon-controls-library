@@ -9,7 +9,7 @@ import {
   EventEmitter,
   Watch
 } from "@stencil/core";
-import { DropdownPosition } from "../dropdown/types";
+import { DropdownPosition } from "../../dropdown/types";
 import { ItemsOverflowBehavior } from "./types";
 
 const FLOATING_POINT_ERROR = 1;

@@ -23,7 +23,7 @@
 
 ### Used by
 
- - [ch-action-group-render](../renders/action-group)
+ - [ch-action-group-render](../../renders/action-group)
 
 ### Graph
 ```mermaid

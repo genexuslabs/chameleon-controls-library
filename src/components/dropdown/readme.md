@@ -79,7 +79,7 @@ and the last one for the dropdown footer.
 
 ### Used by
 
- - [ch-action-group](../action-group)
+ - [ch-action-group](../action-group/action-group)
  - [ch-dropdown-item](../dropdown-item)
  - [ch-dropdown-render](../renders/dropdown)
 

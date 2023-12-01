@@ -79,6 +79,11 @@ export class ChDropDownItem implements ChComponent {
   @Event() actionClick: EventEmitter<string>;
 
   /**
+   * Fired when the visibility of the dropdown section is changed
+   */
+  @Event() expandedChange: EventEmitter<boolean>;
+
+  /**
    * Fires when the control's anchor or button is in focus.
    */
   @Event() focusChange: EventEmitter;

@@ -1,4 +1,4 @@
-import { Component, h, Prop, State } from "@stencil/core";
+import { Component, forceUpdate, h, Prop, State } from "@stencil/core";
 import { ActionGroupItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { ChActionGroupCustomEvent } from "../../../components";
@@ -176,6 +176,12 @@ export class ChActionGroupRender {
     </ch-dropdown-item>
   );
 
+  private handleMoreActionsItemExpandedChange =
+    (item: ActionGroupItemModel) => () => {
+      item.wasExpandedInMoreActions = true;
+      forceUpdate(this);
+    };
+
   private firstLevelRenderCollapsedItem = (
     item: ActionGroupItemModel,
     index: number
@@ -195,10 +201,27 @@ export class ChActionGroupRender {
       rightImgSrc={this.renderImg(item.endImage)}
       shortcut={item.shortcut}
       onClick={this.handleItemClick(item.link?.url, item.id)}
+      onExpandedChange={
+        !item.wasExpandedInMoreActions
+          ? this.handleMoreActionsItemExpandedChange(item)
+          : null
+      }
     >
       {item.caption}
 
-      {item.items != null && item.items.map(this.renderItem(true))}
+      {
+        // Render items when the parent is expanded the first time
+        item.items != null &&
+          item.wasExpandedInMoreActions &&
+          item.items.map(this.renderItem(true))
+      }
+
+      {
+        // Render a dummy element if the control was not expanded and has items
+        item.items != null && !item.wasExpandedInMoreActions && (
+          <ch-dropdown-item></ch-dropdown-item>
+        )
+      }
     </ch-dropdown-item>
   );
 

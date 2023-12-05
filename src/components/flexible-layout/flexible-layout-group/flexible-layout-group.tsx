@@ -182,6 +182,7 @@ export class ChFlexibleLayoutGroup {
             <button
               aria-label={this.closeButtonAccessibleName}
               class="close-button"
+              part="close-button"
               type="button"
             ></button>
           )}

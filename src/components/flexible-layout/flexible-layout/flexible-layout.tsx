@@ -102,7 +102,7 @@ export class ChFlexibleLayout {
             key={INLINE_START_GROUP}
             exportparts={
               INLINE_START_PARTS +
-              ",selected," +
+              ",selected,close-button," +
               CAPTION_PARTS(layout.inlineStart)
             }
             class={INLINE_START_GROUP}
@@ -116,7 +116,9 @@ export class ChFlexibleLayout {
         <ch-flexible-layout-group
           key={MAIN_GROUP}
           exportparts={
-            MAIN_PARTS + ",selected," + CAPTION_PARTS(layout.main ?? [])
+            MAIN_PARTS +
+            ",selected,close-button," +
+            CAPTION_PARTS(layout.main ?? [])
           }
           class={MAIN_GROUP}
           items={layout.main}
@@ -129,7 +131,9 @@ export class ChFlexibleLayout {
           <ch-flexible-layout-group
             key={INLINE_END_GROUP}
             exportparts={
-              INLINE_END_PARTS + ",selected," + CAPTION_PARTS(layout.inlineEnd)
+              INLINE_END_PARTS +
+              ",selected,close-button," +
+              CAPTION_PARTS(layout.inlineEnd)
             }
             class={INLINE_END_GROUP}
             items={layout.inlineEnd}
@@ -143,7 +147,9 @@ export class ChFlexibleLayout {
           <ch-flexible-layout-group
             key={BLOCK_END_GROUP}
             exportparts={
-              BLOCK_END_PARTS + ",selected," + CAPTION_PARTS(layout.blockEnd)
+              BLOCK_END_PARTS +
+              ",selected,close-button," +
+              CAPTION_PARTS(layout.blockEnd)
             }
             class={BLOCK_END_GROUP}
             items={layout.blockEnd}

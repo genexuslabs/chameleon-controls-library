@@ -31,17 +31,17 @@ const initializeRenderedItems = (
     },
     {
       items: flexibleLayout.main,
-      group: "inlineStart",
+      group: "main",
       defaultSelected: "last"
     },
     {
       items: flexibleLayout.inlineEnd,
-      group: "inlineStart",
+      group: "inlineEnd",
       defaultSelected: "first"
     },
     {
       items: flexibleLayout.blockEnd,
-      group: "inlineStart",
+      group: "blockEnd",
       defaultSelected: "last"
     }
   ];

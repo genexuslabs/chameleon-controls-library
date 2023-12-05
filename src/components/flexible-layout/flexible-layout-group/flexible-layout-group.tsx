@@ -65,6 +65,13 @@ export class ChFlexibleLayoutGroup {
   @Prop() readonly accessibleName: string;
 
   /**
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the element. This label is used for the close button of the captions.
+   */
+  @Prop() readonly closeButtonAccessibleName: string = "Close";
+
+  /**
    * Specifies the items that are displayed in the group.
    */
   @Prop() readonly items: FlexibleLayoutItemBase[] | FlexibleLayoutItem[];
@@ -170,6 +177,14 @@ export class ChFlexibleLayoutGroup {
           )}
 
           {this.showCaptions && item.name}
+
+          {this.showCaptions && (
+            <button
+              aria-label={this.closeButtonAccessibleName}
+              class="close-button"
+              type="button"
+            ></button>
+          )}
         </button>
       ))}
     </div>,

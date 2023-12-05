@@ -130,10 +130,7 @@ export class ChFlexibleLayoutGroup {
     );
   }
 
-  private renderBlockStart = () =>
-    this.items.map(item => <slot name={item.id} />);
-
-  private renderOtherTypes = () => [
+  private renderItems = () => [
     <div
       role="tablist"
       aria-label={this.accessibleName}
@@ -226,9 +223,7 @@ export class ChFlexibleLayoutGroup {
     return (
       <Host role={accessibleRoleMap[this.type]}>
         {this.items?.length > 0 &&
-          (this.type === "block-start"
-            ? this.renderBlockStart()
-            : this.renderOtherTypes())}
+          (this.type === "block-start" ? <slot /> : this.renderItems())}
       </Host>
     );
   }

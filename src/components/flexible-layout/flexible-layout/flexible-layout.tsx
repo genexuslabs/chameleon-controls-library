@@ -84,8 +84,6 @@ export class ChFlexibleLayout {
       return "";
     }
 
-    console.log("layout", this.layout, "displayedItems", this.displayedItems);
-
     return (
       <Host>
         {layout.blockStart != null && ( // Top
@@ -95,7 +93,7 @@ export class ChFlexibleLayout {
             items={layout.blockStart}
             type={BLOCK_START_GROUP}
           >
-            {this.renderItems("blockStart")}
+            <slot />
           </ch-flexible-layout-group>
         )}
 

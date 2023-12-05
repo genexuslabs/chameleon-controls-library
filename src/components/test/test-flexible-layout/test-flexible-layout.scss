@@ -67,6 +67,25 @@ ch-test-flexible-layout {
     padding-block: 8px;
     padding-inline: 16px;
   }
+
+  // Main, BlockEnd
+  &::part(main__button),
+  &::part(block-end__button) {
+    padding-block: 6px;
+    padding-inline: 16px 8px;
+    gap: 8px;
+    background-color: #ececec;
+  }
+
+  &::part(main__button selected),
+  &::part(block-end__button selected) {
+    background-color: #fff;
+  }
+
+  &::part(main__tab-list),
+  &::part(block-end__tab-list) {
+    background-color: rgb(243, 243, 243);
+  }
 }
 
 .ch-tree-view-item--success::part(action)::before {

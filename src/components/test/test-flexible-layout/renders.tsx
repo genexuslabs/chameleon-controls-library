@@ -15,12 +15,20 @@ import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 const MENU_BAR = "menu-bar";
 const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
+const START_PAGE = "start-page";
+const GRID = "Grid";
+const STRUCT_EDITOR = "StructEditor";
 
 export const defaultLayout: FlexibleLayout = {
   blockStart: [{ id: MENU_BAR, name: MENU_BAR }],
   inlineStart: [
     { id: KB_EXPLORER, name: "KB Explorer" },
     { id: PREFERENCES, name: "Preferences" }
+  ],
+  main: [
+    { id: START_PAGE, name: "Start Page", selected: true },
+    { id: GRID, name: "Grid" },
+    { id: STRUCT_EDITOR, name: "Struct Editor" }
   ]
 };
 
@@ -55,5 +63,22 @@ export const layoutRenders: FlexibleLayoutRenders = {
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
       showLines="all"
     ></ch-tree-view-render>
-  )
+  ),
+  [START_PAGE]: () => (
+    <div>
+      <h1
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          fontSize: "64px",
+          color: "#c5c8c6",
+          "text-align": "center"
+        }}
+      >
+        GeneXus
+      </h1>
+    </div>
+  ),
+  [GRID]: () => <div>Grid render...</div>,
+  [STRUCT_EDITOR]: () => <div>Struct Editor...</div>
 };

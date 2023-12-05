@@ -20,9 +20,10 @@
 
 ## Events
 
-| Event                       | Description                             | Type                  |
-| --------------------------- | --------------------------------------- | --------------------- |
-| `displayedItemsCountChange` | Fired when the item is targeted or not. | `CustomEvent<number>` |
+| Event                             | Description                                                  | Type                   |
+| --------------------------------- | ------------------------------------------------------------ | ---------------------- |
+| `displayedItemsCountChange`       | Fired when the item is targeted or not.                      | `CustomEvent<number>`  |
+| `moreActionsButtonExpandedChange` | Fired when the more actions button is expanded or collapsed. | `CustomEvent<boolean>` |
 
 
 ## Slots

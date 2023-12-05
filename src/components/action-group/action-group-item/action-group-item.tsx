@@ -1,5 +1,5 @@
 import { Component, Element, h, Prop } from "@stencil/core";
-import { Component as ChComponent } from "../../common/interfaces";
+import { Component as ChComponent } from "../../../common/interfaces";
 
 /**
  * @slot - The slot where the ch-dropdown-item is placed.

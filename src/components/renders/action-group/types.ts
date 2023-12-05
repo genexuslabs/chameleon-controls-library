@@ -8,4 +8,14 @@ export type ActionGroupItemModel = ReducedDropdownItemModel & {
   subActionClass?: string;
   items?: ActionGroupItemModel[];
   itemsResponsiveCollapsePosition?: DropdownPosition;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
+  wasExpandedInFirstLevel?: boolean;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
+  wasExpandedInMoreActions?: boolean;
 };

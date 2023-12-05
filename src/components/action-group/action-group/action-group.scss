@@ -1,11 +1,12 @@
-@import "../../common/_base";
+@import "../../../common/_base";
 
 @include box-sizing();
 
 :host {
   display: grid;
   position: relative;
-  width: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   grid-template: "more-actions actions" 1fr / min-content 1fr;
   overflow: hidden;
 }

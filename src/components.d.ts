@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ItemsOverflowBehavior } from "./components/action-group/types";
+import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
@@ -298,6 +298,10 @@ export namespace Components {
           * Specifies the src for the right img.
          */
         "rightImgSrc": string;
+        /**
+          * Specifies the shortcut caption that the control will display.
+         */
+        "shortcut": string;
     }
     interface ChDropdownItemSeparator {
     }
@@ -1105,7 +1109,7 @@ export namespace Components {
         /**
           * Suspend shortcuts.
          */
-        "suspend": false;
+        "suspend": boolean;
     }
     interface ChSidebarMenu {
         /**
@@ -2579,6 +2583,10 @@ declare namespace LocalJSX {
          */
         "onDisplayedItemsCountChange"?: (event: ChActionGroupCustomEvent<number>) => void;
         /**
+          * Fired when the more actions button is expanded or collapsed.
+         */
+        "onMoreActionsButtonExpandedChange"?: (event: ChActionGroupCustomEvent<boolean>) => void;
+        /**
           * Determine if the dropdowns should be opened when the action is focused.
          */
         "openOnFocus"?: boolean;
@@ -2805,6 +2813,10 @@ declare namespace LocalJSX {
          */
         "onActionClick"?: (event: ChDropdownItemCustomEvent<string>) => void;
         /**
+          * Fired when the visibility of the dropdown section is changed
+         */
+        "onExpandedChange"?: (event: ChDropdownItemCustomEvent<boolean>) => void;
+        /**
           * Fires when the control's anchor or button is in focus.
          */
         "onFocusChange"?: (event: ChDropdownItemCustomEvent<any>) => void;
@@ -2820,6 +2832,10 @@ declare namespace LocalJSX {
           * Specifies the src for the right img.
          */
         "rightImgSrc"?: string;
+        /**
+          * Specifies the shortcut caption that the control will display.
+         */
+        "shortcut"?: string;
     }
     interface ChDropdownItemSeparator {
     }
@@ -3677,7 +3693,7 @@ declare namespace LocalJSX {
         /**
           * Suspend shortcuts.
          */
-        "suspend"?: false;
+        "suspend"?: boolean;
     }
     interface ChSidebarMenu {
         /**

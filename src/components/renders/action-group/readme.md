@@ -25,6 +25,10 @@
 
 ## Dependencies
 
+### Used by
+
+ - [ch-test-flexible-layout](../../test/test-flexible-layout)
+
 ### Depends on
 
 - [ch-dropdown-item](../../dropdown-item)
@@ -41,6 +45,7 @@ graph TD;
   ch-dropdown --> ch-window
   ch-window --> ch-window-close
   ch-action-group --> ch-dropdown
+  ch-test-flexible-layout --> ch-action-group-render
   style ch-action-group-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

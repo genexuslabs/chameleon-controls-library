@@ -136,6 +136,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ch-test-flexible-layout](../../test/test-flexible-layout)
  - [ch-tree-view-render-wrapper](../../test/test-tree-view)
 
 ### Depends on
@@ -149,6 +150,7 @@ graph TD;
   ch-tree-view-render --> ch-tree-view
   ch-tree-view-render --> ch-tree-view-item
   ch-tree-view-item --> ch-checkbox
+  ch-test-flexible-layout --> ch-tree-view-render
   ch-tree-view-render-wrapper --> ch-tree-view-render
   style ch-tree-view-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -8,10 +8,7 @@
   grid-template:
     "block-start block-start block-start" min-content
     "inline-start main inline-end" 1fr
-    "block-end block-end block-end" / var(
-      --ch-flexible-layout__inline-start--inline-size
-    )
-    1fr var(--ch-flexible-layout__inline-end--inline-size);
+    "block-end block-end block-end" max-content / max-content 1fr max-content;
 }
 
 .block-start {
@@ -20,6 +17,7 @@
 
 .inline-start {
   grid-area: inline-start;
+  inline-size: var(--ch-flexible-layout__inline-start--inline-size);
 }
 
 .main {
@@ -28,6 +26,7 @@
 
 .inline-end {
   grid-area: inline-end;
+  inline-size: var(--ch-flexible-layout__inline-end--inline-size);
 }
 
 .block-end {

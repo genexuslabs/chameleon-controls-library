@@ -111,6 +111,7 @@ export class ChDropdownRender {
             )
           : item.endImage
       }
+      shortcut={item.shortcut}
       onClick={this.handleItemClick(item.link?.url, item.id)}
     >
       {item.caption}

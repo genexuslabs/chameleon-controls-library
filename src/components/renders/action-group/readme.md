@@ -28,8 +28,8 @@
 ### Depends on
 
 - [ch-dropdown-item](../../dropdown-item)
-- [ch-action-group](../../action-group)
-- [ch-action-group-item](../../action-group-item)
+- [ch-action-group](../../action-group/action-group)
+- [ch-action-group-item](../../action-group/action-group-item)
 
 ### Graph
 ```mermaid

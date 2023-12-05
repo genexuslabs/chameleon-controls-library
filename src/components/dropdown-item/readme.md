@@ -16,14 +16,16 @@
 | `openOnFocus`          | `open-on-focus`          | Determine if the dropdown section should be opened when the expandable button of the control is focused. Only works if the control has subitems.                  | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `false`               |
 | `position`             | `position`               | Specifies the position of the dropdown section that is placed relative to the expandable button.                                                                  | `"Center_OutsideEnd" \| "Center_OutsideStart" \| "InsideEnd_OutsideEnd" \| "InsideEnd_OutsideStart" \| "InsideStart_OutsideEnd" \| "InsideStart_OutsideStart" \| "OutsideEnd_Center" \| "OutsideEnd_InsideEnd" \| "OutsideEnd_InsideStart" \| "OutsideEnd_OutsideEnd" \| "OutsideEnd_OutsideStart" \| "OutsideStart_Center" \| "OutsideStart_InsideEnd" \| "OutsideStart_InsideStart" \| "OutsideStart_OutsideEnd" \| "OutsideStart_OutsideStart"` | `"Center_OutsideEnd"` |
 | `rightImgSrc`          | `right-img-src`          | Specifies the src for the right img.                                                                                                                              | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`           |
+| `shortcut`             | `shortcut`               | Specifies the shortcut caption that the control will display.                                                                                                     | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`           |
 
 
 ## Events
 
-| Event         | Description                                            | Type                  |
-| ------------- | ------------------------------------------------------ | --------------------- |
-| `actionClick` | Fires when the control's anchor or button is clicked.  | `CustomEvent<string>` |
-| `focusChange` | Fires when the control's anchor or button is in focus. | `CustomEvent<any>`    |
+| Event            | Description                                                  | Type                   |
+| ---------------- | ------------------------------------------------------------ | ---------------------- |
+| `actionClick`    | Fires when the control's anchor or button is clicked.        | `CustomEvent<string>`  |
+| `expandedChange` | Fired when the visibility of the dropdown section is changed | `CustomEvent<boolean>` |
+| `focusChange`    | Fires when the control's anchor or button is in focus.       | `CustomEvent<any>`     |
 
 
 ## Methods
@@ -46,9 +48,10 @@ Type: `Promise<void>`
 | `"action"`    |             |
 | `"button"`    |             |
 | `"content"`   |             |
-| `"left-img"`  |             |
+| `"end-img"`   |             |
 | `"link"`      |             |
-| `"right-img"` |             |
+| `"shortcut"`  |             |
+| `"start-img"` |             |
 
 
 ## Dependencies

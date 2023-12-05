@@ -8,7 +8,13 @@ export type DropdownItemModel = {
   items?: DropdownItemModel[];
   itemsPosition?: DropdownPosition;
   link?: Link;
+  shortcut?: string;
   startImage?: string;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
+  wasExpanded?: boolean;
 };
 
 type Link = {

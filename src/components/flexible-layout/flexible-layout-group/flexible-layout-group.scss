@@ -87,6 +87,12 @@
   inline-size: 100%;
 }
 
+.inline-start__page,
+.inline-end__page {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
 .page--hidden {
   display: none;
 }

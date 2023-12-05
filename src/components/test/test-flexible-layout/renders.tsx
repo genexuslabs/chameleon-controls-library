@@ -9,6 +9,7 @@ import {
   kbExplorerModel,
   preferencesModel
 } from "../../../pages/assets/models/tree.js";
+import { GXWebModel } from "../../../pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 
 const MENU_BAR = "menu-bar";
@@ -35,7 +36,9 @@ const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
   });
 
 export const layoutRenders: FlexibleLayoutRenders = {
-  [MENU_BAR]: () => <ch-action-group-render></ch-action-group-render>,
+  [MENU_BAR]: () => (
+    <ch-action-group-render model={GXWebModel}></ch-action-group-render>
+  ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
       treeModel={kbExplorerModel}

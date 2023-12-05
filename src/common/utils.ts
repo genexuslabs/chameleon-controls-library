@@ -49,3 +49,12 @@ export function overrideMethod(
     }
   };
 }
+
+/**
+ * Converts an object mapping token keys to booleans into a space-separated
+ * string containing the token keys that map to truthy values.
+ */
+export const tokenMap = (tokens: { [key: string]: boolean }) =>
+  Object.keys(tokens)
+    .filter(key => tokens[key])
+    .join(" ");

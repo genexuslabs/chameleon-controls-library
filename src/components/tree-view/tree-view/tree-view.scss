@@ -1,7 +1,8 @@
 ch-tree-view {
   display: flex;
   position: relative;
-  width: 100%;
+  block-size: 100%;
+  inline-size: 100%;
   overflow: auto;
 
   & > .ch-tree-view-container {

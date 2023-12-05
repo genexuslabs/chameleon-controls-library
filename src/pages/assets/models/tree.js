@@ -551,6 +551,181 @@ const importOBjectsPanelModel = [
   }
 ];
 
+export const preferencesModel = [
+  {
+    id: "root",
+    caption: "GeneXusNext",
+    leftImgSrc: "assets/icons/knowledge-base.svg",
+    expanded: true,
+    items: [
+      {
+        id: "Environment.GeneXusNext",
+        caption: "GeneXusNext Develop",
+        lazy: true,
+        leftImgSrc: "assets/icons/version.svg"
+      },
+      {
+        id: "Environment.TeamDev",
+        caption: "Team Development",
+        leaf: true,
+        leftImgSrc: "assets/icons/teamdev.svg",
+        order: 1
+      },
+      {
+        id: "Environment.Patterns",
+        caption: "Patterns",
+        leftImgSrc: "assets/icons/patterns.svg",
+        order: 2,
+        items: [
+          {
+            id: "Environment.Patterns.ConversationalFlows",
+            caption: "Conversational Flows",
+            leaf: true,
+            leftImgSrc: "assets/icons/conversational-flows.svg"
+          },
+          {
+            id: "Environment.Patterns.WorkWith",
+            caption: "Work With",
+            leaf: true,
+            leftImgSrc: "assets/icons/workwith-for-sd.svg"
+          },
+          {
+            id: "Environment.Patterns.WorkWithForWeb",
+            caption: "Work With for Web",
+            leaf: true,
+            leftImgSrc: "assets/icons/work-with-web.svg"
+          }
+        ]
+      },
+      {
+        id: "Environment.Workflow",
+        caption: "Workflow",
+        leftImgSrc: "assets/icons/workflow.svg",
+        order: 3,
+        items: [
+          {
+            id: "Environment.Workflow.Roles",
+            caption: "Roles",
+            leaf: true,
+            leftImgSrc: "assets/icons/roles.svg"
+          },
+          {
+            id: "Environment.Workflow.Documents",
+            caption: "Documents",
+            leaf: true,
+            leftImgSrc: "assets/icons/document-workflow.svg"
+          },
+          {
+            id: "Environment.Workflow.Calendars",
+            caption: "Calendars",
+            leaf: true,
+            leftImgSrc: "assets/icons/calendars.svg"
+          },
+          {
+            id: "Environment.Workflow.Notification_Templates",
+            caption: "Notification templates",
+            leaf: true,
+            leftImgSrc: "assets/icons/patterns.svg"
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const Environment_GeneXusNext_preferencesModel = [
+  {
+    id: "Environment.GeneXusNext.JavaMySQL",
+    caption: "JavaMySQL",
+    leftImgSrc: "assets/icons/java.svg",
+    items: [
+      {
+        id: "Environment.GeneXusNext.JavaMySQL.Backend",
+        caption: "Back end",
+        leftImgSrc: "assets/icons/generator.svg",
+        items: [
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Backend.DefaultJava",
+            caption: "Default (Java)",
+            leaf: true,
+            leftImgSrc: "assets/icons/java.svg",
+            order: 0
+          },
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores",
+            caption: "Data Stores",
+            leftImgSrc: "assets/icons/datastore.svg",
+            order: 1,
+            items: [
+              {
+                id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.DefaultMySQL",
+                caption: "Default (MySQL)",
+                leaf: true,
+                leftImgSrc: "assets/icons/mysql.svg"
+              },
+              {
+                id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.GAMMySQL",
+                caption: "GAM (MySQL)",
+                leaf: true,
+                leftImgSrc: "assets/icons/mysql.svg",
+                order: 1
+              }
+            ]
+          },
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Backend.Services",
+            caption: "Services",
+            leaf: true,
+            leftImgSrc: "assets/icons/datastore-green.svg",
+            order: 2
+          }
+        ]
+      },
+      {
+        id: "Environment.GeneXusNext.JavaMySQL.Frontend",
+        caption: "Front end",
+        leftImgSrc: "assets/icons/sd.svg",
+        order: 1,
+        items: [
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebJava",
+            caption: "Web (Java)",
+            leaf: true,
+            leftImgSrc: "assets/icons/java.svg"
+          },
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebAngular",
+            caption: "Web (Angular)",
+            leaf: true,
+            leftImgSrc: "assets/icons/angular.svg",
+            order: 1
+          }
+        ]
+      },
+      {
+        id: "Environment.GeneXusNext.JavaMySQL.Deployment",
+        caption: "Deployment",
+        leftImgSrc: "assets/icons/deployment-unit.svg",
+        order: 2,
+        items: [
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Deployment.Backend",
+            caption: "Backend",
+            leaf: true,
+            leftImgSrc: "assets/icons/deployment-unit.svg"
+          },
+          {
+            id: "Environment.GeneXusNext.JavaMySQL.Deployment.Frontend",
+            caption: "Frontend",
+            leaf: true,
+            leftImgSrc: "assets/icons/deployment-unit.svg"
+          }
+        ]
+      }
+    ]
+  }
+];
+
 export const lazyLoadItemsDictionary = {
   Main_Programs: kbExplorerModel_MainPrograms,
   Root_Module: kbExplorerModel_RootModule,
@@ -561,5 +736,6 @@ export const lazyLoadItemsDictionary = {
   "Root_Module.General.UI.Q2": kbExplorerModel_RootModule_General_UI_Q2,
   "Root_Module.General.UI.Stencils":
     kbExplorerModel_RootModule_General_UI_Stencils,
-  Panel: importOBjectsPanelModel
+  Panel: importOBjectsPanelModel,
+  "Environment.GeneXusNext": Environment_GeneXusNext_preferencesModel
 };

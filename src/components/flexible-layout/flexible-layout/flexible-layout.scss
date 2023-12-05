@@ -1,0 +1,35 @@
+:host {
+  --ch-flexible-layout__inline-start--inline-size: 260px;
+  --ch-flexible-layout__inline-end--inline-size: 260px;
+
+  display: grid;
+  block-size: 100%;
+  inline-size: 100%;
+  grid-template:
+    "block-start block-start block-start" min-content
+    "inline-start main inline-end" 1fr
+    "block-end block-end block-end" / var(
+      --ch-flexible-layout__inline-start--inline-size
+    )
+    1fr var(--ch-flexible-layout__inline-end--inline-size);
+}
+
+.block-start {
+  grid-area: block-start;
+}
+
+.inline-start {
+  grid-area: inline-start;
+}
+
+.main {
+  grid-area: main;
+}
+
+.inline-end {
+  grid-area: inline-end;
+}
+
+.block-end {
+  grid-area: block-end;
+}

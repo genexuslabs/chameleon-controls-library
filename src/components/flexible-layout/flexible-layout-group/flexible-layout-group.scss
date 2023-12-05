@@ -1,0 +1,62 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
+:host {
+  display: grid;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+:host([type="block-start"]) {
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+}
+
+:host([type="inline-start"]) {
+  grid-template-columns: max-content 1fr;
+}
+
+:host([type="main"]),
+:host([type="block-end"]) {
+  grid-template-rows: max-content 1fr;
+}
+
+:host([type="inline-end"]) {
+  grid-template-rows: 1fr max-content;
+}
+
+:where(button) {
+  all: unset;
+  display: flex;
+
+  // Disallow selecting the text
+  user-select: none;
+
+  // Avoid zooming on double tap on iOS devices
+  touch-action: manipulation;
+
+  // Allow user drag
+  -webkit-user-drag: element;
+
+  cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - -
+//            Tab lists
+// - - - - - - - - - - - - - - - -
+.inline-start__tab-list {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-auto-flow: row;
+}
+
+.page-container {
+  display: grid;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.page--hidden {
+  display: none;
+}

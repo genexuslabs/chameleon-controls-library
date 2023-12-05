@@ -607,25 +607,29 @@ export const preferencesModel = [
             id: "Environment.Workflow.Roles",
             caption: "Roles",
             leaf: true,
-            leftImgSrc: "assets/icons/roles.svg"
+            leftImgSrc: "assets/icons/roles.svg",
+            order: 0
           },
           {
             id: "Environment.Workflow.Documents",
             caption: "Documents",
             leaf: true,
-            leftImgSrc: "assets/icons/document-workflow.svg"
+            leftImgSrc: "assets/icons/document-workflow.svg",
+            order: 1
           },
           {
             id: "Environment.Workflow.Calendars",
             caption: "Calendars",
             leaf: true,
-            leftImgSrc: "assets/icons/calendars.svg"
+            leftImgSrc: "assets/icons/calendars.svg",
+            order: 2
           },
           {
             id: "Environment.Workflow.Notification_Templates",
             caption: "Notification templates",
             leaf: true,
-            leftImgSrc: "assets/icons/patterns.svg"
+            leftImgSrc: "assets/icons/notification-templates.svg",
+            order: 3
           }
         ]
       }

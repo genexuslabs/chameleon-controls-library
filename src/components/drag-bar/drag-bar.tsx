@@ -131,45 +131,45 @@ export class DragBar implements ChComponent {
     );
   }
 
-  componentDidLoad() {
+  private mouseDownHandler = (event: MouseEvent) => {
+    // Necessary to prevent selecting the inner image (or other elements) of
+    // the bar item when the mouse is down
+    event.preventDefault();
+
+    // Handler to remove mouse down
     const removeMouseMoveHandler = () => {
       this.el.removeEventListener("mousemove", this.handleBarDrag, {
         capture: true
       });
     };
 
-    // Add event on mousedown
-    this.barRef.addEventListener(
-      "mousedown",
-      (event: MouseEvent) => {
-        // Necessary to prevent selecting the inner image of the bar item when
-        // the mouse is down
-        event.preventDefault();
+    // Remove mousemove and mouseup handlers when mouseup
+    const mouseUpHandler = () => {
+      removeMouseMoveHandler();
 
-        this.el.addEventListener("mousemove", this.handleBarDrag, {
-          capture: true
-        });
+      this.el.removeEventListener("mouseup", mouseUpHandler, {
+        capture: true
+      });
+    };
 
-        // Remove mousemove and mouseup handlers when mouseup
-        this.el.addEventListener(
-          "mouseup",
-          () => {
-            removeMouseMoveHandler();
+    // Remove mousemove and mouseleave handlers when mouseleave
+    const mouseLeaveHandler = () => {
+      removeMouseMoveHandler();
 
-            this.el.removeEventListener("mouseup", removeMouseMoveHandler);
-          },
-          { capture: true }
-        );
+      this.el.removeEventListener("mouseleave", removeMouseMoveHandler, {
+        capture: true
+      });
+    };
 
-        this.el.addEventListener("mouseleave", () => {
-          removeMouseMoveHandler();
-
-          this.el.removeEventListener("mouseleave", removeMouseMoveHandler);
-        });
-      },
-      { capture: true }
-    );
-  }
+    // Add listeners
+    this.el.addEventListener("mousemove", this.handleBarDrag, {
+      capture: true
+    });
+    this.el.addEventListener("mouseup", mouseUpHandler, { capture: true });
+    this.el.addEventListener("mouseleave", mouseLeaveHandler, {
+      capture: true
+    });
+  };
 
   disconnectedCallback() {
     if (this.rtlWatcher) {
@@ -201,6 +201,7 @@ export class DragBar implements ChComponent {
                 "--ch-drag-bar__inset-inline-start": `calc(${this.dragBarPositions[index]})`
               }}
               ref={el => (this.barRef = el)}
+              onMouseDown={this.mouseDownHandler}
             ></div>
           )
         ])}

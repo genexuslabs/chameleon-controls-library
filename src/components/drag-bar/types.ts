@@ -1,4 +1,5 @@
 export type DragBarComponent = {
   id: string;
-  hasFixedSize?: boolean;
+  fixedSize?: boolean;
+  size: string;
 };

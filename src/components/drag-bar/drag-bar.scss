@@ -1,13 +1,3 @@
-$bar-width: 4px;
-$bar-half-width: $bar-width / 2;
-
-$bar-item-width: 20px;
-$bar-item-height: 70px;
-$bar-item-half-width: $bar-item-width / 2;
-$bar-item-half-height: $bar-item-height / 2;
-
-$bar-item-border-radius: $bar-item-width / 2;
-
 *,
 ::before,
 ::after {
@@ -15,7 +5,11 @@ $bar-item-border-radius: $bar-item-width / 2;
 }
 
 :host {
+  --ch-drag-bar-inline-size: 5px;
+  --ch-drag-bar-inline-size--half: var(--ch-drag-bar-inline-size) / 2;
+
   display: flex;
+  position: relative;
   width: 100%;
   height: 100%;
 }
@@ -27,48 +21,27 @@ $bar-item-border-radius: $bar-item-width / 2;
 }
 
 .bar {
-  position: relative;
-  width: $bar-width;
-  background-color: #323942;
-  cursor: col-resize;
-}
-
-.bar-item {
   position: absolute;
-  inset-block-start: calc(50% - #{$bar-item-half-height});
-  inset-inline-start: calc(#{$bar-half-width} - #{$bar-item-half-width});
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #2d333a;
-  border-radius: $bar-item-border-radius;
-  width: $bar-item-width;
-  height: $bar-item-height;
-  padding: 7px 4px;
+  inset-block: 0;
+  inset-inline-start: calc(
+    var(--ch-drag-bar__start-component-width) -
+      var(--ch-drag-bar-inline-size--half)
+  );
+  inline-size: var(--ch-drag-bar-inline-size);
+  background-color: currentColor;
+  cursor: ew-resize;
+  opacity: 0;
+  transition: opacity 120ms linear 200ms;
 
-  // Avoid zooming on double click
-  touch-action: manipulation;
-
-  // Disable text selection
-  user-select: none;
-}
-
-.bar-item-src {
-  display: block;
-  width: 100%;
-  height: 100%;
-
-  pointer-events: none;
-
-  &--rtl {
-    transform: rotateY(180deg);
+  &:hover {
+    opacity: 1;
   }
 }
 
 .start-component {
   display: flex;
   width: var(--ch-drag-bar__start-component-width);
-  max-width: calc(100% - #{$bar-item-half-width} - #{$bar-half-width});
+  max-width: calc(100% - var(--ch-drag-bar-inline-size--half));
 }
 
 .end-component {

@@ -29,7 +29,6 @@ export class DragBar implements ChComponent {
   // Refs
   private barRef: HTMLDivElement;
   private mainContainerRef: HTMLDivElement;
-  private startComponentRef: HTMLDivElement;
 
   @Element() el: HTMLChDragBarElement;
 
@@ -42,7 +41,7 @@ export class DragBar implements ChComponent {
    * This attribute lets you specify the label for the drag bar.
    * Important for accessibility.
    */
-  @Prop() readonly barLabel: string = "";
+  @Prop() readonly barAccessibleName: string = "";
 
   /**
    * A CSS class to set as the `ch-next-drag-bar` element class.
@@ -180,17 +179,13 @@ export class DragBar implements ChComponent {
         style={{ [START_COMPONENT_WIDTH]: this.startComponentInitialWidth }}
       >
         <div class="container" ref={el => (this.mainContainerRef = el)}>
-          <div
-            class="start-component"
-            part="start-component"
-            ref={el => (this.startComponentRef = el)}
-          >
+          <div class="start-component" part="start-component">
             <slot name="start-component" />
           </div>
 
           <div
-            aria-label={this.barLabel}
-            title={this.barLabel}
+            aria-label={this.barAccessibleName}
+            title={this.barAccessibleName}
             class="bar"
             part="bar"
             ref={el => (this.barRef = el)}

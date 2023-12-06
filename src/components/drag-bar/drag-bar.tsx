@@ -6,6 +6,8 @@ const START_COMPONENT_MIN_WIDTH = 0; // 0%
 const START_COMPONENT_MAX_WIDTH = 100; // 100%
 
 const START_COMPONENT_WIDTH = "--ch-drag-bar__start-component-width";
+// const DEFAULT_BLOCK_SIZE = "1fr";
+const DEFAULT_INLINE_SIZE = 100;
 
 /**
  * @part bar - The bar of the drag-bar control that divides the start and end components
@@ -29,6 +31,8 @@ export class DragBar implements ChComponent {
 
   // Refs
   private barRef: HTMLDivElement;
+  private sizes: string[] = [];
+  private dragBarPosition: string[] = [];
 
   @Element() el: HTMLChDragBarElement;
 
@@ -48,7 +52,8 @@ export class DragBar implements ChComponent {
    * separated via a drag bar.
    */
   @Prop() readonly components: DragBarComponent[] = [
-    { id: "start-component" },
+    { id: "start-component", size: "70%" },
+    { id: "center-component", size: "10%" },
     { id: "end-component" }
   ];
 
@@ -100,6 +105,26 @@ export class DragBar implements ChComponent {
     });
   };
 
+  private getDefaultInlineSize() {
+    let remainingRelativeSize = DEFAULT_INLINE_SIZE;
+    let totalComponentsWithoutSize = this.components.length;
+
+    this.components.forEach(comp => {
+      if (comp.size) {
+        totalComponentsWithoutSize--;
+
+        // Subtract the relative size from the total
+        if (comp.size.includes("%")) {
+          const sizeWithoutFr = comp.size.replace("%", "").trim();
+
+          remainingRelativeSize -= Number(sizeWithoutFr);
+        }
+      }
+    });
+
+    return remainingRelativeSize / totalComponentsWithoutSize;
+  }
+
   connectedCallback() {
     this.rtlWatcher = new MutationObserver(mutations => {
       this.isRTLDirection = (mutations[0].target as Document).dir === "rtl";
@@ -115,6 +140,26 @@ export class DragBar implements ChComponent {
 
     // Initialize the value, since the observer won't do it
     this.isRTLDirection = document.documentElement.dir === "rtl";
+
+    // Initialize the sizes array
+    const defaultSize = this.getDefaultInlineSize();
+
+    this.components.forEach((comp, index) => {
+      // Add default size if the component does not have size
+      if (!comp.size) {
+        comp.size = `${defaultSize}%`;
+      }
+
+      // Store the sizes
+      this.sizes.push(comp.size);
+
+      // Store each drag bar position
+      const dragBarPosition =
+        index === 0
+          ? comp.size
+          : `${comp.size} + ${this.components[index - 1].size}`;
+      this.dragBarPosition.push(dragBarPosition);
+    });
   }
 
   componentDidLoad() {
@@ -170,7 +215,9 @@ export class DragBar implements ChComponent {
     return (
       <Host
         class={this.cssClass || undefined}
-        style={{ [START_COMPONENT_WIDTH]: this.startComponentInitialWidth }}
+        style={{
+          "grid-template-columns": this.sizes.join(" ")
+        }}
       >
         {this.components.map((component, index) => [
           <div class={component.id} part={component.id}>
@@ -183,6 +230,9 @@ export class DragBar implements ChComponent {
               title={this.barAccessibleName}
               class="bar"
               part="bar"
+              style={{
+                "--ch-drag-bar__inset-inline-start": this.dragBarPosition[index]
+              }}
               ref={el => (this.barRef = el)}
             ></div>
           )

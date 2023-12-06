@@ -8,17 +8,17 @@
   --ch-drag-bar-inline-size: 5px;
   --ch-drag-bar-inline-size--half: var(--ch-drag-bar-inline-size) / 2;
 
-  display: flex;
+  display: grid;
   position: relative;
-  width: 100%;
-  height: 100%;
+  block-size: 100%;
+  inline-size: 100%;
 }
 
 .bar {
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc(
-    var(--ch-drag-bar__start-component-width) -
+    var(--ch-drag-bar__inset-inline-start) -
       var(--ch-drag-bar-inline-size--half)
   );
   inline-size: var(--ch-drag-bar-inline-size);
@@ -35,11 +35,8 @@
 
 .start-component {
   display: flex;
-  width: var(--ch-drag-bar__start-component-width);
-  max-width: calc(100% - var(--ch-drag-bar-inline-size--half));
 }
 
 .end-component {
   display: flex;
-  flex: 1;
 }

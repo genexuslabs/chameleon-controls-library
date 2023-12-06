@@ -11,13 +11,6 @@ const DEFAULT_INLINE_SIZE = 100;
 
 /**
  * @part bar - The bar of the drag-bar control that divides the start and end components
- * @part bar-item - The bar item displayed in the center of the bar
- * @part bar-item-src - The image control displayed inside the `bar-item`
- * @part end-component - The component that wraps the `end-component` slot
- * @part start-component - The component that wraps the `start-component` slot
- *
- * @slot start-component - The component to be displayed in the left position when using LTR languages
- * @slot end-component - The component to be displayed in the right position when using LTR languages
  */
 @Component({
   shadow: true,
@@ -220,9 +213,7 @@ export class DragBar implements ChComponent {
         }}
       >
         {this.components.map((component, index) => [
-          <div class={component.id} part={component.id}>
-            <slot name={component.id} />
-          </div>,
+          <slot name={component.id} />,
 
           index !== lastComponentIndex && (
             <div

@@ -21,8 +21,9 @@ export class DragBar implements ChComponent {
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
   private rtlWatcher: MutationObserver;
 
+  private currentSelectedIndex: number;
+
   // Refs
-  private barRef: HTMLDivElement;
   private sizes: string[] = [];
   private dragBarPositions: string[] = [];
 
@@ -131,10 +132,12 @@ export class DragBar implements ChComponent {
     );
   }
 
-  private mouseDownHandler = (event: MouseEvent) => {
+  private mouseDownHandler = (index: number) => (event: MouseEvent) => {
     // Necessary to prevent selecting the inner image (or other elements) of
     // the bar item when the mouse is down
     event.preventDefault();
+
+    this.currentSelectedIndex = index;
 
     // Handler to remove mouse down
     const removeMouseMoveHandler = () => {
@@ -200,8 +203,7 @@ export class DragBar implements ChComponent {
               style={{
                 "--ch-drag-bar__inset-inline-start": `calc(${this.dragBarPositions[index]})`
               }}
-              ref={el => (this.barRef = el)}
-              onMouseDown={this.mouseDownHandler}
+              onMouseDown={this.mouseDownHandler(index)}
             ></div>
           )
         ])}

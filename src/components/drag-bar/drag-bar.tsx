@@ -1,5 +1,6 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
+import { DragBarComponent } from "./types";
 
 const START_COMPONENT_MIN_WIDTH = 0; // 0%
 const START_COMPONENT_MAX_WIDTH = 100; // 100%
@@ -42,6 +43,15 @@ export class DragBar implements ChComponent {
    * Important for accessibility.
    */
   @Prop() readonly barAccessibleName: string = "";
+
+  /**
+   * Specifies the list of component that are displayed. Each component will be
+   * separated via a drag bar.
+   */
+  @Prop() readonly components: DragBarComponent[] = [
+    { id: "start-component" },
+    { id: "end-component" }
+  ];
 
   /**
    * A CSS class to set as the `ch-next-drag-bar` element class.
@@ -173,27 +183,29 @@ export class DragBar implements ChComponent {
   }
 
   render() {
+    const lastComponentIndex = this.components.length - 1;
+
     return (
       <Host
         class={this.cssClass || undefined}
         style={{ [START_COMPONENT_WIDTH]: this.startComponentInitialWidth }}
       >
         <div class="container" ref={el => (this.mainContainerRef = el)}>
-          <div class="start-component" part="start-component">
-            <slot name="start-component" />
-          </div>
+          {this.components.map((component, index) => [
+            <div class={component.id} part={component.id}>
+              <slot name={component.id} />
+            </div>,
 
-          <div
-            aria-label={this.barAccessibleName}
-            title={this.barAccessibleName}
-            class="bar"
-            part="bar"
-            ref={el => (this.barRef = el)}
-          ></div>
-
-          <div class="end-component" part="end-component">
-            <slot name="end-component" />
-          </div>
+            index !== lastComponentIndex && (
+              <div
+                aria-label={this.barAccessibleName}
+                title={this.barAccessibleName}
+                class="bar"
+                part="bar"
+                ref={el => (this.barRef = el)}
+              ></div>
+            )
+          ])}
         </div>
       </Host>
     );

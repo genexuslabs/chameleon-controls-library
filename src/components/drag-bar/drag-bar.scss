@@ -27,7 +27,8 @@
   opacity: 0;
   transition: opacity 120ms linear 200ms;
 
-  &:hover {
+  &:hover,
+  &:active {
     opacity: 1;
   }
 }

@@ -158,7 +158,6 @@ export class ChFlexibleLayoutGroup {
             [CAPTION_ID(item.id)]: true,
             selected: item.selected
           })}
-          tabindex={item.selected ? "0" : "-1"}
           onClick={
             !item.selected
               ? this.handleSelectedItemChange(index, item.id)
@@ -205,7 +204,6 @@ export class ChFlexibleLayoutGroup {
             "page--hidden": !item.displayed
           }}
           part={this.classes.PAGE}
-          tabindex="0"
         >
           {this.showPageName &&
             (this.type === "inline-start" || this.type === "inline-end") && (

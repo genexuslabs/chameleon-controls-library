@@ -167,7 +167,7 @@ export class ChFlexibleLayoutGroup {
           {item.startImageSrc && (
             <img
               aria-hidden="true"
-              class={this.classes.IMAGE}
+              class={{ [this.classes.IMAGE]: true, "caption-image": true }}
               part={this.classes.IMAGE}
               alt=""
               src={item.startImageSrc}

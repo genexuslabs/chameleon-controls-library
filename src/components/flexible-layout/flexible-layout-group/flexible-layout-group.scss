@@ -43,6 +43,12 @@
   cursor: pointer;
 }
 
+.caption-image {
+  display: block;
+  block-size: 18px;
+  inline-size: 18px;
+}
+
 .close-button::after {
   content: "";
   display: flex;

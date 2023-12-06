@@ -25,22 +25,22 @@ const initializeRenderedItems = (
     defaultSelected: "first" | "last";
   }[] = [
     {
-      items: flexibleLayout.inlineStart,
+      items: flexibleLayout.inlineStart.items,
       group: "inlineStart",
       defaultSelected: "first"
     },
     {
-      items: flexibleLayout.main,
+      items: flexibleLayout.main.items,
       group: "main",
       defaultSelected: "last"
     },
     {
-      items: flexibleLayout.inlineEnd,
+      items: flexibleLayout.inlineEnd.items,
       group: "inlineEnd",
       defaultSelected: "first"
     },
     {
-      items: flexibleLayout.blockEnd,
+      items: flexibleLayout.blockEnd.items,
       group: "blockEnd",
       defaultSelected: "last"
     }
@@ -120,7 +120,7 @@ export class ChFlexibleLayoutRender {
     const group = flexibleLayoutGroupMap[detail.group];
 
     // Mark the item as selected, displayed and rendered
-    const newSelectedItem = this.layout[group][detail.newSelectedIndex];
+    const newSelectedItem = this.layout[group].items[detail.newSelectedIndex];
     newSelectedItem.displayed = true;
     newSelectedItem.selected = true;
     newSelectedItem.wasRendered = true;
@@ -133,7 +133,8 @@ export class ChFlexibleLayoutRender {
 
     // Unselected the previous item
     if (detail.lastSelectedIndex !== -1) {
-      const previousSelectedItem = this.layout[group][detail.lastSelectedIndex];
+      const previousSelectedItem =
+        this.layout[group].items[detail.lastSelectedIndex];
 
       previousSelectedItem.displayed = false;
       previousSelectedItem.selected = false;
@@ -143,7 +144,7 @@ export class ChFlexibleLayoutRender {
     this.displayedItems = { ...this.displayedItems };
 
     // Force re-render in ch-flexible-layout-group element by updating the reference
-    this.layout[group] = [...this.layout[group]];
+    this.layout[group].items = [...this.layout[group].items];
   }
 
   /**
@@ -193,20 +194,20 @@ export class ChFlexibleLayoutRender {
         displayedItems={this.displayedItems}
         layout={this.layout}
       >
-        {layout.blockStart != null && // Top
-          this.renderBlockStartItems(layout.blockStart)}
+        {layout.blockStart?.items != null && // Top
+          this.renderBlockStartItems(layout.blockStart.items)}
 
-        {layout.inlineStart != null && // Left
-          this.renderOtherTypeItems(layout.inlineStart)}
+        {layout.inlineStart?.items != null && // Left
+          this.renderOtherTypeItems(layout.inlineStart.items)}
 
-        {layout.main != null && // Main
-          this.renderOtherTypeItems(layout.main)}
+        {layout.main?.items != null && // Main
+          this.renderOtherTypeItems(layout.main.items)}
 
-        {layout.inlineEnd != null && // Right
-          this.renderOtherTypeItems(layout.inlineEnd)}
+        {layout.inlineEnd?.items != null && // Right
+          this.renderOtherTypeItems(layout.inlineEnd.items)}
 
-        {layout.blockEnd != null && // Bottom
-          this.renderOtherTypeItems(layout.blockEnd)}
+        {layout.blockEnd?.items != null && // Bottom
+          this.renderOtherTypeItems(layout.blockEnd.items)}
       </ch-flexible-layout>
     );
   }

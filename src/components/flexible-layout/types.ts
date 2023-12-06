@@ -1,9 +1,9 @@
 export type FlexibleLayout = {
-  blockStart?: FlexibleLayoutItemBase[];
-  inlineStart?: FlexibleLayoutItem[];
-  main?: FlexibleLayoutItem[];
-  inlineEnd?: FlexibleLayoutItem[];
-  blockEnd?: FlexibleLayoutItem[];
+  blockStart?: { items: FlexibleLayoutItemBase[] };
+  inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[] };
+  main?: { items: FlexibleLayoutItem[] };
+  inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
+  blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
 };
 
 export type FlexibleLayoutDisplayedItems = {
@@ -17,6 +17,7 @@ export type FlexibleLayoutItemBase = {
 
 export type FlexibleLayoutItem = FlexibleLayoutItemBase & {
   displayed?: boolean;
+  expanded?: boolean;
   selected?: boolean;
   startImageSrc?: string;
   wasRendered?: boolean;

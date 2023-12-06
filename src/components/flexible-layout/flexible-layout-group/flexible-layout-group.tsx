@@ -72,6 +72,12 @@ export class ChFlexibleLayoutGroup {
   @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
+   * `true` if the group has is view section expanded. Otherwise, only the
+   * toolbar will be displayed.
+   */
+  @Prop() readonly expanded: boolean = true;
+
+  /**
    * Specifies the items that are displayed in the group.
    */
   @Prop() readonly items: FlexibleLayoutItemBase[] | FlexibleLayoutItem[];
@@ -190,7 +196,11 @@ export class ChFlexibleLayoutGroup {
     </div>,
 
     <div
-      class={"page-container " + this.classes.PAGE_CONTAINER}
+      class={{
+        [this.classes.PAGE_CONTAINER]: true,
+        "page-container": true,
+        "page-container--collapsed": !this.expanded
+      }}
       part={this.classes.PAGE_CONTAINER}
     >
       {this.items.map(item => (

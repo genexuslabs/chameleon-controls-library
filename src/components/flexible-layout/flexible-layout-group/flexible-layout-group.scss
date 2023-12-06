@@ -98,6 +98,10 @@
   display: grid;
   block-size: 100%;
   inline-size: 100%;
+
+  &--collapsed {
+    display: none;
+  }
 }
 
 .inline-start__page,

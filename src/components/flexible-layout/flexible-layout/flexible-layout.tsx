@@ -1,4 +1,4 @@
-import { Component, Host, Prop, h } from "@stencil/core";
+import { Component, Host, Listen, Prop, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
   FlexibleLayoutDisplayedItems,
@@ -14,6 +14,10 @@ import {
   PAGE_NAME_CLASS,
   TAB_LIST_CLASS
 } from "../utils";
+import { mouseEventModifierKey } from "../../common/helpers";
+
+// Keys
+const KEY_B = "KeyB";
 
 const BLOCK_START_GROUP: FlexibleLayoutGroup = "block-start";
 const INLINE_START_GROUP: FlexibleLayoutGroup = "inline-start";
@@ -72,6 +76,24 @@ export class ChFlexibleLayout {
    */
   @Prop() readonly layout: FlexibleLayout;
 
+  @Listen("keydown", { target: "document" })
+  handleKeyDownEvent(event: KeyboardEvent) {
+    if (
+      !mouseEventModifierKey(event) ||
+      event.code !== KEY_B ||
+      this.layout.inlineStart == null
+    ) {
+      return;
+    }
+    event.stopPropagation();
+    event.preventDefault();
+
+    this.layout.inlineStart.expanded = !(
+      this.layout.inlineStart.expanded ?? true
+    );
+    forceUpdate(this);
+  }
+
   private renderItems = (group: keyof FlexibleLayout) =>
     this.displayedItems[group].map(itemId => (
       <slot name={itemId} slot={itemId} />
@@ -86,27 +108,28 @@ export class ChFlexibleLayout {
 
     return (
       <Host>
-        {layout.blockStart != null && ( // Top
+        {layout.blockStart?.items != null && ( // Top
           <ch-flexible-layout-group
             key={BLOCK_START_GROUP}
             class={BLOCK_START_GROUP}
-            items={layout.blockStart}
+            items={layout.blockStart.items}
             type={BLOCK_START_GROUP}
           >
             <slot />
           </ch-flexible-layout-group>
         )}
 
-        {layout.inlineStart != null && ( // Left
+        {layout.inlineStart?.items != null && ( // Left
           <ch-flexible-layout-group
             key={INLINE_START_GROUP}
             exportparts={
               INLINE_START_PARTS +
               ",selected,close-button," +
-              CAPTION_PARTS(layout.inlineStart)
+              CAPTION_PARTS(layout.inlineStart.items)
             }
             class={INLINE_START_GROUP}
-            items={layout.inlineStart}
+            expanded={layout.inlineStart.expanded ?? true}
+            items={layout.inlineStart.items}
             type={INLINE_START_GROUP}
           >
             {this.renderItems("inlineStart")}
@@ -118,41 +141,41 @@ export class ChFlexibleLayout {
           exportparts={
             MAIN_PARTS +
             ",selected,close-button," +
-            CAPTION_PARTS(layout.main ?? [])
+            CAPTION_PARTS(layout.main?.items ?? [])
           }
           class={MAIN_GROUP}
-          items={layout.main}
+          items={layout.main.items}
           type={MAIN_GROUP}
         >
           {this.renderItems("main")}
         </ch-flexible-layout-group>
 
-        {layout.inlineEnd != null && ( // Right
+        {layout.inlineEnd?.items != null && ( // Right
           <ch-flexible-layout-group
             key={INLINE_END_GROUP}
             exportparts={
               INLINE_END_PARTS +
               ",selected,close-button," +
-              CAPTION_PARTS(layout.inlineEnd)
+              CAPTION_PARTS(layout.inlineEnd.items)
             }
             class={INLINE_END_GROUP}
-            items={layout.inlineEnd}
+            items={layout.inlineEnd.items}
             type={INLINE_END_GROUP}
           >
             {this.renderItems("inlineEnd")}
           </ch-flexible-layout-group>
         )}
 
-        {layout.blockEnd != null && ( // Bottom
+        {layout.blockEnd?.items != null && ( // Bottom
           <ch-flexible-layout-group
             key={BLOCK_END_GROUP}
             exportparts={
               BLOCK_END_PARTS +
               ",selected,close-button," +
-              CAPTION_PARTS(layout.blockEnd)
+              CAPTION_PARTS(layout.blockEnd.items)
             }
             class={BLOCK_END_GROUP}
-            items={layout.blockEnd}
+            items={layout.blockEnd.items}
             type={BLOCK_END_GROUP}
           >
             {this.renderItems("blockEnd")}

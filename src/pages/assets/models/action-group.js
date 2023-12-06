@@ -121,7 +121,7 @@ export const GXWebModel = [
       },
       {
         caption: "Expand Selection",
-        shortcut: "Alt+Sift+Right"
+        shortcut: "Alt+Shift+Right"
       },
       {
         caption: "Shrink Selection",

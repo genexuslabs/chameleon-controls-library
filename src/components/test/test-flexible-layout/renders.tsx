@@ -22,24 +22,30 @@ const PROPERTIES = "properties";
 const OUTPUT = "output";
 
 export const defaultLayout: FlexibleLayout = {
-  blockStart: [{ id: MENU_BAR, name: MENU_BAR }],
-  inlineStart: [
-    { id: KB_EXPLORER, name: "KB Explorer" },
-    { id: PREFERENCES, name: "Preferences" }
-  ],
-  main: [
-    { id: START_PAGE, name: "Start Page", selected: true },
-    { id: GRID, name: "Grid" },
-    { id: STRUCT_EDITOR, name: "Struct Editor" }
-  ],
-  inlineEnd: [{ id: PROPERTIES, name: "Properties" }],
-  blockEnd: [
-    {
-      id: OUTPUT,
-      name: "Output",
-      startImageSrc: "assets/icons/toolbar/output.svg"
-    }
-  ]
+  blockStart: { items: [{ id: MENU_BAR, name: MENU_BAR }] },
+  inlineStart: {
+    items: [
+      { id: KB_EXPLORER, name: "KB Explorer" },
+      { id: PREFERENCES, name: "Preferences" }
+    ]
+  },
+  main: {
+    items: [
+      { id: START_PAGE, name: "Start Page", selected: true },
+      { id: GRID, name: "Grid" },
+      { id: STRUCT_EDITOR, name: "Struct Editor" }
+    ]
+  },
+  inlineEnd: { items: [{ id: PROPERTIES, name: "Properties" }] },
+  blockEnd: {
+    items: [
+      {
+        id: OUTPUT,
+        name: "Output",
+        startImageSrc: "assets/icons/toolbar/output.svg"
+      }
+    ]
+  }
 };
 
 const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>

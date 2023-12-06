@@ -29,7 +29,6 @@ export class DragBar implements ChComponent {
 
   // Refs
   private barRef: HTMLDivElement;
-  private mainContainerRef: HTMLDivElement;
 
   @Element() el: HTMLChDragBarElement;
 
@@ -81,10 +80,9 @@ export class DragBar implements ChComponent {
     requestAnimationFrame(() => {
       this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
-      this.lastBarRelativePositionX -=
-        this.mainContainerRef.getBoundingClientRect().left;
+      this.lastBarRelativePositionX -= this.el.getBoundingClientRect().left;
 
-      const containerWidth = this.mainContainerRef.scrollWidth;
+      const containerWidth = this.el.scrollWidth;
 
       let startComponentWidth =
         containerWidth !== 0
@@ -121,13 +119,9 @@ export class DragBar implements ChComponent {
 
   componentDidLoad() {
     const removeMouseMoveHandler = () => {
-      this.mainContainerRef.removeEventListener(
-        "mousemove",
-        this.handleBarDrag,
-        {
-          capture: true
-        }
-      );
+      this.el.removeEventListener("mousemove", this.handleBarDrag, {
+        capture: true
+      });
     };
 
     // Add event on mousedown
@@ -138,37 +132,25 @@ export class DragBar implements ChComponent {
         // the mouse is down
         event.preventDefault();
 
-        this.mainContainerRef.addEventListener(
-          "mousemove",
-          this.handleBarDrag,
-          {
-            capture: true
-          }
-        );
+        this.el.addEventListener("mousemove", this.handleBarDrag, {
+          capture: true
+        });
 
         // Remove mousemove and mouseup handlers when mouseup
-        this.mainContainerRef.addEventListener(
+        this.el.addEventListener(
           "mouseup",
           () => {
             removeMouseMoveHandler();
 
-            this.mainContainerRef.removeEventListener(
-              "mouseup",
-              removeMouseMoveHandler
-            );
+            this.el.removeEventListener("mouseup", removeMouseMoveHandler);
           },
-          {
-            capture: true
-          }
+          { capture: true }
         );
 
-        this.mainContainerRef.addEventListener("mouseleave", () => {
+        this.el.addEventListener("mouseleave", () => {
           removeMouseMoveHandler();
 
-          this.mainContainerRef.removeEventListener(
-            "mouseleave",
-            removeMouseMoveHandler
-          );
+          this.el.removeEventListener("mouseleave", removeMouseMoveHandler);
         });
       },
       { capture: true }
@@ -190,23 +172,21 @@ export class DragBar implements ChComponent {
         class={this.cssClass || undefined}
         style={{ [START_COMPONENT_WIDTH]: this.startComponentInitialWidth }}
       >
-        <div class="container" ref={el => (this.mainContainerRef = el)}>
-          {this.components.map((component, index) => [
-            <div class={component.id} part={component.id}>
-              <slot name={component.id} />
-            </div>,
+        {this.components.map((component, index) => [
+          <div class={component.id} part={component.id}>
+            <slot name={component.id} />
+          </div>,
 
-            index !== lastComponentIndex && (
-              <div
-                aria-label={this.barAccessibleName}
-                title={this.barAccessibleName}
-                class="bar"
-                part="bar"
-                ref={el => (this.barRef = el)}
-              ></div>
-            )
-          ])}
-        </div>
+          index !== lastComponentIndex && (
+            <div
+              aria-label={this.barAccessibleName}
+              title={this.barAccessibleName}
+              class="bar"
+              part="bar"
+              ref={el => (this.barRef = el)}
+            ></div>
+          )
+        ])}
       </Host>
     );
   }

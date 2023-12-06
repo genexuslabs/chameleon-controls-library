@@ -18,6 +18,7 @@ const PREFERENCES = "preferences";
 const START_PAGE = "start-page";
 const GRID = "Grid";
 const STRUCT_EDITOR = "StructEditor";
+const PROPERTIES = "properties";
 
 export const defaultLayout: FlexibleLayout = {
   blockStart: [{ id: MENU_BAR, name: MENU_BAR }],
@@ -29,7 +30,8 @@ export const defaultLayout: FlexibleLayout = {
     { id: START_PAGE, name: "Start Page", selected: true },
     { id: GRID, name: "Grid" },
     { id: STRUCT_EDITOR, name: "Struct Editor" }
-  ]
+  ],
+  inlineEnd: [{ id: PROPERTIES, name: "Properties" }]
 };
 
 const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
@@ -80,5 +82,6 @@ export const layoutRenders: FlexibleLayoutRenders = {
     </div>
   ),
   [GRID]: () => <div>Grid render...</div>,
-  [STRUCT_EDITOR]: () => <div>Struct Editor...</div>
+  [STRUCT_EDITOR]: () => <div>Struct Editor...</div>,
+  [PROPERTIES]: () => <div>Properties render...</div>
 };

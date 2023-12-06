@@ -8,16 +8,14 @@ ch-test-flexible-layout {
 }
 
 .flexible-layout {
-  &::part(inline-start__tab-list) {
-    background-color: #e8e8e9;
-  }
-
-  &::part(inline-start__page-container) {
-    background-color: #f4f4f4;
+  &::part(inline-start__page-container),
+  &::part(inline-end__page-container) {
+    background-color: #f2f2f2;
   }
 
   &::part(inline-start__tab-list),
   &::part(inline-end__tab-list) {
+    background-color: #e8e8e9;
     inline-size: 48px;
     gap: 4px;
   }
@@ -25,7 +23,7 @@ ch-test-flexible-layout {
   &::part(inline-start__button),
   &::part(inline-end__button) {
     position: relative;
-    block-size: 48px;
+    block-size: 32px;
     inline-size: 48px;
 
     &::before {
@@ -51,14 +49,24 @@ ch-test-flexible-layout {
     }
   }
 
+  &::part(inline-end__button selected)::after {
+    inset-inline-start: unset;
+    inset-inline-end: 1px;
+  }
+
   &::part(caption-kb-explorer)::before {
-    -webkit-mask: url("assets/icons/toolbar/kb-explorer.svg") 50% 50% / 20px
-      20px no-repeat;
+    -webkit-mask: url("assets/icons/toolbar/kb-explorer.svg") 50% 50% / 16px
+      16px no-repeat;
   }
 
   &::part(caption-preferences)::before {
-    -webkit-mask: url("assets/icons/toolbar/preferences.svg") 50% 50% / 20px
-      20px no-repeat;
+    -webkit-mask: url("assets/icons/toolbar/preferences.svg") 50% 50% / 16px
+      16px no-repeat;
+  }
+
+  &::part(caption-properties)::before {
+    -webkit-mask: url("assets/icons/toolbar/properties.svg") 50% 50% / 16px 16px
+      no-repeat;
   }
 
   &::part(inline-start__page-name),
@@ -68,6 +76,19 @@ ch-test-flexible-layout {
     padding-inline: 16px;
   }
 
+  &::part(close-button) {
+    padding: 1px;
+
+    &:hover {
+      background-color: color-mix(in srgb, currentColor 10%, transparent);
+      border-radius: 4px;
+    }
+
+    &:focus-visible {
+      outline: 1px solid currentColor;
+    }
+  }
+
   // Main, BlockEnd
   &::part(main__button),
   &::part(block-end__button) {
@@ -75,6 +96,11 @@ ch-test-flexible-layout {
     padding-inline: 16px 8px;
     gap: 8px;
     background-color: #ececec;
+
+    &:focus-visible {
+      outline: 1px solid currentColor;
+      outline-offset: -1px;
+    }
   }
 
   &::part(main__button selected),
@@ -84,7 +110,7 @@ ch-test-flexible-layout {
 
   &::part(main__tab-list),
   &::part(block-end__tab-list) {
-    background-color: rgb(243, 243, 243);
+    background-color: #f7f7f7;
   }
 }
 

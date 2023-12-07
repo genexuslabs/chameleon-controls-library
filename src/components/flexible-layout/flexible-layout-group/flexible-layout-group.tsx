@@ -106,6 +106,11 @@ export class ChFlexibleLayoutGroup {
   @Event()
   selectedItemChange: EventEmitter<FlexibleLayoutGroupSelectedItemInfo>;
 
+  /**
+   * Fired the close button of an item is clicked.
+   */
+  @Event() itemClose: EventEmitter<string>;
+
   private handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {
       // Used to avoid an TypeScript error
@@ -142,6 +147,13 @@ export class ChFlexibleLayoutGroup {
       item => item.selected
     );
   }
+
+  private handleClose = (itemId: string) => (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.itemClose.emit(itemId);
+  };
 
   private renderItems = () => [
     <div
@@ -189,6 +201,7 @@ export class ChFlexibleLayoutGroup {
               class="close-button"
               part="close-button"
               type="button"
+              onClick={this.handleClose(item.id)}
             ></button>
           )}
         </button>

@@ -9,6 +9,7 @@ import { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
+import { FlexibleLayout, FlexibleLayoutDisplayedItems, FlexibleLayoutGroup, FlexibleLayoutGroupSelectedItemInfo, FlexibleLayoutItem, FlexibleLayoutItemBase, FlexibleLayoutRenders } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -329,6 +330,66 @@ export namespace Components {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender": boolean;
+    }
+    interface ChFlexibleLayout {
+        /**
+          * Specifies the items in the flexible layout that must be rendered.
+         */
+        "displayedItems": FlexibleLayoutDisplayedItems;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout": FlexibleLayout;
+    }
+    interface ChFlexibleLayoutGroup {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded": boolean;
+        /**
+          * Specifies the items that are displayed in the group.
+         */
+        "items": FlexibleLayoutItemBase[] | FlexibleLayoutItem[];
+        /**
+          * `true` to display the name of the page.
+         */
+        "showPageName": boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "type": FlexibleLayoutGroup;
+    }
+    interface ChFlexibleLayoutItem {
+        /**
+          * `true` to add the slot attribute in the item.
+         */
+        "addSlot": boolean;
+        /**
+          * Specifies the id of the flexible layout item.
+         */
+        "itemId": string;
+    }
+    interface ChFlexibleLayoutRender {
+        /**
+          * A CSS class to set as the `ch-flexible-layout` element class.
+         */
+        "cssClass": string;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout": FlexibleLayout;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "renders": FlexibleLayoutRenders;
     }
     interface ChFormCheckbox {
         /**
@@ -1214,6 +1275,12 @@ export namespace Components {
          */
         "value": any;
     }
+    interface ChTestFlexibleLayout {
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout": FlexibleLayout;
+    }
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -1925,6 +1992,10 @@ export interface ChDropdownItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownItemElement;
 }
+export interface ChFlexibleLayoutGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChFlexibleLayoutGroupElement;
+}
 export interface ChFormCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChFormCheckboxElement;
@@ -2117,6 +2188,30 @@ declare global {
     var HTMLChDropdownRenderElement: {
         prototype: HTMLChDropdownRenderElement;
         new (): HTMLChDropdownRenderElement;
+    };
+    interface HTMLChFlexibleLayoutElement extends Components.ChFlexibleLayout, HTMLStencilElement {
+    }
+    var HTMLChFlexibleLayoutElement: {
+        prototype: HTMLChFlexibleLayoutElement;
+        new (): HTMLChFlexibleLayoutElement;
+    };
+    interface HTMLChFlexibleLayoutGroupElement extends Components.ChFlexibleLayoutGroup, HTMLStencilElement {
+    }
+    var HTMLChFlexibleLayoutGroupElement: {
+        prototype: HTMLChFlexibleLayoutGroupElement;
+        new (): HTMLChFlexibleLayoutGroupElement;
+    };
+    interface HTMLChFlexibleLayoutItemElement extends Components.ChFlexibleLayoutItem, HTMLStencilElement {
+    }
+    var HTMLChFlexibleLayoutItemElement: {
+        prototype: HTMLChFlexibleLayoutItemElement;
+        new (): HTMLChFlexibleLayoutItemElement;
+    };
+    interface HTMLChFlexibleLayoutRenderElement extends Components.ChFlexibleLayoutRender, HTMLStencilElement {
+    }
+    var HTMLChFlexibleLayoutRenderElement: {
+        prototype: HTMLChFlexibleLayoutRenderElement;
+        new (): HTMLChFlexibleLayoutRenderElement;
     };
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
     }
@@ -2370,6 +2465,12 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChTestFlexibleLayoutElement extends Components.ChTestFlexibleLayout, HTMLStencilElement {
+    }
+    var HTMLChTestFlexibleLayoutElement: {
+        prototype: HTMLChTestFlexibleLayoutElement;
+        new (): HTMLChTestFlexibleLayoutElement;
+    };
     interface HTMLChTestSuggestElement extends Components.ChTestSuggest, HTMLStencilElement {
     }
     var HTMLChTestSuggestElement: {
@@ -2465,6 +2566,10 @@ declare global {
         "ch-dropdown-item": HTMLChDropdownItemElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
+        "ch-flexible-layout": HTMLChFlexibleLayoutElement;
+        "ch-flexible-layout-group": HTMLChFlexibleLayoutGroupElement;
+        "ch-flexible-layout-item": HTMLChFlexibleLayoutItemElement;
+        "ch-flexible-layout-render": HTMLChFlexibleLayoutRenderElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
         "ch-grid": HTMLChGridElement;
         "ch-grid-action-refresh": HTMLChGridActionRefreshElement;
@@ -2507,6 +2612,7 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
         "ch-timer": HTMLChTimerElement;
@@ -2851,6 +2957,78 @@ declare namespace LocalJSX {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender"?: boolean;
+    }
+    interface ChFlexibleLayout {
+        /**
+          * Specifies the items in the flexible layout that must be rendered.
+         */
+        "displayedItems"?: FlexibleLayoutDisplayedItems;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout"?: FlexibleLayout;
+    }
+    interface ChFlexibleLayoutGroup {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Specifies the items that are displayed in the group.
+         */
+        "items"?: FlexibleLayoutItemBase[] | FlexibleLayoutItem[];
+        /**
+          * Fired when an item of the main group is double clicked.
+         */
+        "onExpandMainGroup"?: (event: ChFlexibleLayoutGroupCustomEvent<string>) => void;
+        /**
+          * Fired the close button of an item is clicked.
+         */
+        "onItemClose"?: (event: ChFlexibleLayoutGroupCustomEvent<string>) => void;
+        /**
+          * Fired when the selected item change.
+         */
+        "onSelectedItemChange"?: (event: ChFlexibleLayoutGroupCustomEvent<FlexibleLayoutGroupSelectedItemInfo>) => void;
+        /**
+          * `true` to display the name of the page.
+         */
+        "showPageName"?: boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "type"?: FlexibleLayoutGroup;
+    }
+    interface ChFlexibleLayoutItem {
+        /**
+          * `true` to add the slot attribute in the item.
+         */
+        "addSlot"?: boolean;
+        /**
+          * Specifies the id of the flexible layout item.
+         */
+        "itemId"?: string;
+    }
+    interface ChFlexibleLayoutRender {
+        /**
+          * A CSS class to set as the `ch-flexible-layout` element class.
+         */
+        "cssClass"?: string;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout"?: FlexibleLayout;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "renders"?: FlexibleLayoutRenders;
     }
     interface ChFormCheckbox {
         /**
@@ -3808,6 +3986,12 @@ declare namespace LocalJSX {
          */
         "value"?: any;
     }
+    interface ChTestFlexibleLayout {
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "layout"?: FlexibleLayout;
+    }
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -4500,6 +4684,10 @@ declare namespace LocalJSX {
         "ch-dropdown-item": ChDropdownItem;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
+        "ch-flexible-layout": ChFlexibleLayout;
+        "ch-flexible-layout-group": ChFlexibleLayoutGroup;
+        "ch-flexible-layout-item": ChFlexibleLayoutItem;
+        "ch-flexible-layout-render": ChFlexibleLayoutRender;
         "ch-form-checkbox": ChFormCheckbox;
         "ch-grid": ChGrid;
         "ch-grid-action-refresh": ChGridActionRefresh;
@@ -4542,6 +4730,7 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
         "ch-timer": ChTimer;
@@ -4572,6 +4761,10 @@ declare module "@stencil/core" {
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
+            "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;
+            "ch-flexible-layout-group": LocalJSX.ChFlexibleLayoutGroup & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutGroupElement>;
+            "ch-flexible-layout-item": LocalJSX.ChFlexibleLayoutItem & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutItemElement>;
+            "ch-flexible-layout-render": LocalJSX.ChFlexibleLayoutRender & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutRenderElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
@@ -4614,6 +4807,7 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;

@@ -148,7 +148,7 @@ export class ChLayoutSplitter implements ChComponent {
         }}
       >
         {this.components.map((component, index) => [
-          <slot name={component.id} />,
+          <slot key={component.id} name={component.id} />,
 
           index !== lastComponentIndex && (
             <div

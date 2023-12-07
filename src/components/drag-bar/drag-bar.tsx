@@ -123,10 +123,10 @@ export class DragBar implements ChComponent {
     event.preventDefault();
 
     // Initialize the mouse position, drag bar index and drag bar element
-    this.mouseDownInfo.RTL = isRTL();
-    this.mouseDownInfo.lastPosition = getMousePosition(event);
-    this.mouseDownInfo.index = index;
     this.mouseDownInfo.dragBar = event.target as HTMLElement;
+    this.mouseDownInfo.index = index;
+    this.mouseDownInfo.lastPosition = getMousePosition(event);
+    this.mouseDownInfo.RTL = isRTL();
 
     // Handler to remove mouse down
     const removeMouseMoveHandler = () => {

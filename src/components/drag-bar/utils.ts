@@ -122,6 +122,7 @@ export const updateComponentsAndDragBar = (
   // - - - - - - - - - Increments - - - - - - - - -
   let incrementInPx = info.newPosition - info.lastPosition;
 
+  // When the language is RTL, the increment is in the opposite direction
   if (info.RTL) {
     incrementInPx *= -1;
   }

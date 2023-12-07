@@ -4,6 +4,7 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
 | Property   | Attribute   | Description                                                     | Type                                                                                                                                                                                                                                                                                                     | Default             |
@@ -12,11 +13,12 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 | `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `{ blockStart?: { items: FlexibleLayoutItemBase[]; }; inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; main?: { items: FlexibleLayoutItem[]; }; inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; }` | `undefined`         |
 | `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: () => any; }`                                                                                                                                                                                                                                                                          | `undefined`         |
 
+
 ## Dependencies
 
 ### Used by
 
-- [ch-test-flexible-layout](../../test/test-flexible-layout)
+ - [ch-test-flexible-layout](../../test/test-flexible-layout)
 
 ### Depends on
 
@@ -24,7 +26,6 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 - [ch-flexible-layout](../../flexible-layout/flexible-layout)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-flexible-layout-render --> ch-flexible-layout-item
@@ -34,7 +35,6 @@ graph TD;
   style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
-
+*Built with [StencilJS](https://stenciljs.com/)*

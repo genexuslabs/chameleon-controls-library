@@ -23,7 +23,7 @@
 | -------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `expandMainGroup`    | Fired when an item of the main group is double clicked. | `CustomEvent<string>`                                                                                                                                          |
 | `itemClose`          | Fired the close button of an item is clicked.           | `CustomEvent<string>`                                                                                                                                          |
-| `selectedItemChange` | Fired when the selected item change.                    | `CustomEvent<{ group: "inline-start" \| "main" \| "inline-end" \| "block-end"; lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
+| `selectedItemChange` | Fired when the selected item change.                    | `CustomEvent<{ group: "main" \| "inline-start" \| "inline-end" \| "block-end"; lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
 
 
 ## Shadow Parts

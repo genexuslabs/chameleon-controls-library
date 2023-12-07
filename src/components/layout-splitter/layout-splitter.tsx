@@ -1,4 +1,4 @@
-import { Component, Element, Host, Prop, State, h } from "@stencil/core";
+import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
 import {
@@ -46,22 +46,22 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly components: DragBarComponent[] = [
-    { id: "start-component", size: "3fr" },
-    { id: "end-end-component", size: "2fr" },
-    { id: "center-component", size: "200px" },
-    { id: "end-component", size: "180px" }
-  ];
+  @Prop() readonly components: DragBarComponent[] = [];
+  @Watch("components")
+  handleComponentsChange(newValue: DragBarComponent[]) {
+    this.sizes = [];
+    this.dragBarPositions = [];
 
-  // { id: "start-component", size: "0.7fr" },
-  // { id: "center-component", size: "0.1fr" },
-  // { id: "end-component", size: "80px" },
-  // { id: "end-end-component", size: "0.2fr" }
+    if (newValue == null || newValue.length === 0) {
+      return;
+    }
 
-  // { id: "start-component", size: "3fr" },
-  // { id: "center-component", size: "1fr" },
-  // { id: "end-component", size: "80px" },
-  // { id: "end-end-component", size: "2fr" }
+    this.fixedSizesSum = setSizesAndDragBarPosition(
+      this.components,
+      this.sizes,
+      this.dragBarPositions
+    );
+  }
 
   /**
    * Specifies the initial width of the start component
@@ -95,11 +95,13 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   connectedCallback() {
-    this.fixedSizesSum = setSizesAndDragBarPosition(
-      this.components,
-      this.sizes,
-      this.dragBarPositions
-    );
+    if (this.components?.length > 0) {
+      this.fixedSizesSum = setSizesAndDragBarPosition(
+        this.components,
+        this.sizes,
+        this.dragBarPositions
+      );
+    }
 
     // Initialize mouseDown event info
     this.mouseDownInfo = {

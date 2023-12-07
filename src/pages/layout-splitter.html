@@ -34,6 +34,38 @@
     </style>
   </head>
   <body>
+    <div>
+      <div>
+        <fieldset>
+          <legend>Select a direction:</legend>
+
+          <div>
+            <label>
+              <input id="rows" type="radio" name="direction" value="rows" />
+              Rows
+            </label>
+          </div>
+
+          <div>
+            <label>
+              <input
+                id="columns"
+                type="radio"
+                name="direction"
+                value="columns"
+                checked
+              />
+              Columns
+            </label>
+          </div>
+        </fieldset>
+      </div>
+
+      <button id="layout-1">Layout configuration 1</button>
+      <button id="layout-2">Layout configuration 2</button>
+      <button id="layout-3">Layout configuration 3</button>
+    </div>
+
     <ch-layout-splitter>
       <div
         slot="start-component"
@@ -41,6 +73,8 @@
         style="background-color: beige"
       >
         Start
+
+        <input type="text" style="height: 80px" />
       </div>
       <div
         slot="end-component"
@@ -48,6 +82,8 @@
         style="background-color: burlywood"
       >
         End
+
+        <input type="text" style="height: 80px" />
       </div>
 
       <div
@@ -56,6 +92,8 @@
         style="background-color: rgb(80, 91, 131)"
       >
         End End
+
+        <input type="text" style="height: 80px" />
       </div>
 
       <div
@@ -64,9 +102,64 @@
         style="background-color: rgb(22, 151, 95)"
       >
         Center
+
+        <input type="text" style="height: 80px" />
       </div>
     </ch-layout-splitter>
 
     <script src="./assets/scripts/common.js"></script>
+    <script>
+      window.addEventListener("appload", () => {
+        const layoutSplitter = document.querySelector("ch-layout-splitter");
+
+        layoutSplitter.components = [
+          { id: "start-component", size: "3fr" },
+          { id: "end-end-component", size: "2fr" },
+          { id: "center-component", size: "200px" },
+          { id: "end-component", size: "180px" }
+        ];
+
+        const directionColumns = document.querySelector("#columns");
+        directionColumns.addEventListener("input", event => {
+          layoutSplitter.direction = "columns";
+        });
+
+        const directionRows = document.querySelector("#rows");
+        directionRows.addEventListener("input", event => {
+          layoutSplitter.direction = "rows";
+        });
+
+        const button1 = document.querySelector("#layout-1");
+        const button2 = document.querySelector("#layout-2");
+        const button3 = document.querySelector("#layout-3");
+
+        button1.addEventListener("click", () => {
+          layoutSplitter.components = [
+            { id: "start-component", size: "3fr" },
+            { id: "end-end-component", size: "2fr" },
+            { id: "center-component", size: "200px" },
+            { id: "end-component", size: "180px" }
+          ];
+        });
+
+        button2.addEventListener("click", () => {
+          layoutSplitter.components = [
+            { id: "start-component", size: "0.7fr" },
+            { id: "center-component", size: "0.1fr" },
+            { id: "end-component", size: "80px" },
+            { id: "end-end-component", size: "0.2fr" }
+          ];
+        });
+
+        button3.addEventListener("click", () => {
+          layoutSplitter.components = [
+            { id: "end-end-component", size: "2fr" },
+            { id: "center-component", size: "1fr" },
+            { id: "end-component", size: "80px" },
+            { id: "start-component", size: "3fr" }
+          ];
+        });
+      });
+    </script>
   </body>
 </html>

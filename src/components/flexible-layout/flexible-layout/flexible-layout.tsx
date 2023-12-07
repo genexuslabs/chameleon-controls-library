@@ -94,6 +94,22 @@ export class ChFlexibleLayout {
     forceUpdate(this);
   }
 
+  private handleMainGroupExpand = () => {
+    if (this.layout.inlineStart) {
+      this.layout.inlineStart.expanded = false;
+    }
+
+    if (this.layout.inlineEnd) {
+      this.layout.inlineEnd.expanded = false;
+    }
+
+    if (this.layout.blockEnd) {
+      this.layout.blockEnd.expanded = false;
+    }
+
+    forceUpdate(this);
+  };
+
   private renderItems = (group: keyof FlexibleLayout) =>
     this.displayedItems[group].map(itemId => (
       <slot name={itemId} slot={itemId} />
@@ -146,6 +162,7 @@ export class ChFlexibleLayout {
           class={MAIN_GROUP}
           items={layout.main.items}
           type={MAIN_GROUP}
+          onExpandMainGroup={this.handleMainGroupExpand}
         >
           {this.renderItems("main")}
         </ch-flexible-layout-group>

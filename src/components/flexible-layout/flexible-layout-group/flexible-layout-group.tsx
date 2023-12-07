@@ -101,15 +101,20 @@ export class ChFlexibleLayoutGroup {
   @Prop({ reflect: true }) readonly type: FlexibleLayoutGroup;
 
   /**
-   * Fired when the selected item change.
+   * Fired when an item of the main group is double clicked.
    */
-  @Event()
-  selectedItemChange: EventEmitter<FlexibleLayoutGroupSelectedItemInfo>;
+  @Event() expandMainGroup: EventEmitter<string>;
 
   /**
    * Fired the close button of an item is clicked.
    */
   @Event() itemClose: EventEmitter<string>;
+
+  /**
+   * Fired when the selected item change.
+   */
+  @Event()
+  selectedItemChange: EventEmitter<FlexibleLayoutGroupSelectedItemInfo>;
 
   private handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {
@@ -148,6 +153,13 @@ export class ChFlexibleLayoutGroup {
     );
   }
 
+  private handleItemDblClick = (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.expandMainGroup.emit();
+  };
+
   private handleClose = (itemId: string) => (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -181,6 +193,7 @@ export class ChFlexibleLayoutGroup {
               ? this.handleSelectedItemChange(index, item.id)
               : null
           }
+          onDblClick={this.type === "main" ? this.handleItemDblClick : null}
         >
           {item.startImageSrc && (
             <img

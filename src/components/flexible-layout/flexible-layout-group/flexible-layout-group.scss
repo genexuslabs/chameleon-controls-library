@@ -1,0 +1,115 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
+:host {
+  display: grid;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+:host([type="block-start"]) {
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+}
+
+:host([type="inline-start"]) {
+  grid-template-columns: max-content 1fr;
+}
+
+:host([type="main"]),
+:host([type="block-end"]) {
+  grid-template-rows: max-content 1fr;
+}
+
+:host([type="inline-end"]) {
+  grid-template-columns: 1fr max-content;
+}
+
+:where(button) {
+  all: unset;
+  display: flex;
+  align-items: center;
+
+  // Disallow selecting the text
+  user-select: none;
+
+  // Avoid zooming on double tap on iOS devices
+  touch-action: manipulation;
+
+  // Allow user drag
+  -webkit-user-drag: element;
+
+  cursor: pointer;
+}
+
+.caption-image {
+  display: block;
+  block-size: 18px;
+  inline-size: 18px;
+}
+
+.close-button::after {
+  content: "";
+  display: flex;
+  block-size: 1em;
+  inline-size: 1em;
+  -webkit-mask: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 2L15.5 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 2L2 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+    50% 50% / 0.75em 0.75em no-repeat;
+  background-color: currentColor;
+  opacity: 0;
+}
+
+.main__button,
+.block-end__button {
+  display: flex;
+  align-items: center;
+
+  &:hover > .close-button::after,
+  &:focus-within > .close-button::after,
+  &[aria-selected="true"] > .close-button::after {
+    opacity: 1;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//            Tab lists
+// - - - - - - - - - - - - - - - -
+.inline-start__tab-list,
+.inline-end__tab-list {
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-rows: max-content;
+}
+
+// Change the visual order, but no the order in the HTML
+.inline-end__tab-list {
+  order: 1;
+}
+
+.main__tab-list,
+.block-end__tab-list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+}
+
+.page-container {
+  display: grid;
+  block-size: 100%;
+  inline-size: 100%;
+
+  &--collapsed {
+    display: none;
+  }
+}
+
+.inline-start__page,
+.inline-end__page {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
+.page--hidden {
+  display: none;
+}

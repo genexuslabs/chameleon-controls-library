@@ -31,6 +31,14 @@ export const config: Config = {
       ]
     },
     {
+      components: [
+        "ch-flexible-layout",
+        "ch-flexible-layout-group",
+        "ch-flexible-layout-item",
+        "ch-flexible-layout-render"
+      ]
+    },
+    {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
     },
     {

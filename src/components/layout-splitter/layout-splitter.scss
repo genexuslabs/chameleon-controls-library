@@ -14,10 +14,15 @@
   inline-size: 100%;
 }
 
+:host(.gx-layout-splitter--resizing) ::slotted(*) {
+  pointer-events: none;
+}
+
 .bar {
   position: absolute;
   background-color: currentColor;
   opacity: 0;
+  z-index: 1;
   transition: opacity 120ms linear 200ms;
 
   &:hover,

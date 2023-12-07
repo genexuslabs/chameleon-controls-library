@@ -84,6 +84,22 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
+  // Handler to remove mouse down
+  private removeMouseMoveHandler = () => {
+    document.removeEventListener("mousemove", this.handleBarDrag, {
+      capture: true
+    });
+  };
+
+  // Remove mousemove and mouseup handlers when mouseup
+  private mouseUpHandler = () => {
+    this.removeMouseMoveHandler();
+
+    document.removeEventListener("mouseup", this.mouseUpHandler, {
+      capture: true
+    });
+  };
+
   private mouseDownHandler = (index: number) => (event: MouseEvent) => {
     // Necessary to prevent selecting the inner image (or other elements) of
     // the bar item when the mouse is down
@@ -95,27 +111,13 @@ export class ChLayoutSplitter implements ChComponent {
     this.mouseDownInfo.lastPosition = getMousePosition(event);
     this.mouseDownInfo.RTL = isRTL();
 
-    // Handler to remove mouse down
-    const removeMouseMoveHandler = () => {
-      document.removeEventListener("mousemove", this.handleBarDrag, {
-        capture: true
-      });
-    };
-
-    // Remove mousemove and mouseup handlers when mouseup
-    const mouseUpHandler = () => {
-      removeMouseMoveHandler();
-
-      document.removeEventListener("mouseup", mouseUpHandler, {
-        capture: true
-      });
-    };
-
     // Add listeners
     document.addEventListener("mousemove", this.handleBarDrag, {
       capture: true
     });
-    document.addEventListener("mouseup", mouseUpHandler, { capture: true });
+    document.addEventListener("mouseup", this.mouseUpHandler, {
+      capture: true
+    });
   };
 
   connectedCallback() {
@@ -136,6 +138,11 @@ export class ChLayoutSplitter implements ChComponent {
       newPosition: -1,
       RTL: isRTL()
     };
+  }
+
+  disconnectedCallback() {
+    // Defensive programming. Make sure all event listeners are removed correctly
+    this.mouseUpHandler();
   }
 
   render() {

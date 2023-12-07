@@ -9,6 +9,8 @@ import {
 import { isRTL } from "../../common/utils";
 
 const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
+const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
+  "--ch-layout-splitter__grid-template-direction";
 
 /**
  * @part bar - The bar of the drag-bar control that divides the start and end components
@@ -58,9 +60,14 @@ export class ChLayoutSplitter implements ChComponent {
     );
   }
 
+  /**
+   * Specifies the direction in which the components will be placed
+   */
+  @Prop({ reflect: true }) readonly direction: "rows" | "columns" = "columns";
+
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.mouseDownInfo.newPosition = getMousePosition(event);
+    this.mouseDownInfo.newPosition = getMousePosition(event, this.direction);
 
     if (!this.needForRAF) {
       return;
@@ -76,7 +83,8 @@ export class ChLayoutSplitter implements ChComponent {
         this.sizes,
         this.dragBarPositions,
         this.fixedSizesSum,
-        DRAG_BAR_POSITION_CUSTOM_VAR
+        DRAG_BAR_POSITION_CUSTOM_VAR,
+        GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
       );
 
       // Sync new position with last
@@ -105,10 +113,12 @@ export class ChLayoutSplitter implements ChComponent {
     // the bar item when the mouse is down
     event.preventDefault();
 
-    // Initialize the mouse position, drag bar index and drag bar element
+    // Initialize the values needed for drag processing
     this.mouseDownInfo.dragBar = event.target as HTMLElement;
+    this.mouseDownInfo.dragBarContainerSize =
+      this.direction === "columns" ? this.el.clientWidth : this.el.clientHeight;
     this.mouseDownInfo.index = index;
-    this.mouseDownInfo.lastPosition = getMousePosition(event);
+    this.mouseDownInfo.lastPosition = getMousePosition(event, this.direction);
     this.mouseDownInfo.RTL = isRTL();
 
     // Add listeners
@@ -133,6 +143,7 @@ export class ChLayoutSplitter implements ChComponent {
     this.mouseDownInfo = {
       dragBar: null,
       dragBarContainer: this.el,
+      dragBarContainerSize: -1,
       index: -1,
       lastPosition: -1,
       newPosition: -1,
@@ -151,7 +162,7 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       <Host
         style={{
-          "grid-template-columns": this.sizes.join(" ")
+          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes.join(" ")
         }}
       >
         {this.components.map((component, index) => [

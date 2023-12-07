@@ -117,7 +117,8 @@ export const updateComponentsAndDragBar = (
   sizes: string[],
   dragBarPositions: string[],
   fixedSizes: number,
-  dragBarPositionCustomVar: string
+  dragBarPositionCustomVar: string,
+  gridTemplateDirectionCustomVar: string
 ) => {
   // - - - - - - - - - Increments - - - - - - - - -
   let incrementInPx = info.newPosition - info.lastPosition;
@@ -127,8 +128,7 @@ export const updateComponentsAndDragBar = (
     incrementInPx *= -1;
   }
 
-  const remainingRelativeSizeInPixels =
-    info.dragBarContainer.clientWidth - fixedSizes;
+  const remainingRelativeSizeInPixels = info.dragBarContainerSize - fixedSizes;
   const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
 
   // Components at each position of the drag bar
@@ -168,7 +168,7 @@ export const updateComponentsAndDragBar = (
 
   // Update in the DOM the grid distribution
   info.dragBarContainer.style.setProperty(
-    "grid-template-columns",
+    gridTemplateDirectionCustomVar,
     sizes.join(" ")
   );
 
@@ -179,4 +179,7 @@ export const updateComponentsAndDragBar = (
   );
 };
 
-export const getMousePosition = (event: MouseEvent) => event.clientX;
+export const getMousePosition = (
+  event: MouseEvent,
+  direction: "columns" | "rows"
+) => (direction === "columns" ? event.clientX : event.clientY);

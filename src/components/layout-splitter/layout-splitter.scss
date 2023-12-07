@@ -16,18 +16,38 @@
 
 .bar {
   position: absolute;
-  inset-block: 0;
-  inset-inline-start: calc(
-    var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
-  );
-  inline-size: var(--ch-drag-bar__size);
   background-color: currentColor;
-  cursor: ew-resize;
   opacity: 0;
   transition: opacity 120ms linear 200ms;
 
   &:hover,
   &:active {
     opacity: 1;
+  }
+}
+
+:host([direction="columns"]) {
+  grid-template-columns: var(--ch-layout-splitter__grid-template-direction);
+
+  .bar {
+    inset-block: 0;
+    inset-inline-start: calc(
+      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
+    );
+    inline-size: var(--ch-drag-bar__size);
+    cursor: ew-resize;
+  }
+}
+
+:host([direction="rows"]) {
+  grid-template-rows: var(--ch-layout-splitter__grid-template-direction);
+
+  .bar {
+    inset-inline: 0;
+    inset-block-start: calc(
+      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
+    );
+    block-size: var(--ch-drag-bar__size);
+    cursor: ns-resize;
   }
 }

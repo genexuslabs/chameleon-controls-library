@@ -5,8 +5,8 @@
 }
 
 :host {
-  --ch-drag-bar-inline-size: 5px;
-  --ch-drag-bar-inline-size--half: var(--ch-drag-bar-inline-size) / 2;
+  --ch-drag-bar__size: 5px;
+  --ch-drag-bar__size--half: var(--ch-drag-bar__size) / 2;
 
   display: grid;
   position: relative;
@@ -18,10 +18,9 @@
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc(
-    var(--ch-drag-bar__inset-inline-start) -
-      var(--ch-drag-bar-inline-size--half)
+    var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
   );
-  inline-size: var(--ch-drag-bar-inline-size);
+  inline-size: var(--ch-drag-bar__size);
   background-color: currentColor;
   cursor: ew-resize;
   opacity: 0;

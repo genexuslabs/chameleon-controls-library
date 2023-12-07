@@ -8,7 +8,7 @@ import {
 } from "./utils";
 import { isRTL } from "../../common/utils";
 
-const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__inset-inline-start";
+const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
 
 /**
  * @part bar - The bar of the drag-bar control that divides the start and end components

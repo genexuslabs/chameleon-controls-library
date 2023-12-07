@@ -15,10 +15,10 @@ const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__inset-inline-start";
  */
 @Component({
   shadow: true,
-  styleUrl: "drag-bar.scss",
-  tag: "ch-drag-bar"
+  styleUrl: "layout-splitter.scss",
+  tag: "ch-layout-splitter"
 })
-export class DragBar implements ChComponent {
+export class ChLayoutSplitter implements ChComponent {
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
   private mouseDownInfo: DragBarMouseDownEventInfo;
@@ -29,7 +29,7 @@ export class DragBar implements ChComponent {
 
   private fixedSizesSum: number;
 
-  @Element() el: HTMLChDragBarElement;
+  @Element() el: HTMLChLayoutSplitterElement;
 
   /**
    * Determine the language direction.

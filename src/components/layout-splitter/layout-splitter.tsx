@@ -84,26 +84,6 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
-  connectedCallback() {
-    if (this.components?.length > 0) {
-      this.fixedSizesSum = setSizesAndDragBarPosition(
-        this.components,
-        this.sizes,
-        this.dragBarPositions
-      );
-    }
-
-    // Initialize mouseDown event info
-    this.mouseDownInfo = {
-      dragBar: null,
-      dragBarContainer: this.el,
-      index: -1,
-      lastPosition: -1,
-      newPosition: -1,
-      RTL: isRTL()
-    };
-  }
-
   private mouseDownHandler = (index: number) => (event: MouseEvent) => {
     // Necessary to prevent selecting the inner image (or other elements) of
     // the bar item when the mouse is down
@@ -137,6 +117,26 @@ export class ChLayoutSplitter implements ChComponent {
     });
     document.addEventListener("mouseup", mouseUpHandler, { capture: true });
   };
+
+  connectedCallback() {
+    if (this.components?.length > 0) {
+      this.fixedSizesSum = setSizesAndDragBarPosition(
+        this.components,
+        this.sizes,
+        this.dragBarPositions
+      );
+    }
+
+    // Initialize mouseDown event info
+    this.mouseDownInfo = {
+      dragBar: null,
+      dragBarContainer: this.el,
+      index: -1,
+      lastPosition: -1,
+      newPosition: -1,
+      RTL: isRTL()
+    };
+  }
 
   render() {
     const lastComponentIndex = this.components.length - 1;

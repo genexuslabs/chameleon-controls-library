@@ -59,9 +59,7 @@ export class ChLayoutSplitter implements ChComponent {
     this.sizes = [];
     this.dragBarPositions = [];
 
-    if (newLayout?.items?.length > 0) {
-      this.updateLayoutInfo(newLayout);
-    }
+    this.updateLayoutInfo(newLayout);
   }
 
   private handleBarDrag = (event: MouseEvent) => {
@@ -208,18 +206,18 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
-    const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
-      setSizesAndDragBarPosition(layout);
+    if (layout?.items?.length > 0) {
+      const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
+        setSizesAndDragBarPosition(layout);
 
-    this.fixedSizesSum = subLayoutFixedSizesSum;
-    this.dragBarPositions = dragBarPositionsSubLayout;
-    this.sizes = subLayout;
+      this.fixedSizesSum = subLayoutFixedSizesSum;
+      this.dragBarPositions = dragBarPositionsSubLayout;
+      this.sizes = subLayout;
+    }
   }
 
   connectedCallback() {
-    if (this.layout?.items?.length > 0) {
-      this.updateLayoutInfo(this.layout);
-    }
+    this.updateLayoutInfo(this.layout);
   }
 
   disconnectedCallback() {

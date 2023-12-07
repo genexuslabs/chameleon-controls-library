@@ -1,5 +1,13 @@
 export type DragBarComponent = {
   id: string;
-  fixedSize?: boolean;
   size: string;
+  fixedOffsetSize?: number;
+};
+
+export type DragBarMouseDownEventInfo = {
+  dragBar: HTMLElement;
+  dragBarContainer: HTMLElement;
+  index: number;
+  lastPosition: number;
+  newPosition: number;
 };

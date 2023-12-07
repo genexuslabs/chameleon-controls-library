@@ -1,12 +1,33 @@
-import { DragBarComponent } from "./types";
+import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
+
+const getComponentSize = (comp: DragBarComponent, fixedSizes: number) => {
+  // Pixel value
+  if (comp.size.includes("px")) {
+    return comp.size;
+  }
+
+  // If the component has fr value, take into account the sum of fixed values
+  // to calculate the actual relative value
+  const frValue = Number(comp.size.replace("fr", "").trim());
+
+  if (fixedSizes === 0) {
+    return `${frValue * 100}%`;
+  }
+
+  return comp.fixedOffsetSize
+    ? `calc(${frValue * 100}% - ${fixedSizes * frValue}px + ${
+        comp.fixedOffsetSize
+      }px)`
+    : `calc(${frValue * 100}% - ${fixedSizes * frValue}px)`;
+};
 
 export const setSizesAndDragBarPosition = (
   components: DragBarComponent[],
   sizes: string[],
   dragBarPositions: string[]
-) => {
+): number => {
   let frSum = 0;
-  let fixedSizesSum = 0;
+  let fixedSizes = 0;
 
   // Get the sum of all fr values. Also, store the sum of fixed sizes
   components.map(comp => {
@@ -19,7 +40,7 @@ export const setSizesAndDragBarPosition = (
     else {
       const pxValue = Number(comp.size.replace("px", "").trim());
 
-      fixedSizesSum += pxValue;
+      fixedSizes += pxValue;
     }
   });
 
@@ -37,23 +58,8 @@ export const setSizesAndDragBarPosition = (
 
   // Update sizes array and store drag-bar position (dragBarPositions array)
   components.forEach((comp, index) => {
-    sizes.push(comp.size);
-    let componentSize: string;
-
-    // If the component has fr value, take into account the sum of fixed values
-    // to calculate the actual relative value
-    if (comp.size.includes("fr")) {
-      const frValue = Number(comp.size.replace("fr", "").trim());
-
-      componentSize =
-        fixedSizesSum === 0
-          ? `${frValue * 100}%`
-          : `${frValue * 100}% - (${fixedSizesSum}px * ${frValue})`;
-    }
-    // Pixel value
-    else {
-      componentSize = comp.size;
-    }
+    const componentSize = getComponentSize(comp, fixedSizes);
+    sizes.push(componentSize);
 
     // Store each drag bar position
     const dragBarPosition =
@@ -63,4 +69,109 @@ export const setSizesAndDragBarPosition = (
 
     dragBarPositions.push(dragBarPosition);
   });
+
+  return fixedSizes;
 };
+
+const getFrSize = (sizeWithFr: string) => Number(sizeWithFr.replace("fr", ""));
+const getPxSize = (sizeWithPx: string) => Number(sizeWithPx.replace("px", ""));
+
+const hasAbsoluteValue = (component: DragBarComponent) =>
+  component.size.includes("px");
+
+const updateSize = (
+  component: DragBarComponent,
+  increment: number,
+  index: number,
+  sizes: string[],
+  fixedSizes: number,
+  unitType: "fr" | "px"
+) => {
+  const currentValue =
+    unitType === "px" ? getPxSize(component.size) : getFrSize(component.size);
+
+  const newValue = currentValue + increment;
+  component.size = `${newValue}${unitType}`;
+
+  sizes[index] = getComponentSize(component, fixedSizes);
+};
+
+const updateOffsetSize = (
+  component: DragBarComponent,
+  increment: number,
+  index: number,
+  sizes: string[],
+  fixedSizes: number
+) => {
+  component.fixedOffsetSize =
+    component.fixedOffsetSize != null
+      ? component.fixedOffsetSize + increment
+      : increment;
+
+  sizes[index] = getComponentSize(component, fixedSizes);
+};
+
+export const updateComponentsAndDragBar = (
+  info: DragBarMouseDownEventInfo,
+  components: DragBarComponent[],
+  sizes: string[],
+  dragBarPositions: string[],
+  fixedSizes: number,
+  dragBarPositionCustomVar: string
+) => {
+  // - - - - - - - - - Increments - - - - - - - - -
+  const incrementInPx = info.newPosition - info.lastPosition;
+
+  const remainingRelativeSizeInPixels =
+    info.dragBarContainer.clientWidth - fixedSizes;
+  const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
+
+  // Components at each position of the drag bar
+  const leftComp = components[info.index];
+  const rightComp = components[info.index + 1];
+
+  const leftIndex = info.index;
+  const rightIndex = info.index + 1;
+
+  // px / px
+  if (hasAbsoluteValue(leftComp) && hasAbsoluteValue(rightComp)) {
+    updateSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes, "px");
+    updateSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes, "px");
+  }
+  // px / fr
+  else if (hasAbsoluteValue(leftComp)) {
+    updateSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes, "px");
+    updateOffsetSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes);
+  }
+  // fr / px
+  else if (hasAbsoluteValue(rightComp)) {
+    updateOffsetSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes);
+    updateSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes, "px");
+  }
+  // fr / fr
+  else {
+    updateSize(leftComp, incrementInFr, leftIndex, sizes, fixedSizes, "fr");
+    updateSize(rightComp, -incrementInFr, rightIndex, sizes, fixedSizes, "fr");
+  }
+
+  // Update drag-bar position
+  const dragBarPosition =
+    leftIndex === 0
+      ? sizes[leftIndex]
+      : `${dragBarPositions[leftIndex - 1]} + ${sizes[leftIndex]}`;
+  dragBarPositions[leftIndex] = dragBarPosition;
+
+  // Update in the DOM the grid distribution
+  info.dragBarContainer.style.setProperty(
+    "grid-template-columns",
+    sizes.join(" ")
+  );
+
+  // Update in the DOM the drag bar position
+  info.dragBar.style.setProperty(
+    dragBarPositionCustomVar,
+    `calc(${dragBarPositions[leftIndex]})`
+  );
+};
+
+export const getMousePosition = (event: MouseEvent) => event.clientX;

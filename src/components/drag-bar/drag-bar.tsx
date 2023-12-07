@@ -1,12 +1,13 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { DragBarComponent } from "./types";
-import { setSizesAndDragBarPosition } from "./utils";
+import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
+import {
+  getMousePosition,
+  setSizesAndDragBarPosition,
+  updateComponentsAndDragBar
+} from "./utils";
 
-const START_COMPONENT_MIN_WIDTH = 0; // 0%
-const START_COMPONENT_MAX_WIDTH = 100; // 100%
-
-const START_COMPONENT_WIDTH = "--ch-drag-bar__start-component-width";
+const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__inset-inline-start";
 
 /**
  * @part bar - The bar of the drag-bar control that divides the start and end components
@@ -17,15 +18,16 @@ const START_COMPONENT_WIDTH = "--ch-drag-bar__start-component-width";
   tag: "ch-drag-bar"
 })
 export class DragBar implements ChComponent {
-  private lastBarRelativePositionX = 0;
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
   private rtlWatcher: MutationObserver;
 
-  private currentSelectedIndex: number;
+  private mouseDownInfo: DragBarMouseDownEventInfo;
 
-  // Refs
+  // Distribution of elements
   private sizes: string[] = [];
   private dragBarPositions: string[] = [];
+
+  private fixedSizesSum: number;
 
   @Element() el: HTMLChDragBarElement;
 
@@ -46,9 +48,9 @@ export class DragBar implements ChComponent {
    */
   @Prop() readonly components: DragBarComponent[] = [
     { id: "start-component", size: "3fr" },
+    { id: "end-end-component", size: "2fr" },
     { id: "center-component", size: "200px" },
-    { id: "end-component", size: "80px" },
-    { id: "end-end-component", size: "2fr" }
+    { id: "end-component", size: "180px" }
   ];
 
   // { id: "start-component", size: "0.7fr" },
@@ -71,15 +73,9 @@ export class DragBar implements ChComponent {
    */
   @Prop() readonly startComponentInitialWidth: string = "50%";
 
-  private keepValueInBetween = (value: number) =>
-    Math.max(
-      START_COMPONENT_MIN_WIDTH,
-      Math.min(value, START_COMPONENT_MAX_WIDTH)
-    );
-
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.lastBarRelativePositionX = event.clientX;
+    this.mouseDownInfo.newPosition = getMousePosition(event);
 
     if (!this.needForRAF) {
       return;
@@ -89,23 +85,17 @@ export class DragBar implements ChComponent {
     requestAnimationFrame(() => {
       this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
-      this.lastBarRelativePositionX -= this.el.getBoundingClientRect().left;
-
-      const containerWidth = this.el.scrollWidth;
-
-      let startComponentWidth =
-        containerWidth !== 0
-          ? (this.lastBarRelativePositionX / containerWidth) * 100
-          : 0;
-
-      if (this.isRTLDirection) {
-        startComponentWidth = 100 - startComponentWidth;
-      }
-
-      this.el.style.setProperty(
-        START_COMPONENT_WIDTH,
-        `${this.keepValueInBetween(startComponentWidth)}%`
+      updateComponentsAndDragBar(
+        this.mouseDownInfo,
+        this.components,
+        this.sizes,
+        this.dragBarPositions,
+        this.fixedSizesSum,
+        DRAG_BAR_POSITION_CUSTOM_VAR
       );
+
+      // Sync new position with last
+      this.mouseDownInfo.lastPosition = this.mouseDownInfo.newPosition;
     });
   };
 
@@ -125,11 +115,20 @@ export class DragBar implements ChComponent {
     // Initialize the value, since the observer won't do it
     this.isRTLDirection = document.documentElement.dir === "rtl";
 
-    setSizesAndDragBarPosition(
+    this.fixedSizesSum = setSizesAndDragBarPosition(
       this.components,
       this.sizes,
       this.dragBarPositions
     );
+
+    // Initialize mouseDown event info
+    this.mouseDownInfo = {
+      dragBar: null,
+      dragBarContainer: this.el,
+      index: -1,
+      lastPosition: -1,
+      newPosition: -1
+    };
   }
 
   private mouseDownHandler = (index: number) => (event: MouseEvent) => {
@@ -137,7 +136,10 @@ export class DragBar implements ChComponent {
     // the bar item when the mouse is down
     event.preventDefault();
 
-    this.currentSelectedIndex = index;
+    // Initialize the mouse position, drag bar index and drag bar element
+    this.mouseDownInfo.lastPosition = getMousePosition(event);
+    this.mouseDownInfo.index = index;
+    this.mouseDownInfo.dragBar = event.target as HTMLElement;
 
     // Handler to remove mouse down
     const removeMouseMoveHandler = () => {
@@ -201,7 +203,7 @@ export class DragBar implements ChComponent {
               class="bar"
               part="bar"
               style={{
-                "--ch-drag-bar__inset-inline-start": `calc(${this.dragBarPositions[index]})`
+                [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${this.dragBarPositions[index]})`
               }}
               onMouseDown={this.mouseDownHandler(index)}
             ></div>

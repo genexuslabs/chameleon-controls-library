@@ -64,11 +64,6 @@ export class ChLayoutSplitter implements ChComponent {
   // { id: "end-end-component", size: "2fr" }
 
   /**
-   * A CSS class to set as the `ch-next-drag-bar` element class.
-   */
-  @Prop() readonly cssClass: string;
-
-  /**
    * Specifies the initial width of the start component
    */
   @Prop() readonly startComponentInitialWidth: string = "50%";
@@ -156,7 +151,6 @@ export class ChLayoutSplitter implements ChComponent {
 
     return (
       <Host
-        class={this.cssClass || undefined}
         style={{
           "grid-template-columns": this.sizes.join(" ")
         }}

@@ -1,6 +1,6 @@
 import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
+import { LayoutSplitterComponent, DragBarMouseDownEventInfo } from "./types";
 import {
   getMousePosition,
   setSizesAndDragBarPosition,
@@ -43,9 +43,9 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly components: DragBarComponent[] = [];
+  @Prop() readonly components: LayoutSplitterComponent[] = [];
   @Watch("components")
-  handleComponentsChange(newValue: DragBarComponent[]) {
+  handleComponentsChange(newValue: LayoutSplitterComponent[]) {
     this.sizes = [];
     this.dragBarPositions = [];
 

@@ -1,4 +1,4 @@
-export type DragBarComponent = {
+export type LayoutSplitterComponent = {
   id: string;
   size: string;
   fixedOffsetSize?: number;

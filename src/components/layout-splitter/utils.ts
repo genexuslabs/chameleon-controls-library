@@ -1,6 +1,9 @@
-import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
+import { LayoutSplitterComponent, DragBarMouseDownEventInfo } from "./types";
 
-const getComponentSize = (comp: DragBarComponent, fixedSizes: number) => {
+const getComponentSize = (
+  comp: LayoutSplitterComponent,
+  fixedSizes: number
+) => {
   // Pixel value
   if (comp.size.includes("px")) {
     return comp.size;
@@ -22,7 +25,7 @@ const getComponentSize = (comp: DragBarComponent, fixedSizes: number) => {
 };
 
 export const setSizesAndDragBarPosition = (
-  components: DragBarComponent[],
+  components: LayoutSplitterComponent[],
   sizes: string[],
   dragBarPositions: string[]
 ): number => {
@@ -76,11 +79,11 @@ export const setSizesAndDragBarPosition = (
 const getFrSize = (sizeWithFr: string) => Number(sizeWithFr.replace("fr", ""));
 const getPxSize = (sizeWithPx: string) => Number(sizeWithPx.replace("px", ""));
 
-const hasAbsoluteValue = (component: DragBarComponent) =>
+const hasAbsoluteValue = (component: LayoutSplitterComponent) =>
   component.size.includes("px");
 
 const updateSize = (
-  component: DragBarComponent,
+  component: LayoutSplitterComponent,
   increment: number,
   index: number,
   sizes: string[],
@@ -97,7 +100,7 @@ const updateSize = (
 };
 
 const updateOffsetSize = (
-  component: DragBarComponent,
+  component: LayoutSplitterComponent,
   increment: number,
   index: number,
   sizes: string[],
@@ -113,7 +116,7 @@ const updateOffsetSize = (
 
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
-  components: DragBarComponent[],
+  components: LayoutSplitterComponent[],
   sizes: string[],
   dragBarPositions: string[],
   fixedSizes: number,

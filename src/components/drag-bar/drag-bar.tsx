@@ -143,7 +143,7 @@ export class DragBar implements ChComponent {
 
     // Handler to remove mouse down
     const removeMouseMoveHandler = () => {
-      this.el.removeEventListener("mousemove", this.handleBarDrag, {
+      document.removeEventListener("mousemove", this.handleBarDrag, {
         capture: true
       });
     };
@@ -152,16 +152,16 @@ export class DragBar implements ChComponent {
     const mouseUpHandler = () => {
       removeMouseMoveHandler();
 
-      this.el.removeEventListener("mouseup", mouseUpHandler, {
+      document.removeEventListener("mouseup", mouseUpHandler, {
         capture: true
       });
     };
 
     // Add listeners
-    this.el.addEventListener("mousemove", this.handleBarDrag, {
+    document.addEventListener("mousemove", this.handleBarDrag, {
       capture: true
     });
-    this.el.addEventListener("mouseup", mouseUpHandler, { capture: true });
+    document.addEventListener("mouseup", mouseUpHandler, { capture: true });
   };
 
   disconnectedCallback() {

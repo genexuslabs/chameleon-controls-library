@@ -13,6 +13,7 @@ import {
 } from "./utils";
 import { isRTL } from "../../common/utils";
 
+const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
@@ -102,6 +103,9 @@ export class ChLayoutSplitter implements ChComponent {
     document.removeEventListener("mouseup", this.mouseUpHandler, {
       capture: true
     });
+
+    // Add again pointer-events
+    this.el.classList.remove(RESIZING_CLASS);
   };
 
   private mouseDownHandler =
@@ -136,6 +140,9 @@ export class ChLayoutSplitter implements ChComponent {
         RTL: isRTL(),
         sizes: sizes
       };
+
+      // Remove pointer-events during drag
+      this.el.classList.add(RESIZING_CLASS);
 
       // Add listeners
       document.addEventListener("mousemove", this.handleBarDrag, {

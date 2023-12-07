@@ -11,9 +11,61 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/styles.css" />
+
+    <style>
+      body {
+        display: flex;
+        height: 100vh;
+        font-family: SourceSansPro_Regular;
+        margin: 0;
+      }
+
+      *,
+      ::after,
+      ::before {
+        box-sizing: border-box;
+      }
+
+      .components {
+        display: grid;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
   </head>
   <body>
-    <div class="container">To be done.</div>
+    <ch-drag-bar>
+      <div
+        slot="start-component"
+        class="components"
+        style="background-color: beige"
+      >
+        Start
+      </div>
+      <div
+        slot="end-component"
+        class="components"
+        style="background-color: burlywood"
+      >
+        End
+      </div>
+
+      <div
+        slot="end-end-component"
+        class="components"
+        style="background-color: rgb(80, 91, 131)"
+      >
+        End End
+      </div>
+
+      <div
+        slot="center-component"
+        class="components"
+        style="background-color: rgb(22, 151, 95)"
+      >
+        Center
+      </div>
+    </ch-drag-bar>
 
     <script src="./assets/scripts/common.js"></script>
   </body>

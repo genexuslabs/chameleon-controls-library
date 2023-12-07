@@ -9,6 +9,7 @@ import {
 import {
   getMousePosition,
   setSizesAndDragBarPosition,
+  sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
 import { isRTL } from "../../common/utils";
@@ -169,9 +170,9 @@ export class ChLayoutSplitter implements ChComponent {
             [`direction--${component.subLayout.direction}`]: true
           }}
           style={{
-            [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes[index].subLayout
-              .map(item => item.size)
-              .join(" ")
+            [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
+              this.sizes[index].subLayout
+            )
           }}
         >
           {this.renderItems(
@@ -234,9 +235,7 @@ export class ChLayoutSplitter implements ChComponent {
           [`direction--${this.layout.direction}`]: true
         }}
         style={{
-          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes
-            .map(item => item.size)
-            .join(" ")
+          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(this.sizes)
         }}
       >
         {this.layout?.items != null &&

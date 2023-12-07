@@ -6,6 +6,9 @@ import {
   LayoutSplitterDragBarPosition
 } from "./types";
 
+export const sizesToGridTemplate = (sizes: LayoutSplitterSize[]) =>
+  sizes.map(item => item.size).join(" ");
+
 const getComponentSize = (
   comp: LayoutSplitterComponent,
   fixedSizes: number
@@ -202,7 +205,7 @@ export const updateComponentsAndDragBar = (
   // Update in the DOM the grid distribution
   info.dragBarContainer.style.setProperty(
     gridTemplateDirectionCustomVar,
-    sizes.map(item => item.size).join(" ")
+    sizesToGridTemplate(sizes)
   );
 
   // Update in the DOM the drag bar position

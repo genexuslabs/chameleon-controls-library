@@ -112,12 +112,24 @@
       window.addEventListener("appload", () => {
         const layoutSplitter = document.querySelector("ch-layout-splitter");
 
-        layoutSplitter.components = [
-          { id: "start-component", size: "3fr" },
-          { id: "end-end-component", size: "2fr" },
-          { id: "center-component", size: "200px" },
-          { id: "end-component", size: "180px" }
-        ];
+        layoutSplitter.layout = {
+          direction: "rows",
+          items: [
+            {
+              id: "",
+              size: "1fr",
+              subLayout: {
+                direction: "columns",
+                items: [
+                  { id: "start-component", size: "300px" },
+                  { id: "center-component", size: "1fr" },
+                  { id: "end-component", size: "270px" }
+                ]
+              }
+            },
+            { id: "end-end-component", size: "250px" }
+          ]
+        };
 
         const directionColumns = document.querySelector("#columns");
         directionColumns.addEventListener("input", event => {
@@ -134,30 +146,57 @@
         const button3 = document.querySelector("#layout-3");
 
         button1.addEventListener("click", () => {
-          layoutSplitter.components = [
-            { id: "start-component", size: "3fr" },
-            { id: "end-end-component", size: "2fr" },
-            { id: "center-component", size: "200px" },
-            { id: "end-component", size: "180px" }
-          ];
+          layoutSplitter.layout = {
+            direction: "columns",
+            items: [
+              { id: "start-component", size: "3fr" },
+              { id: "end-end-component", size: "2fr" },
+              { id: "center-component", size: "200px" },
+              { id: "end-component", size: "180px" }
+            ]
+          };
         });
 
         button2.addEventListener("click", () => {
-          layoutSplitter.components = [
-            { id: "start-component", size: "0.7fr" },
-            { id: "center-component", size: "0.1fr" },
-            { id: "end-component", size: "80px" },
-            { id: "end-end-component", size: "0.2fr" }
-          ];
+          layoutSplitter.layout = {
+            direction: "rows",
+            items: [
+              {
+                id: "",
+                size: "1fr",
+                subLayout: {
+                  direction: "columns",
+                  items: [
+                    { id: "start-component", size: "300px" },
+                    { id: "center-component", size: "1fr" },
+                    { id: "end-component", size: "270px" }
+                  ]
+                }
+              },
+              { id: "end-end-component", size: "250px" }
+            ]
+          };
         });
 
         button3.addEventListener("click", () => {
-          layoutSplitter.components = [
-            { id: "end-end-component", size: "2fr" },
-            { id: "center-component", size: "1fr" },
-            { id: "end-component", size: "80px" },
-            { id: "start-component", size: "3fr" }
-          ];
+          layoutSplitter.layout = {
+            direction: "columns",
+            items: [
+              { id: "start-component", size: "300px" },
+              {
+                id: "",
+                size: "1fr",
+                subLayout: {
+                  direction: "rows",
+                  items: [
+                    { id: "center-component", size: "1fr" },
+                    { id: "end-end-component", size: "300px" }
+                  ]
+                }
+              },
+              { id: "end-component", size: "270px" }
+            ]
+          };
         });
       });
     </script>

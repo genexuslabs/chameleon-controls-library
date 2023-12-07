@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description                                                     | Type                                                                                                                                                                             | Default         |
-| -------- | --------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ blockStart?: FlexibleLayoutItemBase[]; inlineStart?: FlexibleLayoutItem[]; main?: FlexibleLayoutItem[]; inlineEnd?: FlexibleLayoutItem[]; blockEnd?: FlexibleLayoutItem[]; }` | `defaultLayout` |
+| Property | Attribute | Description                                                     | Type                                                                                                                                                                                                                                                                                                     | Default         |
+| -------- | --------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ blockStart?: { items: FlexibleLayoutItemBase[]; }; inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; main?: { items: FlexibleLayoutItem[]; }; inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; }` | `defaultLayout` |
 
 
 ## Dependencies

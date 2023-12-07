@@ -762,10 +762,6 @@ export namespace Components {
          */
         "barAccessibleName": string;
         /**
-          * Specifies the direction in which the components will be placed
-         */
-        "direction": "rows" | "columns";
-        /**
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
         "layout": LayoutSplitterDistribution;
@@ -3295,10 +3291,6 @@ declare namespace LocalJSX {
           * This attribute lets you specify the label for the drag bar. Important for accessibility.
          */
         "barAccessibleName"?: string;
-        /**
-          * Specifies the direction in which the components will be placed
-         */
-        "direction"?: "rows" | "columns";
         /**
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */

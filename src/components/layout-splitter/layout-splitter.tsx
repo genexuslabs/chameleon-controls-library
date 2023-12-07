@@ -18,7 +18,7 @@ const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
 
 /**
- * @part bar - The bar of the drag-bar control that divides the start and end components
+ * @part bar - The bar that divides two columns or two rows
  */
 @Component({
   shadow: true,
@@ -61,11 +61,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.updateLayoutInfo(newLayout);
     }
   }
-
-  /**
-   * Specifies the direction in which the components will be placed
-   */
-  @Prop({ reflect: true }) readonly direction: "rows" | "columns" = "columns";
 
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();

@@ -18,6 +18,7 @@
   position: absolute;
   background-color: currentColor;
   opacity: 0;
+  z-index: 1;
   transition: opacity 120ms linear 200ms;
 
   &:hover,

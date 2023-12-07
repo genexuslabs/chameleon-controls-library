@@ -6,6 +6,7 @@ import {
   setSizesAndDragBarPosition,
   updateComponentsAndDragBar
 } from "./utils";
+import { isRTL } from "../../common/utils";
 
 const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__inset-inline-start";
 
@@ -19,7 +20,6 @@ const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__inset-inline-start";
 })
 export class DragBar implements ChComponent {
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
-  private rtlWatcher: MutationObserver;
 
   private mouseDownInfo: DragBarMouseDownEventInfo;
 
@@ -100,21 +100,6 @@ export class DragBar implements ChComponent {
   };
 
   connectedCallback() {
-    this.rtlWatcher = new MutationObserver(mutations => {
-      this.isRTLDirection = (mutations[0].target as Document).dir === "rtl";
-    });
-
-    // Watch changes in the dir attribute of the html tag
-    this.rtlWatcher.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["dir"],
-      childList: false,
-      subtree: false
-    });
-
-    // Initialize the value, since the observer won't do it
-    this.isRTLDirection = document.documentElement.dir === "rtl";
-
     this.fixedSizesSum = setSizesAndDragBarPosition(
       this.components,
       this.sizes,
@@ -127,7 +112,8 @@ export class DragBar implements ChComponent {
       dragBarContainer: this.el,
       index: -1,
       lastPosition: -1,
-      newPosition: -1
+      newPosition: -1,
+      RTL: isRTL()
     };
   }
 
@@ -137,6 +123,7 @@ export class DragBar implements ChComponent {
     event.preventDefault();
 
     // Initialize the mouse position, drag bar index and drag bar element
+    this.mouseDownInfo.RTL = isRTL();
     this.mouseDownInfo.lastPosition = getMousePosition(event);
     this.mouseDownInfo.index = index;
     this.mouseDownInfo.dragBar = event.target as HTMLElement;
@@ -163,13 +150,6 @@ export class DragBar implements ChComponent {
     });
     document.addEventListener("mouseup", mouseUpHandler, { capture: true });
   };
-
-  disconnectedCallback() {
-    if (this.rtlWatcher) {
-      this.rtlWatcher.disconnect();
-      this.rtlWatcher = null;
-    }
-  }
 
   render() {
     const lastComponentIndex = this.components.length - 1;

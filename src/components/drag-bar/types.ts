@@ -10,4 +10,5 @@ export type DragBarMouseDownEventInfo = {
   index: number;
   lastPosition: number;
   newPosition: number;
+  RTL: boolean;
 };

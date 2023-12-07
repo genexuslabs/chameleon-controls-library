@@ -120,7 +120,11 @@ export const updateComponentsAndDragBar = (
   dragBarPositionCustomVar: string
 ) => {
   // - - - - - - - - - Increments - - - - - - - - -
-  const incrementInPx = info.newPosition - info.lastPosition;
+  let incrementInPx = info.newPosition - info.lastPosition;
+
+  if (info.RTL) {
+    incrementInPx *= -1;
+  }
 
   const remainingRelativeSizeInPixels =
     info.dragBarContainer.clientWidth - fixedSizes;

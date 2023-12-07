@@ -14,6 +14,7 @@ import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowCl
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
+import { LayoutSplitterDistribution } from "./components/layout-splitter/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -220,28 +221,6 @@ export namespace Components {
           * The value of the control.
          */
         "value": string;
-    }
-    interface ChDragBar {
-        /**
-          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
-         */
-        "barItemSrc": string;
-        /**
-          * This attribute lets you specify the label for the drag bar. Important for accessibility.
-         */
-        "barLabel": string;
-        /**
-          * A CSS class to set as the `ch-next-drag-bar` element class.
-         */
-        "cssClass": string;
-        /**
-          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
-         */
-        "showBarItem": boolean;
-        /**
-          * Specifies the initial width of the start component
-         */
-        "startComponentInitialWidth": string;
     }
     interface ChDropdown {
         /**
@@ -776,6 +755,20 @@ export namespace Components {
           * Top margin around the root element
          */
         "topMargin": string;
+    }
+    interface ChLayoutSplitter {
+        /**
+          * This attribute lets you specify the label for the drag bar. Important for accessibility.
+         */
+        "barAccessibleName": string;
+        /**
+          * Specifies the direction in which the components will be placed
+         */
+        "direction": "rows" | "columns";
+        /**
+          * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
+         */
+        "layout": LayoutSplitterDistribution;
     }
     interface ChNextDataModeling {
     }
@@ -2105,12 +2098,6 @@ declare global {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
     };
-    interface HTMLChDragBarElement extends Components.ChDragBar, HTMLStencilElement {
-    }
-    var HTMLChDragBarElement: {
-        prototype: HTMLChDragBarElement;
-        new (): HTMLChDragBarElement;
-    };
     interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
     }
     var HTMLChDropdownElement: {
@@ -2248,6 +2235,12 @@ declare global {
     var HTMLChIntersectionObserverElement: {
         prototype: HTMLChIntersectionObserverElement;
         new (): HTMLChIntersectionObserverElement;
+    };
+    interface HTMLChLayoutSplitterElement extends Components.ChLayoutSplitter, HTMLStencilElement {
+    }
+    var HTMLChLayoutSplitterElement: {
+        prototype: HTMLChLayoutSplitterElement;
+        new (): HTMLChLayoutSplitterElement;
     };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
@@ -2472,7 +2465,6 @@ declare global {
         "ch-action-group-render": HTMLChActionGroupRenderElement;
         "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
-        "ch-drag-bar": HTMLChDragBarElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item": HTMLChDropdownItemElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
@@ -2496,6 +2488,7 @@ declare global {
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
+        "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -2742,28 +2735,6 @@ declare namespace LocalJSX {
           * The value of the control.
          */
         "value"?: string;
-    }
-    interface ChDragBar {
-        /**
-          * Specifies the bar item src. If defined, it will set an image to replace the default bar item.
-         */
-        "barItemSrc"?: string;
-        /**
-          * This attribute lets you specify the label for the drag bar. Important for accessibility.
-         */
-        "barLabel"?: string;
-        /**
-          * A CSS class to set as the `ch-next-drag-bar` element class.
-         */
-        "cssClass"?: string;
-        /**
-          * If `true` an item at the middle of the bar will be displayed to give more context about the resize action
-         */
-        "showBarItem"?: boolean;
-        /**
-          * Specifies the initial width of the start component
-         */
-        "startComponentInitialWidth"?: string;
     }
     interface ChDropdown {
         /**
@@ -3318,6 +3289,20 @@ declare namespace LocalJSX {
           * Top margin around the root element
          */
         "topMargin"?: string;
+    }
+    interface ChLayoutSplitter {
+        /**
+          * This attribute lets you specify the label for the drag bar. Important for accessibility.
+         */
+        "barAccessibleName"?: string;
+        /**
+          * Specifies the direction in which the components will be placed
+         */
+        "direction"?: "rows" | "columns";
+        /**
+          * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
+         */
+        "layout"?: LayoutSplitterDistribution;
     }
     interface ChNextDataModeling {
     }
@@ -4519,7 +4504,6 @@ declare namespace LocalJSX {
         "ch-action-group-render": ChActionGroupRender;
         "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
-        "ch-drag-bar": ChDragBar;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item": ChDropdownItem;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
@@ -4543,6 +4527,7 @@ declare namespace LocalJSX {
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
+        "ch-layout-splitter": ChLayoutSplitter;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -4591,7 +4576,6 @@ declare module "@stencil/core" {
             "ch-action-group-render": LocalJSX.ChActionGroupRender & JSXBase.HTMLAttributes<HTMLChActionGroupRenderElement>;
             "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
-            "ch-drag-bar": LocalJSX.ChDragBar & JSXBase.HTMLAttributes<HTMLChDragBarElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
@@ -4615,6 +4599,7 @@ declare module "@stencil/core" {
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
+            "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;

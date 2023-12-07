@@ -1,6 +1,11 @@
-import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
+import { Component, Element, Prop, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { LayoutSplitterComponent, DragBarMouseDownEventInfo } from "./types";
+import {
+  DragBarMouseDownEventInfo,
+  LayoutSplitterDistribution,
+  LayoutSplitterDragBarPosition,
+  LayoutSplitterSize
+} from "./types";
 import {
   getMousePosition,
   setSizesAndDragBarPosition,
@@ -26,8 +31,8 @@ export class ChLayoutSplitter implements ChComponent {
   private mouseDownInfo: DragBarMouseDownEventInfo;
 
   // Distribution of elements
-  private sizes: string[] = [];
-  private dragBarPositions: string[] = [];
+  private sizes: LayoutSplitterSize[] = [];
+  private dragBarPositions: LayoutSplitterDragBarPosition[] = [];
 
   private fixedSizesSum: number;
 
@@ -43,21 +48,18 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly components: LayoutSplitterComponent[] = [];
-  @Watch("components")
-  handleComponentsChange(newValue: LayoutSplitterComponent[]) {
+  @Prop() readonly layout: LayoutSplitterDistribution = {
+    direction: "columns",
+    items: []
+  };
+  @Watch("layout")
+  handleComponentsChange(newLayout: LayoutSplitterDistribution) {
     this.sizes = [];
     this.dragBarPositions = [];
 
-    if (newValue == null || newValue.length === 0) {
-      return;
+    if (newLayout?.items?.length > 0) {
+      this.updateLayoutInfo(newLayout);
     }
-
-    this.fixedSizesSum = setSizesAndDragBarPosition(
-      this.components,
-      this.sizes,
-      this.dragBarPositions
-    );
   }
 
   /**
@@ -67,7 +69,10 @@ export class ChLayoutSplitter implements ChComponent {
 
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.mouseDownInfo.newPosition = getMousePosition(event, this.direction);
+    this.mouseDownInfo.newPosition = getMousePosition(
+      event,
+      this.mouseDownInfo.layout.direction
+    );
 
     if (!this.needForRAF) {
       return;
@@ -79,10 +84,6 @@ export class ChLayoutSplitter implements ChComponent {
 
       updateComponentsAndDragBar(
         this.mouseDownInfo,
-        this.components,
-        this.sizes,
-        this.dragBarPositions,
-        this.fixedSizesSum,
         DRAG_BAR_POSITION_CUSTOM_VAR,
         GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
       );
@@ -108,47 +109,114 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
-  private mouseDownHandler = (index: number) => (event: MouseEvent) => {
-    // Necessary to prevent selecting the inner image (or other elements) of
-    // the bar item when the mouse is down
-    event.preventDefault();
+  private mouseDownHandler =
+    (
+      index: number,
+      dragBarPositions: LayoutSplitterDragBarPosition[],
+      fixedSizesSum: number,
+      layout: LayoutSplitterDistribution,
+      sizes: LayoutSplitterSize[]
+    ) =>
+    (event: MouseEvent) => {
+      // Necessary to prevent selecting the inner image (or other elements) of
+      // the bar item when the mouse is down
+      event.preventDefault();
 
-    // Initialize the values needed for drag processing
-    this.mouseDownInfo.dragBar = event.target as HTMLElement;
-    this.mouseDownInfo.dragBarContainerSize =
-      this.direction === "columns" ? this.el.clientWidth : this.el.clientHeight;
-    this.mouseDownInfo.index = index;
-    this.mouseDownInfo.lastPosition = getMousePosition(event, this.direction);
-    this.mouseDownInfo.RTL = isRTL();
+      // Initialize the values needed for drag processing
+      const dragBarContainer = (event.target as HTMLElement).parentElement;
 
-    // Add listeners
-    document.addEventListener("mousemove", this.handleBarDrag, {
-      capture: true
-    });
-    document.addEventListener("mouseup", this.mouseUpHandler, {
-      capture: true
-    });
+      this.mouseDownInfo = {
+        dragBar: event.target as HTMLElement,
+        dragBarContainer: dragBarContainer,
+        dragBarContainerSize:
+          layout.direction === "columns"
+            ? dragBarContainer.clientWidth
+            : dragBarContainer.clientHeight,
+        dragBarPositions: dragBarPositions,
+        fixedSizesSum: fixedSizesSum,
+        index: index,
+        lastPosition: getMousePosition(event, layout.direction),
+        layout: layout,
+        newPosition: getMousePosition(event, layout.direction), // Also updated in mouse move
+        RTL: isRTL(),
+        sizes: sizes
+      };
+
+      // Add listeners
+      document.addEventListener("mousemove", this.handleBarDrag, {
+        capture: true
+      });
+      document.addEventListener("mouseup", this.mouseUpHandler, {
+        capture: true
+      });
+    };
+
+  private renderItems = (
+    dragBarPositions: LayoutSplitterDragBarPosition[],
+    fixedSizesSum: number,
+    layout: LayoutSplitterDistribution,
+    sizes: LayoutSplitterSize[]
+  ) => {
+    const lastComponentIndex = layout.items.length - 1;
+
+    return layout.items.map((component, index) => [
+      component.subLayout ? (
+        <div
+          class={{
+            container: true,
+            [`direction--${component.subLayout.direction}`]: true
+          }}
+          style={{
+            [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes[index].subLayout
+              .map(item => item.size)
+              .join(" ")
+          }}
+        >
+          {this.renderItems(
+            dragBarPositions[index].subLayout,
+            sizes[index].subLayoutFixedSizesSum,
+            component.subLayout,
+            sizes[index].subLayout
+          )}
+        </div>
+      ) : (
+        <slot key={component.id} name={component.id} />
+      ),
+
+      index !== lastComponentIndex && (
+        <div
+          aria-label={this.barAccessibleName}
+          title={this.barAccessibleName}
+          class="bar"
+          part="bar"
+          style={{
+            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${dragBarPositions[index].position})`
+          }}
+          onMouseDown={this.mouseDownHandler(
+            index,
+            dragBarPositions,
+            fixedSizesSum,
+            layout,
+            sizes
+          )}
+        ></div>
+      )
+    ]);
   };
 
-  connectedCallback() {
-    if (this.components?.length > 0) {
-      this.fixedSizesSum = setSizesAndDragBarPosition(
-        this.components,
-        this.sizes,
-        this.dragBarPositions
-      );
-    }
+  private updateLayoutInfo(layout: LayoutSplitterDistribution) {
+    const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
+      setSizesAndDragBarPosition(layout);
 
-    // Initialize mouseDown event info
-    this.mouseDownInfo = {
-      dragBar: null,
-      dragBarContainer: this.el,
-      dragBarContainerSize: -1,
-      index: -1,
-      lastPosition: -1,
-      newPosition: -1,
-      RTL: isRTL()
-    };
+    this.fixedSizesSum = subLayoutFixedSizesSum;
+    this.dragBarPositions = dragBarPositionsSubLayout;
+    this.sizes = subLayout;
+  }
+
+  connectedCallback() {
+    if (this.layout?.items?.length > 0) {
+      this.updateLayoutInfo(this.layout);
+    }
   }
 
   disconnectedCallback() {
@@ -157,31 +225,26 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    const lastComponentIndex = this.components.length - 1;
-
     return (
-      <Host
+      <div
+        class={{
+          container: true,
+          [`direction--${this.layout.direction}`]: true
+        }}
         style={{
-          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes.join(" ")
+          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes
+            .map(item => item.size)
+            .join(" ")
         }}
       >
-        {this.components.map((component, index) => [
-          <slot key={component.id} name={component.id} />,
-
-          index !== lastComponentIndex && (
-            <div
-              aria-label={this.barAccessibleName}
-              title={this.barAccessibleName}
-              class="bar"
-              part="bar"
-              style={{
-                [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${this.dragBarPositions[index]})`
-              }}
-              onMouseDown={this.mouseDownHandler(index)}
-            ></div>
-          )
-        ])}
-      </Host>
+        {this.layout?.items != null &&
+          this.renderItems(
+            this.dragBarPositions,
+            this.fixedSizesSum,
+            this.layout,
+            this.sizes
+          )}
+      </div>
     );
   }
 }

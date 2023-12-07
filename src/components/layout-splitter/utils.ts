@@ -1,4 +1,10 @@
-import { LayoutSplitterComponent, DragBarMouseDownEventInfo } from "./types";
+import {
+  LayoutSplitterComponent,
+  DragBarMouseDownEventInfo,
+  LayoutSplitterSize,
+  LayoutSplitterDistribution,
+  LayoutSplitterDragBarPosition
+} from "./types";
 
 const getComponentSize = (
   comp: LayoutSplitterComponent,
@@ -25,15 +31,20 @@ const getComponentSize = (
 };
 
 export const setSizesAndDragBarPosition = (
-  components: LayoutSplitterComponent[],
-  sizes: string[],
-  dragBarPositions: string[]
-): number => {
+  layout: LayoutSplitterDistribution
+): {
+  dragBarPositionsSubLayout: LayoutSplitterDragBarPosition[];
+  subLayout: LayoutSplitterSize[];
+  subLayoutFixedSizesSum: number;
+} => {
+  const dragBarPositions: LayoutSplitterDragBarPosition[] = [];
+  const sizes: LayoutSplitterSize[] = [];
+
   let frSum = 0;
   let fixedSizes = 0;
 
   // Get the sum of all fr values. Also, store the sum of fixed sizes
-  components.map(comp => {
+  layout.items.map(comp => {
     if (comp.size.includes("fr")) {
       const frValue = Number(comp.size.replace("fr", "").trim());
 
@@ -49,7 +60,7 @@ export const setSizesAndDragBarPosition = (
 
   // If there are fr values, we must adjust the frs values to be relative to 1fr
   if (frSum > 0) {
-    components.map(comp => {
+    layout.items.map(comp => {
       if (comp.size.includes("fr")) {
         const frValue = Number(comp.size.replace("fr", "").trim());
 
@@ -60,20 +71,35 @@ export const setSizesAndDragBarPosition = (
   }
 
   // Update sizes array and store drag-bar position (dragBarPositions array)
-  components.forEach((comp, index) => {
+  layout.items.forEach((comp, index) => {
     const componentSize = getComponentSize(comp, fixedSizes);
-    sizes.push(componentSize);
-
     // Store each drag bar position
     const dragBarPosition =
       index === 0
         ? componentSize
-        : `${dragBarPositions[index - 1]} + ${componentSize}`;
+        : `${dragBarPositions[index - 1].position} + ${componentSize}`;
 
-    dragBarPositions.push(dragBarPosition);
+    // Compute the sizes array in the subLayout
+    if (comp.subLayout) {
+      const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
+        setSizesAndDragBarPosition(comp.subLayout);
+
+      sizes.push({ size: componentSize, subLayout, subLayoutFixedSizesSum });
+      dragBarPositions.push({
+        position: dragBarPosition,
+        subLayout: dragBarPositionsSubLayout
+      });
+    } else {
+      sizes.push({ size: componentSize });
+      dragBarPositions.push({ position: dragBarPosition });
+    }
   });
 
-  return fixedSizes;
+  return {
+    dragBarPositionsSubLayout: dragBarPositions,
+    subLayout: sizes,
+    subLayoutFixedSizesSum: fixedSizes
+  };
 };
 
 const getFrSize = (sizeWithFr: string) => Number(sizeWithFr.replace("fr", ""));
@@ -86,7 +112,7 @@ const updateSize = (
   component: LayoutSplitterComponent,
   increment: number,
   index: number,
-  sizes: string[],
+  sizes: LayoutSplitterSize[],
   fixedSizes: number,
   unitType: "fr" | "px"
 ) => {
@@ -96,14 +122,14 @@ const updateSize = (
   const newValue = currentValue + increment;
   component.size = `${newValue}${unitType}`;
 
-  sizes[index] = getComponentSize(component, fixedSizes);
+  sizes[index].size = getComponentSize(component, fixedSizes);
 };
 
 const updateOffsetSize = (
   component: LayoutSplitterComponent,
   increment: number,
   index: number,
-  sizes: string[],
+  sizes: LayoutSplitterSize[],
   fixedSizes: number
 ) => {
   component.fixedOffsetSize =
@@ -111,15 +137,11 @@ const updateOffsetSize = (
       ? component.fixedOffsetSize + increment
       : increment;
 
-  sizes[index] = getComponentSize(component, fixedSizes);
+  sizes[index].size = getComponentSize(component, fixedSizes);
 };
 
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
-  components: LayoutSplitterComponent[],
-  sizes: string[],
-  dragBarPositions: string[],
-  fixedSizes: number,
   dragBarPositionCustomVar: string,
   gridTemplateDirectionCustomVar: string
 ) => {
@@ -131,15 +153,21 @@ export const updateComponentsAndDragBar = (
     incrementInPx *= -1;
   }
 
-  const remainingRelativeSizeInPixels = info.dragBarContainerSize - fixedSizes;
+  const dragBarPositions = info.dragBarPositions;
+  const fixedSizes = info.fixedSizesSum;
+  const layout = info.layout;
+  const sizes = info.sizes;
+
+  const remainingRelativeSizeInPixels =
+    info.dragBarContainerSize - info.fixedSizesSum;
   const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
 
   // Components at each position of the drag bar
-  const leftComp = components[info.index];
-  const rightComp = components[info.index + 1];
-
   const leftIndex = info.index;
   const rightIndex = info.index + 1;
+
+  const leftComp = layout.items[leftIndex];
+  const rightComp = layout.items[rightIndex];
 
   // px / px
   if (hasAbsoluteValue(leftComp) && hasAbsoluteValue(rightComp)) {
@@ -165,20 +193,22 @@ export const updateComponentsAndDragBar = (
   // Update drag-bar position
   const dragBarPosition =
     leftIndex === 0
-      ? sizes[leftIndex]
-      : `${dragBarPositions[leftIndex - 1]} + ${sizes[leftIndex]}`;
-  dragBarPositions[leftIndex] = dragBarPosition;
+      ? sizes[leftIndex].size
+      : `${dragBarPositions[leftIndex - 1].position} + ${
+          sizes[leftIndex].size
+        }`;
+  dragBarPositions[leftIndex].position = dragBarPosition;
 
   // Update in the DOM the grid distribution
   info.dragBarContainer.style.setProperty(
     gridTemplateDirectionCustomVar,
-    sizes.join(" ")
+    sizes.map(item => item.size).join(" ")
   );
 
   // Update in the DOM the drag bar position
   info.dragBar.style.setProperty(
     dragBarPositionCustomVar,
-    `calc(${dragBarPositions[leftIndex]})`
+    `calc(${dragBarPositions[leftIndex].position})`
   );
 };
 

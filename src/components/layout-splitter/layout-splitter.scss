@@ -26,10 +26,15 @@
   }
 }
 
-:host([direction="columns"]) {
+.container {
+  display: grid;
+  position: relative;
+}
+
+.direction--columns {
   grid-template-columns: var(--ch-layout-splitter__grid-template-direction);
 
-  .bar {
+  & > .bar {
     inset-block: 0;
     inset-inline-start: calc(
       var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
@@ -39,10 +44,10 @@
   }
 }
 
-:host([direction="rows"]) {
+.direction--rows {
   grid-template-rows: var(--ch-layout-splitter__grid-template-direction);
 
-  .bar {
+  & > .bar {
     inset-inline: 0;
     inset-block-start: calc(
       var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)

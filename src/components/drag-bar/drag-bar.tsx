@@ -157,23 +157,11 @@ export class DragBar implements ChComponent {
       });
     };
 
-    // Remove mousemove and mouseleave handlers when mouseleave
-    const mouseLeaveHandler = () => {
-      removeMouseMoveHandler();
-
-      this.el.removeEventListener("mouseleave", removeMouseMoveHandler, {
-        capture: true
-      });
-    };
-
     // Add listeners
     this.el.addEventListener("mousemove", this.handleBarDrag, {
       capture: true
     });
     this.el.addEventListener("mouseup", mouseUpHandler, { capture: true });
-    this.el.addEventListener("mouseleave", mouseLeaveHandler, {
-      capture: true
-    });
   };
 
   disconnectedCallback() {

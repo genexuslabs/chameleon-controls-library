@@ -1,0 +1,58 @@
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+:host {
+  --ch-drag-bar__size: 5px;
+  --ch-drag-bar__size--half: var(--ch-drag-bar__size) / 2;
+
+  display: grid;
+  position: relative;
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+.bar {
+  position: absolute;
+  background-color: currentColor;
+  opacity: 0;
+  transition: opacity 120ms linear 200ms;
+
+  &:hover,
+  &:active {
+    opacity: 1;
+  }
+}
+
+.container {
+  display: grid;
+  position: relative;
+}
+
+.direction--columns {
+  grid-template-columns: var(--ch-layout-splitter__grid-template-direction);
+
+  & > .bar {
+    inset-block: 0;
+    inset-inline-start: calc(
+      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
+    );
+    inline-size: var(--ch-drag-bar__size);
+    cursor: ew-resize;
+  }
+}
+
+.direction--rows {
+  grid-template-rows: var(--ch-layout-splitter__grid-template-direction);
+
+  & > .bar {
+    inset-inline: 0;
+    inset-block-start: calc(
+      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
+    );
+    block-size: var(--ch-drag-bar__size);
+    cursor: ns-resize;
+  }
+}

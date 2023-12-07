@@ -26,6 +26,8 @@ export function debounce(
   };
 }
 
+export const isRTL = () => document.documentElement.dir === "rtl";
+
 /*  This functions overrides a method adding calls before (`before()`) and
     after (`after()`) 
 */

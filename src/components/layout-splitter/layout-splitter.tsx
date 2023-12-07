@@ -1,4 +1,4 @@
-import { Component, Element, Host, Prop, State, Watch, h } from "@stencil/core";
+import { Component, Element, Host, Prop, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import { DragBarComponent, DragBarMouseDownEventInfo } from "./types";
 import {
@@ -32,11 +32,6 @@ export class ChLayoutSplitter implements ChComponent {
   @Element() el: HTMLChLayoutSplitterElement;
 
   /**
-   * Determine the language direction.
-   */
-  @State() isRTLDirection = false;
-
-  /**
    * This attribute lets you specify the label for the drag bar.
    * Important for accessibility.
    */
@@ -62,11 +57,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.dragBarPositions
     );
   }
-
-  /**
-   * Specifies the initial width of the start component
-   */
-  @Prop() readonly startComponentInitialWidth: string = "50%";
 
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();

@@ -7,7 +7,7 @@ import {
 } from "./types";
 
 export const sizesToGridTemplate = (items: LayoutSplitterModelItem[]) =>
-  items.map(item => item.size).join(" ");
+  items.map(item => item.actualSize).join(" ");
 
 const getComponentSize = (
   comp: LayoutSplitterModelItem,

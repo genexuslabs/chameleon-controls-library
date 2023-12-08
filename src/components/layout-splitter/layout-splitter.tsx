@@ -218,7 +218,7 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    if (this.layoutModel == null) {
+    if (this.layoutModel?.items == null) {
       return "";
     }
 
@@ -231,12 +231,11 @@ export class ChLayoutSplitter implements ChComponent {
           )
         }}
       >
-        {this.layout?.items != null &&
-          this.renderItems(
-            this.layoutModel.direction,
-            this.layoutModel.fixedSizesSum,
-            this.layoutModel.items
-          )}
+        {this.renderItems(
+          this.layoutModel.direction,
+          this.layoutModel.fixedSizesSum,
+          this.layoutModel.items
+        )}
       </div>
     );
   }

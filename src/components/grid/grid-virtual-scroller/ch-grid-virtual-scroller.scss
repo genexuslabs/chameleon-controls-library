@@ -1,18 +1,26 @@
 @layer ch-grid {
-    ch-grid-virtual-scroller {
-      display: contents;
-    }
-    ch-grid-virtual-scroller::before {
-      content: '';
-      height: 0;
-      padding-top: inherit;
-      grid-column: 1 / -1;
-      grid-row: 2;
-    }
-    ch-grid-virtual-scroller::after {
-      content: '';
-      height: 0;
-      padding-bottom: inherit;
-      grid-column: 1 / -1;
-    }
+  ch-grid-virtual-scroller {
+    display: contents;
   }
+
+  ch-grid-column {
+    grid-row: 1;
+  }
+
+  ch-grid-virtual-scroller::before {
+    content: "";
+    height: 0;
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  ch-grid-virtual-scroller::after {
+    content: "";
+    display: block;
+    height: var(--ch-grid-virtual-scroller-height, 0px);
+  }
+
+  .virtual-scroller-row-size {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 3;
+  }
+}

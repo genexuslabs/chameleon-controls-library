@@ -10,10 +10,10 @@ This component allows us to design a layout composed by columns and rows.
 
 ## Properties
 
-| Property            | Attribute             | Description                                                                                          | Type                                                                        | Default                                         |
-| ------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------- |
-| `barAccessibleName` | `bar-accessible-name` | This attribute lets you specify the label for the drag bar. Important for accessibility.             | `string`                                                                    | `""`                                            |
-| `layout`            | --                    | Specifies the list of component that are displayed. Each component will be separated via a drag bar. | `{ direction: LayoutSplitterDirection; items: LayoutSplitterComponent[]; }` | `{     direction: "columns",     items: []   }` |
+| Property            | Attribute             | Description                                                                                          | Type                                                                               | Default                                         |
+| ------------------- | --------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `barAccessibleName` | `bar-accessible-name` | This attribute lets you specify the label for the drag bar. Important for accessibility.             | `string`                                                                           | `""`                                            |
+| `layout`            | --                    | Specifies the list of component that are displayed. Each component will be separated via a drag bar. | `{ direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `{     direction: "columns",     items: []   }` |
 
 
 ## Shadow Parts

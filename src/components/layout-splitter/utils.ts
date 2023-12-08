@@ -1,16 +1,16 @@
 import {
-  LayoutSplitterComponent,
   DragBarMouseDownEventInfo,
-  LayoutSplitterSize,
   LayoutSplitterDistribution,
-  LayoutSplitterDragBarPosition
+  LayoutSplitterModel,
+  LayoutSplitterModelItem,
+  LayoutSplitterModelGroup
 } from "./types";
 
-export const sizesToGridTemplate = (sizes: LayoutSplitterSize[]) =>
-  sizes.map(item => item.size).join(" ");
+export const sizesToGridTemplate = (items: LayoutSplitterModelItem[]) =>
+  items.map(item => item.size).join(" ");
 
 const getComponentSize = (
-  comp: LayoutSplitterComponent,
+  comp: LayoutSplitterModelItem,
   fixedSizes: number
 ) => {
   // Pixel value
@@ -33,106 +33,94 @@ const getComponentSize = (
     : `calc(${frValue * 100}% - ${fixedSizes * frValue}px)`;
 };
 
-export const setSizesAndDragBarPosition = (
-  layout: LayoutSplitterDistribution
-): {
-  dragBarPositionsSubLayout: LayoutSplitterDragBarPosition[];
-  subLayout: LayoutSplitterSize[];
-  subLayoutFixedSizesSum: number;
-} => {
-  const dragBarPositions: LayoutSplitterDragBarPosition[] = [];
-  const sizes: LayoutSplitterSize[] = [];
+const getFrSize = (comp: LayoutSplitterModelItem) =>
+  Number(comp.size.replace("fr", "").trim());
 
+const getPxSize = (comp: LayoutSplitterModelItem) =>
+  Number(comp.size.replace("px", "").trim());
+
+const hasAbsoluteValue = (component: LayoutSplitterModelItem) =>
+  component.size.includes("px");
+
+const getDragBarPosition = (
+  items: LayoutSplitterModelItem[],
+  index: number,
+  componentSize: string
+) =>
+  index === 0
+    ? componentSize
+    : `${items[index - 1].dragBarPosition} + ${componentSize}`;
+
+export const getLayoutModel = (
+  layout: LayoutSplitterDistribution
+): LayoutSplitterModel => {
+  const layoutModel = structuredClone(layout) as LayoutSplitterModel;
+  layoutModel.fixedSizesSum = completeLayoutModel(layoutModel.items);
+
+  return layoutModel;
+};
+
+function completeLayoutModel(items: LayoutSplitterModelItem[]): number {
   let frSum = 0;
   let fixedSizes = 0;
 
   // Get the sum of all fr values. Also, store the sum of fixed sizes
-  layout.items.map(comp => {
-    if (comp.size.includes("fr")) {
-      const frValue = Number(comp.size.replace("fr", "").trim());
-
-      frSum += frValue;
-    }
-    // Pixel value
-    else {
-      const pxValue = Number(comp.size.replace("px", "").trim());
-
-      fixedSizes += pxValue;
+  items.forEach(item => {
+    if (hasAbsoluteValue(item)) {
+      fixedSizes += getPxSize(item);
+    } else {
+      frSum += getFrSize(item);
     }
   });
 
   // If there are fr values, we must adjust the frs values to be relative to 1fr
   if (frSum > 0) {
-    layout.items.map(comp => {
-      if (comp.size.includes("fr")) {
-        const frValue = Number(comp.size.replace("fr", "").trim());
-
+    items.forEach(item => {
+      if (!hasAbsoluteValue(item)) {
+        const frValue = getFrSize(item);
         const adjustedFrValue = frValue / frSum;
-        comp.size = `${adjustedFrValue}fr`;
+
+        item.size = `${adjustedFrValue}fr`;
       }
     });
   }
 
   // Update sizes array and store drag-bar position (dragBarPositions array)
-  layout.items.forEach((comp, index) => {
-    const componentSize = getComponentSize(comp, fixedSizes);
+  items.forEach((item, index) => {
+    const componentSize = getComponentSize(item, fixedSizes);
+    item.actualSize = componentSize;
+
     // Store each drag bar position
-    const dragBarPosition =
-      index === 0
-        ? componentSize
-        : `${dragBarPositions[index - 1].position} + ${componentSize}`;
+    const dragBarPosition = getDragBarPosition(items, index, componentSize);
+    item.dragBarPosition = dragBarPosition;
 
-    // Compute the sizes array in the subLayout
-    if (comp.subLayout) {
-      const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
-        setSizesAndDragBarPosition(comp.subLayout);
-
-      sizes.push({ size: componentSize, subLayout, subLayoutFixedSizesSum });
-      dragBarPositions.push({
-        position: dragBarPosition,
-        subLayout: dragBarPositionsSubLayout
-      });
-    } else {
-      sizes.push({ size: componentSize });
-      dragBarPositions.push({ position: dragBarPosition });
+    if ((item as LayoutSplitterModelGroup).items != null) {
+      (item as LayoutSplitterModelGroup).fixedSizesSum = completeLayoutModel(
+        (item as LayoutSplitterModelGroup).items
+      );
     }
   });
 
-  return {
-    dragBarPositionsSubLayout: dragBarPositions,
-    subLayout: sizes,
-    subLayoutFixedSizesSum: fixedSizes
-  };
-};
-
-const getFrSize = (sizeWithFr: string) => Number(sizeWithFr.replace("fr", ""));
-const getPxSize = (sizeWithPx: string) => Number(sizeWithPx.replace("px", ""));
-
-const hasAbsoluteValue = (component: LayoutSplitterComponent) =>
-  component.size.includes("px");
+  return fixedSizes;
+}
 
 const updateSize = (
-  component: LayoutSplitterComponent,
+  component: LayoutSplitterModelItem,
   increment: number,
-  index: number,
-  sizes: LayoutSplitterSize[],
   fixedSizes: number,
   unitType: "fr" | "px"
 ) => {
   const currentValue =
-    unitType === "px" ? getPxSize(component.size) : getFrSize(component.size);
+    unitType === "px" ? getPxSize(component) : getFrSize(component);
 
   const newValue = currentValue + increment;
   component.size = `${newValue}${unitType}`;
-
-  sizes[index].size = getComponentSize(component, fixedSizes);
+  component.actualSize = getComponentSize(component, fixedSizes);
 };
 
 const updateOffsetSize = (
-  component: LayoutSplitterComponent,
+  component: LayoutSplitterModelItem,
   increment: number,
-  index: number,
-  sizes: LayoutSplitterSize[],
   fixedSizes: number
 ) => {
   component.fixedOffsetSize =
@@ -140,7 +128,7 @@ const updateOffsetSize = (
       ? component.fixedOffsetSize + increment
       : increment;
 
-  sizes[index].size = getComponentSize(component, fixedSizes);
+  component.actualSize = getComponentSize(component, fixedSizes);
 };
 
 export const updateComponentsAndDragBar = (
@@ -153,13 +141,11 @@ export const updateComponentsAndDragBar = (
 
   // When the language is RTL, the increment is in the opposite direction
   if (info.RTL) {
-    incrementInPx *= -1;
+    incrementInPx = -incrementInPx;
   }
 
-  const dragBarPositions = info.dragBarPositions;
+  const layoutItems = info.layoutItems;
   const fixedSizes = info.fixedSizesSum;
-  const layout = info.layout;
-  const sizes = info.sizes;
 
   const remainingRelativeSizeInPixels =
     info.dragBarContainerSize - info.fixedSizesSum;
@@ -169,49 +155,48 @@ export const updateComponentsAndDragBar = (
   const leftIndex = info.index;
   const rightIndex = info.index + 1;
 
-  const leftComp = layout.items[leftIndex];
-  const rightComp = layout.items[rightIndex];
+  const leftComp = layoutItems[leftIndex];
+  const rightComp = layoutItems[rightIndex];
 
   // px / px
   if (hasAbsoluteValue(leftComp) && hasAbsoluteValue(rightComp)) {
-    updateSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes, "px");
-    updateSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes, "px");
+    updateSize(leftComp, incrementInPx, fixedSizes, "px");
+    updateSize(rightComp, -incrementInPx, fixedSizes, "px");
   }
   // px / fr
   else if (hasAbsoluteValue(leftComp)) {
-    updateSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes, "px");
-    updateOffsetSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes);
+    updateSize(leftComp, incrementInPx, fixedSizes, "px");
+    updateOffsetSize(rightComp, -incrementInPx, fixedSizes);
   }
   // fr / px
   else if (hasAbsoluteValue(rightComp)) {
-    updateOffsetSize(leftComp, incrementInPx, leftIndex, sizes, fixedSizes);
-    updateSize(rightComp, -incrementInPx, rightIndex, sizes, fixedSizes, "px");
+    updateOffsetSize(leftComp, incrementInPx, fixedSizes);
+    updateSize(rightComp, -incrementInPx, fixedSizes, "px");
   }
   // fr / fr
   else {
-    updateSize(leftComp, incrementInFr, leftIndex, sizes, fixedSizes, "fr");
-    updateSize(rightComp, -incrementInFr, rightIndex, sizes, fixedSizes, "fr");
+    updateSize(leftComp, incrementInFr, fixedSizes, "fr");
+    updateSize(rightComp, -incrementInFr, fixedSizes, "fr");
   }
 
   // Update drag-bar position
-  const dragBarPosition =
-    leftIndex === 0
-      ? sizes[leftIndex].size
-      : `${dragBarPositions[leftIndex - 1].position} + ${
-          sizes[leftIndex].size
-        }`;
-  dragBarPositions[leftIndex].position = dragBarPosition;
+  const dragBarPosition = getDragBarPosition(
+    layoutItems,
+    leftIndex,
+    leftComp.actualSize
+  );
+  leftComp.dragBarPosition = dragBarPosition;
 
   // Update in the DOM the grid distribution
   info.dragBarContainer.style.setProperty(
     gridTemplateDirectionCustomVar,
-    sizesToGridTemplate(sizes)
+    sizesToGridTemplate(layoutItems)
   );
 
   // Update in the DOM the drag bar position
   info.dragBar.style.setProperty(
     dragBarPositionCustomVar,
-    `calc(${dragBarPositions[leftIndex].position})`
+    `calc(${dragBarPosition})`
   );
 };
 

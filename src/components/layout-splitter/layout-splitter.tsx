@@ -2,13 +2,16 @@ import { Component, Element, Prop, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
+  LayoutSplitterDirection,
   LayoutSplitterDistribution,
-  LayoutSplitterDragBarPosition,
-  LayoutSplitterSize
+  LayoutSplitterModel,
+  LayoutSplitterModelGroup,
+  LayoutSplitterModelItem,
+  LayoutSplitterModelLeaf
 } from "./types";
 import {
+  getLayoutModel,
   getMousePosition,
-  setSizesAndDragBarPosition,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
@@ -33,10 +36,7 @@ export class ChLayoutSplitter implements ChComponent {
   private mouseDownInfo: DragBarMouseDownEventInfo;
 
   // Distribution of elements
-  private sizes: LayoutSplitterSize[] = [];
-  private dragBarPositions: LayoutSplitterDragBarPosition[] = [];
-
-  private fixedSizesSum: number;
+  private layoutModel: LayoutSplitterModel;
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -56,9 +56,6 @@ export class ChLayoutSplitter implements ChComponent {
   };
   @Watch("layout")
   handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.sizes = [];
-    this.dragBarPositions = [];
-
     this.updateLayoutInfo(newLayout);
   }
 
@@ -66,7 +63,7 @@ export class ChLayoutSplitter implements ChComponent {
     event.preventDefault();
     this.mouseDownInfo.newPosition = getMousePosition(
       event,
-      this.mouseDownInfo.layout.direction
+      this.mouseDownInfo.direction
     );
 
     if (!this.needForRAF) {
@@ -109,11 +106,10 @@ export class ChLayoutSplitter implements ChComponent {
 
   private mouseDownHandler =
     (
+      direction: LayoutSplitterDirection,
       index: number,
-      dragBarPositions: LayoutSplitterDragBarPosition[],
       fixedSizesSum: number,
-      layout: LayoutSplitterDistribution,
-      sizes: LayoutSplitterSize[]
+      layoutItems: LayoutSplitterModelItem[]
     ) =>
     (event: MouseEvent) => {
       // Necessary to prevent selecting the inner image (or other elements) of
@@ -121,23 +117,24 @@ export class ChLayoutSplitter implements ChComponent {
       event.preventDefault();
 
       // Initialize the values needed for drag processing
-      const dragBarContainer = (event.target as HTMLElement).parentElement;
+      const dragBar = event.target as HTMLElement;
+      const dragBarContainer = dragBar.parentElement;
+      const currentMousePosition = getMousePosition(event, direction);
 
       this.mouseDownInfo = {
-        dragBar: event.target as HTMLElement,
+        direction: direction,
+        dragBar: dragBar,
         dragBarContainer: dragBarContainer,
         dragBarContainerSize:
-          layout.direction === "columns"
+          direction === "columns"
             ? dragBarContainer.clientWidth
             : dragBarContainer.clientHeight,
-        dragBarPositions: dragBarPositions,
         fixedSizesSum: fixedSizesSum,
         index: index,
-        lastPosition: getMousePosition(event, layout.direction),
-        layout: layout,
-        newPosition: getMousePosition(event, layout.direction), // Also updated in mouse move
-        RTL: isRTL(),
-        sizes: sizes
+        lastPosition: currentMousePosition,
+        layoutItems: layoutItems,
+        newPosition: currentMousePosition, // Also updated in mouse move
+        RTL: isRTL()
       };
 
       // Remove pointer-events during drag
@@ -153,35 +150,36 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
   private renderItems = (
-    dragBarPositions: LayoutSplitterDragBarPosition[],
+    direction: LayoutSplitterDirection,
     fixedSizesSum: number,
-    layout: LayoutSplitterDistribution,
-    sizes: LayoutSplitterSize[]
+    layoutItems: LayoutSplitterModelItem[]
   ) => {
-    const lastComponentIndex = layout.items.length - 1;
+    const lastComponentIndex = layoutItems.length - 1;
 
-    return layout.items.map((component, index) => [
-      component.subLayout ? (
+    return layoutItems.map((item, index) => [
+      (item as LayoutSplitterModelGroup).items ? (
         <div
           class={{
             container: true,
-            [`direction--${component.subLayout.direction}`]: true
+            [`direction--${(item as LayoutSplitterModelGroup).direction}`]: true
           }}
           style={{
             [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
-              this.sizes[index].subLayout
+              (item as LayoutSplitterModelGroup).items
             )
           }}
         >
           {this.renderItems(
-            dragBarPositions[index].subLayout,
-            sizes[index].subLayoutFixedSizesSum,
-            component.subLayout,
-            sizes[index].subLayout
+            (item as LayoutSplitterModelGroup).direction,
+            (item as LayoutSplitterModelGroup).fixedSizesSum,
+            (item as LayoutSplitterModelGroup).items
           )}
         </div>
       ) : (
-        <slot key={component.id} name={component.id} />
+        <slot
+          key={(item as LayoutSplitterModelLeaf).id}
+          name={(item as LayoutSplitterModelLeaf).id}
+        />
       ),
 
       index !== lastComponentIndex && (
@@ -191,14 +189,13 @@ export class ChLayoutSplitter implements ChComponent {
           class="bar"
           part="bar"
           style={{
-            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${dragBarPositions[index].position})`
+            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}
           onMouseDown={this.mouseDownHandler(
+            direction,
             index,
-            dragBarPositions,
             fixedSizesSum,
-            layout,
-            sizes
+            layoutItems
           )}
         ></div>
       )
@@ -207,12 +204,7 @@ export class ChLayoutSplitter implements ChComponent {
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
     if (layout?.items?.length > 0) {
-      const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
-        setSizesAndDragBarPosition(layout);
-
-      this.fixedSizesSum = subLayoutFixedSizesSum;
-      this.dragBarPositions = dragBarPositionsSubLayout;
-      this.sizes = subLayout;
+      this.layoutModel = getLayoutModel(layout);
     }
   }
 
@@ -226,22 +218,27 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
+    if (this.layoutModel == null) {
+      return "";
+    }
+
     return (
       <div
         class={{
           container: true,
-          [`direction--${this.layout.direction}`]: true
+          [`direction--${this.layoutModel.direction}`]: true
         }}
         style={{
-          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(this.sizes)
+          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
+            this.layoutModel.items
+          )
         }}
       >
         {this.layout?.items != null &&
           this.renderItems(
-            this.dragBarPositions,
-            this.fixedSizesSum,
-            this.layout,
-            this.sizes
+            this.layoutModel.direction,
+            this.layoutModel.fixedSizesSum,
+            this.layoutModel.items
           )}
       </div>
     );

@@ -25,6 +25,10 @@ const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
   `container direction--${direction}`;
 
+const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
+  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items)
+});
+
 /**
  * @part bar - The bar that divides two columns or two rows
  */
@@ -163,11 +167,7 @@ export class ChLayoutSplitter implements ChComponent {
       (item as LayoutSplitterModelGroup).items ? (
         <div
           class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
-          style={{
-            [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
-              (item as LayoutSplitterModelGroup).items
-            )
-          }}
+          style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
         >
           {this.renderItems(
             (item as LayoutSplitterModelGroup).direction,
@@ -227,11 +227,7 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       <div
         class={DIRECTION_CLASS(layoutModel.direction)}
-        style={{
-          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
-            layoutModel.items
-          )
-        }}
+        style={TEMPLATE_STYLE(layoutModel.items)}
       >
         {this.renderItems(
           layoutModel.direction,

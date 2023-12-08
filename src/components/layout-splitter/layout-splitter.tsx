@@ -22,6 +22,9 @@ const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
 
+const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
+  `container direction--${direction}`;
+
 /**
  * @part bar - The bar that divides two columns or two rows
  */
@@ -159,10 +162,7 @@ export class ChLayoutSplitter implements ChComponent {
     return layoutItems.map((item, index) => [
       (item as LayoutSplitterModelGroup).items ? (
         <div
-          class={{
-            container: true,
-            [`direction--${(item as LayoutSplitterModelGroup).direction}`]: true
-          }}
+          class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
           style={{
             [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
               (item as LayoutSplitterModelGroup).items
@@ -224,10 +224,7 @@ export class ChLayoutSplitter implements ChComponent {
 
     return (
       <div
-        class={{
-          container: true,
-          [`direction--${this.layoutModel.direction}`]: true
-        }}
+        class={DIRECTION_CLASS(this.layoutModel.direction)}
         style={{
           [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
             this.layoutModel.items

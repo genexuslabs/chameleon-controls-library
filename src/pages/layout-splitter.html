@@ -64,6 +64,7 @@
       <button id="layout-1">Layout configuration 1</button>
       <button id="layout-2">Layout configuration 2</button>
       <button id="layout-3">Layout configuration 3</button>
+      <button id="layout-4">Layout configuration 4</button>
     </div>
 
     <ch-layout-splitter>
@@ -97,6 +98,16 @@
       </div>
 
       <div
+        slot="center-2-component"
+        class="components"
+        style="background-color: rgb(196, 226, 122)"
+      >
+        Center 2
+
+        <input type="text" style="height: 80px" />
+      </div>
+
+      <div
         slot="center-component"
         class="components"
         style="background-color: rgb(22, 151, 95)"
@@ -116,16 +127,13 @@
           direction: "rows",
           items: [
             {
-              id: "",
               size: "1fr",
-              subLayout: {
-                direction: "columns",
-                items: [
-                  { id: "start-component", size: "300px" },
-                  { id: "center-component", size: "1fr" },
-                  { id: "end-component", size: "270px" }
-                ]
-              }
+              direction: "columns",
+              items: [
+                { id: "start-component", size: "300px" },
+                { id: "center-component", size: "1fr" },
+                { id: "end-component", size: "270px" }
+              ]
             },
             { id: "end-end-component", size: "250px" }
           ]
@@ -144,6 +152,7 @@
         const button1 = document.querySelector("#layout-1");
         const button2 = document.querySelector("#layout-2");
         const button3 = document.querySelector("#layout-3");
+        const button4 = document.querySelector("#layout-4");
 
         button1.addEventListener("click", () => {
           layoutSplitter.layout = {
@@ -162,16 +171,13 @@
             direction: "rows",
             items: [
               {
-                id: "",
                 size: "1fr",
-                subLayout: {
-                  direction: "columns",
-                  items: [
-                    { id: "start-component", size: "300px" },
-                    { id: "center-component", size: "1fr" },
-                    { id: "end-component", size: "270px" }
-                  ]
-                }
+                direction: "columns",
+                items: [
+                  { id: "start-component", size: "300px" },
+                  { id: "center-component", size: "1fr" },
+                  { id: "end-component", size: "270px" }
+                ]
               },
               { id: "end-end-component", size: "250px" }
             ]
@@ -184,15 +190,37 @@
             items: [
               { id: "start-component", size: "300px" },
               {
-                id: "",
                 size: "1fr",
-                subLayout: {
-                  direction: "rows",
-                  items: [
-                    { id: "center-component", size: "1fr" },
-                    { id: "end-end-component", size: "300px" }
-                  ]
-                }
+                direction: "rows",
+                items: [
+                  { id: "center-component", size: "1fr" },
+                  { id: "end-end-component", size: "300px" }
+                ]
+              },
+              { id: "end-component", size: "270px" }
+            ]
+          };
+        });
+
+        button4.addEventListener("click", () => {
+          layoutSplitter.layout = {
+            direction: "columns",
+            items: [
+              { id: "start-component", size: "300px" },
+              {
+                size: "1fr",
+                direction: "rows",
+                items: [
+                  {
+                    size: "1fr",
+                    direction: "columns",
+                    items: [
+                      { id: "center-component", size: "1fr" },
+                      { id: "center-2-component", size: "1fr" }
+                    ]
+                  },
+                  { id: "end-end-component", size: "300px" }
+                ]
               },
               { id: "end-component", size: "270px" }
             ]

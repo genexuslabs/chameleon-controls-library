@@ -2,13 +2,17 @@ import { Component, Element, Prop, Watch, h } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
+  LayoutSplitterDirection,
   LayoutSplitterDistribution,
-  LayoutSplitterDragBarPosition,
-  LayoutSplitterSize
+  LayoutSplitterModel,
+  LayoutSplitterModelGroup,
+  LayoutSplitterModelItem,
+  LayoutSplitterModelLeaf
 } from "./types";
 import {
+  getLayoutModel,
   getMousePosition,
-  setSizesAndDragBarPosition,
+  sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
 import { isRTL } from "../../common/utils";
@@ -17,6 +21,13 @@ const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
+
+const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
+  `container direction--${direction}`;
+
+const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
+  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items)
+});
 
 /**
  * @part bar - The bar that divides two columns or two rows
@@ -32,10 +43,7 @@ export class ChLayoutSplitter implements ChComponent {
   private mouseDownInfo: DragBarMouseDownEventInfo;
 
   // Distribution of elements
-  private sizes: LayoutSplitterSize[] = [];
-  private dragBarPositions: LayoutSplitterDragBarPosition[] = [];
-
-  private fixedSizesSum: number;
+  private layoutModel: LayoutSplitterModel;
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -55,19 +63,14 @@ export class ChLayoutSplitter implements ChComponent {
   };
   @Watch("layout")
   handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.sizes = [];
-    this.dragBarPositions = [];
-
-    if (newLayout?.items?.length > 0) {
-      this.updateLayoutInfo(newLayout);
-    }
+    this.updateLayoutInfo(newLayout);
   }
 
   private handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
     this.mouseDownInfo.newPosition = getMousePosition(
       event,
-      this.mouseDownInfo.layout.direction
+      this.mouseDownInfo.direction
     );
 
     if (!this.needForRAF) {
@@ -110,11 +113,10 @@ export class ChLayoutSplitter implements ChComponent {
 
   private mouseDownHandler =
     (
+      direction: LayoutSplitterDirection,
       index: number,
-      dragBarPositions: LayoutSplitterDragBarPosition[],
       fixedSizesSum: number,
-      layout: LayoutSplitterDistribution,
-      sizes: LayoutSplitterSize[]
+      layoutItems: LayoutSplitterModelItem[]
     ) =>
     (event: MouseEvent) => {
       // Necessary to prevent selecting the inner image (or other elements) of
@@ -122,23 +124,24 @@ export class ChLayoutSplitter implements ChComponent {
       event.preventDefault();
 
       // Initialize the values needed for drag processing
-      const dragBarContainer = (event.target as HTMLElement).parentElement;
+      const dragBar = event.target as HTMLElement;
+      const dragBarContainer = dragBar.parentElement;
+      const currentMousePosition = getMousePosition(event, direction);
 
       this.mouseDownInfo = {
-        dragBar: event.target as HTMLElement,
+        direction: direction,
+        dragBar: dragBar,
         dragBarContainer: dragBarContainer,
         dragBarContainerSize:
-          layout.direction === "columns"
+          direction === "columns"
             ? dragBarContainer.clientWidth
             : dragBarContainer.clientHeight,
-        dragBarPositions: dragBarPositions,
         fixedSizesSum: fixedSizesSum,
         index: index,
-        lastPosition: getMousePosition(event, layout.direction),
-        layout: layout,
-        newPosition: getMousePosition(event, layout.direction), // Also updated in mouse move
-        RTL: isRTL(),
-        sizes: sizes
+        lastPosition: currentMousePosition,
+        layoutItems: layoutItems,
+        newPosition: currentMousePosition, // Also updated in mouse move
+        RTL: isRTL()
       };
 
       // Remove pointer-events during drag
@@ -154,35 +157,29 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
   private renderItems = (
-    dragBarPositions: LayoutSplitterDragBarPosition[],
+    direction: LayoutSplitterDirection,
     fixedSizesSum: number,
-    layout: LayoutSplitterDistribution,
-    sizes: LayoutSplitterSize[]
+    layoutItems: LayoutSplitterModelItem[]
   ) => {
-    const lastComponentIndex = layout.items.length - 1;
+    const lastComponentIndex = layoutItems.length - 1;
 
-    return layout.items.map((component, index) => [
-      component.subLayout ? (
+    return layoutItems.map((item, index) => [
+      (item as LayoutSplitterModelGroup).items ? (
         <div
-          class={{
-            container: true,
-            [`direction--${component.subLayout.direction}`]: true
-          }}
-          style={{
-            [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes[index].subLayout
-              .map(item => item.size)
-              .join(" ")
-          }}
+          class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
+          style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
         >
           {this.renderItems(
-            dragBarPositions[index].subLayout,
-            sizes[index].subLayoutFixedSizesSum,
-            component.subLayout,
-            sizes[index].subLayout
+            (item as LayoutSplitterModelGroup).direction,
+            (item as LayoutSplitterModelGroup).fixedSizesSum,
+            (item as LayoutSplitterModelGroup).items
           )}
         </div>
       ) : (
-        <slot key={component.id} name={component.id} />
+        <slot
+          key={(item as LayoutSplitterModelLeaf).id}
+          name={(item as LayoutSplitterModelLeaf).id}
+        />
       ),
 
       index !== lastComponentIndex && (
@@ -192,14 +189,13 @@ export class ChLayoutSplitter implements ChComponent {
           class="bar"
           part="bar"
           style={{
-            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${dragBarPositions[index].position})`
+            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}
           onMouseDown={this.mouseDownHandler(
+            direction,
             index,
-            dragBarPositions,
             fixedSizesSum,
-            layout,
-            sizes
+            layoutItems
           )}
         ></div>
       )
@@ -207,18 +203,13 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
-    const { dragBarPositionsSubLayout, subLayout, subLayoutFixedSizesSum } =
-      setSizesAndDragBarPosition(layout);
-
-    this.fixedSizesSum = subLayoutFixedSizesSum;
-    this.dragBarPositions = dragBarPositionsSubLayout;
-    this.sizes = subLayout;
+    if (layout?.items?.length > 0) {
+      this.layoutModel = getLayoutModel(layout);
+    }
   }
 
   connectedCallback() {
-    if (this.layout?.items?.length > 0) {
-      this.updateLayoutInfo(this.layout);
-    }
+    this.updateLayoutInfo(this.layout);
   }
 
   disconnectedCallback() {
@@ -227,25 +218,22 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
+    const layoutModel = this.layoutModel;
+
+    if (layoutModel?.items == null) {
+      return "";
+    }
+
     return (
       <div
-        class={{
-          container: true,
-          [`direction--${this.layout.direction}`]: true
-        }}
-        style={{
-          [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: this.sizes
-            .map(item => item.size)
-            .join(" ")
-        }}
+        class={DIRECTION_CLASS(layoutModel.direction)}
+        style={TEMPLATE_STYLE(layoutModel.items)}
       >
-        {this.layout?.items != null &&
-          this.renderItems(
-            this.dragBarPositions,
-            this.fixedSizesSum,
-            this.layout,
-            this.sizes
-          )}
+        {this.renderItems(
+          layoutModel.direction,
+          layoutModel.fixedSizesSum,
+          layoutModel.items
+        )}
       </div>
     );
   }

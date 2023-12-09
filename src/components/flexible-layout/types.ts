@@ -4,6 +4,9 @@ import {
 } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
+// - - - - - - - - - - - - - - - - - - - -
+//               Input model
+// - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayout = {
   blockStart?: { items: FlexibleLayoutItemBase[] };
   inlineStart?: {
@@ -54,6 +57,21 @@ export type FlexibleLayoutWidget = {
   wasRendered?: boolean;
 };
 
+export type FlexibleLayoutItemBase = {
+  id: string;
+  name: string;
+};
+
+export type FlexibleLayoutRenders = { [key: string]: () => any };
+
+// - - - - - - - - - - - - - - - - - - - -
+//          Model used internally
+// - - - - - - - - - - - - - - - - - - - -
+export type FlexibleLayoutSplitterModel = {
+  model?: LayoutSplitterDistribution;
+  views: Set<string>;
+};
+
 export type FlexibleLayoutView = {
   exportParts: string;
 
@@ -65,11 +83,9 @@ export type FlexibleLayoutView = {
   widgets: FlexibleLayoutWidget[];
 };
 
-export type FlexibleLayoutSplitterModel = {
-  model?: LayoutSplitterDistribution;
-  views: Set<string>;
-};
-
+// - - - - - - - - - - - - - - - - - - - -
+//               Event info
+// - - - - - - - - - - - - - - - - - - - -
 export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
@@ -77,10 +93,3 @@ export type ViewSelectedItemInfo = {
   type: TabType;
   viewId: string;
 };
-
-export type FlexibleLayoutItemBase = {
-  id: string;
-  name: string;
-};
-
-export type FlexibleLayoutRenders = { [key: string]: () => any };

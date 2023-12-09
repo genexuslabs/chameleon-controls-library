@@ -8,26 +8,33 @@ import { TabType } from "../tab/types";
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayout = {
-  blockStart?: { items: FlexibleLayoutItemBase[] };
-  inlineStart?: {
-    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-    expanded?: boolean;
-    viewType: TabType;
-  };
-  main?: {
-    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-    viewType: TabType;
-  };
-  inlineEnd?: {
-    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-    expanded?: boolean;
-    viewType: TabType;
-  };
-  blockEnd?: {
-    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-    expanded?: boolean;
-    viewType: TabType;
-  };
+  blockStart?: FlexibleLayoutHeader;
+  inlineStart?: FlexibleLayoutAside;
+  main?: FlexibleLayoutMain;
+  inlineEnd?: FlexibleLayoutAside;
+  blockEnd?: FlexibleLayoutFooter;
+};
+
+export type FlexibleLayoutMain = {
+  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+  viewType: Extract<TabType, "main">;
+};
+
+export type FlexibleLayoutAside = {
+  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+  expanded?: boolean;
+  viewType: Extract<TabType, "inlineStart" | "inlineEnd">;
+};
+
+export type FlexibleLayoutHeader = {
+  items: FlexibleLayoutItemBase[];
+  viewType: "blockStart";
+};
+
+export type FlexibleLayoutFooter = {
+  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+  expanded?: boolean;
+  viewType: Extract<TabType, "blockEnd">;
 };
 
 export type FlexibleLayoutDistribution = {

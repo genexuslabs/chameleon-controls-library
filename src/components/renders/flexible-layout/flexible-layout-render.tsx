@@ -1,14 +1,16 @@
 import { Component, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
+  FlexibleLayoutAside,
   FlexibleLayoutDistribution,
+  FlexibleLayoutFooter,
+  FlexibleLayoutMain,
   FlexibleLayoutRenders,
   FlexibleLayoutSplitterModel,
   FlexibleLayoutView,
   FlexibleLayoutWidget,
   ViewSelectedItemInfo
 } from "../../flexible-layout/types";
-import { TabType } from "../../tab/types";
 import {
   flexibleLayoutDistributionToLayoutSplitter,
   mapWidgetsToView
@@ -68,20 +70,14 @@ export class ChFlexibleLayoutRender {
     Object.entries(layout).forEach(
       ([key, value]: [
         key: keyof FlexibleLayout,
-        value: {
-          distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[]; // TODO: Add a type for this expression,
-          viewType: TabType;
-        }
+        value: FlexibleLayoutAside | FlexibleLayoutMain | FlexibleLayoutFooter
       ]) => this.setLayoutSplitter(key, value)
     );
   }
 
   private setLayoutSplitter(
     key: keyof FlexibleLayout,
-    value: {
-      distribution: FlexibleLayoutWidget[] | FlexibleLayoutDistribution;
-      viewType: TabType;
-    }
+    value: FlexibleLayoutAside | FlexibleLayoutMain | FlexibleLayoutFooter
   ) {
     if (!value || key === "blockStart") {
       return;

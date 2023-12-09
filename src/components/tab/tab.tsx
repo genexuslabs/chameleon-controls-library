@@ -205,7 +205,7 @@ export class ChTab {
           aria-labelledby={CAPTION_ID(item.name)}
           class={{
             [this.classes.PAGE]: true,
-            "page--hidden": !item.displayed
+            "page--hidden": !item.selected
           }}
           part={this.classes.PAGE}
         >

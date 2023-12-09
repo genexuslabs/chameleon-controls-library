@@ -24,27 +24,47 @@ const OUTPUT = "output";
 export const defaultLayout: FlexibleLayout = {
   blockStart: { items: [{ id: MENU_BAR, name: MENU_BAR }] },
   inlineStart: {
-    items: [
-      { id: KB_EXPLORER, name: "KB Explorer" },
+    distribution: [
+      { id: KB_EXPLORER, name: "KB Explorer", selected: true },
       { id: PREFERENCES, name: "Preferences" }
-    ]
+    ],
+    expanded: true,
+    viewType: "inlineStart"
   },
   main: {
-    items: [
-      { id: START_PAGE, name: "Start Page", selected: true },
-      { id: GRID, name: "Grid" },
-      { id: STRUCT_EDITOR, name: "Struct Editor" }
-    ]
+    distribution: {
+      direction: "columns",
+      items: [
+        {
+          size: "1fr",
+          widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
+        },
+        {
+          size: "1fr",
+          widgets: [
+            { id: GRID, name: "Grid" },
+            { id: STRUCT_EDITOR, name: "Struct Editor" }
+          ]
+        }
+      ]
+    },
+    viewType: "main"
   },
-  inlineEnd: { items: [{ id: PROPERTIES, name: "Properties" }] },
+  inlineEnd: {
+    distribution: [{ id: PROPERTIES, name: "Properties" }],
+    expanded: true,
+    viewType: "inlineEnd"
+  },
   blockEnd: {
-    items: [
+    distribution: [
       {
         id: OUTPUT,
         name: "Output",
         startImageSrc: "assets/icons/toolbar/output.svg"
       }
-    ]
+    ],
+    expanded: true,
+    viewType: "inlineEnd"
   }
 };
 

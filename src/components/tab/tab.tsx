@@ -93,8 +93,7 @@ export class ChTab {
   /**
    * Fired when the selected item change.
    */
-  @Event()
-  selectedItemChange: EventEmitter<TabSelectedItemInfo>;
+  @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
 
   private handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {

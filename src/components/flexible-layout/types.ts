@@ -1,13 +1,81 @@
+import {
+  LayoutSplitterDirection,
+  LayoutSplitterDistribution
+} from "../layout-splitter/types";
+import { TabType } from "../tab/types";
+
 export type FlexibleLayout = {
   blockStart?: { items: FlexibleLayoutItemBase[] };
-  inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[] };
-  main?: { items: FlexibleLayoutItem[] };
-  inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
-  blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
+  inlineStart?: {
+    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+    expanded?: boolean;
+    viewType: TabType;
+  };
+  main?: {
+    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+    viewType: TabType;
+  };
+  inlineEnd?: {
+    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+    expanded?: boolean;
+    viewType: TabType;
+  };
+  blockEnd?: {
+    distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
+    expanded?: boolean;
+    viewType: TabType;
+  };
 };
 
-export type FlexibleLayoutDisplayedItems = {
-  [key in keyof FlexibleLayout]: string[];
+export type FlexibleLayoutDistribution = {
+  direction: LayoutSplitterDirection;
+  items: FlexibleLayoutItem[];
+};
+
+export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
+
+export type FlexibleLayoutGroup = {
+  direction: LayoutSplitterDirection;
+  items: FlexibleLayoutItem[];
+  size: string;
+};
+
+export type FlexibleLayoutLeaf = {
+  fixedOffsetSize?: number;
+  size: string;
+  widgets: FlexibleLayoutWidget[];
+};
+
+export type FlexibleLayoutWidget = {
+  id: string;
+  name: string;
+  selected?: boolean;
+  startImageSrc?: string;
+  wasRendered?: boolean;
+};
+
+export type FlexibleLayoutView = {
+  exportParts: string;
+
+  /**
+   * This Set provides optimizations to not render items that were never
+   * shown on the screen.
+   */
+  renderedWidgets: Set<string>;
+  widgets: FlexibleLayoutWidget[];
+};
+
+export type FlexibleLayoutSplitterModel = {
+  model?: LayoutSplitterDistribution;
+  views: Set<string>;
+};
+
+export type ViewSelectedItemInfo = {
+  lastSelectedIndex: number;
+  newSelectedId: string;
+  newSelectedIndex: number;
+  type: TabType;
+  viewId: string;
 };
 
 export type FlexibleLayoutItemBase = {
@@ -15,26 +83,4 @@ export type FlexibleLayoutItemBase = {
   name: string;
 };
 
-export type FlexibleLayoutItem = FlexibleLayoutItemBase & {
-  displayed?: boolean;
-  expanded?: boolean;
-  selected?: boolean;
-  startImageSrc?: string;
-  wasRendered?: boolean;
-};
-
-export type FlexibleLayoutGroup =
-  | "block-start"
-  | "inline-start"
-  | "main"
-  | "inline-end"
-  | "block-end";
-
 export type FlexibleLayoutRenders = { [key: string]: () => any };
-
-export type FlexibleLayoutGroupSelectedItemInfo = {
-  group: Exclude<FlexibleLayoutGroup, "block-start">;
-  lastSelectedIndex: number;
-  newSelectedId: string;
-  newSelectedIndex: number;
-};

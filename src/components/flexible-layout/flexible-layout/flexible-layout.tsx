@@ -1,58 +1,32 @@
-import { Component, Host, Listen, Prop, forceUpdate, h } from "@stencil/core";
+import {
+  Component,
+  Event,
+  EventEmitter,
+  Host,
+  Prop,
+  forceUpdate,
+  h
+} from "@stencil/core";
 import {
   FlexibleLayout,
-  FlexibleLayoutDisplayedItems,
-  FlexibleLayoutGroup,
-  FlexibleLayoutItemBase
+  FlexibleLayoutSplitterModel,
+  FlexibleLayoutView,
+  ViewSelectedItemInfo
 } from "../types";
-import {
-  BUTTON_CLASS,
-  CAPTION_ID,
-  IMAGE_CLASS,
-  PAGE_CLASS,
-  PAGE_CONTAINER_CLASS,
-  PAGE_NAME_CLASS,
-  TAB_LIST_CLASS
-} from "../utils";
-import { mouseEventModifierKey } from "../../common/helpers";
+
+// import { mouseEventModifierKey } from "../../common/helpers";
+
+import { TabSelectedItemInfo, TabType } from "../../tab/types";
+import { ChTabCustomEvent } from "../../../components";
 
 // Keys
-const KEY_B = "KeyB";
+// const KEY_B = "KeyB";
 
-const BLOCK_START_GROUP: FlexibleLayoutGroup = "block-start";
-const INLINE_START_GROUP: FlexibleLayoutGroup = "inline-start";
-const MAIN_GROUP: FlexibleLayoutGroup = "main";
-const INLINE_END_GROUP: FlexibleLayoutGroup = "inline-end";
-const BLOCK_END_GROUP: FlexibleLayoutGroup = "block-end";
-
-// Export part functions
-const FLEXIBLE_LAYOUT_GROUP_PARTS = [
-  BUTTON_CLASS,
-  IMAGE_CLASS,
-  PAGE_CLASS,
-  PAGE_CONTAINER_CLASS,
-  PAGE_NAME_CLASS,
-  TAB_LIST_CLASS
-];
-
-const INLINE_START_PARTS = FLEXIBLE_LAYOUT_GROUP_PARTS.map(partFunction =>
-  partFunction("inline-start")
-).join(",");
-
-const MAIN_PARTS = FLEXIBLE_LAYOUT_GROUP_PARTS.map(partFunction =>
-  partFunction("main")
-).join(",");
-
-const INLINE_END_PARTS = FLEXIBLE_LAYOUT_GROUP_PARTS.map(partFunction =>
-  partFunction("inline-end")
-).join(",");
-
-const BLOCK_END_PARTS = FLEXIBLE_LAYOUT_GROUP_PARTS.map(partFunction =>
-  partFunction("block-end")
-).join(",");
-
-const CAPTION_PARTS = (items: FlexibleLayoutItemBase[]) =>
-  items.map(item => CAPTION_ID(item.id)).join(",");
+const BLOCK_START_TYPE: keyof FlexibleLayout = "blockStart";
+const INLINE_START_TYPE: TabType = "inlineStart";
+const MAIN_TYPE: TabType = "main";
+const INLINE_END_TYPE: TabType = "inlineEnd";
+const BLOCK_END_TYPE: TabType = "blockEnd";
 
 @Component({
   shadow: true,
@@ -61,143 +35,160 @@ const CAPTION_PARTS = (items: FlexibleLayoutItemBase[]) =>
 })
 export class ChFlexibleLayout {
   /**
-   * Specifies the items in the flexible layout that must be rendered.
+   * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly displayedItems: FlexibleLayoutDisplayedItems = {
-    blockStart: [],
-    inlineStart: [],
-    main: [],
-    inlineEnd: [],
-    blockEnd: []
+  @Prop() readonly layoutModel: {
+    [key in keyof FlexibleLayout]: FlexibleLayoutSplitterModel;
   };
 
   /**
-   * Specifies the distribution of the items in the flexible layout.
+   * Specifies the information of each view displayed.
    */
-  @Prop() readonly layout: FlexibleLayout;
+  @Prop() readonly viewsInfo: Map<string, FlexibleLayoutView> = new Map();
 
-  @Listen("keydown", { target: "document" })
-  handleKeyDownEvent(event: KeyboardEvent) {
-    if (
-      !mouseEventModifierKey(event) ||
-      event.code !== KEY_B ||
-      this.layout.inlineStart == null
-    ) {
-      return;
-    }
-    event.stopPropagation();
-    event.preventDefault();
+  /**
+   * Fired when the selected item change.
+   */
+  @Event() selectedViewItemChange: EventEmitter<ViewSelectedItemInfo>;
 
-    this.layout.inlineStart.expanded = !(
-      this.layout.inlineStart.expanded ?? true
-    );
-    forceUpdate(this);
-  }
+  // @Listen("keydown", { target: "document" })
+  // handleKeyDownEvent(event: KeyboardEvent) {
+  // if (
+  //   !mouseEventModifierKey(event) ||
+  //   event.code !== KEY_B ||
+  //   this.layout.inlineStart == null
+  // ) {
+  //   return;
+  // }
+  // event.stopPropagation();
+  // event.preventDefault();
+
+  // this.layout.inlineStart.expanded = !(
+  //   this.layout.inlineStart.expanded ?? true
+  // );
+  //   forceUpdate(this);
+  // }
 
   private handleMainGroupExpand = () => {
-    if (this.layout.inlineStart) {
-      this.layout.inlineStart.expanded = false;
-    }
+    // if (this.layout.inlineStart) {
+    //   this.layout.inlineStart.expanded = false;
+    // }
 
-    if (this.layout.inlineEnd) {
-      this.layout.inlineEnd.expanded = false;
-    }
+    // if (this.layout.inlineEnd) {
+    //   this.layout.inlineEnd.expanded = false;
+    // }
 
-    if (this.layout.blockEnd) {
-      this.layout.blockEnd.expanded = false;
-    }
+    // if (this.layout.blockEnd) {
+    //   this.layout.blockEnd.expanded = false;
+    // }
 
     forceUpdate(this);
   };
 
-  private renderItems = (group: keyof FlexibleLayout) =>
-    this.displayedItems[group].map(itemId => (
-      <slot name={itemId} slot={itemId} />
-    ));
+  private handleItemChange =
+    (viewId: string) => (event: ChTabCustomEvent<TabSelectedItemInfo>) => {
+      event.stopPropagation();
+
+      // Add the view id to properly update the render
+      const eventInfo: ViewSelectedItemInfo = {
+        ...event.detail,
+        viewId: viewId
+      };
+
+      this.selectedViewItemChange.emit(eventInfo);
+    };
+
+  private renderTab = (tabType: TabType, viewId: string) => {
+    const viewInfo = this.viewsInfo.get(viewId);
+
+    return (
+      <ch-tab
+        key={viewId}
+        slot={viewId}
+        exportparts={viewInfo.exportParts}
+        items={viewInfo.widgets}
+        type={tabType}
+        onExpandMainGroup={
+          tabType === "main" ? this.handleMainGroupExpand : null
+        }
+        onSelectedItemChange={this.handleItemChange(viewId)}
+      >
+        {[...viewInfo.renderedWidgets.values()].map(widgetId => (
+          <slot name={widgetId} slot={widgetId} />
+        ))}
+      </ch-tab>
+    );
+  };
+
+  private renderViews = (
+    model: FlexibleLayoutSplitterModel,
+    tabType: TabType
+  ) => [...model.views].map(view => this.renderTab(tabType, view));
 
   render() {
-    const layout = this.layout;
+    const layoutModel = this.layoutModel;
 
-    if (layout == null) {
+    if (layoutModel == null) {
       return "";
     }
 
     return (
       <Host>
-        {layout.blockStart?.items != null && ( // Top
-          <ch-flexible-layout-group
-            key={BLOCK_START_GROUP}
-            class={BLOCK_START_GROUP}
-            items={layout.blockStart.items}
-            type={BLOCK_START_GROUP}
-          >
-            <slot />
-          </ch-flexible-layout-group>
-        )}
+        <header class={BLOCK_START_TYPE}>
+          <slot />
+        </header>
 
-        {layout.inlineStart?.items != null && ( // Left
-          <ch-flexible-layout-group
-            key={INLINE_START_GROUP}
-            exportparts={
-              INLINE_START_PARTS +
-              ",selected,close-button," +
-              CAPTION_PARTS(layout.inlineStart.items)
-            }
-            class={INLINE_START_GROUP}
-            expanded={layout.inlineStart.expanded ?? true}
-            items={layout.inlineStart.items}
-            type={INLINE_START_GROUP}
-          >
-            {this.renderItems("inlineStart")}
-          </ch-flexible-layout-group>
-        )}
+        <aside class={INLINE_START_TYPE}>
+          {layoutModel.inlineStart?.model != null ? ( // Left
+            <ch-layout-splitter
+              key={INLINE_START_TYPE}
+              layout={layoutModel.inlineStart.model}
+            >
+              {this.renderViews(layoutModel.inlineStart, INLINE_START_TYPE)}
+            </ch-layout-splitter>
+          ) : (
+            layoutModel.inlineStart &&
+            this.renderTab(INLINE_START_TYPE, INLINE_START_TYPE)
+          )}
+        </aside>
 
-        <ch-flexible-layout-group
-          key={MAIN_GROUP}
-          exportparts={
-            MAIN_PARTS +
-            ",selected,close-button," +
-            CAPTION_PARTS(layout.main?.items ?? [])
-          }
-          class={MAIN_GROUP}
-          items={layout.main.items}
-          type={MAIN_GROUP}
-          onExpandMainGroup={this.handleMainGroupExpand}
-        >
-          {this.renderItems("main")}
-        </ch-flexible-layout-group>
+        <main class={MAIN_TYPE}>
+          {layoutModel.main?.model != null ? ( // Main
+            <ch-layout-splitter key={MAIN_TYPE} layout={layoutModel.main.model}>
+              {this.renderViews(layoutModel.main, MAIN_TYPE)}
+            </ch-layout-splitter>
+          ) : (
+            layoutModel.main && this.renderTab(MAIN_TYPE, MAIN_TYPE)
+          )}
+        </main>
 
-        {layout.inlineEnd?.items != null && ( // Right
-          <ch-flexible-layout-group
-            key={INLINE_END_GROUP}
-            exportparts={
-              INLINE_END_PARTS +
-              ",selected,close-button," +
-              CAPTION_PARTS(layout.inlineEnd.items)
-            }
-            class={INLINE_END_GROUP}
-            items={layout.inlineEnd.items}
-            type={INLINE_END_GROUP}
-          >
-            {this.renderItems("inlineEnd")}
-          </ch-flexible-layout-group>
-        )}
+        <aside class={INLINE_END_TYPE}>
+          {layoutModel.inlineEnd?.model != null ? ( // Right
+            <ch-layout-splitter
+              key={INLINE_END_TYPE}
+              layout={layoutModel.inlineEnd.model}
+            >
+              {this.renderViews(layoutModel.inlineEnd, INLINE_END_TYPE)}
+            </ch-layout-splitter>
+          ) : (
+            layoutModel.inlineEnd &&
+            this.renderTab(INLINE_END_TYPE, INLINE_END_TYPE)
+          )}
+        </aside>
 
-        {layout.blockEnd?.items != null && ( // Bottom
-          <ch-flexible-layout-group
-            key={BLOCK_END_GROUP}
-            exportparts={
-              BLOCK_END_PARTS +
-              ",selected,close-button," +
-              CAPTION_PARTS(layout.blockEnd.items)
-            }
-            class={BLOCK_END_GROUP}
-            items={layout.blockEnd.items}
-            type={BLOCK_END_GROUP}
-          >
-            {this.renderItems("blockEnd")}
-          </ch-flexible-layout-group>
-        )}
+        <footer class={BLOCK_END_TYPE}>
+          {layoutModel.blockEnd?.model != null ? ( // Bottom
+            <ch-layout-splitter
+              key={BLOCK_END_TYPE}
+              layout={layoutModel.blockEnd.model}
+            >
+              {this.renderViews(layoutModel.blockEnd, BLOCK_END_TYPE)}
+            </ch-layout-splitter>
+          ) : (
+            layoutModel.blockEnd &&
+            this.renderTab(BLOCK_END_TYPE, BLOCK_END_TYPE)
+          )}
+        </footer>
       </Host>
     );
   }

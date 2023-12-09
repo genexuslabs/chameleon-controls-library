@@ -11,11 +11,11 @@
     "block-end block-end block-end" max-content / max-content 1fr max-content;
 }
 
-.block-start {
+.blockStart {
   grid-area: block-start;
 }
 
-.inline-start {
+.inlineStart {
   grid-area: inline-start;
   inline-size: var(--ch-flexible-layout__inline-start--inline-size);
 }
@@ -24,11 +24,11 @@
   grid-area: main;
 }
 
-.inline-end {
+.inlineEnd {
   grid-area: inline-end;
   inline-size: var(--ch-flexible-layout__inline-end--inline-size);
 }
 
-.block-end {
+.blockEnd {
   grid-area: block-end;
 }

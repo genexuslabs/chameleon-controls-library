@@ -9,8 +9,8 @@ export type LayoutSplitterDistribution = {
 };
 
 export type LayoutSplitterDistributionItem =
-  | LayoutSplitterDistributionLeaf
-  | LayoutSplitterDistributionGroup;
+  | LayoutSplitterDistributionGroup
+  | LayoutSplitterDistributionLeaf;
 
 export type LayoutSplitterDistributionLeaf = {
   id: string;

@@ -4,6 +4,7 @@ import {
   FlexibleLayoutAside,
   FlexibleLayoutDistribution,
   FlexibleLayoutFooter,
+  FlexibleLayoutHeader,
   FlexibleLayoutMain,
   FlexibleLayoutRenders,
   FlexibleLayoutSplitterModel,
@@ -67,19 +68,20 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    Object.entries(layout).forEach(
-      ([key, value]: [
-        key: keyof FlexibleLayout,
-        value: FlexibleLayoutAside | FlexibleLayoutMain | FlexibleLayoutFooter
-      ]) => this.setLayoutSplitter(key, value)
+    Object.entries(layout).forEach(([key, value]) =>
+      this.setLayoutSplitter(key, value)
     );
   }
 
   private setLayoutSplitter(
-    key: keyof FlexibleLayout,
-    value: FlexibleLayoutAside | FlexibleLayoutMain | FlexibleLayoutFooter
+    key: string,
+    value:
+      | FlexibleLayoutAside
+      | FlexibleLayoutMain
+      | FlexibleLayoutFooter
+      | FlexibleLayoutHeader
   ) {
-    if (!value || key === "blockStart") {
+    if (!value || value.viewType === "blockStart") {
       return;
     }
 
@@ -102,7 +104,7 @@ export class ChFlexibleLayoutRender {
         value.distribution as FlexibleLayoutWidget[],
         this.viewsInfo,
         this.renderedWidgets,
-        key, // ViewType
+        value.viewType, // ViewType
         key // Forced key
       );
 

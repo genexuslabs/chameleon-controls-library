@@ -7,7 +7,27 @@ import { TabType } from "../tab/types";
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
+export type ViewType = TabType | "blockStart";
+
+/**
+ * For some reason, this type does not work when is applied to an object, and
+ * the "main" or "blockStart" keys are defined
+ */
+// export type FlexibleLayout = {
+//   [key: string]: FlexibleLayoutAside | FlexibleLayoutFooter;
+//   blockStart?: FlexibleLayoutHeader;
+//   inlineStart?: FlexibleLayoutAside;
+//   main?: FlexibleLayoutMain;
+//   inlineEnd?: FlexibleLayoutAside;
+//   blockEnd?: FlexibleLayoutFooter;
+// };
+
 export type FlexibleLayout = {
+  [key: string]:
+    | FlexibleLayoutAside
+    | FlexibleLayoutFooter
+    | FlexibleLayoutHeader
+    | FlexibleLayoutMain;
   blockStart?: FlexibleLayoutHeader;
   inlineStart?: FlexibleLayoutAside;
   main?: FlexibleLayoutMain;
@@ -17,24 +37,24 @@ export type FlexibleLayout = {
 
 export type FlexibleLayoutMain = {
   distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-  viewType: Extract<TabType, "main">;
+  viewType: Extract<ViewType, "main">;
 };
 
 export type FlexibleLayoutAside = {
   distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
   expanded?: boolean;
-  viewType: Extract<TabType, "inlineStart" | "inlineEnd">;
+  viewType: Extract<ViewType, "inlineStart" | "inlineEnd">;
 };
 
 export type FlexibleLayoutHeader = {
   items: FlexibleLayoutItemBase[];
-  viewType: "blockStart";
+  viewType: Extract<ViewType, "blockStart">;
 };
 
 export type FlexibleLayoutFooter = {
   distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
   expanded?: boolean;
-  viewType: Extract<TabType, "blockEnd">;
+  viewType: Extract<ViewType, "blockEnd">;
 };
 
 export type FlexibleLayoutDistribution = {

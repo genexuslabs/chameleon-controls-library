@@ -11,7 +11,8 @@ import {
   FlexibleLayout,
   FlexibleLayoutSplitterModel,
   FlexibleLayoutView,
-  ViewSelectedItemInfo
+  ViewSelectedItemInfo,
+  ViewType
 } from "../types";
 
 // import { mouseEventModifierKey } from "../../common/helpers";
@@ -22,7 +23,7 @@ import { ChTabCustomEvent } from "../../../components";
 // Keys
 // const KEY_B = "KeyB";
 
-const BLOCK_START_TYPE: keyof FlexibleLayout = "blockStart";
+const BLOCK_START_TYPE: ViewType = "blockStart";
 const INLINE_START_TYPE: TabType = "inlineStart";
 const MAIN_TYPE: TabType = "main";
 const INLINE_END_TYPE: TabType = "inlineEnd";

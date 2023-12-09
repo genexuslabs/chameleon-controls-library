@@ -169,20 +169,16 @@ export class ChFlexibleLayoutRender {
         ref={el => (this.flexibleLayoutRef = el)}
       >
         {this.layout?.blockStart?.items != null &&
-          this.layout.blockStart.items.map(widget => (
-            <ch-flexible-layout-item
-              key={widget.id}
-              addSlot={false}
-              itemId={widget.id}
-            >
-              {this.renders[widget.id]()}
-            </ch-flexible-layout-item>
-          ))}
+          this.layout.blockStart.items.map(widget => this.renders[widget.id]())}
 
         {[...this.renderedWidgets.values()].map(widget => (
-          <ch-flexible-layout-item key={widget} addSlot={true} itemId={widget}>
+          <div
+            key={widget}
+            slot={widget}
+            class="ch-flexible-layout-render-slot"
+          >
             {this.renders[widget]()}
-          </ch-flexible-layout-item>
+          </div>
         ))}
       </ch-flexible-layout>
     );

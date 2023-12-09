@@ -10,8 +10,8 @@ import { TabType } from "../tab/types";
 export type ViewType = TabType | "blockStart";
 
 /**
- * For some reason, this type does not work when is applied to an object, and
- * the "main" or "blockStart" keys are defined
+ * TODO: For some reason, this type does not work when is applied to an object,
+ * and the "main" or "blockStart" keys are defined
  */
 // export type FlexibleLayout = {
 //   [key: string]: FlexibleLayoutAside | FlexibleLayoutFooter;

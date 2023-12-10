@@ -17,7 +17,8 @@
   grid-template-columns: max-content 1fr;
 }
 
-:host([type="main"]) {
+:host([type="main"]),
+:host([type="blockEnd"]) {
   grid-template-rows: max-content 1fr;
 }
 
@@ -59,7 +60,8 @@
   opacity: 0;
 }
 
-.main__button {
+.main__button,
+.blockEnd__button {
   display: flex;
   align-items: center;
 
@@ -85,7 +87,8 @@
   order: 1;
 }
 
-.main__tab-list {
+.main__tab-list,
+.blockEnd__tab-list {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;

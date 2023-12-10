@@ -4,3 +4,12 @@ export type GxDataTransferInfo = {
   id: string;
   metadata: string;
 };
+
+export type AccessibleRole =
+  | "article"
+  | "banner"
+  | "complementary"
+  | "contentinfo"
+  | "list"
+  | "main"
+  | "region";

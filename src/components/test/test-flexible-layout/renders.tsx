@@ -22,51 +22,178 @@ const PROPERTIES = "properties";
 const OUTPUT = "output";
 
 export const defaultLayout: FlexibleLayout = {
-  blockStart: { items: [{ id: MENU_BAR, name: MENU_BAR }] },
-  inlineStart: {
-    distribution: [
-      { id: KB_EXPLORER, name: "KB Explorer", selected: true },
-      { id: PREFERENCES, name: "Preferences" }
-    ],
-    expanded: true,
-    viewType: "inlineStart"
-  },
-  main: {
-    distribution: {
+  direction: "rows",
+  items: [
+    {
+      accessibleRole: "banner",
+      size: "32px",
+      viewType: "blockStart",
+      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+    },
+    {
       direction: "columns",
+      size: "1fr",
       items: [
         {
-          size: "1fr",
-          widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineStart",
+          widgets: [
+            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: PREFERENCES, name: "Preferences" }
+          ]
         },
         {
+          accessibleRole: "main",
           size: "1fr",
+          viewType: "main",
           widgets: [
+            { id: START_PAGE, name: "Start Page", selected: true },
             { id: GRID, name: "Grid" },
             { id: STRUCT_EDITOR, name: "Struct Editor" }
           ]
+        },
+        {
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineEnd",
+          widgets: [{ id: PROPERTIES, name: "Properties" }]
         }
       ]
     },
-    viewType: "main"
-  },
-  inlineEnd: {
-    distribution: [{ id: PROPERTIES, name: "Properties" }],
-    expanded: true,
-    viewType: "inlineEnd"
-  },
-  blockEnd: {
-    distribution: [
-      {
-        id: OUTPUT,
-        name: "Output",
-        startImageSrc: "assets/icons/toolbar/output.svg"
-      }
-    ],
-    expanded: true,
-    viewType: "inlineEnd"
-  }
+    {
+      accessibleRole: "contentinfo",
+      size: "200px",
+      viewType: "blockEnd",
+      widgets: [
+        {
+          id: OUTPUT,
+          name: "Output",
+          startImageSrc: "assets/icons/toolbar/output.svg"
+        }
+      ]
+    }
+  ]
 };
+
+export const layout2: FlexibleLayout = {
+  direction: "rows",
+  items: [
+    {
+      accessibleRole: "banner",
+      size: "32px",
+      viewType: "blockStart",
+      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+    },
+    {
+      direction: "columns",
+      size: "1fr",
+      items: [
+        {
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineStart",
+          widgets: [
+            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: PREFERENCES, name: "Preferences" }
+          ]
+        },
+        {
+          direction: "columns",
+          size: "1fr",
+          accessibleRole: "main",
+          items: [
+            {
+              size: "1fr",
+              viewType: "main",
+              widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
+            },
+            {
+              size: "1fr",
+              viewType: "main",
+              widgets: [
+                { id: GRID, name: "Grid" },
+                { id: STRUCT_EDITOR, name: "Struct Editor" }
+              ]
+            }
+          ]
+        },
+        {
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineEnd",
+          widgets: [{ id: PROPERTIES, name: "Properties" }]
+        }
+      ]
+    },
+    {
+      accessibleRole: "contentinfo",
+      size: "200px",
+      viewType: "blockEnd",
+      widgets: [
+        {
+          id: OUTPUT,
+          name: "Output",
+          startImageSrc: "assets/icons/toolbar/output.svg"
+        }
+      ]
+    }
+  ]
+};
+
+// export const defaultLayout: FlexibleLayout = {
+//   blockStart: {
+//     items: [{ id: MENU_BAR, name: MENU_BAR }],
+//     viewType: "blockStart"
+//   },
+//   inlineStart: {
+//     distribution: [
+//       { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+//       { id: PREFERENCES, name: "Preferences" }
+//     ],
+//     expanded: true,
+//     viewType: "inlineStart"
+//   },
+//   main: {
+//     distribution: {
+//       direction: "columns",
+//       items: [
+//         {
+//           size: "1fr",
+//           widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
+//         },
+//         {
+//           size: "1fr",
+//           widgets: [
+//             { id: GRID, name: "Grid" },
+//             { id: STRUCT_EDITOR, name: "Struct Editor" }
+//           ]
+//         }
+//       ]
+//     },
+//     viewType: "main"
+//   },
+//   inlineEnd: {
+//     distribution: [{ id: PROPERTIES, name: "Properties" }],
+//     expanded: true,
+//     viewType: "inlineEnd"
+//   },
+//   blockEnd: {
+//     distribution: [
+//       {
+//         id: OUTPUT,
+//         name: "Output",
+//         startImageSrc: "assets/icons/toolbar/output.svg"
+//       }
+//     ],
+//     expanded: true,
+//     viewType: "blockEnd"
+//   }
+// };
 
 const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
   new Promise(resolve => {
@@ -115,8 +242,20 @@ export const layoutRenders: FlexibleLayoutRenders = {
       </h1>
     </div>
   ),
-  [GRID]: () => <div>Grid render...</div>,
-  [STRUCT_EDITOR]: () => <div>Struct Editor...</div>,
-  [PROPERTIES]: () => <div>Properties render...</div>,
-  [OUTPUT]: () => <div>Output render...</div>
+  [GRID]: () => (
+    <div>
+      Grid render... <input type="text" />
+    </div>
+  ),
+  [STRUCT_EDITOR]: () => (
+    <div>
+      Struct Editor... <input type="text" />
+    </div>
+  ),
+  [PROPERTIES]: () => (
+    <div>
+      Properties render... <input type="text" />
+    </div>
+  ),
+  [OUTPUT]: () => <div>Output render... </div>
 };

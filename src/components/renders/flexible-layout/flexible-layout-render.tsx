@@ -1,23 +1,13 @@
 import { Component, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
-  FlexibleLayoutAside,
-  FlexibleLayoutDistribution,
-  FlexibleLayoutFooter,
-  FlexibleLayoutHeader,
-  FlexibleLayoutMain,
   FlexibleLayoutRenders,
-  FlexibleLayoutSplitterModel,
   FlexibleLayoutView,
-  FlexibleLayoutWidget,
   ViewSelectedItemInfo
 } from "../../flexible-layout/types";
-import {
-  flexibleLayoutDistributionToLayoutSplitter,
-  mapWidgetsToView
-} from "../../flexible-layout/flexible-layout/utils";
-import { tabTypeToPart } from "../../tab/utils";
+import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
+import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 
 @Component({
   shadow: false,
@@ -31,11 +21,11 @@ export class ChFlexibleLayoutRender {
    */
   private renderedWidgets: Set<string> = new Set();
 
+  private blockStartWidgets: Set<string> = new Set();
+
   private viewsInfo: Map<string, FlexibleLayoutView> = new Map();
 
-  private layoutSplitterModels: {
-    [key in keyof FlexibleLayout]: FlexibleLayoutSplitterModel;
-  } = {};
+  private layoutSplitterModels: LayoutSplitterDistribution;
 
   // Refs
   private flexibleLayoutRef: HTMLChFlexibleLayoutElement;
@@ -60,59 +50,20 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly renders: FlexibleLayoutRenders;
 
   private setLayoutSplitterModels(layout: FlexibleLayout) {
-    // Reset layout
-    this.layoutSplitterModels = {};
-
     // Empty layout
     if (layout == null) {
+      // Reset layout
+      this.layoutSplitterModels = { direction: "columns", items: [] };
+
       return;
     }
 
-    Object.entries(layout).forEach(([key, value]) =>
-      this.setLayoutSplitter(key, value)
+    this.layoutSplitterModels = getLayoutModel(
+      layout,
+      this.viewsInfo,
+      this.blockStartWidgets,
+      this.renderedWidgets
     );
-  }
-
-  private setLayoutSplitter(
-    key: string,
-    value:
-      | FlexibleLayoutAside
-      | FlexibleLayoutMain
-      | FlexibleLayoutFooter
-      | FlexibleLayoutHeader
-  ) {
-    if (!value || value.viewType === "blockStart") {
-      return;
-    }
-
-    // The group has a distribution divided into multiples sections
-    if ((value.distribution as FlexibleLayoutDistribution).direction != null) {
-      const layoutSplitter = flexibleLayoutDistributionToLayoutSplitter(
-        value.distribution as FlexibleLayoutDistribution,
-        value.viewType,
-        this.viewsInfo,
-        this.renderedWidgets
-      );
-
-      this.layoutSplitterModels[key] = layoutSplitter;
-    }
-    // The group has only one section
-    else {
-      // Store view info
-      mapWidgetsToView(
-        tabTypeToPart[key](value.distribution as FlexibleLayoutWidget[]),
-        value.distribution as FlexibleLayoutWidget[],
-        this.viewsInfo,
-        this.renderedWidgets,
-        value.viewType, // ViewType
-        key // Forced key
-      );
-
-      // Store the forced key
-      this.layoutSplitterModels[key] = {
-        views: new Set([key])
-      };
-    }
   }
 
   private handleViewItemChange = (
@@ -166,8 +117,7 @@ export class ChFlexibleLayoutRender {
         onSelectedViewItemChange={this.handleViewItemChange}
         ref={el => (this.flexibleLayoutRef = el)}
       >
-        {this.layout?.blockStart?.items != null &&
-          this.layout.blockStart.items.map(widget => this.renders[widget.id]())}
+        {[...this.blockStartWidgets].map(widgetId => this.renders[widgetId]())}
 
         {[...this.renderedWidgets.values()].map(widget => (
           <div

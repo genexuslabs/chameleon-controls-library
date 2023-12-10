@@ -1,18 +1,18 @@
 import {
+  LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionLeaf
 } from "../../layout-splitter/types";
-import { TabType } from "../../tab/types";
 import { tabTypeToPart } from "../../tab/utils";
 import {
-  FlexibleLayoutDistribution,
+  FlexibleLayout,
   FlexibleLayoutGroup,
   FlexibleLayoutItem,
   FlexibleLayoutLeaf,
-  FlexibleLayoutSplitterModel,
   FlexibleLayoutView,
-  FlexibleLayoutWidget
+  FlexibleLayoutWidget,
+  ViewType
 } from "../types";
 
 let lastViewId = 0;
@@ -20,16 +20,34 @@ let lastViewId = 0;
 export const getViewId = () => `view-${lastViewId++}`;
 
 export const mapWidgetsToView = (
-  exportParts: string,
   widgets: FlexibleLayoutWidget[],
   viewsInfo: Map<string, FlexibleLayoutView>,
+  blockStartWidgets: Set<string>,
   renderedWidgets: Set<string>,
-  viewType: TabType,
-  viewId?: string
+  viewType: ViewType
 ): string => {
   // Get a new id for the view
-  const actualViewId = viewId ?? getViewId();
+  const viewId = getViewId();
 
+  if (viewType === "blockStart") {
+    // Store widgets in the Map
+    viewsInfo.set(viewId, {
+      id: viewId,
+      type: viewType,
+      renderedWidgets: null, // Won't be used to render the "blockStart" ViewType
+      exportParts: "",
+      widgets: widgets
+    });
+
+    // Add the widgets to the blockStart section
+    widgets.forEach(widget => {
+      blockStartWidgets.add(widget.id);
+    });
+
+    return viewId;
+  }
+
+  const exportParts = tabTypeToPart[viewType](widgets);
   const renderedWidgetsInView: Set<string> = new Set();
   let existSelectedItem = false;
 
@@ -59,85 +77,73 @@ export const mapWidgetsToView = (
   }
 
   // Store widgets in the Map
-  viewsInfo.set(actualViewId, {
+  viewsInfo.set(viewId, {
+    id: viewId,
+    type: viewType,
     renderedWidgets: renderedWidgetsInView,
     exportParts,
     widgets: widgets
   });
 
-  return actualViewId;
+  return viewId;
 };
 
-export const flexibleLayoutDistributionToLayoutSplitter = (
-  flexibleLayout: FlexibleLayoutDistribution,
-  viewType: TabType,
+const getItemsModel = (
+  flexibleItems: FlexibleLayoutItem[],
   viewsInfo: Map<string, FlexibleLayoutView>,
+  blockStartWidgets: Set<string>,
   renderedWidgets: Set<string>
-): FlexibleLayoutSplitterModel => {
-  const views: Set<string> = new Set();
-
-  const layoutSplitter = getLayoutSplitterItems(
-    flexibleLayout.items,
-    views,
-    viewType,
-    viewsInfo,
-    renderedWidgets
-  );
-
-  return {
-    model: {
-      direction: flexibleLayout.direction,
-      items: layoutSplitter
-    },
-    views: views
-  };
-};
-
-function getLayoutSplitterItems(
-  flexibleLayoutItems: FlexibleLayoutItem[],
-  views: Set<string>,
-  viewType: TabType,
-  viewsInfo: Map<string, FlexibleLayoutView>,
-  renderedWidgets: Set<string>
-): LayoutSplitterDistributionItem[] {
-  const layoutSplitterItems: LayoutSplitterDistributionItem[] = [];
-
-  flexibleLayoutItems.forEach(item => {
+): LayoutSplitterDistributionItem[] =>
+  flexibleItems.map(item => {
     // Group
     if ((item as FlexibleLayoutGroup).items != null) {
+      const group = item as FlexibleLayoutGroup;
+
       const splitterGroup: LayoutSplitterDistributionGroup = {
-        direction: (item as FlexibleLayoutGroup).direction,
-        items: getLayoutSplitterItems(
-          (item as FlexibleLayoutGroup).items,
-          views,
-          viewType,
+        direction: group.direction,
+        items: getItemsModel(
+          group.items,
           viewsInfo,
+          blockStartWidgets,
           renderedWidgets
         ),
-        size: (item as FlexibleLayoutGroup).size
+        size: group.size
       };
 
-      layoutSplitterItems.push(splitterGroup);
+      return splitterGroup;
     }
+
     // Leaf
-    else {
-      const viewId = mapWidgetsToView(
-        tabTypeToPart[viewType]((item as FlexibleLayoutLeaf).widgets),
-        (item as FlexibleLayoutLeaf).widgets,
-        viewsInfo,
-        renderedWidgets,
-        viewType
-      );
-      views.add(viewId);
+    const leaf = item as FlexibleLayoutLeaf;
 
-      const splitterLeaf: LayoutSplitterDistributionLeaf = {
-        id: viewId,
-        size: (item as FlexibleLayoutLeaf).size,
-        fixedOffsetSize: (item as FlexibleLayoutLeaf).fixedOffsetSize
-      };
-      layoutSplitterItems.push(splitterLeaf);
-    }
+    const viewId = mapWidgetsToView(
+      leaf.widgets,
+      viewsInfo,
+      blockStartWidgets,
+      renderedWidgets,
+      leaf.viewType
+    );
+
+    const splitterLeaf: LayoutSplitterDistributionLeaf = {
+      id: viewId,
+      size: leaf.size,
+      fixedOffsetSize: leaf.fixedOffsetSize
+    };
+
+    return splitterLeaf;
   });
 
-  return layoutSplitterItems;
-}
+export const getLayoutModel = (
+  flexibleLayout: FlexibleLayout,
+  viewsInfo: Map<string, FlexibleLayoutView>,
+  blockStartWidgets: Set<string>,
+  renderedWidgets: Set<string>
+): LayoutSplitterDistribution => ({
+  direction: flexibleLayout.direction,
+  items: getItemsModel(
+    flexibleLayout.items,
+    viewsInfo,
+    blockStartWidgets,
+    renderedWidgets
+  )
+});

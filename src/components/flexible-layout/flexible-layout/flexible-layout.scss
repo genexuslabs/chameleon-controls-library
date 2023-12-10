@@ -1,34 +1,3 @@
 :host {
-  --ch-flexible-layout__inline-start--inline-size: 260px;
-  --ch-flexible-layout__inline-end--inline-size: 260px;
-
-  display: grid;
-  block-size: 100%;
-  inline-size: 100%;
-  grid-template:
-    "block-start block-start block-start" min-content
-    "inline-start main inline-end" 1fr
-    "block-end block-end block-end" max-content / max-content 1fr max-content;
-}
-
-.blockStart {
-  grid-area: block-start;
-}
-
-.inlineStart {
-  grid-area: inline-start;
-  inline-size: var(--ch-flexible-layout__inline-start--inline-size);
-}
-
-.main {
-  grid-area: main;
-}
-
-.inlineEnd {
-  grid-area: inline-end;
-  inline-size: var(--ch-flexible-layout__inline-end--inline-size);
-}
-
-.blockEnd {
-  grid-area: block-end;
+  display: contents;
 }

@@ -1,13 +1,12 @@
-import {
-  LayoutSplitterDirection,
-  LayoutSplitterDistribution
-} from "../layout-splitter/types";
+import { AccessibleRole } from "../../common/types";
+import { LayoutSplitterDirection } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
 export type ViewType = TabType | "blockStart";
+export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 
 /**
  * TODO: For some reason, this type does not work when is applied to an object,
@@ -21,43 +20,7 @@ export type ViewType = TabType | "blockStart";
 //   inlineEnd?: FlexibleLayoutAside;
 //   blockEnd?: FlexibleLayoutFooter;
 // };
-
 export type FlexibleLayout = {
-  [key: string]:
-    | FlexibleLayoutAside
-    | FlexibleLayoutFooter
-    | FlexibleLayoutHeader
-    | FlexibleLayoutMain;
-  blockStart?: FlexibleLayoutHeader;
-  inlineStart?: FlexibleLayoutAside;
-  main?: FlexibleLayoutMain;
-  inlineEnd?: FlexibleLayoutAside;
-  blockEnd?: FlexibleLayoutFooter;
-};
-
-export type FlexibleLayoutMain = {
-  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-  viewType: Extract<ViewType, "main">;
-};
-
-export type FlexibleLayoutAside = {
-  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-  expanded?: boolean;
-  viewType: Extract<ViewType, "inlineStart" | "inlineEnd">;
-};
-
-export type FlexibleLayoutHeader = {
-  items: FlexibleLayoutItemBase[];
-  viewType: Extract<ViewType, "blockStart">;
-};
-
-export type FlexibleLayoutFooter = {
-  distribution: FlexibleLayoutDistribution | FlexibleLayoutWidget[];
-  expanded?: boolean;
-  viewType: Extract<ViewType, "blockEnd">;
-};
-
-export type FlexibleLayoutDistribution = {
   direction: LayoutSplitterDirection;
   items: FlexibleLayoutItem[];
 };
@@ -65,14 +28,18 @@ export type FlexibleLayoutDistribution = {
 export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
 
 export type FlexibleLayoutGroup = {
+  accessibleRole?: ViewAccessibleRole;
   direction: LayoutSplitterDirection;
+  expanded?: boolean;
   items: FlexibleLayoutItem[];
   size: string;
 };
 
 export type FlexibleLayoutLeaf = {
+  accessibleRole?: ViewAccessibleRole;
   fixedOffsetSize?: number;
   size: string;
+  viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
 };
 
@@ -94,12 +61,9 @@ export type FlexibleLayoutRenders = { [key: string]: () => any };
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
-export type FlexibleLayoutSplitterModel = {
-  model?: LayoutSplitterDistribution;
-  views: Set<string>;
-};
-
 export type FlexibleLayoutView = {
+  id: string;
+  type: ViewType;
   exportParts: string;
 
   /**

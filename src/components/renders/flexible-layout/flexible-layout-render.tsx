@@ -76,7 +76,7 @@ export class ChFlexibleLayoutRender {
 
     // Mark the item as rendered
     this.renderedWidgets.add(selectedItemInfo.newSelectedId);
-    viewInfo.renderedWidgets.add(selectedItemInfo.newSelectedId); // Esto debería ser un set para evitar duplicados
+    viewInfo.renderedWidgets.add(selectedItemInfo.newSelectedId);
 
     // Mark the item as selected, displayed and rendered
     const newSelectedItem = viewInfo.widgets[selectedItemInfo.newSelectedIndex];

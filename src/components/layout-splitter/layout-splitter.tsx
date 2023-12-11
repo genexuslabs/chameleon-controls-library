@@ -187,7 +187,7 @@ export class ChLayoutSplitter implements ChComponent {
           aria-label={this.barAccessibleName}
           title={this.barAccessibleName}
           class="bar"
-          part="bar"
+          part={item.dragBarPart ? `bar ${item.dragBarPart}` : "bar"}
           style={{
             [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}

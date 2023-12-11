@@ -6,7 +6,7 @@
 
 :host {
   --ch-drag-bar__size: 5px;
-  --ch-drag-bar__size--half: var(--ch-drag-bar__size) / 2;
+  --ch-drag-bar__position-fix: calc(0.5px - var(--ch-drag-bar__size) / 2);
 
   display: grid;
   position: relative;
@@ -20,14 +20,25 @@
 
 .bar {
   position: absolute;
-  background-color: currentColor;
-  opacity: 0;
   z-index: 1;
-  transition: opacity 120ms linear 200ms;
+
+  &::after {
+    content: "";
+    display: flex;
+    position: absolute;
+    inline-size: 100%;
+    block-size: 100%;
+    background-color: currentColor;
+    opacity: 0;
+
+    transition: opacity 0s linear 200ms;
+  }
 
   &:hover,
   &:active {
-    opacity: 1;
+    &::after {
+      opacity: 1;
+    }
   }
 }
 
@@ -41,11 +52,14 @@
 
   & > .bar {
     inset-block: 0;
-    inset-inline-start: calc(
-      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
-    );
-    inline-size: var(--ch-drag-bar__size);
+    inset-inline-start: calc(var(--ch-drag-bar__start-position));
+    inline-size: 1px;
     cursor: ew-resize;
+
+    &::after {
+      inline-size: var(--ch-drag-bar__size);
+      margin-inline-start: var(--ch-drag-bar__position-fix);
+    }
   }
 }
 
@@ -54,10 +68,13 @@
 
   & > .bar {
     inset-inline: 0;
-    inset-block-start: calc(
-      var(--ch-drag-bar__start-position) - var(--ch-drag-bar__size--half)
-    );
-    block-size: var(--ch-drag-bar__size);
+    inset-block-start: calc(var(--ch-drag-bar__start-position));
+    block-size: 1px;
     cursor: ns-resize;
+
+    &::after {
+      margin-block-start: var(--ch-drag-bar__position-fix);
+      block-size: var(--ch-drag-bar__size);
+    }
   }
 }

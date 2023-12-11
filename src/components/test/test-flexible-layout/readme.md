@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description                                                     | Type                                                                                                                                                                                                                                                                                                     | Default         |
-| -------- | --------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ blockStart?: { items: FlexibleLayoutItemBase[]; }; inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; main?: { items: FlexibleLayoutItem[]; }; inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; }` | `defaultLayout` |
+| Property | Attribute | Description                                                     | Type                                                                   | Default   |
+| -------- | --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- | --------- |
+| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: FlexibleLayoutItem[]; }` | `layout2` |
 
 
 ## Dependencies
@@ -26,9 +26,9 @@ graph TD;
   ch-test-flexible-layout --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-action-group-render
   ch-test-flexible-layout --> ch-tree-view-render
-  ch-flexible-layout-render --> ch-flexible-layout-item
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-flexible-layout-group
+  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-layout-splitter
   ch-action-group-render --> ch-dropdown-item
   ch-action-group-render --> ch-action-group
   ch-action-group-render --> ch-action-group-item

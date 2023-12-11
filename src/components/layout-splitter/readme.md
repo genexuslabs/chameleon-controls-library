@@ -23,6 +23,19 @@ This component allows us to design a layout composed by columns and rows.
 | `"bar"` | The bar that divides two columns or two rows |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-flexible-layout](../flexible-layout/flexible-layout)
+
+### Graph
+```mermaid
+graph TD;
+  ch-flexible-layout --> ch-layout-splitter
+  style ch-layout-splitter fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

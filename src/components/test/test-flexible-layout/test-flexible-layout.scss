@@ -8,6 +8,10 @@ ch-test-flexible-layout {
 }
 
 .flexible-layout {
+  &::part(bar visible) {
+    background-color: #e7e7e7;
+  }
+
   &::part(inlineStart__page-container),
   &::part(inlineEnd__page-container) {
     background-color: #f2f2f2;

@@ -146,55 +146,83 @@ export const layout2: FlexibleLayout = {
   ]
 };
 
-// export const defaultLayout: FlexibleLayout = {
-//   blockStart: {
-//     items: [{ id: MENU_BAR, name: MENU_BAR }],
-//     viewType: "blockStart"
-//   },
-//   inlineStart: {
-//     distribution: [
-//       { id: KB_EXPLORER, name: "KB Explorer", selected: true },
-//       { id: PREFERENCES, name: "Preferences" }
-//     ],
-//     expanded: true,
-//     viewType: "inlineStart"
-//   },
-//   main: {
-//     distribution: {
-//       direction: "columns",
-//       items: [
-//         {
-//           size: "1fr",
-//           widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
-//         },
-//         {
-//           size: "1fr",
-//           widgets: [
-//             { id: GRID, name: "Grid" },
-//             { id: STRUCT_EDITOR, name: "Struct Editor" }
-//           ]
-//         }
-//       ]
-//     },
-//     viewType: "main"
-//   },
-//   inlineEnd: {
-//     distribution: [{ id: PROPERTIES, name: "Properties" }],
-//     expanded: true,
-//     viewType: "inlineEnd"
-//   },
-//   blockEnd: {
-//     distribution: [
-//       {
-//         id: OUTPUT,
-//         name: "Output",
-//         startImageSrc: "assets/icons/toolbar/output.svg"
-//       }
-//     ],
-//     expanded: true,
-//     viewType: "blockEnd"
-//   }
-// };
+export const layout3: FlexibleLayout = {
+  direction: "rows",
+  items: [
+    {
+      accessibleRole: "banner",
+      hideDragBar: true,
+      size: "32px",
+      viewType: "blockStart",
+      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+    },
+    {
+      direction: "columns",
+      size: "1fr",
+      items: [
+        {
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineStart",
+          widgets: [
+            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: PREFERENCES, name: "Preferences" }
+          ]
+        },
+        {
+          direction: "rows",
+          size: "1fr",
+          items: [
+            {
+              direction: "columns",
+              dragBarPart: "visible",
+              size: "1fr",
+              accessibleRole: "main",
+              items: [
+                {
+                  dragBarPart: "visible",
+                  size: "1fr",
+                  viewType: "main",
+                  widgets: [
+                    { id: START_PAGE, name: "Start Page", selected: true }
+                  ]
+                },
+                {
+                  size: "1fr",
+                  viewType: "main",
+                  widgets: [
+                    { id: GRID, name: "Grid" },
+                    { id: STRUCT_EDITOR, name: "Struct Editor" }
+                  ]
+                }
+              ]
+            },
+            {
+              accessibleRole: "contentinfo",
+              size: "200px",
+              viewType: "blockEnd",
+              widgets: [
+                {
+                  id: OUTPUT,
+                  name: "Output",
+                  startImageSrc: "assets/icons/toolbar/output.svg"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          accessibleRole: "complementary",
+          expanded: true,
+          size: "300px",
+          viewType: "inlineEnd",
+          widgets: [{ id: PROPERTIES, name: "Properties" }]
+        }
+      ]
+    }
+  ]
+};
 
 const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
   new Promise(resolve => {

@@ -15,11 +15,13 @@ export type LayoutSplitterDistributionItem =
 export type LayoutSplitterDistributionLeaf = {
   id: string;
   fixedOffsetSize?: number;
+  hideDragBar?: boolean;
   size: string;
 };
 
 export type LayoutSplitterDistributionGroup = {
   direction: LayoutSplitterDirection;
+  hideDragBar?: boolean;
   items: LayoutSplitterDistributionItem[];
   size: string;
 };
@@ -41,6 +43,7 @@ export type LayoutSplitterModelLeaf = {
   actualSize: string;
   dragBarPosition: string;
   fixedOffsetSize?: number;
+  hideDragBar?: boolean;
   id: string;
   size: string;
 };
@@ -51,6 +54,7 @@ export type LayoutSplitterModelGroup = {
   dragBarPosition: string;
   fixedOffsetSize?: number;
   fixedSizesSum: number;
+  hideDragBar?: boolean;
   items: LayoutSplitterModelItem[];
   size: string;
 };

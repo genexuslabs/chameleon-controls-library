@@ -182,7 +182,7 @@ export class ChLayoutSplitter implements ChComponent {
         />
       ),
 
-      index !== lastComponentIndex && (
+      !item.hideDragBar && index !== lastComponentIndex && (
         <div
           aria-label={this.barAccessibleName}
           title={this.barAccessibleName}

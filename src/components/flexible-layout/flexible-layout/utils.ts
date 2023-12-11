@@ -110,6 +110,10 @@ const getItemsModel = (
         size: group.size
       };
 
+      if (item.hideDragBar) {
+        splitterGroup.hideDragBar = true;
+      }
+
       return splitterGroup;
     }
 
@@ -129,6 +133,10 @@ const getItemsModel = (
       size: leaf.size,
       fixedOffsetSize: leaf.fixedOffsetSize
     };
+
+    if (item.hideDragBar) {
+      splitterLeaf.hideDragBar = true;
+    }
 
     return splitterLeaf;
   });

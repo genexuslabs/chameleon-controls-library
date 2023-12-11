@@ -31,6 +31,7 @@ export type FlexibleLayoutGroup = {
   accessibleRole?: ViewAccessibleRole;
   direction: LayoutSplitterDirection;
   expanded?: boolean;
+  hideDragBar?: boolean;
   items: FlexibleLayoutItem[];
   size: string;
 };
@@ -38,6 +39,7 @@ export type FlexibleLayoutGroup = {
 export type FlexibleLayoutLeaf = {
   accessibleRole?: ViewAccessibleRole;
   fixedOffsetSize?: number;
+  hideDragBar?: boolean;
   size: string;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];

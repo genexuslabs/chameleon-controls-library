@@ -83,6 +83,7 @@ export const layout2: FlexibleLayout = {
   items: [
     {
       accessibleRole: "banner",
+      hideDragBar: true,
       size: "32px",
       viewType: "blockStart",
       widgets: [{ id: MENU_BAR, name: MENU_BAR }]

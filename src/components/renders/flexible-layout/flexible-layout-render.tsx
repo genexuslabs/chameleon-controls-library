@@ -27,6 +27,8 @@ export class ChFlexibleLayoutRender {
 
   private layoutSplitterModels: LayoutSplitterDistribution;
 
+  private layoutSplitterParts = "";
+
   // Refs
   private flexibleLayoutRef: HTMLChFlexibleLayoutElement;
 
@@ -58,12 +60,17 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
+    const layoutSplitterPartsSet: Set<string> = new Set();
+
     this.layoutSplitterModels = getLayoutModel(
       layout,
       this.viewsInfo,
       this.blockStartWidgets,
+      layoutSplitterPartsSet,
       this.renderedWidgets
     );
+
+    this.layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   }
 
   private handleViewItemChange = (
@@ -113,6 +120,7 @@ export class ChFlexibleLayoutRender {
       <ch-flexible-layout
         class={this.cssClass || null}
         layoutModel={this.layoutSplitterModels}
+        layoutSplitterParts={this.layoutSplitterParts}
         viewsInfo={this.viewsInfo}
         onSelectedViewItemChange={this.handleViewItemChange}
         ref={el => (this.flexibleLayoutRef = el)}

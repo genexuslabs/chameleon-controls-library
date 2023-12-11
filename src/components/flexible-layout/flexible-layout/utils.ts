@@ -92,6 +92,7 @@ const getItemsModel = (
   flexibleItems: FlexibleLayoutItem[],
   viewsInfo: Map<string, FlexibleLayoutView>,
   blockStartWidgets: Set<string>,
+  layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>
 ): LayoutSplitterDistributionItem[] =>
   flexibleItems.map(item => {
@@ -105,14 +106,14 @@ const getItemsModel = (
           group.items,
           viewsInfo,
           blockStartWidgets,
+          layoutSplitterParts,
           renderedWidgets
         ),
         size: group.size
       };
 
-      if (item.hideDragBar) {
-        splitterGroup.hideDragBar = true;
-      }
+      // Custom behaviors
+      addCustomBehavior(item, splitterGroup, layoutSplitterParts);
 
       return splitterGroup;
     }
@@ -134,17 +135,31 @@ const getItemsModel = (
       fixedOffsetSize: leaf.fixedOffsetSize
     };
 
-    if (item.hideDragBar) {
-      splitterLeaf.hideDragBar = true;
-    }
+    // Custom behaviors
+    addCustomBehavior(item, splitterLeaf, layoutSplitterParts);
 
     return splitterLeaf;
   });
+
+function addCustomBehavior(
+  item: FlexibleLayoutItem,
+  splitterItem: LayoutSplitterDistributionItem,
+  layoutSplitterParts: Set<string>
+) {
+  if (item.hideDragBar) {
+    splitterItem.hideDragBar = true;
+  }
+  if (item.dragBarPart != null) {
+    splitterItem.dragBarPart = item.dragBarPart;
+    layoutSplitterParts.add(item.dragBarPart);
+  }
+}
 
 export const getLayoutModel = (
   flexibleLayout: FlexibleLayout,
   viewsInfo: Map<string, FlexibleLayoutView>,
   blockStartWidgets: Set<string>,
+  layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>
 ): LayoutSplitterDistribution => ({
   direction: flexibleLayout.direction,
@@ -152,6 +167,7 @@ export const getLayoutModel = (
     flexibleLayout.items,
     viewsInfo,
     blockStartWidgets,
+    layoutSplitterParts,
     renderedWidgets
   )
 });

@@ -29,6 +29,11 @@ export class ChFlexibleLayout {
   @Prop() readonly layoutModel: LayoutSplitterDistribution;
 
   /**
+   * Specifies additional parts to export.
+   */
+  @Prop() readonly layoutSplitterParts: string;
+
+  /**
    * Specifies the information of each view displayed.
    */
   @Prop() readonly viewsInfo: Map<string, FlexibleLayoutView> = new Map();
@@ -118,7 +123,10 @@ export class ChFlexibleLayout {
     }
 
     return (
-      <ch-layout-splitter layout={layoutModel}>
+      <ch-layout-splitter
+        layout={layoutModel}
+        exportparts={"bar," + this.layoutSplitterParts}
+      >
         {[...this.viewsInfo.values()].map(this.renderView)}
       </ch-layout-splitter>
     );

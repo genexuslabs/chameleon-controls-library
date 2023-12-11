@@ -338,6 +338,10 @@ export namespace Components {
          */
         "layoutModel": LayoutSplitterDistribution;
         /**
+          * Specifies additional parts to export.
+         */
+        "layoutSplitterParts": string;
+        /**
           * Specifies the information of each view displayed.
          */
         "viewsInfo": Map<string, FlexibleLayoutView>;
@@ -2951,6 +2955,10 @@ declare namespace LocalJSX {
           * Specifies the distribution of the items in the flexible layout.
          */
         "layoutModel"?: LayoutSplitterDistribution;
+        /**
+          * Specifies additional parts to export.
+         */
+        "layoutSplitterParts"?: string;
         /**
           * Fired when the selected item change.
          */

@@ -7,10 +7,11 @@
 
 ## Properties
 
-| Property      | Attribute | Description                                                     | Type                                                                               | Default     |
-| ------------- | --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
-| `layoutModel` | --        | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `undefined` |
-| `viewsInfo`   | --        | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutView>`                                                  | `new Map()` |
+| Property              | Attribute               | Description                                                     | Type                                                                               | Default     |
+| --------------------- | ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
+| `layoutModel`         | --                      | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `undefined` |
+| `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                           | `undefined` |
+| `viewsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutView>`                                                  | `new Map()` |
 
 
 ## Events

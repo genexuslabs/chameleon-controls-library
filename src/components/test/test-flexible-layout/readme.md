@@ -9,7 +9,7 @@
 
 | Property | Attribute | Description                                                     | Type                                                                   | Default   |
 | -------- | --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- | --------- |
-| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: FlexibleLayoutItem[]; }` | `layout2` |
+| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: FlexibleLayoutItem[]; }` | `layout3` |
 
 
 ## Dependencies

@@ -1,74 +1,13 @@
-import { Component, Listen, Prop, State, Watch, h } from "@stencil/core";
+import { Component, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
-  FlexibleLayoutDisplayedItems,
-  FlexibleLayoutGroupSelectedItemInfo,
-  FlexibleLayoutItem,
-  FlexibleLayoutItemBase,
-  FlexibleLayoutRenders
+  FlexibleLayoutRenders,
+  FlexibleLayoutView,
+  ViewSelectedItemInfo
 } from "../../flexible-layout/types";
-import { ChFlexibleLayoutGroupCustomEvent } from "../../../components";
-import { flexibleLayoutGroupMap } from "../../flexible-layout/utils";
-
-const getSelectedItem = (
-  items: FlexibleLayoutItem[]
-): FlexibleLayoutItem | undefined => items.find(item => item.selected);
-
-const initializeRenderedItems = (
-  flexibleLayout: FlexibleLayout,
-  displayedItems: FlexibleLayoutDisplayedItems,
-  renderedItems: Set<string>
-) => {
-  const layouts: {
-    items: FlexibleLayoutItem[];
-    group: keyof FlexibleLayout;
-    defaultSelected: "first" | "last";
-  }[] = [
-    {
-      items: flexibleLayout.inlineStart.items,
-      group: "inlineStart",
-      defaultSelected: "first"
-    },
-    {
-      items: flexibleLayout.main.items,
-      group: "main",
-      defaultSelected: "last"
-    },
-    {
-      items: flexibleLayout.inlineEnd.items,
-      group: "inlineEnd",
-      defaultSelected: "first"
-    },
-    {
-      items: flexibleLayout.blockEnd.items,
-      group: "blockEnd",
-      defaultSelected: "last"
-    }
-  ];
-
-  // Mark selected items to be rendered
-  layouts.forEach(layout => {
-    const items = layout.items;
-
-    if (items?.length > 0) {
-      let selectedElement = getSelectedItem(items);
-
-      // Select default item, if there is no item selected
-      if (!selectedElement) {
-        selectedElement =
-          layout.defaultSelected === "first"
-            ? items[0]
-            : items[items.length - 1];
-        selectedElement.selected = true;
-      }
-
-      selectedElement.displayed = true;
-      selectedElement.wasRendered = true;
-      displayedItems[layout.group].push(selectedElement.id);
-      renderedItems.add(selectedElement.id);
-    }
-  });
-};
+import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
+import { ChFlexibleLayoutCustomEvent } from "../../../components";
+import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 
 @Component({
   shadow: false,
@@ -80,18 +19,18 @@ export class ChFlexibleLayoutRender {
    * This Set provides optimizations to not render items that were never
    * shown on the screen.
    */
-  private renderedItems: Set<string> = new Set();
+  private renderedWidgets: Set<string> = new Set();
 
-  /**
-   * Specifies the items in the flexible layout that must be rendered.
-   */
-  @State() displayedItems: FlexibleLayoutDisplayedItems = {
-    blockStart: [],
-    inlineStart: [],
-    main: [],
-    inlineEnd: [],
-    blockEnd: []
-  };
+  private blockStartWidgets: Set<string> = new Set();
+
+  private viewsInfo: Map<string, FlexibleLayoutView> = new Map();
+
+  private layoutSplitterModels: LayoutSplitterDistribution;
+
+  private layoutSplitterParts = "";
+
+  // Refs
+  private flexibleLayoutRef: HTMLChFlexibleLayoutElement;
 
   /**
    * A CSS class to set as the `ch-flexible-layout` element class.
@@ -101,10 +40,10 @@ export class ChFlexibleLayoutRender {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop({ mutable: true }) layout: FlexibleLayout;
+  @Prop() readonly layout: FlexibleLayout;
   @Watch("layout")
   handleLayoutChange(newLayout: FlexibleLayout) {
-    initializeRenderedItems(newLayout, this.displayedItems, this.renderedItems);
+    this.setLayoutSplitterModels(newLayout);
   }
 
   /**
@@ -112,102 +51,91 @@ export class ChFlexibleLayoutRender {
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
 
-  @Listen("selectedItemChange")
-  handleItemSelectedChange(
-    event: ChFlexibleLayoutGroupCustomEvent<FlexibleLayoutGroupSelectedItemInfo>
-  ) {
-    const detail = event.detail;
-    const group = flexibleLayoutGroupMap[detail.group];
+  private setLayoutSplitterModels(layout: FlexibleLayout) {
+    // Empty layout
+    if (layout == null) {
+      // Reset layout
+      this.layoutSplitterModels = { direction: "columns", items: [] };
+
+      return;
+    }
+
+    const layoutSplitterPartsSet: Set<string> = new Set();
+
+    this.layoutSplitterModels = getLayoutModel(
+      layout,
+      this.viewsInfo,
+      this.blockStartWidgets,
+      layoutSplitterPartsSet,
+      this.renderedWidgets
+    );
+
+    this.layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
+  }
+
+  private handleViewItemChange = (
+    event: ChFlexibleLayoutCustomEvent<ViewSelectedItemInfo>
+  ) => {
+    event.stopPropagation();
+
+    const selectedItemInfo = event.detail;
+    const viewInfo = this.viewsInfo.get(selectedItemInfo.viewId);
+
+    // Mark the item as rendered
+    this.renderedWidgets.add(selectedItemInfo.newSelectedId);
+    viewInfo.renderedWidgets.add(selectedItemInfo.newSelectedId);
 
     // Mark the item as selected, displayed and rendered
-    const newSelectedItem = this.layout[group].items[detail.newSelectedIndex];
-    newSelectedItem.displayed = true;
+    const newSelectedItem = viewInfo.widgets[selectedItemInfo.newSelectedIndex];
     newSelectedItem.selected = true;
     newSelectedItem.wasRendered = true;
 
-    // Mark as displayed the item in the render
-    this.displayedItems[group] = [detail.newSelectedId];
-
-    // Mark as rendered the item
-    this.renderedItems.add(detail.newSelectedId);
-
     // Unselected the previous item
-    if (detail.lastSelectedIndex !== -1) {
+    if (selectedItemInfo.lastSelectedIndex !== -1) {
       const previousSelectedItem =
-        this.layout[group].items[detail.lastSelectedIndex];
+        viewInfo.widgets[selectedItemInfo.lastSelectedIndex];
 
-      previousSelectedItem.displayed = false;
       previousSelectedItem.selected = false;
     }
 
-    // Force re-render by updating the reference
-    this.displayedItems = { ...this.displayedItems };
+    // Shallow copy the widgets to ensure the flexible layout re-renders the view
+    viewInfo.widgets = [...viewInfo.widgets];
 
-    // Force re-render in ch-flexible-layout-group element by updating the reference
-    this.layout[group].items = [...this.layout[group].items];
-  }
-
-  /**
-   * Render items that are marked to be rendered in the `renderedItems` Set
-   */
-  private renderBlockStartItems = (items: FlexibleLayoutItemBase[]) =>
-    items.map(item => (
-      <ch-flexible-layout-item key={item.id} addSlot={false} itemId={item.id}>
-        {this.renders[item.id]()}
-      </ch-flexible-layout-item>
-    ));
-
-  /**
-   * Render items that are marked to be rendered in the `renderedItems` Set
-   */
-  private renderOtherTypeItems = (items: FlexibleLayoutItem[]) =>
-    items.map(
-      item =>
-        this.renderedItems.has(item.id) && (
-          <ch-flexible-layout-item key={item.id} itemId={item.id}>
-            {this.renders[item.id]()}
-          </ch-flexible-layout-item>
-        )
-    );
+    // Queue re-renders
+    forceUpdate(this);
+    forceUpdate(this.flexibleLayoutRef);
+  };
 
   componentWillLoad() {
-    if (this.layout == null) {
-      return;
-    }
-    initializeRenderedItems(
-      this.layout,
-      this.displayedItems,
-      this.renderedItems
-    );
+    this.setLayoutSplitterModels(this.layout);
   }
 
   render() {
-    const layout = this.layout;
-
-    if (layout == null) {
+    // Check render against the "layout" property
+    if (this.layout == null) {
       return "";
     }
 
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
-        displayedItems={this.displayedItems}
-        layout={this.layout}
+        layoutModel={this.layoutSplitterModels}
+        layoutSplitterParts={this.layoutSplitterParts}
+        viewsInfo={this.viewsInfo}
+        onSelectedViewItemChange={this.handleViewItemChange}
+        ref={el => (this.flexibleLayoutRef = el)}
       >
-        {layout.blockStart?.items != null && // Top
-          this.renderBlockStartItems(layout.blockStart.items)}
+        {[...this.blockStartWidgets].map(widgetId => this.renders[widgetId]())}
 
-        {layout.inlineStart?.items != null && // Left
-          this.renderOtherTypeItems(layout.inlineStart.items)}
-
-        {layout.main?.items != null && // Main
-          this.renderOtherTypeItems(layout.main.items)}
-
-        {layout.inlineEnd?.items != null && // Right
-          this.renderOtherTypeItems(layout.inlineEnd.items)}
-
-        {layout.blockEnd?.items != null && // Bottom
-          this.renderOtherTypeItems(layout.blockEnd.items)}
+        {[...this.renderedWidgets.values()].map(widget => (
+          <div
+            key={widget}
+            slot={widget}
+            class="ch-flexible-layout-render-slot"
+          >
+            {this.renders[widget]()}
+          </div>
+        ))}
       </ch-flexible-layout>
     );
   }

@@ -1,13 +1,58 @@
+import { AccessibleRole } from "../../common/types";
+import { LayoutSplitterDirection } from "../layout-splitter/types";
+import { TabType } from "../tab/types";
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Input model
+// - - - - - - - - - - - - - - - - - - - -
+export type ViewType = TabType | "blockStart";
+export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
+
+/**
+ * TODO: For some reason, this type does not work when is applied to an object,
+ * and the "main" or "blockStart" keys are defined
+ */
+// export type FlexibleLayout = {
+//   [key: string]: FlexibleLayoutAside | FlexibleLayoutFooter;
+//   blockStart?: FlexibleLayoutHeader;
+//   inlineStart?: FlexibleLayoutAside;
+//   main?: FlexibleLayoutMain;
+//   inlineEnd?: FlexibleLayoutAside;
+//   blockEnd?: FlexibleLayoutFooter;
+// };
 export type FlexibleLayout = {
-  blockStart?: { items: FlexibleLayoutItemBase[] };
-  inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[] };
-  main?: { items: FlexibleLayoutItem[] };
-  inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
-  blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[] };
+  direction: LayoutSplitterDirection;
+  items: FlexibleLayoutItem[];
 };
 
-export type FlexibleLayoutDisplayedItems = {
-  [key in keyof FlexibleLayout]: string[];
+export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
+
+export type FlexibleLayoutGroup = {
+  accessibleRole?: ViewAccessibleRole;
+  direction: LayoutSplitterDirection;
+  dragBarPart?: string;
+  expanded?: boolean;
+  hideDragBar?: boolean;
+  items: FlexibleLayoutItem[];
+  size: string;
+};
+
+export type FlexibleLayoutLeaf = {
+  accessibleRole?: ViewAccessibleRole;
+  dragBarPart?: string;
+  fixedOffsetSize?: number;
+  hideDragBar?: boolean;
+  size: string;
+  viewType: ViewType;
+  widgets: FlexibleLayoutWidget[];
+};
+
+export type FlexibleLayoutWidget = {
+  id: string;
+  name: string;
+  selected?: boolean;
+  startImageSrc?: string;
+  wasRendered?: boolean;
 };
 
 export type FlexibleLayoutItemBase = {
@@ -15,26 +60,32 @@ export type FlexibleLayoutItemBase = {
   name: string;
 };
 
-export type FlexibleLayoutItem = FlexibleLayoutItemBase & {
-  displayed?: boolean;
-  expanded?: boolean;
-  selected?: boolean;
-  startImageSrc?: string;
-  wasRendered?: boolean;
-};
-
-export type FlexibleLayoutGroup =
-  | "block-start"
-  | "inline-start"
-  | "main"
-  | "inline-end"
-  | "block-end";
-
 export type FlexibleLayoutRenders = { [key: string]: () => any };
 
-export type FlexibleLayoutGroupSelectedItemInfo = {
-  group: Exclude<FlexibleLayoutGroup, "block-start">;
+// - - - - - - - - - - - - - - - - - - - -
+//          Model used internally
+// - - - - - - - - - - - - - - - - - - - -
+export type FlexibleLayoutView = {
+  id: string;
+  type: ViewType;
+  expanded?: boolean;
+  exportParts: string;
+
+  /**
+   * This Set provides optimizations to not render items that were never
+   * shown on the screen.
+   */
+  renderedWidgets: Set<string>;
+  widgets: FlexibleLayoutWidget[];
+};
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Event info
+// - - - - - - - - - - - - - - - - - - - -
+export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
   newSelectedIndex: number;
+  type: TabType;
+  viewId: string;
 };

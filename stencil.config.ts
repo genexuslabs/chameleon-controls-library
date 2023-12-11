@@ -31,12 +31,10 @@ export const config: Config = {
       ]
     },
     {
-      components: [
-        "ch-flexible-layout",
-        "ch-flexible-layout-group",
-        "ch-flexible-layout-item",
-        "ch-flexible-layout-render"
-      ]
+      components: ["ch-flexible-layout", "ch-flexible-layout-render"]
+    },
+    {
+      components: ["ch-layout-splitter"] // Make sure the ch-layout-splitter control is not bundled with other components
     },
     {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]

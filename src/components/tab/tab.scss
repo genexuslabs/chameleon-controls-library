@@ -1,4 +1,4 @@
-@import "../../../common/_base";
+@import "../../common/_base";
 
 @include box-sizing();
 
@@ -8,21 +8,21 @@
   inline-size: 100%;
 }
 
-:host([type="block-start"]) {
+:host([type="blockStart"]) {
   grid-auto-flow: row;
   grid-auto-rows: max-content;
 }
 
-:host([type="inline-start"]) {
+:host([type="inlineStart"]) {
   grid-template-columns: max-content 1fr;
 }
 
 :host([type="main"]),
-:host([type="block-end"]) {
+:host([type="blockEnd"]) {
   grid-template-rows: max-content 1fr;
 }
 
-:host([type="inline-end"]) {
+:host([type="inlineEnd"]) {
   grid-template-columns: 1fr max-content;
 }
 
@@ -61,7 +61,7 @@
 }
 
 .main__button,
-.block-end__button {
+.blockEnd__button {
   display: flex;
   align-items: center;
 
@@ -75,20 +75,20 @@
 // - - - - - - - - - - - - - - - -
 //            Tab lists
 // - - - - - - - - - - - - - - - -
-.inline-start__tab-list,
-.inline-end__tab-list {
+.inlineStart__tab-list,
+.inlineEnd__tab-list {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
 }
 
 // Change the visual order, but no the order in the HTML
-.inline-end__tab-list {
+.inlineEnd__tab-list {
   order: 1;
 }
 
 .main__tab-list,
-.block-end__tab-list {
+.blockEnd__tab-list {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
@@ -98,14 +98,25 @@
   display: grid;
   block-size: 100%;
   inline-size: 100%;
+}
 
-  &--collapsed {
+// content-visibility: hidden is faster for rendering the content back, as
+// it preserves the rendering state of content (display: none does not)
+@supports (content-visibility: hidden) {
+  .page-container--collapsed {
+    content-visibility: hidden;
+    inline-size: 0;
+  }
+}
+
+@supports not (content-visibility: hidden) {
+  .page-container--collapsed {
     display: none;
   }
 }
 
-.inline-start__page,
-.inline-end__page {
+.inlineStart__page,
+.inlineEnd__page {
   display: grid;
   grid-template-rows: max-content 1fr;
 }

@@ -9,17 +9,21 @@ export type LayoutSplitterDistribution = {
 };
 
 export type LayoutSplitterDistributionItem =
-  | LayoutSplitterDistributionLeaf
-  | LayoutSplitterDistributionGroup;
+  | LayoutSplitterDistributionGroup
+  | LayoutSplitterDistributionLeaf;
 
 export type LayoutSplitterDistributionLeaf = {
   id: string;
+  dragBarPart?: string;
   fixedOffsetSize?: number;
+  hideDragBar?: boolean;
   size: string;
 };
 
 export type LayoutSplitterDistributionGroup = {
   direction: LayoutSplitterDirection;
+  dragBarPart?: string;
+  hideDragBar?: boolean;
   items: LayoutSplitterDistributionItem[];
   size: string;
 };
@@ -39,8 +43,10 @@ export type LayoutSplitterModelItem =
 
 export type LayoutSplitterModelLeaf = {
   actualSize: string;
+  dragBarPart?: string;
   dragBarPosition: string;
   fixedOffsetSize?: number;
+  hideDragBar?: boolean;
   id: string;
   size: string;
 };
@@ -48,9 +54,11 @@ export type LayoutSplitterModelLeaf = {
 export type LayoutSplitterModelGroup = {
   actualSize: string;
   direction: LayoutSplitterDirection;
+  dragBarPart?: string;
   dragBarPosition: string;
   fixedOffsetSize?: number;
   fixedSizesSum: number;
+  hideDragBar?: boolean;
   items: LayoutSplitterModelItem[];
   size: string;
 };

@@ -7,44 +7,28 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import {
-  FlexibleLayoutGroup,
-  FlexibleLayoutGroupSelectedItemInfo,
-  FlexibleLayoutItem,
-  FlexibleLayoutItemBase
-} from "../types";
+import { FlexibleLayoutWidget } from "../flexible-layout/types";
+import { tokenMap } from "../../common/utils";
+import { TabSelectedItemInfo, TabType } from "./types";
 import {
   BUTTON_CLASS,
   CAPTION_ID,
+  CLOSE_BUTTON_PART,
   IMAGE_CLASS,
   PAGE_CLASS,
   PAGE_CONTAINER_CLASS,
   PAGE_ID,
   PAGE_NAME_CLASS,
+  SELECTED_PART,
   TAB_LIST_CLASS
-} from "../utils";
-import { tokenMap } from "../../../common/utils";
-
-const accessibleRoleMap: {
-  [key in FlexibleLayoutGroup]:
-    | "banner"
-    | "complementary"
-    | "contentinfo"
-    | "main";
-} = {
-  "block-start": "banner",
-  "inline-start": "complementary",
-  main: "main",
-  "inline-end": "complementary",
-  "block-end": "contentinfo"
-} as const;
+} from "./utils";
 
 @Component({
   shadow: true,
-  styleUrl: "flexible-layout-group.scss",
-  tag: "ch-flexible-layout-group"
+  styleUrl: "tab.scss",
+  tag: "ch-tab"
 })
-export class ChFlexibleLayoutGroup {
+export class ChTab {
   private classes: {
     BUTTON?: string;
     IMAGE?: string;
@@ -80,13 +64,9 @@ export class ChFlexibleLayoutGroup {
   /**
    * Specifies the items that are displayed in the group.
    */
-  @Prop() readonly items: FlexibleLayoutItemBase[] | FlexibleLayoutItem[];
+  @Prop() readonly items: FlexibleLayoutWidget[];
   @Watch("items")
-  handleItemsChange(newItems: FlexibleLayoutItemBase[] | FlexibleLayoutItem[]) {
-    if (this.type === "block-start") {
-      return;
-    }
-
+  handleItemsChange(newItems: FlexibleLayoutWidget[]) {
     this.updateSelectedIndex(newItems);
   }
 
@@ -98,7 +78,7 @@ export class ChFlexibleLayoutGroup {
   /**
    * Specifies the flexible layout type.
    */
-  @Prop({ reflect: true }) readonly type: FlexibleLayoutGroup;
+  @Prop({ reflect: true }) readonly type: TabType;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -113,44 +93,29 @@ export class ChFlexibleLayoutGroup {
   /**
    * Fired when the selected item change.
    */
-  @Event()
-  selectedItemChange: EventEmitter<FlexibleLayoutGroupSelectedItemInfo>;
+  @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
 
   private handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {
-      // Used to avoid an TypeScript error
-      if (this.type === "block-start") {
-        return;
-      }
-
       event.stopPropagation();
 
       this.selectedItemChange.emit({
-        group: this.type,
         lastSelectedIndex: this.lastSelectedItem,
         newSelectedId: itemId,
-        newSelectedIndex: index
+        newSelectedIndex: index,
+        type: this.type
       });
 
       this.lastSelectedItem = index;
     };
 
-  private updateSelectedIndex(
-    items: FlexibleLayoutItemBase[] | FlexibleLayoutItem[]
-  ) {
-    if (this.type === "block-start") {
-      return;
-    }
-
+  private updateSelectedIndex(items: FlexibleLayoutWidget[]) {
     if (items == null) {
       this.lastSelectedItem = -1;
       return;
     }
 
-    // Hack. Only block-start type has items: FlexibleLayoutItemBase[]
-    this.lastSelectedItem = (items as FlexibleLayoutItem[]).findIndex(
-      item => item.selected
-    );
+    this.lastSelectedItem = items.findIndex(item => item.selected);
   }
 
   private handleItemDblClick = (event: MouseEvent) => {
@@ -167,14 +132,14 @@ export class ChFlexibleLayoutGroup {
     this.itemClose.emit(itemId);
   };
 
-  private renderItems = () => [
+  private renderTabBar = () => (
     <div
       role="tablist"
       aria-label={this.accessibleName}
       class={this.classes.TAB_LIST}
       part={this.classes.TAB_LIST}
     >
-      {(this.items as FlexibleLayoutItem[]).map((item, index) => (
+      {this.items.map((item, index) => (
         <button
           key={CAPTION_ID(item.id)}
           id={CAPTION_ID(item.id)}
@@ -186,7 +151,7 @@ export class ChFlexibleLayoutGroup {
           part={tokenMap({
             [this.classes.BUTTON]: true,
             [CAPTION_ID(item.id)]: true,
-            selected: item.selected
+            [SELECTED_PART]: item.selected
           })}
           onClick={
             !item.selected
@@ -212,15 +177,17 @@ export class ChFlexibleLayoutGroup {
             <button
               aria-label={this.closeButtonAccessibleName}
               class="close-button"
-              part="close-button"
+              part={CLOSE_BUTTON_PART}
               type="button"
               onClick={this.handleClose(item.id)}
             ></button>
           )}
         </button>
       ))}
-    </div>,
+    </div>
+  );
 
+  private renderTabPages = () => (
     <div
       class={{
         [this.classes.PAGE_CONTAINER]: true,
@@ -237,12 +204,12 @@ export class ChFlexibleLayoutGroup {
           aria-labelledby={CAPTION_ID(item.name)}
           class={{
             [this.classes.PAGE]: true,
-            "page--hidden": !item.displayed
+            "page--hidden": !item.selected
           }}
           part={this.classes.PAGE}
         >
           {this.showPageName &&
-            (this.type === "inline-start" || this.type === "inline-end") && (
+            (this.type === "inlineStart" || this.type === "inlineEnd") && (
               <span aria-hidden="true" part={this.classes.PAGE_NAME}>
                 {item.name}
               </span>
@@ -251,7 +218,7 @@ export class ChFlexibleLayoutGroup {
         </div>
       ))}
     </div>
-  ];
+  );
 
   componentWillLoad() {
     this.updateSelectedIndex(this.items);
@@ -266,14 +233,18 @@ export class ChFlexibleLayoutGroup {
       TAB_LIST: TAB_LIST_CLASS(this.type)
     };
 
-    this.showCaptions = this.type === "main" || this.type === "block-end";
+    this.showCaptions = this.type === "main" || this.type === "blockEnd";
   }
 
   render() {
+    if (this.items == null || this.items.length === 0) {
+      return "";
+    }
+
     return (
-      <Host role={accessibleRoleMap[this.type]}>
-        {this.items?.length > 0 &&
-          (this.type === "block-start" ? <slot /> : this.renderItems())}
+      <Host>
+        {this.renderTabBar()}
+        {this.renderTabPages()}
       </Host>
     );
   }

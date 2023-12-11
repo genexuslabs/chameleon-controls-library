@@ -7,10 +7,18 @@
 
 ## Properties
 
-| Property         | Attribute | Description                                                       | Type                                                                                                                                                                                                                                                                                                     | Default                                                                                            |
-| ---------------- | --------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `displayedItems` | --        | Specifies the items in the flexible layout that must be rendered. | `{ blockStart?: string[]; inlineStart?: string[]; main?: string[]; inlineEnd?: string[]; blockEnd?: string[]; }`                                                                                                                                                                                         | `{     blockStart: [],     inlineStart: [],     main: [],     inlineEnd: [],     blockEnd: []   }` |
-| `layout`         | --        | Specifies the distribution of the items in the flexible layout.   | `{ blockStart?: { items: FlexibleLayoutItemBase[]; }; inlineStart?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; main?: { items: FlexibleLayoutItem[]; }; inlineEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; blockEnd?: { expanded?: boolean; items: FlexibleLayoutItem[]; }; }` | `undefined`                                                                                        |
+| Property              | Attribute               | Description                                                     | Type                                                                               | Default     |
+| --------------------- | ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
+| `layoutModel`         | --                      | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `undefined` |
+| `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                           | `undefined` |
+| `viewsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutView>`                                                  | `new Map()` |
+
+
+## Events
+
+| Event                    | Description                          | Type                                                                                                                          |
+| ------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `selectedViewItemChange` | Fired when the selected item change. | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; viewId: string; }>` |
 
 
 ## Dependencies
@@ -21,12 +29,14 @@
 
 ### Depends on
 
-- [ch-flexible-layout-group](../flexible-layout-group)
+- [ch-tab](../../tab)
+- [ch-layout-splitter](../../layout-splitter)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-flexible-layout --> ch-flexible-layout-group
+  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-layout-splitter
   ch-flexible-layout-render --> ch-flexible-layout
   style ch-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```

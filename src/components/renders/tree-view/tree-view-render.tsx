@@ -567,8 +567,8 @@ export class ChTreeViewRender {
   @Method()
   async reloadItems(
     itemId: string,
-    beforeProperties?: TreeViewItemModel,
-    afterProperties?: TreeViewItemModel
+    beforeProperties?: Partial<TreeViewItemModel>,
+    afterProperties?: Partial<TreeViewItemModel>
   ) {
     if (
       !this.lazyLoadTreeItemsCallback ||
@@ -695,7 +695,10 @@ export class ChTreeViewRender {
    * of the items in the list.
    */
   @Method()
-  async updateItemsProperties(items: string[], properties: TreeViewItemModel) {
+  async updateItemsProperties(
+    items: string[],
+    properties: Partial<TreeViewItemModel>
+  ) {
     items.forEach(itemId => {
       this.updateItemProperty(itemId, properties);
     });
@@ -728,7 +731,10 @@ export class ChTreeViewRender {
     );
   }
 
-  private updateItemProperty(itemId: string, properties: TreeViewItemModel) {
+  private updateItemProperty(
+    itemId: string,
+    properties: Partial<TreeViewItemModel>
+  ) {
     const itemUIModel = this.flattenedTreeModel.get(itemId);
     if (!itemUIModel) {
       return;

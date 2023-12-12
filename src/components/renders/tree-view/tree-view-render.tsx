@@ -577,6 +577,12 @@ export class ChTreeViewRender {
       return;
     }
 
+    const noProperties = !beforeProperties && !afterProperties;
+    if (noProperties) {
+      beforeProperties = { downloading: true };
+      afterProperties = { downloading: false };
+    }
+
     // TODO: Further investigate whether this function must do a diffing to know
     // which items are removed, so we remove them from the flattenedTreeModel
 

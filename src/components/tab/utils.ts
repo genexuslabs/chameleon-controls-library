@@ -56,3 +56,10 @@ export const tabTypeToPart: {
   inlineEnd: widgets => INLINE_END_PARTS + "," + CAPTION_PARTS(widgets),
   blockEnd: widgets => BLOCK_END_PARTS + "," + CAPTION_PARTS(widgets)
 };
+
+export type TabElementSize = {
+  xStart: number;
+  xEnd: number;
+  yStart: number;
+  yEnd: number;
+};

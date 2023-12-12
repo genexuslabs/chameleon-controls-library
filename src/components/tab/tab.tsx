@@ -8,7 +8,7 @@ import {
   h
 } from "@stencil/core";
 import { FlexibleLayoutWidget } from "../flexible-layout/types";
-import { tokenMap } from "../../common/utils";
+import { inBetween, tokenMap } from "../../common/utils";
 import { TabSelectedItemInfo, TabType } from "./types";
 import {
   BUTTON_CLASS,
@@ -20,7 +20,8 @@ import {
   PAGE_ID,
   PAGE_NAME_CLASS,
   SELECTED_PART,
-  TAB_LIST_CLASS
+  TAB_LIST_CLASS,
+  TabElementSize
 } from "./utils";
 
 @Component({
@@ -40,6 +41,19 @@ export class ChTab {
   private lastSelectedItem = -1;
 
   private showCaptions: boolean;
+
+  private lastDragEvent: DragEvent;
+  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+
+  /**
+   * This variable represents the boundaries of the box where the mouse can be
+   * placed when dragging a caption, to consider that the caption is within the
+   * tab list.
+   */
+  private mouseBoundingLimits: TabElementSize;
+
+  // Refs
+  private tabListRef: HTMLDivElement;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -125,6 +139,81 @@ export class ChTab {
     this.expandMainGroup.emit();
   };
 
+  private handleDragStart = (event: DragEvent) => {
+    // Read operations
+    const mousePositionX = event.clientX;
+    const mousePositionY = event.clientY;
+
+    const buttonRect = (
+      event.target as HTMLButtonElement
+    ).getBoundingClientRect();
+    const tabListRect = this.tabListRef.getBoundingClientRect();
+
+    // Button information
+    const buttonSizes: TabElementSize = {
+      xStart: buttonRect.x,
+      xEnd: buttonRect.x + buttonRect.width,
+      yStart: buttonRect.y,
+      yEnd: buttonRect.y + buttonRect.height
+    };
+
+    const mouseDistanceToButtonTopEdge = mousePositionY - buttonSizes.yStart;
+    const mouseDistanceToButtonBottomEdge = buttonSizes.yEnd - mousePositionY;
+    const mouseDistanceToButtonLeftEdge = mousePositionX - buttonSizes.xStart;
+    const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
+
+    // Tab List information
+    const tabListSizes: TabElementSize = {
+      xStart: tabListRect.x,
+      xEnd: tabListRect.x + tabListRect.width,
+      yStart: tabListRect.y,
+      yEnd: tabListRect.y + tabListRect.height
+    };
+
+    // Mouse limits
+    this.mouseBoundingLimits = {
+      xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
+      xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
+      yStart: tabListSizes.yStart - mouseDistanceToButtonBottomEdge,
+      yEnd: tabListSizes.yEnd + mouseDistanceToButtonTopEdge
+    };
+
+    document.body.addEventListener("dragover", this.handleItemDrag, {
+      capture: true
+    });
+  };
+
+  private handleDragEnd = () => {
+    document.body.removeEventListener("dragover", this.handleItemDrag, {
+      capture: true
+    });
+  };
+
+  private handleItemDrag = (event: DragEvent) => {
+    event.preventDefault();
+    this.lastDragEvent = event;
+
+    if (!this.needForRAF) {
+      return;
+    }
+    this.needForRAF = false; // No need to call RAF up until next frame
+
+    requestAnimationFrame(() => {
+      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+
+      const mousePositionX = this.lastDragEvent.clientX;
+      const mousePositionY = this.lastDragEvent.clientY;
+
+      const mouseLimits = this.mouseBoundingLimits;
+
+      const draggedButtonIsInsideTheTabList =
+        inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
+        inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
+
+      console.log(draggedButtonIsInsideTheTabList ? "INSIDE" : "outside...");
+    });
+  };
+
   private handleClose = (itemId: string) => (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -138,6 +227,7 @@ export class ChTab {
       aria-label={this.accessibleName}
       class={this.classes.TAB_LIST}
       part={this.classes.TAB_LIST}
+      ref={el => (this.tabListRef = el)}
     >
       {this.items.map((item, index) => (
         <button
@@ -159,6 +249,9 @@ export class ChTab {
               : null
           }
           onDblClick={this.type === "main" ? this.handleItemDblClick : null}
+          // Drag and drop
+          onDragStart={this.handleDragStart}
+          onDragEnd={this.handleDragEnd}
         >
           {item.startImageSrc && (
             <img

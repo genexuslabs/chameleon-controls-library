@@ -560,6 +560,49 @@ export class ChTreeViewRender {
   }
 
   /**
+   * Given an item id and the additional properties to update before and after
+   * reload, it reloads the items of the `itemId` node by using the
+   * `lazyLoadTreeItemsCallback` property.
+   */
+  @Method()
+  async reloadItems(
+    itemId: string,
+    beforeProperties?: Partial<TreeViewItemModel>,
+    afterProperties?: Partial<TreeViewItemModel>
+  ) {
+    if (
+      !this.lazyLoadTreeItemsCallback ||
+      !this.flattenedTreeModel.has(itemId)
+    ) {
+      return;
+    }
+
+    const noProperties = !beforeProperties && !afterProperties;
+    if (noProperties) {
+      beforeProperties = { downloading: true };
+      afterProperties = { downloading: false };
+    }
+
+    // TODO: Further investigate whether this function must do a diffing to know
+    // which items are removed, so we remove them from the flattenedTreeModel
+
+    if (beforeProperties) {
+      this.updateItemProperty(itemId, beforeProperties);
+      forceUpdate(this);
+    }
+
+    const promise = this.lazyLoadTreeItemsCallback(itemId);
+
+    promise.then(result => {
+      this.loadLazyContent(itemId, result);
+
+      if (afterProperties) {
+        this.updateItemProperty(itemId, afterProperties);
+      }
+    });
+  }
+
+  /**
    * Given an item id, it displays and scrolls into the item view.
    */
   @Method()
@@ -658,10 +701,12 @@ export class ChTreeViewRender {
    * of the items in the list.
    */
   @Method()
-  async updateItemsProperties(items: string[], properties: TreeViewItemModel) {
-    items.forEach(item => {
-      const itemUIModel = this.flattenedTreeModel.get(item);
-      this.updateItemProperty(itemUIModel, properties);
+  async updateItemsProperties(
+    items: string[],
+    properties: Partial<TreeViewItemModel>
+  ) {
+    items.forEach(itemId => {
+      this.updateItemProperty(itemId, properties);
     });
 
     // Update filters
@@ -693,9 +738,10 @@ export class ChTreeViewRender {
   }
 
   private updateItemProperty(
-    itemUIModel: TreeViewItemModelExtended | undefined,
-    properties: TreeViewItemModel
+    itemId: string,
+    properties: Partial<TreeViewItemModel>
   ) {
+    const itemUIModel = this.flattenedTreeModel.get(itemId);
     if (!itemUIModel) {
       return;
     }

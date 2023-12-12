@@ -528,6 +528,14 @@
           value="false"
           caption="Hide matches and show non-matches"
         ></ch-checkbox>
+
+        <div>
+          <label>
+            Item id
+            <input id="item-id-to-reload" type="text" />
+          </label>
+          <button id="button-to-reload-items">Reload items</button>
+        </div>
       </div>
 
       <div class="buttons-wrapper">
@@ -1224,6 +1232,7 @@
           testTreeX.treeModel = importObjectsModel;
         });
 
+        // Scroll into visible
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1234,6 +1243,22 @@
         scrollIntoVisibleBtn.addEventListener("click", () => {
           testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value);
           scrollIntoVisibleInput.value = "";
+        });
+
+        // Reload items
+        const reloadItemsBtn = document.getElementById(
+          "button-to-reload-items"
+        );
+        const reloadItemsInput = document.getElementById("item-id-to-reload");
+        reloadItemsBtn.addEventListener("click", () => {
+          console.log(reloadItemsInput.value);
+
+          testTreeX.reloadItems(
+            reloadItemsInput.value,
+            { downloading: true },
+            { downloading: false }
+          );
+          reloadItemsInput.value = "";
         });
 
         const contextMenuTextBlock = document.getElementById(
@@ -1384,7 +1409,7 @@
             }
 
             setTimeout(() => {
-              resolve(lazyModel);
+              resolve(structuredClone(lazyModel));
             }, 500); // Resolves or rejects after 1 second
           });
 

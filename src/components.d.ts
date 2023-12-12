@@ -1669,6 +1669,10 @@ export namespace Components {
          */
         "multiSelection": boolean;
         /**
+          * Given an item id and the additional properties to update before and after reload, it reloads the items of the `itemId` node by using the `lazyLoadTreeItemsCallback` property.
+         */
+        "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
+        /**
           * This property allows us to implement custom rendering of tree items.
          */
         "renderItem": (
@@ -1712,7 +1716,7 @@ export namespace Components {
         /**
           * Given a item list and the properties to update, it updates the properties of the items in the list.
          */
-        "updateItemsProperties": (items: string[], properties: TreeViewItemModel) => Promise<void>;
+        "updateItemsProperties": (items: string[], properties: Partial<TreeViewItemModel>) => Promise<void>;
         /**
           * Update the information about the valid droppable zones.
           * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.

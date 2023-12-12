@@ -560,6 +560,43 @@ export class ChTreeViewRender {
   }
 
   /**
+   * Given an item id and the additional properties to update before and after
+   * reload, it reloads the items of the `itemId` node by using the
+   * `lazyLoadTreeItemsCallback` property.
+   */
+  @Method()
+  async reloadItems(
+    itemId: string,
+    beforeProperties?: TreeViewItemModel,
+    afterProperties?: TreeViewItemModel
+  ) {
+    if (
+      !this.lazyLoadTreeItemsCallback ||
+      !this.flattenedTreeModel.has(itemId)
+    ) {
+      return;
+    }
+
+    // TODO: Further investigate whether this function must do a diffing to know
+    // which items are removed, so we remove them from the flattenedTreeModel
+
+    if (beforeProperties) {
+      this.updateItemProperty(itemId, beforeProperties);
+      forceUpdate(this);
+    }
+
+    const promise = this.lazyLoadTreeItemsCallback(itemId);
+
+    promise.then(result => {
+      this.loadLazyContent(itemId, result);
+
+      if (afterProperties) {
+        this.updateItemProperty(itemId, afterProperties);
+      }
+    });
+  }
+
+  /**
    * Given an item id, it displays and scrolls into the item view.
    */
   @Method()
@@ -659,9 +696,8 @@ export class ChTreeViewRender {
    */
   @Method()
   async updateItemsProperties(items: string[], properties: TreeViewItemModel) {
-    items.forEach(item => {
-      const itemUIModel = this.flattenedTreeModel.get(item);
-      this.updateItemProperty(itemUIModel, properties);
+    items.forEach(itemId => {
+      this.updateItemProperty(itemId, properties);
     });
 
     // Update filters
@@ -692,10 +728,8 @@ export class ChTreeViewRender {
     );
   }
 
-  private updateItemProperty(
-    itemUIModel: TreeViewItemModelExtended | undefined,
-    properties: TreeViewItemModel
-  ) {
+  private updateItemProperty(itemId: string, properties: TreeViewItemModel) {
+    const itemUIModel = this.flattenedTreeModel.get(itemId);
     if (!itemUIModel) {
       return;
     }

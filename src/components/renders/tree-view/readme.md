@@ -80,6 +80,18 @@ Type: `Promise<void>`
 
 
 
+### `reloadItems(itemId: string, beforeProperties?: TreeViewItemModel, afterProperties?: TreeViewItemModel) => Promise<void>`
+
+Given an item id and the additional properties to update before and after
+reload, it reloads the items of the `itemId` node by using the
+`lazyLoadTreeItemsCallback` property.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
 Given an item id, it displays and scrolls into the item view.

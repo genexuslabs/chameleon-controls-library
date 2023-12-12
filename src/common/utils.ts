@@ -60,3 +60,8 @@ export const tokenMap = (tokens: { [key: string]: boolean }) =>
   Object.keys(tokens)
     .filter(key => tokens[key])
     .join(" ");
+
+/**
+ * `true` if `x` <= `y` <= `z`
+ */
+export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;

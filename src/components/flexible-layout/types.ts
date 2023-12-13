@@ -89,3 +89,19 @@ export type ViewSelectedItemInfo = {
   type: TabType;
   viewId: string;
 };
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Interfaces
+// - - - - - - - - - - - - - - - - - - - -
+export interface DraggableView {
+  /**
+   * Returns the info associated to the draggable views.
+   */
+  getDraggableViews: () => Promise<DraggableViewInfo>;
+}
+
+export type DraggableViewInfo = {
+  mainView: HTMLElement;
+  pageView: HTMLElement;
+  tabListView: HTMLElement;
+};

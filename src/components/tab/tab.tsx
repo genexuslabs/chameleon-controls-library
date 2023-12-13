@@ -74,7 +74,7 @@ export class ChTab implements DraggableView {
 
   private showCaptions: boolean;
 
-  private lastDragEvent: DragEvent;
+  private lastDragEvent: MouseEvent;
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
   /**
@@ -267,7 +267,7 @@ export class ChTab implements DraggableView {
     this.draggedElementIndex = -1;
   };
 
-  private handleItemDrag = (event: DragEvent) => {
+  private handleItemDrag = (event: MouseEvent) => {
     this.lastDragEvent = event;
 
     if (!this.needForRAF) {

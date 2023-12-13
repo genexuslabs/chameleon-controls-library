@@ -1,13 +1,19 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
   Host,
+  Method,
   Prop,
   Watch,
   h
 } from "@stencil/core";
-import { FlexibleLayoutWidget } from "../flexible-layout/types";
+import {
+  DraggableView,
+  DraggableViewInfo,
+  FlexibleLayoutWidget
+} from "../flexible-layout/types";
 import { inBetween, tokenMap } from "../../common/utils";
 import { TabSelectedItemInfo, TabType } from "./types";
 import {
@@ -29,7 +35,7 @@ import {
   styleUrl: "tab.scss",
   tag: "ch-tab"
 })
-export class ChTab {
+export class ChTab implements DraggableView {
   private classes: {
     BUTTON?: string;
     IMAGE?: string;
@@ -54,6 +60,9 @@ export class ChTab {
 
   // Refs
   private tabListRef: HTMLDivElement;
+  private tabPageRef: HTMLDivElement;
+
+  @Element() el: HTMLChTabElement;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -108,6 +117,18 @@ export class ChTab {
    * Fired when the selected item change.
    */
   @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
+
+  /**
+   * Returns the info associated to the draggable view.
+   */
+  @Method()
+  async getDraggableViews(): Promise<DraggableViewInfo> {
+    return {
+      mainView: this.el,
+      pageView: this.tabPageRef,
+      tabListView: this.tabListRef
+    };
+  }
 
   private handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {
@@ -288,6 +309,7 @@ export class ChTab {
         "page-container--collapsed": !this.expanded
       }}
       part={this.classes.PAGE_CONTAINER}
+      ref={el => (this.tabPageRef = el)}
     >
       {this.items.map(item => (
         <div

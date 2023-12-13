@@ -84,6 +84,11 @@ export class ChTab implements DraggableView {
    */
   private mouseBoundingLimits: TabElementSize;
 
+  /**
+   * `true` when the mouse position is out of bounds at least once.
+   */
+  private hasCrossedBoundaries = false;
+
   // Refs
   private tabListRef: HTMLDivElement;
   private tabPageRef: HTMLDivElement;
@@ -145,6 +150,11 @@ export class ChTab implements DraggableView {
    * Fired when the selected item change.
    */
   @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
+
+  /**
+   * Fired the first time a caption button is dragged outside of its tab list.
+   */
+  @Event() itemDragStart: EventEmitter<any>;
 
   /**
    * Returns the info associated to the draggable view.
@@ -265,6 +275,9 @@ export class ChTab implements DraggableView {
 
     // Restore visibility of the dragged element
     this.draggedElementIndex = -1;
+
+    // Reset state
+    this.hasCrossedBoundaries = false;
   };
 
   private handleItemDrag = (event: MouseEvent) => {
@@ -281,15 +294,23 @@ export class ChTab implements DraggableView {
       const mousePositionX = this.lastDragEvent.clientX;
       const mousePositionY = this.lastDragEvent.clientY;
 
-      const mouseLimits = this.mouseBoundingLimits;
-
-      const draggedButtonIsInsideTheTabList =
-        inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
-        inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
-
       setMousePosition(this.el, mousePositionX, mousePositionY);
 
-      console.log(draggedButtonIsInsideTheTabList ? "INSIDE" : "outside...");
+      if (!this.hasCrossedBoundaries) {
+        const mouseLimits = this.mouseBoundingLimits;
+
+        const draggedButtonIsInsideTheTabList =
+          inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
+          inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
+
+        // Emit the itemDragStart event the first time the button is out of the
+        // mouse bounds (`mouseBoundingLimits`)
+        if (draggedButtonIsInsideTheTabList) {
+          this.itemDragStart.emit();
+        }
+
+        this.hasCrossedBoundaries = !draggedButtonIsInsideTheTabList;
+      }
     });
   };
 

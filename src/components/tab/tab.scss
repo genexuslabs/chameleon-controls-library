@@ -26,6 +26,9 @@
   grid-template-columns: 1fr max-content;
 }
 
+// - - - - - - - - - - - - - - - -
+//         Caption button
+// - - - - - - - - - - - - - - - -
 :where(button) {
   all: unset;
   display: flex;
@@ -70,6 +73,11 @@
   &[aria-selected="true"] > .close-button::after {
     opacity: 1;
   }
+}
+
+// "Hide" the dragged element, without removing it from the accessibility tree
+.dragging {
+  opacity: 0;
 }
 
 // - - - - - - - - - - - - - - - -

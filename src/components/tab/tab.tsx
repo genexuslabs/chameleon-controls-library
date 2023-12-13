@@ -6,6 +6,7 @@ import {
   Host,
   Method,
   Prop,
+  State,
   Watch,
   h
 } from "@stencil/core";
@@ -63,6 +64,8 @@ export class ChTab implements DraggableView {
   private tabPageRef: HTMLDivElement;
 
   @Element() el: HTMLChTabElement;
+
+  @State() draggedElementIndex = -1;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -160,8 +163,12 @@ export class ChTab implements DraggableView {
     this.expandMainGroup.emit();
   };
 
-  private handleDragStart = (event: DragEvent) => {
+  private handleDragStart = (index: number) => (event: DragEvent) => {
+    // Set effect
     event.dataTransfer.effectAllowed = "move";
+
+    // Store the index of the dragged element
+    this.draggedElementIndex = index;
 
     // Read operations
     const mousePositionX = event.clientX;
@@ -210,6 +217,9 @@ export class ChTab implements DraggableView {
     document.body.removeEventListener("dragover", this.handleItemDrag, {
       capture: true
     });
+
+    // Restore visibility of the dragged element
+    this.draggedElementIndex = -1;
   };
 
   private handleItemDrag = (event: DragEvent) => {
@@ -260,7 +270,10 @@ export class ChTab implements DraggableView {
           aria-controls={PAGE_ID(item.id)}
           aria-label={!this.showCaptions ? item.name : null}
           aria-selected={(!!item.selected).toString()}
-          class={this.classes.BUTTON}
+          class={{
+            [this.classes.BUTTON]: true,
+            dragging: this.draggedElementIndex === index
+          }}
           part={tokenMap({
             [this.classes.BUTTON]: true,
             [CAPTION_ID(item.id)]: true,
@@ -273,7 +286,7 @@ export class ChTab implements DraggableView {
           }
           onDblClick={this.type === "main" ? this.handleItemDblClick : null}
           // Drag and drop
-          onDragStart={this.handleDragStart}
+          onDragStart={this.handleDragStart(index)}
           onDragEnd={this.handleDragEnd}
         >
           {item.startImageSrc && (

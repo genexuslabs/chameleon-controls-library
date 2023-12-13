@@ -161,6 +161,8 @@ export class ChTab implements DraggableView {
   };
 
   private handleDragStart = (event: DragEvent) => {
+    event.dataTransfer.effectAllowed = "move";
+
     // Read operations
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;

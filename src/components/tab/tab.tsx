@@ -15,7 +15,7 @@ import {
   DraggableViewInfo,
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
-import { inBetween, removeDragImage, tokenMap } from "../../common/utils";
+import { inBetween, tokenMap } from "../../common/utils";
 import { TabSelectedItemInfo, TabType } from "./types";
 import {
   BUTTON_CLASS,
@@ -189,10 +189,8 @@ export class ChTab implements DraggableView {
   };
 
   private handleDragStart = (index: number) => (event: DragEvent) => {
-    // Set effect
-    event.dataTransfer.effectAllowed = "move";
-
-    removeDragImage(event);
+    // Remove dragover event to allow mousemove event to fire
+    event.preventDefault();
 
     // Store the index of the dragged element
     this.draggedElementIndex = index;
@@ -245,13 +243,23 @@ export class ChTab implements DraggableView {
       mouseDistanceToButtonTopEdge
     );
 
-    document.body.addEventListener("dragover", this.handleItemDrag, {
+    // Add listeners
+    document.body.addEventListener("mousemove", this.handleItemDrag, {
+      capture: true,
+      passive: true
+    });
+
+    document.body.addEventListener("mouseup", this.handleDragEnd, {
       capture: true
     });
   };
 
   private handleDragEnd = () => {
-    document.body.removeEventListener("dragover", this.handleItemDrag, {
+    document.body.removeEventListener("mousemove", this.handleItemDrag, {
+      capture: true
+    });
+
+    document.body.removeEventListener("mouseup", this.handleDragEnd, {
       capture: true
     });
 
@@ -260,7 +268,6 @@ export class ChTab implements DraggableView {
   };
 
   private handleItemDrag = (event: DragEvent) => {
-    event.preventDefault();
     this.lastDragEvent = event;
 
     if (!this.needForRAF) {
@@ -326,7 +333,6 @@ export class ChTab implements DraggableView {
           onDblClick={this.type === "main" ? this.handleItemDblClick : null}
           // Drag and drop
           onDragStart={this.handleDragStart(index)}
-          onDragEnd={this.handleDragEnd}
         >
           {item.startImageSrc && (
             <img

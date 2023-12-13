@@ -15,7 +15,7 @@ import {
   DraggableViewInfo,
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
-import { inBetween, tokenMap } from "../../common/utils";
+import { inBetween, removeDragImage, tokenMap } from "../../common/utils";
 import { TabSelectedItemInfo, TabType } from "./types";
 import {
   BUTTON_CLASS,
@@ -166,6 +166,8 @@ export class ChTab implements DraggableView {
   private handleDragStart = (index: number) => (event: DragEvent) => {
     // Set effect
     event.dataTransfer.effectAllowed = "move";
+
+    removeDragImage(event);
 
     // Store the index of the dragged element
     this.draggedElementIndex = index;

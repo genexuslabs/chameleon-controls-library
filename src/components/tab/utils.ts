@@ -16,9 +16,10 @@ export const PAGE_ID = (name: string) => `page-${name}`;
 
 // Export part functions
 export const CLOSE_BUTTON_PART = "close-button";
+export const DRAG_PREVIEW = "drag-preview";
 export const SELECTED_PART = "selected";
 
-const additionalParts = `,${CLOSE_BUTTON_PART},${SELECTED_PART}`;
+const additionalParts = `,${CLOSE_BUTTON_PART},${DRAG_PREVIEW},${SELECTED_PART}`;
 
 export const TAB_TYPE_PARTS = [
   BUTTON_CLASS,

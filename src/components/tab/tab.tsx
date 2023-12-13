@@ -21,6 +21,7 @@ import {
   BUTTON_CLASS,
   CAPTION_ID,
   CLOSE_BUTTON_PART,
+  DRAG_PREVIEW,
   IMAGE_CLASS,
   PAGE_CLASS,
   PAGE_CONTAINER_CLASS,
@@ -30,6 +31,30 @@ import {
   TAB_LIST_CLASS,
   TabElementSize
 } from "./utils";
+
+const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
+const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
+
+const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
+const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
+
+const setMousePosition = (
+  element: HTMLElement,
+  positionX: number,
+  positionY: number
+) => {
+  element.style.setProperty(MOUSE_POSITION_X, `${positionX}px`);
+  element.style.setProperty(MOUSE_POSITION_Y, `${positionY}px`);
+};
+
+const setMouseOffset = (
+  element: HTMLElement,
+  offsetX: number,
+  offsetY: number
+) => {
+  element.style.setProperty(MOUSE_OFFSET_X, `${offsetX}px`);
+  element.style.setProperty(MOUSE_OFFSET_Y, `${offsetY}px`);
+};
 
 @Component({
   shadow: true,
@@ -210,6 +235,16 @@ export class ChTab implements DraggableView {
       yEnd: tabListSizes.yEnd + mouseDistanceToButtonTopEdge
     };
 
+    // Initialize mouse position to avoid initial flickering
+    setMousePosition(this.el, mousePositionX, mousePositionY);
+
+    // Update mouse offset to correctly place the dragged element preview
+    setMouseOffset(
+      this.el,
+      mouseDistanceToButtonLeftEdge,
+      mouseDistanceToButtonTopEdge
+    );
+
     document.body.addEventListener("dragover", this.handleItemDrag, {
       capture: true
     });
@@ -245,6 +280,8 @@ export class ChTab implements DraggableView {
         inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
         inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
 
+      setMousePosition(this.el, mousePositionX, mousePositionY);
+
       console.log(draggedButtonIsInsideTheTabList ? "INSIDE" : "outside...");
     });
   };
@@ -274,7 +311,7 @@ export class ChTab implements DraggableView {
           aria-selected={(!!item.selected).toString()}
           class={{
             [this.classes.BUTTON]: true,
-            dragging: this.draggedElementIndex === index
+            "dragged-element": this.draggedElementIndex === index
           }}
           part={tokenMap({
             [this.classes.BUTTON]: true,
@@ -352,6 +389,37 @@ export class ChTab implements DraggableView {
     </div>
   );
 
+  private renderDragPreview = (
+    draggedIndex: number,
+    draggedElement: FlexibleLayoutWidget
+  ) => (
+    <button
+      aria-hidden="true"
+      class={{
+        [this.classes.BUTTON]: true,
+        [DRAG_PREVIEW]: true
+      }}
+      part={tokenMap({
+        [this.classes.BUTTON]: true,
+        [CAPTION_ID(draggedIndex.toString())]: true,
+        [DRAG_PREVIEW]: true,
+        [SELECTED_PART]: true
+      })}
+    >
+      {draggedElement.startImageSrc && (
+        <img
+          class={{ [this.classes.IMAGE]: true, "caption-image": true }}
+          part={this.classes.IMAGE}
+          alt=""
+          src={draggedElement.startImageSrc}
+          loading="lazy"
+        />
+      )}
+
+      {this.showCaptions && draggedElement.name}
+    </button>
+  );
+
   componentWillLoad() {
     this.updateSelectedIndex(this.items);
 
@@ -373,10 +441,16 @@ export class ChTab implements DraggableView {
       return "";
     }
 
+    const draggedIndex = this.draggedElementIndex;
+    const draggedElement = this.items[draggedIndex];
+
     return (
       <Host>
         {this.renderTabBar()}
         {this.renderTabPages()}
+
+        {draggedIndex !== -1 &&
+          this.renderDragPreview(draggedIndex, draggedElement)}
       </Host>
     );
   }

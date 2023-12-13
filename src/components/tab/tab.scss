@@ -76,8 +76,18 @@
 }
 
 // "Hide" the dragged element, without removing it from the accessibility tree
-.dragging {
+.dragged-element {
   opacity: 0;
+}
+
+.drag-preview {
+  position: fixed;
+  left: 0; // Necessary since the custom vars are physical values
+  top: 0; // Necessary since the custom vars are physical values
+  transform: translate(
+    calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+    calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+  );
 }
 
 // - - - - - - - - - - - - - - - -

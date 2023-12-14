@@ -521,6 +521,11 @@ export class ChTreeView {
   }
 
   private trackItemDrag = (event: DragEvent) => {
+    // The Tree View must be the only element that processes the "dragover"
+    // event. Any other element that processes this event can modify the
+    // `dropEffect` an thus break the drag and drop implementation
+    event.stopImmediatePropagation();
+
     event.preventDefault();
     this.lastDragEvent = event;
 

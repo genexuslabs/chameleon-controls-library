@@ -2,6 +2,8 @@
 
 @include box-sizing();
 
+$z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
+
 :host {
   display: grid;
   block-size: 100%;
@@ -88,6 +90,7 @@
     calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
     calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
   );
+  z-index: $z-index-gx-navbar-item + 1;
 }
 
 // - - - - - - - - - - - - - - - -

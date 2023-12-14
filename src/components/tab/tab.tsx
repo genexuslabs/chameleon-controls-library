@@ -467,7 +467,6 @@ export class ChTab implements DraggableView {
               part={this.classes.IMAGE}
               alt=""
               src={draggedElement.startImageSrc}
-              loading="lazy"
             />
           )}
 

@@ -525,7 +525,7 @@ export class ChTreeView {
       (event.target as HTMLElement).closest(TREE_TAG_NAME) !== null;
 
     // The Tree View must be the only element that processes the "dragover"
-    // event. Any other element that processes this event can modify the
+    // event. Any other handler that processes this event can modify the
     // `dropEffect` an thus break the drag and drop implementation
     if (draggingInATree) {
       event.stopImmediatePropagation();

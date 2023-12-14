@@ -27,7 +27,8 @@ import {
   TreeViewFilterOptions,
   TreeViewFilterType,
   TreeViewItemModelExtended,
-  TreeViewOperationStatusModifyCaption
+  TreeViewOperationStatusModifyCaption,
+  TreeViewRemoveItemsResult
 } from "./types";
 import {
   ChTreeViewCustomEvent,
@@ -39,6 +40,7 @@ import {
   TreeViewGXItemModel,
   fromGxImageToURL
 } from "./genexus-implementation";
+import { removeTreeViewItems } from "./utils";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
@@ -560,6 +562,37 @@ export class ChTreeViewRender {
   }
 
   /**
+   * Given a list of ids, removes the items and their children in the tree.
+   */
+  @Method()
+  async removeItems(items: string[]) {
+    const removeItemsResult: TreeViewRemoveItemsResult = removeTreeViewItems(
+      items,
+      this.flattenedTreeModel,
+      this.flattenedCheckboxTreeModel,
+      this.selectedItems
+    );
+
+    // Update selected items
+    if (removeItemsResult.atLeastOneSelected) {
+      this.emitSelectedItemsChange([...this.selectedItems.keys()]);
+    }
+
+    // Re-sync checked items
+    if (removeItemsResult.atLeastOneCheckbox) {
+      this.emitCheckedItemsChange();
+    }
+
+    // Force re-render
+    if (removeItemsResult.atLeastOneElement) {
+      forceUpdate(this);
+
+      // Update filters
+      this.processFilters();
+    }
+  }
+
+  /**
    * Given an item id and the additional properties to update before and after
    * reload, it reloads the items of the `itemId` node by using the
    * `lazyLoadTreeItemsCallback` property.
@@ -911,8 +944,8 @@ export class ChTreeViewRender {
       this.selectedItems.add(itemId);
     });
 
-    const selectedItemsInfo = this._getItemsInfo([...event.detail.keys()]);
-    this.selectedItemsChange.emit(selectedItemsInfo);
+    // Update selected items
+    this.emitSelectedItemsChange([...event.detail.keys()]);
   };
 
   private handleExpandedItemChange = (
@@ -1084,6 +1117,11 @@ export class ChTreeViewRender {
 
   private emitCheckedItemsChange() {
     this.emitCheckedChange = true;
+  }
+
+  private emitSelectedItemsChange(selectedItems: string[]) {
+    const selectedItemsInfo = this._getItemsInfo(selectedItems);
+    this.selectedItemsChange.emit(selectedItemsInfo);
   }
 
   private updateCheckedItems() {

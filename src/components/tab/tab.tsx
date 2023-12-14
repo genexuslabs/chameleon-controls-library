@@ -22,6 +22,7 @@ import {
   CAPTION_ID,
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
+  DRAG_PREVIEW_ELEMENT,
   DRAG_PREVIEW_INSIDE_BLOCK,
   DRAG_PREVIEW_INSIDE_INLINE,
   DRAG_PREVIEW_OUTSIDE,
@@ -434,12 +435,8 @@ export class ChTab implements DraggableView {
     </div>
   );
 
-  private renderDragPreview = (
-    draggedIndex: number,
-    draggedElement: FlexibleLayoutWidget
-  ) => {
+  private renderDragPreview = (draggedElement: FlexibleLayoutWidget) => {
     const classes = {
-      [this.classes.BUTTON]: true,
       [DRAG_PREVIEW]: true,
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
@@ -453,27 +450,30 @@ export class ChTab implements DraggableView {
     };
 
     return (
-      <button
-        aria-hidden="true"
-        class={classes}
-        part={tokenMap({
-          ...classes,
-          [CAPTION_ID(draggedIndex.toString())]: true,
-          [SELECTED_PART]: true
-        })}
-      >
-        {draggedElement.startImageSrc && (
-          <img
-            class={{ [this.classes.IMAGE]: true, "caption-image": true }}
-            part={this.classes.IMAGE}
-            alt=""
-            src={draggedElement.startImageSrc}
-            loading="lazy"
-          />
-        )}
+      <div class={classes} part={tokenMap(classes)}>
+        <button
+          aria-hidden="true"
+          class={{ [this.classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
+          part={tokenMap({
+            [this.classes.BUTTON]: true,
+            [CAPTION_ID(draggedElement.id)]: true,
+            [DRAG_PREVIEW_ELEMENT]: true,
+            [SELECTED_PART]: draggedElement.selected
+          })}
+        >
+          {draggedElement.startImageSrc && (
+            <img
+              class={{ [this.classes.IMAGE]: true, "caption-image": true }}
+              part={this.classes.IMAGE}
+              alt=""
+              src={draggedElement.startImageSrc}
+              loading="lazy"
+            />
+          )}
 
-        {this.showCaptions && draggedElement.name}
-      </button>
+          {this.showCaptions && draggedElement.name}
+        </button>
+      </div>
     );
   };
 
@@ -506,8 +506,7 @@ export class ChTab implements DraggableView {
         {this.renderTabBar()}
         {this.renderTabPages()}
 
-        {draggedIndex !== -1 &&
-          this.renderDragPreview(draggedIndex, draggedElement)}
+        {draggedIndex !== -1 && this.renderDragPreview(draggedElement)}
       </Host>
     );
   }

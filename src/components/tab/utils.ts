@@ -17,20 +17,24 @@ export const PAGE_ID = (name: string) => `page-${name}`;
 // Export part functions
 export const CLOSE_BUTTON_PART = "close-button";
 export const DRAG_PREVIEW = "drag-preview";
+export const DRAG_PREVIEW_ELEMENT = "drag-preview-element";
 export const DRAG_PREVIEW_OUTSIDE = "drag-preview--outside-tab-list";
 export const DRAG_PREVIEW_INSIDE_BLOCK = "drag-preview--inside-tab-list__block";
 export const DRAG_PREVIEW_INSIDE_INLINE =
   "drag-preview--inside-tab-list__inline";
 export const SELECTED_PART = "selected";
 
-const additionalParts = [
-  CLOSE_BUTTON_PART,
-  DRAG_PREVIEW,
-  DRAG_PREVIEW_OUTSIDE,
-  DRAG_PREVIEW_INSIDE_BLOCK,
-  DRAG_PREVIEW_INSIDE_INLINE,
-  SELECTED_PART
-].join(",");
+const additionalParts =
+  "," +
+  [
+    CLOSE_BUTTON_PART,
+    DRAG_PREVIEW,
+    DRAG_PREVIEW_ELEMENT,
+    DRAG_PREVIEW_OUTSIDE,
+    DRAG_PREVIEW_INSIDE_BLOCK,
+    DRAG_PREVIEW_INSIDE_INLINE,
+    SELECTED_PART
+  ].join(",");
 
 export const TAB_TYPE_PARTS = [
   BUTTON_CLASS,

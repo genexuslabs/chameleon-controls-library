@@ -191,6 +191,8 @@ const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
   });
 };
 
+type ImmediateFilter = "immediate" | "debounced" | undefined;
+
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
@@ -204,9 +206,11 @@ export class ChTreeViewRender {
     new Map();
   private selectedItems: Set<string> = new Set();
 
-  private applyFilters = false;
   private emitCheckedChange = false;
 
+  // Filters info
+  private applyFilters = false;
+  private immediateFilter: ImmediateFilter;
   private filterTimeout: NodeJS.Timeout;
   private filterListAsSet: Set<string>;
 
@@ -290,7 +294,7 @@ export class ChTreeViewRender {
    * timeout to process the filter.
    * Only works if `filterType = "caption" | "metadata"`.
    */
-  @Prop() readonly filterDebounce: number = 250;
+  @Prop() readonly filterDebounce: number = 2500;
   @Watch("filterDebounce")
   handleFilterDebounceChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
@@ -1137,8 +1141,12 @@ export class ChTreeViewRender {
     this.checkedItemsChange.emit(allItemsWithCheckbox);
   }
 
-  private processFilters() {
+  private processFilters(immediateFilter?: ImmediateFilter) {
     this.applyFilters = true;
+
+    if (immediateFilter !== undefined) {
+      this.immediateFilter ??= immediateFilter;
+    }
   }
 
   private updateFilters() {
@@ -1170,12 +1178,14 @@ export class ChTreeViewRender {
       );
 
     // Check if should filter with debounce
-    if (processWithDebounce) {
+    if (processWithDebounce && this.immediateFilter !== "immediate") {
       this.filterTimeout = setTimeout(() => {
+        this.immediateFilter = undefined;
         filterFunction();
         forceUpdate(this); // After the filter processing is completed, force a re-render
       }, this.filterDebounce);
     } else {
+      this.immediateFilter = undefined;
       filterFunction();
     }
   }

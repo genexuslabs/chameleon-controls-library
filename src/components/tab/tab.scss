@@ -77,6 +77,9 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   }
 }
 
+// - - - - - - - - - - - - - - - -
+//          Drag preview
+// - - - - - - - - - - - - - - - -
 // "Hide" the dragged element, without removing it from the accessibility tree
 .dragged-element {
   opacity: 0;
@@ -86,11 +89,28 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   position: fixed;
   left: 0; // Necessary since the custom vars are physical values
   top: 0; // Necessary since the custom vars are physical values
-  transform: translate(
-    calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
-    calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
-  );
   z-index: $z-index-gx-navbar-item + 1;
+
+  &--outside-tab-list {
+    transform: translate(
+      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+    );
+  }
+
+  &--inside-tab-list__block {
+    transform: translate(
+      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      var(--ch-tab-button-position-y)
+    );
+  }
+
+  &--inside-tab-list__inline {
+    transform: translate(
+      var(--ch-tab-button-position-x),
+      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+    );
+  }
 }
 
 // - - - - - - - - - - - - - - - -

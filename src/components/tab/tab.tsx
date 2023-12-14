@@ -22,6 +22,9 @@ import {
   CAPTION_ID,
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
+  DRAG_PREVIEW_INSIDE_BLOCK,
+  DRAG_PREVIEW_INSIDE_INLINE,
+  DRAG_PREVIEW_OUTSIDE,
   IMAGE_CLASS,
   PAGE_CLASS,
   PAGE_CONTAINER_CLASS,
@@ -32,11 +35,23 @@ import {
   TabElementSize
 } from "./utils";
 
+const BUTTON_POSITION_X = "--ch-tab-button-position-x";
+const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
+
 const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
 const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
 
 const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
 const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
+
+const setButtonInitialPosition = (
+  element: HTMLElement,
+  positionX: number,
+  positionY: number
+) => {
+  element.style.setProperty(BUTTON_POSITION_X, `${positionX}px`);
+  element.style.setProperty(BUTTON_POSITION_Y, `${positionY}px`);
+};
 
 const setMousePosition = (
   element: HTMLElement,
@@ -84,11 +99,6 @@ export class ChTab implements DraggableView {
    */
   private mouseBoundingLimits: TabElementSize;
 
-  /**
-   * `true` when the mouse position is out of bounds at least once.
-   */
-  private hasCrossedBoundaries = false;
-
   // Refs
   private tabListRef: HTMLDivElement;
   private tabPageRef: HTMLDivElement;
@@ -96,6 +106,11 @@ export class ChTab implements DraggableView {
   @Element() el: HTMLChTabElement;
 
   @State() draggedElementIndex = -1;
+
+  /**
+   * `true` when the mouse position is out of bounds at least once.
+   */
+  @State() hasCrossedBoundaries = false;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
@@ -245,6 +260,9 @@ export class ChTab implements DraggableView {
 
     // Initialize mouse position to avoid initial flickering
     setMousePosition(this.el, mousePositionX, mousePositionY);
+
+    // Initialize the button position
+    setButtonInitialPosition(this.el, buttonSizes.xStart, buttonSizes.yStart);
 
     // Update mouse offset to correctly place the dragged element preview
     setMouseOffset(
@@ -419,33 +437,45 @@ export class ChTab implements DraggableView {
   private renderDragPreview = (
     draggedIndex: number,
     draggedElement: FlexibleLayoutWidget
-  ) => (
-    <button
-      aria-hidden="true"
-      class={{
-        [this.classes.BUTTON]: true,
-        [DRAG_PREVIEW]: true
-      }}
-      part={tokenMap({
-        [this.classes.BUTTON]: true,
-        [CAPTION_ID(draggedIndex.toString())]: true,
-        [DRAG_PREVIEW]: true,
-        [SELECTED_PART]: true
-      })}
-    >
-      {draggedElement.startImageSrc && (
-        <img
-          class={{ [this.classes.IMAGE]: true, "caption-image": true }}
-          part={this.classes.IMAGE}
-          alt=""
-          src={draggedElement.startImageSrc}
-          loading="lazy"
-        />
-      )}
+  ) => {
+    const classes = {
+      [this.classes.BUTTON]: true,
+      [DRAG_PREVIEW]: true,
+      [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
-      {this.showCaptions && draggedElement.name}
-    </button>
-  );
+      [DRAG_PREVIEW_INSIDE_INLINE]:
+        !this.hasCrossedBoundaries &&
+        (this.type === "inlineStart" || this.type === "inlineEnd"),
+
+      [DRAG_PREVIEW_INSIDE_BLOCK]:
+        !this.hasCrossedBoundaries &&
+        (this.type === "main" || this.type === "blockEnd")
+    };
+
+    return (
+      <button
+        aria-hidden="true"
+        class={classes}
+        part={tokenMap({
+          ...classes,
+          [CAPTION_ID(draggedIndex.toString())]: true,
+          [SELECTED_PART]: true
+        })}
+      >
+        {draggedElement.startImageSrc && (
+          <img
+            class={{ [this.classes.IMAGE]: true, "caption-image": true }}
+            part={this.classes.IMAGE}
+            alt=""
+            src={draggedElement.startImageSrc}
+            loading="lazy"
+          />
+        )}
+
+        {this.showCaptions && draggedElement.name}
+      </button>
+    );
+  };
 
   componentWillLoad() {
     this.updateSelectedIndex(this.items);

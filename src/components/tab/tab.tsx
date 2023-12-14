@@ -72,6 +72,10 @@ const setMouseOffset = (
   element.style.setProperty(MOUSE_OFFSET_Y, `${offsetY}px`);
 };
 
+const addGrabbingStyle = () =>
+  document.body.style.setProperty("cursor", "grabbing");
+const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
+
 @Component({
   shadow: true,
   styleUrl: "tab.scss",
@@ -272,6 +276,8 @@ export class ChTab implements DraggableView {
       mouseDistanceToButtonTopEdge
     );
 
+    addGrabbingStyle();
+
     // Add listeners
     document.body.addEventListener("mousemove", this.handleItemDrag, {
       capture: true,
@@ -291,6 +297,8 @@ export class ChTab implements DraggableView {
     document.body.removeEventListener("mouseup", this.handleDragEnd, {
       capture: true
     });
+
+    removeGrabbingStyle();
 
     // Restore visibility of the dragged element
     this.draggedElementIndex = -1;

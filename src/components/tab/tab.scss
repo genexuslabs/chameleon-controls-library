@@ -91,6 +91,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   top: 0; // Necessary since the custom vars are physical values
   z-index: $z-index-gx-navbar-item + 1;
 
+  &-element {
+    cursor: grabbing;
+  }
+
   &--outside-tab-list {
     transform: translate(
       calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),

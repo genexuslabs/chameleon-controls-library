@@ -592,7 +592,7 @@ export class ChTreeViewRender {
       forceUpdate(this);
 
       // Update filters
-      this.processFilters();
+      this.processFilters("immediate");
     }
   }
 

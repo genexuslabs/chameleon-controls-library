@@ -68,6 +68,7 @@ const defaultRenderItem = (
 ) =>
   (treeState.filterType === "none" || itemModel.render !== false) && (
     <ch-tree-view-item
+      key={itemModel.id}
       id={itemModel.id}
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? treeState.checkbox}
@@ -294,7 +295,7 @@ export class ChTreeViewRender {
    * timeout to process the filter.
    * Only works if `filterType = "caption" | "metadata"`.
    */
-  @Prop() readonly filterDebounce: number = 2500;
+  @Prop() readonly filterDebounce: number = 250;
   @Watch("filterDebounce")
   handleFilterDebounceChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {

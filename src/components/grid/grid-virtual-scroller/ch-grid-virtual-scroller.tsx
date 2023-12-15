@@ -5,7 +5,8 @@ import {
   Event,
   EventEmitter,
   Watch,
-  State
+  State,
+  h
 } from "@stencil/core";
 
 /**
@@ -18,12 +19,24 @@ import {
   styleUrl: "ch-grid-virtual-scroller.scss",
   shadow: false
 })
-export class ChGridVirtualScrollerLegend {
+export class ChGridVirtualScroller {
   private gridMainEl: HTMLElement;
   private resizeObserver = new ResizeObserver(this.resizeHandler.bind(this));
-  private timer: NodeJS.Timeout;
+  private virtualRowSizeElement: HTMLDivElement;
 
   @Element() el: HTMLChGridVirtualScrollerElement;
+
+  /**
+   * Height of header in pixels.
+   */
+  @State() headerHeight = 0;
+
+  @Watch("headerHeight")
+  headerHeightHandler() {
+    if (this.gridMainEl) {
+      this.updateViewPortItems();
+    }
+  }
 
   /**
    * Height of each row in pixels.
@@ -137,6 +150,7 @@ export class ChGridVirtualScrollerLegend {
   }
 
   componentDidLoad() {
+    this.resizeObserver.observe(this.virtualRowSizeElement);
     this.updateViewPortItems();
   }
 
@@ -150,7 +164,9 @@ export class ChGridVirtualScrollerLegend {
     );
 
     this.browserHeight = document.documentElement.clientHeight;
-    this.rowHeight = rowHeights.length >= 4 ? parseInt(rowHeights[2]) : 0; // row[0]:column header, row[1]:top shadow row, row[2]:first row, row[3]:second row OR bottom shadow row
+    // [0]:header height, [1]:deprecated, [2]:first row height
+    this.headerHeight = rowHeights.length >= 3 ? parseInt(rowHeights[0]) : 0;
+    this.rowHeight = rowHeights.length >= 3 ? parseInt(rowHeights[2]) : 0;
 
     if (this.rowHeight > 0) {
       this.hasGridScroll =
@@ -162,7 +178,7 @@ export class ChGridVirtualScrollerLegend {
     }
   }
 
-  private updateViewPortItems(eventInfo?: Event) {
+  private updateViewPortItems() {
     const percentScroll = this.getPercentScroll();
     let startIndex: number;
 
@@ -180,24 +196,26 @@ export class ChGridVirtualScrollerLegend {
       );
     }
 
-    this.el.style.paddingTop = `${startIndex * this.rowHeight}px`;
-    this.el.style.paddingBottom = `${
-      (this.items.length -
-        (startIndex + Math.min(this.items.length, this.maxViewPortItems))) *
-      this.rowHeight
-    }px`;
+    const hiddenHeight =
+      this.maxViewPortItems * this.rowHeight +
+      this.headerHeight -
+      this.gridMainEl.clientHeight;
+    const offset = (percentScroll * hiddenHeight) / 100;
+
+    this.el.style.setProperty(
+      "--ch-grid-virtual-scroller-position",
+      `translateY(${this.gridMainEl.scrollTop - offset}px)`
+    );
+    this.el.style.setProperty(
+      "--ch-grid-virtual-scroller-height",
+      `${(this.items.length - this.maxViewPortItems) * this.rowHeight}px`
+    );
 
     this.viewPortItems = this.items.slice(
       startIndex,
       startIndex + this.maxViewPortItems
     );
     this.viewPortItemsChanged.emit();
-
-    if (eventInfo) {
-      // Angular discards events during rendering, if it lags it can discard the last one and not display correctly
-      clearTimeout(this.timer);
-      this.timer = setTimeout(this.updateViewPortItems.bind(this), 100);
-    }
   }
 
   private getPercentScroll(): number {
@@ -218,5 +236,14 @@ export class ChGridVirtualScrollerLegend {
     }
 
     return hiddenHeight > 0 ? (scrollPosition * 100) / hiddenHeight : 0;
+  }
+
+  render() {
+    return (
+      <div
+        ref={el => (this.virtualRowSizeElement = el)}
+        class="virtual-scroller-row-size"
+      ></div>
+    );
   }
 }

@@ -382,7 +382,7 @@ export class ChTreeView {
   @Method()
   async scrollIntoVisible(treeItemId: string) {
     const itemRef = this.el.querySelector(
-      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
+      `${TREE_ITEM_TAG_NAME}[id="${treeItemId}"]`
     );
     if (!itemRef) {
       return;

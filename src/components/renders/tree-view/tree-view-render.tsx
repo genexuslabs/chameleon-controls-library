@@ -40,7 +40,11 @@ import {
   TreeViewGXItemModel,
   fromGxImageToURL
 } from "./genexus-implementation";
-import { removeTreeViewItems } from "./utils";
+import {
+  removeTreeViewItems,
+  scrollIntoVisibleId,
+  scrollIntoVisiblePath
+} from "./utils";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
@@ -208,6 +212,8 @@ export class ChTreeViewRender {
   private selectedItems: Set<string> = new Set();
 
   private emitCheckedChange = false;
+
+  private rootNode: TreeViewItemModel;
 
   // Filters info
   private applyFilters = false;
@@ -641,34 +647,35 @@ export class ChTreeViewRender {
   }
 
   /**
-   * Given an item id, it displays and scrolls into the item view.
+   * Given the path of the item (represent by a sorted array containing all ids
+   * from the root to the item), it displays and scrolls into the item view.
+   * The path can also be a string representing the id of the item to scroll
+   * into.
    */
   @Method()
-  async scrollIntoVisible(treeItemId: string) {
-    const itemUIModel = this.flattenedTreeModel.get(treeItemId);
+  async scrollIntoVisible(path: string | string[]) {
+    const hasOnlyTheItemId = typeof path === "string";
 
-    if (!itemUIModel) {
-      // @todo Check if the item is on the server?
+    const success = await (hasOnlyTheItemId
+      ? scrollIntoVisibleId(path, this.flattenedTreeModel)
+      : scrollIntoVisiblePath(
+          path,
+          this.flattenedTreeModel,
+          this.rootNode,
+          this.lazyLoadTreeItemsCallback
+        ));
+
+    if (!success) {
       return;
     }
-
-    let visitedNode = itemUIModel.parentItem as TreeViewItemModel;
-
-    // While the parent is not the root, update the UI Models
-    while (visitedNode && visitedNode.id != null) {
-      // Expand the item
-      visitedNode.expanded = true;
-
-      const visitedNodeUIModel = this.flattenedTreeModel.get(visitedNode.id);
-      visitedNode = visitedNodeUIModel.parentItem as TreeViewItemModel;
-    }
+    const itemId = hasOnlyTheItemId ? path : path[path.length - 1];
 
     forceUpdate(this);
 
     // @todo For some reason, when the model is created using the "big model" option,
     // this implementation does not work when only the UI Model is updated. So, to
     // expand the items, we have to delegate the responsibility to the tree-x
-    this.treeRef.scrollIntoVisible(treeItemId);
+    this.treeRef.scrollIntoVisible(itemId);
   }
 
   /**
@@ -1082,7 +1089,8 @@ export class ChTreeViewRender {
       this.treeRef.clearSelectedItemsInfo();
     }
 
-    this.flattenSubModel({ id: null, caption: null, items: this.treeModel });
+    this.rootNode = { id: null, caption: null, items: this.treeModel };
+    this.flattenSubModel(this.rootNode);
 
     // Re-sync checked items
     this.emitCheckedItemsChange();

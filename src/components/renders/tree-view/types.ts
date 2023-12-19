@@ -68,3 +68,7 @@ export type TreeViewRemoveItemsResult = {
   atLeastOneCheckbox: boolean;
   atLeastOneSelected: boolean;
 };
+
+export type LazyLoadTreeItemsCallback = (
+  treeItemId: string
+) => Promise<TreeViewItemModel[]>;

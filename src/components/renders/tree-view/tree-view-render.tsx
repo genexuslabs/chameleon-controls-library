@@ -23,6 +23,7 @@ import {
   TreeViewItemSelectedInfo
 } from "../../tree-view/tree-view/types";
 import {
+  LazyLoadTreeItemsCallback,
   TreeViewFilterInfo,
   TreeViewFilterOptions,
   TreeViewFilterType,
@@ -45,6 +46,8 @@ import {
   scrollIntoVisibleId,
   scrollIntoVisiblePath
 } from "./utils";
+import { reloadItems } from "./reload-items";
+import { updateItemProperty } from "./update-item-property";
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
@@ -366,9 +369,7 @@ export class ChTreeViewRender {
   /**
    * Callback that is executed when a item request to load its subitems.
    */
-  @Prop() readonly lazyLoadTreeItemsCallback: (
-    treeItemId: string
-  ) => Promise<TreeViewItemModel[]>;
+  @Prop() readonly lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback;
 
   /**
    * Callback that is executed when a item request to modify its caption.
@@ -614,36 +615,16 @@ export class ChTreeViewRender {
     beforeProperties?: Partial<TreeViewItemModel>,
     afterProperties?: Partial<TreeViewItemModel>
   ) {
-    if (
-      !this.lazyLoadTreeItemsCallback ||
-      !this.flattenedTreeModel.has(itemId)
-    ) {
-      return;
-    }
-
-    const noProperties = !beforeProperties && !afterProperties;
-    if (noProperties) {
-      beforeProperties = { downloading: true };
-      afterProperties = { downloading: false };
-    }
-
-    // TODO: Further investigate whether this function must do a diffing to know
-    // which items are removed, so we remove them from the flattenedTreeModel
-
-    if (beforeProperties) {
-      this.updateItemProperty(itemId, beforeProperties);
-      forceUpdate(this);
-    }
-
-    const promise = this.lazyLoadTreeItemsCallback(itemId);
-
-    promise.then(result => {
-      this.loadLazyContent(itemId, result);
-
-      if (afterProperties) {
-        this.updateItemProperty(itemId, afterProperties);
-      }
-    });
+    reloadItems(
+      this,
+      itemId,
+      this.flattenedTreeModel,
+      this.lazyLoadTreeItemsCallback,
+      (itemId: string, items?: TreeViewItemModel[]) =>
+        this.loadLazyContent(itemId, items),
+      beforeProperties,
+      afterProperties
+    );
   }
 
   /**
@@ -751,7 +732,7 @@ export class ChTreeViewRender {
     properties: Partial<TreeViewItemModel>
   ) {
     items.forEach(itemId => {
-      this.updateItemProperty(itemId, properties);
+      updateItemProperty(itemId, properties, this.flattenedTreeModel);
     });
 
     // Update filters
@@ -780,24 +761,6 @@ export class ChTreeViewRender {
       draggedItems,
       validDrop
     );
-  }
-
-  private updateItemProperty(
-    itemId: string,
-    properties: Partial<TreeViewItemModel>
-  ) {
-    const itemUIModel = this.flattenedTreeModel.get(itemId);
-    if (!itemUIModel) {
-      return;
-    }
-
-    const itemInfo = itemUIModel.item;
-
-    Object.keys(properties).forEach(propertyName => {
-      if (properties[propertyName] !== undefined) {
-        itemInfo[propertyName] = properties[propertyName];
-      }
-    });
   }
 
   @Listen("checkboxChange")

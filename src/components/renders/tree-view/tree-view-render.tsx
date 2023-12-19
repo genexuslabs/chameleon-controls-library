@@ -620,8 +620,8 @@ export class ChTreeViewRender {
       itemId,
       this.flattenedTreeModel,
       this.lazyLoadTreeItemsCallback,
-      (itemId: string, items?: TreeViewItemModel[]) =>
-        this.loadLazyContent(itemId, items),
+      (itemId, items) => this.loadLazyContent(itemId, items),
+      (items: string[]) => this.removeItems(items),
       beforeProperties,
       afterProperties
     );

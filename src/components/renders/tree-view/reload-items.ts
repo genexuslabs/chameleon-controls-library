@@ -8,11 +8,21 @@ export const reloadItems = (
   itemId: string,
   flattenedTreeModel: Map<string, TreeViewItemModelExtended>,
   lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback,
-  loadLazyContent: (itemId: string, items?: TreeViewItemModel[]) => void,
+  loadLazyContent: (
+    itemId: string,
+    items?: TreeViewItemModel[]
+  ) => Promise<void>,
+  removeItems: (items: string[]) => void,
   beforeProperties?: Partial<TreeViewItemModel>,
   afterProperties?: Partial<TreeViewItemModel>
 ) => {
-  if (!lazyLoadTreeItemsCallback || !flattenedTreeModel.has(itemId)) {
+  const itemToReloadUIModel = flattenedTreeModel.get(itemId);
+
+  if (
+    !lazyLoadTreeItemsCallback ||
+    !itemToReloadUIModel ||
+    itemToReloadUIModel.item.leaf === true
+  ) {
     return;
   }
 
@@ -22,9 +32,6 @@ export const reloadItems = (
     afterProperties = { downloading: false };
   }
 
-  // TODO: Further investigate whether this function must do a diffing to know
-  // which items are removed, so we remove them from the flattenedTreeModel
-
   if (beforeProperties) {
     updateItemProperty(itemId, beforeProperties, flattenedTreeModel);
     forceUpdate(classRef);
@@ -32,11 +39,69 @@ export const reloadItems = (
 
   const promise = lazyLoadTreeItemsCallback(itemId);
 
-  promise.then(result => {
-    loadLazyContent(itemId, result);
+  promise.then(async newItems => {
+    // Store previous ids in a Set for efficient access
+    const oldItemsSet = new Set(
+      itemToReloadUIModel.item.items.map(item => item.id)
+    );
+
+    const reloadNewItemsQueue: string[] = [];
+
+    // Reconcile the state of old items to new ones
+    newItems.forEach(newItem => {
+      const newItemOldUIModel = flattenedTreeModel.get(newItem.id);
+
+      // If the item previously existed in the client
+      if (newItemOldUIModel && oldItemsSet.has(newItem.id)) {
+        const newItemOldInfo = newItemOldUIModel.item;
+
+        // Reconciliate the state
+        newItem.checked = newItemOldInfo.checked;
+        newItem.expanded = newItemOldInfo.expanded;
+        newItem.indeterminate = newItemOldInfo.indeterminate;
+        newItem.selected = newItemOldInfo.selected;
+
+        const newItemWasLazyLoaded =
+          newItem.lazy && newItemOldInfo.lazy === false;
+
+        if (newItemWasLazyLoaded) {
+          newItem.lazy = false;
+
+          // Don't remove items until the child item is reloaded
+          newItem.items = newItemOldInfo.items;
+
+          // Add the item to be reloaded after its parent has finished its reload
+          reloadNewItemsQueue.push(newItem.id);
+        }
+
+        // Remove the item from the set to properly count items that no longer
+        // exist in the node
+        oldItemsSet.delete(newItem.id);
+      }
+    });
+
+    // Remove all the items that no longer exists in the node
+    if (oldItemsSet.size > 0) {
+      removeItems([...oldItemsSet.keys()]);
+    }
+
+    // Update the items of the reloaded node
+    await loadLazyContent(itemId, newItems);
 
     if (afterProperties) {
       updateItemProperty(itemId, afterProperties, flattenedTreeModel);
     }
+
+    // Reload child items that were lazy loaded
+    reloadNewItemsQueue.forEach(itemToReload =>
+      reloadItems(
+        classRef,
+        itemToReload,
+        flattenedTreeModel,
+        lazyLoadTreeItemsCallback,
+        loadLazyContent,
+        removeItems
+      )
+    );
   });
 };

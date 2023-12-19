@@ -61,7 +61,7 @@ const DEFAULT_SELECTED_VALUE = false;
 
 // There are a filter applied and, if the type is "caption" or
 // "metadata", the filter property must be set
-const treeViewHasFilters = (filterType: TreeViewFilterType, filter) =>
+const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   filterType !== "none" &&
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
@@ -213,6 +213,14 @@ export class ChTreeViewRender {
   private flattenedCheckboxTreeModel: Map<string, TreeViewItemModelExtended> =
     new Map();
   private selectedItems: Set<string> = new Set();
+
+  // UI Models when filters are applied. These UI models are allocated at
+  // runtime to optimize memory usage
+  private flattenedCheckboxTreeModelFilter: Map<
+    string,
+    TreeViewItemModelExtended
+  >;
+  private selectedItemsFilter: Set<string>;
 
   private emitCheckedChange = false;
 
@@ -585,14 +593,16 @@ export class ChTreeViewRender {
       this.selectedItems
     );
 
-    // Update selected items
-    if (removeItemsResult.atLeastOneSelected) {
-      this.emitSelectedItemsChange([...this.selectedItems.keys()]);
-    }
+    if (!treeViewHasFilters(this.filterType, this.filter)) {
+      // Update selected items
+      if (removeItemsResult.atLeastOneSelected) {
+        this.emitSelectedItemsChange([...this.selectedItems.keys()]);
+      }
 
-    // Re-sync checked items
-    if (removeItemsResult.atLeastOneCheckbox) {
-      this.emitCheckedItemsChange();
+      // Re-sync checked items
+      if (removeItemsResult.atLeastOneCheckbox) {
+        this.emitCheckedItemsChange();
+      }
     }
 
     // Force re-render
@@ -1088,6 +1098,18 @@ export class ChTreeViewRender {
 
     item.render = satisfiesFilter; // Update item render
 
+    // Update selected and checkbox items
+    if (satisfiesFilter) {
+      if (item.selected) {
+        this.selectedItemsFilter.add(item.id);
+      }
+
+      if (item.checkbox ?? this.checkbox) {
+        const itemUIModel = this.flattenedCheckboxTreeModel.get(item.id);
+        this.flattenedCheckboxTreeModelFilter.set(item.id, itemUIModel);
+      }
+    }
+
     return satisfiesFilter;
   }
 
@@ -1101,9 +1123,13 @@ export class ChTreeViewRender {
   }
 
   private updateCheckedItems() {
+    const checkedItemsMap = treeViewHasFilters(this.filterType, this.filter)
+      ? this.flattenedCheckboxTreeModelFilter
+      : this.flattenedCheckboxTreeModel;
+
     // New copy of the checked items
     const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
-      new Map(this.flattenedCheckboxTreeModel);
+      new Map(checkedItemsMap);
 
     // Update the checked value if not defined
     allItemsWithCheckbox.forEach(itemUIModel => {
@@ -1123,6 +1149,9 @@ export class ChTreeViewRender {
 
   private updateFilters() {
     if (this.filterType === "none") {
+      // Remove memory allocation
+      this.flattenedCheckboxTreeModelFilter = undefined;
+      this.selectedItemsFilter = undefined;
       return;
     }
 
@@ -1133,7 +1162,11 @@ export class ChTreeViewRender {
       this.filterDebounce > 0 &&
       (this.filterType === "caption" || this.filterType === "metadata");
 
-    const filterFunction = () =>
+    const filterFunction = () => {
+      // Allocate Map and Set
+      this.flattenedCheckboxTreeModelFilter = new Map();
+      this.selectedItemsFilter = new Set();
+
       this.filterSubModel(
         {
           id: null,
@@ -1149,6 +1182,13 @@ export class ChTreeViewRender {
         }
       );
 
+      // Emit that selected and checked items have changed, regardless of
+      // whether is true or not
+      // TODO: Check with the last filter if we must emit the event
+      this.updateCheckedItems();
+      this.emitSelectedItemsChange([...this.selectedItemsFilter.keys()]);
+    };
+
     // Check if should filter with debounce
     if (processWithDebounce && this.immediateFilter !== "immediate") {
       this.filterTimeout = setTimeout(() => {
@@ -1156,7 +1196,9 @@ export class ChTreeViewRender {
         filterFunction();
         forceUpdate(this); // After the filter processing is completed, force a re-render
       }, this.filterDebounce);
-    } else {
+    }
+    // No debounce
+    else {
       this.immediateFilter = undefined;
       filterFunction();
     }

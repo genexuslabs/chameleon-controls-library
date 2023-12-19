@@ -347,7 +347,7 @@ export class ChTreeViewRender {
    * | `unchecked` | Show only the items that have a checkbox and are not checked.                                  |
    * | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
    * | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. |
-   * | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     |
+   * | `list`      | Show only the items that are contained in the array determinate by the `filterList` property.  |
    * | `none`      | Show all items.                                                                                |
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
@@ -416,7 +416,7 @@ export class ChTreeViewRender {
   @Prop() readonly toggleCheckboxes: boolean = false;
 
   /**
-   * This property lets you define the model of the ch-tree-x control.
+   * This property lets you define the model of the ch-tree-view-render control.
    */
   @Prop() readonly treeModel: TreeViewItemModel[] = [];
   @Watch("treeModel")
@@ -655,7 +655,7 @@ export class ChTreeViewRender {
 
     // @todo For some reason, when the model is created using the "big model" option,
     // this implementation does not work when only the UI Model is updated. So, to
-    // expand the items, we have to delegate the responsibility to the tree-x
+    // expand the items, we have to delegate the responsibility to the tree-view
     this.treeRef.scrollIntoVisible(itemId);
   }
 

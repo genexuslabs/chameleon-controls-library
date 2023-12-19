@@ -1,8 +1,12 @@
 @layer ch-grid {
-    ch-grid-rowset-empty {
-      display: flex;
-      grid-column-start: 1;
-      grid-column-end: -1;
-      margin-inline-start: calc(var(--indent) * (var(--level)));
-    }
+  ch-grid-rowset-empty {
+    display: flex;
+    grid-column-start: 1;
+    grid-column-end: -1;
+    margin-inline-start: calc(var(--indent) * (var(--level)));
   }
+  ch-grid:has(> ch-grid-rowset:only-of-type
+      > ch-grid-rowset-empty:only-child)::part(main) {
+    grid-template-rows: max-content 1fr;
+  }
+}

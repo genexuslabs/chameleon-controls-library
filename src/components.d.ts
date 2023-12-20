@@ -39,6 +39,40 @@ import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
+export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
+export { DropdownPosition } from "./components/dropdown/types";
+export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { DropdownItemModel } from "./components/renders/dropdown/types";
+export { LayoutSplitterDistribution } from "./components/layout-splitter/types";
+export { FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+export { GridLocalization } from "./components/grid/ch-grid";
+export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
+export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
+export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
+export { Color, Size } from "./components/icon/icon";
+export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
+export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
+export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
+export { NotificationMessageWithDelay } from "./components/notifications/notifications-types";
+export { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
+export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
+export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
+export { ecLevel } from "./components/qr/ch-qr";
+export { GxDataTransferInfo, LabelPosition } from "./common/types";
+export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+export { TabSelectedItemInfo, TabType } from "./components/tab/types";
+export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+export { checkedChTreeItem } from "./components/tree/ch-tree";
+export { chTreeItemData } from "./components/tree-item/ch-tree-item";
+export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
+export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
+export { TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption } from "./components/renders/tree-view/types";
+export { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
+export { ChWindowAlign } from "./components/window/ch-window";
+export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
+export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
+export { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
     interface ChAccordion {
         /**
@@ -390,6 +424,9 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
     interface ChGrid {
         /**
           * A boolean indicating whether the user can drag column headers to reorder columns.
@@ -514,20 +551,32 @@ export namespace Components {
          */
         "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
     }
+    /**
+     * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
     interface ChGridActionRefresh {
         /**
           * Indicates whether the refresh button is disabled or not.
          */
         "disabled": boolean;
     }
+    /**
+     * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     */
     interface ChGridActionSettings {
         /**
           * Indicates whether the settings button is disabled or not.
          */
         "disabled": boolean;
     }
+    /**
+     * The `ch-grid-actionbar` component represents a container for a grid actions.
+     */
     interface ChGridActionbar {
     }
+    /**
+     * The `ch-grid-column` component represents a grid column.
+     */
     interface ChGridColumn {
         /**
           * @deprecated Use "columnImage" or "columnImageSet" instead. A URL to an icon to display in the column header.
@@ -640,18 +689,29 @@ export namespace Components {
          */
         "sortable": boolean;
     }
+    /**
+     * The `ch-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
     interface ChGridColumnDisplay {
         /**
           * The column element that is being monitored.
          */
         "column": HTMLChGridColumnElement;
     }
+    /**
+     * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     */
     interface ChGridColumnResize {
         /**
           * The column element that is being resized.
          */
         "column": HTMLChGridColumnElement;
     }
+    /**
+     * The `ch-grid-column-settings` component represents a settings window for a column.
+     */
     interface ChGridColumnSettings {
         /**
           * The `HTMLChGridColumnElement` that the settings window is associated with.
@@ -662,8 +722,14 @@ export namespace Components {
          */
         "show": boolean;
     }
+    /**
+     * The `ch-grid-columnset` component represents a group of columns.
+     */
     interface ChGridColumnset {
     }
+    /**
+     * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     */
     interface ChGridInfiniteScroll {
         /**
           * Indicates that the grid is already loaded.
@@ -674,6 +740,9 @@ export namespace Components {
          */
         "status": ChGridInfiniteScrollState;
     }
+    /**
+     * The `ch-grid-row-actions` component represents a group row actions.
+     */
     interface ChGridRowActions {
         /**
           * Closes the row actions window.
@@ -704,10 +773,19 @@ export namespace Components {
          */
         "showOnRowHover": boolean;
     }
+    /**
+     * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     */
     interface ChGridRowsetEmpty {
     }
+    /**
+     * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     */
     interface ChGridRowsetLegend {
     }
+    /**
+     * The `ch-grid-settings` component represents a settings window for a grid component.
+     */
     interface ChGridSettings {
         /**
           * The `HTMLChGridElement` that the settings window is associated with.
@@ -718,12 +796,20 @@ export namespace Components {
          */
         "show": boolean;
     }
+    /**
+     * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     */
     interface ChGridSettingsColumns {
         /**
           * An array of column elements to render.
          */
         "columns": HTMLChGridColumnElement[];
     }
+    /**
+     * The `ch-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
     interface ChGridVirtualScroller {
         /**
           * The list of items to be rendered in the grid.
@@ -1005,6 +1091,9 @@ export namespace Components {
         "showCloseButton": boolean;
         "timeToDismiss": 5000;
     }
+    /**
+     * The 'ch-paginator' component represents a paginator control for navigating through pages.
+     */
     interface ChPaginator {
         /**
           * The active page number.
@@ -1019,6 +1108,9 @@ export namespace Components {
          */
         "totalPages": 1;
     }
+    /**
+     * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+     */
     interface ChPaginatorNavigate {
         /**
           * Flag indicating if the button is disabled.
@@ -1029,6 +1121,9 @@ export namespace Components {
          */
         "type": ChPaginatorNavigateType;
     }
+    /**
+     * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
+     */
     interface ChPaginatorPages {
         /**
           * The maximum number of items to display in the pagination.
@@ -1184,6 +1279,12 @@ export namespace Components {
          */
         "iconSrc": string;
     }
+    /**
+     * It allows to include styles in the shadow-root of chameleon components,
+     * for example, to style the scrollbars.
+     * Use it in a similar way to the html STYLE tag or
+     * referencing an external stylesheet in a similar way to the html LINK tag.
+     */
     interface ChStyle {
         /**
           * Specifies the location of the stylesheet document
@@ -1858,6 +1959,10 @@ export namespace Components {
          */
         "updateValidDropZone": (requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>;
     }
+    /**
+     * The 'ch-window' component represents a popup container that is positioned
+     * relative to an element or the screen.
+     */
     interface ChWindow {
         /**
           * Specifies the drag behavior of the window.
@@ -1920,6 +2025,9 @@ export namespace Components {
          */
         "yAlign": ChWindowAlign;
     }
+    /**
+     * The 'ch-window-close' component represents the close button for the 'ch-window' component.
+     */
     interface ChWindowClose {
         /**
           * Specifies whether the close button is disabled.
@@ -1940,6 +2048,9 @@ export namespace Components {
          */
         "state": GridChameleonState;
     }
+    /**
+     * Represents a component that provides filtering controls for a grid column.
+     */
     interface GxGridChameleonColumnFilter {
         /**
           * The text to display on the "Apply" button.
@@ -2210,96 +2321,148 @@ declare global {
         prototype: HTMLChFormCheckboxElement;
         new (): HTMLChFormCheckboxElement;
     };
+    /**
+     * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
     interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {
     }
     var HTMLChGridElement: {
         prototype: HTMLChGridElement;
         new (): HTMLChGridElement;
     };
+    /**
+     * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
     interface HTMLChGridActionRefreshElement extends Components.ChGridActionRefresh, HTMLStencilElement {
     }
     var HTMLChGridActionRefreshElement: {
         prototype: HTMLChGridActionRefreshElement;
         new (): HTMLChGridActionRefreshElement;
     };
+    /**
+     * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     */
     interface HTMLChGridActionSettingsElement extends Components.ChGridActionSettings, HTMLStencilElement {
     }
     var HTMLChGridActionSettingsElement: {
         prototype: HTMLChGridActionSettingsElement;
         new (): HTMLChGridActionSettingsElement;
     };
+    /**
+     * The `ch-grid-actionbar` component represents a container for a grid actions.
+     */
     interface HTMLChGridActionbarElement extends Components.ChGridActionbar, HTMLStencilElement {
     }
     var HTMLChGridActionbarElement: {
         prototype: HTMLChGridActionbarElement;
         new (): HTMLChGridActionbarElement;
     };
+    /**
+     * The `ch-grid-column` component represents a grid column.
+     */
     interface HTMLChGridColumnElement extends Components.ChGridColumn, HTMLStencilElement {
     }
     var HTMLChGridColumnElement: {
         prototype: HTMLChGridColumnElement;
         new (): HTMLChGridColumnElement;
     };
+    /**
+     * The `ch-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
     interface HTMLChGridColumnDisplayElement extends Components.ChGridColumnDisplay, HTMLStencilElement {
     }
     var HTMLChGridColumnDisplayElement: {
         prototype: HTMLChGridColumnDisplayElement;
         new (): HTMLChGridColumnDisplayElement;
     };
+    /**
+     * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     */
     interface HTMLChGridColumnResizeElement extends Components.ChGridColumnResize, HTMLStencilElement {
     }
     var HTMLChGridColumnResizeElement: {
         prototype: HTMLChGridColumnResizeElement;
         new (): HTMLChGridColumnResizeElement;
     };
+    /**
+     * The `ch-grid-column-settings` component represents a settings window for a column.
+     */
     interface HTMLChGridColumnSettingsElement extends Components.ChGridColumnSettings, HTMLStencilElement {
     }
     var HTMLChGridColumnSettingsElement: {
         prototype: HTMLChGridColumnSettingsElement;
         new (): HTMLChGridColumnSettingsElement;
     };
+    /**
+     * The `ch-grid-columnset` component represents a group of columns.
+     */
     interface HTMLChGridColumnsetElement extends Components.ChGridColumnset, HTMLStencilElement {
     }
     var HTMLChGridColumnsetElement: {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
     };
+    /**
+     * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     */
     interface HTMLChGridInfiniteScrollElement extends Components.ChGridInfiniteScroll, HTMLStencilElement {
     }
     var HTMLChGridInfiniteScrollElement: {
         prototype: HTMLChGridInfiniteScrollElement;
         new (): HTMLChGridInfiniteScrollElement;
     };
+    /**
+     * The `ch-grid-row-actions` component represents a group row actions.
+     */
     interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
     }
     var HTMLChGridRowActionsElement: {
         prototype: HTMLChGridRowActionsElement;
         new (): HTMLChGridRowActionsElement;
     };
+    /**
+     * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     */
     interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
     }
     var HTMLChGridRowsetEmptyElement: {
         prototype: HTMLChGridRowsetEmptyElement;
         new (): HTMLChGridRowsetEmptyElement;
     };
+    /**
+     * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     */
     interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
     }
     var HTMLChGridRowsetLegendElement: {
         prototype: HTMLChGridRowsetLegendElement;
         new (): HTMLChGridRowsetLegendElement;
     };
+    /**
+     * The `ch-grid-settings` component represents a settings window for a grid component.
+     */
     interface HTMLChGridSettingsElement extends Components.ChGridSettings, HTMLStencilElement {
     }
     var HTMLChGridSettingsElement: {
         prototype: HTMLChGridSettingsElement;
         new (): HTMLChGridSettingsElement;
     };
+    /**
+     * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     */
     interface HTMLChGridSettingsColumnsElement extends Components.ChGridSettingsColumns, HTMLStencilElement {
     }
     var HTMLChGridSettingsColumnsElement: {
         prototype: HTMLChGridSettingsColumnsElement;
         new (): HTMLChGridSettingsColumnsElement;
     };
+    /**
+     * The `ch-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
     interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
     }
     var HTMLChGridVirtualScrollerElement: {
@@ -2360,18 +2523,27 @@ declare global {
         prototype: HTMLChNotificationsItemElement;
         new (): HTMLChNotificationsItemElement;
     };
+    /**
+     * The 'ch-paginator' component represents a paginator control for navigating through pages.
+     */
     interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
     }
     var HTMLChPaginatorElement: {
         prototype: HTMLChPaginatorElement;
         new (): HTMLChPaginatorElement;
     };
+    /**
+     * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+     */
     interface HTMLChPaginatorNavigateElement extends Components.ChPaginatorNavigate, HTMLStencilElement {
     }
     var HTMLChPaginatorNavigateElement: {
         prototype: HTMLChPaginatorNavigateElement;
         new (): HTMLChPaginatorNavigateElement;
     };
+    /**
+     * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
+     */
     interface HTMLChPaginatorPagesElement extends Components.ChPaginatorPages, HTMLStencilElement {
     }
     var HTMLChPaginatorPagesElement: {
@@ -2432,6 +2604,12 @@ declare global {
         prototype: HTMLChStepListItemElement;
         new (): HTMLChStepListItemElement;
     };
+    /**
+     * It allows to include styles in the shadow-root of chameleon components,
+     * for example, to style the scrollbars.
+     * Use it in a similar way to the html STYLE tag or
+     * referencing an external stylesheet in a similar way to the html LINK tag.
+     */
     interface HTMLChStyleElement extends Components.ChStyle, HTMLStencilElement {
     }
     var HTMLChStyleElement: {
@@ -2528,12 +2706,19 @@ declare global {
         prototype: HTMLChTreeViewRenderWrapperElement;
         new (): HTMLChTreeViewRenderWrapperElement;
     };
+    /**
+     * The 'ch-window' component represents a popup container that is positioned
+     * relative to an element or the screen.
+     */
     interface HTMLChWindowElement extends Components.ChWindow, HTMLStencilElement {
     }
     var HTMLChWindowElement: {
         prototype: HTMLChWindowElement;
         new (): HTMLChWindowElement;
     };
+    /**
+     * The 'ch-window-close' component represents the close button for the 'ch-window' component.
+     */
     interface HTMLChWindowCloseElement extends Components.ChWindowClose, HTMLStencilElement {
     }
     var HTMLChWindowCloseElement: {
@@ -2546,6 +2731,9 @@ declare global {
         prototype: HTMLGxGridChameleonElement;
         new (): HTMLGxGridChameleonElement;
     };
+    /**
+     * Represents a component that provides filtering controls for a grid column.
+     */
     interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
     }
     var HTMLGxGridChameleonColumnFilterElement: {
@@ -3017,6 +3205,9 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
     interface ChGrid {
         /**
           * A boolean indicating whether the user can drag column headers to reorder columns.
@@ -3083,6 +3274,9 @@ declare namespace LocalJSX {
          */
         "rowSelectionMode"?: "none" | "single" | "multiple";
     }
+    /**
+     * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
     interface ChGridActionRefresh {
         /**
           * Indicates whether the refresh button is disabled or not.
@@ -3093,6 +3287,9 @@ declare namespace LocalJSX {
          */
         "onRefreshClicked"?: (event: ChGridActionRefreshCustomEvent<any>) => void;
     }
+    /**
+     * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     */
     interface ChGridActionSettings {
         /**
           * Indicates whether the settings button is disabled or not.
@@ -3103,8 +3300,14 @@ declare namespace LocalJSX {
          */
         "onSettingsShowClicked"?: (event: ChGridActionSettingsCustomEvent<any>) => void;
     }
+    /**
+     * The `ch-grid-actionbar` component represents a container for a grid actions.
+     */
     interface ChGridActionbar {
     }
+    /**
+     * The `ch-grid-column` component represents a grid column.
+     */
     interface ChGridColumn {
         /**
           * @deprecated Use "columnImage" or "columnImageSet" instead. A URL to an icon to display in the column header.
@@ -3257,12 +3460,20 @@ declare namespace LocalJSX {
          */
         "sortable"?: boolean;
     }
+    /**
+     * The `ch-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
     interface ChGridColumnDisplay {
         /**
           * The column element that is being monitored.
          */
         "column": HTMLChGridColumnElement;
     }
+    /**
+     * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     */
     interface ChGridColumnResize {
         /**
           * The column element that is being resized.
@@ -3281,6 +3492,9 @@ declare namespace LocalJSX {
          */
         "onColumnResizing"?: (event: ChGridColumnResizeCustomEvent<ChGridColumnResizeEvent>) => void;
     }
+    /**
+     * The `ch-grid-column-settings` component represents a settings window for a column.
+     */
     interface ChGridColumnSettings {
         /**
           * The `HTMLChGridColumnElement` that the settings window is associated with.
@@ -3291,8 +3505,14 @@ declare namespace LocalJSX {
          */
         "show"?: boolean;
     }
+    /**
+     * The `ch-grid-columnset` component represents a group of columns.
+     */
     interface ChGridColumnset {
     }
+    /**
+     * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     */
     interface ChGridInfiniteScroll {
         /**
           * Event emitted when end is reached.
@@ -3303,6 +3523,9 @@ declare namespace LocalJSX {
          */
         "status"?: ChGridInfiniteScrollState;
     }
+    /**
+     * The `ch-grid-row-actions` component represents a group row actions.
+     */
     interface ChGridRowActions {
         /**
           * Event emitted when row actions is opened.
@@ -3321,14 +3544,23 @@ declare namespace LocalJSX {
          */
         "showOnRowHover"?: boolean;
     }
+    /**
+     * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     */
     interface ChGridRowsetEmpty {
     }
+    /**
+     * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     */
     interface ChGridRowsetLegend {
         /**
           * Event emitted when the legend is clicked.
          */
         "onRowsetLegendClicked"?: (event: ChGridRowsetLegendCustomEvent<CustomEvent>) => void;
     }
+    /**
+     * The `ch-grid-settings` component represents a settings window for a grid component.
+     */
     interface ChGridSettings {
         /**
           * The `HTMLChGridElement` that the settings window is associated with.
@@ -3343,12 +3575,20 @@ declare namespace LocalJSX {
          */
         "show"?: boolean;
     }
+    /**
+     * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     */
     interface ChGridSettingsColumns {
         /**
           * An array of column elements to render.
          */
         "columns": HTMLChGridColumnElement[];
     }
+    /**
+     * The `ch-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
     interface ChGridVirtualScroller {
         /**
           * The list of items to be rendered in the grid.
@@ -3653,6 +3893,9 @@ declare namespace LocalJSX {
         "showCloseButton"?: boolean;
         "timeToDismiss"?: 5000;
     }
+    /**
+     * The 'ch-paginator' component represents a paginator control for navigating through pages.
+     */
     interface ChPaginator {
         /**
           * The active page number.
@@ -3675,6 +3918,9 @@ declare namespace LocalJSX {
          */
         "totalPages"?: 1;
     }
+    /**
+     * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+     */
     interface ChPaginatorNavigate {
         /**
           * Flag indicating if the button is disabled.
@@ -3689,6 +3935,9 @@ declare namespace LocalJSX {
          */
         "type"?: ChPaginatorNavigateType;
     }
+    /**
+     * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
+     */
     interface ChPaginatorPages {
         /**
           * The maximum number of items to display in the pagination.
@@ -3870,6 +4119,12 @@ declare namespace LocalJSX {
          */
         "onItemClicked"?: (event: ChStepListItemCustomEvent<any>) => void;
     }
+    /**
+     * It allows to include styles in the shadow-root of chameleon components,
+     * for example, to style the scrollbars.
+     * Use it in a similar way to the html STYLE tag or
+     * referencing an external stylesheet in a similar way to the html LINK tag.
+     */
     interface ChStyle {
         /**
           * Specifies the location of the stylesheet document
@@ -3936,7 +4191,7 @@ declare namespace LocalJSX {
         /**
           * This event is emitted every time the item is selected, either by clicking on it, or by pressing Enter.
          */
-        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemSelectedEvent>) => void;
+        "onItemSelected"?: (event: ChSuggestListItemCustomEvent<SuggestItemSelectedEvent1>) => void;
         /**
           * The item value
          */
@@ -4543,6 +4798,10 @@ declare namespace LocalJSX {
          */
         "treeModel"?: TreeViewItemModel[];
     }
+    /**
+     * The 'ch-window' component represents a popup container that is positioned
+     * relative to an element or the screen.
+     */
     interface ChWindow {
         /**
           * Specifies the drag behavior of the window.
@@ -4613,6 +4872,9 @@ declare namespace LocalJSX {
          */
         "yAlign"?: ChWindowAlign;
     }
+    /**
+     * The 'ch-window-close' component represents the close button for the 'ch-window' component.
+     */
     interface ChWindowClose {
         /**
           * Specifies whether the close button is disabled.
@@ -4637,6 +4899,9 @@ declare namespace LocalJSX {
          */
         "state"?: GridChameleonState;
     }
+    /**
+     * Represents a component that provides filtering controls for a grid column.
+     */
     interface GxGridChameleonColumnFilter {
         /**
           * The text to display on the "Apply" button.
@@ -4757,21 +5022,73 @@ declare module "@stencil/core" {
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;
             "ch-flexible-layout-render": LocalJSX.ChFlexibleLayoutRender & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutRenderElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
+            /**
+             * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+             */
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
+            /**
+             * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+             */
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
+            /**
+             * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+             */
             "ch-grid-action-settings": LocalJSX.ChGridActionSettings & JSXBase.HTMLAttributes<HTMLChGridActionSettingsElement>;
+            /**
+             * The `ch-grid-actionbar` component represents a container for a grid actions.
+             */
             "ch-grid-actionbar": LocalJSX.ChGridActionbar & JSXBase.HTMLAttributes<HTMLChGridActionbarElement>;
+            /**
+             * The `ch-grid-column` component represents a grid column.
+             */
             "ch-grid-column": LocalJSX.ChGridColumn & JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
+            /**
+             * The `ch-grid-column-display` component is responsible for determining the
+             * visibility of a grid column and updating its hidden property based on
+             * whether the monitored class is visible or not.
+             */
             "ch-grid-column-display": LocalJSX.ChGridColumnDisplay & JSXBase.HTMLAttributes<HTMLChGridColumnDisplayElement>;
+            /**
+             * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+             */
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
+            /**
+             * The `ch-grid-column-settings` component represents a settings window for a column.
+             */
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
+            /**
+             * The `ch-grid-columnset` component represents a group of columns.
+             */
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
+            /**
+             * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+             */
             "ch-grid-infinite-scroll": LocalJSX.ChGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChGridInfiniteScrollElement>;
+            /**
+             * The `ch-grid-row-actions` component represents a group row actions.
+             */
             "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
+            /**
+             * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+             */
             "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
+            /**
+             * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+             */
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
+            /**
+             * The `ch-grid-settings` component represents a settings window for a grid component.
+             */
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
+            /**
+             * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+             */
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
+            /**
+             * The `ch-grid-virtual-scroller` component that displays a subset of items.
+             * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+             * based on the viewport size and scroll position.
+             */
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
@@ -4782,8 +5099,17 @@ declare module "@stencil/core" {
             "ch-next-progress-bar": LocalJSX.ChNextProgressBar & JSXBase.HTMLAttributes<HTMLChNextProgressBarElement>;
             "ch-notifications": LocalJSX.ChNotifications & JSXBase.HTMLAttributes<HTMLChNotificationsElement>;
             "ch-notifications-item": LocalJSX.ChNotificationsItem & JSXBase.HTMLAttributes<HTMLChNotificationsItemElement>;
+            /**
+             * The 'ch-paginator' component represents a paginator control for navigating through pages.
+             */
             "ch-paginator": LocalJSX.ChPaginator & JSXBase.HTMLAttributes<HTMLChPaginatorElement>;
+            /**
+             * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+             */
             "ch-paginator-navigate": LocalJSX.ChPaginatorNavigate & JSXBase.HTMLAttributes<HTMLChPaginatorNavigateElement>;
+            /**
+             * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
+             */
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
             "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
@@ -4794,6 +5120,12 @@ declare module "@stencil/core" {
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
+            /**
+             * It allows to include styles in the shadow-root of chameleon components,
+             * for example, to style the scrollbars.
+             * Use it in a similar way to the html STYLE tag or
+             * referencing an external stylesheet in a similar way to the html LINK tag.
+             */
             "ch-style": LocalJSX.ChStyle & JSXBase.HTMLAttributes<HTMLChStyleElement>;
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
@@ -4810,9 +5142,19 @@ declare module "@stencil/core" {
             "ch-tree-view-item": LocalJSX.ChTreeViewItem & JSXBase.HTMLAttributes<HTMLChTreeViewItemElement>;
             "ch-tree-view-render": LocalJSX.ChTreeViewRender & JSXBase.HTMLAttributes<HTMLChTreeViewRenderElement>;
             "ch-tree-view-render-wrapper": LocalJSX.ChTreeViewRenderWrapper & JSXBase.HTMLAttributes<HTMLChTreeViewRenderWrapperElement>;
+            /**
+             * The 'ch-window' component represents a popup container that is positioned
+             * relative to an element or the screen.
+             */
             "ch-window": LocalJSX.ChWindow & JSXBase.HTMLAttributes<HTMLChWindowElement>;
+            /**
+             * The 'ch-window-close' component represents the close button for the 'ch-window' component.
+             */
             "ch-window-close": LocalJSX.ChWindowClose & JSXBase.HTMLAttributes<HTMLChWindowCloseElement>;
             "gx-grid-chameleon": LocalJSX.GxGridChameleon & JSXBase.HTMLAttributes<HTMLGxGridChameleonElement>;
+            /**
+             * Represents a component that provides filtering controls for a grid column.
+             */
             "gx-grid-chameleon-column-filter": LocalJSX.GxGridChameleonColumnFilter & JSXBase.HTMLAttributes<HTMLGxGridChameleonColumnFilterElement>;
         }
     }

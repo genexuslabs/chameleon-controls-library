@@ -356,34 +356,14 @@ export class ChTreeView {
     this.resetVariables();
   }
 
-  /**
-   * Only sync the info about the selected items. It does not update the state
-   * of the previous selected items.
-   */
-  @Listen("selectedItemSync")
-  handleSelectedItemSync(
-    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
-  ) {
-    event.stopPropagation();
-    const selectedItemInfo = event.detail;
-
-    // If the item is selected, add it to list
-    if (selectedItemInfo.selected) {
-      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
-    } else {
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
-    }
-  }
-
   @Listen("selectedItemChange")
   handleSelectedItemChange(
     event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
-    const selectedItemEl = event.target as HTMLChTreeViewItemElement;
 
-    this.handleItemSelection(selectedItemEl, selectedItemInfo);
+    this.handleItemSelection(selectedItemInfo);
   }
 
   /**
@@ -402,7 +382,7 @@ export class ChTreeView {
   @Method()
   async scrollIntoVisible(treeItemId: string) {
     const itemRef = this.el.querySelector(
-      `${TREE_ITEM_TAG_NAME}#${treeItemId}`
+      `${TREE_ITEM_TAG_NAME}[id="${treeItemId}"]`
     );
     if (!itemRef) {
       return;
@@ -525,7 +505,7 @@ export class ChTreeView {
       (event.target as HTMLElement).closest(TREE_TAG_NAME) !== null;
 
     // The Tree View must be the only element that processes the "dragover"
-    // event. Any other element that processes this event can modify the
+    // event. Any other handler that processes this event can modify the
     // `dropEffect` an thus break the drag and drop implementation
     if (draggingInATree) {
       event.stopImmediatePropagation();
@@ -674,29 +654,25 @@ export class ChTreeView {
     });
   }
 
-  private handleItemSelection(
-    selectedItemEl: HTMLChTreeViewItemElement,
-    selectedItemInfo: TreeViewItemSelectedInfo
-  ) {
+  private handleItemSelection(selectedItemInfo: TreeViewItemSelectedInfo) {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
-      // Don't update the state of the selected item if no needed
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
-
+      // Deselect all items except the item that emitted the event
       this.selectedItemsInfo.forEach(treeItem => {
-        treeItem.itemRef.selected = false;
+        if (treeItem.id !== selectedItemInfo.id) {
+          treeItem.itemRef.selected = false;
+        }
       });
 
       this.clearSelectedItems();
-
-      // Re-select the item
-      selectedItemEl.selected = selectedItemInfo.selected;
     }
 
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
       this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+    } else {
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model

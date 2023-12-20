@@ -33,7 +33,7 @@ import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
-import { TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption } from "./components/renders/tree-view/types";
+import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 import { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
@@ -67,7 +67,7 @@ export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
-export { TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption } from "./components/renders/tree-view/types";
+export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 export { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
 export { ChWindowAlign } from "./components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
@@ -1733,7 +1733,7 @@ export namespace Components {
          */
         "filterOptions": TreeViewFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     | | `none`      | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`      | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
          */
         "filterType": TreeViewFilterType;
         /**
@@ -1751,9 +1751,7 @@ export namespace Components {
         /**
           * Callback that is executed when a item request to load its subitems.
          */
-        "lazyLoadTreeItemsCallback": (
-    treeItemId: string
-  ) => Promise<TreeViewItemModel[]>;
+        "lazyLoadTreeItemsCallback": LazyLoadTreeItemsCallback;
         /**
           * Given an item id, an array of items to add, the download status and the lazy state, updates the item's UI Model.
          */
@@ -1774,6 +1772,10 @@ export namespace Components {
          */
         "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
         /**
+          * Given a list of ids, removes the items and their children in the tree.
+         */
+        "removeItems": (items: string[]) => Promise<void>;
+        /**
           * This property allows us to implement custom rendering of tree items.
          */
         "renderItem": (
@@ -1784,9 +1786,9 @@ export namespace Components {
     level: number
   ) => any;
         /**
-          * Given an item id, it displays and scrolls into the item view.
+          * Given the path of the item (represent by a sorted array containing all ids from the root to the item), it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.
          */
-        "scrollIntoVisible": (treeItemId: string) => Promise<void>;
+        "scrollIntoVisible": (path: string | string[]) => Promise<void>;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
@@ -1807,7 +1809,7 @@ export namespace Components {
          */
         "toggleItems": (treeItemIds: string[], expand?: boolean) => Promise<TreeViewItemExpandedInfo[]>;
         /**
-          * This property lets you define the model of the ch-tree-x control.
+          * This property lets you define the model of the ch-tree-view-render control.
          */
         "treeModel": TreeViewItemModel[];
         /**
@@ -3123,7 +3125,6 @@ declare global {
         "modifyCaption": TreeViewItemNewCaption;
         "openReference": TreeViewItemOpenReferenceInfo;
         "selectedItemChange": TreeViewItemSelectedInfo;
-        "selectedItemSync": TreeViewItemSelectedInfo;
     }
     interface HTMLChTreeViewItemElement extends Components.ChTreeViewItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTreeViewItemElementEventMap>(type: K, listener: (this: HTMLChTreeViewItemElement, ev: ChTreeViewItemCustomEvent<HTMLChTreeViewItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5035,10 +5036,6 @@ declare namespace LocalJSX {
          */
         "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>) => void;
         /**
-          * Fired when the selected state is updated through the interface and without user interaction. The purpose of this event is to better sync with the main tree.
-         */
-        "onSelectedItemSync"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>) => void;
-        /**
           * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
         "rightImgSrc"?: string;
@@ -5117,7 +5114,7 @@ declare namespace LocalJSX {
          */
         "filterOptions"?: TreeViewFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`   | Show only the items that are contained in the array determinate by the `filterList` property.     | | `none`      | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value       | Details                                                                                        | | ----------- | ---------------------------------------------------------------------------------------------- | | `checked`   | Show only the items that have a checkbox and are checked.                                      | | `unchecked` | Show only the items that have a checkbox and are not checked.                                  | | `caption`   | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `metadata`  | Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. | | `list`      | Show only the items that are contained in the array determinate by the `filterList` property.  | | `none`      | Show all items.                                                                                |
          */
         "filterType"?: TreeViewFilterType;
         /**
@@ -5131,9 +5128,7 @@ declare namespace LocalJSX {
         /**
           * Callback that is executed when a item request to load its subitems.
          */
-        "lazyLoadTreeItemsCallback"?: (
-    treeItemId: string
-  ) => Promise<TreeViewItemModel[]>;
+        "lazyLoadTreeItemsCallback"?: LazyLoadTreeItemsCallback;
         /**
           * Callback that is executed when a item request to modify its caption.
          */
@@ -5184,7 +5179,7 @@ declare namespace LocalJSX {
          */
         "toggleCheckboxes"?: boolean;
         /**
-          * This property lets you define the model of the ch-tree-x control.
+          * This property lets you define the model of the ch-tree-view-render control.
          */
         "treeModel"?: TreeViewItemModel[];
         /**

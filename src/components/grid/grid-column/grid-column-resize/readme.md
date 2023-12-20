@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+
 ## Properties
 
 | Property              | Attribute | Description                               | Type                      | Default     |

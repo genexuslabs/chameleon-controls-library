@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-row-actions` component represents a group row actions.
+
 ## Properties
 
 | Property           | Attribute             | Description                                                                          | Type      | Default     |
@@ -37,6 +41,12 @@ Type: `Promise<void>`
 
 Opens the row actions on the row-actions-button cell.
 
+#### Parameters
+
+| Name   | Type          | Description |
+| ------ | ------------- | ----------- |
+| `cell` | `HTMLElement` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -47,6 +57,13 @@ Type: `Promise<void>`
 
 Opens the row actions on the row-actions-button cell.
 
+#### Parameters
+
+| Name      | Type     | Description |
+| --------- | -------- | ----------- |
+| `clientX` | `number` |             |
+| `clientY` | `number` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -56,6 +73,12 @@ Type: `Promise<void>`
 ### `openRowHover(row: HTMLElement) => Promise<void>`
 
 Opens the row actions on row hover.
+
+#### Parameters
+
+| Name  | Type          | Description |
+| ----- | ------------- | ----------- |
+| `row` | `HTMLElement` |             |
 
 #### Returns
 

@@ -5,6 +5,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-virtual-scroller` component that displays a subset of items.
+It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+based on the viewport size and scroll position.
+
 ## Properties
 
 | Property        | Attribute     | Description                                                                                      | Type     | Default     |

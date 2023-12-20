@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+
 ## Properties
 
 | Property   | Attribute  | Description                                              | Type      | Default     |

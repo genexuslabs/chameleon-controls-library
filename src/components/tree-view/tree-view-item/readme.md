@@ -58,6 +58,12 @@
 Focus the last item in its subtree. If the control is not expanded, it
 focus the control.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -69,6 +75,12 @@ Type: `Promise<void>`
 Focus the next item in the tree. If the control is expanded, it focuses
 the first subitem in its tree.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -78,6 +90,12 @@ Type: `Promise<void>`
 ### `focusNextSibling(ctrlKeyPressed: boolean) => Promise<void>`
 
 Focus the next sibling item in the tree.
+
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
 
 #### Returns
 
@@ -90,6 +108,12 @@ Type: `Promise<void>`
 Focus the previous item in the tree. If the previous item is expanded, it focuses
 the last subitem in its tree.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -100,6 +124,12 @@ Type: `Promise<void>`
 
 Set focus in the control.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -109,6 +139,13 @@ Type: `Promise<void>`
 ### `updateChecked(newChecked: boolean, newIndeterminate: boolean) => Promise<void>`
 
 Update `checked` and `indeterminate` properties.
+
+#### Parameters
+
+| Name               | Type      | Description |
+| ------------------ | --------- | ----------- |
+| `newChecked`       | `boolean` |             |
+| `newIndeterminate` | `boolean` |             |
 
 #### Returns
 

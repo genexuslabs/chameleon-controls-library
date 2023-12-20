@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+
 ## Properties
 
 | Property | Attribute | Description                                              | Type                    | Default    |

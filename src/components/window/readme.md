@@ -3,6 +3,11 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-window' component represents a popup container that is positioned
+relative to an element or the screen.
+
 ## Properties
 
 | Property              | Attribute                | Description                                                                          | Type                                                                             | Default     |

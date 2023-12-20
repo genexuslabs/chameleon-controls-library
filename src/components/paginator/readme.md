@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-paginator' component represents a paginator control for navigating through pages.
+
 ## Properties
 
 | Property      | Attribute       | Description                                                                                                          | Type      | Default |

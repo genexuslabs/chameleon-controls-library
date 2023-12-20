@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+
 ## Properties
 
 | Property              | Attribute               | Description                                                                                                                                                                                                                                                         | Type                               | Default     |
@@ -37,6 +41,12 @@
 
 Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
 
+#### Parameters
+
+| Name     | Type     | Description                                    |
+| -------- | -------- | ---------------------------------------------- |
+| `cellId` | `string` | - The cellId of the cell to ensure visibility. |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -47,6 +57,12 @@ Type: `Promise<void>`
 
 Collapses a row, hiding its children.
 
+#### Parameters
+
+| Name    | Type     | Description                         |
+| ------- | -------- | ----------------------------------- |
+| `rowId` | `string` | - The rowId of the row to collapse. |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -56,6 +72,12 @@ Type: `Promise<void>`
 ### `expandRow(rowId: string) => Promise<void>`
 
 Expands a row, showing its children.
+
+#### Parameters
+
+| Name    | Type     | Description                       |
+| ------- | -------- | --------------------------------- |
+| `rowId` | `string` | - The rowId of the row to expand. |
 
 #### Returns
 
@@ -157,6 +179,12 @@ Type: `Promise<string[]>`
 
 Mark or unmark all rows.
 
+#### Parameters
+
+| Name     | Type      | Description                                                |
+| -------- | --------- | ---------------------------------------------------------- |
+| `marked` | `boolean` | - A boolean indicating whether to mark or unmark all rows. |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -166,6 +194,13 @@ Type: `Promise<void>`
 ### `markRow(rowId: string, marked?: boolean) => Promise<void>`
 
 Mark or unmark a row.
+
+#### Parameters
+
+| Name     | Type      | Description                                               |
+| -------- | --------- | --------------------------------------------------------- |
+| `rowId`  | `string`  | - The rowId of the row to select or deselect.             |
+| `marked` | `boolean` | - A boolean indicating whether to mark or unmark the row. |
 
 #### Returns
 
@@ -177,6 +212,12 @@ Type: `Promise<void>`
 
 Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
 
+#### Parameters
+
+| Name    | Type     | Description                                  |
+| ------- | -------- | -------------------------------------------- |
+| `rowId` | `string` | - The rowId of the row to ensure visibility. |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -186,6 +227,12 @@ Type: `Promise<void>`
 ### `selectAllRows(selected?: boolean) => Promise<void>`
 
 Selects or deselects all rows.
+
+#### Parameters
+
+| Name       | Type      | Description                                                    |
+| ---------- | --------- | -------------------------------------------------------------- |
+| `selected` | `boolean` | - A boolean indicating whether to select or deselect all rows. |
 
 #### Returns
 
@@ -199,6 +246,15 @@ Select or deselect a cell.
 The cell can be identified by the cellId parameter or
 by using the rowId and columnId pair.
 
+#### Parameters
+
+| Name       | Type      | Description                                                    |
+| ---------- | --------- | -------------------------------------------------------------- |
+| `cellId`   | `string`  | - The cellId of the cell to select or deselect.                |
+| `rowId`    | `string`  | - The rowId of the row containing the cell.                    |
+| `columnId` | `string`  | - The columnId of the column containing the cell.              |
+| `selected` | `boolean` | - A boolean indicating whether to select or deselect the cell. |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -208,6 +264,13 @@ Type: `Promise<void>`
 ### `selectRow(rowId: string, selected?: boolean) => Promise<void>`
 
 Selects or deselects a row.
+
+#### Parameters
+
+| Name       | Type      | Description                                                   |
+| ---------- | --------- | ------------------------------------------------------------- |
+| `rowId`    | `string`  | - The rowId of the row to select or deselect.                 |
+| `selected` | `boolean` | - A boolean indicating whether to select or deselect the row. |
 
 #### Returns
 

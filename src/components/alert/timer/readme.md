@@ -15,6 +15,13 @@
 | `progress`       | `progress`        | Sets the progress propiety to determine the progress.               | `number`  | `0`       |
 
 
+## Shadow Parts
+
+| Part          | Description |
+| ------------- | ----------- |
+| `"indicator"` |             |
+
+
 ## Dependencies
 
 ### Used by

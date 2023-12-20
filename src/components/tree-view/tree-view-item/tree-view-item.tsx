@@ -20,7 +20,10 @@ import {
   TreeViewItemSelectedInfo
 } from "../tree-view/types";
 import { mouseEventModifierKey } from "../../common/helpers";
-import { ChTreeViewItemCustomEvent } from "../../../components";
+import {
+  ChCheckboxCustomEvent,
+  ChTreeViewItemCustomEvent
+} from "../../../components";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -703,7 +706,9 @@ export class ChTreeViewItem {
     });
   }
 
-  private handleCheckedChange = (event: CustomEvent) => {
+  private handleCheckedChange = (
+    event: ChCheckboxCustomEvent<any> & InputEvent
+  ) => {
     event.stopPropagation();
 
     const checked = (event.target as HTMLChCheckboxElement).checked;

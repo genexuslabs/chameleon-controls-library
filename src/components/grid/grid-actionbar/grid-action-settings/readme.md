@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+
 ## Properties
 
 | Property   | Attribute  | Description                                               | Type      | Default     |

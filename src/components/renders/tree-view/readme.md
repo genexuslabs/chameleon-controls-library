@@ -52,6 +52,14 @@
 Given the drop accepting, the data transfer info and the external items,
 it process the drops of the items in the tree.
 
+#### Parameters
+
+| Name               | Type                                                                                                                                    | Description |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `acceptDrop`       | `boolean`                                                                                                                               |             |
+| `dataTransferInfo` | `{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; }` |             |
+| `items`            | `TreeViewItemModel[]`                                                                                                                   |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -63,6 +71,12 @@ Type: `Promise<void>`
 Given a list of ids, it returns an array of the items that exists in the
 given list.
 
+#### Parameters
+
+| Name      | Type       | Description |
+| --------- | ---------- | ----------- |
+| `itemsId` | `string[]` |             |
+
 #### Returns
 
 Type: `Promise<TreeViewItemModelExtended[]>`
@@ -73,6 +87,15 @@ Type: `Promise<TreeViewItemModelExtended[]>`
 
 Given an item id, an array of items to add, the download status and the
 lazy state, updates the item's UI Model.
+
+#### Parameters
+
+| Name          | Type                  | Description |
+| ------------- | --------------------- | ----------- |
+| `itemId`      | `string`              |             |
+| `items`       | `TreeViewItemModel[]` |             |
+| `downloading` | `boolean`             |             |
+| `lazy`        | `boolean`             |             |
 
 #### Returns
 
@@ -86,6 +109,14 @@ Given an item id and the additional properties to update before and after
 reload, it reloads the items of the `itemId` node by using the
 `lazyLoadTreeItemsCallback` property.
 
+#### Parameters
+
+| Name               | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `itemId`           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |             |
+| `beforeProperties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
+| `afterProperties`  | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -95,6 +126,12 @@ Type: `Promise<void>`
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
 Given an item id, it displays and scrolls into the item view.
+
+#### Parameters
+
+| Name         | Type     | Description |
+| ------------ | -------- | ----------- |
+| `treeItemId` | `string` |             |
 
 #### Returns
 
@@ -106,6 +143,13 @@ Type: `Promise<void>`
 
 This method is used to toggle a tree item by the tree item id/ids.
 
+#### Parameters
+
+| Name          | Type       | Description                                                                         |
+| ------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `treeItemIds` | `string[]` | An array id the tree items to be toggled.                                           |
+| `expand`      | `boolean`  | A boolean indicating that the tree item should be expanded or collapsed. (optional) |
+
 #### Returns
 
 Type: `Promise<TreeViewItemExpandedInfo[]>`
@@ -115,6 +159,12 @@ The modified items after the method was called.
 ### `updateAllItemsProperties(properties: { expanded?: boolean; checked?: boolean; }) => Promise<void>`
 
 Given a subset of item's properties, it updates all item UI models.
+
+#### Parameters
+
+| Name         | Type                                         | Description |
+| ------------ | -------------------------------------------- | ----------- |
+| `properties` | `{ expanded?: boolean; checked?: boolean; }` |             |
 
 #### Returns
 
@@ -127,6 +177,13 @@ Type: `Promise<void>`
 Given a item list and the properties to update, it updates the properties
 of the items in the list.
 
+#### Parameters
+
+| Name         | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `items`      | `string[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |             |
+| `properties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -136,6 +193,15 @@ Type: `Promise<void>`
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
+
+#### Parameters
+
+| Name               | Type                   | Description                                                                            |
+| ------------------ | ---------------------- | -------------------------------------------------------------------------------------- |
+| `requestTimestamp` | `number`               | Time where the request to the server was made. Useful to avoid having old information. |
+| `newContainerId`   | `string`               | ID of the container where the drag is trying to be made.                               |
+| `draggedItems`     | `GxDataTransferInfo[]` | Information about the dragged items.                                                   |
+| `validDrop`        | `boolean`              | Current state of the droppable zone.                                                   |
 
 #### Returns
 

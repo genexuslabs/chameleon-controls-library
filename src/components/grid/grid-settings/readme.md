@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-settings` component represents a settings window for a grid component.
+
 ## Properties
 
 | Property            | Attribute | Description                                                          | Type                | Default     |

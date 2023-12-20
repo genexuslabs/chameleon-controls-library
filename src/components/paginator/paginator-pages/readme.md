@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
+
 ## Properties
 
 | Property               | Attribute                 | Description                                               | Type      | Default |

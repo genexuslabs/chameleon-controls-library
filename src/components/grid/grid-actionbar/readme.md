@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-actionbar` component represents a container for a grid actions.
+
 ## Dependencies
 
 ### Used by

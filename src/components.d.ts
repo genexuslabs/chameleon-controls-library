@@ -1786,9 +1786,9 @@ export namespace Components {
     level: number
   ) => any;
         /**
-          * Given the path of the item (represent by a sorted array containing all ids from the root to the item), it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.
+          * Given the path of the item (represent by a sorted array containing all ids from the root to the item) and the additional properties to update after, it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.
          */
-        "scrollIntoVisible": (path: string | string[]) => Promise<void>;
+        "scrollIntoVisible": (path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */

@@ -3,6 +3,12 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-column-display` component is responsible for determining the
+visibility of a grid column and updating its hidden property based on
+whether the monitored class is visible or not.
+
 ## Properties
 
 | Property              | Attribute | Description                                 | Type                      | Default     |

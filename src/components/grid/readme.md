@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+
 ## Properties
 
 | Property              | Attribute               | Description                                                                                                                                                                                                                                                         | Type                               | Default     |

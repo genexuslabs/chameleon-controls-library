@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+
 ## Properties
 
 | Property               | Attribute | Description                            | Type                        | Default     |

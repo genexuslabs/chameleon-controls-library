@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+
 ## Events
 
 | Event                 | Description                               | Type                            |

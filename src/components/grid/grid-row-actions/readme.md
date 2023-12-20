@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-row-actions` component represents a group row actions.
+
 ## Properties
 
 | Property           | Attribute             | Description                                                                          | Type      | Default     |

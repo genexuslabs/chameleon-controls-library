@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+Represents a component that provides filtering controls for a grid column.
+
 ## Properties
 
 | Property              | Attribute           | Description                                      | Type           | Default     |

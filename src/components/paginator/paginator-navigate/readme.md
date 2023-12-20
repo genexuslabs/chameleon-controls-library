@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
+
 ## Properties
 
 | Property   | Attribute  | Description                                | Type                                        | Default     |

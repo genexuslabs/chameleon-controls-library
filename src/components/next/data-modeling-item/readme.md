@@ -43,6 +43,13 @@
 
 Check errors in the item when `level !== 0`
 
+#### Parameters
+
+| Name     | Type                          | Description |
+| -------- | ----------------------------- | ----------- |
+| `errors` | `"no" \| "yes" \| "unknown"`  |             |
+| `event`  | `UIEvent \| CustomEvent<any>` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -62,6 +69,12 @@ Type: `Promise<void>`
 ### `delete(event: UIEvent) => Promise<void>`
 
 Deletes the field.
+
+#### Parameters
+
+| Name    | Type      | Description |
+| ------- | --------- | ----------- |
+| `event` | `UIEvent` |             |
 
 #### Returns
 

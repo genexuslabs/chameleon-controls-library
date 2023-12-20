@@ -1286,7 +1286,9 @@
         );
 
         scrollIntoVisibleBtn.addEventListener("click", () => {
-          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value);
+          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
+            selected: true
+          });
           scrollIntoVisibleInput.value = "";
         });
 

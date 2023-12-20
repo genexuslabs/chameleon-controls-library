@@ -139,18 +139,20 @@ Type: `Promise<void>`
 
 
 
-### `scrollIntoVisible(path: string | string[]) => Promise<void>`
+### `scrollIntoVisible(path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<void>`
 
 Given the path of the item (represent by a sorted array containing all ids
-from the root to the item), it displays and scrolls into the item view.
+from the root to the item) and the additional properties to update after,
+it displays and scrolls into the item view.
 The path can also be a string representing the id of the item to scroll
 into.
 
 #### Parameters
 
-| Name   | Type                 | Description |
-| ------ | -------------------- | ----------- |
-| `path` | `string \| string[]` |             |
+| Name              | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `path`            | `string \| string[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |             |
+| `afterProperties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
 
 #### Returns
 

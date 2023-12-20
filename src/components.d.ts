@@ -2243,13 +2243,36 @@ export interface GxGridChameleonColumnFilterCustomEvent<T> extends CustomEvent<T
     target: HTMLGxGridChameleonColumnFilterElement;
 }
 declare global {
+    interface HTMLChAccordionElementEventMap {
+        "expandedChange": boolean;
+    }
     interface HTMLChAccordionElement extends Components.ChAccordion, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChAccordionElementEventMap>(type: K, listener: (this: HTMLChAccordionElement, ev: ChAccordionCustomEvent<HTMLChAccordionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChAccordionElementEventMap>(type: K, listener: (this: HTMLChAccordionElement, ev: ChAccordionCustomEvent<HTMLChAccordionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChAccordionElement: {
         prototype: HTMLChAccordionElement;
         new (): HTMLChAccordionElement;
     };
+    interface HTMLChActionGroupElementEventMap {
+        "displayedItemsCountChange": number;
+        "moreActionsButtonExpandedChange": boolean;
+    }
     interface HTMLChActionGroupElement extends Components.ChActionGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChActionGroupElementEventMap>(type: K, listener: (this: HTMLChActionGroupElement, ev: ChActionGroupCustomEvent<HTMLChActionGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChActionGroupElementEventMap>(type: K, listener: (this: HTMLChActionGroupElement, ev: ChActionGroupCustomEvent<HTMLChActionGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChActionGroupElement: {
         prototype: HTMLChActionGroupElement;
@@ -2267,25 +2290,72 @@ declare global {
         prototype: HTMLChActionGroupRenderElement;
         new (): HTMLChActionGroupRenderElement;
     };
+    interface HTMLChAlertElementEventMap {
+        "close": any;
+    }
     interface HTMLChAlertElement extends Components.ChAlert, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChAlertElementEventMap>(type: K, listener: (this: HTMLChAlertElement, ev: ChAlertCustomEvent<HTMLChAlertElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChAlertElementEventMap>(type: K, listener: (this: HTMLChAlertElement, ev: ChAlertCustomEvent<HTMLChAlertElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChAlertElement: {
         prototype: HTMLChAlertElement;
         new (): HTMLChAlertElement;
     };
+    interface HTMLChCheckboxElementEventMap {
+        "click": any;
+        "input": any;
+    }
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChCheckboxElementEventMap>(type: K, listener: (this: HTMLChCheckboxElement, ev: ChCheckboxCustomEvent<HTMLChCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChCheckboxElementEventMap>(type: K, listener: (this: HTMLChCheckboxElement, ev: ChCheckboxCustomEvent<HTMLChCheckboxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
     };
+    interface HTMLChDropdownElementEventMap {
+        "expandedChange": boolean;
+    }
     interface HTMLChDropdownElement extends Components.ChDropdown, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChDropdownElementEventMap>(type: K, listener: (this: HTMLChDropdownElement, ev: ChDropdownCustomEvent<HTMLChDropdownElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChDropdownElementEventMap>(type: K, listener: (this: HTMLChDropdownElement, ev: ChDropdownCustomEvent<HTMLChDropdownElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChDropdownElement: {
         prototype: HTMLChDropdownElement;
         new (): HTMLChDropdownElement;
     };
+    interface HTMLChDropdownItemElementEventMap {
+        "actionClick": string;
+        "expandedChange": boolean;
+        "focusChange": any;
+    }
     interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChDropdownItemElementEventMap>(type: K, listener: (this: HTMLChDropdownItemElement, ev: ChDropdownItemCustomEvent<HTMLChDropdownItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChDropdownItemElementEventMap>(type: K, listener: (this: HTMLChDropdownItemElement, ev: ChDropdownItemCustomEvent<HTMLChDropdownItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChDropdownItemElement: {
         prototype: HTMLChDropdownItemElement;
@@ -2303,7 +2373,18 @@ declare global {
         prototype: HTMLChDropdownRenderElement;
         new (): HTMLChDropdownRenderElement;
     };
+    interface HTMLChFlexibleLayoutElementEventMap {
+        "selectedViewItemChange": ViewSelectedItemInfo;
+    }
     interface HTMLChFlexibleLayoutElement extends Components.ChFlexibleLayout, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChFlexibleLayoutElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutElement, ev: ChFlexibleLayoutCustomEvent<HTMLChFlexibleLayoutElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChFlexibleLayoutElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutElement, ev: ChFlexibleLayoutCustomEvent<HTMLChFlexibleLayoutElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChFlexibleLayoutElement: {
         prototype: HTMLChFlexibleLayoutElement;
@@ -2315,34 +2396,84 @@ declare global {
         prototype: HTMLChFlexibleLayoutRenderElement;
         new (): HTMLChFlexibleLayoutRenderElement;
     };
+    interface HTMLChFormCheckboxElementEventMap {
+        "change": any;
+    }
     interface HTMLChFormCheckboxElement extends Components.ChFormCheckbox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChFormCheckboxElementEventMap>(type: K, listener: (this: HTMLChFormCheckboxElement, ev: ChFormCheckboxCustomEvent<HTMLChFormCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChFormCheckboxElementEventMap>(type: K, listener: (this: HTMLChFormCheckboxElement, ev: ChFormCheckboxCustomEvent<HTMLChFormCheckboxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChFormCheckboxElement: {
         prototype: HTMLChFormCheckboxElement;
         new (): HTMLChFormCheckboxElement;
     };
+    interface HTMLChGridElementEventMap {
+        "selectionChanged": ChGridSelectionChangedEvent;
+        "rowMarkingChanged": ChGridMarkingChangedEvent;
+        "cellSelectionChanged": ChGridCellSelectionChangedEvent;
+        "rowClicked": ChGridRowClickedEvent;
+        "rowDoubleClicked": ChGridRowClickedEvent;
+        "rowEnterPressed": ChGridRowPressedEvent;
+        "rowContextMenu": ChGridRowContextMenuEvent;
+    }
     /**
      * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
      */
     interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridElementEventMap>(type: K, listener: (this: HTMLChGridElement, ev: ChGridCustomEvent<HTMLChGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridElementEventMap>(type: K, listener: (this: HTMLChGridElement, ev: ChGridCustomEvent<HTMLChGridElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridElement: {
         prototype: HTMLChGridElement;
         new (): HTMLChGridElement;
     };
+    interface HTMLChGridActionRefreshElementEventMap {
+        "refreshClicked": any;
+    }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
      */
     interface HTMLChGridActionRefreshElement extends Components.ChGridActionRefresh, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridActionRefreshElementEventMap>(type: K, listener: (this: HTMLChGridActionRefreshElement, ev: ChGridActionRefreshCustomEvent<HTMLChGridActionRefreshElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridActionRefreshElementEventMap>(type: K, listener: (this: HTMLChGridActionRefreshElement, ev: ChGridActionRefreshCustomEvent<HTMLChGridActionRefreshElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridActionRefreshElement: {
         prototype: HTMLChGridActionRefreshElement;
         new (): HTMLChGridActionRefreshElement;
     };
+    interface HTMLChGridActionSettingsElementEventMap {
+        "settingsShowClicked": any;
+    }
     /**
      * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
      */
     interface HTMLChGridActionSettingsElement extends Components.ChGridActionSettings, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridActionSettingsElementEventMap>(type: K, listener: (this: HTMLChGridActionSettingsElement, ev: ChGridActionSettingsCustomEvent<HTMLChGridActionSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridActionSettingsElementEventMap>(type: K, listener: (this: HTMLChGridActionSettingsElement, ev: ChGridActionSettingsCustomEvent<HTMLChGridActionSettingsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridActionSettingsElement: {
         prototype: HTMLChGridActionSettingsElement;
@@ -2357,10 +2488,30 @@ declare global {
         prototype: HTMLChGridActionbarElement;
         new (): HTMLChGridActionbarElement;
     };
+    interface HTMLChGridColumnElementEventMap {
+        "columnHiddenChanged": ChGridColumnHiddenChangedEvent;
+        "columnSizeChanging": ChGridColumnSizeChangedEvent;
+        "columnSizeChanged": ChGridColumnSizeChangedEvent;
+        "columnOrderChanged": ChGridColumnOrderChangedEvent;
+        "columnSortChanged": ChGridColumnSortChangedEvent;
+        "columnFreezeChanged": ChGridColumnFreezeChangedEvent;
+        "columnDragStarted": ChGridColumnDragEvent;
+        "columnDragging": ChGridColumnDragEvent;
+        "columnDragEnded": ChGridColumnDragEvent;
+        "columnSelectorClicked": ChGridColumnSelectorClickedEvent;
+    }
     /**
      * The `ch-grid-column` component represents a grid column.
      */
     interface HTMLChGridColumnElement extends Components.ChGridColumn, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridColumnElementEventMap>(type: K, listener: (this: HTMLChGridColumnElement, ev: ChGridColumnCustomEvent<HTMLChGridColumnElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridColumnElementEventMap>(type: K, listener: (this: HTMLChGridColumnElement, ev: ChGridColumnCustomEvent<HTMLChGridColumnElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridColumnElement: {
         prototype: HTMLChGridColumnElement;
@@ -2377,10 +2528,23 @@ declare global {
         prototype: HTMLChGridColumnDisplayElement;
         new (): HTMLChGridColumnDisplayElement;
     };
+    interface HTMLChGridColumnResizeElementEventMap {
+        "columnResizeStarted": ChGridColumnResizeEvent;
+        "columnResizing": ChGridColumnResizeEvent;
+        "columnResizeFinished": ChGridColumnResizeEvent;
+    }
     /**
      * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
      */
     interface HTMLChGridColumnResizeElement extends Components.ChGridColumnResize, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridColumnResizeElementEventMap>(type: K, listener: (this: HTMLChGridColumnResizeElement, ev: ChGridColumnResizeCustomEvent<HTMLChGridColumnResizeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridColumnResizeElementEventMap>(type: K, listener: (this: HTMLChGridColumnResizeElement, ev: ChGridColumnResizeCustomEvent<HTMLChGridColumnResizeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridColumnResizeElement: {
         prototype: HTMLChGridColumnResizeElement;
@@ -2404,19 +2568,41 @@ declare global {
         prototype: HTMLChGridColumnsetElement;
         new (): HTMLChGridColumnsetElement;
     };
+    interface HTMLChGridInfiniteScrollElementEventMap {
+        "infinite": any;
+    }
     /**
      * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
      */
     interface HTMLChGridInfiniteScrollElement extends Components.ChGridInfiniteScroll, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridInfiniteScrollElementEventMap>(type: K, listener: (this: HTMLChGridInfiniteScrollElement, ev: ChGridInfiniteScrollCustomEvent<HTMLChGridInfiniteScrollElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridInfiniteScrollElementEventMap>(type: K, listener: (this: HTMLChGridInfiniteScrollElement, ev: ChGridInfiniteScrollCustomEvent<HTMLChGridInfiniteScrollElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridInfiniteScrollElement: {
         prototype: HTMLChGridInfiniteScrollElement;
         new (): HTMLChGridInfiniteScrollElement;
     };
+    interface HTMLChGridRowActionsElementEventMap {
+        "rowActionOpened": any;
+    }
     /**
      * The `ch-grid-row-actions` component represents a group row actions.
      */
     interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridRowActionsElementEventMap>(type: K, listener: (this: HTMLChGridRowActionsElement, ev: ChGridRowActionsCustomEvent<HTMLChGridRowActionsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridRowActionsElementEventMap>(type: K, listener: (this: HTMLChGridRowActionsElement, ev: ChGridRowActionsCustomEvent<HTMLChGridRowActionsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridRowActionsElement: {
         prototype: HTMLChGridRowActionsElement;
@@ -2431,19 +2617,41 @@ declare global {
         prototype: HTMLChGridRowsetEmptyElement;
         new (): HTMLChGridRowsetEmptyElement;
     };
+    interface HTMLChGridRowsetLegendElementEventMap {
+        "rowsetLegendClicked": CustomEvent;
+    }
     /**
      * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
      */
     interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridRowsetLegendElementEventMap>(type: K, listener: (this: HTMLChGridRowsetLegendElement, ev: ChGridRowsetLegendCustomEvent<HTMLChGridRowsetLegendElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridRowsetLegendElementEventMap>(type: K, listener: (this: HTMLChGridRowsetLegendElement, ev: ChGridRowsetLegendCustomEvent<HTMLChGridRowsetLegendElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridRowsetLegendElement: {
         prototype: HTMLChGridRowsetLegendElement;
         new (): HTMLChGridRowsetLegendElement;
     };
+    interface HTMLChGridSettingsElementEventMap {
+        "settingsCloseClicked": any;
+    }
     /**
      * The `ch-grid-settings` component represents a settings window for a grid component.
      */
     interface HTMLChGridSettingsElement extends Components.ChGridSettings, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridSettingsElementEventMap>(type: K, listener: (this: HTMLChGridSettingsElement, ev: ChGridSettingsCustomEvent<HTMLChGridSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridSettingsElementEventMap>(type: K, listener: (this: HTMLChGridSettingsElement, ev: ChGridSettingsCustomEvent<HTMLChGridSettingsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridSettingsElement: {
         prototype: HTMLChGridSettingsElement;
@@ -2458,12 +2666,23 @@ declare global {
         prototype: HTMLChGridSettingsColumnsElement;
         new (): HTMLChGridSettingsColumnsElement;
     };
+    interface HTMLChGridVirtualScrollerElementEventMap {
+        "viewPortItemsChanged": any;
+    }
     /**
      * The `ch-grid-virtual-scroller` component that displays a subset of items.
      * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
      * based on the viewport size and scroll position.
      */
     interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChGridVirtualScrollerElement, ev: ChGridVirtualScrollerCustomEvent<HTMLChGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChGridVirtualScrollerElement, ev: ChGridVirtualScrollerCustomEvent<HTMLChGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChGridVirtualScrollerElement: {
         prototype: HTMLChGridVirtualScrollerElement;
@@ -2475,7 +2694,18 @@ declare global {
         prototype: HTMLChIconElement;
         new (): HTMLChIconElement;
     };
+    interface HTMLChIntersectionObserverElementEventMap {
+        "intersectionUpdate": IntersectionObserverEntry;
+    }
     interface HTMLChIntersectionObserverElement extends Components.ChIntersectionObserver, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChIntersectionObserverElementEventMap>(type: K, listener: (this: HTMLChIntersectionObserverElement, ev: ChIntersectionObserverCustomEvent<HTMLChIntersectionObserverElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChIntersectionObserverElementEventMap>(type: K, listener: (this: HTMLChIntersectionObserverElement, ev: ChIntersectionObserverCustomEvent<HTMLChIntersectionObserverElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChIntersectionObserverElement: {
         prototype: HTMLChIntersectionObserverElement;
@@ -2493,13 +2723,41 @@ declare global {
         prototype: HTMLChNextDataModelingElement;
         new (): HTMLChNextDataModelingElement;
     };
+    interface HTMLChNextDataModelingItemElementEventMap {
+        "deleteField": any;
+        "editField": ItemInfo;
+        "newEntity": EntityInfo;
+        "firstNewField": ItemInfo;
+        "firstNewFieldErrors": any;
+        "newField": ItemInfo;
+    }
     interface HTMLChNextDataModelingItemElement extends Components.ChNextDataModelingItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChNextDataModelingItemElementEventMap>(type: K, listener: (this: HTMLChNextDataModelingItemElement, ev: ChNextDataModelingItemCustomEvent<HTMLChNextDataModelingItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChNextDataModelingItemElementEventMap>(type: K, listener: (this: HTMLChNextDataModelingItemElement, ev: ChNextDataModelingItemCustomEvent<HTMLChNextDataModelingItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChNextDataModelingItemElement: {
         prototype: HTMLChNextDataModelingItemElement;
         new (): HTMLChNextDataModelingItemElement;
     };
+    interface HTMLChNextDataModelingRenderElementEventMap {
+        "fieldAdded": any;
+        "fieldRemoved": any;
+    }
     interface HTMLChNextDataModelingRenderElement extends Components.ChNextDataModelingRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChNextDataModelingRenderElementEventMap>(type: K, listener: (this: HTMLChNextDataModelingRenderElement, ev: ChNextDataModelingRenderCustomEvent<HTMLChNextDataModelingRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChNextDataModelingRenderElementEventMap>(type: K, listener: (this: HTMLChNextDataModelingRenderElement, ev: ChNextDataModelingRenderCustomEvent<HTMLChNextDataModelingRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChNextDataModelingRenderElement: {
         prototype: HTMLChNextDataModelingRenderElement;
@@ -2517,34 +2775,80 @@ declare global {
         prototype: HTMLChNotificationsElement;
         new (): HTMLChNotificationsElement;
     };
+    interface HTMLChNotificationsItemElementEventMap {
+        "notificationClick": number;
+        "notificationDismiss": number;
+    }
     interface HTMLChNotificationsItemElement extends Components.ChNotificationsItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChNotificationsItemElementEventMap>(type: K, listener: (this: HTMLChNotificationsItemElement, ev: ChNotificationsItemCustomEvent<HTMLChNotificationsItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChNotificationsItemElementEventMap>(type: K, listener: (this: HTMLChNotificationsItemElement, ev: ChNotificationsItemCustomEvent<HTMLChNotificationsItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChNotificationsItemElement: {
         prototype: HTMLChNotificationsItemElement;
         new (): HTMLChNotificationsItemElement;
     };
+    interface HTMLChPaginatorElementEventMap {
+        "activePageChanged": ChPaginatorActivePageChangedEvent;
+        "pageNavigationRequested": ChPaginatorPageNavigationRequestedEvent;
+    }
     /**
      * The 'ch-paginator' component represents a paginator control for navigating through pages.
      */
     interface HTMLChPaginatorElement extends Components.ChPaginator, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChPaginatorElementEventMap>(type: K, listener: (this: HTMLChPaginatorElement, ev: ChPaginatorCustomEvent<HTMLChPaginatorElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChPaginatorElementEventMap>(type: K, listener: (this: HTMLChPaginatorElement, ev: ChPaginatorCustomEvent<HTMLChPaginatorElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChPaginatorElement: {
         prototype: HTMLChPaginatorElement;
         new (): HTMLChPaginatorElement;
     };
+    interface HTMLChPaginatorNavigateElementEventMap {
+        "navigateClicked": ChPaginatorNavigateClickedEvent;
+    }
     /**
      * The 'ch-paginator-navigate' component represents the navigation buttons for the 'ch-paginator' component.
      */
     interface HTMLChPaginatorNavigateElement extends Components.ChPaginatorNavigate, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChPaginatorNavigateElementEventMap>(type: K, listener: (this: HTMLChPaginatorNavigateElement, ev: ChPaginatorNavigateCustomEvent<HTMLChPaginatorNavigateElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChPaginatorNavigateElementEventMap>(type: K, listener: (this: HTMLChPaginatorNavigateElement, ev: ChPaginatorNavigateCustomEvent<HTMLChPaginatorNavigateElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChPaginatorNavigateElement: {
         prototype: HTMLChPaginatorNavigateElement;
         new (): HTMLChPaginatorNavigateElement;
     };
+    interface HTMLChPaginatorPagesElementEventMap {
+        "pageChanged": ChPaginatorPagesPageChangedEvent;
+    }
     /**
      * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
      */
     interface HTMLChPaginatorPagesElement extends Components.ChPaginatorPages, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChPaginatorPagesElementEventMap>(type: K, listener: (this: HTMLChPaginatorPagesElement, ev: ChPaginatorPagesCustomEvent<HTMLChPaginatorPagesElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChPaginatorPagesElementEventMap>(type: K, listener: (this: HTMLChPaginatorPagesElement, ev: ChPaginatorPagesCustomEvent<HTMLChPaginatorPagesElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChPaginatorPagesElement: {
         prototype: HTMLChPaginatorPagesElement;
@@ -2556,13 +2860,36 @@ declare global {
         prototype: HTMLChQrElement;
         new (): HTMLChQrElement;
     };
+    interface HTMLChSelectElementEventMap {
+        "onToggle": any;
+        "optionClickedEvent": any;
+    }
     interface HTMLChSelectElement extends Components.ChSelect, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSelectElementEventMap>(type: K, listener: (this: HTMLChSelectElement, ev: ChSelectCustomEvent<HTMLChSelectElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSelectElementEventMap>(type: K, listener: (this: HTMLChSelectElement, ev: ChSelectCustomEvent<HTMLChSelectElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSelectElement: {
         prototype: HTMLChSelectElement;
         new (): HTMLChSelectElement;
     };
+    interface HTMLChSelectOptionElementEventMap {
+        "itemClicked": any;
+    }
     interface HTMLChSelectOptionElement extends Components.ChSelectOption, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSelectOptionElementEventMap>(type: K, listener: (this: HTMLChSelectOptionElement, ev: ChSelectOptionCustomEvent<HTMLChSelectOptionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSelectOptionElementEventMap>(type: K, listener: (this: HTMLChSelectOptionElement, ev: ChSelectOptionCustomEvent<HTMLChSelectOptionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSelectOptionElement: {
         prototype: HTMLChSelectOptionElement;
@@ -2574,7 +2901,19 @@ declare global {
         prototype: HTMLChShortcutsElement;
         new (): HTMLChShortcutsElement;
     };
+    interface HTMLChSidebarMenuElementEventMap {
+        "itemClicked": any;
+        "collapseBtnClicked": any;
+    }
     interface HTMLChSidebarMenuElement extends Components.ChSidebarMenu, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSidebarMenuElementEventMap>(type: K, listener: (this: HTMLChSidebarMenuElement, ev: ChSidebarMenuCustomEvent<HTMLChSidebarMenuElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSidebarMenuElementEventMap>(type: K, listener: (this: HTMLChSidebarMenuElement, ev: ChSidebarMenuCustomEvent<HTMLChSidebarMenuElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSidebarMenuElement: {
         prototype: HTMLChSidebarMenuElement;
@@ -2586,7 +2925,18 @@ declare global {
         prototype: HTMLChSidebarMenuListElement;
         new (): HTMLChSidebarMenuListElement;
     };
+    interface HTMLChSidebarMenuListItemElementEventMap {
+        "itemClickedEvent": any;
+    }
     interface HTMLChSidebarMenuListItemElement extends Components.ChSidebarMenuListItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSidebarMenuListItemElementEventMap>(type: K, listener: (this: HTMLChSidebarMenuListItemElement, ev: ChSidebarMenuListItemCustomEvent<HTMLChSidebarMenuListItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSidebarMenuListItemElementEventMap>(type: K, listener: (this: HTMLChSidebarMenuListItemElement, ev: ChSidebarMenuListItemCustomEvent<HTMLChSidebarMenuListItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSidebarMenuListItemElement: {
         prototype: HTMLChSidebarMenuListItemElement;
@@ -2598,7 +2948,18 @@ declare global {
         prototype: HTMLChStepListElement;
         new (): HTMLChStepListElement;
     };
+    interface HTMLChStepListItemElementEventMap {
+        "itemClicked": any;
+    }
     interface HTMLChStepListItemElement extends Components.ChStepListItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChStepListItemElementEventMap>(type: K, listener: (this: HTMLChStepListItemElement, ev: ChStepListItemCustomEvent<HTMLChStepListItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChStepListItemElementEventMap>(type: K, listener: (this: HTMLChStepListItemElement, ev: ChStepListItemCustomEvent<HTMLChStepListItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChStepListItemElement: {
         prototype: HTMLChStepListItemElement;
@@ -2616,7 +2977,19 @@ declare global {
         prototype: HTMLChStyleElement;
         new (): HTMLChStyleElement;
     };
+    interface HTMLChSuggestElementEventMap {
+        "valueChanged": string;
+        "selectionChanged": SuggestItemSelectedEvent;
+    }
     interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSuggestElementEventMap>(type: K, listener: (this: HTMLChSuggestElement, ev: ChSuggestCustomEvent<HTMLChSuggestElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSuggestElementEventMap>(type: K, listener: (this: HTMLChSuggestElement, ev: ChSuggestCustomEvent<HTMLChSuggestElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSuggestElement: {
         prototype: HTMLChSuggestElement;
@@ -2628,13 +3001,38 @@ declare global {
         prototype: HTMLChSuggestListElement;
         new (): HTMLChSuggestListElement;
     };
+    interface HTMLChSuggestListItemElementEventMap {
+        "itemSelected": SuggestItemSelectedEvent1;
+        "focusChangeAttempt": FocusChangeAttempt;
+    }
     interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSuggestListItemElementEventMap>(type: K, listener: (this: HTMLChSuggestListItemElement, ev: ChSuggestListItemCustomEvent<HTMLChSuggestListItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSuggestListItemElementEventMap>(type: K, listener: (this: HTMLChSuggestListItemElement, ev: ChSuggestListItemCustomEvent<HTMLChSuggestListItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChSuggestListItemElement: {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChTabElementEventMap {
+        "expandMainGroup": string;
+        "itemClose": string;
+        "selectedItemChange": TabSelectedItemInfo;
+    }
     interface HTMLChTabElement extends Components.ChTab, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTabElement: {
         prototype: HTMLChTabElement;
@@ -2676,50 +3074,148 @@ declare global {
         prototype: HTMLChTreeElement;
         new (): HTMLChTreeElement;
     };
+    interface HTMLChTreeItemElementEventMap {
+        "liItemClicked": any;
+        "toggleIconClicked": any;
+        "checkboxClickedEvent": chTreeItemData;
+    }
     interface HTMLChTreeItemElement extends Components.ChTreeItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTreeItemElementEventMap>(type: K, listener: (this: HTMLChTreeItemElement, ev: ChTreeItemCustomEvent<HTMLChTreeItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTreeItemElementEventMap>(type: K, listener: (this: HTMLChTreeItemElement, ev: ChTreeItemCustomEvent<HTMLChTreeItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTreeItemElement: {
         prototype: HTMLChTreeItemElement;
         new (): HTMLChTreeItemElement;
     };
+    interface HTMLChTreeViewElementEventMap {
+        "droppableZoneEnter": TreeViewDropCheckInfo;
+        "expandedItemChange": TreeViewItemExpandedInfo;
+        "itemContextmenu": TreeViewItemContextMenu;
+        "itemsDropped": TreeViewDataTransferInfo;
+        "selectedItemsChange": Map<string, TreeViewItemSelectedInfo>;
+    }
     interface HTMLChTreeViewElement extends Components.ChTreeView, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTreeViewElementEventMap>(type: K, listener: (this: HTMLChTreeViewElement, ev: ChTreeViewCustomEvent<HTMLChTreeViewElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTreeViewElementEventMap>(type: K, listener: (this: HTMLChTreeViewElement, ev: ChTreeViewCustomEvent<HTMLChTreeViewElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTreeViewElement: {
         prototype: HTMLChTreeViewElement;
         new (): HTMLChTreeViewElement;
     };
+    interface HTMLChTreeViewItemElementEventMap {
+        "checkboxChange": TreeViewItemCheckedInfo;
+        "checkboxToggleChange": TreeViewItemCheckedInfo;
+        "itemDragStart": TreeViewItemDragStartInfo;
+        "itemDragEnd": any;
+        "loadLazyContent": string;
+        "modifyCaption": TreeViewItemNewCaption;
+        "openReference": TreeViewItemOpenReferenceInfo;
+        "selectedItemChange": TreeViewItemSelectedInfo;
+        "selectedItemSync": TreeViewItemSelectedInfo;
+    }
     interface HTMLChTreeViewItemElement extends Components.ChTreeViewItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTreeViewItemElementEventMap>(type: K, listener: (this: HTMLChTreeViewItemElement, ev: ChTreeViewItemCustomEvent<HTMLChTreeViewItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTreeViewItemElementEventMap>(type: K, listener: (this: HTMLChTreeViewItemElement, ev: ChTreeViewItemCustomEvent<HTMLChTreeViewItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTreeViewItemElement: {
         prototype: HTMLChTreeViewItemElement;
         new (): HTMLChTreeViewItemElement;
     };
+    interface HTMLChTreeViewRenderElementEventMap {
+        "checkedItemsChange": Map<string, TreeViewItemModelExtended>;
+        "itemContextmenu": TreeViewItemContextMenu;
+        "itemOpenReference": TreeViewItemOpenReferenceInfo;
+        "selectedItemsChange": TreeViewItemModelExtended[];
+    }
     interface HTMLChTreeViewRenderElement extends Components.ChTreeViewRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTreeViewRenderElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderElement, ev: ChTreeViewRenderCustomEvent<HTMLChTreeViewRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTreeViewRenderElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderElement, ev: ChTreeViewRenderCustomEvent<HTMLChTreeViewRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTreeViewRenderElement: {
         prototype: HTMLChTreeViewRenderElement;
         new (): HTMLChTreeViewRenderElement;
     };
+    interface HTMLChTreeViewRenderWrapperElementEventMap {
+        "checkedItemsChange": Map<string, TreeViewItemModelExtended>;
+        "itemContextmenu": TreeViewItemContextMenu;
+        "itemOpenReference": TreeViewItemOpenReferenceInfo;
+        "selectedItemsChange": Map<string, TreeViewItemSelectedInfo>;
+    }
     interface HTMLChTreeViewRenderWrapperElement extends Components.ChTreeViewRenderWrapper, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTreeViewRenderWrapperElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderWrapperElement, ev: ChTreeViewRenderWrapperCustomEvent<HTMLChTreeViewRenderWrapperElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTreeViewRenderWrapperElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderWrapperElement, ev: ChTreeViewRenderWrapperCustomEvent<HTMLChTreeViewRenderWrapperElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTreeViewRenderWrapperElement: {
         prototype: HTMLChTreeViewRenderWrapperElement;
         new (): HTMLChTreeViewRenderWrapperElement;
     };
+    interface HTMLChWindowElementEventMap {
+        "windowOpened": any;
+        "windowClosed": any;
+    }
     /**
      * The 'ch-window' component represents a popup container that is positioned
      * relative to an element or the screen.
      */
     interface HTMLChWindowElement extends Components.ChWindow, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChWindowElementEventMap>(type: K, listener: (this: HTMLChWindowElement, ev: ChWindowCustomEvent<HTMLChWindowElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChWindowElementEventMap>(type: K, listener: (this: HTMLChWindowElement, ev: ChWindowCustomEvent<HTMLChWindowElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChWindowElement: {
         prototype: HTMLChWindowElement;
         new (): HTMLChWindowElement;
     };
+    interface HTMLChWindowCloseElementEventMap {
+        "windowCloseClicked": any;
+    }
     /**
      * The 'ch-window-close' component represents the close button for the 'ch-window' component.
      */
     interface HTMLChWindowCloseElement extends Components.ChWindowClose, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChWindowCloseElementEventMap>(type: K, listener: (this: HTMLChWindowCloseElement, ev: ChWindowCloseCustomEvent<HTMLChWindowCloseElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChWindowCloseElementEventMap>(type: K, listener: (this: HTMLChWindowCloseElement, ev: ChWindowCloseCustomEvent<HTMLChWindowCloseElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChWindowCloseElement: {
         prototype: HTMLChWindowCloseElement;
@@ -2731,10 +3227,21 @@ declare global {
         prototype: HTMLGxGridChameleonElement;
         new (): HTMLGxGridChameleonElement;
     };
+    interface HTMLGxGridChameleonColumnFilterElementEventMap {
+        "columnSettingsChanged": GridChameleonColumnFilterChanged;
+    }
     /**
      * Represents a component that provides filtering controls for a grid column.
      */
     interface HTMLGxGridChameleonColumnFilterElement extends Components.GxGridChameleonColumnFilter, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLGxGridChameleonColumnFilterElementEventMap>(type: K, listener: (this: HTMLGxGridChameleonColumnFilterElement, ev: GxGridChameleonColumnFilterCustomEvent<HTMLGxGridChameleonColumnFilterElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLGxGridChameleonColumnFilterElementEventMap>(type: K, listener: (this: HTMLGxGridChameleonColumnFilterElement, ev: GxGridChameleonColumnFilterCustomEvent<HTMLGxGridChameleonColumnFilterElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLGxGridChameleonColumnFilterElement: {
         prototype: HTMLGxGridChameleonColumnFilterElement;

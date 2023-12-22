@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-column` component represents a grid column.
+
 ## Properties
 
 | Property               | Attribute                 | Description                                                                                                                                                                                                                                           | Type                                 | Default     |

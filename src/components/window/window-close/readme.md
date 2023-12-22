@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The 'ch-window-close' component represents the close button for the 'ch-window' component.
+
 ## Properties
 
 | Property   | Attribute  | Description                                     | Type      | Default     |

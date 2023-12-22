@@ -62,3 +62,13 @@ export type TreeViewFilterInfo = {
   defaultCheckbox: boolean;
   defaultChecked: boolean;
 };
+
+export type TreeViewRemoveItemsResult = {
+  atLeastOneElement: boolean;
+  atLeastOneCheckbox: boolean;
+  atLeastOneSelected: boolean;
+};
+
+export type LazyLoadTreeItemsCallback = (
+  treeItemId: string
+) => Promise<TreeViewItemModel[]>;

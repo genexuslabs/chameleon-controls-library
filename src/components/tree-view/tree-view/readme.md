@@ -44,6 +44,12 @@ Type: `Promise<void>`
 
 Given an item id, it displays and scrolls into the item view.
 
+#### Parameters
+
+| Name         | Type     | Description |
+| ------------ | -------- | ----------- |
+| `treeItemId` | `string` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -53,6 +59,15 @@ Type: `Promise<void>`
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
+
+#### Parameters
+
+| Name               | Type                   | Description                                                                            |
+| ------------------ | ---------------------- | -------------------------------------------------------------------------------------- |
+| `requestTimestamp` | `number`               | Time where the request to the server was made. Useful to avoid having old information. |
+| `newContainerId`   | `string`               | ID of the container where the drag is trying to be made.                               |
+| `draggedItems`     | `GxDataTransferInfo[]` | Information about the dragged items.                                                   |
+| `validDrop`        | `boolean`              | Current state of the droppable zone.                                                   |
 
 #### Returns
 

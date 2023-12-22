@@ -69,6 +69,7 @@ module.exports = {
         listen: "multiline"
       }
     ],
+    "@stencil-community/ban-exported-const-enums": "warn", // Exported const enums are not allowed
     "@stencil-community/element-type": "warn", // This rule catches Stencil Element decorator have the correct type
     "@stencil-community/methods-must-be-public": "warn", // This rule catches Stencil Methods marked as private or protected
     "@stencil-community/no-unused-watch": "warn", // This rule catches Stencil Watchs with non existing Props or States
@@ -79,6 +80,7 @@ module.exports = {
     "@stencil-community/props-must-be-readonly": "warn", // This rule catches Stencil Props marked as non readonly, excluding mutable ones
     "@stencil-community/required-jsdoc": "warn", // This rule catches Stencil Props, Methods and Events to define jsdoc
     "@stencil-community/required-prefix": ["warn", ["ch-"]], // Ensures that a Component's tag use the "ch-" prefix.
+    "@stencil-community/reserved-member-names": "warn", // Ensures that any of reserved global HTML attribute names are used as @Prop or @Method
     "@stencil-community/single-export": "warn", // This rule catches modules that expose more than just the Stencil Component itself
     "@stencil-community/strict-boolean-conditions": "off",
 

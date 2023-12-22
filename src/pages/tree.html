@@ -28,6 +28,12 @@
         min-height: 100vh;
       }
 
+      fieldset {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+      }
+
       .main-container {
         display: grid;
         grid-template-rows: 1fr min-content;
@@ -128,9 +134,15 @@
 
       .configuration {
         display: grid;
-        grid-template-columns: repeat(5, max-content);
-        grid-template-rows: min-content min-content min-content min-content;
+        grid-template-columns: 1fr;
+        grid-template-rows: min-content min-content min-content;
         gap: 12px 24px;
+      }
+
+      .configuration > div {
+        display: grid;
+        grid-template-columns: max-content max-content;
+        gap: 16px;
       }
 
       .tree-buttons {
@@ -413,7 +425,10 @@
           </ch-tree-view-item>
         </ch-tree-view>
 
-        <ch-tree-view-render show-lines="all"></ch-tree-view-render>
+        <ch-tree-view-render
+          show-lines="all"
+          multi-selection="true"
+        ></ch-tree-view-render>
 
         <div>
           <ch-textblock id="contextmenu-textblock"
@@ -436,109 +451,147 @@
       </div>
 
       <div class="configuration">
-        <button id="expand-all" type="button">Expand All</button>
-
-        <ch-checkbox
-          id="multi-selection"
-          checked-value="true"
-          un-checked-value="false"
-          value="false"
-          caption="Multi selection"
-        ></ch-checkbox>
-
-        <ch-checkbox
-          id="editable"
-          checked-value="true"
-          un-checked-value="false"
-          value="true"
-          caption="Editable Items"
-        ></ch-checkbox>
-
-        <ch-checkbox
-          id="check-all"
-          checked-value="true"
-          un-checked-value="false"
-          value="false"
-          caption="Check / uncheck all"
-        ></ch-checkbox>
-
-        <label>
-          Lines
-          <select name="lines" id="lines">
-            <option value="all" selected>All lines</option>
-            <option value="last">Last line</option>
-            <option value="none">None</option>
-          </select>
-        </label>
-
-        <button id="collapse-all" type="button">Collapse All</button>
-
-        <ch-checkbox
-          id="drag-enabled"
-          checked-value="true"
-          un-checked-value="false"
-          value="true"
-          caption="Drag Enabled"
-        ></ch-checkbox>
-
-        <ch-checkbox
-          id="drop-enabled"
-          checked-value="true"
-          un-checked-value="false"
-          value="true"
-          caption="Drop Enabled"
-        ></ch-checkbox>
-
         <div>
-          <input id="input-scroll-into-visible" type="text" />
-          <button id="btn-scroll-into-visible" type="button">
-            Scroll into visible
-          </button>
+          <fieldset>
+            <legend>Properties</legend>
+
+            <ch-checkbox
+              id="multi-selection"
+              checked-value="true"
+              un-checked-value="false"
+              value="true"
+              caption="Multi selection"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="editable"
+              checked-value="true"
+              un-checked-value="false"
+              value="true"
+              caption="Editable Items"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="drag-enabled"
+              checked-value="true"
+              un-checked-value="false"
+              value="true"
+              caption="Drag Enabled"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="drop-enabled"
+              checked-value="true"
+              un-checked-value="false"
+              value="true"
+              caption="Drop Enabled"
+            ></ch-checkbox>
+
+            <label>
+              Lines
+              <select name="lines" id="lines">
+                <option value="all" selected>All lines</option>
+                <option value="last">Last line</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Methods</legend>
+
+            <button id="expand-all" type="button">Expand All</button>
+
+            <button id="collapse-all" type="button">Collapse All</button>
+
+            <ch-checkbox
+              id="check-all"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Check / uncheck all"
+            ></ch-checkbox>
+
+            <div>
+              <input id="input-scroll-into-visible" type="text" />
+              <button id="btn-scroll-into-visible" type="button">
+                Scroll into visible
+              </button>
+            </div>
+
+            <div>
+              <label>
+                Item id
+                <input id="item-id-to-reload" type="text" />
+              </label>
+              <button id="button-to-reload-items">Reload items</button>
+            </div>
+
+            <div>
+              <label>
+                Remove items
+                <input
+                  id="items-to-remove"
+                  placeholder="ItemId1,ItemId2,ItemId3"
+                  type="text"
+                />
+              </label>
+              <button id="button-items-to-remove">Remove items</button>
+            </div>
+          </fieldset>
         </div>
 
-        <label>
-          Filter type
-          <select name="filter-type" id="filter-type">
-            <option value="checked">Checked</option>
-            <option value="unchecked">Unchecked</option>
-            <option value="caption">Caption</option>
-            <option value="metadata">Metadata</option>
-            <option value="id-list">List of ids</option>
-            <option value="none" selected>None</option>
-          </select>
-        </label>
+        <div>
+          <fieldset>
+            <legend>Filters</legend>
 
-        <label>
-          Filter
-          <input id="filter" value="" />
-        </label>
+            <label>
+              Filter type
+              <select name="filter-type" id="filter-type">
+                <option value="checked">Checked</option>
+                <option value="unchecked">Unchecked</option>
+                <option value="caption">Caption</option>
+                <option value="metadata">Metadata</option>
+                <option value="id-list">List of ids</option>
+                <option value="none" selected>None</option>
+              </select>
+            </label>
 
-        <ch-checkbox
-          id="camel-case"
-          checked-value="true"
-          un-checked-value="false"
-          value="false"
-          caption="Apply camel casing to filter"
-        ></ch-checkbox>
+            <label>
+              Filter
+              <input id="filter" value="" />
+            </label>
 
-        <ch-checkbox
-          id="hide-matches"
-          checked-value="true"
-          un-checked-value="false"
-          value="false"
-          caption="Hide matches and show non-matches"
-        ></ch-checkbox>
-      </div>
+            <ch-checkbox
+              id="camel-case"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Apply camel casing to filter"
+            ></ch-checkbox>
 
-      <div class="buttons-wrapper">
-        <button id="load-model-btn">Load model (click first)</button>
-        <button id="update-model-btn">Update model (click second)</button>
-        <button id="update-model-again-btn">
-          Update model again (click third)
-        </button>
-        <button id="update-big-model-btn">Set big model</button>
-        <button id="kb-explorer-model-btn">KB Explorer</button>
-        <button id="import-objects-model-btn">Import Objects</button>
+            <ch-checkbox
+              id="hide-matches"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Hide matches and show non-matches"
+            ></ch-checkbox>
+          </fieldset>
+
+          <fieldset>
+            <legend>Models</legend>
+
+            <button id="load-model-btn">Load model (click first)</button>
+            <button id="update-model-btn">Update model (click second)</button>
+            <button id="update-model-again-btn">
+              Update model again (click third)
+            </button>
+            <button id="update-big-model-btn">Set big model</button>
+            <button id="kb-explorer-model-btn">KB Explorer</button>
+            <button id="import-objects-model-btn">Import Objects</button>
+          </fieldset>
+        </div>
       </div>
     </div>
 
@@ -1224,6 +1277,7 @@
           testTreeX.treeModel = importObjectsModel;
         });
 
+        // Scroll into visible
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1232,8 +1286,43 @@
         );
 
         scrollIntoVisibleBtn.addEventListener("click", () => {
-          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value);
+          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
+            selected: true
+          });
           scrollIntoVisibleInput.value = "";
+        });
+
+        // Reload items
+        const reloadItemsBtn = document.getElementById(
+          "button-to-reload-items"
+        );
+        const reloadItemsInput = document.getElementById("item-id-to-reload");
+        reloadItemsBtn.addEventListener("click", () => {
+          testTreeX.reloadItems(
+            reloadItemsInput.value,
+            { downloading: true },
+            { downloading: false }
+          );
+          reloadItemsInput.value = "";
+        });
+
+        // Remove items
+        const removeItemsBtn = document.getElementById(
+          "button-items-to-remove"
+        );
+        const removeItemsInput = document.getElementById("items-to-remove");
+        removeItemsBtn.addEventListener("click", () => {
+          /** @type string */
+          const itemsString = removeItemsInput.value;
+
+          if (!itemsString) {
+            return;
+          }
+
+          const itemsToRemove = itemsString.split(/\s*,\s*/);
+
+          testTreeX.removeItems(itemsToRemove);
+          removeItemsInput.value = "";
         });
 
         const contextMenuTextBlock = document.getElementById(
@@ -1337,6 +1426,8 @@
         );
 
         testTreeX.addEventListener("selectedItemsChange", event => {
+          console.log("selectedItemsChange...");
+
           selectedItemsTextBlock.innerHTML = `<br>+ + + + + Selected Items + + + + +<br>
           ${event.detail.map(el => el.item.id).join("<br>")}`;
         });
@@ -1384,7 +1475,7 @@
             }
 
             setTimeout(() => {
-              resolve(lazyModel);
+              resolve(structuredClone(lazyModel));
             }, 500); // Resolves or rejects after 1 second
           });
 

@@ -186,14 +186,15 @@ export class ChGridManagerColumns {
                         margin-inline-end: var(--ch-grid-column-${i}-margin-end);
                         border-inline-end: var(--ch-grid-column-${i}-border-end);
                         padding-inline-end: var(--ch-grid-column-${i}-padding-end);
-                        transform: var(--ch-grid-column-${i}-transform);
                         left: var(--ch-grid-column-${i}-left-freeze);
                         right: var(--ch-grid-column-${i}-right-freeze);
                     }
                     ch-grid-column:nth-child(${i}) {
+                      transform: var(--ch-grid-column-${i}-transform);
                       z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-column-z-index-head, 0)  + var(--ch-grid-column-z-index-active, 0));
                     }
                     ch-grid-cell:nth-child(${i}) {
+                      transform: var(--ch-grid-virtual-scroller-position,) var(--ch-grid-column-${i}-transform,);
                       z-index: calc(var(--ch-grid-column-${i}-z-index-freeze, 0) + var(--ch-grid-cell-z-index-active, 0));
                     }
                     ch-grid-cell:nth-child(${i})::before {

@@ -20,8 +20,10 @@ import {
   TreeViewItemSelectedInfo
 } from "../tree-view/types";
 import { mouseEventModifierKey } from "../../common/helpers";
-import { ChTreeViewItemCustomEvent } from "../../../components";
-import { removeDragImage } from "../../../common/utils";
+import {
+  ChCheckboxCustomEvent,
+  ChTreeViewItemCustomEvent
+} from "../../../components";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -194,7 +196,10 @@ export class ChTreeViewItem {
   @Watch("lastItem")
   handleLasItemChange(isLastItem: boolean) {
     if (isLastItem && this.showLines) {
-      this.setResizeObserver();
+      // Use RAF to set the observer after the render method has completed
+      requestAnimationFrame(() => {
+        this.setResizeObserver();
+      });
     } else {
       this.disconnectObserver();
     }
@@ -242,16 +247,6 @@ export class ChTreeViewItem {
    * This attribute lets you specify if the item is selected
    */
   @Prop({ mutable: true, reflect: true }) selected = false;
-
-  @Watch("selected")
-  handleSelectedChange(newValue: boolean) {
-    this.selectedItemSync.emit(
-      this.getSelectedInfo(
-        true, // Does not matter in this case
-        newValue
-      )
-    );
-  }
 
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
@@ -328,13 +323,6 @@ export class ChTreeViewItem {
    * control.
    */
   @Event() selectedItemChange: EventEmitter<TreeViewItemSelectedInfo>;
-
-  /**
-   * Fired when the selected state is updated through the interface and without
-   * user interaction. The purpose of this event is to better sync with the
-   * main tree.
-   */
-  @Event() selectedItemSync: EventEmitter<TreeViewItemSelectedInfo>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(
@@ -716,7 +704,9 @@ export class ChTreeViewItem {
     });
   }
 
-  private handleCheckedChange = (event: CustomEvent) => {
+  private handleCheckedChange = (
+    event: ChCheckboxCustomEvent<any> & InputEvent
+  ) => {
     event.stopPropagation();
 
     const checked = (event.target as HTMLChCheckboxElement).checked;
@@ -791,11 +781,6 @@ export class ChTreeViewItem {
     // If it was disconnected on edit mode, remove the body event handler
     if (this.editing) {
       this.removeEditMode(false);
-    }
-
-    // Sync selected state with the main tree
-    if (this.selected) {
-      this.selectedItemChange.emit(this.getSelectedInfo(true, false));
     }
 
     this.disconnectObserver();

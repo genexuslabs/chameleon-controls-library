@@ -3,6 +3,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-columnset` component represents a group of columns.
+
 ## Dependencies
 
 ### Used by

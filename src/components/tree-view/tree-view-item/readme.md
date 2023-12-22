@@ -38,17 +38,16 @@
 
 ## Events
 
-| Event                  | Description                                                                                                                                                  | Type                                                                                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `checkboxChange`       | Fired when the checkbox value of the control is changed.                                                                                                     | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
-| `checkboxToggleChange` | Fired when the checkbox value of the control is changed. This event only applies when the control has `toggleCheckboxes = true`                              | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
-| `itemDragEnd`          | Fired when the item is no longer being dragged.                                                                                                              | `CustomEvent<any>`                                                                                                                                                    |
-| `itemDragStart`        | Fired when the item is being dragged.                                                                                                                        | `CustomEvent<{ elem: HTMLChTreeViewItemElement; dragEvent: DragEvent; }>`                                                                                             |
-| `loadLazyContent`      | Fired when the lazy control is expanded an its content must be loaded.                                                                                       | `CustomEvent<string>`                                                                                                                                                 |
-| `modifyCaption`        | Fired when the item is asking to modify its caption.                                                                                                         | `CustomEvent<{ id: string; caption: string; }>`                                                                                                                       |
-| `openReference`        | Fired when the user interacts with the control in a way that its reference must be opened.                                                                   | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                                                                       |
-| `selectedItemChange`   | Fired when the selected state is updated by user interaction on the control.                                                                                 | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; parentId: string; selected: boolean; }>` |
-| `selectedItemSync`     | Fired when the selected state is updated through the interface and without user interaction. The purpose of this event is to better sync with the main tree. | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; parentId: string; selected: boolean; }>` |
+| Event                  | Description                                                                                                                     | Type                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `checkboxChange`       | Fired when the checkbox value of the control is changed.                                                                        | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
+| `checkboxToggleChange` | Fired when the checkbox value of the control is changed. This event only applies when the control has `toggleCheckboxes = true` | `CustomEvent<{ id: string; checked: boolean; indeterminate: boolean; }>`                                                                                              |
+| `itemDragEnd`          | Fired when the item is no longer being dragged.                                                                                 | `CustomEvent<any>`                                                                                                                                                    |
+| `itemDragStart`        | Fired when the item is being dragged.                                                                                           | `CustomEvent<{ elem: HTMLChTreeViewItemElement; dragEvent: DragEvent; }>`                                                                                             |
+| `loadLazyContent`      | Fired when the lazy control is expanded an its content must be loaded.                                                          | `CustomEvent<string>`                                                                                                                                                 |
+| `modifyCaption`        | Fired when the item is asking to modify its caption.                                                                            | `CustomEvent<{ id: string; caption: string; }>`                                                                                                                       |
+| `openReference`        | Fired when the user interacts with the control in a way that its reference must be opened.                                      | `CustomEvent<{ id: string; leaf: boolean; metadata: string; }>`                                                                                                       |
+| `selectedItemChange`   | Fired when the selected state is updated by user interaction on the control.                                                    | `CustomEvent<{ ctrlKeyPressed: boolean; expanded: boolean; id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; parentId: string; selected: boolean; }>` |
 
 
 ## Methods
@@ -57,6 +56,12 @@
 
 Focus the last item in its subtree. If the control is not expanded, it
 focus the control.
+
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
 
 #### Returns
 
@@ -69,6 +74,12 @@ Type: `Promise<void>`
 Focus the next item in the tree. If the control is expanded, it focuses
 the first subitem in its tree.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -78,6 +89,12 @@ Type: `Promise<void>`
 ### `focusNextSibling(ctrlKeyPressed: boolean) => Promise<void>`
 
 Focus the next sibling item in the tree.
+
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
 
 #### Returns
 
@@ -90,6 +107,12 @@ Type: `Promise<void>`
 Focus the previous item in the tree. If the previous item is expanded, it focuses
 the last subitem in its tree.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -100,6 +123,12 @@ Type: `Promise<void>`
 
 Set focus in the control.
 
+#### Parameters
+
+| Name             | Type      | Description |
+| ---------------- | --------- | ----------- |
+| `ctrlKeyPressed` | `boolean` |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -109,6 +138,13 @@ Type: `Promise<void>`
 ### `updateChecked(newChecked: boolean, newIndeterminate: boolean) => Promise<void>`
 
 Update `checked` and `indeterminate` properties.
+
+#### Parameters
+
+| Name               | Type      | Description |
+| ------------------ | --------- | ----------- |
+| `newChecked`       | `boolean` |             |
+| `newIndeterminate` | `boolean` |             |
 
 #### Returns
 

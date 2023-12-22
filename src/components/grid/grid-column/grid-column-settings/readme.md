@@ -5,6 +5,10 @@
 <!-- Auto Generated Below -->
 
 
+## Overview
+
+The `ch-grid-column-settings` component represents a settings window for a column.
+
 ## Properties
 
 | Property              | Attribute | Description                                                                | Type                      | Default     |

@@ -21,7 +21,7 @@
 | `filterDebounce`             | `filter-debounce`   | This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" \| "metadata"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `number`                                                                                                                                               | `250`                          |
 | `filterList`                 | --                  | This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           | `string[]`                                                                                                                                             | `[]`                           |
 | `filterOptions`              | --                  | This property lets you determine the options that will be applied to the filter.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `{ autoExpand?: boolean; hideMatchesAndShowNonMatches?: boolean; highlightMatchedItems?: boolean; matchCase?: boolean; regularExpression?: boolean; }` | `{}`                           |
-| `filterType`                 | `filter-type`       | This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  \| Value       \| Details                                                                                        \| \| ----------- \| ---------------------------------------------------------------------------------------------- \| \| `checked`   \| Show only the items that have a checkbox and are checked.                                      \| \| `unchecked` \| Show only the items that have a checkbox and are not checked.                                  \| \| `caption`   \| Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  \| \| `metadata`  \| Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. \| \| `list`   \| Show only the items that are contained in the array determinate by the `filterList` property.     \| \| `none`      \| Show all items.                                                                                \| | `"caption" \| "checked" \| "list" \| "metadata" \| "none" \| "unchecked"`                                                                              | `"none"`                       |
+| `filterType`                 | `filter-type`       | This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  \| Value       \| Details                                                                                        \| \| ----------- \| ---------------------------------------------------------------------------------------------- \| \| `checked`   \| Show only the items that have a checkbox and are checked.                                      \| \| `unchecked` \| Show only the items that have a checkbox and are not checked.                                  \| \| `caption`   \| Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  \| \| `metadata`  \| Show only the items whose `metadata` satisfies the regex determinate by the `filter` property. \| \| `list`      \| Show only the items that are contained in the array determinate by the `filterList` property.  \| \| `none`      \| Show all items.                                                                                \| | `"caption" \| "checked" \| "list" \| "metadata" \| "none" \| "unchecked"`                                                                              | `"none"`                       |
 | `gxImageConstructor`         | --                  | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `(name: string) => any`                                                                                                                                | `undefined`                    |
 | `gxSettings`                 | `gx-settings`       | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `any`                                                                                                                                                  | `undefined`                    |
 | `lazyLoadTreeItemsCallback`  | --                  | Callback that is executed when a item request to load its subitems.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | `(treeItemId: string) => Promise<TreeViewItemModel[]>`                                                                                                 | `undefined`                    |
@@ -31,7 +31,7 @@
 | `showLines`                  | `show-lines`        | `true` to display the relation between tree items and tree lists using lines.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `"all" \| "last" \| "none"`                                                                                                                            | `"none"`                       |
 | `sortItemsCallback`          | --                  | Callback that is executed when the treeModel is changed to order its items.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `(subModel: TreeViewItemModel[]) => void`                                                                                                              | `defaultSortItemsCallback`     |
 | `toggleCheckboxes`           | `toggle-checkboxes` | Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked. This attribute will be used in all items by default.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | `boolean`                                                                                                                                              | `false`                        |
-| `treeModel`                  | --                  | This property lets you define the model of the ch-tree-x control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `TreeViewItemModel[]`                                                                                                                                  | `[]`                           |
+| `treeModel`                  | --                  | This property lets you define the model of the ch-tree-view-render control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `TreeViewItemModel[]`                                                                                                                                  | `[]`                           |
 | `useGxRender`                | `use-gx-render`     | This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | `boolean`                                                                                                                                              | `false`                        |
 
 
@@ -52,6 +52,14 @@
 Given the drop accepting, the data transfer info and the external items,
 it process the drops of the items in the tree.
 
+#### Parameters
+
+| Name               | Type                                                                                                                                    | Description |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `acceptDrop`       | `boolean`                                                                                                                               |             |
+| `dataTransferInfo` | `{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; }` |             |
+| `items`            | `TreeViewItemModel[]`                                                                                                                   |             |
+
 #### Returns
 
 Type: `Promise<void>`
@@ -62,6 +70,12 @@ Type: `Promise<void>`
 
 Given a list of ids, it returns an array of the items that exists in the
 given list.
+
+#### Parameters
+
+| Name      | Type       | Description |
+| --------- | ---------- | ----------- |
+| `itemsId` | `string[]` |             |
 
 #### Returns
 
@@ -74,15 +88,71 @@ Type: `Promise<TreeViewItemModelExtended[]>`
 Given an item id, an array of items to add, the download status and the
 lazy state, updates the item's UI Model.
 
+#### Parameters
+
+| Name          | Type                  | Description |
+| ------------- | --------------------- | ----------- |
+| `itemId`      | `string`              |             |
+| `items`       | `TreeViewItemModel[]` |             |
+| `downloading` | `boolean`             |             |
+| `lazy`        | `boolean`             |             |
+
 #### Returns
 
 Type: `Promise<void>`
 
 
 
-### `scrollIntoVisible(treeItemId: string) => Promise<void>`
+### `reloadItems(itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<void>`
 
-Given an item id, it displays and scrolls into the item view.
+Given an item id and the additional properties to update before and after
+reload, it reloads the items of the `itemId` node by using the
+`lazyLoadTreeItemsCallback` property.
+
+#### Parameters
+
+| Name               | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `itemId`           | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |             |
+| `beforeProperties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
+| `afterProperties`  | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `removeItems(items: string[]) => Promise<void>`
+
+Given a list of ids, removes the items and their children in the tree.
+
+#### Parameters
+
+| Name    | Type       | Description |
+| ------- | ---------- | ----------- |
+| `items` | `string[]` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `scrollIntoVisible(path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<void>`
+
+Given the path of the item (represent by a sorted array containing all ids
+from the root to the item) and the additional properties to update after,
+it displays and scrolls into the item view.
+The path can also be a string representing the id of the item to scroll
+into.
+
+#### Parameters
+
+| Name              | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `path`            | `string \| string[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |             |
+| `afterProperties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
 
 #### Returns
 
@@ -94,6 +164,13 @@ Type: `Promise<void>`
 
 This method is used to toggle a tree item by the tree item id/ids.
 
+#### Parameters
+
+| Name          | Type       | Description                                                                         |
+| ------------- | ---------- | ----------------------------------------------------------------------------------- |
+| `treeItemIds` | `string[]` | An array id the tree items to be toggled.                                           |
+| `expand`      | `boolean`  | A boolean indicating that the tree item should be expanded or collapsed. (optional) |
+
 #### Returns
 
 Type: `Promise<TreeViewItemExpandedInfo[]>`
@@ -104,16 +181,29 @@ The modified items after the method was called.
 
 Given a subset of item's properties, it updates all item UI models.
 
+#### Parameters
+
+| Name         | Type                                         | Description |
+| ------------ | -------------------------------------------- | ----------- |
+| `properties` | `{ expanded?: boolean; checked?: boolean; }` |             |
+
 #### Returns
 
 Type: `Promise<void>`
 
 
 
-### `updateItemsProperties(items: string[], properties: TreeViewItemModel) => Promise<void>`
+### `updateItemsProperties(items: string[], properties: Partial<TreeViewItemModel>) => Promise<void>`
 
 Given a item list and the properties to update, it updates the properties
 of the items in the list.
+
+#### Parameters
+
+| Name         | Type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | Description |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `items`      | `string[]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |             |
+| `properties` | `{ id?: string; caption?: string; checkbox?: boolean; checked?: boolean; class?: string; disabled?: boolean; downloading?: boolean; dragDisabled?: boolean; dropDisabled?: boolean; editable?: boolean; expanded?: boolean; lastItemId?: string; lazy?: boolean; leaf?: boolean; leftImgSrc?: string; indeterminate?: boolean; items?: TreeViewItemModel[]; metadata?: string; order?: number; render?: boolean; rightImgSrc?: string; selected?: boolean; showExpandableButton?: boolean; toggleCheckboxes?: boolean; }` |             |
 
 #### Returns
 
@@ -124,6 +214,15 @@ Type: `Promise<void>`
 ### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
+
+#### Parameters
+
+| Name               | Type                   | Description                                                                            |
+| ------------------ | ---------------------- | -------------------------------------------------------------------------------------- |
+| `requestTimestamp` | `number`               | Time where the request to the server was made. Useful to avoid having old information. |
+| `newContainerId`   | `string`               | ID of the container where the drag is trying to be made.                               |
+| `draggedItems`     | `GxDataTransferInfo[]` | Information about the dragged items.                                                   |
+| `validDrop`        | `boolean`              | Current state of the droppable zone.                                                   |
 
 #### Returns
 

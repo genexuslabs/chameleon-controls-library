@@ -35,9 +35,12 @@ import {
   TAB_LIST_CLASS,
   TabElementSize
 } from "./utils";
+import { insertIntoIndex, removeElement } from "../../common/array";
 
 const BUTTON_POSITION_X = "--ch-tab-button-position-x";
 const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
+
+const BUTTON_SIZE = "--ch-tab-button-size";
 
 const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
 const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
@@ -48,6 +51,9 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 
+const isBlockDirection = (type: TabType) =>
+  type === "main" || type === "blockEnd";
+
 const setButtonInitialPosition = (
   element: HTMLElement,
   positionX: number,
@@ -55,6 +61,10 @@ const setButtonInitialPosition = (
 ) => {
   element.style.setProperty(BUTTON_POSITION_X, `${positionX}px`);
   element.style.setProperty(BUTTON_POSITION_Y, `${positionY}px`);
+};
+
+const setButtonSize = (element: HTMLElement, size: number) => {
+  element.style.setProperty(BUTTON_SIZE, `${size}px`);
 };
 
 const setMousePosition = (
@@ -143,12 +153,19 @@ export class ChTab implements DraggableView {
   private lastDragEvent: MouseEvent;
   private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
+  private initialMousePosition = -1;
+
+  // Allocated at runtime to reduce memory usage
+  private itemSizes: number[];
+
   /**
    * This variable represents the boundaries of the box where the mouse can be
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
   private mouseBoundingLimits: TabElementSize;
+
+  private renderedPages: FlexibleLayoutWidget[] = [];
 
   // Refs
   private tabListRef: HTMLDivElement;
@@ -157,6 +174,7 @@ export class ChTab implements DraggableView {
   @Element() el: HTMLChTabElement;
 
   @State() draggedElementIndex = -1;
+  @State() draggedElementNewIndex = -1;
 
   /**
    * `true` when the mouse position is out of bounds at least once.
@@ -190,6 +208,8 @@ export class ChTab implements DraggableView {
   @Watch("items")
   handleItemsChange(newItems: FlexibleLayoutWidget[]) {
     this.updateSelectedIndex(newItems);
+
+    this.updateRenderedPages(newItems);
   }
 
   /**
@@ -257,6 +277,15 @@ export class ChTab implements DraggableView {
     this.lastSelectedItem = items.findIndex(item => item.selected);
   }
 
+  /**
+   * Make a shallow copy of the items array to maintain order between the pages,
+   * even when re-ordering tabs. This is useful for optimizing rendering
+   * performance by not re-ordering pages when the caption's order changes.
+   */
+  private updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
+    this.renderedPages = (items ?? []).map(item => item);
+  };
+
   private handleItemDblClick = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -271,9 +300,14 @@ export class ChTab implements DraggableView {
     // Store the index of the dragged element
     this.draggedElementIndex = index;
 
-    // Read operations
+    // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;
+
+    const getItemSize = isBlockDirection(this.type)
+      ? (item: HTMLElement) => item.getBoundingClientRect().width
+      : (item: HTMLElement) => item.getBoundingClientRect().height;
+    this.itemSizes = [...this.tabListRef.children].map(getItemSize);
 
     const buttonRect = (
       event.target as HTMLButtonElement
@@ -308,11 +342,23 @@ export class ChTab implements DraggableView {
       yEnd: tabListSizes.yEnd + mouseDistanceToButtonTopEdge
     };
 
+    // Store initial mouse position
+    this.initialMousePosition =
+      this.type === "main" || this.type === "blockEnd"
+        ? mousePositionX
+        : mousePositionY;
+
+    // - - - - - - - - - - - DOM write operations - - - - - - - - - - -
     // Initialize mouse position to avoid initial flickering
     setMousePosition(this.el, mousePositionX, mousePositionY);
 
     // Initialize the button position
     setButtonInitialPosition(this.el, buttonSizes.xStart, buttonSizes.yStart);
+
+    setButtonSize(
+      this.el,
+      isBlockDirection(this.type) ? buttonRect.width : buttonRect.height
+    );
 
     // Update mouse offset to correctly place the dragged element preview
     setMouseOffset(
@@ -345,8 +391,22 @@ export class ChTab implements DraggableView {
 
     removeGrabbingStyle();
 
+    const anItemWasReordered =
+      !this.hasCrossedBoundaries &&
+      this.draggedElementNewIndex !== this.draggedElementIndex;
+
+    // Move the item to the new position
+    if (anItemWasReordered) {
+      const itemToInsert = removeElement(this.items, this.draggedElementIndex);
+      insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+    }
+
     // Restore visibility of the dragged element
     this.draggedElementIndex = -1;
+    this.draggedElementNewIndex = -1;
+
+    // Free the memory
+    this.itemSizes = undefined;
 
     // Reset state
     this.hasCrossedBoundaries = false;
@@ -368,20 +428,70 @@ export class ChTab implements DraggableView {
 
       setMousePosition(this.el, mousePositionX, mousePositionY);
 
-      if (!this.hasCrossedBoundaries) {
-        const mouseLimits = this.mouseBoundingLimits;
+      // There is no need to update the preview of the reorder
+      if (this.hasCrossedBoundaries) {
+        return;
+      }
 
-        const draggedButtonIsInsideTheTabList =
-          inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
-          inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
+      const mouseLimits = this.mouseBoundingLimits;
 
-        // Emit the itemDragStart event the first time the button is out of the
-        // mouse bounds (`mouseBoundingLimits`)
-        if (draggedButtonIsInsideTheTabList) {
-          this.itemDragStart.emit();
+      const draggedButtonIsInsideTheTabList =
+        inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
+        inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
+
+      // Emit the itemDragStart event the first time the button is out of the
+      // mouse bounds (`mouseBoundingLimits`)
+      if (!draggedButtonIsInsideTheTabList) {
+        this.itemDragStart.emit();
+        this.hasCrossedBoundaries = true;
+        return;
+      }
+
+      // There is no need to re-order the items in the preview
+      if (this.items.length === 1) {
+        return;
+      }
+
+      // In this point, the preview is inside the tab list, we should check
+      // in which place is the preview to give feedback for the item's reorder
+      const mousePosition = isBlockDirection(this.type)
+        ? mousePositionX
+        : mousePositionY;
+
+      const hasMovedToTheEnd = this.initialMousePosition < mousePosition;
+
+      // Distance traveled from the initial mouse position
+      let distanceTraveled = Math.abs(
+        this.initialMousePosition - mousePosition
+      );
+
+      let newIndex = this.draggedElementIndex;
+
+      if (hasMovedToTheEnd) {
+        // While it is not the last item and the distance traveled is greater
+        // than half the size of the next item
+        while (
+          newIndex < this.items.length - 1 &&
+          distanceTraveled - this.itemSizes[newIndex + 1] / 2 > 0
+        ) {
+          distanceTraveled -= this.itemSizes[newIndex + 1];
+          newIndex++;
         }
+      } else {
+        // While it is not the first item and the distance traveled is greater
+        // than half the size of the previous item
+        while (
+          newIndex > 0 &&
+          distanceTraveled - this.itemSizes[newIndex - 1] / 2 > 0
+        ) {
+          distanceTraveled -= this.itemSizes[newIndex - 1];
+          newIndex--;
+        }
+      }
 
-        this.hasCrossedBoundaries = !draggedButtonIsInsideTheTabList;
+      // Check if should update the dragged element index in the preview
+      if (this.draggedElementNewIndex !== newIndex) {
+        this.draggedElementNewIndex = newIndex;
       }
     });
   };
@@ -393,7 +503,7 @@ export class ChTab implements DraggableView {
     this.itemClose.emit(itemId);
   };
 
-  private renderTabBar = () => (
+  private renderTabBar = (thereAreShiftedElements: boolean) => (
     <div
       role="tablist"
       aria-label={this.accessibleName}
@@ -411,7 +521,18 @@ export class ChTab implements DraggableView {
           aria-selected={(!!item.selected).toString()}
           class={{
             [this.classes.BUTTON]: true,
-            "dragged-element": this.draggedElementIndex === index
+            "dragged-element": this.draggedElementIndex === index,
+            "shifted-element": this.draggedElementIndex !== -1,
+
+            "shifted-element--start":
+              thereAreShiftedElements &&
+              this.draggedElementIndex < index &&
+              index <= this.draggedElementNewIndex,
+
+            "shifted-element--end":
+              thereAreShiftedElements &&
+              this.draggedElementNewIndex <= index &&
+              index < this.draggedElementIndex
           }}
           part={tokenMap({
             [this.classes.BUTTON]: true,
@@ -464,7 +585,7 @@ export class ChTab implements DraggableView {
       part={this.classes.PAGE_CONTAINER}
       ref={el => (this.tabPageRef = el)}
     >
-      {this.items.map(item => (
+      {this.renderedPages.map(item => (
         <div
           key={PAGE_ID(item.id)}
           id={PAGE_ID(item.id)}
@@ -532,6 +653,8 @@ export class ChTab implements DraggableView {
   componentWillLoad() {
     this.updateSelectedIndex(this.items);
 
+    this.updateRenderedPages(this.items);
+
     // Initialize classes
     this.classes = {
       BUTTON: BUTTON_CLASS(this.type),
@@ -552,10 +675,14 @@ export class ChTab implements DraggableView {
 
     const draggedIndex = this.draggedElementIndex;
     const draggedElement = this.items[draggedIndex];
+    const thereAreShiftedElementsInPreview =
+      !this.hasCrossedBoundaries &&
+      this.draggedElementNewIndex !== -1 &&
+      this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
       <Host>
-        {this.renderTabBar()}
+        {this.renderTabBar(thereAreShiftedElementsInPreview)}
         {this.renderTabPages()}
 
         {draggedIndex !== -1 && this.renderDragPreview(draggedElement)}

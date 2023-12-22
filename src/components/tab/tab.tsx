@@ -146,7 +146,7 @@ export class ChTab implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
-  private lastSelectedItem = -1;
+  private lastSelectedIndex = -1;
 
   private showCaptions: boolean;
 
@@ -259,22 +259,22 @@ export class ChTab implements DraggableView {
       event.stopPropagation();
 
       this.selectedItemChange.emit({
-        lastSelectedIndex: this.lastSelectedItem,
+        lastSelectedIndex: this.lastSelectedIndex,
         newSelectedId: itemId,
         newSelectedIndex: index,
         type: this.type
       });
 
-      this.lastSelectedItem = index;
+      this.lastSelectedIndex = index;
     };
 
   private updateSelectedIndex(items: FlexibleLayoutWidget[]) {
     if (items == null) {
-      this.lastSelectedItem = -1;
+      this.lastSelectedIndex = -1;
       return;
     }
 
-    this.lastSelectedItem = items.findIndex(item => item.selected);
+    this.lastSelectedIndex = items.findIndex(item => item.selected);
   }
 
   /**
@@ -399,6 +399,9 @@ export class ChTab implements DraggableView {
     if (anItemWasReordered) {
       const itemToInsert = removeElement(this.items, this.draggedElementIndex);
       insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+
+      // Update last selected index
+      this.adjustLastSelectedIndexValueAfterReorder();
     }
 
     // Restore visibility of the dragged element
@@ -411,6 +414,31 @@ export class ChTab implements DraggableView {
     // Reset state
     this.hasCrossedBoundaries = false;
   };
+
+  private adjustLastSelectedIndexValueAfterReorder() {
+    // If the dragged element is the selected element, use the new index
+    if (this.lastSelectedIndex === this.draggedElementIndex) {
+      this.lastSelectedIndex = this.draggedElementNewIndex;
+    }
+    // Dragged element:
+    //   - Started: Before the selected index
+    //   - Ended: After the selected index or in the same position
+    else if (
+      this.draggedElementIndex < this.lastSelectedIndex &&
+      this.lastSelectedIndex <= this.draggedElementNewIndex
+    ) {
+      this.lastSelectedIndex--;
+    }
+    // Dragged element:
+    //   - Started: After the selected index
+    //   - Ended: Before the selected index or in the same position
+    else if (
+      this.lastSelectedIndex < this.draggedElementIndex &&
+      this.draggedElementNewIndex <= this.lastSelectedIndex
+    ) {
+      this.lastSelectedIndex++;
+    }
+  }
 
   private handleItemDrag = (event: MouseEvent) => {
     this.lastDragEvent = event;

@@ -24,6 +24,7 @@ import {
   ChCheckboxCustomEvent,
   ChTreeViewItemCustomEvent
 } from "../../../components";
+import { removeDragImage } from "../../../common/utils";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";

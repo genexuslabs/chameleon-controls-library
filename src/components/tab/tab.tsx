@@ -45,6 +45,9 @@ const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
 const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
 const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 
+const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
+const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
+
 const setButtonInitialPosition = (
   element: HTMLElement,
   positionX: number,
@@ -61,6 +64,49 @@ const setMousePosition = (
 ) => {
   element.style.setProperty(MOUSE_POSITION_X, `${positionX}px`);
   element.style.setProperty(MOUSE_POSITION_Y, `${positionY}px`);
+};
+
+// Useful to implement snap to the edges
+const setTabListStartEndPosition = (
+  element: HTMLElement,
+  startPosition: number,
+  endPosition: number
+) => {
+  element.style.setProperty(TAB_LIST_EDGE_START_POSITION, `${startPosition}px`);
+  element.style.setProperty(TAB_LIST_EDGE_END_POSITION, `${endPosition}px`);
+};
+
+const getTabListSizesAndSetPosition = (
+  hostRef: HTMLChTabElement,
+  tabListRef: HTMLElement,
+  type: TabType,
+  buttonRect: DOMRect
+): TabElementSize => {
+  const tabListRect = tabListRef.getBoundingClientRect();
+
+  // Tab List information
+  const tabListSizes: TabElementSize = {
+    xStart: tabListRect.x,
+    xEnd: tabListRect.x + tabListRect.width,
+    yStart: tabListRect.y,
+    yEnd: tabListRect.y + tabListRect.height
+  };
+
+  if (type === "inlineStart" || type === "inlineEnd") {
+    setTabListStartEndPosition(
+      hostRef,
+      tabListSizes.yStart,
+      tabListSizes.yEnd - buttonRect.height
+    );
+  } else {
+    setTabListStartEndPosition(
+      hostRef,
+      tabListSizes.xStart,
+      tabListSizes.xEnd - buttonRect.width
+    );
+  }
+
+  return tabListSizes;
 };
 
 const setMouseOffset = (
@@ -232,7 +278,14 @@ export class ChTab implements DraggableView {
     const buttonRect = (
       event.target as HTMLButtonElement
     ).getBoundingClientRect();
-    const tabListRect = this.tabListRef.getBoundingClientRect();
+
+    // Tab List information
+    const tabListSizes = getTabListSizesAndSetPosition(
+      this.el,
+      this.tabListRef,
+      this.type,
+      buttonRect
+    );
 
     // Button information
     const buttonSizes: TabElementSize = {
@@ -246,14 +299,6 @@ export class ChTab implements DraggableView {
     const mouseDistanceToButtonBottomEdge = buttonSizes.yEnd - mousePositionY;
     const mouseDistanceToButtonLeftEdge = mousePositionX - buttonSizes.xStart;
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
-
-    // Tab List information
-    const tabListSizes: TabElementSize = {
-      xStart: tabListRect.x,
-      xEnd: tabListRect.x + tabListRect.width,
-      yStart: tabListRect.y,
-      yEnd: tabListRect.y + tabListRect.height
-    };
 
     // Mouse limits
     this.mouseBoundingLimits = {

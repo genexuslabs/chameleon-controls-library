@@ -86,6 +86,13 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .drag-preview {
+  // "clamp" implements snap to the edges
+  --ch-tab-snap-drag-preview: clamp(
+    var(--ch-tab-tab-list-start),
+    var(--ch-tab-mouse-position),
+    var(--ch-tab-tab-list-end)
+  );
+
   position: fixed;
   left: 0; // Necessary since the custom vars are physical values
   top: 0; // Necessary since the custom vars are physical values
@@ -103,16 +110,24 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   }
 
   &--inside-tab-list__block {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
+    );
+
     transform: translate(
-      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      var(--ch-tab-snap-drag-preview),
       var(--ch-tab-button-position-y)
     );
   }
 
   &--inside-tab-list__inline {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)
+    );
+
     transform: translate(
       var(--ch-tab-button-position-x),
-      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+      var(--ch-tab-snap-drag-preview)
     );
   }
 }

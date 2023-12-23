@@ -37,6 +37,8 @@ import {
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 
+const TRANSITION_DURATION = "--ch-tab-transition-duration";
+
 const BUTTON_POSITION_X = "--ch-tab-button-position-x";
 const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
 
@@ -413,6 +415,7 @@ export class ChTab implements DraggableView {
 
     // Reset state
     this.hasCrossedBoundaries = false;
+    this.el.style.removeProperty(TRANSITION_DURATION);
   };
 
   private adjustLastSelectedIndexValueAfterReorder() {
@@ -470,8 +473,12 @@ export class ChTab implements DraggableView {
       // Emit the itemDragStart event the first time the button is out of the
       // mouse bounds (`mouseBoundingLimits`)
       if (!draggedButtonIsInsideTheTabList) {
-        this.itemDragStart.emit();
         this.hasCrossedBoundaries = true;
+
+        // Remove transition before the render to avoid flickering in the animation
+        this.el.style.setProperty(TRANSITION_DURATION, "0s");
+
+        this.itemDragStart.emit();
         return;
       }
 
@@ -550,6 +557,8 @@ export class ChTab implements DraggableView {
           class={{
             [this.classes.BUTTON]: true,
             "dragged-element": this.draggedElementIndex === index,
+            "dragged-element--outside":
+              this.draggedElementIndex === index && this.hasCrossedBoundaries,
             "shifted-element": this.draggedElementIndex !== -1,
 
             "shifted-element--start":

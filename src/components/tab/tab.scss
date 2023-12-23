@@ -5,6 +5,8 @@
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
+  --ch-tab-transition-duration: 150ms;
+
   display: grid;
   block-size: 100%;
   inline-size: 100%;
@@ -83,6 +85,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 // "Hide" the dragged element, without removing it from the accessibility tree
 .dragged-element {
   opacity: 0;
+
+  &--outside {
+    display: none;
+  }
 }
 
 .drag-preview {
@@ -133,7 +139,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .shifted-element {
-  transition: transform 150ms;
+  transition: transform var(--ch-tab-transition-duration);
 }
 
 :host([type="main"]),

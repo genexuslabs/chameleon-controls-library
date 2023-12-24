@@ -198,6 +198,12 @@ export class ChTab implements DraggableView {
   @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
+   * This attribute lets you specify if the drag operation is disabled in the
+   * captions of the control. If `true`, the captions can't be dragged.
+   */
+  @Prop() readonly dragDisabled: boolean = false;
+
+  /**
    * `true` if the group has is view section expanded. Otherwise, only the
    * toolbar will be displayed.
    */
@@ -583,7 +589,7 @@ export class ChTab implements DraggableView {
           }
           onDblClick={this.type === "main" ? this.handleItemDblClick : null}
           // Drag and drop
-          onDragStart={this.handleDragStart(index)}
+          onDragStart={!this.dragDisabled ? this.handleDragStart(index) : null}
         >
           {item.startImageSrc && (
             <img

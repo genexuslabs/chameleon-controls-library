@@ -16,7 +16,7 @@ import {
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
 import { inBetween, tokenMap } from "../../common/utils";
-import { TabSelectedItemInfo, TabType } from "./types";
+import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./types";
 import {
   BUTTON_CLASS,
   CAPTION_ID,
@@ -238,7 +238,7 @@ export class ChTab implements DraggableView {
   /**
    * Fired the close button of an item is clicked.
    */
-  @Event() itemClose: EventEmitter<string>;
+  @Event() itemClose: EventEmitter<TabItemCloseInfo>;
 
   /**
    * Fired when the selected item change.
@@ -537,12 +537,17 @@ export class ChTab implements DraggableView {
     });
   };
 
-  private handleClose = (itemId: string) => (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  private handleClose =
+    (index: number, itemId: string) => (event: MouseEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    this.itemClose.emit(itemId);
-  };
+      this.itemClose.emit({
+        itemIndex: index,
+        itemId: itemId,
+        type: this.type
+      });
+    };
 
   private renderTabBar = (thereAreShiftedElements: boolean) => (
     <div
@@ -582,7 +587,7 @@ export class ChTab implements DraggableView {
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.selected
           })}
-          onAuxClick={this.handleClose(item.id)}
+          onAuxClick={this.handleClose(index, item.id)}
           onClick={
             !item.selected
               ? this.handleSelectedItemChange(index, item.id)
@@ -611,7 +616,7 @@ export class ChTab implements DraggableView {
               class="close-button"
               part={CLOSE_BUTTON_PART}
               type="button"
-              onClick={this.handleClose(item.id)}
+              onClick={this.handleClose(index, item.id)}
             ></button>
           )}
         </button>

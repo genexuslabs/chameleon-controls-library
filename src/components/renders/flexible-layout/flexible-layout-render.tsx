@@ -3,11 +3,13 @@ import {
   FlexibleLayout,
   FlexibleLayoutRenders,
   FlexibleLayoutView,
+  ViewItemCloseInfo,
   ViewSelectedItemInfo
 } from "../../flexible-layout/types";
 import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import { removeElement } from "../../../common/array";
 
 @Component({
   shadow: false,
@@ -106,6 +108,52 @@ export class ChFlexibleLayoutRender {
     forceUpdate(this.flexibleLayoutRef);
   };
 
+  private handleViewItemClose = (
+    event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>
+  ) => {
+    event.stopPropagation();
+
+    const itemCloseInfo = event.detail;
+    const viewInfo = this.viewsInfo.get(itemCloseInfo.viewId);
+
+    // Last item from the view. Destroy the view and adjust the layout
+    if (viewInfo.widgets.length === 1) {
+      // TODO: Add implementation
+      return;
+    }
+
+    const viewWidgets = viewInfo.widgets;
+    const widgetsCount = viewWidgets.length;
+    const itemUIModel = viewWidgets[itemCloseInfo.itemIndex];
+
+    // If the item was selected, select another item
+    if (itemUIModel.selected) {
+      const newSelectedItem =
+        itemCloseInfo.itemIndex === widgetsCount - 1 // If it's the last item
+          ? viewWidgets[widgetsCount - 2] // Select the previous
+          : viewWidgets[itemCloseInfo.itemIndex + 1]; // Otherwise, select the next
+
+      this.renderedWidgets.add(newSelectedItem.id);
+      viewInfo.renderedWidgets.add(newSelectedItem.id);
+
+      // Mark the item as selected and rendered
+      newSelectedItem.selected = true;
+      newSelectedItem.wasRendered = true;
+    }
+
+    // Remove the item render from the view, but not from the flexible-layout-render
+    // This way will help us to easily recover the item state
+    viewInfo.renderedWidgets.delete(itemCloseInfo.itemId);
+    removeElement(viewWidgets, itemCloseInfo.itemIndex);
+
+    // Shallow copy the widgets to ensure the flexible layout re-renders the view
+    viewInfo.widgets = [...viewInfo.widgets];
+
+    // Queue re-renders
+    forceUpdate(this);
+    forceUpdate(this.flexibleLayoutRef);
+  };
+
   componentWillLoad() {
     this.setLayoutSplitterModels(this.layout);
   }
@@ -122,6 +170,7 @@ export class ChFlexibleLayoutRender {
         layoutModel={this.layoutSplitterModels}
         layoutSplitterParts={this.layoutSplitterParts}
         viewsInfo={this.viewsInfo}
+        onViewItemClose={this.handleViewItemClose}
         onSelectedViewItemChange={this.handleViewItemChange}
         ref={el => (this.flexibleLayoutRef = el)}
       >

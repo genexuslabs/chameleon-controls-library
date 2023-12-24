@@ -82,6 +82,13 @@ export type FlexibleLayoutView = {
 // - - - - - - - - - - - - - - - - - - - -
 //               Event info
 // - - - - - - - - - - - - - - - - - - - -
+export type ViewItemCloseInfo = {
+  itemId: string;
+  itemIndex: number;
+  type: TabType;
+  viewId: string;
+};
+
 export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;

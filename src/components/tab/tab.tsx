@@ -8,6 +8,7 @@ import {
   Prop,
   State,
   Watch,
+  forceUpdate,
   h
 } from "@stencil/core";
 import {
@@ -262,6 +263,19 @@ export class ChTab implements DraggableView {
       pageView: this.tabPageRef,
       tabListView: this.tabListRef
     };
+  }
+
+  /**
+   * Given an index, remove the item from the tab control
+   */
+  @Method()
+  async removeItem(index: number, forceRerender = true) {
+    const removedItem = removeElement(this.items, index);
+    this.renderedPages.delete(removedItem.id);
+
+    if (forceRerender) {
+      forceUpdate(this);
+    }
   }
 
   private handleSelectedItemChange =
@@ -711,6 +725,8 @@ export class ChTab implements DraggableView {
     if (this.items == null || this.items.length === 0) {
       return "";
     }
+
+    console.log("Render...");
 
     const draggedIndex = this.draggedElementIndex;
     const draggedElement = this.items[draggedIndex];

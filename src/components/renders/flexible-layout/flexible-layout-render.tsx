@@ -9,7 +9,6 @@ import {
 import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
-import { removeElement } from "../../../common/array";
 
 @Component({
   shadow: false,
@@ -132,10 +131,10 @@ export class ChFlexibleLayoutRender {
 
     // Remove the item render from the view, but not from the flexible-layout-render
     // This way will help us to easily recover the item state
-    removeElement(viewWidgets, itemCloseInfo.itemIndex);
-
-    // Shallow copy the widgets to ensure the flexible layout re-renders the view
-    viewInfo.widgets = [...viewInfo.widgets];
+    this.flexibleLayoutRef.removeItemInView(
+      viewInfo.id,
+      itemCloseInfo.itemIndex
+    );
 
     // Queue re-renders
     forceUpdate(this);

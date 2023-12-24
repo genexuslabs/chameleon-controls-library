@@ -1,7 +1,9 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
+  Method,
   Prop,
   forceUpdate,
   h
@@ -31,6 +33,8 @@ import { LayoutSplitterDistribution } from "../../layout-splitter/types";
   tag: "ch-flexible-layout"
 })
 export class ChFlexibleLayout {
+  @Element() el: HTMLChFlexibleLayoutElement;
+
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
@@ -55,6 +59,22 @@ export class ChFlexibleLayout {
    * Fired when the selected item change.
    */
   @Event() selectedViewItemChange: EventEmitter<ViewSelectedItemInfo>;
+
+  /**
+   * Given the view ID and the item index, remove the item from the view
+   */
+  @Method()
+  async removeItemInView(viewId: string, index: number, forceRerender = true) {
+    const viewInfo = this.viewsInfo.get(viewId);
+    if (!viewInfo) {
+      return;
+    }
+
+    const viewRef = this.el.shadowRoot.querySelector(
+      `ch-tab[id='${viewInfo.id}']`
+    ) as HTMLChTabElement;
+    await viewRef.removeItem(index, forceRerender);
+  }
 
   // @Listen("keydown", { target: "document" })
   // handleKeyDownEvent(event: KeyboardEvent) {
@@ -118,6 +138,7 @@ export class ChFlexibleLayout {
 
   private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
     <ch-tab
+      id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
       exportparts={viewInfo.exportParts}

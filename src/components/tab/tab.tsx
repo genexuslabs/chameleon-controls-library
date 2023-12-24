@@ -148,7 +148,7 @@ export class ChTab implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
-  private lastSelectedIndex = -1;
+  private selectedIndex: number = -1;
 
   private showCaptions: boolean;
 
@@ -167,7 +167,7 @@ export class ChTab implements DraggableView {
    */
   private mouseBoundingLimits: TabElementSize;
 
-  private renderedPages: FlexibleLayoutWidget[] = [];
+  private renderedPages: Set<string> = new Set();
 
   // Refs
   private tabListRef: HTMLDivElement;
@@ -210,20 +210,22 @@ export class ChTab implements DraggableView {
   @Prop() readonly expanded: boolean = true;
 
   /**
-   * Specifies the items that are displayed in the group.
+   * Specifies the items of the tab control.
    */
   @Prop() readonly items: FlexibleLayoutWidget[];
   @Watch("items")
   handleItemsChange(newItems: FlexibleLayoutWidget[]) {
-    this.updateSelectedIndex(newItems);
-
     this.updateRenderedPages(newItems);
   }
 
   /**
-   * `true` to display the name of the page.
+   * Specifies the selected item of the widgets array.
    */
-  @Prop() readonly showPageName: boolean = true;
+  @Prop() readonly selectedId: string;
+  @Watch("selectedId")
+  handleSelectedIdChange(newSelectedId: string) {
+    this.renderedPages.add(newSelectedId);
+  }
 
   /**
    * Specifies the flexible layout type.
@@ -267,31 +269,27 @@ export class ChTab implements DraggableView {
       event.stopPropagation();
 
       this.selectedItemChange.emit({
-        lastSelectedIndex: this.lastSelectedIndex,
+        lastSelectedIndex: this.selectedIndex,
         newSelectedId: itemId,
         newSelectedIndex: index,
         type: this.type
       });
 
-      this.lastSelectedIndex = index;
+      this.selectedIndex = index;
+      // this.selectedId = itemId;
     };
 
-  private updateSelectedIndex(items: FlexibleLayoutWidget[]) {
-    if (items == null) {
-      this.lastSelectedIndex = -1;
-      return;
-    }
-
-    this.lastSelectedIndex = items.findIndex(item => item.selected);
-  }
-
   /**
-   * Make a shallow copy of the items array to maintain order between the pages,
-   * even when re-ordering tabs. This is useful for optimizing rendering
+   * Make a set based on the rendered items array to maintain order between the
+   * pages, even when re-ordering tabs. This is useful for optimizing rendering
    * performance by not re-ordering pages when the caption's order changes.
    */
   private updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
-    this.renderedPages = (items ?? []).map(item => item);
+    (items ?? []).forEach(item => {
+      if (item.wasRendered) {
+        this.renderedPages.add(item.id);
+      }
+    });
   };
 
   private handleItemDblClick = (event: MouseEvent) => {
@@ -426,26 +424,26 @@ export class ChTab implements DraggableView {
 
   private adjustLastSelectedIndexValueAfterReorder() {
     // If the dragged element is the selected element, use the new index
-    if (this.lastSelectedIndex === this.draggedElementIndex) {
-      this.lastSelectedIndex = this.draggedElementNewIndex;
+    if (this.selectedIndex === this.draggedElementIndex) {
+      this.selectedIndex = this.draggedElementNewIndex;
     }
     // Dragged element:
     //   - Started: Before the selected index
     //   - Ended: After the selected index or in the same position
     else if (
-      this.draggedElementIndex < this.lastSelectedIndex &&
-      this.lastSelectedIndex <= this.draggedElementNewIndex
+      this.draggedElementIndex < this.selectedIndex &&
+      this.selectedIndex <= this.draggedElementNewIndex
     ) {
-      this.lastSelectedIndex--;
+      this.selectedIndex--;
     }
     // Dragged element:
     //   - Started: After the selected index
     //   - Ended: Before the selected index or in the same position
     else if (
-      this.lastSelectedIndex < this.draggedElementIndex &&
-      this.draggedElementNewIndex <= this.lastSelectedIndex
+      this.selectedIndex < this.draggedElementIndex &&
+      this.draggedElementNewIndex <= this.selectedIndex
     ) {
-      this.lastSelectedIndex++;
+      this.selectedIndex++;
     }
   }
 
@@ -564,7 +562,7 @@ export class ChTab implements DraggableView {
           role="tab"
           aria-controls={PAGE_ID(item.id)}
           aria-label={!this.showCaptions ? item.name : null}
-          aria-selected={(!!item.selected).toString()}
+          aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.classes.BUTTON]: true,
             "dragged-element": this.draggedElementIndex === index,
@@ -585,11 +583,11 @@ export class ChTab implements DraggableView {
           part={tokenMap({
             [this.classes.BUTTON]: true,
             [CAPTION_ID(item.id)]: true,
-            [SELECTED_PART]: item.selected
+            [SELECTED_PART]: item.id === this.selectedId
           })}
           onAuxClick={this.handleClose(index, item.id)}
           onClick={
-            !item.selected
+            !(item.id === this.selectedId)
               ? this.handleSelectedItemChange(index, item.id)
               : null
           }
@@ -634,25 +632,19 @@ export class ChTab implements DraggableView {
       part={this.classes.PAGE_CONTAINER}
       ref={el => (this.tabPageRef = el)}
     >
-      {this.renderedPages.map(item => (
+      {[...this.renderedPages.keys()].map(itemId => (
         <div
-          key={PAGE_ID(item.id)}
-          id={PAGE_ID(item.id)}
+          key={PAGE_ID(itemId)}
+          id={PAGE_ID(itemId)}
           role="tabpanel"
-          aria-labelledby={CAPTION_ID(item.name)}
+          aria-labelledby={CAPTION_ID(itemId)}
           class={{
             [this.classes.PAGE]: true,
-            "page--hidden": !item.selected
+            "page--hidden": !(itemId === this.selectedId)
           }}
           part={this.classes.PAGE}
         >
-          {this.showPageName &&
-            (this.type === "inlineStart" || this.type === "inlineEnd") && (
-              <span aria-hidden="true" part={this.classes.PAGE_NAME}>
-                {item.name}
-              </span>
-            )}
-          {item.wasRendered && <slot name={item.id} />}
+          <slot name={itemId} />
         </div>
       ))}
     </div>
@@ -681,7 +673,7 @@ export class ChTab implements DraggableView {
             [this.classes.BUTTON]: true,
             [CAPTION_ID(draggedElement.id)]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
-            [SELECTED_PART]: draggedElement.selected
+            [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
         >
           {draggedElement.startImageSrc && (
@@ -700,8 +692,6 @@ export class ChTab implements DraggableView {
   };
 
   componentWillLoad() {
-    this.updateSelectedIndex(this.items);
-
     this.updateRenderedPages(this.items);
 
     // Initialize classes

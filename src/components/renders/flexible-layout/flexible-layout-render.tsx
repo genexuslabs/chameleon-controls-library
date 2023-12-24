@@ -85,23 +85,13 @@ export class ChFlexibleLayoutRender {
 
     // Mark the item as rendered
     this.renderedWidgets.add(selectedItemInfo.newSelectedId);
-    viewInfo.renderedWidgets.add(selectedItemInfo.newSelectedId);
 
-    // Mark the item as selected, displayed and rendered
+    // Mark the item as rendered
     const newSelectedItem = viewInfo.widgets[selectedItemInfo.newSelectedIndex];
-    newSelectedItem.selected = true;
     newSelectedItem.wasRendered = true;
 
     // Unselected the previous item
-    if (selectedItemInfo.lastSelectedIndex !== -1) {
-      const previousSelectedItem =
-        viewInfo.widgets[selectedItemInfo.lastSelectedIndex];
-
-      previousSelectedItem.selected = false;
-    }
-
-    // Shallow copy the widgets to ensure the flexible layout re-renders the view
-    viewInfo.widgets = [...viewInfo.widgets];
+    viewInfo.selectedWidgetId = selectedItemInfo.newSelectedId;
 
     // Queue re-renders
     forceUpdate(this);
@@ -127,23 +117,21 @@ export class ChFlexibleLayoutRender {
     const itemUIModel = viewWidgets[itemCloseInfo.itemIndex];
 
     // If the item was selected, select another item
-    if (itemUIModel.selected) {
+    if (itemUIModel.id === viewInfo.selectedWidgetId) {
       const newSelectedItem =
         itemCloseInfo.itemIndex === widgetsCount - 1 // If it's the last item
           ? viewWidgets[widgetsCount - 2] // Select the previous
           : viewWidgets[itemCloseInfo.itemIndex + 1]; // Otherwise, select the next
 
       this.renderedWidgets.add(newSelectedItem.id);
-      viewInfo.renderedWidgets.add(newSelectedItem.id);
 
       // Mark the item as selected and rendered
-      newSelectedItem.selected = true;
+      viewInfo.selectedWidgetId = newSelectedItem.id;
       newSelectedItem.wasRendered = true;
     }
 
     // Remove the item render from the view, but not from the flexible-layout-render
     // This way will help us to easily recover the item state
-    viewInfo.renderedWidgets.delete(itemCloseInfo.itemId);
     removeElement(viewWidgets, itemCloseInfo.itemIndex);
 
     // Shallow copy the widgets to ensure the flexible layout re-renders the view

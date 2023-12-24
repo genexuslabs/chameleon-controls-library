@@ -42,6 +42,7 @@ export type FlexibleLayoutLeaf = {
   dragBarPart?: string;
   fixedOffsetSize?: number;
   hideDragBar?: boolean;
+  selectedWidgetId?: string;
   size: string;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
@@ -50,7 +51,6 @@ export type FlexibleLayoutLeaf = {
 export type FlexibleLayoutWidget = {
   id: string;
   name: string;
-  selected?: boolean;
   startImageSrc?: string;
   wasRendered?: boolean;
 };
@@ -70,12 +70,7 @@ export type FlexibleLayoutView = {
   type: ViewType;
   expanded?: boolean;
   exportParts: string;
-
-  /**
-   * This Set provides optimizations to not render items that were never
-   * shown on the screen.
-   */
-  renderedWidgets: Set<string>;
+  selectedWidgetId?: string;
   widgets: FlexibleLayoutWidget[];
 };
 

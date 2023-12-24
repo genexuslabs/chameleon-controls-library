@@ -122,14 +122,16 @@ export class ChFlexibleLayout {
       slot={viewInfo.id}
       exportparts={viewInfo.exportParts}
       items={viewInfo.widgets}
+      selectedId={viewInfo.selectedWidgetId}
       type={tabType}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onSelectedItemChange={this.handleItemChange(viewInfo.id)}
     >
-      {[...viewInfo.renderedWidgets.values()].map(widgetId => (
-        <slot name={widgetId} slot={widgetId} />
-      ))}
+      {viewInfo.widgets.map(
+        widget =>
+          widget.wasRendered && <slot name={widget.id} slot={widget.id} />
+      )}
     </ch-tab>
   );
 

@@ -207,12 +207,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   }
 }
 
-.inlineStart__page,
-.inlineEnd__page {
-  display: grid;
-  grid-template-rows: max-content 1fr;
-}
-
 .page--hidden {
-  display: none;
+  display: none; // Destroys the render state. Ctrl + Z and Ctrl + C won't work properly
 }

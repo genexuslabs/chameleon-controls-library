@@ -582,6 +582,7 @@ export class ChTab implements DraggableView {
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.selected
           })}
+          onAuxClick={this.handleClose(item.id)}
           onClick={
             !item.selected
               ? this.handleSelectedItemChange(index, item.id)

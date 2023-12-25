@@ -219,7 +219,7 @@ export class ChTab implements DraggableView {
   @Prop() readonly items: FlexibleLayoutWidget[];
   @Watch("items")
   handleItemsChange(newItems: FlexibleLayoutWidget[]) {
-    this.updateRenderedPages(newItems);
+    this.#updateRenderedPages(newItems);
   }
 
   /**
@@ -281,7 +281,7 @@ export class ChTab implements DraggableView {
     }
   }
 
-  private handleSelectedItemChange =
+  #handleSelectedItemChange =
     (index: number, itemId: string) => (event: MouseEvent) => {
       event.stopPropagation();
 
@@ -301,7 +301,7 @@ export class ChTab implements DraggableView {
    * pages, even when re-ordering tabs. This is useful for optimizing rendering
    * performance by not re-ordering pages when the caption's order changes.
    */
-  private updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
+  #updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
         this.#renderedPages.add(item.id);
@@ -309,14 +309,14 @@ export class ChTab implements DraggableView {
     });
   };
 
-  private handleItemDblClick = (event: MouseEvent) => {
+  #handleItemDblClick = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
     this.expandMainGroup.emit();
   };
 
-  private handleDragStart = (index: number) => (event: DragEvent) => {
+  #handleDragStart = (index: number) => (event: DragEvent) => {
     // Remove dragover event to allow mousemove event to fire
     event.preventDefault();
 
@@ -392,26 +392,26 @@ export class ChTab implements DraggableView {
     addGrabbingStyle();
 
     // Add listeners
-    document.body.addEventListener("mousemove", this.handleItemDrag, {
+    document.body.addEventListener("mousemove", this.#handleItemDrag, {
       capture: true,
       passive: true
     });
 
-    document.body.addEventListener("mouseup", this.handleDragEnd, {
+    document.body.addEventListener("mouseup", this.#handleDragEnd, {
       capture: true
     });
   };
 
-  private handleDragEnd = () => {
+  #handleDragEnd = () => {
     // Since mousemove callbacks are executed on animation frames, we must also
     // remove the events on animations frame. Otherwise we would remove the
     // events and in the next frame the mousemove handler will be executes
     requestAnimationFrame(() => {
-      document.body.removeEventListener("mousemove", this.handleItemDrag, {
+      document.body.removeEventListener("mousemove", this.#handleItemDrag, {
         capture: true
       });
 
-      document.body.removeEventListener("mouseup", this.handleDragEnd, {
+      document.body.removeEventListener("mouseup", this.#handleDragEnd, {
         capture: true
       });
 
@@ -471,7 +471,7 @@ export class ChTab implements DraggableView {
     }
   }
 
-  private handleItemDrag = (event: MouseEvent) => {
+  #handleItemDrag = (event: MouseEvent) => {
     this.#lastDragEvent = event;
 
     if (!this.#needForRAF) {
@@ -559,19 +559,18 @@ export class ChTab implements DraggableView {
     });
   };
 
-  private handleClose =
-    (index: number, itemId: string) => (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
+  #handleClose = (index: number, itemId: string) => (event: MouseEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-      this.itemClose.emit({
-        itemIndex: index,
-        itemId: itemId,
-        type: this.type
-      });
-    };
+    this.itemClose.emit({
+      itemIndex: index,
+      itemId: itemId,
+      type: this.type
+    });
+  };
 
-  private renderTabBar = (thereAreShiftedElements: boolean) => (
+  #renderTabBar = (thereAreShiftedElements: boolean) => (
     <div
       role="tablist"
       aria-label={this.accessibleName}
@@ -609,15 +608,15 @@ export class ChTab implements DraggableView {
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.id === this.selectedId
           })}
-          onAuxClick={this.handleClose(index, item.id)}
+          onAuxClick={this.#handleClose(index, item.id)}
           onClick={
             !(item.id === this.selectedId)
-              ? this.handleSelectedItemChange(index, item.id)
+              ? this.#handleSelectedItemChange(index, item.id)
               : null
           }
-          onDblClick={this.type === "main" ? this.handleItemDblClick : null}
+          onDblClick={this.type === "main" ? this.#handleItemDblClick : null}
           // Drag and drop
-          onDragStart={!this.dragDisabled ? this.handleDragStart(index) : null}
+          onDragStart={!this.dragDisabled ? this.#handleDragStart(index) : null}
         >
           {item.startImageSrc && (
             <img
@@ -638,7 +637,7 @@ export class ChTab implements DraggableView {
               class="close-button"
               part={CLOSE_BUTTON_PART}
               type="button"
-              onClick={this.handleClose(index, item.id)}
+              onClick={this.#handleClose(index, item.id)}
             ></button>
           )}
         </button>
@@ -646,7 +645,7 @@ export class ChTab implements DraggableView {
     </div>
   );
 
-  private renderTabPages = () => (
+  #renderTabPages = () => (
     <div
       class={{
         [this.#classes.PAGE_CONTAINER]: true,
@@ -674,7 +673,7 @@ export class ChTab implements DraggableView {
     </div>
   );
 
-  private renderDragPreview = (draggedElement: FlexibleLayoutWidget) => {
+  #renderDragPreview = (draggedElement: FlexibleLayoutWidget) => {
     const classes = {
       [DRAG_PREVIEW]: true,
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
@@ -714,7 +713,7 @@ export class ChTab implements DraggableView {
   };
 
   componentWillLoad() {
-    this.updateRenderedPages(this.items);
+    this.#updateRenderedPages(this.items);
 
     // Initialize classes
     this.#classes = {
@@ -743,10 +742,10 @@ export class ChTab implements DraggableView {
 
     return (
       <Host>
-        {this.renderTabBar(thereAreShiftedElementsInPreview)}
-        {this.renderTabPages()}
+        {this.#renderTabBar(thereAreShiftedElementsInPreview)}
+        {this.#renderTabPages()}
 
-        {draggedIndex !== -1 && this.renderDragPreview(draggedElement)}
+        {draggedIndex !== -1 && this.#renderDragPreview(draggedElement)}
       </Host>
     );
   }

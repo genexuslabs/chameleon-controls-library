@@ -57,17 +57,20 @@ const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 const isBlockDirection = (type: TabType) =>
   type === "main" || type === "blockEnd";
 
+const setProperty = (element: HTMLElement, property: string, value: number) =>
+  element.style.setProperty(property, `${value}px`);
+
 const setButtonInitialPosition = (
   element: HTMLElement,
   positionX: number,
   positionY: number
 ) => {
-  element.style.setProperty(BUTTON_POSITION_X, `${positionX}px`);
-  element.style.setProperty(BUTTON_POSITION_Y, `${positionY}px`);
+  setProperty(element, BUTTON_POSITION_X, positionX);
+  setProperty(element, BUTTON_POSITION_Y, positionY);
 };
 
 const setButtonSize = (element: HTMLElement, size: number) => {
-  element.style.setProperty(BUTTON_SIZE, `${size}px`);
+  setProperty(element, BUTTON_SIZE, size);
 };
 
 const setMousePosition = (
@@ -75,8 +78,8 @@ const setMousePosition = (
   positionX: number,
   positionY: number
 ) => {
-  element.style.setProperty(MOUSE_POSITION_X, `${positionX}px`);
-  element.style.setProperty(MOUSE_POSITION_Y, `${positionY}px`);
+  setProperty(element, MOUSE_POSITION_X, positionX);
+  setProperty(element, MOUSE_POSITION_Y, positionY);
 };
 
 // Useful to implement snap to the edges
@@ -85,8 +88,8 @@ const setTabListStartEndPosition = (
   startPosition: number,
   endPosition: number
 ) => {
-  element.style.setProperty(TAB_LIST_EDGE_START_POSITION, `${startPosition}px`);
-  element.style.setProperty(TAB_LIST_EDGE_END_POSITION, `${endPosition}px`);
+  setProperty(element, TAB_LIST_EDGE_START_POSITION, startPosition);
+  setProperty(element, TAB_LIST_EDGE_END_POSITION, endPosition);
 };
 
 const getTabListSizesAndSetPosition = (
@@ -105,17 +108,17 @@ const getTabListSizesAndSetPosition = (
     yEnd: tabListRect.y + tabListRect.height
   };
 
-  if (type === "inlineStart" || type === "inlineEnd") {
-    setTabListStartEndPosition(
-      hostRef,
-      tabListSizes.yStart,
-      tabListSizes.yEnd - buttonRect.height
-    );
-  } else {
+  if (isBlockDirection(type)) {
     setTabListStartEndPosition(
       hostRef,
       tabListSizes.xStart,
       tabListSizes.xEnd - buttonRect.width
+    );
+  } else {
+    setTabListStartEndPosition(
+      hostRef,
+      tabListSizes.yStart,
+      tabListSizes.yEnd - buttonRect.height
     );
   }
 
@@ -127,8 +130,8 @@ const setMouseOffset = (
   offsetX: number,
   offsetY: number
 ) => {
-  element.style.setProperty(MOUSE_OFFSET_X, `${offsetX}px`);
-  element.style.setProperty(MOUSE_OFFSET_Y, `${offsetY}px`);
+  setProperty(element, MOUSE_OFFSET_X, offsetX);
+  setProperty(element, MOUSE_OFFSET_Y, offsetY);
 };
 
 const addGrabbingStyle = () =>

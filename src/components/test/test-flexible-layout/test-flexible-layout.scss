@@ -12,20 +12,17 @@ ch-test-flexible-layout {
     background-color: #e7e7e7;
   }
 
-  &::part(inlineStart__page-container),
-  &::part(inlineEnd__page-container) {
+  &::part(inline__page-container) {
     background-color: #f2f2f2;
   }
 
-  &::part(inlineStart__tab-list),
-  &::part(inlineEnd__tab-list) {
+  &::part(inline__tab-list) {
     background-color: #e8e8e9;
     inline-size: 48px;
     gap: 4px;
   }
 
-  &::part(inlineStart__button),
-  &::part(inlineEnd__button) {
+  &::part(inline__button) {
     position: relative;
     block-size: 32px;
     inline-size: 48px;
@@ -39,8 +36,7 @@ ch-test-flexible-layout {
     }
   }
 
-  &::part(inlineStart__button selected),
-  &::part(inlineEnd__button selected) {
+  &::part(inline__button selected) {
     &::after {
       content: "";
       display: flex;
@@ -53,7 +49,7 @@ ch-test-flexible-layout {
     }
   }
 
-  &::part(inlineEnd__button selected)::after {
+  &::part(inline__button inlineEnd selected)::after {
     inset-inline-start: unset;
     inset-inline-end: 1px;
   }
@@ -73,8 +69,7 @@ ch-test-flexible-layout {
       no-repeat;
   }
 
-  &::part(inlineStart__page-name),
-  &::part(inlineEnd__page-name) {
+  &::part(inline__page-name) {
     display: block;
     padding-block: 8px;
     padding-inline: 16px;
@@ -94,8 +89,7 @@ ch-test-flexible-layout {
   }
 
   // Main, BlockEnd
-  &::part(main__button),
-  &::part(blockEnd__button) {
+  &::part(block__button) {
     padding-block: 6px;
     padding-inline: 16px 8px;
     gap: 8px;
@@ -107,21 +101,18 @@ ch-test-flexible-layout {
     }
   }
 
-  &::part(main__button selected),
-  &::part(blockEnd__button selected) {
+  &::part(block__button selected) {
     background-color: #fff;
   }
 
-  &::part(main__tab-list),
-  &::part(blockEnd__tab-list) {
+  &::part(block__tab-list) {
     background-color: #f7f7f7;
   }
 
   // - - - - - - - - - - - - - - - -
   //          Drag preview
   // - - - - - - - - - - - - - - - -
-  &::part(drag-preview-element main__button),
-  &::part(drag-preview-element blockEnd__button) {
+  &::part(drag-preview-element block__button) {
     padding-inline: 25px;
   }
 

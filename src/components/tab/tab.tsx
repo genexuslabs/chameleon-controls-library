@@ -17,7 +17,13 @@ import {
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
 import { inBetween, tokenMap } from "../../common/utils";
-import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./types";
+import {
+  TabDirection,
+  TabElementSize,
+  TabItemCloseInfo,
+  TabSelectedItemInfo,
+  TabType
+} from "./types";
 import {
   BUTTON_CLASS,
   CAPTION_ID,
@@ -33,8 +39,7 @@ import {
   PAGE_ID,
   PAGE_NAME_CLASS,
   SELECTED_PART,
-  TAB_LIST_CLASS,
-  TabElementSize
+  TAB_LIST_CLASS
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 
@@ -54,8 +59,9 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 
-const isBlockDirection = (type: TabType) =>
-  type === "main" || type === "blockEnd";
+const getDirection = (type: TabType): TabDirection =>
+  type === "main" || type === "blockEnd" ? "block" : "inline";
+const isBlockDirection = (direction: TabDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -95,7 +101,7 @@ const setTabListStartEndPosition = (
 const getTabListSizesAndSetPosition = (
   hostRef: HTMLChTabElement,
   tabListRef: HTMLElement,
-  type: TabType,
+  direction: TabDirection,
   buttonRect: DOMRect
 ): TabElementSize => {
   const tabListRect = tabListRef.getBoundingClientRect();
@@ -108,7 +114,7 @@ const getTabListSizesAndSetPosition = (
     yEnd: tabListRect.y + tabListRect.height
   };
 
-  if (isBlockDirection(type)) {
+  if (isBlockDirection(direction)) {
     setTabListStartEndPosition(
       hostRef,
       tabListSizes.xStart,
@@ -152,6 +158,16 @@ export class ChTab implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
+  #parts: {
+    BUTTON?: string;
+    IMAGE?: string;
+    PAGE?: string;
+    PAGE_CONTAINER?: string;
+    PAGE_NAME?: string;
+    TAB_LIST?: string;
+  } = {};
+  #direction: TabDirection;
+
   #selectedIndex: number = -1;
 
   #showCaptions: boolean;
@@ -169,6 +185,7 @@ export class ChTab implements DraggableView {
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: TabElementSize;
 
   #renderedPages: Set<string> = new Set();
@@ -211,6 +228,7 @@ export class ChTab implements DraggableView {
    * `true` if the group has is view section expanded. Otherwise, only the
    * toolbar will be displayed.
    */
+  // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly expanded: boolean = true;
 
   /**
@@ -235,6 +253,10 @@ export class ChTab implements DraggableView {
    * Specifies the flexible layout type.
    */
   @Prop({ reflect: true }) readonly type: TabType;
+  @Watch("type")
+  handleTypeChange(newType: TabType) {
+    this.#initializeState(newType);
+  }
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -301,6 +323,7 @@ export class ChTab implements DraggableView {
    * pages, even when re-ordering tabs. This is useful for optimizing rendering
    * performance by not re-ordering pages when the caption's order changes.
    */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
@@ -327,7 +350,7 @@ export class ChTab implements DraggableView {
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;
 
-    const getItemSize = isBlockDirection(this.type)
+    const getItemSize = isBlockDirection(this.#direction)
       ? (item: HTMLElement) => item.getBoundingClientRect().width
       : (item: HTMLElement) => item.getBoundingClientRect().height;
     this.#itemSizes = [...this.#tabListRef.children].map(getItemSize);
@@ -340,7 +363,7 @@ export class ChTab implements DraggableView {
     const tabListSizes = getTabListSizesAndSetPosition(
       this.el,
       this.#tabListRef,
-      this.type,
+      this.#direction,
       buttonRect
     );
 
@@ -366,7 +389,7 @@ export class ChTab implements DraggableView {
     };
 
     // Store initial mouse position
-    this.#initialMousePosition = isBlockDirection(this.type)
+    this.#initialMousePosition = isBlockDirection(this.#direction)
       ? mousePositionX
       : mousePositionY;
 
@@ -379,7 +402,7 @@ export class ChTab implements DraggableView {
 
     setButtonSize(
       this.el,
-      isBlockDirection(this.type) ? buttonRect.width : buttonRect.height
+      isBlockDirection(this.#direction) ? buttonRect.width : buttonRect.height
     );
 
     // Update mouse offset to correctly place the dragged element preview
@@ -517,7 +540,7 @@ export class ChTab implements DraggableView {
 
       // In this point, the preview is inside the tab list, we should check
       // in which place is the preview to give feedback for the item's reorder
-      const mousePosition = isBlockDirection(this.type)
+      const mousePosition = isBlockDirection(this.#direction)
         ? mousePositionX
         : mousePositionY;
 
@@ -575,7 +598,7 @@ export class ChTab implements DraggableView {
       role="tablist"
       aria-label={this.accessibleName}
       class={this.#classes.TAB_LIST}
-      part={this.#classes.TAB_LIST}
+      part={this.#parts.TAB_LIST}
       ref={el => (this.#tabListRef = el)}
     >
       {this.items.map((item, index) => (
@@ -604,7 +627,7 @@ export class ChTab implements DraggableView {
               index < this.draggedElementIndex
           }}
           part={tokenMap({
-            [this.#classes.BUTTON]: true,
+            [this.#parts.BUTTON]: true,
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.id === this.selectedId
           })}
@@ -622,7 +645,7 @@ export class ChTab implements DraggableView {
             <img
               aria-hidden="true"
               class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
-              part={this.#classes.IMAGE}
+              part={this.#parts.IMAGE}
               alt=""
               src={item.startImageSrc}
               loading="lazy"
@@ -652,7 +675,7 @@ export class ChTab implements DraggableView {
         "page-container": true,
         "page-container--collapsed": !this.expanded
       }}
-      part={this.#classes.PAGE_CONTAINER}
+      part={this.#parts.PAGE_CONTAINER}
       ref={el => (this.#tabPageRef = el)}
     >
       {[...this.#renderedPages.keys()].map(itemId => (
@@ -665,7 +688,7 @@ export class ChTab implements DraggableView {
             [this.#classes.PAGE]: true,
             "page--hidden": !(itemId === this.selectedId)
           }}
-          part={this.#classes.PAGE}
+          part={this.#parts.PAGE}
         >
           <slot name={itemId} />
         </div>
@@ -679,10 +702,10 @@ export class ChTab implements DraggableView {
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
       [DRAG_PREVIEW_INSIDE_INLINE]:
-        !this.hasCrossedBoundaries && !isBlockDirection(this.type),
+        !this.hasCrossedBoundaries && !isBlockDirection(this.#direction),
 
       [DRAG_PREVIEW_INSIDE_BLOCK]:
-        !this.hasCrossedBoundaries && isBlockDirection(this.type)
+        !this.hasCrossedBoundaries && isBlockDirection(this.#direction)
     };
 
     return (
@@ -691,7 +714,7 @@ export class ChTab implements DraggableView {
           aria-hidden="true"
           class={{ [this.#classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
           part={tokenMap({
-            [this.#classes.BUTTON]: true,
+            [this.#parts.BUTTON]: true,
             [CAPTION_ID(draggedElement.id)]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
             [SELECTED_PART]: draggedElement.id === this.selectedId
@@ -700,7 +723,7 @@ export class ChTab implements DraggableView {
           {draggedElement.startImageSrc && (
             <img
               class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
-              part={this.#classes.IMAGE}
+              part={this.#parts.IMAGE}
               alt=""
               src={draggedElement.startImageSrc}
             />
@@ -712,20 +735,34 @@ export class ChTab implements DraggableView {
     );
   };
 
-  componentWillLoad() {
+  #initializeState = (type: TabType) => {
+    this.#direction = getDirection(type);
     this.#updateRenderedPages(this.items);
 
-    // Initialize classes
+    // Initialize classes and parts
+    this.#setClassesAndParts(this.#direction, type);
+
+    this.#showCaptions = isBlockDirection(this.#direction);
+  };
+
+  #setClassesAndParts = (direction: TabDirection, type: TabType) => {
     this.#classes = {
-      BUTTON: BUTTON_CLASS(this.type),
-      IMAGE: IMAGE_CLASS(this.type),
-      PAGE: PAGE_CLASS(this.type),
-      PAGE_CONTAINER: PAGE_CONTAINER_CLASS(this.type),
-      PAGE_NAME: PAGE_NAME_CLASS(this.type),
-      TAB_LIST: TAB_LIST_CLASS(this.type)
+      BUTTON: BUTTON_CLASS(direction),
+      IMAGE: IMAGE_CLASS(direction),
+      PAGE: PAGE_CLASS(direction),
+      PAGE_CONTAINER: PAGE_CONTAINER_CLASS(direction),
+      PAGE_NAME: PAGE_NAME_CLASS(direction),
+      TAB_LIST: TAB_LIST_CLASS(direction)
     };
 
-    this.#showCaptions = isBlockDirection(this.type);
+    // Add the type information to each part
+    Object.entries(this.#classes).forEach(([key, value]) => {
+      this.#parts[key] = `${value} ${type}`;
+    });
+  };
+
+  componentWillLoad() {
+    this.#initializeState(this.type);
   }
 
   render() {
@@ -741,7 +778,7 @@ export class ChTab implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host>
+      <Host class={`ch-tab-direction--${this.#direction}`}>
         {this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

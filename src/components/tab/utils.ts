@@ -1,14 +1,16 @@
 import { FlexibleLayoutWidget } from "../flexible-layout/types";
-import { TabType } from "./types";
+import { TabDirection, TabType } from "./types";
 
 // Classes and parts
-export const BUTTON_CLASS = (type: TabType) => `${type}__button`;
-export const IMAGE_CLASS = (type: TabType) => `${type}__img`;
-export const PAGE_CLASS = (type: TabType) => `${type}__page`;
-export const PAGE_CONTAINER_CLASS = (type: TabType) =>
-  `${type}__page-container`;
-export const PAGE_NAME_CLASS = (type: TabType) => `${type}__page-name`;
-export const TAB_LIST_CLASS = (type: TabType) => `${type}__tab-list`;
+export const BUTTON_CLASS = (direction: TabDirection) => `${direction}__button`;
+export const IMAGE_CLASS = (direction: TabDirection) => `${direction}__img`;
+export const PAGE_CLASS = (direction: TabDirection) => `${direction}__page`;
+export const PAGE_CONTAINER_CLASS = (direction: TabDirection) =>
+  `${direction}__page-container`;
+export const PAGE_NAME_CLASS = (direction: TabDirection) =>
+  `${direction}__page-name`;
+export const TAB_LIST_CLASS = (direction: TabDirection) =>
+  `${direction}__tab-list`;
 
 // Ids
 export const CAPTION_ID = (name: string) => `caption-${name}`;
@@ -24,17 +26,15 @@ export const DRAG_PREVIEW_INSIDE_INLINE =
   "drag-preview--inside-tab-list__inline";
 export const SELECTED_PART = "selected";
 
-const additionalParts =
-  "," +
-  [
-    CLOSE_BUTTON_PART,
-    DRAG_PREVIEW,
-    DRAG_PREVIEW_ELEMENT,
-    DRAG_PREVIEW_OUTSIDE,
-    DRAG_PREVIEW_INSIDE_BLOCK,
-    DRAG_PREVIEW_INSIDE_INLINE,
-    SELECTED_PART
-  ].join(",");
+const additionalParts = [
+  CLOSE_BUTTON_PART,
+  DRAG_PREVIEW,
+  DRAG_PREVIEW_ELEMENT,
+  DRAG_PREVIEW_OUTSIDE,
+  DRAG_PREVIEW_INSIDE_BLOCK,
+  DRAG_PREVIEW_INSIDE_INLINE,
+  SELECTED_PART
+].join(",");
 
 export const TAB_TYPE_PARTS = [
   BUTTON_CLASS,
@@ -45,21 +45,22 @@ export const TAB_TYPE_PARTS = [
   TAB_LIST_CLASS
 ];
 
+const BLOCK_PARTS = TAB_TYPE_PARTS.map(partFunction =>
+  partFunction("block")
+).join(",");
+
+const INLINE_PARTS = TAB_TYPE_PARTS.map(partFunction =>
+  partFunction("inline")
+).join(",");
+
 export const INLINE_START_PARTS =
-  TAB_TYPE_PARTS.map(partFunction => partFunction("inlineStart")).join(",") +
-  additionalParts;
+  INLINE_PARTS + ",inlineStart," + additionalParts;
 
-export const MAIN_PARTS =
-  TAB_TYPE_PARTS.map(partFunction => partFunction("main")).join(",") +
-  additionalParts;
+export const MAIN_PARTS = BLOCK_PARTS + ",main," + additionalParts;
 
-export const INLINE_END_PARTS =
-  TAB_TYPE_PARTS.map(partFunction => partFunction("inlineEnd")).join(",") +
-  additionalParts;
+export const INLINE_END_PARTS = INLINE_PARTS + ",inlineEnd," + additionalParts;
 
-export const BLOCK_END_PARTS =
-  TAB_TYPE_PARTS.map(partFunction => partFunction("blockEnd")).join(",") +
-  additionalParts;
+export const BLOCK_END_PARTS = BLOCK_PARTS + ",blockEnd," + additionalParts;
 
 export const CAPTION_PARTS = (widgets: FlexibleLayoutWidget[]) =>
   widgets.map(item => CAPTION_ID(item.id)).join(",");
@@ -71,11 +72,4 @@ export const tabTypeToPart: {
   main: widgets => MAIN_PARTS + "," + CAPTION_PARTS(widgets),
   inlineEnd: widgets => INLINE_END_PARTS + "," + CAPTION_PARTS(widgets),
   blockEnd: widgets => BLOCK_END_PARTS + "," + CAPTION_PARTS(widgets)
-};
-
-export type TabElementSize = {
-  xStart: number;
-  xEnd: number;
-  yStart: number;
-  yEnd: number;
 };

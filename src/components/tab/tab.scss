@@ -21,8 +21,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   grid-template-columns: max-content 1fr;
 }
 
-:host([type="main"]),
-:host([type="blockEnd"]) {
+:host(.ch-tab-direction--block) {
   grid-template-rows: max-content 1fr;
 }
 
@@ -67,8 +66,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   opacity: 0;
 }
 
-.main__button,
-.blockEnd__button {
+.block__button {
   display: flex;
   align-items: center;
 
@@ -142,8 +140,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   transition: transform var(--ch-tab-transition-duration);
 }
 
-:host([type="main"]),
-:host([type="blockEnd"]) {
+:host(.ch-tab-direction--block) {
   .shifted-element--start {
     transform: translate(calc(var(--ch-tab-button-size) * -1), 0);
   }
@@ -153,8 +150,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   }
 }
 
-:host([type="inlineStart"]),
-:host([type="inlineEnd"]) {
+:host(.ch-tab-direction--inline) {
   .shifted-element--start {
     transform: translateY(calc(var(--ch-tab-button-size) * -1));
   }
@@ -167,20 +163,18 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 // - - - - - - - - - - - - - - - -
 //            Tab lists
 // - - - - - - - - - - - - - - - -
-.inlineStart__tab-list,
-.inlineEnd__tab-list {
+.inline__tab-list {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
+
+  // Change the visual order, but no the order in the HTML
+  :host([type="inlineEnd"]) > & {
+    order: 1;
+  }
 }
 
-// Change the visual order, but no the order in the HTML
-.inlineEnd__tab-list {
-  order: 1;
-}
-
-.main__tab-list,
-.blockEnd__tab-list {
+.block__tab-list {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;

@@ -141,7 +141,7 @@ const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
   tag: "ch-tab"
 })
 export class ChTab implements DraggableView {
-  private classes: {
+  #classes: {
     BUTTON?: string;
     IMAGE?: string;
     PAGE?: string;
@@ -149,30 +149,30 @@ export class ChTab implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
-  private selectedIndex: number = -1;
+  #selectedIndex: number = -1;
 
-  private showCaptions: boolean;
+  #showCaptions: boolean;
 
-  private lastDragEvent: MouseEvent;
-  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  #lastDragEvent: MouseEvent;
+  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
-  private initialMousePosition = -1;
+  #initialMousePosition = -1;
 
   // Allocated at runtime to reduce memory usage
-  private itemSizes: number[];
+  #itemSizes: number[];
 
   /**
    * This variable represents the boundaries of the box where the mouse can be
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
-  private mouseBoundingLimits: TabElementSize;
+  #mouseBoundingLimits: TabElementSize;
 
-  private renderedPages: Set<string> = new Set();
+  #renderedPages: Set<string> = new Set();
 
   // Refs
-  private tabListRef: HTMLDivElement;
-  private tabPageRef: HTMLDivElement;
+  #tabListRef: HTMLDivElement;
+  #tabPageRef: HTMLDivElement;
 
   @Element() el: HTMLChTabElement;
 
@@ -225,7 +225,7 @@ export class ChTab implements DraggableView {
   @Prop() readonly selectedId: string;
   @Watch("selectedId")
   handleSelectedIdChange(newSelectedId: string) {
-    this.renderedPages.add(newSelectedId);
+    this.#renderedPages.add(newSelectedId);
   }
 
   /**
@@ -260,8 +260,8 @@ export class ChTab implements DraggableView {
   async getDraggableViews(): Promise<DraggableViewInfo> {
     return {
       mainView: this.el,
-      pageView: this.tabPageRef,
-      tabListView: this.tabListRef
+      pageView: this.#tabPageRef,
+      tabListView: this.#tabListRef
     };
   }
 
@@ -271,7 +271,7 @@ export class ChTab implements DraggableView {
   @Method()
   async removeItem(index: number, forceRerender = true) {
     const removedItem = removeElement(this.items, index);
-    this.renderedPages.delete(removedItem.id);
+    this.#renderedPages.delete(removedItem.id);
 
     if (forceRerender) {
       forceUpdate(this);
@@ -283,13 +283,13 @@ export class ChTab implements DraggableView {
       event.stopPropagation();
 
       this.selectedItemChange.emit({
-        lastSelectedIndex: this.selectedIndex,
+        lastSelectedIndex: this.#selectedIndex,
         newSelectedId: itemId,
         newSelectedIndex: index,
         type: this.type
       });
 
-      this.selectedIndex = index;
+      this.#selectedIndex = index;
       // this.selectedId = itemId;
     };
 
@@ -301,7 +301,7 @@ export class ChTab implements DraggableView {
   private updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
-        this.renderedPages.add(item.id);
+        this.#renderedPages.add(item.id);
       }
     });
   };
@@ -327,7 +327,7 @@ export class ChTab implements DraggableView {
     const getItemSize = isBlockDirection(this.type)
       ? (item: HTMLElement) => item.getBoundingClientRect().width
       : (item: HTMLElement) => item.getBoundingClientRect().height;
-    this.itemSizes = [...this.tabListRef.children].map(getItemSize);
+    this.#itemSizes = [...this.#tabListRef.children].map(getItemSize);
 
     const buttonRect = (
       event.target as HTMLButtonElement
@@ -336,7 +336,7 @@ export class ChTab implements DraggableView {
     // Tab List information
     const tabListSizes = getTabListSizesAndSetPosition(
       this.el,
-      this.tabListRef,
+      this.#tabListRef,
       this.type,
       buttonRect
     );
@@ -355,7 +355,7 @@ export class ChTab implements DraggableView {
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
 
     // Mouse limits
-    this.mouseBoundingLimits = {
+    this.#mouseBoundingLimits = {
       xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
       xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
       yStart: tabListSizes.yStart - mouseDistanceToButtonBottomEdge,
@@ -363,10 +363,9 @@ export class ChTab implements DraggableView {
     };
 
     // Store initial mouse position
-    this.initialMousePosition =
-      this.type === "main" || this.type === "blockEnd"
-        ? mousePositionX
-        : mousePositionY;
+    this.#initialMousePosition = isBlockDirection(this.type)
+      ? mousePositionX
+      : mousePositionY;
 
     // - - - - - - - - - - - DOM write operations - - - - - - - - - - -
     // Initialize mouse position to avoid initial flickering
@@ -436,7 +435,7 @@ export class ChTab implements DraggableView {
       this.draggedElementNewIndex = -1;
 
       // Free the memory
-      this.itemSizes = undefined;
+      this.#itemSizes = undefined;
 
       // Reset state
       this.hasCrossedBoundaries = false;
@@ -446,42 +445,42 @@ export class ChTab implements DraggableView {
 
   private adjustLastSelectedIndexValueAfterReorder() {
     // If the dragged element is the selected element, use the new index
-    if (this.selectedIndex === this.draggedElementIndex) {
-      this.selectedIndex = this.draggedElementNewIndex;
+    if (this.#selectedIndex === this.draggedElementIndex) {
+      this.#selectedIndex = this.draggedElementNewIndex;
     }
     // Dragged element:
     //   - Started: Before the selected index
     //   - Ended: After the selected index or in the same position
     else if (
-      this.draggedElementIndex < this.selectedIndex &&
-      this.selectedIndex <= this.draggedElementNewIndex
+      this.draggedElementIndex < this.#selectedIndex &&
+      this.#selectedIndex <= this.draggedElementNewIndex
     ) {
-      this.selectedIndex--;
+      this.#selectedIndex--;
     }
     // Dragged element:
     //   - Started: After the selected index
     //   - Ended: Before the selected index or in the same position
     else if (
-      this.selectedIndex < this.draggedElementIndex &&
-      this.draggedElementNewIndex <= this.selectedIndex
+      this.#selectedIndex < this.draggedElementIndex &&
+      this.draggedElementNewIndex <= this.#selectedIndex
     ) {
-      this.selectedIndex++;
+      this.#selectedIndex++;
     }
   }
 
   private handleItemDrag = (event: MouseEvent) => {
-    this.lastDragEvent = event;
+    this.#lastDragEvent = event;
 
-    if (!this.needForRAF) {
+    if (!this.#needForRAF) {
       return;
     }
-    this.needForRAF = false; // No need to call RAF up until next frame
+    this.#needForRAF = false; // No need to call RAF up until next frame
 
     requestAnimationFrame(() => {
-      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
-      const mousePositionX = this.lastDragEvent.clientX;
-      const mousePositionY = this.lastDragEvent.clientY;
+      const mousePositionX = this.#lastDragEvent.clientX;
+      const mousePositionY = this.#lastDragEvent.clientY;
 
       setMousePosition(this.el, mousePositionX, mousePositionY);
 
@@ -490,7 +489,7 @@ export class ChTab implements DraggableView {
         return;
       }
 
-      const mouseLimits = this.mouseBoundingLimits;
+      const mouseLimits = this.#mouseBoundingLimits;
 
       const draggedButtonIsInsideTheTabList =
         inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
@@ -519,11 +518,11 @@ export class ChTab implements DraggableView {
         ? mousePositionX
         : mousePositionY;
 
-      const hasMovedToTheEnd = this.initialMousePosition < mousePosition;
+      const hasMovedToTheEnd = this.#initialMousePosition < mousePosition;
 
       // Distance traveled from the initial mouse position
       let distanceTraveled = Math.abs(
-        this.initialMousePosition - mousePosition
+        this.#initialMousePosition - mousePosition
       );
 
       let newIndex = this.draggedElementIndex;
@@ -533,9 +532,9 @@ export class ChTab implements DraggableView {
         // than half the size of the next item
         while (
           newIndex < this.items.length - 1 &&
-          distanceTraveled - this.itemSizes[newIndex + 1] / 2 > 0
+          distanceTraveled - this.#itemSizes[newIndex + 1] / 2 > 0
         ) {
-          distanceTraveled -= this.itemSizes[newIndex + 1];
+          distanceTraveled -= this.#itemSizes[newIndex + 1];
           newIndex++;
         }
       } else {
@@ -543,9 +542,9 @@ export class ChTab implements DraggableView {
         // than half the size of the previous item
         while (
           newIndex > 0 &&
-          distanceTraveled - this.itemSizes[newIndex - 1] / 2 > 0
+          distanceTraveled - this.#itemSizes[newIndex - 1] / 2 > 0
         ) {
-          distanceTraveled -= this.itemSizes[newIndex - 1];
+          distanceTraveled -= this.#itemSizes[newIndex - 1];
           newIndex--;
         }
       }
@@ -573,9 +572,9 @@ export class ChTab implements DraggableView {
     <div
       role="tablist"
       aria-label={this.accessibleName}
-      class={this.classes.TAB_LIST}
-      part={this.classes.TAB_LIST}
-      ref={el => (this.tabListRef = el)}
+      class={this.#classes.TAB_LIST}
+      part={this.#classes.TAB_LIST}
+      ref={el => (this.#tabListRef = el)}
     >
       {this.items.map((item, index) => (
         <button
@@ -583,10 +582,10 @@ export class ChTab implements DraggableView {
           id={CAPTION_ID(item.id)}
           role="tab"
           aria-controls={PAGE_ID(item.id)}
-          aria-label={!this.showCaptions ? item.name : null}
+          aria-label={!this.#showCaptions ? item.name : null}
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
-            [this.classes.BUTTON]: true,
+            [this.#classes.BUTTON]: true,
             "dragged-element": this.draggedElementIndex === index,
             "dragged-element--outside":
               this.draggedElementIndex === index && this.hasCrossedBoundaries,
@@ -603,7 +602,7 @@ export class ChTab implements DraggableView {
               index < this.draggedElementIndex
           }}
           part={tokenMap({
-            [this.classes.BUTTON]: true,
+            [this.#classes.BUTTON]: true,
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.id === this.selectedId
           })}
@@ -620,17 +619,17 @@ export class ChTab implements DraggableView {
           {item.startImageSrc && (
             <img
               aria-hidden="true"
-              class={{ [this.classes.IMAGE]: true, "caption-image": true }}
-              part={this.classes.IMAGE}
+              class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
+              part={this.#classes.IMAGE}
               alt=""
               src={item.startImageSrc}
               loading="lazy"
             />
           )}
 
-          {this.showCaptions && item.name}
+          {this.#showCaptions && item.name}
 
-          {this.showCaptions && (
+          {this.#showCaptions && (
             <button
               aria-label={this.closeButtonAccessibleName}
               class="close-button"
@@ -647,24 +646,24 @@ export class ChTab implements DraggableView {
   private renderTabPages = () => (
     <div
       class={{
-        [this.classes.PAGE_CONTAINER]: true,
+        [this.#classes.PAGE_CONTAINER]: true,
         "page-container": true,
         "page-container--collapsed": !this.expanded
       }}
-      part={this.classes.PAGE_CONTAINER}
-      ref={el => (this.tabPageRef = el)}
+      part={this.#classes.PAGE_CONTAINER}
+      ref={el => (this.#tabPageRef = el)}
     >
-      {[...this.renderedPages.keys()].map(itemId => (
+      {[...this.#renderedPages.keys()].map(itemId => (
         <div
           key={PAGE_ID(itemId)}
           id={PAGE_ID(itemId)}
           role="tabpanel"
           aria-labelledby={CAPTION_ID(itemId)}
           class={{
-            [this.classes.PAGE]: true,
+            [this.#classes.PAGE]: true,
             "page--hidden": !(itemId === this.selectedId)
           }}
-          part={this.classes.PAGE}
+          part={this.#classes.PAGE}
         >
           <slot name={itemId} />
         </div>
@@ -678,21 +677,19 @@ export class ChTab implements DraggableView {
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
       [DRAG_PREVIEW_INSIDE_INLINE]:
-        !this.hasCrossedBoundaries &&
-        (this.type === "inlineStart" || this.type === "inlineEnd"),
+        !this.hasCrossedBoundaries && !isBlockDirection(this.type),
 
       [DRAG_PREVIEW_INSIDE_BLOCK]:
-        !this.hasCrossedBoundaries &&
-        (this.type === "main" || this.type === "blockEnd")
+        !this.hasCrossedBoundaries && isBlockDirection(this.type)
     };
 
     return (
       <div class={classes} part={tokenMap(classes)}>
         <button
           aria-hidden="true"
-          class={{ [this.classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
+          class={{ [this.#classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
           part={tokenMap({
-            [this.classes.BUTTON]: true,
+            [this.#classes.BUTTON]: true,
             [CAPTION_ID(draggedElement.id)]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
             [SELECTED_PART]: draggedElement.id === this.selectedId
@@ -700,14 +697,14 @@ export class ChTab implements DraggableView {
         >
           {draggedElement.startImageSrc && (
             <img
-              class={{ [this.classes.IMAGE]: true, "caption-image": true }}
-              part={this.classes.IMAGE}
+              class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
+              part={this.#classes.IMAGE}
               alt=""
               src={draggedElement.startImageSrc}
             />
           )}
 
-          {this.showCaptions && draggedElement.name}
+          {this.#showCaptions && draggedElement.name}
         </button>
       </div>
     );
@@ -717,7 +714,7 @@ export class ChTab implements DraggableView {
     this.updateRenderedPages(this.items);
 
     // Initialize classes
-    this.classes = {
+    this.#classes = {
       BUTTON: BUTTON_CLASS(this.type),
       IMAGE: IMAGE_CLASS(this.type),
       PAGE: PAGE_CLASS(this.type),
@@ -726,7 +723,7 @@ export class ChTab implements DraggableView {
       TAB_LIST: TAB_LIST_CLASS(this.type)
     };
 
-    this.showCaptions = this.type === "main" || this.type === "blockEnd";
+    this.#showCaptions = isBlockDirection(this.type);
   }
 
   render() {

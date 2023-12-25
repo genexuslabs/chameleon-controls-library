@@ -38,12 +38,12 @@ const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
   tag: "ch-layout-splitter"
 })
 export class ChLayoutSplitter implements ChComponent {
-  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
-  private mouseDownInfo: DragBarMouseDownEventInfo;
+  #mouseDownInfo: DragBarMouseDownEventInfo;
 
   // Distribution of elements
-  private layoutModel: LayoutSplitterModel;
+  #layoutModel: LayoutSplitterModel;
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -66,44 +66,44 @@ export class ChLayoutSplitter implements ChComponent {
     this.updateLayoutInfo(newLayout);
   }
 
-  private handleBarDrag = (event: MouseEvent) => {
+  #handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.mouseDownInfo.newPosition = getMousePosition(
+    this.#mouseDownInfo.newPosition = getMousePosition(
       event,
-      this.mouseDownInfo.direction
+      this.#mouseDownInfo.direction
     );
 
-    if (!this.needForRAF) {
+    if (!this.#needForRAF) {
       return;
     }
-    this.needForRAF = false; // No need to call RAF up until next frame
+    this.#needForRAF = false; // No need to call RAF up until next frame
 
     requestAnimationFrame(() => {
-      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
       updateComponentsAndDragBar(
-        this.mouseDownInfo,
+        this.#mouseDownInfo,
         DRAG_BAR_POSITION_CUSTOM_VAR,
         GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
       );
 
       // Sync new position with last
-      this.mouseDownInfo.lastPosition = this.mouseDownInfo.newPosition;
+      this.#mouseDownInfo.lastPosition = this.#mouseDownInfo.newPosition;
     });
   };
 
   // Handler to remove mouse down
-  private removeMouseMoveHandler = () => {
-    document.removeEventListener("mousemove", this.handleBarDrag, {
+  #removeMouseMoveHandler = () => {
+    document.removeEventListener("mousemove", this.#handleBarDrag, {
       capture: true
     });
   };
 
   // Remove mousemove and mouseup handlers when mouseup
-  private mouseUpHandler = () => {
-    this.removeMouseMoveHandler();
+  #mouseUpHandler = () => {
+    this.#removeMouseMoveHandler();
 
-    document.removeEventListener("mouseup", this.mouseUpHandler, {
+    document.removeEventListener("mouseup", this.#mouseUpHandler, {
       capture: true
     });
 
@@ -111,7 +111,7 @@ export class ChLayoutSplitter implements ChComponent {
     this.el.classList.remove(RESIZING_CLASS);
   };
 
-  private mouseDownHandler =
+  #mouseDownHandler =
     (
       direction: LayoutSplitterDirection,
       index: number,
@@ -128,7 +128,7 @@ export class ChLayoutSplitter implements ChComponent {
       const dragBarContainer = dragBar.parentElement;
       const currentMousePosition = getMousePosition(event, direction);
 
-      this.mouseDownInfo = {
+      this.#mouseDownInfo = {
         direction: direction,
         dragBar: dragBar,
         dragBarContainer: dragBarContainer,
@@ -148,15 +148,15 @@ export class ChLayoutSplitter implements ChComponent {
       this.el.classList.add(RESIZING_CLASS);
 
       // Add listeners
-      document.addEventListener("mousemove", this.handleBarDrag, {
+      document.addEventListener("mousemove", this.#handleBarDrag, {
         capture: true
       });
-      document.addEventListener("mouseup", this.mouseUpHandler, {
+      document.addEventListener("mouseup", this.#mouseUpHandler, {
         capture: true
       });
     };
 
-  private renderItems = (
+  #renderItems = (
     direction: LayoutSplitterDirection,
     fixedSizesSum: number,
     layoutItems: LayoutSplitterModelItem[]
@@ -169,7 +169,7 @@ export class ChLayoutSplitter implements ChComponent {
           class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
           style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
         >
-          {this.renderItems(
+          {this.#renderItems(
             (item as LayoutSplitterModelGroup).direction,
             (item as LayoutSplitterModelGroup).fixedSizesSum,
             (item as LayoutSplitterModelGroup).items
@@ -191,7 +191,7 @@ export class ChLayoutSplitter implements ChComponent {
           style={{
             [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}
-          onMouseDown={this.mouseDownHandler(
+          onMouseDown={this.#mouseDownHandler(
             direction,
             index,
             fixedSizesSum,
@@ -204,7 +204,7 @@ export class ChLayoutSplitter implements ChComponent {
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
     if (layout?.items?.length > 0) {
-      this.layoutModel = getLayoutModel(layout);
+      this.#layoutModel = getLayoutModel(layout);
     }
   }
 
@@ -214,11 +214,11 @@ export class ChLayoutSplitter implements ChComponent {
 
   disconnectedCallback() {
     // Defensive programming. Make sure all event listeners are removed correctly
-    this.mouseUpHandler();
+    this.#mouseUpHandler();
   }
 
   render() {
-    const layoutModel = this.layoutModel;
+    const layoutModel = this.#layoutModel;
 
     if (layoutModel?.items == null) {
       return "";
@@ -229,7 +229,7 @@ export class ChLayoutSplitter implements ChComponent {
         class={DIRECTION_CLASS(layoutModel.direction)}
         style={TEMPLATE_STYLE(layoutModel.items)}
       >
-        {this.renderItems(
+        {this.#renderItems(
           layoutModel.direction,
           layoutModel.fixedSizesSum,
           layoutModel.items

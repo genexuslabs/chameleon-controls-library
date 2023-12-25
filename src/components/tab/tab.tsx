@@ -401,39 +401,47 @@ export class ChTab implements DraggableView {
   };
 
   private handleDragEnd = () => {
-    document.body.removeEventListener("mousemove", this.handleItemDrag, {
-      capture: true
+    // Since mousemove callbacks are executed on animation frames, we must also
+    // remove the events on animations frame. Otherwise we would remove the
+    // events and in the next frame the mousemove handler will be executes
+    requestAnimationFrame(() => {
+      document.body.removeEventListener("mousemove", this.handleItemDrag, {
+        capture: true
+      });
+
+      document.body.removeEventListener("mouseup", this.handleDragEnd, {
+        capture: true
+      });
+
+      removeGrabbingStyle();
+
+      const anItemWasReordered =
+        !this.hasCrossedBoundaries &&
+        this.draggedElementNewIndex !== this.draggedElementIndex;
+
+      // Move the item to the new position
+      if (anItemWasReordered) {
+        const itemToInsert = removeElement(
+          this.items,
+          this.draggedElementIndex
+        );
+        insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+
+        // Update last selected index
+        this.adjustLastSelectedIndexValueAfterReorder();
+      }
+
+      // Restore visibility of the dragged element
+      this.draggedElementIndex = -1;
+      this.draggedElementNewIndex = -1;
+
+      // Free the memory
+      this.itemSizes = undefined;
+
+      // Reset state
+      this.hasCrossedBoundaries = false;
+      this.el.style.removeProperty(TRANSITION_DURATION);
     });
-
-    document.body.removeEventListener("mouseup", this.handleDragEnd, {
-      capture: true
-    });
-
-    removeGrabbingStyle();
-
-    const anItemWasReordered =
-      !this.hasCrossedBoundaries &&
-      this.draggedElementNewIndex !== this.draggedElementIndex;
-
-    // Move the item to the new position
-    if (anItemWasReordered) {
-      const itemToInsert = removeElement(this.items, this.draggedElementIndex);
-      insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
-
-      // Update last selected index
-      this.adjustLastSelectedIndexValueAfterReorder();
-    }
-
-    // Restore visibility of the dragged element
-    this.draggedElementIndex = -1;
-    this.draggedElementNewIndex = -1;
-
-    // Free the memory
-    this.itemSizes = undefined;
-
-    // Reset state
-    this.hasCrossedBoundaries = false;
-    this.el.style.removeProperty(TRANSITION_DURATION);
   };
 
   private adjustLastSelectedIndexValueAfterReorder() {
@@ -725,8 +733,6 @@ export class ChTab implements DraggableView {
     if (this.items == null || this.items.length === 0) {
       return "";
     }
-
-    console.log("Render...");
 
     const draggedIndex = this.draggedElementIndex;
     const draggedElement = this.items[draggedIndex];

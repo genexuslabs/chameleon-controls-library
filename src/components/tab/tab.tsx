@@ -593,6 +593,18 @@ export class ChTab implements DraggableView {
     });
   };
 
+  #imgRender = (item: FlexibleLayoutWidget) =>
+    item.startImageSrc && (
+      <img
+        aria-hidden="true"
+        class={"caption-image " + this.#classes.IMAGE}
+        part={this.#parts.IMAGE}
+        alt=""
+        src={item.startImageSrc}
+        loading="lazy"
+      />
+    );
+
   #renderTabBar = (thereAreShiftedElements: boolean) => (
     <div
       role="tablist"
@@ -641,16 +653,7 @@ export class ChTab implements DraggableView {
           // Drag and drop
           onDragStart={!this.dragDisabled ? this.#handleDragStart(index) : null}
         >
-          {item.startImageSrc && (
-            <img
-              aria-hidden="true"
-              class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
-              part={this.#parts.IMAGE}
-              alt=""
-              src={item.startImageSrc}
-              loading="lazy"
-            />
-          )}
+          {this.#imgRender(item)}
 
           {this.#showCaptions && item.name}
 
@@ -720,14 +723,7 @@ export class ChTab implements DraggableView {
             [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
         >
-          {draggedElement.startImageSrc && (
-            <img
-              class={{ [this.#classes.IMAGE]: true, "caption-image": true }}
-              part={this.#parts.IMAGE}
-              alt=""
-              src={draggedElement.startImageSrc}
-            />
-          )}
+          {this.#imgRender(draggedElement)}
 
           {this.#showCaptions && draggedElement.name}
         </button>

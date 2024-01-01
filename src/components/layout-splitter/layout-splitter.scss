@@ -1,8 +1,6 @@
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+@import "../../common/base";
+
+@include box-sizing();
 
 :host {
   --ch-drag-bar__size: 5px;

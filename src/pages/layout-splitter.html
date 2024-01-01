@@ -31,40 +31,26 @@
         width: 100%;
         height: 100%;
       }
+
+      fieldset {
+        display: grid;
+        grid-template-columns: max-content;
+        gap: 8px;
+      }
     </style>
   </head>
   <body>
     <div>
       <div>
         <fieldset>
-          <legend>Select a direction:</legend>
+          <legend>Layout configuration</legend>
 
-          <div>
-            <label>
-              <input id="rows" type="radio" name="direction" value="rows" />
-              Rows
-            </label>
-          </div>
-
-          <div>
-            <label>
-              <input
-                id="columns"
-                type="radio"
-                name="direction"
-                value="columns"
-                checked
-              />
-              Columns
-            </label>
-          </div>
+          <button id="layout-1">Configuration 1</button>
+          <button id="layout-2">Configuration 2</button>
+          <button id="layout-3">Configuration 3</button>
+          <button id="layout-4">Configuration 4</button>
         </fieldset>
       </div>
-
-      <button id="layout-1">Layout configuration 1</button>
-      <button id="layout-2">Layout configuration 2</button>
-      <button id="layout-3">Layout configuration 3</button>
-      <button id="layout-4">Layout configuration 4</button>
     </div>
 
     <ch-layout-splitter>
@@ -138,16 +124,6 @@
             { id: "end-end-component", size: "250px" }
           ]
         };
-
-        const directionColumns = document.querySelector("#columns");
-        directionColumns.addEventListener("input", event => {
-          layoutSplitter.direction = "columns";
-        });
-
-        const directionRows = document.querySelector("#rows");
-        directionRows.addEventListener("input", event => {
-          layoutSplitter.direction = "rows";
-        });
 
         const button1 = document.querySelector("#layout-1");
         const button2 = document.querySelector("#layout-2");

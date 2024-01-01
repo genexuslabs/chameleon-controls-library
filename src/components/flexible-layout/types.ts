@@ -1,5 +1,8 @@
 import { AccessibleRole } from "../../common/types";
-import { LayoutSplitterDirection } from "../layout-splitter/types";
+import {
+  LayoutSplitterDirection,
+  LayoutSplitterSize
+} from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -34,7 +37,7 @@ export type FlexibleLayoutGroup = {
   expanded?: boolean;
   hideDragBar?: boolean;
   items: FlexibleLayoutItem[];
-  size: string;
+  size: LayoutSplitterSize;
 };
 
 export type FlexibleLayoutLeaf = {
@@ -42,7 +45,7 @@ export type FlexibleLayoutLeaf = {
   dragBarPart?: string;
   fixedOffsetSize?: number;
   hideDragBar?: boolean;
-  size: string;
+  size: LayoutSplitterSize;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
 };

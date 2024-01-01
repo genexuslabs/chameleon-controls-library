@@ -23,6 +23,11 @@
   position: absolute;
   z-index: 1;
 
+  // Remove default focus style
+  &:focus-visible {
+    outline: unset;
+  }
+
   &::after {
     content: "";
     display: flex;
@@ -32,16 +37,21 @@
     background-color: currentColor;
     opacity: 0;
 
-    transition: opacity 0s linear 200ms;
+    transition: opacity 0s linear;
   }
 
-  &:is(:hover, :active) {
-    &::after {
-      opacity: 1;
-    }
+  &:is(:active, :focus-visible, :hover)::after {
+    opacity: 1;
+  }
+
+  &:hover::after {
+    transition-delay: 250ms; // Hovering delays the display of the drag-bar
   }
 }
 
+// - - - - - - - - - - - - - - - -
+//           Containers
+// - - - - - - - - - - - - - - - -
 .leaf {
   display: contents;
 }

@@ -201,6 +201,7 @@ export class ChLayoutSplitter implements ChComponent {
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
           title={this.barAccessibleName}
+          tabindex="0"
           // - - - - - - - - - - - - -
           class="bar"
           part={item.dragBarPart ? `bar ${item.dragBarPart}` : "bar"}

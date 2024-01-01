@@ -70,8 +70,6 @@ export type DragBarMouseDownEventInfo = {
   dragBarContainerSize: number;
   fixedSizesSum: number;
   index: number;
-  lastPosition: number;
   layoutItems: LayoutSplitterModelItem[];
-  newPosition: number;
   RTL: boolean;
 };

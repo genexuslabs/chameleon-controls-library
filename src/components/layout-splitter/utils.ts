@@ -133,23 +133,21 @@ const updateOffsetSize = (
 
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
+  incrementInPx: number,
   dragBarPositionCustomVar: string,
   gridTemplateDirectionCustomVar: string
 ) => {
   // - - - - - - - - - Increments - - - - - - - - -
-  let incrementInPx = info.newPosition - info.lastPosition;
-
   // When the language is RTL, the increment is in the opposite direction
-  if (info.RTL) {
-    incrementInPx = -incrementInPx;
-  }
+  const incrementInPxRTL =
+    info.direction === "columns" && info.RTL ? -incrementInPx : incrementInPx;
 
   const layoutItems = info.layoutItems;
   const fixedSizes = info.fixedSizesSum;
 
   const remainingRelativeSizeInPixels =
     info.dragBarContainerSize - info.fixedSizesSum;
-  const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
+  const incrementInFr = incrementInPxRTL / remainingRelativeSizeInPixels;
 
   // Components at each position of the drag bar
   const leftIndex = info.index;
@@ -160,18 +158,18 @@ export const updateComponentsAndDragBar = (
 
   // px / px
   if (hasAbsoluteValue(leftComp) && hasAbsoluteValue(rightComp)) {
-    updateSize(leftComp, incrementInPx, fixedSizes, "px");
-    updateSize(rightComp, -incrementInPx, fixedSizes, "px");
+    updateSize(leftComp, incrementInPxRTL, fixedSizes, "px");
+    updateSize(rightComp, -incrementInPxRTL, fixedSizes, "px");
   }
   // px / fr
   else if (hasAbsoluteValue(leftComp)) {
-    updateSize(leftComp, incrementInPx, fixedSizes, "px");
-    updateOffsetSize(rightComp, -incrementInPx, fixedSizes);
+    updateSize(leftComp, incrementInPxRTL, fixedSizes, "px");
+    updateOffsetSize(rightComp, -incrementInPxRTL, fixedSizes);
   }
   // fr / px
   else if (hasAbsoluteValue(rightComp)) {
-    updateOffsetSize(leftComp, incrementInPx, fixedSizes);
-    updateSize(rightComp, -incrementInPx, fixedSizes, "px");
+    updateOffsetSize(leftComp, incrementInPxRTL, fixedSizes);
+    updateSize(rightComp, -incrementInPxRTL, fixedSizes, "px");
   }
   // fr / fr
   else {

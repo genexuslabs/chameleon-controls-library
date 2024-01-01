@@ -16,6 +16,9 @@
   pointer-events: none;
 }
 
+// - - - - - - - - - - - - - - - -
+//               Bar
+// - - - - - - - - - - - - - - - -
 .bar {
   position: absolute;
   z-index: 1;
@@ -32,15 +35,18 @@
     transition: opacity 0s linear 200ms;
   }
 
-  &:hover,
-  &:active {
+  &:is(:hover, :active) {
     &::after {
       opacity: 1;
     }
   }
 }
 
-.container {
+.leaf {
+  display: contents;
+}
+
+.group {
   display: grid;
   position: relative;
 }

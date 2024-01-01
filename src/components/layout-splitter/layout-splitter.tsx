@@ -23,11 +23,17 @@ const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
 
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
-  `container direction--${direction}`;
+  `group direction--${direction}`;
 
 const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items)
 });
+
+const getItemIndex = (indexPrefix: string, index: number) =>
+  `${indexPrefix}${index}`;
+
+const getAriaControls = (indexPrefix: string, index: number) =>
+  `${indexPrefix}${index} ${indexPrefix}${index + 1}`; // Based on getItemIndex
 
 /**
  * @part bar - The bar that divides two columns or two rows
@@ -51,7 +57,7 @@ export class ChLayoutSplitter implements ChComponent {
    * This attribute lets you specify the label for the drag bar.
    * Important for accessibility.
    */
-  @Prop() readonly barAccessibleName: string = "";
+  @Prop() readonly barAccessibleName: string = "Resize";
 
   /**
    * Specifies the list of component that are displayed. Each component will be
@@ -159,6 +165,7 @@ export class ChLayoutSplitter implements ChComponent {
   #renderItems = (
     direction: LayoutSplitterDirection,
     fixedSizesSum: number,
+    indexPrefix: string,
     layoutItems: LayoutSplitterModelItem[]
   ) => {
     const lastComponentIndex = layoutItems.length - 1;
@@ -166,26 +173,35 @@ export class ChLayoutSplitter implements ChComponent {
     return layoutItems.map((item, index) => [
       (item as LayoutSplitterModelGroup).items ? (
         <div
+          id={getItemIndex(indexPrefix, index)}
           class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
           style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
         >
           {this.#renderItems(
             (item as LayoutSplitterModelGroup).direction,
             (item as LayoutSplitterModelGroup).fixedSizesSum,
+            getItemIndex(indexPrefix, index),
             (item as LayoutSplitterModelGroup).items
           )}
         </div>
       ) : (
-        <slot
-          key={(item as LayoutSplitterModelLeaf).id}
-          name={(item as LayoutSplitterModelLeaf).id}
-        />
+        <div id={getItemIndex(indexPrefix, index)} class="leaf">
+          <slot
+            key={(item as LayoutSplitterModelLeaf).id}
+            name={(item as LayoutSplitterModelLeaf).id}
+          />
+        </div>
       ),
 
       !item.hideDragBar && index !== lastComponentIndex && (
         <div
+          // - - - Accessibility - - -
+          role="separator"
+          aria-controls={getAriaControls(indexPrefix, index)}
           aria-label={this.barAccessibleName}
+          aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
           title={this.barAccessibleName}
+          // - - - - - - - - - - - - -
           class="bar"
           part={item.dragBarPart ? `bar ${item.dragBarPart}` : "bar"}
           style={{
@@ -232,6 +248,7 @@ export class ChLayoutSplitter implements ChComponent {
         {this.#renderItems(
           layoutModel.direction,
           layoutModel.fixedSizesSum,
+          "item",
           layoutModel.items
         )}
       </div>

@@ -689,6 +689,7 @@ export class ChTab implements DraggableView {
           aria-labelledby={CAPTION_ID(itemId)}
           class={{
             [this.#classes.PAGE]: true,
+            "page--selected": itemId === this.selectedId,
             "page--hidden": !(itemId === this.selectedId)
           }}
           part={this.#parts.PAGE}

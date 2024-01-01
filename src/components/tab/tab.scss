@@ -182,25 +182,31 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .page-container {
   display: grid;
+  grid-template: "selected" 1fr / 1fr;
   block-size: 100%;
   inline-size: 100%;
+}
+
+.page--selected {
+  grid-area: selected;
 }
 
 // content-visibility: hidden is faster for rendering the content back, as
 // it preserves the rendering state of content (display: none does not)
 @supports (content-visibility: hidden) {
-  .page-container--collapsed {
+  .page-container--collapsed,
+  .page--hidden {
     content-visibility: hidden;
+  }
+
+  .page-container--collapsed {
     inline-size: 0;
   }
 }
 
 @supports not (content-visibility: hidden) {
-  .page-container--collapsed {
-    display: none;
+  .page-container--collapsed,
+  .page--hidden {
+    display: none; // Destroys the render state. Ctrl + Z and Ctrl + C won't work properly
   }
-}
-
-.page--hidden {
-  display: none; // Destroys the render state. Ctrl + Z and Ctrl + C won't work properly
 }

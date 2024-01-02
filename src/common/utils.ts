@@ -60,3 +60,12 @@ export const tokenMap = (tokens: { [key: string]: boolean }) =>
   Object.keys(tokens)
     .filter(key => tokens[key])
     .join(" ");
+
+/**
+ * `true` if `x` <= `y` <= `z`
+ */
+export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;
+
+const resetDragImage = new Image();
+export const removeDragImage = (event: DragEvent) =>
+  event.dataTransfer.setDragImage(resetDragImage, 0, 0);

@@ -24,11 +24,10 @@ import {
   ChCheckboxCustomEvent,
   ChTreeViewItemCustomEvent
 } from "../../../components";
+import { removeDragImage } from "../../../common/utils";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
-
-const resetDragImage = new Image();
 
 const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
   "--ch-tree-view-item-distance-to-checkbox";
@@ -741,8 +740,7 @@ export class ChTreeViewItem {
       return;
     }
 
-    // Remove drag image
-    event.dataTransfer.setDragImage(resetDragImage, 0, 0);
+    removeDragImage(event);
     event.dataTransfer.effectAllowed = "move";
 
     this.dragState = "start";

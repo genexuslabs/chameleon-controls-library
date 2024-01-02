@@ -2,23 +2,26 @@
 
 @include box-sizing();
 
+$z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
+
 :host {
+  --ch-tab-transition-duration: 150ms;
+
   display: grid;
   block-size: 100%;
   inline-size: 100%;
 }
 
-:host([type="blockStart"]) {
-  grid-auto-flow: row;
-  grid-auto-rows: max-content;
-}
+// :host([type="blockStart"]) {
+//   grid-auto-flow: row;
+//   grid-auto-rows: max-content;
+// }
 
 :host([type="inlineStart"]) {
   grid-template-columns: max-content 1fr;
 }
 
-:host([type="main"]),
-:host([type="blockEnd"]) {
+:host(.ch-tab-direction--block) {
   grid-template-rows: max-content 1fr;
 }
 
@@ -26,6 +29,9 @@
   grid-template-columns: 1fr max-content;
 }
 
+// - - - - - - - - - - - - - - - -
+//         Caption button
+// - - - - - - - - - - - - - - - -
 :where(button) {
   all: unset;
   display: flex;
@@ -60,8 +66,7 @@
   opacity: 0;
 }
 
-.main__button,
-.blockEnd__button {
+.block__button {
   display: flex;
   align-items: center;
 
@@ -73,22 +78,103 @@
 }
 
 // - - - - - - - - - - - - - - - -
+//          Drag preview
+// - - - - - - - - - - - - - - - -
+// "Hide" the dragged element, without removing it from the accessibility tree
+.dragged-element {
+  opacity: 0;
+
+  &--outside {
+    display: none;
+  }
+}
+
+.drag-preview {
+  // "clamp" implements snap to the edges
+  --ch-tab-snap-drag-preview: clamp(
+    var(--ch-tab-tab-list-start),
+    var(--ch-tab-mouse-position),
+    var(--ch-tab-tab-list-end)
+  );
+
+  position: fixed;
+  left: 0; // Necessary since the custom vars are physical values
+  top: 0; // Necessary since the custom vars are physical values
+  z-index: $z-index-gx-navbar-item + 1;
+
+  &-element {
+    cursor: grabbing;
+  }
+
+  &--outside-tab-list {
+    transform: translate(
+      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+    );
+  }
+
+  &--inside-tab-list__block {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
+    );
+
+    transform: translate(
+      var(--ch-tab-snap-drag-preview),
+      var(--ch-tab-button-position-y)
+    );
+  }
+
+  &--inside-tab-list__inline {
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)
+    );
+
+    transform: translate(
+      var(--ch-tab-button-position-x),
+      var(--ch-tab-snap-drag-preview)
+    );
+  }
+}
+
+.shifted-element {
+  transition: transform var(--ch-tab-transition-duration);
+}
+
+:host(.ch-tab-direction--block) {
+  .shifted-element--start {
+    transform: translate(calc(var(--ch-tab-button-size) * -1), 0);
+  }
+
+  .shifted-element--end {
+    transform: translate(var(--ch-tab-button-size), 0);
+  }
+}
+
+:host(.ch-tab-direction--inline) {
+  .shifted-element--start {
+    transform: translateY(calc(var(--ch-tab-button-size) * -1));
+  }
+
+  .shifted-element--end {
+    transform: translateY(var(--ch-tab-button-size));
+  }
+}
+
+// - - - - - - - - - - - - - - - -
 //            Tab lists
 // - - - - - - - - - - - - - - - -
-.inlineStart__tab-list,
-.inlineEnd__tab-list {
+.inline__tab-list {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
+
+  // Change the visual order, but no the order in the HTML
+  :host([type="inlineEnd"]) > & {
+    order: 1;
+  }
 }
 
-// Change the visual order, but no the order in the HTML
-.inlineEnd__tab-list {
-  order: 1;
-}
-
-.main__tab-list,
-.blockEnd__tab-list {
+.block__tab-list {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
@@ -96,31 +182,31 @@
 
 .page-container {
   display: grid;
+  grid-template: "selected" 1fr / 1fr;
   block-size: 100%;
   inline-size: 100%;
+}
+
+.page--selected {
+  grid-area: selected;
 }
 
 // content-visibility: hidden is faster for rendering the content back, as
 // it preserves the rendering state of content (display: none does not)
 @supports (content-visibility: hidden) {
-  .page-container--collapsed {
+  .page-container--collapsed,
+  .page--hidden {
     content-visibility: hidden;
+  }
+
+  .page-container--collapsed {
     inline-size: 0;
   }
 }
 
 @supports not (content-visibility: hidden) {
-  .page-container--collapsed {
-    display: none;
+  .page-container--collapsed,
+  .page--hidden {
+    display: none; // Destroys the render state. Ctrl + Z and Ctrl + C won't work properly
   }
-}
-
-.inlineStart__page,
-.inlineEnd__page {
-  display: grid;
-  grid-template-rows: max-content 1fr;
-}
-
-.page--hidden {
-  display: none;
 }

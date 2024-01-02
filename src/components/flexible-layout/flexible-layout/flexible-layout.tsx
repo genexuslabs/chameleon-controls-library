@@ -1,16 +1,26 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
+  Method,
   Prop,
   forceUpdate,
   h
 } from "@stencil/core";
-import { FlexibleLayoutView, ViewSelectedItemInfo } from "../types";
+import {
+  FlexibleLayoutView,
+  ViewItemCloseInfo,
+  ViewSelectedItemInfo
+} from "../types";
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { TabSelectedItemInfo, TabType } from "../../tab/types";
+import {
+  TabItemCloseInfo,
+  TabSelectedItemInfo,
+  TabType
+} from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 
@@ -23,6 +33,8 @@ import { LayoutSplitterDistribution } from "../../layout-splitter/types";
   tag: "ch-flexible-layout"
 })
 export class ChFlexibleLayout {
+  @Element() el: HTMLChFlexibleLayoutElement;
+
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
@@ -39,9 +51,30 @@ export class ChFlexibleLayout {
   @Prop() readonly viewsInfo: Map<string, FlexibleLayoutView> = new Map();
 
   /**
+   * Fired when a item of a view request to be closed.
+   */
+  @Event() viewItemClose: EventEmitter<ViewItemCloseInfo>;
+
+  /**
    * Fired when the selected item change.
    */
   @Event() selectedViewItemChange: EventEmitter<ViewSelectedItemInfo>;
+
+  /**
+   * Given the view ID and the item index, remove the item from the view
+   */
+  @Method()
+  async removeItemInView(viewId: string, index: number, forceRerender = true) {
+    const viewInfo = this.viewsInfo.get(viewId);
+    if (!viewInfo) {
+      return;
+    }
+
+    const viewRef = this.el.shadowRoot.querySelector(
+      `ch-tab[id='${viewInfo.id}']`
+    ) as HTMLChTabElement;
+    await viewRef.removeItem(index, forceRerender);
+  }
 
   // @Listen("keydown", { target: "document" })
   // handleKeyDownEvent(event: KeyboardEvent) {
@@ -90,19 +123,36 @@ export class ChFlexibleLayout {
       this.selectedViewItemChange.emit(eventInfo);
     };
 
+  private handleItemClose =
+    (viewId: string) => (event: ChTabCustomEvent<TabItemCloseInfo>) => {
+      event.stopPropagation();
+
+      // Add the view id to properly update the render
+      const eventInfo: ViewItemCloseInfo = {
+        ...event.detail,
+        viewId: viewId
+      };
+
+      this.viewItemClose.emit(eventInfo);
+    };
+
   private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
     <ch-tab
+      id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
       exportparts={viewInfo.exportParts}
       items={viewInfo.widgets}
+      selectedId={viewInfo.selectedWidgetId}
       type={tabType}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
+      onItemClose={this.handleItemClose(viewInfo.id)}
       onSelectedItemChange={this.handleItemChange(viewInfo.id)}
     >
-      {[...viewInfo.renderedWidgets.values()].map(widgetId => (
-        <slot name={widgetId} slot={widgetId} />
-      ))}
+      {viewInfo.widgets.map(
+        widget =>
+          widget.wasRendered && <slot name={widget.id} slot={widget.id} />
+      )}
     </ch-tab>
   );
 

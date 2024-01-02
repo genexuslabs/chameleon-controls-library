@@ -10,7 +10,7 @@ import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-import { FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -27,7 +27,7 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-import { TabSelectedItemInfo, TabType } from "./components/tab/types";
+import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -44,7 +44,7 @@ export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
 export { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-export { FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -61,7 +61,7 @@ export { ecLevel } from "./components/qr/ch-qr";
 export { GxDataTransferInfo, LabelPosition } from "./common/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-export { TabSelectedItemInfo, TabType } from "./components/tab/types";
+export { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab/types";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
@@ -375,6 +375,10 @@ export namespace Components {
           * Specifies additional parts to export.
          */
         "layoutSplitterParts": string;
+        /**
+          * Given the view ID and the item index, remove the item from the view
+         */
+        "removeItemInView": (viewId: string, index: number, forceRerender?: boolean) => Promise<void>;
         /**
           * Specifies the information of each view displayed.
          */
@@ -1355,17 +1359,29 @@ export namespace Components {
          */
         "closeButtonAccessibleName": string;
         /**
+          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+         */
+        "dragDisabled": boolean;
+        /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
         "expanded": boolean;
         /**
-          * Specifies the items that are displayed in the group.
+          * Returns the info associated to the draggable view.
+         */
+        "getDraggableViews": () => Promise<DraggableViewInfo>;
+        /**
+          * Specifies the items of the tab control.
          */
         "items": FlexibleLayoutWidget[];
         /**
-          * `true` to display the name of the page.
+          * Given an index, remove the item from the tab control
          */
-        "showPageName": boolean;
+        "removeItem": (index: number, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId": string;
         /**
           * Specifies the flexible layout type.
          */
@@ -2376,6 +2392,7 @@ declare global {
         new (): HTMLChDropdownRenderElement;
     };
     interface HTMLChFlexibleLayoutElementEventMap {
+        "viewItemClose": ViewItemCloseInfo;
         "selectedViewItemChange": ViewSelectedItemInfo;
     }
     interface HTMLChFlexibleLayoutElement extends Components.ChFlexibleLayout, HTMLStencilElement {
@@ -3023,8 +3040,9 @@ declare global {
     };
     interface HTMLChTabElementEventMap {
         "expandMainGroup": string;
-        "itemClose": string;
+        "itemClose": TabItemCloseInfo;
         "selectedItemChange": TabSelectedItemInfo;
+        "itemDragStart": any;
     }
     interface HTMLChTabElement extends Components.ChTab, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3663,6 +3681,10 @@ declare namespace LocalJSX {
           * Fired when the selected item change.
          */
         "onSelectedViewItemChange"?: (event: ChFlexibleLayoutCustomEvent<ViewSelectedItemInfo>) => void;
+        /**
+          * Fired when a item of a view request to be closed.
+         */
+        "onViewItemClose"?: (event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>) => void;
         /**
           * Specifies the information of each view displayed.
          */
@@ -4715,11 +4737,15 @@ declare namespace LocalJSX {
          */
         "closeButtonAccessibleName"?: string;
         /**
+          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+         */
+        "dragDisabled"?: boolean;
+        /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
         "expanded"?: boolean;
         /**
-          * Specifies the items that are displayed in the group.
+          * Specifies the items of the tab control.
          */
         "items"?: FlexibleLayoutWidget[];
         /**
@@ -4729,15 +4755,19 @@ declare namespace LocalJSX {
         /**
           * Fired the close button of an item is clicked.
          */
-        "onItemClose"?: (event: ChTabCustomEvent<string>) => void;
+        "onItemClose"?: (event: ChTabCustomEvent<TabItemCloseInfo>) => void;
+        /**
+          * Fired the first time a caption button is dragged outside of its tab list.
+         */
+        "onItemDragStart"?: (event: ChTabCustomEvent<any>) => void;
         /**
           * Fired when the selected item change.
          */
         "onSelectedItemChange"?: (event: ChTabCustomEvent<TabSelectedItemInfo>) => void;
         /**
-          * `true` to display the name of the page.
+          * Specifies the selected item of the widgets array.
          */
-        "showPageName"?: boolean;
+        "selectedId"?: string;
         /**
           * Specifies the flexible layout type.
          */

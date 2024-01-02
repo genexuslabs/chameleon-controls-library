@@ -1,0 +1,129 @@
+@import "../../common/base";
+
+@include box-sizing();
+
+$ch-popover-x: calc(
+  (
+      var(--ch-popover-action-left) + var(--ch-popover-inline) +
+        var(--ch-popover-dragged-x)
+    ) * var(--ch-popover-rtl)
+);
+
+$ch-popover-y: calc(
+  var(--ch-popover-action-top) + var(--ch-popover-block) +
+    var(--ch-popover-dragged-y)
+);
+
+:host {
+  /**
+   * @prop --ch-popover-separation-x:
+   * Specifies the separation between the action and popover in the x axis.
+   * @default 0px
+   */
+  --ch-popover-separation-x: 0px;
+
+  /**
+   * @prop --ch-popover-separation-y:
+   * Specifies the separation between the action and popover in the y axis.
+   * @default 0px
+   */
+  --ch-popover-separation-y: 0px;
+
+  --ch-popover-dragged-x: 0px;
+  --ch-popover-dragged-y: 0px;
+  --ch-popover-rtl: 1;
+
+  // Reset browser defaults
+  margin: 0;
+  padding: 0;
+  background-color: unset;
+  border: unset;
+  color: unset;
+
+  top: 0;
+  inset-inline-start: 0;
+
+  // Alignment and Drag
+  translate: $ch-popover-x $ch-popover-y;
+}
+
+// Prevents initial flickering
+:host(.gx-popover-prevent-flickering) {
+  // Necessary to override visibility: inherit from Stencil's hydration
+  visibility: hidden !important;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Drag
+// - - - - - - - - - - - - - - - -
+:host(.gx-popover-header-drag) {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
+:host(.gx-popover-dragging) {
+  cursor: move;
+
+  // Remove any type of pointer when dragging, to make "cursor: move" effective
+  ::slotted(*) {
+    pointer-events: none;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//         Block alignment
+// - - - - - - - - - - - - - - - -
+// :host([block-align="outside-start"]) {
+//   --ch-popover-block: calc(-100% + var(--ch-popover-separation-y) * -1);
+// }
+
+// :host([block-align="inside-start"]) {
+//   --ch-popover-block: var(--ch-popover-separation-y);
+// }
+
+// :host([block-align="center"]) {
+//   --ch-popover-block: calc(
+//     var(--ch-popover-action-height) / 2 - 50% + var(--ch-popover-separation-y)
+//   );
+// }
+
+// :host([block-align="inside-end"]) {
+//   --ch-popover-block: calc(
+//     var(--ch-popover-action-height) - (100% + var(--ch-popover-separation-y))
+//   );
+// }
+
+// :host([block-align="outside-end"]) {
+//   --ch-popover-block: calc(
+//     var(--ch-popover-action-height) + var(--ch-popover-separation-y)
+//   );
+// }
+
+// // - - - - - - - - - - - - - - - -
+// //        Inline alignment
+// // - - - - - - - - - - - - - - - -
+// :host([inline-align="outside-start"]) {
+//   --ch-popover-inline: calc(-100% + var(--ch-popover-separation-x) * -1);
+// }
+
+// :host([inline-align="inside-start"]) {
+//   --ch-popover-inline: var(--ch-popover-separation-x);
+// }
+
+// :host([inline-align="center"]) {
+//   --ch-popover-inline: calc(
+//     var(--ch-popover-action-width) / 2 - 50% + var(--ch-popover-separation-x)
+//   );
+// }
+
+// :host([inline-align="inside-end"]) {
+//   --ch-popover-inline: calc(
+//     var(--ch-popover-action-width) - (100% + var(--ch-popover-separation-x))
+//   );
+// }
+
+// :host([inline-align="outside-end"]) {
+//   --ch-popover-inline: calc(
+//     var(--ch-popover-action-width) + var(--ch-popover-separation-x)
+//   );
+// }

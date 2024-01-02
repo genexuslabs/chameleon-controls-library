@@ -23,11 +23,23 @@ const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
   "--ch-layout-splitter__grid-template-direction";
 
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
-  `container direction--${direction}`;
+  `group direction--${direction}`;
 
 const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items)
 });
+
+const getItemIndex = (indexPrefix: string, index: number) =>
+  `${indexPrefix}${index}`;
+
+const getAriaControls = (indexPrefix: string, index: number) =>
+  `${indexPrefix}${index} ${indexPrefix}${index + 1}`; // Based on getItemIndex
+
+// Key codes
+const ARROW_UP = "ArrowUp";
+const ARROW_RIGHT = "ArrowRight";
+const ARROW_DOWN = "ArrowDown";
+const ARROW_LEFT = "ArrowLeft";
 
 /**
  * @part bar - The bar that divides two columns or two rows
@@ -41,6 +53,8 @@ export class ChLayoutSplitter implements ChComponent {
   #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
   #mouseDownInfo: DragBarMouseDownEventInfo;
+  #lastMousePosition: number;
+  #newMousePosition: number;
 
   // Distribution of elements
   #layoutModel: LayoutSplitterModel;
@@ -51,7 +65,13 @@ export class ChLayoutSplitter implements ChComponent {
    * This attribute lets you specify the label for the drag bar.
    * Important for accessibility.
    */
-  @Prop() readonly barAccessibleName: string = "";
+  @Prop() readonly barAccessibleName: string = "Resize";
+
+  /**
+   * Specifies the resizing increment (in pixel) that is applied when using the
+   * keyboard to resize a drag bar.
+   */
+  @Prop() readonly incrementWithKeyboard: number = 2;
 
   /**
    * Specifies the list of component that are displayed. Each component will be
@@ -68,11 +88,15 @@ export class ChLayoutSplitter implements ChComponent {
 
   #handleBarDrag = (event: MouseEvent) => {
     event.preventDefault();
-    this.#mouseDownInfo.newPosition = getMousePosition(
+    this.#newMousePosition = getMousePosition(
       event,
       this.#mouseDownInfo.direction
     );
 
+    this.#handleBarDragRAF();
+  };
+
+  #handleBarDragRAF = (incrementInPx?: number) => {
     if (!this.#needForRAF) {
       return;
     }
@@ -83,12 +107,13 @@ export class ChLayoutSplitter implements ChComponent {
 
       updateComponentsAndDragBar(
         this.#mouseDownInfo,
+        incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
         DRAG_BAR_POSITION_CUSTOM_VAR,
         GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
       );
 
       // Sync new position with last
-      this.#mouseDownInfo.lastPosition = this.#mouseDownInfo.newPosition;
+      this.#lastMousePosition = this.#newMousePosition;
     });
   };
 
@@ -111,6 +136,35 @@ export class ChLayoutSplitter implements ChComponent {
     this.el.classList.remove(RESIZING_CLASS);
   };
 
+  #initializeDragBarValuesForResizeProcessing = (
+    direction: LayoutSplitterDirection,
+    index: number,
+    fixedSizesSum: number,
+    layoutItems: LayoutSplitterModelItem[],
+    event: Event
+  ) => {
+    // Initialize the values needed for drag processing
+    const dragBar = event.target as HTMLElement;
+    const dragBarContainer = dragBar.parentElement;
+
+    this.#mouseDownInfo = {
+      direction: direction,
+      dragBar: dragBar,
+      dragBarContainer: dragBarContainer,
+      dragBarContainerSize:
+        direction === "columns"
+          ? dragBarContainer.clientWidth
+          : dragBarContainer.clientHeight,
+      fixedSizesSum: fixedSizesSum,
+      index: index,
+      layoutItems: layoutItems,
+      RTL: isRTL()
+    };
+
+    // Remove pointer-events during drag
+    this.el.classList.add(RESIZING_CLASS);
+  };
+
   #mouseDownHandler =
     (
       direction: LayoutSplitterDirection,
@@ -123,29 +177,18 @@ export class ChLayoutSplitter implements ChComponent {
       // the bar item when the mouse is down
       event.preventDefault();
 
-      // Initialize the values needed for drag processing
-      const dragBar = event.target as HTMLElement;
-      const dragBarContainer = dragBar.parentElement;
+      this.#initializeDragBarValuesForResizeProcessing(
+        direction,
+        index,
+        fixedSizesSum,
+        layoutItems,
+        event
+      );
+
+      // Mouse position
       const currentMousePosition = getMousePosition(event, direction);
-
-      this.#mouseDownInfo = {
-        direction: direction,
-        dragBar: dragBar,
-        dragBarContainer: dragBarContainer,
-        dragBarContainerSize:
-          direction === "columns"
-            ? dragBarContainer.clientWidth
-            : dragBarContainer.clientHeight,
-        fixedSizesSum: fixedSizesSum,
-        index: index,
-        lastPosition: currentMousePosition,
-        layoutItems: layoutItems,
-        newPosition: currentMousePosition, // Also updated in mouse move
-        RTL: isRTL()
-      };
-
-      // Remove pointer-events during drag
-      this.el.classList.add(RESIZING_CLASS);
+      this.#lastMousePosition = currentMousePosition;
+      this.#newMousePosition = currentMousePosition; // Also updated in mouse move
 
       // Add listeners
       document.addEventListener("mousemove", this.#handleBarDrag, {
@@ -156,9 +199,50 @@ export class ChLayoutSplitter implements ChComponent {
       });
     };
 
+  #handleResize =
+    (
+      direction: LayoutSplitterDirection,
+      index: number,
+      fixedSizesSum: number,
+      layoutItems: LayoutSplitterModelItem[]
+    ) =>
+    (event: KeyboardEvent) => {
+      if (
+        (direction === "rows" &&
+          event.code !== ARROW_UP &&
+          event.code !== ARROW_DOWN) ||
+        (direction === "columns" &&
+          event.code !== ARROW_LEFT &&
+          event.code !== ARROW_RIGHT)
+      ) {
+        return;
+      }
+
+      // Prevent scroll
+      event.preventDefault();
+
+      this.#initializeDragBarValuesForResizeProcessing(
+        direction,
+        index,
+        fixedSizesSum,
+        layoutItems,
+        event
+      );
+
+      const positiveIncrement =
+        event.code === ARROW_RIGHT || event.code === ARROW_DOWN;
+
+      this.#handleBarDragRAF(
+        positiveIncrement
+          ? this.incrementWithKeyboard
+          : -this.incrementWithKeyboard
+      );
+    };
+
   #renderItems = (
     direction: LayoutSplitterDirection,
     fixedSizesSum: number,
+    indexPrefix: string,
     layoutItems: LayoutSplitterModelItem[]
   ) => {
     const lastComponentIndex = layoutItems.length - 1;
@@ -166,31 +250,47 @@ export class ChLayoutSplitter implements ChComponent {
     return layoutItems.map((item, index) => [
       (item as LayoutSplitterModelGroup).items ? (
         <div
+          id={getItemIndex(indexPrefix, index)}
           class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
           style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
         >
           {this.#renderItems(
             (item as LayoutSplitterModelGroup).direction,
             (item as LayoutSplitterModelGroup).fixedSizesSum,
+            getItemIndex(indexPrefix, index),
             (item as LayoutSplitterModelGroup).items
           )}
         </div>
       ) : (
-        <slot
-          key={(item as LayoutSplitterModelLeaf).id}
-          name={(item as LayoutSplitterModelLeaf).id}
-        />
+        <div id={getItemIndex(indexPrefix, index)} class="leaf">
+          <slot
+            key={(item as LayoutSplitterModelLeaf).id}
+            name={(item as LayoutSplitterModelLeaf).id}
+          />
+        </div>
       ),
 
       !item.hideDragBar && index !== lastComponentIndex && (
         <div
+          // - - - Accessibility - - -
+          role="separator"
+          aria-controls={getAriaControls(indexPrefix, index)}
           aria-label={this.barAccessibleName}
+          aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
           title={this.barAccessibleName}
+          tabindex="0"
+          // - - - - - - - - - - - - -
           class="bar"
           part={item.dragBarPart ? `bar ${item.dragBarPart}` : "bar"}
           style={{
             [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}
+          onKeyDown={this.#handleResize(
+            direction,
+            index,
+            fixedSizesSum,
+            layoutItems
+          )}
           onMouseDown={this.#mouseDownHandler(
             direction,
             index,
@@ -232,6 +332,7 @@ export class ChLayoutSplitter implements ChComponent {
         {this.#renderItems(
           layoutModel.direction,
           layoutModel.fixedSizesSum,
+          "item",
           layoutModel.items
         )}
       </div>

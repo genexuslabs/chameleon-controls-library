@@ -2,6 +2,7 @@
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
 export type LayoutSplitterDirection = "rows" | "columns";
+export type LayoutSplitterSize = `${number}px` | `${number}fr`;
 
 export type LayoutSplitterDistribution = {
   direction: LayoutSplitterDirection;
@@ -17,7 +18,7 @@ export type LayoutSplitterDistributionLeaf = {
   dragBarPart?: string;
   fixedOffsetSize?: number;
   hideDragBar?: boolean;
-  size: string;
+  size: LayoutSplitterSize;
 };
 
 export type LayoutSplitterDistributionGroup = {
@@ -25,7 +26,7 @@ export type LayoutSplitterDistributionGroup = {
   dragBarPart?: string;
   hideDragBar?: boolean;
   items: LayoutSplitterDistributionItem[];
-  size: string;
+  size: LayoutSplitterSize;
 };
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -48,7 +49,7 @@ export type LayoutSplitterModelLeaf = {
   fixedOffsetSize?: number;
   hideDragBar?: boolean;
   id: string;
-  size: string;
+  size: LayoutSplitterSize;
 };
 
 export type LayoutSplitterModelGroup = {
@@ -60,7 +61,7 @@ export type LayoutSplitterModelGroup = {
   fixedSizesSum: number;
   hideDragBar?: boolean;
   items: LayoutSplitterModelItem[];
-  size: string;
+  size: LayoutSplitterSize;
 };
 
 export type DragBarMouseDownEventInfo = {
@@ -70,8 +71,6 @@ export type DragBarMouseDownEventInfo = {
   dragBarContainerSize: number;
   fixedSizesSum: number;
   index: number;
-  lastPosition: number;
   layoutItems: LayoutSplitterModelItem[];
-  newPosition: number;
   RTL: boolean;
 };

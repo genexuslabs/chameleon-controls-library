@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-tree</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+
+    <style>
+      @font-face {
+        font-family: SourceSansPro_Regular;
+        src: url("assets/fonts/SourceSansPro_Regular.woff2");
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      fieldset {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .main-container {
+        display: grid;
+        grid-template-rows: 1fr min-content;
+        align-self: stretch;
+        width: 100%;
+        padding-inline: 4px;
+        gap: 8px;
+        margin: 16px;
+      }
+
+      .section-dev {
+        display: grid;
+        grid-template-columns: 250px 500px max-content;
+        gap: 32px;
+        height: 100%;
+      }
+
+      ch-popover {
+        background-color: aliceblue;
+        box-shadow: 0 0 1px 2px rgb(0, 0, 0, 0.2);
+      }
+
+      #action1,
+      #action2 {
+        width: 120px;
+        height: 60px;
+        margin: auto 80px;
+      }
+
+      .scroll-container {
+        display: grid;
+        max-width: 500px;
+        max-height: 200px;
+        overflow: auto;
+        outline: 1px solid;
+      }
+
+      .scroll-content {
+        width: 800px;
+        height: 800px;
+      }
+
+      /* ch-popover::backdrop {
+        background-color: rgb(165, 42, 42, 0.1);
+      } */
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <ch-popover id="popover1">
+        <div slot="header">Header title <button>Close</button></div>
+        Popover content
+      </ch-popover>
+
+      <button id="action1">Open popover</button>
+
+      <div class="scroll-container">
+        <div class="scroll-content">
+          <ch-popover id="popover2">
+            <div>Popover content11</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+            <div>Popover content</div>
+          </ch-popover>
+
+          <input id="action2" placeholder="Open popover" />
+        </div>
+      </div>
+
+      <div class="configuration">
+        <div>
+          <fieldset>
+            <legend>Properties</legend>
+
+            <label>
+              Mode
+              <select name="mode" id="mode">
+                <option value="auto" selected>Auto</option>
+                <option value="manual">Manual</option>
+              </select>
+            </label>
+
+            <label>
+              Allow drag
+              <select name="allow-drag" id="allow-drag">
+                <option value="no" selected>No</option>
+                <option value="box">Box</option>
+                <option value="header">Header</option>
+              </select>
+            </label>
+
+            <ch-checkbox
+              id="popover-1-visible"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Popover 1 Visible"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="popover-2-visible"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Popover 2 Visible"
+            ></ch-checkbox>
+
+            <label
+              >Popover content
+              <input
+                type="text"
+                id="popover-content"
+                placeholder="Set popover content..."
+              />
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Alignment</legend>
+
+            <label>
+              Block Alignment
+              <select name="block-align" id="block-align">
+                <option value="outside-start">Outside Start</option>
+                <option value="inside-start">Inside Start</option>
+                <option value="center" selected>Center</option>
+                <option value="inside-end">Inside End</option>
+                <option value="outside-end">Outside End</option>
+              </select>
+            </label>
+
+            <label>
+              Inline Alignment
+              <select name="inline-align" id="inline-align">
+                <option value="outside-start">Outside Start</option>
+                <option value="inside-start">Inside Start</option>
+                <option value="center" selected>Center</option>
+                <option value="inside-end">Inside End</option>
+                <option value="outside-end">Outside End</option>
+              </select>
+            </label>
+
+            <label>
+              Separation X
+              <input
+                type="number"
+                id="separation-x"
+                placeholder="Separation value..."
+                value="0"
+              />
+            </label>
+
+            <label>
+              Separation Y
+              <input
+                type="number"
+                id="separation-y"
+                placeholder="Separation value..."
+                value="0"
+              />
+            </label>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      window.addEventListener("appload", () => {
+        const actionElement1 = document.querySelector("#action1");
+        const actionElement2 = document.querySelector("#action2");
+        const popoverElement1 = document.querySelector("#popover1");
+        const popoverElement2 = document.querySelector("#popover2");
+        const checkboxVisible1 = document.querySelector("#popover-1-visible");
+        const checkboxVisible2 = document.querySelector("#popover-2-visible");
+
+        popoverElement1.actionElement = actionElement1;
+        popoverElement2.actionElement = actionElement2;
+
+        const modeSelect = document.getElementById("mode");
+        modeSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.mode = selectedOption;
+          popoverElement2.mode = selectedOption;
+        });
+
+        const allowDragSelect = document.getElementById("allow-drag");
+        allowDragSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.allowDrag = selectedOption;
+          popoverElement2.allowDrag = selectedOption;
+        });
+
+        // - - - - - - - - - - - - - Hidden - - - - - - - - - - - - -
+        popoverElement1.addEventListener("popoverOpened", () => {
+          checkboxVisible1.value = true;
+        });
+        popoverElement1.addEventListener("popoverClosed", () => {
+          checkboxVisible1.value = false;
+        });
+
+        popoverElement2.addEventListener("popoverOpened", () => {
+          checkboxVisible2.value = true;
+        });
+        popoverElement2.addEventListener("popoverClosed", () => {
+          checkboxVisible2.value = false;
+        });
+
+        checkboxVisible1.addEventListener("input", event => {
+          popoverElement1.hidden = !event.target.checked;
+        });
+        checkboxVisible2.addEventListener("input", event => {
+          popoverElement2.hidden = !event.target.checked;
+        });
+
+        const blockAlignSelect = document.getElementById("block-align");
+        blockAlignSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.blockAlign = selectedOption;
+          popoverElement2.blockAlign = selectedOption;
+        });
+
+        const inlineAlignSelect = document.getElementById("inline-align");
+        inlineAlignSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.inlineAlign = selectedOption;
+          popoverElement2.inlineAlign = selectedOption;
+        });
+
+        // - - - - - - - - - - - - Separation - - - - - - - - - - - -
+        const separationXInput = document.getElementById("separation-x");
+        separationXInput.addEventListener("input", event => {
+          const separation = event.target.value;
+          popoverElement1.style.setProperty(
+            "--ch-popover-separation-x",
+            separation + "px"
+          );
+          popoverElement2.style.setProperty(
+            "--ch-popover-separation-x",
+            separation + "px"
+          );
+        });
+
+        const separationYInput = document.getElementById("separation-y");
+        separationYInput.addEventListener("input", event => {
+          const separation = event.target.value;
+          popoverElement1.style.setProperty(
+            "--ch-popover-separation-y",
+            separation + "px"
+          );
+          popoverElement2.style.setProperty(
+            "--ch-popover-separation-y",
+            separation + "px"
+          );
+        });
+
+        const popoverContentInput = document.getElementById("popover-content");
+        popoverContentInput.addEventListener("input", event => {
+          const content = event.target.value;
+          popoverElement1.innerText = content;
+          popoverElement2.innerText = content;
+        });
+      });
+    </script>
+
+    <script src="./assets/scripts/common.js"></script>
+  </body>
+</html>

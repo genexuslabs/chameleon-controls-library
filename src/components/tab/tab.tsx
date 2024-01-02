@@ -16,7 +16,7 @@ import {
   DraggableViewInfo,
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
-import { inBetween, tokenMap } from "../../common/utils";
+import { inBetween, isRTL, tokenMap } from "../../common/utils";
 import {
   TabDirection,
   TabElementSize,
@@ -42,7 +42,9 @@ import {
   TAB_LIST_CLASS
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
+import { focusComposedPath } from "../common/helpers";
 
+// Custom vars
 const TRANSITION_DURATION = "--ch-tab-transition-duration";
 
 const BUTTON_POSITION_X = "--ch-tab-button-position-x";
@@ -59,6 +61,26 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 
+// Key codes
+const ARROW_UP = "ArrowUp";
+const ARROW_RIGHT = "ArrowRight";
+const ARROW_DOWN = "ArrowDown";
+const ARROW_LEFT = "ArrowLeft";
+
+type KeyEvents =
+  | typeof ARROW_UP
+  | typeof ARROW_RIGHT
+  | typeof ARROW_DOWN
+  | typeof ARROW_LEFT;
+
+// Selectors
+const FIRST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
+  tabListRef.querySelector(":scope>button");
+
+const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
+  tabListRef.querySelector(":scope>button:last-child");
+
+// Utility functions
 const getDirection = (type: TabType): TabDirection =>
   type === "main" || type === "blockEnd" ? "block" : "inline";
 const isBlockDirection = (direction: TabDirection) => direction === "block";
@@ -144,12 +166,38 @@ const addGrabbingStyle = () =>
   document.body.style.setProperty("cursor", "grabbing");
 const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
 
+const focusNextOrPreviousCaption = (
+  focusNextSibling: boolean,
+  tabListRef: HTMLElement,
+  focusedCaption: HTMLButtonElement,
+  event: KeyboardEvent
+) => {
+  // Prevent scroll
+  event.preventDefault();
+
+  let nextFocusedCaption: HTMLButtonElement;
+
+  // Determine the next selected caption button
+  if (focusNextSibling) {
+    nextFocusedCaption = (focusedCaption.nextElementSibling ??
+      FIRST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+  } else {
+    nextFocusedCaption = (focusedCaption.previousElementSibling ??
+      LAST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+  }
+
+  // Focus and select the caption
+  nextFocusedCaption.focus();
+  nextFocusedCaption.click();
+};
+
 @Component({
   shadow: true,
   styleUrl: "tab.scss",
   tag: "ch-tab"
 })
 export class ChTab implements DraggableView {
+  // Styling
   #classes: {
     BUTTON?: string;
     IMAGE?: string;
@@ -193,6 +241,43 @@ export class ChTab implements DraggableView {
   // Refs
   #tabListRef: HTMLDivElement;
   #tabPageRef: HTMLDivElement;
+
+  // Keyboard interactions
+  #keyEvents: {
+    [key in KeyEvents]: (
+      direction: TabDirection,
+      event: KeyboardEvent,
+      focusedCaption: HTMLButtonElement
+    ) => void;
+  } = {
+    [ARROW_UP]: (direction, ev, focusedButton) => {
+      if (direction === "block") {
+        return;
+      }
+      focusNextOrPreviousCaption(false, this.#tabListRef, focusedButton, ev);
+    },
+
+    [ARROW_RIGHT]: (direction, ev, focusedButton) => {
+      if (direction === "inline") {
+        return;
+      }
+      focusNextOrPreviousCaption(!isRTL(), this.#tabListRef, focusedButton, ev);
+    },
+
+    [ARROW_DOWN]: (direction, ev, focusedButton) => {
+      if (direction === "block") {
+        return;
+      }
+      focusNextOrPreviousCaption(true, this.#tabListRef, focusedButton, ev);
+    },
+
+    [ARROW_LEFT]: (direction, ev, focusedButton) => {
+      if (direction === "inline") {
+        return;
+      }
+      focusNextOrPreviousCaption(isRTL(), this.#tabListRef, focusedButton, ev);
+    }
+  };
 
   @Element() el: HTMLChTabElement;
 
@@ -593,6 +678,23 @@ export class ChTab implements DraggableView {
     });
   };
 
+  #handleTabFocus = (event: KeyboardEvent) => {
+    if (this.items.length < 2) {
+      return;
+    }
+
+    const keyEventHandler = this.#keyEvents[event.code];
+    if (!keyEventHandler) {
+      return;
+    }
+
+    const currentFocusedCaption = focusComposedPath()[0].closest(
+      "." + this.#classes.BUTTON
+    ) as HTMLButtonElement;
+
+    keyEventHandler(this.#direction, event, currentFocusedCaption);
+  };
+
   #imgRender = (item: FlexibleLayoutWidget) =>
     item.startImageSrc && (
       <img
@@ -612,6 +714,7 @@ export class ChTab implements DraggableView {
       class={this.#classes.TAB_LIST}
       part={this.#parts.TAB_LIST}
       ref={el => (this.#tabListRef = el)}
+      onKeyDown={this.#handleTabFocus}
     >
       {this.items.map((item, index) => (
         <button

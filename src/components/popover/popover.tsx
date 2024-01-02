@@ -166,7 +166,7 @@ export class ChPopover {
    * always be explicitly hidden, but allow for use cases such as nested
    * popovers in menus.
    */
-  @Prop() readonly mode: "auto" | "manual" = "manual";
+  @Prop() readonly mode: "auto" | "manual" = "auto";
 
   /**
    * Specifies if the popover is automatically aligned is the content overflow

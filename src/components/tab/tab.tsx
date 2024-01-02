@@ -66,12 +66,16 @@ const ARROW_UP = "ArrowUp";
 const ARROW_RIGHT = "ArrowRight";
 const ARROW_DOWN = "ArrowDown";
 const ARROW_LEFT = "ArrowLeft";
+const HOME = "Home";
+const END = "End";
 
 type KeyEvents =
   | typeof ARROW_UP
   | typeof ARROW_RIGHT
   | typeof ARROW_DOWN
-  | typeof ARROW_LEFT;
+  | typeof ARROW_LEFT
+  | typeof HOME
+  | typeof END;
 
 // Selectors
 const FIRST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
@@ -276,6 +280,26 @@ export class ChTab implements DraggableView {
         return;
       }
       focusNextOrPreviousCaption(isRTL(), this.#tabListRef, focusedButton, ev);
+    },
+
+    [HOME]: () => {
+      const nextFocusedCaption = FIRST_CAPTION_BUTTON(
+        this.#tabListRef
+      ) as HTMLButtonElement;
+
+      // Focus and select the caption
+      nextFocusedCaption.focus();
+      nextFocusedCaption.click();
+    },
+
+    [END]: () => {
+      const nextFocusedCaption = LAST_CAPTION_BUTTON(
+        this.#tabListRef
+      ) as HTMLButtonElement;
+
+      // Focus and select the caption
+      nextFocusedCaption.focus();
+      nextFocusedCaption.click();
     }
   };
 

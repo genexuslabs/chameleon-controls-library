@@ -16,6 +16,7 @@ import { getAlignmentValue } from "./utils";
 
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
 
+// Custom vars
 const POPOVER_ALIGN_BLOCK = "--ch-popover-block";
 const POPOVER_ALIGN_INLINE = "--ch-popover-inline";
 
@@ -33,6 +34,7 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
+// Utils
 const fromPxToNumber = (pxValue: string) =>
   Number(pxValue.replace("px", "").trim());
 
@@ -145,6 +147,7 @@ export class ChPopover {
     // Update the popover visualization
     if (newHiddenValue) {
       this.el.hidePopover();
+      this.#avoidFlickeringInTheNextRender(true);
     } else {
       this.el.showPopover();
     }
@@ -184,6 +187,15 @@ export class ChPopover {
    */
   @Event() popoverClosed: EventEmitter;
 
+  #avoidFlickeringInTheNextRender = (addClass: boolean) => {
+    if (addClass) {
+      // Class to prevent flickering in the first position adjustment
+      this.el.classList.add(POPOVER_PREVENT_FLICKERING_CLASS);
+    } else {
+      this.el.classList.remove(POPOVER_PREVENT_FLICKERING_CLASS);
+    }
+  };
+
   #setPositionWatcher = () => {
     if (!this.actionElement || this.hidden) {
       this.#removePositionWatcher();
@@ -195,6 +207,7 @@ export class ChPopover {
       this.#resizeObserver.disconnect();
     }
 
+    this.#firstRender = true;
     this.#resizeObserver ??= new ResizeObserver(this.#updatePositionRAF);
 
     this.#resizeObserver.observe(this.actionElement);
@@ -237,7 +250,7 @@ export class ChPopover {
     // The popover's position is now set, so we no longer have to hide it
     if (this.#firstRender) {
       this.#firstRender = false;
-      this.el.classList.remove(POPOVER_PREVENT_FLICKERING_CLASS);
+      this.#avoidFlickeringInTheNextRender(false);
     }
   };
 
@@ -410,8 +423,7 @@ export class ChPopover {
   }
 
   componentDidLoad() {
-    // Class to prevent flickering in the first position adjustment
-    this.el.classList.add(POPOVER_PREVENT_FLICKERING_CLASS);
+    this.#avoidFlickeringInTheNextRender(true);
 
     // Initialize popoverTargetElement
     addPopoverTargetElement(this.actionElement, this.el);

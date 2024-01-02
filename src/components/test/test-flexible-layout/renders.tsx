@@ -18,6 +18,7 @@ const PREFERENCES = "preferences";
 const START_PAGE = "start-page";
 const GRID = "Grid";
 const STRUCT_EDITOR = "StructEditor";
+const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
 const OUTPUT = "output";
 
@@ -39,8 +40,9 @@ export const defaultLayout: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineStart",
+          selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: KB_EXPLORER, name: "KB Explorer" },
             { id: PREFERENCES, name: "Preferences" }
           ]
         },
@@ -48,8 +50,9 @@ export const defaultLayout: FlexibleLayout = {
           accessibleRole: "main",
           size: "1fr",
           viewType: "main",
+          selectedWidgetId: START_PAGE,
           widgets: [
-            { id: START_PAGE, name: "Start Page", selected: true },
+            { id: START_PAGE, name: "Start Page" },
             { id: GRID, name: "Grid" },
             { id: STRUCT_EDITOR, name: "Struct Editor" }
           ]
@@ -97,8 +100,9 @@ export const layout2: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineStart",
+          selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: KB_EXPLORER, name: "KB Explorer" },
             { id: PREFERENCES, name: "Preferences" }
           ]
         },
@@ -110,7 +114,8 @@ export const layout2: FlexibleLayout = {
             {
               size: "1fr",
               viewType: "main",
-              widgets: [{ id: START_PAGE, name: "Start Page", selected: true }]
+              selectedWidgetId: START_PAGE,
+              widgets: [{ id: START_PAGE, name: "Start Page" }]
             },
             {
               size: "1fr",
@@ -165,8 +170,9 @@ export const layout3: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineStart",
+          selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer", selected: true },
+            { id: KB_EXPLORER, name: "KB Explorer" },
             { id: PREFERENCES, name: "Preferences" }
           ]
         },
@@ -184,16 +190,19 @@ export const layout3: FlexibleLayout = {
                   dragBarPart: "visible",
                   size: "1fr",
                   viewType: "main",
-                  widgets: [
-                    { id: START_PAGE, name: "Start Page", selected: true }
-                  ]
+                  selectedWidgetId: START_PAGE,
+                  widgets: [{ id: START_PAGE, name: "Start Page" }]
                 },
                 {
                   size: "1fr",
                   viewType: "main",
                   widgets: [
                     { id: GRID, name: "Grid" },
-                    { id: STRUCT_EDITOR, name: "Struct Editor" }
+                    { id: STRUCT_EDITOR, name: "Struct Editor" },
+                    {
+                      id: ATTRS_CONTAINERS_AND_OTHERS,
+                      name: "AttrsContainersAndOthers"
+                    }
                   ]
                 }
               ]
@@ -279,6 +288,11 @@ export const layoutRenders: FlexibleLayoutRenders = {
   [STRUCT_EDITOR]: () => (
     <div>
       Struct Editor... <input type="text" />
+    </div>
+  ),
+  [ATTRS_CONTAINERS_AND_OTHERS]: () => (
+    <div>
+      Panel AttrsContainersAndOthers <input type="text" />
     </div>
   ),
   [PROPERTIES]: () => (

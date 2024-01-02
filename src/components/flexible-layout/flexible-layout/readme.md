@@ -16,9 +16,31 @@
 
 ## Events
 
-| Event                    | Description                          | Type                                                                                                                          |
-| ------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `selectedViewItemChange` | Fired when the selected item change. | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; viewId: string; }>` |
+| Event                    | Description                                       | Type                                                                                                                          |
+| ------------------------ | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `selectedViewItemChange` | Fired when the selected item change.              | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; viewId: string; }>` |
+| `viewItemClose`          | Fired when a item of a view request to be closed. | `CustomEvent<{ itemId: string; itemIndex: number; type: TabType; viewId: string; }>`                                          |
+
+
+## Methods
+
+### `removeItemInView(viewId: string, index: number, forceRerender?: boolean) => Promise<void>`
+
+Given the view ID and the item index, remove the item from the view
+
+#### Parameters
+
+| Name            | Type      | Description |
+| --------------- | --------- | ----------- |
+| `viewId`        | `string`  |             |
+| `index`         | `number`  |             |
+| `forceRerender` | `boolean` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Dependencies

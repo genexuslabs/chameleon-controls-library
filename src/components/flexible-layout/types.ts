@@ -45,6 +45,7 @@ export type FlexibleLayoutLeaf = {
   dragBarPart?: string;
   fixedOffsetSize?: number;
   hideDragBar?: boolean;
+  selectedWidgetId?: string;
   size: LayoutSplitterSize;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
@@ -53,7 +54,6 @@ export type FlexibleLayoutLeaf = {
 export type FlexibleLayoutWidget = {
   id: string;
   name: string;
-  selected?: boolean;
   startImageSrc?: string;
   wasRendered?: boolean;
 };
@@ -73,22 +73,40 @@ export type FlexibleLayoutView = {
   type: ViewType;
   expanded?: boolean;
   exportParts: string;
-
-  /**
-   * This Set provides optimizations to not render items that were never
-   * shown on the screen.
-   */
-  renderedWidgets: Set<string>;
+  selectedWidgetId?: string;
   widgets: FlexibleLayoutWidget[];
 };
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Event info
 // - - - - - - - - - - - - - - - - - - - -
+export type ViewItemCloseInfo = {
+  itemId: string;
+  itemIndex: number;
+  type: TabType;
+  viewId: string;
+};
+
 export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
   newSelectedIndex: number;
   type: TabType;
   viewId: string;
+};
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Interfaces
+// - - - - - - - - - - - - - - - - - - - -
+export interface DraggableView {
+  /**
+   * Returns the info associated to the draggable views.
+   */
+  getDraggableViews: () => Promise<DraggableViewInfo>;
+}
+
+export type DraggableViewInfo = {
+  mainView: HTMLElement;
+  pageView: HTMLElement;
+  tabListView: HTMLElement;
 };

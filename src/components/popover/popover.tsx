@@ -67,9 +67,6 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
   shadow: true
 })
 export class ChPopover {
-  // Necessary to prevent flickering in the first position adjustment
-  #firstRender = true;
-
   // Sync computations with frames
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
   #positionAdjustRAF = new SyncWithRAF();
@@ -207,11 +204,16 @@ export class ChPopover {
       this.#resizeObserver.disconnect();
     }
 
-    this.#firstRender = true;
     this.#resizeObserver ??= new ResizeObserver(this.#updatePositionRAF);
 
     this.#resizeObserver.observe(this.actionElement);
     this.#resizeObserver.observe(this.el);
+
+    // Faster first render. Don't wait until the next animation frame
+    this.#updatePosition();
+
+    // The popover's position is now set, so we no longer have to hide it
+    this.#avoidFlickeringInTheNextRender(false);
 
     // Listeners
     this.#windowRef.addEventListener("resize", this.#updatePositionRAF, {
@@ -246,12 +248,6 @@ export class ChPopover {
     setProperty(this.el, POPOVER_ACTION_TOP, actionRect.top);
 
     this.#setResponsiveAlignment(actionRect, popoverRect, computedStyle);
-
-    // The popover's position is now set, so we no longer have to hide it
-    if (this.#firstRender) {
-      this.#firstRender = false;
-      this.#avoidFlickeringInTheNextRender(false);
-    }
   };
 
   #setResponsiveAlignment = (

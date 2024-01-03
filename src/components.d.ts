@@ -1158,8 +1158,7 @@ export namespace Components {
     }
     /**
      * The `ch-popover` component represents a popover container that is positioned
-     * relative to an element or the screen, but placed on the top layer using
-     * `position: fixed`.
+     * relative to an element, but placed on the top layer using `position: fixed`.
      */
     interface ChPopover {
         /**
@@ -2924,8 +2923,7 @@ declare global {
     }
     /**
      * The `ch-popover` component represents a popover container that is positioned
-     * relative to an element or the screen, but placed on the top layer using
-     * `position: fixed`.
+     * relative to an element, but placed on the top layer using `position: fixed`.
      */
     interface HTMLChPopoverElement extends Components.ChPopover, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChPopoverElementEventMap>(type: K, listener: (this: HTMLChPopoverElement, ev: ChPopoverCustomEvent<HTMLChPopoverElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4569,8 +4567,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-popover` component represents a popover container that is positioned
-     * relative to an element or the screen, but placed on the top layer using
-     * `position: fixed`.
+     * relative to an element, but placed on the top layer using `position: fixed`.
      */
     interface ChPopover {
         /**
@@ -5762,8 +5759,7 @@ declare module "@stencil/core" {
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
             /**
              * The `ch-popover` component represents a popover container that is positioned
-             * relative to an element or the screen, but placed on the top layer using
-             * `position: fixed`.
+             * relative to an element, but placed on the top layer using `position: fixed`.
              */
             "ch-popover": LocalJSX.ChPopover & JSXBase.HTMLAttributes<HTMLChPopoverElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;

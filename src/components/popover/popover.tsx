@@ -58,8 +58,7 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
 
 /**
  * The `ch-popover` component represents a popover container that is positioned
- * relative to an element or the screen, but placed on the top layer using
- * `position: fixed`.
+ * relative to an element, but placed on the top layer using `position: fixed`.
  */
 @Component({
   tag: "ch-popover",

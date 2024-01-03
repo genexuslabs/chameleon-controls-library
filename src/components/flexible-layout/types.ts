@@ -110,3 +110,10 @@ export type DraggableViewInfo = {
   pageView: HTMLElement;
   tabListView: HTMLElement;
 };
+
+export type DraggableViewExtendedInfo = {
+  abortController: AbortController;
+  mainView: HTMLElement;
+  pageView: HTMLElement;
+  tabListView: HTMLElement;
+};

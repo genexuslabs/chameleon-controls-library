@@ -9,6 +9,8 @@ import {
   h
 } from "@stencil/core";
 import {
+  DraggableViewExtendedInfo,
+  DraggableViewInfo,
   FlexibleLayoutView,
   ViewItemCloseInfo,
   ViewSelectedItemInfo
@@ -27,12 +29,19 @@ import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 // Keys
 // const KEY_B = "KeyB";
 
+const handleDraggableViewMouseMove =
+  (draggableView: DraggableViewInfo) => (event: MouseEvent) => {
+    console.log("mousemove", draggableView, (event.target as HTMLElement).id);
+  };
+
 @Component({
   shadow: true,
   styleUrl: "flexible-layout.scss",
   tag: "ch-flexible-layout"
 })
 export class ChFlexibleLayout {
+  #draggableViews: DraggableViewExtendedInfo[];
+
   @Element() el: HTMLChFlexibleLayoutElement;
 
   /**
@@ -136,6 +145,57 @@ export class ChFlexibleLayout {
       this.viewItemClose.emit(eventInfo);
     };
 
+  private handleDragStart =
+    (viewId: string) => async (event: ChTabCustomEvent<number>) => {
+      event.stopPropagation();
+
+      const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
+      const itemInfo = this.viewsInfo.get(viewId).widgets[event.detail];
+
+      console.log("Item Info", itemInfo);
+
+      // Get all draggable views
+      const draggableViewsResult = await Promise.allSettled(
+        views.map(view => view.getDraggableViews())
+      );
+
+      // Allocate memory
+      this.#draggableViews = [];
+
+      draggableViewsResult.forEach(draggableViewResult => {
+        if (draggableViewResult.status === "fulfilled") {
+          const draggableView = draggableViewResult.value;
+          const abortController = new AbortController(); // Necessary to remove the event listener
+
+          this.#draggableViews.push({
+            ...draggableView,
+            abortController: abortController
+          });
+
+          draggableView.mainView.addEventListener(
+            "mousemove",
+            handleDraggableViewMouseMove(draggableView),
+            { capture: true, signal: abortController.signal }
+          );
+        }
+      });
+
+      document.addEventListener("mouseup", this.#handleDraggableViewEnd);
+    };
+
+  #handleDraggableViewEnd = () => {
+    // Remove mousemove handlers
+    this.#draggableViews.forEach(draggableView => {
+      draggableView.abortController.abort();
+    });
+
+    // Remove mouseup handler
+    document.removeEventListener("mouseup", this.#handleDraggableViewEnd);
+
+    // Free the memory
+    this.#draggableViews = undefined;
+  };
+
   private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
     <ch-tab
       id={viewInfo.id}
@@ -147,6 +207,7 @@ export class ChFlexibleLayout {
       type={tabType}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
+      onItemDragStart={this.handleDragStart(viewInfo.id)}
       onSelectedItemChange={this.handleItemChange(viewInfo.id)}
     >
       {viewInfo.widgets.map(

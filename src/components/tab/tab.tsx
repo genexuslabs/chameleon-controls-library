@@ -385,7 +385,7 @@ export class ChTab implements DraggableView {
   /**
    * Fired the first time a caption button is dragged outside of its tab list.
    */
-  @Event() itemDragStart: EventEmitter<any>;
+  @Event() itemDragStart: EventEmitter<number>;
 
   /**
    * Returns the info associated to the draggable view.
@@ -539,6 +539,7 @@ export class ChTab implements DraggableView {
     // remove the events on animations frame. Otherwise we would remove the
     // events and in the next frame the mousemove handler will be executes
     requestAnimationFrame(() => {
+      // TODO: UPDATE THIS TO USE SyncWithRAF.cancel()
       document.body.removeEventListener("mousemove", this.#handleItemDrag, {
         capture: true
       });
@@ -638,7 +639,7 @@ export class ChTab implements DraggableView {
         // Remove transition before the render to avoid flickering in the animation
         this.el.style.setProperty(TRANSITION_DURATION, "0s");
 
-        this.itemDragStart.emit();
+        this.itemDragStart.emit(this.draggedElementIndex);
         return;
       }
 

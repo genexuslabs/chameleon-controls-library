@@ -23,6 +23,7 @@ import { NotificationMessageWithDelay } from "./components/notifications/notific
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
+import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -57,6 +58,7 @@ export { NotificationMessageWithDelay } from "./components/notifications/notific
 export { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
+export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
 export { GxDataTransferInfo, LabelPosition } from "./common/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -1154,6 +1156,41 @@ export namespace Components {
          */
         "totalPages": 1;
     }
+    /**
+     * The `ch-popover` component represents a popover container that is positioned
+     * relative to an element or the screen, but placed on the top layer using
+     * `position: fixed`.
+     */
+    interface ChPopover {
+        /**
+          * Specifies a reference of the action that controls the popover control.
+         */
+        "actionElement"?: PopoverActionElement;
+        /**
+          * Specifies the drag behavior of the popover. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
+         */
+        "allowDrag": "box" | "header" | "no";
+        /**
+          * Specifies the block alignment of the window.
+         */
+        "blockAlign": ChPopoverAlign;
+        /**
+          * Specifies whether the popover is hidden or visible.
+         */
+        "hidden": boolean;
+        /**
+          * Specifies the inline alignment of the window.
+         */
+        "inlineAlign": ChPopoverAlign;
+        /**
+          * Popovers that have the `"auto"` state can be "light dismissed" by selecting outside the popover area, and generally only allow one popover to be displayed on-screen at a time. By contrast, `"manual"` popovers must always be explicitly hidden, but allow for use cases such as nested popovers in menus.
+         */
+        "mode": "auto" | "manual";
+        /**
+          * Specifies if the popover is automatically aligned is the content overflow the window.
+         */
+        "responsiveAlignment": boolean;
+    }
     interface ChQr {
         /**
           * The background color. By default is transparent.
@@ -2200,6 +2237,10 @@ export interface ChPaginatorPagesCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChPaginatorPagesElement;
 }
+export interface ChPopoverCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChPopoverElement;
+}
 export interface ChSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSelectElement;
@@ -2877,6 +2918,29 @@ declare global {
         prototype: HTMLChPaginatorPagesElement;
         new (): HTMLChPaginatorPagesElement;
     };
+    interface HTMLChPopoverElementEventMap {
+        "popoverOpened": any;
+        "popoverClosed": any;
+    }
+    /**
+     * The `ch-popover` component represents a popover container that is positioned
+     * relative to an element or the screen, but placed on the top layer using
+     * `position: fixed`.
+     */
+    interface HTMLChPopoverElement extends Components.ChPopover, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChPopoverElementEventMap>(type: K, listener: (this: HTMLChPopoverElement, ev: ChPopoverCustomEvent<HTMLChPopoverElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChPopoverElementEventMap>(type: K, listener: (this: HTMLChPopoverElement, ev: ChPopoverCustomEvent<HTMLChPopoverElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChPopoverElement: {
+        prototype: HTMLChPopoverElement;
+        new (): HTMLChPopoverElement;
+    };
     interface HTMLChQrElement extends Components.ChQr, HTMLStencilElement {
     }
     var HTMLChQrElement: {
@@ -3312,6 +3376,7 @@ declare global {
         "ch-paginator": HTMLChPaginatorElement;
         "ch-paginator-navigate": HTMLChPaginatorNavigateElement;
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
+        "ch-popover": HTMLChPopoverElement;
         "ch-qr": HTMLChQrElement;
         "ch-select": HTMLChSelectElement;
         "ch-select-option": HTMLChSelectOptionElement;
@@ -4502,6 +4567,49 @@ declare namespace LocalJSX {
          */
         "totalPages"?: 1;
     }
+    /**
+     * The `ch-popover` component represents a popover container that is positioned
+     * relative to an element or the screen, but placed on the top layer using
+     * `position: fixed`.
+     */
+    interface ChPopover {
+        /**
+          * Specifies a reference of the action that controls the popover control.
+         */
+        "actionElement"?: PopoverActionElement;
+        /**
+          * Specifies the drag behavior of the popover. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
+         */
+        "allowDrag"?: "box" | "header" | "no";
+        /**
+          * Specifies the block alignment of the window.
+         */
+        "blockAlign"?: ChPopoverAlign;
+        /**
+          * Specifies whether the popover is hidden or visible.
+         */
+        "hidden"?: boolean;
+        /**
+          * Specifies the inline alignment of the window.
+         */
+        "inlineAlign"?: ChPopoverAlign;
+        /**
+          * Popovers that have the `"auto"` state can be "light dismissed" by selecting outside the popover area, and generally only allow one popover to be displayed on-screen at a time. By contrast, `"manual"` popovers must always be explicitly hidden, but allow for use cases such as nested popovers in menus.
+         */
+        "mode"?: "auto" | "manual";
+        /**
+          * Emitted when the popover is closed.
+         */
+        "onPopoverClosed"?: (event: ChPopoverCustomEvent<any>) => void;
+        /**
+          * Emitted when the popover is opened.
+         */
+        "onPopoverOpened"?: (event: ChPopoverCustomEvent<any>) => void;
+        /**
+          * Specifies if the popover is automatically aligned is the content overflow the window.
+         */
+        "responsiveAlignment"?: boolean;
+    }
     interface ChQr {
         /**
           * The background color. By default is transparent.
@@ -5514,6 +5622,7 @@ declare namespace LocalJSX {
         "ch-paginator": ChPaginator;
         "ch-paginator-navigate": ChPaginatorNavigate;
         "ch-paginator-pages": ChPaginatorPages;
+        "ch-popover": ChPopover;
         "ch-qr": ChQr;
         "ch-select": ChSelect;
         "ch-select-option": ChSelectOption;
@@ -5651,6 +5760,12 @@ declare module "@stencil/core" {
              * The 'ch-paginator-pages' component represents the pagination pages for the 'ch-paginator' component.
              */
             "ch-paginator-pages": LocalJSX.ChPaginatorPages & JSXBase.HTMLAttributes<HTMLChPaginatorPagesElement>;
+            /**
+             * The `ch-popover` component represents a popover container that is positioned
+             * relative to an element or the screen, but placed on the top layer using
+             * `position: fixed`.
+             */
+            "ch-popover": LocalJSX.ChPopover & JSXBase.HTMLAttributes<HTMLChPopoverElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
             "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
             "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;

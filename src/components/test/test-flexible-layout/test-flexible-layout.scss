@@ -109,6 +109,11 @@ ch-test-flexible-layout {
     background-color: #f7f7f7;
   }
 
+  &::part(block__page-container),
+  &::part(inline__page-container) {
+    overflow: auto;
+  }
+
   // - - - - - - - - - - - - - - - -
   //          Drag preview
   // - - - - - - - - - - - - - - - -

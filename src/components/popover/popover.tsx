@@ -68,7 +68,7 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
 export class ChPopover {
   // Sync computations with frames
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
-  #positionAdjustRAF = new SyncWithRAF();
+  #positionAdjustRAF: SyncWithRAF; // Don't allocate memory until needed
 
   #adjustAlignment = false;
 
@@ -203,6 +203,7 @@ export class ChPopover {
       this.#resizeObserver.disconnect();
     }
 
+    this.#positionAdjustRAF ??= new SyncWithRAF();
     this.#resizeObserver ??= new ResizeObserver(this.#updatePositionRAF);
 
     this.#resizeObserver.observe(this.actionElement);

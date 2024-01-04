@@ -237,7 +237,6 @@ export class ChTab implements DraggableView {
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: TabElementSize;
 
   #renderedPages: Set<string> = new Set();
@@ -777,7 +776,9 @@ export class ChTab implements DraggableView {
             [this.#classes.BUTTON]: true,
             "dragged-element": this.draggedElementIndex === index,
             "dragged-element--outside":
-              this.draggedElementIndex === index && this.hasCrossedBoundaries,
+              this.draggedElementIndex === index &&
+              this.hasCrossedBoundaries &&
+              this.items.length > 1,
             "shifted-element": this.draggedElementIndex !== -1,
 
             "shifted-element--start":

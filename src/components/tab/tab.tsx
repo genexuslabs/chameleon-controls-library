@@ -243,6 +243,7 @@ export class ChTab implements DraggableView {
   #renderedPages: Set<string> = new Set();
 
   // Refs
+  #dragPreviewRef: HTMLDivElement;
   #tabListRef: HTMLDivElement;
   #tabPageRef: HTMLDivElement;
 
@@ -397,6 +398,14 @@ export class ChTab implements DraggableView {
       pageView: this.#tabPageRef,
       tabListView: this.#tabListRef
     };
+  }
+
+  /**
+   * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+   */
+  @Method()
+  async promoteDragPreviewToTopLayer(): Promise<void> {
+    this.#dragPreviewRef.showPopover();
   }
 
   /**
@@ -841,9 +850,14 @@ export class ChTab implements DraggableView {
     };
 
     return (
-      <div class={classes} part={tokenMap(classes)}>
+      <div
+        aria-hidden="true"
+        class={classes}
+        part={tokenMap(classes)}
+        popover="manual"
+        ref={el => (this.#dragPreviewRef = el)}
+      >
         <button
-          aria-hidden="true"
           class={{ [this.#classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,

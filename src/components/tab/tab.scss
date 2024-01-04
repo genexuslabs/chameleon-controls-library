@@ -102,6 +102,18 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   top: 0; // Necessary since the custom vars are physical values
   z-index: $z-index-gx-navbar-item + 1;
 
+  &[popover] {
+    // Reset popover's browser defaults
+    padding: 0;
+    margin: 0;
+    border: unset;
+    color: unset;
+
+    // The preview MUST NOT capture pointer-events in order to properly show
+    // the droppable areas
+    pointer-events: none;
+  }
+
   &-element {
     cursor: grabbing;
   }

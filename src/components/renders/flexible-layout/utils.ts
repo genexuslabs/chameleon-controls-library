@@ -11,7 +11,7 @@ import {
   FlexibleLayoutItem,
   FlexibleLayoutLeaf,
   FlexibleLayoutView
-} from "../types";
+} from "../../flexible-layout/types";
 
 let lastViewId = 0;
 

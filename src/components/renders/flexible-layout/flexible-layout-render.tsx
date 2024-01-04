@@ -6,7 +6,7 @@ import {
   ViewItemCloseInfo,
   ViewSelectedItemInfo
 } from "../../flexible-layout/types";
-import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
+import { getLayoutModel } from "./utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 

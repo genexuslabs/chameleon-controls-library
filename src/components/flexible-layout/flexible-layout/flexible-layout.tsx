@@ -27,10 +27,7 @@ import {
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
-import {
-  handleDraggableViewMouseMove,
-  removeDroppableAreaStyles
-} from "../utils";
+import { handleWidgetDrag, removeDroppableAreaStyles } from "../utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -192,24 +189,28 @@ export class ChFlexibleLayout {
 
           draggableView.mainView.addEventListener(
             "mousemove",
-            handleDraggableViewMouseMove(
-              extendedDraggableView,
-              this.#droppableAreaRef
-            ),
-            { capture: true, signal: abortController.signal }
+            handleWidgetDrag(extendedDraggableView, this.#droppableAreaRef),
+            { capture: true, passive: true, signal: abortController.signal }
           );
         }
       });
 
-      document.addEventListener("mouseup", this.#handleDraggableViewEnd);
-      document.addEventListener("keydown", this.#handleDraggableViewEndKeydown);
+      document.addEventListener("mouseup", this.#handleWidgetDragEnd, {
+        passive: true
+      });
+      document.addEventListener("keydown", this.#handleWidgetDragEndKeydown, {
+        passive: true
+      });
 
       // Removes view when they are out of a droppable area
       this.#viewsOutOfDroppableZoneController = new AbortController();
       document.addEventListener(
         "mousemove",
         () => removeDroppableAreaStyles(this.#droppableAreaRef),
-        { signal: this.#viewsOutOfDroppableZoneController.signal }
+        {
+          passive: true,
+          signal: this.#viewsOutOfDroppableZoneController.signal
+        }
       );
 
       // Show droppable area
@@ -222,28 +223,25 @@ export class ChFlexibleLayout {
       this.dragBarDisabled = true;
     };
 
-  #handleDraggableViewEndKeydown = (event: KeyboardEvent) => {
+  #handleWidgetDragEndKeydown = (event: KeyboardEvent) => {
     if (event.code !== ESCAPE_KEY) {
       return;
     }
 
     event.preventDefault();
-    this.#handleDraggableViewEnd();
+    this.#handleWidgetDragEnd();
     this.#draggedViewRef.endDragPreview();
   };
 
-  #handleDraggableViewEnd = () => {
+  #handleWidgetDragEnd = () => {
     // Remove mousemove handlers
     this.#draggableViews.forEach(draggableView => {
       draggableView.abortController.abort();
     });
 
     // Remove mouseup and keydown handlers
-    document.removeEventListener("mouseup", this.#handleDraggableViewEnd);
-    document.removeEventListener(
-      "keydown",
-      this.#handleDraggableViewEndKeydown
-    );
+    document.removeEventListener("mouseup", this.#handleWidgetDragEnd);
+    document.removeEventListener("keydown", this.#handleWidgetDragEndKeydown);
     this.#viewsOutOfDroppableZoneController.abort();
 
     // Hide droppable area

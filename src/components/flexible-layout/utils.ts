@@ -77,7 +77,7 @@ const droppableAreaMap: {
 
 let lastDroppableArea: DroppableArea;
 
-export const handleDraggableViewMouseMove =
+export const handleWidgetDrag =
   (draggableView: DraggableViewExtendedInfo, droppableAreaRef: HTMLElement) =>
   (event: MouseEvent) => {
     event.stopPropagation(); // Prevents the remove of the droppable area

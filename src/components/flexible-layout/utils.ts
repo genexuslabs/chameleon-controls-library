@@ -1,5 +1,5 @@
 import { inBetween } from "../../common/utils";
-import { DraggableViewInfo } from "./types";
+import { DraggableViewExtendedInfo } from "./types";
 
 type DroppableArea =
   | "block-start"
@@ -21,14 +21,14 @@ const INLINE_END = "--ch-flexible-layout-drop-area-inline-end";
  * be displayed at the START position with half the size.
  */
 const START_HALF_THRESHOLD = 30; // In percentage
-const START_HALF_THRESHOLD_FRACTION = START_HALF_THRESHOLD / 100;
 
 /**
  * If the mouse position is in the interval [70%, 100%] the droppable area
  * should be displayed at the END position with half the size.
  */
 const END_HALF_THRESHOLD = 100 - START_HALF_THRESHOLD; // In percentage
-const END_HALF_THRESHOLD_FRACTION = 1 - START_HALF_THRESHOLD_FRACTION;
+
+const EDGE_SIZE = 0.5;
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -41,14 +41,13 @@ const droppableAreaMap: {
 } = {
   "block-start": (documentRect, mainViewRect) => [
     mainViewRect.top,
-    documentRect.height -
-      (mainViewRect.top + mainViewRect.height * START_HALF_THRESHOLD_FRACTION),
+    documentRect.height - (mainViewRect.top + mainViewRect.height * EDGE_SIZE),
     mainViewRect.left,
     documentRect.width - (mainViewRect.left + mainViewRect.width)
   ],
 
   "block-end": (documentRect, mainViewRect) => [
-    mainViewRect.top + mainViewRect.height * END_HALF_THRESHOLD_FRACTION,
+    mainViewRect.top + mainViewRect.height * EDGE_SIZE,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
     mainViewRect.left,
     documentRect.width - (mainViewRect.left + mainViewRect.width)
@@ -58,14 +57,13 @@ const droppableAreaMap: {
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
     mainViewRect.left,
-    documentRect.width -
-      (mainViewRect.left + mainViewRect.width * START_HALF_THRESHOLD_FRACTION)
+    documentRect.width - (mainViewRect.left + mainViewRect.width * EDGE_SIZE)
   ],
 
   "inline-end": (documentRect, mainViewRect) => [
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
-    mainViewRect.left + mainViewRect.width * END_HALF_THRESHOLD_FRACTION,
+    mainViewRect.left + mainViewRect.width * EDGE_SIZE,
     documentRect.width - (mainViewRect.left + mainViewRect.width)
   ],
 
@@ -80,8 +78,10 @@ const droppableAreaMap: {
 let lastDroppableArea: DroppableArea;
 
 export const handleDraggableViewMouseMove =
-  (draggableView: DraggableViewInfo, droppableAreaRef: HTMLElement) =>
+  (draggableView: DraggableViewExtendedInfo, droppableAreaRef: HTMLElement) =>
   (event: MouseEvent) => {
+    event.stopPropagation(); // Prevents the remove of the droppable area
+
     // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const documentRect = document.documentElement.getBoundingClientRect();
     const mainViewRect = draggableView.mainView.getBoundingClientRect();

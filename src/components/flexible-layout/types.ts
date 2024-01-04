@@ -120,4 +120,5 @@ export type DraggableViewExtendedInfo = {
   mainView: HTMLElement;
   pageView: HTMLElement;
   tabListView: HTMLElement;
+  viewId: string;
 };

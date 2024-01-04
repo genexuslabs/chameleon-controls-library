@@ -6,6 +6,7 @@ import {
   Host,
   Method,
   Prop,
+  State,
   forceUpdate,
   h
 } from "@stencil/core";
@@ -43,11 +44,15 @@ const ESCAPE_KEY = "Escape";
 export class ChFlexibleLayout {
   #draggableViews: DraggableViewExtendedInfo[];
 
+  #viewsOutOfDroppableZoneController: AbortController; // Allocated at runtime to reduce memory usage
+
   // Refs
   #draggedViewRef: DraggableView;
   #droppableAreaRef: HTMLDivElement;
 
   @Element() el: HTMLChFlexibleLayoutElement;
+
+  @State() dragBarDisabled = false;
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -177,14 +182,20 @@ export class ChFlexibleLayout {
           const draggableView = draggableViewResult.value;
           const abortController = new AbortController(); // Necessary to remove the event listener
 
-          this.#draggableViews.push({
+          const extendedDraggableView = {
             ...draggableView,
+            viewId: viewId,
             abortController: abortController
-          });
+          };
+
+          this.#draggableViews.push(extendedDraggableView);
 
           draggableView.mainView.addEventListener(
             "mousemove",
-            handleDraggableViewMouseMove(draggableView, this.#droppableAreaRef),
+            handleDraggableViewMouseMove(
+              extendedDraggableView,
+              this.#droppableAreaRef
+            ),
             { capture: true, signal: abortController.signal }
           );
         }
@@ -193,11 +204,22 @@ export class ChFlexibleLayout {
       document.addEventListener("mouseup", this.#handleDraggableViewEnd);
       document.addEventListener("keydown", this.#handleDraggableViewEndKeydown);
 
+      // Removes view when they are out of a droppable area
+      this.#viewsOutOfDroppableZoneController = new AbortController();
+      document.addEventListener(
+        "mousemove",
+        () => removeDroppableAreaStyles(this.#droppableAreaRef),
+        { signal: this.#viewsOutOfDroppableZoneController.signal }
+      );
+
       // Show droppable area
       this.#droppableAreaRef.showPopover(); // Layer 1
 
       // After that, promote the drag preview to the second layer
       this.#draggedViewRef.promoteDragPreviewToTopLayer(); // Layer 2
+
+      // Disable drag bars in layout-splitter to improve the drag experience
+      this.dragBarDisabled = true;
     };
 
   #handleDraggableViewEndKeydown = (event: KeyboardEvent) => {
@@ -222,6 +244,7 @@ export class ChFlexibleLayout {
       "keydown",
       this.#handleDraggableViewEndKeydown
     );
+    this.#viewsOutOfDroppableZoneController.abort();
 
     // Hide droppable area
     this.#droppableAreaRef.hidePopover();
@@ -229,6 +252,9 @@ export class ChFlexibleLayout {
 
     // Free the memory
     this.#draggableViews = undefined;
+
+    // Re-enable drag bars
+    this.dragBarDisabled = false;
   };
 
   private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
@@ -271,6 +297,7 @@ export class ChFlexibleLayout {
     return (
       <Host>
         <ch-layout-splitter
+          dragBarDisabled={this.dragBarDisabled}
           layout={layoutModel}
           exportparts={"bar," + this.layoutSplitterParts}
         >

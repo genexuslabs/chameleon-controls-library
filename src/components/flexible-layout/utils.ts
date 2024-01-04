@@ -1,12 +1,9 @@
 import { inBetween } from "../../common/utils";
-import { DraggableViewExtendedInfo } from "./types";
-
-type DroppableArea =
-  | "block-start"
-  | "block-end"
-  | "inline-start"
-  | "inline-end"
-  | "center";
+import {
+  DraggableViewExtendedInfo,
+  DroppableArea,
+  WidgetDropInfo
+} from "./types";
 
 type DroppableAreaSizes = [number, number, number, number];
 
@@ -76,6 +73,7 @@ const droppableAreaMap: {
 };
 
 let lastDroppableArea: DroppableArea;
+let lastViewId: string;
 
 export const handleWidgetDrag =
   (draggableView: DraggableViewExtendedInfo, droppableAreaRef: HTMLElement) =>
@@ -136,10 +134,14 @@ export const handleWidgetDrag =
     }
 
     // If the droppable area did not change, there is no need to update the DOM
-    if (lastDroppableArea === droppableArea) {
+    if (
+      lastViewId === draggableView.viewId &&
+      lastDroppableArea === droppableArea
+    ) {
       return;
     }
     lastDroppableArea = droppableArea;
+    lastViewId = draggableView.viewId;
 
     const droppableAreaSizes = droppableAreaMap[droppableArea](
       documentRect,
@@ -156,5 +158,11 @@ export const handleWidgetDrag =
 
 export const removeDroppableAreaStyles = (droppableAreaRef: HTMLElement) => {
   lastDroppableArea = undefined;
+  lastViewId = undefined;
   droppableAreaRef.removeAttribute("style");
 };
+
+export const getWidgetDropInfo = (): WidgetDropInfo | undefined =>
+  lastDroppableArea === undefined
+    ? undefined
+    : { dropAreaTarget: lastDroppableArea, viewIdTarget: lastViewId };

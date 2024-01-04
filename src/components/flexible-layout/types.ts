@@ -122,3 +122,22 @@ export type DraggableViewExtendedInfo = {
   tabListView: HTMLElement;
   viewId: string;
 };
+
+export type WidgetDragInfo = {
+  index: number;
+  viewId: string;
+};
+
+export type WidgetDropInfo = {
+  viewIdTarget: string;
+  dropAreaTarget: DroppableArea;
+};
+
+export type WidgetReorderInfo = WidgetDragInfo & WidgetDropInfo;
+
+export type DroppableArea =
+  | "block-start"
+  | "block-end"
+  | "inline-start"
+  | "inline-end"
+  | "center";

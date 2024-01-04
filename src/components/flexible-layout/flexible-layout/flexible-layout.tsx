@@ -15,7 +15,9 @@ import {
   DraggableViewExtendedInfo,
   FlexibleLayoutView,
   ViewItemCloseInfo,
-  ViewSelectedItemInfo
+  ViewSelectedItemInfo,
+  WidgetDragInfo,
+  WidgetReorderInfo
 } from "../types";
 
 // import { mouseEventModifierKey } from "../../common/helpers";
@@ -27,7 +29,11 @@ import {
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
-import { handleWidgetDrag, removeDroppableAreaStyles } from "../utils";
+import {
+  getWidgetDropInfo,
+  handleWidgetDrag,
+  removeDroppableAreaStyles
+} from "../utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -41,6 +47,7 @@ const ESCAPE_KEY = "Escape";
 export class ChFlexibleLayout {
   #draggableViews: DraggableViewExtendedInfo[];
 
+  #dragInfo: WidgetDragInfo;
   #viewsOutOfDroppableZoneController: AbortController; // Allocated at runtime to reduce memory usage
 
   // Refs
@@ -75,6 +82,11 @@ export class ChFlexibleLayout {
    * Fired when the selected item change.
    */
   @Event() selectedViewItemChange: EventEmitter<ViewSelectedItemInfo>;
+
+  /**
+   * Fired when a widget is dragged and dropped into a view.
+   */
+  @Event() viewItemReorder: EventEmitter<WidgetReorderInfo>;
 
   /**
    * Given the view ID and the item index, remove the item from the view
@@ -161,9 +173,12 @@ export class ChFlexibleLayout {
       this.#draggedViewRef = event.target;
 
       const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
-      const itemInfo = this.viewsInfo.get(viewId).widgets[event.detail];
+      // const itemInfo = this.viewsInfo.get(viewId).widgets[event.detail];
 
-      console.log("Item Info", itemInfo);
+      this.#dragInfo = {
+        index: event.detail,
+        viewId: viewId
+      };
 
       // Get all draggable views
       const draggableViewsResult = await Promise.allSettled(
@@ -174,14 +189,14 @@ export class ChFlexibleLayout {
       this.#draggableViews = [];
 
       // Add handlers to manage droppable areas
-      draggableViewsResult.forEach(draggableViewResult => {
+      draggableViewsResult.forEach((draggableViewResult, index) => {
         if (draggableViewResult.status === "fulfilled") {
           const draggableView = draggableViewResult.value;
           const abortController = new AbortController(); // Necessary to remove the event listener
 
           const extendedDraggableView = {
             ...draggableView,
-            viewId: viewId,
+            viewId: views[index].id, // All views have an id in the DOM
             abortController: abortController
           };
 
@@ -229,6 +244,10 @@ export class ChFlexibleLayout {
     }
 
     event.preventDefault();
+
+    // Cancels the drop by removing the drop info
+    removeDroppableAreaStyles(this.#droppableAreaRef);
+
     this.#handleWidgetDragEnd();
     this.#draggedViewRef.endDragPreview();
   };
@@ -244,12 +263,20 @@ export class ChFlexibleLayout {
     document.removeEventListener("keydown", this.#handleWidgetDragEndKeydown);
     this.#viewsOutOfDroppableZoneController.abort();
 
+    // Check if must update the view due to a drop
+    const dropInfo = getWidgetDropInfo();
+
+    if (dropInfo) {
+      this.viewItemReorder.emit({ ...this.#dragInfo, ...dropInfo });
+    }
+
     // Hide droppable area
     this.#droppableAreaRef.hidePopover();
     removeDroppableAreaStyles(this.#droppableAreaRef);
 
     // Free the memory
     this.#draggableViews = undefined;
+    this.#dragInfo = undefined;
 
     // Re-enable drag bars
     this.dragBarDisabled = false;

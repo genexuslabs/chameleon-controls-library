@@ -23,6 +23,10 @@
   position: absolute;
   z-index: 1;
 
+  &[aria-disabled] {
+    pointer-events: none;
+  }
+
   // Remove default focus style
   &:focus-visible {
     outline: unset;

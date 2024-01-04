@@ -68,6 +68,12 @@ export class ChLayoutSplitter implements ChComponent {
   @Prop() readonly barAccessibleName: string = "Resize";
 
   /**
+   * This attribute lets you specify if the resize operation is disabled in all
+   * drag bars. If `true`, the drag bars are disabled.
+   */
+  @Prop() readonly dragBarDisabled: boolean = false;
+
+  /**
    * Specifies the resizing increment (in pixel) that is applied when using the
    * keyboard to resize a drag bar.
    */
@@ -275,6 +281,7 @@ export class ChLayoutSplitter implements ChComponent {
           // - - - Accessibility - - -
           role="separator"
           aria-controls={getAriaControls(indexPrefix, index)}
+          aria-disabled={this.dragBarDisabled ? "true" : null}
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
           title={this.barAccessibleName}
@@ -285,18 +292,21 @@ export class ChLayoutSplitter implements ChComponent {
           style={{
             [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
           }}
-          onKeyDown={this.#handleResize(
-            direction,
-            index,
-            fixedSizesSum,
-            layoutItems
-          )}
-          onMouseDown={this.#mouseDownHandler(
-            direction,
-            index,
-            fixedSizesSum,
-            layoutItems
-          )}
+          onKeyDown={
+            !this.dragBarDisabled
+              ? this.#handleResize(direction, index, fixedSizesSum, layoutItems)
+              : null
+          }
+          onMouseDown={
+            !this.dragBarDisabled
+              ? this.#mouseDownHandler(
+                  direction,
+                  index,
+                  fixedSizesSum,
+                  layoutItems
+                )
+              : null
+          }
         ></div>
       )
     ]);

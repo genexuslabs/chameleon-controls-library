@@ -389,6 +389,15 @@ export class ChTab implements DraggableView {
   @Event() itemDragStart: EventEmitter<number>;
 
   /**
+   * Ends the preview of the dragged item. Useful for ending the preview via
+   * keyboard interaction.
+   */
+  @Method()
+  async endDragPreview(): Promise<void> {
+    this.#handleDragEnd();
+  }
+
+  /**
    * Returns the info associated to the draggable view.
    */
   @Method()
@@ -405,6 +414,12 @@ export class ChTab implements DraggableView {
    */
   @Method()
   async promoteDragPreviewToTopLayer(): Promise<void> {
+    // If this property is added in a declarative way via the Stencil's render,
+    // we would have to use requestAnimationFrame to delay the shopPopover()
+    // method, since the popover defaults to "auto", which does not allow to
+    // keep multiple "auto" popover open at the same time
+    this.#dragPreviewRef.popover = "manual";
+
     this.#dragPreviewRef.showPopover();
   }
 
@@ -854,7 +869,6 @@ export class ChTab implements DraggableView {
         aria-hidden="true"
         class={classes}
         part={tokenMap(classes)}
-        popover="manual"
         ref={el => (this.#dragPreviewRef = el)}
       >
         <button

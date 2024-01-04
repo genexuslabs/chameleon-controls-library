@@ -102,7 +102,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   top: 0; // Necessary since the custom vars are physical values
   z-index: $z-index-gx-navbar-item + 1;
 
-  &[popover] {
+  &:popover-open {
     // Reset popover's browser defaults
     padding: 0;
     margin: 0;

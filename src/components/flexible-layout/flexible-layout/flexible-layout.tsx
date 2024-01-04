@@ -3,14 +3,15 @@ import {
   Element,
   Event,
   EventEmitter,
+  Host,
   Method,
   Prop,
   forceUpdate,
   h
 } from "@stencil/core";
 import {
+  DraggableView,
   DraggableViewExtendedInfo,
-  DraggableViewInfo,
   FlexibleLayoutView,
   ViewItemCloseInfo,
   ViewSelectedItemInfo
@@ -25,14 +26,14 @@ import {
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import {
+  handleDraggableViewMouseMove,
+  removeDroppableAreaStyles
+} from "../utils";
 
 // Keys
+const ESCAPE_KEY = "Escape";
 // const KEY_B = "KeyB";
-
-const handleDraggableViewMouseMove =
-  (draggableView: DraggableViewInfo) => (event: MouseEvent) => {
-    console.log("mousemove", draggableView, (event.target as HTMLElement).id);
-  };
 
 @Component({
   shadow: true,
@@ -41,6 +42,10 @@ const handleDraggableViewMouseMove =
 })
 export class ChFlexibleLayout {
   #draggableViews: DraggableViewExtendedInfo[];
+
+  // Refs
+  #draggedViewRef: DraggableView;
+  #droppableAreaRef: HTMLDivElement;
 
   @Element() el: HTMLChFlexibleLayoutElement;
 
@@ -149,6 +154,10 @@ export class ChFlexibleLayout {
     (viewId: string) => async (event: ChTabCustomEvent<number>) => {
       event.stopPropagation();
 
+      // We MUST store the reference before the Promise.allSettle, otherwise
+      // the event target will be the flexible-layout control
+      this.#draggedViewRef = event.target;
+
       const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
       const itemInfo = this.viewsInfo.get(viewId).widgets[event.detail];
 
@@ -162,6 +171,7 @@ export class ChFlexibleLayout {
       // Allocate memory
       this.#draggableViews = [];
 
+      // Add handlers to manage droppable areas
       draggableViewsResult.forEach(draggableViewResult => {
         if (draggableViewResult.status === "fulfilled") {
           const draggableView = draggableViewResult.value;
@@ -174,14 +184,31 @@ export class ChFlexibleLayout {
 
           draggableView.mainView.addEventListener(
             "mousemove",
-            handleDraggableViewMouseMove(draggableView),
+            handleDraggableViewMouseMove(draggableView, this.#droppableAreaRef),
             { capture: true, signal: abortController.signal }
           );
         }
       });
 
       document.addEventListener("mouseup", this.#handleDraggableViewEnd);
+      document.addEventListener("keydown", this.#handleDraggableViewEndKeydown);
+
+      // Show droppable area
+      this.#droppableAreaRef.showPopover(); // Layer 1
+
+      // After that, promote the drag preview to the second layer
+      this.#draggedViewRef.promoteDragPreviewToTopLayer(); // Layer 2
     };
+
+  #handleDraggableViewEndKeydown = (event: KeyboardEvent) => {
+    if (event.code !== ESCAPE_KEY) {
+      return;
+    }
+
+    event.preventDefault();
+    this.#handleDraggableViewEnd();
+    this.#draggedViewRef.endDragPreview();
+  };
 
   #handleDraggableViewEnd = () => {
     // Remove mousemove handlers
@@ -189,8 +216,16 @@ export class ChFlexibleLayout {
       draggableView.abortController.abort();
     });
 
-    // Remove mouseup handler
+    // Remove mouseup and keydown handlers
     document.removeEventListener("mouseup", this.#handleDraggableViewEnd);
+    document.removeEventListener(
+      "keydown",
+      this.#handleDraggableViewEndKeydown
+    );
+
+    // Hide droppable area
+    this.#droppableAreaRef.hidePopover();
+    removeDroppableAreaStyles(this.#droppableAreaRef);
 
     // Free the memory
     this.#draggableViews = undefined;
@@ -234,12 +269,22 @@ export class ChFlexibleLayout {
     }
 
     return (
-      <ch-layout-splitter
-        layout={layoutModel}
-        exportparts={"bar," + this.layoutSplitterParts}
-      >
-        {[...this.viewsInfo.values()].map(this.renderView)}
-      </ch-layout-splitter>
+      <Host>
+        <ch-layout-splitter
+          layout={layoutModel}
+          exportparts={"bar," + this.layoutSplitterParts}
+        >
+          {[...this.viewsInfo.values()].map(this.renderView)}
+        </ch-layout-splitter>
+
+        <div
+          aria-hidden="true"
+          class="droppable-area"
+          part="droppable-area"
+          popover="manual"
+          ref={el => (this.#droppableAreaRef = el)}
+        ></div>
+      </Host>
     );
   }
 }

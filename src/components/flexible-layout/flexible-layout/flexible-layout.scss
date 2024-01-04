@@ -1,3 +1,26 @@
 :host {
   display: contents;
 }
+
+.droppable-area {
+  // Reset popover's browser defaults
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  border: unset;
+  color: unset;
+
+  inset-block: var(--ch-flexible-layout-drop-area-block-start)
+    var(--ch-flexible-layout-drop-area-block-end);
+
+  inset-inline: var(--ch-flexible-layout-drop-area-inline-start)
+    var(--ch-flexible-layout-drop-area-inline-end);
+
+  background-color: color-mix(in srgb, currentColor 15%, transparent);
+
+  transition-property: inset;
+  transition-duration: 150ms;
+  transition-timing-function: ease-in-out;
+  pointer-events: none; // Avoid the capture of pointer events
+}

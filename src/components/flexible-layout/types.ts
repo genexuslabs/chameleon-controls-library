@@ -99,10 +99,14 @@ export type ViewSelectedItemInfo = {
 //               Interfaces
 // - - - - - - - - - - - - - - - - - - - -
 export interface DraggableView {
+  endDragPreview: () => Promise<void>;
+
   /**
    * Returns the info associated to the draggable views.
    */
   getDraggableViews: () => Promise<DraggableViewInfo>;
+
+  promoteDragPreviewToTopLayer: () => Promise<void>;
 }
 
 export type DraggableViewInfo = {

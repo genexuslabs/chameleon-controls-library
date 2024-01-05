@@ -201,6 +201,8 @@ const focusNextOrPreviousCaption = (
   tag: "ch-tab"
 })
 export class ChTab implements DraggableView {
+  #cancelId: number;
+
   // Styling
   #classes: {
     BUTTON?: string;
@@ -561,45 +563,42 @@ export class ChTab implements DraggableView {
     // Since mousemove callbacks are executed on animation frames, we must also
     // remove the events on animations frame. Otherwise we would remove the
     // events and in the next frame the mousemove handler will be executes
-    requestAnimationFrame(() => {
-      // TODO: UPDATE THIS TO USE SyncWithRAF.cancel()
-      document.body.removeEventListener("mousemove", this.#handleItemDrag, {
-        capture: true
-      });
+    cancelAnimationFrame(this.#cancelId);
+    this.#needForRAF = true;
 
-      document.body.removeEventListener("mouseup", this.#handleDragEnd, {
-        capture: true
-      });
-
-      removeGrabbingStyle();
-
-      const anItemWasReordered =
-        !this.hasCrossedBoundaries &&
-        this.draggedElementNewIndex !== this.draggedElementIndex;
-
-      // Move the item to the new position
-      if (anItemWasReordered) {
-        const itemToInsert = removeElement(
-          this.items,
-          this.draggedElementIndex
-        );
-        insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
-
-        // Update last selected index
-        this.adjustLastSelectedIndexValueAfterReorder();
-      }
-
-      // Restore visibility of the dragged element
-      this.draggedElementIndex = -1;
-      this.draggedElementNewIndex = -1;
-
-      // Free the memory
-      this.#itemSizes = undefined;
-
-      // Reset state
-      this.hasCrossedBoundaries = false;
-      this.el.style.removeProperty(TRANSITION_DURATION);
+    document.body.removeEventListener("mousemove", this.#handleItemDrag, {
+      capture: true
     });
+
+    document.body.removeEventListener("mouseup", this.#handleDragEnd, {
+      capture: true
+    });
+
+    removeGrabbingStyle();
+
+    const anItemWasReordered =
+      !this.hasCrossedBoundaries &&
+      this.draggedElementNewIndex !== this.draggedElementIndex;
+
+    // Move the item to the new position
+    if (anItemWasReordered) {
+      const itemToInsert = removeElement(this.items, this.draggedElementIndex);
+      insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+
+      // Update last selected index
+      this.adjustLastSelectedIndexValueAfterReorder();
+    }
+
+    // Restore visibility of the dragged element
+    this.draggedElementIndex = -1;
+    this.draggedElementNewIndex = -1;
+
+    // Free the memory
+    this.#itemSizes = undefined;
+
+    // Reset state
+    this.hasCrossedBoundaries = false;
+    this.el.style.removeProperty(TRANSITION_DURATION);
   };
 
   private adjustLastSelectedIndexValueAfterReorder() {
@@ -635,7 +634,7 @@ export class ChTab implements DraggableView {
     }
     this.#needForRAF = false; // No need to call RAF up until next frame
 
-    requestAnimationFrame(() => {
+    this.#cancelId = requestAnimationFrame(() => {
       this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
       const mousePositionX = this.#lastDragEvent.clientX;

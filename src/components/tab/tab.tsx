@@ -890,13 +890,22 @@ export class ChTab implements DraggableView {
         ref={el => (this.#dragPreviewRef = el)}
       >
         <button
-          class={{ [this.#classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
+          class={{
+            [this.#classes.BUTTON]: true,
+            [DRAG_PREVIEW_ELEMENT]: true,
+            "decorative-image": isDecorativeImg(draggedElement)
+          }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,
             [CAPTION_ID(draggedElement.id)]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
             [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
+          style={
+            isDecorativeImg(draggedElement)
+              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImageSrc}")` }
+              : null
+          }
         >
           {this.#imgRender(draggedElement)}
 

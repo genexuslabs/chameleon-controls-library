@@ -210,6 +210,10 @@ export class ChFlexibleLayout {
             handleWidgetDrag(extendedDraggableView, this.#droppableAreaRef),
             { capture: true, passive: true, signal: abortController.signal }
           );
+
+          // Remove pointer events to not interfere on the mousemove event
+          extendedDraggableView.tabListView.style.pointerEvents = "none";
+          extendedDraggableView.pageView.style.pointerEvents = "none";
         }
       });
 
@@ -259,6 +263,10 @@ export class ChFlexibleLayout {
     // Remove mousemove handlers
     this.#draggableViews.forEach(draggableView => {
       draggableView.abortController.abort();
+
+      // Reset pointer events
+      draggableView.tabListView.style.pointerEvents = null;
+      draggableView.pageView.style.pointerEvents = null;
     });
 
     // Remove mouseup and keydown handlers

@@ -15,6 +15,10 @@ const KB_EXPLORER_ORDER = {
   images: 8
 };
 
+const FIRST_LEVEL_SIZE = 10;
+const SECOND_LEVEL_SIZE = 20;
+const THIRD_LEVEL_SIZE = 20;
+
 export const kbExplorerModel = [
   {
     id: "root",
@@ -743,3 +747,44 @@ export const lazyLoadItemsDictionary = {
   Panel: importOBjectsPanelModel,
   "Environment.GeneXusNext": Environment_GeneXusNext_preferencesModel
 };
+
+export const eagerLargeModel = [];
+
+for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+  const subEagerLargeModel = [];
+  const modelId = "item-" + i;
+
+  for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+    const subModelId = modelId + "-" + j;
+    const subSubEagerLargeModel = [];
+
+    for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+      const subSubModelId = subModelId + "-" + k;
+
+      subSubEagerLargeModel.push({
+        id: subSubModelId,
+        caption: subSubModelId,
+        leaf: true,
+        leftImgSrc: "./assets/icons/file.svg"
+      });
+    }
+
+    subEagerLargeModel.push({
+      id: subModelId,
+      caption: subModelId,
+      expanded: true,
+      leaf: false,
+      leftImgSrc: "./assets/icons/knowledge-base.svg",
+      items: subSubEagerLargeModel
+    });
+  }
+
+  eagerLargeModel.push({
+    id: modelId,
+    caption: modelId,
+    expanded: true,
+    leaf: false,
+    leftImgSrc: "assets/icons/patterns.svg",
+    items: subEagerLargeModel
+  });
+}

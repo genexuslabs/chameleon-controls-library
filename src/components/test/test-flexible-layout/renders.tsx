@@ -5,6 +5,7 @@ import {
 } from "../../flexible-layout/types";
 
 import {
+  eagerLargeModel,
   lazyLoadItemsDictionary,
   kbExplorerModel,
   preferencesModel
@@ -15,6 +16,7 @@ import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 const MENU_BAR = "menu-bar";
 const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
+const HEAVY_TREE = "heavy-tree";
 const START_PAGE = "start-page";
 const GRID = "Grid";
 const STRUCT_EDITOR = "StructEditor";
@@ -51,6 +53,11 @@ export const defaultLayout: FlexibleLayout = {
               id: PREFERENCES,
               name: "Preferences",
               startImageSrc: "assets/icons/toolbar/preferences.svg"
+            },
+            {
+              id: HEAVY_TREE,
+              name: "Heavy Tree",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -125,6 +132,11 @@ export const layout2: FlexibleLayout = {
               id: PREFERENCES,
               name: "Preferences",
               startImageSrc: "assets/icons/toolbar/preferences.svg"
+            },
+            {
+              id: HEAVY_TREE,
+              name: "Heavy Tree",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -209,6 +221,11 @@ export const layout3: FlexibleLayout = {
               id: PREFERENCES,
               name: "Preferences",
               startImageSrc: "assets/icons/toolbar/preferences.svg"
+            },
+            {
+              id: HEAVY_TREE,
+              name: "Heavy Tree",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -344,5 +361,15 @@ export const layoutRenders: FlexibleLayoutRenders = {
       Properties render... <input type="text" />
     </div>
   ),
-  [OUTPUT]: () => <div>Output render... </div>
+  [OUTPUT]: () => <div>Output render... </div>,
+  [HEAVY_TREE]: () => (
+    <ch-tree-view-render
+      treeModel={eagerLargeModel}
+      dragDisabled={true}
+      dropDisabled={true}
+      editableItems={false}
+      multiSelection
+      showLines="all"
+    ></ch-tree-view-render>
+  )
 };

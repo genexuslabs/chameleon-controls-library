@@ -435,12 +435,11 @@ export class ChTab implements DraggableView {
   }
 
   /**
-   * Given an index, remove the item from the tab control
+   * Given an id, remove the page from the render
    */
   @Method()
-  async removeItem(index: number, forceRerender = true) {
-    const removedItem = removeElement(this.items, index);
-    this.#renderedPages.delete(removedItem.id);
+  async removePage(pageId: string, forceRerender = true) {
+    this.#renderedPages.delete(pageId);
 
     if (forceRerender) {
       forceUpdate(this);

@@ -10,6 +10,7 @@ import {
 import { getLayoutModel } from "./utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import { removeElement } from "../../../common/array";
 
 @Component({
   shadow: false,
@@ -115,14 +116,15 @@ export class ChFlexibleLayoutRender {
 
     const viewWidgets = viewInfo.widgets;
     const widgetsCount = viewWidgets.length;
-    const itemUIModel = viewWidgets[itemCloseInfo.itemIndex];
+    const itemIndex = itemCloseInfo.itemIndex;
+    const itemUIModel = viewWidgets[itemIndex];
 
     // If the item was selected, select another item
     if (itemUIModel.id === viewInfo.selectedWidgetId) {
       const newSelectedItem =
-        itemCloseInfo.itemIndex === widgetsCount - 1 // If it's the last item
+        itemIndex === widgetsCount - 1 // If it's the last item
           ? viewWidgets[widgetsCount - 2] // Select the previous
-          : viewWidgets[itemCloseInfo.itemIndex + 1]; // Otherwise, select the next
+          : viewWidgets[itemIndex + 1]; // Otherwise, select the next
 
       this.#renderedWidgets.add(newSelectedItem.id);
 
@@ -131,16 +133,26 @@ export class ChFlexibleLayoutRender {
       newSelectedItem.wasRendered = true;
     }
 
-    // Remove the item render from the view, but not from the flexible-layout-render
-    // This way will help us to easily recover the item state
-    this.#flexibleLayoutRef.removeItemInView(
-      viewInfo.id,
-      itemCloseInfo.itemIndex
-    );
+    this.#removeWidget(viewInfo, itemIndex);
 
     // Queue re-renders
     forceUpdate(this);
     forceUpdate(this.#flexibleLayoutRef);
+  };
+
+  #removeWidget = (
+    viewInfo: FlexibleLayoutView,
+    itemIndex: number,
+    skipRenderRemoval = false
+  ) => {
+    // Remove the item from the view
+    const itemUIModel = removeElement(viewInfo.widgets, itemIndex);
+    this.#flexibleLayoutRef.removeItemPageInView(viewInfo.id, itemUIModel.id);
+
+    // Remove the item from the flexible-layout-render to optimize resources
+    if (itemUIModel.conserveRenderState !== true && !skipRenderRemoval) {
+      this.#renderedWidgets.delete(itemUIModel.id);
+    }
   };
 
   #handleViewItemReorder = (
@@ -205,7 +217,7 @@ export class ChFlexibleLayoutRender {
 
       // TODO: UPDATE THE SELECTED INTERNAL INDEX IN THE TAB ???
       // Remove the item from the view
-      this.#flexibleLayoutRef.removeItemInView(viewInfo.id, itemIndex, false);
+      this.#removeWidget(viewInfo, itemIndex, true);
     }
 
     // Queue re-renders

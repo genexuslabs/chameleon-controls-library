@@ -52,6 +52,11 @@ export type FlexibleLayoutLeaf = {
 };
 
 export type FlexibleLayoutWidget = {
+  /**
+   * If `true` when a widget is closed its render state and DOM nodes won't be
+   * destroyed. Defaults to `false`.
+   */
+  conserveRenderState?: boolean;
   id: string;
   name: string;
   startImageSrc?: string;

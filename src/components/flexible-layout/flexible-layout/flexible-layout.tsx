@@ -89,10 +89,14 @@ export class ChFlexibleLayout {
   @Event() viewItemReorder: EventEmitter<WidgetReorderInfo>;
 
   /**
-   * Given the view ID and the item index, remove the item from the view
+   * Given the view ID and the item id, remove the page of the item from the view.
    */
   @Method()
-  async removeItemInView(viewId: string, index: number, forceRerender = true) {
+  async removeItemPageInView(
+    viewId: string,
+    itemId: string,
+    forceRerender = true
+  ) {
     const viewInfo = this.viewsInfo.get(viewId);
     if (!viewInfo) {
       return;
@@ -101,7 +105,7 @@ export class ChFlexibleLayout {
     const viewRef = this.el.shadowRoot.querySelector(
       `ch-tab[id='${viewInfo.id}']`
     ) as HTMLChTabElement;
-    await viewRef.removeItem(index, forceRerender);
+    await viewRef.removePage(itemId, forceRerender);
   }
 
   // @Listen("keydown", { target: "document" })

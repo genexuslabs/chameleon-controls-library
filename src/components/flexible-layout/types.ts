@@ -1,6 +1,7 @@
 import { AccessibleRole, ImageRender } from "../../common/types";
 import {
   LayoutSplitterDirection,
+  LayoutSplitterDistributionGroup,
   LayoutSplitterSize
 } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
@@ -11,7 +12,7 @@ import { TabType } from "../tab/types";
 export type ViewType = TabType | "blockStart";
 export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 
-/**
+/*
  * TODO: For some reason, this type does not work when is applied to an object,
  * and the "main" or "blockStart" keys are defined
  */
@@ -80,6 +81,10 @@ export type FlexibleLayoutRenders = { [key: string]: () => any };
 // - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayoutView = {
   id: string;
+  itemRef: FlexibleLayoutLeaf;
+  itemRefIndex: number;
+  parentDistributionRef: LayoutSplitterDistributionGroup;
+  parentItemRef: FlexibleLayoutGroup;
   type: ViewType;
   expanded?: boolean;
   exportParts: string;

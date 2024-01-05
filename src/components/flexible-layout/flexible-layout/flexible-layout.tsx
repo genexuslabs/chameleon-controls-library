@@ -173,7 +173,6 @@ export class ChFlexibleLayout {
       this.#draggedViewRef = event.target;
 
       const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
-      // const itemInfo = this.viewsInfo.get(viewId).widgets[event.detail];
 
       this.#dragInfo = {
         index: event.detail,

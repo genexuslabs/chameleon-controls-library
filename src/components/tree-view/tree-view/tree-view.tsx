@@ -334,6 +334,9 @@ export class ChTreeView {
   handleItemDragStart(
     event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>
   ) {
+    // Avoid bubbling as this event can listened in other components (e.g. ch-flexible-layout)
+    event.stopPropagation();
+
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
     });

@@ -294,6 +294,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
     <ch-tree-view-render
       treeModel={kbExplorerModel}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      multiSelection
       showLines="last"
     ></ch-tree-view-render>
   ),
@@ -304,6 +305,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
       dropDisabled={true}
       editableItems={false}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      multiSelection
       showLines="all"
     ></ch-tree-view-render>
   ),

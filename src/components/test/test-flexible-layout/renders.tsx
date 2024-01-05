@@ -42,8 +42,16 @@ export const defaultLayout: FlexibleLayout = {
           viewType: "inlineStart",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer" },
-            { id: PREFERENCES, name: "Preferences" }
+            {
+              id: KB_EXPLORER,
+              name: "KB Explorer",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+            },
+            {
+              id: PREFERENCES,
+              name: "Preferences",
+              startImageSrc: "assets/icons/toolbar/preferences.svg"
+            }
           ]
         },
         {
@@ -62,7 +70,13 @@ export const defaultLayout: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineEnd",
-          widgets: [{ id: PROPERTIES, name: "Properties" }]
+          widgets: [
+            {
+              id: PROPERTIES,
+              name: "Properties",
+              startImageSrc: "assets/icons/toolbar/properties.svg"
+            }
+          ]
         }
       ]
     },
@@ -102,8 +116,16 @@ export const layout2: FlexibleLayout = {
           viewType: "inlineStart",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer" },
-            { id: PREFERENCES, name: "Preferences" }
+            {
+              id: KB_EXPLORER,
+              name: "KB Explorer",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+            },
+            {
+              id: PREFERENCES,
+              name: "Preferences",
+              startImageSrc: "assets/icons/toolbar/preferences.svg"
+            }
           ]
         },
         {
@@ -132,7 +154,13 @@ export const layout2: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineEnd",
-          widgets: [{ id: PROPERTIES, name: "Properties" }]
+          widgets: [
+            {
+              id: PROPERTIES,
+              name: "Properties",
+              startImageSrc: "assets/icons/toolbar/properties.svg"
+            }
+          ]
         }
       ]
     },
@@ -172,8 +200,16 @@ export const layout3: FlexibleLayout = {
           viewType: "inlineStart",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
-            { id: KB_EXPLORER, name: "KB Explorer" },
-            { id: PREFERENCES, name: "Preferences" }
+            {
+              id: KB_EXPLORER,
+              name: "KB Explorer",
+              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+            },
+            {
+              id: PREFERENCES,
+              name: "Preferences",
+              startImageSrc: "assets/icons/toolbar/preferences.svg"
+            }
           ]
         },
         {
@@ -226,7 +262,13 @@ export const layout3: FlexibleLayout = {
           expanded: true,
           size: "300px",
           viewType: "inlineEnd",
-          widgets: [{ id: PROPERTIES, name: "Properties" }]
+          widgets: [
+            {
+              id: PROPERTIES,
+              name: "Properties",
+              startImageSrc: "assets/icons/toolbar/properties.svg"
+            }
+          ]
         }
       ]
     }

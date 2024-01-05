@@ -1,4 +1,4 @@
-import { AccessibleRole } from "../../common/types";
+import { AccessibleRole, ImageRender } from "../../common/types";
 import {
   LayoutSplitterDirection,
   LayoutSplitterSize
@@ -55,6 +55,11 @@ export type FlexibleLayoutWidget = {
   id: string;
   name: string;
   startImageSrc?: string;
+
+  /**
+   * Specifies how the image will be rendered. Defaults to `"pseudo-element"`.
+   */
+  startImageType?: ImageRender;
   wasRendered?: boolean;
 };
 

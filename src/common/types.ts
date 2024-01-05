@@ -13,3 +13,8 @@ export type AccessibleRole =
   | "list"
   | "main"
   | "region";
+
+/**
+ * Specifies how the image will be rendered.
+ */
+export type ImageRender = "img" | "inject-svg" | "pseudo-element";

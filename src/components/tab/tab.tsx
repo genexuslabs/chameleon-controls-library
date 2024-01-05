@@ -61,6 +61,8 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 
+const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
+
 // Key codes
 const ARROW_UP = "ArrowUp";
 const ARROW_RIGHT = "ArrowRight";
@@ -85,6 +87,10 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
   tabListRef.querySelector(":scope>button:last-child");
 
 // Utility functions
+const isDecorativeImg = (item: FlexibleLayoutWidget) =>
+  item.startImageSrc &&
+  (!item.startImageType || item.startImageType === "pseudo-element");
+
 const getDirection = (type: TabType): TabDirection =>
   type === "main" || type === "blockEnd" ? "block" : "inline";
 const isBlockDirection = (direction: TabDirection) => direction === "block";
@@ -747,6 +753,7 @@ export class ChTab implements DraggableView {
   };
 
   #imgRender = (item: FlexibleLayoutWidget) =>
+    item.startImageType === "img" &&
     item.startImageSrc && (
       <img
         aria-hidden="true"
@@ -777,6 +784,8 @@ export class ChTab implements DraggableView {
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.#classes.BUTTON]: true,
+            "decorative-image": isDecorativeImg(item),
+
             "dragged-element": this.draggedElementIndex === index,
             "dragged-element--outside":
               this.draggedElementIndex === index &&
@@ -799,6 +808,11 @@ export class ChTab implements DraggableView {
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.id === this.selectedId
           })}
+          style={
+            isDecorativeImg(item)
+              ? { [DECORATIVE_IMAGE]: `url("${item.startImageSrc}")` }
+              : null
+          }
           onAuxClick={this.#handleClose(index, item.id)}
           onClick={
             !(item.id === this.selectedId)

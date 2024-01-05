@@ -49,10 +49,17 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   cursor: pointer;
 }
 
-.caption-image {
+.caption-image,
+.decorative-image::before {
   display: block;
   block-size: 18px;
   inline-size: 18px;
+}
+
+.decorative-image::before {
+  content: "";
+  -webkit-mask: var(--ch-tab-decorative-image) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
 }
 
 .close-button::after {

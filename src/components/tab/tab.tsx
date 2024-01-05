@@ -415,6 +415,10 @@ export class ChTab implements DraggableView {
    */
   @Method()
   async promoteDragPreviewToTopLayer(): Promise<void> {
+    if (this.draggedElementIndex === -1) {
+      return;
+    }
+
     // If this property is added in a declarative way via the Stencil's render,
     // we would have to use requestAnimationFrame to delay the shopPopover()
     // method, since the popover defaults to "auto", which does not allow to

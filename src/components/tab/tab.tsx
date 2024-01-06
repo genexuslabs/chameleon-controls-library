@@ -61,6 +61,8 @@ const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
 const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
 
+const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
+
 // Key codes
 const ARROW_UP = "ArrowUp";
 const ARROW_RIGHT = "ArrowRight";
@@ -85,6 +87,10 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
   tabListRef.querySelector(":scope>button:last-child");
 
 // Utility functions
+const isDecorativeImg = (item: FlexibleLayoutWidget) =>
+  item.startImageSrc &&
+  (!item.startImageType || item.startImageType === "pseudo-element");
+
 const getDirection = (type: TabType): TabDirection =>
   type === "main" || type === "blockEnd" ? "block" : "inline";
 const isBlockDirection = (direction: TabDirection) => direction === "block";
@@ -201,6 +207,8 @@ const focusNextOrPreviousCaption = (
   tag: "ch-tab"
 })
 export class ChTab implements DraggableView {
+  #cancelId: number;
+
   // Styling
   #classes: {
     BUTTON?: string;
@@ -237,12 +245,12 @@ export class ChTab implements DraggableView {
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: TabElementSize;
 
   #renderedPages: Set<string> = new Set();
 
   // Refs
+  #dragPreviewRef: HTMLDivElement;
   #tabListRef: HTMLDivElement;
   #tabPageRef: HTMLDivElement;
 
@@ -385,7 +393,16 @@ export class ChTab implements DraggableView {
   /**
    * Fired the first time a caption button is dragged outside of its tab list.
    */
-  @Event() itemDragStart: EventEmitter<any>;
+  @Event() itemDragStart: EventEmitter<number>;
+
+  /**
+   * Ends the preview of the dragged item. Useful for ending the preview via
+   * keyboard interaction.
+   */
+  @Method()
+  async endDragPreview(): Promise<void> {
+    this.#handleDragEnd();
+  }
 
   /**
    * Returns the info associated to the draggable view.
@@ -400,12 +417,29 @@ export class ChTab implements DraggableView {
   }
 
   /**
-   * Given an index, remove the item from the tab control
+   * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
    */
   @Method()
-  async removeItem(index: number, forceRerender = true) {
-    const removedItem = removeElement(this.items, index);
-    this.#renderedPages.delete(removedItem.id);
+  async promoteDragPreviewToTopLayer(): Promise<void> {
+    if (this.draggedElementIndex === -1) {
+      return;
+    }
+
+    // If this property is added in a declarative way via the Stencil's render,
+    // we would have to use requestAnimationFrame to delay the shopPopover()
+    // method, since the popover defaults to "auto", which does not allow to
+    // keep multiple "auto" popover open at the same time
+    this.#dragPreviewRef.popover = "manual";
+
+    this.#dragPreviewRef.showPopover();
+  }
+
+  /**
+   * Given an id, remove the page from the render
+   */
+  @Method()
+  async removePage(pageId: string, forceRerender = true) {
+    this.#renderedPages.delete(pageId);
 
     if (forceRerender) {
       forceUpdate(this);
@@ -538,44 +572,42 @@ export class ChTab implements DraggableView {
     // Since mousemove callbacks are executed on animation frames, we must also
     // remove the events on animations frame. Otherwise we would remove the
     // events and in the next frame the mousemove handler will be executes
-    requestAnimationFrame(() => {
-      document.body.removeEventListener("mousemove", this.#handleItemDrag, {
-        capture: true
-      });
+    cancelAnimationFrame(this.#cancelId);
+    this.#needForRAF = true;
 
-      document.body.removeEventListener("mouseup", this.#handleDragEnd, {
-        capture: true
-      });
-
-      removeGrabbingStyle();
-
-      const anItemWasReordered =
-        !this.hasCrossedBoundaries &&
-        this.draggedElementNewIndex !== this.draggedElementIndex;
-
-      // Move the item to the new position
-      if (anItemWasReordered) {
-        const itemToInsert = removeElement(
-          this.items,
-          this.draggedElementIndex
-        );
-        insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
-
-        // Update last selected index
-        this.adjustLastSelectedIndexValueAfterReorder();
-      }
-
-      // Restore visibility of the dragged element
-      this.draggedElementIndex = -1;
-      this.draggedElementNewIndex = -1;
-
-      // Free the memory
-      this.#itemSizes = undefined;
-
-      // Reset state
-      this.hasCrossedBoundaries = false;
-      this.el.style.removeProperty(TRANSITION_DURATION);
+    document.body.removeEventListener("mousemove", this.#handleItemDrag, {
+      capture: true
     });
+
+    document.body.removeEventListener("mouseup", this.#handleDragEnd, {
+      capture: true
+    });
+
+    removeGrabbingStyle();
+
+    const anItemWasReordered =
+      !this.hasCrossedBoundaries &&
+      this.draggedElementNewIndex !== this.draggedElementIndex;
+
+    // Move the item to the new position
+    if (anItemWasReordered) {
+      const itemToInsert = removeElement(this.items, this.draggedElementIndex);
+      insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+
+      // Update last selected index
+      this.adjustLastSelectedIndexValueAfterReorder();
+    }
+
+    // Restore visibility of the dragged element
+    this.draggedElementIndex = -1;
+    this.draggedElementNewIndex = -1;
+
+    // Free the memory
+    this.#itemSizes = undefined;
+
+    // Reset state
+    this.hasCrossedBoundaries = false;
+    this.el.style.removeProperty(TRANSITION_DURATION);
   };
 
   private adjustLastSelectedIndexValueAfterReorder() {
@@ -611,7 +643,7 @@ export class ChTab implements DraggableView {
     }
     this.#needForRAF = false; // No need to call RAF up until next frame
 
-    requestAnimationFrame(() => {
+    this.#cancelId = requestAnimationFrame(() => {
       this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
       const mousePositionX = this.#lastDragEvent.clientX;
@@ -638,7 +670,7 @@ export class ChTab implements DraggableView {
         // Remove transition before the render to avoid flickering in the animation
         this.el.style.setProperty(TRANSITION_DURATION, "0s");
 
-        this.itemDragStart.emit();
+        this.itemDragStart.emit(this.draggedElementIndex);
         return;
       }
 
@@ -720,6 +752,7 @@ export class ChTab implements DraggableView {
   };
 
   #imgRender = (item: FlexibleLayoutWidget) =>
+    item.startImageType === "img" &&
     item.startImageSrc && (
       <img
         aria-hidden="true"
@@ -750,9 +783,13 @@ export class ChTab implements DraggableView {
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.#classes.BUTTON]: true,
+            "decorative-image": isDecorativeImg(item),
+
             "dragged-element": this.draggedElementIndex === index,
             "dragged-element--outside":
-              this.draggedElementIndex === index && this.hasCrossedBoundaries,
+              this.draggedElementIndex === index &&
+              this.hasCrossedBoundaries &&
+              this.items.length > 1,
             "shifted-element": this.draggedElementIndex !== -1,
 
             "shifted-element--start":
@@ -770,6 +807,11 @@ export class ChTab implements DraggableView {
             [CAPTION_ID(item.id)]: true,
             [SELECTED_PART]: item.id === this.selectedId
           })}
+          style={
+            isDecorativeImg(item)
+              ? { [DECORATIVE_IMAGE]: `url("${item.startImageSrc}")` }
+              : null
+          }
           onAuxClick={this.#handleClose(index, item.id)}
           onClick={
             !(item.id === this.selectedId)
@@ -840,16 +882,29 @@ export class ChTab implements DraggableView {
     };
 
     return (
-      <div class={classes} part={tokenMap(classes)}>
+      <div
+        aria-hidden="true"
+        class={classes}
+        part={tokenMap(classes)}
+        ref={el => (this.#dragPreviewRef = el)}
+      >
         <button
-          aria-hidden="true"
-          class={{ [this.#classes.BUTTON]: true, [DRAG_PREVIEW_ELEMENT]: true }}
+          class={{
+            [this.#classes.BUTTON]: true,
+            [DRAG_PREVIEW_ELEMENT]: true,
+            "decorative-image": isDecorativeImg(draggedElement)
+          }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,
             [CAPTION_ID(draggedElement.id)]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
             [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
+          style={
+            isDecorativeImg(draggedElement)
+              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImageSrc}")` }
+              : null
+          }
         >
           {this.#imgRender(draggedElement)}
 

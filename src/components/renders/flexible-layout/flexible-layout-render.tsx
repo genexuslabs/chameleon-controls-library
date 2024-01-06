@@ -1,14 +1,17 @@
-import { Component, Prop, Watch, forceUpdate, h } from "@stencil/core";
+import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
   FlexibleLayoutRenders,
   FlexibleLayoutView,
   ViewItemCloseInfo,
-  ViewSelectedItemInfo
+  ViewSelectedItemInfo,
+  WidgetReorderInfo
 } from "../../flexible-layout/types";
-import { getLayoutModel } from "../../flexible-layout/flexible-layout/utils";
+import { getLayoutModel } from "./utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import { removeElement } from "../../../common/array";
+import { removeView } from "./remove-view";
 
 @Component({
   shadow: false,
@@ -53,6 +56,28 @@ export class ChFlexibleLayoutRender {
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
 
+  /**
+   * Removes a view and optionally all its rendered widget from the render.
+   * The reserved space will be given to the closest view.
+   */
+  @Method()
+  async removeView(viewId: string, removeRenderedWidgets: boolean) {
+    const success = removeView(
+      viewId,
+      this.#viewsInfo,
+      this.#renderedWidgets,
+      removeRenderedWidgets
+    );
+
+    if (success) {
+      this.setLayoutSplitterModels(this.layout);
+
+      // Queue re-renders
+      forceUpdate(this);
+      forceUpdate(this.#flexibleLayoutRef);
+    }
+  }
+
   private setLayoutSplitterModels(layout: FlexibleLayout) {
     // Empty layout
     if (layout == null) {
@@ -90,8 +115,8 @@ export class ChFlexibleLayoutRender {
     const newSelectedItem = viewInfo.widgets[selectedItemInfo.newSelectedIndex];
     newSelectedItem.wasRendered = true;
 
-    // Unselected the previous item
-    viewInfo.selectedWidgetId = selectedItemInfo.newSelectedId;
+    // Select the new item
+    this.#updateSelectedWidget(viewInfo, selectedItemInfo.newSelectedId);
 
     // Queue re-renders
     forceUpdate(this);
@@ -114,28 +139,121 @@ export class ChFlexibleLayoutRender {
 
     const viewWidgets = viewInfo.widgets;
     const widgetsCount = viewWidgets.length;
-    const itemUIModel = viewWidgets[itemCloseInfo.itemIndex];
+    const itemIndex = itemCloseInfo.itemIndex;
+    const itemUIModel = viewWidgets[itemIndex];
 
     // If the item was selected, select another item
     if (itemUIModel.id === viewInfo.selectedWidgetId) {
       const newSelectedItem =
-        itemCloseInfo.itemIndex === widgetsCount - 1 // If it's the last item
+        itemIndex === widgetsCount - 1 // If it's the last item
           ? viewWidgets[widgetsCount - 2] // Select the previous
-          : viewWidgets[itemCloseInfo.itemIndex + 1]; // Otherwise, select the next
+          : viewWidgets[itemIndex + 1]; // Otherwise, select the next
 
       this.#renderedWidgets.add(newSelectedItem.id);
 
       // Mark the item as selected and rendered
-      viewInfo.selectedWidgetId = newSelectedItem.id;
+      this.#updateSelectedWidget(viewInfo, newSelectedItem.id);
       newSelectedItem.wasRendered = true;
     }
 
-    // Remove the item render from the view, but not from the flexible-layout-render
-    // This way will help us to easily recover the item state
-    this.#flexibleLayoutRef.removeItemInView(
-      viewInfo.id,
-      itemCloseInfo.itemIndex
-    );
+    this.#removeWidget(viewInfo, itemIndex);
+
+    // Queue re-renders
+    forceUpdate(this);
+    forceUpdate(this.#flexibleLayoutRef);
+  };
+
+  #removeWidget = (
+    viewInfo: FlexibleLayoutView,
+    itemIndex: number,
+    skipRenderRemoval = false
+  ) => {
+    // Remove the item from the view
+    const itemUIModel = removeElement(viewInfo.widgets, itemIndex);
+    this.#flexibleLayoutRef.removeItemPageInView(viewInfo.id, itemUIModel.id);
+
+    // Remove the item from the flexible-layout-render to optimize resources
+    if (itemUIModel.conserveRenderState !== true && !skipRenderRemoval) {
+      this.#renderedWidgets.delete(itemUIModel.id);
+
+      // TODO: Remove item in this.layout???
+    }
+  };
+
+  #updateSelectedWidget = (
+    viewInfo: FlexibleLayoutView,
+    selectedId: string
+  ) => {
+    viewInfo.selectedWidgetId = selectedId;
+    viewInfo.itemRef.selectedWidgetId = selectedId;
+  };
+
+  #handleViewItemReorder = (
+    event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>
+  ) => {
+    const reorderInfo = event.detail;
+    const viewId = reorderInfo.viewId;
+    const viewIdTarget = reorderInfo.viewIdTarget;
+    const dropAreaTarget = reorderInfo.dropAreaTarget;
+
+    const viewInfo = this.#viewsInfo.get(viewId);
+
+    // Dropping in the same view. Nothing to change
+    if (
+      viewId === viewIdTarget &&
+      (dropAreaTarget === "center" || viewInfo.widgets.length === 1)
+    ) {
+      return;
+    }
+
+    const viewTargetInfo = this.#viewsInfo.get(viewIdTarget);
+    const itemIndex = reorderInfo.index;
+    const itemInfo = viewInfo.widgets[itemIndex];
+
+    // Mark the item as rendered, because the drag does not have to trigger item
+    // selection (which trigger item rendering)
+    this.#renderedWidgets.add(itemInfo.id);
+    itemInfo.wasRendered = true;
+
+    // Update the selected widget in the target view
+    this.#updateSelectedWidget(viewTargetInfo, itemInfo.id);
+
+    // The drop does not create a new view
+    if (dropAreaTarget === "center") {
+      viewTargetInfo.widgets.push(itemInfo);
+    } else {
+      // HANDLE NEW VIEW CREATION
+      // CHECK IF THE PREVIOUS VIEW HAS ONLY ONE ITEM TO REUSE ITS VIEW ID?
+    }
+
+    // Remove the view, since it has no more items
+    if (viewInfo.widgets.length === 1) {
+      removeView(viewId, this.#viewsInfo, this.#renderedWidgets, false);
+
+      // Refresh reference to force re-render
+      this.#layoutSplitterModels = { ...this.#layoutSplitterModels };
+    }
+    // Remove the item in the view that belongs
+    else {
+      // Select the previous item if the remove item was selected
+      if (viewInfo.selectedWidgetId === itemInfo.id) {
+        const newSelectedIndex = itemIndex === 0 ? 1 : itemIndex - 1;
+        const newSelectedItem = viewInfo.widgets[newSelectedIndex];
+
+        // Mark the item as rendered
+        this.#renderedWidgets.add(newSelectedItem.id);
+        newSelectedItem.wasRendered = true;
+
+        // Mark the item as selected
+        this.#updateSelectedWidget(viewInfo, newSelectedItem.id);
+      }
+
+      // TODO: UPDATE THE SELECTED INTERNAL INDEX IN THE TAB ???
+      // Remove the item from the view
+      this.#removeWidget(viewInfo, itemIndex, true);
+    }
+
+    console.log(this.#renderedWidgets);
 
     // Queue re-renders
     forceUpdate(this);
@@ -159,6 +277,7 @@ export class ChFlexibleLayoutRender {
         layoutSplitterParts={this.#layoutSplitterParts}
         viewsInfo={this.#viewsInfo}
         onViewItemClose={this.#handleViewItemClose}
+        onViewItemReorder={this.#handleViewItemReorder}
         onSelectedViewItemChange={this.#handleViewItemChange}
         ref={el => (this.#flexibleLayoutRef = el)}
       >

@@ -11,14 +11,19 @@ import {
   FlexibleLayoutItem,
   FlexibleLayoutLeaf,
   FlexibleLayoutView
-} from "../types";
+} from "../../flexible-layout/types";
 
 let lastViewId = 0;
+
+export const ROOT_VIEW: null = null;
 
 export const getViewId = () => `view-${lastViewId++}`;
 
 export const mapWidgetsToView = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,
+  itemRefIndex: number,
+  parentDistributionRef: LayoutSplitterDistributionGroup,
+  parentItemRef: FlexibleLayoutGroup,
   viewsInfo: Map<string, FlexibleLayoutView>,
   blockStartWidgets: Set<string>,
   renderedWidgets: Set<string>
@@ -34,6 +39,10 @@ export const mapWidgetsToView = (
     // Store widgets in the Map
     viewsInfo.set(viewId, {
       id: viewId,
+      itemRef: flexibleLayoutLeaf,
+      itemRefIndex: itemRefIndex,
+      parentDistributionRef: parentDistributionRef,
+      parentItemRef: parentItemRef,
       type: viewType,
       exportParts: "",
       widgets: widgets
@@ -73,6 +82,10 @@ export const mapWidgetsToView = (
   // Store widgets in the Map
   viewsInfo.set(viewId, {
     id: viewId,
+    itemRef: flexibleLayoutLeaf,
+    itemRefIndex: itemRefIndex,
+    parentDistributionRef: parentDistributionRef,
+    parentItemRef: parentItemRef,
     exportParts,
     selectedWidgetId: selectedWidgetId,
     type: viewType,
@@ -84,27 +97,33 @@ export const mapWidgetsToView = (
 
 const getItemsModel = (
   flexibleItems: FlexibleLayoutItem[],
+  parentItemRef: FlexibleLayoutGroup,
+  parentDistributionRef: LayoutSplitterDistributionGroup,
   viewsInfo: Map<string, FlexibleLayoutView>,
   blockStartWidgets: Set<string>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>
 ): LayoutSplitterDistributionItem[] =>
-  flexibleItems.map(item => {
+  flexibleItems.map((item, itemIndex) => {
     // Group
     if ((item as FlexibleLayoutGroup).items != null) {
       const group = item as FlexibleLayoutGroup;
 
+      // Necessary to have the reference before the getItemsModel call
       const splitterGroup: LayoutSplitterDistributionGroup = {
         direction: group.direction,
-        items: getItemsModel(
-          group.items,
-          viewsInfo,
-          blockStartWidgets,
-          layoutSplitterParts,
-          renderedWidgets
-        ),
         size: group.size
-      };
+      } as any;
+
+      splitterGroup.items = getItemsModel(
+        group.items,
+        group,
+        splitterGroup,
+        viewsInfo,
+        blockStartWidgets,
+        layoutSplitterParts,
+        renderedWidgets
+      );
 
       // Custom behaviors
       addCustomBehavior(item, splitterGroup, layoutSplitterParts);
@@ -117,6 +136,9 @@ const getItemsModel = (
 
     const viewId = mapWidgetsToView(
       leaf,
+      itemIndex,
+      parentDistributionRef,
+      parentItemRef,
       viewsInfo,
       blockStartWidgets,
       renderedWidgets
@@ -158,6 +180,8 @@ export const getLayoutModel = (
   direction: flexibleLayout.direction,
   items: getItemsModel(
     flexibleLayout.items,
+    ROOT_VIEW,
+    ROOT_VIEW,
     viewsInfo,
     blockStartWidgets,
     layoutSplitterParts,

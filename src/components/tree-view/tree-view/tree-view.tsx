@@ -240,9 +240,22 @@ export class ChTreeView {
     // Reset the validity of the droppable zones with each new drag start
     this.validDroppableZoneCache.clear();
 
-    this.draggingInTheDocument = true;
-    this.dragStartTimestamp = new Date().getTime();
-    this.draggedItems = JSON.parse(event.dataTransfer.getData(TEXT_FORMAT));
+    // If there is no data, the dragstart does not achieve the interface required
+    const data = event.dataTransfer.getData(TEXT_FORMAT);
+    if (data === "") {
+      return;
+    }
+
+    try {
+      // Try to parse the data
+      const paredData = JSON.parse(data);
+
+      this.draggedItems = paredData;
+      this.draggingInTheDocument = true;
+      this.dragStartTimestamp = new Date().getTime();
+    } catch {
+      // Empty
+    }
   }
 
   @Listen("dragend", { capture: true, passive: true, target: "window" })
@@ -321,6 +334,9 @@ export class ChTreeView {
   handleItemDragStart(
     event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>
   ) {
+    // Avoid bubbling as this event can listened in other components (e.g. ch-flexible-layout)
+    event.stopPropagation();
+
     document.body.addEventListener("dragover", this.trackItemDrag, {
       capture: true
     });

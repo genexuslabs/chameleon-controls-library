@@ -6,17 +6,16 @@ import {
   FlexibleLayoutItem,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
-  FlexibleLayoutView
+  FlexibleLayoutLeafInfo
 } from "../../flexible-layout/types";
 
 export const ROOT_VIEW: null = null;
 
 export const createAndSetViewInfo = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,
-  index: number,
   blockStartWidgets: Set<string>,
   renderedWidgets: Set<string>
-): FlexibleLayoutView => {
+): FlexibleLayoutLeafInfo => {
   let selectedWidgetId = flexibleLayoutLeaf.selectedWidgetId;
   const viewId = flexibleLayoutLeaf.id;
   const viewType = flexibleLayoutLeaf.viewType;
@@ -30,7 +29,6 @@ export const createAndSetViewInfo = (
 
     return {
       id: viewId,
-      index: index,
       type: viewType,
       exportParts: "",
       widgets: widgets
@@ -62,7 +60,6 @@ export const createAndSetViewInfo = (
 
   return {
     id: viewId,
-    index: index,
     exportParts,
     selectedWidgetId: selectedWidgetId,
     type: viewType,
@@ -87,7 +84,7 @@ const updateFlexibleSubModels = (
   renderedWidgets: Set<string>,
   parentItem: FlexibleLayoutGroup
 ) => {
-  flexibleLayoutItems.forEach((flexibleItem, index) => {
+  flexibleLayoutItems.forEach(flexibleItem => {
     // Group
     if ((flexibleItem as FlexibleLayoutGroup).items != null) {
       const group = flexibleItem as FlexibleLayoutGroup;
@@ -116,12 +113,7 @@ const updateFlexibleSubModels = (
         {
           item: leaf,
           parentItem: parentItem,
-          view: createAndSetViewInfo(
-            leaf,
-            index,
-            blockStartWidgets,
-            renderedWidgets
-          )
+          view: createAndSetViewInfo(leaf, blockStartWidgets, renderedWidgets)
         };
       itemsInfo.set(leaf.id, flexibleItemExtended);
     }
@@ -150,6 +142,6 @@ export const updateFlexibleModels = (
 export const getViewInfo = (
   itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
   viewId: string
-): FlexibleLayoutView =>
+): FlexibleLayoutLeafInfo =>
   (itemsInfo.get(viewId) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
     .view;

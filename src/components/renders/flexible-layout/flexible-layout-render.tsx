@@ -5,12 +5,15 @@ import {
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
   FlexibleLayoutRenders,
-  FlexibleLayoutView,
+  FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetReorderInfo
 } from "../../flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent } from "../../../components";
+import {
+  ChFlexibleLayoutCustomEvent,
+  LayoutSplitterItemRemoveResult
+} from "../../../components";
 import { removeElement } from "../../../common/array";
 import { getViewInfo, updateFlexibleModels } from "./utils";
 
@@ -61,11 +64,14 @@ export class ChFlexibleLayoutRender {
    * The reserved space will be given to the closest view.
    */
   @Method()
-  async removeView(viewId: string, removeRenderedWidgets: boolean) {
+  async removeView(
+    viewId: string,
+    removeRenderedWidgets: boolean
+  ): Promise<LayoutSplitterItemRemoveResult> {
     const itemInfo = this.#itemsInfo.get(viewId);
 
     if (!itemInfo) {
-      return false;
+      return { success: false, renamedItems: [] };
     }
     const viewInfo = (
       itemInfo as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
@@ -73,14 +79,39 @@ export class ChFlexibleLayoutRender {
 
     // The item is not a view (leaf). It's a group.
     if (viewInfo == null) {
-      return false;
+      return { success: false, renamedItems: [] };
     }
 
     const success = await this.#flexibleLayoutRef.removeView(viewId);
 
     if (!success) {
-      return false;
+      return { success: false, renamedItems: [] };
     }
+
+    // Update view info, since it got renamed
+    const renamedItems = success.renamedItems;
+    renamedItems.forEach(renamedItem => {
+      const oldItemUIModel = this.#itemsInfo.get(
+        renamedItem.oldId
+      ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+
+      if (oldItemUIModel.view != null) {
+        const newItemUIModel = this.#itemsInfo.get(
+          renamedItem.newId
+        ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+
+        // Add view information
+        newItemUIModel.view = oldItemUIModel.view;
+
+        // Update view id
+        newItemUIModel.view.id = renamedItem.newId;
+      }
+
+      // Delete the old item
+      this.#itemsInfo.delete(renamedItem.oldId);
+    });
+
+    // console.log(this.#itemsInfo);
 
     // Remove rendered widgets
     if (removeRenderedWidgets) {
@@ -94,6 +125,7 @@ export class ChFlexibleLayoutRender {
 
     // Queue re-renders
     forceUpdate(this);
+    return success;
   }
 
   private setLayoutSplitterModels(layout: FlexibleLayout) {
@@ -181,7 +213,7 @@ export class ChFlexibleLayoutRender {
   };
 
   #removeWidget = (
-    viewInfo: FlexibleLayoutView,
+    viewInfo: FlexibleLayoutLeafInfo,
     itemIndex: number,
     skipRenderRemoval = false
   ) => {
@@ -198,7 +230,7 @@ export class ChFlexibleLayoutRender {
   };
 
   #updateSelectedWidget = (
-    viewInfo: FlexibleLayoutView,
+    viewInfo: FlexibleLayoutLeafInfo,
     selectedId: string
   ) => {
     viewInfo.selectedWidgetId = selectedId;

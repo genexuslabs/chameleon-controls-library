@@ -14,7 +14,8 @@ import {
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended
+  LayoutSplitterDistributionItemExtended,
+  LayoutSplitterItemRemoveResult
 } from "./types";
 import {
   fixAndUpdateLayoutModel,
@@ -126,15 +127,15 @@ export class ChLayoutSplitter implements ChComponent {
    * The layout is rearranged depending on the state of the removed item.
    */
   @Method()
-  async removeItem(viewId: string) {
-    const success = removeItem(viewId, this.#itemsInfo);
+  async removeItem(viewId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const result = removeItem(viewId, this.#itemsInfo);
 
-    if (success) {
+    if (result.success) {
       // Queue re-renders
       forceUpdate(this);
     }
 
-    return success;
+    return result;
   }
 
   #handleBarDrag = (event: MouseEvent) => {

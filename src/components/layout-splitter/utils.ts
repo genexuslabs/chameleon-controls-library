@@ -133,13 +133,12 @@ function fixAndUpdateSubModel(
   }
 
   // Update the actualSizes and fixedSizes maps
-  items.forEach((item, index) => {
+  items.forEach(item => {
     const itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem> =
       {
         item: item,
         parentItem: parentItem,
-        actualSize: getComponentSize(item, fixedSizesSum),
-        index: index
+        actualSize: getComponentSize(item, fixedSizesSum)
       };
 
     if ((item as LayoutSplitterDistributionGroup).items != null) {

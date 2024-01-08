@@ -42,14 +42,12 @@ export type LayoutSplitterDistributionItemExtended<
       item: T;
       parentItem: LayoutSplitterDistributionGroup;
       actualSize: string;
-      index: number;
       fixedSizesSum: number;
     }
   : {
       item: T;
       parentItem: LayoutSplitterDistributionGroup;
       actualSize: string;
-      index: number;
     };
 
 export type DragBarMouseDownEventInfo = {
@@ -62,3 +60,10 @@ export type DragBarMouseDownEventInfo = {
   layoutItems: LayoutSplitterDistributionItem[];
   RTL: boolean;
 };
+
+export type LayoutSplitterItemRemoveResult = {
+  success: boolean;
+  renamedItems: LayoutSplitterRenamedItem[];
+};
+
+export type LayoutSplitterRenamedItem = { oldId: string; newId: string };

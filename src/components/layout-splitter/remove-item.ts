@@ -2,7 +2,9 @@ import { removeElement } from "../../common/array";
 import {
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended
+  LayoutSplitterDistributionItemExtended,
+  LayoutSplitterItemRemoveResult,
+  LayoutSplitterRenamedItem
 } from "./types";
 import {
   getFrSize,
@@ -17,30 +19,42 @@ import {
  */
 type ItemToRemove = [LayoutSplitterDistributionItem[], number, string];
 
+const findItemInParent = (
+  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
+) => {
+  const itemId = itemToFind.item.id;
+  return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
+};
+
 export const removeItem = (
   itemId: string,
   itemsInfo: Map<
     string,
     LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
   >
-): boolean => {
+): LayoutSplitterItemRemoveResult => {
   const itemToRemoveUIModel = itemsInfo.get(itemId);
 
   if (!itemToRemoveUIModel) {
-    return false;
+    return { success: false, renamedItems: [] };
   }
 
   // TODO: Valid whether the parent is the root node or not. If it is the root, update the fixedSizesSum
 
   const itemsToRemove: ItemToRemove[] = [];
 
-  const itemIndex = itemToRemoveUIModel.index;
+  const itemToRemoveIndex = findItemInParent(itemToRemoveUIModel);
   const parentItem = itemToRemoveUIModel.parentItem;
   const parentItemItems = parentItem.items;
-  const itemToAddSpace = parentItemItems[itemIndex === 0 ? 1 : itemIndex - 1];
+
+  const itemToAddSpace =
+    parentItemItems[itemToRemoveIndex === 0 ? 1 : itemToRemoveIndex - 1];
+  const renamedItems: LayoutSplitterRenamedItem[] = [];
+
+  // const itemToAddSpaceUIModel = itemsInfo.get(itemToAddSpace.id);
 
   // Remove the item in a future iteration
-  itemsToRemove.push([parentItemItems, itemIndex, itemId]);
+  itemsToRemove.push([parentItemItems, itemToRemoveIndex, itemId]);
 
   // The space reserved for the item can be given to a sibling item
   if (parentItemItems.length > 2) {
@@ -55,12 +69,35 @@ export const removeItem = (
   // the child item with the parent of its group
   else if (parentItemItems.length === 2) {
     // TODO: CHECK PARENT ROOT
-    // const parentItemUIModel = itemsInfo.get(parentItem.id);
-    // const parentItemIndex = parentItemUIModel.index;
-    // const secondParentItem = parentItemUIModel.parentItem;
-    // itemsInfo.delete(parentItem.id);
-    // secondParentItem.items[parentItemIndex] = itemToAddSpace;
-    // TODO: Add implementation
+    const parentItemUIModel = itemsInfo.get(parentItem.id);
+    const secondParentItem = parentItemUIModel.parentItem;
+    const parentItemIndex = findItemInParent(parentItemUIModel);
+
+    const itemToReplace = secondParentItem.items[
+      parentItemIndex
+    ] as LayoutSplitterDistributionGroup;
+
+    // Push the item rename
+    renamedItems.push({ oldId: itemToAddSpace.id, newId: itemToReplace.id });
+
+    // This property is no longer valid in the new parent
+    delete itemToReplace.items;
+
+    // Update all properties in the new parent, except for some specific properties
+    Object.keys(itemToAddSpace).forEach(
+      (key: keyof LayoutSplitterDistributionItem) => {
+        if (
+          key !== "id" &&
+          key !== "size" &&
+          key !== "dragBar" &&
+          key !== "fixedOffsetSize"
+        ) {
+          itemToReplace[key] = itemToAddSpace[key];
+        }
+      }
+    );
+
+    itemsInfo.delete(itemToAddSpace.id);
   } else {
     // Remove the item and its group parent
   }
@@ -73,7 +110,7 @@ export const removeItem = (
     itemsInfo.delete(itemToRemove[2]);
   });
 
-  return true;
+  return { success: true, renamedItems: renamedItems };
 };
 
 function addSpaceToItem(

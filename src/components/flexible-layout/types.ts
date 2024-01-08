@@ -79,16 +79,19 @@ export type FlexibleLayoutItemExtended<
   ? {
       item: T;
       parentItem: FlexibleLayoutGroup;
-      view: FlexibleLayoutView;
+      view: FlexibleLayoutLeafInfo;
     }
   : {
       item: T;
       parentItem: FlexibleLayoutGroup;
     };
 
-export type FlexibleLayoutView = {
+export type FlexibleLayoutLeafInfo = {
+  /**
+   * Same as the leaf id (item.id).
+   */
   id: string;
-  index: number;
+
   type: ViewType;
   expanded?: boolean;
   exportParts: string;

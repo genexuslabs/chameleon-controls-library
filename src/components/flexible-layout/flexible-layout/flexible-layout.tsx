@@ -16,7 +16,7 @@ import {
   FlexibleLayoutItem,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
-  FlexibleLayoutView,
+  FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetDragInfo,
@@ -31,7 +31,10 @@ import {
   TabType
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
-import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import {
+  LayoutSplitterDistribution,
+  LayoutSplitterItemRemoveResult
+} from "../../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
@@ -110,15 +113,15 @@ export class ChFlexibleLayout {
    * The layout is rearranged depending on the state of the removed view.
    */
   @Method()
-  async removeView(itemId: string) {
-    const success = await this.#layoutSplitterRef.removeItem(itemId);
+  async removeView(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const result = await this.#layoutSplitterRef.removeItem(itemId);
 
-    if (success) {
+    if (result.success) {
       // Queue re-renders
       forceUpdate(this);
     }
 
-    return success;
+    return result;
   }
 
   /**
@@ -141,11 +144,11 @@ export class ChFlexibleLayout {
     await viewRef.removePage(itemId, forceRerender);
   }
 
-  #getViewInfo = (viewId: string): FlexibleLayoutView =>
+  #getViewInfo = (viewId: string): FlexibleLayoutLeafInfo =>
     getViewInfo(this.itemsInfo, viewId);
 
-  #getAllViews = (): FlexibleLayoutView[] => {
-    const views: FlexibleLayoutView[] = [];
+  #getAllViews = (): FlexibleLayoutLeafInfo[] => {
+    const views: FlexibleLayoutLeafInfo[] = [];
 
     this.itemsInfo.forEach(item => {
       const itemView = (item as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
@@ -344,7 +347,7 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
+  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutLeafInfo) => (
     <ch-tab
       id={viewInfo.id}
       key={viewInfo.id}
@@ -365,7 +368,7 @@ export class ChFlexibleLayout {
     </ch-tab>
   );
 
-  private renderView = (view: FlexibleLayoutView) =>
+  private renderView = (view: FlexibleLayoutLeafInfo) =>
     view.type === "blockStart" ? (
       <header key={view.id} slot={view.id}>
         <slot />

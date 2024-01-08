@@ -155,6 +155,13 @@ export class ChTreeViewRenderWrapper {
     "decorative";
 
   /**
+   * Specifies if a tree-view-item is expanded on click interaction. If `true`
+   * the tree-view-item is expanded on click interaction. If `false`, with
+   * mouse interaction the tree-view-item will only be expanded on double click.
+   */
+  @Prop() readonly expandOnClick: boolean = true;
+
+  /**
    * This property lets you determine the expression that will be applied to the
    * filter.
    * Only works if `filterType = "caption" | "metadata"`.
@@ -377,6 +384,7 @@ export class ChTreeViewRenderWrapper {
         dropItemsCallback={this.dropItemsCallback}
         editableItems={this.editableItems}
         expandableButton={this.expandableButton}
+        expandOnClick={this.expandOnClick}
         filter={this.filter}
         filterList={this.filterList}
         filterOptions={this.filterOptions}

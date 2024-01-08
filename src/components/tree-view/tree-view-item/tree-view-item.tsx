@@ -191,7 +191,7 @@ export class ChTreeViewItem {
    * `true` to expand the control on click interaction. If `false`, with mouse
    * interaction the control will only be expanded on double click.
    */
-  @Prop() readonly expandOnClick: boolean = false;
+  @Prop() readonly expandOnClick: boolean = true;
 
   /**
    * If the item has a sub-tree, this attribute determines if the subtree is

@@ -312,7 +312,7 @@ export class ChTreeViewRender {
    * the tree-view-item is expanded on click interaction. If `false`, with
    * mouse interaction the tree-view-item will only be expanded on double click.
    */
-  @Prop() readonly expandOnClick: boolean = false;
+  @Prop() readonly expandOnClick: boolean = true;
 
   /**
    * This property lets you determine the expression that will be applied to the

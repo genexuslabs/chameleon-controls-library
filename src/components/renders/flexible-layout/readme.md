@@ -7,11 +7,32 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 
 ## Properties
 
-| Property   | Attribute   | Description                                                     | Type                                                                   | Default             |
-| ---------- | ----------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------- |
-| `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                               | `"flexible-layout"` |
-| `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `{ direction: LayoutSplitterDirection; items: FlexibleLayoutItem[]; }` | `undefined`         |
-| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: () => any; }`                                        | `undefined`         |
+| Property   | Attribute   | Description                                                     | Type                                                                           | Default             |
+| ---------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------- |
+| `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                                       | `"flexible-layout"` |
+| `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }` | `undefined`         |
+| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: () => any; }`                                                | `undefined`         |
+
+
+## Methods
+
+### `removeView(viewId: string, removeRenderedWidgets: boolean) => Promise<LayoutSplitterItemRemoveResult>`
+
+Removes a view and optionally all its rendered widget from the render.
+The reserved space will be given to the closest view.
+
+#### Parameters
+
+| Name                    | Type      | Description |
+| ----------------------- | --------- | ----------- |
+| `viewId`                | `string`  |             |
+| `removeRenderedWidgets` | `boolean` |             |
+
+#### Returns
+
+Type: `Promise<LayoutSplitterItemRemoveResult>`
+
+
 
 
 ## Dependencies

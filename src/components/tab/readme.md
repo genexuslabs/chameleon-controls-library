@@ -24,11 +24,22 @@
 | -------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | `expandMainGroup`    | Fired when an item of the main group is double clicked.                   | `CustomEvent<string>`                                                                                         |
 | `itemClose`          | Fired the close button of an item is clicked.                             | `CustomEvent<{ itemId: string; itemIndex: number; type: TabType; }>`                                          |
-| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list. | `CustomEvent<any>`                                                                                            |
+| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list. | `CustomEvent<number>`                                                                                         |
 | `selectedItemChange` | Fired when the selected item change.                                      | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; }>` |
 
 
 ## Methods
+
+### `endDragPreview() => Promise<void>`
+
+Ends the preview of the dragged item. Useful for ending the preview via
+keyboard interaction.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 ### `getDraggableViews() => Promise<DraggableViewInfo>`
 
@@ -40,15 +51,25 @@ Type: `Promise<DraggableViewInfo>`
 
 
 
-### `removeItem(index: number, forceRerender?: boolean) => Promise<void>`
+### `promoteDragPreviewToTopLayer() => Promise<void>`
 
-Given an index, remove the item from the tab control
+Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `removePage(pageId: string, forceRerender?: boolean) => Promise<void>`
+
+Given an id, remove the page from the render
 
 #### Parameters
 
 | Name            | Type      | Description |
 | --------------- | --------- | ----------- |
-| `index`         | `number`  |             |
+| `pageId`        | `string`  |             |
 | `forceRerender` | `boolean` |             |
 
 #### Returns

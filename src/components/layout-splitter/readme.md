@@ -10,11 +10,42 @@ This component allows us to design a layout composed by columns and rows.
 
 ## Properties
 
-| Property                | Attribute                 | Description                                                                                               | Type                                                                               | Default                                         |
-| ----------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------- |
-| `barAccessibleName`     | `bar-accessible-name`     | This attribute lets you specify the label for the drag bar. Important for accessibility.                  | `string`                                                                           | `"Resize"`                                      |
-| `incrementWithKeyboard` | `increment-with-keyboard` | Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar. | `number`                                                                           | `2`                                             |
-| `layout`                | --                        | Specifies the list of component that are displayed. Each component will be separated via a drag bar.      | `{ direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `{     direction: "columns",     items: []   }` |
+| Property                | Attribute                 | Description                                                                                                                  | Type                                                                                           | Default                                                         |
+| ----------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `barAccessibleName`     | `bar-accessible-name`     | This attribute lets you specify the label for the drag bar. Important for accessibility.                                     | `string`                                                                                       | `"Resize"`                                                      |
+| `dragBarDisabled`       | `drag-bar-disabled`       | This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled. | `boolean`                                                                                      | `false`                                                         |
+| `incrementWithKeyboard` | `increment-with-keyboard` | Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.                    | `number`                                                                                       | `2`                                                             |
+| `layout`                | --                        | Specifies the list of component that are displayed. Each component will be separated via a drag bar.                         | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `{     id: "root",     direction: "columns",     items: []   }` |
+
+
+## Methods
+
+### `refreshLayout() => Promise<void>`
+
+Schedules a new render of the control even if no state changed.
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `removeItem(viewId: string) => Promise<LayoutSplitterItemRemoveResult>`
+
+Removes the item that is identified by the given ID.
+The layout is rearranged depending on the state of the removed item.
+
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `viewId` | `string` |             |
+
+#### Returns
+
+Type: `Promise<LayoutSplitterItemRemoveResult>`
+
+
 
 
 ## Shadow Parts

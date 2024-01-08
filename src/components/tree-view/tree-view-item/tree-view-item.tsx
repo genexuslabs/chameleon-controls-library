@@ -188,6 +188,12 @@ export class ChTreeViewItem {
     "decorative";
 
   /**
+   * `true` to expand the control on click interaction. If `false`, with mouse
+   * interaction the control will only be expanded on double click.
+   */
+  @Prop() readonly expandOnClick: boolean = false;
+
+  /**
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
@@ -627,9 +633,16 @@ export class ChTreeViewItem {
   }
 
   private toggleOrSelect(event: MouseEvent) {
+    // Ctrl key
     if (mouseEventModifierKey(event)) {
       this.toggleSelected();
-    } else {
+    }
+    // Expand on click interaction
+    else if (this.expandOnClick) {
+      this.toggleExpand(event);
+    }
+    // Click only selects the item
+    else {
       this.setSelected();
     }
   }
@@ -657,8 +670,9 @@ export class ChTreeViewItem {
 
     this.emitOpenReference();
 
-    // The Control key is not pressed, so the control can be expanded
-    if (!this.leaf) {
+    // The Control key is not pressed, so the control can be expanded if double
+    // click expands the item
+    if (!this.leaf && !this.expandOnClick) {
       this.toggleExpand(event);
     }
   };

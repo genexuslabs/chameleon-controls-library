@@ -90,6 +90,7 @@ const defaultRenderItem = (
       expandableButton={
         itemModel.expandableButton ?? treeState.expandableButton
       }
+      expandOnClick={treeState.expandOnClick}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
@@ -151,6 +152,7 @@ const GXRenderItem = (
       }
       editable={itemModel.editable ?? treeState.editableItems}
       expanded={itemModel.expanded}
+      expandOnClick={treeState.expandOnClick}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
@@ -304,6 +306,13 @@ export class ChTreeViewRender {
    */
   @Prop() readonly expandableButton: "action" | "decorative" | "no" =
     "decorative";
+
+  /**
+   * Specifies if a tree-view-item is expanded on click interaction. If `true`
+   * the tree-view-item is expanded on click interaction. If `false`, with
+   * mouse interaction the tree-view-item will only be expanded on double click.
+   */
+  @Prop() readonly expandOnClick: boolean = false;
 
   /**
    * This property lets you determine the expression that will be applied to the

@@ -266,7 +266,7 @@ export const layout3: FlexibleLayout = {
                 {
                   id: "sub-group-2-2-1-1",
                   dragBar: { part: "visible", size: 1 },
-                  size: "1fr",
+                  size: "0.5fr",
                   viewType: "main",
                   selectedWidgetId: START_PAGE,
                   widgets: [{ id: START_PAGE, name: "Start Page" }]
@@ -274,13 +274,13 @@ export const layout3: FlexibleLayout = {
                 {
                   id: "sub-group-2-2-1-2",
                   direction: "rows",
-                  size: "1fr",
+                  size: "0.5fr",
                   viewType: "main",
                   items: [
                     {
                       id: "sub-group-2-2-1-2-1",
                       dragBar: { part: "visible", size: 1 },
-                      size: "1fr",
+                      size: "0.5fr",
                       viewType: "main",
                       widgets: [
                         { id: GRID, name: "Grid" },
@@ -293,7 +293,7 @@ export const layout3: FlexibleLayout = {
                     },
                     {
                       id: "sub-group-2-2-1-2-2",
-                      size: "1fr",
+                      size: "0.5fr",
                       viewType: "main",
                       widgets: [{ id: IMPORT_OBJECTS, name: "Import Objects" }]
                     }

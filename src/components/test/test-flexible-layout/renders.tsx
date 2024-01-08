@@ -6,6 +6,7 @@ import {
 
 import {
   eagerLargeModel,
+  importObjectsModel,
   lazyLoadItemsDictionary,
   kbExplorerModel,
   preferencesModel
@@ -23,6 +24,7 @@ const STRUCT_EDITOR = "StructEditor";
 const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
 const OUTPUT = "output";
+const IMPORT_OBJECTS = "import-objects";
 
 export const defaultLayout: FlexibleLayout = {
   id: "root",
@@ -271,14 +273,29 @@ export const layout3: FlexibleLayout = {
                 },
                 {
                   id: "sub-group-2-2-1-2",
+                  direction: "rows",
                   size: "1fr",
                   viewType: "main",
-                  widgets: [
-                    { id: GRID, name: "Grid" },
-                    { id: STRUCT_EDITOR, name: "Struct Editor" },
+                  items: [
                     {
-                      id: ATTRS_CONTAINERS_AND_OTHERS,
-                      name: "AttrsContainersAndOthers"
+                      id: "sub-group-2-2-1-2-1",
+                      dragBar: { part: "visible", size: 1 },
+                      size: "1fr",
+                      viewType: "main",
+                      widgets: [
+                        { id: GRID, name: "Grid" },
+                        { id: STRUCT_EDITOR, name: "Struct Editor" },
+                        {
+                          id: ATTRS_CONTAINERS_AND_OTHERS,
+                          name: "AttrsContainersAndOthers"
+                        }
+                      ]
+                    },
+                    {
+                      id: "sub-group-2-2-1-2-2",
+                      size: "1fr",
+                      viewType: "main",
+                      widgets: [{ id: IMPORT_OBJECTS, name: "Import Objects" }]
                     }
                   ]
                 }
@@ -513,6 +530,20 @@ export const layoutRenders: FlexibleLayoutRenders = {
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
       treeModel={eagerLargeModel}
+      dragDisabled={true}
+      dropDisabled={true}
+      editableItems={false}
+      multiSelection
+      showLines="all"
+    ></ch-tree-view-render>
+  ),
+  [IMPORT_OBJECTS]: () => (
+    <ch-tree-view-render
+      treeModel={importObjectsModel}
+      checkbox
+      checked
+      lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      toggleCheckboxes
       dragDisabled={true}
       dropDisabled={true}
       editableItems={false}

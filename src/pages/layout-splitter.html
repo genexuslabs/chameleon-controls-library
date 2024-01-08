@@ -49,6 +49,10 @@
           <button id="layout-2">Configuration 2</button>
           <button id="layout-3">Configuration 3</button>
           <button id="layout-4">Configuration 4</button>
+          <button id="layout-5">Configuration 5</button>
+          <button id="layout-6">Configuration 6</button>
+          <button id="layout-7">Configuration 7</button>
+          <button id="layout-8">Configuration 8</button>
         </fieldset>
       </div>
     </div>
@@ -109,10 +113,23 @@
       window.addEventListener("appload", () => {
         const layoutSplitter = document.querySelector("ch-layout-splitter");
 
-        layoutSplitter.layout = {
+        const layout1 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "3fr" },
+            { id: "end-end-component", size: "2fr" },
+            { id: "center-component", size: "200px" },
+            { id: "end-component", size: "180px" }
+          ]
+        };
+
+        const layout2 = {
+          id: "root",
           direction: "rows",
           items: [
             {
+              id: "sub-group-1",
               size: "1fr",
               direction: "columns",
               items: [
@@ -125,82 +142,179 @@
           ]
         };
 
+        const layout3 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "300px" },
+            {
+              id: "sub-group-1",
+              size: "1fr",
+              direction: "rows",
+              items: [
+                { id: "center-component", size: "1fr" },
+                { id: "end-end-component", size: "300px" }
+              ]
+            },
+            { id: "end-component", size: "270px" }
+          ]
+        };
+
+        const layout4 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "300px" },
+            {
+              id: "sub-group-1",
+              size: "1fr",
+              direction: "rows",
+              items: [
+                {
+                  id: "sub-group-1-1",
+                  size: "1fr",
+                  direction: "columns",
+                  items: [
+                    { id: "center-component", size: "1fr" },
+                    { id: "center-2-component", size: "1fr" }
+                  ]
+                },
+                { id: "end-end-component", size: "300px" }
+              ]
+            },
+            { id: "end-component", size: "270px" }
+          ]
+        };
+
+        const layout5 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "3fr" },
+            { id: "center-2-component", size: "100px" },
+            { id: "end-end-component", size: "2fr" },
+            { id: "center-component", size: "200px" },
+            { id: "end-component", size: "180px" }
+          ]
+        };
+
+        const layout6 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "3fr" },
+            { id: "end-end-component", size: "2fr" },
+            { id: "center-2-component", size: "1fr" },
+            { id: "center-component", size: "0.5fr" },
+            { id: "end-component", size: "180px" }
+          ]
+        };
+
+        const layout7 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "300px", dragBar: { size: 1 } },
+            {
+              id: "sub-group-1",
+              dragBar: { size: 1 },
+              size: "1fr",
+              direction: "rows",
+              items: [
+                {
+                  id: "sub-group-1-1",
+                  dragBar: { size: 1 },
+                  size: "1fr",
+                  direction: "columns",
+                  items: [
+                    {
+                      id: "center-component",
+                      size: "1fr",
+                      dragBar: { size: 1 }
+                    },
+                    { id: "center-2-component", size: "1fr" }
+                  ]
+                },
+                { id: "end-end-component", size: "300px" }
+              ]
+            },
+            { id: "end-component", size: "270px" }
+          ]
+        };
+
+        const layout8 = {
+          id: "root",
+          direction: "columns",
+          items: [
+            { id: "start-component", size: "300px", dragBar: { size: 5 } },
+            {
+              id: "sub-group-1",
+              dragBar: { size: 4 },
+              size: "1fr",
+              direction: "rows",
+              items: [
+                {
+                  id: "sub-group-1-1",
+                  dragBar: { size: 3 },
+                  size: "1fr",
+                  direction: "columns",
+                  items: [
+                    {
+                      id: "center-component",
+                      size: "1fr",
+                      dragBar: { size: 2 }
+                    },
+                    { id: "center-2-component", size: "1fr" }
+                  ]
+                },
+                { id: "end-end-component", size: "300px" }
+              ]
+            },
+            { id: "end-component", size: "270px" }
+          ]
+        };
+
+        layoutSplitter.layout = layout2;
+
         const button1 = document.querySelector("#layout-1");
         const button2 = document.querySelector("#layout-2");
         const button3 = document.querySelector("#layout-3");
         const button4 = document.querySelector("#layout-4");
+        const button5 = document.querySelector("#layout-5");
+        const button6 = document.querySelector("#layout-6");
+        const button7 = document.querySelector("#layout-7");
+        const button8 = document.querySelector("#layout-8");
 
         button1.addEventListener("click", () => {
-          layoutSplitter.layout = {
-            direction: "columns",
-            items: [
-              { id: "start-component", size: "3fr" },
-              { id: "end-end-component", size: "2fr" },
-              { id: "center-component", size: "200px" },
-              { id: "end-component", size: "180px" }
-            ]
-          };
+          layoutSplitter.layout = layout1;
         });
 
         button2.addEventListener("click", () => {
-          layoutSplitter.layout = {
-            direction: "rows",
-            items: [
-              {
-                size: "1fr",
-                direction: "columns",
-                items: [
-                  { id: "start-component", size: "300px" },
-                  { id: "center-component", size: "1fr" },
-                  { id: "end-component", size: "270px" }
-                ]
-              },
-              { id: "end-end-component", size: "250px" }
-            ]
-          };
+          layoutSplitter.layout = layout2;
         });
 
         button3.addEventListener("click", () => {
-          layoutSplitter.layout = {
-            direction: "columns",
-            items: [
-              { id: "start-component", size: "300px" },
-              {
-                size: "1fr",
-                direction: "rows",
-                items: [
-                  { id: "center-component", size: "1fr" },
-                  { id: "end-end-component", size: "300px" }
-                ]
-              },
-              { id: "end-component", size: "270px" }
-            ]
-          };
+          layoutSplitter.layout = layout3;
         });
 
         button4.addEventListener("click", () => {
-          layoutSplitter.layout = {
-            direction: "columns",
-            items: [
-              { id: "start-component", size: "300px" },
-              {
-                size: "1fr",
-                direction: "rows",
-                items: [
-                  {
-                    size: "1fr",
-                    direction: "columns",
-                    items: [
-                      { id: "center-component", size: "1fr" },
-                      { id: "center-2-component", size: "1fr" }
-                    ]
-                  },
-                  { id: "end-end-component", size: "300px" }
-                ]
-              },
-              { id: "end-component", size: "270px" }
-            ]
-          };
+          layoutSplitter.layout = layout4;
+        });
+
+        button5.addEventListener("click", () => {
+          layoutSplitter.layout = layout5;
+        });
+
+        button6.addEventListener("click", () => {
+          layoutSplitter.layout = layout6;
+        });
+
+        button7.addEventListener("click", () => {
+          layoutSplitter.layout = layout7;
+        });
+
+        button8.addEventListener("click", () => {
+          layoutSplitter.layout = layout8;
         });
       });
     </script>

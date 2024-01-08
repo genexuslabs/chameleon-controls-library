@@ -25,19 +25,23 @@ const PROPERTIES = "properties";
 const OUTPUT = "output";
 
 export const defaultLayout: FlexibleLayout = {
+  id: "root",
   direction: "rows",
   items: [
     {
+      id: "sub-group-1",
       accessibleRole: "banner",
       size: "32px",
       viewType: "blockStart",
       widgets: [{ id: MENU_BAR, name: MENU_BAR }]
     },
     {
+      id: "sub-group-2",
       direction: "columns",
       size: "1fr",
       items: [
         {
+          id: "sub-group-2-1",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -62,6 +66,7 @@ export const defaultLayout: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-2",
           accessibleRole: "main",
           size: "1fr",
           viewType: "main",
@@ -73,6 +78,7 @@ export const defaultLayout: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-3",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -88,6 +94,7 @@ export const defaultLayout: FlexibleLayout = {
       ]
     },
     {
+      id: "sub-group-3",
       accessibleRole: "contentinfo",
       size: "200px",
       viewType: "blockEnd",
@@ -103,20 +110,24 @@ export const defaultLayout: FlexibleLayout = {
 };
 
 export const layout2: FlexibleLayout = {
+  id: "root",
   direction: "rows",
   items: [
     {
+      id: "sub-group-1",
       accessibleRole: "banner",
-      hideDragBar: true,
+      dragBar: { hidden: true },
       size: "32px",
       viewType: "blockStart",
       widgets: [{ id: MENU_BAR, name: MENU_BAR }]
     },
     {
+      id: "sub-group-2",
       direction: "columns",
       size: "1fr",
       items: [
         {
+          id: "sub-group-2-1",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -141,17 +152,20 @@ export const layout2: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-2",
           direction: "columns",
           size: "1fr",
           accessibleRole: "main",
           items: [
             {
+              id: "sub-group-2-2-1",
               size: "1fr",
               viewType: "main",
               selectedWidgetId: START_PAGE,
               widgets: [{ id: START_PAGE, name: "Start Page" }]
             },
             {
+              id: "sub-group-2-2-2",
               size: "1fr",
               viewType: "main",
               widgets: [
@@ -162,6 +176,7 @@ export const layout2: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-3",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -177,6 +192,7 @@ export const layout2: FlexibleLayout = {
       ]
     },
     {
+      id: "sub-group-3",
       accessibleRole: "contentinfo",
       size: "200px",
       viewType: "blockEnd",
@@ -192,20 +208,24 @@ export const layout2: FlexibleLayout = {
 };
 
 export const layout3: FlexibleLayout = {
+  id: "root",
   direction: "rows",
   items: [
     {
+      id: "sub-group-1",
       accessibleRole: "banner",
-      hideDragBar: true,
+      dragBar: { hidden: true },
       size: "32px",
       viewType: "blockStart",
       widgets: [{ id: MENU_BAR, name: MENU_BAR }]
     },
     {
+      id: "sub-group-2",
       direction: "columns",
       size: "1fr",
       items: [
         {
+          id: "sub-group-2-1",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -230,23 +250,27 @@ export const layout3: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-2",
           direction: "rows",
           size: "1fr",
           items: [
             {
+              id: "sub-group-2-2-1",
               direction: "columns",
-              dragBarPart: "visible",
+              dragBar: { part: "visible", size: 1 },
               size: "1fr",
               accessibleRole: "main",
               items: [
                 {
-                  dragBarPart: "visible",
+                  id: "sub-group-2-2-1-1",
+                  dragBar: { part: "visible", size: 1 },
                   size: "1fr",
                   viewType: "main",
                   selectedWidgetId: START_PAGE,
                   widgets: [{ id: START_PAGE, name: "Start Page" }]
                 },
                 {
+                  id: "sub-group-2-2-1-2",
                   size: "1fr",
                   viewType: "main",
                   widgets: [
@@ -261,6 +285,7 @@ export const layout3: FlexibleLayout = {
               ]
             },
             {
+              id: "sub-group-2-2-2",
               accessibleRole: "contentinfo",
               size: "200px",
               viewType: "blockEnd",
@@ -275,6 +300,7 @@ export const layout3: FlexibleLayout = {
           ]
         },
         {
+          id: "sub-group-2-3",
           accessibleRole: "complementary",
           expanded: true,
           size: "300px",
@@ -344,6 +370,128 @@ export const layoutRenders: FlexibleLayoutRenders = {
   [GRID]: () => (
     <div>
       Grid render... <input type="text" />
+      <ch-grid>
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-name="Name"
+            settingable={false}
+            column-type="tree"
+            freeze="start"
+            size="20%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Type"
+            settingable={false}
+            size="80%"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Description"
+            settingable={false}
+            size="500px"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-name="Is Collection"
+            settingable={false}
+            size="100px"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-row>
+          <ch-grid-cell>Target</ch-grid-cell>
+          <ch-grid-cell></ch-grid-cell>
+          <ch-grid-cell>Target</ch-grid-cell>
+          <ch-grid-cell>false</ch-grid-cell>
+
+          <ch-grid-rowset>
+            <ch-grid-row leaf="false">
+              <ch-grid-cell>TargetType</ch-grid-cell>
+              <ch-grid-cell>
+                TargetType, GeneXus.Common.Notifications
+              </ch-grid-cell>
+              <ch-grid-cell>Target Type (required)</ch-grid-cell>
+              <ch-grid-cell>false</ch-grid-cell>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Devices</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Devices List</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Device</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>DeviceToken</ch-grid-cell>
+                      <ch-grid-cell>Character(500)</ch-grid-cell>
+                      <ch-grid-cell>DeviceToken</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Groups</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Groups</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Group</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+            <ch-grid-row>
+              <ch-grid-cell>Targets</ch-grid-cell>
+              <ch-grid-cell></ch-grid-cell>
+              <ch-grid-cell>Targets</ch-grid-cell>
+              <ch-grid-cell>true</ch-grid-cell>
+
+              <ch-grid-rowset>
+                <ch-grid-row>
+                  <ch-grid-cell>Filter</ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+                  <ch-grid-cell></ch-grid-cell>
+
+                  <ch-grid-rowset>
+                    <ch-grid-row>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                    <ch-grid-row>
+                      <ch-grid-cell>Value</ch-grid-cell>
+                      <ch-grid-cell>Character(100)</ch-grid-cell>
+                      <ch-grid-cell>Name</ch-grid-cell>
+                      <ch-grid-cell>false</ch-grid-cell>
+                    </ch-grid-row>
+                  </ch-grid-rowset>
+                </ch-grid-row>
+              </ch-grid-rowset>
+            </ch-grid-row>
+          </ch-grid-rowset>
+        </ch-grid-row>
+      </ch-grid>
     </div>
   ),
   [STRUCT_EDITOR]: () => (

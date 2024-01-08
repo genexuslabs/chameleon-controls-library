@@ -487,7 +487,7 @@
               caption="Drop Enabled"
             ></ch-checkbox>
 
-            <label>
+            <label style="display: flex; flex-direction: column">
               Lines
               <select name="lines" id="lines">
                 <option value="all" selected>All lines</option>
@@ -496,7 +496,7 @@
               </select>
             </label>
 
-            <label>
+            <label style="display: flex; flex-direction: column">
               Expandable button
               <select name="expandable-button" id="expandable-button">
                 <option value="action">Action</option>
@@ -504,6 +504,14 @@
                 <option value="no">None</option>
               </select>
             </label>
+
+            <ch-checkbox
+              id="expand-on-click"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Expand on click"
+            ></ch-checkbox>
           </fieldset>
 
           <fieldset>
@@ -1171,6 +1179,14 @@
         const editableCheckbox = document.getElementById("editable");
         editableCheckbox.addEventListener("input", event => {
           testTreeX.editableItems = event.target.checked;
+        });
+
+        // Expand on click
+        const expandOnClickCheckbox =
+          document.getElementById("expand-on-click");
+        expandOnClickCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+          testTreeX.expandOnClick = checked;
         });
 
         const checkAllCheckbox = document.getElementById("check-all");

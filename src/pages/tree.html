@@ -495,6 +495,15 @@
                 <option value="none">None</option>
               </select>
             </label>
+
+            <label>
+              Expandable button
+              <select name="expandable-button" id="expandable-button">
+                <option value="action">Action</option>
+                <option value="decorative" selected>Decorative</option>
+                <option value="no">None</option>
+              </select>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -1196,10 +1205,19 @@
           testTreeX.dropDisabled = !checked;
         });
 
+        // Lines
         const linesSelect = document.getElementById("lines");
         linesSelect.addEventListener("input", event => {
           const selectedOption = event.target.value;
           testTreeX.showLines = selectedOption;
+        });
+
+        // Expandable button
+        const expandableButtonSelect =
+          document.getElementById("expandable-button");
+        expandableButtonSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          testTreeX.expandableButton = selectedOption;
         });
 
         const filterTypeSelect = document.getElementById("filter-type");

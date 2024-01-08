@@ -9,8 +9,9 @@ import { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+import { LayoutSplitterDistribution, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+import { LayoutSplitterItemRemoveResult as LayoutSplitterItemRemoveResult1 } from "./components";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -43,8 +44,9 @@ export { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+export { LayoutSplitterDistribution, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+export { LayoutSplitterItemRemoveResult as LayoutSplitterItemRemoveResult1 } from "./components";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -368,6 +370,13 @@ export namespace Components {
     }
     interface ChFlexibleLayout {
         /**
+          * Specifies the information of each view displayed.
+         */
+        "itemsInfo": Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+  >;
+        /**
           * Specifies the distribution of the items in the flexible layout.
          */
         "layoutModel": LayoutSplitterDistribution;
@@ -376,13 +385,17 @@ export namespace Components {
          */
         "layoutSplitterParts": string;
         /**
-          * Given the view ID and the item index, remove the item from the view
+          * Schedules a new render of the control even if no state changed.
          */
-        "removeItemInView": (viewId: string, index: number, forceRerender?: boolean) => Promise<void>;
+        "refreshLayout": () => Promise<void>;
         /**
-          * Specifies the information of each view displayed.
+          * Given the view ID and the item id, remove the page of the item from the view.
          */
-        "viewsInfo": Map<string, FlexibleLayoutView>;
+        "removeItemPageInView": (viewId: string, itemId: string, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Removes the view that is identified by the given ID. The layout is rearranged depending on the state of the removed view.
+         */
+        "removeView": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
     interface ChFlexibleLayoutRender {
         /**
@@ -393,6 +406,10 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "layout": FlexibleLayout;
+        /**
+          * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
+         */
+        "removeView": (viewId: string, removeRenderedWidgets: boolean) => Promise<LayoutSplitterItemRemoveResult1>;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -882,6 +899,10 @@ export namespace Components {
          */
         "barAccessibleName": string;
         /**
+          * This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.
+         */
+        "dragBarDisabled": boolean;
+        /**
           * Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.
          */
         "incrementWithKeyboard": number;
@@ -889,6 +910,14 @@ export namespace Components {
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
         "layout": LayoutSplitterDistribution;
+        /**
+          * Schedules a new render of the control even if no state changed.
+         */
+        "refreshLayout": () => Promise<void>;
+        /**
+          * Removes the item that is identified by the given ID. The layout is rearranged depending on the state of the removed item.
+         */
+        "removeItem": (viewId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
     interface ChNextDataModeling {
     }
@@ -1367,6 +1396,10 @@ export namespace Components {
          */
         "dragDisabled": boolean;
         /**
+          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
+         */
+        "endDragPreview": () => Promise<void>;
+        /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
         "expanded": boolean;
@@ -1379,9 +1412,13 @@ export namespace Components {
          */
         "items": FlexibleLayoutWidget[];
         /**
-          * Given an index, remove the item from the tab control
+          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
          */
-        "removeItem": (index: number, forceRerender?: boolean) => Promise<void>;
+        "promoteDragPreviewToTopLayer": () => Promise<void>;
+        /**
+          * Given an id, remove the page from the render
+         */
+        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
         /**
           * Specifies the selected item of the widgets array.
          */
@@ -2398,6 +2435,7 @@ declare global {
     interface HTMLChFlexibleLayoutElementEventMap {
         "viewItemClose": ViewItemCloseInfo;
         "selectedViewItemChange": ViewSelectedItemInfo;
+        "viewItemReorder": WidgetReorderInfo;
     }
     interface HTMLChFlexibleLayoutElement extends Components.ChFlexibleLayout, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChFlexibleLayoutElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutElement, ev: ChFlexibleLayoutCustomEvent<HTMLChFlexibleLayoutElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3046,7 +3084,7 @@ declare global {
         "expandMainGroup": string;
         "itemClose": TabItemCloseInfo;
         "selectedItemChange": TabSelectedItemInfo;
-        "itemDragStart": any;
+        "itemDragStart": number;
     }
     interface HTMLChTabElement extends Components.ChTab, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3674,6 +3712,13 @@ declare namespace LocalJSX {
     }
     interface ChFlexibleLayout {
         /**
+          * Specifies the information of each view displayed.
+         */
+        "itemsInfo"?: Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+  >;
+        /**
           * Specifies the distribution of the items in the flexible layout.
          */
         "layoutModel"?: LayoutSplitterDistribution;
@@ -3690,9 +3735,9 @@ declare namespace LocalJSX {
          */
         "onViewItemClose"?: (event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>) => void;
         /**
-          * Specifies the information of each view displayed.
+          * Fired when a widget is dragged and dropped into a view.
          */
-        "viewsInfo"?: Map<string, FlexibleLayoutView>;
+        "onViewItemReorder"?: (event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>) => void;
     }
     interface ChFlexibleLayoutRender {
         /**
@@ -4199,6 +4244,10 @@ declare namespace LocalJSX {
           * This attribute lets you specify the label for the drag bar. Important for accessibility.
          */
         "barAccessibleName"?: string;
+        /**
+          * This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.
+         */
+        "dragBarDisabled"?: boolean;
         /**
           * Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.
          */
@@ -4767,7 +4816,7 @@ declare namespace LocalJSX {
         /**
           * Fired the first time a caption button is dragged outside of its tab list.
          */
-        "onItemDragStart"?: (event: ChTabCustomEvent<any>) => void;
+        "onItemDragStart"?: (event: ChTabCustomEvent<number>) => void;
         /**
           * Fired when the selected item change.
          */

@@ -1,59 +1,38 @@
-import {
-  LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionLeaf
-} from "../../layout-splitter/types";
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { tabTypeToPart } from "../../tab/utils";
 import {
   FlexibleLayout,
   FlexibleLayoutGroup,
   FlexibleLayoutItem,
+  FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
-  FlexibleLayoutView
+  FlexibleLayoutLeafInfo
 } from "../../flexible-layout/types";
-
-let lastViewId = 0;
 
 export const ROOT_VIEW: null = null;
 
-export const getViewId = () => `view-${lastViewId++}`;
-
-export const mapWidgetsToView = (
+export const createAndSetViewInfo = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,
-  itemRefIndex: number,
-  parentDistributionRef: LayoutSplitterDistributionGroup,
-  parentItemRef: FlexibleLayoutGroup,
-  viewsInfo: Map<string, FlexibleLayoutView>,
   blockStartWidgets: Set<string>,
   renderedWidgets: Set<string>
-): string => {
-  // Get a new id for the view
-  const viewId = getViewId();
-
+): FlexibleLayoutLeafInfo => {
   let selectedWidgetId = flexibleLayoutLeaf.selectedWidgetId;
+  const viewId = flexibleLayoutLeaf.id;
   const viewType = flexibleLayoutLeaf.viewType;
   const widgets = flexibleLayoutLeaf.widgets;
 
   if (viewType === "blockStart") {
-    // Store widgets in the Map
-    viewsInfo.set(viewId, {
-      id: viewId,
-      itemRef: flexibleLayoutLeaf,
-      itemRefIndex: itemRefIndex,
-      parentDistributionRef: parentDistributionRef,
-      parentItemRef: parentItemRef,
-      type: viewType,
-      exportParts: "",
-      widgets: widgets
-    });
-
     // Add the widgets to the blockStart section
     widgets.forEach(widget => {
       blockStartWidgets.add(widget.id);
     });
 
-    return viewId;
+    return {
+      id: viewId,
+      type: viewType,
+      exportParts: "",
+      widgets: widgets
+    };
   }
 
   const exportParts = tabTypeToPart[viewType](widgets);
@@ -79,112 +58,90 @@ export const mapWidgetsToView = (
     renderedWidgets.add(selectedWidgetId);
   }
 
-  // Store widgets in the Map
-  viewsInfo.set(viewId, {
+  return {
     id: viewId,
-    itemRef: flexibleLayoutLeaf,
-    itemRefIndex: itemRefIndex,
-    parentDistributionRef: parentDistributionRef,
-    parentItemRef: parentItemRef,
     exportParts,
     selectedWidgetId: selectedWidgetId,
     type: viewType,
     widgets: widgets
-  });
-
-  return viewId;
+  };
 };
 
-const getItemsModel = (
-  flexibleItems: FlexibleLayoutItem[],
-  parentItemRef: FlexibleLayoutGroup,
-  parentDistributionRef: LayoutSplitterDistributionGroup,
-  viewsInfo: Map<string, FlexibleLayoutView>,
+const addCustomBehavior = (
+  item: FlexibleLayoutItem,
+  layoutSplitterParts: Set<string>
+) => {
+  if (item.dragBar?.part) {
+    layoutSplitterParts.add(item.dragBar?.part);
+  }
+};
+
+const updateFlexibleSubModels = (
+  flexibleLayoutItems: FlexibleLayoutItem[],
+  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
   blockStartWidgets: Set<string>,
   layoutSplitterParts: Set<string>,
-  renderedWidgets: Set<string>
-): LayoutSplitterDistributionItem[] =>
-  flexibleItems.map((item, itemIndex) => {
+  renderedWidgets: Set<string>,
+  parentItem: FlexibleLayoutGroup
+) => {
+  flexibleLayoutItems.forEach(flexibleItem => {
     // Group
-    if ((item as FlexibleLayoutGroup).items != null) {
-      const group = item as FlexibleLayoutGroup;
+    if ((flexibleItem as FlexibleLayoutGroup).items != null) {
+      const group = flexibleItem as FlexibleLayoutGroup;
 
-      // Necessary to have the reference before the getItemsModel call
-      const splitterGroup: LayoutSplitterDistributionGroup = {
-        direction: group.direction,
-        size: group.size
-      } as any;
+      const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutGroup> =
+        {
+          item: group,
+          parentItem: parentItem
+        };
+      itemsInfo.set(group.id, flexibleItemExtended);
 
-      splitterGroup.items = getItemsModel(
-        group.items,
-        group,
-        splitterGroup,
-        viewsInfo,
+      updateFlexibleSubModels(
+        group.items, // Subitems
+        itemsInfo,
         blockStartWidgets,
         layoutSplitterParts,
-        renderedWidgets
+        renderedWidgets,
+        group
       );
+    }
+    // Leaf
+    else {
+      const leaf = flexibleItem as FlexibleLayoutLeaf;
 
-      // Custom behaviors
-      addCustomBehavior(item, splitterGroup, layoutSplitterParts);
-
-      return splitterGroup;
+      const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutLeaf> =
+        {
+          item: leaf,
+          parentItem: parentItem,
+          view: createAndSetViewInfo(leaf, blockStartWidgets, renderedWidgets)
+        };
+      itemsInfo.set(leaf.id, flexibleItemExtended);
     }
 
-    // Leaf
-    const leaf = item as FlexibleLayoutLeaf;
-
-    const viewId = mapWidgetsToView(
-      leaf,
-      itemIndex,
-      parentDistributionRef,
-      parentItemRef,
-      viewsInfo,
-      blockStartWidgets,
-      renderedWidgets
-    );
-
-    const splitterLeaf: LayoutSplitterDistributionLeaf = {
-      id: viewId,
-      size: leaf.size,
-      fixedOffsetSize: leaf.fixedOffsetSize
-    };
-
     // Custom behaviors
-    addCustomBehavior(item, splitterLeaf, layoutSplitterParts);
-
-    return splitterLeaf;
+    addCustomBehavior(flexibleItem, layoutSplitterParts);
   });
+};
 
-function addCustomBehavior(
-  item: FlexibleLayoutItem,
-  splitterItem: LayoutSplitterDistributionItem,
-  layoutSplitterParts: Set<string>
-) {
-  if (item.hideDragBar) {
-    splitterItem.hideDragBar = true;
-  }
-  if (item.dragBarPart != null) {
-    splitterItem.dragBarPart = item.dragBarPart;
-    layoutSplitterParts.add(item.dragBarPart);
-  }
-}
-
-export const getLayoutModel = (
+export const updateFlexibleModels = (
   flexibleLayout: FlexibleLayout,
-  viewsInfo: Map<string, FlexibleLayoutView>,
+  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
   blockStartWidgets: Set<string>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>
-): LayoutSplitterDistribution => ({
-  direction: flexibleLayout.direction,
-  items: getItemsModel(
+) =>
+  updateFlexibleSubModels(
     flexibleLayout.items,
-    ROOT_VIEW,
-    ROOT_VIEW,
-    viewsInfo,
+    itemsInfo,
     blockStartWidgets,
     layoutSplitterParts,
-    renderedWidgets
-  )
-});
+    renderedWidgets,
+    ROOT_VIEW // Root item
+  );
+
+export const getViewInfo = (
+  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
+  viewId: string
+): FlexibleLayoutLeafInfo =>
+  (itemsInfo.get(viewId) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
+    .view;

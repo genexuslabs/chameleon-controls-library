@@ -13,7 +13,10 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
-  FlexibleLayoutView,
+  FlexibleLayoutItem,
+  FlexibleLayoutItemExtended,
+  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetDragInfo,
@@ -28,12 +31,16 @@ import {
   TabType
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
-import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import {
+  LayoutSplitterDistribution,
+  LayoutSplitterItemRemoveResult
+} from "../../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
   removeDroppableAreaStyles
 } from "../utils";
+import { getViewInfo } from "../../renders/flexible-layout/utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -53,6 +60,7 @@ export class ChFlexibleLayout {
   // Refs
   #draggedViewRef: DraggableView;
   #droppableAreaRef: HTMLDivElement;
+  #layoutSplitterRef: HTMLChLayoutSplitterElement;
 
   @Element() el: HTMLChFlexibleLayoutElement;
 
@@ -71,7 +79,10 @@ export class ChFlexibleLayout {
   /**
    * Specifies the information of each view displayed.
    */
-  @Prop() readonly viewsInfo: Map<string, FlexibleLayoutView> = new Map();
+  @Prop() readonly itemsInfo: Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+  >;
 
   /**
    * Fired when a item of a view request to be closed.
@@ -89,6 +100,31 @@ export class ChFlexibleLayout {
   @Event() viewItemReorder: EventEmitter<WidgetReorderInfo>;
 
   /**
+   * Schedules a new render of the control even if no state changed.
+   */
+  @Method()
+  async refreshLayout() {
+    forceUpdate(this);
+    this.#layoutSplitterRef.refreshLayout();
+  }
+
+  /**
+   * Removes the view that is identified by the given ID.
+   * The layout is rearranged depending on the state of the removed view.
+   */
+  @Method()
+  async removeView(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const result = await this.#layoutSplitterRef.removeItem(itemId);
+
+    if (result.success) {
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result;
+  }
+
+  /**
    * Given the view ID and the item id, remove the page of the item from the view.
    */
   @Method()
@@ -97,7 +133,7 @@ export class ChFlexibleLayout {
     itemId: string,
     forceRerender = true
   ) {
-    const viewInfo = this.viewsInfo.get(viewId);
+    const viewInfo = this.#getViewInfo(viewId);
     if (!viewInfo) {
       return;
     }
@@ -107,6 +143,24 @@ export class ChFlexibleLayout {
     ) as HTMLChTabElement;
     await viewRef.removePage(itemId, forceRerender);
   }
+
+  #getViewInfo = (viewId: string): FlexibleLayoutLeafInfo =>
+    getViewInfo(this.itemsInfo, viewId);
+
+  #getAllViews = (): FlexibleLayoutLeafInfo[] => {
+    const views: FlexibleLayoutLeafInfo[] = [];
+
+    this.itemsInfo.forEach(item => {
+      const itemView = (item as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
+        .view;
+
+      if (itemView != null) {
+        views.push(itemView);
+      }
+    });
+
+    return views;
+  };
 
   // @Listen("keydown", { target: "document" })
   // handleKeyDownEvent(event: KeyboardEvent) {
@@ -293,7 +347,7 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutView) => (
+  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutLeafInfo) => (
     <ch-tab
       id={viewInfo.id}
       key={viewInfo.id}
@@ -314,7 +368,7 @@ export class ChFlexibleLayout {
     </ch-tab>
   );
 
-  private renderView = (view: FlexibleLayoutView) =>
+  private renderView = (view: FlexibleLayoutLeafInfo) =>
     view.type === "blockStart" ? (
       <header key={view.id} slot={view.id}>
         <slot />
@@ -336,8 +390,9 @@ export class ChFlexibleLayout {
           dragBarDisabled={this.dragBarDisabled}
           layout={layoutModel}
           exportparts={"bar," + this.layoutSplitterParts}
+          ref={el => (this.#layoutSplitterRef = el)}
         >
-          {[...this.viewsInfo.values()].map(this.renderView)}
+          {this.#getAllViews().map(this.renderView)}
         </ch-layout-splitter>
 
         <div

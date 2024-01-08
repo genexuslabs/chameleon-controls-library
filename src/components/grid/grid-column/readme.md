@@ -79,6 +79,7 @@ The `ch-grid-column` component represents a grid column.
 
 ### Used by
 
+ - [ch-test-flexible-layout](../../test/test-flexible-layout)
  - [gx-grid-chameleon](../../gx-grid)
 
 ### Depends on
@@ -93,6 +94,7 @@ graph TD;
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window
   ch-window --> ch-window-close
+  ch-test-flexible-layout --> ch-grid-column
   gx-grid-chameleon --> ch-grid-column
   style ch-grid-column fill:#f9f,stroke:#333,stroke-width:4px
 ```

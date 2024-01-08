@@ -1,39 +1,55 @@
-import { Component, Element, Prop, Watch, h } from "@stencil/core";
+import {
+  Component,
+  Element,
+  Method,
+  Prop,
+  Watch,
+  forceUpdate,
+  h
+} from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
-  LayoutSplitterModel,
-  LayoutSplitterModelGroup,
-  LayoutSplitterModelItem,
-  LayoutSplitterModelLeaf
+  LayoutSplitterDistributionGroup,
+  LayoutSplitterDistributionItem,
+  LayoutSplitterDistributionItemExtended,
+  LayoutSplitterItemRemoveResult
 } from "./types";
 import {
-  getLayoutModel,
+  fixAndUpdateLayoutModel,
   getMousePosition,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
 import { isRTL } from "../../common/utils";
+import { removeItem } from "./remove-item";
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
-const DRAG_BAR_POSITION_CUSTOM_VAR = "--ch-drag-bar__start-position";
-const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR =
-  "--ch-layout-splitter__grid-template-direction";
+const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
 
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
   `group direction--${direction}`;
 
-const TEMPLATE_STYLE = (items: LayoutSplitterModelItem[]) => ({
-  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(items)
+const TEMPLATE_STYLE = (
+  items: LayoutSplitterDistributionItem[],
+  itemsInfo: Map<
+    string,
+    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
+  >
+) => ({
+  [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
+    items,
+    itemsInfo,
+    items.length - 1
+  )
 });
 
-const getItemIndex = (indexPrefix: string, index: number) =>
-  `${indexPrefix}${index}`;
-
-const getAriaControls = (indexPrefix: string, index: number) =>
-  `${indexPrefix}${index} ${indexPrefix}${index + 1}`; // Based on getItemIndex
+const getAriaControls = (
+  layoutItems: LayoutSplitterDistributionItem[],
+  index: number
+) => `${layoutItems[index].id} ${layoutItems[index + 1].id}`;
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -56,8 +72,13 @@ export class ChLayoutSplitter implements ChComponent {
   #lastMousePosition: number;
   #newMousePosition: number;
 
+  #fixedSizesSumRoot: number;
+
   // Distribution of elements
-  #layoutModel: LayoutSplitterModel;
+  #itemsInfo: Map<
+    string,
+    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
+  > = new Map();
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -84,12 +105,37 @@ export class ChLayoutSplitter implements ChComponent {
    * separated via a drag bar.
    */
   @Prop() readonly layout: LayoutSplitterDistribution = {
+    id: "root",
     direction: "columns",
     items: []
   };
   @Watch("layout")
   handleComponentsChange(newLayout: LayoutSplitterDistribution) {
     this.updateLayoutInfo(newLayout);
+  }
+
+  /**
+   * Schedules a new render of the control even if no state changed.
+   */
+  @Method()
+  async refreshLayout() {
+    forceUpdate(this);
+  }
+
+  /**
+   * Removes the item that is identified by the given ID.
+   * The layout is rearranged depending on the state of the removed item.
+   */
+  @Method()
+  async removeItem(viewId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const result = removeItem(viewId, this.#itemsInfo);
+
+    if (result.success) {
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result;
   }
 
   #handleBarDrag = (event: MouseEvent) => {
@@ -113,8 +159,8 @@ export class ChLayoutSplitter implements ChComponent {
 
       updateComponentsAndDragBar(
         this.#mouseDownInfo,
+        this.#itemsInfo,
         incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
-        DRAG_BAR_POSITION_CUSTOM_VAR,
         GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
       );
 
@@ -146,23 +192,22 @@ export class ChLayoutSplitter implements ChComponent {
     direction: LayoutSplitterDirection,
     index: number,
     fixedSizesSum: number,
-    layoutItems: LayoutSplitterModelItem[],
+    layoutItems: LayoutSplitterDistributionItem[],
     event: Event
   ) => {
     // Initialize the values needed for drag processing
-    const dragBar = event.target as HTMLElement;
-    const dragBarContainer = dragBar.parentElement;
+    const dragBarContainer = (event.target as HTMLElement).parentElement;
 
     this.#mouseDownInfo = {
-      direction: direction,
-      dragBar: dragBar,
-      dragBarContainer: dragBarContainer,
-      dragBarContainerSize:
+      container: dragBarContainer,
+      containerSize:
         direction === "columns"
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
+      direction: direction,
       fixedSizesSum: fixedSizesSum,
-      index: index,
+      itemStartId: layoutItems[index].id,
+      itemEndId: layoutItems[index + 1].id,
       layoutItems: layoutItems,
       RTL: isRTL()
     };
@@ -176,7 +221,7 @@ export class ChLayoutSplitter implements ChComponent {
       direction: LayoutSplitterDirection,
       index: number,
       fixedSizesSum: number,
-      layoutItems: LayoutSplitterModelItem[]
+      layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: MouseEvent) => {
       // Necessary to prevent selecting the inner image (or other elements) of
@@ -201,7 +246,8 @@ export class ChLayoutSplitter implements ChComponent {
         capture: true
       });
       document.addEventListener("mouseup", this.#mouseUpHandler, {
-        capture: true
+        capture: true,
+        passive: true
       });
     };
 
@@ -210,7 +256,7 @@ export class ChLayoutSplitter implements ChComponent {
       direction: LayoutSplitterDirection,
       index: number,
       fixedSizesSum: number,
-      layoutItems: LayoutSplitterModelItem[]
+      layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: KeyboardEvent) => {
       if (
@@ -248,39 +294,43 @@ export class ChLayoutSplitter implements ChComponent {
   #renderItems = (
     direction: LayoutSplitterDirection,
     fixedSizesSum: number,
-    indexPrefix: string,
-    layoutItems: LayoutSplitterModelItem[]
+    layoutItems: LayoutSplitterDistributionItem[]
   ) => {
     const lastComponentIndex = layoutItems.length - 1;
 
     return layoutItems.map((item, index) => [
-      (item as LayoutSplitterModelGroup).items ? (
+      (item as LayoutSplitterDistributionGroup).items ? (
         <div
-          id={getItemIndex(indexPrefix, index)}
-          class={DIRECTION_CLASS((item as LayoutSplitterModelGroup).direction)}
-          style={TEMPLATE_STYLE((item as LayoutSplitterModelGroup).items)}
+          id={item.id}
+          class={DIRECTION_CLASS(
+            (item as LayoutSplitterDistributionGroup).direction
+          )}
+          style={TEMPLATE_STYLE(
+            (item as LayoutSplitterDistributionGroup).items,
+            this.#itemsInfo
+          )}
         >
           {this.#renderItems(
-            (item as LayoutSplitterModelGroup).direction,
-            (item as LayoutSplitterModelGroup).fixedSizesSum,
-            getItemIndex(indexPrefix, index),
-            (item as LayoutSplitterModelGroup).items
+            (item as LayoutSplitterDistributionGroup).direction,
+            (
+              this.#itemsInfo.get(
+                item.id
+              ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
+            ).fixedSizesSum,
+            (item as LayoutSplitterDistributionGroup).items
           )}
         </div>
       ) : (
-        <div id={getItemIndex(indexPrefix, index)} class="leaf">
-          <slot
-            key={(item as LayoutSplitterModelLeaf).id}
-            name={(item as LayoutSplitterModelLeaf).id}
-          />
+        <div id={item.id} class="leaf">
+          <slot key={item.id} name={item.id} />
         </div>
       ),
 
-      !item.hideDragBar && index !== lastComponentIndex && (
+      item.dragBar?.hidden !== true && index !== lastComponentIndex && (
         <div
           // - - - Accessibility - - -
           role="separator"
-          aria-controls={getAriaControls(indexPrefix, index)}
+          aria-controls={getAriaControls(layoutItems, index)}
           aria-disabled={this.dragBarDisabled ? "true" : null}
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
@@ -288,10 +338,10 @@ export class ChLayoutSplitter implements ChComponent {
           tabindex="0"
           // - - - - - - - - - - - - -
           class="bar"
-          part={item.dragBarPart ? `bar ${item.dragBarPart}` : "bar"}
-          style={{
-            [DRAG_BAR_POSITION_CUSTOM_VAR]: `calc(${item.dragBarPosition})`
-          }}
+          part={item.dragBar?.part ? `bar ${item.dragBar.part}` : "bar"}
+          style={
+            item.dragBar?.size ? { "--size": `${item.dragBar.size}px` } : null
+          }
           onKeyDown={
             !this.dragBarDisabled
               ? this.#handleResize(direction, index, fixedSizesSum, layoutItems)
@@ -313,8 +363,16 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
+    // Clear old information
+    this.#itemsInfo.clear();
+
     if (layout?.items?.length > 0) {
-      this.#layoutModel = getLayoutModel(layout);
+      this.#fixedSizesSumRoot = fixAndUpdateLayoutModel(
+        layout,
+        this.#itemsInfo
+      );
+
+      console.log(this.#itemsInfo);
     }
   }
 
@@ -328,7 +386,7 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    const layoutModel = this.#layoutModel;
+    const layoutModel = this.layout;
 
     if (layoutModel?.items == null) {
       return "";
@@ -337,12 +395,11 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       <div
         class={DIRECTION_CLASS(layoutModel.direction)}
-        style={TEMPLATE_STYLE(layoutModel.items)}
+        style={TEMPLATE_STYLE(layoutModel.items, this.#itemsInfo)}
       >
         {this.#renderItems(
           layoutModel.direction,
-          layoutModel.fixedSizesSum,
-          "item",
+          this.#fixedSizesSumRoot,
           layoutModel.items
         )}
       </div>

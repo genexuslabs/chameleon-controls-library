@@ -1,8 +1,8 @@
 import { AccessibleRole, ImageRender } from "../../common/types";
 import {
-  LayoutSplitterDirection,
+  LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
-  LayoutSplitterSize
+  LayoutSplitterDistributionLeaf
 } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
@@ -24,32 +24,26 @@ export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 //   inlineEnd?: FlexibleLayoutAside;
 //   blockEnd?: FlexibleLayoutFooter;
 // };
-export type FlexibleLayout = {
-  direction: LayoutSplitterDirection;
+export type FlexibleLayout = Omit<LayoutSplitterDistribution, "items"> & {
   items: FlexibleLayoutItem[];
 };
 
 export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
 
-export type FlexibleLayoutGroup = {
+export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
   accessibleRole?: ViewAccessibleRole;
-  direction: LayoutSplitterDirection;
-  dragBarPart?: string;
-  expanded?: boolean;
-  hideDragBar?: boolean;
-  items: FlexibleLayoutItem[];
-  size: LayoutSplitterSize;
-};
-
-export type FlexibleLayoutLeaf = {
-  accessibleRole?: ViewAccessibleRole;
-  dragBarPart?: string;
-  fixedOffsetSize?: number;
-  hideDragBar?: boolean;
   selectedWidgetId?: string;
-  size: LayoutSplitterSize;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
+};
+
+export type FlexibleLayoutGroup = Omit<
+  LayoutSplitterDistributionGroup,
+  "items"
+> & {
+  accessibleRole?: ViewAccessibleRole;
+  expanded?: boolean;
+  items: FlexibleLayoutItem[];
 };
 
 export type FlexibleLayoutWidget = {
@@ -79,12 +73,22 @@ export type FlexibleLayoutRenders = { [key: string]: () => any };
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
+export type FlexibleLayoutItemExtended<
+  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf
+> = T extends FlexibleLayoutLeaf
+  ? {
+      item: T;
+      parentItem: FlexibleLayoutGroup;
+      view: FlexibleLayoutView;
+    }
+  : {
+      item: T;
+      parentItem: FlexibleLayoutGroup;
+    };
+
 export type FlexibleLayoutView = {
   id: string;
-  itemRef: FlexibleLayoutLeaf;
-  itemRefIndex: number;
-  parentDistributionRef: LayoutSplitterDistributionGroup;
-  parentItemRef: FlexibleLayoutGroup;
+  index: number;
   type: ViewType;
   expanded?: boolean;
   exportParts: string;

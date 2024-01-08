@@ -1,17 +1,18 @@
 import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
+  FlexibleLayoutItem,
+  FlexibleLayoutItemExtended,
+  FlexibleLayoutLeaf,
   FlexibleLayoutRenders,
   FlexibleLayoutView,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetReorderInfo
 } from "../../flexible-layout/types";
-import { getLayoutModel } from "./utils";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
-import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 import { removeElement } from "../../../common/array";
-import { removeView } from "./remove-view";
+import { getViewInfo, updateFlexibleModels } from "./utils";
 
 @Component({
   shadow: false,
@@ -28,9 +29,8 @@ export class ChFlexibleLayoutRender {
 
   #blockStartWidgets: Set<string> = new Set();
 
-  #viewsInfo: Map<string, FlexibleLayoutView> = new Map();
-
-  #layoutSplitterModels: LayoutSplitterDistribution;
+  #itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>> =
+    new Map();
 
   #layoutSplitterParts = "";
 
@@ -62,36 +62,51 @@ export class ChFlexibleLayoutRender {
    */
   @Method()
   async removeView(viewId: string, removeRenderedWidgets: boolean) {
-    const success = removeView(
-      viewId,
-      this.#viewsInfo,
-      this.#renderedWidgets,
-      removeRenderedWidgets
-    );
+    const itemInfo = this.#itemsInfo.get(viewId);
 
-    if (success) {
-      this.setLayoutSplitterModels(this.layout);
-
-      // Queue re-renders
-      forceUpdate(this);
-      forceUpdate(this.#flexibleLayoutRef);
+    if (!itemInfo) {
+      return false;
     }
+    const viewInfo = (
+      itemInfo as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
+    ).view;
+
+    // The item is not a view (leaf). It's a group.
+    if (viewInfo == null) {
+      return false;
+    }
+
+    const success = await this.#flexibleLayoutRef.removeView(viewId);
+
+    if (!success) {
+      return false;
+    }
+
+    // Remove rendered widgets
+    if (removeRenderedWidgets) {
+      viewInfo.widgets.forEach(widget => {
+        this.#renderedWidgets.delete(widget.id);
+      });
+    }
+
+    // Delete the view
+    this.#itemsInfo.delete(viewId);
+
+    // Queue re-renders
+    forceUpdate(this);
   }
 
   private setLayoutSplitterModels(layout: FlexibleLayout) {
     // Empty layout
     if (layout == null) {
-      // Reset layout
-      this.#layoutSplitterModels = { direction: "columns", items: [] };
-
       return;
     }
 
     const layoutSplitterPartsSet: Set<string> = new Set();
 
-    this.#layoutSplitterModels = getLayoutModel(
+    updateFlexibleModels(
       layout,
-      this.#viewsInfo,
+      this.#itemsInfo,
       this.#blockStartWidgets,
       layoutSplitterPartsSet,
       this.#renderedWidgets
@@ -100,13 +115,15 @@ export class ChFlexibleLayoutRender {
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   }
 
+  #getViewInfo = (viewId: string) => getViewInfo(this.#itemsInfo, viewId);
+
   #handleViewItemChange = (
     event: ChFlexibleLayoutCustomEvent<ViewSelectedItemInfo>
   ) => {
     event.stopPropagation();
 
     const selectedItemInfo = event.detail;
-    const viewInfo = this.#viewsInfo.get(selectedItemInfo.viewId);
+    const viewInfo = this.#getViewInfo(selectedItemInfo.viewId);
 
     // Mark the item as rendered
     this.#renderedWidgets.add(selectedItemInfo.newSelectedId);
@@ -129,7 +146,7 @@ export class ChFlexibleLayoutRender {
     event.stopPropagation();
 
     const itemCloseInfo = event.detail;
-    const viewInfo = this.#viewsInfo.get(itemCloseInfo.viewId);
+    const viewInfo = this.#getViewInfo(itemCloseInfo.viewId);
 
     // Last item from the view. Destroy the view and adjust the layout
     if (viewInfo.widgets.length === 1) {
@@ -185,7 +202,6 @@ export class ChFlexibleLayoutRender {
     selectedId: string
   ) => {
     viewInfo.selectedWidgetId = selectedId;
-    viewInfo.itemRef.selectedWidgetId = selectedId;
   };
 
   #handleViewItemReorder = (
@@ -196,7 +212,7 @@ export class ChFlexibleLayoutRender {
     const viewIdTarget = reorderInfo.viewIdTarget;
     const dropAreaTarget = reorderInfo.dropAreaTarget;
 
-    const viewInfo = this.#viewsInfo.get(viewId);
+    const viewInfo = this.#getViewInfo(viewId);
 
     // Dropping in the same view. Nothing to change
     if (
@@ -206,7 +222,7 @@ export class ChFlexibleLayoutRender {
       return;
     }
 
-    const viewTargetInfo = this.#viewsInfo.get(viewIdTarget);
+    const viewTargetInfo = this.#getViewInfo(viewIdTarget);
     const itemIndex = reorderInfo.index;
     const itemInfo = viewInfo.widgets[itemIndex];
 
@@ -228,10 +244,10 @@ export class ChFlexibleLayoutRender {
 
     // Remove the view, since it has no more items
     if (viewInfo.widgets.length === 1) {
-      removeView(viewId, this.#viewsInfo, this.#renderedWidgets, false);
+      this.removeView(viewId, false);
 
       // Refresh reference to force re-render
-      this.#layoutSplitterModels = { ...this.#layoutSplitterModels };
+      // this.#layoutSplitterModels = { ...this.#layoutSplitterModels }; // TODO: UPDATE THIS
     }
     // Remove the item in the view that belongs
     else {
@@ -253,11 +269,9 @@ export class ChFlexibleLayoutRender {
       this.#removeWidget(viewInfo, itemIndex, true);
     }
 
-    console.log(this.#renderedWidgets);
-
     // Queue re-renders
-    forceUpdate(this);
-    forceUpdate(this.#flexibleLayoutRef);
+    // forceUpdate(this);
+    // this.#flexibleLayoutRef.refreshLayout();
   };
 
   componentWillLoad() {
@@ -273,9 +287,9 @@ export class ChFlexibleLayoutRender {
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
-        layoutModel={this.#layoutSplitterModels}
+        layoutModel={this.layout}
         layoutSplitterParts={this.#layoutSplitterParts}
-        viewsInfo={this.#viewsInfo}
+        itemsInfo={this.#itemsInfo}
         onViewItemClose={this.#handleViewItemClose}
         onViewItemReorder={this.#handleViewItemReorder}
         onSelectedViewItemChange={this.#handleViewItemChange}

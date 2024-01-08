@@ -177,6 +177,17 @@ export class ChTreeViewItem {
   }
 
   /**
+   * Specifies what kind of expandable button is displayed.
+   * Only works if `leaf === false`.
+   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
+   *     the items of the control.
+   *  - `"decorative"`: Only a decorative icon is rendered to display the state
+   *     of the item.
+   */
+  @Prop() readonly expandableButton: "action" | "decorative" | "no" =
+    "decorative";
+
+  /**
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
@@ -254,12 +265,6 @@ export class ChTreeViewItem {
    * the control.
    */
   @Prop() readonly showDownloadingSpinner: boolean = true;
-
-  /**
-   * `true` to show the expandable button that allows to expand/collapse the
-   * items of the control. Only works if `leaf === false`.
-   */
-  @Prop() readonly showExpandableButton: boolean = true;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -789,8 +794,10 @@ export class ChTreeViewItem {
 
   render() {
     const evenLevel = this.level % 2 === 0;
-    const expandableButtonVisible = !this.leaf && this.showExpandableButton;
-    const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
+    const expandableButtonVisible =
+      !this.leaf && this.expandableButton !== "no";
+    const expandableButtonNotVisible =
+      !this.leaf && this.expandableButton === "no";
 
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
@@ -835,7 +842,14 @@ export class ChTreeViewItem {
             "header--odd": !evenLevel,
             "header--even-expandable": evenLevel && expandableButtonVisible,
             "header--odd-expandable": !evenLevel && expandableButtonVisible,
-            "header--level-0": this.level === INITIAL_LEVEL
+            "header--level-0": this.level === INITIAL_LEVEL,
+
+            "expandable-button-decorative":
+              !this.leaf && this.expandableButton === "decorative",
+            "expandable-button-decorative--collapsed":
+              !this.leaf &&
+              this.expandableButton === "decorative" &&
+              !this.expanded
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""
@@ -850,7 +864,7 @@ export class ChTreeViewItem {
           onDragEnd={!this.dragDisabled ? this.handleDragEnd : null}
           ref={el => (this.headerRef = el)}
         >
-          {!this.leaf && this.showExpandableButton && (
+          {!this.leaf && this.expandableButton === "action" && (
             <button
               type="button"
               class={{

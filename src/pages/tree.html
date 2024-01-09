@@ -34,6 +34,17 @@
         gap: 8px;
       }
 
+      .flex-container {
+        display: flex;
+        gap: 8px;
+      }
+
+      .scroll-context {
+        display: grid;
+        max-height: calc(100vh - 274px);
+        overflow: auto;
+      }
+
       .main-container {
         display: grid;
         grid-template-rows: 1fr min-content;
@@ -430,7 +441,7 @@
           multi-selection="true"
         ></ch-tree-view-render>
 
-        <div>
+        <div class="scroll-context">
           <ch-textblock id="contextmenu-textblock"
             >+ + + + + + + Context + + + + + + +</ch-textblock
           >
@@ -519,7 +530,34 @@
 
             <button id="expand-all" type="button">Expand All</button>
 
+            <div class="flex-container">
+              <input id="input-scroll-into-visible" type="text" />
+              <button id="btn-scroll-into-visible" type="button">
+                Scroll into visible
+              </button>
+            </div>
+
+            <div class="flex-container">
+              <input
+                aria-label="Reload items"
+                id="item-id-to-reload"
+                placeholder="ItemId1"
+                type="text"
+              />
+              <button id="button-to-reload-items">Reload items</button>
+            </div>
+
             <button id="collapse-all" type="button">Collapse All</button>
+
+            <div class="flex-container">
+              <input
+                aria-label="Remove items"
+                id="items-to-remove"
+                placeholder="ItemId1,ItemId2,ItemId3"
+                type="text"
+              />
+              <button id="button-items-to-remove">Remove items</button>
+            </div>
 
             <ch-checkbox
               id="check-all"
@@ -528,33 +566,6 @@
               value="false"
               caption="Check / uncheck all"
             ></ch-checkbox>
-
-            <div>
-              <input id="input-scroll-into-visible" type="text" />
-              <button id="btn-scroll-into-visible" type="button">
-                Scroll into visible
-              </button>
-            </div>
-
-            <div>
-              <label>
-                Item id
-                <input id="item-id-to-reload" type="text" />
-              </label>
-              <button id="button-to-reload-items">Reload items</button>
-            </div>
-
-            <div>
-              <label>
-                Remove items
-                <input
-                  id="items-to-remove"
-                  placeholder="ItemId1,ItemId2,ItemId3"
-                  type="text"
-                />
-              </label>
-              <button id="button-items-to-remove">Remove items</button>
-            </div>
           </fieldset>
         </div>
 
@@ -1400,6 +1411,10 @@
           if (allItemsWithCheckbox.length === 0) {
             checkAllCheckbox.checked = false;
             checkAllCheckbox.indeterminate = false;
+
+            checkedItemsTextBlock.innerHTML =
+              "<br>+ + + + + Checked items + + + + +<br><br><br>+ + + + + Unchecked items + + + + +<br>";
+
             return;
           }
 

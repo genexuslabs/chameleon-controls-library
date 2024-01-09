@@ -379,7 +379,28 @@ export class ChTreeView {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
 
-    this.handleItemSelection(selectedItemInfo);
+    // If the Control key was not pressed or multi selection is disabled,
+    // remove all selected items
+    if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
+      // Deselect all items except the item that emitted the event
+      this.selectedItemsInfo.forEach(treeItem => {
+        if (treeItem.id !== selectedItemInfo.id) {
+          treeItem.itemRef.selected = false;
+        }
+      });
+
+      this.clearSelectedItems();
+    }
+
+    // If the item is selected, add it to list
+    if (selectedItemInfo.selected) {
+      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+    } else {
+      this.selectedItemsInfo.delete(selectedItemInfo.id);
+    }
+
+    // Sync with UI model
+    this.selectedItemsChange.emit(this.selectedItemsInfo);
   }
 
   /**
@@ -668,31 +689,6 @@ export class ChTreeView {
         this.draggedParentIds.push(parentId);
       }
     });
-  }
-
-  private handleItemSelection(selectedItemInfo: TreeViewItemSelectedInfo) {
-    // If the Control key was not pressed or multi selection is disabled,
-    // remove all selected items
-    if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
-      // Deselect all items except the item that emitted the event
-      this.selectedItemsInfo.forEach(treeItem => {
-        if (treeItem.id !== selectedItemInfo.id) {
-          treeItem.itemRef.selected = false;
-        }
-      });
-
-      this.clearSelectedItems();
-    }
-
-    // If the item is selected, add it to list
-    if (selectedItemInfo.selected) {
-      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
-    } else {
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
-    }
-
-    // Sync with UI model
-    this.selectedItemsChange.emit(this.selectedItemsInfo);
   }
 
   private clearSelectedItems() {

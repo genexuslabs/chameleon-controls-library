@@ -227,7 +227,7 @@ $own-offset: calc(
     }
 
     &--collapsed::before {
-      transform: rotate(-90deg);
+      transform: rotate(-90deg); // TODO: Add RTL support
     }
   }
 
@@ -320,7 +320,8 @@ $own-offset: calc(
 .downloading {
   width: 0.75em;
   height: 0.75em;
-  margin-inline-start: 8px;
+  // The "2px" separation is necessary to avoid issues with the horizontal scrollbar in Firefox
+  margin-inline: 8px 2px;
   border: 2px solid currentColor;
   border-inline-start-color: transparent;
   border-radius: 50%;

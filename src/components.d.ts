@@ -1652,6 +1652,14 @@ export namespace Components {
          */
         "editing": boolean;
         /**
+          * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed. Only works if `leaf === false`.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
+        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded": boolean;
@@ -1716,10 +1724,6 @@ export namespace Components {
          */
         "showDownloadingSpinner": boolean;
         /**
-          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
-         */
-        "showExpandableButton": boolean;
-        /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
         "showLines": TreeViewLines;
@@ -1773,6 +1777,14 @@ export namespace Components {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems": boolean;
+        /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
         /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
@@ -1927,6 +1939,14 @@ export namespace Components {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems": boolean;
+        /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
         /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
@@ -5059,6 +5079,14 @@ declare namespace LocalJSX {
          */
         "editing"?: boolean;
         /**
+          * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed. Only works if `leaf === false`.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
+        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded"?: boolean;
@@ -5135,10 +5163,6 @@ declare namespace LocalJSX {
          */
         "showDownloadingSpinner"?: boolean;
         /**
-          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
-         */
-        "showExpandableButton"?: boolean;
-        /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
         "showLines"?: TreeViewLines;
@@ -5184,6 +5208,14 @@ declare namespace LocalJSX {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems"?: boolean;
+        /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
         /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
@@ -5311,6 +5343,14 @@ declare namespace LocalJSX {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems"?: boolean;
+        /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
         /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */

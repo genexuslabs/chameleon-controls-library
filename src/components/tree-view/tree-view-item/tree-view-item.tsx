@@ -177,6 +177,23 @@ export class ChTreeViewItem {
   }
 
   /**
+   * Specifies what kind of expandable button is displayed.
+   * Only works if `leaf === false`.
+   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
+   *     the items of the control.
+   *  - `"decorative"`: Only a decorative icon is rendered to display the state
+   *     of the item.
+   */
+  @Prop() readonly expandableButton: "action" | "decorative" | "no" =
+    "decorative";
+
+  /**
+   * `true` to expand the control on click interaction. If `false`, with mouse
+   * interaction the control will only be expanded on double click.
+   */
+  @Prop() readonly expandOnClick: boolean = true;
+
+  /**
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
@@ -254,12 +271,6 @@ export class ChTreeViewItem {
    * the control.
    */
   @Prop() readonly showDownloadingSpinner: boolean = true;
-
-  /**
-   * `true` to show the expandable button that allows to expand/collapse the
-   * items of the control. Only works if `leaf === false`.
-   */
-  @Prop() readonly showExpandableButton: boolean = true;
 
   /**
    * `true` to display the relation between tree items and tree lists using
@@ -622,9 +633,16 @@ export class ChTreeViewItem {
   }
 
   private toggleOrSelect(event: MouseEvent) {
+    // Ctrl key
     if (mouseEventModifierKey(event)) {
       this.toggleSelected();
-    } else {
+    }
+    // Expand on click interaction
+    else if (this.expandOnClick) {
+      this.toggleExpand(event);
+    }
+    // Click only selects the item
+    else {
       this.setSelected();
     }
   }
@@ -652,8 +670,9 @@ export class ChTreeViewItem {
 
     this.emitOpenReference();
 
-    // The Control key is not pressed, so the control can be expanded
-    if (!this.leaf) {
+    // The Control key is not pressed, so the control can be expanded if double
+    // click expands the item
+    if (!this.leaf && !this.expandOnClick) {
       this.toggleExpand(event);
     }
   };
@@ -789,8 +808,10 @@ export class ChTreeViewItem {
 
   render() {
     const evenLevel = this.level % 2 === 0;
-    const expandableButtonVisible = !this.leaf && this.showExpandableButton;
-    const expandableButtonNotVisible = !this.leaf && !this.showExpandableButton;
+    const expandableButtonVisible =
+      !this.leaf && this.expandableButton !== "no";
+    const expandableButtonNotVisible =
+      !this.leaf && this.expandableButton === "no";
 
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
@@ -835,7 +856,14 @@ export class ChTreeViewItem {
             "header--odd": !evenLevel,
             "header--even-expandable": evenLevel && expandableButtonVisible,
             "header--odd-expandable": !evenLevel && expandableButtonVisible,
-            "header--level-0": this.level === INITIAL_LEVEL
+            "header--level-0": this.level === INITIAL_LEVEL,
+
+            "expandable-button-decorative":
+              !this.leaf && this.expandableButton === "decorative",
+            "expandable-button-decorative--collapsed":
+              !this.leaf &&
+              this.expandableButton === "decorative" &&
+              !this.expanded
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""
@@ -850,7 +878,7 @@ export class ChTreeViewItem {
           onDragEnd={!this.dragDisabled ? this.handleDragEnd : null}
           ref={el => (this.headerRef = el)}
         >
-          {!this.leaf && this.showExpandableButton && (
+          {!this.leaf && this.expandableButton === "action" && (
             <button
               type="button"
               class={{

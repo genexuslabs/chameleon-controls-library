@@ -226,6 +226,8 @@ export class ChTreeViewRender {
   >;
   private selectedItemsFilter: Set<string>;
 
+  #emitSelectedChange = false;
+
   private emitCheckedChange = false;
 
   private rootNode: TreeViewItemModel;
@@ -480,6 +482,40 @@ export class ChTreeViewRender {
 
   /**
    * Fired when the selected items change.
+   * This event can be fired by the following conditions:
+   *   1. A user changes the selected items interacting with the Tree View.
+   *
+   *   2. TODO: The `multiSelection` value is changed from `true` to `false`.
+   *
+   *   3. TODO: A selected item is no longer rendered because it does not satisfies a
+   *      filter condition.
+   *
+   *   4. TODO: The `treeModel` property is updated and contains different selected
+   *      items. Even if it does not contains different selected items, this
+   *      event is fired because the selected items can have a different path
+   *      than before the `treeModel` update.
+   *
+   *   5. TODO: The `updateItemsProperties` method is executed, changing the item
+   *      selection.
+   *
+   *   6. A selected item is removed.
+   *
+   *   7. TODO: A selected item is moved into a new parent with drag and drop.
+   *      In this case, since the detail of the event contains the information
+   *      of the parent, this event must be fired to update the information.
+   *
+   *   8. TODO: Executing `scrollIntoVisible` method and updating the selected value
+   *      of the scrolled item.
+   *
+   *   9. TODO: An external item is dropped into the Tree View and the item is
+   *      selected.
+   *
+   *  10. TODO: Lazy loading content that has selected items?
+   *
+   * Thing that does not fire this event:
+   *   - TODO: Renaming a selected item.
+   *
+   *   - TODO: Applying a filter that keeps all selected items rendered.
    */
   @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
 
@@ -508,10 +544,10 @@ export class ChTreeViewRender {
         this.moveItemToNewParent(newParentUIModel)
       );
 
-      // When the selected items are moved, the tree must remove its internal
+      // When the selected items are moved, the tree must update its internal
       // state to not have undefined references
       if (dataTransferInfo.draggingSelectedItems) {
-        await this.treeRef.clearSelectedItemsInfo();
+        this.scheduleSelectedItemsChange();
       }
     }
     // Add the new items
@@ -618,7 +654,7 @@ export class ChTreeViewRender {
     if (!treeViewHasFilters(this.filterType, this.filter)) {
       // Update selected items
       if (removeItemsResult.atLeastOneSelected) {
-        this.emitSelectedItemsChange([...this.selectedItems.keys()]);
+        this.updateSelectedItems();
       }
 
       // Re-sync checked items
@@ -960,7 +996,7 @@ export class ChTreeViewRender {
     });
 
     // Update selected items
-    this.emitSelectedItemsChange([...event.detail.keys()]);
+    this.updateSelectedItems();
   };
 
   private handleExpandedItemChange = (
@@ -1087,13 +1123,13 @@ export class ChTreeViewRender {
     this.flattenedCheckboxTreeModel.clear();
     this.selectedItems.clear();
 
-    // The model was updated at runtime, so we need to clear the references
-    if (this.treeRef) {
-      this.treeRef.clearSelectedItemsInfo();
-    }
-
     this.rootNode = { id: null, caption: null, items: this.treeModel };
     this.flattenSubModel(this.rootNode);
+
+    // The model was updated at runtime, so we need to update the references
+    if (this.treeRef) {
+      this.treeRef.setSelectedItems([...this.selectedItems.keys()]);
+    }
 
     // Re-sync checked items
     this.emitCheckedItemsChange();
@@ -1147,8 +1183,16 @@ export class ChTreeViewRender {
     this.emitCheckedChange = true;
   }
 
-  private emitSelectedItemsChange(selectedItems: string[]) {
-    const selectedItemsInfo = this._getItemsInfo(selectedItems);
+  private scheduleSelectedItemsChange() {
+    this.#emitSelectedChange = true;
+  }
+
+  private updateSelectedItems() {
+    const selectedItems = treeViewHasFilters(this.filterType, this.filter)
+      ? this.selectedItemsFilter
+      : this.selectedItems;
+
+    const selectedItemsInfo = this._getItemsInfo([...selectedItems.keys()]);
     this.selectedItemsChange.emit(selectedItemsInfo);
   }
 
@@ -1216,7 +1260,7 @@ export class ChTreeViewRender {
       // whether is true or not
       // TODO: Check with the last filter if we must emit the event
       this.updateCheckedItems();
-      this.emitSelectedItemsChange([...this.selectedItemsFilter.keys()]);
+      this.updateSelectedItems();
     };
 
     // Check if should filter with debounce
@@ -1253,6 +1297,10 @@ export class ChTreeViewRender {
     if (this.applyFilters) {
       this.updateFilters();
       this.applyFilters = false;
+    }
+
+    if (this.#emitSelectedChange) {
+      this.updateSelectedItems();
     }
   }
 

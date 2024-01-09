@@ -32,6 +32,8 @@ const TREE_TAG_NAME = "ch-tree-view";
 
 // Selectors
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
+const ITEM_SELECTOR = (treeItemId: string) =>
+  `${TREE_ITEM_TAG_NAME}[id="${treeItemId}"]`;
 
 const TEXT_FORMAT = "text/plain";
 
@@ -389,7 +391,7 @@ export class ChTreeView {
         }
       });
 
-      this.clearSelectedItems();
+      this.updateSelectedItems();
     }
 
     // If the item is selected, add it to list
@@ -404,13 +406,12 @@ export class ChTreeView {
   }
 
   /**
-   * Clear all information about the selected items. This method is intended to
-   * be used when selected items are reordered and the selected references will
-   * no longer be useful.
+   * Given an array of item ids, it updates the information of selected items.
+   * This method is intended to be used when selected item references change.
    */
   @Method()
-  async clearSelectedItemsInfo() {
-    this.clearSelectedItems();
+  async setSelectedItems(selectedItems: string[] = []) {
+    this.updateSelectedItems(selectedItems);
   }
 
   /**
@@ -418,9 +419,7 @@ export class ChTreeView {
    */
   @Method()
   async scrollIntoVisible(treeItemId: string) {
-    const itemRef = this.el.querySelector(
-      `${TREE_ITEM_TAG_NAME}[id="${treeItemId}"]`
-    );
+    const itemRef = this.el.querySelector(ITEM_SELECTOR(treeItemId));
     if (!itemRef) {
       return;
     }
@@ -691,8 +690,14 @@ export class ChTreeView {
     });
   }
 
-  private clearSelectedItems() {
+  private updateSelectedItems(selectedItems: string[] = []) {
     this.selectedItemsInfo.clear();
+
+    if (selectedItems.length === 0) {
+      return;
+    }
+
+    // TODO: Add implementation
   }
 
   disconnectedCallback() {

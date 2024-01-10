@@ -17,7 +17,7 @@ import {
   TreeViewItemCheckedInfo,
   TreeViewItemNewCaption,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelected
 } from "../tree-view/types";
 import { mouseEventModifierKey } from "../../common/helpers";
 import {
@@ -334,7 +334,7 @@ export class ChTreeViewItem {
    * Fired when the selected state is updated by user interaction on the
    * control.
    */
-  @Event() selectedItemChange: EventEmitter<TreeViewItemSelectedInfo>;
+  @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
 
   @Listen("checkboxChange")
   updateCheckboxValue(
@@ -650,11 +650,10 @@ export class ChTreeViewItem {
   private getSelectedInfo = (
     ctrlKeyPressed: boolean,
     selected: boolean
-  ): TreeViewItemSelectedInfo => ({
+  ): TreeViewItemSelected => ({
     ctrlKeyPressed: ctrlKeyPressed,
     expanded: this.expanded,
     id: this.el.id,
-    itemRef: this.el,
     metadata: this.metadata,
     parentId: this.el.parentElement?.id, // TODO: Improve this
     selected: selected
@@ -784,11 +783,6 @@ export class ChTreeViewItem {
   componentWillLoad() {
     // Check if must lazy load
     this.lazyLoadItems(this.expanded);
-
-    // Sync selected state with the main tree
-    if (this.selected) {
-      this.selectedItemChange.emit(this.getSelectedInfo(true, true));
-    }
   }
 
   componentDidLoad() {

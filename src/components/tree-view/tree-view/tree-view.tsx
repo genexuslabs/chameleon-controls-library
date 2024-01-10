@@ -16,11 +16,10 @@ import {
   TreeViewDropCheckInfo,
   TreeViewDroppableZoneState,
   TreeViewItemContextMenu,
-  // CheckedTreeItemInfo,
-  // ExpandedTreeItemInfo,
   TreeViewItemDragStartInfo,
   TreeViewItemExpandedInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelectedInfo,
+  TreeViewItemSelected
 } from "./types";
 import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
 import { scrollToEdge } from "../../../common/scroll-to-edge";
@@ -189,23 +188,6 @@ export class ChTreeView {
   @Event() selectedItemsChange: EventEmitter<
     Map<string, TreeViewItemSelectedInfo>
   >;
-
-  // /**
-  //  * Returns an array of the selected tree items, providing the id, caption and
-  //  * selected status.
-  //  */
-  // @Method()
-  // async getCheckedItems(): Promise<CheckedTreeItemInfo[]> {
-  //   const checkedItems = Array.from(
-  //     this.el.querySelectorAll(CHECKED_ITEMS)
-  //   ) as HTMLChTreeViewItemElement[];
-
-  //   return checkedItems.map(item => ({
-  //     id: item.id,
-  //     caption: item.caption,
-  //     selected: item.selected
-  //   }));
-  // }
 
   @Listen("contextmenu", { capture: true })
   handleContextMenuEvent(event: PointerEvent) {
@@ -376,7 +358,7 @@ export class ChTreeView {
 
   @Listen("selectedItemChange")
   handleSelectedItemChange(
-    event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>
+    event: ChTreeViewItemCustomEvent<TreeViewItemSelected>
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
@@ -387,10 +369,11 @@ export class ChTreeView {
       // Deselect all items except the item that emitted the event
       this.selectedItemsInfo.forEach(treeItem => {
         if (treeItem.id !== selectedItemInfo.id) {
-          treeItem.itemRef.selected = false;
+          this.#getTreeViewItemRef(treeItem.id).selected = false;
         }
       });
 
+      // Clear selected items
       this.updateSelectedItems();
     }
 
@@ -410,7 +393,7 @@ export class ChTreeView {
    * This method is intended to be used when selected item references change.
    */
   @Method()
-  async setSelectedItems(selectedItems: string[] = []) {
+  async setSelectedItems(selectedItems: TreeViewItemSelectedInfo[] = []) {
     this.updateSelectedItems(selectedItems);
   }
 
@@ -472,6 +455,9 @@ export class ChTreeView {
       this.lastOpenSubTreeItem.dragState = "enter";
     }
   }
+
+  #getTreeViewItemRef = itemId =>
+    this.el.querySelector(ITEM_SELECTOR(itemId)) as HTMLChTreeViewItemElement;
 
   private validDroppableZone(event: DragEvent): TreeViewDroppableZoneState {
     const containerTarget = event.target as HTMLChTreeViewItemElement;
@@ -622,7 +608,7 @@ export class ChTreeView {
       const selectedItemCount = selectedItemKeys.length;
 
       dragIsEnabledForAllItems = selectedItemValues.every(
-        el => !el.itemRef.dragDisabled
+        el => !this.#getTreeViewItemRef(el.id).dragDisabled
       );
 
       this.draggedIds = selectedItemKeys;
@@ -690,14 +676,16 @@ export class ChTreeView {
     });
   }
 
-  private updateSelectedItems(selectedItems: string[] = []) {
+  private updateSelectedItems(selectedItems: TreeViewItemSelectedInfo[] = []) {
     this.selectedItemsInfo.clear();
 
     if (selectedItems.length === 0) {
       return;
     }
 
-    // TODO: Add implementation
+    selectedItems.forEach(selectedItem => {
+      this.selectedItemsInfo.set(selectedItem.id, selectedItem);
+    });
   }
 
   disconnectedCallback() {

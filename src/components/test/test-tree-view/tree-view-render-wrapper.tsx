@@ -15,7 +15,7 @@ import {
   TreeViewLines,
   TreeViewItemExpandedInfo,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelected
 } from "../../tree-view/tree-view/types";
 import {
   TreeViewFilterOptions,
@@ -273,9 +273,7 @@ export class ChTreeViewRenderWrapper {
   /**
    * Fired when the selected items change.
    */
-  @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeViewItemSelectedInfo>
-  >;
+  @Event() selectedItemsChange: EventEmitter<Map<string, TreeViewItemSelected>>;
 
   /**
    * Given an item id, an array of items to add, the download status and the

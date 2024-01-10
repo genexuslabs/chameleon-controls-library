@@ -565,6 +565,35 @@
               </div>
             </fieldset>
 
+            <fieldset style="grid-template-columns: max-content max-content">
+              <legend>Scroll into visible</legend>
+
+              <div class="flex-container" style="flex-direction: column">
+                <ch-checkbox
+                  id="scroll-into-visible-selected"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Selected"
+                ></ch-checkbox>
+
+                <ch-checkbox
+                  id="scroll-into-visible-checked"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Checked"
+                ></ch-checkbox>
+              </div>
+
+              <div class="flex-container">
+                <input id="input-scroll-into-visible" type="text" />
+                <button id="btn-scroll-into-visible" type="button">
+                  Scroll into visible
+                </button>
+              </div>
+            </fieldset>
+
             <ch-checkbox
               id="check-all"
               checked-value="true"
@@ -572,13 +601,6 @@
               value="false"
               caption="Check / uncheck all"
             ></ch-checkbox>
-
-            <div class="flex-container">
-              <input id="input-scroll-into-visible" type="text" />
-              <button id="btn-scroll-into-visible" type="button">
-                Scroll into visible
-              </button>
-            </div>
 
             <div class="flex-container">
               <input
@@ -1356,7 +1378,7 @@
           testTreeX.treeModel = importObjectsModel;
         });
 
-        // Scroll into visible
+        // - - - - - - - - - - - - - -   Scroll into visible   - - - - - - - - - - - - - -
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1364,12 +1386,21 @@
           "input-scroll-into-visible"
         );
 
+        const scrollIntoVisibleCheckedCheckbox = document.getElementById(
+          "scroll-into-visible-checked"
+        );
+        const scrollIntoVisibleSelectedCheckbox = document.getElementById(
+          "scroll-into-visible-selected"
+        );
+
         scrollIntoVisibleBtn.addEventListener("click", () => {
           testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
-            selected: true
+            checked: scrollIntoVisibleCheckedCheckbox.value === "true",
+            selected: scrollIntoVisibleSelectedCheckbox.value === "true"
           });
           scrollIntoVisibleInput.value = "";
         });
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         // - - - - - - - - - - - - - - Update items properties - - - - - - - - - - - - - -
         const updateItemsBtn = document.getElementById(
@@ -1395,8 +1426,8 @@
           const itemsToRemove = itemsString.split(/\s*,\s*/);
 
           testTreeX.updateItemsProperties(itemsToRemove, {
-            checked: updateItemsCheckedCheckbox.value,
-            selected: updateItemsSelectedCheckbox.value
+            checked: updateItemsCheckedCheckbox.value === "true",
+            selected: updateItemsSelectedCheckbox.value === "true"
           });
           updateItemsInput.value = "";
         });

@@ -110,8 +110,6 @@ export class ChTreeView {
 
   #openSubTreeTimeout: NodeJS.Timeout;
 
-  #selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
-
   /**
    * Cache to avoid duplicate requests when checking the droppable zone in the
    * same drag event.
@@ -149,6 +147,14 @@ export class ChTreeView {
    * over in a subtree to open it when dragging.
    */
   @Prop() readonly openSubTreeCountdown: number = 750;
+
+  /**
+   * Callback that is executed to get the current selected items.
+   */
+  @Prop() readonly selectedItemsCallback: () => Map<
+    string,
+    TreeViewItemSelectedInfo
+  >;
 
   /**
    * `true` to scroll in the tree when dragging an item near the edges of the
@@ -363,32 +369,24 @@ export class ChTreeView {
   ) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
+    const selectedItemsInfo = this.selectedItemsCallback();
 
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
       // Clear selected items
-      this.#updateSelectedItems();
+      selectedItemsInfo.clear();
     }
 
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
-      this.#selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+      selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
     } else {
-      this.#selectedItemsInfo.delete(selectedItemInfo.id);
+      selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model
-    this.selectedItemsChange.emit(this.#selectedItemsInfo);
-  }
-
-  /**
-   * Given an array of item ids, it updates the information of selected items.
-   * This method is intended to be used when selected item references change.
-   */
-  @Method()
-  async setSelectedItems(selectedItems: TreeViewItemSelectedInfo[] = []) {
-    this.#updateSelectedItems(selectedItems);
+    this.selectedItemsChange.emit(selectedItemsInfo);
   }
 
   /**
@@ -592,17 +590,16 @@ export class ChTreeView {
   ): boolean => {
     const draggedElement = dragInfo.elem;
 
-    const isDraggingSelectedItems = this.#selectedItemsInfo.has(
-      draggedElement.id
-    );
+    const selectedItemsInfo = this.selectedItemsCallback();
+    const isDraggingSelectedItems = selectedItemsInfo.has(draggedElement.id);
     this.#draggingSelectedItems = isDraggingSelectedItems;
 
     let dataTransferInfo: GxDataTransferInfo[] = [];
     let dragIsEnabledForAllItems: boolean;
 
     if (isDraggingSelectedItems) {
-      const selectedItemKeys = [...this.#selectedItemsInfo.keys()];
-      const selectedItemValues = [...this.#selectedItemsInfo.values()];
+      const selectedItemKeys = [...selectedItemsInfo.keys()];
+      const selectedItemValues = [...selectedItemsInfo.values()];
       const selectedItemCount = selectedItemKeys.length;
 
       dragIsEnabledForAllItems = selectedItemValues.every(
@@ -664,25 +661,14 @@ export class ChTreeView {
     }
 
     // Dragging selected items
-    this.#selectedItemsInfo.forEach(selectedItem => {
+    const selectedItemsInfo = this.selectedItemsCallback();
+    selectedItemsInfo.forEach(selectedItem => {
       const parentId = selectedItem.parentId;
 
       // parentId === "" when the item is in the first level of the tree
       if (parentId !== "") {
         this.#draggedParentIds.push(parentId);
       }
-    });
-  };
-
-  #updateSelectedItems = (selectedItems: TreeViewItemSelectedInfo[] = []) => {
-    this.#selectedItemsInfo.clear();
-
-    if (selectedItems.length === 0) {
-      return;
-    }
-
-    selectedItems.forEach(selectedItem => {
-      this.#selectedItemsInfo.set(selectedItem.id, selectedItem);
     });
   };
 

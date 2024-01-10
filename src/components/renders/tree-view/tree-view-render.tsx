@@ -1029,9 +1029,7 @@ export class ChTreeViewRender {
     // with the real DOM
     forceUpdate(this);
 
-    // Update selected items, without updating the ch-tree-view control
-    // references, since the selection was provoked by user interaction
-    this.#updateSelectedItems(false);
+    this.#updateSelectedItems();
   };
 
   #handleExpandedItemChange = (
@@ -1092,7 +1090,10 @@ export class ChTreeViewRender {
       }
 
       // Create a new Set with only the last item
-      currentSelectedItems = new Set([selectedItemsArray[lastItemIndex]]);
+      currentSelectedItems.clear();
+      currentSelectedItems.add(selectedItemsArray[lastItemIndex]);
+
+      this.#scheduleSelectedItemsChange();
     }
   };
 
@@ -1255,28 +1256,11 @@ export class ChTreeViewRender {
     this.#selectedChangeScheduled = true;
   };
 
-  #updateSelectedItems = (updateTreeViewReferences = true) => {
+  #updateSelectedItems = () => {
     const selectedItemsInfo = this.#getItemsInfo([
       ...this.#selectedItems.keys()
     ]);
     this.selectedItemsChange.emit(selectedItemsInfo);
-
-    // Update the references in the ch-tree-view control, since the selection
-    // was not performed by user interaction
-    if (updateTreeViewReferences && this.#treeRef) {
-      this.#treeRef.setSelectedItems(
-        selectedItemsInfo.map(itemUIModel => {
-          const itemInfo = itemUIModel.item;
-
-          return {
-            id: itemInfo.id,
-            expanded: itemInfo.expanded,
-            metadata: itemInfo.metadata,
-            parentId: itemUIModel.parentItem.id
-          };
-        })
-      );
-    }
   };
 
   #updateCheckedItems = () => {
@@ -1428,6 +1412,24 @@ export class ChTreeViewRender {
     }
   };
 
+  #getSelectedItemsCallback = () => {
+    const selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
+
+    this.#selectedItems.forEach(itemId => {
+      const itemUIModel = this.#flattenedTreeModel.get(itemId);
+      const itemInfo = itemUIModel.item;
+
+      selectedItemsInfo.set(itemId, {
+        id: itemInfo.id,
+        expanded: itemInfo.expanded,
+        metadata: itemInfo.metadata,
+        parentId: itemUIModel.parentItem.id
+      });
+    });
+
+    return selectedItemsInfo;
+  };
+
   componentWillLoad() {
     if (this.useGxRender) {
       this.renderItem = GXRenderItem;
@@ -1461,6 +1463,7 @@ export class ChTreeViewRender {
       <ch-tree-view
         class={this.cssClass || null}
         multiSelection={this.multiSelection}
+        selectedItemsCallback={this.#getSelectedItemsCallback}
         waitDropProcessing={this.waitDropProcessing}
         onDroppableZoneEnter={this.#handleDroppableZoneEnter}
         onExpandedItemChange={this.#handleExpandedItemChange}

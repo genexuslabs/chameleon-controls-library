@@ -217,11 +217,6 @@ export class ChTreeViewRender {
     new Map();
   #selectedItems: Set<string> = new Set();
 
-  // UI Models when filters are applied. These UI models are allocated at
-  // runtime to optimize memory usage
-  #flattenedCheckboxTreeModelFilter: Map<string, TreeViewItemModelExtended>;
-  #selectedItemsFilter: Set<string>;
-
   #selectedChangeScheduled = false;
 
   #checkedChangeScheduled = false;
@@ -965,13 +960,7 @@ export class ChTreeViewRender {
     event.stopPropagation();
     const itemsToProcess = new Map(event.detail);
 
-    const treeViewWithFilters = treeViewHasFilters(
-      this.filterType,
-      this.filter
-    );
-    const previousSelectedItems = treeViewWithFilters
-      ? this.#selectedItemsFilter
-      : this.#selectedItems;
+    const previousSelectedItems = this.#selectedItems;
 
     // Remove no longer selected items
     previousSelectedItems.forEach(selectedItemId => {
@@ -998,12 +987,6 @@ export class ChTreeViewRender {
 
       previousSelectedItems.add(itemId);
     });
-
-    // The first interaction that the user does, provokes updates event the
-    // selection previous to the filter
-    if (treeViewWithFilters) {
-      this.#selectedItems = new Set(previousSelectedItems);
-    }
 
     // Update selected items, without updating the ch-tree-view control
     // references, since the selection was provoked by user interaction
@@ -1150,7 +1133,9 @@ export class ChTreeViewRender {
 
   #filterSubModel = (
     item: TreeViewItemModel,
-    filterInfo: TreeViewFilterInfo
+    filterInfo: TreeViewFilterInfo,
+    currentSelectedItems: Set<string>,
+    currentCheckboxItems: Map<string, TreeViewItemModelExtended>
   ): boolean => {
     let aSubItemIsRendered = false;
 
@@ -1159,7 +1144,12 @@ export class ChTreeViewRender {
       let lastItemId = undefined;
 
       item.items.forEach(subItem => {
-        const itemSatisfiesFilter = this.#filterSubModel(subItem, filterInfo);
+        const itemSatisfiesFilter = this.#filterSubModel(
+          subItem,
+          filterInfo,
+          currentSelectedItems,
+          currentCheckboxItems
+        );
         aSubItemIsRendered ||= itemSatisfiesFilter;
 
         if (itemSatisfiesFilter) {
@@ -1180,12 +1170,12 @@ export class ChTreeViewRender {
     // Update selected and checkbox items
     if (satisfiesFilter) {
       if (item.selected) {
-        this.#selectedItemsFilter.add(item.id);
+        currentSelectedItems.add(item.id);
       }
 
       if (item.checkbox ?? this.checkbox) {
         const itemUIModel = this.#flattenedCheckboxTreeModel.get(item.id);
-        this.#flattenedCheckboxTreeModelFilter.set(item.id, itemUIModel);
+        currentCheckboxItems.set(item.id, itemUIModel);
       }
     }
 
@@ -1201,11 +1191,9 @@ export class ChTreeViewRender {
   };
 
   #updateSelectedItems = (updateTreeViewReferences = true) => {
-    const selectedItems = treeViewHasFilters(this.filterType, this.filter)
-      ? this.#selectedItemsFilter
-      : this.#selectedItems;
-
-    const selectedItemsInfo = this.#getItemsInfo([...selectedItems.keys()]);
+    const selectedItemsInfo = this.#getItemsInfo([
+      ...this.#selectedItems.keys()
+    ]);
     this.selectedItemsChange.emit(selectedItemsInfo);
 
     // Update the references in the ch-tree-view control, since the selection
@@ -1227,13 +1215,9 @@ export class ChTreeViewRender {
   };
 
   #updateCheckedItems = () => {
-    const checkedItemsMap = treeViewHasFilters(this.filterType, this.filter)
-      ? this.#flattenedCheckboxTreeModelFilter
-      : this.#flattenedCheckboxTreeModel;
-
     // New copy of the checked items
     const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
-      new Map(checkedItemsMap);
+      new Map(this.#flattenedCheckboxTreeModel);
 
     // Update the checked value if not defined
     allItemsWithCheckbox.forEach(itemUIModel => {
@@ -1251,77 +1235,44 @@ export class ChTreeViewRender {
     }
   };
 
-  #validateIfCheckboxesChangedDependingOnFilters = () => {
-    // No need to validate, if it's has been scheduled
-    if (
-      this.#checkedChangeScheduled ||
-      !this.#flattenedCheckboxTreeModelFilter
-    ) {
-      return;
-    }
-
-    // Different sizes when applying filters, schedule selectedItemsChange
-    if (
-      this.#flattenedCheckboxTreeModelFilter.size !==
-      this.#flattenedCheckboxTreeModel.size
-    ) {
-      this.#checkedChangeScheduled = true;
-      return;
-    }
-
-    const checkboxTreeModelFilterCopy = [
-      ...this.#flattenedCheckboxTreeModel.keys()
-    ];
-
-    for (let index = 0; index < checkboxTreeModelFilterCopy.length; index++) {
-      // Found a value that don't belong to the checkbox model without filters,
+  #unCheckboxFilteredItems = (
+    newCheckboxItems: Map<string, TreeViewItemModelExtended>
+  ) => {
+    this.#flattenedCheckboxTreeModel.forEach((_, itemId) => {
+      // Found a value that don't belong to the checkboxItems with filters,
       // schedule checkedItemsChange
-      if (
-        !this.#flattenedCheckboxTreeModel.has(
-          checkboxTreeModelFilterCopy[index]
-        )
-      ) {
+      if (!newCheckboxItems.has(itemId)) {
+        // Schedule selectedItemsChange
         this.#checkedChangeScheduled = true;
-        return;
       }
-    }
+    });
+
+    // The previous checkbox items will now be the selected items with filter
+    this.#flattenedCheckboxTreeModel = newCheckboxItems;
   };
 
-  #validateIfSelectedItemsChangedDependingOnFilters = () => {
-    // No need to validate, if it's has been scheduled
-    if (this.#selectedChangeScheduled || !this.#selectedItemsFilter) {
-      return;
-    }
+  #deselectFilteredItems = (newSelectedItems: Set<string>) => {
+    this.#selectedItems.forEach(itemId => {
+      // Found a value that don't belong to the selectedItems with filters,
+      // deselect the item
+      if (!newSelectedItems.has(itemId)) {
+        this.#flattenedTreeModel.get(itemId).item.selected = false;
 
-    // Different sizes when applying filters, schedule selectedItemsChange
-    if (this.#selectedItemsFilter.size !== this.#selectedItems.size) {
-      this.#selectedChangeScheduled = true;
-      this.#selectedItems = this.#selectedItemsFilter; // WA
-      return;
-    }
-
-    const selectedItemsFilterCopy = [...this.#selectedItemsFilter.keys()];
-
-    for (let index = 0; index < selectedItemsFilterCopy.length; index++) {
-      // Found a value that don't belong to the selectedItems without filters,
-      // schedule selectedItemsChange
-      if (!this.#selectedItems.has(selectedItemsFilterCopy[index])) {
+        // Schedule selectedItemsChange
         this.#selectedChangeScheduled = true;
-        this.#selectedItems = this.#selectedItemsFilter; // WA
-        return;
       }
-    }
+    });
+
+    // The previous selected items will now be the selected items with filter
+    this.#selectedItems = newSelectedItems;
   };
 
   #updateFilters = () => {
     if (this.filterType === "none") {
-      this.#validateIfCheckboxesChangedDependingOnFilters();
-      this.#validateIfSelectedItemsChangedDependingOnFilters();
-      this.#validateCheckedAndSelectedItems();
+      // TODO: Update items with checkbox
 
-      // Remove memory allocation
-      this.#flattenedCheckboxTreeModelFilter = undefined;
-      this.#selectedItemsFilter = undefined;
+      // this.#validateIfCheckboxesChangedDependingOnFilters();
+      this.#validateCheckedAndSelectedItems();
 
       return;
     }
@@ -1334,9 +1285,9 @@ export class ChTreeViewRender {
       (this.filterType === "caption" || this.filterType === "metadata");
 
     const filterFunction = () => {
-      // Allocate Map and Set
-      this.#flattenedCheckboxTreeModelFilter = new Map();
-      this.#selectedItemsFilter = new Set();
+      const currentSelectedItems: Set<string> = new Set();
+      const currentCheckedItems: Map<string, TreeViewItemModelExtended> =
+        new Map();
 
       this.#filterSubModel(
         {
@@ -1350,13 +1301,15 @@ export class ChTreeViewRender {
           filter: this.filter,
           filterOptions: this.filterOptions,
           filterSet: this.#filterListAsSet
-        }
+        },
+        currentSelectedItems,
+        currentCheckedItems
       );
 
-      // Validate if there are differences between the items with checkboxes
+      // It validates if there are differences between the items with checkbox
       // and the selected items. If there are, emit the corresponding updates.
-      this.#validateIfCheckboxesChangedDependingOnFilters();
-      this.#validateIfSelectedItemsChangedDependingOnFilters();
+      this.#deselectFilteredItems(currentSelectedItems);
+      this.#unCheckboxFilteredItems(currentCheckedItems);
 
       this.#validateCheckedAndSelectedItems();
     };

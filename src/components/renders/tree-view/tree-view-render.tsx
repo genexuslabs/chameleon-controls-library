@@ -411,6 +411,13 @@ export class ChTreeViewRender {
    * Set this attribute if you want to allow multi selection of the items.
    */
   @Prop() readonly multiSelection: boolean = false;
+  @Watch("multiSelection")
+  handleMultiSelectionChange(newMultiSelection: boolean) {
+    // MultiSelection is disabled. We must select the last updated item
+    if (!newMultiSelection) {
+      this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
+    }
+  }
 
   /**
    * This property allows us to implement custom rendering of tree items.
@@ -481,7 +488,7 @@ export class ChTreeViewRender {
    * This event can be fired by the following conditions:
    *   1. A user changes the selected items interacting with the Tree View.
    *
-   *   2. TODO: The `multiSelection` value is changed from `true` to `false`.
+   *   2. The `multiSelection` value is changed from `true` to `false`.
    *
    *   3. A selected item is no longer rendered because it does not satisfies a
    *      filter condition.

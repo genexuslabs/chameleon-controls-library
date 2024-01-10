@@ -367,13 +367,6 @@ export class ChTreeView {
     // If the Control key was not pressed or multi selection is disabled,
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
-      // Deselect all items except the item that emitted the event
-      this.#selectedItemsInfo.forEach(treeItem => {
-        if (treeItem.id !== selectedItemInfo.id) {
-          this.#getTreeViewItemRef(treeItem.id).selected = false;
-        }
-      });
-
       // Clear selected items
       this.#updateSelectedItems();
     }

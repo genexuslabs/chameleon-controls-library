@@ -1013,6 +1013,10 @@ export class ChTreeViewRender {
       previousSelectedItems.add(itemId);
     });
 
+    // Queue re-render to avoid issues about synchronization the Virtual DOM
+    // with the real DOM
+    forceUpdate(this);
+
     // Update selected items, without updating the ch-tree-view control
     // references, since the selection was provoked by user interaction
     this.#updateSelectedItems(false);

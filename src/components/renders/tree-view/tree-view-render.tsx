@@ -212,34 +212,30 @@ type ImmediateFilter = "immediate" | "debounced" | undefined;
 })
 export class ChTreeViewRender {
   // UI Models
-  private flattenedTreeModel: Map<string, TreeViewItemModelExtended> =
+  #flattenedTreeModel: Map<string, TreeViewItemModelExtended> = new Map();
+  #flattenedCheckboxTreeModel: Map<string, TreeViewItemModelExtended> =
     new Map();
-  private flattenedCheckboxTreeModel: Map<string, TreeViewItemModelExtended> =
-    new Map();
-  private selectedItems: Set<string> = new Set();
+  #selectedItems: Set<string> = new Set();
 
   // UI Models when filters are applied. These UI models are allocated at
   // runtime to optimize memory usage
-  private flattenedCheckboxTreeModelFilter: Map<
-    string,
-    TreeViewItemModelExtended
-  >;
-  private selectedItemsFilter: Set<string>;
+  #flattenedCheckboxTreeModelFilter: Map<string, TreeViewItemModelExtended>;
+  #selectedItemsFilter: Set<string>;
 
   #selectedChangeScheduled = false;
 
-  private checkedChangeScheduled = false;
+  #checkedChangeScheduled = false;
 
-  private rootNode: TreeViewItemModel;
+  #rootNode: TreeViewItemModel;
 
   // Filters info
-  private applyFilters = false;
-  private immediateFilter: ImmediateFilter;
-  private filterTimeout: NodeJS.Timeout;
-  private filterListAsSet: Set<string>;
+  #applyFilters = false;
+  #immediateFilter: ImmediateFilter;
+  #filterTimeout: NodeJS.Timeout;
+  #filterListAsSet: Set<string>;
 
   // Refs
-  private treeRef: HTMLChTreeViewElement;
+  #treeRef: HTMLChTreeViewElement;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -325,7 +321,7 @@ export class ChTreeViewRender {
   @Watch("filter")
   handleFilterChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
-      this.scheduleFilterProcessing();
+      this.#scheduleFilterProcessing();
     }
   }
 
@@ -340,7 +336,7 @@ export class ChTreeViewRender {
   @Watch("filterDebounce")
   handleFilterDebounceChange() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
-      this.scheduleFilterProcessing();
+      this.#scheduleFilterProcessing();
     }
   }
 
@@ -352,10 +348,10 @@ export class ChTreeViewRender {
   @Watch("filterList")
   handleFilterListChange() {
     // Use a Set to efficiently check for ids
-    this.filterListAsSet = new Set(this.filterList);
+    this.#filterListAsSet = new Set(this.filterList);
 
     if (this.filterType === "list") {
-      this.scheduleFilterProcessing();
+      this.#scheduleFilterProcessing();
     }
   }
 
@@ -366,7 +362,7 @@ export class ChTreeViewRender {
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
   handleFilterOptionsChange() {
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
   }
 
   /**
@@ -385,7 +381,7 @@ export class ChTreeViewRender {
   @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
   handleFilterTypeChange() {
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
   }
 
   /**
@@ -453,7 +449,7 @@ export class ChTreeViewRender {
   @Prop() readonly treeModel: TreeViewItemModel[] = [];
   @Watch("treeModel")
   handleTreeModelChange() {
-    this.flattenModel();
+    this.#flattenModel();
   }
 
   /**
@@ -534,20 +530,20 @@ export class ChTreeViewRender {
     }
 
     const newParentId = dataTransferInfo.newContainer.id;
-    const newParentUIModel = this.flattenedTreeModel.get(newParentId).item;
+    const newParentUIModel = this.#flattenedTreeModel.get(newParentId).item;
 
     // Only move the items to the new parent, keeping the state
     if (dataTransferInfo.dropInTheSameTree) {
       // Add the UI models to the new container and remove the UI models from
       // the old containers
       dataTransferInfo.draggedItems.forEach(
-        this.moveItemToNewParent(newParentUIModel)
+        this.#moveItemToNewParent(newParentUIModel)
       );
 
       // When the selected items are moved, the tree must update its internal
       // state to not have undefined references
       if (dataTransferInfo.draggingSelectedItems) {
-        this.scheduleSelectedItemsChange();
+        this.#scheduleSelectedItemsChange();
       }
     }
     // Add the new items
@@ -560,19 +556,19 @@ export class ChTreeViewRender {
       newParentUIModel.items.push(...items);
 
       // Flatten the new UI models
-      items.forEach(this.flattenItemUIModel(newParentUIModel));
+      items.forEach(this.#flattenItemUIModel(newParentUIModel));
     }
 
-    this.sortItems(newParentUIModel.items);
+    this.#sortItems(newParentUIModel.items);
 
     // Open the item to visualize the new subitems
     newParentUIModel.expanded = true;
 
     // Re-sync checked items
-    this.scheduleCheckedItemsChange();
+    this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
 
     // Force re-render
     forceUpdate(this);
@@ -584,14 +580,14 @@ export class ChTreeViewRender {
    */
   @Method()
   async getItemsInfo(itemsId: string[]): Promise<TreeViewItemModelExtended[]> {
-    return this._getItemsInfo(itemsId);
+    return this.#getItemsInfo(itemsId);
   }
 
-  private _getItemsInfo(itemsId: string[]): TreeViewItemModelExtended[] {
+  #getItemsInfo = (itemsId: string[]): TreeViewItemModelExtended[] => {
     const treeViewItemsInfo: TreeViewItemModelExtended[] = [];
 
     itemsId.forEach(itemId => {
-      const itemUIModel = this.flattenedTreeModel.get(itemId);
+      const itemUIModel = this.#flattenedTreeModel.get(itemId);
 
       if (itemUIModel) {
         treeViewItemsInfo.push(itemUIModel);
@@ -599,7 +595,7 @@ export class ChTreeViewRender {
     });
 
     return treeViewItemsInfo;
-  }
+  };
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -612,7 +608,7 @@ export class ChTreeViewRender {
     downloading = false,
     lazy = false
   ) {
-    const itemToLazyLoadContent = this.flattenedTreeModel.get(itemId).item;
+    const itemToLazyLoadContent = this.#flattenedTreeModel.get(itemId).item;
 
     // Establish that the content was lazy loaded
     itemToLazyLoadContent.downloading = downloading;
@@ -626,14 +622,14 @@ export class ChTreeViewRender {
     // @todo What happens in the server when dropping items on a lazy node?
     itemToLazyLoadContent.items = items;
 
-    this.sortItems(itemToLazyLoadContent.items);
-    this.flattenSubModel(itemToLazyLoadContent);
+    this.#sortItems(itemToLazyLoadContent.items);
+    this.#flattenSubModel(itemToLazyLoadContent);
 
     // Re-sync checked items
-    this.scheduleCheckedItemsChange();
+    this.#scheduleCheckedItemsChange();
 
     // Update filters
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
 
     // Force re-render
     forceUpdate(this);
@@ -646,20 +642,20 @@ export class ChTreeViewRender {
   async removeItems(items: string[]) {
     const removeItemsResult: TreeViewRemoveItemsResult = removeTreeViewItems(
       items,
-      this.flattenedTreeModel,
-      this.flattenedCheckboxTreeModel,
-      this.selectedItems
+      this.#flattenedTreeModel,
+      this.#flattenedCheckboxTreeModel,
+      this.#selectedItems
     );
 
     if (!treeViewHasFilters(this.filterType, this.filter)) {
       // Update selected items
       if (removeItemsResult.atLeastOneSelected) {
-        this.updateSelectedItems();
+        this.#updateSelectedItems();
       }
 
       // Re-sync checked items
       if (removeItemsResult.atLeastOneCheckbox) {
-        this.scheduleCheckedItemsChange();
+        this.#scheduleCheckedItemsChange();
       }
     }
 
@@ -668,7 +664,7 @@ export class ChTreeViewRender {
       forceUpdate(this);
 
       // Update filters
-      this.scheduleFilterProcessing("immediate");
+      this.#scheduleFilterProcessing("immediate");
     }
   }
 
@@ -686,7 +682,7 @@ export class ChTreeViewRender {
     reloadItems(
       this,
       itemId,
-      this.flattenedTreeModel,
+      this.#flattenedTreeModel,
       this.lazyLoadTreeItemsCallback,
       (itemId, items) => this.loadLazyContent(itemId, items),
       (items: string[]) => this.removeItems(items),
@@ -710,11 +706,11 @@ export class ChTreeViewRender {
     const hasOnlyTheItemId = typeof path === "string";
 
     const success = await (hasOnlyTheItemId
-      ? scrollIntoVisibleId(path, this.flattenedTreeModel)
+      ? scrollIntoVisibleId(path, this.#flattenedTreeModel)
       : scrollIntoVisiblePath(
           path,
-          this.flattenedTreeModel,
-          this.rootNode,
+          this.#flattenedTreeModel,
+          this.#rootNode,
           this.lazyLoadTreeItemsCallback
         ));
 
@@ -724,7 +720,7 @@ export class ChTreeViewRender {
     const itemId = hasOnlyTheItemId ? path : path[path.length - 1];
 
     if (afterProperties) {
-      updateItemProperty(itemId, afterProperties, this.flattenedTreeModel);
+      updateItemProperty(itemId, afterProperties, this.#flattenedTreeModel);
     }
 
     forceUpdate(this);
@@ -732,7 +728,7 @@ export class ChTreeViewRender {
     // @todo For some reason, when the model is created using the "big model" option,
     // this implementation does not work when only the UI Model is updated. So, to
     // expand the items, we have to delegate the responsibility to the tree-view
-    this.treeRef.scrollIntoVisible(itemId);
+    this.#treeRef.scrollIntoVisible(itemId);
   }
 
   /**
@@ -754,7 +750,7 @@ export class ChTreeViewRender {
     const modifiedTreeItems: TreeViewItemExpandedInfo[] = [];
 
     treeItemIds.forEach(treeItemId => {
-      const itemInfo = this.flattenedTreeModel.get(treeItemId).item;
+      const itemInfo = this.#flattenedTreeModel.get(treeItemId).item;
 
       if (itemInfo) {
         itemInfo.expanded = expand ?? !itemInfo.expanded;
@@ -779,7 +775,7 @@ export class ChTreeViewRender {
     expanded?: boolean;
     checked?: boolean;
   }) {
-    [...this.flattenedTreeModel.values()].forEach(itemUIModel => {
+    [...this.#flattenedTreeModel.values()].forEach(itemUIModel => {
       if (properties.expanded != null) {
         itemUIModel.item.expanded = properties.expanded;
       }
@@ -792,7 +788,7 @@ export class ChTreeViewRender {
 
     // Update filters
     if (properties.checked != null) {
-      this.scheduleFilterProcessing();
+      this.#scheduleFilterProcessing();
     }
 
     forceUpdate(this);
@@ -808,11 +804,11 @@ export class ChTreeViewRender {
     properties: Partial<TreeViewItemModel>
   ) {
     items.forEach(itemId => {
-      updateItemProperty(itemId, properties, this.flattenedTreeModel);
+      updateItemProperty(itemId, properties, this.#flattenedTreeModel);
     });
 
     // Update filters
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
 
     forceUpdate(this);
   }
@@ -831,7 +827,7 @@ export class ChTreeViewRender {
     draggedItems: GxDataTransferInfo[],
     validDrop: boolean
   ) {
-    this.treeRef.updateValidDropZone(
+    this.#treeRef.updateValidDropZone(
       requestTimestamp,
       newContainerId,
       draggedItems,
@@ -848,7 +844,7 @@ export class ChTreeViewRender {
 
     const detail = event.detail;
     const treeItemId = detail.id;
-    const itemUIModel = this.flattenedCheckboxTreeModel.get(treeItemId);
+    const itemUIModel = this.#flattenedCheckboxTreeModel.get(treeItemId);
 
     // In some cases, when the `treeModel` and `checked` properties are updated
     // outside of the tree control, some events are fired with undefined references
@@ -860,11 +856,11 @@ export class ChTreeViewRender {
     itemInfo.checked = detail.checked;
     itemInfo.indeterminate = detail.indeterminate;
 
-    this.scheduleCheckedItemsChange();
+    this.#scheduleCheckedItemsChange();
 
     // Update filters
     if (this.filterType === "checked" || this.filterType === "unchecked") {
-      this.scheduleFilterProcessing();
+      this.#scheduleFilterProcessing();
     }
 
     // Force re-render
@@ -898,7 +894,7 @@ export class ChTreeViewRender {
 
     const itemRef = event.target;
     const itemId = event.detail.id;
-    const itemUIModel = this.flattenedTreeModel.get(itemId);
+    const itemUIModel = this.#flattenedTreeModel.get(itemId);
     const itemInfo = itemUIModel.item;
     const newCaption = event.detail.caption;
     const oldCaption = itemInfo.caption;
@@ -915,10 +911,10 @@ export class ChTreeViewRender {
 
     promise.then(status => {
       if (status.success) {
-        this.sortItems(itemUIModel.parentItem.items);
+        this.#sortItems(itemUIModel.parentItem.items);
 
         // Update filters
-        this.scheduleFilterProcessing();
+        this.#scheduleFilterProcessing();
 
         // Force re-render
         forceUpdate(this);
@@ -939,7 +935,7 @@ export class ChTreeViewRender {
     this.itemOpenReference.emit(event.detail);
   }
 
-  private handleDroppableZoneEnter = (
+  #handleDroppableZoneEnter = (
     event: ChTreeViewCustomEvent<TreeViewDropCheckInfo>
   ) => {
     if (!this.checkDroppableZoneCallback) {
@@ -963,7 +959,7 @@ export class ChTreeViewRender {
     });
   };
 
-  private handleSelectedItemsChange = (
+  #handleSelectedItemsChange = (
     event: ChTreeViewCustomEvent<Map<string, TreeViewItemSelectedInfo>>
   ) => {
     event.stopPropagation();
@@ -974,12 +970,12 @@ export class ChTreeViewRender {
       this.filter
     );
     const previousSelectedItems = treeViewWithFilters
-      ? this.selectedItemsFilter
-      : this.selectedItems;
+      ? this.#selectedItemsFilter
+      : this.#selectedItems;
 
     // Remove no longer selected items
     previousSelectedItems.forEach(selectedItemId => {
-      const itemUIModel = this.flattenedTreeModel.get(selectedItemId).item;
+      const itemUIModel = this.#flattenedTreeModel.get(selectedItemId).item;
       const itemIsStillSelected = itemsToProcess.get(selectedItemId);
 
       // The item does not need to be added. Remove it from the processed list
@@ -996,7 +992,7 @@ export class ChTreeViewRender {
 
     // Add new selected items
     itemsToProcess.forEach((newSelectedItemInfo, itemId) => {
-      const newSelectedItem = this.flattenedTreeModel.get(itemId).item;
+      const newSelectedItem = this.#flattenedTreeModel.get(itemId).item;
       newSelectedItem.selected = true;
       newSelectedItem.expanded = newSelectedItemInfo.expanded;
 
@@ -1006,30 +1002,30 @@ export class ChTreeViewRender {
     // The first interaction that the user does, provokes updates event the
     // selection previous to the filter
     if (treeViewWithFilters) {
-      this.selectedItems = new Set(previousSelectedItems);
+      this.#selectedItems = new Set(previousSelectedItems);
     }
 
     // Update selected items, without updating the ch-tree-view control
     // references, since the selection was provoked by user interaction
-    this.updateSelectedItems(false);
+    this.#updateSelectedItems(false);
   };
 
-  private handleExpandedItemChange = (
+  #handleExpandedItemChange = (
     event: ChTreeViewCustomEvent<TreeViewItemExpandedInfo>
   ) => {
     const detail = event.detail;
-    const itemInfo = this.flattenedTreeModel.get(detail.id).item;
+    const itemInfo = this.#flattenedTreeModel.get(detail.id).item;
     itemInfo.expanded = detail.expanded;
   };
 
-  private handleItemContextmenu = (
+  #handleItemContextmenu = (
     event: ChTreeViewCustomEvent<TreeViewItemContextMenu>
   ) => {
     event.stopPropagation();
     this.itemContextmenu.emit(event.detail);
   };
 
-  private handleItemsDropped = (
+  #handleItemsDropped = (
     event: ChTreeViewCustomEvent<TreeViewDataTransferInfo>
   ) => {
     const dataTransferInfo = event.detail;
@@ -1037,7 +1033,7 @@ export class ChTreeViewRender {
     const newParentId = newContainer.id;
 
     // Check if the parent exists in the UI Model
-    if (!this.flattenedTreeModel.get(newParentId)) {
+    if (!this.#flattenedTreeModel.get(newParentId)) {
       return;
     }
 
@@ -1057,10 +1053,10 @@ export class ChTreeViewRender {
     });
   };
 
-  private moveItemToNewParent =
+  #moveItemToNewParent =
     (newParentUIModel: TreeViewItemModel) =>
     (dataTransferInfo: GxDataTransferInfo) => {
-      const itemUIModelExtended = this.flattenedTreeModel.get(
+      const itemUIModelExtended = this.#flattenedTreeModel.get(
         dataTransferInfo.id
       );
       const item = itemUIModelExtended.item;
@@ -1080,7 +1076,7 @@ export class ChTreeViewRender {
       itemUIModelExtended.parentItem = newParentUIModel;
     };
 
-  private flattenSubModel(model: TreeViewItemModel) {
+  #flattenSubModel = (model: TreeViewItemModel) => {
     const items = model.items;
 
     if (!items) {
@@ -1090,21 +1086,21 @@ export class ChTreeViewRender {
       }
       return;
     }
-    this.sortItems(items);
+    this.#sortItems(items);
 
-    items.forEach(this.flattenItemUIModel(model));
-  }
+    items.forEach(this.#flattenItemUIModel(model));
+  };
 
-  private flattenItemUIModel =
+  #flattenItemUIModel =
     (parentModel: TreeViewItemModel) => (item: TreeViewItemModel) => {
-      this.flattenedTreeModel.set(item.id, {
+      this.#flattenedTreeModel.set(item.id, {
         parentItem: parentModel,
         item: item
       });
 
       // Add the items that have a checkbox in a separate Map
       if (item.checkbox ?? this.checkbox) {
-        this.flattenedCheckboxTreeModel.set(item.id, {
+        this.#flattenedCheckboxTreeModel.set(item.id, {
           parentItem: parentModel,
           item: item
         });
@@ -1120,42 +1116,42 @@ export class ChTreeViewRender {
       item.selected ??= DEFAULT_SELECTED_VALUE;
 
       if (item.selected) {
-        this.selectedItems.add(item.id);
+        this.#selectedItems.add(item.id);
       }
 
-      this.flattenSubModel(item);
+      this.#flattenSubModel(item);
     };
 
-  private sortItems(items: TreeViewItemModel[]) {
+  #sortItems = (items: TreeViewItemModel[]) => {
     // Ensure that items are sorted
     if (this.sortItemsCallback) {
       this.sortItemsCallback(items);
     }
-  }
+  };
 
-  private flattenModel() {
-    this.flattenedTreeModel.clear();
-    this.flattenedCheckboxTreeModel.clear();
-    this.selectedItems.clear();
+  #flattenModel = () => {
+    this.#flattenedTreeModel.clear();
+    this.#flattenedCheckboxTreeModel.clear();
+    this.#selectedItems.clear();
 
-    this.rootNode = { id: null, caption: null, items: this.treeModel };
-    this.flattenSubModel(this.rootNode);
+    this.#rootNode = { id: null, caption: null, items: this.treeModel };
+    this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
-    this.scheduleFilterProcessing();
+    this.#scheduleFilterProcessing();
 
     // The model was updated at runtime, so we need to update the references
     // Re-sync selected items
-    this.scheduleSelectedItemsChange();
+    this.#scheduleSelectedItemsChange();
 
     // Re-sync checked items
-    this.scheduleCheckedItemsChange();
-  }
+    this.#scheduleCheckedItemsChange();
+  };
 
-  private filterSubModel(
+  #filterSubModel = (
     item: TreeViewItemModel,
     filterInfo: TreeViewFilterInfo
-  ): boolean {
+  ): boolean => {
     let aSubItemIsRendered = false;
 
     // Check if a subitem is rendered
@@ -1163,7 +1159,7 @@ export class ChTreeViewRender {
       let lastItemId = undefined;
 
       item.items.forEach(subItem => {
-        const itemSatisfiesFilter = this.filterSubModel(subItem, filterInfo);
+        const itemSatisfiesFilter = this.#filterSubModel(subItem, filterInfo);
         aSubItemIsRendered ||= itemSatisfiesFilter;
 
         if (itemSatisfiesFilter) {
@@ -1184,38 +1180,38 @@ export class ChTreeViewRender {
     // Update selected and checkbox items
     if (satisfiesFilter) {
       if (item.selected) {
-        this.selectedItemsFilter.add(item.id);
+        this.#selectedItemsFilter.add(item.id);
       }
 
       if (item.checkbox ?? this.checkbox) {
-        const itemUIModel = this.flattenedCheckboxTreeModel.get(item.id);
-        this.flattenedCheckboxTreeModelFilter.set(item.id, itemUIModel);
+        const itemUIModel = this.#flattenedCheckboxTreeModel.get(item.id);
+        this.#flattenedCheckboxTreeModelFilter.set(item.id, itemUIModel);
       }
     }
 
     return satisfiesFilter;
-  }
+  };
 
-  private scheduleCheckedItemsChange() {
-    this.checkedChangeScheduled = true;
-  }
+  #scheduleCheckedItemsChange = () => {
+    this.#checkedChangeScheduled = true;
+  };
 
-  private scheduleSelectedItemsChange() {
+  #scheduleSelectedItemsChange = () => {
     this.#selectedChangeScheduled = true;
-  }
+  };
 
-  private updateSelectedItems(updateTreeViewReferences = true) {
+  #updateSelectedItems = (updateTreeViewReferences = true) => {
     const selectedItems = treeViewHasFilters(this.filterType, this.filter)
-      ? this.selectedItemsFilter
-      : this.selectedItems;
+      ? this.#selectedItemsFilter
+      : this.#selectedItems;
 
-    const selectedItemsInfo = this._getItemsInfo([...selectedItems.keys()]);
+    const selectedItemsInfo = this.#getItemsInfo([...selectedItems.keys()]);
     this.selectedItemsChange.emit(selectedItemsInfo);
 
     // Update the references in the ch-tree-view control, since the selection
     // was not performed by user interaction
-    if (updateTreeViewReferences && this.treeRef) {
-      this.treeRef.setSelectedItems(
+    if (updateTreeViewReferences && this.#treeRef) {
+      this.#treeRef.setSelectedItems(
         selectedItemsInfo.map(itemUIModel => {
           const itemInfo = itemUIModel.item;
 
@@ -1228,12 +1224,12 @@ export class ChTreeViewRender {
         })
       );
     }
-  }
+  };
 
-  private updateCheckedItems() {
+  #updateCheckedItems = () => {
     const checkedItemsMap = treeViewHasFilters(this.filterType, this.filter)
-      ? this.flattenedCheckboxTreeModelFilter
-      : this.flattenedCheckboxTreeModel;
+      ? this.#flattenedCheckboxTreeModelFilter
+      : this.#flattenedCheckboxTreeModel;
 
     // New copy of the checked items
     const allItemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
@@ -1245,88 +1241,93 @@ export class ChTreeViewRender {
     });
 
     this.checkedItemsChange.emit(allItemsWithCheckbox);
-  }
+  };
 
-  private scheduleFilterProcessing(immediateFilter?: ImmediateFilter) {
-    this.applyFilters = true;
+  #scheduleFilterProcessing = (immediateFilter?: ImmediateFilter) => {
+    this.#applyFilters = true;
 
     if (immediateFilter !== undefined) {
-      this.immediateFilter ??= immediateFilter;
+      this.#immediateFilter ??= immediateFilter;
     }
-  }
+  };
 
-  private validateIfCheckboxesChangedDependingOnFilters() {
+  #validateIfCheckboxesChangedDependingOnFilters = () => {
     // No need to validate, if it's has been scheduled
-    if (this.checkedChangeScheduled || !this.flattenedCheckboxTreeModelFilter) {
+    if (
+      this.#checkedChangeScheduled ||
+      !this.#flattenedCheckboxTreeModelFilter
+    ) {
       return;
     }
 
     // Different sizes when applying filters, schedule selectedItemsChange
     if (
-      this.flattenedCheckboxTreeModelFilter.size !==
-      this.flattenedCheckboxTreeModel.size
+      this.#flattenedCheckboxTreeModelFilter.size !==
+      this.#flattenedCheckboxTreeModel.size
     ) {
-      this.checkedChangeScheduled = true;
+      this.#checkedChangeScheduled = true;
       return;
     }
 
     const checkboxTreeModelFilterCopy = [
-      ...this.flattenedCheckboxTreeModel.keys()
+      ...this.#flattenedCheckboxTreeModel.keys()
     ];
 
     for (let index = 0; index < checkboxTreeModelFilterCopy.length; index++) {
       // Found a value that don't belong to the checkbox model without filters,
       // schedule checkedItemsChange
       if (
-        !this.flattenedCheckboxTreeModel.has(checkboxTreeModelFilterCopy[index])
+        !this.#flattenedCheckboxTreeModel.has(
+          checkboxTreeModelFilterCopy[index]
+        )
       ) {
-        this.checkedChangeScheduled = true;
+        this.#checkedChangeScheduled = true;
         return;
       }
     }
-  }
+  };
 
-  private validateIfSelectedItemsChangedDependingOnFilters() {
+  #validateIfSelectedItemsChangedDependingOnFilters = () => {
     // No need to validate, if it's has been scheduled
-    if (this.#selectedChangeScheduled || !this.selectedItemsFilter) {
+    if (this.#selectedChangeScheduled || !this.#selectedItemsFilter) {
       return;
     }
 
     // Different sizes when applying filters, schedule selectedItemsChange
-    if (this.selectedItemsFilter.size !== this.selectedItems.size) {
+    if (this.#selectedItemsFilter.size !== this.#selectedItems.size) {
       this.#selectedChangeScheduled = true;
-      this.selectedItems = this.selectedItemsFilter; // WA
+      this.#selectedItems = this.#selectedItemsFilter; // WA
       return;
     }
 
-    const selectedItemsFilterCopy = [...this.selectedItemsFilter.keys()];
+    const selectedItemsFilterCopy = [...this.#selectedItemsFilter.keys()];
 
     for (let index = 0; index < selectedItemsFilterCopy.length; index++) {
       // Found a value that don't belong to the selectedItems without filters,
       // schedule selectedItemsChange
-      if (!this.selectedItems.has(selectedItemsFilterCopy[index])) {
+      if (!this.#selectedItems.has(selectedItemsFilterCopy[index])) {
         this.#selectedChangeScheduled = true;
-        this.selectedItems = this.selectedItemsFilter; // WA
+        this.#selectedItems = this.#selectedItemsFilter; // WA
         return;
       }
     }
-  }
+  };
 
-  private updateFilters() {
+  #updateFilters = () => {
     if (this.filterType === "none") {
-      this.validateIfCheckboxesChangedDependingOnFilters();
-      this.validateIfSelectedItemsChangedDependingOnFilters();
-      this.validateCheckedAndSelectedItems();
+      this.#validateIfCheckboxesChangedDependingOnFilters();
+      this.#validateIfSelectedItemsChangedDependingOnFilters();
+      this.#validateCheckedAndSelectedItems();
 
       // Remove memory allocation
-      this.flattenedCheckboxTreeModelFilter = undefined;
-      this.selectedItemsFilter = undefined;
+      this.#flattenedCheckboxTreeModelFilter = undefined;
+      this.#selectedItemsFilter = undefined;
 
       return;
     }
 
     // Remove queued filter processing
-    clearTimeout(this.filterTimeout);
+    clearTimeout(this.#filterTimeout);
 
     const processWithDebounce =
       this.filterDebounce > 0 &&
@@ -1334,10 +1335,10 @@ export class ChTreeViewRender {
 
     const filterFunction = () => {
       // Allocate Map and Set
-      this.flattenedCheckboxTreeModelFilter = new Map();
-      this.selectedItemsFilter = new Set();
+      this.#flattenedCheckboxTreeModelFilter = new Map();
+      this.#selectedItemsFilter = new Set();
 
-      this.filterSubModel(
+      this.#filterSubModel(
         {
           id: null,
           caption: null,
@@ -1348,73 +1349,73 @@ export class ChTreeViewRender {
           defaultChecked: this.checked,
           filter: this.filter,
           filterOptions: this.filterOptions,
-          filterSet: this.filterListAsSet
+          filterSet: this.#filterListAsSet
         }
       );
 
       // Validate if there are differences between the items with checkboxes
       // and the selected items. If there are, emit the corresponding updates.
-      this.validateIfCheckboxesChangedDependingOnFilters();
-      this.validateIfSelectedItemsChangedDependingOnFilters();
+      this.#validateIfCheckboxesChangedDependingOnFilters();
+      this.#validateIfSelectedItemsChangedDependingOnFilters();
 
-      this.validateCheckedAndSelectedItems();
+      this.#validateCheckedAndSelectedItems();
     };
 
     // Check if should filter with debounce
-    if (processWithDebounce && this.immediateFilter !== "immediate") {
-      this.filterTimeout = setTimeout(() => {
-        this.immediateFilter = undefined;
+    if (processWithDebounce && this.#immediateFilter !== "immediate") {
+      this.#filterTimeout = setTimeout(() => {
+        this.#immediateFilter = undefined;
         filterFunction();
         forceUpdate(this); // After the filter processing is completed, force a re-render
       }, this.filterDebounce);
     }
     // No debounce
     else {
-      this.immediateFilter = undefined;
+      this.#immediateFilter = undefined;
       filterFunction();
     }
-  }
+  };
 
-  private validateCheckedAndSelectedItems() {
-    if (this.checkedChangeScheduled) {
-      this.updateCheckedItems();
-      this.checkedChangeScheduled = false;
+  #validateCheckedAndSelectedItems = () => {
+    if (this.#checkedChangeScheduled) {
+      this.#updateCheckedItems();
+      this.#checkedChangeScheduled = false;
     }
 
     if (this.#selectedChangeScheduled) {
       this.#selectedChangeScheduled = false;
 
       // Update the selected items in the ch-tree-view control
-      this.updateSelectedItems();
+      this.#updateSelectedItems();
     }
-  }
+  };
 
   componentWillLoad() {
     if (this.useGxRender) {
       this.renderItem = GXRenderItem;
     }
 
-    this.flattenModel();
+    this.#flattenModel();
   }
 
   componentWillRender() {
     if (
       !this.#selectedChangeScheduled &&
-      !this.checkedChangeScheduled &&
-      !this.applyFilters
+      !this.#checkedChangeScheduled &&
+      !this.#applyFilters
     ) {
       return;
     }
 
     // If the filters must be applied, we must let the filters decided which
     // are the selected and checked items
-    if (this.applyFilters) {
-      this.updateFilters();
-      this.applyFilters = false;
+    if (this.#applyFilters) {
+      this.#updateFilters();
+      this.#applyFilters = false;
       return;
     }
 
-    this.validateCheckedAndSelectedItems();
+    this.#validateCheckedAndSelectedItems();
   }
 
   render() {
@@ -1423,12 +1424,12 @@ export class ChTreeViewRender {
         class={this.cssClass || null}
         multiSelection={this.multiSelection}
         waitDropProcessing={this.waitDropProcessing}
-        onDroppableZoneEnter={this.handleDroppableZoneEnter}
-        onExpandedItemChange={this.handleExpandedItemChange}
-        onItemContextmenu={this.handleItemContextmenu}
-        onItemsDropped={this.handleItemsDropped}
-        onSelectedItemsChange={this.handleSelectedItemsChange}
-        ref={el => (this.treeRef = el)}
+        onDroppableZoneEnter={this.#handleDroppableZoneEnter}
+        onExpandedItemChange={this.#handleExpandedItemChange}
+        onItemContextmenu={this.#handleItemContextmenu}
+        onItemsDropped={this.#handleItemsDropped}
+        onSelectedItemsChange={this.#handleSelectedItemsChange}
+        ref={el => (this.#treeRef = el)}
       >
         {this.treeModel.map((itemModel, index) =>
           this.renderItem(

@@ -65,16 +65,17 @@ const CHECKBOX_EXPORT_PARTS = [
   shadow: true
 })
 export class ChTreeViewItem {
-  private watcher: ResizeObserver;
+  #watcher: ResizeObserver;
 
   /**
    * Useful to ignore the checkbox change when it was committed from a children.
    */
-  private ignoreCheckboxChange = false;
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #ignoreCheckboxChange = false;
 
   // Refs
-  private headerRef: HTMLButtonElement;
-  private inputRef: HTMLInputElement;
+  #headerRef: HTMLButtonElement;
+  #inputRef: HTMLInputElement;
 
   @Element() el: HTMLChTreeViewItemElement;
 
@@ -95,12 +96,12 @@ export class ChTreeViewItem {
   @Prop({ reflect: true, mutable: true }) checked = false;
   @Watch("checked")
   updateChildrenCheckedValue(newValue: boolean) {
-    if (!this.toggleCheckboxes || this.leaf || this.ignoreCheckboxChange) {
-      this.ignoreCheckboxChange = false;
+    if (!this.toggleCheckboxes || this.leaf || this.#ignoreCheckboxChange) {
+      this.#ignoreCheckboxChange = false;
       return;
     }
 
-    const treeItems = this.getDirectTreeItems();
+    const treeItems = this.#getDirectTreeItems();
 
     treeItems.forEach(treeItem => {
       if (treeItem.checked !== newValue || treeItem.indeterminate !== false) {
@@ -162,15 +163,15 @@ export class ChTreeViewItem {
       return;
     }
 
-    document.body.addEventListener("click", this.removeEditModeOnClick, {
+    document.body.addEventListener("click", this.#removeEditModeOnClick, {
       capture: true
     });
 
     // Wait until the input is rendered to focus it
     writeTask(() => {
       requestAnimationFrame(() => {
-        if (this.inputRef) {
-          this.inputRef.focus();
+        if (this.#inputRef) {
+          this.#inputRef.focus();
         }
       });
     });
@@ -203,7 +204,7 @@ export class ChTreeViewItem {
     // Wait until all properties are updated before lazy loading. Otherwise, the
     // lazyLoad property could be updated just after the executing of the function
     setTimeout(() => {
-      this.lazyLoadItems(isExpanded);
+      this.#lazyLoadItems(isExpanded);
     });
   }
 
@@ -216,10 +217,10 @@ export class ChTreeViewItem {
     if (isLastItem && this.showLines) {
       // Use RAF to set the observer after the render method has completed
       requestAnimationFrame(() => {
-        this.setResizeObserver();
+        this.#setResizeObserver();
       });
     } else {
-      this.disconnectObserver();
+      this.#disconnectObserver();
     }
   }
 
@@ -280,9 +281,9 @@ export class ChTreeViewItem {
   @Watch("showLines")
   handleShowLinesChange(newShowLines: TreeViewLines) {
     if (newShowLines && this.lastItem) {
-      this.setResizeObserver();
+      this.#setResizeObserver();
     } else {
-      this.disconnectObserver();
+      this.#disconnectObserver();
     }
   }
 
@@ -346,7 +347,7 @@ export class ChTreeViewItem {
     }
 
     const updatedCheck = event.detail.checked;
-    const treeItems = this.getDirectTreeItems();
+    const treeItems = this.#getDirectTreeItems();
 
     // Check if all the items have the same value as the updated item
     const allItemsHaveTheSameCheckedValue = treeItems.every(
@@ -357,7 +358,7 @@ export class ChTreeViewItem {
       this.checked !== updatedCheck ||
       this.indeterminate !== !allItemsHaveTheSameCheckedValue;
 
-    this.ignoreCheckboxChange = this.checked !== updatedCheck;
+    this.#ignoreCheckboxChange = this.checked !== updatedCheck;
     this.checked = updatedCheck;
     this.indeterminate = !allItemsHaveTheSameCheckedValue;
 
@@ -491,11 +492,11 @@ export class ChTreeViewItem {
    */
   @Method()
   async setFocus(ctrlKeyPressed: boolean) {
-    this.headerRef.focus();
+    this.#headerRef.focus();
 
     // Normal navigation auto selects the item.
     if (!ctrlKeyPressed) {
-      this.setSelected();
+      this.#setSelected();
     }
   }
 
@@ -516,17 +517,16 @@ export class ChTreeViewItem {
     });
   }
 
-  private getDirectTreeItems(): HTMLChTreeViewItemElement[] {
-    return Array.from(
+  #getDirectTreeItems = (): HTMLChTreeViewItemElement[] =>
+    Array.from(
       this.el.querySelectorAll(DIRECT_TREE_ITEM_CHILDREN)
     ) as HTMLChTreeViewItemElement[];
-  }
 
-  private setResizeObserver() {
-    this.watcher = new ResizeObserver(() => {
+  #setResizeObserver = () => {
+    this.#watcher = new ResizeObserver(() => {
       const distanceToCheckbox =
         this.el.getBoundingClientRect().height -
-        this.headerRef.getBoundingClientRect().height / 2;
+        this.#headerRef.getBoundingClientRect().height / 2;
 
       this.el.style.setProperty(
         DISTANCE_TO_CHECKBOX_CUSTOM_VAR,
@@ -534,19 +534,19 @@ export class ChTreeViewItem {
       );
     });
 
-    this.watcher.observe(this.el);
-    this.watcher.observe(this.headerRef);
-  }
+    this.#watcher.observe(this.el);
+    this.#watcher.observe(this.#headerRef);
+  };
 
-  private disconnectObserver() {
-    if (!this.watcher) {
+  #disconnectObserver = () => {
+    if (!this.#watcher) {
       return;
     }
-    this.watcher.disconnect();
-    this.watcher = null;
-  }
+    this.#watcher.disconnect();
+    this.#watcher = null;
+  };
 
-  private checkIfShouldRemoveEditMode = (event: KeyboardEvent) => {
+  #checkIfShouldRemoveEditMode = (event: KeyboardEvent) => {
     event.stopPropagation();
 
     if (event.code !== ENTER_KEY && event.code !== ESCAPE_KEY) {
@@ -555,18 +555,18 @@ export class ChTreeViewItem {
 
     event.preventDefault();
     const commitEdition = event.code === ENTER_KEY;
-    this.removeEditMode(true, commitEdition)();
+    this.#removeEditMode(true, commitEdition)();
   };
 
-  private removeEditModeOnClick = (event: PointerEvent) => {
+  #removeEditModeOnClick = (event: PointerEvent) => {
     // The click is executed outside the input and the pointer type is defined,
     // meaning that the button click was not triggered by the Enter or Space keys
-    if (!event.composedPath().includes(this.inputRef) && event.pointerType) {
-      this.removeEditMode(false)();
+    if (!event.composedPath().includes(this.#inputRef) && event.pointerType) {
+      this.#removeEditMode(false)();
     }
   };
 
-  private removeEditMode =
+  #removeEditMode =
     (shouldFocusHeader: boolean, commitEdition = false) =>
     () => {
       // When pressing the enter key in the input, the removeEditMode event is
@@ -577,11 +577,11 @@ export class ChTreeViewItem {
       }
       this.editing = false;
 
-      document.body.removeEventListener("click", this.removeEditModeOnClick, {
+      document.body.removeEventListener("click", this.#removeEditModeOnClick, {
         capture: true
       });
 
-      const newCaption = this.inputRef.value;
+      const newCaption = this.#inputRef.value;
 
       if (commitEdition && newCaption.trim() !== "") {
         this.modifyCaption.emit({
@@ -591,11 +591,11 @@ export class ChTreeViewItem {
       }
 
       if (shouldFocusHeader) {
-        this.headerRef.focus();
+        this.#headerRef.focus();
       }
     };
 
-  private toggleExpand = (event: MouseEvent) => {
+  #toggleExpand = (event: MouseEvent) => {
     event.stopPropagation();
 
     if (!this.leaf) {
@@ -604,11 +604,11 @@ export class ChTreeViewItem {
 
     this.selected = true;
     this.selectedItemChange.emit(
-      this.getSelectedInfo(mouseEventModifierKey(event), true)
+      this.#getSelectedInfo(mouseEventModifierKey(event), true)
     );
   };
 
-  private lazyLoadItems(expanded: boolean) {
+  #lazyLoadItems = (expanded: boolean) => {
     if (!this.lazyLoad || !expanded) {
       return;
     }
@@ -618,36 +618,36 @@ export class ChTreeViewItem {
     this.downloading = true;
 
     this.loadLazyContent.emit(this.el.id);
-  }
+  };
 
-  private toggleSelected() {
+  #toggleSelected = () => {
     const selected = !this.selected;
     this.selected = selected;
 
-    this.selectedItemChange.emit(this.getSelectedInfo(true, selected));
-  }
+    this.selectedItemChange.emit(this.#getSelectedInfo(true, selected));
+  };
 
-  private setSelected() {
+  #setSelected = () => {
     this.selected = true;
-    this.selectedItemChange.emit(this.getSelectedInfo(false, true));
-  }
+    this.selectedItemChange.emit(this.#getSelectedInfo(false, true));
+  };
 
-  private toggleOrSelect(event: MouseEvent) {
+  #toggleOrSelect = (event: MouseEvent) => {
     // Ctrl key
     if (mouseEventModifierKey(event)) {
-      this.toggleSelected();
+      this.#toggleSelected();
     }
     // Expand on click interaction
     else if (this.expandOnClick) {
-      this.toggleExpand(event);
+      this.#toggleExpand(event);
     }
     // Click only selects the item
     else {
-      this.setSelected();
+      this.#setSelected();
     }
-  }
+  };
 
-  private getSelectedInfo = (
+  #getSelectedInfo = (
     ctrlKeyPressed: boolean,
     selected: boolean
   ): TreeViewItemSelected => ({
@@ -659,20 +659,20 @@ export class ChTreeViewItem {
     selected: selected
   });
 
-  private handleActionDblClick = (event: PointerEvent) => {
+  #handleActionDblClick = (event: PointerEvent) => {
     event.stopPropagation();
 
     if (mouseEventModifierKey(event)) {
-      this.toggleSelected();
+      this.#toggleSelected();
       return;
     }
 
-    this.emitOpenReference();
+    this.#emitOpenReference();
 
     // The Control key is not pressed, so the control can be expanded if double
     // click expands the item
     if (!this.leaf && !this.expandOnClick) {
-      this.toggleExpand(event);
+      this.#toggleExpand(event);
     }
   };
 
@@ -682,7 +682,8 @@ export class ChTreeViewItem {
    *   - Enter keydown
    *   - Space keydown and keyup
    */
-  private handleActionClick = (event: PointerEvent) => {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #handleActionClick = (event: PointerEvent) => {
     event.stopPropagation();
 
     // Don't perform actions when editing
@@ -694,38 +695,37 @@ export class ChTreeViewItem {
 
     // Click event
     if (event.pointerType) {
-      this.toggleOrSelect(event);
+      this.#toggleOrSelect(event);
       return;
     }
 
-    this.emitOpenReference();
+    this.#emitOpenReference();
 
     // Enter or space
-    this.toggleExpand(event);
+    this.#toggleExpand(event);
   };
 
   /**
    * Event triggered by key events on the main button.
    */
-  private handleActionKeyDown = (event: KeyboardEvent) => {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #handleActionKeyDown = (event: KeyboardEvent) => {
     // Only toggle if the Enter key was pressed with the Ctrl key
     if (mouseEventModifierKey(event) && event.code === ENTER_KEY) {
       event.stopPropagation();
-      this.toggleSelected();
+      this.#toggleSelected();
     }
   };
 
-  private emitOpenReference() {
+  #emitOpenReference = () => {
     this.openReference.emit({
       id: this.el.id,
       leaf: this.leaf,
       metadata: this.metadata
     });
-  }
+  };
 
-  private handleCheckedChange = (
-    event: ChCheckboxCustomEvent<any> & InputEvent
-  ) => {
+  #handleCheckedChange = (event: ChCheckboxCustomEvent<any> & InputEvent) => {
     event.stopPropagation();
 
     const checked = (event.target as HTMLChCheckboxElement).checked;
@@ -739,7 +739,7 @@ export class ChTreeViewItem {
     });
   };
 
-  private renderImg = (cssClass: string, src: string) => (
+  #renderImg = (cssClass: string, src: string) => (
     <img
       aria-hidden="true"
       class={cssClass}
@@ -750,7 +750,7 @@ export class ChTreeViewItem {
     />
   );
 
-  private handleDragStart = (event: DragEvent) => {
+  #handleDragStart = (event: DragEvent) => {
     // Disallow drag when editing the caption
     if (this.editing) {
       event.preventDefault();
@@ -768,7 +768,7 @@ export class ChTreeViewItem {
     });
   };
 
-  private handleDragEnd = () => {
+  #handleDragEnd = () => {
     // event.preventDefault();
 
     // this.el.style.cursor = null;
@@ -776,28 +776,28 @@ export class ChTreeViewItem {
     this.itemDragEnd.emit();
   };
 
-  private handleDrop = () => {
+  #handleDrop = () => {
     this.dragState = "none";
   };
 
   componentWillLoad() {
     // Check if must lazy load
-    this.lazyLoadItems(this.expanded);
+    this.#lazyLoadItems(this.expanded);
   }
 
   componentDidLoad() {
     if (this.lastItem && this.showLines) {
-      this.setResizeObserver();
+      this.#setResizeObserver();
     }
   }
 
   disconnectedCallback() {
     // If it was disconnected on edit mode, remove the body event handler
     if (this.editing) {
-      this.removeEditMode(false);
+      this.#removeEditMode(false);
     }
 
-    this.disconnectObserver();
+    this.#disconnectObserver();
   }
 
   render() {
@@ -832,7 +832,7 @@ export class ChTreeViewItem {
         }}
         style={{ "--level": `${this.level}` }}
         // Drag and drop
-        onDrop={acceptDrop ? this.handleDrop : null}
+        onDrop={acceptDrop ? this.#handleDrop : null}
       >
         <button
           aria-controls={hasContent ? EXPANDABLE_ID : null}
@@ -864,13 +864,13 @@ export class ChTreeViewItem {
           }${this.level === INITIAL_LEVEL ? " level-0" : ""}`}
           type="button"
           disabled={this.disabled}
-          onClick={this.handleActionClick}
-          onKeyDown={!this.editing ? this.handleActionKeyDown : null}
+          onClick={this.#handleActionClick}
+          onKeyDown={!this.editing ? this.#handleActionKeyDown : null}
           // Drag and drop
           draggable={!this.dragDisabled}
-          onDragStart={this.handleDragStart}
-          onDragEnd={!this.dragDisabled ? this.handleDragEnd : null}
-          ref={el => (this.headerRef = el)}
+          onDragStart={this.#handleDragStart}
+          onDragEnd={!this.dragDisabled ? this.#handleDragEnd : null}
+          ref={el => (this.#headerRef = el)}
         >
           {!this.leaf && this.expandableButton === "action" && (
             <button
@@ -884,7 +884,7 @@ export class ChTreeViewItem {
                 this.expanded ? " expanded" : " collapsed"
               }`}
               disabled={this.disabled}
-              onClick={this.toggleExpand}
+              onClick={this.#toggleExpand}
             ></button>
           )}
 
@@ -901,7 +901,7 @@ export class ChTreeViewItem {
               indeterminate={this.indeterminate}
               unCheckedValue="false"
               value={`${this.checked}`}
-              onInput={this.handleCheckedChange}
+              onInput={this.#handleCheckedChange}
             ></ch-checkbox>
           )}
 
@@ -917,9 +917,10 @@ export class ChTreeViewItem {
                 part={`action${!this.editing ? " readonly-mode" : ""}${
                   !this.leaf && this.expanded ? " expanded" : ""
                 }`}
-                onDblClick={!this.editing ? this.handleActionDblClick : null}
+                onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
-                {this.leftImgSrc && this.renderImg("left-img", this.leftImgSrc)}
+                {this.leftImgSrc &&
+                  this.#renderImg("left-img", this.leftImgSrc)}
 
                 {this.editable && this.editing ? (
                   <input
@@ -928,16 +929,16 @@ export class ChTreeViewItem {
                     disabled={this.disabled}
                     type="text"
                     value={this.caption}
-                    onBlur={this.removeEditMode(false)}
-                    onKeyDown={this.checkIfShouldRemoveEditMode}
-                    ref={el => (this.inputRef = el)}
+                    onBlur={this.#removeEditMode(false)}
+                    onKeyDown={this.#checkIfShouldRemoveEditMode}
+                    ref={el => (this.#inputRef = el)}
                   />
                 ) : (
                   this.caption
                 )}
 
                 {this.rightImgSrc &&
-                  this.renderImg("right-img", this.rightImgSrc)}
+                  this.#renderImg("right-img", this.rightImgSrc)}
               </div>,
 
               this.showDownloadingSpinner && !this.leaf && this.downloading && (

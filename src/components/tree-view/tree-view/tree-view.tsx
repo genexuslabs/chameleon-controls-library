@@ -69,7 +69,7 @@ const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
 })
 export class ChTreeView {
   // @todo TODO: Check if key codes works in Safari
-  private keyDownEvents: {
+  #keyDownEvents: {
     [key in KeyEvents]: (event: KeyboardEvent) => void;
   } = {
     [ARROW_DOWN_KEY]: event => {
@@ -104,33 +104,34 @@ export class ChTreeView {
     }
   };
 
-  private draggingSelectedItems = false;
-  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
-  private lastDragEvent: MouseEvent;
+  #draggingSelectedItems = false;
+  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  #lastDragEvent: MouseEvent;
 
-  private openSubTreeTimeout: NodeJS.Timeout;
+  #openSubTreeTimeout: NodeJS.Timeout;
 
-  private selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
+  #selectedItemsInfo: Map<string, TreeViewItemSelectedInfo> = new Map();
 
   /**
    * Cache to avoid duplicate requests when checking the droppable zone in the
    * same drag event.
    */
-  private validDroppableZoneCache: Map<string, TreeViewDroppableZoneState> =
-    new Map();
-  private dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
-  private draggedItems: GxDataTransferInfo[];
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #validDroppableZoneCache: Map<string, TreeViewDroppableZoneState> = new Map();
+  #dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
+  #draggedItems: GxDataTransferInfo[];
 
   // Refs
-  private currentDraggedItem: HTMLChTreeViewItemElement;
-  private lastOpenSubTreeItem: HTMLChTreeViewItemElement;
+  #currentDraggedItem: HTMLChTreeViewItemElement;
+  #lastOpenSubTreeItem: HTMLChTreeViewItemElement;
 
   /**
    * Text displayed when dragging an item.
    */
-  private dragInfo: string;
-  private draggedIds: string[] = [];
-  private draggedParentIds: string[] = [];
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #dragInfo: string;
+  #draggedIds: string[] = [];
+  #draggedParentIds: string[] = [];
 
   @Element() el: HTMLChTreeViewElement;
 
@@ -209,7 +210,7 @@ export class ChTreeView {
   // Set edit mode in items
   @Listen("keydown", { capture: true })
   handleKeyDownEvents(event: KeyboardEvent) {
-    const keyHandler = this.keyDownEvents[event.key];
+    const keyHandler = this.#keyDownEvents[event.key];
 
     if (keyHandler) {
       keyHandler(event);
@@ -222,7 +223,7 @@ export class ChTreeView {
   @Listen("dragstart", { passive: true, target: "window" })
   handleDragStart(event: DragEvent) {
     // Reset the validity of the droppable zones with each new drag start
-    this.validDroppableZoneCache.clear();
+    this.#validDroppableZoneCache.clear();
 
     // If there is no data, the dragstart does not achieve the interface required
     const data = event.dataTransfer.getData(TEXT_FORMAT);
@@ -234,9 +235,9 @@ export class ChTreeView {
       // Try to parse the data
       const paredData = JSON.parse(data);
 
-      this.draggedItems = paredData;
+      this.#draggedItems = paredData;
       this.draggingInTheDocument = true;
-      this.dragStartTimestamp = new Date().getTime();
+      this.#dragStartTimestamp = new Date().getTime();
     } catch {
       // Empty
     }
@@ -249,7 +250,7 @@ export class ChTreeView {
 
   @Listen("dragenter", { capture: true, passive: true })
   handleDragEnter(event: DragEvent) {
-    this.cancelSubTreeOpening(null, true);
+    this.#cancelSubTreeOpening(null, true);
     event.stopPropagation();
     const containerTarget = event.target as HTMLChTreeViewItemElement;
 
@@ -258,10 +259,10 @@ export class ChTreeView {
       return;
     }
 
-    this.lastOpenSubTreeItem = containerTarget;
-    this.openSubTreeAfterCountdown(containerTarget);
+    this.#lastOpenSubTreeItem = containerTarget;
+    this.#openSubTreeAfterCountdown(containerTarget);
 
-    if (this.validDroppableZone(event) === "valid") {
+    if (this.#validDroppableZone(event) === "valid") {
       containerTarget.dragState = "enter";
     }
   }
@@ -276,24 +277,24 @@ export class ChTreeView {
 
     const treeItem = currentTarget as HTMLChTreeViewItemElement;
     treeItem.dragState = "none";
-    this.cancelSubTreeOpening(treeItem);
+    this.#cancelSubTreeOpening(treeItem);
   }
 
-  private cancelSubTreeOpening(
+  #cancelSubTreeOpening = (
     treeItem: HTMLChTreeViewItemElement,
     forceClear = false
-  ) {
-    if (this.lastOpenSubTreeItem === treeItem || forceClear) {
-      clearTimeout(this.openSubTreeTimeout);
-      this.lastOpenSubTreeItem = null;
+  ) => {
+    if (this.#lastOpenSubTreeItem === treeItem || forceClear) {
+      clearTimeout(this.#openSubTreeTimeout);
+      this.#lastOpenSubTreeItem = null;
     }
-  }
+  };
 
   @Listen("drop")
   handleItemDrop(event: DragEvent) {
     event.stopPropagation();
 
-    this.cancelSubTreeOpening(null, true);
+    this.#cancelSubTreeOpening(null, true);
     const newContainer = event.target as HTMLChTreeViewItemElement;
 
     const draggedItems: GxDataTransferInfo[] = JSON.parse(
@@ -302,13 +303,13 @@ export class ChTreeView {
 
     // The droppable zone must be checked, even if it was marked as not valid
     // @todo Try to drop an item with high delays in droppable zone checking
-    if (this.validDroppableZone(event) !== "valid") {
+    if (this.#validDroppableZone(event) !== "valid") {
       return;
     }
 
     this.itemsDropped.emit({
       newContainer: { id: newContainer.id, metadata: newContainer.metadata },
-      draggingSelectedItems: this.draggingSelectedItems,
+      draggingSelectedItems: this.#draggingSelectedItems,
       draggedItems: draggedItems,
       dropInTheSameTree: this.draggingInTree
     });
@@ -321,12 +322,12 @@ export class ChTreeView {
     // Avoid bubbling as this event can listened in other components (e.g. ch-flexible-layout)
     event.stopPropagation();
 
-    document.body.addEventListener("dragover", this.trackItemDrag, {
+    document.body.addEventListener("dragover", this.#trackItemDrag, {
       capture: true
     });
 
-    this.currentDraggedItem = event.target;
-    const allItemsCanBeDragged = this.checkDragValidityAndUpdateDragInfo(
+    this.#currentDraggedItem = event.target;
+    const allItemsCanBeDragged = this.#checkDragValidityAndUpdateDragInfo(
       event.detail
     );
 
@@ -340,7 +341,7 @@ export class ChTreeView {
     this.draggingInTree = true;
 
     if (this.scrollToEdgeOnDrag) {
-      this.fixScrollPositionOnDrag();
+      this.#fixScrollPositionOnDrag();
     }
   }
 
@@ -348,12 +349,12 @@ export class ChTreeView {
   handleItemDragEnd() {
     this.draggingInTree = false;
 
-    document.body.removeEventListener("dragover", this.trackItemDrag, {
+    document.body.removeEventListener("dragover", this.#trackItemDrag, {
       capture: true
     });
 
     // Reset not allowed droppable ids
-    this.resetVariables();
+    this.#resetVariables();
   }
 
   @Listen("selectedItemChange")
@@ -367,25 +368,25 @@ export class ChTreeView {
     // remove all selected items
     if (!selectedItemInfo.ctrlKeyPressed || !this.multiSelection) {
       // Deselect all items except the item that emitted the event
-      this.selectedItemsInfo.forEach(treeItem => {
+      this.#selectedItemsInfo.forEach(treeItem => {
         if (treeItem.id !== selectedItemInfo.id) {
           this.#getTreeViewItemRef(treeItem.id).selected = false;
         }
       });
 
       // Clear selected items
-      this.updateSelectedItems();
+      this.#updateSelectedItems();
     }
 
     // If the item is selected, add it to list
     if (selectedItemInfo.selected) {
-      this.selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
+      this.#selectedItemsInfo.set(selectedItemInfo.id, selectedItemInfo);
     } else {
-      this.selectedItemsInfo.delete(selectedItemInfo.id);
+      this.#selectedItemsInfo.delete(selectedItemInfo.id);
     }
 
     // Sync with UI model
-    this.selectedItemsChange.emit(this.selectedItemsInfo);
+    this.selectedItemsChange.emit(this.#selectedItemsInfo);
   }
 
   /**
@@ -394,7 +395,7 @@ export class ChTreeView {
    */
   @Method()
   async setSelectedItems(selectedItems: TreeViewItemSelectedInfo[] = []) {
-    this.updateSelectedItems(selectedItems);
+    this.#updateSelectedItems(selectedItems);
   }
 
   /**
@@ -437,33 +438,36 @@ export class ChTreeView {
   ) {
     if (
       !this.draggingInTheDocument ||
-      requestTimestamp <= this.dragStartTimestamp
+      requestTimestamp <= this.#dragStartTimestamp
     ) {
       return;
     }
 
     const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
-    this.validDroppableZoneCache.set(
+    this.#validDroppableZoneCache.set(
       droppableZoneKey,
       validDrop ? "valid" : "invalid"
     );
 
     const shouldUpdateDragEnterInCurrentContainer =
-      this.lastOpenSubTreeItem?.id === newContainerId;
+      this.#lastOpenSubTreeItem?.id === newContainerId;
 
     if (shouldUpdateDragEnterInCurrentContainer) {
-      this.lastOpenSubTreeItem.dragState = "enter";
+      this.#lastOpenSubTreeItem.dragState = "enter";
     }
   }
 
   #getTreeViewItemRef = itemId =>
     this.el.querySelector(ITEM_SELECTOR(itemId)) as HTMLChTreeViewItemElement;
 
-  private validDroppableZone(event: DragEvent): TreeViewDroppableZoneState {
+  #validDroppableZone = (event: DragEvent): TreeViewDroppableZoneState => {
     const containerTarget = event.target as HTMLChTreeViewItemElement;
 
-    const cacheKey = getDroppableZoneKey(containerTarget.id, this.draggedItems);
-    let droppableZoneState = this.validDroppableZoneCache.get(cacheKey);
+    const cacheKey = getDroppableZoneKey(
+      containerTarget.id,
+      this.#draggedItems
+    );
+    let droppableZoneState = this.#validDroppableZoneCache.get(cacheKey);
 
     // Invalidate the cache, because the item is no longer waiting for its content to be downloaded
     if (
@@ -487,42 +491,42 @@ export class ChTreeView {
       event.dataTransfer.effectAllowed === "none" ||
       containerTarget.dropDisabled ||
       (this.draggingInTree &&
-        (this.draggedIds.includes(containerTarget.id) ||
-          this.draggedParentIds.includes(containerTarget.id)))
+        (this.#draggedIds.includes(containerTarget.id) ||
+          this.#draggedParentIds.includes(containerTarget.id)))
     ) {
-      this.validDroppableZoneCache.set(cacheKey, "invalid");
+      this.#validDroppableZoneCache.set(cacheKey, "invalid");
       return "invalid";
     }
 
     // Disable drops when items need to lazy load their content first
     if (containerTarget.lazyLoad || containerTarget.downloading) {
-      this.validDroppableZoneCache.set(cacheKey, "temporal-invalid");
+      this.#validDroppableZoneCache.set(cacheKey, "temporal-invalid");
       return "temporal-invalid";
     }
 
-    this.validDroppableZoneCache.set(cacheKey, "checking");
+    this.#validDroppableZoneCache.set(cacheKey, "checking");
     this.droppableZoneEnter.emit({
       newContainer: {
         id: containerTarget.id,
         metadata: containerTarget.metadata
       },
-      draggedItems: this.draggedItems
+      draggedItems: this.#draggedItems
     });
     return "checking";
-  }
+  };
 
-  private openSubTreeAfterCountdown(currentTarget: HTMLChTreeViewItemElement) {
+  #openSubTreeAfterCountdown = (currentTarget: HTMLChTreeViewItemElement) => {
     if (currentTarget.leaf || currentTarget.expanded) {
       return;
     }
 
-    this.openSubTreeTimeout = setTimeout(() => {
+    this.#openSubTreeTimeout = setTimeout(() => {
       currentTarget.expanded = true;
       this.expandedItemChange.emit({ id: currentTarget.id, expanded: true });
     }, this.openSubTreeCountdown);
-  }
+  };
 
-  private trackItemDrag = (event: DragEvent) => {
+  #trackItemDrag = (event: DragEvent) => {
     const draggingInATree =
       (event.target as HTMLElement).closest(TREE_TAG_NAME) !== null;
 
@@ -534,30 +538,30 @@ export class ChTreeView {
     }
 
     event.preventDefault();
-    this.lastDragEvent = event;
+    this.#lastDragEvent = event;
 
-    this.updateDropEffect(event);
+    this.#updateDropEffect(event);
 
-    if (!this.needForRAF) {
+    if (!this.#needForRAF) {
       return;
     }
-    this.needForRAF = false; // No need to call RAF up until next frame
+    this.#needForRAF = false; // No need to call RAF up until next frame
 
     requestAnimationFrame(() => {
-      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
 
       this.el.style.setProperty(
         POSITION_X_DRAG_CUSTOM_VAR,
-        `${this.lastDragEvent.clientX}px`
+        `${this.#lastDragEvent.clientX}px`
       );
       this.el.style.setProperty(
         POSITION_Y_DRAG_CUSTOM_VAR,
-        `${this.lastDragEvent.clientY}px`
+        `${this.#lastDragEvent.clientY}px`
       );
     });
   };
 
-  private updateDropEffect(event: DragEvent) {
+  #updateDropEffect = (event: DragEvent) => {
     const itemTarget = event.target as HTMLElement;
 
     // Check if it is a valid item
@@ -567,7 +571,7 @@ export class ChTreeView {
     ) {
       return;
     }
-    const droppableZoneState = this.validDroppableZone(event);
+    const droppableZoneState = this.#validDroppableZone(event);
 
     if (
       droppableZoneState === "invalid" ||
@@ -575,12 +579,12 @@ export class ChTreeView {
     ) {
       event.dataTransfer.dropEffect = "none";
     }
-  }
+  };
 
-  private resetVariables() {
-    this.draggedIds = [];
-    this.draggedParentIds = [];
-  }
+  #resetVariables = () => {
+    this.#draggedIds = [];
+    this.#draggedParentIds = [];
+  };
 
   /**
    * First, it check if all items can be dragged. If so, it updates the
@@ -589,35 +593,36 @@ export class ChTreeView {
    * items.
    * @returns If all selected items can be dragged.
    */
-  private checkDragValidityAndUpdateDragInfo(
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #checkDragValidityAndUpdateDragInfo = (
     dragInfo: TreeViewItemDragStartInfo
-  ): boolean {
+  ): boolean => {
     const draggedElement = dragInfo.elem;
 
-    const isDraggingSelectedItems = this.selectedItemsInfo.has(
+    const isDraggingSelectedItems = this.#selectedItemsInfo.has(
       draggedElement.id
     );
-    this.draggingSelectedItems = isDraggingSelectedItems;
+    this.#draggingSelectedItems = isDraggingSelectedItems;
 
     let dataTransferInfo: GxDataTransferInfo[] = [];
     let dragIsEnabledForAllItems: boolean;
 
     if (isDraggingSelectedItems) {
-      const selectedItemKeys = [...this.selectedItemsInfo.keys()];
-      const selectedItemValues = [...this.selectedItemsInfo.values()];
+      const selectedItemKeys = [...this.#selectedItemsInfo.keys()];
+      const selectedItemValues = [...this.#selectedItemsInfo.values()];
       const selectedItemCount = selectedItemKeys.length;
 
       dragIsEnabledForAllItems = selectedItemValues.every(
         el => !this.#getTreeViewItemRef(el.id).dragDisabled
       );
 
-      this.draggedIds = selectedItemKeys;
+      this.#draggedIds = selectedItemKeys;
       dataTransferInfo = selectedItemValues.map(el => ({
         id: el.id,
         metadata: el.metadata
       }));
 
-      this.dragInfo =
+      this.#dragInfo =
         selectedItemCount === 1
           ? draggedElement.caption
           : selectedItemCount.toString();
@@ -626,11 +631,11 @@ export class ChTreeView {
       dataTransferInfo = [
         { id: draggedElement.id, metadata: draggedElement.metadata }
       ];
-      this.draggedIds = [draggedElement.id];
-      this.dragInfo = draggedElement.caption;
+      this.#draggedIds = [draggedElement.id];
+      this.#dragInfo = draggedElement.caption;
     }
 
-    this.getDirectParentsOfDraggableItems(isDraggingSelectedItems);
+    this.#getDirectParentsOfDraggableItems(isDraggingSelectedItems);
 
     // Update drag event info
     const data = JSON.stringify(dataTransferInfo);
@@ -640,56 +645,56 @@ export class ChTreeView {
     // that can't be dragged, otherwise, other trees or element might behave
     // unexpected when a dragstart event comes
     return dragIsEnabledForAllItems;
-  }
+  };
 
-  private fixScrollPositionOnDrag = () => {
-    if (!this.draggingInTree || !this.lastDragEvent) {
+  #fixScrollPositionOnDrag = () => {
+    if (!this.draggingInTree || !this.#lastDragEvent) {
       return;
     }
 
     requestAnimationFrame(() => {
-      scrollToEdge(this.lastDragEvent, this.el, 10, 30);
+      scrollToEdge(this.#lastDragEvent, this.el, 10, 30);
 
-      requestAnimationFrame(this.fixScrollPositionOnDrag);
+      requestAnimationFrame(this.#fixScrollPositionOnDrag);
     });
   };
 
-  private getDirectParentsOfDraggableItems(draggingSelectedItems: boolean) {
+  #getDirectParentsOfDraggableItems = (draggingSelectedItems: boolean) => {
     if (!draggingSelectedItems) {
-      const parentTreeItemElem = this.currentDraggedItem.parentElement;
+      const parentTreeItemElem = this.#currentDraggedItem.parentElement;
 
       if (parentTreeItemElem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-        this.draggedParentIds.push(parentTreeItemElem.id);
+        this.#draggedParentIds.push(parentTreeItemElem.id);
       }
 
       return;
     }
 
     // Dragging selected items
-    this.selectedItemsInfo.forEach(selectedItem => {
+    this.#selectedItemsInfo.forEach(selectedItem => {
       const parentId = selectedItem.parentId;
 
       // parentId === "" when the item is in the first level of the tree
       if (parentId !== "") {
-        this.draggedParentIds.push(parentId);
+        this.#draggedParentIds.push(parentId);
       }
     });
-  }
+  };
 
-  private updateSelectedItems(selectedItems: TreeViewItemSelectedInfo[] = []) {
-    this.selectedItemsInfo.clear();
+  #updateSelectedItems = (selectedItems: TreeViewItemSelectedInfo[] = []) => {
+    this.#selectedItemsInfo.clear();
 
     if (selectedItems.length === 0) {
       return;
     }
 
     selectedItems.forEach(selectedItem => {
-      this.selectedItemsInfo.set(selectedItem.id, selectedItem);
+      this.#selectedItemsInfo.set(selectedItem.id, selectedItem);
     });
-  }
+  };
 
   disconnectedCallback() {
-    this.resetVariables();
+    this.#resetVariables();
 
     // Remove dragover body event
     this.handleItemDragEnd();
@@ -702,7 +707,7 @@ export class ChTreeView {
           "ch-tree-view-dragging-item": this.draggingInTheDocument,
           "ch-tree-view-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
           "ch-tree-view--dragging-selected-items":
-            this.draggingInTree && this.draggingSelectedItems,
+            this.draggingInTree && this.#draggingSelectedItems,
           "ch-tree-view-waiting-drop-processing": this.waitDropProcessing
         }}
       >
@@ -717,7 +722,7 @@ export class ChTreeView {
 
         {this.draggingInTree && (
           <span aria-hidden="true" class="ch-tree-view-drag-info">
-            {this.dragInfo}
+            {this.#dragInfo}
           </span>
         )}
       </Host>

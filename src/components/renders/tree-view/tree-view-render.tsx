@@ -49,6 +49,8 @@ import {
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
 
+const ROOT_ID = null;
+
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
 const DEFAULT_CLASS_VALUE = "tree-view-item";
@@ -1117,7 +1119,7 @@ export class ChTreeViewRender {
     this.#flattenedCheckboxTreeModel.clear();
     this.#selectedItems.clear();
 
-    this.#rootNode = { id: null, caption: null, items: this.treeModel };
+    this.#rootNode = { id: ROOT_ID, caption: ROOT_ID, items: this.treeModel };
     this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
@@ -1168,13 +1170,13 @@ export class ChTreeViewRender {
     item.render = satisfiesFilter; // Update item render
 
     // Update selected and checkbox items
-    if (satisfiesFilter) {
+    if (satisfiesFilter && item.id !== ROOT_ID) {
       if (item.selected) {
         currentSelectedItems.add(item.id);
       }
 
       if (item.checkbox ?? this.checkbox) {
-        const itemUIModel = this.#flattenedCheckboxTreeModel.get(item.id);
+        const itemUIModel = this.#flattenedTreeModel.get(item.id);
         currentCheckboxItems.set(item.id, itemUIModel);
       }
     }
@@ -1291,8 +1293,8 @@ export class ChTreeViewRender {
 
       this.#filterSubModel(
         {
-          id: null,
-          caption: null,
+          id: ROOT_ID,
+          caption: ROOT_ID,
           items: this.treeModel
         },
         {

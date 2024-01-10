@@ -1084,7 +1084,7 @@ export class ChTreeViewRender {
       });
 
       // Add the items that have a checkbox in a separate Map
-      if (item.checkbox ?? this.checkbox) {
+      if (this.#itemHasCheckbox(item)) {
         this.#flattenedCheckboxTreeModel.set(item.id, {
           parentItem: parentModel,
           item: item
@@ -1106,6 +1106,9 @@ export class ChTreeViewRender {
 
       this.#flattenSubModel(item);
     };
+
+  #itemHasCheckbox = (item: TreeViewItemModel) =>
+    item.checkbox ?? this.checkbox;
 
   #sortItems = (items: TreeViewItemModel[]) => {
     // Ensure that items are sorted
@@ -1175,7 +1178,7 @@ export class ChTreeViewRender {
         currentSelectedItems.add(item.id);
       }
 
-      if (item.checkbox ?? this.checkbox) {
+      if (this.#itemHasCheckbox(item)) {
         const itemUIModel = this.#flattenedTreeModel.get(item.id);
         currentCheckboxItems.set(item.id, itemUIModel);
       }
@@ -1240,30 +1243,42 @@ export class ChTreeViewRender {
   #unCheckboxFilteredItems = (
     newCheckboxItems: Map<string, TreeViewItemModelExtended>
   ) => {
-    this.#flattenedCheckboxTreeModel.forEach((_, itemId) => {
-      // Found a value that don't belong to the checkboxItems with filters,
-      // schedule checkedItemsChange
-      if (!newCheckboxItems.has(itemId)) {
-        // Schedule selectedItemsChange
-        this.#checkedChangeScheduled = true;
-      }
-    });
+    if (newCheckboxItems.size !== this.#flattenedCheckboxTreeModel.size) {
+      this.#checkedChangeScheduled = true;
+    }
+    // Check if the items in each Map have the same id
+    else {
+      this.#flattenedCheckboxTreeModel.forEach((_, itemId) => {
+        // Found a value that don't belong to the checkboxItems with filters,
+        // schedule checkedItemsChange
+        if (!newCheckboxItems.has(itemId)) {
+          // Schedule checkedItemsChange
+          this.#checkedChangeScheduled = true;
+        }
+      });
+    }
 
     // The previous checkbox items will now be the selected items with filter
     this.#flattenedCheckboxTreeModel = newCheckboxItems;
   };
 
   #deselectFilteredItems = (newSelectedItems: Set<string>) => {
-    this.#selectedItems.forEach(itemId => {
-      // Found a value that don't belong to the selectedItems with filters,
-      // deselect the item
-      if (!newSelectedItems.has(itemId)) {
-        this.#flattenedTreeModel.get(itemId).item.selected = false;
+    if (newSelectedItems.size !== this.#selectedItems.size) {
+      this.#selectedChangeScheduled = true;
+    }
+    // Check if the items in each Set have the same id
+    else {
+      this.#selectedItems.forEach(itemId => {
+        // Found a value that don't belong to the selectedItems with filters,
+        // deselect the item
+        if (!newSelectedItems.has(itemId)) {
+          this.#flattenedTreeModel.get(itemId).item.selected = false;
 
-        // Schedule selectedItemsChange
-        this.#selectedChangeScheduled = true;
-      }
-    });
+          // Schedule selectedItemsChange
+          this.#selectedChangeScheduled = true;
+        }
+      });
+    }
 
     // The previous selected items will now be the selected items with filter
     this.#selectedItems = newSelectedItems;
@@ -1273,7 +1288,17 @@ export class ChTreeViewRender {
     if (this.filterType === "none") {
       // TODO: Update items with checkbox
 
-      // this.#validateIfCheckboxesChangedDependingOnFilters();
+      // Check if there are more items with checkbox
+      const itemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
+        new Map();
+
+      this.#flattenedTreeModel.forEach((itemUIModel, itemId) => {
+        if (this.#itemHasCheckbox(itemUIModel.item)) {
+          itemsWithCheckbox.set(itemId, itemUIModel);
+        }
+      });
+
+      this.#unCheckboxFilteredItems(itemsWithCheckbox);
       this.#validateCheckedAndSelectedItems();
 
       return;

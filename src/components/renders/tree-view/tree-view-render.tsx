@@ -1,5 +1,6 @@
 import {
   Component,
+  Element,
   Event,
   EventEmitter,
   h,
@@ -36,7 +37,7 @@ import {
   ChTreeViewItemCustomEvent
 } from "../../../components";
 import { GxDataTransferInfo } from "../../../common/types";
-import { computeFilter } from "./helpers";
+import { computeFilter, itemHasCheckbox } from "./helpers";
 import {
   TreeViewGXItemModel,
   fromGxImageToURL
@@ -233,6 +234,8 @@ export class ChTreeViewRender {
 
   // Refs
   #treeRef: HTMLChTreeViewElement;
+
+  @Element() el: HTMLChTreeViewRenderElement;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -644,7 +647,7 @@ export class ChTreeViewRender {
       this.#selectedItems
     );
 
-    if (!treeViewHasFilters(this.filterType, this.filter)) {
+    if (!this.#treeHasFilters()) {
       // Update selected items
       if (removeItemsResult.atLeastOneSelected) {
         this.#updateSelectedItems();
@@ -677,7 +680,7 @@ export class ChTreeViewRender {
     afterProperties?: Partial<TreeViewItemModel>
   ) {
     reloadItems(
-      this,
+      this.el,
       itemId,
       this.#flattenedTreeModel,
       this.lazyLoadTreeItemsCallback,
@@ -717,7 +720,7 @@ export class ChTreeViewRender {
     const itemId = hasOnlyTheItemId ? path : path[path.length - 1];
 
     if (afterProperties) {
-      updateItemProperty(itemId, afterProperties, this.#flattenedTreeModel);
+      this.updateItemsProperties([itemId], afterProperties);
     }
 
     forceUpdate(this);
@@ -800,12 +803,32 @@ export class ChTreeViewRender {
     items: string[],
     properties: Partial<TreeViewItemModel>
   ) {
+    // Set to check if there are new selected items
+    const newSelectedItems = new Set(this.#selectedItems);
+
+    // Map to check if there are new items with checkbox
+    const newCheckboxItems: Map<string, TreeViewItemModelExtended> = new Map(
+      this.#flattenedCheckboxTreeModel
+    );
+
     items.forEach(itemId => {
-      updateItemProperty(itemId, properties, this.#flattenedTreeModel);
+      updateItemProperty(
+        itemId,
+        properties,
+        this.#flattenedTreeModel,
+        newSelectedItems,
+        newCheckboxItems,
+        this.checkbox
+      );
     });
 
-    // Update filters
-    this.#scheduleFilterProcessing();
+    // Update filters if necessary
+    if (this.#treeHasFilters()) {
+      this.#scheduleFilterProcessing();
+    } else {
+      this.#checkIfThereAreDifferentItemsWithCheckbox(newCheckboxItems);
+      this.#checkIfThereAreDifferentSelectedItems(newSelectedItems);
+    }
 
     forceUpdate(this);
   }
@@ -1108,7 +1131,9 @@ export class ChTreeViewRender {
     };
 
   #itemHasCheckbox = (item: TreeViewItemModel) =>
-    item.checkbox ?? this.checkbox;
+    itemHasCheckbox(item, this.checkbox);
+
+  #treeHasFilters = () => treeViewHasFilters(this.filterType, this.filter);
 
   #sortItems = (items: TreeViewItemModel[]) => {
     // Ensure that items are sorted
@@ -1240,7 +1265,7 @@ export class ChTreeViewRender {
     }
   };
 
-  #unCheckboxFilteredItems = (
+  #checkIfThereAreDifferentItemsWithCheckbox = (
     newCheckboxItems: Map<string, TreeViewItemModelExtended>
   ) => {
     if (newCheckboxItems.size !== this.#flattenedCheckboxTreeModel.size) {
@@ -1262,7 +1287,7 @@ export class ChTreeViewRender {
     this.#flattenedCheckboxTreeModel = newCheckboxItems;
   };
 
-  #deselectFilteredItems = (newSelectedItems: Set<string>) => {
+  #checkIfThereAreDifferentSelectedItems = (newSelectedItems: Set<string>) => {
     if (newSelectedItems.size !== this.#selectedItems.size) {
       this.#selectedChangeScheduled = true;
     }
@@ -1286,8 +1311,6 @@ export class ChTreeViewRender {
 
   #updateFilters = () => {
     if (this.filterType === "none") {
-      // TODO: Update items with checkbox
-
       // Check if there are more items with checkbox
       const itemsWithCheckbox: Map<string, TreeViewItemModelExtended> =
         new Map();
@@ -1298,7 +1321,7 @@ export class ChTreeViewRender {
         }
       });
 
-      this.#unCheckboxFilteredItems(itemsWithCheckbox);
+      this.#checkIfThereAreDifferentItemsWithCheckbox(itemsWithCheckbox);
       this.#validateCheckedAndSelectedItems();
 
       return;
@@ -1335,8 +1358,8 @@ export class ChTreeViewRender {
 
       // It validates if there are differences between the items with checkbox
       // and the selected items. If there are, emit the corresponding updates.
-      this.#deselectFilteredItems(currentSelectedItems);
-      this.#unCheckboxFilteredItems(currentCheckedItems);
+      this.#checkIfThereAreDifferentSelectedItems(currentSelectedItems);
+      this.#checkIfThereAreDifferentItemsWithCheckbox(currentCheckedItems);
 
       this.#validateCheckedAndSelectedItems();
     };
@@ -1415,7 +1438,7 @@ export class ChTreeViewRender {
           this.renderItem(
             itemModel,
             this,
-            treeViewHasFilters(this.filterType, this.filter),
+            this.#treeHasFilters(),
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0
           )

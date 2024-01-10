@@ -483,7 +483,7 @@ export class ChTreeViewRender {
    *
    *   2. TODO: The `multiSelection` value is changed from `true` to `false`.
    *
-   *   3. TODO: A selected item is no longer rendered because it does not satisfies a
+   *   3. A selected item is no longer rendered because it does not satisfies a
    *      filter condition.
    *
    *   4. TODO: The `treeModel` property is updated and contains different selected
@@ -491,7 +491,7 @@ export class ChTreeViewRender {
    *      event is fired because the selected items can have a different path
    *      than before the `treeModel` update.
    *
-   *   5. TODO: The `updateItemsProperties` method is executed, changing the item
+   *   5.The `updateItemsProperties` method is executed, changing the item
    *      selection.
    *
    *   6. A selected item is removed.
@@ -500,7 +500,7 @@ export class ChTreeViewRender {
    *      In this case, since the detail of the event contains the information
    *      of the parent, this event must be fired to update the information.
    *
-   *   8. TODO: Executing `scrollIntoVisible` method and updating the selected value
+   *   8. Executing `scrollIntoVisible` method and updating the selected value
    *      of the scrolled item.
    *
    *   9. TODO: An external item is dropped into the Tree View and the item is
@@ -822,6 +822,11 @@ export class ChTreeViewRender {
       );
     });
 
+    // MultiSelection is disabled. We must select the last updated item
+    if (!this.multiSelection) {
+      this.#removeAllSelectedItemsExceptForTheLast(newSelectedItems);
+    }
+
     // Update filters if necessary
     if (this.#treeHasFilters()) {
       this.#scheduleFilterProcessing();
@@ -1063,6 +1068,25 @@ export class ChTreeViewRender {
       this.dropItems(response.acceptDrop, dataTransferInfo, response.items);
       this.waitDropProcessing = false;
     });
+  };
+
+  #removeAllSelectedItemsExceptForTheLast = (
+    currentSelectedItems: Set<string>
+  ) => {
+    if (currentSelectedItems.size > 1) {
+      const selectedItemsArray = [...currentSelectedItems.values()];
+      const lastItemIndex = currentSelectedItems.size - 1;
+
+      // Deselect all items except the last
+      for (let index = 0; index < lastItemIndex; index++) {
+        const itemId = selectedItemsArray[index];
+
+        this.#flattenedTreeModel.get(itemId).item.selected = false;
+      }
+
+      // Create a new Set with only the last item
+      currentSelectedItems = new Set([selectedItemsArray[lastItemIndex]]);
+    }
   };
 
   #moveItemToNewParent =

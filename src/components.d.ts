@@ -32,7 +32,7 @@ import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
-import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
+import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 import { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
@@ -67,7 +67,7 @@ export { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
-export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
+export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 export { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
@@ -1574,10 +1574,6 @@ export namespace Components {
     }
     interface ChTreeView {
         /**
-          * Clear all information about the selected items. This method is intended to be used when selected items are reordered and the selected references will no longer be useful.
-         */
-        "clearSelectedItemsInfo": () => Promise<void>;
-        /**
           * Set this attribute if you want to allow multi selection of the items.
          */
         "multiSelection": boolean;
@@ -1593,6 +1589,13 @@ export namespace Components {
           * `true` to scroll in the tree when dragging an item near the edges of the tree.
          */
         "scrollToEdgeOnDrag": boolean;
+        /**
+          * Callback that is executed to get the current selected items.
+         */
+        "selectedItemsCallback": () => Map<
+    string,
+    TreeViewItemSelectedInfo
+  >;
         /**
           * Update the information about the valid droppable zones.
           * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
@@ -3204,7 +3207,7 @@ declare global {
         "loadLazyContent": string;
         "modifyCaption": TreeViewItemNewCaption;
         "openReference": TreeViewItemOpenReferenceInfo;
-        "selectedItemChange": TreeViewItemSelectedInfo;
+        "selectedItemChange": TreeViewItemSelected;
     }
     interface HTMLChTreeViewItemElement extends Components.ChTreeViewItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTreeViewItemElementEventMap>(type: K, listener: (this: HTMLChTreeViewItemElement, ev: ChTreeViewItemCustomEvent<HTMLChTreeViewItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3244,7 +3247,7 @@ declare global {
         "checkedItemsChange": Map<string, TreeViewItemModelExtended>;
         "itemContextmenu": TreeViewItemContextMenu;
         "itemOpenReference": TreeViewItemOpenReferenceInfo;
-        "selectedItemsChange": Map<string, TreeViewItemSelectedInfo>;
+        "selectedItemsChange": Map<string, TreeViewItemSelected>;
     }
     interface HTMLChTreeViewRenderWrapperElement extends Components.ChTreeViewRenderWrapper, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTreeViewRenderWrapperElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderWrapperElement, ev: ChTreeViewRenderWrapperCustomEvent<HTMLChTreeViewRenderWrapperElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5029,6 +5032,13 @@ declare namespace LocalJSX {
          */
         "scrollToEdgeOnDrag"?: boolean;
         /**
+          * Callback that is executed to get the current selected items.
+         */
+        "selectedItemsCallback"?: () => Map<
+    string,
+    TreeViewItemSelectedInfo
+  >;
+        /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
         "waitDropProcessing"?: boolean;
@@ -5149,7 +5159,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the selected state is updated by user interaction on the control.
          */
-        "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>) => void;
+        "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelected>) => void;
         /**
           * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
@@ -5260,7 +5270,7 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
-          * Fired when the checked items change. This event does not take into account the currently filtered items.
+          * Fired when the checked items change. This event does take into account the currently filtered items.
          */
         "onCheckedItemsChange"?: (event: ChTreeViewRenderCustomEvent<Map<string, TreeViewItemModelExtended>>) => void;
         /**
@@ -5272,7 +5282,7 @@ declare namespace LocalJSX {
          */
         "onItemOpenReference"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemOpenReferenceInfo>) => void;
         /**
-          * Fired when the selected items change.
+          * Fired when the selected items change. This event can be fired by the following conditions:   1. A user changes the selected items interacting with the Tree View.    2. The `multiSelection` value is changed from `true` to `false`.    3. A selected item is no longer rendered because it does not satisfies a      filter condition.    4. TODO: The `treeModel` property is updated and contains different selected      items. Even if it does not contains different selected items, this      event is fired because the selected items can have a different path      than before the `treeModel` update.    5.The `updateItemsProperties` method is executed, changing the item      selection.    6. A selected item is removed.    7. TODO: A selected item is moved into a new parent with drag and drop.      In this case, since the detail of the event contains the information      of the parent, this event must be fired to update the information.    8. Executing `scrollIntoVisible` method and updating the selected value      of the scrolled item.    9. TODO: An external item is dropped into the Tree View and the item is      selected.   10. TODO: Lazy loading content that has selected items?  Thing that does not fire this event:   - TODO: Renaming a selected item.    - TODO: Applying a filter that keeps all selected items rendered.
          */
         "onSelectedItemsChange"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemModelExtended[]>) => void;
         /**
@@ -5399,7 +5409,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the selected items change.
          */
-        "onSelectedItemsChange"?: (event: ChTreeViewRenderWrapperCustomEvent<Map<string, TreeViewItemSelectedInfo>>) => void;
+        "onSelectedItemsChange"?: (event: ChTreeViewRenderWrapperCustomEvent<Map<string, TreeViewItemSelected>>) => void;
         /**
           * This property allows us to implement custom rendering of tree items.
          */

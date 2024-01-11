@@ -5,6 +5,11 @@ import {
   TreeViewFilterType
 } from "./types";
 
+export const itemHasCheckbox = (
+  item: TreeViewItemModel,
+  defaultCheckbox: boolean
+) => item.checkbox ?? defaultCheckbox;
+
 const filterWithCase = (
   stringToFilter: string,
   filter: string,
@@ -39,7 +44,7 @@ const filterDictionary: {
       : true,
 
   checked: (item, filterInfo) =>
-    (item.checkbox ?? filterInfo.defaultCheckbox) &&
+    itemHasCheckbox(item, filterInfo.defaultCheckbox) &&
     !item.indeterminate &&
     (item.checked ?? filterInfo.defaultChecked),
 
@@ -57,7 +62,7 @@ const filterDictionary: {
   none: () => true,
 
   unchecked: (item, filterInfo) =>
-    (item.checkbox ?? filterInfo.defaultCheckbox) &&
+    itemHasCheckbox(item, filterInfo.defaultCheckbox) &&
     !item.indeterminate &&
     !(item.checked ?? filterInfo.defaultChecked)
 };

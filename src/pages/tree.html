@@ -30,7 +30,7 @@
 
       fieldset {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: max-content max-content max-content;
         gap: 8px;
       }
 
@@ -528,14 +528,79 @@
           <fieldset>
             <legend>Methods</legend>
 
-            <button id="expand-all" type="button">Expand All</button>
-
-            <div class="flex-container">
-              <input id="input-scroll-into-visible" type="text" />
-              <button id="btn-scroll-into-visible" type="button">
-                Scroll into visible
-              </button>
+            <div style="display: grid; gap: 8px">
+              <button id="expand-all" type="button">Expand All</button>
+              <button id="collapse-all" type="button">Collapse All</button>
             </div>
+
+            <fieldset style="grid-template-columns: max-content max-content">
+              <legend>Update items properties</legend>
+
+              <div class="flex-container" style="flex-direction: column">
+                <ch-checkbox
+                  id="update-items-properties-selected"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Selected"
+                ></ch-checkbox>
+
+                <ch-checkbox
+                  id="update-items-properties-checked"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Checked"
+                ></ch-checkbox>
+              </div>
+
+              <div class="flex-container">
+                <input
+                  aria-label="Items to update"
+                  id="items-to-update"
+                  placeholder="ItemId1,ItemId2,ItemId3"
+                  type="text"
+                />
+                <button id="button-items-to-update">Update items</button>
+              </div>
+            </fieldset>
+
+            <fieldset style="grid-template-columns: max-content max-content">
+              <legend>Scroll into visible</legend>
+
+              <div class="flex-container" style="flex-direction: column">
+                <ch-checkbox
+                  id="scroll-into-visible-selected"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Selected"
+                ></ch-checkbox>
+
+                <ch-checkbox
+                  id="scroll-into-visible-checked"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Checked"
+                ></ch-checkbox>
+              </div>
+
+              <div class="flex-container">
+                <input id="input-scroll-into-visible" type="text" />
+                <button id="btn-scroll-into-visible" type="button">
+                  Scroll into visible
+                </button>
+              </div>
+            </fieldset>
+
+            <ch-checkbox
+              id="check-all"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Check / uncheck all"
+            ></ch-checkbox>
 
             <div class="flex-container">
               <input
@@ -547,8 +612,6 @@
               <button id="button-to-reload-items">Reload items</button>
             </div>
 
-            <button id="collapse-all" type="button">Collapse All</button>
-
             <div class="flex-container">
               <input
                 aria-label="Remove items"
@@ -558,14 +621,6 @@
               />
               <button id="button-items-to-remove">Remove items</button>
             </div>
-
-            <ch-checkbox
-              id="check-all"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Check / uncheck all"
-            ></ch-checkbox>
           </fieldset>
         </div>
 
@@ -1323,7 +1378,7 @@
           testTreeX.treeModel = importObjectsModel;
         });
 
-        // Scroll into visible
+        // - - - - - - - - - - - - - -   Scroll into visible   - - - - - - - - - - - - - -
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1331,12 +1386,52 @@
           "input-scroll-into-visible"
         );
 
+        const scrollIntoVisibleCheckedCheckbox = document.getElementById(
+          "scroll-into-visible-checked"
+        );
+        const scrollIntoVisibleSelectedCheckbox = document.getElementById(
+          "scroll-into-visible-selected"
+        );
+
         scrollIntoVisibleBtn.addEventListener("click", () => {
           testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
-            selected: true
+            checked: scrollIntoVisibleCheckedCheckbox.value === "true",
+            selected: scrollIntoVisibleSelectedCheckbox.value === "true"
           });
           scrollIntoVisibleInput.value = "";
         });
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        // - - - - - - - - - - - - - - Update items properties - - - - - - - - - - - - - -
+        const updateItemsBtn = document.getElementById(
+          "button-items-to-update"
+        );
+        const updateItemsInput = document.getElementById("items-to-update");
+
+        const updateItemsCheckedCheckbox = document.getElementById(
+          "update-items-properties-checked"
+        );
+        const updateItemsSelectedCheckbox = document.getElementById(
+          "update-items-properties-selected"
+        );
+
+        updateItemsBtn.addEventListener("click", () => {
+          /** @type string */
+          const itemsString = updateItemsInput.value;
+
+          if (!itemsString) {
+            return;
+          }
+
+          const itemsToRemove = itemsString.split(/\s*,\s*/);
+
+          testTreeX.updateItemsProperties(itemsToRemove, {
+            checked: updateItemsCheckedCheckbox.value === "true",
+            selected: updateItemsSelectedCheckbox.value === "true"
+          });
+          updateItemsInput.value = "";
+        });
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         // Reload items
         const reloadItemsBtn = document.getElementById(

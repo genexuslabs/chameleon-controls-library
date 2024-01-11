@@ -24,6 +24,7 @@ export const kbExplorerModel = [
     id: "root",
     caption: "GeneXusNext Develop",
     editable: false,
+    expanded: true,
     leaf: false,
     leftImgSrc: "assets/icons/version.svg",
     dragDisabled: true,

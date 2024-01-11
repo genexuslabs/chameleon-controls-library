@@ -318,6 +318,8 @@ $own-offset: calc(
 //           Downloading
 // - - - - - - - - - - - - - - - -
 .downloading {
+  $delay-to-show-downloading: 75ms;
+
   width: 0.75em;
   height: 0.75em;
   // The "2px" separation is necessary to avoid issues with the horizontal scrollbar in Firefox
@@ -326,7 +328,15 @@ $own-offset: calc(
   border-inline-start-color: transparent;
   border-radius: 50%;
   opacity: 0.75;
-  animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite,
+    avoid-flickering $delay-to-show-downloading;
+}
+
+@keyframes avoid-flickering {
+  0%,
+  100% {
+    display: none;
+  }
 }
 
 @keyframes spin {
@@ -360,5 +370,4 @@ $own-offset: calc(
 .expandable--collapsed {
   display: none;
   overflow: hidden;
-  content-visibility: hidden;
 }

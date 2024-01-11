@@ -59,15 +59,19 @@ export type TreeViewItemCheckedInfo = {
   indeterminate: boolean;
 };
 
-export type TreeViewItemSelectedInfo = {
+export type TreeViewItemSelected = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
   id: string;
-  itemRef: HTMLChTreeViewItemElement;
   metadata: string;
   parentId: string;
   selected: boolean;
 };
+
+export type TreeViewItemSelectedInfo = Pick<
+  TreeViewItemSelected,
+  "id" | "expanded" | "metadata" | "parentId"
+>;
 
 export type TreeViewItemOpenReferenceInfo = {
   id: string;

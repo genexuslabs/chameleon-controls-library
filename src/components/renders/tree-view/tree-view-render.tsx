@@ -685,8 +685,8 @@ export class ChTreeViewRender {
     itemId: string,
     beforeProperties?: Partial<TreeViewItemModel>,
     afterProperties?: Partial<TreeViewItemModel>
-  ) {
-    reloadItems(
+  ): Promise<boolean> {
+    const success = await reloadItems(
       this.el,
       itemId,
       this.#flattenedTreeModel,
@@ -696,6 +696,8 @@ export class ChTreeViewRender {
       beforeProperties,
       afterProperties
     );
+
+    return success;
   }
 
   /**

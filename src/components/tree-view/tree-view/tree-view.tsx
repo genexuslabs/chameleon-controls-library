@@ -8,7 +8,9 @@ import {
   Method,
   Prop,
   State,
-  h
+  h,
+  readTask,
+  writeTask
 } from "@stencil/core";
 
 import {
@@ -390,26 +392,19 @@ export class ChTreeView {
   }
 
   /**
-   * Given an item id, it displays and scrolls into the item view.
+   * Given an item id, it scrolls into the item view.
    */
   @Method()
   async scrollIntoVisible(treeItemId: string) {
-    const itemRef = this.el.querySelector(ITEM_SELECTOR(treeItemId));
-    if (!itemRef) {
-      return;
-    }
+    readTask(() => {
+      const itemRef = this.el.querySelector(ITEM_SELECTOR(treeItemId));
+      if (!itemRef) {
+        return;
+      }
 
-    let parentItem = itemRef.parentElement;
-
-    // Expand all parents
-    while (parentItem.tagName.toLowerCase() === TREE_ITEM_TAG_NAME) {
-      (parentItem as HTMLChTreeViewItemElement).expanded = true;
-      parentItem = parentItem.parentElement;
-    }
-
-    // Wait until the parents are expanded
-    requestAnimationFrame(() => {
-      itemRef.scrollIntoView();
+      writeTask(() => {
+        itemRef.scrollIntoView();
+      });
     });
   }
 

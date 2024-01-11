@@ -1,3 +1,4 @@
+import { forceUpdate } from "@stencil/core";
 import { removeElement } from "../../../common/array";
 import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 import { TreeViewItemModelExtended, TreeViewRemoveItemsResult } from "./types";
@@ -87,7 +88,8 @@ export const scrollIntoVisibleId = (
  *
  * @returns If the operation was completed successfully.
  */
-export const scrollIntoVisiblePath = (
+export const scrollIntoVisiblePath = async (
+  elementRef: HTMLChTreeViewRenderElement,
   path: string[],
   flattenedTreeModel: Map<string, TreeViewItemModelExtended>,
   rootNode: TreeViewItemModel,
@@ -95,9 +97,16 @@ export const scrollIntoVisiblePath = (
     treeItemId: string
   ) => Promise<TreeViewItemModel[]>
 ): Promise<boolean> => {
-  let lastRenderedItemInPath = path.length - 1;
+  const pathHasRepeatedElements = new Set(path).size !== path.length;
 
-  // Initialize item
+  if (pathHasRepeatedElements) {
+    return false;
+  }
+
+  const indexOfLastItemInPath = path.length - 1;
+  let lastRenderedItemInPath = indexOfLastItemInPath;
+
+  // Start from the last item in the path
   let itemUIModel = flattenedTreeModel.get(path[lastRenderedItemInPath]);
 
   // Find the last item that is rendered
@@ -107,15 +116,16 @@ export const scrollIntoVisiblePath = (
   }
 
   if (!itemUIModel) {
-    return resolveNewPromise(false);
+    return false;
   }
 
   const indexOfLastRenderItem = lastRenderedItemInPath;
 
-  // Check if the rest of the path up to the root is valid
+  // At this point, we have the index of the last render item. We must check if
+  // the rest of the path up to the root is valid
   while (lastRenderedItemInPath >= 0) {
     if (flattenedTreeModel.get(path[lastRenderedItemInPath]) === undefined) {
-      return resolveNewPromise(false);
+      return false;
     }
 
     lastRenderedItemInPath--;
@@ -124,32 +134,69 @@ export const scrollIntoVisiblePath = (
   // Check if the first item in the path is the root, to completely validate
   // the path
   if (flattenedTreeModel.get(path[0]).parentItem !== rootNode) {
-    return resolveNewPromise(false);
+    return false;
   }
 
   // - - - - - - - - - - - - - - - - - -
   // At this point, we now that the path starts from the root and is valid up to
   // the last rendered item
+  // root, node1, node2, ..., indexOfLastRenderItem, unloadedNode1, unloadedNode2, ..., nodeToScrollIntoVisible
   // - - - - - - - - - - - - - - - - - -
+  const thereAreMoreItemsToLazyLoad =
+    indexOfLastRenderItem !== indexOfLastItemInPath;
   const canNotLazyLoadRemainingPath =
-    indexOfLastRenderItem !== path.length - 1 && !lazyLoadTreeItemsCallback;
+    thereAreMoreItemsToLazyLoad && !lazyLoadTreeItemsCallback;
 
   if (canNotLazyLoadRemainingPath) {
-    return resolveNewPromise(false);
+    return false;
   }
 
-  // USE RELOAD ITEMS FOR THE NEXT PART
+  // Expand all parent items
+  let parentUIModel = flattenedTreeModel.get(
+    path[indexOfLastRenderItem]
+  ).parentItem;
 
-  // let visitedNode = itemUIModel.parentItem as TreeViewItemModel;
+  while (parentUIModel !== rootNode) {
+    parentUIModel.expanded = true;
+    parentUIModel = flattenedTreeModel.get(parentUIModel.id).parentItem;
+  }
 
-  // // While the parent is not the root, update the UI Models
-  // while (visitedNode && visitedNode.id != null) {
-  //   // Expand the item
-  //   visitedNode.expanded = true;
+  forceUpdate(elementRef);
 
-  //   const visitedNodeUIModel = flattenedTreeModel.get(visitedNode.id);
-  //   visitedNode = visitedNodeUIModel.parentItem as TreeViewItemModel;
-  // }
+  // Load the remaining path (unloadedNode1, unloadedNode2, ..., nodeToScrollIntoVisible),
+  // checking in each step if the next item to lazy load exists
+  let nextIndexToLazyLoad = indexOfLastRenderItem;
 
-  return resolveNewPromise(true);
+  // The reloaded processing will end in the parent of the last item
+  while (nextIndexToLazyLoad < indexOfLastItemInPath) {
+    const itemId = path[nextIndexToLazyLoad];
+
+    const itemUIModel = flattenedTreeModel.get(itemId);
+
+    // Check if the rest of the path up to the last item is valid, if not,
+    // cancel the scrollIntoVisible operation
+    if (!itemUIModel) {
+      return false;
+    }
+
+    const itemInfo = itemUIModel.item;
+
+    // The remaining path is invalid, because there is an item that isn't a folder
+    if (itemInfo.leaf === true) {
+      return false;
+    }
+
+    // Expand the parent and set the downloading state
+    itemInfo.downloading = true;
+    itemInfo.expanded = true;
+    itemInfo.lazy = false;
+    forceUpdate(elementRef);
+
+    const result = await lazyLoadTreeItemsCallback(itemId);
+    await elementRef.loadLazyContent(itemId, result);
+
+    nextIndexToLazyLoad++;
+  }
+
+  return true;
 };

@@ -1582,7 +1582,7 @@ export namespace Components {
          */
         "openSubTreeCountdown": number;
         /**
-          * Given an item id, it displays and scrolls into the item view.
+          * Given an item id, it scrolls into the item view.
          */
         "scrollIntoVisible": (treeItemId: string) => Promise<void>;
         /**
@@ -1842,7 +1842,7 @@ export namespace Components {
         /**
           * Given an item id and the additional properties to update before and after reload, it reloads the items of the `itemId` node by using the `lazyLoadTreeItemsCallback` property.
          */
-        "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
+        "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>;
         /**
           * Given a list of ids, removes the items and their children in the tree.
          */
@@ -1858,9 +1858,9 @@ export namespace Components {
     level: number
   ) => any;
         /**
-          * Given the path of the item (represent by a sorted array containing all ids from the root to the item) and the additional properties to update after, it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.
+          * Given the path of the item (represent by a sorted array containing all ids from the root to the item) and the additional properties to update after, it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.  When using a path, this method will fail if:   - The path does not start from the root element.   - The path contains a cycle.   - The path does not correspond to a valid path on the server:     - One of the item of the path, except for the last one, is a leaf.     - An item in the path does not exists on the server.     - The path has repeated items.     - And so on.
          */
-        "scrollIntoVisible": (path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
+        "scrollIntoVisible": (path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
@@ -5282,7 +5282,7 @@ declare namespace LocalJSX {
          */
         "onItemOpenReference"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemOpenReferenceInfo>) => void;
         /**
-          * Fired when the selected items change. This event can be fired by the following conditions:   1. A user changes the selected items interacting with the Tree View.    2. The `multiSelection` value is changed from `true` to `false`.    3. A selected item is no longer rendered because it does not satisfies a      filter condition.    4. TODO: The `treeModel` property is updated and contains different selected      items. Even if it does not contains different selected items, this      event is fired because the selected items can have a different path      than before the `treeModel` update.    5.The `updateItemsProperties` method is executed, changing the item      selection.    6. A selected item is removed.    7. TODO: A selected item is moved into a new parent with drag and drop.      In this case, since the detail of the event contains the information      of the parent, this event must be fired to update the information.    8. Executing `scrollIntoVisible` method and updating the selected value      of the scrolled item.    9. TODO: An external item is dropped into the Tree View and the item is      selected.   10. TODO: Lazy loading content that has selected items?  Thing that does not fire this event:   - TODO: Renaming a selected item.    - TODO: Applying a filter that keeps all selected items rendered.
+          * Fired when the selected items change. This event can be fired by the following conditions:   1. A user changes the selected items interacting with the Tree View.    2. The `multiSelection` value is changed from `true` to `false`.    3. A selected item is no longer rendered because it does not satisfies a      filter condition.    4. TODO: The `treeModel` property is updated and contains different selected      items. Even if it does not contains different selected items, this      event is fired because the selected items can have a different path      than before the `treeModel` update.    5. The `updateItemsProperties` method is executed, changing the item      selection.    6. A selected item is removed.    7. TODO: A selected item is moved into a new parent with drag and drop.      In this case, since the detail of the event contains the information      of the parent, this event must be fired to update the information.    8. Executing `scrollIntoVisible` method and updating the selected value      of the scrolled item.    9. TODO: An external item is dropped into the Tree View and the item is      selected.   10. TODO: Lazy loading content that has selected items?  Thing that does not fire this event:   - TODO: Renaming a selected item.    - TODO: Applying a filter that keeps all selected items rendered.
          */
         "onSelectedItemsChange"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemModelExtended[]>) => void;
         /**

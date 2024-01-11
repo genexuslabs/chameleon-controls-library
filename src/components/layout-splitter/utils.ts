@@ -4,8 +4,12 @@ import {
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended
+  LayoutSplitterDistributionItemExtended,
+  LayoutSplitterSize
 } from "./types";
+
+export const FIXED_SIZES_SUM_CUSTOM_VAR =
+  "--ch-layout-splitter-fixed-sizes-sum";
 
 export const sizesToGridTemplate = (
   items: LayoutSplitterDistributionItem[],
@@ -24,64 +28,64 @@ export const sizesToGridTemplate = (
     )
     .join(" ");
 
-export const getFrSize = (item: LayoutSplitterDistributionItem): number =>
+export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
   Number(item.size.replace("fr", "").trim());
 
-export const getPxSize = (item: LayoutSplitterDistributionItem): number =>
+export const getPxValue = (item: LayoutSplitterDistributionItem): number =>
   Number(item.size.replace("px", "").trim());
 
 export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
   item.size.includes("px");
 
-const getComponentSize = (
-  item: LayoutSplitterDistributionItem,
-  fixedSizesSum: number
-): string => {
-  // Pixel value
-  if (hasAbsoluteValue(item)) {
-    return item.size;
-  }
-
+const getItemFrSize = (item: LayoutSplitterDistributionItem): string => {
   // If the component has fr value, take into account the sum of fixed values
   // to calculate the actual relative value
-  const frValue = getFrSize(item);
-
-  if (fixedSizesSum === 0) {
-    return `${frValue * 100}%`;
-  }
+  const frValue = getFrValue(item);
+  const frString = `${frValue * 100}%`;
 
   return item.fixedOffsetSize
-    ? `calc(${frValue * 100}% - ${
-        fixedSizesSum * frValue - item.fixedOffsetSize
+    ? `calc(${frString} + var(${FIXED_SIZES_SUM_CUSTOM_VAR}) * ${-frValue} + ${
+        item.fixedOffsetSize
       }px)`
-    : `calc(${frValue * 100}% - ${fixedSizesSum * frValue}px)`;
+    : `calc(${frString} + var(${FIXED_SIZES_SUM_CUSTOM_VAR}) * ${-frValue})`;
 };
 
-export const updateSize = (
+const getComponentSize = (item: LayoutSplitterDistributionItem): string =>
+  hasAbsoluteValue(item) // Pixel value
+    ? item.size
+    : getItemFrSize(item);
+
+export const updatePxSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number,
-  fixedSizesSum: number,
-  unitType: "fr" | "px"
+  increment: number
 ) => {
   const itemInfo = itemUIModel.item;
-  const currentValue =
-    unitType === "px" ? getPxSize(itemInfo) : getFrSize(itemInfo);
+  const newValue: LayoutSplitterSize = `${getPxValue(itemInfo) + increment}px`;
 
-  const newValue = currentValue + increment;
-  itemInfo.size = `${newValue}${unitType}`;
-  itemUIModel.actualSize = getComponentSize(itemInfo, fixedSizesSum);
+  itemInfo.size = newValue;
+  itemUIModel.actualSize = newValue;
+};
+
+export const updateFrSize = (
+  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  increment: number
+) => {
+  const itemInfo = itemUIModel.item;
+  const newValue: LayoutSplitterSize = `${getFrValue(itemInfo) + increment}fr`;
+
+  itemInfo.size = newValue;
+  itemUIModel.actualSize = getItemFrSize(itemInfo);
 };
 
 export const updateOffsetSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number,
-  fixedSizesSum: number
+  increment: number
 ) => {
   const itemInfo = itemUIModel.item;
 
   itemInfo.fixedOffsetSize ??= 0;
   itemInfo.fixedOffsetSize += increment;
-  itemUIModel.actualSize = getComponentSize(itemInfo, fixedSizesSum);
+  itemUIModel.actualSize = getComponentSize(itemInfo);
 };
 
 export const fixAndUpdateLayoutModel = (
@@ -108,9 +112,9 @@ function fixAndUpdateSubModel(
   // Get the sum of all fr values. Also, store the sum of fixed sizes
   items.forEach((item, index) => {
     if (hasAbsoluteValue(item)) {
-      fixedSizesSum += getPxSize(item);
+      fixedSizesSum += getPxValue(item);
     } else {
-      frSum += getFrSize(item);
+      frSum += getFrValue(item);
     }
 
     // Take into account previous resizes (fixedOffsetSize values) and add drag
@@ -124,7 +128,7 @@ function fixAndUpdateSubModel(
   if (frSum > 0) {
     items.forEach(item => {
       if (!hasAbsoluteValue(item)) {
-        const frValue = getFrSize(item);
+        const frValue = getFrValue(item);
         const adjustedFrValue = frValue / frSum;
 
         item.size = `${adjustedFrValue}fr`;
@@ -138,7 +142,7 @@ function fixAndUpdateSubModel(
       {
         item: item,
         parentItem: parentItem,
-        actualSize: getComponentSize(item, fixedSizesSum)
+        actualSize: getComponentSize(item)
       };
 
     if ((item as LayoutSplitterDistributionGroup).items != null) {
@@ -171,38 +175,47 @@ export const updateComponentsAndDragBar = (
   const incrementInPxRTL =
     info.direction === "columns" && info.RTL ? -incrementInPx : incrementInPx;
 
-  const layoutItems = info.layoutItems;
-  const fixedSizes = info.fixedSizesSum;
-
-  const remainingRelativeSizeInPixels = info.containerSize - info.fixedSizesSum;
-  const incrementInFr = incrementInPxRTL / remainingRelativeSizeInPixels;
-
   // Components at each position of the drag bar
   const startItemUIModel = itemsInfo.get(info.itemStartId);
   const endItemUIModel = itemsInfo.get(info.itemEndId);
+
+  const fixedSizesSumParent =
+    startItemUIModel.parentItem === ROOT_VIEW
+      ? info.fixedSizesSumRoot
+      : (
+          itemsInfo.get(
+            startItemUIModel.parentItem.id
+          ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
+        ).fixedSizesSum;
+
+  const layoutItems = info.layoutItems;
+
+  const remainingRelativeSizeInPixels =
+    info.containerSize - fixedSizesSumParent;
+  const incrementInFr = incrementInPxRTL / remainingRelativeSizeInPixels;
 
   // px / px
   if (
     hasAbsoluteValue(startItemUIModel.item) &&
     hasAbsoluteValue(endItemUIModel.item)
   ) {
-    updateSize(startItemUIModel, incrementInPxRTL, fixedSizes, "px");
-    updateSize(endItemUIModel, -incrementInPxRTL, fixedSizes, "px");
+    updatePxSize(startItemUIModel, incrementInPxRTL);
+    updatePxSize(endItemUIModel, -incrementInPxRTL);
   }
   // px / fr
   else if (hasAbsoluteValue(startItemUIModel.item)) {
-    updateSize(startItemUIModel, incrementInPxRTL, fixedSizes, "px");
-    updateOffsetSize(endItemUIModel, -incrementInPxRTL, fixedSizes);
+    updatePxSize(startItemUIModel, incrementInPxRTL);
+    updateOffsetSize(endItemUIModel, -incrementInPxRTL);
   }
   // fr / px
   else if (hasAbsoluteValue(endItemUIModel.item)) {
-    updateOffsetSize(startItemUIModel, incrementInPxRTL, fixedSizes);
-    updateSize(endItemUIModel, -incrementInPxRTL, fixedSizes, "px");
+    updateOffsetSize(startItemUIModel, incrementInPxRTL);
+    updatePxSize(endItemUIModel, -incrementInPxRTL);
   }
   // fr / fr
   else {
-    updateSize(startItemUIModel, incrementInFr, fixedSizes, "fr");
-    updateSize(endItemUIModel, -incrementInFr, fixedSizes, "fr");
+    updateFrSize(startItemUIModel, incrementInFr);
+    updateFrSize(endItemUIModel, -incrementInFr);
   }
 
   // Update in the DOM the grid distribution

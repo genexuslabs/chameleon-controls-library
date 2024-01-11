@@ -7,11 +7,12 @@ import {
   LayoutSplitterRenamedItem
 } from "./types";
 import {
-  getFrSize,
-  getPxSize,
+  getFrValue,
+  getPxValue,
   hasAbsoluteValue,
+  updateFrSize,
   updateOffsetSize,
-  updateSize
+  updatePxSize
 } from "./utils";
 
 /**
@@ -58,11 +59,7 @@ export const removeItem = (
 
   // The space reserved for the item can be given to a sibling item
   if (parentItemItems.length > 2) {
-    addSpaceToItem(
-      itemToRemoveUIModel,
-      itemsInfo.get(itemToAddSpace.id),
-      itemsInfo
-    );
+    addSpaceToItem(itemToRemoveUIModel, itemsInfo.get(itemToAddSpace.id));
   }
 
   // The current group will have one child. Remove the group and and reconnect
@@ -115,11 +112,7 @@ export const removeItem = (
 
 function addSpaceToItem(
   itemToSubtractUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  itemToAddUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  itemToAddUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
 ) {
   console.log(itemToSubtractUIModel, itemToAddUIModel);
   // TODO: Add implementation. Ensure the given space is relative to 100% (1fr)
@@ -131,7 +124,7 @@ function addSpaceToItem(
   // px / px
   if (hasAbsoluteValue(itemToSubtractInfo) && hasAbsoluteValue(itemToAddInfo)) {
     // TODO: FixedSizesSum does not make sense when adding pixels. Update implementation to improve this
-    updateSize(itemToAddUIModel, getPxSize(itemToSubtractInfo), 0, "px");
+    updatePxSize(itemToAddUIModel, getPxValue(itemToSubtractInfo));
   }
   // px / fr
   else if (hasAbsoluteValue(itemToSubtractInfo)) {
@@ -146,25 +139,16 @@ function addSpaceToItem(
   }
   // fr / fr
   else {
-    // TODO: Check if the node is the root
-    const fixedSizesSum = (
-      itemsInfo.get(
-        itemToSubtractUIModel.parentItem.id
-      ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-    ).fixedSizesSum;
-
     // Update fixedOffsetSize if the removed item had
     if (itemToSubtractInfo.fixedOffsetSize != null) {
       updateOffsetSize(
         itemToSubtractUIModel,
-        itemToSubtractInfo.fixedOffsetSize,
-        fixedSizesSum
+        itemToSubtractInfo.fixedOffsetSize
       );
     }
 
-    const newFrSize = getFrSize(itemToSubtractInfo) + getFrSize(itemToAddInfo);
-
-    // TODO: In some situations, this should be avoided (fixedSizesSum). Find a way to remove the use of fixedSizesSum
-    updateSize(itemToAddUIModel, newFrSize, fixedSizesSum, "fr");
+    const newFrSize =
+      getFrValue(itemToSubtractInfo) + getFrValue(itemToAddInfo);
+    updateFrSize(itemToAddUIModel, newFrSize);
   }
 }

@@ -18,6 +18,7 @@ import {
   LayoutSplitterItemRemoveResult
 } from "./types";
 import {
+  FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
   sizesToGridTemplate,
@@ -37,13 +38,15 @@ const TEMPLATE_STYLE = (
   itemsInfo: Map<
     string,
     LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  >,
+  fixedSizesSum: number
 ) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
     items,
     itemsInfo,
     items.length - 1
-  )
+  ),
+  [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`
 });
 
 const getAriaControls = (
@@ -191,7 +194,6 @@ export class ChLayoutSplitter implements ChComponent {
   #initializeDragBarValuesForResizeProcessing = (
     direction: LayoutSplitterDirection,
     index: number,
-    fixedSizesSum: number,
     layoutItems: LayoutSplitterDistributionItem[],
     event: Event
   ) => {
@@ -205,7 +207,7 @@ export class ChLayoutSplitter implements ChComponent {
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
       direction: direction,
-      fixedSizesSum: fixedSizesSum,
+      fixedSizesSumRoot: this.#fixedSizesSumRoot,
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
       layoutItems: layoutItems,
@@ -220,7 +222,6 @@ export class ChLayoutSplitter implements ChComponent {
     (
       direction: LayoutSplitterDirection,
       index: number,
-      fixedSizesSum: number,
       layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: MouseEvent) => {
@@ -231,7 +232,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.#initializeDragBarValuesForResizeProcessing(
         direction,
         index,
-        fixedSizesSum,
         layoutItems,
         event
       );
@@ -255,7 +255,6 @@ export class ChLayoutSplitter implements ChComponent {
     (
       direction: LayoutSplitterDirection,
       index: number,
-      fixedSizesSum: number,
       layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: KeyboardEvent) => {
@@ -276,7 +275,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.#initializeDragBarValuesForResizeProcessing(
         direction,
         index,
-        fixedSizesSum,
         layoutItems,
         event
       );
@@ -293,7 +291,6 @@ export class ChLayoutSplitter implements ChComponent {
 
   #renderItems = (
     direction: LayoutSplitterDirection,
-    fixedSizesSum: number,
     layoutItems: LayoutSplitterDistributionItem[]
   ) => {
     const lastComponentIndex = layoutItems.length - 1;
@@ -307,16 +304,16 @@ export class ChLayoutSplitter implements ChComponent {
           )}
           style={TEMPLATE_STYLE(
             (item as LayoutSplitterDistributionGroup).items,
-            this.#itemsInfo
-          )}
-        >
-          {this.#renderItems(
-            (item as LayoutSplitterDistributionGroup).direction,
+            this.#itemsInfo,
             (
               this.#itemsInfo.get(
                 item.id
               ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-            ).fixedSizesSum,
+            ).fixedSizesSum
+          )}
+        >
+          {this.#renderItems(
+            (item as LayoutSplitterDistributionGroup).direction,
             (item as LayoutSplitterDistributionGroup).items
           )}
         </div>
@@ -344,17 +341,12 @@ export class ChLayoutSplitter implements ChComponent {
           }
           onKeyDown={
             !this.dragBarDisabled
-              ? this.#handleResize(direction, index, fixedSizesSum, layoutItems)
+              ? this.#handleResize(direction, index, layoutItems)
               : null
           }
           onMouseDown={
             !this.dragBarDisabled
-              ? this.#mouseDownHandler(
-                  direction,
-                  index,
-                  fixedSizesSum,
-                  layoutItems
-                )
+              ? this.#mouseDownHandler(direction, index, layoutItems)
               : null
           }
         ></div>
@@ -395,13 +387,13 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       <div
         class={DIRECTION_CLASS(layoutModel.direction)}
-        style={TEMPLATE_STYLE(layoutModel.items, this.#itemsInfo)}
-      >
-        {this.#renderItems(
-          layoutModel.direction,
-          this.#fixedSizesSumRoot,
-          layoutModel.items
+        style={TEMPLATE_STYLE(
+          layoutModel.items,
+          this.#itemsInfo,
+          this.#fixedSizesSumRoot
         )}
+      >
+        {this.#renderItems(layoutModel.direction, layoutModel.items)}
       </div>
     );
   }

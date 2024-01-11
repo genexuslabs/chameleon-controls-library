@@ -31,7 +31,7 @@
 
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
-Given an item id, it displays and scrolls into the item view.
+Given an item id, it scrolls into the item view.
 
 #### Parameters
 

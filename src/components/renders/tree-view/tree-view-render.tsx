@@ -498,7 +498,7 @@ export class ChTreeViewRender {
    *      event is fired because the selected items can have a different path
    *      than before the `treeModel` update.
    *
-   *   5.The `updateItemsProperties` method is executed, changing the item
+   *   5. The `updateItemsProperties` method is executed, changing the item
    *      selection.
    *
    *   6. A selected item is removed.
@@ -685,8 +685,8 @@ export class ChTreeViewRender {
     itemId: string,
     beforeProperties?: Partial<TreeViewItemModel>,
     afterProperties?: Partial<TreeViewItemModel>
-  ) {
-    reloadItems(
+  ): Promise<boolean> {
+    const success = await reloadItems(
       this.el,
       itemId,
       this.#flattenedTreeModel,
@@ -696,6 +696,8 @@ export class ChTreeViewRender {
       beforeProperties,
       afterProperties
     );
+
+    return success;
   }
 
   /**
@@ -704,17 +706,27 @@ export class ChTreeViewRender {
    * it displays and scrolls into the item view.
    * The path can also be a string representing the id of the item to scroll
    * into.
+   *
+   * When using a path, this method will fail if:
+   *   - The path does not start from the root element.
+   *   - The path contains a cycle.
+   *   - The path does not correspond to a valid path on the server:
+   *     - One of the item of the path, except for the last one, is a leaf.
+   *     - An item in the path does not exists on the server.
+   *     - The path has repeated items.
+   *     - And so on.
    */
   @Method()
   async scrollIntoVisible(
     path: string | string[],
     afterProperties?: Partial<TreeViewItemModel>
-  ) {
+  ): Promise<boolean> {
     const hasOnlyTheItemId = typeof path === "string";
 
     const success = await (hasOnlyTheItemId
       ? scrollIntoVisibleId(path, this.#flattenedTreeModel)
       : scrollIntoVisiblePath(
+          this.el,
           path,
           this.#flattenedTreeModel,
           this.#rootNode,
@@ -722,9 +734,16 @@ export class ChTreeViewRender {
         ));
 
     if (!success) {
-      return;
+      return false;
     }
     const itemId = hasOnlyTheItemId ? path : path[path.length - 1];
+
+    // Expand all parent items
+    let parentInfo = this.#flattenedTreeModel.get(itemId).parentItem;
+    while (parentInfo !== this.#rootNode) {
+      parentInfo.expanded = true;
+      parentInfo = this.#flattenedTreeModel.get(parentInfo.id).parentItem;
+    }
 
     if (afterProperties) {
       this.updateItemsProperties([itemId], afterProperties);
@@ -732,10 +751,12 @@ export class ChTreeViewRender {
 
     forceUpdate(this);
 
-    // @todo For some reason, when the model is created using the "big model" option,
-    // this implementation does not work when only the UI Model is updated. So, to
-    // expand the items, we have to delegate the responsibility to the tree-view
-    this.#treeRef.scrollIntoVisible(itemId);
+    // Scroll into the itemId view, after rendering has completed
+    requestAnimationFrame(() => {
+      this.#treeRef.scrollIntoVisible(itemId);
+    });
+
+    return true;
   }
 
   /**

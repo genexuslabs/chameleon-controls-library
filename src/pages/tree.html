@@ -1394,10 +1394,24 @@
         );
 
         scrollIntoVisibleBtn.addEventListener("click", () => {
-          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
-            checked: scrollIntoVisibleCheckedCheckbox.value === "true",
-            selected: scrollIntoVisibleSelectedCheckbox.value === "true"
-          });
+          /** @type string */
+          const itemsString = scrollIntoVisibleInput.value;
+
+          if (!itemsString) {
+            return;
+          }
+
+          const pathToScrollIntoVisible = itemsString.split(/\s*,\s*/);
+
+          testTreeX.scrollIntoVisible(
+            pathToScrollIntoVisible.length === 1
+              ? pathToScrollIntoVisible[0]
+              : pathToScrollIntoVisible,
+            {
+              checked: scrollIntoVisibleCheckedCheckbox.value === "true",
+              selected: scrollIntoVisibleSelectedCheckbox.value === "true"
+            }
+          );
           scrollIntoVisibleInput.value = "";
         });
         // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1621,7 +1635,7 @@
 
             setTimeout(() => {
               resolve(structuredClone(lazyModel));
-            }, 500); // Resolves or rejects after 1 second
+            }, 750); // Resolves or rejects after 500ms second
           });
 
         testTreeX.dropItemsCallback = () =>

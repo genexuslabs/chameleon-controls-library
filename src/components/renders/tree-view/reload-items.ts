@@ -1,10 +1,8 @@
-import { forceUpdate } from "@stencil/core";
 import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 import { LazyLoadTreeItemsCallback, TreeViewItemModelExtended } from "./types";
-import { updateItemProperty } from "./update-item-property";
 
 export const reloadItems = (
-  classRef: any,
+  elementRef: HTMLChTreeViewRenderElement,
   itemId: string,
   flattenedTreeModel: Map<string, TreeViewItemModelExtended>,
   lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback,
@@ -33,8 +31,7 @@ export const reloadItems = (
   }
 
   if (beforeProperties) {
-    updateItemProperty(itemId, beforeProperties, flattenedTreeModel);
-    forceUpdate(classRef);
+    elementRef.updateItemsProperties([itemId], beforeProperties);
   }
 
   const promise = lazyLoadTreeItemsCallback(itemId);
@@ -89,13 +86,13 @@ export const reloadItems = (
     await loadLazyContent(itemId, newItems);
 
     if (afterProperties) {
-      updateItemProperty(itemId, afterProperties, flattenedTreeModel);
+      elementRef.updateItemsProperties([itemId], afterProperties);
     }
 
     // Reload child items that were lazy loaded
     reloadNewItemsQueue.forEach(itemToReload =>
       reloadItems(
-        classRef,
+        elementRef,
         itemToReload,
         flattenedTreeModel,
         lazyLoadTreeItemsCallback,

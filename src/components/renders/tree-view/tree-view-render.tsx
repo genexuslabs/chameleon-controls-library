@@ -706,6 +706,15 @@ export class ChTreeViewRender {
    * it displays and scrolls into the item view.
    * The path can also be a string representing the id of the item to scroll
    * into.
+   *
+   * When using a path, this method will fail if:
+   *   - The path does not start from the root element.
+   *   - The path contains a cycle.
+   *   - The path does not correspond to a valid path on the server:
+   *     - One of the item of the path, except for the last one, is a leaf.
+   *     - An item in the path does not exists on the server.
+   *     - The path has repeated items.
+   *     - And so on.
    */
   @Method()
   async scrollIntoVisible(

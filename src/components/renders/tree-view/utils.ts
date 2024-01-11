@@ -97,6 +97,12 @@ export const scrollIntoVisiblePath = async (
     treeItemId: string
   ) => Promise<TreeViewItemModel[]>
 ): Promise<boolean> => {
+  const pathHasRepeatedElements = new Set(path).size !== path.length;
+
+  if (pathHasRepeatedElements) {
+    return false;
+  }
+
   const indexOfLastItemInPath = path.length - 1;
   let lastRenderedItemInPath = indexOfLastItemInPath;
 

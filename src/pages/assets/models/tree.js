@@ -19,6 +19,57 @@ const FIRST_LEVEL_SIZE = 10;
 const SECOND_LEVEL_SIZE = 20;
 const THIRD_LEVEL_SIZE = 20;
 
+const kbExplorer_root = [
+  {
+    id: "Main_Programs",
+    caption: "Main Programs",
+    editable: false,
+    leftImgSrc: "assets/icons/category.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    lazy: true,
+    order: 0
+  },
+  {
+    id: "Root_Module",
+    caption: "Root Module",
+    editable: false,
+    class: "tree-view-item tree-view-item--module",
+    dragDisabled: true,
+    lazy: true,
+    order: 1
+  },
+  {
+    id: "References",
+    caption: "References",
+    editable: false,
+    leftImgSrc: "assets/icons/references.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    order: 2
+  },
+  {
+    id: "Customization",
+    caption: "Customization",
+    editable: false,
+    leftImgSrc: "assets/icons/customization.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    lazy: true,
+    order: 3
+  },
+  {
+    id: "Documentation",
+    caption: "Documentation",
+    editable: false,
+    leaf: true,
+    leftImgSrc: "assets/icons/document.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    order: 4
+  }
+];
+
 export const kbExplorerModel = [
   {
     id: "root",
@@ -29,55 +80,7 @@ export const kbExplorerModel = [
     leftImgSrc: "assets/icons/version.svg",
     dragDisabled: true,
     dropDisabled: true,
-    items: [
-      {
-        id: "Main_Programs",
-        caption: "Main Programs",
-        editable: false,
-        leftImgSrc: "assets/icons/category.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        lazy: true,
-        order: 0
-      },
-      {
-        id: "Root_Module",
-        caption: "Root Module",
-        editable: false,
-        class: "tree-view-item tree-view-item--module",
-        dragDisabled: true,
-        lazy: true,
-        order: 1
-      },
-      {
-        id: "References",
-        caption: "References",
-        editable: false,
-        leftImgSrc: "assets/icons/references.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        order: 2
-      },
-      {
-        id: "Customization",
-        caption: "Customization",
-        editable: false,
-        leftImgSrc: "assets/icons/customization.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        lazy: true,
-        order: 3
-      },
-      {
-        id: "Documentation",
-        caption: "Documentation",
-        editable: false,
-        leftImgSrc: "assets/icons/document.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        order: 4
-      }
-    ]
+    items: kbExplorer_root
   }
 ];
 
@@ -233,6 +236,7 @@ const kbExplorerModel_Customization = [
     caption: "Files",
     dragDisabled: true,
     dropDisabled: true,
+    leaf: true,
     leftImgSrc: "assets/icons/file.svg",
     order: KB_EXPLORER_ORDER.files
   },
@@ -241,6 +245,7 @@ const kbExplorerModel_Customization = [
     caption: "Images",
     dragDisabled: true,
     dropDisabled: true,
+    leaf: true,
     leftImgSrc: "assets/icons/image.svg",
     order: KB_EXPLORER_ORDER.images
   },
@@ -736,6 +741,7 @@ const Environment_GeneXusNext_preferencesModel = [
 ];
 
 export const lazyLoadItemsDictionary = {
+  root: kbExplorer_root,
   Main_Programs: kbExplorerModel_MainPrograms,
   Root_Module: kbExplorerModel_RootModule,
   Customization: kbExplorerModel_Customization,

@@ -180,7 +180,7 @@ export class ChFlexibleLayoutRender {
 
     // Last item from the view. Destroy the view and adjust the layout
     if (viewInfo.widgets.length === 1) {
-      // TODO: Add implementation
+      this.removeView(viewInfo.id, true);
       return;
     }
 

@@ -53,7 +53,7 @@ Type: `Promise<void>`
 
 
 
-### `removeView(itemId: string) => Promise<LayoutSplitterItemRemoveResult>`
+### `removeView(itemId: string) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes the view that is identified by the given ID.
 The layout is rearranged depending on the state of the removed view.
@@ -66,7 +66,7 @@ The layout is rearranged depending on the state of the removed view.
 
 #### Returns
 
-Type: `Promise<LayoutSplitterItemRemoveResult>`
+Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 
 
@@ -82,12 +82,12 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 
 ### Used by
 
- - [ch-flexible-layout-render](../../renders/flexible-layout)
+ - [ch-flexible-layout-render](../renders/flexible-layout)
 
 ### Depends on
 
-- [ch-tab](../../tab)
-- [ch-layout-splitter](../../layout-splitter)
+- [ch-tab](../tab)
+- [ch-layout-splitter](../layout-splitter)
 
 ### Graph
 ```mermaid

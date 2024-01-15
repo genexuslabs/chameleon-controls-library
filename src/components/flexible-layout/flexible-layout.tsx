@@ -22,23 +22,19 @@ import {
   ViewSelectedItemInfo,
   WidgetDragInfo,
   WidgetReorderInfo
-} from "../types";
+} from "./types";
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import {
-  TabItemCloseInfo,
-  TabSelectedItemInfo,
-  TabType
-} from "../../tab/types";
-import { ChTabCustomEvent } from "../../../components";
-import { LayoutSplitterDistribution } from "../../layout-splitter/types";
+import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "../tab/types";
+import { ChTabCustomEvent } from "../../components";
+import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
   removeDroppableAreaStyles
-} from "../utils";
-import { getViewInfo } from "../../renders/flexible-layout/utils";
+} from "./utils";
+import { getViewInfo } from "../renders/flexible-layout/utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";

@@ -116,6 +116,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
     border: unset;
     color: unset;
 
+    // Native popovers have "inset: 0", so we need to reset that property with
+    // the physical values again to support RTL
+    inset: unset;
+    left: 0;
+    top: 0;
+
     // The preview MUST NOT capture pointer-events in order to properly show
     // the droppable areas
     pointer-events: none;
@@ -125,6 +131,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
     cursor: grabbing;
   }
 
+  // Drag outside
   &--outside-tab-list {
     transform: translate(
       calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
@@ -132,6 +139,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
     );
   }
 
+  // Drag inside (block)
   &--inside-tab-list__block {
     --ch-tab-mouse-position: calc(
       var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
@@ -143,6 +151,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
     );
   }
 
+  // Drag inside (inline)
   &--inside-tab-list__inline {
     --ch-tab-mouse-position: calc(
       var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)

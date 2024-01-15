@@ -12,7 +12,8 @@ import {
   hasAbsoluteValue,
   updateFrSize,
   incrementOffsetSize,
-  updatePxSize
+  updatePxSize,
+  findItemInParent
 } from "./utils";
 
 /**
@@ -21,13 +22,6 @@ import {
 type ItemToRemove = [LayoutSplitterDistributionItem[], number, string];
 
 export const NO_FIXED_SIZES_TO_UPDATE = 0;
-
-const findItemInParent = (
-  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-) => {
-  const itemId = itemToFind.item.id;
-  return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
-};
 
 export const removeItem = (
   itemId: string,
@@ -72,6 +66,8 @@ export const removeItem = (
       itemsInfo.get(itemToAddSpace.id),
       itemToAddSpaceIndex < itemToRemoveIndex
     );
+
+    // TODO: CHECK WHAT HAPPENS WITH THE DRAG BAR SIZE OF THE REMOVED ITEM IN THE fixedSizesSumDecrement <----------------
   }
 
   // The current group will have one child. Remove the group and and reconnect
@@ -142,6 +138,8 @@ export const removeItem = (
     removeElement(itemToRemove[0], itemToRemove[1]);
     itemsInfo.delete(itemToRemove[2]);
   });
+
+  // TODO: Remove the dragBar parts that no longer apply???? <----------------------
 
   return {
     success: true,

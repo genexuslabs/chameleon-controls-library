@@ -11,6 +11,13 @@ import {
 export const FIXED_SIZES_SUM_CUSTOM_VAR =
   "--ch-layout-splitter-fixed-sizes-sum";
 
+export const findItemInParent = (
+  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
+) => {
+  const itemId = itemToFind.item.id;
+  return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
+};
+
 export const sizesToGridTemplate = (
   items: LayoutSplitterDistributionItem[],
   itemsInfo: Map<
@@ -55,38 +62,54 @@ const getComponentSize = (item: LayoutSplitterDistributionItem): string =>
     ? item.size
     : getItemFrSize(item);
 
+export const setPxSize = (
+  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  newValue: number
+) => {
+  const newValueString: LayoutSplitterSize = `${newValue}px`;
+
+  itemUIModel.item.size = newValueString;
+  itemUIModel.actualSize = newValueString;
+};
+
 export const updatePxSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
   increment: number
-) => {
-  const itemInfo = itemUIModel.item;
-  const newValue: LayoutSplitterSize = `${getPxValue(itemInfo) + increment}px`;
+) => setPxSize(itemUIModel, getPxValue(itemUIModel.item) + increment);
 
-  itemInfo.size = newValue;
-  itemUIModel.actualSize = newValue;
+export const setFrSize = (
+  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  newValue: number
+) => {
+  const newValueString: LayoutSplitterSize = `${newValue}fr`;
+
+  itemUIModel.item.size = newValueString;
+  itemUIModel.actualSize = getItemFrSize(itemUIModel.item);
 };
 
 export const updateFrSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
   increment: number
+) => setFrSize(itemUIModel, getFrValue(itemUIModel.item) + increment);
+
+export const setOffsetSize = (
+  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  newValue: number
 ) => {
   const itemInfo = itemUIModel.item;
-  const newValue: LayoutSplitterSize = `${getFrValue(itemInfo) + increment}fr`;
 
-  itemInfo.size = newValue;
-  itemUIModel.actualSize = getItemFrSize(itemInfo);
+  itemInfo.fixedOffsetSize = newValue;
+  itemUIModel.actualSize = getComponentSize(itemInfo);
 };
 
 export const incrementOffsetSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
   increment: number
-) => {
-  const itemInfo = itemUIModel.item;
-
-  itemInfo.fixedOffsetSize ??= 0;
-  itemInfo.fixedOffsetSize += increment;
-  itemUIModel.actualSize = getComponentSize(itemInfo);
-};
+) =>
+  setOffsetSize(
+    itemUIModel,
+    increment + (itemUIModel.item.fixedOffsetSize ?? 0)
+  );
 
 export const fixAndUpdateLayoutModel = (
   layout: LayoutSplitterDistribution,

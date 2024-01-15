@@ -78,12 +78,12 @@ export type FlexibleLayoutItemExtended<
   T extends FlexibleLayoutGroup | FlexibleLayoutLeaf
 > = T extends FlexibleLayoutLeaf
   ? {
-      item: T;
+      item: FlexibleLayoutLeaf;
       parentItem: FlexibleLayoutGroup;
       view: FlexibleLayoutLeafInfo;
     }
   : {
-      item: T;
+      item: FlexibleLayoutGroup;
       parentItem: FlexibleLayoutGroup;
     };
 

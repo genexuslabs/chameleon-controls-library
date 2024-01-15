@@ -9,11 +9,24 @@ import {
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetReorderInfo,
-  FlexibleLayoutViewRemoveResult
+  FlexibleLayoutViewRemoveResult,
+  FlexibleLayoutGroup
 } from "../../flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { removeElement } from "../../../common/array";
-import { getViewInfo, updateFlexibleModels } from "./utils";
+import { addNewViewToInfo, getViewInfo, updateFlexibleModels } from "./utils";
+
+const GENERATE_GUID = () => {
+  let currentDate = new Date().getTime();
+
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    let randomNumber = Math.random() * 16; // random number in range 0 to 16
+    randomNumber = (currentDate + randomNumber) % 16 | 0;
+    currentDate = Math.floor(currentDate / 16);
+
+    return (c === "x" ? randomNumber : (randomNumber & 0x3) | 0x8).toString(16);
+  });
+};
 
 @Component({
   shadow: false,
@@ -56,6 +69,43 @@ export class ChFlexibleLayoutRender {
    * Specifies the distribution of the items in the flexible layout.
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
+
+  /**
+   * Add a view with widgets to render. The view will take the half space of
+   * the sibling view that its added with.
+   */
+  @Method()
+  async addSiblingView(
+    parentGroup: string,
+    siblingItem: string,
+    placedInTheSibling: "before" | "after",
+    viewInfo: FlexibleLayoutLeaf,
+    takeHalfTheSpaceOfTheSiblingItem: boolean
+  ): Promise<boolean> {
+    const success = await this.#flexibleLayoutRef.addSiblingView(
+      parentGroup,
+      siblingItem,
+      placedInTheSibling,
+      viewInfo,
+      takeHalfTheSpaceOfTheSiblingItem
+    );
+
+    if (!success) {
+      return false;
+    }
+
+    addNewViewToInfo(
+      viewInfo,
+      this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroup,
+      this.#itemsInfo,
+      this.#blockStartWidgets,
+      this.#renderedWidgets
+    );
+
+    // Queue re-render
+    forceUpdate(this);
+    return true;
+  }
 
   /**
    * Removes a view and optionally all its rendered widget from the render.
@@ -261,13 +311,67 @@ export class ChFlexibleLayoutRender {
     this.#renderedWidgets.add(itemInfo.id);
     itemInfo.wasRendered = true;
 
-    // Update the selected widget in the target view
-    this.#updateSelectedWidget(viewTargetInfo, itemInfo.id);
-
     // The drop does not create a new view
     if (dropAreaTarget === "center") {
       viewTargetInfo.widgets.push(itemInfo);
+
+      // Update the selected widget in the target view
+      this.#updateSelectedWidget(viewTargetInfo, itemInfo.id);
     } else {
+      // Implementation note: If the direction matches the dropAreaTarget
+      // (for example, dropAreaTarget === "block-start" and parent direction === "row")
+      // we can use addSiblingView
+
+      const viewUIModel = this.#itemsInfo.get(
+        viewId
+      ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+      const parentInfo = viewUIModel.parentItem;
+
+      const newViewToAddId = GENERATE_GUID();
+      const newViewToAdd: FlexibleLayoutLeaf = {
+        id: newViewToAddId,
+        size: undefined,
+        viewType: viewUIModel.item.viewType,
+        widgets: [itemInfo],
+        selectedWidgetId: itemInfo.id,
+        dragBar: {
+          size: 1,
+          part: viewUIModel.item.dragBar?.part // TODO: IMPROVE THIS
+        }
+      };
+
+      // Add a sibling
+      if (
+        parentInfo.direction === "rows" &&
+        (dropAreaTarget === "block-start" || dropAreaTarget === "block-end")
+      ) {
+        this.addSiblingView(
+          parentInfo.id,
+          viewIdTarget,
+          dropAreaTarget === "block-start" ? "before" : "after",
+          newViewToAdd,
+          true
+        );
+      }
+      // Add a sibling
+      else if (
+        parentInfo.direction === "columns" &&
+        (dropAreaTarget === "inline-start" || dropAreaTarget === "inline-end")
+      ) {
+        this.addSiblingView(
+          parentInfo.id,
+          viewIdTarget,
+          dropAreaTarget === "inline-start" ? "before" : "after",
+          newViewToAdd,
+          true
+        );
+      }
+      // The current target must be modified to be a group
+      else {
+        // TODO: Add implementation
+      }
+
+      // VERIFY THE PARENT NODE
       // HANDLE NEW VIEW CREATION
       // CHECK IF THE PREVIOUS VIEW HAS ONLY ONE ITEM TO REUSE ITS VIEW ID?
     }
@@ -299,6 +403,7 @@ export class ChFlexibleLayoutRender {
 
       // Queue re-renders
       forceUpdate(this); // Update rendered items
+      // forceUpdate(this.#flexibleLayoutRef);
     }
 
     // this.#flexibleLayoutRef.refreshLayout();

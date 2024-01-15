@@ -10,11 +10,14 @@ import {
 import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
+  GroupExtended,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionItemExtended,
+  LayoutSplitterDistributionLeaf,
+  LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
 } from "./types";
 import {
@@ -27,6 +30,7 @@ import {
 import { isRTL } from "../../common/utils";
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { ROOT_VIEW } from "../renders/flexible-layout/utils";
+import { addSiblingLeaf } from "./add-sibling-item";
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
@@ -127,6 +131,48 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   /**
+   *
+   */
+  @Method()
+  async addSiblingLeaf(
+    parentGroup: string,
+    siblingItem: string,
+    placedInTheSibling: "before" | "after",
+    leafInfo: LayoutSplitterDistributionLeaf,
+    takeHalfTheSpaceOfTheSiblingItem: boolean
+  ): Promise<LayoutSplitterItemAddResult> {
+    const result = addSiblingLeaf(
+      parentGroup,
+      siblingItem,
+      placedInTheSibling,
+      leafInfo,
+      this.#itemsInfo,
+      takeHalfTheSpaceOfTheSiblingItem
+    );
+
+    if (result.success) {
+      const fixedSizesSumIncrement = result.fixedSizesSumIncrement;
+
+      // The fixesSizesSum of the parent must be updated
+      if (fixedSizesSumIncrement) {
+        const parentItem = this.#itemsInfo.get(parentGroup).parentItem;
+
+        if (parentItem === ROOT_VIEW) {
+          this.#fixedSizesSumRoot += fixedSizesSumIncrement;
+        } else {
+          (this.#itemsInfo.get(parentItem.id) as GroupExtended).fixedSizesSum +=
+            fixedSizesSumIncrement;
+        }
+      }
+
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result;
+  }
+
+  /**
    * Removes the item that is identified by the given ID.
    * The layout is rearranged depending on the state of the removed item.
    */
@@ -143,11 +189,8 @@ export class ChLayoutSplitter implements ChComponent {
         if (parentItem === ROOT_VIEW) {
           this.#fixedSizesSumRoot -= fixedSizesSumDecrement;
         } else {
-          (
-            this.#itemsInfo.get(
-              parentItem.id
-            ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-          ).fixedSizesSum -= fixedSizesSumDecrement;
+          (this.#itemsInfo.get(parentItem.id) as GroupExtended).fixedSizesSum -=
+            fixedSizesSumDecrement;
         }
       }
 

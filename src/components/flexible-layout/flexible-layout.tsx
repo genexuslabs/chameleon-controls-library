@@ -104,6 +104,33 @@ export class ChFlexibleLayout {
   }
 
   /**
+   *
+   */
+  @Method()
+  async addSiblingView(
+    parentGroup: string,
+    siblingItem: string,
+    placedInTheSibling: "before" | "after",
+    viewInfo: FlexibleLayoutLeaf,
+    takeHalfTheSpaceOfTheSiblingItem: boolean
+  ): Promise<boolean> {
+    const result = await this.#layoutSplitterRef.addSiblingLeaf(
+      parentGroup,
+      siblingItem,
+      placedInTheSibling,
+      viewInfo,
+      takeHalfTheSpaceOfTheSiblingItem
+    );
+
+    if (result.success) {
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result.success;
+  }
+
+  /**
    * Removes the view that is identified by the given ID.
    * The layout is rearranged depending on the state of the removed view.
    */

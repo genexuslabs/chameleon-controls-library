@@ -281,7 +281,7 @@ export class ChFlexibleLayoutRender {
     }
     // Remove the item in the view that belongs
     else {
-      // Select the previous item if the remove item was selected
+      // Select the previous item if the removed item was selected
       if (viewInfo.selectedWidgetId === itemInfo.id) {
         const newSelectedIndex = itemIndex === 0 ? 1 : itemIndex - 1;
         const newSelectedItem = viewInfo.widgets[newSelectedIndex];
@@ -294,13 +294,13 @@ export class ChFlexibleLayoutRender {
         this.#updateSelectedWidget(viewInfo, newSelectedItem.id);
       }
 
-      // TODO: UPDATE THE SELECTED INTERNAL INDEX IN THE TAB ???
       // Remove the item from the view
       this.#removeWidget(viewInfo, itemIndex, true);
+
+      // Queue re-renders
+      forceUpdate(this); // Update rendered items
     }
 
-    // Queue re-renders
-    // forceUpdate(this);
     // this.#flexibleLayoutRef.refreshLayout();
   };
 

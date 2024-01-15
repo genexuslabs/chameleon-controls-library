@@ -14,8 +14,8 @@
   inset-block: var(--ch-flexible-layout-drop-area-block-start)
     var(--ch-flexible-layout-drop-area-block-end);
 
-  inset-inline: var(--ch-flexible-layout-drop-area-inline-start)
-    var(--ch-flexible-layout-drop-area-inline-end);
+  left: var(--ch-flexible-layout-drop-area-inline-start);
+  right: var(--ch-flexible-layout-drop-area-inline-end);
 
   background-color: color-mix(in srgb, currentColor 15%, transparent);
 

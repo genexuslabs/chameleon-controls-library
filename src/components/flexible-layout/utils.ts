@@ -5,6 +5,9 @@ import {
   WidgetDropInfo
 } from "./types";
 
+/**
+ * [block-start, block-end, inline-start, inline-end]
+ */
 type DroppableAreaSizes = [number, number, number, number];
 
 // Custom vars
@@ -30,45 +33,58 @@ const EDGE_SIZE = 0.5;
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
 
+const inlineStart = (mainViewRect: DOMRect, rtl: boolean) =>
+  rtl ? mainViewRect.left + mainViewRect.width * EDGE_SIZE : mainViewRect.left;
+
+const inlineEnd = (
+  documentRect: DOMRect,
+  mainViewRect: DOMRect,
+  rtl: boolean
+) =>
+  rtl
+    ? documentRect.width - mainViewRect.right
+    : documentRect.width - (mainViewRect.left + mainViewRect.width * EDGE_SIZE);
+
 const droppableAreaMap: {
   [key in DroppableArea]: (
     documentRect: DOMRect,
-    mainViewRect: DOMRect
+    mainViewRect: DOMRect,
+    rtl: boolean
   ) => DroppableAreaSizes;
 } = {
   "block-start": (documentRect, mainViewRect) => [
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height * EDGE_SIZE),
     mainViewRect.left,
-    documentRect.width - (mainViewRect.left + mainViewRect.width)
+    documentRect.width - mainViewRect.right
   ],
 
   "block-end": (documentRect, mainViewRect) => [
     mainViewRect.top + mainViewRect.height * EDGE_SIZE,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
     mainViewRect.left,
-    documentRect.width - (mainViewRect.left + mainViewRect.width)
+    documentRect.width - mainViewRect.right
   ],
 
-  "inline-start": (documentRect, mainViewRect) => [
+  "inline-start": (documentRect, mainViewRect, rtl) => [
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
-    mainViewRect.left,
-    documentRect.width - (mainViewRect.left + mainViewRect.width * EDGE_SIZE)
+    inlineStart(mainViewRect, rtl),
+    inlineEnd(documentRect, mainViewRect, rtl)
   ],
 
-  "inline-end": (documentRect, mainViewRect) => [
+  "inline-end": (documentRect, mainViewRect, rtl) => [
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
-    mainViewRect.left + mainViewRect.width * EDGE_SIZE,
-    documentRect.width - (mainViewRect.left + mainViewRect.width)
+    inlineStart(mainViewRect, !rtl),
+    inlineEnd(documentRect, mainViewRect, !rtl)
   ],
 
   center: (documentRect, mainViewRect) => [
     mainViewRect.top,
     documentRect.height - (mainViewRect.top + mainViewRect.height),
     mainViewRect.left,
-    documentRect.width - (mainViewRect.left + mainViewRect.width)
+    documentRect.width - mainViewRect.right
   ]
 };
 
@@ -76,7 +92,11 @@ let lastDroppableArea: DroppableArea;
 let lastViewId: string;
 
 export const handleWidgetDrag =
-  (draggableView: DraggableViewExtendedInfo, droppableAreaRef: HTMLElement) =>
+  (
+    draggableView: DraggableViewExtendedInfo,
+    droppableAreaRef: HTMLElement,
+    rtl: boolean
+  ) =>
   (event: MouseEvent) => {
     event.stopPropagation(); // Prevents the remove of the droppable area
 
@@ -86,7 +106,9 @@ export const handleWidgetDrag =
     const positionX = event.clientX; // Mouse position X
     const positionY = event.clientY; // Mouse position Y
 
-    const distanceToTheLeftEdge = positionX - mainViewRect.left;
+    const distanceToTheLeftEdge = rtl
+      ? mainViewRect.width - (positionX - mainViewRect.left)
+      : positionX - mainViewRect.left;
     const distanceToTheTopEdge = positionY - mainViewRect.top;
 
     const relativePositionX =
@@ -145,7 +167,8 @@ export const handleWidgetDrag =
 
     const droppableAreaSizes = droppableAreaMap[droppableArea](
       documentRect,
-      mainViewRect
+      mainViewRect,
+      rtl
     );
 
     // - - - - - - - - - - - DOM write operations - - - - - - - - - - -

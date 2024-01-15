@@ -35,6 +35,7 @@ import {
   removeDroppableAreaStyles
 } from "./utils";
 import { getViewInfo } from "../renders/flexible-layout/utils";
+import { isRTL } from "../../common/utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -253,9 +254,15 @@ export class ChFlexibleLayout {
 
           this.#draggableViews.push(extendedDraggableView);
 
+          const RTL = isRTL();
+
           draggableView.mainView.addEventListener(
             "mousemove",
-            handleWidgetDrag(extendedDraggableView, this.#droppableAreaRef),
+            handleWidgetDrag(
+              extendedDraggableView,
+              this.#droppableAreaRef,
+              RTL
+            ),
             { capture: true, passive: true, signal: abortController.signal }
           );
 

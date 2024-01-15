@@ -1,7 +1,6 @@
 import { removeElement } from "../../common/array";
 import {
   GroupExtended,
-  LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionItemExtended,
   LayoutSplitterItemRemoveResult,

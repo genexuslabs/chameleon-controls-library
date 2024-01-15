@@ -49,7 +49,7 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly layout: FlexibleLayout;
   @Watch("layout")
   handleLayoutChange(newLayout: FlexibleLayout) {
-    this.setLayoutSplitterModels(newLayout);
+    this.#updateFlexibleModels(newLayout);
   }
 
   /**
@@ -126,7 +126,7 @@ export class ChFlexibleLayoutRender {
     return success;
   }
 
-  private setLayoutSplitterModels(layout: FlexibleLayout) {
+  #updateFlexibleModels = (layout: FlexibleLayout) => {
     // Empty layout
     if (layout == null) {
       return;
@@ -143,7 +143,7 @@ export class ChFlexibleLayoutRender {
     );
 
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
-  }
+  };
 
   #getViewInfo = (viewId: string) => getViewInfo(this.#itemsInfo, viewId);
 
@@ -305,7 +305,7 @@ export class ChFlexibleLayoutRender {
   };
 
   componentWillLoad() {
-    this.setLayoutSplitterModels(this.layout);
+    this.#updateFlexibleModels(this.layout);
   }
 
   render() {

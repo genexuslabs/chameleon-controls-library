@@ -2,7 +2,8 @@ import { AccessibleRole, ImageRender } from "../../common/types";
 import {
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionLeaf
+  LayoutSplitterDistributionLeaf,
+  LayoutSplitterItemRemoveResult
 } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
@@ -116,6 +117,11 @@ export type ViewSelectedItemInfo = {
   type: TabType;
   viewId: string;
 };
+
+export type FlexibleLayoutViewRemoveResult = Omit<
+  LayoutSplitterItemRemoveResult,
+  "fixedSizesSumDecrement"
+>;
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Interfaces

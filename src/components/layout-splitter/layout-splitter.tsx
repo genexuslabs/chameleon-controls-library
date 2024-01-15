@@ -25,7 +25,8 @@ import {
   updateComponentsAndDragBar
 } from "./utils";
 import { isRTL } from "../../common/utils";
-import { removeItem } from "./remove-item";
+import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
+import { ROOT_VIEW } from "../renders/flexible-layout/utils";
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
@@ -130,10 +131,26 @@ export class ChLayoutSplitter implements ChComponent {
    * The layout is rearranged depending on the state of the removed item.
    */
   @Method()
-  async removeItem(viewId: string): Promise<LayoutSplitterItemRemoveResult> {
-    const result = removeItem(viewId, this.#itemsInfo);
+  async removeItem(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const parentItem = this.#itemsInfo.get(itemId).parentItem;
+    const result = removeItem(itemId, this.#itemsInfo);
 
     if (result.success) {
+      const fixedSizesSumDecrement = result.fixedSizesSumDecrement;
+
+      // The fixesSizesSum of the parent must be updated
+      if (fixedSizesSumDecrement !== NO_FIXED_SIZES_TO_UPDATE) {
+        if (parentItem === ROOT_VIEW) {
+          this.#fixedSizesSumRoot -= fixedSizesSumDecrement;
+        } else {
+          (
+            this.#itemsInfo.get(
+              parentItem.id
+            ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
+          ).fixedSizesSum -= fixedSizesSumDecrement;
+        }
+      }
+
       // Queue re-renders
       forceUpdate(this);
     }
@@ -179,6 +196,9 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
+  #addResizingStyle = () => this.el.classList.add(RESIZING_CLASS);
+  #removeResizingStyle = () => this.el.classList.remove(RESIZING_CLASS);
+
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
     this.#removeMouseMoveHandler();
@@ -188,7 +208,7 @@ export class ChLayoutSplitter implements ChComponent {
     });
 
     // Add again pointer-events
-    this.el.classList.remove(RESIZING_CLASS);
+    this.#removeResizingStyle();
   };
 
   #initializeDragBarValuesForResizeProcessing = (
@@ -215,7 +235,7 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
     // Remove pointer-events during drag
-    this.el.classList.add(RESIZING_CLASS);
+    this.#addResizingStyle();
   };
 
   #mouseDownHandler =
@@ -344,6 +364,7 @@ export class ChLayoutSplitter implements ChComponent {
               ? this.#handleResize(direction, index, layoutItems)
               : null
           }
+          onKeyUp={this.#removeResizingStyle}
           onMouseDown={
             !this.dragBarDisabled
               ? this.#mouseDownHandler(direction, index, layoutItems)

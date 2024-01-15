@@ -8,12 +8,10 @@ import {
   FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
-  WidgetReorderInfo
+  WidgetReorderInfo,
+  FlexibleLayoutViewRemoveResult
 } from "../../flexible-layout/types";
-import {
-  ChFlexibleLayoutCustomEvent,
-  LayoutSplitterItemRemoveResult
-} from "../../../components";
+import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { removeElement } from "../../../common/array";
 import { getViewInfo, updateFlexibleModels } from "./utils";
 
@@ -67,7 +65,7 @@ export class ChFlexibleLayoutRender {
   async removeView(
     viewId: string,
     removeRenderedWidgets: boolean
-  ): Promise<LayoutSplitterItemRemoveResult> {
+  ): Promise<FlexibleLayoutViewRemoveResult> {
     const itemInfo = this.#itemsInfo.get(viewId);
 
     if (!itemInfo) {

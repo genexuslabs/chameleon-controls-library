@@ -50,6 +50,19 @@ export type LayoutSplitterDistributionItemExtended<
       actualSize: string;
     };
 
+// Aliases to improve code readability
+export type ItemExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>;
+
+export type LeafExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionLeaf>;
+
+export type GroupExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>;
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Event info
+// - - - - - - - - - - - - - - - - - - - -
 export type DragBarMouseDownEventInfo = {
   container: HTMLElement;
   containerSize: number;
@@ -64,6 +77,7 @@ export type DragBarMouseDownEventInfo = {
 export type LayoutSplitterItemRemoveResult = {
   success: boolean;
   renamedItems: LayoutSplitterRenamedItem[];
+  fixedSizesSumDecrement: number;
 };
 
 export type LayoutSplitterRenamedItem = { oldId: string; newId: string };

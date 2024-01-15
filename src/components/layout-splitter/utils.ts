@@ -77,7 +77,7 @@ export const updateFrSize = (
   itemUIModel.actualSize = getItemFrSize(itemInfo);
 };
 
-export const updateOffsetSize = (
+export const incrementOffsetSize = (
   itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
   increment: number
 ) => {
@@ -205,11 +205,11 @@ export const updateComponentsAndDragBar = (
   // px / fr
   else if (hasAbsoluteValue(startItemUIModel.item)) {
     updatePxSize(startItemUIModel, incrementInPxRTL);
-    updateOffsetSize(endItemUIModel, -incrementInPxRTL);
+    incrementOffsetSize(endItemUIModel, -incrementInPxRTL);
   }
   // fr / px
   else if (hasAbsoluteValue(endItemUIModel.item)) {
-    updateOffsetSize(startItemUIModel, incrementInPxRTL);
+    incrementOffsetSize(startItemUIModel, incrementInPxRTL);
     updatePxSize(endItemUIModel, -incrementInPxRTL);
   }
   // fr / fr

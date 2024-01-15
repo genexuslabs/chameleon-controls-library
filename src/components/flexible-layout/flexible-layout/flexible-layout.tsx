@@ -17,6 +17,7 @@ import {
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
+  FlexibleLayoutViewRemoveResult,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetDragInfo,
@@ -31,10 +32,7 @@ import {
   TabType
 } from "../../tab/types";
 import { ChTabCustomEvent } from "../../../components";
-import {
-  LayoutSplitterDistribution,
-  LayoutSplitterItemRemoveResult
-} from "../../layout-splitter/types";
+import { LayoutSplitterDistribution } from "../../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
@@ -113,7 +111,7 @@ export class ChFlexibleLayout {
    * The layout is rearranged depending on the state of the removed view.
    */
   @Method()
-  async removeView(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+  async removeView(itemId: string): Promise<FlexibleLayoutViewRemoveResult> {
     const result = await this.#layoutSplitterRef.removeItem(itemId);
 
     if (result.success) {
@@ -121,7 +119,7 @@ export class ChFlexibleLayout {
       forceUpdate(this);
     }
 
-    return result;
+    return { success: result.success, renamedItems: result.renamedItems };
   }
 
   /**

@@ -25,6 +25,26 @@
 
 ## Methods
 
+### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
+
+
+
+#### Parameters
+
+| Name                               | Type                                                                                                                                                        | Description |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                                                                    |             |
+| `siblingItem`                      | `string`                                                                                                                                                    |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
 ### `refreshLayout() => Promise<void>`
 
 Schedules a new render of the control even if no state changed.

@@ -197,7 +197,8 @@ export class ChFlexibleLayoutRender {
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 
-  #getViewInfo = (viewId: string) => getViewInfo(this.#itemsInfo, viewId);
+  #getViewInfo = (viewId: string): FlexibleLayoutLeafInfo =>
+    getViewInfo(this.#itemsInfo, viewId);
 
   #handleViewItemChange = (
     event: ChFlexibleLayoutCustomEvent<ViewSelectedItemInfo>
@@ -323,7 +324,7 @@ export class ChFlexibleLayoutRender {
       this.#handleViewItemReorderCreateView(
         viewId,
         widgetToMove,
-        viewIdTarget,
+        viewTargetInfo,
         dropAreaTarget
       );
     }
@@ -364,48 +365,51 @@ export class ChFlexibleLayoutRender {
   #handleViewItemReorderCreateView = (
     viewId: string,
     widget: FlexibleLayoutWidget,
-    viewIdTarget: string,
+    viewTargetInfo: FlexibleLayoutLeafInfo,
     dropAreaTarget: DroppableArea
   ) => {
     // Implementation note: If the direction matches the dropAreaTarget
     // (for example, dropAreaTarget === "block-start" and parent direction === "row")
     // we can use addSiblingView
 
-    const viewUIModel = this.#itemsInfo.get(
-      viewId
+    // const viewUIModel = this.#itemsInfo.get(
+    //   viewId
+    // ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+    const viewTargetUIModel = this.#itemsInfo.get(
+      viewTargetInfo.id
     ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
-    const parentInfo = viewUIModel.parentItem;
+    const viewTargetParentInfo = viewTargetUIModel.parentItem; // TODO: CHECK FOR ROOT NODE <------------------
 
     const newViewToAddId = GENERATE_GUID();
     const newViewToAdd: FlexibleLayoutLeaf = {
       id: newViewToAddId,
       size: undefined,
-      viewType: viewUIModel.item.viewType,
+      viewType: viewTargetUIModel.item.viewType,
       widgets: [widget],
       selectedWidgetId: widget.id,
       dragBar: {
-        size: 1,
-        part: viewUIModel.item.dragBar?.part // TODO: IMPROVE THIS
+        size: viewTargetUIModel.item.dragBar?.size,
+        part: viewTargetUIModel.item.dragBar?.part // TODO: IMPROVE THIS
       }
     };
 
     const viewTargetIsContainedInAGroupWithTheSameDirection =
-      (parentInfo.direction === "rows" &&
+      (viewTargetParentInfo.direction === "rows" &&
         (dropAreaTarget === "block-start" || dropAreaTarget === "block-end")) ||
-      (parentInfo.direction === "columns" &&
+      (viewTargetParentInfo.direction === "columns" &&
         (dropAreaTarget === "inline-start" || dropAreaTarget === "inline-end"));
 
     console.log(
       viewTargetIsContainedInAGroupWithTheSameDirection,
-      parentInfo.direction,
+      viewTargetParentInfo.direction,
       dropAreaTarget
     );
 
     // Add a sibling
     if (viewTargetIsContainedInAGroupWithTheSameDirection) {
       this.addSiblingView(
-        parentInfo.id,
-        viewIdTarget,
+        viewTargetParentInfo.id,
+        viewTargetInfo.id,
         dropAreaTarget === "block-start" || "inline-start" ? "before" : "after",
         newViewToAdd,
         true

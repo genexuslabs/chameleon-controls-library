@@ -107,7 +107,6 @@ export class ChIcon {
         }
       } else {
         this.svgContent = "";
-        return;
       }
     }
   }

@@ -27,6 +27,7 @@ module.exports = {
     "max-depth": ["warn", 3], // Enforce a maximum depth that blocks can be nested. Many developers consider code difficult to read if blocks are nested beyond a certain depth
     "no-alert": "error", // Disallow the use of alert, confirm, and prompt
     "no-console": "warn", // Warning when using console.log, console.warn or console.error
+    "no-else-return": ["warn", { allowElseIf: false }], // Disallow else blocks after return statements in if statements
     "no-debugger": "error", // Error when using debugger;
     "no-duplicate-case": "error", // This rule disallows duplicate test expressions in case clauses of switch statements
     "no-empty": "error", // Disallow empty block statements

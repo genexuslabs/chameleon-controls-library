@@ -54,9 +54,7 @@ export const addSiblingLeaf = (
   // Get the index of the leaf
   const siblingIndex = findItemInParent(siblingItemUIModel);
   const leafIndex =
-    placedInTheSibling === "before"
-      ? Math.max(0, siblingIndex - 1)
-      : siblingIndex + 1;
+    placedInTheSibling === "before" ? siblingIndex : siblingIndex + 1;
 
   const parentGroupItems = parentGroupUIModel.item.items;
 

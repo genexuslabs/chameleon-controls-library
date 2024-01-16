@@ -410,7 +410,9 @@ export class ChFlexibleLayoutRender {
       this.addSiblingView(
         viewTargetParentInfo.id,
         viewTargetInfo.id,
-        dropAreaTarget === "block-start" || "inline-start" ? "before" : "after",
+        dropAreaTarget === "block-start" || dropAreaTarget === "inline-start"
+          ? "before"
+          : "after",
         newViewToAdd,
         true
       );

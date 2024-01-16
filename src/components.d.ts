@@ -9,9 +9,8 @@ import { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { LayoutSplitterDistribution, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
-import { LayoutSplitterItemRemoveResult as LayoutSplitterItemRemoveResult1 } from "./components";
+import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -44,9 +43,8 @@ export { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { LayoutSplitterDistribution, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
-export { LayoutSplitterItemRemoveResult as LayoutSplitterItemRemoveResult1 } from "./components";
+export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -369,6 +367,7 @@ export namespace Components {
         "useGxRender": boolean;
     }
     interface ChFlexibleLayout {
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
           * Specifies the information of each view displayed.
          */
@@ -395,9 +394,13 @@ export namespace Components {
         /**
           * Removes the view that is identified by the given ID. The layout is rearranged depending on the state of the removed view.
          */
-        "removeView": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
+        "removeView": (itemId: string) => Promise<FlexibleLayoutViewRemoveResult>;
     }
     interface ChFlexibleLayoutRender {
+        /**
+          * Add a view with widgets to render. The view will take the half space of the sibling view that its added with.
+         */
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
@@ -409,7 +412,7 @@ export namespace Components {
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
-        "removeView": (viewId: string, removeRenderedWidgets: boolean) => Promise<LayoutSplitterItemRemoveResult1>;
+        "removeView": (viewId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -894,6 +897,7 @@ export namespace Components {
         "topMargin": string;
     }
     interface ChLayoutSplitter {
+        "addSiblingLeaf": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterDistributionLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>;
         /**
           * This attribute lets you specify the label for the drag bar. Important for accessibility.
          */
@@ -917,7 +921,7 @@ export namespace Components {
         /**
           * Removes the item that is identified by the given ID. The layout is rearranged depending on the state of the removed item.
          */
-        "removeItem": (viewId: string) => Promise<LayoutSplitterItemRemoveResult>;
+        "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
     interface ChNextDataModeling {
     }

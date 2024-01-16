@@ -38,6 +38,7 @@ module.exports = {
     "no-sequences": "error", // Disallow comma operators
     "no-undef": "off", // Allows defining undefined variables
     "no-unneeded-ternary": "warn", // Disallow ternary operators when simpler alternatives exist
+    "no-useless-return": "error", // Disallow redundant return statements
     "spaced-comment": ["error", "always", { exceptions: ["-", "+", "/"] }], // Enforce consistent spacing after the // or /* in a comment
 
     // - - - - - - - - - - - -

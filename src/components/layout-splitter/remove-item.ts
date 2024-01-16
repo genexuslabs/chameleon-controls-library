@@ -1,17 +1,19 @@
 import { removeElement } from "../../common/array";
 import {
-  LayoutSplitterDistributionGroup,
+  GroupExtended,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionItemExtended,
   LayoutSplitterItemRemoveResult,
   LayoutSplitterRenamedItem
 } from "./types";
 import {
-  getFrSize,
-  getPxSize,
+  getFrValue,
+  getPxValue,
   hasAbsoluteValue,
-  updateOffsetSize,
-  updateSize
+  updateFrSize,
+  incrementOffsetSize,
+  updatePxSize,
+  findItemInParent
 } from "./utils";
 
 /**
@@ -19,12 +21,7 @@ import {
  */
 type ItemToRemove = [LayoutSplitterDistributionItem[], number, string];
 
-const findItemInParent = (
-  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-) => {
-  const itemId = itemToFind.item.id;
-  return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
-};
+export const NO_FIXED_SIZES_TO_UPDATE = 0;
 
 export const removeItem = (
   itemId: string,
@@ -34,9 +31,14 @@ export const removeItem = (
   >
 ): LayoutSplitterItemRemoveResult => {
   const itemToRemoveUIModel = itemsInfo.get(itemId);
+  let fixedSizesSumDecrement: number = NO_FIXED_SIZES_TO_UPDATE;
 
   if (!itemToRemoveUIModel) {
-    return { success: false, renamedItems: [] };
+    return {
+      success: false,
+      renamedItems: [],
+      fixedSizesSumDecrement: fixedSizesSumDecrement
+    };
   }
 
   // TODO: Valid whether the parent is the root node or not. If it is the root, update the fixedSizesSum
@@ -47,41 +49,68 @@ export const removeItem = (
   const parentItem = itemToRemoveUIModel.parentItem;
   const parentItemItems = parentItem.items;
 
-  const itemToAddSpace =
-    parentItemItems[itemToRemoveIndex === 0 ? 1 : itemToRemoveIndex - 1];
+  const itemToAddSpaceIndex =
+    itemToRemoveIndex === 0 ? 1 : itemToRemoveIndex - 1;
+  const itemToAddSpace = parentItemItems[itemToAddSpaceIndex];
   const renamedItems: LayoutSplitterRenamedItem[] = [];
 
   // const itemToAddSpaceUIModel = itemsInfo.get(itemToAddSpace.id);
 
-  // Remove the item in a future iteration
+  // Queue to remove the item in a future iteration
   itemsToRemove.push([parentItemItems, itemToRemoveIndex, itemId]);
 
   // The space reserved for the item can be given to a sibling item
   if (parentItemItems.length > 2) {
-    addSpaceToItem(
+    fixedSizesSumDecrement = addSpaceToItemAndGetNewFixesSizes(
       itemToRemoveUIModel,
       itemsInfo.get(itemToAddSpace.id),
-      itemsInfo
+      itemToAddSpaceIndex < itemToRemoveIndex
     );
+
+    // TODO: CHECK WHAT HAPPENS WITH THE DRAG BAR SIZE OF THE REMOVED ITEM IN THE fixedSizesSumDecrement <----------------
   }
 
   // The current group will have one child. Remove the group and and reconnect
   // the child item with the parent of its group
   else if (parentItemItems.length === 2) {
-    // TODO: CHECK PARENT ROOT
-    const parentItemUIModel = itemsInfo.get(parentItem.id);
-    const secondParentItem = parentItemUIModel.parentItem;
-    const parentItemIndex = findItemInParent(parentItemUIModel);
+    // - - - - - - - - - - - - - - - - - - - - - - - - -
+    // INPUT MODEL:
+    //                     secondParentItem
+    //                            / \
+    //                         /       \
+    //                      /             \
+    //            (Id x) parentItem   Other items...
+    //                     / \
+    //                  /       \
+    //               /             \
+    //  (Id y) itemToRemove   (Id z) itemToAddSpace
+    //
+    //
+    // OUTPUT MODEL:
+    //                secondParentItem
+    //                       / \
+    //                    /       \
+    //                 /             \
+    //  (Id x) itemToAddSpace    Other items...
+    // - - - - - - - - - - - - - - - - - - - - - - - - -
 
-    const itemToReplace = secondParentItem.items[
-      parentItemIndex
-    ] as LayoutSplitterDistributionGroup;
+    // TODO: CHECK PARENT ROOT <-----------------------------------------------------
+    const parentItemUIModel = itemsInfo.get(parentItem.id) as GroupExtended;
+    const itemToAddSpaceUIModel = itemsInfo.get(
+      itemToAddSpace.id
+    ) as GroupExtended;
 
     // Push the item rename
-    renamedItems.push({ oldId: itemToAddSpace.id, newId: itemToReplace.id });
+    renamedItems.push({
+      oldId: itemToAddSpace.id,
+      newId: parentItem.id
+    });
+
+    // Update the fixedSizesSum even if it does not exists in the "itemToAddSpace"
+    parentItemUIModel.fixedSizesSum = itemToAddSpaceUIModel.fixedSizesSum;
 
     // This property is no longer valid in the new parent
-    delete itemToReplace.items;
+    delete parentItem.items;
 
     // Update all properties in the new parent, except for some specific properties
     Object.keys(itemToAddSpace).forEach(
@@ -92,7 +121,7 @@ export const removeItem = (
           key !== "dragBar" &&
           key !== "fixedOffsetSize"
         ) {
-          itemToReplace[key] = itemToAddSpace[key];
+          parentItem[key] = itemToAddSpace[key];
         }
       }
     );
@@ -110,18 +139,21 @@ export const removeItem = (
     itemsInfo.delete(itemToRemove[2]);
   });
 
-  return { success: true, renamedItems: renamedItems };
+  // TODO: Remove the dragBar parts that no longer apply???? <----------------------
+
+  return {
+    success: true,
+    renamedItems: renamedItems,
+    fixedSizesSumDecrement: fixedSizesSumDecrement
+  };
 };
 
-function addSpaceToItem(
+function addSpaceToItemAndGetNewFixesSizes(
   itemToSubtractUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
   itemToAddUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
-) {
-  console.log(itemToSubtractUIModel, itemToAddUIModel);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _itemToAddSpaceIsBefore: boolean
+): number {
   // TODO: Add implementation. Ensure the given space is relative to 100% (1fr)
   // TODO: Remove drag bar Size from fixedSizesSum
 
@@ -130,41 +162,59 @@ function addSpaceToItem(
 
   // px / px
   if (hasAbsoluteValue(itemToSubtractInfo) && hasAbsoluteValue(itemToAddInfo)) {
-    // TODO: FixedSizesSum does not make sense when adding pixels. Update implementation to improve this
-    updateSize(itemToAddUIModel, getPxSize(itemToSubtractInfo), 0, "px");
+    updatePxSize(itemToAddUIModel, getPxValue(itemToSubtractInfo));
+    return NO_FIXED_SIZES_TO_UPDATE;
   }
-  // px / fr
-  else if (hasAbsoluteValue(itemToSubtractInfo)) {
-    // TODO: UPDATE FIXED SIZES SUM IN THE PARENT
-    // updateSize(startItemUIModel, incrementInPxRTL, fixedSizes, "px");
-    // updateOffsetSize(endItemUIModel, -incrementInPxRTL, fixedSizes);
-  }
-  // fr / px
-  else if (hasAbsoluteValue(itemToAddInfo)) {
-    // updateOffsetSize(startItemUIModel, incrementInPxRTL, fixedSizes);
-    // updateSize(endItemUIModel, -incrementInPxRTL, fixedSizes, "px");
-  }
-  // fr / fr
-  else {
-    // TODO: Check if the node is the root
-    const fixedSizesSum = (
-      itemsInfo.get(
-        itemToSubtractUIModel.parentItem.id
-      ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-    ).fixedSizesSum;
 
-    // Update fixedOffsetSize if the removed item had
-    if (itemToSubtractInfo.fixedOffsetSize != null) {
-      updateOffsetSize(
-        itemToSubtractUIModel,
-        itemToSubtractInfo.fixedOffsetSize,
-        fixedSizesSum
-      );
+  // itemToSubtract ----> px / itemToAdd ---> fr
+  if (hasAbsoluteValue(itemToSubtractInfo)) {
+    const pxValue = getPxValue(itemToSubtractInfo);
+    let fixedSizesSumDecrement = pxValue;
+
+    const itemToAddSpaceOffsetSize = itemToAddInfo.fixedOffsetSize;
+
+    // It means we must reset the fixedOffsetSize value, since it could be set
+    // by any resize that has occurred
+    if (itemToAddSpaceOffsetSize != null) {
+      // Remove the space that the resize introduced
+      fixedSizesSumDecrement += itemToAddSpaceOffsetSize;
+
+      incrementOffsetSize(itemToAddUIModel, -itemToAddSpaceOffsetSize);
     }
 
-    const newFrSize = getFrSize(itemToSubtractInfo) + getFrSize(itemToAddInfo);
-
-    // TODO: In some situations, this should be avoided (fixedSizesSum). Find a way to remove the use of fixedSizesSum
-    updateSize(itemToAddUIModel, newFrSize, fixedSizesSum, "fr");
+    return fixedSizesSumDecrement;
   }
+
+  // itemToSubtract ----> fr / itemToAdd ---> px
+  if (hasAbsoluteValue(itemToAddInfo)) {
+    // updateOffsetSize(startItemUIModel, incrementInPxRTL, fixedSizes);
+    // updateSize(endItemUIModel, -incrementInPxRTL, fixedSizes, "px");
+
+    // const pxValue = getPxValue(itemToSubtractInfo);
+    // let fixedSizesSumDecrement = pxValue;
+
+    // // It means we must reset the fixedOffsetSize value, since it could be set
+    // // by any resize that has occurred
+    // if (itemToAddSpaceIsBefore) {
+    //   fixedSizesSumDecrement -= itemToAddInfo.fixedOffsetSize ?? 0;
+
+    //   updateOffsetSize(itemToAddUIModel, 0);
+    // }
+
+    return NO_FIXED_SIZES_TO_UPDATE;
+  }
+  // fr / fr
+
+  // Update fixedOffsetSize if the removed item had
+  if (itemToSubtractInfo.fixedOffsetSize != null) {
+    incrementOffsetSize(
+      itemToSubtractUIModel,
+      itemToSubtractInfo.fixedOffsetSize
+    );
+  }
+
+  const newFrSize = getFrValue(itemToSubtractInfo) + getFrValue(itemToAddInfo);
+  updateFrSize(itemToAddUIModel, newFrSize);
+
+  return NO_FIXED_SIZES_TO_UPDATE;
 }

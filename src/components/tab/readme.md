@@ -83,7 +83,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-flexible-layout](../flexible-layout/flexible-layout)
+ - [ch-flexible-layout](../flexible-layout)
 
 ### Graph
 ```mermaid

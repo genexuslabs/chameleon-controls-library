@@ -25,6 +25,26 @@
 
 ## Methods
 
+### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
+
+
+
+#### Parameters
+
+| Name                               | Type                                                                                                                                                        | Description |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                                                                    |             |
+| `siblingItem`                      | `string`                                                                                                                                                    |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
 ### `refreshLayout() => Promise<void>`
 
 Schedules a new render of the control even if no state changed.
@@ -53,7 +73,7 @@ Type: `Promise<void>`
 
 
 
-### `removeView(itemId: string) => Promise<LayoutSplitterItemRemoveResult>`
+### `removeView(itemId: string) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes the view that is identified by the given ID.
 The layout is rearranged depending on the state of the removed view.
@@ -66,7 +86,7 @@ The layout is rearranged depending on the state of the removed view.
 
 #### Returns
 
-Type: `Promise<LayoutSplitterItemRemoveResult>`
+Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 
 
@@ -82,12 +102,12 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 
 ### Used by
 
- - [ch-flexible-layout-render](../../renders/flexible-layout)
+ - [ch-flexible-layout-render](../renders/flexible-layout)
 
 ### Depends on
 
-- [ch-tab](../../tab)
-- [ch-layout-splitter](../../layout-splitter)
+- [ch-tab](../tab)
+- [ch-layout-splitter](../layout-splitter)
 
 ### Graph
 ```mermaid

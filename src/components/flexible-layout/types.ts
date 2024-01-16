@@ -2,7 +2,8 @@ import { AccessibleRole, ImageRender } from "../../common/types";
 import {
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionLeaf
+  LayoutSplitterDistributionLeaf,
+  LayoutSplitterItemRemoveResult
 } from "../layout-splitter/types";
 import { TabType } from "../tab/types";
 
@@ -77,12 +78,12 @@ export type FlexibleLayoutItemExtended<
   T extends FlexibleLayoutGroup | FlexibleLayoutLeaf
 > = T extends FlexibleLayoutLeaf
   ? {
-      item: T;
+      item: FlexibleLayoutLeaf;
       parentItem: FlexibleLayoutGroup;
       view: FlexibleLayoutLeafInfo;
     }
   : {
-      item: T;
+      item: FlexibleLayoutGroup;
       parentItem: FlexibleLayoutGroup;
     };
 
@@ -116,6 +117,11 @@ export type ViewSelectedItemInfo = {
   type: TabType;
   viewId: string;
 };
+
+export type FlexibleLayoutViewRemoveResult = Omit<
+  LayoutSplitterItemRemoveResult,
+  "fixedSizesSumDecrement"
+>;
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Interfaces

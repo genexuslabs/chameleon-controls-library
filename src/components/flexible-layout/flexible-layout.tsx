@@ -17,30 +17,25 @@ import {
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
+  FlexibleLayoutViewRemoveResult,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetDragInfo,
   WidgetReorderInfo
-} from "../types";
+} from "./types";
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import {
-  TabItemCloseInfo,
-  TabSelectedItemInfo,
-  TabType
-} from "../../tab/types";
-import { ChTabCustomEvent } from "../../../components";
-import {
-  LayoutSplitterDistribution,
-  LayoutSplitterItemRemoveResult
-} from "../../layout-splitter/types";
+import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "../tab/types";
+import { ChTabCustomEvent } from "../../components";
+import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
   removeDroppableAreaStyles
-} from "../utils";
-import { getViewInfo } from "../../renders/flexible-layout/utils";
+} from "./utils";
+import { getViewInfo } from "../renders/flexible-layout/utils";
+import { isRTL } from "../../common/utils";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -109,11 +104,38 @@ export class ChFlexibleLayout {
   }
 
   /**
+   *
+   */
+  @Method()
+  async addSiblingView(
+    parentGroup: string,
+    siblingItem: string,
+    placedInTheSibling: "before" | "after",
+    viewInfo: FlexibleLayoutLeaf,
+    takeHalfTheSpaceOfTheSiblingItem: boolean
+  ): Promise<boolean> {
+    const result = await this.#layoutSplitterRef.addSiblingLeaf(
+      parentGroup,
+      siblingItem,
+      placedInTheSibling,
+      viewInfo,
+      takeHalfTheSpaceOfTheSiblingItem
+    );
+
+    if (result.success) {
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result.success;
+  }
+
+  /**
    * Removes the view that is identified by the given ID.
    * The layout is rearranged depending on the state of the removed view.
    */
   @Method()
-  async removeView(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+  async removeView(itemId: string): Promise<FlexibleLayoutViewRemoveResult> {
     const result = await this.#layoutSplitterRef.removeItem(itemId);
 
     if (result.success) {
@@ -121,7 +143,7 @@ export class ChFlexibleLayout {
       forceUpdate(this);
     }
 
-    return result;
+    return { success: result.success, renamedItems: result.renamedItems };
   }
 
   /**
@@ -259,9 +281,15 @@ export class ChFlexibleLayout {
 
           this.#draggableViews.push(extendedDraggableView);
 
+          const RTL = isRTL();
+
           draggableView.mainView.addEventListener(
             "mousemove",
-            handleWidgetDrag(extendedDraggableView, this.#droppableAreaRef),
+            handleWidgetDrag(
+              extendedDraggableView,
+              this.#droppableAreaRef,
+              RTL
+            ),
             { capture: true, passive: true, signal: abortController.signal }
           );
 

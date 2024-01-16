@@ -39,31 +39,50 @@ export type LayoutSplitterDistributionItemExtended<
   T extends LayoutSplitterDistributionGroup | LayoutSplitterDistributionLeaf
 > = T extends LayoutSplitterDistributionGroup
   ? {
-      item: T;
+      item: LayoutSplitterDistributionGroup;
       parentItem: LayoutSplitterDistributionGroup;
       actualSize: string;
       fixedSizesSum: number;
     }
   : {
-      item: T;
+      item: LayoutSplitterDistributionLeaf;
       parentItem: LayoutSplitterDistributionGroup;
       actualSize: string;
     };
 
+// Aliases to improve code readability
+export type ItemExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>;
+
+export type LeafExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionLeaf>;
+
+export type GroupExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>;
+
+// - - - - - - - - - - - - - - - - - - - -
+//               Event info
+// - - - - - - - - - - - - - - - - - - - -
 export type DragBarMouseDownEventInfo = {
   container: HTMLElement;
   containerSize: number;
   direction: LayoutSplitterDirection;
-  fixedSizesSum: number;
+  fixedSizesSumRoot: number;
   itemStartId: string;
   itemEndId: string;
   layoutItems: LayoutSplitterDistributionItem[];
   RTL: boolean;
 };
 
+export type LayoutSplitterItemAddResult = {
+  success: boolean;
+  fixedSizesSumIncrement?: number;
+};
+
 export type LayoutSplitterItemRemoveResult = {
   success: boolean;
   renamedItems: LayoutSplitterRenamedItem[];
+  fixedSizesSumDecrement: number;
 };
 
 export type LayoutSplitterRenamedItem = { oldId: string; newId: string };

@@ -76,6 +76,22 @@ const addCustomBehavior = (
   }
 };
 
+export const addNewViewToInfo = (
+  leaf: FlexibleLayoutLeaf,
+  parentItem: FlexibleLayoutGroup,
+  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
+  blockStartWidgets: Set<string>,
+  renderedWidgets: Set<string>
+) => {
+  const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutLeaf> = {
+    item: leaf,
+    parentItem: parentItem,
+    view: createAndSetViewInfo(leaf, blockStartWidgets, renderedWidgets)
+  };
+
+  itemsInfo.set(leaf.id, flexibleItemExtended);
+};
+
 const updateFlexibleSubModels = (
   flexibleLayoutItems: FlexibleLayoutItem[],
   itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
@@ -107,15 +123,13 @@ const updateFlexibleSubModels = (
     }
     // Leaf
     else {
-      const leaf = flexibleItem as FlexibleLayoutLeaf;
-
-      const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutLeaf> =
-        {
-          item: leaf,
-          parentItem: parentItem,
-          view: createAndSetViewInfo(leaf, blockStartWidgets, renderedWidgets)
-        };
-      itemsInfo.set(leaf.id, flexibleItemExtended);
+      addNewViewToInfo(
+        flexibleItem as FlexibleLayoutLeaf,
+        parentItem,
+        itemsInfo,
+        blockStartWidgets,
+        renderedWidgets
+      );
     }
 
     // Custom behaviors

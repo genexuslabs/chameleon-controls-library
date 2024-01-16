@@ -10,21 +10,27 @@ import {
 import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
+  GroupExtended,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionItemExtended,
+  LayoutSplitterDistributionLeaf,
+  LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
 } from "./types";
 import {
+  FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
 import { isRTL } from "../../common/utils";
-import { removeItem } from "./remove-item";
+import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
+import { ROOT_VIEW } from "../renders/flexible-layout/utils";
+import { addSiblingLeaf } from "./add-sibling-item";
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
@@ -37,13 +43,15 @@ const TEMPLATE_STYLE = (
   itemsInfo: Map<
     string,
     LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  >,
+  fixedSizesSum: number
 ) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
     items,
     itemsInfo,
     items.length - 1
-  )
+  ),
+  [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`
 });
 
 const getAriaControls = (
@@ -123,14 +131,69 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   /**
+   *
+   */
+  @Method()
+  async addSiblingLeaf(
+    parentGroup: string,
+    siblingItem: string,
+    placedInTheSibling: "before" | "after",
+    leafInfo: LayoutSplitterDistributionLeaf,
+    takeHalfTheSpaceOfTheSiblingItem: boolean
+  ): Promise<LayoutSplitterItemAddResult> {
+    const result = addSiblingLeaf(
+      parentGroup,
+      siblingItem,
+      placedInTheSibling,
+      leafInfo,
+      this.#itemsInfo,
+      takeHalfTheSpaceOfTheSiblingItem
+    );
+
+    if (result.success) {
+      const fixedSizesSumIncrement = result.fixedSizesSumIncrement;
+
+      // The fixesSizesSum of the parent must be updated
+      if (fixedSizesSumIncrement) {
+        const parentItem = this.#itemsInfo.get(parentGroup).parentItem;
+
+        if (parentItem === ROOT_VIEW) {
+          this.#fixedSizesSumRoot += fixedSizesSumIncrement;
+        } else {
+          (this.#itemsInfo.get(parentItem.id) as GroupExtended).fixedSizesSum +=
+            fixedSizesSumIncrement;
+        }
+      }
+
+      // Queue re-renders
+      forceUpdate(this);
+    }
+
+    return result;
+  }
+
+  /**
    * Removes the item that is identified by the given ID.
    * The layout is rearranged depending on the state of the removed item.
    */
   @Method()
-  async removeItem(viewId: string): Promise<LayoutSplitterItemRemoveResult> {
-    const result = removeItem(viewId, this.#itemsInfo);
+  async removeItem(itemId: string): Promise<LayoutSplitterItemRemoveResult> {
+    const parentItem = this.#itemsInfo.get(itemId).parentItem;
+    const result = removeItem(itemId, this.#itemsInfo);
 
     if (result.success) {
+      const fixedSizesSumDecrement = result.fixedSizesSumDecrement;
+
+      // The fixesSizesSum of the parent must be updated
+      if (fixedSizesSumDecrement !== NO_FIXED_SIZES_TO_UPDATE) {
+        if (parentItem === ROOT_VIEW) {
+          this.#fixedSizesSumRoot -= fixedSizesSumDecrement;
+        } else {
+          (this.#itemsInfo.get(parentItem.id) as GroupExtended).fixedSizesSum -=
+            fixedSizesSumDecrement;
+        }
+      }
+
       // Queue re-renders
       forceUpdate(this);
     }
@@ -176,6 +239,9 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
+  #addResizingStyle = () => this.el.classList.add(RESIZING_CLASS);
+  #removeResizingStyle = () => this.el.classList.remove(RESIZING_CLASS);
+
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
     this.#removeMouseMoveHandler();
@@ -185,13 +251,12 @@ export class ChLayoutSplitter implements ChComponent {
     });
 
     // Add again pointer-events
-    this.el.classList.remove(RESIZING_CLASS);
+    this.#removeResizingStyle();
   };
 
   #initializeDragBarValuesForResizeProcessing = (
     direction: LayoutSplitterDirection,
     index: number,
-    fixedSizesSum: number,
     layoutItems: LayoutSplitterDistributionItem[],
     event: Event
   ) => {
@@ -205,7 +270,7 @@ export class ChLayoutSplitter implements ChComponent {
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
       direction: direction,
-      fixedSizesSum: fixedSizesSum,
+      fixedSizesSumRoot: this.#fixedSizesSumRoot,
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
       layoutItems: layoutItems,
@@ -213,14 +278,13 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
     // Remove pointer-events during drag
-    this.el.classList.add(RESIZING_CLASS);
+    this.#addResizingStyle();
   };
 
   #mouseDownHandler =
     (
       direction: LayoutSplitterDirection,
       index: number,
-      fixedSizesSum: number,
       layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: MouseEvent) => {
@@ -231,7 +295,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.#initializeDragBarValuesForResizeProcessing(
         direction,
         index,
-        fixedSizesSum,
         layoutItems,
         event
       );
@@ -255,7 +318,6 @@ export class ChLayoutSplitter implements ChComponent {
     (
       direction: LayoutSplitterDirection,
       index: number,
-      fixedSizesSum: number,
       layoutItems: LayoutSplitterDistributionItem[]
     ) =>
     (event: KeyboardEvent) => {
@@ -276,7 +338,6 @@ export class ChLayoutSplitter implements ChComponent {
       this.#initializeDragBarValuesForResizeProcessing(
         direction,
         index,
-        fixedSizesSum,
         layoutItems,
         event
       );
@@ -293,7 +354,6 @@ export class ChLayoutSplitter implements ChComponent {
 
   #renderItems = (
     direction: LayoutSplitterDirection,
-    fixedSizesSum: number,
     layoutItems: LayoutSplitterDistributionItem[]
   ) => {
     const lastComponentIndex = layoutItems.length - 1;
@@ -307,16 +367,16 @@ export class ChLayoutSplitter implements ChComponent {
           )}
           style={TEMPLATE_STYLE(
             (item as LayoutSplitterDistributionGroup).items,
-            this.#itemsInfo
-          )}
-        >
-          {this.#renderItems(
-            (item as LayoutSplitterDistributionGroup).direction,
+            this.#itemsInfo,
             (
               this.#itemsInfo.get(
                 item.id
               ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-            ).fixedSizesSum,
+            ).fixedSizesSum
+          )}
+        >
+          {this.#renderItems(
+            (item as LayoutSplitterDistributionGroup).direction,
             (item as LayoutSplitterDistributionGroup).items
           )}
         </div>
@@ -344,17 +404,13 @@ export class ChLayoutSplitter implements ChComponent {
           }
           onKeyDown={
             !this.dragBarDisabled
-              ? this.#handleResize(direction, index, fixedSizesSum, layoutItems)
+              ? this.#handleResize(direction, index, layoutItems)
               : null
           }
+          onKeyUp={this.#removeResizingStyle}
           onMouseDown={
             !this.dragBarDisabled
-              ? this.#mouseDownHandler(
-                  direction,
-                  index,
-                  fixedSizesSum,
-                  layoutItems
-                )
+              ? this.#mouseDownHandler(direction, index, layoutItems)
               : null
           }
         ></div>
@@ -372,7 +428,7 @@ export class ChLayoutSplitter implements ChComponent {
         this.#itemsInfo
       );
 
-      console.log(this.#itemsInfo);
+      // console.log(this.#itemsInfo);
     }
   }
 
@@ -395,13 +451,13 @@ export class ChLayoutSplitter implements ChComponent {
     return (
       <div
         class={DIRECTION_CLASS(layoutModel.direction)}
-        style={TEMPLATE_STYLE(layoutModel.items, this.#itemsInfo)}
-      >
-        {this.#renderItems(
-          layoutModel.direction,
-          this.#fixedSizesSumRoot,
-          layoutModel.items
+        style={TEMPLATE_STYLE(
+          layoutModel.items,
+          this.#itemsInfo,
+          this.#fixedSizesSumRoot
         )}
+      >
+        {this.#renderItems(layoutModel.direction, layoutModel.items)}
       </div>
     );
   }

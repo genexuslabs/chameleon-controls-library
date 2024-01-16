@@ -16,7 +16,28 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 
 ## Methods
 
-### `removeView(viewId: string, removeRenderedWidgets: boolean) => Promise<LayoutSplitterItemRemoveResult>`
+### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
+
+Add a view with widgets to render. The view will take the half space of
+the sibling view that its added with.
+
+#### Parameters
+
+| Name                               | Type                                                                                                                                                        | Description |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                                                                    |             |
+| `siblingItem`                      | `string`                                                                                                                                                    |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
+
+#### Returns
+
+Type: `Promise<boolean>`
+
+
+
+### `removeView(viewId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes a view and optionally all its rendered widget from the render.
 The reserved space will be given to the closest view.
@@ -30,7 +51,7 @@ The reserved space will be given to the closest view.
 
 #### Returns
 
-Type: `Promise<LayoutSplitterItemRemoveResult>`
+Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 
 
@@ -43,7 +64,7 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 
 ### Depends on
 
-- [ch-flexible-layout](../../flexible-layout/flexible-layout)
+- [ch-flexible-layout](../../flexible-layout)
 
 ### Graph
 ```mermaid

@@ -20,6 +20,26 @@ This component allows us to design a layout composed by columns and rows.
 
 ## Methods
 
+### `addSiblingLeaf(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterDistributionLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>`
+
+
+
+#### Parameters
+
+| Name                               | Type                                                                                                         | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
+| `parentGroup`                      | `string`                                                                                                     |             |
+| `siblingItem`                      | `string`                                                                                                     |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                        |             |
+| `leafInfo`                         | `{ id: string; dragBar?: LayoutSplitterDragBarConfig; fixedOffsetSize?: number; size: LayoutSplitterSize; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                    |             |
+
+#### Returns
+
+Type: `Promise<LayoutSplitterItemAddResult>`
+
+
+
 ### `refreshLayout() => Promise<void>`
 
 Schedules a new render of the control even if no state changed.
@@ -30,7 +50,7 @@ Type: `Promise<void>`
 
 
 
-### `removeItem(viewId: string) => Promise<LayoutSplitterItemRemoveResult>`
+### `removeItem(itemId: string) => Promise<LayoutSplitterItemRemoveResult>`
 
 Removes the item that is identified by the given ID.
 The layout is rearranged depending on the state of the removed item.
@@ -39,7 +59,7 @@ The layout is rearranged depending on the state of the removed item.
 
 | Name     | Type     | Description |
 | -------- | -------- | ----------- |
-| `viewId` | `string` |             |
+| `itemId` | `string` |             |
 
 #### Returns
 
@@ -59,7 +79,7 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 
 ### Used by
 
- - [ch-flexible-layout](../flexible-layout/flexible-layout)
+ - [ch-flexible-layout](../flexible-layout)
 
 ### Graph
 ```mermaid

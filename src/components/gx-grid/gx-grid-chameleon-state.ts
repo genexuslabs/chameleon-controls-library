@@ -11,7 +11,7 @@ export class GridChameleonManagerState {
   static load(grid: GxGrid, state: GridChameleonState) {
     this.grid = grid;
     this.state = state ?? {};
-    this.state.Columns = this.state.Columns ?? [];
+    this.state.Columns ??= [];
 
     this.loadLocal();
     this.apply();
@@ -150,9 +150,7 @@ export class GridChameleonManagerState {
   private static getColumnFilter(name: string): GridChameleonStateColumnFilter {
     const column = this.getColumn(name);
 
-    if (!column.Filter) {
-      column.Filter = {};
-    }
+    column.Filter ||= {};
 
     return column.Filter;
   }

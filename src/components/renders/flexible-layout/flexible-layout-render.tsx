@@ -10,7 +10,9 @@ import {
   ViewSelectedItemInfo,
   WidgetReorderInfo,
   FlexibleLayoutViewRemoveResult,
-  FlexibleLayoutGroup
+  FlexibleLayoutGroup,
+  DroppableArea,
+  FlexibleLayoutWidget
 } from "../../flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { removeElement } from "../../../common/array";
@@ -303,77 +305,27 @@ export class ChFlexibleLayoutRender {
     }
 
     const viewTargetInfo = this.#getViewInfo(viewIdTarget);
-    const itemIndex = reorderInfo.index;
-    const itemInfo = viewInfo.widgets[itemIndex];
+    const widgetIndex = reorderInfo.index;
+    const widgetToMove = viewInfo.widgets[widgetIndex];
 
     // Mark the item as rendered, because the drag does not have to trigger item
     // selection (which trigger item rendering)
-    this.#renderedWidgets.add(itemInfo.id);
-    itemInfo.wasRendered = true;
+    this.#renderedWidgets.add(widgetToMove.id);
+    widgetToMove.wasRendered = true;
 
     // The drop does not create a new view
     if (dropAreaTarget === "center") {
-      viewTargetInfo.widgets.push(itemInfo);
+      viewTargetInfo.widgets.push(widgetToMove);
 
       // Update the selected widget in the target view
-      this.#updateSelectedWidget(viewTargetInfo, itemInfo.id);
+      this.#updateSelectedWidget(viewTargetInfo, widgetToMove.id);
     } else {
-      // Implementation note: If the direction matches the dropAreaTarget
-      // (for example, dropAreaTarget === "block-start" and parent direction === "row")
-      // we can use addSiblingView
-
-      const viewUIModel = this.#itemsInfo.get(
-        viewId
-      ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
-      const parentInfo = viewUIModel.parentItem;
-
-      const newViewToAddId = GENERATE_GUID();
-      const newViewToAdd: FlexibleLayoutLeaf = {
-        id: newViewToAddId,
-        size: undefined,
-        viewType: viewUIModel.item.viewType,
-        widgets: [itemInfo],
-        selectedWidgetId: itemInfo.id,
-        dragBar: {
-          size: 1,
-          part: viewUIModel.item.dragBar?.part // TODO: IMPROVE THIS
-        }
-      };
-
-      // Add a sibling
-      if (
-        parentInfo.direction === "rows" &&
-        (dropAreaTarget === "block-start" || dropAreaTarget === "block-end")
-      ) {
-        this.addSiblingView(
-          parentInfo.id,
-          viewIdTarget,
-          dropAreaTarget === "block-start" ? "before" : "after",
-          newViewToAdd,
-          true
-        );
-      }
-      // Add a sibling
-      else if (
-        parentInfo.direction === "columns" &&
-        (dropAreaTarget === "inline-start" || dropAreaTarget === "inline-end")
-      ) {
-        this.addSiblingView(
-          parentInfo.id,
-          viewIdTarget,
-          dropAreaTarget === "inline-start" ? "before" : "after",
-          newViewToAdd,
-          true
-        );
-      }
-      // The current target must be modified to be a group
-      else {
-        // TODO: Add implementation
-      }
-
-      // VERIFY THE PARENT NODE
-      // HANDLE NEW VIEW CREATION
-      // CHECK IF THE PREVIOUS VIEW HAS ONLY ONE ITEM TO REUSE ITS VIEW ID?
+      this.#handleViewItemReorderCreateView(
+        viewId,
+        widgetToMove,
+        viewIdTarget,
+        dropAreaTarget
+      );
     }
 
     // Remove the view, since it has no more items
@@ -386,8 +338,8 @@ export class ChFlexibleLayoutRender {
     // Remove the item in the view that belongs
     else {
       // Select the previous item if the removed item was selected
-      if (viewInfo.selectedWidgetId === itemInfo.id) {
-        const newSelectedIndex = itemIndex === 0 ? 1 : itemIndex - 1;
+      if (viewInfo.selectedWidgetId === widgetToMove.id) {
+        const newSelectedIndex = widgetIndex === 0 ? 1 : widgetIndex - 1;
         const newSelectedItem = viewInfo.widgets[newSelectedIndex];
 
         // Mark the item as rendered
@@ -399,7 +351,7 @@ export class ChFlexibleLayoutRender {
       }
 
       // Remove the item from the view
-      this.#removeWidget(viewInfo, itemIndex, true);
+      this.#removeWidget(viewInfo, widgetIndex, true);
 
       // Queue re-renders
       forceUpdate(this); // Update rendered items
@@ -407,6 +359,67 @@ export class ChFlexibleLayoutRender {
     }
 
     // this.#flexibleLayoutRef.refreshLayout();
+  };
+
+  #handleViewItemReorderCreateView = (
+    viewId: string,
+    widget: FlexibleLayoutWidget,
+    viewIdTarget: string,
+    dropAreaTarget: DroppableArea
+  ) => {
+    // Implementation note: If the direction matches the dropAreaTarget
+    // (for example, dropAreaTarget === "block-start" and parent direction === "row")
+    // we can use addSiblingView
+
+    const viewUIModel = this.#itemsInfo.get(
+      viewId
+    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+    const parentInfo = viewUIModel.parentItem;
+
+    const newViewToAddId = GENERATE_GUID();
+    const newViewToAdd: FlexibleLayoutLeaf = {
+      id: newViewToAddId,
+      size: undefined,
+      viewType: viewUIModel.item.viewType,
+      widgets: [widget],
+      selectedWidgetId: widget.id,
+      dragBar: {
+        size: 1,
+        part: viewUIModel.item.dragBar?.part // TODO: IMPROVE THIS
+      }
+    };
+
+    const viewTargetIsContainedInAGroupWithTheSameDirection =
+      (parentInfo.direction === "rows" &&
+        (dropAreaTarget === "block-start" || dropAreaTarget === "block-end")) ||
+      (parentInfo.direction === "columns" &&
+        (dropAreaTarget === "inline-start" || dropAreaTarget === "inline-end"));
+
+    console.log(
+      viewTargetIsContainedInAGroupWithTheSameDirection,
+      parentInfo.direction,
+      dropAreaTarget
+    );
+
+    // Add a sibling
+    if (viewTargetIsContainedInAGroupWithTheSameDirection) {
+      this.addSiblingView(
+        parentInfo.id,
+        viewIdTarget,
+        dropAreaTarget === "block-start" || "inline-start" ? "before" : "after",
+        newViewToAdd,
+        true
+      );
+    }
+
+    // The current target must be modified to be a group
+    else {
+      // TODO: Add implementation
+    }
+
+    // VERIFY THE PARENT NODE
+    // HANDLE NEW VIEW CREATION
+    // CHECK IF THE PREVIOUS VIEW HAS ONLY ONE ITEM TO REUSE ITS VIEW ID?
   };
 
   componentWillLoad() {

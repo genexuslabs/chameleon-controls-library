@@ -12,7 +12,7 @@ export class ChIcon {
 
   @Element() element: HTMLChIconElement;
 
-  /*********************************
+  /** *******************************
   PROPERTIES & STATE
   *********************************/
   /**
@@ -44,7 +44,7 @@ export class ChIcon {
 
   @State() private svgContent?: string;
 
-  /*********************************
+  /** *******************************
   METHODS
   *********************************/
 
@@ -75,6 +75,8 @@ export class ChIcon {
       typeof window !== "undefined" &&
       (window as any).IntersectionObserver
     ) {
+      // TODO: FIX THIS
+      // eslint-disable-next-line no-multi-assign
       const io = (this.io = new (window as any).IntersectionObserver(
         (data: IntersectionObserverEntry[]) => {
           if (data[0].isIntersecting) {

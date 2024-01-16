@@ -60,9 +60,7 @@ function getImage(
   name: string,
   gxImageConstructor: (name: string) => any
 ): any {
-  if (!computedStyle) {
-    computedStyle = getComputedStyle(document.documentElement);
-  }
+  computedStyle ||= getComputedStyle(document.documentElement);
 
   let value = computedStyle.getPropertyValue(`--gx-image_${name}`);
 

@@ -1,16 +1,31 @@
 @layer ch-grid {
+  ch-grid:has(ch-grid-virtual-scroller[has-window-scroll]) {
+    height: var(--ch-grid-virtual-scroller-height);
+  }
+
+  ch-grid:has(ch-grid-virtual-scroller[has-grid-scroll])::part(main) {
+    grid-template-rows: auto var(--ch-grid-virtual-scroller-height);
+  }
+
+  ch-grid:has(ch-grid-virtual-scroller[has-window-scroll])::part(main) {
+    block-size: auto;
+    position: sticky;
+    top: 0px;
+    margin-bottom: auto;
+  }
+
   ch-grid-virtual-scroller {
-    display: contents;
-  }
+    display: grid;
+    height: max-content;
 
-  ch-grid-virtual-scroller::after {
-    content: "";
-    display: block;
-    height: var(--ch-grid-virtual-scroller-height, 0px);
-  }
-
-  .virtual-scroller-row-size {
+    grid-auto-rows: max-content;
     grid-column: 1 / -1;
-    grid-row: 1 / span 3;
+    grid-row: 2;
+    grid-template-columns: subgrid;
+  }
+
+  ch-grid-virtual-scroller[has-grid-scroll] {
+    position: sticky;
+    top: 0px;
   }
 }

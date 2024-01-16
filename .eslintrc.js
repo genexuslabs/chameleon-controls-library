@@ -28,6 +28,7 @@ module.exports = {
     "no-alert": "error", // Disallow the use of alert, confirm, and prompt
     "no-console": "warn", // Warning when using console.log, console.warn or console.error
     "no-else-return": ["warn", { allowElseIf: false }], // Disallow else blocks after return statements in if statements
+    "no-extra-boolean-cast": "error", // Disallow unnecessary boolean casts
     "no-debugger": "error", // Error when using debugger;
     "no-duplicate-case": "error", // This rule disallows duplicate test expressions in case clauses of switch statements
     "no-empty": "error", // Disallow empty block statements

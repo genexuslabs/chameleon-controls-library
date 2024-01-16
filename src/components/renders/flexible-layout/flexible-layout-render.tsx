@@ -322,7 +322,6 @@ export class ChFlexibleLayoutRender {
       this.#updateSelectedWidget(viewTargetInfo, widgetToMove.id);
     } else {
       this.#handleViewItemReorderCreateView(
-        viewId,
         widgetToMove,
         viewTargetInfo,
         dropAreaTarget
@@ -363,7 +362,6 @@ export class ChFlexibleLayoutRender {
   };
 
   #handleViewItemReorderCreateView = (
-    viewId: string,
     widget: FlexibleLayoutWidget,
     viewTargetInfo: FlexibleLayoutLeafInfo,
     dropAreaTarget: DroppableArea
@@ -398,12 +396,6 @@ export class ChFlexibleLayoutRender {
         (dropAreaTarget === "block-start" || dropAreaTarget === "block-end")) ||
       (viewTargetParentInfo.direction === "columns" &&
         (dropAreaTarget === "inline-start" || dropAreaTarget === "inline-end"));
-
-    console.log(
-      viewTargetIsContainedInAGroupWithTheSameDirection,
-      viewTargetParentInfo.direction,
-      dropAreaTarget
-    );
 
     // Add a sibling
     if (viewTargetIsContainedInAGroupWithTheSameDirection) {

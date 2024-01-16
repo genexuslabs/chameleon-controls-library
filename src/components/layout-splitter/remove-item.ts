@@ -154,7 +154,6 @@ function addSpaceToItemAndGetNewFixesSizes(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _itemToAddSpaceIsBefore: boolean
 ): number {
-  console.log(itemToSubtractUIModel, itemToAddUIModel);
   // TODO: Add implementation. Ensure the given space is relative to 100% (1fr)
   // TODO: Remove drag bar Size from fixedSizesSum
 

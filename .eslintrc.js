@@ -18,6 +18,11 @@ module.exports = {
     camelcase: "warn", // Enforce camelcase naming convention
     curly: "error", // Enforce consistent brace style for all control statements
     eqeqeq: ["warn", "always", { null: "ignore" }], // Require the use of === and !==   "ignore" -------> Do not apply this rule to null
+    "logical-assignment-operators": [
+      "warn",
+      "always",
+      { enforceForIfStatements: true }
+    ], // This rule checks for expressions that can be shortened using logical assignment operator
     "max-depth": ["warn", 3], // Enforce a maximum depth that blocks can be nested. Many developers consider code difficult to read if blocks are nested beyond a certain depth
     "no-alert": "error", // Disallow the use of alert, confirm, and prompt
     "no-console": "warn", // Warning when using console.log, console.warn or console.error

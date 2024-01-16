@@ -33,6 +33,7 @@ module.exports = {
     "no-duplicate-case": "error", // This rule disallows duplicate test expressions in case clauses of switch statements
     "no-empty": "error", // Disallow empty block statements
     "no-lonely-if": "warn", // Disallow if statements as the only statement in else blocks
+    "no-multi-assign": "error", // Disallow use of chained assignment expressions
     "no-nested-ternary": "warn", // Warns the use of nested ternary expressions
     "no-sequences": "error", // Disallow comma operators
     "no-undef": "off", // Allows defining undefined variables

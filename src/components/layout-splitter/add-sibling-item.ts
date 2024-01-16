@@ -101,6 +101,8 @@ export const addSiblingLeaf = (
       setFrSize(leafUIModel, siblingHalfSize);
       setFrSize(siblingItemUIModel, siblingHalfSize);
     }
+  } else {
+    // TODO: Add implementation
   }
 
   // TODO: Emit the new dragBar parts <----------------------

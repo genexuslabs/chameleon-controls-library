@@ -30,7 +30,7 @@ This component allows us to design a layout composed by columns and rows.
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
 | `parentGroup`                      | `string`                                                                                                     |             |
 | `siblingItem`                      | `string`                                                                                                     |             |
-| `placedInTheSibling`               | `"before" \| "after"`                                                                                        |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                        |             |
 | `leafInfo`                         | `{ id: string; dragBar?: LayoutSplitterDragBarConfig; fixedOffsetSize?: number; size: LayoutSplitterSize; }` |             |
 | `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                    |             |
 

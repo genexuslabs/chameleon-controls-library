@@ -28,17 +28,17 @@ const FLOATING_POINT_ERROR = 1;
   shadow: true
 })
 export class ChActionGroup {
-  private needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
-  private totalItems = -1;
+  #totalItems = -1;
 
   // Observer
-  private actionsContainerWatcher: ResizeObserver;
-  private actionsWatcher: ResizeObserver;
+  #actionsContainerWatcher: ResizeObserver;
+  #actionsWatcher: ResizeObserver;
 
   // Refs
-  private actionsContainer: HTMLDivElement;
-  private slotItems: HTMLSlotElement;
+  #actionsContainer: HTMLDivElement;
+  #slotItems: HTMLSlotElement;
 
   @Element() el: HTMLChActionGroupElement;
 
@@ -76,7 +76,7 @@ export class ChActionGroup {
   handleOverflowBehaviorChange(newValue: ItemsOverflowBehavior) {
     if (newValue !== "ResponsiveCollapse") {
       const actionGroupItems =
-        this.slotItems.assignedElements() as HTMLChActionGroupItemElement[];
+        this.#slotItems.assignedElements() as HTMLChActionGroupItemElement[];
 
       // Reset floating
       actionGroupItems.forEach(item => {
@@ -84,7 +84,7 @@ export class ChActionGroup {
       });
     }
 
-    this.setResponsiveCollapse();
+    this.#setResponsiveCollapse();
   }
 
   /**
@@ -130,12 +130,13 @@ export class ChActionGroup {
    * Update the visibility of the actions.
    * Only works if itemsOverflowBehavior === "ResponsiveCollapse"
    */
-  private updateDisplayedActions = () => {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #updateDisplayedActions = () => {
     const actionGroupItems =
-      this.slotItems.assignedElements() as HTMLChActionGroupItemElement[];
+      this.#slotItems.assignedElements() as HTMLChActionGroupItemElement[];
 
     // The column-gap property must be taken into account
-    const columnGap = getComputedStyle(this.actionsContainer).columnGap;
+    const columnGap = getComputedStyle(this.#actionsContainer).columnGap;
     const columnGapValue =
       columnGap != null && columnGap.endsWith("px")
         ? Number(columnGap.replace("px", ""))
@@ -143,7 +144,9 @@ export class ChActionGroup {
 
     // Since the last item does not add column-gap, we have to adjust the measurement
     let availableWidth =
-      this.actionsContainer.clientWidth + columnGapValue - FLOATING_POINT_ERROR;
+      this.#actionsContainer.clientWidth +
+      columnGapValue -
+      FLOATING_POINT_ERROR;
     let displayedItems = 0;
 
     // Check which items are visible
@@ -160,90 +163,90 @@ export class ChActionGroup {
       }
     });
 
-    this.totalItems = actionGroupItems.length;
+    this.#totalItems = actionGroupItems.length;
     this.displayedItems = displayedItems;
     this.displayedItemsCountChange.emit(displayedItems);
   };
 
-  private updateDisplayedActionInFrame = () => {
-    if (!this.needForRAF) {
+  #updateDisplayedActionInFrame = () => {
+    if (!this.#needForRAF) {
       return;
     }
-    this.needForRAF = false; // No need to call RAF up until next frame
+    this.#needForRAF = false; // No need to call RAF up until next frame
 
     requestAnimationFrame(() => {
-      this.needForRAF = true; // RAF now consumes the movement instruction so a new one can come
-      this.updateDisplayedActions();
+      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
+      this.#updateDisplayedActions();
     });
   };
 
-  private connectActionsObserver() {
-    this.actionsWatcher = new ResizeObserver(this.updateDisplayedActionInFrame);
-
-    // Observe the actions
-    const actionGroupItems = this.slotItems.assignedElements();
-    actionGroupItems.forEach(action => {
-      this.actionsWatcher.observe(action);
-    });
-  }
-
-  private connectActionsContainerObserver() {
-    this.actionsContainerWatcher = new ResizeObserver(
-      this.updateDisplayedActionInFrame
+  #connectActionsObserver = () => {
+    this.#actionsWatcher = new ResizeObserver(
+      this.#updateDisplayedActionInFrame
     );
 
-    this.actionsContainerWatcher.observe(this.actionsContainer);
-  }
+    // Observe the actions
+    const actionGroupItems = this.#slotItems.assignedElements();
+    actionGroupItems.forEach(action => {
+      this.#actionsWatcher.observe(action);
+    });
+  };
 
-  private disconnectActionsObserver() {
-    if (this.actionsWatcher) {
-      this.actionsWatcher.disconnect();
-      this.actionsWatcher = null;
+  #connectActionsContainerObserver = () => {
+    this.#actionsContainerWatcher = new ResizeObserver(
+      this.#updateDisplayedActionInFrame
+    );
+
+    this.#actionsContainerWatcher.observe(this.#actionsContainer);
+  };
+
+  #disconnectActionsObserver = () => {
+    if (this.#actionsWatcher) {
+      this.#actionsWatcher.disconnect();
+      this.#actionsWatcher = null;
     }
-  }
+  };
 
-  private disconnectActionsContainerObserver() {
-    if (this.actionsContainerWatcher) {
-      this.actionsContainerWatcher.disconnect();
-      this.actionsContainerWatcher = null;
+  #disconnectActionsContainerObserver = () => {
+    if (this.#actionsContainerWatcher) {
+      this.#actionsContainerWatcher.disconnect();
+      this.#actionsContainerWatcher = null;
     }
-  }
+  };
 
-  private setResponsiveCollapse() {
-    this.disconnectActionsObserver();
-    this.disconnectActionsContainerObserver();
+  #setResponsiveCollapse = () => {
+    this.#disconnectActionsObserver();
+    this.#disconnectActionsContainerObserver();
 
     if (this.itemsOverflowBehavior !== "ResponsiveCollapse") {
       return;
     }
-    this.connectActionsObserver();
-    this.connectActionsContainerObserver();
-  }
+    this.#connectActionsObserver();
+    this.#connectActionsContainerObserver();
+  };
 
-  private updateActionsWatcher = () => {
+  #updateActionsWatcher = () => {
     if (this.itemsOverflowBehavior !== "ResponsiveCollapse") {
       return;
     }
 
     // Avoid memory leaks by disconnecting and re-connecting the observer
-    this.disconnectActionsObserver();
-    this.connectActionsObserver();
+    this.#disconnectActionsObserver();
+    this.#connectActionsObserver();
   };
 
-  private handleMoreActionButtonExpand = (
-    event: ChDropdownCustomEvent<boolean>
-  ) => {
+  #handleMoreActionButtonExpand = (event: ChDropdownCustomEvent<boolean>) => {
     event.stopPropagation();
     this.moreActionsButtonExpandedChange.emit(event.detail);
   };
 
   componentDidLoad() {
-    this.setResponsiveCollapse();
+    this.#setResponsiveCollapse();
   }
 
   disconnectedCallback() {
-    this.disconnectActionsObserver();
-    this.disconnectActionsContainerObserver();
+    this.#disconnectActionsObserver();
+    this.#disconnectActionsContainerObserver();
   }
 
   render() {
@@ -252,7 +255,7 @@ export class ChActionGroup {
     return (
       <Host role="menubar" aria-label={this.accessibleName}>
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
-          this.totalItems !== this.displayedItems && (
+          this.#totalItems !== this.displayedItems && (
             <ch-dropdown
               exportparts="expandable-button:more-actions-button,separation:more-actions-separation,list:more-actions-list,section:more-actions-section,mask:more-actions-mask"
               buttonLabel={this.buttonLabel}
@@ -261,7 +264,7 @@ export class ChActionGroup {
               expandBehavior={this.expandBehavior}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
-              onExpandedChange={this.handleMoreActionButtonExpand}
+              onExpandedChange={this.#handleMoreActionButtonExpand}
             >
               <slot name="more-items" slot="items"></slot>
             </ch-dropdown>
@@ -276,12 +279,12 @@ export class ChActionGroup {
               this.itemsOverflowBehavior === "ResponsiveCollapse"
           }}
           part="actions"
-          ref={el => (this.actionsContainer = el)}
+          ref={el => (this.#actionsContainer = el)}
         >
           <slot
             name="items"
-            onSlotchange={this.updateActionsWatcher}
-            ref={el => (this.slotItems = el as HTMLSlotElement)}
+            onSlotchange={this.#updateActionsWatcher}
+            ref={el => (this.#slotItems = el as HTMLSlotElement)}
           ></slot>
         </div>
       </Host>

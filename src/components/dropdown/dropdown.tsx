@@ -48,19 +48,19 @@ type DropDownKeyDownEvents = "ArrowDown" | "ArrowUp" | "Escape";
   tag: "ch-dropdown"
 })
 export class ChDropDown implements ChComponent {
-  private keyEventsDictionary: {
+  #keyEventsDictionary: {
     [key in DropDownKeyDownEvents]: (event?: KeyboardEvent) => void;
   } = {
     ArrowDown: (event: KeyboardEvent) => {
       event.preventDefault();
 
-      if (!this.currentFocusedItem) {
-        this.focusFirstDropDownItem();
+      if (!this.#currentFocusedItem) {
+        this.#focusFirstDropDownItem();
 
         return;
       }
 
-      const nextDropDownItem = this.findNextDropDownItemSibling();
+      const nextDropDownItem = this.#findNextDropDownItemSibling();
       if (nextDropDownItem) {
         // This is wrong, it should call the focusElement Method. StencilJS bug?
         nextDropDownItem.handleFocusElement();
@@ -70,13 +70,13 @@ export class ChDropDown implements ChComponent {
     ArrowUp: (event: KeyboardEvent) => {
       event.preventDefault();
 
-      if (!this.currentFocusedItem) {
-        this.focusFirstDropDownItem();
+      if (!this.#currentFocusedItem) {
+        this.#focusFirstDropDownItem();
 
         return;
       }
 
-      const previousDropDownItem = this.findPreviousDropDownItemSibling();
+      const previousDropDownItem = this.#findPreviousDropDownItemSibling();
       if (previousDropDownItem) {
         // This is wrong, it should call the focusElement Method. StencilJS bug?
         previousDropDownItem.handleFocusElement();
@@ -84,22 +84,23 @@ export class ChDropDown implements ChComponent {
     },
 
     Escape: () => {
-      this.closeDropdown();
-      this.returnFocusToButton();
+      this.#closeDropdown();
+      this.#returnFocusToButton();
     }
   };
 
-  private showHeader = false;
-  private showFooter = false;
-  private firstExpanded = false;
+  #showHeader = false;
+  #showFooter = false;
+  #firstExpanded = false;
 
   /**
    * Determine the current dropdown-item that is focused
    */
-  private currentFocusedItem: HTMLChDropdownItemElement;
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #currentFocusedItem: HTMLChDropdownItemElement;
 
   // Refs
-  private expandableButton: HTMLButtonElement;
+  #expandableButton: HTMLButtonElement;
 
   @Element() el: HTMLChDropdownElement;
 
@@ -144,12 +145,12 @@ export class ChDropDown implements ChComponent {
   @Watch("expanded")
   handleExpandedChange(newExpandedValue: boolean) {
     if (newExpandedValue) {
-      this.currentFocusedItem = undefined;
+      this.#currentFocusedItem = undefined;
 
       // Click
-      document.body.addEventListener(
+      document.addEventListener(
         "click",
-        this.closeDropdownWhenClickingOutside,
+        this.#closeDropdownWhenClickingOutside,
         {
           capture: true
         }
@@ -157,19 +158,19 @@ export class ChDropDown implements ChComponent {
 
       // Keyboard events
       if (!this.nestedDropdown) {
-        document.body.addEventListener("keydown", this.handleKeyDownEvents, {
+        document.addEventListener("keydown", this.#handleKeyDownEvents, {
           capture: true
         });
       }
 
-      document.body.addEventListener("keyup", this.handleKeyUpEvents, {
+      document.addEventListener("keyup", this.#handleKeyUpEvents, {
         capture: true
       });
     } else {
       // Click
-      document.body.removeEventListener(
+      document.removeEventListener(
         "click",
-        this.closeDropdownWhenClickingOutside,
+        this.#closeDropdownWhenClickingOutside,
         {
           capture: true
         }
@@ -177,40 +178,40 @@ export class ChDropDown implements ChComponent {
 
       // Keyboard events
       if (!this.nestedDropdown) {
-        document.body.removeEventListener("keydown", this.handleKeyDownEvents, {
+        document.removeEventListener("keydown", this.#handleKeyDownEvents, {
           capture: true
         });
       }
 
-      document.body.removeEventListener("keyup", this.handleKeyUpEvents, {
+      document.removeEventListener("keyup", this.#handleKeyUpEvents, {
         capture: true
       });
     }
   }
 
   @Listen("actionClick")
-  handleActionClick() {
-    this.closeDropdown();
+  onActionClick() {
+    this.#closeDropdown();
 
     // @todo This behavior must be specified by a property
     // this.returnFocusToButton();
   }
 
   @Listen("focusChange")
-  handleDropDownItemFocusChange(event: CustomEvent) {
-    this.currentFocusedItem = event.target as HTMLChDropdownItemElement;
+  onFocusChange(event: CustomEvent) {
+    this.#currentFocusedItem = event.target as HTMLChDropdownItemElement;
   }
 
-  private focusFirstDropDownItem() {
-    this.currentFocusedItem = this.el.querySelector(DROPDOWN_ITEM_SELECTOR);
+  #focusFirstDropDownItem = () => {
+    this.#currentFocusedItem = this.el.querySelector(DROPDOWN_ITEM_SELECTOR);
 
-    if (this.currentFocusedItem) {
-      this.currentFocusedItem.handleFocusElement();
+    if (this.#currentFocusedItem) {
+      this.#currentFocusedItem.handleFocusElement();
     }
-  }
+  };
 
-  private findNextDropDownItemSibling() {
-    let nextSibling = this.currentFocusedItem
+  #findNextDropDownItemSibling = () => {
+    let nextSibling = this.#currentFocusedItem
       .nextElementSibling as HTMLChDropdownItemElement;
 
     while (
@@ -221,10 +222,10 @@ export class ChDropDown implements ChComponent {
     }
 
     return nextSibling;
-  }
+  };
 
-  private findPreviousDropDownItemSibling() {
-    let previousSibling = this.currentFocusedItem
+  #findPreviousDropDownItemSibling = () => {
+    let previousSibling = this.#currentFocusedItem
       .previousElementSibling as HTMLChDropdownItemElement;
 
     while (
@@ -236,15 +237,15 @@ export class ChDropDown implements ChComponent {
     }
 
     return previousSibling;
-  }
+  };
 
-  private closeDropdown = () => {
-    this.closeDropdownWithHover();
+  #closeDropdown = () => {
+    this.#closeDropdownWithHover();
     this.expanded = false;
     this.expandedChange.emit(false);
   };
 
-  private closeDropdownWithHover = () => {
+  #closeDropdownWithHover = () => {
     this.expandedWithHover = false;
 
     // If the control was not expanded with focus
@@ -257,21 +258,22 @@ export class ChDropDown implements ChComponent {
    * Returns focus to the expandable button when closing the dropdown. Only
    * works if `openOnFocus = "false"`
    */
-  private returnFocusToButton() {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #returnFocusToButton = () => {
     if (!this.openOnFocus && !this.nestedDropdown) {
-      this.expandableButton.focus();
-    }
-  }
-
-  private closeDropdownWhenClickingOutside = (event: MouseEvent) => {
-    if (event.composedPath().find(el => el === this.el) === undefined) {
-      this.closeDropdown();
+      this.#expandableButton.focus();
     }
   };
 
-  private handleKeyDownEvents = (event: KeyboardEvent) => {
+  #closeDropdownWhenClickingOutside = (event: MouseEvent) => {
+    if (event.composedPath().find(el => el === this.el) === undefined) {
+      this.#closeDropdown();
+    }
+  };
+
+  #handleKeyDownEvents = (event: KeyboardEvent) => {
     const keyEventHandler: ((event?: KeyboardEvent) => void) | undefined =
-      this.keyEventsDictionary[event.code];
+      this.#keyEventsDictionary[event.code];
 
     if (keyEventHandler) {
       keyEventHandler(event);
@@ -282,7 +284,8 @@ export class ChDropDown implements ChComponent {
    * Check if the next focused element is a child element of the dropdown
    * control.
    */
-  private handleKeyUpEvents = (event: KeyboardEvent) => {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #handleKeyUpEvents = (event: KeyboardEvent) => {
     if (event.code !== TAB_KEY) {
       return;
     }
@@ -292,20 +295,20 @@ export class ChDropDown implements ChComponent {
       return;
     }
 
-    this.closeDropdown();
+    this.#closeDropdown();
   };
 
-  private handleMouseLeave = () => {
+  #handleMouseLeave = () => {
     const focusedElementIsInsideDropDown =
       document.activeElement.closest("ch-dropdown") === this.el;
 
     if (focusedElementIsInsideDropDown) {
       this.expanded = true;
     }
-    this.closeDropdownWithHover();
+    this.#closeDropdownWithHover();
   };
 
-  private handleMouseEnter = () => {
+  #handleMouseEnter = () => {
     if (this.expandedWithHover) {
       return;
     }
@@ -318,14 +321,14 @@ export class ChDropDown implements ChComponent {
     }
   };
 
-  private handleButtonClick = (event: MouseEvent) => {
+  #handleButtonClick = (event: MouseEvent) => {
     event.stopPropagation();
 
     this.expandedChange.emit(!this.expanded);
     this.expanded = !this.expanded;
   };
 
-  private handleButtonFocus = (event: FocusEvent) => {
+  #handleButtonFocus = (event: FocusEvent) => {
     event.stopPropagation();
 
     if (this.expanded) {
@@ -341,8 +344,8 @@ export class ChDropDown implements ChComponent {
   };
 
   componentWillLoad() {
-    this.showHeader = !!this.el.querySelector(':scope > [slot="header"]');
-    this.showFooter = !!this.el.querySelector(':scope > [slot="footer"]');
+    this.#showHeader = !!this.el.querySelector(':scope>[slot="header"]');
+    this.#showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
   }
 
   render() {
@@ -354,13 +357,13 @@ export class ChDropDown implements ChComponent {
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
     const isExpanded = this.expanded || this.expandedWithHover;
-    this.firstExpanded ||= isExpanded;
+    this.#firstExpanded ||= isExpanded;
 
     return (
       <Host
         onMouseLeave={
           this.expandBehavior === "ClickOrHover"
-            ? this.handleMouseLeave
+            ? this.#handleMouseLeave
             : undefined
         }
       >
@@ -373,14 +376,14 @@ export class ChDropDown implements ChComponent {
           class="expandable-button"
           part="expandable-button"
           type="button"
-          onClick={this.handleButtonClick}
-          onFocus={this.openOnFocus ? this.handleButtonFocus : undefined}
+          onClick={this.#handleButtonClick}
+          onFocus={this.openOnFocus ? this.#handleButtonFocus : undefined}
           onMouseEnter={
             this.expandBehavior === "ClickOrHover"
-              ? this.handleMouseEnter
+              ? this.#handleMouseEnter
               : undefined
           }
-          ref={el => (this.expandableButton = el)}
+          ref={el => (this.#expandableButton = el)}
         >
           <slot name="action" />
         </button>
@@ -388,12 +391,12 @@ export class ChDropDown implements ChComponent {
         <ch-window
           part="window"
           exportparts="window:section,mask,header,footer,separation"
-          container={this.expandableButton}
+          container={this.#expandableButton}
           closeOnEscape={true}
           hidden={!isExpanded}
           modal={false}
-          showFooter={this.showFooter}
-          showHeader={this.showHeader}
+          showFooter={this.#showFooter}
+          showHeader={this.#showHeader}
           showMain={false}
           // Necessary since the separation between the button and the section
           // triggers the onMouseLeave event
@@ -401,14 +404,14 @@ export class ChDropDown implements ChComponent {
           xAlign={xAlignMapping}
           yAlign={yAlignMapping}
         >
-          {this.firstExpanded && [
-            this.showHeader && <slot name="header" slot="header" />,
+          {this.#firstExpanded && [
+            this.#showHeader && <slot name="header" slot="header" />,
 
             <div role="list" class="list" part="list">
               <slot name="items" />
             </div>,
 
-            this.showFooter && <slot name="footer" slot="footer" />
+            this.#showFooter && <slot name="footer" slot="footer" />
           ]}
         </ch-window>
       </Host>

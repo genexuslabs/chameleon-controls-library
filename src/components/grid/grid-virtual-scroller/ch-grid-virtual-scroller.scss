@@ -1,4 +1,7 @@
 @layer ch-grid {
+  ch-grid:has(ch-grid-virtual-scroller) {
+    box-sizing: content-box !important;
+  }
   ch-grid:has(ch-grid-virtual-scroller[has-window-scroll]) {
     height: var(--ch-grid-virtual-scroller-height);
   }

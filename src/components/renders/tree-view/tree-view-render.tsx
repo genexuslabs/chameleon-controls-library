@@ -890,9 +890,7 @@ export class ChTreeViewRender {
 
   @Listen("checkboxChange")
   @Listen("checkboxToggleChange")
-  updateCheckboxValue(
-    event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
-  ) {
+  onCheckboxChange(event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>) {
     event.stopPropagation();
 
     const detail = event.detail;
@@ -921,7 +919,7 @@ export class ChTreeViewRender {
   }
 
   @Listen("loadLazyContent")
-  loadLazyChildrenHandler(event: ChTreeViewItemCustomEvent<string>) {
+  onLoadLazyContent(event: ChTreeViewItemCustomEvent<string>) {
     if (!this.lazyLoadTreeItemsCallback) {
       return;
     }
@@ -937,9 +935,7 @@ export class ChTreeViewRender {
   }
 
   @Listen("modifyCaption")
-  handleCaptionModification(
-    event: ChTreeViewItemCustomEvent<TreeViewItemNewCaption>
-  ) {
+  onModifyCaption(event: ChTreeViewItemCustomEvent<TreeViewItemNewCaption>) {
     if (!this.modifyItemCaptionCallback) {
       return;
     }
@@ -981,7 +977,7 @@ export class ChTreeViewRender {
   }
 
   @Listen("openReference", { capture: true })
-  handleOpenReference(
+  onOpenReference(
     event: ChTreeViewItemCustomEvent<TreeViewItemOpenReferenceInfo>
   ) {
     event.stopPropagation();

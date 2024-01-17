@@ -158,7 +158,7 @@ export class ChTreeViewItem {
    */
   @Prop({ mutable: true }) editing = false;
   @Watch("editing")
-  handleEditingChange(isEditing: boolean) {
+  editingChanged(isEditing: boolean) {
     if (!isEditing) {
       return;
     }
@@ -200,7 +200,7 @@ export class ChTreeViewItem {
    */
   @Prop({ mutable: true }) expanded = false;
   @Watch("expanded")
-  handleExpandedChange(isExpanded: boolean) {
+  expandedChanged(isExpanded: boolean) {
     // Wait until all properties are updated before lazy loading. Otherwise, the
     // lazyLoad property could be updated just after the executing of the function
     setTimeout(() => {
@@ -213,7 +213,7 @@ export class ChTreeViewItem {
    */
   @Prop() readonly lastItem: boolean = false;
   @Watch("lastItem")
-  handleLasItemChange(isLastItem: boolean) {
+  lastItemChanged(isLastItem: boolean) {
     if (isLastItem && this.showLines) {
       // Use RAF to set the observer after the render method has completed
       requestAnimationFrame(() => {
@@ -279,7 +279,7 @@ export class ChTreeViewItem {
    */
   @Prop() readonly showLines: TreeViewLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: TreeViewLines) {
+  showLinesChanged(newShowLines: TreeViewLines) {
     if (newShowLines && this.lastItem) {
       this.#setResizeObserver();
     } else {

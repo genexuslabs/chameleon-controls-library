@@ -319,7 +319,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filter: string;
   @Watch("filter")
-  handleFilterChange() {
+  filterChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.#scheduleFilterProcessing();
     }
@@ -334,7 +334,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterDebounce: number = 250;
   @Watch("filterDebounce")
-  handleFilterDebounceChange() {
+  filterDebounceChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.#scheduleFilterProcessing();
     }
@@ -346,7 +346,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterList: string[] = [];
   @Watch("filterList")
-  handleFilterListChange() {
+  filterListChanged() {
     // Use a Set to efficiently check for ids
     this.#filterListAsSet = new Set(this.filterList);
 
@@ -361,7 +361,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
-  handleFilterOptionsChange() {
+  filterOptionsChanged() {
     this.#scheduleFilterProcessing();
   }
 
@@ -380,7 +380,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
-  handleFilterTypeChange() {
+  filterTypeChanged() {
     this.#scheduleFilterProcessing();
   }
 
@@ -412,7 +412,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly multiSelection: boolean = false;
   @Watch("multiSelection")
-  handleMultiSelectionChange(newMultiSelection: boolean) {
+  multiSelectionChanged(newMultiSelection: boolean) {
     // MultiSelection is disabled. We must select the last updated item
     if (!newMultiSelection) {
       this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
@@ -455,7 +455,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly treeModel: TreeViewItemModel[] = [];
   @Watch("treeModel")
-  handleTreeModelChange() {
+  treeModelChanged() {
     this.#flattenModel();
   }
 

@@ -199,7 +199,7 @@ export class ChTreeView {
   >;
 
   @Listen("contextmenu", { capture: true })
-  handleContextMenuEvent(event: PointerEvent) {
+  onContextMenu(event: PointerEvent) {
     const treeItem = (event.target as HTMLElement).closest(TREE_ITEM_TAG_NAME);
 
     if (!treeItem) {
@@ -217,7 +217,7 @@ export class ChTreeView {
 
   // Set edit mode in items
   @Listen("keydown", { capture: true })
-  handleKeyDownEvents(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent) {
     const keyHandler = this.#keyDownEvents[event.key];
 
     if (keyHandler) {
@@ -229,7 +229,7 @@ export class ChTreeView {
   // Also, we cant use capture and setTimeout with 0 seconds, because the
   // getData method can only be accessed during the dragstart and drop event
   @Listen("dragstart", { passive: true, target: "window" })
-  handleDragStart(event: DragEvent) {
+  onDragStart(event: DragEvent) {
     // Reset the validity of the droppable zones with each new drag start
     this.#validDroppableZoneCache.clear();
 
@@ -252,12 +252,12 @@ export class ChTreeView {
   }
 
   @Listen("dragend", { capture: true, passive: true, target: "window" })
-  handleDragEnd() {
+  onDragEnd() {
     this.draggingInTheDocument = false;
   }
 
   @Listen("dragenter", { capture: true, passive: true })
-  handleDragEnter(event: DragEvent) {
+  onDragEnter(event: DragEvent) {
     this.#cancelSubTreeOpening(null, true);
     event.stopPropagation();
     const containerTarget = event.target as HTMLChTreeViewItemElement;
@@ -276,7 +276,7 @@ export class ChTreeView {
   }
 
   @Listen("dragleave", { capture: true, passive: true })
-  handleDragLeave(event: DragEvent) {
+  onDragLeave(event: DragEvent) {
     const currentTarget = event.target as HTMLElement;
 
     if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
@@ -299,7 +299,7 @@ export class ChTreeView {
   };
 
   @Listen("drop")
-  handleItemDrop(event: DragEvent) {
+  onDrop(event: DragEvent) {
     event.stopPropagation();
 
     this.#cancelSubTreeOpening(null, true);
@@ -324,13 +324,11 @@ export class ChTreeView {
   }
 
   @Listen("itemDragStart")
-  handleItemDragStart(
-    event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>
-  ) {
+  onItemDragStart(event: ChTreeViewItemCustomEvent<TreeViewItemDragStartInfo>) {
     // Avoid bubbling as this event can listened in other components (e.g. ch-flexible-layout)
     event.stopPropagation();
 
-    document.body.addEventListener("dragover", this.#trackItemDrag, {
+    document.addEventListener("dragover", this.#trackItemDrag, {
       capture: true
     });
 
@@ -354,10 +352,10 @@ export class ChTreeView {
   }
 
   @Listen("itemDragEnd")
-  handleItemDragEnd() {
+  onItemDragEnd() {
     this.draggingInTree = false;
 
-    document.body.removeEventListener("dragover", this.#trackItemDrag, {
+    document.removeEventListener("dragover", this.#trackItemDrag, {
       capture: true
     });
 
@@ -366,9 +364,7 @@ export class ChTreeView {
   }
 
   @Listen("selectedItemChange")
-  handleSelectedItemChange(
-    event: ChTreeViewItemCustomEvent<TreeViewItemSelected>
-  ) {
+  onSelectedItemChange(event: ChTreeViewItemCustomEvent<TreeViewItemSelected>) {
     event.stopPropagation();
     const selectedItemInfo = event.detail;
     const selectedItemsInfo = this.selectedItemsCallback();
@@ -671,7 +667,7 @@ export class ChTreeView {
     this.#resetVariables();
 
     // Remove dragover body event
-    this.handleItemDragEnd();
+    this.onItemDragEnd();
   }
 
   render() {

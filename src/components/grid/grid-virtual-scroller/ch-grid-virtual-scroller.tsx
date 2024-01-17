@@ -247,15 +247,10 @@ export class ChGridVirtualScroller {
   };
 
   private defineHasScroll() {
-    if (this.items.length === this.viewPortItems.length) {
-      this.hasGridScroll = false;
-      this.hasWindowScroll = false;
-    } else {
-      this.hasGridScroll =
-        this.gridLayoutEl.scrollHeight !== this.gridLayoutEl.clientHeight;
-      this.hasWindowScroll =
-        !this.hasGridScroll && this.gridEl.clientHeight > this.browserHeight;
-    }
+    this.hasGridScroll =
+      this.gridLayoutEl.scrollHeight !== this.gridLayoutEl.clientHeight;
+    this.hasWindowScroll =
+      !this.hasGridScroll && this.gridEl.clientHeight > this.browserHeight;
   }
 
   private defineHeaderHeight() {

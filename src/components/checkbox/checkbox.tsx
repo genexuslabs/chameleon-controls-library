@@ -1,6 +1,5 @@
 import {
   Component,
-  Element,
   Event,
   EventEmitter,
   Prop,
@@ -26,8 +25,6 @@ const PARTS = (checked: boolean, indeterminate: boolean) =>
   tag: "ch-checkbox"
 })
 export class CheckBox implements AccessibleNameComponent, DisableableComponent {
-  @Element() element: HTMLChCheckboxElement;
-
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
@@ -105,13 +102,14 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
     this.checked = this.value === this.checkedValue;
   }
 
-  private getValue = (checked: boolean) =>
+  #getValue = (checked: boolean) =>
     checked ? this.checkedValue : this.unCheckedValue;
 
   /**
    * Checks if it is necessary to prevent the click from bubbling
    */
-  private handleClick = (event: UIEvent) => {
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #handleClick = (event: UIEvent) => {
     if (this.readonly || this.disabled) {
       return;
     }
@@ -119,12 +117,12 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
     event.stopPropagation();
   };
 
-  private handleChange = (event: UIEvent) => {
+  #handleChange = (event: UIEvent) => {
     event.stopPropagation();
 
     const inputRef = event.target as HTMLInputElement;
     const checked = inputRef.checked;
-    const value = this.getValue(checked);
+    const value = this.#getValue(checked);
 
     this.checked = checked;
     this.value = value;
@@ -171,8 +169,8 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             disabled={this.disabled || this.readonly}
             indeterminate={this.indeterminate}
             value={this.value}
-            onClick={this.handleClick}
-            onInput={this.handleChange}
+            onClick={this.#handleClick}
+            onInput={this.#handleChange}
           />
           <div
             class={{
@@ -190,7 +188,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             class="label"
             part="label"
             htmlFor={CHECKBOX_ID}
-            onClick={this.handleClick}
+            onClick={this.#handleClick}
           >
             {this.caption}
           </label>

@@ -22,9 +22,18 @@ export const config: Config = {
   bundles: [
     {
       components: [
+        "ch-action-group",
+        "ch-action-group-item",
+        "ch-action-group-render"
+      ]
+    },
+
+    {
+      components: [
         "ch-dropdown",
         "ch-dropdown-item",
         "ch-dropdown-item-separator"
+        // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
       ]
     },
     {

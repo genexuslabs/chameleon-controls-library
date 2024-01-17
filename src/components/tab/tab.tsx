@@ -595,7 +595,7 @@ export class ChTab implements DraggableView {
       insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
 
       // Update last selected index
-      this.adjustLastSelectedIndexValueAfterReorder();
+      this.#adjustLastSelectedIndexValueAfterReorder();
     }
 
     // Restore visibility of the dragged element
@@ -610,7 +610,7 @@ export class ChTab implements DraggableView {
     this.el.style.removeProperty(TRANSITION_DURATION);
   };
 
-  private adjustLastSelectedIndexValueAfterReorder() {
+  #adjustLastSelectedIndexValueAfterReorder = () => {
     // If the dragged element is the selected element, use the new index
     if (this.#selectedIndex === this.draggedElementIndex) {
       this.#selectedIndex = this.draggedElementNewIndex;
@@ -633,7 +633,7 @@ export class ChTab implements DraggableView {
     ) {
       this.#selectedIndex++;
     }
-  }
+  };
 
   #handleItemDrag = (event: MouseEvent) => {
     this.#lastDragEvent = event;

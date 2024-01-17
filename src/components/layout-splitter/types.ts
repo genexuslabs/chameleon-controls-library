@@ -81,8 +81,11 @@ export type LayoutSplitterItemAddResult = {
 
 export type LayoutSplitterItemRemoveResult = {
   success: boolean;
-  renamedItems: LayoutSplitterRenamedItem[];
+  reconnectedSubtree: LayoutSplitterReconnectedSubtree;
   fixedSizesSumDecrement: number;
 };
 
-export type LayoutSplitterRenamedItem = { oldId: string; newId: string };
+export type LayoutSplitterReconnectedSubtree = {
+  nodeToRemove: string;
+  nodeToReconnect: string;
+};

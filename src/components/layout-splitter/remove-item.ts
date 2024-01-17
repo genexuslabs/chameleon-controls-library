@@ -1,19 +1,20 @@
 import { removeElement } from "../../common/array";
 import {
   GroupExtended,
+  LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
   LayoutSplitterDistributionItemExtended,
   LayoutSplitterItemRemoveResult,
-  LayoutSplitterRenamedItem
+  LayoutSplitterReconnectedSubtree
 } from "./types";
 import {
   getFrValue,
   getPxValue,
   hasAbsoluteValue,
-  updateFrSize,
   incrementOffsetSize,
   updatePxSize,
-  findItemInParent
+  findItemInParent,
+  setFrSize
 } from "./utils";
 
 /**
@@ -31,12 +32,13 @@ export const removeItem = (
   >
 ): LayoutSplitterItemRemoveResult => {
   const itemToRemoveUIModel = itemsInfo.get(itemId);
+  let reconnectedSubtree: LayoutSplitterReconnectedSubtree = undefined;
   let fixedSizesSumDecrement: number = NO_FIXED_SIZES_TO_UPDATE;
 
   if (!itemToRemoveUIModel) {
     return {
       success: false,
-      renamedItems: [],
+      reconnectedSubtree: reconnectedSubtree,
       fixedSizesSumDecrement: fixedSizesSumDecrement
     };
   }
@@ -52,9 +54,6 @@ export const removeItem = (
   const itemToAddSpaceIndex =
     itemToRemoveIndex === 0 ? 1 : itemToRemoveIndex - 1;
   const itemToAddSpace = parentItemItems[itemToAddSpaceIndex];
-  const renamedItems: LayoutSplitterRenamedItem[] = [];
-
-  // const itemToAddSpaceUIModel = itemsInfo.get(itemToAddSpace.id);
 
   // Queue to remove the item in a future iteration
   itemsToRemove.push([parentItemItems, itemToRemoveIndex, itemId]);
@@ -84,6 +83,9 @@ export const removeItem = (
     //                  /       \
     //               /             \
     //  (Id y) itemToRemove   (Id z) itemToAddSpace
+    //                                    / \
+    //                                 /       \
+    //                                 groups...
     //
     //
     // OUTPUT MODEL:
@@ -91,7 +93,10 @@ export const removeItem = (
     //                       / \
     //                    /       \
     //                 /             \
-    //  (Id x) itemToAddSpace    Other items...
+    //     (Id x) parentItem    Other items...
+    //              / \
+    //           /       \
+    //           groups...
     // - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // TODO: CHECK PARENT ROOT <-----------------------------------------------------
@@ -101,10 +106,19 @@ export const removeItem = (
     ) as GroupExtended;
 
     // Push the item rename
-    renamedItems.push({
-      oldId: itemToAddSpace.id,
-      newId: parentItem.id
-    });
+    reconnectedSubtree = {
+      nodeToRemove: itemToAddSpace.id,
+      nodeToReconnect: parentItem.id
+    };
+
+    // Reconnect the parent for the "itemToAddSpace" items
+    if ((itemToAddSpace as LayoutSplitterDistributionGroup).items != null) {
+      (itemToAddSpace as LayoutSplitterDistributionGroup).items.forEach(
+        subItem => {
+          itemsInfo.get(subItem.id).parentItem = parentItem;
+        }
+      );
+    }
 
     // Update the fixedSizesSum even if it does not exists in the "itemToAddSpace"
     parentItemUIModel.fixedSizesSum = itemToAddSpaceUIModel.fixedSizesSum;
@@ -143,7 +157,7 @@ export const removeItem = (
 
   return {
     success: true,
-    renamedItems: renamedItems,
+    reconnectedSubtree: reconnectedSubtree,
     fixedSizesSumDecrement: fixedSizesSumDecrement
   };
 };
@@ -214,7 +228,7 @@ function addSpaceToItemAndGetNewFixesSizes(
   }
 
   const newFrSize = getFrValue(itemToSubtractInfo) + getFrValue(itemToAddInfo);
-  updateFrSize(itemToAddUIModel, newFrSize);
+  setFrSize(itemToAddUIModel, newFrSize);
 
   return NO_FIXED_SIZES_TO_UPDATE;
 }

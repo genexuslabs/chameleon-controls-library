@@ -143,7 +143,10 @@ export class ChFlexibleLayout {
       forceUpdate(this);
     }
 
-    return { success: result.success, renamedItems: result.renamedItems };
+    return {
+      success: result.success,
+      reconnectedSubtree: result.reconnectedSubtree
+    };
   }
 
   /**

@@ -1,3 +1,9 @@
+import { TreeViewItemModel } from "../../tree-view/tree-view/types";
+
+export type GXRender<T extends true | false> = T extends true
+  ? TreeViewGXItemModel
+  : TreeViewItemModel;
+
 export type TreeViewGXItemModel = {
   id: string;
   caption: string;
@@ -10,6 +16,7 @@ export type TreeViewGXItemModel = {
   editable?: boolean;
   enabled?: boolean;
   expanded?: boolean;
+  expandableButton?: "action" | "decorative" | "no";
 
   /**
    * Used by the tree view to decide which is the last item in the list when
@@ -36,7 +43,6 @@ export type TreeViewGXItemModel = {
   render?: boolean;
   rightImage?: string;
   selected?: boolean;
-  showExpandableButton?: boolean;
   toggleCheckboxes?: boolean;
 };
 
@@ -115,7 +121,8 @@ export const fromGxImageToURL = (
   if (urlLower.startsWith("assets/")) {
     // Relative URL to local assets
     return url;
-  } else if (
+  }
+  if (
     urlLower.startsWith("http://") ||
     urlLower.startsWith("https://") ||
     urlLower.startsWith("blob:") ||
@@ -124,10 +131,10 @@ export const fromGxImageToURL = (
   ) {
     // Absolute URL
     return url;
-  } else if (urlLower.startsWith(Settings.BASE_PATH.toLowerCase())) {
+  }
+  if (urlLower.startsWith(Settings.BASE_PATH.toLowerCase())) {
     // Host relative URL
     return baseUrl + url.substring(Settings.BASE_PATH.length);
-  } else {
-    return baseUrl + url;
   }
+  return baseUrl + url;
 };

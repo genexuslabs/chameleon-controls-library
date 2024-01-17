@@ -39,6 +39,7 @@ import {
 import { GxDataTransferInfo } from "../../../common/types";
 import { computeFilter, itemHasCheckbox } from "./helpers";
 import {
+  GXRender,
   TreeViewGXItemModel,
   fromGxImageToURL
 } from "./genexus-implementation";
@@ -69,12 +70,29 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
 
-const defaultRenderItem = (
-  itemModel: TreeViewItemModel,
+const gxDragDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender
+) =>
+  itemModel.dragEnabled != null
+    ? !itemModel.dragEnabled
+    : treeState.dragDisabled;
+
+const gxDropDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender
+) =>
+  itemModel.dropEnabled != null
+    ? !itemModel.dropEnabled
+    : treeState.dropDisabled;
+
+const defaultRenderItem = <T extends true | false>(
+  itemModel: GXRender<T>,
   treeState: ChTreeViewRender,
   treeHasFilter: boolean,
   lastItem: boolean,
-  level: number
+  level: number,
+  useGxRender = false
 ) =>
   (treeState.filterType === "none" || itemModel.render !== false) && (
     <ch-tree-view-item
@@ -84,10 +102,24 @@ const defaultRenderItem = (
       checkbox={itemModel.checkbox ?? treeState.checkbox}
       checked={itemModel.checked ?? treeState.checked}
       class={itemModel.class}
-      disabled={itemModel.disabled}
+      disabled={
+        useGxRender
+          ? (itemModel as GXRender<true>).enabled === false
+          : (itemModel as GXRender<false>).disabled
+      }
       downloading={itemModel.downloading}
-      dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
-      dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
+      dragDisabled={
+        useGxRender
+          ? gxDragDisabled(itemModel, treeState)
+          : (itemModel as GXRender<false>).dragDisabled ??
+            treeState.dragDisabled
+      }
+      dropDisabled={
+        useGxRender
+          ? gxDropDisabled(itemModel, treeState)
+          : (itemModel as GXRender<false>).dropDisabled ??
+            treeState.dropDisabled
+      }
       editable={itemModel.editable ?? treeState.editableItems}
       expanded={itemModel.expanded}
       expandableButton={
@@ -98,10 +130,26 @@ const defaultRenderItem = (
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
       leaf={itemModel.leaf}
-      leftImgSrc={itemModel.leftImgSrc}
+      leftImgSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              (itemModel as GXRender<true>).leftImage,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : (itemModel as GXRender<false>).leftImgSrc
+      }
       level={level}
       metadata={itemModel.metadata}
-      rightImgSrc={itemModel.rightImgSrc}
+      rightImgSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              (itemModel as GXRender<true>).rightImage,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : (itemModel as GXRender<false>).rightImgSrc
+      }
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
@@ -121,72 +169,8 @@ const defaultRenderItem = (
               (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
-            level + 1
-          )
-        )}
-    </ch-tree-view-item>
-  );
-
-const GXRenderItem = (
-  itemModel: TreeViewGXItemModel,
-  treeState: ChTreeViewRender,
-  treeHasFilter: boolean,
-  lastItem: boolean,
-  level: number
-) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && (
-    <ch-tree-view-item
-      key={itemModel.id}
-      id={itemModel.id}
-      caption={itemModel.caption}
-      checkbox={itemModel.checkbox ?? treeState.checkbox}
-      checked={itemModel.checked ?? treeState.checked}
-      class={itemModel.class}
-      downloading={itemModel.downloading}
-      dragDisabled={
-        itemModel.dragEnabled != null
-          ? !itemModel.dragEnabled
-          : treeState.dragDisabled
-      }
-      dropDisabled={
-        itemModel.dropEnabled != null
-          ? !itemModel.dropEnabled
-          : treeState.dropDisabled
-      }
-      editable={itemModel.editable ?? treeState.editableItems}
-      expanded={itemModel.expanded}
-      expandOnClick={treeState.expandOnClick}
-      indeterminate={itemModel.indeterminate}
-      lastItem={lastItem}
-      lazyLoad={itemModel.lazy}
-      leaf={itemModel.leaf}
-      leftImgSrc={fromGxImageToURL(
-        itemModel.leftImage,
-        treeState.gxSettings,
-        treeState.gxImageConstructor
-      )}
-      level={level}
-      metadata={itemModel.metadata}
-      selected={itemModel.selected}
-      showLines={treeState.showLines}
-      toggleCheckboxes={
-        itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
-      }
-    >
-      {!itemModel.leaf &&
-        itemModel.items != null &&
-        itemModel.items.map((subModel, index) =>
-          GXRenderItem(
-            subModel,
-            treeState,
-            treeHasFilter,
-            treeState.showLines !== "none" &&
-              // If there is a filter applied in the current list, use the
-              // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== undefined
-                ? subModel.id === itemModel.lastItemId
-                : index === itemModel.items.length - 1),
-            level + 1
+            level + 1,
+            useGxRender
           )
         )}
     </ch-tree-view-item>
@@ -422,12 +406,13 @@ export class ChTreeViewRender {
   /**
    * This property allows us to implement custom rendering of tree items.
    */
-  @Prop({ mutable: true }) renderItem: (
+  @Prop() readonly renderItem: (
     itemModel: TreeViewItemModel | any,
     treeState: ChTreeViewRender,
     treeHasFilter: boolean,
     lastItem: boolean,
-    level: number
+    level: number,
+    useGxRender?: boolean
   ) => any = defaultRenderItem;
 
   /**
@@ -1448,10 +1433,6 @@ export class ChTreeViewRender {
   };
 
   componentWillLoad() {
-    if (this.useGxRender) {
-      this.renderItem = GXRenderItem;
-    }
-
     this.#flattenModel();
   }
 
@@ -1495,7 +1476,8 @@ export class ChTreeViewRender {
             this,
             this.#treeHasFilters(),
             this.showLines !== "none" && index === this.treeModel.length - 1,
-            0
+            0,
+            this.useGxRender
           )
         )}
       </ch-tree-view>

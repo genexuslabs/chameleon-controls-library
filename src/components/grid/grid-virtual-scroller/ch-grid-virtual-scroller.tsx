@@ -126,7 +126,7 @@ export class ChGridVirtualScroller {
     this.defineStartIndex();
   }
 
-  @State() startIndex: number;
+  @State() startIndex: number = null;
   @Watch("startIndex")
   startIndexHandler() {
     this.defineViewPortItems();
@@ -147,7 +147,7 @@ export class ChGridVirtualScroller {
   @Prop() readonly items: any[];
   @Watch("items")
   itemsHandler() {
-    if (!this.startIndex) {
+    if (!this.startIndex === null) {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
@@ -161,7 +161,7 @@ export class ChGridVirtualScroller {
   @Prop() readonly itemsCount: number;
   @Watch("itemsCount")
   itemsCountHandler() {
-    if (!this.startIndex) {
+    if (!this.startIndex === null) {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
@@ -242,15 +242,20 @@ export class ChGridVirtualScroller {
           break;
       }
     });
+
     this.defineHasScroll();
   };
 
   private defineHasScroll() {
-    this.hasGridScroll =
-      this.gridLayoutEl.scrollHeight !== this.gridLayoutEl.clientHeight;
-    this.hasWindowScroll =
-      !this.hasGridScroll &&
-      this.gridLayoutEl.clientHeight > this.browserHeight;
+    if (this.items.length === this.viewPortItems.length) {
+      this.hasGridScroll = false;
+      this.hasWindowScroll = false;
+    } else {
+      this.hasGridScroll =
+        this.gridLayoutEl.scrollHeight !== this.gridLayoutEl.clientHeight;
+      this.hasWindowScroll =
+        !this.hasGridScroll && this.gridEl.clientHeight > this.browserHeight;
+    }
   }
 
   private defineHeaderHeight() {

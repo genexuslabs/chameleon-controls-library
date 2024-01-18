@@ -52,6 +52,7 @@ $own-offset: calc(
   );
 
   display: flex;
+  gap: var(--ch-tree-view-item-gap);
   align-items: center;
   min-block-size: calc(1em + 6px);
   padding-inline-start: var(--padding-inline-start);
@@ -148,7 +149,6 @@ $own-offset: calc(
   place-items: center;
   inline-size: var(--ch-tree-view-item__expandable-button-size);
   block-size: var(--ch-tree-view-item__expandable-button-size);
-  margin-inline-end: var(--ch-tree-view-item-gap);
   z-index: 1;
   cursor: pointer;
   content-visibility: auto;
@@ -198,7 +198,6 @@ $own-offset: calc(
   // Necessary to avoid CLS when the ch-checkbox control is downloaded after
   // the tree-view-item did render
   inline-size: var(--ch-tree-view-item__checkbox-size);
-  margin-inline-end: var(--ch-tree-view-item-gap);
 
   &::part(container) {
     inline-size: var(--ch-tree-view-item__checkbox-size);
@@ -212,6 +211,7 @@ $own-offset: calc(
 .action {
   display: grid;
   grid-template: "left-img text right-img" / max-content 1fr max-content;
+  gap: var(--ch-tree-view-item-gap);
   align-items: center;
   block-size: 100%;
   flex: 1;
@@ -233,12 +233,10 @@ $own-offset: calc(
 
 .left-img {
   grid-area: left-img;
-  margin-inline-end: var(--ch-tree-view-item-gap);
 }
 
 .right-img {
   grid-area: right-img;
-  margin-inline-start: var(--ch-tree-view-item-gap);
 }
 
 .edit-name {

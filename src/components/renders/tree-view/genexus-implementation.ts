@@ -1,4 +1,4 @@
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
+import { TreeViewItemModel } from "./types";
 
 export type GXRender<T extends true | false> = T extends true
   ? TreeViewGXItemModel

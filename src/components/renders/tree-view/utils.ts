@@ -1,7 +1,10 @@
 import { forceUpdate } from "@stencil/core";
 import { removeElement } from "../../../common/array";
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
-import { TreeViewItemModelExtended, TreeViewRemoveItemsResult } from "./types";
+import {
+  TreeViewItemModel,
+  TreeViewItemModelExtended,
+  TreeViewRemoveItemsResult
+} from "./types";
 
 export const removeTreeViewItems = (
   items: string[] | undefined,

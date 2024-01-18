@@ -11,7 +11,6 @@ import {
   TreeViewDataTransferInfo,
   TreeViewDropCheckInfo,
   TreeViewItemContextMenu,
-  TreeViewItemModel,
   TreeViewLines,
   TreeViewItemExpandedInfo,
   TreeViewItemOpenReferenceInfo,
@@ -20,6 +19,7 @@ import {
 import {
   TreeViewFilterOptions,
   TreeViewFilterType,
+  TreeViewItemModel,
   TreeViewItemModelExtended,
   TreeViewOperationStatusModifyCaption
 } from "../../renders/tree-view/types";

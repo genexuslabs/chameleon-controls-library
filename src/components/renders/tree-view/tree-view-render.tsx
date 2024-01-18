@@ -15,7 +15,6 @@ import {
   TreeViewDataTransferInfo,
   TreeViewDropCheckInfo,
   TreeViewItemContextMenu,
-  TreeViewItemModel,
   TreeViewLines,
   TreeViewItemCheckedInfo,
   TreeViewItemExpandedInfo,
@@ -28,6 +27,7 @@ import {
   TreeViewFilterInfo,
   TreeViewFilterOptions,
   TreeViewFilterType,
+  TreeViewItemModel,
   TreeViewItemModelExtended,
   TreeViewOperationStatusModifyCaption,
   TreeViewRemoveItemsResult

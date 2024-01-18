@@ -1,8 +1,8 @@
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 import {
   TreeViewFilterInfo,
   TreeViewFilterOptions,
-  TreeViewFilterType
+  TreeViewFilterType,
+  TreeViewItemModel
 } from "./types";
 
 export const itemHasCheckbox = (

@@ -59,6 +59,13 @@ const CHECKBOX_EXPORT_PARTS = [
   .map(getCheckboxExportPart)
   .join(",");
 
+// Separation for dashed lines
+const SEPARATION_EXPANDABLE_BUTTON = "offset--expandable";
+const SEPARATION_DEFAULT = "offset--default";
+
+const getParentDashedLineOffset = (expandableButton: boolean) =>
+  expandableButton ? SEPARATION_EXPANDABLE_BUTTON : SEPARATION_DEFAULT;
+
 @Component({
   tag: "ch-tree-view-item",
   styleUrl: "tree-view-item.scss",
@@ -804,8 +811,6 @@ export class ChTreeViewItem {
     const evenLevel = this.level % 2 === 0;
     const expandableButtonVisible =
       !this.leaf && this.expandableButton !== "no";
-    const expandableButtonNotVisible =
-      !this.leaf && this.expandableButton === "no";
 
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
@@ -816,6 +821,8 @@ export class ChTreeViewItem {
       this.showLines === "last" &&
       this.level !== INITIAL_LEVEL &&
       this.lastItem;
+
+    const itemOffset = getParentDashedLineOffset(expandableButtonVisible);
 
     return (
       <Host
@@ -842,15 +849,10 @@ export class ChTreeViewItem {
             "header--selected": this.selected,
             "header--disabled": this.disabled,
 
-            "header--expandable-offset": expandableButtonVisible,
-            "header--checkbox-offset":
-              expandableButtonNotVisible && this.checkbox,
+            ["header-" + itemOffset]: this.level > INITIAL_LEVEL,
 
-            "header--even": evenLevel,
-            "header--odd": !evenLevel,
-            "header--even-expandable": evenLevel && expandableButtonVisible,
-            "header--odd-expandable": !evenLevel && expandableButtonVisible,
-            "header--level-0": this.level === INITIAL_LEVEL,
+            "header--even": this.level > INITIAL_LEVEL && evenLevel,
+            "header--odd": this.level > INITIAL_LEVEL && !evenLevel,
 
             "expandable-button-decorative":
               !this.leaf && this.expandableButton === "decorative",
@@ -861,7 +863,7 @@ export class ChTreeViewItem {
           }}
           part={`header${this.disabled ? " disabled" : ""}${
             this.selected ? " selected" : ""
-          }${this.level === INITIAL_LEVEL ? " level-0" : ""}`}
+          }`}
           type="button"
           disabled={this.disabled}
           onClick={this.#handleActionClick}
@@ -968,7 +970,10 @@ export class ChTreeViewItem {
             class={{
               expandable: true,
               "expandable--collapsed": !this.expanded,
-              "expandable--lazy-loaded": !this.downloading
+              "expandable--lazy-loaded": !this.downloading,
+
+              [itemOffset + "-even"]: this.level > INITIAL_LEVEL && evenLevel,
+              [itemOffset + "-odd"]: this.level > INITIAL_LEVEL && !evenLevel
             }}
             part={`expandable${this.expanded ? " expanded" : " collapsed"}${
               !this.downloading ? " lazy-loaded" : ""

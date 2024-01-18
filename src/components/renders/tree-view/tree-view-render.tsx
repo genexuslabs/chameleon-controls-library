@@ -122,9 +122,7 @@ const defaultRenderItem = <T extends true | false>(
       }
       editable={itemModel.editable ?? treeState.editableItems}
       expanded={itemModel.expanded}
-      expandableButton={
-        itemModel.expandableButton ?? treeState.expandableButton
-      }
+      expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}

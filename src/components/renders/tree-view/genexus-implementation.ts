@@ -16,7 +16,6 @@ export type TreeViewGXItemModel = {
   editable?: boolean;
   enabled?: boolean;
   expanded?: boolean;
-  expandableButton?: "action" | "decorative" | "no";
 
   /**
    * Used by the tree view to decide which is the last item in the list when

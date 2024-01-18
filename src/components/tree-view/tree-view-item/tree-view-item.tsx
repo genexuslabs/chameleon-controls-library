@@ -815,12 +815,11 @@ export class ChTreeViewItem {
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
-    const showAllLines =
-      this.showLines === "all" && this.level !== INITIAL_LEVEL;
+
+    const canShowLines = this.level !== INITIAL_LEVEL;
+    const showAllLines = this.showLines === "all" && canShowLines;
     const showLastLine =
-      this.showLines === "last" &&
-      this.level !== INITIAL_LEVEL &&
-      this.lastItem;
+      this.showLines === "last" && canShowLines && this.lastItem;
 
     const itemOffset = getParentDashedLineOffset(expandableButtonVisible);
 
@@ -849,10 +848,9 @@ export class ChTreeViewItem {
             "header--selected": this.selected,
             "header--disabled": this.disabled,
 
-            ["header-" + itemOffset]: this.level > INITIAL_LEVEL,
-
-            "header--even": this.level > INITIAL_LEVEL && evenLevel,
-            "header--odd": this.level > INITIAL_LEVEL && !evenLevel,
+            ["header-" + itemOffset]: canShowLines,
+            "header--even": canShowLines && evenLevel,
+            "header--odd": canShowLines && !evenLevel,
 
             "expandable-button-decorative":
               !this.leaf && this.expandableButton === "decorative",
@@ -972,8 +970,8 @@ export class ChTreeViewItem {
               "expandable--collapsed": !this.expanded,
               "expandable--lazy-loaded": !this.downloading,
 
-              [itemOffset + "-even"]: this.level > INITIAL_LEVEL && evenLevel,
-              [itemOffset + "-odd"]: this.level > INITIAL_LEVEL && !evenLevel
+              [itemOffset + "-even"]: canShowLines && evenLevel,
+              [itemOffset + "-odd"]: canShowLines && !evenLevel
             }}
             part={`expandable${this.expanded ? " expanded" : " collapsed"}${
               !this.downloading ? " lazy-loaded" : ""

@@ -78,26 +78,18 @@ $own-offset: calc(
   }
 }
 
-.offset--expandable-even {
+.expandable--even {
   --parent-offset-even: calc(
     var(--ch-tree-view-item__expandable-button-size) +
       var(--ch-tree-view-item-gap) + var(--parent-offset-odd, 0px)
   );
 }
 
-.offset--default-even {
-  --parent-offset-even: var(--parent-offset-odd);
-}
-
-.offset--expandable-odd {
+.expandable--odd {
   --parent-offset-odd: calc(
     var(--ch-tree-view-item__expandable-button-size) +
       var(--ch-tree-view-item-gap) + var(--parent-offset-even, 0px)
   );
-}
-
-.offset--default-odd {
-  --parent-offset-odd: var(--parent-offset-even);
 }
 
 // - - - - - - - - - - - - - - - -

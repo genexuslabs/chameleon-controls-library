@@ -60,10 +60,10 @@ const CHECKBOX_EXPORT_PARTS = [
   .join(",");
 
 // Separation for dashed lines
-const SEPARATION_EXPANDABLE_BUTTON = "offset--expandable";
-const SEPARATION_DEFAULT = "offset--default";
+const SEPARATION_EXPANDABLE_BUTTON = "header-offset--expandable";
+const SEPARATION_DEFAULT = "header-offset--default";
 
-const getParentDashedLineOffset = (expandableButton: boolean) =>
+const getDashedLineOffset = (expandableButton: boolean) =>
   expandableButton ? SEPARATION_EXPANDABLE_BUTTON : SEPARATION_DEFAULT;
 
 @Component({
@@ -809,8 +809,6 @@ export class ChTreeViewItem {
 
   render() {
     const evenLevel = this.level % 2 === 0;
-    const expandableButtonVisible =
-      !this.leaf && this.expandableButton !== "no";
 
     const acceptDrop =
       !this.dropDisabled && !this.leaf && this.dragState !== "start";
@@ -820,8 +818,6 @@ export class ChTreeViewItem {
     const showAllLines = this.showLines === "all" && canShowLines;
     const showLastLine =
       this.showLines === "last" && canShowLines && this.lastItem;
-
-    const itemOffset = getParentDashedLineOffset(expandableButtonVisible);
 
     return (
       <Host
@@ -848,7 +844,8 @@ export class ChTreeViewItem {
             "header--selected": this.selected,
             "header--disabled": this.disabled,
 
-            ["header-" + itemOffset]: canShowLines,
+            [getDashedLineOffset(!this.leaf && this.expandableButton !== "no")]:
+              canShowLines,
             "header--even": canShowLines && evenLevel,
             "header--odd": canShowLines && !evenLevel,
 
@@ -970,8 +967,8 @@ export class ChTreeViewItem {
               "expandable--collapsed": !this.expanded,
               "expandable--lazy-loaded": !this.downloading,
 
-              [itemOffset + "-even"]: canShowLines && evenLevel,
-              [itemOffset + "-odd"]: canShowLines && !evenLevel
+              "expandable--even": canShowLines && evenLevel,
+              "expandable--odd": canShowLines && !evenLevel
             }}
             part={`expandable${this.expanded ? " expanded" : " collapsed"}${
               !this.downloading ? " lazy-loaded" : ""

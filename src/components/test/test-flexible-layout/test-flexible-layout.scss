@@ -171,9 +171,9 @@ ch-test-flexible-layout {
 .tree-view-item--module::part(action)::before {
   grid-area: left-img;
   content: "";
-  width: 14px;
-  height: 14px;
-  margin-inline-end: 4px;
+  width: var(--ch-tree-view-item__image-size);
+  height: var(--ch-tree-view-item__image-size);
+  margin-inline-end: 5px;
   background-repeat: no-repeat;
 }
 

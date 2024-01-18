@@ -24,7 +24,7 @@ import {
   ChCheckboxCustomEvent,
   ChTreeViewItemCustomEvent
 } from "../../../components";
-import { removeDragImage } from "../../../common/utils";
+import { removeDragImage, tokenMap } from "../../../common/utils";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -45,6 +45,13 @@ const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
+// Parts
+const EVEN_LEVEL = "even-level";
+const ODD_LEVEL = "odd-level";
+
+const getLevelPart = (evenLevel: boolean) =>
+  evenLevel ? EVEN_LEVEL : ODD_LEVEL;
+
 // Export Parts
 const getCheckboxExportPart = (part: string): string =>
   `${part}:checkbox__${part}`;
@@ -58,13 +65,6 @@ const CHECKBOX_EXPORT_PARTS = [
 ]
   .map(getCheckboxExportPart)
   .join(",");
-
-// Separation for dashed lines
-const SEPARATION_EXPANDABLE_BUTTON = "header-offset--expandable";
-const SEPARATION_DEFAULT = "header-offset--default";
-
-const getDashedLineOffset = (expandableButton: boolean) =>
-  expandableButton ? SEPARATION_EXPANDABLE_BUTTON : SEPARATION_DEFAULT;
 
 @Component({
   tag: "ch-tree-view-item",
@@ -819,6 +819,8 @@ export class ChTreeViewItem {
     const showLastLine =
       this.showLines === "last" && canShowLines && this.lastItem;
 
+    const levelPart = getLevelPart(evenLevel);
+
     return (
       <Host
         role="treeitem"
@@ -844,11 +846,6 @@ export class ChTreeViewItem {
             "header--selected": this.selected,
             "header--disabled": this.disabled,
 
-            [getDashedLineOffset(!this.leaf && this.expandableButton !== "no")]:
-              canShowLines,
-            "header--even": canShowLines && evenLevel,
-            "header--odd": canShowLines && !evenLevel,
-
             "expandable-button-decorative":
               !this.leaf && this.expandableButton === "decorative",
             "expandable-button-decorative--collapsed":
@@ -856,9 +853,14 @@ export class ChTreeViewItem {
               this.expandableButton === "decorative" &&
               !this.expanded
           }}
-          part={`header${this.disabled ? " disabled" : ""}${
-            this.selected ? " selected" : ""
-          }`}
+          part={tokenMap({
+            header: true,
+            disabled: this.disabled,
+            selected: this.selected,
+            [levelPart]: canShowLines,
+            "expand-button":
+              canShowLines && !this.leaf && this.expandableButton !== "no"
+          })}
           type="button"
           disabled={this.disabled}
           onClick={this.#handleActionClick}
@@ -970,9 +972,12 @@ export class ChTreeViewItem {
               "expandable--even": canShowLines && evenLevel,
               "expandable--odd": canShowLines && !evenLevel
             }}
-            part={`expandable${this.expanded ? " expanded" : " collapsed"}${
-              !this.downloading ? " lazy-loaded" : ""
-            }`}
+            part={tokenMap({
+              [EXPANDABLE_ID]: true,
+              [this.expanded ? "expanded" : " collapsed"]: true,
+              "lazy-loaded": !this.downloading,
+              [levelPart]: canShowLines
+            })}
           >
             <slot />
           </div>

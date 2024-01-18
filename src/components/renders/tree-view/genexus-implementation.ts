@@ -4,45 +4,15 @@ export type GXRender<T extends true | false> = T extends true
   ? TreeViewGXItemModel
   : TreeViewItemModel;
 
-export type TreeViewGXItemModel = {
-  id: string;
-  caption: string;
-  checkbox?: boolean;
-  checked?: boolean;
-  class?: string;
-  downloading?: boolean;
+export type TreeViewGXItemModel = Omit<
+  TreeViewItemModel,
+  "disabled" | "dragDisabled" | "dropDisabled" | "leftImgSrc" | "rightImgSrc"
+> & {
   dragEnabled?: boolean;
   dropEnabled?: boolean;
-  editable?: boolean;
   enabled?: boolean;
-  expanded?: boolean;
-
-  /**
-   * Used by the tree view to decide which is the last item in the list when
-   * filters are applied.
-   */
-  lastItemId?: string;
-
-  lazy?: boolean;
-  leaf?: boolean;
   leftImage?: string;
-  indeterminate?: boolean;
-  items?: TreeViewGXItemModel[];
-  metadata?: string;
-
-  /**
-   * Establish the order at which the item will be placed in its parent.
-   * Multiple items can have the same `order` value.
-   */
-  order?: number;
-
-  /**
-   * `false` to not render the item.
-   */
-  render?: boolean;
   rightImage?: string;
-  selected?: boolean;
-  toggleCheckboxes?: boolean;
 };
 
 const URL_REGEX = /url\((["']?)([^\)]*)\)(?:\s+([\d.]+)x)?/i;

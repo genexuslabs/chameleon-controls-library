@@ -54,32 +54,44 @@ ch-tree-view {
 // - - - - - - - - - - - - - - - -
 //        Item indentation
 // - - - - - - - - - - - - - - - -
+ch-tree-view-item::part(header),
+ch-tree-view-drop {
+  --own-offset: 0px;
+
+  --ch-tree-view-item-indentation: calc(
+    var(--ch-tree-tab-size) * var(--level) - var(--own-offset) -
+      var(--parent-offset, 0px) +
+      var(--ch-tree-view-item-custom-padding-inline-start)
+  );
+}
+
+ch-tree-view-item::part(header expand-button),
+ch-tree-view-drop {
+  --own-offset: calc(
+    var(--ch-tree-view-item__expandable-button-size) +
+      var(--ch-tree-view-item-gap)
+  );
+}
+
+// Even level
+ch-tree-view-item::part(header even-level),
+ch-tree-view-drop.gx-even-level {
+  --parent-offset: var(--parent-offset-odd);
+}
+
+// Odd level
+ch-tree-view-item::part(header odd-level),
+ch-tree-view-drop.gx-odd-level {
+  --parent-offset: var(--parent-offset-even);
+}
+
+ch-tree-view-drop {
+  margin-inline-start: var(--ch-tree-view-item-indentation);
+}
+
 ch-tree-view-item {
   &::part(header) {
-    --own-offset: 0px;
-
-    --padding-inline-start: calc(
-      var(--ch-tree-tab-size) * var(--level) - var(--own-offset) -
-        var(--parent-offset, 0px) +
-        var(--ch-tree-view-item-custom-padding-inline-start)
-    );
-
-    padding-inline-start: var(--padding-inline-start);
-  }
-
-  &::part(header expand-button) {
-    --own-offset: calc(
-      var(--ch-tree-view-item__expandable-button-size) +
-        var(--ch-tree-view-item-gap)
-    );
-  }
-
-  &::part(header even-level) {
-    --parent-offset: var(--parent-offset-odd);
-  }
-
-  &::part(header odd-level) {
-    --parent-offset: var(--parent-offset-even);
+    padding-inline-start: var(--ch-tree-view-item-indentation);
   }
 
   &::part(expandable even-level) {
@@ -95,8 +107,25 @@ ch-tree-view-item {
         var(--ch-tree-view-item-gap) + var(--parent-offset-even, 0px)
     );
   }
+
+  & > ch-tree-view-drop:first-child {
+    transform: translateY(0);
+
+    &::after {
+      inset-block-start: 0px;
+    }
+  }
+
+  // Improve collision with the end drop (level N + 1) of a group and the next
+  // drop in the level N
+  & > ch-tree-view-drop:last-child {
+    transform: translateY(-6px);
+  }
 }
 
+// - - - - - - - - - - - - - - - -
+//            Drag info
+// - - - - - - - - - - - - - - - -
 .ch-tree-view-drag-info {
   --rtl-offset: 16px;
 

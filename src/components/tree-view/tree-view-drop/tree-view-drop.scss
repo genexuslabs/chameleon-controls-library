@@ -1,0 +1,30 @@
+:host {
+  display: grid;
+  position: relative;
+  transform: translateY(-3px);
+}
+
+:host::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  inset-inline: 0;
+  block-size: 8px;
+  // background-color: #9c9c9c6c;
+}
+
+:host::after {
+  content: "";
+  display: flex;
+  position: absolute;
+  align-self: center;
+  inset-block-start: 2.5px;
+  inset-inline: 0;
+  block-size: 3px;
+  background-color: currentColor;
+  opacity: 0;
+}
+
+:host(.ch-tree-view-drop--drag-enter)::after {
+  opacity: 1;
+}

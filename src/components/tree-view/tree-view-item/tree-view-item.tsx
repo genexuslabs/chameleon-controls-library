@@ -25,13 +25,16 @@ import {
   ChTreeViewItemCustomEvent
 } from "../../../components";
 import { removeDragImage, tokenMap } from "../../../common/utils";
+import {
+  INITIAL_LEVEL,
+  getTreeItemLevelPart
+} from "../../renders/tree-view/utils";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
 
 const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
   "--ch-tree-view-item-distance-to-checkbox";
-const INITIAL_LEVEL = 0;
 
 // Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
@@ -44,13 +47,6 @@ const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
-
-// Parts
-const EVEN_LEVEL = "even-level";
-const ODD_LEVEL = "odd-level";
-
-const getLevelPart = (evenLevel: boolean) =>
-  evenLevel ? EVEN_LEVEL : ODD_LEVEL;
 
 // Export Parts
 const getCheckboxExportPart = (part: string): string =>
@@ -819,7 +815,7 @@ export class ChTreeViewItem {
     const showLastLine =
       this.showLines === "last" && canShowLines && this.lastItem;
 
-    const levelPart = getLevelPart(evenLevel);
+    const levelPart = getTreeItemLevelPart(evenLevel);
 
     return (
       <Host
@@ -830,8 +826,7 @@ export class ChTreeViewItem {
           [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
           [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
           [TREE_ITEM_TAG_NAME + "--not-editing"]: !this.editing, // WA for some bugs in GeneXus' DSO
-          [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
-            this.dragState !== "none" && this.dragState !== "start",
+          [TREE_ITEM_TAG_NAME + "--drag-enter"]: this.dragState === "enter",
           [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}

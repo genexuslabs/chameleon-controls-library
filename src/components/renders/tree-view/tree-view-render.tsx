@@ -86,15 +86,26 @@ const gxDropDisabled = (
     ? !itemModel.dropEnabled
     : treeState.dropDisabled;
 
+const treeDropId = (treeItemId: string) => `ch-tree-view-drop__${treeItemId}`;
+
 const defaultRenderItem = <T extends true | false>(
   itemModel: GXRender<T>,
   treeState: ChTreeViewRender,
   treeHasFilter: boolean,
   lastItem: boolean,
   level: number,
+  dropBeforeAndAfterEnabled: boolean,
   useGxRender = false
 ) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && (
+  (treeState.filterType === "none" || itemModel.render !== false) && [
+    dropBeforeAndAfterEnabled && (
+      <ch-tree-view-drop
+        id={treeDropId(itemModel.id)}
+        level={level}
+        type="before"
+      ></ch-tree-view-drop>
+    ),
+
     <ch-tree-view-item
       key={itemModel.id}
       id={itemModel.id}
@@ -168,11 +179,20 @@ const defaultRenderItem = <T extends true | false>(
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1,
+            dropBeforeAndAfterEnabled,
             useGxRender
           )
         )}
-    </ch-tree-view-item>
-  );
+    </ch-tree-view-item>,
+
+    dropBeforeAndAfterEnabled && lastItem && (
+      <ch-tree-view-drop
+        id={treeDropId(itemModel.id)}
+        level={level}
+        type="after"
+      ></ch-tree-view-drop>
+    )
+  ];
 
 const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
   subModel.sort((a, b) => {
@@ -269,6 +289,12 @@ export class ChTreeViewRender {
   @Prop() readonly dropItemsCallback: (
     dataTransferInfo: TreeViewDataTransferInfo
   ) => Promise<{ acceptDrop: boolean; items?: TreeViewItemModel[] }>;
+
+  /**
+   * This attribute lets you specify which kind of drop operation can be
+   * effected in the items.
+   */
+  @Prop() readonly dropMode: "above" | "before-and-after" | "all" = "above";
 
   /**
    * This attribute lets you specify if the edit operation is enabled in all
@@ -410,6 +436,7 @@ export class ChTreeViewRender {
     treeHasFilter: boolean,
     lastItem: boolean,
     level: number,
+    dropBeforeAndAfterEnabled: boolean,
     useGxRender?: boolean
   ) => any = defaultRenderItem;
 
@@ -1475,6 +1502,7 @@ export class ChTreeViewRender {
             this.#treeHasFilters(),
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0,
+            this.dropMode !== "above",
             this.useGxRender
           )
         )}

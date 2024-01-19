@@ -29,6 +29,7 @@ import { GxDataTransferInfo } from "../../../common/types";
 import { ChTreeViewItemCustomEvent } from "../../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
+const TREE_DROP_TAG_NAME = "ch-tree-view-drop";
 const TREE_TAG_NAME = "ch-tree-view";
 
 // Selectors
@@ -46,6 +47,10 @@ type KeyEvents = typeof ARROW_DOWN_KEY | typeof ARROW_UP_KEY | typeof EDIT_KEY;
 
 const isTreeItem = (element: HTMLElement) =>
   element.tagName.toLowerCase() === TREE_ITEM_TAG_NAME;
+
+const isTreeItemOrTreeDrop = (elementTagName: string) =>
+  elementTagName === TREE_ITEM_TAG_NAME ||
+  elementTagName === TREE_DROP_TAG_NAME;
 
 const getFocusedTreeItem = (): HTMLChTreeViewItemElement | undefined =>
   focusComposedPath().find(isTreeItem) as HTMLChTreeViewItemElement;
@@ -261,14 +266,19 @@ export class ChTreeView {
     this.#cancelSubTreeOpening(null, true);
     event.stopPropagation();
     const containerTarget = event.target as HTMLChTreeViewItemElement;
+    const containerTargetTagName = containerTarget.tagName.toLowerCase();
 
     // Check if it is a valid item
-    if (containerTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+    if (!isTreeItemOrTreeDrop(containerTargetTagName)) {
       return;
     }
 
     this.#lastOpenSubTreeItem = containerTarget;
-    this.#openSubTreeAfterCountdown(containerTarget);
+
+    // Only the tree view items can open its subtree when hovering
+    if (containerTargetTagName === TREE_ITEM_TAG_NAME) {
+      this.#openSubTreeAfterCountdown(containerTarget);
+    }
 
     if (this.#validDroppableZone(event) === "valid") {
       containerTarget.dragState = "enter";
@@ -279,7 +289,7 @@ export class ChTreeView {
   onDragLeave(event: DragEvent) {
     const currentTarget = event.target as HTMLElement;
 
-    if (currentTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME) {
+    if (!isTreeItemOrTreeDrop(currentTarget.tagName.toLowerCase())) {
       return;
     }
 

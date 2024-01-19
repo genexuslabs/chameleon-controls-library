@@ -2,11 +2,6 @@
 
 @include box-sizing();
 
-$own-offset: calc(
-  var(--ch-tree-view-item__expandable-button-size) +
-    var(--ch-tree-view-item-gap)
-);
-
 :where(button) {
   all: unset;
   display: flex;
@@ -51,7 +46,7 @@ $own-offset: calc(
   position: absolute;
   inset-inline-start: var(--inset-inline-start);
   inline-size: calc(
-    var(--padding-inline-start) - var(--inset-inline-start) -
+    var(--ch-tree-view-item-indentation) - var(--inset-inline-start) -
       var(--ch-tree-view-item__dashed-line--inset-inline-end)
   );
   block-size: 1px;

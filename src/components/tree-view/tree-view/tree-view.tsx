@@ -21,7 +21,8 @@ import {
   TreeViewItemDragStartInfo,
   TreeViewItemExpandedInfo,
   TreeViewItemSelectedInfo,
-  TreeViewItemSelected
+  TreeViewItemSelected,
+  TreeViewDropType
 } from "./types";
 import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
 import { scrollToEdge } from "../../../common/scroll-to-edge";
@@ -45,6 +46,9 @@ const EDIT_KEY = "F2";
 
 type KeyEvents = typeof ARROW_DOWN_KEY | typeof ARROW_UP_KEY | typeof EDIT_KEY;
 
+const isTreeDrop = (element: HTMLElement) =>
+  element.tagName.toLowerCase() === TREE_DROP_TAG_NAME;
+
 const isTreeItem = (element: HTMLElement) =>
   element.tagName.toLowerCase() === TREE_ITEM_TAG_NAME;
 
@@ -60,11 +64,12 @@ const canMoveTreeItemFocus = (treeItem: HTMLChTreeViewItemElement): boolean =>
 
 const getDroppableZoneKey = (
   newContainerId: string,
-  draggedItems: GxDataTransferInfo[]
+  draggedItems: GxDataTransferInfo[],
+  dropType: TreeViewDropType
 ) =>
   `"newContainerId":"${newContainerId}","metadata":"${JSON.stringify(
     draggedItems
-  )}"`;
+  )}","dropType":"${dropType}"`;
 
 const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-x";
 const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
@@ -128,7 +133,7 @@ export class ChTreeView {
 
   // Refs
   #currentDraggedItem: HTMLChTreeViewItemElement;
-  #lastOpenSubTreeItem: HTMLChTreeViewItemElement;
+  #lastOpenSubTreeItem: HTMLChTreeViewItemElement | HTMLChTreeViewDropElement;
 
   /**
    * Text displayed when dragging an item.
@@ -265,23 +270,35 @@ export class ChTreeView {
   onDragEnter(event: DragEvent) {
     this.#cancelSubTreeOpening(null, true);
     event.stopPropagation();
-    const containerTarget = event.target as HTMLChTreeViewItemElement;
-    const containerTargetTagName = containerTarget.tagName.toLowerCase();
+
+    // The event target can be either a tree item or a tree drop element
+    const eventTarget = event.target as
+      | HTMLChTreeViewItemElement
+      | HTMLChTreeViewDropElement;
+    const containerTargetTagName = eventTarget.tagName.toLowerCase();
 
     // Check if it is a valid item
     if (!isTreeItemOrTreeDrop(containerTargetTagName)) {
       return;
     }
 
-    this.#lastOpenSubTreeItem = containerTarget;
+    const targetIsTreeItem = containerTargetTagName === TREE_ITEM_TAG_NAME;
+    const dragEnterInformation = this.#getDropTypeAndTreeItemTarget(
+      eventTarget,
+      targetIsTreeItem
+    );
+    const treeItemTarget = dragEnterInformation.treeItem;
+    const dropType = dragEnterInformation.dropType;
+
+    this.#lastOpenSubTreeItem = eventTarget;
 
     // Only the tree view items can open its subtree when hovering
-    if (containerTargetTagName === TREE_ITEM_TAG_NAME) {
-      this.#openSubTreeAfterCountdown(containerTarget);
+    if (targetIsTreeItem) {
+      this.#openSubTreeAfterCountdown(treeItemTarget);
     }
 
-    if (this.#validDroppableZone(event) === "valid") {
-      containerTarget.dragState = "enter";
+    if (this.#validDroppableZone(event, treeItemTarget, dropType) === "valid") {
+      eventTarget.dragState = "enter";
     }
   }
 
@@ -298,11 +315,40 @@ export class ChTreeView {
     this.#cancelSubTreeOpening(treeItem);
   }
 
+  #getDropTypeAndTreeItemTarget = (
+    eventTarget: HTMLChTreeViewItemElement | HTMLChTreeViewDropElement,
+    targetIsTreeItem: boolean
+  ): {
+    treeItem: HTMLChTreeViewItemElement;
+    dropType: TreeViewDropType;
+  } => {
+    // Only the tree view items can open its subtree when hovering
+    if (targetIsTreeItem) {
+      return {
+        treeItem: eventTarget as HTMLChTreeViewItemElement,
+        dropType: "above"
+      };
+    }
+
+    // The drop is intended to be performed before or after the tree item
+    const dropType: TreeViewDropType = (
+      eventTarget as HTMLChTreeViewDropElement
+    ).type;
+
+    return {
+      // Depending on the position of the tree drop, we get the treeItem ref
+      treeItem: (dropType === "before"
+        ? eventTarget.nextElementSibling
+        : eventTarget.previousElementSibling) as HTMLChTreeViewItemElement,
+      dropType: (eventTarget as HTMLChTreeViewDropElement).type
+    };
+  };
+
   #cancelSubTreeOpening = (
-    treeItem: HTMLChTreeViewItemElement,
+    treeItemOrTreeDrop: HTMLChTreeViewItemElement | HTMLChTreeViewDropElement,
     forceClear = false
   ) => {
-    if (this.#lastOpenSubTreeItem === treeItem || forceClear) {
+    if (this.#lastOpenSubTreeItem === treeItemOrTreeDrop || forceClear) {
       clearTimeout(this.#openSubTreeTimeout);
       this.#lastOpenSubTreeItem = null;
     }
@@ -313,23 +359,44 @@ export class ChTreeView {
     event.stopPropagation();
 
     this.#cancelSubTreeOpening(null, true);
-    const newContainer = event.target as HTMLChTreeViewItemElement;
+    const eventTarget = event.target as
+      | HTMLChTreeViewItemElement
+      | HTMLChTreeViewDropElement;
+    const containerTargetTagName = eventTarget.tagName.toLowerCase();
 
+    // Check if it is a valid item
+    if (!isTreeItemOrTreeDrop(containerTargetTagName)) {
+      return;
+    }
+
+    const targetIsTreeItem = containerTargetTagName === TREE_ITEM_TAG_NAME;
+    const dragEnterInformation = this.#getDropTypeAndTreeItemTarget(
+      eventTarget,
+      targetIsTreeItem
+    );
+    const treeItemTarget = dragEnterInformation.treeItem;
+    const dropType = dragEnterInformation.dropType;
+
+    // The droppable zone must be checked, even if it was marked as not valid
+    // @todo Try to drop an item with high delays in droppable zone checking
+    if (this.#validDroppableZone(event, treeItemTarget, dropType) !== "valid") {
+      return;
+    }
+
+    // TODO: Check dataTransfer format before parsing?
     const draggedItems: GxDataTransferInfo[] = JSON.parse(
       event.dataTransfer.getData(TEXT_FORMAT)
     );
 
-    // The droppable zone must be checked, even if it was marked as not valid
-    // @todo Try to drop an item with high delays in droppable zone checking
-    if (this.#validDroppableZone(event) !== "valid") {
-      return;
-    }
-
     this.itemsDropped.emit({
-      newContainer: { id: newContainer.id, metadata: newContainer.metadata },
+      newContainer: {
+        id: treeItemTarget.id,
+        metadata: treeItemTarget.metadata
+      },
       draggingSelectedItems: this.#draggingSelectedItems,
       draggedItems: draggedItems,
-      dropInTheSameTree: this.draggingInTree
+      dropInTheSameTree: this.draggingInTree,
+      dropType: dropType
     });
   }
 
@@ -398,7 +465,7 @@ export class ChTreeView {
   }
 
   /**
-   * Given an item id, it scrolls into the item view.
+   * Given an item id, it scrolls into the item's view.
    */
   @Method()
   async scrollIntoVisible(treeItemId: string) {
@@ -426,6 +493,7 @@ export class ChTreeView {
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],
+    dropType: TreeViewDropType,
     validDrop: boolean
   ) {
     if (
@@ -435,14 +503,28 @@ export class ChTreeView {
       return;
     }
 
-    const droppableZoneKey = getDroppableZoneKey(newContainerId, draggedItems);
+    const droppableZoneKey = getDroppableZoneKey(
+      newContainerId,
+      draggedItems,
+      dropType
+    );
     this.#validDroppableZoneCache.set(
       droppableZoneKey,
       validDrop ? "valid" : "invalid"
     );
 
+    // Don't show droppable zones if the dragEnter is invalid or the last
+    // dragover was not performed in the same node that this method validates
+    if (!validDrop || !this.#lastOpenSubTreeItem) {
+      return;
+    }
+
+    const treeItemId = isTreeDrop(this.#lastOpenSubTreeItem)
+      ? (this.#lastOpenSubTreeItem as HTMLChTreeViewDropElement).treeItemId
+      : this.#lastOpenSubTreeItem.id;
+
     const shouldUpdateDragEnterInCurrentContainer =
-      this.#lastOpenSubTreeItem?.id === newContainerId;
+      treeItemId === newContainerId;
 
     if (shouldUpdateDragEnterInCurrentContainer) {
       this.#lastOpenSubTreeItem.dragState = "enter";
@@ -452,57 +534,72 @@ export class ChTreeView {
   #getTreeViewItemRef = itemId =>
     this.el.querySelector(ITEM_SELECTOR(itemId)) as HTMLChTreeViewItemElement;
 
-  #validDroppableZone = (event: DragEvent): TreeViewDroppableZoneState => {
-    const containerTarget = event.target as HTMLChTreeViewItemElement;
-
+  #validDroppableZone = (
+    event: DragEvent,
+    treeItemTarget: HTMLChTreeViewItemElement,
+    dropType: TreeViewDropType
+  ): TreeViewDroppableZoneState => {
     const cacheKey = getDroppableZoneKey(
-      containerTarget.id,
-      this.#draggedItems
+      treeItemTarget.id,
+      this.#draggedItems,
+      dropType
     );
     let droppableZoneState = this.#validDroppableZoneCache.get(cacheKey);
 
-    // Invalidate the cache, because the item is no longer waiting for its content to be downloaded
+    // Invalidate the cache, because the item is no longer waiting for its
+    // content to be downloaded
     if (
       droppableZoneState === "temporal-invalid" &&
-      !containerTarget.lazyLoad &&
-      !containerTarget.downloading
+      !treeItemTarget.lazyLoad &&
+      !treeItemTarget.downloading
     ) {
       droppableZoneState = null;
     }
 
+    // If there is a cached value, return the cached value
     if (droppableZoneState != null) {
       return droppableZoneState;
     }
 
     // Do not show drop zones if:
     //   - The effect does not allow it.
-    //   - The drop is disabled in the container target.
+    //   - The drop is disabled in the container target when dragging "above".
     //   - When dragging in the same tree, don't mark droppable zones if they are
     //     the dragged items or their direct parents.
+    //
+    // There is no need to check the following case, because the tree drop is
+    // not even rendered:
+    //   - When dragging "before" and "after" an item and the direct parent
+    //     has drops disabled.
     if (
       event.dataTransfer.effectAllowed === "none" ||
-      containerTarget.dropDisabled ||
+      (dropType === "above" && treeItemTarget.dropDisabled) ||
       (this.draggingInTree &&
-        (this.#draggedIds.includes(containerTarget.id) ||
-          this.#draggedParentIds.includes(containerTarget.id)))
+        (this.#draggedIds.includes(treeItemTarget.id) ||
+          this.#draggedParentIds.includes(treeItemTarget.id)))
     ) {
       this.#validDroppableZoneCache.set(cacheKey, "invalid");
       return "invalid";
     }
 
-    // Disable drops when items need to lazy load their content first
-    if (containerTarget.lazyLoad || containerTarget.downloading) {
+    // Disable "above" drops when items need to lazy load their content first
+    if (
+      dropType === "above" &&
+      (treeItemTarget.lazyLoad || treeItemTarget.downloading)
+    ) {
       this.#validDroppableZoneCache.set(cacheKey, "temporal-invalid");
       return "temporal-invalid";
     }
 
+    // Otherwise, emit the event to check the droppable zone
     this.#validDroppableZoneCache.set(cacheKey, "checking");
     this.droppableZoneEnter.emit({
       newContainer: {
-        id: containerTarget.id,
-        metadata: containerTarget.metadata
+        id: treeItemTarget.id,
+        metadata: treeItemTarget.metadata
       },
-      draggedItems: this.#draggedItems
+      draggedItems: this.#draggedItems,
+      dropType: dropType
     });
     return "checking";
   };
@@ -554,16 +651,33 @@ export class ChTreeView {
   };
 
   #updateDropEffect = (event: DragEvent) => {
-    const itemTarget = event.target as HTMLElement;
+    const itemTarget = event.target as
+      | HTMLChTreeViewItemElement
+      | HTMLChTreeViewDropElement;
+    const containerTargetTagName = itemTarget.tagName.toLowerCase();
 
-    // Check if it is a valid item
+    // Check if it is a valid item and the drag is performed over the current
+    // tree view
     if (
-      itemTarget.tagName.toLowerCase() !== TREE_ITEM_TAG_NAME ||
+      !isTreeItemOrTreeDrop(containerTargetTagName) ||
       itemTarget.closest(TREE_TAG_NAME) !== this.el
     ) {
       return;
     }
-    const droppableZoneState = this.#validDroppableZone(event);
+
+    const targetIsTreeItem = containerTargetTagName === TREE_ITEM_TAG_NAME;
+    const dragEnterInformation = this.#getDropTypeAndTreeItemTarget(
+      itemTarget,
+      targetIsTreeItem
+    );
+    const treeItemTarget = dragEnterInformation.treeItem;
+    const dropType = dragEnterInformation.dropType;
+
+    const droppableZoneState = this.#validDroppableZone(
+      event,
+      treeItemTarget,
+      dropType
+    );
 
     if (
       droppableZoneState === "invalid" ||

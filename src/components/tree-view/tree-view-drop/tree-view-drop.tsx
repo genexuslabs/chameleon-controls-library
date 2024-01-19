@@ -4,6 +4,7 @@ import {
   getTreeItemLevelPart
 } from "../../renders/tree-view/utils";
 import { DragState } from "../tree-view-item/tree-view-item";
+import { TreeViewDropType } from "../tree-view/types";
 
 const TREE_DROP_TAG_NAME = "ch-tree-view-drop";
 
@@ -25,9 +26,14 @@ export class ChTreeViewDrop {
   @Prop() readonly level: number = INITIAL_LEVEL;
 
   /**
+   * Specifies the id of the tree item that this element controls.
+   */
+  @Prop() readonly treeItemId: string;
+
+  /**
    * Specifies the type of drop that is performed over the control.
    */
-  @Prop() readonly type: "before" | "after" = "before";
+  @Prop() readonly type: Exclude<TreeViewDropType, "above"> = "before";
 
   render() {
     const canShowLines = this.level !== INITIAL_LEVEL;

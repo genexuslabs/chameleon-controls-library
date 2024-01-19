@@ -61,11 +61,13 @@ export type TreeViewDataTransferInfo = {
   draggedItems: GxDataTransferInfo[];
   draggingSelectedItems: boolean;
   dropInTheSameTree: boolean;
+  dropType: TreeViewDropType;
 };
 
 export type TreeViewDropCheckInfo = {
   newContainer: GxDataTransferInfo;
   draggedItems: GxDataTransferInfo[];
+  dropType: TreeViewDropType;
 };
 
 export type TreeViewDroppableZoneState =
@@ -73,3 +75,5 @@ export type TreeViewDroppableZoneState =
   | "invalid"
   | "temporal-invalid"
   | "valid";
+
+export type TreeViewDropType = "above" | "after" | "before";

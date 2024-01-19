@@ -20,7 +20,8 @@ import {
   TreeViewItemExpandedInfo,
   TreeViewItemNewCaption,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelectedInfo,
+  TreeViewDropType
 } from "../../tree-view/tree-view/types";
 import {
   LazyLoadTreeItemsCallback,
@@ -86,6 +87,15 @@ const gxDropDisabled = (
     ? !itemModel.dropEnabled
     : treeState.dropDisabled;
 
+const isItemDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender,
+  useGxRender: boolean
+) =>
+  useGxRender
+    ? gxDropDisabled(itemModel, treeState)
+    : (itemModel as GXRender<false>).dropDisabled ?? treeState.dropDisabled;
+
 const treeDropId = (treeItemId: string) => `ch-tree-view-drop__${treeItemId}`;
 
 const defaultRenderItem = <T extends true | false>(
@@ -102,6 +112,7 @@ const defaultRenderItem = <T extends true | false>(
       <ch-tree-view-drop
         id={treeDropId(itemModel.id)}
         level={level}
+        treeItemId={itemModel.id}
         type="before"
       ></ch-tree-view-drop>
     ),
@@ -125,12 +136,7 @@ const defaultRenderItem = <T extends true | false>(
           : (itemModel as GXRender<false>).dragDisabled ??
             treeState.dragDisabled
       }
-      dropDisabled={
-        useGxRender
-          ? gxDropDisabled(itemModel, treeState)
-          : (itemModel as GXRender<false>).dropDisabled ??
-            treeState.dropDisabled
-      }
+      dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
@@ -179,7 +185,11 @@ const defaultRenderItem = <T extends true | false>(
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
             level + 1,
-            dropBeforeAndAfterEnabled,
+
+            // When dragging "before" and "after" an item and the direct parent
+            // has drops disabled, don't render the ch-tree-view-drop elements.
+            treeState.dropMode !== "above" &&
+              isItemDisabled(itemModel, treeState, useGxRender) !== true,
             useGxRender
           )
         )}
@@ -187,8 +197,9 @@ const defaultRenderItem = <T extends true | false>(
 
     dropBeforeAndAfterEnabled && lastItem && (
       <ch-tree-view-drop
-        id={treeDropId(itemModel.id)}
+        id={treeDropId(itemModel.id) + "-after"}
         level={level}
+        treeItemId={itemModel.id}
         type="after"
       ></ch-tree-view-drop>
     )
@@ -882,18 +893,21 @@ export class ChTreeViewRender {
    * @param newContainerId ID of the container where the drag is trying to be made.
    * @param draggedItems Information about the dragged items.
    * @param validDrop Current state of the droppable zone.
+   * @param dropType Type of drop that wants to be effected
    */
   @Method()
   async updateValidDropZone(
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],
+    dropType: TreeViewDropType,
     validDrop: boolean
   ) {
     this.#treeRef.updateValidDropZone(
       requestTimestamp,
       newContainerId,
       draggedItems,
+      dropType,
       validDrop
     );
   }
@@ -1013,6 +1027,7 @@ export class ChTreeViewRender {
         requestTimestamp,
         dropInformation.newContainer.id,
         dropInformation.draggedItems,
+        dropInformation.dropType,
         validDrop
       );
     });
@@ -1502,7 +1517,7 @@ export class ChTreeViewRender {
             this.#treeHasFilters(),
             this.showLines !== "none" && index === this.treeModel.length - 1,
             0,
-            this.dropMode !== "above",
+            this.dropMode !== "above" && this.dropDisabled !== true,
             this.useGxRender
           )
         )}

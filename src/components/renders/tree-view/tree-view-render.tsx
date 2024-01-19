@@ -571,15 +571,17 @@ export class ChTreeViewRender {
 
     // Only move the items to the new parent, keeping the state
     if (dataTransferInfo.dropInTheSameTree) {
-      let specificIndexToInsert = undefined;
+      let specificIndexToInsert: { index: number } = undefined;
 
       if (dropType !== "above") {
-        specificIndexToInsert = actualParent.items.findIndex(
-          item => item.id === dataTransferInfo.newContainer.id
-        );
+        specificIndexToInsert = {
+          index: actualParent.items.findIndex(
+            item => item.id === dataTransferInfo.newContainer.id
+          )
+        };
 
         if (dropType === "after") {
-          specificIndexToInsert++;
+          specificIndexToInsert.index++;
         }
       }
 
@@ -1161,7 +1163,7 @@ export class ChTreeViewRender {
   };
 
   #moveItemToNewParent =
-    (newParentUIModel: TreeViewItemModel, specificIndex?: number) =>
+    (newParentItem: TreeViewItemModel, specificIndex?: { index: number }) =>
     (dataTransferInfo: GxDataTransferInfo, index: number) => {
       const itemUIModelExtended = this.#flattenedTreeModel.get(
         dataTransferInfo.id
@@ -1169,25 +1171,33 @@ export class ChTreeViewRender {
       const item = itemUIModelExtended.item;
       const oldParentItem = itemUIModelExtended.parentItem;
 
+      const oldIndex = oldParentItem.items.findIndex(el => el.id === item.id);
+
       // Remove the UI model from the previous parent. The equality function
       // must be by index, not by object reference
-      removeElement(
-        oldParentItem.items,
-        oldParentItem.items.findIndex(el => el.id === item.id)
-      );
+      removeElement(oldParentItem.items, oldIndex);
 
       // The item must be inserted in a specific position, because the dropMode
       // has "before" and "after" enabled
       if (specificIndex !== undefined) {
-        insertIntoIndex(newParentUIModel.items, item, specificIndex + index);
+        let newIndex = specificIndex.index + index;
+
+        // The item is moved in the same parent, so no new items are added
+        // The specificIndex must be decreased to balance the increment
+        if (oldParentItem.id === newParentItem.id && oldIndex < newIndex) {
+          newIndex--;
+          specificIndex.index--;
+        }
+
+        insertIntoIndex(newParentItem.items, item, newIndex);
       }
       // Add the UI Model to the new parent by pushing it at the end
       else {
-        newParentUIModel.items.push(item);
+        newParentItem.items.push(item);
       }
 
       // Reference the new parent in the item
-      itemUIModelExtended.parentItem = newParentUIModel;
+      itemUIModelExtended.parentItem = newParentItem;
     };
 
   #flattenSubModel = (model: TreeViewItemModel) => {

@@ -33,6 +33,12 @@ const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
 const TREE_DROP_TAG_NAME = "ch-tree-view-drop";
 const TREE_TAG_NAME = "ch-tree-view";
 
+// Droppable zone states
+const CHECKING: TreeViewDroppableZoneState = "checking";
+const INVALID: TreeViewDroppableZoneState = "invalid";
+const TEMPORAL_INVALID: TreeViewDroppableZoneState = "temporal-invalid";
+const VALID: TreeViewDroppableZoneState = "valid";
+
 // Selectors
 // const CHECKED_ITEMS = `${TREE_ITEM_TAG_NAME}[checked]`;
 const ITEM_SELECTOR = (treeItemId: string) =>
@@ -297,7 +303,7 @@ export class ChTreeView {
       this.#openSubTreeAfterCountdown(treeItemTarget);
     }
 
-    if (this.#validDroppableZone(event, treeItemTarget, dropType) === "valid") {
+    if (this.#validDroppableZone(event, treeItemTarget, dropType) === VALID) {
       eventTarget.dragState = "enter";
     }
   }
@@ -386,7 +392,7 @@ export class ChTreeView {
 
     // The droppable zone must be checked, even if it was marked as not valid
     // @todo Try to drop an item with high delays in droppable zone checking
-    if (this.#validDroppableZone(event, treeItemTarget, dropType) !== "valid") {
+    if (this.#validDroppableZone(event, treeItemTarget, dropType) !== VALID) {
       return;
     }
 
@@ -517,7 +523,7 @@ export class ChTreeView {
     );
     this.#validDroppableZoneCache.set(
       droppableZoneKey,
-      validDrop ? "valid" : "invalid"
+      validDrop ? VALID : INVALID
     );
 
     // Don't show droppable zones if the dragEnter is invalid or the last
@@ -556,7 +562,7 @@ export class ChTreeView {
     // Invalidate the cache, because the item is no longer waiting for its
     // content to be downloaded
     if (
-      droppableZoneState === "temporal-invalid" &&
+      droppableZoneState === TEMPORAL_INVALID &&
       !treeItemTarget.lazyLoad &&
       !treeItemTarget.downloading
     ) {
@@ -585,8 +591,8 @@ export class ChTreeView {
         (this.#draggedIds.includes(treeItemTarget.id) ||
           this.#draggedParentIds.includes(treeItemTarget.id)))
     ) {
-      this.#validDroppableZoneCache.set(cacheKey, "invalid");
-      return "invalid";
+      this.#validDroppableZoneCache.set(cacheKey, INVALID);
+      return INVALID;
     }
 
     // Disable "above" drops when items need to lazy load their content first
@@ -594,12 +600,12 @@ export class ChTreeView {
       dropType === "above" &&
       (treeItemTarget.lazyLoad || treeItemTarget.downloading)
     ) {
-      this.#validDroppableZoneCache.set(cacheKey, "temporal-invalid");
-      return "temporal-invalid";
+      this.#validDroppableZoneCache.set(cacheKey, TEMPORAL_INVALID);
+      return TEMPORAL_INVALID;
     }
 
     // Otherwise, emit the event to check the droppable zone
-    this.#validDroppableZoneCache.set(cacheKey, "checking");
+    this.#validDroppableZoneCache.set(cacheKey, CHECKING);
     this.droppableZoneEnter.emit({
       newContainer: {
         id: treeItemTarget.id,
@@ -608,7 +614,7 @@ export class ChTreeView {
       draggedItems: this.#draggedItems,
       dropType: dropType
     });
-    return "checking";
+    return CHECKING;
   };
 
   #openSubTreeAfterCountdown = (currentTarget: HTMLChTreeViewItemElement) => {
@@ -687,8 +693,8 @@ export class ChTreeView {
     );
 
     if (
-      droppableZoneState === "invalid" ||
-      droppableZoneState === "temporal-invalid"
+      droppableZoneState === INVALID ||
+      droppableZoneState === TEMPORAL_INVALID
     ) {
       event.dataTransfer.dropEffect = "none";
     }

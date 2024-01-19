@@ -51,6 +51,7 @@ import {
 } from "./utils";
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
+import { insertIntoIndex } from "../../../common/array";
 
 const ROOT_ID = null;
 
@@ -558,14 +559,34 @@ export class ChTreeViewRender {
     }
 
     const newParentId = dataTransferInfo.newContainer.id;
-    const newParentUIModel = this.#flattenedTreeModel.get(newParentId).item;
+    const newParentUIModel = this.#flattenedTreeModel.get(newParentId);
+    const dropType = dataTransferInfo.dropType;
+
+    // When the dropType is "before" or "after", the target node must be
+    // the parent
+    const actualParent =
+      dropType === "above"
+        ? newParentUIModel.item
+        : newParentUIModel.parentItem;
 
     // Only move the items to the new parent, keeping the state
     if (dataTransferInfo.dropInTheSameTree) {
+      let specificIndexToInsert = undefined;
+
+      if (dropType !== "above") {
+        specificIndexToInsert = actualParent.items.findIndex(
+          item => item.id === dataTransferInfo.newContainer.id
+        );
+
+        if (dropType === "after") {
+          specificIndexToInsert++;
+        }
+      }
+
       // Add the UI models to the new container and remove the UI models from
       // the old containers
       dataTransferInfo.draggedItems.forEach(
-        this.#moveItemToNewParent(newParentUIModel)
+        this.#moveItemToNewParent(actualParent, specificIndexToInsert)
       );
 
       // When the selected items are moved, the tree must update its internal
@@ -581,16 +602,16 @@ export class ChTreeViewRender {
       }
 
       // Add new items to the parent
-      newParentUIModel.items.push(...items);
+      actualParent.items.push(...items);
 
       // Flatten the new UI models
-      items.forEach(this.#flattenItemUIModel(newParentUIModel));
+      items.forEach(this.#flattenItemUIModel(actualParent));
     }
 
-    this.#sortItems(newParentUIModel.items);
+    this.#sortItems(actualParent.items);
 
     // Open the item to visualize the new subitems
-    newParentUIModel.expanded = true;
+    actualParent.expanded = true;
 
     // Re-sync checked items
     this.#scheduleCheckedItemsChange();
@@ -1140,8 +1161,8 @@ export class ChTreeViewRender {
   };
 
   #moveItemToNewParent =
-    (newParentUIModel: TreeViewItemModel) =>
-    (dataTransferInfo: GxDataTransferInfo) => {
+    (newParentUIModel: TreeViewItemModel, specificIndex?: number) =>
+    (dataTransferInfo: GxDataTransferInfo, index: number) => {
       const itemUIModelExtended = this.#flattenedTreeModel.get(
         dataTransferInfo.id
       );
@@ -1155,8 +1176,15 @@ export class ChTreeViewRender {
         1
       );
 
-      // Add the UI Model to the new parent
-      newParentUIModel.items.push(item);
+      // The item must be inserted in a specific position, because the dropMode
+      // has "before" and "after" enabled
+      if (specificIndex !== undefined) {
+        insertIntoIndex(newParentUIModel.items, item, specificIndex + index);
+      }
+      // Add the UI Model to the new parent by pushing it at the end
+      else {
+        newParentUIModel.items.push(item);
+      }
 
       // Reference the new parent in the item
       itemUIModelExtended.parentItem = newParentUIModel;
@@ -1214,8 +1242,8 @@ export class ChTreeViewRender {
   #treeHasFilters = () => treeViewHasFilters(this.filterType, this.filter);
 
   #sortItems = (items: TreeViewItemModel[]) => {
-    // Ensure that items are sorted
-    if (this.sortItemsCallback) {
+    // Ensure that items are sorted if the dropMode enables it
+    if (this.dropMode === "above" && this.sortItemsCallback) {
       this.sortItemsCallback(items);
     }
   };

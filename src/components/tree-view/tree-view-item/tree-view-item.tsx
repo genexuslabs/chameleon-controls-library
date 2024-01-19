@@ -779,10 +779,6 @@ export class ChTreeViewItem {
     this.itemDragEnd.emit();
   };
 
-  #handleDrop = () => {
-    this.dragState = "none";
-  };
-
   componentWillLoad() {
     // Check if must lazy load
     this.#lazyLoadItems(this.expanded);
@@ -806,8 +802,6 @@ export class ChTreeViewItem {
   render() {
     const evenLevel = this.level % 2 === 0;
 
-    const acceptDrop =
-      !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
 
     const canShowLines = this.level !== INITIAL_LEVEL;
@@ -830,8 +824,6 @@ export class ChTreeViewItem {
           [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}
-        // Drag and drop
-        onDrop={acceptDrop ? this.#handleDrop : null}
       >
         <button
           aria-controls={hasContent ? EXPANDABLE_ID : null}

@@ -304,15 +304,19 @@ export class ChTreeView {
 
   @Listen("dragleave", { capture: true, passive: true })
   onDragLeave(event: DragEvent) {
-    const currentTarget = event.target as HTMLElement;
+    const currentTarget = event.target as
+      | HTMLChTreeViewItemElement
+      | HTMLChTreeViewDropElement;
 
     if (!isTreeItemOrTreeDrop(currentTarget.tagName.toLowerCase())) {
       return;
     }
 
-    const treeItem = currentTarget as HTMLChTreeViewItemElement;
-    treeItem.dragState = "none";
-    this.#cancelSubTreeOpening(treeItem);
+    currentTarget.dragState = "none";
+
+    if (isTreeItem(currentTarget)) {
+      this.#cancelSubTreeOpening(currentTarget as HTMLChTreeViewItemElement);
+    }
   }
 
   #getDropTypeAndTreeItemTarget = (
@@ -368,6 +372,9 @@ export class ChTreeView {
     if (!isTreeItemOrTreeDrop(containerTargetTagName)) {
       return;
     }
+
+    // Remove drag enter mode
+    eventTarget.dragState = "none";
 
     const targetIsTreeItem = containerTargetTagName === TREE_ITEM_TAG_NAME;
     const dragEnterInformation = this.#getDropTypeAndTreeItemTarget(

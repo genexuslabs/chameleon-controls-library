@@ -108,6 +108,9 @@ ch-tree-view-item {
     );
   }
 
+  // Improve the position of the first-child to avoid clipping the droppable
+  // area, since the parent has content-visibility: "auto" which creates a new
+  // containing block
   & > ch-tree-view-drop:first-child {
     transform: translateY(0);
 
@@ -119,7 +122,11 @@ ch-tree-view-item {
   // Improve collision with the end drop (level N + 1) of a group and the next
   // drop in the level N
   & > ch-tree-view-drop:last-child {
-    transform: translateY(-6px);
+    transform: translateY(calc(var(--ch-tree-view-drop--size) * -1));
+
+    &::after {
+      inset-block-start: calc(var(--ch-tree-view-drop--size) * 0.5);
+    }
   }
 }
 

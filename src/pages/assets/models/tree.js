@@ -19,6 +19,197 @@ const FIRST_LEVEL_SIZE = 10;
 const SECOND_LEVEL_SIZE = 20;
 const THIRD_LEVEL_SIZE = 20;
 
+const fileSystem_root = [
+  {
+    id: "dev",
+    caption: "dev",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true
+  },
+  {
+    id: "etc",
+    caption: "etc",
+    editable: false,
+    class: "tree-view-item tree-view-item--folder",
+    dragDisabled: true,
+    dropDisabled: true,
+    items: [
+      {
+        id: "cups",
+        caption: "cups",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leftImgSrc: "assets/icons/file.svg",
+        leaf: true
+      },
+      {
+        id: "httpd",
+        caption: "httpd",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leftImgSrc: "assets/icons/file.svg",
+        leaf: true
+      },
+      {
+        id: "init",
+        caption: "init.d",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leftImgSrc: "assets/icons/file.svg",
+        leaf: true
+      }
+    ]
+  },
+  {
+    id: "sbin",
+    caption: "sbin",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true
+  },
+  {
+    id: "tmp",
+    caption: "tmp",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    leaf: true
+  },
+  {
+    id: "Users",
+    caption: "Users",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    items: [
+      {
+        id: "jdoe",
+        caption: "jdoe",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "jmiller",
+        caption: "jmiller",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "mysql",
+        caption: "mysql",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      }
+    ]
+  },
+  {
+    id: "usr",
+    caption: "usr",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    items: [
+      {
+        id: "bin",
+        caption: "bin",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "lib",
+        caption: "lib",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "local",
+        caption: "local",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      }
+    ]
+  },
+  {
+    id: "var",
+    caption: "var",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    dragDisabled: true,
+    dropDisabled: true,
+    items: [
+      {
+        id: "log",
+        caption: "log",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "spool",
+        caption: "spool",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      },
+      {
+        id: "yp",
+        caption: "yp",
+        class: "tree-view-item tree-view-item--folder",
+        editable: false,
+        dragDisabled: true,
+        dropDisabled: true,
+        leaf: true
+      }
+    ]
+  }
+];
+
+export const fileSystemModel = [
+  {
+    id: "root",
+    caption: "/",
+    class: "tree-view-item tree-view-item--folder",
+    editable: false,
+    expanded: true,
+    dragDisabled: true,
+    dropDisabled: true,
+    items: fileSystem_root
+  }
+];
+
 const kbExplorer_root = [
   {
     id: "Main_Programs",

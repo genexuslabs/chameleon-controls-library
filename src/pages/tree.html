@@ -70,9 +70,8 @@
       .ch-tree-view-item--success::part(action)::before {
         grid-area: first-img;
         content: "";
-        width: 12px;
-        height: 12px;
-        margin-inline-end: 4px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         background-color: rgb(69, 150, 96);
         border-radius: 50%;
       }
@@ -95,8 +94,8 @@
       .tree-view-item--custom-image::part(action)::before {
         grid-area: left-img;
         content: "";
-        width: 14px;
-        height: 14px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         margin-inline-end: 4px;
         background-color: rgb(69, 84, 150);
         border-radius: 50%;
@@ -107,9 +106,8 @@
       .tree-view-item--module::part(action)::before {
         grid-area: left-img;
         content: "";
-        width: 14px;
-        height: 14px;
-        margin-inline-end: 4px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         background-repeat: no-repeat;
       }
 
@@ -482,6 +480,15 @@
               caption="Editable Items"
             ></ch-checkbox>
 
+            <label style="display: flex; flex-direction: column">
+              Lines
+              <select name="lines" id="lines">
+                <option value="all" selected>All lines</option>
+                <option value="last">Last line</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+
             <ch-checkbox
               id="drag-enabled"
               checked-value="true"
@@ -499,15 +506,6 @@
             ></ch-checkbox>
 
             <label style="display: flex; flex-direction: column">
-              Lines
-              <select name="lines" id="lines">
-                <option value="all" selected>All lines</option>
-                <option value="last">Last line</option>
-                <option value="none">None</option>
-              </select>
-            </label>
-
-            <label style="display: flex; flex-direction: column">
               Expandable button
               <select name="expandable-button" id="expandable-button">
                 <option value="action">Action</option>
@@ -523,6 +521,15 @@
               value="true"
               caption="Expand on click"
             ></ch-checkbox>
+
+            <label style="display: flex; flex-direction: column">
+              Drop mode
+              <select name="drop-mode" id="drop-mode">
+                <option value="above" selected>Above</option>
+                <option value="before-after">Before and After</option>
+                <option value="all">All</option>
+              </select>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -671,6 +678,8 @@
               Update model again (click third)
             </button>
             <button id="update-big-model-btn">Set big model</button>
+            <button id="update-file-system-btn">File system model</button>
+
             <button id="kb-explorer-model-btn">KB Explorer</button>
             <button id="import-objects-model-btn">Import Objects</button>
           </fieldset>
@@ -680,6 +689,7 @@
 
     <script type="module">
       import {
+        fileSystemModel,
         lazyLoadItemsDictionary,
         kbExplorerModel,
         importObjectsModel
@@ -1302,6 +1312,13 @@
           testTreeX.expandableButton = selectedOption;
         });
 
+        // Drop mode
+        const dropModeSelect = document.getElementById("drop-mode");
+        dropModeSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          testTreeX.dropMode = selectedOption;
+        });
+
         const filterTypeSelect = document.getElementById("filter-type");
         filterTypeSelect.addEventListener("input", event => {
           const selectedFilterType = event.target.value;
@@ -1349,11 +1366,20 @@
           testTreeX.treeModel = modelTinyUpdatedAgain;
         });
 
+        // Big model
         const updateBigModelBtn = document.getElementById(
           "update-big-model-btn"
         );
         updateBigModelBtn.addEventListener("click", () => {
           testTreeX.treeModel = bigModel;
+        });
+
+        // File system model
+        const updateFileSystemBtn = document.getElementById(
+          "update-file-system-btn"
+        );
+        updateFileSystemBtn.addEventListener("click", () => {
+          testTreeX.treeModel = fileSystemModel;
         });
 
         const kbExplorerBtn = document.getElementById("kb-explorer-model-btn");
@@ -1635,7 +1661,7 @@
 
             setTimeout(() => {
               resolve(structuredClone(lazyModel));
-            }, 750); // Resolves or rejects after 500ms second
+            }, 500); // Resolves or rejects after 500ms second
           });
 
         testTreeX.dropItemsCallback = () =>

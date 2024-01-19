@@ -14,7 +14,8 @@ import {
   TreeViewLines,
   TreeViewItemExpandedInfo,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelected
+  TreeViewItemSelected,
+  TreeViewDropType
 } from "../../tree-view/tree-view/types";
 import {
   TreeViewFilterOptions,
@@ -344,12 +345,14 @@ export class ChTreeViewRenderWrapper {
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],
+    dropType: TreeViewDropType,
     validDrop: boolean
   ) {
     this.treeRef.updateValidDropZone(
       requestTimestamp,
       newContainerId,
       draggedItems,
+      dropType,
       validDrop
     );
   }

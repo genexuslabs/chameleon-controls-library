@@ -121,51 +121,99 @@ export class ChFlexibleLayoutRender {
     const itemInfo = this.#itemsInfo.get(viewId);
 
     if (!itemInfo) {
-      return { success: false, renamedItems: [] };
+      return { success: false, reconnectedSubtree: undefined };
     }
-    const viewInfo = (
+    const viewToRemoveInfo = (
       itemInfo as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
     ).view;
 
     // The item is not a view (leaf). It's a group.
-    if (viewInfo == null) {
-      return { success: false, renamedItems: [] };
+    if (viewToRemoveInfo == null) {
+      return { success: false, reconnectedSubtree: undefined };
     }
 
-    const success = await this.#flexibleLayoutRef.removeView(viewId);
+    const result = await this.#flexibleLayoutRef.removeView(viewId);
 
-    if (!success) {
-      return { success: false, renamedItems: [] };
+    if (!result.success) {
+      return result;
     }
 
     // Update view info, since it got renamed
-    const renamedItems = success.renamedItems;
-    renamedItems.forEach(renamedItem => {
-      const oldItemUIModel = this.#itemsInfo.get(
-        renamedItem.oldId
-      ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+    const reconnectedSubtree = result.reconnectedSubtree;
 
-      if (oldItemUIModel.view != null) {
-        const newItemUIModel = this.#itemsInfo.get(
-          renamedItem.newId
+    if (reconnectedSubtree) {
+      // - - - - - - - - - - - - - - - - - - - - - - - - -
+      // INPUT MODEL:
+      //                       secondParentItem
+      //                              / \
+      //                           /       \
+      //                        /             \
+      //     (Id x) reconnectedSubtree  Other items...
+      //                       / \
+      //                    /       \
+      //                 /             \
+      // (Id y) viewToRemoveInfo  (Id z) nodeToRemove
+      //                                     / \
+      //                                  /       \
+      //                              subtree or widgets
+      //
+      //
+      // OUTPUT MODEL:
+      //                  secondParentItem
+      //                         / \
+      //                      /       \
+      //                   /             \
+      // (Id x) reconnectedSubtree  Other items...
+      //                / \
+      //             /       \
+      //         subtree or widgets
+      // - - - - - - - - - - - - - - - - - - - - - - - - -
+
+      const nodeToRemoveUIModel = this.#itemsInfo.get(
+        reconnectedSubtree.nodeToRemove
+      );
+
+      // The node to reconnect is still a group. We must reconnect its children
+      if (
+        (nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
+          .view == null
+      ) {
+        const itemsOfNodeToRemove = (
+          nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutGroup>
+        ).item.items;
+
+        const nodeToReconnectUIModel = this.#itemsInfo.get(
+          reconnectedSubtree.nodeToReconnect
+        ) as FlexibleLayoutItemExtended<FlexibleLayoutGroup>;
+
+        // Reconnect the parent of the removedNode subtree
+        itemsOfNodeToRemove.forEach(itemToUpdateItsParent => {
+          this.#itemsInfo.get(itemToUpdateItsParent.id).parentItem =
+            nodeToReconnectUIModel.item;
+        });
+      }
+      // The node to reconnect is a leaf
+      else {
+        const nodeToReconnectUIModel = this.#itemsInfo.get(
+          reconnectedSubtree.nodeToReconnect
         ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
 
         // Add view information
-        newItemUIModel.view = oldItemUIModel.view;
+        nodeToReconnectUIModel.view = (
+          nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
+        ).view;
 
         // Update view id
-        newItemUIModel.view.id = renamedItem.newId;
+        nodeToReconnectUIModel.view.id = reconnectedSubtree.nodeToReconnect;
       }
 
       // Delete the old item
-      this.#itemsInfo.delete(renamedItem.oldId);
-    });
-
-    // console.log(this.#itemsInfo);
+      this.#itemsInfo.delete(reconnectedSubtree.nodeToRemove);
+    }
 
     // Remove rendered widgets
     if (removeRenderedWidgets) {
-      viewInfo.widgets.forEach(widget => {
+      viewToRemoveInfo.widgets.forEach(widget => {
         this.#renderedWidgets.delete(widget.id);
       });
     }
@@ -175,7 +223,7 @@ export class ChFlexibleLayoutRender {
 
     // Queue re-renders
     forceUpdate(this);
-    return success;
+    return result;
   }
 
   #updateFlexibleModels = (layout: FlexibleLayout) => {
@@ -287,7 +335,7 @@ export class ChFlexibleLayoutRender {
     viewInfo.selectedWidgetId = selectedId;
   };
 
-  #handleViewItemReorder = (
+  #handleViewItemReorder = async (
     event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>
   ) => {
     const reorderInfo = event.detail;
@@ -321,7 +369,7 @@ export class ChFlexibleLayoutRender {
       // Update the selected widget in the target view
       this.#updateSelectedWidget(viewTargetInfo, widgetToMove.id);
     } else {
-      this.#handleViewItemReorderCreateView(
+      await this.#handleViewItemReorderCreateView(
         widgetToMove,
         viewTargetInfo,
         dropAreaTarget
@@ -330,7 +378,7 @@ export class ChFlexibleLayoutRender {
 
     // Remove the view, since it has no more items
     if (viewInfo.widgets.length === 1) {
-      this.removeView(viewId, false);
+      await this.removeView(viewId, false);
 
       // Refresh reference to force re-render
       // this.#layoutSplitterModels = { ...this.#layoutSplitterModels }; // TODO: UPDATE THIS
@@ -361,7 +409,7 @@ export class ChFlexibleLayoutRender {
     // this.#flexibleLayoutRef.refreshLayout();
   };
 
-  #handleViewItemReorderCreateView = (
+  #handleViewItemReorderCreateView = async (
     widget: FlexibleLayoutWidget,
     viewTargetInfo: FlexibleLayoutLeafInfo,
     dropAreaTarget: DroppableArea
@@ -399,7 +447,7 @@ export class ChFlexibleLayoutRender {
 
     // Add a sibling
     if (viewTargetIsContainedInAGroupWithTheSameDirection) {
-      this.addSiblingView(
+      await this.addSiblingView(
         viewTargetParentInfo.id,
         viewTargetInfo.id,
         dropAreaTarget === "block-start" || dropAreaTarget === "inline-start"

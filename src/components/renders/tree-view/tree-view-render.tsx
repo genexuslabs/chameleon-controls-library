@@ -51,7 +51,7 @@ import {
 } from "./utils";
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
-import { insertIntoIndex } from "../../../common/array";
+import { insertIntoIndex, removeElement } from "../../../common/array";
 
 const ROOT_ID = null;
 
@@ -1171,9 +1171,9 @@ export class ChTreeViewRender {
 
       // Remove the UI model from the previous parent. The equality function
       // must be by index, not by object reference
-      oldParentItem.items.splice(
-        oldParentItem.items.findIndex(el => el.id === item.id),
-        1
+      removeElement(
+        oldParentItem.items,
+        oldParentItem.items.findIndex(el => el.id === item.id)
       );
 
       // The item must be inserted in a specific position, because the dropMode

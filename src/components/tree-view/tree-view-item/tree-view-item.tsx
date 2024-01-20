@@ -48,6 +48,13 @@ const DIRECT_TREE_ITEM_CHILDREN = `:scope>${TREE_ITEM_TAG_NAME}`;
 const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
 const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 
+// Custom classes
+const DOWNLOADING_CLASS = TREE_ITEM_TAG_NAME + "--downloading";
+const EDITING_CLASS = TREE_ITEM_TAG_NAME + "--editing";
+const NOT_EDITING_CLASS = TREE_ITEM_TAG_NAME + "--not-editing";
+const DRAG_ENTER_CLASS = TREE_ITEM_TAG_NAME + "--drag-enter";
+const DENY_DROP_CLASS = TREE_ITEM_TAG_NAME + "--deny-drop";
+
 // Keys
 const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
@@ -843,11 +850,11 @@ export class ChTreeViewItem {
         aria-level={this.level + 1}
         aria-selected={this.selected ? "true" : null}
         class={{
-          [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
-          [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
-          [TREE_ITEM_TAG_NAME + "--not-editing"]: !this.editing, // WA for some bugs in GeneXus' DSO
-          [TREE_ITEM_TAG_NAME + "--drag-enter"]: this.dragState === "enter",
-          [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
+          [DOWNLOADING_CLASS]: this.downloading,
+          [EDITING_CLASS]: this.editing,
+          [NOT_EDITING_CLASS]: !this.editing, // WA for some bugs in GeneXus' DSO
+          [DRAG_ENTER_CLASS]: this.dragState === "enter",
+          [DENY_DROP_CLASS]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}
       >

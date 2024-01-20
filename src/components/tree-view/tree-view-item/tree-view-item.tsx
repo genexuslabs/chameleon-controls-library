@@ -178,7 +178,7 @@ export class ChTreeViewItem {
       return;
     }
 
-    document.body.addEventListener("click", this.#removeEditModeOnClick, {
+    document.addEventListener("click", this.#removeEditModeOnClick, {
       capture: true
     });
 
@@ -602,7 +602,7 @@ export class ChTreeViewItem {
       }
       this.editing = false;
 
-      document.body.removeEventListener("click", this.#removeEditModeOnClick, {
+      document.removeEventListener("click", this.#removeEditModeOnClick, {
         capture: true
       });
 

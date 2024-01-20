@@ -144,12 +144,18 @@
 // - - - - - - - - - - - - - - - -
 .action {
   display: grid;
-  grid-template: "start-img text end-img" / max-content 1fr max-content;
+  grid-template: "start-img text" / max-content 1fr;
   gap: var(--ch-tree-view-item-gap);
   align-items: center;
   block-size: 100%;
   flex: 1;
   cursor: pointer;
+
+  // This distinction is necessary to avoid showing a separation at the end of
+  // the input when editing a caption
+  &--end-img {
+    grid-template: "start-img text end-img" / max-content 1fr max-content;
+  }
 }
 
 .readonly-mode {

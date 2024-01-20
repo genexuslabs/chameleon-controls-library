@@ -931,6 +931,8 @@ export class ChTreeViewItem {
               <div
                 class={{
                   action: true,
+                  "action--end-img": !!this.endImageSrc,
+
                   [`start-img-type--${this.startImageType} pseudo-img--start`]:
                     pseudoStartImage,
                   [`end-img-type--${this.endImageType} pseudo-img--end`]:

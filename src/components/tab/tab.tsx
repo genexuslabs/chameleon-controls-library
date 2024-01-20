@@ -16,7 +16,12 @@ import {
   DraggableViewInfo,
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
-import { inBetween, isRTL, tokenMap } from "../../common/utils";
+import {
+  inBetween,
+  isPseudoElementImg,
+  isRTL,
+  tokenMap
+} from "../../common/utils";
 import {
   TabDirection,
   TabElementSize,
@@ -87,9 +92,6 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
   tabListRef.querySelector(":scope>button:last-child");
 
 // Utility functions
-const isDecorativeImg = (item: FlexibleLayoutWidget) =>
-  item.startImageSrc &&
-  (!item.startImageType || item.startImageType === "pseudo-element");
 
 const getDirection = (type: TabType): TabDirection =>
   type === "main" || type === "blockEnd" ? "block" : "inline";
@@ -783,7 +785,10 @@ export class ChTab implements DraggableView {
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.#classes.BUTTON]: true,
-            "decorative-image": isDecorativeImg(item),
+            "decorative-image": isPseudoElementImg(
+              item.startImageSrc,
+              item.startImageType
+            ),
 
             "dragged-element": this.draggedElementIndex === index,
             "dragged-element--outside":
@@ -808,7 +813,7 @@ export class ChTab implements DraggableView {
             [SELECTED_PART]: item.id === this.selectedId
           })}
           style={
-            isDecorativeImg(item)
+            isPseudoElementImg(item.startImageSrc, item.startImageType)
               ? { [DECORATIVE_IMAGE]: `url("${item.startImageSrc}")` }
               : null
           }
@@ -881,6 +886,11 @@ export class ChTab implements DraggableView {
         !this.hasCrossedBoundaries && isBlockDirection(this.#direction)
     };
 
+    const decorativeImage = isPseudoElementImg(
+      draggedElement.startImageSrc,
+      draggedElement.startImageType
+    );
+
     return (
       <div
         aria-hidden="true"
@@ -892,7 +902,7 @@ export class ChTab implements DraggableView {
           class={{
             [this.#classes.BUTTON]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
-            "decorative-image": isDecorativeImg(draggedElement)
+            "decorative-image": decorativeImage
           }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,
@@ -901,7 +911,7 @@ export class ChTab implements DraggableView {
             [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
           style={
-            isDecorativeImg(draggedElement)
+            decorativeImage
               ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImageSrc}")` }
               : null
           }

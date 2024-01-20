@@ -1,3 +1,5 @@
+import { ImageRender } from "../../../components";
+
 export type TreeViewItemModel = {
   id: string;
   caption: string;
@@ -10,6 +12,8 @@ export type TreeViewItemModel = {
   dropDisabled?: boolean;
   editable?: boolean;
   expanded?: boolean;
+  endImgSrc?: string;
+  endImgType?: ImageRender;
 
   /**
    * Used by the tree view to decide which is the last item in the list when
@@ -19,7 +23,7 @@ export type TreeViewItemModel = {
 
   lazy?: boolean;
   leaf?: boolean;
-  leftImgSrc?: string;
+
   indeterminate?: boolean;
   items?: TreeViewItemModel[];
   metadata?: string;
@@ -34,8 +38,9 @@ export type TreeViewItemModel = {
    * `false` to not render the item.
    */
   render?: boolean;
-  rightImgSrc?: string;
   selected?: boolean;
+  startImgSrc?: string;
+  startImgType?: ImageRender;
   toggleCheckboxes?: boolean;
 };
 

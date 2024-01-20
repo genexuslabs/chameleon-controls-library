@@ -139,6 +139,15 @@ const defaultRenderItem = <T extends true | false>(
       }
       dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
+      endImageSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              itemModel.endImgSrc,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : itemModel.endImgSrc
+      }
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
@@ -146,30 +155,21 @@ const defaultRenderItem = <T extends true | false>(
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
       leaf={itemModel.leaf}
-      leftImgSrc={
-        useGxRender
-          ? fromGxImageToURL(
-              (itemModel as GXRender<true>).leftImage,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : (itemModel as GXRender<false>).leftImgSrc
-      }
       level={level}
       metadata={itemModel.metadata}
-      rightImgSrc={
-        useGxRender
-          ? fromGxImageToURL(
-              (itemModel as GXRender<true>).rightImage,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : (itemModel as GXRender<false>).rightImgSrc
-      }
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+      }
+      startImageSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              itemModel.startImgSrc,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : itemModel.startImgSrc
       }
     >
       {!itemModel.leaf &&

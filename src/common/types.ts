@@ -17,4 +17,4 @@ export type AccessibleRole =
 /**
  * Specifies how the image will be rendered.
  */
-export type ImageRender = "img" | "inject-svg" | "pseudo-element";
+export type ImageRender = "background" | "img" | "mask";

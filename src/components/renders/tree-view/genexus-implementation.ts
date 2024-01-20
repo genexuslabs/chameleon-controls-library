@@ -6,13 +6,11 @@ export type GXRender<T extends true | false> = T extends true
 
 export type TreeViewGXItemModel = Omit<
   TreeViewItemModel,
-  "disabled" | "dragDisabled" | "dropDisabled" | "leftImgSrc" | "rightImgSrc"
+  "disabled" | "dragDisabled" | "dropDisabled"
 > & {
   dragEnabled?: boolean;
   dropEnabled?: boolean;
   enabled?: boolean;
-  leftImage?: string;
-  rightImage?: string;
 };
 
 const URL_REGEX = /url\((["']?)([^\)]*)\)(?:\s+([\d.]+)x)?/i;

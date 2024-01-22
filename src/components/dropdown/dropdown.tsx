@@ -359,6 +359,8 @@ export class ChDropDown implements ChComponent {
     const isExpanded = this.expanded || this.expandedWithHover;
     this.#firstExpanded ||= isExpanded;
 
+    const noNeedToAddDivListWrapper = !this.#showHeader && !this.#showFooter;
+
     return (
       <Host
         onMouseLeave={
@@ -388,32 +390,29 @@ export class ChDropDown implements ChComponent {
           <slot name="action" />
         </button>
 
-        <ch-window
+        <ch-popover
+          role={noNeedToAddDivListWrapper ? "list" : null}
           part="window"
-          exportparts="window:section,mask,header,footer,separation"
-          container={this.#expandableButton}
-          closeOnEscape={true}
+          actionElement={this.#expandableButton}
           hidden={!isExpanded}
-          modal={false}
-          showFooter={this.#showFooter}
-          showHeader={this.#showHeader}
-          showMain={false}
-          // Necessary since the separation between the button and the section
-          // triggers the onMouseLeave event
-          showSeparation={this.expandBehavior === "ClickOrHover"}
-          xAlign={xAlignMapping}
-          yAlign={yAlignMapping}
+          blockAlign={yAlignMapping}
+          inlineAlign={xAlignMapping}
         >
-          {this.#firstExpanded && [
-            this.#showHeader && <slot name="header" slot="header" />,
-
-            <div role="list" class="list" part="list">
+          {this.#firstExpanded &&
+            (noNeedToAddDivListWrapper ? (
               <slot name="items" />
-            </div>,
+            ) : (
+              [
+                this.#showHeader && <slot name="header" />,
 
-            this.#showFooter && <slot name="footer" slot="footer" />
-          ]}
-        </ch-window>
+                <div role="list" class="list" part="list">
+                  <slot name="items" />
+                </div>,
+
+                this.#showFooter && <slot name="footer" />
+              ]
+            ))}
+        </ch-popover>
       </Host>
     );
   }

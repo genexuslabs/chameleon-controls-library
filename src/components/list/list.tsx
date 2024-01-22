@@ -23,14 +23,12 @@ import {
   tokenMap
 } from "../../common/utils";
 import {
-  TabDirection,
-  TabElementSize,
-  TabItemCloseInfo,
-  TabSelectedItemInfo,
-  TabType
+  ListDirection,
+  ListElementSize,
+  ListItemCloseInfo,
+  ListSelectedItemInfo
 } from "./types";
 import {
-  BUTTON_CLASS,
   CAPTION_ID,
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
@@ -38,35 +36,33 @@ import {
   DRAG_PREVIEW_INSIDE_BLOCK,
   DRAG_PREVIEW_INSIDE_INLINE,
   DRAG_PREVIEW_OUTSIDE,
-  IMAGE_CLASS,
-  PAGE_CLASS,
-  PAGE_CONTAINER_CLASS,
+  LIST_CLASSES,
+  LIST_PART_BLOCK,
+  LIST_PART_INLINE,
   PAGE_ID,
-  PAGE_NAME_CLASS,
-  SELECTED_PART,
-  TAB_LIST_CLASS
+  SELECTED_PART
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
 
 // Custom vars
-const TRANSITION_DURATION = "--ch-tab-transition-duration";
+const TRANSITION_DURATION = "--ch-list-transition-duration";
 
-const BUTTON_POSITION_X = "--ch-tab-button-position-x";
-const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
+const BUTTON_POSITION_X = "--ch-list-button-position-x";
+const BUTTON_POSITION_Y = "--ch-list-button-position-y";
 
-const BUTTON_SIZE = "--ch-tab-button-size";
+const BUTTON_SIZE = "--ch-list-button-size";
 
-const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
-const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
+const MOUSE_OFFSET_X = "--ch-list-mouse-offset-x";
+const MOUSE_OFFSET_Y = "--ch-list-mouse-offset-y";
 
-const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
-const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
+const MOUSE_POSITION_X = "--ch-list-mouse-position-x";
+const MOUSE_POSITION_Y = "--ch-list-mouse-position-y";
 
-const TAB_LIST_EDGE_START_POSITION = "--ch-tab-tab-list-start";
-const TAB_LIST_EDGE_END_POSITION = "--ch-tab-tab-list-end";
+const TAB_LIST_EDGE_START_POSITION = "--ch-list-tab-list-start";
+const TAB_LIST_EDGE_END_POSITION = "--ch-list-tab-list-end";
 
-const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
+const DECORATIVE_IMAGE = "--ch-list-decorative-image";
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -93,9 +89,7 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
 
 // Utility functions
 
-const getDirection = (type: TabType): TabDirection =>
-  type === "main" || type === "blockEnd" ? "block" : "inline";
-const isBlockDirection = (direction: TabDirection) => direction === "block";
+const isBlockDirection = (direction: ListDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -133,15 +127,15 @@ const setTabListStartEndPosition = (
 };
 
 const getTabListSizesAndSetPosition = (
-  hostRef: HTMLChTabElement,
+  hostRef: HTMLChListElement,
   tabListRef: HTMLElement,
-  direction: TabDirection,
+  direction: ListDirection,
   buttonRect: DOMRect
-): TabElementSize => {
+): ListElementSize => {
   const tabListRect = tabListRef.getBoundingClientRect();
 
   // Tab List information
-  const tabListSizes: TabElementSize = {
+  const tabListSizes: ListElementSize = {
     xStart: tabListRect.x,
     xEnd: tabListRect.x + tabListRect.width,
     yStart: tabListRect.y,
@@ -205,10 +199,10 @@ const focusNextOrPreviousCaption = (
 
 @Component({
   shadow: true,
-  styleUrl: "tab.scss",
-  tag: "ch-tab"
+  styleUrl: "list.scss",
+  tag: "ch-list"
 })
-export class ChTab implements DraggableView {
+export class ChList implements DraggableView {
   #cancelId: number;
 
   // Styling
@@ -228,7 +222,6 @@ export class ChTab implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
-  #direction: TabDirection;
 
   #selectedIndex: number = -1;
 
@@ -247,7 +240,7 @@ export class ChTab implements DraggableView {
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
-  #mouseBoundingLimits: TabElementSize;
+  #mouseBoundingLimits: ListElementSize;
 
   #renderedPages: Set<string> = new Set();
 
@@ -259,7 +252,7 @@ export class ChTab implements DraggableView {
   // Keyboard interactions
   #keyEvents: {
     [key in KeyEvents]: (
-      direction: TabDirection,
+      direction: ListDirection,
       event: KeyboardEvent,
       focusedCaption: HTMLButtonElement
     ) => void;
@@ -313,7 +306,7 @@ export class ChTab implements DraggableView {
     }
   };
 
-  @Element() el: HTMLChTabElement;
+  @Element() el: HTMLChListElement;
 
   @State() draggedElementIndex = -1;
   @State() draggedElementNewIndex = -1;
@@ -336,6 +329,15 @@ export class ChTab implements DraggableView {
    * for the element. This label is used for the close button of the captions.
    */
   @Prop() readonly closeButtonAccessibleName: string = "Close";
+
+  /**
+   * Specifies the flexible layout type.
+   */
+  @Prop({ reflect: true }) readonly direction: ListDirection;
+  @Watch("direction")
+  directionChange(newDirection: ListDirection) {
+    this.#initializeState(newDirection);
+  }
 
   /**
    * This attribute lets you specify if the drag operation is disabled in the
@@ -369,15 +371,6 @@ export class ChTab implements DraggableView {
   }
 
   /**
-   * Specifies the flexible layout type.
-   */
-  @Prop({ reflect: true }) readonly type: TabType;
-  @Watch("type")
-  handleTypeChange(newType: TabType) {
-    this.#initializeState(newType);
-  }
-
-  /**
    * Fired when an item of the main group is double clicked.
    */
   @Event() expandMainGroup: EventEmitter<string>;
@@ -385,12 +378,12 @@ export class ChTab implements DraggableView {
   /**
    * Fired the close button of an item is clicked.
    */
-  @Event() itemClose: EventEmitter<TabItemCloseInfo>;
+  @Event() itemClose: EventEmitter<ListItemCloseInfo>;
 
   /**
    * Fired when the selected item change.
    */
-  @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
+  @Event() selectedItemChange: EventEmitter<ListSelectedItemInfo>;
 
   /**
    * Fired the first time a caption button is dragged outside of its tab list.
@@ -455,8 +448,7 @@ export class ChTab implements DraggableView {
       this.selectedItemChange.emit({
         lastSelectedIndex: this.#selectedIndex,
         newSelectedId: itemId,
-        newSelectedIndex: index,
-        type: this.type
+        newSelectedIndex: index
       });
 
       this.#selectedIndex = index;
@@ -477,12 +469,12 @@ export class ChTab implements DraggableView {
     });
   };
 
-  #handleItemDblClick = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  // #handleItemDblClick = (event: MouseEvent) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
 
-    this.expandMainGroup.emit();
-  };
+  //   this.expandMainGroup.emit();
+  // };
 
   #handleDragStart = (index: number) => (event: DragEvent) => {
     // Remove dragover event to allow mousemove event to fire
@@ -494,8 +486,9 @@ export class ChTab implements DraggableView {
     // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;
+    const direction = this.direction;
 
-    const getItemSize = isBlockDirection(this.#direction)
+    const getItemSize = isBlockDirection(direction)
       ? (item: HTMLElement) => item.getBoundingClientRect().width
       : (item: HTMLElement) => item.getBoundingClientRect().height;
     this.#itemSizes = [...this.#tabListRef.children].map(getItemSize);
@@ -508,12 +501,12 @@ export class ChTab implements DraggableView {
     const tabListSizes = getTabListSizesAndSetPosition(
       this.el,
       this.#tabListRef,
-      this.#direction,
+      direction,
       buttonRect
     );
 
     // Button information
-    const buttonSizes: TabElementSize = {
+    const buttonSizes: ListElementSize = {
       xStart: buttonRect.x,
       xEnd: buttonRect.x + buttonRect.width,
       yStart: buttonRect.y,
@@ -534,7 +527,7 @@ export class ChTab implements DraggableView {
     };
 
     // Store initial mouse position
-    this.#initialMousePosition = isBlockDirection(this.#direction)
+    this.#initialMousePosition = isBlockDirection(direction)
       ? mousePositionX
       : mousePositionY;
 
@@ -547,7 +540,7 @@ export class ChTab implements DraggableView {
 
     setButtonSize(
       this.el,
-      isBlockDirection(this.#direction) ? buttonRect.width : buttonRect.height
+      isBlockDirection(direction) ? buttonRect.width : buttonRect.height
     );
 
     // Update mouse offset to correctly place the dragged element preview
@@ -560,12 +553,12 @@ export class ChTab implements DraggableView {
     addGrabbingStyle();
 
     // Add listeners
-    document.body.addEventListener("mousemove", this.#handleItemDrag, {
+    document.addEventListener("mousemove", this.#handleItemDrag, {
       capture: true,
       passive: true
     });
 
-    document.body.addEventListener("mouseup", this.#handleDragEnd, {
+    document.addEventListener("mouseup", this.#handleDragEnd, {
       capture: true
     });
   };
@@ -577,11 +570,11 @@ export class ChTab implements DraggableView {
     cancelAnimationFrame(this.#cancelId);
     this.#needForRAF = true;
 
-    document.body.removeEventListener("mousemove", this.#handleItemDrag, {
+    document.removeEventListener("mousemove", this.#handleItemDrag, {
       capture: true
     });
 
-    document.body.removeEventListener("mouseup", this.#handleDragEnd, {
+    document.removeEventListener("mouseup", this.#handleDragEnd, {
       capture: true
     });
 
@@ -683,7 +676,7 @@ export class ChTab implements DraggableView {
 
       // In this point, the preview is inside the tab list, we should check
       // in which place is the preview to give feedback for the item's reorder
-      const mousePosition = isBlockDirection(this.#direction)
+      const mousePosition = isBlockDirection(this.direction)
         ? mousePositionX
         : mousePositionY;
 
@@ -731,8 +724,7 @@ export class ChTab implements DraggableView {
 
     this.itemClose.emit({
       itemIndex: index,
-      itemId: itemId,
-      type: this.type
+      itemId: itemId
     });
   };
 
@@ -750,7 +742,7 @@ export class ChTab implements DraggableView {
       "." + this.#classes.BUTTON
     ) as HTMLButtonElement;
 
-    keyEventHandler(this.#direction, event, currentFocusedCaption);
+    keyEventHandler(this.direction, event, currentFocusedCaption);
   };
 
   #imgRender = (item: FlexibleLayoutWidget) =>
@@ -823,7 +815,9 @@ export class ChTab implements DraggableView {
               ? this.#handleSelectedItemChange(index, item.id)
               : null
           }
-          onDblClick={this.type === "main" ? this.#handleItemDblClick : null}
+          // onDblClick={
+          //   this.direction === "main" ? this.#handleItemDblClick : null
+          // }
           // Drag and drop
           onDragStart={!this.dragDisabled ? this.#handleDragStart(index) : null}
         >
@@ -880,10 +874,10 @@ export class ChTab implements DraggableView {
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
       [DRAG_PREVIEW_INSIDE_INLINE]:
-        !this.hasCrossedBoundaries && !isBlockDirection(this.#direction),
+        !this.hasCrossedBoundaries && !isBlockDirection(this.direction),
 
       [DRAG_PREVIEW_INSIDE_BLOCK]:
-        !this.hasCrossedBoundaries && isBlockDirection(this.#direction)
+        !this.hasCrossedBoundaries && isBlockDirection(this.direction)
     };
 
     const decorativeImage = isPseudoElementImg(
@@ -924,34 +918,22 @@ export class ChTab implements DraggableView {
     );
   };
 
-  #initializeState = (type: TabType) => {
-    this.#direction = getDirection(type);
+  #initializeState = (direction: ListDirection) => {
     this.#updateRenderedPages(this.items);
 
     // Initialize classes and parts
-    this.#setClassesAndParts(this.#direction, type);
+    this.#setClassesAndParts(direction);
 
-    this.#showCaptions = isBlockDirection(this.#direction);
+    this.#showCaptions = isBlockDirection(direction);
   };
 
-  #setClassesAndParts = (direction: TabDirection, type: TabType) => {
-    this.#classes = {
-      BUTTON: BUTTON_CLASS(direction),
-      IMAGE: IMAGE_CLASS(direction),
-      PAGE: PAGE_CLASS(direction),
-      PAGE_CONTAINER: PAGE_CONTAINER_CLASS(direction),
-      PAGE_NAME: PAGE_NAME_CLASS(direction),
-      TAB_LIST: TAB_LIST_CLASS(direction)
-    };
-
-    // Add the type information to each part
-    Object.entries(this.#classes).forEach(([key, value]) => {
-      this.#parts[key] = `${value} ${type}`;
-    });
+  #setClassesAndParts = (direction: ListDirection) => {
+    this.#classes = LIST_CLASSES;
+    this.#parts = direction === "block" ? LIST_PART_BLOCK : LIST_PART_INLINE;
   };
 
   componentWillLoad() {
-    this.#initializeState(this.type);
+    this.#initializeState(this.direction);
   }
 
   render() {
@@ -967,7 +949,7 @@ export class ChTab implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host class={`ch-tab-direction--${this.#direction}`}>
+      <Host class={`ch-list-direction--${this.direction}`}>
         {this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

@@ -33,7 +33,7 @@ graph TD;
   ch-test-flexible-layout --> ch-grid-columnset
   ch-test-flexible-layout --> ch-grid-column
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
   ch-action-group-render --> ch-dropdown-item
   ch-action-group-render --> ch-action-group

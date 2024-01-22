@@ -31,7 +31,7 @@ import {
   ListSelectedItemInfo,
   ListType
 } from "../list/types";
-import { ChSortableCustomEvent } from "../../components";
+import { ChListCustomEvent } from "../../components";
 import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
@@ -226,8 +226,7 @@ export class ChFlexibleLayout {
   };
 
   private handleItemChange =
-    (viewId: string) =>
-    (event: ChSortableCustomEvent<ListSelectedItemInfo>) => {
+    (viewId: string) => (event: ChListCustomEvent<ListSelectedItemInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -240,7 +239,7 @@ export class ChFlexibleLayout {
     };
 
   private handleItemClose =
-    (viewId: string) => (event: ChSortableCustomEvent<ListItemCloseInfo>) => {
+    (viewId: string) => (event: ChListCustomEvent<ListItemCloseInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -253,7 +252,7 @@ export class ChFlexibleLayout {
     };
 
   private handleDragStart =
-    (viewId: string) => async (event: ChSortableCustomEvent<number>) => {
+    (viewId: string) => async (event: ChListCustomEvent<number>) => {
       event.stopPropagation();
 
       // We MUST store the reference before the Promise.allSettle, otherwise

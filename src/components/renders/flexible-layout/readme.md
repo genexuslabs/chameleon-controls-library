@@ -27,7 +27,7 @@ the sibling view that its added with.
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `parentGroup`                      | `string`                                                                                                                                                    |             |
 | `siblingItem`                      | `string`                                                                                                                                                    |             |
-| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                       |             |
 | `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
 | `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
 

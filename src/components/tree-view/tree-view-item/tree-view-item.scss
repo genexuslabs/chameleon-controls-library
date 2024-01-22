@@ -151,8 +151,8 @@
   flex: 1;
   cursor: pointer;
 
-  // This distinction is necessary to avoid showing a separation at the end of
-  // the input when editing a caption
+  // This distinction is necessary to avoid displaying a separation at the end
+  // of the input when editing the caption
   &--end-img {
     grid-template: "start-img text end-img" / max-content 1fr max-content;
   }

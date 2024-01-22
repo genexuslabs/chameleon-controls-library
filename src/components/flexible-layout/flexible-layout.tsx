@@ -41,6 +41,9 @@ import {
 import { getViewInfo } from "../renders/flexible-layout/utils";
 import { isRTL } from "../../common/utils";
 
+const getTabDirection = (tabType: ListType) =>
+  tabType === "main" || tabType === "blockEnd" ? "block" : "inline";
+
 // Keys
 const ESCAPE_KEY = "Escape";
 // const KEY_B = "KeyB";
@@ -387,10 +390,11 @@ export class ChFlexibleLayout {
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
+      part={`view ${getTabDirection(tabType)} ${tabType}`}
       exportparts={viewInfo.exportParts}
       items={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
-      type={tabType}
+      direction={getTabDirection(tabType)}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onItemDragStart={this.handleDragStart(viewInfo.id)}

@@ -1,17 +1,40 @@
 import { FlexibleLayoutWidget } from "../flexible-layout/types";
-import { ListDirection, ListType } from "./types";
+import { ListType } from "./types";
 
 // Classes and parts
-export const BUTTON_CLASS = (direction: ListDirection) =>
-  `${direction}__button`;
-export const IMAGE_CLASS = (direction: ListDirection) => `${direction}__img`;
-export const PAGE_CLASS = (direction: ListDirection) => `${direction}__page`;
-export const PAGE_CONTAINER_CLASS = (direction: ListDirection) =>
-  `${direction}__page-container`;
-export const PAGE_NAME_CLASS = (direction: ListDirection) =>
-  `${direction}__page-name`;
-export const TAB_LIST_CLASS = (direction: ListDirection) =>
-  `${direction}__tab-list`;
+export const BUTTON_CLASS = "button";
+export const IMAGE_CLASS = "img";
+export const PAGE_CLASS = "page";
+export const PAGE_CONTAINER_CLASS = "page-container";
+export const PAGE_NAME_CLASS = "page-name";
+export const TAB_LIST_CLASS = "tab-list";
+
+export const LIST_CLASSES = {
+  BUTTON: BUTTON_CLASS,
+  IMAGE: IMAGE_CLASS,
+  PAGE: PAGE_CLASS,
+  PAGE_CONTAINER: PAGE_CONTAINER_CLASS,
+  PAGE_NAME: PAGE_NAME_CLASS,
+  TAB_LIST: TAB_LIST_CLASS
+};
+
+export const LIST_PART_BLOCK = {
+  BUTTON: BUTTON_CLASS + " block",
+  IMAGE: IMAGE_CLASS + " block",
+  PAGE: PAGE_CLASS + " block",
+  PAGE_CONTAINER: PAGE_CONTAINER_CLASS + " block",
+  PAGE_NAME: PAGE_NAME_CLASS + " block",
+  TAB_LIST: TAB_LIST_CLASS + " block"
+};
+
+export const LIST_PART_INLINE = {
+  BUTTON: BUTTON_CLASS + " inline",
+  IMAGE: IMAGE_CLASS + " inline",
+  PAGE: PAGE_CLASS + " inline",
+  PAGE_CONTAINER: PAGE_CONTAINER_CLASS + " inline",
+  PAGE_NAME: PAGE_NAME_CLASS + " inline",
+  TAB_LIST: TAB_LIST_CLASS + " inline"
+};
 
 // Ids
 export const CAPTION_ID = (name: string) => `caption-${name}`;
@@ -27,7 +50,8 @@ export const DRAG_PREVIEW_INSIDE_INLINE =
   "drag-preview--inside-tab-list__inline";
 export const SELECTED_PART = "selected";
 
-const additionalParts = [
+const partsArray = [
+  ...Object.values(LIST_CLASSES),
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
   DRAG_PREVIEW_ELEMENT,
@@ -35,33 +59,17 @@ const additionalParts = [
   DRAG_PREVIEW_INSIDE_BLOCK,
   DRAG_PREVIEW_INSIDE_INLINE,
   SELECTED_PART
-].join(",");
-
-export const TAB_TYPE_PARTS = [
-  BUTTON_CLASS,
-  IMAGE_CLASS,
-  PAGE_CLASS,
-  PAGE_CONTAINER_CLASS,
-  PAGE_NAME_CLASS,
-  TAB_LIST_CLASS
 ];
 
-const BLOCK_PARTS = TAB_TYPE_PARTS.map(partFunction =>
-  partFunction("block")
-).join(",");
+const PARTS = partsArray.join(",");
 
-const INLINE_PARTS = TAB_TYPE_PARTS.map(partFunction =>
-  partFunction("inline")
-).join(",");
+export const INLINE_START_PARTS = PARTS + ",inline,inline:inlineStart";
 
-export const INLINE_START_PARTS =
-  INLINE_PARTS + ",inlineStart," + additionalParts;
+export const MAIN_PARTS = PARTS + ",block,block:main";
 
-export const MAIN_PARTS = BLOCK_PARTS + ",main," + additionalParts;
+export const INLINE_END_PARTS = PARTS + ",inline,inline:inlineEnd";
 
-export const INLINE_END_PARTS = INLINE_PARTS + ",inlineEnd," + additionalParts;
-
-export const BLOCK_END_PARTS = BLOCK_PARTS + ",blockEnd," + additionalParts;
+export const BLOCK_END_PARTS = PARTS + ",block,block:blockEnd";
 
 export const CAPTION_PARTS = (widgets: FlexibleLayoutWidget[]) =>
   widgets.map(item => CAPTION_ID(item.id)).join(",");

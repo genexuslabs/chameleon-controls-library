@@ -21,11 +21,9 @@ import {
   ListDirection,
   ListElementSize,
   ListItemCloseInfo,
-  ListSelectedItemInfo,
-  ListType
+  ListSelectedItemInfo
 } from "./types";
 import {
-  BUTTON_CLASS,
   CAPTION_ID,
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
@@ -33,13 +31,11 @@ import {
   DRAG_PREVIEW_INSIDE_BLOCK,
   DRAG_PREVIEW_INSIDE_INLINE,
   DRAG_PREVIEW_OUTSIDE,
-  IMAGE_CLASS,
-  PAGE_CLASS,
-  PAGE_CONTAINER_CLASS,
+  LIST_CLASSES,
+  LIST_PART_BLOCK,
+  LIST_PART_INLINE,
   PAGE_ID,
-  PAGE_NAME_CLASS,
-  SELECTED_PART,
-  TAB_LIST_CLASS
+  SELECTED_PART
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
@@ -91,8 +87,6 @@ const isDecorativeImg = (item: FlexibleLayoutWidget) =>
   item.startImageSrc &&
   (!item.startImageType || item.startImageType === "pseudo-element");
 
-const getDirection = (type: ListType): ListDirection =>
-  type === "main" || type === "blockEnd" ? "block" : "inline";
 const isBlockDirection = (direction: ListDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
@@ -172,8 +166,9 @@ const setMouseOffset = (
   setProperty(element, MOUSE_OFFSET_Y, offsetY);
 };
 
-const addGrabbingStyle = () => document.style.setProperty("cursor", "grabbing");
-const removeGrabbingStyle = () => document.style.removeProperty("cursor");
+const addGrabbingStyle = () =>
+  document.body.style.setProperty("cursor", "grabbing");
+const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
 
 const focusNextOrPreviousCaption = (
   focusNextSibling: boolean,
@@ -225,7 +220,6 @@ export class ChList implements DraggableView {
     PAGE_NAME?: string;
     TAB_LIST?: string;
   } = {};
-  #direction: ListDirection;
 
   #selectedIndex: number = -1;
 
@@ -335,6 +329,15 @@ export class ChList implements DraggableView {
   @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
+   * Specifies the flexible layout type.
+   */
+  @Prop({ reflect: true }) readonly direction: ListDirection;
+  @Watch("direction")
+  directionChange(newDirection: ListDirection) {
+    this.#initializeState(newDirection);
+  }
+
+  /**
    * This attribute lets you specify if the drag operation is disabled in the
    * captions of the control. If `true`, the captions can't be dragged.
    */
@@ -363,15 +366,6 @@ export class ChList implements DraggableView {
   @Watch("selectedId")
   handleSelectedIdChange(newSelectedId: string) {
     this.#renderedPages.add(newSelectedId);
-  }
-
-  /**
-   * Specifies the flexible layout type.
-   */
-  @Prop({ reflect: true }) readonly type: ListType;
-  @Watch("type")
-  handleTypeChange(newType: ListType) {
-    this.#initializeState(newType);
   }
 
   /**
@@ -452,8 +446,7 @@ export class ChList implements DraggableView {
       this.selectedItemChange.emit({
         lastSelectedIndex: this.#selectedIndex,
         newSelectedId: itemId,
-        newSelectedIndex: index,
-        type: this.type
+        newSelectedIndex: index
       });
 
       this.#selectedIndex = index;
@@ -474,12 +467,12 @@ export class ChList implements DraggableView {
     });
   };
 
-  #handleItemDblClick = (event: MouseEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
+  // #handleItemDblClick = (event: MouseEvent) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
 
-    this.expandMainGroup.emit();
-  };
+  //   this.expandMainGroup.emit();
+  // };
 
   #handleDragStart = (index: number) => (event: DragEvent) => {
     // Remove dragover event to allow mousemove event to fire
@@ -491,8 +484,9 @@ export class ChList implements DraggableView {
     // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const mousePositionX = event.clientX;
     const mousePositionY = event.clientY;
+    const direction = this.direction;
 
-    const getItemSize = isBlockDirection(this.#direction)
+    const getItemSize = isBlockDirection(direction)
       ? (item: HTMLElement) => item.getBoundingClientRect().width
       : (item: HTMLElement) => item.getBoundingClientRect().height;
     this.#itemSizes = [...this.#tabListRef.children].map(getItemSize);
@@ -505,7 +499,7 @@ export class ChList implements DraggableView {
     const tabListSizes = getTabListSizesAndSetPosition(
       this.el,
       this.#tabListRef,
-      this.#direction,
+      direction,
       buttonRect
     );
 
@@ -531,7 +525,7 @@ export class ChList implements DraggableView {
     };
 
     // Store initial mouse position
-    this.#initialMousePosition = isBlockDirection(this.#direction)
+    this.#initialMousePosition = isBlockDirection(direction)
       ? mousePositionX
       : mousePositionY;
 
@@ -544,7 +538,7 @@ export class ChList implements DraggableView {
 
     setButtonSize(
       this.el,
-      isBlockDirection(this.#direction) ? buttonRect.width : buttonRect.height
+      isBlockDirection(direction) ? buttonRect.width : buttonRect.height
     );
 
     // Update mouse offset to correctly place the dragged element preview
@@ -680,7 +674,7 @@ export class ChList implements DraggableView {
 
       // In this point, the preview is inside the tab list, we should check
       // in which place is the preview to give feedback for the item's reorder
-      const mousePosition = isBlockDirection(this.#direction)
+      const mousePosition = isBlockDirection(this.direction)
         ? mousePositionX
         : mousePositionY;
 
@@ -728,8 +722,7 @@ export class ChList implements DraggableView {
 
     this.itemClose.emit({
       itemIndex: index,
-      itemId: itemId,
-      type: this.type
+      itemId: itemId
     });
   };
 
@@ -747,7 +740,7 @@ export class ChList implements DraggableView {
       "." + this.#classes.BUTTON
     ) as HTMLButtonElement;
 
-    keyEventHandler(this.#direction, event, currentFocusedCaption);
+    keyEventHandler(this.direction, event, currentFocusedCaption);
   };
 
   #imgRender = (item: FlexibleLayoutWidget) =>
@@ -817,7 +810,9 @@ export class ChList implements DraggableView {
               ? this.#handleSelectedItemChange(index, item.id)
               : null
           }
-          onDblClick={this.type === "main" ? this.#handleItemDblClick : null}
+          // onDblClick={
+          //   this.direction === "main" ? this.#handleItemDblClick : null
+          // }
           // Drag and drop
           onDragStart={!this.dragDisabled ? this.#handleDragStart(index) : null}
         >
@@ -874,10 +869,10 @@ export class ChList implements DraggableView {
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
 
       [DRAG_PREVIEW_INSIDE_INLINE]:
-        !this.hasCrossedBoundaries && !isBlockDirection(this.#direction),
+        !this.hasCrossedBoundaries && !isBlockDirection(this.direction),
 
       [DRAG_PREVIEW_INSIDE_BLOCK]:
-        !this.hasCrossedBoundaries && isBlockDirection(this.#direction)
+        !this.hasCrossedBoundaries && isBlockDirection(this.direction)
     };
 
     return (
@@ -913,34 +908,22 @@ export class ChList implements DraggableView {
     );
   };
 
-  #initializeState = (type: ListType) => {
-    this.#direction = getDirection(type);
+  #initializeState = (direction: ListDirection) => {
     this.#updateRenderedPages(this.items);
 
     // Initialize classes and parts
-    this.#setClassesAndParts(this.#direction, type);
+    this.#setClassesAndParts(direction);
 
-    this.#showCaptions = isBlockDirection(this.#direction);
+    this.#showCaptions = isBlockDirection(direction);
   };
 
-  #setClassesAndParts = (direction: ListDirection, type: ListType) => {
-    this.#classes = {
-      BUTTON: BUTTON_CLASS(direction),
-      IMAGE: IMAGE_CLASS(direction),
-      PAGE: PAGE_CLASS(direction),
-      PAGE_CONTAINER: PAGE_CONTAINER_CLASS(direction),
-      PAGE_NAME: PAGE_NAME_CLASS(direction),
-      TAB_LIST: TAB_LIST_CLASS(direction)
-    };
-
-    // Add the type information to each part
-    Object.entries(this.#classes).forEach(([key, value]) => {
-      this.#parts[key] = `${value} ${type}`;
-    });
+  #setClassesAndParts = (direction: ListDirection) => {
+    this.#classes = LIST_CLASSES;
+    this.#parts = direction === "block" ? LIST_PART_BLOCK : LIST_PART_INLINE;
   };
 
   componentWillLoad() {
-    this.#initializeState(this.type);
+    this.#initializeState(this.direction);
   }
 
   render() {
@@ -956,7 +939,7 @@ export class ChList implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host class={`ch-list-direction--${this.#direction}`}>
+      <Host class={`ch-list-direction--${this.direction}`}>
         {this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

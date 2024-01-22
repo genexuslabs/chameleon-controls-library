@@ -17,16 +17,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 //   grid-auto-rows: max-content;
 // }
 
-:host([type="inlineStart"]) {
-  grid-template-columns: max-content 1fr;
-}
-
 :host(.ch-list-direction--block) {
   grid-template-rows: max-content 1fr;
 }
 
-:host([type="inlineEnd"]) {
-  grid-template-columns: 1fr max-content;
+:host(.ch-list-direction--inline) {
+  grid-template-columns: max-content 1fr;
 }
 
 // - - - - - - - - - - - - - - - -
@@ -73,7 +69,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   opacity: 0;
 }
 
-.block__button {
+.button {
   display: flex;
   align-items: center;
 
@@ -191,18 +187,13 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 // - - - - - - - - - - - - - - - -
 //            Tab lists
 // - - - - - - - - - - - - - - - -
-.inline__tab-list {
+:host([direction="inline"]) > .tab-list {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
-
-  // Change the visual order, but no the order in the HTML
-  :host([type="inlineEnd"]) > & {
-    order: 1;
-  }
 }
 
-.block__tab-list {
+:host([direction="block"]) > .tab-list {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;

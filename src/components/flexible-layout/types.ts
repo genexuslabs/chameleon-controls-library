@@ -106,7 +106,6 @@ export type FlexibleLayoutLeafInfo = {
 export type ViewItemCloseInfo = {
   itemId: string;
   itemIndex: number;
-  type: ListType;
   viewId: string;
 };
 
@@ -114,7 +113,6 @@ export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
   newSelectedIndex: number;
-  type: ListType;
   viewId: string;
 };
 

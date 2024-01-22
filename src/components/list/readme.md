@@ -1,9 +1,6 @@
-# ch-tab
-
-
+# ch-list
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -17,16 +14,14 @@
 | `selectedId`                | `selected-id`                  | Specifies the selected item of the widgets array.                                                                                                                                                                          | `string`                                               | `undefined` |
 | `type`                      | `type`                         | Specifies the flexible layout type.                                                                                                                                                                                        | `"blockEnd" \| "inlineEnd" \| "inlineStart" \| "main"` | `undefined` |
 
-
 ## Events
 
-| Event                | Description                                                               | Type                                                                                                          |
-| -------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `expandMainGroup`    | Fired when an item of the main group is double clicked.                   | `CustomEvent<string>`                                                                                         |
-| `itemClose`          | Fired the close button of an item is clicked.                             | `CustomEvent<{ itemId: string; itemIndex: number; type: TabType; }>`                                          |
-| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list. | `CustomEvent<number>`                                                                                         |
-| `selectedItemChange` | Fired when the selected item change.                                      | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; }>` |
-
+| Event                | Description                                                               | Type                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `expandMainGroup`    | Fired when an item of the main group is double clicked.                   | `CustomEvent<string>`                                                                                          |
+| `itemClose`          | Fired the close button of an item is clicked.                             | `CustomEvent<{ itemId: string; itemIndex: number; type: ListType; }>`                                          |
+| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list. | `CustomEvent<number>`                                                                                          |
+| `selectedItemChange` | Fired when the selected item change.                                      | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: ListType; }>` |
 
 ## Methods
 
@@ -39,8 +34,6 @@ keyboard interaction.
 
 Type: `Promise<void>`
 
-
-
 ### `getDraggableViews() => Promise<DraggableViewInfo>`
 
 Returns the info associated to the draggable view.
@@ -49,8 +42,6 @@ Returns the info associated to the draggable view.
 
 Type: `Promise<DraggableViewInfo>`
 
-
-
 ### `promoteDragPreviewToTopLayer() => Promise<void>`
 
 Promotes the drag preview to the top layer. Useful to avoid z-index issues.
@@ -58,8 +49,6 @@ Promotes the drag preview to the top layer. Useful to avoid z-index issues.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removePage(pageId: string, forceRerender?: boolean) => Promise<void>`
 
@@ -76,22 +65,21 @@ Given an id, remove the page from the render
 
 Type: `Promise<void>`
 
-
-
-
 ## Dependencies
 
 ### Used by
 
- - [ch-flexible-layout](../flexible-layout)
+- [ch-flexible-layout](../flexible-layout)
 
 ### Graph
+
 ```mermaid
 graph TD;
-  ch-flexible-layout --> ch-tab
-  style ch-tab fill:#f9f,stroke:#333,stroke-width:4px
+  ch-flexible-layout --> ch-list
+  style ch-list fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_
+

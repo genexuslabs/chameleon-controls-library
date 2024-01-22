@@ -26,8 +26,12 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "../tab/types";
-import { ChTabCustomEvent } from "../../components";
+import {
+  ListItemCloseInfo,
+  ListSelectedItemInfo,
+  ListType
+} from "../list/types";
+import { ChSortableCustomEvent } from "../../components";
 import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
@@ -164,8 +168,8 @@ export class ChFlexibleLayout {
     }
 
     const viewRef = this.el.shadowRoot.querySelector(
-      `ch-tab[id='${viewInfo.id}']`
-    ) as HTMLChTabElement;
+      `ch-list[id='${viewInfo.id}']`
+    ) as HTMLChListElement;
     await viewRef.removePage(itemId, forceRerender);
   }
 
@@ -222,7 +226,8 @@ export class ChFlexibleLayout {
   };
 
   private handleItemChange =
-    (viewId: string) => (event: ChTabCustomEvent<TabSelectedItemInfo>) => {
+    (viewId: string) =>
+    (event: ChSortableCustomEvent<ListSelectedItemInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -235,7 +240,7 @@ export class ChFlexibleLayout {
     };
 
   private handleItemClose =
-    (viewId: string) => (event: ChTabCustomEvent<TabItemCloseInfo>) => {
+    (viewId: string) => (event: ChSortableCustomEvent<ListItemCloseInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -248,14 +253,14 @@ export class ChFlexibleLayout {
     };
 
   private handleDragStart =
-    (viewId: string) => async (event: ChTabCustomEvent<number>) => {
+    (viewId: string) => async (event: ChSortableCustomEvent<number>) => {
       event.stopPropagation();
 
       // We MUST store the reference before the Promise.allSettle, otherwise
       // the event target will be the flexible-layout control
       this.#draggedViewRef = event.target;
 
-      const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
+      const views = [...this.el.shadowRoot.querySelectorAll("ch-list")];
 
       this.#dragInfo = {
         index: event.detail,
@@ -378,8 +383,8 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutLeafInfo) => (
-    <ch-tab
+  private renderTab = (tabType: ListType, viewInfo: FlexibleLayoutLeafInfo) => (
+    <ch-list
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
@@ -396,7 +401,7 @@ export class ChFlexibleLayout {
         widget =>
           widget.wasRendered && <slot name={widget.id} slot={widget.id} />
       )}
-    </ch-tab>
+    </ch-list>
   );
 
   private renderView = (view: FlexibleLayoutLeafInfo) =>

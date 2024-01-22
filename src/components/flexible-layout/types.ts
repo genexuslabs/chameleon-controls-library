@@ -5,12 +5,12 @@ import {
   LayoutSplitterDistributionLeaf,
   LayoutSplitterItemRemoveResult
 } from "../layout-splitter/types";
-import { TabType } from "../tab/types";
+import { ListType } from "../list/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
-export type ViewType = TabType | "blockStart";
+export type ViewType = ListType | "blockStart";
 export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 
 /*
@@ -106,7 +106,7 @@ export type FlexibleLayoutLeafInfo = {
 export type ViewItemCloseInfo = {
   itemId: string;
   itemIndex: number;
-  type: TabType;
+  type: ListType;
   viewId: string;
 };
 
@@ -114,7 +114,7 @@ export type ViewSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
   newSelectedIndex: number;
-  type: TabType;
+  type: ListType;
   viewId: string;
 };
 

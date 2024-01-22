@@ -70,7 +70,7 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 ```mermaid
 graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
   ch-test-flexible-layout --> ch-flexible-layout-render
   style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px

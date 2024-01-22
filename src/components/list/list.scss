@@ -5,7 +5,7 @@
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
-  --ch-tab-transition-duration: 150ms;
+  --ch-list-transition-duration: 150ms;
 
   display: grid;
   block-size: 100%;
@@ -21,7 +21,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   grid-template-columns: max-content 1fr;
 }
 
-:host(.ch-tab-direction--block) {
+:host(.ch-list-direction--block) {
   grid-template-rows: max-content 1fr;
 }
 
@@ -58,7 +58,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .decorative-image::before {
   content: "";
-  -webkit-mask: var(--ch-tab-decorative-image) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: var(--ch-list-decorative-image) 50% 50% / 100% 100% no-repeat;
   background-color: currentColor;
 }
 
@@ -98,10 +98,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .drag-preview {
   // "clamp" implements snap to the edges
-  --ch-tab-snap-drag-preview: clamp(
-    var(--ch-tab-tab-list-start),
-    var(--ch-tab-mouse-position),
-    var(--ch-tab-tab-list-end)
+  --ch-list-snap-drag-preview: clamp(
+    var(--ch-list-tab-list-start),
+    var(--ch-list-mouse-position),
+    var(--ch-list-tab-list-end)
   );
 
   position: fixed;
@@ -134,57 +134,57 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   // Drag outside
   &--outside-tab-list {
     transform: translate(
-      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
-      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
+      calc(var(--ch-list-mouse-position-x) - var(--ch-list-mouse-offset-x)),
+      calc(var(--ch-list-mouse-position-y) - var(--ch-list-mouse-offset-y))
     );
   }
 
   // Drag inside (block)
   &--inside-tab-list__block {
-    --ch-tab-mouse-position: calc(
-      var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
+    --ch-list-mouse-position: calc(
+      var(--ch-list-mouse-position-x) - var(--ch-list-mouse-offset-x)
     );
 
     transform: translate(
-      var(--ch-tab-snap-drag-preview),
-      var(--ch-tab-button-position-y)
+      var(--ch-list-snap-drag-preview),
+      var(--ch-list-button-position-y)
     );
   }
 
   // Drag inside (inline)
   &--inside-tab-list__inline {
-    --ch-tab-mouse-position: calc(
-      var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)
+    --ch-list-mouse-position: calc(
+      var(--ch-list-mouse-position-y) - var(--ch-list-mouse-offset-y)
     );
 
     transform: translate(
-      var(--ch-tab-button-position-x),
-      var(--ch-tab-snap-drag-preview)
+      var(--ch-list-button-position-x),
+      var(--ch-list-snap-drag-preview)
     );
   }
 }
 
 .shifted-element {
-  transition: transform var(--ch-tab-transition-duration);
+  transition: transform var(--ch-list-transition-duration);
 }
 
-:host(.ch-tab-direction--block) {
+:host(.ch-list-direction--block) {
   .shifted-element--start {
-    transform: translate(calc(var(--ch-tab-button-size) * -1), 0);
+    transform: translate(calc(var(--ch-list-button-size) * -1), 0);
   }
 
   .shifted-element--end {
-    transform: translate(var(--ch-tab-button-size), 0);
+    transform: translate(var(--ch-list-button-size), 0);
   }
 }
 
-:host(.ch-tab-direction--inline) {
+:host(.ch-list-direction--inline) {
   .shifted-element--start {
-    transform: translateY(calc(var(--ch-tab-button-size) * -1));
+    transform: translateY(calc(var(--ch-list-button-size) * -1));
   }
 
   .shifted-element--end {
-    transform: translateY(var(--ch-tab-button-size));
+    transform: translateY(var(--ch-list-button-size));
   }
 }
 

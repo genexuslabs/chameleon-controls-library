@@ -1,15 +1,16 @@
 import { FlexibleLayoutWidget } from "../flexible-layout/types";
-import { TabDirection, TabType } from "./types";
+import { ListDirection, ListType } from "./types";
 
 // Classes and parts
-export const BUTTON_CLASS = (direction: TabDirection) => `${direction}__button`;
-export const IMAGE_CLASS = (direction: TabDirection) => `${direction}__img`;
-export const PAGE_CLASS = (direction: TabDirection) => `${direction}__page`;
-export const PAGE_CONTAINER_CLASS = (direction: TabDirection) =>
+export const BUTTON_CLASS = (direction: ListDirection) =>
+  `${direction}__button`;
+export const IMAGE_CLASS = (direction: ListDirection) => `${direction}__img`;
+export const PAGE_CLASS = (direction: ListDirection) => `${direction}__page`;
+export const PAGE_CONTAINER_CLASS = (direction: ListDirection) =>
   `${direction}__page-container`;
-export const PAGE_NAME_CLASS = (direction: TabDirection) =>
+export const PAGE_NAME_CLASS = (direction: ListDirection) =>
   `${direction}__page-name`;
-export const TAB_LIST_CLASS = (direction: TabDirection) =>
+export const TAB_LIST_CLASS = (direction: ListDirection) =>
   `${direction}__tab-list`;
 
 // Ids
@@ -66,7 +67,7 @@ export const CAPTION_PARTS = (widgets: FlexibleLayoutWidget[]) =>
   widgets.map(item => CAPTION_ID(item.id)).join(",");
 
 export const tabTypeToPart: {
-  [key in TabType]: (widgets: FlexibleLayoutWidget[]) => string;
+  [key in ListType]: (widgets: FlexibleLayoutWidget[]) => string;
 } = {
   inlineStart: widgets => INLINE_START_PARTS + "," + CAPTION_PARTS(widgets),
   main: widgets => MAIN_PARTS + "," + CAPTION_PARTS(widgets),

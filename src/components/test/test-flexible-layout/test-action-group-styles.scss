@@ -5,9 +5,9 @@
 }
 
 .action-group::part(more-actions-list),
-.action-group-item::part(list),
-.dropdown::part(list),
-.dropdown-item::part(list) {
+.action-group-item::part(window),
+.dropdown::part(window),
+.dropdown-item::part(window) {
   width: max-content;
   padding-block: 4px;
   background-color: #fff;

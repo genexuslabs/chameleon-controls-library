@@ -172,9 +172,8 @@ const setMouseOffset = (
   setProperty(element, MOUSE_OFFSET_Y, offsetY);
 };
 
-const addGrabbingStyle = () =>
-  document.body.style.setProperty("cursor", "grabbing");
-const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
+const addGrabbingStyle = () => document.style.setProperty("cursor", "grabbing");
+const removeGrabbingStyle = () => document.style.removeProperty("cursor");
 
 const focusNextOrPreviousCaption = (
   focusNextSibling: boolean,
@@ -558,12 +557,12 @@ export class ChList implements DraggableView {
     addGrabbingStyle();
 
     // Add listeners
-    document.body.addEventListener("mousemove", this.#handleItemDrag, {
+    document.addEventListener("mousemove", this.#handleItemDrag, {
       capture: true,
       passive: true
     });
 
-    document.body.addEventListener("mouseup", this.#handleDragEnd, {
+    document.addEventListener("mouseup", this.#handleDragEnd, {
       capture: true
     });
   };
@@ -575,11 +574,11 @@ export class ChList implements DraggableView {
     cancelAnimationFrame(this.#cancelId);
     this.#needForRAF = true;
 
-    document.body.removeEventListener("mousemove", this.#handleItemDrag, {
+    document.removeEventListener("mousemove", this.#handleItemDrag, {
       capture: true
     });
 
-    document.body.removeEventListener("mouseup", this.#handleDragEnd, {
+    document.removeEventListener("mouseup", this.#handleDragEnd, {
       capture: true
     });
 

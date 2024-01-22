@@ -352,8 +352,6 @@ export class NextDataModeling implements ChComponent {
       );
 
       this.entityWasAdded = "none";
-
-      return;
     }
   }
 

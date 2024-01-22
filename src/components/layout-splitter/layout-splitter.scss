@@ -4,7 +4,6 @@
 
 :host {
   --ch-drag-bar__size: 5px;
-  --ch-drag-bar__position-fix: calc(0.5px - var(--ch-drag-bar__size) / 2);
 
   display: grid;
   position: relative;
@@ -20,8 +19,16 @@
 //               Bar
 // - - - - - - - - - - - - - - - -
 .bar {
-  position: absolute;
+  --position-fix: calc((var(--size, 0px) - var(--ch-drag-bar__size)) / 2);
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: currentColor;
   z-index: 1;
+
+  &[aria-disabled] {
+    pointer-events: none;
+  }
 
   // Remove default focus style
   &:focus-visible {
@@ -32,8 +39,6 @@
     content: "";
     display: flex;
     position: absolute;
-    inline-size: 100%;
-    block-size: 100%;
     background-color: currentColor;
     opacity: 0;
 
@@ -62,33 +67,29 @@
 }
 
 .direction--columns {
-  grid-template-columns: var(--ch-layout-splitter__grid-template-direction);
+  grid-template-columns: var(--ch-layout-splitter__distribution);
 
   & > .bar {
-    inset-block: 0;
-    inset-inline-start: calc(var(--ch-drag-bar__start-position));
-    inline-size: 1px;
     cursor: ew-resize;
 
     &::after {
+      block-size: 100%;
       inline-size: var(--ch-drag-bar__size);
-      margin-inline-start: var(--ch-drag-bar__position-fix);
+      margin-inline-start: var(--position-fix);
     }
   }
 }
 
 .direction--rows {
-  grid-template-rows: var(--ch-layout-splitter__grid-template-direction);
+  grid-template-rows: var(--ch-layout-splitter__distribution);
 
   & > .bar {
-    inset-inline: 0;
-    inset-block-start: calc(var(--ch-drag-bar__start-position));
-    block-size: 1px;
     cursor: ns-resize;
 
     &::after {
-      margin-block-start: var(--ch-drag-bar__position-fix);
       block-size: var(--ch-drag-bar__size);
+      inline-size: 100%;
+      margin-block-start: var(--position-fix);
     }
   }
 }

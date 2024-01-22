@@ -5,6 +5,7 @@ export type LayoutSplitterDirection = "rows" | "columns";
 export type LayoutSplitterSize = `${number}px` | `${number}fr`;
 
 export type LayoutSplitterDistribution = {
+  id: "root";
   direction: LayoutSplitterDirection;
   items: LayoutSplitterDistributionItem[];
 };
@@ -15,62 +16,76 @@ export type LayoutSplitterDistributionItem =
 
 export type LayoutSplitterDistributionLeaf = {
   id: string;
-  dragBarPart?: string;
+  dragBar?: LayoutSplitterDragBarConfig;
   fixedOffsetSize?: number;
-  hideDragBar?: boolean;
   size: LayoutSplitterSize;
 };
 
-export type LayoutSplitterDistributionGroup = {
+export type LayoutSplitterDistributionGroup = LayoutSplitterDistributionLeaf & {
   direction: LayoutSplitterDirection;
-  dragBarPart?: string;
-  hideDragBar?: boolean;
   items: LayoutSplitterDistributionItem[];
-  size: LayoutSplitterSize;
+};
+
+export type LayoutSplitterDragBarConfig = {
+  hidden?: boolean;
+  part?: string;
+  size?: number;
 };
 
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
-export type LayoutSplitterModel = {
-  direction: LayoutSplitterDirection;
-  fixedSizesSum: number;
-  items: LayoutSplitterModelItem[];
-};
+export type LayoutSplitterDistributionItemExtended<
+  T extends LayoutSplitterDistributionGroup | LayoutSplitterDistributionLeaf
+> = T extends LayoutSplitterDistributionGroup
+  ? {
+      item: LayoutSplitterDistributionGroup;
+      parentItem: LayoutSplitterDistributionGroup;
+      actualSize: string;
+      fixedSizesSum: number;
+    }
+  : {
+      item: LayoutSplitterDistributionLeaf;
+      parentItem: LayoutSplitterDistributionGroup;
+      actualSize: string;
+    };
 
-export type LayoutSplitterModelItem =
-  | LayoutSplitterModelLeaf
-  | LayoutSplitterModelGroup;
+// Aliases to improve code readability
+export type ItemExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>;
 
-export type LayoutSplitterModelLeaf = {
-  actualSize: string;
-  dragBarPart?: string;
-  dragBarPosition: string;
-  fixedOffsetSize?: number;
-  hideDragBar?: boolean;
-  id: string;
-  size: LayoutSplitterSize;
-};
+export type LeafExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionLeaf>;
 
-export type LayoutSplitterModelGroup = {
-  actualSize: string;
-  direction: LayoutSplitterDirection;
-  dragBarPart?: string;
-  dragBarPosition: string;
-  fixedOffsetSize?: number;
-  fixedSizesSum: number;
-  hideDragBar?: boolean;
-  items: LayoutSplitterModelItem[];
-  size: LayoutSplitterSize;
-};
+export type GroupExtended =
+  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>;
 
+// - - - - - - - - - - - - - - - - - - - -
+//               Event info
+// - - - - - - - - - - - - - - - - - - - -
 export type DragBarMouseDownEventInfo = {
+  container: HTMLElement;
+  containerSize: number;
   direction: LayoutSplitterDirection;
-  dragBar: HTMLElement;
-  dragBarContainer: HTMLElement;
-  dragBarContainerSize: number;
-  fixedSizesSum: number;
-  index: number;
-  layoutItems: LayoutSplitterModelItem[];
+  fixedSizesSumRoot: number;
+  itemStartId: string;
+  itemEndId: string;
+  layoutItems: LayoutSplitterDistributionItem[];
   RTL: boolean;
+};
+
+export type LayoutSplitterItemAddResult = {
+  success: boolean;
+  fixedSizesSumIncrement?: number;
+};
+
+export type LayoutSplitterItemRemoveResult = {
+  success: boolean;
+  reconnectedSubtree: LayoutSplitterReconnectedSubtree;
+  fixedSizesSumDecrement: number;
+};
+
+export type LayoutSplitterReconnectedSubtree = {
+  nodeToRemove: string;
+  nodeToReconnect: string;
 };

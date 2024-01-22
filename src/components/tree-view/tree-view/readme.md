@@ -7,12 +7,13 @@
 
 ## Properties
 
-| Property               | Attribute                 | Description                                                                                                        | Type      | Default |
-| ---------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------- | ------- |
-| `multiSelection`       | `multi-selection`         | Set this attribute if you want to allow multi selection of the items.                                              | `boolean` | `false` |
-| `openSubTreeCountdown` | `open-sub-tree-countdown` | This property lets you specify the time (in ms) that the mouse must be over in a subtree to open it when dragging. | `number`  | `750`   |
-| `scrollToEdgeOnDrag`   | `scroll-to-edge-on-drag`  | `true` to scroll in the tree when dragging an item near the edges of the tree.                                     | `boolean` | `true`  |
-| `waitDropProcessing`   | `wait-drop-processing`    | This property lets you specify if the tree is waiting to process the drop of items.                                | `boolean` | `false` |
+| Property                | Attribute                 | Description                                                                                                        | Type                                          | Default     |
+| ----------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- | ----------- |
+| `multiSelection`        | `multi-selection`         | Set this attribute if you want to allow multi selection of the items.                                              | `boolean`                                     | `false`     |
+| `openSubTreeCountdown`  | `open-sub-tree-countdown` | This property lets you specify the time (in ms) that the mouse must be over in a subtree to open it when dragging. | `number`                                      | `750`       |
+| `scrollToEdgeOnDrag`    | `scroll-to-edge-on-drag`  | `true` to scroll in the tree when dragging an item near the edges of the tree.                                     | `boolean`                                     | `true`      |
+| `selectedItemsCallback` | --                        | Callback that is executed to get the current selected items.                                                       | `() => Map<string, TreeViewItemSelectedInfo>` | `undefined` |
+| `waitDropProcessing`    | `wait-drop-processing`    | This property lets you specify if the tree is waiting to process the drop of items.                                | `boolean`                                     | `false`     |
 
 
 ## Events
@@ -28,21 +29,9 @@
 
 ## Methods
 
-### `clearSelectedItemsInfo() => Promise<void>`
-
-Clear all information about the selected items. This method is intended to
-be used when selected items are reordered and the selected references will
-no longer be useful.
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
-Given an item id, it displays and scrolls into the item view.
+Given an item id, it scrolls into the item view.
 
 #### Parameters
 

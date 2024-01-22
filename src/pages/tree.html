@@ -30,8 +30,19 @@
 
       fieldset {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: max-content max-content max-content;
         gap: 8px;
+      }
+
+      .flex-container {
+        display: flex;
+        gap: 8px;
+      }
+
+      .scroll-context {
+        display: grid;
+        max-height: calc(100vh - 274px);
+        overflow: auto;
       }
 
       .main-container {
@@ -430,7 +441,7 @@
           multi-selection="true"
         ></ch-tree-view-render>
 
-        <div>
+        <div class="scroll-context">
           <ch-textblock id="contextmenu-textblock"
             >+ + + + + + + Context + + + + + + +</ch-textblock
           >
@@ -487,7 +498,7 @@
               caption="Drop Enabled"
             ></ch-checkbox>
 
-            <label>
+            <label style="display: flex; flex-direction: column">
               Lines
               <select name="lines" id="lines">
                 <option value="all" selected>All lines</option>
@@ -495,14 +506,93 @@
                 <option value="none">None</option>
               </select>
             </label>
+
+            <label style="display: flex; flex-direction: column">
+              Expandable button
+              <select name="expandable-button" id="expandable-button">
+                <option value="action">Action</option>
+                <option value="decorative" selected>Decorative</option>
+                <option value="no">None</option>
+              </select>
+            </label>
+
+            <ch-checkbox
+              id="expand-on-click"
+              checked-value="true"
+              un-checked-value="false"
+              value="true"
+              caption="Expand on click"
+            ></ch-checkbox>
           </fieldset>
 
           <fieldset>
             <legend>Methods</legend>
 
-            <button id="expand-all" type="button">Expand All</button>
+            <div style="display: grid; gap: 8px">
+              <button id="expand-all" type="button">Expand All</button>
+              <button id="collapse-all" type="button">Collapse All</button>
+            </div>
 
-            <button id="collapse-all" type="button">Collapse All</button>
+            <fieldset style="grid-template-columns: max-content max-content">
+              <legend>Update items properties</legend>
+
+              <div class="flex-container" style="flex-direction: column">
+                <ch-checkbox
+                  id="update-items-properties-selected"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Selected"
+                ></ch-checkbox>
+
+                <ch-checkbox
+                  id="update-items-properties-checked"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Checked"
+                ></ch-checkbox>
+              </div>
+
+              <div class="flex-container">
+                <input
+                  aria-label="Items to update"
+                  id="items-to-update"
+                  placeholder="ItemId1,ItemId2,ItemId3"
+                  type="text"
+                />
+                <button id="button-items-to-update">Update items</button>
+              </div>
+            </fieldset>
+
+            <fieldset style="grid-template-columns: max-content max-content">
+              <legend>Scroll into visible</legend>
+
+              <div class="flex-container" style="flex-direction: column">
+                <ch-checkbox
+                  id="scroll-into-visible-selected"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Selected"
+                ></ch-checkbox>
+
+                <ch-checkbox
+                  id="scroll-into-visible-checked"
+                  checked-value="true"
+                  un-checked-value="false"
+                  value="false"
+                  caption="Checked"
+                ></ch-checkbox>
+              </div>
+
+              <div class="flex-container">
+                <input id="input-scroll-into-visible" type="text" />
+                <button id="btn-scroll-into-visible" type="button">
+                  Scroll into visible
+                </button>
+              </div>
+            </fieldset>
 
             <ch-checkbox
               id="check-all"
@@ -512,30 +602,23 @@
               caption="Check / uncheck all"
             ></ch-checkbox>
 
-            <div>
-              <input id="input-scroll-into-visible" type="text" />
-              <button id="btn-scroll-into-visible" type="button">
-                Scroll into visible
-              </button>
-            </div>
-
-            <div>
-              <label>
-                Item id
-                <input id="item-id-to-reload" type="text" />
-              </label>
+            <div class="flex-container">
+              <input
+                aria-label="Reload items"
+                id="item-id-to-reload"
+                placeholder="ItemId1"
+                type="text"
+              />
               <button id="button-to-reload-items">Reload items</button>
             </div>
 
-            <div>
-              <label>
-                Remove items
-                <input
-                  id="items-to-remove"
-                  placeholder="ItemId1,ItemId2,ItemId3"
-                  type="text"
-                />
-              </label>
+            <div class="flex-container">
+              <input
+                aria-label="Remove items"
+                id="items-to-remove"
+                placeholder="ItemId1,ItemId2,ItemId3"
+                type="text"
+              />
               <button id="button-items-to-remove">Remove items</button>
             </div>
           </fieldset>
@@ -598,7 +681,8 @@
     <script type="module">
       import {
         lazyLoadItemsDictionary,
-        kbExplorerModel
+        kbExplorerModel,
+        importObjectsModel
       } from "./assets/models/tree.js";
 
       const modelTiny = [
@@ -1163,6 +1247,14 @@
           testTreeX.editableItems = event.target.checked;
         });
 
+        // Expand on click
+        const expandOnClickCheckbox =
+          document.getElementById("expand-on-click");
+        expandOnClickCheckbox.addEventListener("input", event => {
+          const checked = event.target.checked;
+          testTreeX.expandOnClick = checked;
+        });
+
         const checkAllCheckbox = document.getElementById("check-all");
         checkAllCheckbox.addEventListener("input", event => {
           const checked = event.target.checked;
@@ -1195,10 +1287,19 @@
           testTreeX.dropDisabled = !checked;
         });
 
+        // Lines
         const linesSelect = document.getElementById("lines");
         linesSelect.addEventListener("input", event => {
           const selectedOption = event.target.value;
           testTreeX.showLines = selectedOption;
+        });
+
+        // Expandable button
+        const expandableButtonSelect =
+          document.getElementById("expandable-button");
+        expandableButtonSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          testTreeX.expandableButton = selectedOption;
         });
 
         const filterTypeSelect = document.getElementById("filter-type");
@@ -1277,7 +1378,7 @@
           testTreeX.treeModel = importObjectsModel;
         });
 
-        // Scroll into visible
+        // - - - - - - - - - - - - - -   Scroll into visible   - - - - - - - - - - - - - -
         const scrollIntoVisibleBtn = document.getElementById(
           "btn-scroll-into-visible"
         );
@@ -1285,12 +1386,66 @@
           "input-scroll-into-visible"
         );
 
+        const scrollIntoVisibleCheckedCheckbox = document.getElementById(
+          "scroll-into-visible-checked"
+        );
+        const scrollIntoVisibleSelectedCheckbox = document.getElementById(
+          "scroll-into-visible-selected"
+        );
+
         scrollIntoVisibleBtn.addEventListener("click", () => {
-          testTreeX.scrollIntoVisible(scrollIntoVisibleInput.value, {
-            selected: true
-          });
+          /** @type string */
+          const itemsString = scrollIntoVisibleInput.value;
+
+          if (!itemsString) {
+            return;
+          }
+
+          const pathToScrollIntoVisible = itemsString.split(/\s*,\s*/);
+
+          testTreeX.scrollIntoVisible(
+            pathToScrollIntoVisible.length === 1
+              ? pathToScrollIntoVisible[0]
+              : pathToScrollIntoVisible,
+            {
+              checked: scrollIntoVisibleCheckedCheckbox.value === "true",
+              selected: scrollIntoVisibleSelectedCheckbox.value === "true"
+            }
+          );
           scrollIntoVisibleInput.value = "";
         });
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+        // - - - - - - - - - - - - - - Update items properties - - - - - - - - - - - - - -
+        const updateItemsBtn = document.getElementById(
+          "button-items-to-update"
+        );
+        const updateItemsInput = document.getElementById("items-to-update");
+
+        const updateItemsCheckedCheckbox = document.getElementById(
+          "update-items-properties-checked"
+        );
+        const updateItemsSelectedCheckbox = document.getElementById(
+          "update-items-properties-selected"
+        );
+
+        updateItemsBtn.addEventListener("click", () => {
+          /** @type string */
+          const itemsString = updateItemsInput.value;
+
+          if (!itemsString) {
+            return;
+          }
+
+          const itemsToRemove = itemsString.split(/\s*,\s*/);
+
+          testTreeX.updateItemsProperties(itemsToRemove, {
+            checked: updateItemsCheckedCheckbox.value === "true",
+            selected: updateItemsSelectedCheckbox.value === "true"
+          });
+          updateItemsInput.value = "";
+        });
+        // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
         // Reload items
         const reloadItemsBtn = document.getElementById(
@@ -1365,6 +1520,10 @@
           if (allItemsWithCheckbox.length === 0) {
             checkAllCheckbox.checked = false;
             checkAllCheckbox.indeterminate = false;
+
+            checkedItemsTextBlock.innerHTML =
+              "<br>+ + + + + Checked items + + + + +<br><br><br>+ + + + + Unchecked items + + + + +<br>";
+
             return;
           }
 
@@ -1476,7 +1635,7 @@
 
             setTimeout(() => {
               resolve(structuredClone(lazyModel));
-            }, 500); // Resolves or rejects after 1 second
+            }, 750); // Resolves or rejects after 500ms second
           });
 
         testTreeX.dropItemsCallback = () =>

@@ -12,6 +12,7 @@ export type TreeViewItemModel = {
   dropDisabled?: boolean;
   editable?: boolean;
   expanded?: boolean;
+  expandableButton?: "action" | "decorative" | "no";
 
   /**
    * Used by the tree view to decide which is the last item in the list when
@@ -38,7 +39,6 @@ export type TreeViewItemModel = {
   render?: boolean;
   rightImgSrc?: string;
   selected?: boolean;
-  showExpandableButton?: boolean;
   toggleCheckboxes?: boolean;
 };
 
@@ -59,15 +59,19 @@ export type TreeViewItemCheckedInfo = {
   indeterminate: boolean;
 };
 
-export type TreeViewItemSelectedInfo = {
+export type TreeViewItemSelected = {
   ctrlKeyPressed: boolean;
   expanded: boolean;
   id: string;
-  itemRef: HTMLChTreeViewItemElement;
   metadata: string;
   parentId: string;
   selected: boolean;
 };
+
+export type TreeViewItemSelectedInfo = Pick<
+  TreeViewItemSelected,
+  "id" | "expanded" | "metadata" | "parentId"
+>;
 
 export type TreeViewItemOpenReferenceInfo = {
   id: string;

@@ -293,6 +293,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
  - [gx-grid-chameleon](../gx-grid)
 
 ### Depends on
@@ -307,6 +308,7 @@ graph TD;
   ch-grid --> ch-grid-settings-columns
   ch-grid-settings --> ch-window
   ch-window --> ch-window-close
+  ch-test-flexible-layout --> ch-grid
   gx-grid-chameleon --> ch-grid
   style ch-grid fill:#f9f,stroke:#333,stroke-width:4px
 ```

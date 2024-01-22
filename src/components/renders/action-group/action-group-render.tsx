@@ -100,17 +100,16 @@ export class ChActionGroupRender {
   //  */
   // @Event() expandedChange: EventEmitter<boolean>;
 
-  private handleItemClick =
-    (target: string, itemId: string) => (event: UIEvent) => {
-      this.itemClickCallback(event, target, itemId);
-    };
+  #handleItemClick = (target: string, itemId: string) => (event: UIEvent) => {
+    this.itemClickCallback(event, target, itemId);
+  };
 
-  private renderImg = (img: string) =>
+  #renderImg = (img: string) =>
     this.useGxRender
       ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
       : img;
 
-  private renderItem =
+  #renderItem =
     (responsiveCollapse: boolean) =>
     (item: ActionGroupItemModel, index: number) =>
       (
@@ -121,19 +120,19 @@ export class ChActionGroupRender {
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           expandBehavior={this.expandBehavior}
           href={item.link?.url}
-          leftImgSrc={this.renderImg(item.startImage)}
+          leftImgSrc={this.#renderImg(item.startImage)}
           openOnFocus={this.openOnFocus}
           position={
             (responsiveCollapse
               ? item.itemsResponsiveCollapsePosition
               : item.itemsPosition) || "OutsideEnd_InsideStart"
           }
-          rightImgSrc={this.renderImg(item.endImage)}
+          rightImgSrc={this.#renderImg(item.endImage)}
           shortcut={item.shortcut}
-          onClick={this.handleItemClick(item.link?.url, item.id)}
+          onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpanded
-              ? this.handleItemExpanded(item, "wasExpanded")
+              ? this.#handleItemExpanded(item, "wasExpanded")
               : null
           }
         >
@@ -141,7 +140,7 @@ export class ChActionGroupRender {
 
           {item.items != null &&
             item.wasExpanded &&
-            item.items.map(this.renderItem(responsiveCollapse))}
+            item.items.map(this.#renderItem(responsiveCollapse))}
 
           {
             // Render a dummy element if the control was not expanded and has items
@@ -152,10 +151,7 @@ export class ChActionGroupRender {
         </ch-dropdown-item>
       );
 
-  private firstLevelRenderItem = (
-    item: ActionGroupItemModel,
-    index: number
-  ) => {
+  #firstLevelRenderItem = (item: ActionGroupItemModel, index: number) => {
     // Dummy dropdown item to avoid issues when removing all items from the
     // first level. E. g., if the first level adds a chevron when the item is
     // a dropdown, by removing all items the chevron won't be displayed
@@ -175,14 +171,14 @@ export class ChActionGroupRender {
         expandBehavior={this.expandBehavior}
         forceContainingBlock={false}
         href={item.link?.url}
-        leftImgSrc={this.renderImg(item.startImage)}
+        leftImgSrc={this.#renderImg(item.startImage)}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
-        rightImgSrc={this.renderImg(item.endImage)}
-        onClick={this.handleItemClick(item.link?.url, item.id)}
+        rightImgSrc={this.#renderImg(item.endImage)}
+        onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
-            ? this.handleItemExpanded(item, "wasExpandedInFirstLevel")
+            ? this.#handleItemExpanded(item, "wasExpandedInFirstLevel")
             : null
         }
       >
@@ -193,14 +189,14 @@ export class ChActionGroupRender {
           (this.displayedItemsCount === -1 ||
             index < this.displayedItemsCount) &&
           item.items != null &&
-          item.items.map(this.renderItem(false))}
+          item.items.map(this.#renderItem(false))}
 
         {mustRenderDummySubElement && <ch-dropdown-item></ch-dropdown-item>}
       </ch-dropdown-item>
     );
   };
 
-  private handleItemExpanded =
+  #handleItemExpanded =
     (
       item: ActionGroupItemModel,
       propertyName: Extract<
@@ -213,7 +209,7 @@ export class ChActionGroupRender {
       forceUpdate(this);
     };
 
-  private firstLevelRenderCollapsedItem = (
+  #firstLevelRenderCollapsedItem = (
     item: ActionGroupItemModel,
     index: number
   ) => (
@@ -224,17 +220,17 @@ export class ChActionGroupRender {
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.link?.url}
-      leftImgSrc={this.renderImg(item.startImage)}
+      leftImgSrc={this.#renderImg(item.startImage)}
       openOnFocus={this.openOnFocus}
       position={
         item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
       }
-      rightImgSrc={this.renderImg(item.endImage)}
+      rightImgSrc={this.#renderImg(item.endImage)}
       shortcut={item.shortcut}
-      onClick={this.handleItemClick(item.link?.url, item.id)}
+      onClick={this.#handleItemClick(item.link?.url, item.id)}
       onExpandedChange={
         !item.wasExpandedInMoreActions
-          ? this.handleItemExpanded(item, "wasExpandedInMoreActions")
+          ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
           : null
       }
     >
@@ -244,7 +240,7 @@ export class ChActionGroupRender {
         // Render items when the parent is expanded the first time
         item.items != null &&
           item.wasExpandedInMoreActions &&
-          item.items.map(this.renderItem(true))
+          item.items.map(this.#renderItem(true))
       }
 
       {
@@ -256,13 +252,13 @@ export class ChActionGroupRender {
     </ch-dropdown-item>
   );
 
-  private handleDisplayedItemsCountChange = (
+  #handleDisplayedItemsCountChange = (
     event: ChActionGroupCustomEvent<number>
   ) => {
     this.displayedItemsCount = event.detail;
   };
 
-  private handleMoreActionButtonExpandedChange = () => {
+  #handleMoreActionButtonExpandedChange = () => {
     this.moreActionsButtonWasExpanded = true;
   };
 
@@ -281,10 +277,10 @@ export class ChActionGroupRender {
         itemsOverflowBehavior={this.itemsOverflowBehavior}
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
         openOnFocus={this.openOnFocus}
-        onDisplayedItemsCountChange={this.handleDisplayedItemsCountChange}
+        onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}
         onMoreActionsButtonExpandedChange={
           !this.moreActionsButtonWasExpanded
-            ? this.handleMoreActionButtonExpandedChange
+            ? this.#handleMoreActionButtonExpandedChange
             : null
         }
       >
@@ -294,14 +290,14 @@ export class ChActionGroupRender {
               slot="items"
               key={item.id || item.caption || index}
             >
-              {this.firstLevelRenderItem(item, index)}
+              {this.#firstLevelRenderItem(item, index)}
             </ch-action-group-item>
           ))}
 
         {thereAreCollapsedItems &&
           this.model
             .filter((_, index) => index >= this.displayedItemsCount)
-            .map(this.firstLevelRenderCollapsedItem)}
+            .map(this.#firstLevelRenderCollapsedItem)}
       </ch-action-group>
     );
   }

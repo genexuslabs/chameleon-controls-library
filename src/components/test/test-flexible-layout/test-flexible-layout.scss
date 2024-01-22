@@ -1,5 +1,6 @@
 @import "../../../common/_base";
 @import "./test-action-group-styles.scss";
+@import "./test-grid-styles.scss";
 
 @include box-sizing();
 
@@ -12,31 +13,39 @@ ch-test-flexible-layout {
     background-color: #e7e7e7;
   }
 
-  &::part(inline__page-container) {
+  &::part(page-container inline) {
     background-color: #f2f2f2;
   }
 
-  &::part(inline__tab-list) {
+  &::part(tab-list inline) {
     background-color: #e8e8e9;
     inline-size: 48px;
     gap: 4px;
   }
 
-  &::part(inline__button) {
+  &::part(view inlineEnd) {
+    grid-template-columns: 1fr max-content;
+  }
+
+  // Change the visual order, but no the order in the HTML
+  &::part(tab-list inlineEnd) {
+    order: 1;
+  }
+
+  &::part(button inline) {
     position: relative;
     block-size: 32px;
     inline-size: 48px;
 
     &::before {
-      content: "";
       display: flex;
       block-size: 100%;
       inline-size: 100%;
-      background-color: currentColor;
+      -webkit-mask-size: 16px;
     }
   }
 
-  &::part(inline__button selected) {
+  &::part(button selected inline) {
     &::after {
       content: "";
       display: flex;
@@ -49,31 +58,16 @@ ch-test-flexible-layout {
     }
   }
 
-  &::part(inline__button inlineEnd selected)::after {
+  &::part(button inlineEnd selected)::after {
     inset-inline-start: unset;
     inset-inline-end: 1px;
   }
 
-  &::part(caption-kb-explorer)::before {
-    -webkit-mask: url("assets/icons/toolbar/kb-explorer.svg") 50% 50% / 16px
-      16px no-repeat;
-  }
-
-  &::part(caption-preferences)::before {
-    -webkit-mask: url("assets/icons/toolbar/preferences.svg") 50% 50% / 16px
-      16px no-repeat;
-  }
-
-  &::part(caption-properties)::before {
-    -webkit-mask: url("assets/icons/toolbar/properties.svg") 50% 50% / 16px 16px
-      no-repeat;
-  }
-
-  &::part(inline__page-name) {
-    display: block;
-    padding-block: 8px;
-    padding-inline: 16px;
-  }
+  // &::part(page-name inline) {
+  //   display: block;
+  //   padding-block: 8px;
+  //   padding-inline: 16px;
+  // }
 
   &::part(close-button) {
     padding: 1px;
@@ -88,8 +82,13 @@ ch-test-flexible-layout {
     }
   }
 
+  &::part(button inline):focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: -1px;
+  }
+
   // Main, BlockEnd
-  &::part(block__button) {
+  &::part(button block) {
     padding-block: 6px;
     padding-inline: 16px 8px;
     gap: 8px;
@@ -101,18 +100,37 @@ ch-test-flexible-layout {
     }
   }
 
-  &::part(block__button selected) {
+  &::part(button block selected) {
     background-color: #fff;
   }
 
-  &::part(block__tab-list) {
+  &::part(button block selected blockEnd) {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline: 0;
+      block-size: 1px;
+      background-color: currentColor;
+      z-index: 1;
+    }
+  }
+
+  &::part(tab-list block) {
     background-color: #f7f7f7;
+    overflow: auto;
+  }
+
+  &::part(page-container) {
+    overflow: auto;
   }
 
   // - - - - - - - - - - - - - - - -
   //          Drag preview
   // - - - - - - - - - - - - - - - -
-  &::part(drag-preview-element block__button) {
+  &::part(drag-preview-element button block) {
     padding-inline: 25px;
   }
 

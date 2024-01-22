@@ -22,9 +22,18 @@ export const config: Config = {
   bundles: [
     {
       components: [
+        "ch-action-group",
+        "ch-action-group-item",
+        "ch-action-group-render"
+      ]
+    },
+
+    {
+      components: [
         "ch-dropdown",
         "ch-dropdown-item",
         "ch-dropdown-item-separator"
+        // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
       ]
     },
     {
@@ -32,6 +41,9 @@ export const config: Config = {
     },
     {
       components: ["ch-layout-splitter"] // Make sure the ch-layout-splitter control is not bundled with other components
+    },
+    {
+      components: ["ch-list"] // Make sure the ch-list control is not bundled with other components
     },
     {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]

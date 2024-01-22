@@ -202,7 +202,8 @@ $own-offset: calc(
 // - - - - - - - - - - - - - - - -
 //        Expandable button
 // - - - - - - - - - - - - - - - -
-.expandable-button {
+.expandable-button,
+.expandable-button-decorative::before {
   display: grid;
   place-items: center;
   width: var(--ch-tree-view-view__expandable-button-width);
@@ -212,6 +213,23 @@ $own-offset: calc(
   cursor: pointer;
   content-visibility: auto;
   contain-intrinsic-size: auto var(--ch-tree-view-view__expandable-button-width);
+}
+
+.expandable-button {
+  &-decorative {
+    &::before {
+      content: "";
+      background-color: currentColor;
+      -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>')
+        50% 50% / calc(100% - 2px) calc(100% - 2px) no-repeat;
+
+      cursor: unset;
+    }
+
+    &--collapsed::before {
+      transform: rotate(-90deg); // TODO: Add RTL support
+    }
+  }
 
   &::before {
     content: "";
@@ -300,14 +318,25 @@ $own-offset: calc(
 //           Downloading
 // - - - - - - - - - - - - - - - -
 .downloading {
+  $delay-to-show-downloading: 75ms;
+
   width: 0.75em;
   height: 0.75em;
-  margin-inline-start: 8px;
+  // The "2px" separation is necessary to avoid issues with the horizontal scrollbar in Firefox
+  margin-inline: 8px 2px;
   border: 2px solid currentColor;
   border-inline-start-color: transparent;
   border-radius: 50%;
   opacity: 0.75;
-  animation: spin 1s linear infinite;
+  animation: spin 1s linear infinite,
+    avoid-flickering $delay-to-show-downloading;
+}
+
+@keyframes avoid-flickering {
+  0%,
+  100% {
+    display: none;
+  }
 }
 
 @keyframes spin {
@@ -341,5 +370,4 @@ $own-offset: calc(
 .expandable--collapsed {
   display: none;
   overflow: hidden;
-  content-visibility: hidden;
 }

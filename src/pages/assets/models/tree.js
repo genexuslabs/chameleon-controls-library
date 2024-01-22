@@ -15,64 +15,72 @@ const KB_EXPLORER_ORDER = {
   images: 8
 };
 
+const FIRST_LEVEL_SIZE = 10;
+const SECOND_LEVEL_SIZE = 20;
+const THIRD_LEVEL_SIZE = 20;
+
+const kbExplorer_root = [
+  {
+    id: "Main_Programs",
+    caption: "Main Programs",
+    editable: false,
+    leftImgSrc: "assets/icons/category.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    lazy: true,
+    order: 0
+  },
+  {
+    id: "Root_Module",
+    caption: "Root Module",
+    editable: false,
+    class: "tree-view-item tree-view-item--module",
+    dragDisabled: true,
+    lazy: true,
+    order: 1
+  },
+  {
+    id: "References",
+    caption: "References",
+    editable: false,
+    leftImgSrc: "assets/icons/references.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    order: 2
+  },
+  {
+    id: "Customization",
+    caption: "Customization",
+    editable: false,
+    leftImgSrc: "assets/icons/customization.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    lazy: true,
+    order: 3
+  },
+  {
+    id: "Documentation",
+    caption: "Documentation",
+    editable: false,
+    leaf: true,
+    leftImgSrc: "assets/icons/document.svg",
+    dragDisabled: true,
+    dropDisabled: true,
+    order: 4
+  }
+];
+
 export const kbExplorerModel = [
   {
     id: "root",
     caption: "GeneXusNext Develop",
     editable: false,
+    expanded: true,
     leaf: false,
     leftImgSrc: "assets/icons/version.svg",
     dragDisabled: true,
     dropDisabled: true,
-    items: [
-      {
-        id: "Main_Programs",
-        caption: "Main Programs",
-        editable: false,
-        leftImgSrc: "assets/icons/category.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        lazy: true,
-        order: 0
-      },
-      {
-        id: "Root_Module",
-        caption: "Root Module",
-        editable: false,
-        class: "tree-view-item tree-view-item--module",
-        dragDisabled: true,
-        lazy: true,
-        order: 1
-      },
-      {
-        id: "References",
-        caption: "References",
-        editable: false,
-        leftImgSrc: "assets/icons/references.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        order: 2
-      },
-      {
-        id: "Customization",
-        caption: "Customization",
-        editable: false,
-        leftImgSrc: "assets/icons/customization.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        lazy: true,
-        order: 3
-      },
-      {
-        id: "Documentation",
-        caption: "Documentation",
-        editable: false,
-        leftImgSrc: "assets/icons/document.svg",
-        dragDisabled: true,
-        dropDisabled: true,
-        order: 4
-      }
-    ]
+    items: kbExplorer_root
   }
 ];
 
@@ -228,6 +236,7 @@ const kbExplorerModel_Customization = [
     caption: "Files",
     dragDisabled: true,
     dropDisabled: true,
+    leaf: true,
     leftImgSrc: "assets/icons/file.svg",
     order: KB_EXPLORER_ORDER.files
   },
@@ -236,6 +245,7 @@ const kbExplorerModel_Customization = [
     caption: "Images",
     dragDisabled: true,
     dropDisabled: true,
+    leaf: true,
     leftImgSrc: "assets/icons/image.svg",
     order: KB_EXPLORER_ORDER.images
   },
@@ -731,6 +741,7 @@ const Environment_GeneXusNext_preferencesModel = [
 ];
 
 export const lazyLoadItemsDictionary = {
+  root: kbExplorer_root,
   Main_Programs: kbExplorerModel_MainPrograms,
   Root_Module: kbExplorerModel_RootModule,
   Customization: kbExplorerModel_Customization,
@@ -743,3 +754,44 @@ export const lazyLoadItemsDictionary = {
   Panel: importOBjectsPanelModel,
   "Environment.GeneXusNext": Environment_GeneXusNext_preferencesModel
 };
+
+export const eagerLargeModel = [];
+
+for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+  const subEagerLargeModel = [];
+  const modelId = "item-" + i;
+
+  for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+    const subModelId = modelId + "-" + j;
+    const subSubEagerLargeModel = [];
+
+    for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+      const subSubModelId = subModelId + "-" + k;
+
+      subSubEagerLargeModel.push({
+        id: subSubModelId,
+        caption: subSubModelId,
+        leaf: true,
+        leftImgSrc: "./assets/icons/file.svg"
+      });
+    }
+
+    subEagerLargeModel.push({
+      id: subModelId,
+      caption: subModelId,
+      expanded: true,
+      leaf: false,
+      leftImgSrc: "./assets/icons/knowledge-base.svg",
+      items: subSubEagerLargeModel
+    });
+  }
+
+  eagerLargeModel.push({
+    id: modelId,
+    caption: modelId,
+    expanded: true,
+    leaf: false,
+    leftImgSrc: "assets/icons/patterns.svg",
+    items: subEagerLargeModel
+  });
+}

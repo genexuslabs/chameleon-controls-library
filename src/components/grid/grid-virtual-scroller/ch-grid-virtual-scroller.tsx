@@ -5,8 +5,7 @@ import {
   Event,
   EventEmitter,
   Watch,
-  State,
-  h
+  State
 } from "@stencil/core";
 
 /**
@@ -20,34 +19,36 @@ import {
   shadow: false
 })
 export class ChGridVirtualScroller {
-  private gridMainEl: HTMLElement;
-  private resizeObserver = new ResizeObserver(this.resizeHandler.bind(this));
-  private virtualRowSizeElement: HTMLDivElement;
+  private gridEl: HTMLElement;
+  private gridLayoutEl: HTMLElement;
+  private resizeObserver: ResizeObserver;
 
   @Element() el: HTMLChGridVirtualScrollerElement;
 
   /**
-   * Height of header in pixels.
+   * Flag indicating whether the grid has a scrollbar.
    */
-  @State() headerHeight = 0;
+  @Prop({ reflect: true, mutable: true }) hasGridScroll = false;
 
-  @Watch("headerHeight")
-  headerHeightHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
-    }
+  @Watch("hasGridScroll")
+  hasGridScrollHandler() {
+    this.unobserveScroll();
+    this.observeScroll();
+
+    this.definePercentScroll();
   }
 
   /**
-   * Height of each row in pixels.
+   * Flag indicating whether the browser window has a scrollbar.
    */
-  @State() rowHeight = 0;
+  @Prop({ reflect: true, mutable: true }) hasWindowScroll = false;
 
-  @Watch("rowHeight")
-  rowHeightHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
-    }
+  @Watch("hasWindowScroll")
+  hasWindowScrollHandler() {
+    this.unobserveScroll();
+    this.observeScroll();
+
+    this.definePercentScroll();
   }
 
   /**
@@ -56,56 +57,87 @@ export class ChGridVirtualScroller {
   @State() browserHeight = document.documentElement.clientHeight;
 
   /**
-   * Flag indicating whether the grid has a scrollbar.
+   * Height of the header in pixels.
    */
-  @State() hasGridScroll = false;
+  @State() headerHeight: number;
 
-  @Watch("hasGridScroll")
-  hasScrollHandler() {
-    if (this.hasGridScroll) {
-      this.gridMainEl.addEventListener(
-        "scroll",
-        this.updateViewPortItems.bind(this),
-        { passive: true }
-      );
-    } else {
-      this.gridMainEl.removeEventListener(
-        "scroll",
-        this.updateViewPortItems.bind(this)
-      );
-    }
-    this.updateViewPortItems();
+  @Watch("headerHeight")
+  headerHeightHandler() {
+    this.el.style.top = `${this.headerHeight}px`;
+  }
+
+  @State() rowsHeight = 0;
+  @Watch("rowsHeight")
+  rowsHeightHandler() {
+    this.defineHeaderHeight();
+    this.defineRowHeight();
   }
 
   /**
-   * Flag indicating whether the browser window has a scrollbar.
+   * Height of each row in pixels.
    */
-  @State() hasWindowScroll = false;
+  @State() rowHeight = 0;
+  @Watch("rowHeight")
+  rowHeightHandler() {
+    this.defineMaxViewPortItems();
+    this.defineVirtualHeight();
+  }
 
-  @Watch("hasWindowScroll")
-  hasWindowScrollHandler() {
-    if (this.hasWindowScroll) {
-      document.addEventListener("scroll", this.updateViewPortItems.bind(this), {
-        passive: true
-      });
-    } else {
-      document.removeEventListener(
-        "scroll",
-        this.updateViewPortItems.bind(this)
-      );
+  @State() virtualHeight = 0;
+  @Watch("virtualHeight")
+  virtualHeightHandler() {
+    this.unobserveScroll();
+    this.unobserveResize();
+
+    this.gridEl.style.setProperty(
+      "--ch-grid-virtual-scroller-height",
+      `${this.virtualHeight}px`
+    );
+
+    if (Math.ceil(this.percentScroll) !== 100) {
+      if (this.hasGridScroll) {
+        this.gridLayoutEl.scrollTop =
+          this.percentScroll /
+          (100 /
+            (this.gridLayoutEl.scrollHeight - this.gridLayoutEl.clientHeight));
+      } else if (this.hasWindowScroll) {
+        window.scrollY =
+          this.percentScroll /
+          (100 / (this.gridEl.clientHeight - this.browserHeight));
+      }
     }
-    this.updateViewPortItems();
+
+    this.observeScroll();
+    this.observeResize();
   }
 
   /**
    * The maximum number of items that can fit on the screen at any given time.
    */
-  @State() maxViewPortItems = 1;
-
+  @State() maxViewPortItems = 7;
   @Watch("maxViewPortItems")
   maxViewPortItemsHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
+    this.defineViewPortItems();
+  }
+
+  @State() percentScroll: number = 0;
+  @Watch("percentScroll")
+  percentScrollHandler() {
+    this.defineStartIndex();
+  }
+
+  @State() startIndex: number = null;
+  @Watch("startIndex")
+  startIndexHandler() {
+    this.defineViewPortItems();
+  }
+
+  @State() isScrolling: boolean = false;
+  @Watch("isScrolling")
+  isScrollingHandler() {
+    if (!this.isScrolling) {
+      this.defineMaxViewPortItems();
+      this.defineVirtualHeight();
     }
   }
 
@@ -113,11 +145,12 @@ export class ChGridVirtualScroller {
    * The list of items to be rendered in the grid.
    */
   @Prop() readonly items: any[];
-
   @Watch("items")
   itemsHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
+    if (!this.startIndex === null) {
+      this.defineStartIndex();
+    } else {
+      this.defineViewPortItems();
     }
   }
 
@@ -126,17 +159,23 @@ export class ChGridVirtualScroller {
    * Use if the list changes, without recreating the array.
    */
   @Prop() readonly itemsCount: number;
-
   @Watch("itemsCount")
   itemsCountHandler() {
-    if (this.gridMainEl) {
-      this.updateViewPortItems();
+    if (!this.startIndex === null) {
+      this.defineStartIndex();
+    } else {
+      this.defineViewPortItems();
     }
   }
+
   /**
    * The list of items to display within the current viewport.
    */
   @Prop({ mutable: true }) viewPortItems: any[];
+  @Watch("viewPortItems")
+  viewPortItemsHandler() {
+    this.viewPortItemsChanged.emit();
+  }
 
   /**
    *Event emitted when the list of visible items in the grid changes.
@@ -144,106 +183,150 @@ export class ChGridVirtualScroller {
   @Event() viewPortItemsChanged: EventEmitter;
 
   componentWillLoad() {
-    this.gridMainEl = this.el.assignedSlot.parentElement;
-    this.resizeObserver.observe(this.gridMainEl);
-    this.resizeObserver.observe(document.documentElement);
+    this.gridLayoutEl = this.el.assignedSlot.parentElement;
+    this.gridEl = this.el.closest("ch-grid");
+    this.resizeObserver = new ResizeObserver(this.resizeHandler);
+
+    this.observeScroll();
+    this.observeResize();
   }
 
-  componentDidLoad() {
-    this.resizeObserver.observe(this.virtualRowSizeElement);
-    this.updateViewPortItems();
+  private observeScroll() {
+    let viewport: HTMLElement | Document;
+
+    if (this.hasGridScroll) {
+      viewport = this.gridLayoutEl;
+    } else if (this.hasWindowScroll) {
+      viewport = document;
+    }
+
+    viewport?.addEventListener("scroll", this.scrollHandler, {
+      passive: true
+    });
+    viewport?.addEventListener("scrollend", this.scrollEndHandler, {
+      passive: true
+    });
   }
 
-  disconnectedCallback() {
-    this.resizeObserver.disconnect();
+  private observeResize() {
+    this.resizeObserver.observe(this.el);
+    this.resizeObserver.observe(this.gridEl);
   }
 
-  private resizeHandler() {
-    const rowHeights = getComputedStyle(this.gridMainEl).gridTemplateRows.split(
-      " "
+  private unobserveScroll() {
+    document.removeEventListener("scroll", this.scrollHandler);
+    document.removeEventListener("scrollend", this.scrollEndHandler);
+    this.gridLayoutEl.removeEventListener("scroll", this.scrollHandler);
+    this.gridLayoutEl.removeEventListener("scrollend", this.scrollEndHandler);
+  }
+
+  private unobserveResize() {
+    this.resizeObserver.unobserve(this.el);
+    this.resizeObserver.unobserve(document.documentElement);
+  }
+
+  private scrollHandler = () => {
+    this.isScrolling = true;
+    this.definePercentScroll();
+  };
+
+  private scrollEndHandler = () => {
+    this.isScrolling = false;
+  };
+
+  private resizeHandler = (entries: ResizeObserverEntry[]) => {
+    entries.forEach(entry => {
+      switch (entry.target) {
+        case this.el:
+          this.rowsHeight = entry.contentRect.height;
+          break;
+      }
+    });
+
+    this.defineHasScroll();
+  };
+
+  private defineHasScroll() {
+    this.hasGridScroll =
+      this.gridLayoutEl.scrollHeight !== this.gridLayoutEl.clientHeight;
+    this.hasWindowScroll =
+      !this.hasGridScroll && this.gridEl.clientHeight > this.browserHeight;
+  }
+
+  private defineHeaderHeight() {
+    this.headerHeight = parseFloat(
+      getComputedStyle(this.gridLayoutEl).gridTemplateRows
     );
+  }
 
-    this.browserHeight = document.documentElement.clientHeight;
-    // [0]:header height, [1]:deprecated, [2]:first row height
-    this.headerHeight = rowHeights.length >= 3 ? parseInt(rowHeights[0]) : 0;
-    this.rowHeight = rowHeights.length >= 3 ? parseInt(rowHeights[2]) : 0;
+  private defineRowHeight() {
+    if (this.viewPortItems.length === 0) {
+      this.rowHeight = 0;
+    } else if (this.viewPortItems.length > 0 && this.percentScroll === 0) {
+      this.rowHeight = this.rowsHeight / this.viewPortItems.length;
+    } else {
+      this.rowHeight = Math.min(
+        this.rowHeight,
+        this.rowsHeight / this.viewPortItems.length
+      );
+    }
+  }
 
-    if (this.rowHeight > 0) {
-      this.hasGridScroll =
-        this.gridMainEl.scrollHeight !== this.gridMainEl.clientHeight;
-      this.hasWindowScroll =
-        !this.hasGridScroll &&
-        this.gridMainEl.clientHeight > this.browserHeight;
+  private defineMaxViewPortItems() {
+    if (this.rowHeight === 0) {
+      this.maxViewPortItems = 7;
+    } else {
       this.maxViewPortItems = Math.ceil(this.browserHeight / this.rowHeight);
     }
   }
 
-  private updateViewPortItems() {
-    const percentScroll = this.getPercentScroll();
-    let startIndex: number;
-
-    if (percentScroll <= 50) {
-      startIndex = Math.floor(
-        (percentScroll *
-          Math.max(this.items.length - this.maxViewPortItems, 0)) /
-          100
-      );
-    } else {
-      startIndex = Math.ceil(
-        (percentScroll *
-          Math.max(this.items.length - this.maxViewPortItems, 0)) /
-          100
-      );
+  private defineVirtualHeight() {
+    if (!this.isScrolling) {
+      this.virtualHeight = this.items.length * this.rowHeight;
     }
-
-    const hiddenHeight =
-      this.maxViewPortItems * this.rowHeight +
-      this.headerHeight -
-      this.gridMainEl.clientHeight;
-    const offset = (percentScroll * hiddenHeight) / 100;
-
-    this.el.style.setProperty(
-      "--ch-grid-virtual-scroller-position",
-      `translateY(${this.gridMainEl.scrollTop - offset}px)`
-    );
-    this.el.style.setProperty(
-      "--ch-grid-virtual-scroller-height",
-      `${(this.items.length - this.maxViewPortItems) * this.rowHeight}px`
-    );
-
-    this.viewPortItems = this.items.slice(
-      startIndex,
-      startIndex + this.maxViewPortItems
-    );
-    this.viewPortItemsChanged.emit();
   }
 
-  private getPercentScroll(): number {
+  private defineViewPortItems() {
+    this.viewPortItems = this.items.slice(
+      this.startIndex,
+      this.startIndex + this.maxViewPortItems
+    );
+    // this.viewPortItems = this.items.slice(
+    //   Math.min(this.startIndex, this.items.length - this.maxViewPortItems),
+    //   this.startIndex + this.maxViewPortItems
+    // );
+  }
+
+  private defineStartIndex() {
+    const index =
+      (this.percentScroll *
+        Math.max(this.items.length - this.maxViewPortItems, 0)) /
+      100;
+    // const index = (this.percentScroll * (this.items.length - 1)) / 100;
+
+    this.startIndex =
+      this.percentScroll <= 50 ? Math.floor(index) : Math.ceil(index);
+  }
+
+  private definePercentScroll() {
     let hiddenHeight = 0;
     let scrollPosition = 0;
 
     if (this.hasGridScroll) {
       hiddenHeight =
-        this.gridMainEl.scrollHeight - this.gridMainEl.clientHeight;
-      scrollPosition = this.gridMainEl.scrollTop;
+        this.gridLayoutEl.scrollHeight - this.gridLayoutEl.clientHeight;
+      scrollPosition = this.gridLayoutEl.scrollTop;
     } else if (this.hasWindowScroll) {
-      const gridMainRect = this.gridMainEl.getBoundingClientRect();
-      hiddenHeight = this.gridMainEl.clientHeight - this.browserHeight;
+      const gridRect = this.gridEl.getBoundingClientRect();
+
+      hiddenHeight = this.gridEl.clientHeight - this.browserHeight;
       scrollPosition = Math.min(
-        gridMainRect.top >= 0 ? 0 : gridMainRect.top * -1,
+        gridRect.top >= 0 ? 0 : gridRect.top * -1,
         hiddenHeight
       );
     }
 
-    return hiddenHeight > 0 ? (scrollPosition * 100) / hiddenHeight : 0;
-  }
-
-  render() {
-    return (
-      <div
-        ref={el => (this.virtualRowSizeElement = el)}
-        class="virtual-scroller-row-size"
-      ></div>
-    );
+    this.percentScroll =
+      hiddenHeight > 0 ? (scrollPosition * 100) / hiddenHeight : 0;
   }
 }

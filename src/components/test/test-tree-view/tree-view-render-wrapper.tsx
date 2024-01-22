@@ -15,7 +15,7 @@ import {
   TreeViewLines,
   TreeViewItemExpandedInfo,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelected
 } from "../../tree-view/tree-view/types";
 import {
   TreeViewFilterOptions,
@@ -50,6 +50,7 @@ const defaultRenderItem = (
       dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
       dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
       editable={itemModel.editable ?? treeState.editableItems}
+      expandableButton={itemModel.expandableButton}
       expanded={itemModel.expanded}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
@@ -60,7 +61,6 @@ const defaultRenderItem = (
       metadata={itemModel.metadata}
       rightImgSrc={itemModel.rightImgSrc}
       selected={itemModel.selected}
-      showExpandableButton={itemModel.showExpandableButton}
       showLines={treeState.showLines}
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
@@ -142,6 +142,24 @@ export class ChTreeViewRenderWrapper {
    * items by default. If `true`, the items can edit its caption in place.
    */
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+
+  /**
+   * Specifies what kind of expandable button is displayed in the items by
+   * default.
+   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
+   *     the items of the control.
+   *  - `"decorative"`: Only a decorative icon is rendered to display the state
+   *     of the item.
+   */
+  @Prop() readonly expandableButton: "action" | "decorative" | "no" =
+    "decorative";
+
+  /**
+   * Specifies if a tree-view-item is expanded on click interaction. If `true`
+   * the tree-view-item is expanded on click interaction. If `false`, with
+   * mouse interaction the tree-view-item will only be expanded on double click.
+   */
+  @Prop() readonly expandOnClick: boolean = true;
 
   /**
    * This property lets you determine the expression that will be applied to the
@@ -255,9 +273,7 @@ export class ChTreeViewRenderWrapper {
   /**
    * Fired when the selected items change.
    */
-  @Event() selectedItemsChange: EventEmitter<
-    Map<string, TreeViewItemSelectedInfo>
-  >;
+  @Event() selectedItemsChange: EventEmitter<Map<string, TreeViewItemSelected>>;
 
   /**
    * Given an item id, an array of items to add, the download status and the
@@ -365,6 +381,8 @@ export class ChTreeViewRenderWrapper {
         dropDisabled={this.dropDisabled}
         dropItemsCallback={this.dropItemsCallback}
         editableItems={this.editableItems}
+        expandableButton={this.expandableButton}
+        expandOnClick={this.expandOnClick}
         filter={this.filter}
         filterList={this.filterList}
         filterOptions={this.filterOptions}

@@ -18,17 +18,27 @@ module.exports = {
     camelcase: "warn", // Enforce camelcase naming convention
     curly: "error", // Enforce consistent brace style for all control statements
     eqeqeq: ["warn", "always", { null: "ignore" }], // Require the use of === and !==   "ignore" -------> Do not apply this rule to null
+    "logical-assignment-operators": [
+      "warn",
+      "always",
+      { enforceForIfStatements: true }
+    ], // This rule checks for expressions that can be shortened using logical assignment operator
+    "dot-notation": "warn", // This rule is aimed at maintaining code consistency and improving code readability by encouraging use of the dot notation style whenever possible. As such, it will warn when it encounters an unnecessary use of square-bracket notation.
     "max-depth": ["warn", 3], // Enforce a maximum depth that blocks can be nested. Many developers consider code difficult to read if blocks are nested beyond a certain depth
     "no-alert": "error", // Disallow the use of alert, confirm, and prompt
     "no-console": "warn", // Warning when using console.log, console.warn or console.error
+    "no-else-return": ["warn", { allowElseIf: false }], // Disallow else blocks after return statements in if statements
+    "no-extra-boolean-cast": "error", // Disallow unnecessary boolean casts
     "no-debugger": "error", // Error when using debugger;
     "no-duplicate-case": "error", // This rule disallows duplicate test expressions in case clauses of switch statements
     "no-empty": "error", // Disallow empty block statements
     "no-lonely-if": "warn", // Disallow if statements as the only statement in else blocks
+    "no-multi-assign": "error", // Disallow use of chained assignment expressions
     "no-nested-ternary": "warn", // Warns the use of nested ternary expressions
     "no-sequences": "error", // Disallow comma operators
     "no-undef": "off", // Allows defining undefined variables
     "no-unneeded-ternary": "warn", // Disallow ternary operators when simpler alternatives exist
+    "no-useless-return": "error", // Disallow redundant return statements
     "spaced-comment": ["error", "always", { exceptions: ["-", "+", "/"] }], // Enforce consistent spacing after the // or /* in a comment
 
     // - - - - - - - - - - - -

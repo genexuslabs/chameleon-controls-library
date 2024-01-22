@@ -9,13 +9,14 @@ import { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
+import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -28,11 +29,10 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { GxDataTransferInfo, LabelPosition } from "./common/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
-import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
+import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 import { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
@@ -44,13 +44,14 @@ export { ItemsOverflowBehavior } from "./components/action-group/action-group/ty
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { LayoutSplitterDistribution } from "./components/layout-splitter/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutRenders, FlexibleLayoutView, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo } from "./components/flexible-layout/types";
+export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./components/icon/icon";
+export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -63,11 +64,10 @@ export { ecLevel } from "./components/qr/ch-qr";
 export { GxDataTransferInfo, LabelPosition } from "./common/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-export { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "./components/tab/types";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
-export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
+export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemModel, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 export { ChTreeViewRender } from "./components/renders/tree-view/tree-view-render";
@@ -369,6 +369,14 @@ export namespace Components {
         "useGxRender": boolean;
     }
     interface ChFlexibleLayout {
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
+        /**
+          * Specifies the information of each view displayed.
+         */
+        "itemsInfo": Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+  >;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -378,15 +386,23 @@ export namespace Components {
          */
         "layoutSplitterParts": string;
         /**
-          * Given the view ID and the item index, remove the item from the view
+          * Schedules a new render of the control even if no state changed.
          */
-        "removeItemInView": (viewId: string, index: number, forceRerender?: boolean) => Promise<void>;
+        "refreshLayout": () => Promise<void>;
         /**
-          * Specifies the information of each view displayed.
+          * Given the view ID and the item id, remove the page of the item from the view.
          */
-        "viewsInfo": Map<string, FlexibleLayoutView>;
+        "removeItemPageInView": (viewId: string, itemId: string, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Removes the view that is identified by the given ID. The layout is rearranged depending on the state of the removed view.
+         */
+        "removeView": (itemId: string) => Promise<FlexibleLayoutViewRemoveResult>;
     }
     interface ChFlexibleLayoutRender {
+        /**
+          * Add a view with widgets to render. The view will take the half space of the sibling view that its added with.
+         */
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
@@ -395,6 +411,10 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "layout": FlexibleLayout;
+        /**
+          * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
+         */
+        "removeView": (viewId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -818,6 +838,14 @@ export namespace Components {
      */
     interface ChGridVirtualScroller {
         /**
+          * Flag indicating whether the grid has a scrollbar.
+         */
+        "hasGridScroll": boolean;
+        /**
+          * Flag indicating whether the browser window has a scrollbar.
+         */
+        "hasWindowScroll": boolean;
+        /**
           * The list of items to be rendered in the grid.
          */
         "items": any[];
@@ -879,10 +907,15 @@ export namespace Components {
         "topMargin": string;
     }
     interface ChLayoutSplitter {
+        "addSiblingLeaf": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterDistributionLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>;
         /**
           * This attribute lets you specify the label for the drag bar. Important for accessibility.
          */
         "barAccessibleName": string;
+        /**
+          * This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.
+         */
+        "dragBarDisabled": boolean;
         /**
           * Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.
          */
@@ -891,6 +924,60 @@ export namespace Components {
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
         "layout": LayoutSplitterDistribution;
+        /**
+          * Schedules a new render of the control even if no state changed.
+         */
+        "refreshLayout": () => Promise<void>;
+        /**
+          * Removes the item that is identified by the given ID. The layout is rearranged depending on the state of the removed item.
+         */
+        "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
+    }
+    interface ChList {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction": ListDirection;
+        /**
+          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+         */
+        "dragDisabled": boolean;
+        /**
+          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
+         */
+        "endDragPreview": () => Promise<void>;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded": boolean;
+        /**
+          * Returns the info associated to the draggable view.
+         */
+        "getDraggableViews": () => Promise<DraggableViewInfo>;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "items": FlexibleLayoutWidget[];
+        /**
+          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+         */
+        "promoteDragPreviewToTopLayer": () => Promise<void>;
+        /**
+          * Given an id, remove the page from the render
+         */
+        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId": string;
     }
     interface ChNextDataModeling {
     }
@@ -1389,44 +1476,6 @@ export namespace Components {
          */
         "value": any;
     }
-    interface ChTab {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName": string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName": string;
-        /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
-         */
-        "dragDisabled": boolean;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded": boolean;
-        /**
-          * Returns the info associated to the draggable view.
-         */
-        "getDraggableViews": () => Promise<DraggableViewInfo>;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "items": FlexibleLayoutWidget[];
-        /**
-          * Given an index, remove the item from the tab control
-         */
-        "removeItem": (index: number, forceRerender?: boolean) => Promise<void>;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId": string;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "type": TabType;
-    }
     interface ChTestFlexibleLayout {
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -1573,10 +1622,6 @@ export namespace Components {
     }
     interface ChTreeView {
         /**
-          * Clear all information about the selected items. This method is intended to be used when selected items are reordered and the selected references will no longer be useful.
-         */
-        "clearSelectedItemsInfo": () => Promise<void>;
-        /**
           * Set this attribute if you want to allow multi selection of the items.
          */
         "multiSelection": boolean;
@@ -1585,13 +1630,20 @@ export namespace Components {
          */
         "openSubTreeCountdown": number;
         /**
-          * Given an item id, it displays and scrolls into the item view.
+          * Given an item id, it scrolls into the item view.
          */
         "scrollIntoVisible": (treeItemId: string) => Promise<void>;
         /**
           * `true` to scroll in the tree when dragging an item near the edges of the tree.
          */
         "scrollToEdgeOnDrag": boolean;
+        /**
+          * Callback that is executed to get the current selected items.
+         */
+        "selectedItemsCallback": () => Map<
+    string,
+    TreeViewItemSelectedInfo
+  >;
         /**
           * Update the information about the valid droppable zones.
           * @param requestTimestamp Time where the request to the server was made. Useful to avoid having old information.
@@ -1650,6 +1702,14 @@ export namespace Components {
           * Set this attribute when the item is in edit mode
          */
         "editing": boolean;
+        /**
+          * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed. Only works if `leaf === false`.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
         /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
@@ -1715,10 +1775,6 @@ export namespace Components {
          */
         "showDownloadingSpinner": boolean;
         /**
-          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
-         */
-        "showExpandableButton": boolean;
-        /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
         "showLines": TreeViewLines;
@@ -1773,6 +1829,14 @@ export namespace Components {
          */
         "editableItems": boolean;
         /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
+        /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
         "filter": string;
@@ -1826,7 +1890,7 @@ export namespace Components {
         /**
           * Given an item id and the additional properties to update before and after reload, it reloads the items of the `itemId` node by using the `lazyLoadTreeItemsCallback` property.
          */
-        "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
+        "reloadItems": (itemId: string, beforeProperties?: Partial<TreeViewItemModel>, afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>;
         /**
           * Given a list of ids, removes the items and their children in the tree.
          */
@@ -1842,9 +1906,9 @@ export namespace Components {
     level: number
   ) => any;
         /**
-          * Given the path of the item (represent by a sorted array containing all ids from the root to the item) and the additional properties to update after, it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.
+          * Given the path of the item (represent by a sorted array containing all ids from the root to the item) and the additional properties to update after, it displays and scrolls into the item view. The path can also be a string representing the id of the item to scroll into.  When using a path, this method will fail if:   - The path does not start from the root element.   - The path contains a cycle.   - The path does not correspond to a valid path on the server:     - One of the item of the path, except for the last one, is a leaf.     - An item in the path does not exists on the server.     - The path has repeated items.     - And so on.
          */
-        "scrollIntoVisible": (path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<void>;
+        "scrollIntoVisible": (path: string | string[], afterProperties?: Partial<TreeViewItemModel>) => Promise<boolean>;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
@@ -1926,6 +1990,14 @@ export namespace Components {
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
         "editableItems": boolean;
+        /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "action" | "decorative" | "no";
         /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
@@ -2212,6 +2284,10 @@ export interface ChIntersectionObserverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChIntersectionObserverElement;
 }
+export interface ChListCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChListElement;
+}
 export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChNextDataModelingItemElement;
@@ -2267,10 +2343,6 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
-}
-export interface ChTabCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChTabElement;
 }
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2438,6 +2510,7 @@ declare global {
     interface HTMLChFlexibleLayoutElementEventMap {
         "viewItemClose": ViewItemCloseInfo;
         "selectedViewItemChange": ViewSelectedItemInfo;
+        "viewItemReorder": WidgetReorderInfo;
     }
     interface HTMLChFlexibleLayoutElement extends Components.ChFlexibleLayout, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChFlexibleLayoutElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutElement, ev: ChFlexibleLayoutCustomEvent<HTMLChFlexibleLayoutElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2780,6 +2853,26 @@ declare global {
         prototype: HTMLChLayoutSplitterElement;
         new (): HTMLChLayoutSplitterElement;
     };
+    interface HTMLChListElementEventMap {
+        "expandMainGroup": string;
+        "itemClose": ListItemCloseInfo;
+        "selectedItemChange": ListSelectedItemInfo;
+        "itemDragStart": number;
+    }
+    interface HTMLChListElement extends Components.ChList, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChListElement: {
+        prototype: HTMLChListElement;
+        new (): HTMLChListElement;
+    };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
     var HTMLChNextDataModelingElement: {
@@ -3104,26 +3197,6 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
-    interface HTMLChTabElementEventMap {
-        "expandMainGroup": string;
-        "itemClose": TabItemCloseInfo;
-        "selectedItemChange": TabSelectedItemInfo;
-        "itemDragStart": any;
-    }
-    interface HTMLChTabElement extends Components.ChTab, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChTabElementEventMap>(type: K, listener: (this: HTMLChTabElement, ev: ChTabCustomEvent<HTMLChTabElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChTabElement: {
-        prototype: HTMLChTabElement;
-        new (): HTMLChTabElement;
-    };
     interface HTMLChTestFlexibleLayoutElement extends Components.ChTestFlexibleLayout, HTMLStencilElement {
     }
     var HTMLChTestFlexibleLayoutElement: {
@@ -3208,7 +3281,7 @@ declare global {
         "loadLazyContent": string;
         "modifyCaption": TreeViewItemNewCaption;
         "openReference": TreeViewItemOpenReferenceInfo;
-        "selectedItemChange": TreeViewItemSelectedInfo;
+        "selectedItemChange": TreeViewItemSelected;
     }
     interface HTMLChTreeViewItemElement extends Components.ChTreeViewItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTreeViewItemElementEventMap>(type: K, listener: (this: HTMLChTreeViewItemElement, ev: ChTreeViewItemCustomEvent<HTMLChTreeViewItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3248,7 +3321,7 @@ declare global {
         "checkedItemsChange": Map<string, TreeViewItemModelExtended>;
         "itemContextmenu": TreeViewItemContextMenu;
         "itemOpenReference": TreeViewItemOpenReferenceInfo;
-        "selectedItemsChange": Map<string, TreeViewItemSelectedInfo>;
+        "selectedItemsChange": Map<string, TreeViewItemSelected>;
     }
     interface HTMLChTreeViewRenderWrapperElement extends Components.ChTreeViewRenderWrapper, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChTreeViewRenderWrapperElementEventMap>(type: K, listener: (this: HTMLChTreeViewRenderWrapperElement, ev: ChTreeViewRenderWrapperCustomEvent<HTMLChTreeViewRenderWrapperElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3365,6 +3438,7 @@ declare global {
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
+        "ch-list": HTMLChListElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -3388,7 +3462,6 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
-        "ch-tab": HTMLChTabElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
@@ -3737,6 +3810,13 @@ declare namespace LocalJSX {
     }
     interface ChFlexibleLayout {
         /**
+          * Specifies the information of each view displayed.
+         */
+        "itemsInfo"?: Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+  >;
+        /**
           * Specifies the distribution of the items in the flexible layout.
          */
         "layoutModel"?: LayoutSplitterDistribution;
@@ -3753,9 +3833,9 @@ declare namespace LocalJSX {
          */
         "onViewItemClose"?: (event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>) => void;
         /**
-          * Specifies the information of each view displayed.
+          * Fired when a widget is dragged and dropped into a view.
          */
-        "viewsInfo"?: Map<string, FlexibleLayoutView>;
+        "onViewItemReorder"?: (event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>) => void;
     }
     interface ChFlexibleLayoutRender {
         /**
@@ -4188,6 +4268,14 @@ declare namespace LocalJSX {
      */
     interface ChGridVirtualScroller {
         /**
+          * Flag indicating whether the grid has a scrollbar.
+         */
+        "hasGridScroll"?: boolean;
+        /**
+          * Flag indicating whether the browser window has a scrollbar.
+         */
+        "hasWindowScroll"?: boolean;
+        /**
           * The list of items to be rendered in the grid.
          */
         "items"?: any[];
@@ -4263,6 +4351,10 @@ declare namespace LocalJSX {
          */
         "barAccessibleName"?: string;
         /**
+          * This attribute lets you specify if the resize operation is disabled in all drag bars. If `true`, the drag bars are disabled.
+         */
+        "dragBarDisabled"?: boolean;
+        /**
           * Specifies the resizing increment (in pixel) that is applied when using the keyboard to resize a drag bar.
          */
         "incrementWithKeyboard"?: number;
@@ -4270,6 +4362,52 @@ declare namespace LocalJSX {
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
         "layout"?: LayoutSplitterDistribution;
+    }
+    interface ChList {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction"?: ListDirection;
+        /**
+          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+         */
+        "dragDisabled"?: boolean;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "items"?: FlexibleLayoutWidget[];
+        /**
+          * Fired when an item of the main group is double clicked.
+         */
+        "onExpandMainGroup"?: (event: ChListCustomEvent<string>) => void;
+        /**
+          * Fired the close button of an item is clicked.
+         */
+        "onItemClose"?: (event: ChListCustomEvent<ListItemCloseInfo>) => void;
+        /**
+          * Fired the first time a caption button is dragged outside of its tab list.
+         */
+        "onItemDragStart"?: (event: ChListCustomEvent<number>) => void;
+        /**
+          * Fired when the selected item change.
+         */
+        "onSelectedItemChange"?: (event: ChListCustomEvent<ListSelectedItemInfo>) => void;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId"?: string;
     }
     interface ChNextDataModeling {
     }
@@ -4840,52 +4978,6 @@ declare namespace LocalJSX {
          */
         "value"?: any;
     }
-    interface ChTab {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName"?: string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName"?: string;
-        /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
-         */
-        "dragDisabled"?: boolean;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded"?: boolean;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "items"?: FlexibleLayoutWidget[];
-        /**
-          * Fired when an item of the main group is double clicked.
-         */
-        "onExpandMainGroup"?: (event: ChTabCustomEvent<string>) => void;
-        /**
-          * Fired the close button of an item is clicked.
-         */
-        "onItemClose"?: (event: ChTabCustomEvent<TabItemCloseInfo>) => void;
-        /**
-          * Fired the first time a caption button is dragged outside of its tab list.
-         */
-        "onItemDragStart"?: (event: ChTabCustomEvent<any>) => void;
-        /**
-          * Fired when the selected item change.
-         */
-        "onSelectedItemChange"?: (event: ChTabCustomEvent<TabSelectedItemInfo>) => void;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId"?: string;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "type"?: TabType;
-    }
     interface ChTestFlexibleLayout {
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -5065,6 +5157,13 @@ declare namespace LocalJSX {
          */
         "scrollToEdgeOnDrag"?: boolean;
         /**
+          * Callback that is executed to get the current selected items.
+         */
+        "selectedItemsCallback"?: () => Map<
+    string,
+    TreeViewItemSelectedInfo
+  >;
+        /**
           * This property lets you specify if the tree is waiting to process the drop of items.
          */
         "waitDropProcessing"?: boolean;
@@ -5114,6 +5213,14 @@ declare namespace LocalJSX {
           * Set this attribute when the item is in edit mode
          */
         "editing"?: boolean;
+        /**
+          * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed. Only works if `leaf === false`.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
         /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
@@ -5177,7 +5284,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the selected state is updated by user interaction on the control.
          */
-        "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelectedInfo>) => void;
+        "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelected>) => void;
         /**
           * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
          */
@@ -5190,10 +5297,6 @@ declare namespace LocalJSX {
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
         "showDownloadingSpinner"?: boolean;
-        /**
-          * `true` to show the expandable button that allows to expand/collapse the items of the control. Only works if `leaf === false`.
-         */
-        "showExpandableButton"?: boolean;
         /**
           * `true` to display the relation between tree items and tree lists using lines.
          */
@@ -5241,6 +5344,14 @@ declare namespace LocalJSX {
          */
         "editableItems"?: boolean;
         /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
+        /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
         "filter"?: string;
@@ -5284,7 +5395,7 @@ declare namespace LocalJSX {
          */
         "multiSelection"?: boolean;
         /**
-          * Fired when the checked items change. This event does not take into account the currently filtered items.
+          * Fired when the checked items change. This event does take into account the currently filtered items.
          */
         "onCheckedItemsChange"?: (event: ChTreeViewRenderCustomEvent<Map<string, TreeViewItemModelExtended>>) => void;
         /**
@@ -5296,7 +5407,7 @@ declare namespace LocalJSX {
          */
         "onItemOpenReference"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemOpenReferenceInfo>) => void;
         /**
-          * Fired when the selected items change.
+          * Fired when the selected items change. This event can be fired by the following conditions:   1. A user changes the selected items interacting with the Tree View.    2. The `multiSelection` value is changed from `true` to `false`.    3. A selected item is no longer rendered because it does not satisfies a      filter condition.    4. TODO: The `treeModel` property is updated and contains different selected      items. Even if it does not contains different selected items, this      event is fired because the selected items can have a different path      than before the `treeModel` update.    5. The `updateItemsProperties` method is executed, changing the item      selection.    6. A selected item is removed.    7. TODO: A selected item is moved into a new parent with drag and drop.      In this case, since the detail of the event contains the information      of the parent, this event must be fired to update the information.    8. Executing `scrollIntoVisible` method and updating the selected value      of the scrolled item.    9. TODO: An external item is dropped into the Tree View and the item is      selected.   10. TODO: Lazy loading content that has selected items?  Thing that does not fire this event:   - TODO: Renaming a selected item.    - TODO: Applying a filter that keeps all selected items rendered.
          */
         "onSelectedItemsChange"?: (event: ChTreeViewRenderCustomEvent<TreeViewItemModelExtended[]>) => void;
         /**
@@ -5368,6 +5479,14 @@ declare namespace LocalJSX {
          */
         "editableItems"?: boolean;
         /**
+          * Specifies if a tree-view-item is expanded on click interaction. If `true` the tree-view-item is expanded on click interaction. If `false`, with mouse interaction the tree-view-item will only be expanded on double click.
+         */
+        "expandOnClick"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "action" | "decorative" | "no";
+        /**
           * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "metadata"`.
          */
         "filter"?: string;
@@ -5415,7 +5534,7 @@ declare namespace LocalJSX {
         /**
           * Fired when the selected items change.
          */
-        "onSelectedItemsChange"?: (event: ChTreeViewRenderWrapperCustomEvent<Map<string, TreeViewItemSelectedInfo>>) => void;
+        "onSelectedItemsChange"?: (event: ChTreeViewRenderWrapperCustomEvent<Map<string, TreeViewItemSelected>>) => void;
         /**
           * This property allows us to implement custom rendering of tree items.
          */
@@ -5610,6 +5729,7 @@ declare namespace LocalJSX {
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
+        "ch-list": ChList;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -5633,7 +5753,6 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
-        "ch-tab": ChTab;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
@@ -5739,6 +5858,7 @@ declare module "@stencil/core" {
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
+            "ch-list": LocalJSX.ChList & JSXBase.HTMLAttributes<HTMLChListElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;
@@ -5781,7 +5901,6 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
-            "ch-tab": LocalJSX.ChTab & JSXBase.HTMLAttributes<HTMLChTabElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;

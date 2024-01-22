@@ -43,6 +43,7 @@ graph TD;
   ch-window --> ch-window-close
   ch-action-group --> ch-dropdown
   ch-tree-view-render --> ch-tree-view
+  ch-tree-view-render --> ch-tree-view-drop
   ch-tree-view-render --> ch-tree-view-item
   ch-tree-view-item --> ch-checkbox
   ch-grid --> ch-grid-settings

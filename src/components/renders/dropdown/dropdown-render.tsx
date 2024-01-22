@@ -121,13 +121,13 @@ export class ChDropdownRender {
     >
       {item.caption}
 
-      {item.items != null &&
+      {item.items?.length > 0 &&
         item.wasExpanded &&
         item.items.map(this.renderItem)}
 
       {
         // Render a dummy element if the control was not expanded and has items
-        item.items != null && !item.wasExpanded && (
+        item.items?.length > 0 && !item.wasExpanded && (
           <ch-dropdown-item></ch-dropdown-item>
         )
       }

@@ -138,13 +138,13 @@ export class ChActionGroupRender {
         >
           {item.caption}
 
-          {item.items != null &&
+          {item.items?.length > 0 &&
             item.wasExpanded &&
             item.items.map(this.#renderItem(responsiveCollapse))}
 
           {
             // Render a dummy element if the control was not expanded and has items
-            item.items != null && !item.wasExpanded && (
+            item.items?.length > 0 && !item.wasExpanded && (
               <ch-dropdown-item></ch-dropdown-item>
             )
           }
@@ -156,8 +156,7 @@ export class ChActionGroupRender {
     // first level. E. g., if the first level adds a chevron when the item is
     // a dropdown, by removing all items the chevron won't be displayed
     const mustRenderDummySubElement =
-      item.items != null &&
-      item.items.length !== 0 && // Dropdown has items
+      item.items?.length > 0 && // Dropdown has items
       (!item.wasExpanded || // Dropdown was not expanded and has items
         (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
           this.displayedItemsCount !== -1 &&
@@ -238,14 +237,14 @@ export class ChActionGroupRender {
 
       {
         // Render items when the parent is expanded the first time
-        item.items != null &&
+        item.items?.length > 0 &&
           item.wasExpandedInMoreActions &&
           item.items.map(this.#renderItem(true))
       }
 
       {
         // Render a dummy element if the control was not expanded and has items
-        item.items != null && !item.wasExpandedInMoreActions && (
+        item.items?.length > 0 && !item.wasExpandedInMoreActions && (
           <ch-dropdown-item></ch-dropdown-item>
         )
       }

@@ -168,7 +168,7 @@ export class ChDropDownItem implements ChComponent {
   private itemsRender = () => (
     <ch-dropdown
       class="action"
-      exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,section,mask,header,footer,window"
+      exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,window"
       expandBehavior={this.expandBehavior}
       nestedDropdown={true}
       openOnFocus={this.openOnFocus}

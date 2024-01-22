@@ -19,7 +19,7 @@ $img-size: 24px;
 // Make the ch-dropdown control relative to the item
 :host([force-containing-block]) {
   transform: translateX(0);
-  --ch-window-relative-position: true;
+  --ch-popover-stay-in-the-same-layer: true;
 }
 
 .action {

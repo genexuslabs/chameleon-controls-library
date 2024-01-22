@@ -26,8 +26,12 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { TabItemCloseInfo, TabSelectedItemInfo, TabType } from "../tab/types";
-import { ChTabCustomEvent } from "../../components";
+import {
+  ListItemCloseInfo,
+  ListSelectedItemInfo,
+  ListType
+} from "../list/types";
+import { ChListCustomEvent } from "../../components";
 import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
@@ -36,6 +40,9 @@ import {
 } from "./utils";
 import { getViewInfo } from "../renders/flexible-layout/utils";
 import { isRTL } from "../../common/utils";
+
+const getTabDirection = (tabType: ListType) =>
+  tabType === "main" || tabType === "blockEnd" ? "block" : "inline";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -164,8 +171,8 @@ export class ChFlexibleLayout {
     }
 
     const viewRef = this.el.shadowRoot.querySelector(
-      `ch-tab[id='${viewInfo.id}']`
-    ) as HTMLChTabElement;
+      `ch-list[id='${viewInfo.id}']`
+    ) as HTMLChListElement;
     await viewRef.removePage(itemId, forceRerender);
   }
 
@@ -222,7 +229,7 @@ export class ChFlexibleLayout {
   };
 
   private handleItemChange =
-    (viewId: string) => (event: ChTabCustomEvent<TabSelectedItemInfo>) => {
+    (viewId: string) => (event: ChListCustomEvent<ListSelectedItemInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -235,7 +242,7 @@ export class ChFlexibleLayout {
     };
 
   private handleItemClose =
-    (viewId: string) => (event: ChTabCustomEvent<TabItemCloseInfo>) => {
+    (viewId: string) => (event: ChListCustomEvent<ListItemCloseInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -248,14 +255,14 @@ export class ChFlexibleLayout {
     };
 
   private handleDragStart =
-    (viewId: string) => async (event: ChTabCustomEvent<number>) => {
+    (viewId: string) => async (event: ChListCustomEvent<number>) => {
       event.stopPropagation();
 
       // We MUST store the reference before the Promise.allSettle, otherwise
       // the event target will be the flexible-layout control
       this.#draggedViewRef = event.target;
 
-      const views = [...this.el.shadowRoot.querySelectorAll("ch-tab")];
+      const views = [...this.el.shadowRoot.querySelectorAll("ch-list")];
 
       this.#dragInfo = {
         index: event.detail,
@@ -378,15 +385,16 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (tabType: TabType, viewInfo: FlexibleLayoutLeafInfo) => (
-    <ch-tab
+  private renderTab = (tabType: ListType, viewInfo: FlexibleLayoutLeafInfo) => (
+    <ch-list
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
+      part={`view ${getTabDirection(tabType)} ${tabType}`}
       exportparts={viewInfo.exportParts}
       items={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
-      type={tabType}
+      direction={getTabDirection(tabType)}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onItemDragStart={this.handleDragStart(viewInfo.id)}
@@ -396,7 +404,7 @@ export class ChFlexibleLayout {
         widget =>
           widget.wasRendered && <slot name={widget.id} slot={widget.id} />
       )}
-    </ch-tab>
+    </ch-list>
   );
 
   private renderView = (view: FlexibleLayoutLeafInfo) =>

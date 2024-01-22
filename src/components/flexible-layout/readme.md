@@ -16,11 +16,11 @@
 
 ## Events
 
-| Event                    | Description                                             | Type                                                                                                                          |
-| ------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `selectedViewItemChange` | Fired when the selected item change.                    | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; type: TabType; viewId: string; }>` |
-| `viewItemClose`          | Fired when a item of a view request to be closed.       | `CustomEvent<{ itemId: string; itemIndex: number; type: TabType; viewId: string; }>`                                          |
-| `viewItemReorder`        | Fired when a widget is dragged and dropped into a view. | `CustomEvent<WidgetDragInfo & WidgetDropInfo>`                                                                                |
+| Event                    | Description                                             | Type                                                                                                           |
+| ------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `selectedViewItemChange` | Fired when the selected item change.                    | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; viewId: string; }>` |
+| `viewItemClose`          | Fired when a item of a view request to be closed.       | `CustomEvent<{ itemId: string; itemIndex: number; viewId: string; }>`                                          |
+| `viewItemReorder`        | Fired when a widget is dragged and dropped into a view. | `CustomEvent<WidgetDragInfo & WidgetDropInfo>`                                                                 |
 
 
 ## Methods
@@ -35,7 +35,7 @@
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `parentGroup`                      | `string`                                                                                                                                                    |             |
 | `siblingItem`                      | `string`                                                                                                                                                    |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                       |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
 | `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
 | `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
 
@@ -106,13 +106,13 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 ### Depends on
 
-- [ch-tab](../tab)
+- [ch-list](../list)
 - [ch-layout-splitter](../layout-splitter)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
   ch-flexible-layout-render --> ch-flexible-layout
   style ch-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px

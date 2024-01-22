@@ -27,7 +27,7 @@ the sibling view that its added with.
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `parentGroup`                      | `string`                                                                                                                                                    |             |
 | `siblingItem`                      | `string`                                                                                                                                                    |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                       |             |
+| `placedInTheSibling`               | `"before" \| "after"`                                                                                                                                       |             |
 | `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
 | `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
 
@@ -70,7 +70,7 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 ```mermaid
 graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-tab
+  ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
   ch-test-flexible-layout --> ch-flexible-layout-render
   style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px

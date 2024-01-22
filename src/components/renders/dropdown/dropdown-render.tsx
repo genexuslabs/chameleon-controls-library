@@ -1,4 +1,4 @@
-import { Component, Element, h, Prop } from "@stencil/core";
+import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
@@ -81,7 +81,9 @@ export class ChDropdownRender {
 
   private handleItemClick =
     (target: string, itemId: string) => (event: UIEvent) => {
-      this.itemClickCallback(event, target, itemId);
+      if (this.itemClickCallback) {
+        this.itemClickCallback(event, target, itemId);
+      }
     };
 
   private renderItem = (item: DropdownItemModel) => [
@@ -113,12 +115,29 @@ export class ChDropdownRender {
       }
       shortcut={item.shortcut}
       onClick={this.handleItemClick(item.link?.url, item.id)}
+      onExpandedChange={
+        !item.wasExpanded ? this.#handleItemExpanded(item) : null
+      }
     >
       {item.caption}
 
-      {item.items != null && item.items.map(this.renderItem)}
+      {item.items != null &&
+        item.wasExpanded &&
+        item.items.map(this.renderItem)}
+
+      {
+        // Render a dummy element if the control was not expanded and has items
+        item.items != null && !item.wasExpanded && (
+          <ch-dropdown-item></ch-dropdown-item>
+        )
+      }
     </ch-dropdown-item>
   ];
+
+  #handleItemExpanded = (item: DropdownItemModel) => () => {
+    item.wasExpanded = true;
+    forceUpdate(this);
+  };
 
   componentWillLoad() {
     this.showHeader = !!this.el.querySelector(':scope>[slot="header"]');
@@ -129,7 +148,7 @@ export class ChDropdownRender {
     return (
       <ch-dropdown
         buttonLabel={this.buttonLabel}
-        class={this.cssClass || null}
+        class={this.cssClass}
         expandBehavior={this.expandBehavior}
         openOnFocus={this.openOnFocus}
         position={this.position}

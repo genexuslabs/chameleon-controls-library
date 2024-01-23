@@ -90,6 +90,7 @@ export class ChDropdownRender {
     <ch-dropdown-item
       slot="items"
       id={item.id}
+      caption={item.caption}
       class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.link?.url}
@@ -119,8 +120,6 @@ export class ChDropdownRender {
         !item.wasExpanded ? this.#handleItemExpanded(item) : null
       }
     >
-      {item.caption}
-
       {item.items?.length > 0 &&
         item.wasExpanded &&
         item.items.map(this.renderItem)}

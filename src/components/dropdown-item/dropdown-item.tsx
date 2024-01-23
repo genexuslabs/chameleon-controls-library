@@ -27,6 +27,11 @@ export class ChDropDownItem implements ChComponent {
   @State() hasItems = false;
 
   /**
+   * Specifies the caption that the control will display.
+   */
+  @Prop() readonly caption: string;
+
+  /**
    * Determine which actions on the expandable button display the dropdown
    * section.
    * Only works if the control has subitems.
@@ -110,7 +115,7 @@ export class ChDropDownItem implements ChComponent {
     ),
 
     <span slot="action" class="content" part="content">
-      <slot />
+      {this.caption}
     </span>,
 
     !!this.shortcut && (

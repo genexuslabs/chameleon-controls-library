@@ -9,6 +9,7 @@
 
 | Property               | Attribute                | Description                                                                                                                                                       | Type                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default               |
 | ---------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `caption`              | `caption`                | Specifies the caption that the control will display.                                                                                                              | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`           |
 | `expandBehavior`       | `expand-behavior`        | Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.                                            | `"Click" \| "ClickOrHover"`                                                                                                                                                                                                                                                                                                                                                                                                                        | `"ClickOrHover"`      |
 | `forceContainingBlock` | `force-containing-block` | `true` to force the control to make its own containing block.                                                                                                     | `boolean`                                                                                                                                                                                                                                                                                                                                                                                                                                          | `true`                |
 | `href`                 | `href`                   | Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag. | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `undefined`           |
@@ -43,15 +44,13 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part          | Description |
-| ------------- | ----------- |
-| `"action"`    |             |
-| `"button"`    |             |
-| `"content"`   |             |
-| `"end-img"`   |             |
-| `"link"`      |             |
-| `"shortcut"`  |             |
-| `"start-img"` |             |
+| Part         | Description |
+| ------------ | ----------- |
+| `"action"`   |             |
+| `"button"`   |             |
+| `"content"`  |             |
+| `"link"`     |             |
+| `"shortcut"` |             |
 
 
 ## Dependencies
@@ -69,8 +68,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   ch-dropdown-item --> ch-dropdown
-  ch-dropdown --> ch-window
-  ch-window --> ch-window-close
+  ch-dropdown --> ch-popover
   ch-action-group-render --> ch-dropdown-item
   ch-dropdown-render --> ch-dropdown-item
   style ch-dropdown-item fill:#f9f,stroke:#333,stroke-width:4px

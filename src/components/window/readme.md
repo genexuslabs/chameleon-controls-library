@@ -55,7 +55,6 @@ relative to an element or the screen.
 
 ### Used by
 
- - [ch-dropdown](../dropdown)
  - [ch-grid-column-settings](../grid/grid-column/grid-column-settings)
  - [ch-grid-row-actions](../grid/grid-row-actions)
  - [ch-grid-settings](../grid/grid-settings)
@@ -71,7 +70,6 @@ relative to an element or the screen.
 ```mermaid
 graph TD;
   ch-window --> ch-window-close
-  ch-dropdown --> ch-window
   ch-grid-column-settings --> ch-window
   ch-grid-row-actions --> ch-window
   ch-grid-settings --> ch-window

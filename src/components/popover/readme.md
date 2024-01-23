@@ -46,6 +46,19 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `--ch-popover-separation-y` | Specifies the separation between the action and popover in the y axis. @default 0px |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-dropdown](../dropdown)
+
+### Graph
+```mermaid
+graph TD;
+  ch-dropdown --> ch-popover
+  style ch-popover fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

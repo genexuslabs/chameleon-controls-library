@@ -39,8 +39,7 @@ graph TD;
   ch-action-group-render --> ch-action-group
   ch-action-group-render --> ch-action-group-item
   ch-dropdown-item --> ch-dropdown
-  ch-dropdown --> ch-window
-  ch-window --> ch-window-close
+  ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
   ch-tree-view-render --> ch-tree-view
   ch-tree-view-render --> ch-tree-view-item
@@ -48,6 +47,7 @@ graph TD;
   ch-grid --> ch-grid-settings
   ch-grid --> ch-grid-settings-columns
   ch-grid-settings --> ch-window
+  ch-window --> ch-window-close
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window

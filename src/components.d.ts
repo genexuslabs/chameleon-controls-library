@@ -846,14 +846,6 @@ export namespace Components {
      */
     interface ChGridVirtualScroller {
         /**
-          * Flag indicating whether the grid has a scrollbar.
-         */
-        "hasGridScroll": boolean;
-        /**
-          * Flag indicating whether the browser window has a scrollbar.
-         */
-        "hasWindowScroll": boolean;
-        /**
           * The list of items to be rendered in the grid.
          */
         "items": any[];
@@ -4283,14 +4275,6 @@ declare namespace LocalJSX {
      * based on the viewport size and scroll position.
      */
     interface ChGridVirtualScroller {
-        /**
-          * Flag indicating whether the grid has a scrollbar.
-         */
-        "hasGridScroll"?: boolean;
-        /**
-          * Flag indicating whether the browser window has a scrollbar.
-         */
-        "hasWindowScroll"?: boolean;
         /**
           * The list of items to be rendered in the grid.
          */

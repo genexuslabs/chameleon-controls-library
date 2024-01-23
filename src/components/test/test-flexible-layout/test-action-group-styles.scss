@@ -46,11 +46,19 @@
 
 .dropdown-item::part(expandable-action)::after {
   content: "";
-  display: flex;
-  block-size: 0;
-  inline-size: 0;
+  display: block;
   position: absolute;
   inset-inline-end: 14px;
-  border-block: 5px solid transparent;
-  border-inline-start: 7px solid currentColor;
+  inline-size: calc(var(--ch-dropdown-item__image-size) * 0.625);
+  block-size: calc(var(--ch-dropdown-item__image-size) * 0.625);
+  border-block-end: 1px solid;
+  border-inline-end: 1px solid;
+  transform: rotate(-45deg);
+}
+
+/* Improve vertical alignment in nested dropdowns */
+.action-group > .dropdown-item::part(window),
+.action-group-item > .dropdown-item::part(window),
+.dropdown-item > .dropdown-item::part(window) {
+  margin-block-start: -4px;
 }

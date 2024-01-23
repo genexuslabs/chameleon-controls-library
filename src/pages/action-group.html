@@ -64,8 +64,20 @@
 
       .dropdown-item-web::part(expandable-action)::after {
         content: "";
+        display: block;
+        position: absolute;
+        inset-inline-end: 14px;
+        inline-size: calc(var(--ch-dropdown-item__image-size) * 0.625);
+        block-size: calc(var(--ch-dropdown-item__image-size) * 0.625);
+        border-block-end: 1px solid;
+        border-inline-end: 1px solid;
+        transform: rotate(-45deg);
+      }
+
+      .gg-chevron-right::after {
+        content: "";
         display: flex;
-        block-size: 0;
+
         inline-size: 0;
         position: absolute;
         inset-inline-end: 14px;
@@ -437,9 +449,8 @@
         const itemsOverflowBehaviorElem = document.getElementById(
           "dropdown-items-overflow-behavior"
         );
-        itemsOverflowBehaviorElem.addEventListener("change", event => {
-          console.log("Holaaa", event.link.value);
-          actionGroupTest.itemsOverflowBehavior = event.link.value;
+        itemsOverflowBehaviorElem.addEventListener("input", event => {
+          actionGroupTest.itemsOverflowBehavior = event.target.value;
         });
 
         const separationElem = document.getElementById("separation");

@@ -4,9 +4,12 @@
   all: unset;
 }
 
+// Must be placed after the ":where(a, button)"
 @include box-sizing();
 
 :host {
+  --ch-dropdown-item__image-size: #{$default-decorative-image-size};
+
   display: flex;
   width: 100%;
   height: 100%;
@@ -30,9 +33,9 @@
 .start-img,
 .end-img {
   display: block;
-  width: $default-decorative-image-size;
-  height: $default-decorative-image-size;
-  min-width: $default-decorative-image-size;
+  width: var(--ch-dropdown-item__image-size);
+  height: var(--ch-dropdown-item__image-size);
+  min-width: var(--ch-dropdown-item__image-size);
 }
 
 .content {

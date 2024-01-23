@@ -1,14 +1,10 @@
-$img-size: 24px;
+@import "../../common/base";
 
 :where(a, button) {
   all: unset;
 }
 
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+@include box-sizing();
 
 :host {
   display: flex;
@@ -34,9 +30,9 @@ $img-size: 24px;
 .start-img,
 .end-img {
   display: block;
-  width: $img-size;
-  height: $img-size;
-  min-width: $img-size;
+  width: $default-decorative-image-size;
+  height: $default-decorative-image-size;
+  min-width: $default-decorative-image-size;
 }
 
 .content {

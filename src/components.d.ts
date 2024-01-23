@@ -284,6 +284,10 @@ export namespace Components {
     }
     interface ChDropdownItem {
         /**
+          * Specifies the caption that the control will display.
+         */
+        "caption": string;
+        /**
           * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
          */
         "expandBehavior": "Click" | "ClickOrHover";
@@ -351,6 +355,10 @@ export namespace Components {
     target: string,
     itemId: string
   ) => void;
+        /**
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "itemCssClass": string;
         /**
           * This property lets you define the model of the ch-dropdown control.
          */
@@ -3716,6 +3724,10 @@ declare namespace LocalJSX {
     }
     interface ChDropdownItem {
         /**
+          * Specifies the caption that the control will display.
+         */
+        "caption"?: string;
+        /**
           * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
          */
         "expandBehavior"?: "Click" | "ClickOrHover";
@@ -3791,6 +3803,10 @@ declare namespace LocalJSX {
     target: string,
     itemId: string
   ) => void;
+        /**
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "itemCssClass"?: string;
         /**
           * This property lets you define the model of the ch-dropdown control.
          */

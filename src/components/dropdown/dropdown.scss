@@ -1,14 +1,13 @@
+@import "../../common/_base";
+
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :where(button) {
   all: unset;
 }
 
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+// Must be placed after the ":where(a, button)"
+@include box-sizing();
 
 :host {
   --separation: 0px;
@@ -17,8 +16,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
   display: flex;
   position: relative;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .expandable-button {
@@ -27,8 +26,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   justify-content: center;
   align-self: center;
   position: relative;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   cursor: pointer;
   z-index: $z-index-gx-navbar-item + 1;
 

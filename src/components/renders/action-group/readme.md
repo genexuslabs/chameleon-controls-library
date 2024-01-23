@@ -42,8 +42,7 @@ graph TD;
   ch-action-group-render --> ch-action-group
   ch-action-group-render --> ch-action-group-item
   ch-dropdown-item --> ch-dropdown
-  ch-dropdown --> ch-window
-  ch-window --> ch-window-close
+  ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
   ch-test-flexible-layout --> ch-action-group-render
   style ch-action-group-render fill:#f9f,stroke:#333,stroke-width:4px

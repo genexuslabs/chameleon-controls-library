@@ -117,6 +117,7 @@ export class ChActionGroupRender {
           slot="items"
           key={item.id || item.caption || index}
           id={item.id}
+          caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           expandBehavior={this.expandBehavior}
           href={item.link?.url}
@@ -136,8 +137,6 @@ export class ChActionGroupRender {
               : null
           }
         >
-          {item.caption}
-
           {item.items?.length > 0 &&
             item.wasExpanded &&
             item.items.map(this.#renderItem(responsiveCollapse))}
@@ -157,7 +156,7 @@ export class ChActionGroupRender {
     // a dropdown, by removing all items the chevron won't be displayed
     const mustRenderDummySubElement =
       item.items?.length > 0 && // Dropdown has items
-      (!item.wasExpanded || // Dropdown was not expanded and has items
+      (!item.wasExpandedInFirstLevel || // Dropdown was not expanded and has items
         (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
           this.displayedItemsCount !== -1 &&
           index >= this.displayedItemsCount));
@@ -166,6 +165,7 @@ export class ChActionGroupRender {
       <ch-dropdown-item
         key={item.id || item.caption || index}
         id={item.id}
+        caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
         expandBehavior={this.expandBehavior}
         forceContainingBlock={false}
@@ -181,8 +181,6 @@ export class ChActionGroupRender {
             : null
         }
       >
-        {item.caption}
-
         {item.wasExpandedInFirstLevel &&
           this.itemsOverflowBehavior === "ResponsiveCollapse" &&
           (this.displayedItemsCount === -1 ||
@@ -216,6 +214,7 @@ export class ChActionGroupRender {
       slot="more-items"
       key={item.id || item.caption || index}
       id={item.id}
+      caption={item.caption}
       class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
       expandBehavior={this.expandBehavior}
       href={item.link?.url}
@@ -233,8 +232,6 @@ export class ChActionGroupRender {
           : null
       }
     >
-      {item.caption}
-
       {
         // Render items when the parent is expanded the first time
         item.items?.length > 0 &&

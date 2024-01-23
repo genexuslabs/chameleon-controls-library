@@ -3,8 +3,6 @@ import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
-const DEFAULT_DROPDOWN_ITEM_CLASS = "dropdown-item";
-
 @Component({
   tag: "ch-dropdown-render",
   styleUrl: "dropdown-render.scss",
@@ -53,6 +51,12 @@ export class ChDropdownRender {
   ) => void;
 
   /**
+   * A CSS class to set as the `ch-dropdown-item` element class.
+   * This default class is used for the items that don't have an explicit class.
+   */
+  @Prop() readonly itemCssClass: string = "dropdown-item";
+
+  /**
    * This property lets you define the model of the ch-dropdown control.
    */
   @Prop() readonly model: DropdownItemModel[];
@@ -90,7 +94,8 @@ export class ChDropdownRender {
     <ch-dropdown-item
       slot="items"
       id={item.id}
-      class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
+      caption={item.caption}
+      class={item.class || this.itemCssClass}
       expandBehavior={this.expandBehavior}
       href={item.link?.url}
       leftImgSrc={
@@ -119,8 +124,6 @@ export class ChDropdownRender {
         !item.wasExpanded ? this.#handleItemExpanded(item) : null
       }
     >
-      {item.caption}
-
       {item.items?.length > 0 &&
         item.wasExpanded &&
         item.items.map(this.renderItem)}

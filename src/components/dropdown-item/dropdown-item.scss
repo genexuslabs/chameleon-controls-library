@@ -1,44 +1,61 @@
-$img-size: 24px;
+@import "../../common/base";
 
 :where(a, button) {
   all: unset;
 }
 
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+// Must be placed after the ":where(a, button)"
+@include box-sizing();
 
 :host {
+  --ch-dropdown-item__image-size: #{$default-decorative-image-size};
+
   display: flex;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 // Make the ch-dropdown control relative to the item
 :host([force-containing-block]) {
   transform: translateX(0);
-  --ch-window-relative-position: true;
+  --ch-popover-stay-in-the-same-layer: true;
 }
 
 .action {
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   cursor: pointer;
   text-align: start;
 }
 
-.start-img,
-.end-img {
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+.start-img::before,
+.end-img::after,
+.start-img-part::part(expandable-button)::before,
+.end-img-part::part(expandable-button)::after {
+  content: "";
   display: block;
-  width: $img-size;
-  height: $img-size;
-  min-width: $img-size;
+  inline-size: var(--ch-dropdown-item__image-size);
+  block-size: var(--ch-dropdown-item__image-size);
+  min-inline-size: var(--ch-dropdown-item__image-size);
+}
+
+.start-img::before,
+.start-img-part::part(expandable-button)::before {
+  background-image: var(--ch-dropdown-item-start-img);
+  background-size: 100%;
+}
+
+.end-img::after,
+.end-img-part::part(expandable-button)::after {
+  background-image: var(--ch-dropdown-item-end-img);
+  background-size: 100%;
 }
 
 .content {
-  width: 100%;
+  inline-size: 100%;
 }

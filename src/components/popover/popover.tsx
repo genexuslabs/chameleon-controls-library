@@ -34,6 +34,8 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
+const POPOVER_STAY_IN_THE_SAME_LAYER = "--ch-popover-stay-in-the-same-layer";
+
 // Utils
 const fromPxToNumber = (pxValue: string) =>
   Number(pxValue.replace("px", "").trim());
@@ -92,6 +94,7 @@ export class ChPopover {
   @State() actualBlockAlign: ChPopoverAlign;
   @State() actualInlineAlign: ChPopoverAlign;
   @State() dragging = false;
+  @State() relativePopover = false;
 
   /**
    * Specifies a reference of the action that controls the popover control.
@@ -142,10 +145,13 @@ export class ChPopover {
 
     // Update the popover visualization
     if (newHiddenValue) {
-      this.el.hidePopover();
+      if (!this.relativePopover) {
+        this.el.hidePopover();
+      }
+
       this.#avoidFlickeringInTheNextRender(true);
     } else {
-      this.el.showPopover();
+      this.#showPopover();
     }
   }
 
@@ -182,6 +188,14 @@ export class ChPopover {
    * Emitted when the popover is closed.
    */
   @Event() popoverClosed: EventEmitter;
+
+  #showPopover = () => {
+    if (!this.relativePopover) {
+      this.el.showPopover();
+    } else {
+      this.hidden &&= false;
+    }
+  };
 
   #avoidFlickeringInTheNextRender = (addClass: boolean) => {
     if (addClass) {
@@ -231,21 +245,23 @@ export class ChPopover {
 
   #updatePosition = () => {
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const actionRect = this.actionElement.getBoundingClientRect();
-    const documentRect = document.documentElement.getBoundingClientRect();
-    const popoverRect = this.el.getBoundingClientRect();
-
-    const insetInlineStart = this.#isRTLDirection
-      ? documentRect.width - (actionRect.left + actionRect.width)
-      : actionRect.left;
-
     const computedStyle = getComputedStyle(this.el);
 
-    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    setProperty(this.el, POPOVER_ACTION_WIDTH, actionRect.width);
-    setProperty(this.el, POPOVER_ACTION_HEIGHT, actionRect.height);
-    setProperty(this.el, POPOVER_ACTION_LEFT, insetInlineStart);
-    setProperty(this.el, POPOVER_ACTION_TOP, actionRect.top);
+    const actionRect = this.actionElement.getBoundingClientRect();
+    const popoverRect = this.el.getBoundingClientRect();
+
+    if (!this.relativePopover) {
+      const documentRect = document.documentElement.getBoundingClientRect();
+      const insetInlineStart = this.#isRTLDirection
+        ? documentRect.width - (actionRect.left + actionRect.width)
+        : actionRect.left;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_ACTION_WIDTH, actionRect.width);
+      setProperty(this.el, POPOVER_ACTION_HEIGHT, actionRect.height);
+      setProperty(this.el, POPOVER_ACTION_LEFT, insetInlineStart);
+      setProperty(this.el, POPOVER_ACTION_TOP, actionRect.top);
+    }
 
     this.#setResponsiveAlignment(actionRect, popoverRect, computedStyle);
   };
@@ -309,9 +325,7 @@ export class ChPopover {
     // Necessary to avoid selecting the text of other elements
     event.preventDefault();
 
-    if (!this.#dragRAF) {
-      this.#dragRAF = new SyncWithRAF();
-    }
+    this.#dragRAF ||= new SyncWithRAF();
 
     this.dragging = true;
     this.#initialDragEvent = event;
@@ -399,6 +413,13 @@ export class ChPopover {
       }
     });
 
+    // Check if the popover must stay in the same layer, due to is already
+    // contained in another popover at the top layer
+    this.relativePopover =
+      getComputedStyle(this.el).getPropertyValue(
+        POPOVER_STAY_IN_THE_SAME_LAYER
+      ) === "true";
+
     // Observe the dir attribute in the document
     this.#rtlWatcher.observe(document.documentElement, {
       attributeFilter: ["dir"]
@@ -428,7 +449,7 @@ export class ChPopover {
     this.#setPositionWatcher();
 
     if (!this.hidden) {
-      this.el.showPopover();
+      this.#showPopover();
     }
   }
 
@@ -453,9 +474,10 @@ export class ChPopover {
       <Host
         class={{
           "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
-          "gx-popover-dragging": this.dragging
+          "gx-popover-dragging": this.dragging,
+          "gx-popover-same-layer": this.relativePopover
         }}
-        popover={this.mode}
+        popover={this.relativePopover ? null : this.mode}
         onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         onToggle={this.#handlePopoverToggle}
       >

@@ -11,8 +11,8 @@
   --ch-dropdown-item__image-size: #{$default-decorative-image-size};
 
   display: flex;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 // Make the ch-dropdown control relative to the item
@@ -24,8 +24,8 @@
 .action {
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   cursor: pointer;
   text-align: start;
 }
@@ -33,11 +33,11 @@
 .start-img,
 .end-img {
   display: block;
-  width: var(--ch-dropdown-item__image-size);
-  height: var(--ch-dropdown-item__image-size);
-  min-width: var(--ch-dropdown-item__image-size);
+  inline-size: var(--ch-dropdown-item__image-size);
+  block-size: var(--ch-dropdown-item__image-size);
+  min-inline-size: var(--ch-dropdown-item__image-size);
 }
 
 .content {
-  width: 100%;
+  inline-size: 100%;
 }

@@ -157,7 +157,7 @@ export class ChActionGroupRender {
     // a dropdown, by removing all items the chevron won't be displayed
     const mustRenderDummySubElement =
       item.items?.length > 0 && // Dropdown has items
-      (!item.wasExpanded || // Dropdown was not expanded and has items
+      (!item.wasExpandedInFirstLevel || // Dropdown was not expanded and has items
         (this.itemsOverflowBehavior === "ResponsiveCollapse" && // Dropdown items are collapsed
           this.displayedItemsCount !== -1 &&
           index >= this.displayedItemsCount));

@@ -34,10 +34,8 @@
   color: white;
 }
 
-.dropdown-item::part(start-img) {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
+.dropdown-item-web::part(action)::before {
+  --ch-dropdown-item__image-size: 18px;
   margin-inline-start: -24px;
   padding: 1px;
 }

@@ -21,6 +21,9 @@
         width: 450px;
         height: 30px;
         margin: auto;
+        resize: auto;
+        border: 1px solid;
+        overflow: auto;
       }
 
       .action-group::part(more-actions-list),
@@ -53,12 +56,21 @@
         color: white;
       }
 
-      .dropdown-item::part(start-img) {
-        width: 18px;
-        height: 18px;
-        min-width: 18px;
+      .dropdown-item-web::part(action)::before {
+        --ch-dropdown-item__image-size: 18px;
         margin-inline-start: -24px;
         padding: 1px;
+      }
+
+      .dropdown-item-web::part(expandable-action)::after {
+        content: "";
+        display: flex;
+        block-size: 0;
+        inline-size: 0;
+        position: absolute;
+        inset-inline-end: 14px;
+        border-block: 5px solid transparent;
+        border-inline-start: 7px solid currentColor;
       }
 
       .dropdown-item::part(shortcut) {

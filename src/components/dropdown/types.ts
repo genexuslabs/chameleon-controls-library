@@ -1,3 +1,10 @@
+export type DropdownAlign =
+  | "OutsideStart"
+  | "InsideStart"
+  | "Center"
+  | "InsideEnd"
+  | "OutsideEnd";
+
 export type DropdownPosition =
   | "OutsideStart_OutsideStart"
   | "InsideStart_OutsideStart"

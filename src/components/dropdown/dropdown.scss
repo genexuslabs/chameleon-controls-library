@@ -10,6 +10,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 @include box-sizing();
 
 :host {
+  --ch-dropdown-item__image-size: #{$default-decorative-image-size};
+
   --separation: 0px;
   --separation-x: var(--separation);
   --separation-y: var(--separation);
@@ -31,6 +33,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   cursor: pointer;
   z-index: $z-index-gx-navbar-item + 1;
 
+  // Make the ch-dropdown control relative to the item
+  transform: translateX(0);
+  --ch-popover-stay-in-the-same-layer: true;
+
   &:focus-visible {
     outline: 1px solid currentColor;
   }
@@ -45,27 +51,70 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 //           Separation
 // - - - - - - - - - - - - - - - -
 // Dummy separation to keep opened the popup when expand-behavior === "ClickOrHover"
-ch-window[y-align="outside-start"] {
-  --ch-window-separation: var(--separation-y);
-  --ch-window-separation-y: calc(var(--separation-y) * -1);
-}
+// ch-window[y-align="outside-start"] {
+//   --ch-window-separation: var(--separation-y);
+//   --ch-window-separation-y: calc(var(--separation-y) * -1);
+// }
 
-ch-window[y-align="outside-end"] {
-  --ch-window-separation: var(--separation-y);
-  --ch-window-separation-y: var(--separation-y);
-}
+// ch-window[y-align="outside-end"] {
+//   --ch-window-separation: var(--separation-y);
+//   --ch-window-separation-y: var(--separation-y);
+// }
 
-ch-window[x-align="outside-start"] {
-  --ch-window-separation: var(--separation-x);
-  --ch-window-separation-x: calc(var(--separation-x) * -1);
-}
+// ch-window[x-align="outside-start"] {
+//   --ch-window-separation: var(--separation-x);
+//   --ch-window-separation-x: calc(var(--separation-x) * -1);
+// }
 
-ch-window[x-align="outside-end"] {
-  --ch-window-separation: var(--separation-x);
-  --ch-window-separation-x: var(--separation-x);
-}
+// ch-window[x-align="outside-end"] {
+//   --ch-window-separation: var(--separation-x);
+//   --ch-window-separation-x: var(--separation-x);
+// }
 
 .list {
   display: flex;
   flex-direction: column;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  cursor: pointer;
+  text-align: start;
+
+  &:focus-visible {
+    outline: 1px solid currentColor;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+.start-img::before,
+.end-img::after,
+.start-img-part::part(expandable-button)::before,
+.end-img-part::part(expandable-button)::after {
+  content: "";
+  display: block;
+  inline-size: var(--ch-dropdown-item__image-size);
+  block-size: var(--ch-dropdown-item__image-size);
+  min-inline-size: var(--ch-dropdown-item__image-size);
+}
+
+.start-img::before,
+.start-img-part::part(expandable-button)::before {
+  background-image: var(--ch-dropdown-item-start-img);
+  background-size: 100%;
+}
+
+.end-img::after,
+.end-img-part::part(expandable-button)::after {
+  background-image: var(--ch-dropdown-item-end-img);
+  background-size: 100%;
+}
+
+.content {
+  inline-size: 100%;
 }

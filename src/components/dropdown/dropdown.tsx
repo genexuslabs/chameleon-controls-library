@@ -13,17 +13,9 @@ import {
 import { Component as ChComponent } from "../../common/interfaces";
 import { ChWindowAlign } from "../window/ch-window";
 
-import { DropdownPosition } from "./types";
-import { KEY_CODES } from "../../common/reserverd-names";
+import { DropdownAlign, DropdownPosition } from "./types";
 import { focusComposedPath } from "../common/helpers";
 import { ChDropdownCustomEvent } from "../../components";
-
-export type DropdownAlign =
-  | "OutsideStart"
-  | "InsideStart"
-  | "Center"
-  | "InsideEnd"
-  | "OutsideEnd";
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChWindowAlign;
@@ -37,132 +29,21 @@ const mapDropdownAlignToChWindowAlign: {
 
 const WINDOW_ID = "window";
 
-const DROPDOWN_ITEM_TAG_NAME = "ch-dropdown-item";
-
-const elementIsDropdownItem = (element: Element) =>
-  element?.tagName?.toLowerCase() === DROPDOWN_ITEM_TAG_NAME;
-
-// Keys
-type DropDownKeyDownEvents =
-  | typeof KEY_CODES.ARROW_UP
-  | typeof KEY_CODES.ARROW_RIGHT
-  | typeof KEY_CODES.ARROW_DOWN
-  | typeof KEY_CODES.ARROW_LEFT
-  | typeof KEY_CODES.HOME
-  | typeof KEY_CODES.END
-  | typeof KEY_CODES.ESCAPE;
-
 @Component({
   shadow: true,
   styleUrl: "dropdown.scss",
   tag: "ch-dropdown"
 })
 export class ChDropDown implements ChComponent {
-  #keyEventsDictionary: {
-    [key in DropDownKeyDownEvents]: (event?: KeyboardEvent) => void;
-  } = {
-    [KEY_CODES.ARROW_DOWN]: event => {
-      event.preventDefault(); // Prevent window's scroll
-      const currentFocusedElement = focusComposedPath();
-
-      if (
-        !this.nestedDropdown &&
-        this.#focusIsOnExpandableButton(currentFocusedElement)
-      ) {
-        this.#getFirstDropdownItemRef().focusElement();
-      }
-      // The focus was in a subitem. Focus the next subitem
-      else {
-        const currentFocusedItem =
-          currentFocusedElement[currentFocusedElement.length - 1];
-        let nextSiblingToFocus = currentFocusedItem.nextElementSibling;
-
-        if (!elementIsDropdownItem(nextSiblingToFocus)) {
-          nextSiblingToFocus = this.#getFirstDropdownItemRef();
-        }
-        (nextSiblingToFocus as HTMLChDropdownItemElement).focusElement();
-      }
-    },
-
-    [KEY_CODES.ARROW_UP]: event => {
-      event.preventDefault(); // Prevent window's scroll
-      const currentFocusedElement = focusComposedPath();
-
-      if (
-        !this.nestedDropdown &&
-        this.#focusIsOnExpandableButton(currentFocusedElement)
-      ) {
-        this.#getLastDropdownItemRef().focusElement();
-      }
-      // The focus was in a subitem. Focus the next subitem
-      else {
-        const currentFocusedItem =
-          currentFocusedElement[currentFocusedElement.length - 1];
-        let nextSiblingToFocus = currentFocusedItem.previousElementSibling;
-
-        if (!elementIsDropdownItem(nextSiblingToFocus)) {
-          nextSiblingToFocus = this.#getLastDropdownItemRef();
-        }
-        (nextSiblingToFocus as HTMLChDropdownItemElement).focusElement();
-      }
-    },
-
-    [KEY_CODES.ARROW_RIGHT]: event => {
-      const currentFocusedElement = focusComposedPath();
-
-      const currentFocusedItem =
-        currentFocusedElement[currentFocusedElement.length - 1];
-
-      if (!elementIsDropdownItem(currentFocusedItem)) {
-        return;
-      }
-      event.preventDefault(); // Prevent window's scroll
-
-      (
-        currentFocusedItem as HTMLChDropdownItemElement
-      ).expandAndFocusDropdown();
-    },
-
-    [KEY_CODES.ARROW_LEFT]: event => {
-      const currentFocusedElement = focusComposedPath();
-
-      const currentFocusedItem =
-        currentFocusedElement[currentFocusedElement.length - 1];
-
-      if (!elementIsDropdownItem(currentFocusedItem)) {
-        return;
-      }
-      event.preventDefault(); // Prevent window's scroll
-
-      if (this.expanded) {
-        this.#closeDropdown();
-        this.#expandableButton.focus();
-      }
-    },
-
-    [KEY_CODES.HOME]: event => {
-      event.preventDefault(); // Prevent window's scroll
-      this.#getFirstDropdownItemRef().focusElement();
-    },
-
-    [KEY_CODES.END]: event => {
-      event.preventDefault(); // Prevent window's scroll
-      this.#getLastDropdownItemRef().focusElement();
-    },
-
-    [KEY_CODES.ESCAPE]: () => {
-      this.#closeDropdown();
-      this.#returnFocusToButton();
-    }
-  };
-
-  #showHeader = false;
-  #showFooter = false;
   #firstExpanded = false;
 
+  // This is a WA to avoid a StencilJS's issue when reusing the top layer and
+  // interacting with the Tab key in the same top layer.
+  // After the second opening, the Tab key stops working
+  #idToNotReuseTopLayer = 0;
+
   // Refs
-  #expandableButton: HTMLButtonElement;
-  #itemsRef: HTMLSlotElement;
+  #mainAction: HTMLButtonElement | HTMLAnchorElement;
 
   @Element() el: HTMLChDropdownElement;
 
@@ -176,6 +57,11 @@ export class ChDropDown implements ChComponent {
    * Important for accessibility.
    */
   @Prop() readonly buttonAccessibleName: string;
+
+  /**
+   * Specifies the caption that the control will display.
+   */
+  @Prop() readonly caption: string;
 
   /**
    * `true` to display the dropdown section.
@@ -197,6 +83,29 @@ export class ChDropDown implements ChComponent {
       });
     }
   }
+
+  /**
+   * `true` to force the control to make its own containing block.
+   */
+  @Prop({ reflect: true }) readonly forceContainingBlock: boolean = true;
+
+  /**
+   * Specifies the hyperlink of the item. If this property is defined, the
+   * control will render an anchor tag with this `href`. Otherwise, it will
+   * render a button tag.
+   */
+  @Prop() readonly href: string;
+
+  /**
+   * Specifies whether the item contains a subtree. `true` if the item does not
+   * have a subtree.
+   */
+  @Prop() readonly leaf: boolean = false;
+
+  /**
+   * Specifies the src for the left img.
+   */
+  @Prop() readonly startImgSrc: string;
 
   /**
    * Level in the render at which the item is placed.
@@ -223,6 +132,26 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
+   * Specifies the src for the right img.
+   */
+  @Prop() readonly endImgSrc: string;
+
+  /**
+   * Specifies the shortcut caption that the control will display.
+   */
+  @Prop() readonly shortcut: string;
+
+  /**
+   *
+   */
+  @Prop() readonly showFooter: boolean = false;
+
+  /**
+   *
+   */
+  @Prop() readonly showHeader: boolean = false;
+
+  /**
    * Fired when the visibility of the dropdown section is changed by user
    * interaction.
    */
@@ -246,14 +175,44 @@ export class ChDropDown implements ChComponent {
     this.#closeDropdown();
   }
 
+  /**
+   * Focus the dropdown action.
+   */
+  @Method()
+  async focusElement() {
+    this.#mainAction.focus();
+  }
+
+  /**
+   * Collapse the content of the dropdown.
+   */
+  @Method()
+  async collapseDropdown() {
+    if (this.expanded) {
+      this.expandedChange.emit(false);
+      this.expanded = false;
+    }
+  }
+
+  /**
+   * Expand the content of the dropdown.
+   */
+  @Method()
+  async expandDropdown() {
+    if (!this.expanded) {
+      this.expandedChange.emit(true);
+      this.expanded = true;
+    }
+  }
+
   #closeDropdownSibling = () => {
     const currentFocusedElement = focusComposedPath();
     const currentFocusedItem =
       currentFocusedElement[currentFocusedElement.length - 1];
 
-    if (!elementIsDropdownItem(currentFocusedItem)) {
-      return;
-    }
+    // if (!elementIsDropdownItem(currentFocusedItem)) {
+    //   return;
+    // }
 
     if ((currentFocusedItem as HTMLChDropdownElement).level === this.level) {
       return;
@@ -263,55 +222,6 @@ export class ChDropDown implements ChComponent {
     currentFocusedItem.dispatchEvent(
       new CustomEvent("recursiveClose", { bubbles: true, detail: this.level })
     );
-  };
-
-  /**
-   * Expand the content of the dropdown and focus the first dropdown-item.
-   */
-  @Method()
-  async expandAndFocusDropdown() {
-    if (!this.expanded) {
-      this.expandedChange.emit(true);
-      this.expanded = true;
-    }
-
-    // Wait until the dropdown content has been rendered
-    requestAnimationFrame(() => {
-      this.#getFirstDropdownItemRef().focusElement();
-    });
-  }
-
-  /**
-   * Focus the expandable button of the dropdown.
-   */
-  @Method()
-  async focusButton() {
-    this.#expandableButton.focus();
-  }
-
-  #focusIsOnExpandableButton = (composedPath: HTMLElement[]): boolean =>
-    composedPath[0] === this.#expandableButton;
-
-  #getFirstDropdownItemRef = (): HTMLChDropdownItemElement =>
-    this.#getSubItems()[0];
-
-  #getLastDropdownItemRef = (): HTMLChDropdownItemElement => {
-    const dropdownItems = this.#getSubItems();
-    return dropdownItems[dropdownItems.length - 1];
-  };
-
-  #getSubItems = (): HTMLChDropdownItemElement[] => {
-    const slotElements = this.#itemsRef.assignedElements();
-    let arrayOfDropdownItems = slotElements;
-
-    // There is nested slot when nesting dropdowns
-    if (this.nestedDropdown) {
-      arrayOfDropdownItems = (
-        slotElements[0] as HTMLSlotElement
-      ).assignedElements();
-    }
-
-    return arrayOfDropdownItems as HTMLChDropdownItemElement[];
   };
 
   #closeDropdown = () => {
@@ -324,30 +234,23 @@ export class ChDropDown implements ChComponent {
    * works if `openOnFocus = "false"`
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #returnFocusToButton = () => {
-    if (!this.openOnFocus) {
-      this.#expandableButton.focus();
-    }
-  };
+  // #returnFocusToButton = () => {
+  //   if (!this.openOnFocus) {
+  //     this.#mainAction.focus();
+  //   }
+  // };
 
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #closeOnClickOutside = (event: MouseEvent) => {
     if (event.composedPath().find(el => el === this.el) === undefined) {
       this.#closeDropdown();
     }
   };
 
-  #handleKeyDownEvents = (event: KeyboardEvent) => {
-    const keyEventHandler: ((event?: KeyboardEvent) => void) | undefined =
-      this.#keyEventsDictionary[event.code];
-
-    if (keyEventHandler) {
-      event.stopPropagation();
-      keyEventHandler(event);
-    }
-  };
-
   #handleMouseEnter = (event: MouseEvent) => {
     event.stopPropagation();
+
+    console.log("handleMouseEnter");
 
     // We first must close the current expanded dropdown, since with the
     // keyboard we could have expanded a different dropdown
@@ -363,6 +266,8 @@ export class ChDropDown implements ChComponent {
     event.stopPropagation();
 
     if (this.expanded) {
+      console.log("#handleMouseLeave");
+
       this.expandedChange.emit(false);
       this.expanded = false;
     }
@@ -396,22 +301,104 @@ export class ChDropDown implements ChComponent {
       return;
     }
 
-    if (!this.expanded) {
-      // We first must close the current expanded dropdown, since with the
-      // mouse we could have expanded a different dropdown
-      this.#closeDropdownSibling();
-    }
+    // if (!this.expanded) {
+    //   // We first must close the current expanded dropdown, since with the
+    //   // mouse we could have expanded a different dropdown
+    //   this.#closeDropdownSibling();
+    // }
 
-    this.expandedChange.emit(!this.expanded);
     this.expanded = !this.expanded;
+    this.expandedChange.emit(!this.expanded);
   };
 
-  componentWillLoad() {
-    this.#showHeader = !!this.el.querySelector(':scope>[slot="header"]');
-    this.#showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
-  }
+  private dropDownItemContent = () => [
+    <span slot="action" class="content" part="content">
+      {this.caption}
+    </span>,
 
-  render() {
+    !!this.shortcut && (
+      <span aria-hidden="true" slot="action" part="shortcut">
+        {this.shortcut}
+      </span>
+    )
+  ];
+
+  #firstLevelRender = () => (
+    <button
+      aria-controls={WINDOW_ID}
+      aria-expanded={this.expanded.toString()}
+      aria-haspopup="true"
+      aria-label={this.buttonAccessibleName}
+      class="expandable-button"
+      part="expandable-button"
+      type="button"
+      onClick={this.#handleButtonClick}
+      ref={el => (this.#mainAction = el)}
+    >
+      <slot name="action" />
+    </button>
+  );
+
+  #actionRender = () =>
+    this.href ? (
+      <a
+        aria-controls={!this.leaf ? WINDOW_ID : null}
+        aria-expanded={!this.leaf ? this.expanded.toString() : null}
+        aria-haspopup={!this.leaf ? "true" : null}
+        class={{
+          action: true,
+          "start-img": !!this.startImgSrc,
+          "end-img": !!this.endImgSrc
+        }}
+        part={
+          this.leaf
+            ? "action link"
+            : "action link expandable-action expandable-link"
+        }
+        href={this.href}
+        onClick={this.#handleButtonClick}
+        onMouseEnter={
+          !this.leaf && !this.actionGroupParent ? this.#handleMouseEnter : null
+        }
+        ref={el => (this.#mainAction = el)}
+      >
+        {this.dropDownItemContent()}
+      </a>
+    ) : (
+      <button
+        aria-controls={!this.leaf ? WINDOW_ID : null}
+        aria-expanded={!this.leaf ? this.expanded.toString() : null}
+        aria-haspopup={!this.leaf ? "true" : null}
+        class={{
+          action: true,
+          "start-img": !!this.startImgSrc,
+          "end-img": !!this.endImgSrc
+        }}
+        part={
+          this.leaf
+            ? "action button"
+            : "action button expandable-action expandable-button"
+        }
+        type="button"
+        onMouseEnter={
+          !this.leaf && !this.actionGroupParent ? this.#handleMouseEnter : null
+        }
+        onClick={this.#handleButtonClick}
+        ref={el => (this.#mainAction = el)}
+      >
+        {this.dropDownItemContent()}
+      </button>
+    );
+
+  #popoverRender = () => {
+    this.#firstExpanded ||= this.expanded;
+
+    if (!this.#firstExpanded) {
+      return "";
+    }
+
+    this.#idToNotReuseTopLayer++;
+
     const aligns = this.position.split("_");
     const alignX = aligns[0] as DropdownAlign;
     const alignY = aligns[1] as DropdownAlign;
@@ -419,70 +406,58 @@ export class ChDropDown implements ChComponent {
     const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
-    const isExpanded = this.expanded;
-    this.#firstExpanded ||= isExpanded;
-
-    const noNeedToAddDivListWrapper = !this.#showHeader && !this.#showFooter;
+    const noNeedToAddDivListWrapper = !this.showHeader && !this.showFooter;
 
     return (
+      <ch-popover
+        key={this.#idToNotReuseTopLayer}
+        role={noNeedToAddDivListWrapper ? "list" : null}
+        id={WINDOW_ID}
+        part="window"
+        actionElement={this.#mainAction as HTMLButtonElement}
+        mode="manual"
+        hidden={!this.expanded}
+        inlineAlign={xAlignMapping}
+        blockAlign={yAlignMapping}
+      >
+        {noNeedToAddDivListWrapper ? (
+          <slot />
+        ) : (
+          [
+            this.showHeader && <slot name="header" />,
+
+            <div role="list" class="list" part="list">
+              <slot />
+            </div>,
+
+            this.showFooter && <slot name="footer" />
+          ]
+        )}
+      </ch-popover>
+    );
+  };
+
+  render() {
+    return (
       <Host
-        onKeyDown={this.expanded ? this.#handleKeyDownEvents : null}
+        role={this.leaf ? "listitem" : null}
+        style={
+          !!this.startImgSrc || !!this.endImgSrc
+            ? {
+                "--ch-dropdown-item-start-img": `url("${this.startImgSrc}")`,
+                "--ch-dropdown-item-end-img": `url("${this.endImgSrc}")`
+              }
+            : undefined
+        }
         onMouseLeave={
-          this.nestedDropdown && !this.actionGroupParent
+          this.expanded && !this.actionGroupParent && this.level !== -1
             ? this.#handleMouseLeave
             : null
         }
       >
-        <button
-          aria-controls={WINDOW_ID}
-          aria-expanded={this.expanded.toString()}
-          aria-haspopup="true"
-          aria-label={this.buttonAccessibleName}
-          class="expandable-button"
-          part="expandable-button"
-          type="button"
-          onClick={this.#handleButtonClick}
-          onMouseEnter={
-            this.nestedDropdown && !this.actionGroupParent
-              ? this.#handleMouseEnter
-              : null
-          }
-          ref={el => (this.#expandableButton = el)}
-        >
-          <slot name="action" />
-        </button>
+        {this.level === -1 ? this.#firstLevelRender() : this.#actionRender()}
 
-        <ch-popover
-          role={noNeedToAddDivListWrapper ? "list" : null}
-          id={WINDOW_ID}
-          part="window"
-          actionElement={this.#expandableButton}
-          mode="manual"
-          hidden={!isExpanded}
-          inlineAlign={xAlignMapping}
-          blockAlign={yAlignMapping}
-        >
-          {this.#firstExpanded &&
-            (noNeedToAddDivListWrapper ? (
-              <slot
-                name="items"
-                ref={el => (this.#itemsRef = el as HTMLSlotElement)}
-              />
-            ) : (
-              [
-                this.#showHeader && <slot name="header" />,
-
-                <div role="list" class="list" part="list">
-                  <slot
-                    name="items"
-                    ref={el => (this.#itemsRef = el as HTMLSlotElement)}
-                  />
-                </div>,
-
-                this.#showFooter && <slot name="footer" />
-              ]
-            ))}
-        </ch-popover>
+        {!this.leaf && this.#popoverRender()}
       </Host>
     );
   }

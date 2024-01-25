@@ -14,7 +14,9 @@
 .more-actions {
   grid-area: more-actions;
 
-  &::part(expandable-button) {
+  &::part(action) {
+    justify-content: center;
+    align-self: center;
     inline-size: 1.375em;
     block-size: 1.375em;
 

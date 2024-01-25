@@ -2,6 +2,7 @@ import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
+import { dropdownKeyEventsDictionary } from "./utils";
 
 @Component({
   tag: "ch-dropdown-render",
@@ -9,8 +10,10 @@ import { fromGxImageToURL } from "../tree-view/genexus-implementation";
   shadow: false // Necessary to avoid focus capture
 })
 export class ChDropdownRender {
-  private showHeader = false;
-  private showFooter = false;
+  #showHeader = false;
+  #showFooter = false;
+
+  #mainDropdownExpanded = false;
 
   @Element() el: HTMLChDropdownRenderElement;
 
@@ -56,13 +59,6 @@ export class ChDropdownRender {
   @Prop() readonly model: DropdownItemModel[];
 
   /**
-   * Determine if the dropdown section should be opened when the expandable
-   * button of the control is focused.
-   * TODO: Add implementation
-   */
-  @Prop() readonly openOnFocus: boolean = false;
-
-  /**
    * Specifies the position of the dropdown section that is placed relative to
    * the expandable button.
    */
@@ -85,27 +81,15 @@ export class ChDropdownRender {
       }
     };
 
-  private renderItem = (level: number) => (item: DropdownItemModel) =>
-    [
-      <ch-dropdown-item
-        slot="items"
+  private renderItem = (level: number) => (item: DropdownItemModel) => {
+    const hasItems = item.items?.length > 0;
+
+    return [
+      <ch-dropdown
         id={item.id}
         caption={item.caption}
         class={item.class || this.itemCssClass}
-        href={item.link?.url}
-        leftImgSrc={
-          this.useGxRender
-            ? fromGxImageToURL(
-                item.startImage,
-                this.gxSettings,
-                this.gxImageConstructor
-              )
-            : item.startImage
-        }
-        level={level}
-        openOnFocus={this.openOnFocus}
-        position={item.itemsPosition || "OutsideEnd_InsideStart"}
-        rightImgSrc={
+        endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
                 item.endImage,
@@ -114,33 +98,60 @@ export class ChDropdownRender {
               )
             : item.endImage
         }
+        href={item.link?.url}
+        leaf={!hasItems}
+        level={level}
+        position={item.itemsPosition || "OutsideEnd_InsideStart"}
         shortcut={item.shortcut}
+        startImgSrc={
+          this.useGxRender
+            ? fromGxImageToURL(
+                item.startImage,
+                this.gxSettings,
+                this.gxImageConstructor
+              )
+            : item.startImage
+        }
         onClick={this.handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpanded ? this.#handleItemExpanded(item) : null
         }
       >
-        {item.items?.length > 0 &&
+        {hasItems &&
           item.wasExpanded &&
           item.items.map(this.renderItem(level + 1))}
 
         {
           // Render a dummy element if the control was not expanded and has items
-          item.items?.length > 0 && !item.wasExpanded && (
-            <ch-dropdown-item></ch-dropdown-item>
-          )
+          hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
         }
-      </ch-dropdown-item>
+      </ch-dropdown>
     ];
+  };
+
+  #handleKeyDownEvents = (event: KeyboardEvent) => {
+    const keyEventHandler: ((event?: KeyboardEvent) => void) | undefined =
+      dropdownKeyEventsDictionary[event.code];
+
+    if (keyEventHandler) {
+      event.stopPropagation();
+      keyEventHandler(event);
+    }
+  };
 
   #handleItemExpanded = (item: DropdownItemModel) => () => {
     item.wasExpanded = true;
     forceUpdate(this);
   };
 
+  #handleMainDropdownExpand = () => {
+    this.#mainDropdownExpanded = true;
+    forceUpdate(this);
+  };
+
   componentWillLoad() {
-    this.showHeader = !!this.el.querySelector(':scope>[slot="header"]');
-    this.showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
+    this.#showHeader = !!this.el.querySelector(':scope>[slot="header"]');
+    this.#showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
   }
 
   render() {
@@ -148,16 +159,26 @@ export class ChDropdownRender {
       <ch-dropdown
         buttonAccessibleName={this.buttonAccessibleName}
         class={this.cssClass}
-        openOnFocus={this.openOnFocus}
+        level={-1}
+        showHeader={this.#showHeader}
+        showFooter={this.#showFooter}
         position={this.position}
+        onKeyDown={
+          this.#mainDropdownExpanded ? this.#handleKeyDownEvents : null
+        }
+        onExpandedChange={
+          !this.#mainDropdownExpanded ? this.#handleMainDropdownExpand : null
+        }
       >
         <slot name="action" slot="action" />
 
-        {this.showHeader && <slot name="header" slot="header" />}
+        {this.#showHeader && <slot name="header" slot="header" />}
 
-        {this.model != null && this.model.map(this.renderItem(0))}
+        {this.#showFooter && <slot name="footer" slot="footer" />}
 
-        {this.showFooter && <slot name="footer" slot="footer" />}
+        {this.#mainDropdownExpanded &&
+          this.model != null &&
+          this.model.map(this.renderItem(0))}
       </ch-dropdown>
     );
   }

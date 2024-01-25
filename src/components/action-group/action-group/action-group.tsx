@@ -251,17 +251,18 @@ export class ChActionGroup {
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
-              exportparts="expandable-button:more-actions-button,separation:more-actions-separation,window:more-actions-list"
+              exportparts="action:more-actions-button,window:more-actions-window"
               class="more-actions"
               part="more-actions"
               actionGroupParent={true}
               buttonAccessibleName={this.moreActionsAccessibleName}
+              leaf={false}
               nestedDropdown={true}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
               onExpandedChange={this.#handleMoreActionButtonExpand}
             >
-              <slot name="more-items" slot="items"></slot>
+              <slot name="more-items"></slot>
             </ch-dropdown>
           )}
 

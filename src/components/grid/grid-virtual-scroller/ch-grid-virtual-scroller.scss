@@ -1,6 +1,6 @@
 @layer ch-grid {
   ch-grid:has(ch-grid-virtual-scroller)::part(main) {
-    grid-template-rows: auto var(--ch-grid-virtual-scroller-height);
+    grid-template-rows: max-content var(--ch-grid-virtual-scroller-height);
   }
 
   ch-grid-virtual-scroller {

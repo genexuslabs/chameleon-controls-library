@@ -110,6 +110,7 @@ export class ChActionGroupRender {
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           href={item.link?.url}
           leftImgSrc={this.#renderImg(item.startImage)}
+          level={level}
           openOnFocus={this.openOnFocus}
           position={
             (responsiveCollapse
@@ -157,12 +158,13 @@ export class ChActionGroupRender {
       <ch-dropdown-item
         key={item.id || item.caption || index}
         id={item.id}
+        actionGroupParent={true}
         caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
         forceContainingBlock={false}
         href={item.link?.url}
         leftImgSrc={this.#renderImg(item.startImage)}
-        nestedDropdown={false}
+        level={level}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
         rightImgSrc={this.#renderImg(item.endImage)}

@@ -252,9 +252,11 @@ export class ChActionGroup {
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
               exportparts="expandable-button:more-actions-button,separation:more-actions-separation,window:more-actions-list"
-              buttonAccessibleName={this.moreActionsAccessibleName}
               class="more-actions"
               part="more-actions"
+              actionGroupParent={true}
+              buttonAccessibleName={this.moreActionsAccessibleName}
+              nestedDropdown={true}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
               onExpandedChange={this.#handleMoreActionButtonExpand}

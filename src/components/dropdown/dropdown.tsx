@@ -167,6 +167,11 @@ export class ChDropDown implements ChComponent {
   @Element() el: HTMLChDropdownElement;
 
   /**
+   * Specifies if the current parent of the item is the action-group control.
+   */
+  @Prop() readonly actionGroupParent: boolean = false;
+
+  /**
    * This attribute lets you specify the label for the expandable button.
    * Important for accessibility.
    */
@@ -223,11 +228,6 @@ export class ChDropDown implements ChComponent {
    */
   @Event() expandedChange: EventEmitter<boolean>;
 
-  /**
-   * Fired when all dropdown parents must be closed to a certain level.
-   */
-  @Event() recursiveClose: EventEmitter<number>;
-
   @Listen("actionClick")
   onActionClick() {
     // this.#closeDropdown();
@@ -246,14 +246,6 @@ export class ChDropDown implements ChComponent {
     this.#closeDropdown();
   }
 
-  /**
-   * Executes the `recursiveClose` event.
-   */
-  @Method()
-  async performRecursiveClose(stopperLevel: number) {
-    this.recursiveClose.emit(stopperLevel);
-  }
-
   #closeDropdownSibling = () => {
     const currentFocusedElement = focusComposedPath();
     const currentFocusedItem =
@@ -263,15 +255,14 @@ export class ChDropDown implements ChComponent {
       return;
     }
 
-    const dropdownToPerformRecursiveClosing = currentFocusedElement[
-      currentFocusedElement.length - 2
-    ] as HTMLChDropdownElement;
-
-    if (dropdownToPerformRecursiveClosing === this.el) {
+    if ((currentFocusedItem as HTMLChDropdownElement).level === this.level) {
       return;
     }
 
-    dropdownToPerformRecursiveClosing.performRecursiveClose(this.level);
+    // Fire an event to close all dropdown parents up to a certain level
+    currentFocusedItem.dispatchEvent(
+      new CustomEvent("recursiveClose", { bubbles: true, detail: this.level })
+    );
   };
 
   /**
@@ -430,7 +421,11 @@ export class ChDropDown implements ChComponent {
     return (
       <Host
         onKeyDown={this.expanded ? this.#handleKeyDownEvents : null}
-        onMouseLeave={this.nestedDropdown ? this.#handleMouseLeave : null}
+        onMouseLeave={
+          this.nestedDropdown && !this.actionGroupParent
+            ? this.#handleMouseLeave
+            : null
+        }
       >
         <button
           aria-controls={WINDOW_ID}
@@ -441,7 +436,11 @@ export class ChDropDown implements ChComponent {
           part="expandable-button"
           type="button"
           onClick={this.#handleButtonClick}
-          onMouseEnter={this.nestedDropdown ? this.#handleMouseEnter : null}
+          onMouseEnter={
+            this.nestedDropdown && !this.actionGroupParent
+              ? this.#handleMouseEnter
+              : null
+          }
           ref={el => (this.#expandableButton = el)}
         >
           <slot name="action" />

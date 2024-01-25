@@ -30,6 +30,11 @@ export class ChDropDownItem implements ChComponent {
   @State() hasItems = false;
 
   /**
+   * Specifies if the current parent of the item is the action-group control.
+   */
+  @Prop() readonly actionGroupParent: boolean = false;
+
+  /**
    * Specifies the caption that the control will display.
    */
   @Prop() readonly caption: string;
@@ -55,12 +60,6 @@ export class ChDropDownItem implements ChComponent {
    * Level in the render at which the item is placed.
    */
   @Prop() readonly level: number;
-
-  /**
-   * This attribute lets you specify if the control is nested in another
-   * dropdown. Useful to manage keyboard interaction.
-   */
-  @Prop() readonly nestedDropdown: boolean = true;
 
   /**
    * Determine if the dropdown section should be opened when the expandable
@@ -170,6 +169,7 @@ export class ChDropDownItem implements ChComponent {
 
   private itemsRender = () => (
     <ch-dropdown
+      actionGroupParent={this.actionGroupParent}
       buttonAccessibleName={this.caption}
       class={{
         action: true,
@@ -178,7 +178,7 @@ export class ChDropDownItem implements ChComponent {
       }}
       exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,window"
       level={this.level}
-      nestedDropdown={this.nestedDropdown}
+      nestedDropdown={true}
       openOnFocus={this.openOnFocus}
       position={this.position}
       ref={el => (this.mainElement = el)}

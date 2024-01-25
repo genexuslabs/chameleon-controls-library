@@ -396,6 +396,12 @@ export class ChDropDown implements ChComponent {
       return;
     }
 
+    if (!this.expanded) {
+      // We first must close the current expanded dropdown, since with the
+      // mouse we could have expanded a different dropdown
+      this.#closeDropdownSibling();
+    }
+
     this.expandedChange.emit(!this.expanded);
     this.expanded = !this.expanded;
   };

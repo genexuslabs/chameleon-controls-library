@@ -20,7 +20,10 @@ const DROPDOWN_ITEM = "ch-dropdown-item";
   tag: "ch-dropdown-item"
 })
 export class ChDropDownItem implements ChComponent {
-  private mainElement: HTMLButtonElement | HTMLAnchorElement;
+  private mainElement:
+    | HTMLButtonElement
+    | HTMLAnchorElement
+    | HTMLChDropdownElement;
 
   @Element() el: HTMLChDropdownItemElement;
 
@@ -30,13 +33,6 @@ export class ChDropDownItem implements ChComponent {
    * Specifies the caption that the control will display.
    */
   @Prop() readonly caption: string;
-
-  /**
-   * Determine which actions on the expandable button display the dropdown
-   * section.
-   * Only works if the control has subitems.
-   */
-  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
 
   /**
    * `true` to force the control to make its own containing block.
@@ -54,6 +50,11 @@ export class ChDropDownItem implements ChComponent {
    * Specifies the src for the left img.
    */
   @Prop() readonly leftImgSrc: string;
+
+  /**
+   * Level in the render at which the item is placed.
+   */
+  @Prop() readonly level: number;
 
   /**
    * Determine if the dropdown section should be opened when the expandable
@@ -89,16 +90,25 @@ export class ChDropDownItem implements ChComponent {
   @Event() expandedChange: EventEmitter<boolean>;
 
   /**
-   * Fires when the control's anchor or button is in focus.
-   */
-  @Event() focusChange: EventEmitter;
-
-  /**
    * Focuses the control's anchor or button.
    */
-  @Method("focusElement")
-  async handleFocusElement() {
-    this.mainElement.focus();
+  @Method()
+  async focusElement() {
+    if (this.hasItems) {
+      (this.mainElement as HTMLChDropdownElement).focusButton();
+    } else {
+      this.mainElement.focus();
+    }
+  }
+
+  /**
+   * Expand the content of the dropdown and focus the first dropdown-item.
+   */
+  @Method()
+  async expandAndFocusDropdown() {
+    if (this.hasItems) {
+      (this.mainElement as HTMLChDropdownElement).expandAndFocusDropdown();
+    }
   }
 
   private dropDownItemContent = () => [
@@ -128,7 +138,6 @@ export class ChDropDownItem implements ChComponent {
         part="action link"
         href={this.href}
         onClick={this.handleActionClick}
-        onFocus={this.handleFocus}
         ref={el => (this.mainElement = el)}
       >
         {this.dropDownItemContent()}
@@ -145,7 +154,6 @@ export class ChDropDownItem implements ChComponent {
         part="action button"
         type="button"
         onClick={this.handleActionClick}
-        onFocus={this.handleFocus}
         ref={el => (this.mainElement = el)}
       >
         {this.dropDownItemContent()}
@@ -162,10 +170,11 @@ export class ChDropDownItem implements ChComponent {
         "end-img-part": !!this.rightImgSrc
       }}
       exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,window"
-      expandBehavior={this.expandBehavior}
+      level={this.level}
       nestedDropdown={true}
       openOnFocus={this.openOnFocus}
       position={this.position}
+      ref={el => (this.mainElement = el)}
     >
       {this.dropDownItemContent()}
 
@@ -175,10 +184,6 @@ export class ChDropDownItem implements ChComponent {
 
   private handleActionClick = () => {
     this.actionClick.emit(this.el.id);
-  };
-
-  private handleFocus = () => {
-    this.focusChange.emit();
   };
 
   componentWillLoad() {

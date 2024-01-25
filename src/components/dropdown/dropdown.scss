@@ -31,8 +31,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   cursor: pointer;
   z-index: $z-index-gx-navbar-item + 1;
 
-  &:focus-within {
-    transition: box-shadow 250ms;
+  &:focus-visible {
+    outline: 1px solid currentColor;
   }
 }
 

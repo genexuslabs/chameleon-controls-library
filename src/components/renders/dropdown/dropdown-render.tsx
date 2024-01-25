@@ -26,12 +26,6 @@ export class ChDropdownRender {
   @Prop() readonly cssClass: string = "dropdown";
 
   /**
-   * Determine which actions on the expandable button display the dropdown
-   * section.
-   */
-  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
-
-  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxImageConstructor: (name: string) => any;
@@ -64,6 +58,7 @@ export class ChDropdownRender {
   /**
    * Determine if the dropdown section should be opened when the expandable
    * button of the control is focused.
+   * TODO: Add implementation
    */
   @Prop() readonly openOnFocus: boolean = false;
 
@@ -90,52 +85,53 @@ export class ChDropdownRender {
       }
     };
 
-  private renderItem = (item: DropdownItemModel) => [
-    <ch-dropdown-item
-      slot="items"
-      id={item.id}
-      caption={item.caption}
-      class={item.class || this.itemCssClass}
-      expandBehavior={this.expandBehavior}
-      href={item.link?.url}
-      leftImgSrc={
-        this.useGxRender
-          ? fromGxImageToURL(
-              item.startImage,
-              this.gxSettings,
-              this.gxImageConstructor
-            )
-          : item.startImage
-      }
-      openOnFocus={this.openOnFocus}
-      position={item.itemsPosition || "OutsideEnd_InsideStart"}
-      rightImgSrc={
-        this.useGxRender
-          ? fromGxImageToURL(
-              item.endImage,
-              this.gxSettings,
-              this.gxImageConstructor
-            )
-          : item.endImage
-      }
-      shortcut={item.shortcut}
-      onClick={this.handleItemClick(item.link?.url, item.id)}
-      onExpandedChange={
-        !item.wasExpanded ? this.#handleItemExpanded(item) : null
-      }
-    >
-      {item.items?.length > 0 &&
-        item.wasExpanded &&
-        item.items.map(this.renderItem)}
+  private renderItem = (level: number) => (item: DropdownItemModel) =>
+    [
+      <ch-dropdown-item
+        slot="items"
+        id={item.id}
+        caption={item.caption}
+        class={item.class || this.itemCssClass}
+        href={item.link?.url}
+        leftImgSrc={
+          this.useGxRender
+            ? fromGxImageToURL(
+                item.startImage,
+                this.gxSettings,
+                this.gxImageConstructor
+              )
+            : item.startImage
+        }
+        level={level}
+        openOnFocus={this.openOnFocus}
+        position={item.itemsPosition || "OutsideEnd_InsideStart"}
+        rightImgSrc={
+          this.useGxRender
+            ? fromGxImageToURL(
+                item.endImage,
+                this.gxSettings,
+                this.gxImageConstructor
+              )
+            : item.endImage
+        }
+        shortcut={item.shortcut}
+        onClick={this.handleItemClick(item.link?.url, item.id)}
+        onExpandedChange={
+          !item.wasExpanded ? this.#handleItemExpanded(item) : null
+        }
+      >
+        {item.items?.length > 0 &&
+          item.wasExpanded &&
+          item.items.map(this.renderItem(level + 1))}
 
-      {
-        // Render a dummy element if the control was not expanded and has items
-        item.items?.length > 0 && !item.wasExpanded && (
-          <ch-dropdown-item></ch-dropdown-item>
-        )
-      }
-    </ch-dropdown-item>
-  ];
+        {
+          // Render a dummy element if the control was not expanded and has items
+          item.items?.length > 0 && !item.wasExpanded && (
+            <ch-dropdown-item></ch-dropdown-item>
+          )
+        }
+      </ch-dropdown-item>
+    ];
 
   #handleItemExpanded = (item: DropdownItemModel) => () => {
     item.wasExpanded = true;
@@ -152,7 +148,6 @@ export class ChDropdownRender {
       <ch-dropdown
         buttonLabel={this.buttonLabel}
         class={this.cssClass}
-        expandBehavior={this.expandBehavior}
         openOnFocus={this.openOnFocus}
         position={this.position}
       >
@@ -160,7 +155,7 @@ export class ChDropdownRender {
 
         {this.showHeader && <slot name="header" slot="header" />}
 
-        {this.model != null && this.model.map(this.renderItem)}
+        {this.model != null && this.model.map(this.renderItem(0))}
 
         {this.showFooter && <slot name="footer" slot="footer" />}
       </ch-dropdown>

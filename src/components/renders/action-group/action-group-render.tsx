@@ -29,12 +29,6 @@ export class ChActionGroupRender {
   @Prop() readonly cssClass: string = "action-group";
 
   /**
-   * Determine which actions on the expandable button display the dropdown
-   * section.
-   */
-  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
-
-  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxImageConstructor: (name: string) => any;
@@ -74,6 +68,7 @@ export class ChActionGroupRender {
   /**
    * Determine if the dropdown section should be opened when the expandable
    * button of the control is focused.
+   * TODO: Add implementation
    */
   @Prop() readonly openOnFocus: boolean = false;
 
@@ -83,12 +78,6 @@ export class ChActionGroupRender {
    */
   @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
     "InsideStart_OutsideEnd";
-
-  /**
-   * Specifies the separation (in pixels) between the expandable button and the
-   * dropdown section of the control.
-   */
-  @Prop() readonly separation: number = 0;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -110,7 +99,7 @@ export class ChActionGroupRender {
       : img;
 
   #renderItem =
-    (responsiveCollapse: boolean) =>
+    (level: number, responsiveCollapse: boolean) =>
     (item: ActionGroupItemModel, index: number) =>
       (
         <ch-dropdown-item
@@ -119,7 +108,6 @@ export class ChActionGroupRender {
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          expandBehavior={this.expandBehavior}
           href={item.link?.url}
           leftImgSrc={this.#renderImg(item.startImage)}
           openOnFocus={this.openOnFocus}
@@ -139,7 +127,7 @@ export class ChActionGroupRender {
         >
           {item.items?.length > 0 &&
             item.wasExpanded &&
-            item.items.map(this.#renderItem(responsiveCollapse))}
+            item.items.map(this.#renderItem(level + 1, responsiveCollapse))}
 
           {
             // Render a dummy element if the control was not expanded and has items
@@ -150,7 +138,11 @@ export class ChActionGroupRender {
         </ch-dropdown-item>
       );
 
-  #firstLevelRenderItem = (item: ActionGroupItemModel, index: number) => {
+  #firstLevelRenderItem = (
+    item: ActionGroupItemModel,
+    index: number,
+    level: number
+  ) => {
     // Dummy dropdown item to avoid issues when removing all items from the
     // first level. E. g., if the first level adds a chevron when the item is
     // a dropdown, by removing all items the chevron won't be displayed
@@ -167,7 +159,6 @@ export class ChActionGroupRender {
         id={item.id}
         caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
-        expandBehavior={this.expandBehavior}
         forceContainingBlock={false}
         href={item.link?.url}
         leftImgSrc={this.#renderImg(item.startImage)}
@@ -186,7 +177,7 @@ export class ChActionGroupRender {
           (this.displayedItemsCount === -1 ||
             index < this.displayedItemsCount) &&
           item.items != null &&
-          item.items.map(this.#renderItem(false))}
+          item.items.map(this.#renderItem(level + 1, false))}
 
         {mustRenderDummySubElement && <ch-dropdown-item></ch-dropdown-item>}
       </ch-dropdown-item>
@@ -206,47 +197,46 @@ export class ChActionGroupRender {
       forceUpdate(this);
     };
 
-  #firstLevelRenderCollapsedItem = (
-    item: ActionGroupItemModel,
-    index: number
-  ) => (
-    <ch-dropdown-item
-      slot="more-items"
-      key={item.id || item.caption || index}
-      id={item.id}
-      caption={item.caption}
-      class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-      expandBehavior={this.expandBehavior}
-      href={item.link?.url}
-      leftImgSrc={this.#renderImg(item.startImage)}
-      openOnFocus={this.openOnFocus}
-      position={
-        item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
-      }
-      rightImgSrc={this.#renderImg(item.endImage)}
-      shortcut={item.shortcut}
-      onClick={this.#handleItemClick(item.link?.url, item.id)}
-      onExpandedChange={
-        !item.wasExpandedInMoreActions
-          ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
-          : null
-      }
-    >
-      {
-        // Render items when the parent is expanded the first time
-        item.items?.length > 0 &&
-          item.wasExpandedInMoreActions &&
-          item.items.map(this.#renderItem(true))
-      }
+  #firstLevelRenderCollapsedItem =
+    (level: number) => (item: ActionGroupItemModel, index: number) =>
+      (
+        <ch-dropdown-item
+          slot="more-items"
+          key={item.id || item.caption || index}
+          id={item.id}
+          caption={item.caption}
+          class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
+          href={item.link?.url}
+          leftImgSrc={this.#renderImg(item.startImage)}
+          level={level}
+          openOnFocus={this.openOnFocus}
+          position={
+            item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
+          }
+          rightImgSrc={this.#renderImg(item.endImage)}
+          shortcut={item.shortcut}
+          onClick={this.#handleItemClick(item.link?.url, item.id)}
+          onExpandedChange={
+            !item.wasExpandedInMoreActions
+              ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")
+              : null
+          }
+        >
+          {
+            // Render items when the parent is expanded the first time
+            item.items?.length > 0 &&
+              item.wasExpandedInMoreActions &&
+              item.items.map(this.#renderItem(level + 1, true))
+          }
 
-      {
-        // Render a dummy element if the control was not expanded and has items
-        item.items?.length > 0 && !item.wasExpandedInMoreActions && (
-          <ch-dropdown-item></ch-dropdown-item>
-        )
-      }
-    </ch-dropdown-item>
-  );
+          {
+            // Render a dummy element if the control was not expanded and has items
+            item.items?.length > 0 && !item.wasExpandedInMoreActions && (
+              <ch-dropdown-item></ch-dropdown-item>
+            )
+          }
+        </ch-dropdown-item>
+      );
 
   #handleDisplayedItemsCountChange = (
     event: ChActionGroupCustomEvent<number>
@@ -269,7 +259,6 @@ export class ChActionGroupRender {
       <ch-action-group
         buttonLabel={this.buttonLabel}
         class={this.cssClass || null}
-        expandBehavior={this.expandBehavior}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
         openOnFocus={this.openOnFocus}
@@ -286,14 +275,14 @@ export class ChActionGroupRender {
               slot="items"
               key={item.id || item.caption || index}
             >
-              {this.#firstLevelRenderItem(item, index)}
+              {this.#firstLevelRenderItem(item, index, 0)}
             </ch-action-group-item>
           ))}
 
         {thereAreCollapsedItems &&
           this.model
             .filter((_, index) => index >= this.displayedItemsCount)
-            .map(this.#firstLevelRenderCollapsedItem)}
+            .map(this.#firstLevelRenderCollapsedItem(0))}
       </ch-action-group>
     );
   }

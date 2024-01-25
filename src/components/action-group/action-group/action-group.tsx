@@ -88,12 +88,6 @@ export class ChActionGroup {
   }
 
   /**
-   * Determine which mouse actions on the expandable button display the dropdown
-   * section.
-   */
-  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
-
-  /**
    * @todo Check a better convention for this property, for example, "ActionsInlineAlignment"
    * This attribute determines the position of the More Actions button in the Action Group.
    *
@@ -261,7 +255,6 @@ export class ChActionGroup {
               buttonLabel={this.buttonLabel}
               class="more-actions"
               part="more-actions"
-              expandBehavior={this.expandBehavior}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
               onExpandedChange={this.#handleMoreActionButtonExpand}

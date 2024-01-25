@@ -15,10 +15,10 @@ export class ChDropdownRender {
   @Element() el: HTMLChDropdownRenderElement;
 
   /**
-   * This attribute lets you specify the label for the expandable button.
+   * This attribute lets you specify the label for the first expandable button.
    * Important for accessibility.
    */
-  @Prop() readonly buttonLabel: string = "Show options";
+  @Prop() readonly buttonAccessibleName: string;
 
   /**
    * A CSS class to set as the `ch-dropdown` element class.
@@ -146,7 +146,7 @@ export class ChDropdownRender {
   render() {
     return (
       <ch-dropdown
-        buttonLabel={this.buttonLabel}
+        buttonAccessibleName={this.buttonAccessibleName}
         class={this.cssClass}
         openOnFocus={this.openOnFocus}
         position={this.position}

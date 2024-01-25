@@ -170,7 +170,7 @@ export class ChDropDown implements ChComponent {
    * This attribute lets you specify the label for the expandable button.
    * Important for accessibility.
    */
-  @Prop() readonly buttonLabel: string = "Show options";
+  @Prop() readonly buttonAccessibleName: string;
 
   /**
    * `true` to display the dropdown section.
@@ -436,7 +436,7 @@ export class ChDropDown implements ChComponent {
           aria-controls={WINDOW_ID}
           aria-expanded={this.expanded.toString()}
           aria-haspopup="true"
-          aria-label={this.buttonLabel}
+          aria-label={this.buttonAccessibleName}
           class="expandable-button"
           part="expandable-button"
           type="button"

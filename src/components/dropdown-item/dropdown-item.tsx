@@ -57,6 +57,12 @@ export class ChDropDownItem implements ChComponent {
   @Prop() readonly level: number;
 
   /**
+   * This attribute lets you specify if the control is nested in another
+   * dropdown. Useful to manage keyboard interaction.
+   */
+  @Prop() readonly nestedDropdown: boolean = true;
+
+  /**
    * Determine if the dropdown section should be opened when the expandable
    * button of the control is focused.
    * Only works if the control has subitems.
@@ -164,6 +170,7 @@ export class ChDropDownItem implements ChComponent {
 
   private itemsRender = () => (
     <ch-dropdown
+      buttonAccessibleName={this.caption}
       class={{
         action: true,
         "start-img-part": !!this.leftImgSrc,
@@ -171,7 +178,7 @@ export class ChDropDownItem implements ChComponent {
       }}
       exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,window"
       level={this.level}
-      nestedDropdown={true}
+      nestedDropdown={this.nestedDropdown}
       openOnFocus={this.openOnFocus}
       position={this.position}
       ref={el => (this.mainElement = el)}

@@ -18,10 +18,10 @@ export class ChActionGroupRender {
   @State() moreActionsButtonWasExpanded = false;
 
   /**
-   * This attribute lets you specify the label for the expandable button.
+   * This attribute lets you specify the label for the more actions button.
    * Important for accessibility.
    */
-  @Prop() readonly buttonLabel: string = "Show options";
+  @Prop() readonly moreActionsAccessibleName: string = "Show options";
 
   /**
    * A CSS class to set as the `ch-action-group` element class.
@@ -162,6 +162,7 @@ export class ChActionGroupRender {
         forceContainingBlock={false}
         href={item.link?.url}
         leftImgSrc={this.#renderImg(item.startImage)}
+        nestedDropdown={false}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
         rightImgSrc={this.#renderImg(item.endImage)}
@@ -257,9 +258,9 @@ export class ChActionGroupRender {
 
     return (
       <ch-action-group
-        buttonLabel={this.buttonLabel}
         class={this.cssClass || null}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
+        moreActionsAccessibleName={this.moreActionsAccessibleName}
         moreActionsDropdownPosition={this.moreActionsDropdownPosition}
         openOnFocus={this.openOnFocus}
         onDisplayedItemsCountChange={this.#handleDisplayedItemsCountChange}

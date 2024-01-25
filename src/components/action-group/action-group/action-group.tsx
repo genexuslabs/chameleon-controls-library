@@ -55,12 +55,6 @@ export class ChActionGroup {
   @Prop() readonly accessibleName: string;
 
   /**
-   * This attribute lets you specify the label for the more actions button.
-   * Important for accessibility.
-   */
-  @Prop() readonly buttonLabel: string = "More actions";
-
-  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the Width of the container of ActionGroup.
    *
@@ -86,6 +80,12 @@ export class ChActionGroup {
 
     this.#setResponsiveCollapse();
   }
+
+  /**
+   * This attribute lets you specify the label for the more actions button.
+   * Important for accessibility.
+   */
+  @Prop() readonly moreActionsAccessibleName: string = "More actions";
 
   /**
    * @todo Check a better convention for this property, for example, "ActionsInlineAlignment"
@@ -252,7 +252,7 @@ export class ChActionGroup {
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
               exportparts="expandable-button:more-actions-button,separation:more-actions-separation,window:more-actions-list"
-              buttonLabel={this.buttonLabel}
+              buttonAccessibleName={this.moreActionsAccessibleName}
               class="more-actions"
               part="more-actions"
               openOnFocus={this.openOnFocus}

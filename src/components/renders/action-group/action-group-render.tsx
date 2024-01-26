@@ -95,7 +95,7 @@ export class ChActionGroupRender {
     }
   };
 
-  #renderImg = (img: string) =>
+  #getImagePath = (img: string) =>
     this.useGxRender
       ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
       : img;
@@ -111,7 +111,7 @@ export class ChActionGroupRender {
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#renderImg(item.endImage)}
+          endImgSrc={this.#getImagePath(item.endImage)}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -122,7 +122,7 @@ export class ChActionGroupRender {
               : item.itemsPosition) || "OutsideEnd_InsideStart"
           }
           shortcut={item.shortcut}
-          startImgSrc={this.#renderImg(item.startImage)}
+          startImgSrc={this.#getImagePath(item.startImage)}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpanded
@@ -166,14 +166,13 @@ export class ChActionGroupRender {
         actionGroupParent={true}
         caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
-        endImgSrc={this.#renderImg(item.endImage)}
-        forceContainingBlock={false}
+        endImgSrc={this.#getImagePath(item.endImage)}
         href={item.link?.url}
         leaf={!hasItems}
         level={level}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
-        startImgSrc={this.#renderImg(item.startImage)}
+        startImgSrc={this.#getImagePath(item.startImage)}
         onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
@@ -217,7 +216,7 @@ export class ChActionGroupRender {
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#renderImg(item.endImage)}
+          endImgSrc={this.#getImagePath(item.endImage)}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -226,7 +225,7 @@ export class ChActionGroupRender {
             item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
           }
           shortcut={item.shortcut}
-          startImgSrc={this.#renderImg(item.startImage)}
+          startImgSrc={this.#getImagePath(item.startImage)}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpandedInMoreActions
@@ -267,8 +266,6 @@ export class ChActionGroupRender {
       this.moreActionsButtonWasExpanded &&
       this.model != null &&
       this.displayedItemsCount !== -1;
-
-    console.log("this.displayedItemsCount", this.displayedItemsCount);
 
     return (
       <ch-action-group

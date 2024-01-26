@@ -1,3 +1,10 @@
 ch-dropdown-render {
   display: contents;
 }
+
+.ch-dropdown-separator {
+  display: grid;
+  block-size: 1px;
+  background-color: color-mix(in srgb, currentColor 25%, transparent);
+  pointer-events: none;
+}

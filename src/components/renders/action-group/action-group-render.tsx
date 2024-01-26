@@ -80,6 +80,13 @@ export class ChActionGroupRender {
     "InsideStart_OutsideEnd";
 
   /**
+   * A CSS class to set as the `ch-dropdown-item` element class.
+   * This default class is used for the items that don't have an explicit class.
+   */
+  @Prop() readonly separatorCssClass: string =
+    "action-group-separator-horizontal";
+
+  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender: boolean = false;
@@ -105,7 +112,7 @@ export class ChActionGroupRender {
     (item: ActionGroupItemModel, index: number) => {
       const hasItems = item.items?.length > 0;
 
-      return (
+      return [
         <ch-dropdown
           key={item.id || item.caption || index}
           id={item.id}
@@ -138,8 +145,18 @@ export class ChActionGroupRender {
             // Render a dummy element if the control was not expanded and has items
             hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
           }
-        </ch-dropdown>
-      );
+        </ch-dropdown>,
+
+        item.showSeparator && (
+          <div
+            aria-hidden="true"
+            class={
+              "ch-dropdown-separator " +
+              (item.separatorClass || this.separatorCssClass)
+            }
+          ></div>
+        )
+      ];
     };
 
   #firstLevelRenderItem = (
@@ -159,7 +176,7 @@ export class ChActionGroupRender {
           this.displayedItemsCount !== -1 &&
           index >= this.displayedItemsCount));
 
-    return (
+    return [
       <ch-dropdown
         key={item.id || item.caption || index}
         id={item.id}
@@ -188,8 +205,18 @@ export class ChActionGroupRender {
           item.items.map(this.#renderItem(level + 1, false))}
 
         {mustRenderDummySubElement && <ch-dropdown></ch-dropdown>}
-      </ch-dropdown>
-    );
+      </ch-dropdown>,
+
+      item.showSeparator && (
+        <div
+          aria-hidden="true"
+          class={
+            "ch-action-group-separator--vertical " +
+            (item.separatorClass || this.separatorCssClass)
+          }
+        ></div>
+      )
+    ];
   };
 
   #handleItemExpanded =
@@ -209,7 +236,7 @@ export class ChActionGroupRender {
     (level: number) => (item: ActionGroupItemModel, index: number) => {
       const hasItems = item.items?.length > 0;
 
-      return (
+      return [
         <ch-dropdown
           slot="more-items"
           key={item.id || item.caption || index}
@@ -246,8 +273,19 @@ export class ChActionGroupRender {
               <ch-dropdown></ch-dropdown>
             )
           }
-        </ch-dropdown>
-      );
+        </ch-dropdown>,
+
+        item.showSeparator && (
+          <div
+            slot="more-items"
+            aria-hidden="true"
+            class={
+              "ch-dropdown-separator " +
+              (item.separatorClass || this.separatorCssClass)
+            }
+          ></div>
+        )
+      ];
     };
 
   #handleDisplayedItemsCountChange = (

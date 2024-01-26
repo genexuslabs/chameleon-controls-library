@@ -8,8 +8,10 @@ export type DropdownItemModel = {
   items?: DropdownItemModel[];
   itemsPosition?: DropdownPosition;
   link?: Link;
+  separatorClass?: string;
   shortcut?: string;
   startImage?: string;
+  showSeparator?: boolean;
 
   /**
    * Only used for performance reasons. It is not used as public property

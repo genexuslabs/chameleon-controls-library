@@ -65,6 +65,12 @@ export class ChDropdownRender {
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
+   * A CSS class to set as the `ch-dropdown-item` element class.
+   * This default class is used for the items that don't have an explicit class.
+   */
+  @Prop() readonly separatorCssClass: string = "dropdown-separator";
+
+  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly useGxRender: boolean = false;
@@ -124,7 +130,17 @@ export class ChDropdownRender {
           // Render a dummy element if the control was not expanded and has items
           hasItems && !item.wasExpanded && <ch-dropdown></ch-dropdown>
         }
-      </ch-dropdown>
+      </ch-dropdown>,
+
+      item.showSeparator && (
+        <div
+          aria-hidden="true"
+          class={
+            "ch-dropdown-separator " +
+            (item.separatorClass || this.separatorCssClass)
+          }
+        ></div>
+      )
     ];
   };
 

@@ -437,7 +437,11 @@ export class ChDropDown implements ChComponent {
     return (
       <Host
         role={this.level !== -1 ? "listitem" : null}
-        class={this.level !== -1 ? "ch-dropdown--relative-popover" : undefined}
+        class={
+          this.level !== -1 && !this.actionGroupParent
+            ? "ch-dropdown--relative-popover"
+            : undefined
+        }
         style={
           !!this.startImgSrc || !!this.endImgSrc
             ? {

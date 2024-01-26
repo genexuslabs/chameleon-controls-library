@@ -45,9 +45,10 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
 
 const addPopoverTargetElement = (
   actionElement: PopoverActionElement,
-  popoverElement: HTMLElement
+  popoverElement: HTMLElement,
+  addAction: boolean
 ) => {
-  if (actionElement) {
+  if (actionElement && addAction) {
     actionElement.popoverTargetElement = popoverElement;
   }
 };
@@ -97,6 +98,13 @@ export class ChPopover {
   @State() relativePopover = false;
 
   /**
+   * `true` if the `actionElement` binds the ch-popover using an external ID.
+   * If so, the `popoverTargetElement` property won't be configured in the
+   * action element.
+   */
+  @Prop() readonly actionById: boolean = false;
+
+  /**
    * Specifies a reference of the action that controls the popover control.
    */
   @Prop() readonly actionElement?: PopoverActionElement;
@@ -111,7 +119,7 @@ export class ChPopover {
 
     // Remove previous action element
     removePopoverTargetElement(oldActionElement);
-    addPopoverTargetElement(newActionElement, this.el);
+    addPopoverTargetElement(newActionElement, this.el, !this.actionById);
 
     // Schedule update for watchers
     this.#checkWatchers = true;
@@ -137,7 +145,7 @@ export class ChPopover {
    * Specifies whether the popover is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true }) hidden = true;
+  @Prop({ mutable: true, reflect: true }) hidden = true;
   @Watch("hidden")
   handleHiddenChange(newHiddenValue: boolean) {
     // Schedule update for watchers
@@ -147,9 +155,8 @@ export class ChPopover {
     if (newHiddenValue) {
       if (!this.relativePopover) {
         this.el.hidePopover();
+        this.#avoidFlickeringInTheNextRender(true);
       }
-
-      this.#avoidFlickeringInTheNextRender(true);
     } else {
       this.#showPopover();
     }
@@ -227,7 +234,11 @@ export class ChPopover {
     this.#updatePosition();
 
     // The popover's position is now set, so we no longer have to hide it
-    this.#avoidFlickeringInTheNextRender(false);
+    if (!this.relativePopover) {
+      requestAnimationFrame(() => {
+        this.#avoidFlickeringInTheNextRender(false);
+      });
+    }
 
     // Listeners
     this.#windowRef.addEventListener("resize", this.#updatePositionRAF, {
@@ -420,6 +431,10 @@ export class ChPopover {
         POPOVER_STAY_IN_THE_SAME_LAYER
       ) === "true";
 
+    if (!this.relativePopover) {
+      this.#avoidFlickeringInTheNextRender(true);
+    }
+
     // Observe the dir attribute in the document
     this.#rtlWatcher.observe(document.documentElement, {
       attributeFilter: ["dir"]
@@ -440,10 +455,8 @@ export class ChPopover {
   }
 
   componentDidLoad() {
-    this.#avoidFlickeringInTheNextRender(true);
-
     // Initialize popoverTargetElement
-    addPopoverTargetElement(this.actionElement, this.el);
+    addPopoverTargetElement(this.actionElement, this.el, !this.actionById);
 
     // Initialize watchers
     this.#setPositionWatcher();

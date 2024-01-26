@@ -327,7 +327,7 @@ export class ChDropDown implements ChComponent {
       aria-haspopup="true"
       aria-label={this.buttonAccessibleName}
       class="expandable-button"
-      part="expandable-button"
+      part="action button expandable-action expandable-button"
       type="button"
       onClick={this.#handleButtonClick}
       ref={el => (this.#mainAction = el)}

@@ -257,6 +257,7 @@ export class ChActionGroup {
               actionGroupParent={true}
               buttonAccessibleName={this.moreActionsAccessibleName}
               leaf={false}
+              level={-1}
               nestedDropdown={true}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}

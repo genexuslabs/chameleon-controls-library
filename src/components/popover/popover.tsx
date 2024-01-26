@@ -387,7 +387,9 @@ export class ChPopover {
 
   #handleDragEnd = () => {
     // Cancel RAF to prevent access to undefined references
-    this.#dragRAF.cancel();
+    if (this.#dragRAF) {
+      this.#dragRAF.cancel();
+    }
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementDragRAF, {

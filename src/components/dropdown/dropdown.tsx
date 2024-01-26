@@ -27,7 +27,11 @@ const mapDropdownAlignToChWindowAlign: {
   OutsideEnd: "outside-end"
 };
 
+const DROPDOWN_TAG_NAME = "ch-dropdown";
 const WINDOW_ID = "window";
+
+const elementIsDropdown = (element: Element) =>
+  element?.tagName?.toLowerCase() === DROPDOWN_TAG_NAME;
 
 @Component({
   shadow: true,
@@ -202,14 +206,15 @@ export class ChDropDown implements ChComponent {
 
   #closeDropdownSibling = () => {
     const currentFocusedElement = focusComposedPath();
-    const currentFocusedItem =
-      currentFocusedElement[currentFocusedElement.length - 1];
+    const currentFocusedItem = currentFocusedElement[
+      currentFocusedElement.length - 1
+    ] as HTMLChDropdownElement;
 
-    // if (!elementIsDropdownItem(currentFocusedItem)) {
-    //   return;
-    // }
+    if (!elementIsDropdown(currentFocusedItem)) {
+      return;
+    }
 
-    if ((currentFocusedItem as HTMLChDropdownElement).level === this.level) {
+    if (currentFocusedItem.level < this.level) {
       return;
     }
 
@@ -442,7 +447,7 @@ export class ChDropDown implements ChComponent {
             : undefined
         }
         onMouseLeave={
-          this.expanded && !this.actionGroupParent && this.level !== -1
+          !this.actionGroupParent && this.level !== -1
             ? this.#handleMouseLeave
             : null
         }

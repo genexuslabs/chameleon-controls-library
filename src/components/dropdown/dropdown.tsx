@@ -37,11 +37,6 @@ const WINDOW_ID = "window";
 export class ChDropDown implements ChComponent {
   #firstExpanded = false;
 
-  // This is a WA to avoid a StencilJS's issue when reusing the top layer and
-  // interacting with the Tab key in the same top layer.
-  // After the second opening, the Tab key stops working
-  #idToNotReuseTopLayer = 0;
-
   // Refs
   #mainAction: HTMLButtonElement | HTMLAnchorElement;
 
@@ -81,13 +76,13 @@ export class ChDropDown implements ChComponent {
       document.removeEventListener("click", this.#closeOnClickOutside, {
         capture: true
       });
+
+      // This is a WA to avoid a StencilJS's (or browser) issue when reusing
+      // the top layer and interacting with the Tab key in the same top layer.
+      // After the second opening, the Tab key stops working
+      (this.#mainAction as HTMLButtonElement).popoverTargetElement = null;
     }
   }
-
-  /**
-   * `true` to force the control to make its own containing block.
-   */
-  @Prop({ reflect: true }) readonly forceContainingBlock: boolean = true;
 
   /**
    * Specifies the hyperlink of the item. If this property is defined, the
@@ -142,12 +137,12 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly shortcut: string;
 
   /**
-   *
+   * `true` to make available a slot to show a footer element.
    */
   @Prop() readonly showFooter: boolean = false;
 
   /**
-   *
+   * `true` to make available a slot to show a header element.
    */
   @Prop() readonly showHeader: boolean = false;
 
@@ -250,8 +245,6 @@ export class ChDropDown implements ChComponent {
   #handleMouseEnter = (event: MouseEvent) => {
     event.stopPropagation();
 
-    console.log("handleMouseEnter");
-
     // We first must close the current expanded dropdown, since with the
     // keyboard we could have expanded a different dropdown
     this.#closeDropdownSibling();
@@ -266,8 +259,6 @@ export class ChDropDown implements ChComponent {
     event.stopPropagation();
 
     if (this.expanded) {
-      console.log("#handleMouseLeave");
-
       this.expandedChange.emit(false);
       this.expanded = false;
     }
@@ -311,7 +302,7 @@ export class ChDropDown implements ChComponent {
     this.expandedChange.emit(!this.expanded);
   };
 
-  private dropDownItemContent = () => [
+  #dropDownItemContent = () => [
     <span slot="action" class="content" part="content">
       {this.caption}
     </span>,
@@ -325,6 +316,7 @@ export class ChDropDown implements ChComponent {
 
   #firstLevelRender = () => (
     <button
+      popoverTarget={WINDOW_ID}
       aria-controls={WINDOW_ID}
       aria-expanded={this.expanded.toString()}
       aria-haspopup="true"
@@ -362,10 +354,11 @@ export class ChDropDown implements ChComponent {
         }
         ref={el => (this.#mainAction = el)}
       >
-        {this.dropDownItemContent()}
+        {this.#dropDownItemContent()}
       </a>
     ) : (
       <button
+        popoverTarget={WINDOW_ID}
         aria-controls={!this.leaf ? WINDOW_ID : null}
         aria-expanded={!this.leaf ? this.expanded.toString() : null}
         aria-haspopup={!this.leaf ? "true" : null}
@@ -386,7 +379,7 @@ export class ChDropDown implements ChComponent {
         onClick={this.#handleButtonClick}
         ref={el => (this.#mainAction = el)}
       >
-        {this.dropDownItemContent()}
+        {this.#dropDownItemContent()}
       </button>
     );
 
@@ -396,8 +389,6 @@ export class ChDropDown implements ChComponent {
     if (!this.#firstExpanded) {
       return "";
     }
-
-    this.#idToNotReuseTopLayer++;
 
     const aligns = this.position.split("_");
     const alignX = aligns[0] as DropdownAlign;
@@ -410,10 +401,10 @@ export class ChDropDown implements ChComponent {
 
     return (
       <ch-popover
-        key={this.#idToNotReuseTopLayer}
         role={noNeedToAddDivListWrapper ? "list" : null}
         id={WINDOW_ID}
         part="window"
+        actionById={true}
         actionElement={this.#mainAction as HTMLButtonElement}
         mode="manual"
         hidden={!this.expanded}
@@ -440,7 +431,8 @@ export class ChDropDown implements ChComponent {
   render() {
     return (
       <Host
-        role={this.leaf ? "listitem" : null}
+        role={this.level !== -1 ? "listitem" : null}
+        class={this.level !== -1 ? "ch-dropdown--relative-popover" : undefined}
         style={
           !!this.startImgSrc || !!this.endImgSrc
             ? {
@@ -455,7 +447,9 @@ export class ChDropDown implements ChComponent {
             : null
         }
       >
-        {this.level === -1 ? this.#firstLevelRender() : this.#actionRender()}
+        {this.level === -1 && !this.leaf
+          ? this.#firstLevelRender()
+          : this.#actionRender()}
 
         {!this.leaf && this.#popoverRender()}
       </Host>

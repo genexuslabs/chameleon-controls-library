@@ -22,12 +22,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   block-size: 100%;
 }
 
-// Make the ch-popover control relative to the dropdown
-:host(.ch-dropdown--relative-popover) {
-  transform: translateX(0);
-  --ch-popover-stay-in-the-same-layer: true;
-}
-
 .expandable-button {
   display: flex;
   align-items: center;

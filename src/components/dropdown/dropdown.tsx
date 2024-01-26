@@ -411,6 +411,7 @@ export class ChDropDown implements ChComponent {
         part="window"
         actionById={true}
         actionElement={this.#mainAction as HTMLButtonElement}
+        firstLayer={this.level === -1 || this.actionGroupParent}
         mode="manual"
         hidden={!this.expanded}
         inlineAlign={xAlignMapping}
@@ -437,11 +438,6 @@ export class ChDropDown implements ChComponent {
     return (
       <Host
         role={this.level !== -1 ? "listitem" : null}
-        class={
-          this.level !== -1 && !this.actionGroupParent
-            ? "ch-dropdown--relative-popover"
-            : undefined
-        }
         style={
           !!this.startImgSrc || !!this.endImgSrc
             ? {

@@ -89,11 +89,6 @@ $ch-popover-y--same-layer: calc(
   visibility: hidden !important;
 }
 
-:host(.gx-popover-same-layer) {
-  // Alignment and Drag
-  translate: $ch-popover-x--same-layer $ch-popover-y--same-layer;
-}
-
 // - - - - - - - - - - - - - - - -
 //              Drag
 // - - - - - - - - - - - - - - - -

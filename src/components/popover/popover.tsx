@@ -142,6 +142,11 @@ export class ChPopover {
   }
 
   /**
+   * `true` if the control is not stacked with another top layer.
+   */
+  @Prop() readonly firstLayer: boolean;
+
+  /**
    * Specifies whether the popover is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
@@ -153,12 +158,13 @@ export class ChPopover {
 
     // Update the popover visualization
     if (newHiddenValue) {
-      if (!this.relativePopover) {
-        this.el.hidePopover();
+      if (this.firstLayer) {
         this.#avoidFlickeringInTheNextRender(true);
       }
+
+      this.el.hidePopover();
     } else {
-      this.#showPopover();
+      this.el.showPopover();
     }
   }
 
@@ -196,14 +202,6 @@ export class ChPopover {
    */
   @Event() popoverClosed: EventEmitter;
 
-  #showPopover = () => {
-    if (!this.relativePopover) {
-      this.el.showPopover();
-    } else {
-      this.hidden &&= false;
-    }
-  };
-
   #avoidFlickeringInTheNextRender = (addClass: boolean) => {
     if (addClass) {
       // Class to prevent flickering in the first position adjustment
@@ -234,7 +232,7 @@ export class ChPopover {
     this.#updatePosition();
 
     // The popover's position is now set, so we no longer have to hide it
-    if (!this.relativePopover) {
+    if (this.firstLayer) {
       requestAnimationFrame(() => {
         this.#avoidFlickeringInTheNextRender(false);
       });
@@ -426,14 +424,7 @@ export class ChPopover {
       }
     });
 
-    // Check if the popover must stay in the same layer, due to is already
-    // contained in another popover at the top layer
-    this.relativePopover =
-      getComputedStyle(this.el).getPropertyValue(
-        POPOVER_STAY_IN_THE_SAME_LAYER
-      ) === "true";
-
-    if (!this.relativePopover) {
+    if (this.firstLayer) {
       this.#avoidFlickeringInTheNextRender(true);
     }
 
@@ -464,7 +455,7 @@ export class ChPopover {
     this.#setPositionWatcher();
 
     if (!this.hidden) {
-      this.#showPopover();
+      this.el.showPopover();
     }
   }
 
@@ -489,10 +480,9 @@ export class ChPopover {
       <Host
         class={{
           "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
-          "gx-popover-dragging": this.dragging,
-          "gx-popover-same-layer": this.relativePopover
+          "gx-popover-dragging": this.dragging
         }}
-        popover={this.relativePopover ? null : this.mode}
+        popover={this.mode}
         onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         onToggle={this.#handlePopoverToggle}
       >

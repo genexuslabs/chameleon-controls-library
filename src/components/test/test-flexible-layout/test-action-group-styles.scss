@@ -15,11 +15,11 @@
   line-height: 24px;
 }
 
-.action-group-item::part(action) {
+.action-group-item::part(expandable-action) {
   padding-inline: 8px;
 }
 
-.action-group-item::part(action):hover {
+.action-group-item::part(expandable-action):hover {
   background-color: rgba(0, 0, 0, 0.1);
 }
 

@@ -62,3 +62,8 @@
 .dropdown-item > .dropdown-item::part(window) {
   margin-block-start: -4px;
 }
+
+.action-group-separator-horizontal {
+  margin-block: 4px;
+  margin-inline: 12px;
+}

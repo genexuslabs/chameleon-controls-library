@@ -74,14 +74,13 @@ export class ChDropdownRender {
   //  */
   // @Event() expandedChange: EventEmitter<boolean>;
 
-  private handleItemClick =
-    (target: string, itemId: string) => (event: UIEvent) => {
-      if (this.itemClickCallback) {
-        this.itemClickCallback(event, target, itemId);
-      }
-    };
+  #handleItemClick = (target: string, itemId: string) => (event: UIEvent) => {
+    if (this.itemClickCallback) {
+      this.itemClickCallback(event, target, itemId);
+    }
+  };
 
-  private renderItem = (level: number) => (item: DropdownItemModel) => {
+  #renderItem = (level: number) => (item: DropdownItemModel) => {
     const hasItems = item.items?.length > 0;
 
     return [
@@ -112,14 +111,14 @@ export class ChDropdownRender {
               )
             : item.startImage
         }
-        onClick={this.handleItemClick(item.link?.url, item.id)}
+        onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpanded ? this.#handleItemExpanded(item) : null
         }
       >
         {hasItems &&
           item.wasExpanded &&
-          item.items.map(this.renderItem(level + 1))}
+          item.items.map(this.#renderItem(level + 1))}
 
         {
           // Render a dummy element if the control was not expanded and has items
@@ -178,7 +177,7 @@ export class ChDropdownRender {
 
         {this.#mainDropdownExpanded &&
           this.model != null &&
-          this.model.map(this.renderItem(0))}
+          this.model.map(this.#renderItem(0))}
       </ch-dropdown>
     );
   }

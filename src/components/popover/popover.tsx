@@ -34,8 +34,6 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
-const POPOVER_STAY_IN_THE_SAME_LAYER = "--ch-popover-stay-in-the-same-layer";
-
 // Utils
 const fromPxToNumber = (pxValue: string) =>
   Number(pxValue.replace("px", "").trim());

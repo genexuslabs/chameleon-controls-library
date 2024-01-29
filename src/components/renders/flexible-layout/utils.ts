@@ -112,6 +112,8 @@ const updateFlexibleSubModels = (
         };
       itemsInfo.set(group.id, flexibleItemExtended);
 
+      layoutSplitterParts.add(group.id);
+
       updateFlexibleSubModels(
         group.items, // Subitems
         itemsInfo,

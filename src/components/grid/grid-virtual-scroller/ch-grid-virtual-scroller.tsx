@@ -160,6 +160,7 @@ export class ChGridVirtualScroller {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
+      this.defineVirtualHeight();
     }
   }
 
@@ -174,6 +175,7 @@ export class ChGridVirtualScroller {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
+      this.defineVirtualHeight();
     }
   }
 
@@ -226,9 +228,7 @@ export class ChGridVirtualScroller {
 
   private unobserveScroll() {
     document.removeEventListener("scroll", this.scrollHandler);
-    document.removeEventListener("scrollend", this.scrollEndHandler);
     this.gridLayoutEl.removeEventListener("scroll", this.scrollHandler);
-    this.gridLayoutEl.removeEventListener("scrollend", this.scrollEndHandler);
   }
 
   private unobserveResize() {

@@ -1,3 +1,7 @@
 ch-action-group-item[floating] {
   visibility: hidden;
 }
+
+ch-action-group-item {
+  display: flex;
+}

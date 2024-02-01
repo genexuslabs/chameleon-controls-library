@@ -96,17 +96,13 @@ export namespace Components {
          */
         "accessibleName": string;
         /**
-          * This attribute lets you specify the label for the more actions button. Important for accessibility.
-         */
-        "buttonLabel": string;
-        /**
-          * Determine which mouse actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
-        /**
           * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
          */
         "itemsOverflowBehavior": ItemsOverflowBehavior;
+        /**
+          * This attribute lets you specify the label for the more actions button. Important for accessibility.
+         */
+        "moreActionsAccessibleName": string;
         /**
           * @todo Check a better convention for this property, for example, "ActionsInlineAlignment" This attribute determines the position of the More Actions button in the Action Group.  | Value   | Details                                                               | | --------| --------------------------------------------------------------------- | | `Start` | The More Actions Button is displayed to the left of the ActionGroup.  | | `End`   | The More Actions Button is displayed to the right of the ActionGroup. |
          */
@@ -128,17 +124,9 @@ export namespace Components {
     }
     interface ChActionGroupRender {
         /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel": string;
-        /**
           * A CSS class to set as the `ch-action-group` element class.
          */
         "cssClass": string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -164,17 +152,21 @@ export namespace Components {
          */
         "model": ActionGroupItemModel[];
         /**
+          * This attribute lets you specify the label for the more actions button. Important for accessibility.
+         */
+        "moreActionsAccessibleName": string;
+        /**
           * Specifies the position of the dropdown section that is placed relative to the more actions button.
          */
         "moreActionsDropdownPosition": DropdownPosition;
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused. TODO: Add implementation
          */
         "openOnFocus": boolean;
         /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
          */
-        "separation": number;
+        "separatorCssClass": string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -262,53 +254,55 @@ export namespace Components {
     }
     interface ChDropdown {
         /**
+          * Specifies if the current parent of the item is the action-group control.
+         */
+        "actionGroupParent": boolean;
+        /**
           * This attribute lets you specify the label for the expandable button. Important for accessibility.
          */
-        "buttonLabel": string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
-        /**
-          * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
-         */
-        "nestedDropdown": boolean;
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus": boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position": DropdownPosition;
-    }
-    interface ChDropdownItem {
+        "buttonAccessibleName": string;
         /**
           * Specifies the caption that the control will display.
          */
         "caption": string;
         /**
-          * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
+          * Collapse the content of the dropdown.
          */
-        "expandBehavior": "Click" | "ClickOrHover";
+        "collapseDropdown": () => Promise<void>;
         /**
-          * `true` to force the control to make its own containing block.
+          * Specifies the src for the right img.
          */
-        "forceContainingBlock": boolean;
+        "endImgSrc": string;
         /**
-          * Focuses the control's anchor or button.
+          * Expand the content of the dropdown.
          */
-        "handleFocusElement": () => Promise<void>;
+        "expandDropdown": () => Promise<void>;
+        /**
+          * `true` to display the dropdown section.
+         */
+        "expanded": boolean;
+        /**
+          * Focus the dropdown action.
+         */
+        "focusElement": () => Promise<void>;
         /**
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href": string;
         /**
-          * Specifies the src for the left img.
+          * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
-        "leftImgSrc": string;
+        "leaf": boolean;
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused. Only works if the control has subitems.
+          * Level in the render at which the item is placed.
+         */
+        "level": number;
+        /**
+          * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
+         */
+        "nestedDropdown": boolean;
+        /**
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused. TODO: Add implementation
          */
         "openOnFocus": boolean;
         /**
@@ -316,29 +310,33 @@ export namespace Components {
          */
         "position": DropdownPosition;
         /**
-          * Specifies the src for the right img.
-         */
-        "rightImgSrc": string;
-        /**
           * Specifies the shortcut caption that the control will display.
          */
         "shortcut": string;
+        /**
+          * `true` to make available a slot to show a footer element.
+         */
+        "showFooter": boolean;
+        /**
+          * `true` to make available a slot to show a header element.
+         */
+        "showHeader": boolean;
+        /**
+          * Specifies the src for the left img.
+         */
+        "startImgSrc": string;
     }
     interface ChDropdownItemSeparator {
     }
     interface ChDropdownRender {
         /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+          * This attribute lets you specify the label for the first expandable button. Important for accessibility.
          */
-        "buttonLabel": string;
+        "buttonAccessibleName": string;
         /**
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass": string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior": "Click" | "ClickOrHover";
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -364,13 +362,13 @@ export namespace Components {
          */
         "model": DropdownItemModel[];
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus": boolean;
-        /**
           * Specifies the position of the dropdown section that is placed relative to the expandable button.
          */
         "position": DropdownPosition;
+        /**
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "separatorCssClass": string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -1249,6 +1247,10 @@ export namespace Components {
      */
     interface ChPopover {
         /**
+          * `true` if the `actionElement` binds the ch-popover using an external ID. If so, the `popoverTargetElement` property won't be configured in the action element.
+         */
+        "actionById": boolean;
+        /**
           * Specifies a reference of the action that controls the popover control.
          */
         "actionElement"?: PopoverActionElement;
@@ -1260,6 +1262,10 @@ export namespace Components {
           * Specifies the block alignment of the window.
          */
         "blockAlign": ChPopoverAlign;
+        /**
+          * `true` if the control is not stacked with another top layer.
+         */
+        "firstLayer": boolean;
         /**
           * Specifies whether the popover is hidden or visible.
          */
@@ -2125,10 +2131,6 @@ export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
 }
-export interface ChDropdownItemCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChDropdownItemElement;
-}
 export interface ChFlexibleLayoutCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChFlexibleLayoutElement;
@@ -2368,25 +2370,6 @@ declare global {
     var HTMLChDropdownElement: {
         prototype: HTMLChDropdownElement;
         new (): HTMLChDropdownElement;
-    };
-    interface HTMLChDropdownItemElementEventMap {
-        "actionClick": string;
-        "expandedChange": boolean;
-        "focusChange": any;
-    }
-    interface HTMLChDropdownItemElement extends Components.ChDropdownItem, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChDropdownItemElementEventMap>(type: K, listener: (this: HTMLChDropdownItemElement, ev: ChDropdownItemCustomEvent<HTMLChDropdownItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChDropdownItemElementEventMap>(type: K, listener: (this: HTMLChDropdownItemElement, ev: ChDropdownItemCustomEvent<HTMLChDropdownItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChDropdownItemElement: {
-        prototype: HTMLChDropdownItemElement;
-        new (): HTMLChDropdownItemElement;
     };
     interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
     }
@@ -3292,7 +3275,6 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-dropdown": HTMLChDropdownElement;
-        "ch-dropdown-item": HTMLChDropdownItemElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
         "ch-flexible-layout": HTMLChFlexibleLayoutElement;
@@ -3383,17 +3365,13 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: string;
         /**
-          * This attribute lets you specify the label for the more actions button. Important for accessibility.
-         */
-        "buttonLabel"?: string;
-        /**
-          * Determine which mouse actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
-        /**
           * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed to make the control responsive to changes in the Width of the container of ActionGroup.  | Value                 | Details                                                                                          | | --------------------- | ------------------------------------------------------------------------------------------------ | | `Add Scroll`          | The items of the ActionGroup that overflow horizontally are shown by means of a scroll.          | | `Multiline`           | The ActionGroup items that overflow horizontally are shown in a second line of the control.      | | `Responsive Collapse` | The Action Group items, when they start to overflow the control, are placed in the More Actions. |
          */
         "itemsOverflowBehavior"?: ItemsOverflowBehavior;
+        /**
+          * This attribute lets you specify the label for the more actions button. Important for accessibility.
+         */
+        "moreActionsAccessibleName"?: string;
         /**
           * @todo Check a better convention for this property, for example, "ActionsInlineAlignment" This attribute determines the position of the More Actions button in the Action Group.  | Value   | Details                                                               | | --------| --------------------------------------------------------------------- | | `Start` | The More Actions Button is displayed to the left of the ActionGroup.  | | `End`   | The More Actions Button is displayed to the right of the ActionGroup. |
          */
@@ -3423,17 +3401,9 @@ declare namespace LocalJSX {
     }
     interface ChActionGroupRender {
         /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
-         */
-        "buttonLabel"?: string;
-        /**
           * A CSS class to set as the `ch-action-group` element class.
          */
         "cssClass"?: string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -3459,17 +3429,21 @@ declare namespace LocalJSX {
          */
         "model"?: ActionGroupItemModel[];
         /**
+          * This attribute lets you specify the label for the more actions button. Important for accessibility.
+         */
+        "moreActionsAccessibleName"?: string;
+        /**
           * Specifies the position of the dropdown section that is placed relative to the more actions button.
          */
         "moreActionsDropdownPosition"?: DropdownPosition;
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused. TODO: Add implementation
          */
         "openOnFocus"?: boolean;
         /**
-          * Specifies the separation (in pixels) between the expandable button and the dropdown section of the control.
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
          */
-        "separation"?: number;
+        "separatorCssClass"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -3569,65 +3543,47 @@ declare namespace LocalJSX {
     }
     interface ChDropdown {
         /**
+          * Specifies if the current parent of the item is the action-group control.
+         */
+        "actionGroupParent"?: boolean;
+        /**
           * This attribute lets you specify the label for the expandable button. Important for accessibility.
          */
-        "buttonLabel"?: string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
-        /**
-          * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
-         */
-        "nestedDropdown"?: boolean;
-        /**
-          * Fired when the visibility of the dropdown section is changed
-         */
-        "onExpandedChange"?: (event: ChDropdownCustomEvent<boolean>) => void;
-        /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus"?: boolean;
-        /**
-          * Specifies the position of the dropdown section that is placed relative to the expandable button.
-         */
-        "position"?: DropdownPosition;
-    }
-    interface ChDropdownItem {
+        "buttonAccessibleName"?: string;
         /**
           * Specifies the caption that the control will display.
          */
         "caption"?: string;
         /**
-          * Determine which actions on the expandable button display the dropdown section. Only works if the control has subitems.
+          * Specifies the src for the right img.
          */
-        "expandBehavior"?: "Click" | "ClickOrHover";
+        "endImgSrc"?: string;
         /**
-          * `true` to force the control to make its own containing block.
+          * `true` to display the dropdown section.
          */
-        "forceContainingBlock"?: boolean;
+        "expanded"?: boolean;
         /**
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href"?: string;
         /**
-          * Specifies the src for the left img.
+          * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
-        "leftImgSrc"?: string;
+        "leaf"?: boolean;
         /**
-          * Fires when the control's anchor or button is clicked.
+          * Level in the render at which the item is placed.
          */
-        "onActionClick"?: (event: ChDropdownItemCustomEvent<string>) => void;
+        "level"?: number;
         /**
-          * Fired when the visibility of the dropdown section is changed
+          * This attribute lets you specify if the control is nested in another dropdown. Useful to manage keyboard interaction.
          */
-        "onExpandedChange"?: (event: ChDropdownItemCustomEvent<boolean>) => void;
+        "nestedDropdown"?: boolean;
         /**
-          * Fires when the control's anchor or button is in focus.
+          * Fired when the visibility of the dropdown section is changed by user interaction.
          */
-        "onFocusChange"?: (event: ChDropdownItemCustomEvent<any>) => void;
+        "onExpandedChange"?: (event: ChDropdownCustomEvent<boolean>) => void;
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused. Only works if the control has subitems.
+          * Determine if the dropdown section should be opened when the expandable button of the control is focused. TODO: Add implementation
          */
         "openOnFocus"?: boolean;
         /**
@@ -3635,29 +3591,33 @@ declare namespace LocalJSX {
          */
         "position"?: DropdownPosition;
         /**
-          * Specifies the src for the right img.
-         */
-        "rightImgSrc"?: string;
-        /**
           * Specifies the shortcut caption that the control will display.
          */
         "shortcut"?: string;
+        /**
+          * `true` to make available a slot to show a footer element.
+         */
+        "showFooter"?: boolean;
+        /**
+          * `true` to make available a slot to show a header element.
+         */
+        "showHeader"?: boolean;
+        /**
+          * Specifies the src for the left img.
+         */
+        "startImgSrc"?: string;
     }
     interface ChDropdownItemSeparator {
     }
     interface ChDropdownRender {
         /**
-          * This attribute lets you specify the label for the expandable button. Important for accessibility.
+          * This attribute lets you specify the label for the first expandable button. Important for accessibility.
          */
-        "buttonLabel"?: string;
+        "buttonAccessibleName"?: string;
         /**
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass"?: string;
-        /**
-          * Determine which actions on the expandable button display the dropdown section.
-         */
-        "expandBehavior"?: "Click" | "ClickOrHover";
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -3683,13 +3643,13 @@ declare namespace LocalJSX {
          */
         "model"?: DropdownItemModel[];
         /**
-          * Determine if the dropdown section should be opened when the expandable button of the control is focused.
-         */
-        "openOnFocus"?: boolean;
-        /**
           * Specifies the position of the dropdown section that is placed relative to the expandable button.
          */
         "position"?: DropdownPosition;
+        /**
+          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "separatorCssClass"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -4588,6 +4548,10 @@ declare namespace LocalJSX {
      */
     interface ChPopover {
         /**
+          * `true` if the `actionElement` binds the ch-popover using an external ID. If so, the `popoverTargetElement` property won't be configured in the action element.
+         */
+        "actionById"?: boolean;
+        /**
           * Specifies a reference of the action that controls the popover control.
          */
         "actionElement"?: PopoverActionElement;
@@ -4599,6 +4563,10 @@ declare namespace LocalJSX {
           * Specifies the block alignment of the window.
          */
         "blockAlign"?: ChPopoverAlign;
+        /**
+          * `true` if the control is not stacked with another top layer.
+         */
+        "firstLayer"?: boolean;
         /**
           * Specifies whether the popover is hidden or visible.
          */
@@ -5494,7 +5462,6 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-checkbox": ChCheckbox;
         "ch-dropdown": ChDropdown;
-        "ch-dropdown-item": ChDropdownItem;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
         "ch-flexible-layout": ChFlexibleLayout;
@@ -5571,7 +5538,6 @@ declare module "@stencil/core" {
             "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
-            "ch-dropdown-item": LocalJSX.ChDropdownItem & JSXBase.HTMLAttributes<HTMLChDropdownItemElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;

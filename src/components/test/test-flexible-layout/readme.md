@@ -35,10 +35,9 @@ graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
-  ch-action-group-render --> ch-dropdown-item
+  ch-action-group-render --> ch-dropdown
   ch-action-group-render --> ch-action-group
   ch-action-group-render --> ch-action-group-item
-  ch-dropdown-item --> ch-dropdown
   ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
   ch-tree-view-render --> ch-tree-view

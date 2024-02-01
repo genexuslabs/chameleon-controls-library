@@ -148,7 +148,7 @@ const defaultRenderItem = <T extends true | false>(
             )
           : itemModel.endImgSrc
       }
-      endImageType={itemModel.endImgType}
+      endImageType={itemModel.endImgType ?? "background"}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
@@ -172,7 +172,7 @@ const defaultRenderItem = <T extends true | false>(
             )
           : itemModel.startImgSrc
       }
-      startImageType={itemModel.startImgType}
+      startImageType={itemModel.startImgType ?? "background"}
     >
       {!itemModel.leaf &&
         itemModel.items != null &&

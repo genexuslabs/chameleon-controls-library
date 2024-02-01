@@ -187,15 +187,21 @@
     <script type="module">
       import { GXWebModel } from "./assets/models/action-group.js";
 
+      const START_IMG_TYPE = "background";
+      const END_IMG_TYPE = "background";
+
       const modelMinimal = [
         {
           id: "item-1",
-          startImage: "assets/icons/patterns.svg",
-          endImage: "./assets/icons/knowledge-base.svg",
+          startImgSrc: "assets/icons/patterns.svg",
+          startImgType: START_IMG_TYPE,
+          endImgSrc: "./assets/icons/knowledge-base.svg",
+          endImgType: END_IMG_TYPE,
           items: [
             {
               id: "item-2-2",
-              startImage: "assets/icons/patterns.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               link: { url: "https://www.google.com.uy" },
               caption: "Google",
@@ -203,7 +209,8 @@
             },
             {
               id: "item-1-3",
-              startImage: "./assets/icons/file.svg",
+              startImgSrc: "./assets/icons/file.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               link: "",
               caption: "Item 1-3",
@@ -216,7 +223,8 @@
         },
         {
           id: "item-2",
-          startImage: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
+          startImgType: START_IMG_TYPE,
           items: [],
           link: { url: "https://www.google.com.uy" },
           caption: "Google",
@@ -224,18 +232,23 @@
         },
         {
           id: "item-3",
-          startImage: "./assets/icons/file.svg",
+          startImgSrc: "./assets/icons/file.svg",
+          startImgType: START_IMG_TYPE,
           items: [
             {
               id: "item-3-1",
-              startImage: "assets/icons/patterns.svg",
-              endImage: "./assets/icons/knowledge-base.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
+              endImgSrc: "./assets/icons/knowledge-base.svg",
+              endImgType: END_IMG_TYPE,
               items: [
                 {
                   id: "item-3-1-1",
 
-                  startImage: "assets/icons/patterns.svg",
-                  endImage: "./assets/icons/knowledge-base.svg",
+                  startImgSrc: "assets/icons/patterns.svg",
+                  startImgType: START_IMG_TYPE,
+                  endImgSrc: "./assets/icons/knowledge-base.svg",
+                  endImgType: END_IMG_TYPE,
                   items: [],
                   link: "",
                   caption: "Item 3-1-1",
@@ -243,7 +256,8 @@
                 },
                 {
                   id: "item-3-1-2",
-                  startImage: "assets/icons/patterns.svg",
+                  startImgSrc: "assets/icons/patterns.svg",
+                  startImgType: START_IMG_TYPE,
                   items: [],
                   link: { url: "https://www.google.com.uy" },
                   caption: "Google",
@@ -251,7 +265,8 @@
                 },
                 {
                   id: "item-3-1-3",
-                  startImage: "./assets/icons/file.svg",
+                  startImgSrc: "./assets/icons/file.svg",
+                  startImgType: START_IMG_TYPE,
                   items: [],
                   link: "",
                   caption: "Item 3-1-3",
@@ -263,7 +278,8 @@
             },
             {
               id: "item-3-2",
-              startImage: "assets/icons/patterns.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               link: { url: "https://www.google.com.uy" },
               caption: "Google",
@@ -271,7 +287,8 @@
             },
             {
               id: "item-3-3",
-              startImage: "./assets/icons/file.svg",
+              startImgSrc: "./assets/icons/file.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               caption: "Item 3-3",
               showSeparator: false
@@ -286,20 +303,25 @@
       const modelMediumMinimal = [
         {
           id: "item-1",
-          startImage: "assets/icons/patterns.svg",
-          endImage: "./assets/icons/knowledge-base.svg",
+          startImgSrc: "assets/icons/patterns.svg",
+          startImgType: START_IMG_TYPE,
+          endImgSrc: "./assets/icons/knowledge-base.svg",
+          endImgType: END_IMG_TYPE,
           link: "https://github.com",
           caption: "GitHub",
           showSeparator: false
         },
         {
           id: "item-2",
-          startImage: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
+          startImgType: START_IMG_TYPE,
           items: [
             {
               id: "item-2-1",
-              startImage: "assets/icons/patterns.svg",
-              endImage: "./assets/icons/knowledge-base.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
+              endImgSrc: "./assets/icons/knowledge-base.svg",
+              endImgType: END_IMG_TYPE,
               items: [],
               link: "",
               caption: "Item 1-1",
@@ -308,7 +330,8 @@
             {
               id: "item-2-2",
 
-              startImage: "assets/icons/patterns.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               link: { url: "https://www.google.com.uy" },
               caption: "Google",
@@ -316,7 +339,8 @@
             },
             {
               id: "item-2-3",
-              startImage: "./assets/icons/file.svg",
+              startImgSrc: "./assets/icons/file.svg",
+              startImgType: START_IMG_TYPE,
               items: [],
               link: "",
               caption: "Item 3-3",
@@ -330,14 +354,16 @@
         },
         {
           id: "item-3",
-          startImage: "./assets/icons/file.svg",
+          startImgSrc: "./assets/icons/file.svg",
+          startImgType: START_IMG_TYPE,
           link: { url: "https://www.google.com.uy" },
           caption: "Googleeeeeeee",
           showSeparator: false
         },
         {
           id: "item-4",
-          startImage: "./assets/icons/file.svg",
+          startImgSrc: "./assets/icons/file.svg",
+          startImgType: START_IMG_TYPE,
           link: { url: "https://www.google.com.uy" },
           caption: "Google",
           showSeparator: false
@@ -363,8 +389,10 @@
 
             subSubEagerLargeModel.push({
               id: subSubModelId,
-              startImage: "assets/icons/patterns.svg",
-              endImage: "./assets/icons/knowledge-base.svg",
+              startImgSrc: "assets/icons/patterns.svg",
+              startImgType: START_IMG_TYPE,
+              endImgSrc: "./assets/icons/knowledge-base.svg",
+              endImgType: END_IMG_TYPE,
               link: "",
               caption: subSubModelId
             });
@@ -372,8 +400,10 @@
 
           subEagerLargeModel.push({
             id: subModelId,
-            startImage: "assets/icons/patterns.svg",
-            endImage: "./assets/icons/knowledge-base.svg",
+            startImgSrc: "assets/icons/patterns.svg",
+            startImgType: START_IMG_TYPE,
+            endImgSrc: "./assets/icons/knowledge-base.svg",
+            endImgType: END_IMG_TYPE,
             items: subSubEagerLargeModel,
             link: "",
             caption: subModelId,
@@ -382,8 +412,10 @@
         }
 
         eagerLargeModel.push({
-          startImage: "assets/icons/patterns.svg",
-          endImage: "./assets/icons/knowledge-base.svg",
+          startImgSrc: "assets/icons/patterns.svg",
+          startImgType: START_IMG_TYPE,
+          endImgSrc: "./assets/icons/knowledge-base.svg",
+          endImgType: END_IMG_TYPE,
           items: subEagerLargeModel,
           link: "",
           caption: modelId,

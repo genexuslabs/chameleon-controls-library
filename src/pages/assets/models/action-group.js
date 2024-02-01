@@ -4,14 +4,14 @@
  * @property {string=} id
  * @property {string=} caption
  * @property {string=} class
- * @property {string=} endImage
+ * @property {string=} endImgSrc
  * @property {DropdownItemModel[]=} items
  * @property {DropdownPosition=} itemsPosition
  * @property {Link=} link
  * @property {string=} separatorClass
  * @property {string=} shortcut
  * @property {boolean=} showSeparator
- * @property {string=} startImage
+ * @property {string=} startImgSrc
  */
 
 /**
@@ -41,7 +41,7 @@ export const GXWebModel = [
             caption: "New Knowledge Base",
             subActionClass: "dropdown-item dropdown-item-web",
             shortcut: "Ctrl+Alt+Shift+N",
-            startImage: "assets/icons/knowledge-base.svg"
+            startImgSrc: "assets/icons/knowledge-base.svg"
           },
           {
             caption: "New Object",
@@ -71,14 +71,14 @@ export const GXWebModel = [
         subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+S",
-        startImage: "assets/icons/save.svg"
+        startImgSrc: "assets/icons/save.svg"
       },
       {
         caption: "Save All",
         subActionClass: "dropdown-item dropdown-item-web",
 
         shortcut: "Ctrl+Shift+S",
-        startImage: "assets/icons/save-all.svg"
+        startImgSrc: "assets/icons/save-all.svg"
       }
     ]
   },
@@ -90,7 +90,7 @@ export const GXWebModel = [
       {
         caption: "Domains",
         subActionClass: "dropdown-item dropdown-item-web",
-        startImage: "assets/icons/domain.svg"
+        startImgSrc: "assets/icons/domain.svg"
       },
       {
         caption: "Launchpad"

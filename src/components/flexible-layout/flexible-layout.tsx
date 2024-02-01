@@ -390,7 +390,7 @@ export class ChFlexibleLayout {
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
-      part={`view ${getTabDirection(tabType)} ${tabType}`}
+      part={`view ${getTabDirection(tabType)} ${tabType} ${viewInfo.id}`}
       exportparts={viewInfo.exportParts}
       closeButtonHidden={viewInfo.closeButtonHidden}
       items={viewInfo.widgets}

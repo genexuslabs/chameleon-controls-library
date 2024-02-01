@@ -18,20 +18,20 @@
 
 ## Events
 
-| Event                 | Description                                                                                                                   | Type                                                                                                                                                 |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `droppableZoneEnter`  | Fired when an element attempts to enter in a droppable zone where the tree has no information about the validity of the drop. | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; }>`                                                             |
-| `expandedItemChange`  | Fired when an item is expanded or collapsed.                                                                                  | `CustomEvent<{ id: string; expanded: boolean; }>`                                                                                                    |
-| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                                               | `CustomEvent<{ id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; contextmenuEvent: PointerEvent; }>`                                 |
-| `itemsDropped`        | Fired when the dragged items are dropped in another item of the tree.                                                         | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; }>` |
-| `selectedItemsChange` | Fired when the selected items change.                                                                                         | `CustomEvent<Map<string, TreeViewItemSelectedInfo>>`                                                                                                 |
+| Event                 | Description                                                                                                                   | Type                                                                                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `droppableZoneEnter`  | Fired when an element attempts to enter in a droppable zone where the tree has no information about the validity of the drop. | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; dropType: TreeViewDropType; }>`                                                             |
+| `expandedItemChange`  | Fired when an item is expanded or collapsed.                                                                                  | `CustomEvent<{ id: string; expanded: boolean; }>`                                                                                                                                |
+| `itemContextmenu`     | Fired when an element displays its contextmenu.                                                                               | `CustomEvent<{ id: string; itemRef: HTMLChTreeViewItemElement; metadata: string; contextmenuEvent: PointerEvent; }>`                                                             |
+| `itemsDropped`        | Fired when the dragged items are dropped in another item of the tree.                                                         | `CustomEvent<{ newContainer: GxDataTransferInfo; draggedItems: GxDataTransferInfo[]; draggingSelectedItems: boolean; dropInTheSameTree: boolean; dropType: TreeViewDropType; }>` |
+| `selectedItemsChange` | Fired when the selected items change.                                                                                         | `CustomEvent<Map<string, TreeViewItemSelectedInfo>>`                                                                                                                             |
 
 
 ## Methods
 
 ### `scrollIntoVisible(treeItemId: string) => Promise<void>`
 
-Given an item id, it scrolls into the item view.
+Given an item id, it scrolls into the item's view.
 
 #### Parameters
 
@@ -45,18 +45,19 @@ Type: `Promise<void>`
 
 
 
-### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], validDrop: boolean) => Promise<void>`
+### `updateValidDropZone(requestTimestamp: number, newContainerId: string, draggedItems: GxDataTransferInfo[], dropType: TreeViewDropType, validDrop: boolean) => Promise<void>`
 
 Update the information about the valid droppable zones.
 
 #### Parameters
 
-| Name               | Type                   | Description                                                                            |
-| ------------------ | ---------------------- | -------------------------------------------------------------------------------------- |
-| `requestTimestamp` | `number`               | Time where the request to the server was made. Useful to avoid having old information. |
-| `newContainerId`   | `string`               | ID of the container where the drag is trying to be made.                               |
-| `draggedItems`     | `GxDataTransferInfo[]` | Information about the dragged items.                                                   |
-| `validDrop`        | `boolean`              | Current state of the droppable zone.                                                   |
+| Name               | Type                             | Description                                                                            |
+| ------------------ | -------------------------------- | -------------------------------------------------------------------------------------- |
+| `requestTimestamp` | `number`                         | Time where the request to the server was made. Useful to avoid having old information. |
+| `newContainerId`   | `string`                         | ID of the container where the drag is trying to be made.                               |
+| `draggedItems`     | `GxDataTransferInfo[]`           | Information about the dragged items.                                                   |
+| `dropType`         | `"after" \| "before" \| "above"` |                                                                                        |
+| `validDrop`        | `boolean`                        | Current state of the droppable zone.                                                   |
 
 #### Returns
 

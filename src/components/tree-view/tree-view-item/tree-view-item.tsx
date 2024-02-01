@@ -24,14 +24,22 @@ import {
   ChCheckboxCustomEvent,
   ChTreeViewItemCustomEvent
 } from "../../../components";
-import { removeDragImage } from "../../../common/utils";
+import {
+  isPseudoElementImg,
+  removeDragImage,
+  tokenMap
+} from "../../../common/utils";
+import {
+  INITIAL_LEVEL,
+  getTreeItemLevelPart
+} from "../../renders/tree-view/utils";
+import { ImageRender } from "../../../common/types";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
 
 const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
   "--ch-tree-view-item-distance-to-checkbox";
-const INITIAL_LEVEL = 0;
 
 // Selectors
 const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
@@ -39,6 +47,13 @@ const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
 const DIRECT_TREE_ITEM_CHILDREN = `:scope>${TREE_ITEM_TAG_NAME}`;
 const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
 const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
+
+// Custom classes
+const DOWNLOADING_CLASS = TREE_ITEM_TAG_NAME + "--downloading";
+const EDITING_CLASS = TREE_ITEM_TAG_NAME + "--editing";
+const NOT_EDITING_CLASS = TREE_ITEM_TAG_NAME + "--not-editing";
+const DRAG_ENTER_CLASS = TREE_ITEM_TAG_NAME + "--drag-enter";
+const DENY_DROP_CLASS = TREE_ITEM_TAG_NAME + "--deny-drop";
 
 // Keys
 const EXPANDABLE_ID = "expandable";
@@ -158,12 +173,12 @@ export class ChTreeViewItem {
    */
   @Prop({ mutable: true }) editing = false;
   @Watch("editing")
-  handleEditingChange(isEditing: boolean) {
+  editingChanged(isEditing: boolean) {
     if (!isEditing) {
       return;
     }
 
-    document.body.addEventListener("click", this.#removeEditModeOnClick, {
+    document.addEventListener("click", this.#removeEditModeOnClick, {
       capture: true
     });
 
@@ -176,6 +191,16 @@ export class ChTreeViewItem {
       });
     });
   }
+
+  /**
+   * Specifies the src of the end image.
+   */
+  @Prop() readonly endImageSrc: string;
+
+  /**
+   * Specifies how the end image will be rendered.
+   */
+  @Prop() readonly endImageType: ImageRender = "background";
 
   /**
    * Specifies what kind of expandable button is displayed.
@@ -200,7 +225,7 @@ export class ChTreeViewItem {
    */
   @Prop({ mutable: true }) expanded = false;
   @Watch("expanded")
-  handleExpandedChange(isExpanded: boolean) {
+  expandedChanged(isExpanded: boolean) {
     // Wait until all properties are updated before lazy loading. Otherwise, the
     // lazyLoad property could be updated just after the executing of the function
     setTimeout(() => {
@@ -213,7 +238,7 @@ export class ChTreeViewItem {
    */
   @Prop() readonly lastItem: boolean = false;
   @Watch("lastItem")
-  handleLasItemChange(isLastItem: boolean) {
+  lastItemChanged(isLastItem: boolean) {
     if (isLastItem && this.showLines) {
       // Use RAF to set the observer after the render method has completed
       requestAnimationFrame(() => {
@@ -237,11 +262,6 @@ export class ChTreeViewItem {
   @Prop() readonly leaf: boolean = false;
 
   /**
-   * Set the left side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-   */
-  @Prop() readonly leftImgSrc: string;
-
-  /**
    * Level in the tree at which the item is placed.
    */
   @Prop() readonly level: number = INITIAL_LEVEL;
@@ -256,11 +276,6 @@ export class ChTreeViewItem {
    * when dragging the item.
    */
   @Prop() readonly metadata: string;
-
-  /**
-   * Set the right side icon from the available Gemini icon set : https://gx-gemini.netlify.app/?path=/story/icons-icons--controls
-   */
-  @Prop() readonly rightImgSrc: string;
 
   /**
    * This attribute lets you specify if the item is selected
@@ -279,13 +294,23 @@ export class ChTreeViewItem {
    */
   @Prop() readonly showLines: TreeViewLines = "none";
   @Watch("showLines")
-  handleShowLinesChange(newShowLines: TreeViewLines) {
+  showLinesChanged(newShowLines: TreeViewLines) {
     if (newShowLines && this.lastItem) {
       this.#setResizeObserver();
     } else {
       this.#disconnectObserver();
     }
   }
+
+  /**
+   * Specifies the src of the start image.
+   */
+  @Prop() readonly startImageSrc: string;
+
+  /**
+   * Specifies how the start image will be rendered.
+   */
+  @Prop() readonly startImageType: ImageRender = "background";
 
   /**
    * Set this attribute if you want all the children item's checkboxes to be
@@ -577,7 +602,7 @@ export class ChTreeViewItem {
       }
       this.editing = false;
 
-      document.body.removeEventListener("click", this.#removeEditModeOnClick, {
+      document.removeEventListener("click", this.#removeEditModeOnClick, {
         capture: true
       });
 
@@ -739,16 +764,18 @@ export class ChTreeViewItem {
     });
   };
 
-  #renderImg = (cssClass: string, src: string) => (
-    <img
-      aria-hidden="true"
-      class={cssClass}
-      part={cssClass}
-      alt=""
-      src={src}
-      loading="lazy"
-    />
-  );
+  #renderImg = (cssClass: string, src: string, imageType: ImageRender) =>
+    imageType === "img" &&
+    src && (
+      <img
+        aria-hidden="true"
+        class={cssClass}
+        part={cssClass}
+        alt=""
+        src={src}
+        loading="lazy"
+      />
+    );
 
   #handleDragStart = (event: DragEvent) => {
     // Disallow drag when editing the caption
@@ -776,10 +803,6 @@ export class ChTreeViewItem {
     this.itemDragEnd.emit();
   };
 
-  #handleDrop = () => {
-    this.dragState = "none";
-  };
-
   componentWillLoad() {
     // Check if must lazy load
     this.#lazyLoadItems(this.expanded);
@@ -802,20 +825,24 @@ export class ChTreeViewItem {
 
   render() {
     const evenLevel = this.level % 2 === 0;
-    const expandableButtonVisible =
-      !this.leaf && this.expandableButton !== "no";
-    const expandableButtonNotVisible =
-      !this.leaf && this.expandableButton === "no";
 
-    const acceptDrop =
-      !this.dropDisabled && !this.leaf && this.dragState !== "start";
     const hasContent = !this.leaf && !this.lazyLoad;
-    const showAllLines =
-      this.showLines === "all" && this.level !== INITIAL_LEVEL;
+
+    const canShowLines = this.level !== INITIAL_LEVEL;
+    const showAllLines = this.showLines === "all" && canShowLines;
     const showLastLine =
-      this.showLines === "last" &&
-      this.level !== INITIAL_LEVEL &&
-      this.lastItem;
+      this.showLines === "last" && canShowLines && this.lastItem;
+
+    const levelPart = getTreeItemLevelPart(evenLevel);
+
+    const pseudoStartImage = isPseudoElementImg(
+      this.startImageSrc,
+      this.startImageType
+    );
+    const pseudoEndImage = isPseudoElementImg(
+      this.endImageSrc,
+      this.endImageType
+    );
 
     return (
       <Host
@@ -823,16 +850,13 @@ export class ChTreeViewItem {
         aria-level={this.level + 1}
         aria-selected={this.selected ? "true" : null}
         class={{
-          [TREE_ITEM_TAG_NAME + "--downloading"]: this.downloading,
-          [TREE_ITEM_TAG_NAME + "--editing"]: this.editing,
-          [TREE_ITEM_TAG_NAME + "--not-editing"]: !this.editing, // WA for some bugs in GeneXus' DSO
-          [TREE_ITEM_TAG_NAME + "--drag-" + this.dragState]:
-            this.dragState !== "none" && this.dragState !== "start",
-          [TREE_ITEM_TAG_NAME + "--deny-drop"]: this.leaf
+          [DOWNLOADING_CLASS]: this.downloading,
+          [EDITING_CLASS]: this.editing,
+          [NOT_EDITING_CLASS]: !this.editing, // WA for some bugs in GeneXus' DSO
+          [DRAG_ENTER_CLASS]: this.dragState === "enter",
+          [DENY_DROP_CLASS]: this.leaf
         }}
         style={{ "--level": `${this.level}` }}
-        // Drag and drop
-        onDrop={acceptDrop ? this.#handleDrop : null}
       >
         <button
           aria-controls={hasContent ? EXPANDABLE_ID : null}
@@ -842,16 +866,6 @@ export class ChTreeViewItem {
             "header--selected": this.selected,
             "header--disabled": this.disabled,
 
-            "header--expandable-offset": expandableButtonVisible,
-            "header--checkbox-offset":
-              expandableButtonNotVisible && this.checkbox,
-
-            "header--even": evenLevel,
-            "header--odd": !evenLevel,
-            "header--even-expandable": evenLevel && expandableButtonVisible,
-            "header--odd-expandable": !evenLevel && expandableButtonVisible,
-            "header--level-0": this.level === INITIAL_LEVEL,
-
             "expandable-button-decorative":
               !this.leaf && this.expandableButton === "decorative",
             "expandable-button-decorative--collapsed":
@@ -859,9 +873,14 @@ export class ChTreeViewItem {
               this.expandableButton === "decorative" &&
               !this.expanded
           }}
-          part={`header${this.disabled ? " disabled" : ""}${
-            this.selected ? " selected" : ""
-          }${this.level === INITIAL_LEVEL ? " level-0" : ""}`}
+          part={tokenMap({
+            header: true,
+            disabled: this.disabled,
+            selected: this.selected,
+            [levelPart]: canShowLines,
+            "expand-button":
+              canShowLines && !this.leaf && this.expandableButton !== "no"
+          })}
           type="button"
           disabled={this.disabled}
           onClick={this.#handleActionClick}
@@ -912,15 +931,32 @@ export class ChTreeViewItem {
               <div
                 class={{
                   action: true,
+                  "action--end-img": !!this.endImageSrc,
+
+                  [`start-img-type--${this.startImageType} pseudo-img--start`]:
+                    pseudoStartImage,
+                  [`end-img-type--${this.endImageType} pseudo-img--end`]:
+                    pseudoEndImage,
                   "readonly-mode": !this.editing
                 }}
                 part={`action${!this.editing ? " readonly-mode" : ""}${
                   !this.leaf && this.expanded ? " expanded" : ""
                 }`}
+                style={{
+                  "--ch-start-img": pseudoStartImage
+                    ? `url("${this.startImageSrc}")`
+                    : null,
+                  "--ch-end-img": pseudoEndImage
+                    ? `url("${this.endImageSrc}")`
+                    : null
+                }}
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
-                {this.leftImgSrc &&
-                  this.#renderImg("left-img", this.leftImgSrc)}
+                {this.#renderImg(
+                  "img start-img",
+                  this.startImageSrc,
+                  this.startImageType
+                )}
 
                 {this.editable && this.editing ? (
                   <input
@@ -937,8 +973,11 @@ export class ChTreeViewItem {
                   this.caption
                 )}
 
-                {this.rightImgSrc &&
-                  this.#renderImg("right-img", this.rightImgSrc)}
+                {this.#renderImg(
+                  "img end-img",
+                  this.endImageSrc,
+                  this.endImageType
+                )}
               </div>,
 
               this.showDownloadingSpinner && !this.leaf && this.downloading && (
@@ -968,11 +1007,17 @@ export class ChTreeViewItem {
             class={{
               expandable: true,
               "expandable--collapsed": !this.expanded,
-              "expandable--lazy-loaded": !this.downloading
+              "expandable--lazy-loaded": !this.downloading,
+
+              "expandable--even": canShowLines && evenLevel,
+              "expandable--odd": canShowLines && !evenLevel
             }}
-            part={`expandable${this.expanded ? " expanded" : " collapsed"}${
-              !this.downloading ? " lazy-loaded" : ""
-            }`}
+            part={tokenMap({
+              [EXPANDABLE_ID]: true,
+              [this.expanded ? "expanded" : "collapsed"]: true,
+              "lazy-loaded": !this.downloading,
+              [levelPart]: canShowLines
+            })}
           >
             <slot />
           </div>

@@ -70,9 +70,8 @@
       .ch-tree-view-item--success::part(action)::before {
         grid-area: first-img;
         content: "";
-        width: 12px;
-        height: 12px;
-        margin-inline-end: 4px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         background-color: rgb(69, 150, 96);
         border-radius: 50%;
       }
@@ -95,8 +94,8 @@
       .tree-view-item--custom-image::part(action)::before {
         grid-area: left-img;
         content: "";
-        width: 14px;
-        height: 14px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         margin-inline-end: 4px;
         background-color: rgb(69, 84, 150);
         border-radius: 50%;
@@ -105,11 +104,9 @@
 
       .tree-view-item--folder::part(action)::before,
       .tree-view-item--module::part(action)::before {
-        grid-area: left-img;
         content: "";
-        width: 14px;
-        height: 14px;
-        margin-inline-end: 4px;
+        width: var(--ch-tree-view-item__image-size);
+        height: var(--ch-tree-view-item__image-size);
         background-repeat: no-repeat;
       }
 
@@ -129,11 +126,15 @@
         background-image: url("assets/icons/module-open.svg");
       }
 
-      .tree-view-item--pending-commit::part(action)::before {
-        content: "";
+      /* PENDING COMMIT */
+      .tree-view-item--pending-commit::part(action) {
         position: relative;
+      }
+
+      .tree-view-item--pending-commit::part(action)::after {
+        content: "";
+        position: absolute;
         z-index: 1;
-        grid-area: left-img;
         width: 5px;
         height: 5px;
         align-self: end;
@@ -220,7 +221,7 @@
         >
           <ch-tree-view-item
             opened
-            left-img-src="/build/ch-icon-assets/generator.svg"
+            start-img-src="/build/ch-icon-assets/generator.svg"
             caption="Meats"
             checkbox
           >
@@ -228,49 +229,49 @@
               checkbox
               checked
               toggle-checkboxes
-              left-img-src="/build/ch-icon-assets/patterns.svg"
+              start-img-src="/build/ch-icon-assets/patterns.svg"
               caption="White meats"
             >
               <ch-tree-view-item
                 checkbox
-                left-img-src="./assets/icons/file.svg"
+                start-img-src="./assets/icons/file.svg"
                 caption="Chicken"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/java.svg"
+                start-img-src="/build/ch-icon-assets/java.svg"
                 caption="Turkey"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="./assets/icons/file.svg"
+                start-img-src="./assets/icons/file.svg"
                 caption="Duck"
                 leaf
               >
               </ch-tree-view-item>
             </ch-tree-view-item>
             <ch-tree-view-item
-              left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+              start-img-src="/build/ch-icon-assets/knowledge-base.svg"
               caption="Red meats"
             >
               <ch-tree-view-item
-                left-img-src="./assets/icons/file.svg"
+                start-img-src="./assets/icons/file.svg"
                 caption="Beef"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
-                left-img-src="./assets/icons/file.svg"
+                start-img-src="./assets/icons/file.svg"
                 caption="Lamb and mutton"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
-                left-img-src="/build/tree-item-assets/download.svg"
+                start-img-src="/build/tree-item-assets/download.svg"
                 caption="Pork"
                 leaf
               >
@@ -279,7 +280,7 @@
           </ch-tree-view-item>
           <ch-tree-view-item
             id="fish"
-            left-img-src="./assets/icons/file.svg"
+            start-img-src="./assets/icons/file.svg"
             checkbox
             checked="false"
             disabled
@@ -288,25 +289,25 @@
           >
           </ch-tree-view-item>
           <ch-tree-view-item
-            left-img-src="/build/tree-item-assets/download.svg"
+            start-img-src="/build/tree-item-assets/download.svg"
             caption="Fruits"
             checked="false"
           >
             <ch-tree-view-item
               checkbox
-              left-img-src="/build/ch-icon-assets/java.svg"
+              start-img-src="/build/ch-icon-assets/java.svg"
               caption="Orange"
               leaf
             >
             </ch-tree-view-item>
             <ch-tree-view-item
               checkbox
-              left-img-src="./assets/icons/file.svg"
+              start-img-src="./assets/icons/file.svg"
               opened
               caption="Banana"
             >
               <ch-tree-view-item
-                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
                 checkbox
                 caption="Pisang"
                 leaf
@@ -314,13 +315,13 @@
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/java.svg"
+                start-img-src="/build/ch-icon-assets/java.svg"
                 caption="Red Banana"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
-                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
                 caption="Cavendish"
                 show-expandable-button="false"
               >
@@ -331,13 +332,13 @@
                 >
                 </ch-tree-view-item>
                 <ch-tree-view-item
-                  left-img-src="assets/icons/patterns.svg"
+                  start-img-src="assets/icons/patterns.svg"
                   caption="Small"
                   leaf
                 >
                 </ch-tree-view-item>
                 <ch-tree-view-item
-                  left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                  start-img-src="/build/ch-icon-assets/knowledge-base.svg"
                   caption="Mini (empty items)"
                 >
                 </ch-tree-view-item>
@@ -345,21 +346,21 @@
             </ch-tree-view-item>
             <ch-tree-view-item
               checkbox
-              left-img-src="./assets/icons/file.svg"
+              start-img-src="./assets/icons/file.svg"
               caption="Strawberry"
               expanded
               show-expandable-button="false"
             >
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/java.svg"
+                start-img-src="/build/ch-icon-assets/java.svg"
                 caption="Albion"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/java.svg"
+                start-img-src="/build/ch-icon-assets/java.svg"
                 opened
                 caption="Tillamook"
                 leaf
@@ -367,7 +368,7 @@
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/knowledge-base.svg"
+                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
                 caption="Northeaster"
                 leaf
               >
@@ -377,7 +378,7 @@
           <ch-tree-view-item
             opened
             expanded
-            left-img-src="/build/ch-icon-assets/java.svg"
+            start-img-src="/build/ch-icon-assets/java.svg"
             empty-tree
             caption="Nuts"
             show-expandable-button="false"
@@ -385,12 +386,12 @@
             <ch-tree-view-item
               opened
               checkbox
-              left-img-src="assets/icons/patterns.svg"
+              start-img-src="assets/icons/patterns.svg"
               caption="Almonds"
             >
               <ch-tree-view-item
                 checkbox
-                left-img-src="assets/icons/patterns.svg"
+                start-img-src="assets/icons/patterns.svg"
                 opened
                 caption="Mollar de Tarragona"
                 leaf
@@ -398,21 +399,21 @@
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="/build/ch-icon-assets/java.svg"
+                start-img-src="/build/ch-icon-assets/java.svg"
                 caption="Ferragnès"
                 leaf
               >
               </ch-tree-view-item>
               <ch-tree-view-item
                 checkbox
-                left-img-src="assets/icons/patterns.svg"
+                start-img-src="assets/icons/patterns.svg"
                 caption="Verdal"
                 leaf
               >
               </ch-tree-view-item>
             </ch-tree-view-item>
             <ch-tree-view-item
-              left-img-src="assets/icons/patterns.svg"
+              start-img-src="assets/icons/patterns.svg"
               opened
               caption="Brazil nuts"
               leaf
@@ -420,14 +421,14 @@
             </ch-tree-view-item>
             <ch-tree-view-item
               checkbox
-              left-img-src="assets/icons/patterns.svg"
+              start-img-src="assets/icons/patterns.svg"
               caption="Cashews (lazy)"
               lazy-load
             >
             </ch-tree-view-item>
             <ch-tree-view-item
               checkbox
-              left-img-src="assets/icons/patterns.svg"
+              start-img-src="assets/icons/patterns.svg"
               caption="Chestnuts (lazy)"
               lazy-load
               drag-enabled="false"
@@ -482,6 +483,15 @@
               caption="Editable Items"
             ></ch-checkbox>
 
+            <label style="display: flex; flex-direction: column">
+              Lines
+              <select name="lines" id="lines">
+                <option value="all" selected>All lines</option>
+                <option value="last">Last line</option>
+                <option value="none">None</option>
+              </select>
+            </label>
+
             <ch-checkbox
               id="drag-enabled"
               checked-value="true"
@@ -499,15 +509,6 @@
             ></ch-checkbox>
 
             <label style="display: flex; flex-direction: column">
-              Lines
-              <select name="lines" id="lines">
-                <option value="all" selected>All lines</option>
-                <option value="last">Last line</option>
-                <option value="none">None</option>
-              </select>
-            </label>
-
-            <label style="display: flex; flex-direction: column">
               Expandable button
               <select name="expandable-button" id="expandable-button">
                 <option value="action">Action</option>
@@ -523,6 +524,15 @@
               value="true"
               caption="Expand on click"
             ></ch-checkbox>
+
+            <label style="display: flex; flex-direction: column">
+              Drop mode
+              <select name="drop-mode" id="drop-mode">
+                <option value="above" selected>Above</option>
+                <option value="before-after">Before and After</option>
+                <option value="all">All</option>
+              </select>
+            </label>
           </fieldset>
 
           <fieldset>
@@ -671,6 +681,8 @@
               Update model again (click third)
             </button>
             <button id="update-big-model-btn">Set big model</button>
+            <button id="update-file-system-btn">File system model</button>
+
             <button id="kb-explorer-model-btn">KB Explorer</button>
             <button id="import-objects-model-btn">Import Objects</button>
           </fieldset>
@@ -680,6 +692,7 @@
 
     <script type="module">
       import {
+        fileSystemModel,
         lazyLoadItemsDictionary,
         kbExplorerModel,
         importObjectsModel
@@ -689,31 +702,31 @@
         {
           id: "number-1",
           caption: "number-1 label (always editable)",
-          leftImgSrc: "./assets/icons/knowledge-base.svg",
+          startImgSrc: "./assets/icons/knowledge-base.svg",
           editable: true
         },
         {
           id: "number-2",
           caption: "number-2 (always editable)",
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           editable: true,
           items: [
             {
               id: "number-2.1",
               caption: "number-2.1",
-              leftImgSrc: "./assets/icons/file.svg"
+              startImgSrc: "./assets/icons/file.svg"
             }
           ]
         },
         {
           id: "number-3",
           caption: "number-3",
-          leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+          startImgSrc: "/build/ch-icon-assets/patterns.svg",
           items: [
             {
               id: "number-3.1",
               caption: "number-3.1",
-              leftImgSrc: "/build/ch-icon-assets/java.svg"
+              startImgSrc: "/build/ch-icon-assets/java.svg"
             }
           ]
         }
@@ -723,22 +736,22 @@
         {
           id: "number-1",
           caption: "number-1",
-          leftImgSrc: "./build/ch-icon-assets/csharp.svg.svg"
+          startImgSrc: "./build/ch-icon-assets/csharp.svg.svg"
         },
         {
           id: "number-2",
           caption: "number-2",
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           items: [
             {
               id: "number-2.1",
               caption: "number-2.1",
-              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+              startImgSrc: "/build/ch-icon-assets/patterns.svg",
               items: [
                 {
                   id: "number-2.1.1",
                   caption: "number-2.1.1",
-                  leftImgSrc: "/build/ch-icon-assets/java.svg"
+                  startImgSrc: "/build/ch-icon-assets/java.svg"
                 }
               ]
             }
@@ -747,12 +760,12 @@
         {
           id: "number-3",
           caption: "number-3",
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           items: [
             {
               id: "number-3.1",
               caption: "number-3.1",
-              leftImgSrc: "./assets/icons/datastore.svg"
+              startImgSrc: "./assets/icons/datastore.svg"
             }
           ]
         }
@@ -763,32 +776,32 @@
           id: "number-a",
           caption: "number-a (always editable)",
           leaf: true,
-          leftImgSrc: "./assets/icons/apple.svg",
+          startImgSrc: "./assets/icons/apple.svg",
           editable: true
         },
         {
           id: "number-b",
           caption: "number-b",
           leaf: false,
-          leftImgSrc: "./assets/icons/file.svg",
+          startImgSrc: "./assets/icons/file.svg",
           items: [
             {
               id: "number-2.1",
               caption: "number-2.1",
               leaf: false,
-              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+              startImgSrc: "/build/ch-icon-assets/patterns.svg",
               items: [
                 {
                   id: "number-2.1.1",
                   caption: "number-2.1.1",
                   leaf: false,
-                  leftImgSrc: "/build/ch-icon-assets/java.svg",
+                  startImgSrc: "/build/ch-icon-assets/java.svg",
                   items: [
                     {
                       id: "number-2.1.1.1",
                       caption: "number-2.1.1.1",
                       leaf: true,
-                      leftImgSrc: "/build/tree-item-assets/download.svg"
+                      startImgSrc: "/build/tree-item-assets/download.svg"
                     }
                   ]
                 }
@@ -800,7 +813,7 @@
           id: "number-3",
           caption: "number-3",
           leaf: true,
-          leftImgSrc: "/build/ch-icon-assets/patterns.svg"
+          startImgSrc: "/build/ch-icon-assets/patterns.svg"
         }
       ];
 
@@ -810,33 +823,33 @@
           caption: "number-1 label (always editable)",
           class: "tree-view-item tree-view-item--success",
           leaf: false,
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           editable: true,
           items: [
             {
               id: "number-1-1",
               caption: "number-1-1 (always editable)",
               leaf: false,
-              leftImgSrc: "/build/ch-icon-assets/patterns.svg",
+              startImgSrc: "/build/ch-icon-assets/patterns.svg",
               editable: true,
               items: [
                 {
                   id: "number-1-1-1",
                   caption: "number-1-1-1",
                   leaf: true,
-                  leftImgSrc: "./assets/icons/knowledge-base.svg"
+                  startImgSrc: "./assets/icons/knowledge-base.svg"
                 },
                 {
                   id: "number-1-1-2",
                   caption: "number-1-1-2",
                   leaf: false,
-                  leftImgSrc: "./assets/icons/knowledge-base.svg",
+                  startImgSrc: "./assets/icons/knowledge-base.svg",
                   items: [
                     {
                       id: "number-1-1-2-1",
                       caption: "number-1-1-2-1 (lazy, drag disabled)",
                       leaf: false,
-                      leftImgSrc: "./assets/icons/knowledge-base.svg",
+                      startImgSrc: "./assets/icons/knowledge-base.svg",
                       lazy: true,
                       checkbox: true,
                       dragDisabled: true,
@@ -846,7 +859,7 @@
                       id: "number-1-1-2-2",
                       caption: "number-1-1-2-2",
                       leaf: true,
-                      leftImgSrc: "/build/ch-icon-assets/java.svg"
+                      startImgSrc: "/build/ch-icon-assets/java.svg"
                     }
                   ]
                 }
@@ -856,7 +869,7 @@
               id: "number-1-2",
               caption: "number-1-2",
               leaf: true,
-              leftImgSrc: "./assets/icons/knowledge-base.svg"
+              startImgSrc: "./assets/icons/knowledge-base.svg"
             }
           ]
         },
@@ -870,13 +883,13 @@
               id: "number-2-1",
               caption: "number-2-1",
               leaf: true,
-              leftImgSrc: "/build/ch-icon-assets/java.svg"
+              startImgSrc: "/build/ch-icon-assets/java.svg"
             },
             {
               id: "number-2-2",
               caption: "number-2-2",
               leaf: true,
-              leftImgSrc: "./assets/icons/knowledge-base.svg"
+              startImgSrc: "./assets/icons/knowledge-base.svg"
             }
           ]
         }
@@ -887,53 +900,53 @@
           id: "number-1",
           caption: "number-1",
           leaf: false,
-          leftImgSrc: "./assets/icons/knowledge-base.svg",
+          startImgSrc: "./assets/icons/knowledge-base.svg",
           items: [
             {
               id: "number-1-1",
               caption: "number-1-1",
               class: "ch-tree-view-item--success",
               leaf: false,
-              leftImgSrc: "./assets/icons/knowledge-base.svg",
+              startImgSrc: "./assets/icons/knowledge-base.svg",
               items: [
                 {
                   id: "number-1-1-1",
                   caption: "number-1-1-1",
                   leaf: true,
-                  leftImgSrc: "./assets/icons/knowledge-base.svg"
+                  startImgSrc: "./assets/icons/knowledge-base.svg"
                 },
                 {
                   id: "number-1-1-2",
                   caption: "number-1-1-2",
                   leaf: false,
-                  leftImgSrc: "./assets/icons/knowledge-base.svg",
+                  startImgSrc: "./assets/icons/knowledge-base.svg",
                   items: [
                     {
                       id: "number-1-1-2-1",
                       caption: "number-1-1-2-1",
                       leaf: false,
-                      leftImgSrc: "./assets/icons/knowledge-base.svg",
+                      startImgSrc: "./assets/icons/knowledge-base.svg",
                       items: [
                         {
                           id: "new-item-added-1",
                           caption: "new-item-added-1",
                           disabled: true,
                           leaf: true,
-                          leftImgSrc: "./assets/icons/knowledge-base.svg"
+                          startImgSrc: "./assets/icons/knowledge-base.svg"
                         },
                         {
                           id: "new-item-added-2",
                           caption: "new-item-added-2",
                           disabled: false,
                           leaf: true,
-                          leftImgSrc: "./assets/icons/knowledge-base.svg"
+                          startImgSrc: "./assets/icons/knowledge-base.svg"
                         },
                         {
                           id: "new-item-added-3",
                           caption: "new-item-added-3",
                           disabled: true,
                           leaf: true,
-                          leftImgSrc: "./assets/icons/knowledge-base.svg"
+                          startImgSrc: "./assets/icons/knowledge-base.svg"
                         },
                         {
                           id: "new-item-added-4",
@@ -941,14 +954,14 @@
                           disabled: false,
                           expanded: true,
                           leaf: false,
-                          leftImgSrc: "./assets/icons/knowledge-base.svg",
+                          startImgSrc: "./assets/icons/knowledge-base.svg",
                           items: [
                             {
                               id: "new-item-added-4-1",
                               caption: "new-item-added-4-1",
                               disabled: false,
                               leaf: true,
-                              leftImgSrc: "./assets/icons/knowledge-base.svg"
+                              startImgSrc: "./assets/icons/knowledge-base.svg"
                             },
                             {
                               id: "new-item-added-4-2",
@@ -956,7 +969,7 @@
                               disabled: true,
                               expanded: true,
                               leaf: false,
-                              leftImgSrc: "./assets/icons/knowledge-base.svg",
+                              startImgSrc: "./assets/icons/knowledge-base.svg",
                               items: [
                                 {
                                   id: "new-item-added-4-2-1",
@@ -964,7 +977,7 @@
                                   disabled: true,
                                   expanded: true,
                                   leaf: false,
-                                  leftImgSrc:
+                                  startImgSrc:
                                     "./assets/icons/knowledge-base.svg",
                                   items: [
                                     {
@@ -972,7 +985,7 @@
                                       caption: "new-item-added-4-2-1-1",
                                       disabled: false,
                                       leaf: true,
-                                      leftImgSrc:
+                                      startImgSrc:
                                         "./assets/icons/knowledge-base.svg"
                                     },
                                     {
@@ -980,7 +993,7 @@
                                       caption: "new-item-added-4-2-1-2",
                                       disabled: false,
                                       leaf: true,
-                                      leftImgSrc:
+                                      startImgSrc:
                                         "./assets/icons/knowledge-base.svg"
                                     },
                                     {
@@ -988,7 +1001,7 @@
                                       caption: "new-item-added-4-2-1-3",
                                       disabled: true,
                                       leaf: true,
-                                      leftImgSrc:
+                                      startImgSrc:
                                         "./assets/icons/knowledge-base.svg"
                                     },
                                     {
@@ -996,7 +1009,7 @@
                                       caption: "new-item-added-4-2-1-4",
                                       disabled: false,
                                       leaf: true,
-                                      leftImgSrc:
+                                      startImgSrc:
                                         "./assets/icons/knowledge-base.svg"
                                     }
                                   ]
@@ -1006,7 +1019,7 @@
                                   caption: "new-item-added-4-2-2",
                                   disabled: true,
                                   leaf: true,
-                                  leftImgSrc:
+                                  startImgSrc:
                                     "./assets/icons/knowledge-base.svg"
                                 }
                               ]
@@ -1019,21 +1032,21 @@
                           disabled: true,
                           expanded: true,
                           leaf: false,
-                          leftImgSrc: "./assets/icons/knowledge-base.svg",
+                          startImgSrc: "./assets/icons/knowledge-base.svg",
                           items: [
                             {
                               id: "new-item-added-5-1",
                               caption: "new-item-added-5-1",
                               disabled: false,
                               leaf: true,
-                              leftImgSrc: "./assets/icons/knowledge-base.svg"
+                              startImgSrc: "./assets/icons/knowledge-base.svg"
                             },
                             {
                               id: "new-item-added-5-2",
                               caption: "new-item-added-5-2",
                               disabled: true,
                               leaf: true,
-                              leftImgSrc: "./assets/icons/knowledge-base.svg"
+                              startImgSrc: "./assets/icons/knowledge-base.svg"
                             }
                           ]
                         }
@@ -1043,7 +1056,7 @@
                       id: "number-1-1-2-2",
                       caption: "number-1-1-2-2",
                       leaf: true,
-                      leftImgSrc: "./assets/icons/knowledge-base.svg"
+                      startImgSrc: "./assets/icons/knowledge-base.svg"
                     }
                   ]
                 }
@@ -1053,7 +1066,7 @@
               id: "number-1-2",
               caption: "number-1-2",
               leaf: true,
-              leftImgSrc: "./assets/icons/knowledge-base.svg"
+              startImgSrc: "./assets/icons/knowledge-base.svg"
             }
           ]
         },
@@ -1061,26 +1074,26 @@
           id: "number-2",
           caption: "number-2",
           leaf: false,
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           items: [
             {
               id: "number-2-1",
               caption: "number-2-1",
               leaf: true,
-              leftImgSrc: "/build/ch-icon-assets/patterns.svg"
+              startImgSrc: "/build/ch-icon-assets/patterns.svg"
             },
             {
               id: "number-2-2",
               caption: "number-2-2",
               leaf: true,
-              leftImgSrc: "assets/icons/patterns.svg"
+              startImgSrc: "assets/icons/patterns.svg"
             },
             {
               id: "number-2-3",
               caption: "number-2-3",
               disabled: true,
               leaf: true,
-              leftImgSrc: "assets/icons/patterns.svg"
+              startImgSrc: "assets/icons/patterns.svg"
             }
           ]
         },
@@ -1090,26 +1103,26 @@
           leaf: false,
           disabled: true,
           expanded: true,
-          leftImgSrc: "./assets/icons/datastore.svg",
+          startImgSrc: "./assets/icons/datastore.svg",
           items: [
             {
               id: "number-3-1",
               caption: "number-3-1",
               leaf: true,
-              leftImgSrc: "/build/ch-icon-assets/patterns.svg"
+              startImgSrc: "/build/ch-icon-assets/patterns.svg"
             },
             {
               id: "number-3-2",
               caption: "number-3-2",
               disabled: true,
               leaf: true,
-              leftImgSrc: "assets/icons/patterns.svg"
+              startImgSrc: "assets/icons/patterns.svg"
             },
             {
               id: "number-3-3",
               caption: "number-3-3",
               leaf: true,
-              leftImgSrc: "assets/icons/patterns.svg"
+              startImgSrc: "assets/icons/patterns.svg"
             }
           ]
         }
@@ -1120,7 +1133,7 @@
           id: "lazy-loaded-1",
           caption: "Lazy Loaded 1 (drag disabled)",
           leaf: true,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           checkbox: true,
           dragDisabled: true
         },
@@ -1129,7 +1142,7 @@
           caption: "Lazy Loaded 2 (lazy, drag disabled, drop disabled)",
           leaf: false,
           lazy: true,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           checkbox: true,
           dragDisabled: true,
           dropDisabled: true,
@@ -1142,7 +1155,7 @@
           id: "lazy-loaded-3",
           caption: "Lazy Loaded 3 (drag disabled)",
           leaf: true,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           checkbox: true,
           dragDisabled: true
         },
@@ -1150,7 +1163,7 @@
           id: "lazy-loaded-4",
           caption: "Lazy Loaded 4 (drag disabled)",
           leaf: true,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           checkbox: true,
           dragDisabled: true
         }
@@ -1168,7 +1181,7 @@
           caption: "item-" + i,
           lazy: true,
           leaf: false,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           items: []
         });
       }
@@ -1190,7 +1203,7 @@
               id: subSubModelId,
               caption: subSubModelId,
               leaf: true,
-              leftImgSrc: "./assets/icons/file.svg"
+              startImgSrc: "./assets/icons/file.svg"
             });
           }
 
@@ -1199,7 +1212,7 @@
             caption: subModelId,
             expanded: true,
             leaf: false,
-            leftImgSrc: "./assets/icons/knowledge-base.svg",
+            startImgSrc: "./assets/icons/knowledge-base.svg",
             items: subSubEagerLargeModel
           });
         }
@@ -1209,7 +1222,7 @@
           caption: modelId,
           expanded: true,
           leaf: false,
-          leftImgSrc: "assets/icons/patterns.svg",
+          startImgSrc: "assets/icons/patterns.svg",
           items: subEagerLargeModel
         });
       }
@@ -1218,7 +1231,7 @@
         {
           id: "number-2-2",
           caption: "number-2-2",
-          leftImgSrc: "./assets/icons/knowledge-base.svg"
+          startImgSrc: "./assets/icons/knowledge-base.svg"
         }
       ];
 
@@ -1302,6 +1315,13 @@
           testTreeX.expandableButton = selectedOption;
         });
 
+        // Drop mode
+        const dropModeSelect = document.getElementById("drop-mode");
+        dropModeSelect.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          testTreeX.dropMode = selectedOption;
+        });
+
         const filterTypeSelect = document.getElementById("filter-type");
         filterTypeSelect.addEventListener("input", event => {
           const selectedFilterType = event.target.value;
@@ -1349,11 +1369,20 @@
           testTreeX.treeModel = modelTinyUpdatedAgain;
         });
 
+        // Big model
         const updateBigModelBtn = document.getElementById(
           "update-big-model-btn"
         );
         updateBigModelBtn.addEventListener("click", () => {
           testTreeX.treeModel = bigModel;
+        });
+
+        // File system model
+        const updateFileSystemBtn = document.getElementById(
+          "update-file-system-btn"
+        );
+        updateFileSystemBtn.addEventListener("click", () => {
+          testTreeX.treeModel = fileSystemModel;
         });
 
         const kbExplorerBtn = document.getElementById("kb-explorer-model-btn");
@@ -1611,7 +1640,7 @@
                     id: subModelId + "-" + k,
                     caption: subModelId + "-" + k,
                     leaf: true,
-                    leftImgSrc: "./assets/icons/file.svg"
+                    startImgSrc: "./assets/icons/file.svg"
                   });
                 }
 
@@ -1620,7 +1649,7 @@
                   caption: subModelId,
                   expanded: true,
                   leaf: false,
-                  leftImgSrc: "./assets/icons/knowledge-base.svg",
+                  startImgSrc: "./assets/icons/knowledge-base.svg",
                   items: subModelItems
                 });
               }
@@ -1635,7 +1664,7 @@
 
             setTimeout(() => {
               resolve(structuredClone(lazyModel));
-            }, 750); // Resolves or rejects after 500ms second
+            }, 500); // Resolves or rejects after 500ms second
           });
 
         testTreeX.dropItemsCallback = () =>
@@ -1699,7 +1728,7 @@
         testTreeX.sortItemsCallback = sortItems;
 
         // Eager large model
-        // testTreeX.treeModel = eagerLargeModel;
+        testTreeX.treeModel = eagerLargeModel;
       });
     </script>
 

@@ -1,0 +1,31 @@
+:host {
+  --ch-tree-view-drop--size: 8px;
+  display: grid;
+  position: relative;
+  transform: translateY(calc(var(--ch-tree-view-drop--size) * -0.5));
+}
+
+:host::before {
+  content: "";
+  display: flex;
+  position: absolute;
+  inset-inline: 0;
+  block-size: var(--ch-tree-view-drop--size);
+  // background-color: #9c9c9c6c;
+}
+
+:host::after {
+  display: flex;
+  position: absolute;
+  align-self: center;
+  inset-block-start: calc(var(--ch-tree-view-drop--size) * 0.25);
+  inset-inline: 0;
+  block-size: calc(var(--ch-tree-view-drop--size) * 0.5);
+  background-color: currentColor;
+  opacity: 0;
+}
+
+:host(.ch-tree-view-drop--drag-enter)::after {
+  content: "";
+  opacity: 1;
+}

@@ -1,4 +1,48 @@
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
+import { ImageRender } from "../../../components";
+
+export type TreeViewItemModel = {
+  id: string;
+  caption: string;
+  checkbox?: boolean;
+  checked?: boolean;
+  class?: string;
+  disabled?: boolean;
+  downloading?: boolean;
+  dragDisabled?: boolean;
+  dropDisabled?: boolean;
+  editable?: boolean;
+  expanded?: boolean;
+  endImgSrc?: string;
+  endImgType?: ImageRender;
+
+  /**
+   * Used by the tree view to decide which is the last item in the list when
+   * filters are applied.
+   */
+  lastItemId?: string;
+
+  lazy?: boolean;
+  leaf?: boolean;
+
+  indeterminate?: boolean;
+  items?: TreeViewItemModel[];
+  metadata?: string;
+
+  /**
+   * Establish the order at which the item will be placed in its parent.
+   * Multiple items can have the same `order` value.
+   */
+  order?: number;
+
+  /**
+   * `false` to not render the item.
+   */
+  render?: boolean;
+  selected?: boolean;
+  startImgSrc?: string;
+  startImgType?: ImageRender;
+  toggleCheckboxes?: boolean;
+};
 
 export type TreeViewItemModelExtended = {
   parentItem: TreeViewItemModel;

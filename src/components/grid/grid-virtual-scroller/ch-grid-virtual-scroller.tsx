@@ -28,7 +28,7 @@ export class ChGridVirtualScroller {
   /**
    * Flag indicating whether the grid has a scrollbar.
    */
-  @Prop({ reflect: true, mutable: true }) hasGridScroll = false;
+  @State() hasGridScroll = false;
 
   @Watch("hasGridScroll")
   hasGridScrollHandler() {
@@ -41,10 +41,14 @@ export class ChGridVirtualScroller {
   /**
    * Flag indicating whether the browser window has a scrollbar.
    */
-  @Prop({ reflect: true, mutable: true }) hasWindowScroll = false;
+  @State() hasWindowScroll = false;
 
   @Watch("hasWindowScroll")
   hasWindowScrollHandler() {
+    this.gridLayoutEl.style.overflowX = this.hasWindowScroll
+      ? "visible"
+      : "auto";
+
     this.unobserveScroll();
     this.observeScroll();
 
@@ -55,6 +59,11 @@ export class ChGridVirtualScroller {
    * Height of the browser window in pixels.
    */
   @State() browserHeight = document.documentElement.clientHeight;
+  @Watch("browserHeight")
+  browserHeightHandler() {
+    this.defineMaxViewPortItems();
+    this.defineVirtualHeight();
+  }
 
   /**
    * Height of the header in pixels.
@@ -89,7 +98,7 @@ export class ChGridVirtualScroller {
     this.unobserveScroll();
     this.unobserveResize();
 
-    this.gridEl.style.setProperty(
+    this.gridLayoutEl.style.setProperty(
       "--ch-grid-virtual-scroller-height",
       `${this.virtualHeight}px`
     );
@@ -151,6 +160,7 @@ export class ChGridVirtualScroller {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
+      this.defineVirtualHeight();
     }
   }
 
@@ -165,6 +175,7 @@ export class ChGridVirtualScroller {
       this.defineStartIndex();
     } else {
       this.defineViewPortItems();
+      this.defineVirtualHeight();
     }
   }
 
@@ -211,18 +222,20 @@ export class ChGridVirtualScroller {
   private observeResize() {
     this.resizeObserver.observe(this.el);
     this.resizeObserver.observe(this.gridEl);
+    this.resizeObserver.observe(document.documentElement);
+    this.resizeObserver.observe(document.body);
   }
 
   private unobserveScroll() {
     document.removeEventListener("scroll", this.scrollHandler);
-    document.removeEventListener("scrollend", this.scrollEndHandler);
     this.gridLayoutEl.removeEventListener("scroll", this.scrollHandler);
-    this.gridLayoutEl.removeEventListener("scrollend", this.scrollEndHandler);
   }
 
   private unobserveResize() {
     this.resizeObserver.unobserve(this.el);
+    this.resizeObserver.unobserve(this.gridEl);
     this.resizeObserver.unobserve(document.documentElement);
+    this.resizeObserver.unobserve(document.body);
   }
 
   private scrollHandler = () => {
@@ -239,6 +252,10 @@ export class ChGridVirtualScroller {
       switch (entry.target) {
         case this.el:
           this.rowsHeight = entry.contentRect.height;
+          break;
+        case document.documentElement:
+        case document.body:
+          this.browserHeight = document.documentElement.clientHeight;
           break;
       }
     });

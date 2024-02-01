@@ -8,7 +8,9 @@
  * @property {DropdownItemModel[]=} items
  * @property {DropdownPosition=} itemsPosition
  * @property {Link=} link
+ * @property {string=} separatorClass
  * @property {string=} shortcut
+ * @property {boolean=} showSeparator
  * @property {string=} startImage
  */
 
@@ -42,24 +44,27 @@ export const GXWebModel = [
             startImage: "assets/icons/knowledge-base.svg"
           },
           {
-            caption: "Knowledge Base from GeneXus Server"
+            caption: "New Object",
+            shortcut: "Ctrl+Alt+N",
+            showSeparator: true
           },
           {
-            caption: "New Object",
-            shortcut: "Ctrl+Alt+N"
+            caption: "Knowledge Base from GeneXus Server"
           }
         ]
       },
       {
         caption: "Open Object",
-        shortcut: "Ctrl+O"
+        shortcut: "Ctrl+O",
+        showSeparator: true
       },
       {
         caption: "Close",
         shortcut: "Ctrl+Alt+W"
       },
       {
-        caption: "Close Knowledge Base"
+        caption: "Close Knowledge Base",
+        showSeparator: true
       },
       {
         caption: "Save",
@@ -91,7 +96,8 @@ export const GXWebModel = [
         caption: "Launchpad"
       },
       {
-        caption: "Start Page"
+        caption: "Start Page",
+        showSeparator: true
       },
       {
         caption: "Last Impact"
@@ -132,7 +138,8 @@ export const GXWebModel = [
       },
       {
         caption: "Shrink Selection",
-        shortcut: "Alt+Shift+Left"
+        shortcut: "Alt+Shift+Left",
+        showSeparator: true
       },
       {
         caption: "Copy Line Up",
@@ -151,7 +158,8 @@ export const GXWebModel = [
         shortcut: "Alt+Down"
       },
       {
-        caption: "Duplicate Selection"
+        caption: "Duplicate Selection",
+        showSeparator: true
       },
       {
         caption: "Add Cursor Above",
@@ -187,23 +195,27 @@ export const GXWebModel = [
         caption: "Build All"
       },
       {
-        caption: "Rebuild All"
+        caption: "Rebuild All",
+        showSeparator: true
       },
       {
         caption: "Run",
         shortcut: "F5"
       },
       {
-        caption: "Run Without Building"
+        caption: "Run Without Building",
+        showSeparator: true
       },
       {
         caption: "Create Database Tables"
       },
       {
-        caption: "Impact Database Tables"
+        caption: "Impact Database Tables",
+        showSeparator: true
       },
       {
-        caption: "Cancel Build"
+        caption: "Cancel Build",
+        showSeparator: true
       },
       {
         caption: "Show Live Inspector"

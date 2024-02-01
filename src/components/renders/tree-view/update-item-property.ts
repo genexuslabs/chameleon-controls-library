@@ -1,6 +1,5 @@
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
 import { itemHasCheckbox } from "./helpers";
-import { TreeViewItemModelExtended } from "./types";
+import { TreeViewItemModel, TreeViewItemModelExtended } from "./types";
 
 export const updateItemProperty = (
   itemId: string,

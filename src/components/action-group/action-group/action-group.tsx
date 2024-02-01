@@ -55,12 +55,6 @@ export class ChActionGroup {
   @Prop() readonly accessibleName: string;
 
   /**
-   * This attribute lets you specify the label for the more actions button.
-   * Important for accessibility.
-   */
-  @Prop() readonly buttonLabel: string = "More actions";
-
-  /**
    * This attribute determines how items behave when the content of the ActionGroup overflows horizontal. This property is needed
    * to make the control responsive to changes in the Width of the container of ActionGroup.
    *
@@ -88,10 +82,10 @@ export class ChActionGroup {
   }
 
   /**
-   * Determine which mouse actions on the expandable button display the dropdown
-   * section.
+   * This attribute lets you specify the label for the more actions button.
+   * Important for accessibility.
    */
-  @Prop() readonly expandBehavior: "Click" | "ClickOrHover" = "ClickOrHover";
+  @Prop() readonly moreActionsAccessibleName: string = "More actions";
 
   /**
    * @todo Check a better convention for this property, for example, "ActionsInlineAlignment"
@@ -257,16 +251,19 @@ export class ChActionGroup {
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
-              exportparts="expandable-button:more-actions-button,separation:more-actions-separation,window:more-actions-list"
-              buttonLabel={this.buttonLabel}
+              exportparts="action:more-actions-button,window:more-actions-window"
               class="more-actions"
               part="more-actions"
-              expandBehavior={this.expandBehavior}
+              actionGroupParent={true}
+              buttonAccessibleName={this.moreActionsAccessibleName}
+              leaf={false}
+              level={-1}
+              nestedDropdown={true}
               openOnFocus={this.openOnFocus}
               position={this.moreActionsDropdownPosition}
               onExpandedChange={this.#handleMoreActionButtonExpand}
             >
-              <slot name="more-items" slot="items"></slot>
+              <slot name="more-items"></slot>
             </ch-dropdown>
           )}
 

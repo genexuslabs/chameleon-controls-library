@@ -1,43 +1,16 @@
-export type TreeViewGXItemModel = {
-  id: string;
-  caption: string;
-  checkbox?: boolean;
-  checked?: boolean;
-  class?: string;
-  downloading?: boolean;
+import { TreeViewItemModel } from "./types";
+
+export type GXRender<T extends true | false> = T extends true
+  ? TreeViewGXItemModel
+  : TreeViewItemModel;
+
+export type TreeViewGXItemModel = Omit<
+  TreeViewItemModel,
+  "disabled" | "dragDisabled" | "dropDisabled"
+> & {
   dragEnabled?: boolean;
   dropEnabled?: boolean;
-  editable?: boolean;
   enabled?: boolean;
-  expanded?: boolean;
-
-  /**
-   * Used by the tree view to decide which is the last item in the list when
-   * filters are applied.
-   */
-  lastItemId?: string;
-
-  lazy?: boolean;
-  leaf?: boolean;
-  leftImage?: string;
-  indeterminate?: boolean;
-  items?: TreeViewGXItemModel[];
-  metadata?: string;
-
-  /**
-   * Establish the order at which the item will be placed in its parent.
-   * Multiple items can have the same `order` value.
-   */
-  order?: number;
-
-  /**
-   * `false` to not render the item.
-   */
-  render?: boolean;
-  rightImage?: string;
-  selected?: boolean;
-  showExpandableButton?: boolean;
-  toggleCheckboxes?: boolean;
 };
 
 const URL_REGEX = /url\((["']?)([^\)]*)\)(?:\s+([\d.]+)x)?/i;
@@ -115,7 +88,8 @@ export const fromGxImageToURL = (
   if (urlLower.startsWith("assets/")) {
     // Relative URL to local assets
     return url;
-  } else if (
+  }
+  if (
     urlLower.startsWith("http://") ||
     urlLower.startsWith("https://") ||
     urlLower.startsWith("blob:") ||
@@ -124,10 +98,10 @@ export const fromGxImageToURL = (
   ) {
     // Absolute URL
     return url;
-  } else if (urlLower.startsWith(Settings.BASE_PATH.toLowerCase())) {
+  }
+  if (urlLower.startsWith(Settings.BASE_PATH.toLowerCase())) {
     // Host relative URL
     return baseUrl + url.substring(Settings.BASE_PATH.length);
-  } else {
-    return baseUrl + url;
   }
+  return baseUrl + url;
 };

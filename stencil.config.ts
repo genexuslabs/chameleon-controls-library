@@ -31,7 +31,6 @@ export const config: Config = {
     {
       components: [
         "ch-dropdown",
-        "ch-dropdown-item",
         "ch-dropdown-item-separator"
         // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
       ]
@@ -52,7 +51,12 @@ export const config: Config = {
       components: ["ch-popover"] // Make sure the ch-popover control is not bundled with other components
     },
     {
-      components: ["ch-tree-view", "ch-tree-view-item", "ch-tree-view-render"]
+      components: [
+        "ch-tree-view",
+        "ch-tree-view-drop",
+        "ch-tree-view-item",
+        "ch-tree-view-render"
+      ]
     }
   ]
 };

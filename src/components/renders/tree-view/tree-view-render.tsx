@@ -15,19 +15,20 @@ import {
   TreeViewDataTransferInfo,
   TreeViewDropCheckInfo,
   TreeViewItemContextMenu,
-  TreeViewItemModel,
   TreeViewLines,
   TreeViewItemCheckedInfo,
   TreeViewItemExpandedInfo,
   TreeViewItemNewCaption,
   TreeViewItemOpenReferenceInfo,
-  TreeViewItemSelectedInfo
+  TreeViewItemSelectedInfo,
+  TreeViewDropType
 } from "../../tree-view/tree-view/types";
 import {
   LazyLoadTreeItemsCallback,
   TreeViewFilterInfo,
   TreeViewFilterOptions,
   TreeViewFilterType,
+  TreeViewItemModel,
   TreeViewItemModelExtended,
   TreeViewOperationStatusModifyCaption,
   TreeViewRemoveItemsResult
@@ -39,6 +40,7 @@ import {
 import { GxDataTransferInfo } from "../../../common/types";
 import { computeFilter, itemHasCheckbox } from "./helpers";
 import {
+  GXRender,
   TreeViewGXItemModel,
   fromGxImageToURL
 } from "./genexus-implementation";
@@ -49,6 +51,7 @@ import {
 } from "./utils";
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
+import { insertIntoIndex, removeElement } from "../../../common/array";
 
 const ROOT_ID = null;
 
@@ -69,14 +72,52 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
 
-const defaultRenderItem = (
-  itemModel: TreeViewItemModel,
+const gxDragDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender
+) =>
+  itemModel.dragEnabled != null
+    ? !itemModel.dragEnabled
+    : treeState.dragDisabled;
+
+const gxDropDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender
+) =>
+  itemModel.dropEnabled != null
+    ? !itemModel.dropEnabled
+    : treeState.dropDisabled;
+
+const isItemDisabled = (
+  itemModel: TreeViewGXItemModel,
+  treeState: ChTreeViewRender,
+  useGxRender: boolean
+) =>
+  useGxRender
+    ? gxDropDisabled(itemModel, treeState)
+    : (itemModel as GXRender<false>).dropDisabled ?? treeState.dropDisabled;
+
+const treeDropId = (treeItemId: string) => `ch-tree-view-drop__${treeItemId}`;
+
+const defaultRenderItem = <T extends true | false>(
+  itemModel: GXRender<T>,
   treeState: ChTreeViewRender,
   treeHasFilter: boolean,
   lastItem: boolean,
-  level: number
+  level: number,
+  dropBeforeAndAfterEnabled: boolean,
+  useGxRender = false
 ) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && (
+  (treeState.filterType === "none" || itemModel.render !== false) && [
+    dropBeforeAndAfterEnabled && (
+      <ch-tree-view-drop
+        id={treeDropId(itemModel.id)}
+        level={level}
+        treeItemId={itemModel.id}
+        type="before"
+      ></ch-tree-view-drop>
+    ),
+
     <ch-tree-view-item
       key={itemModel.id}
       id={itemModel.id}
@@ -84,28 +125,51 @@ const defaultRenderItem = (
       checkbox={itemModel.checkbox ?? treeState.checkbox}
       checked={itemModel.checked ?? treeState.checked}
       class={itemModel.class}
-      disabled={itemModel.disabled}
-      downloading={itemModel.downloading}
-      dragDisabled={itemModel.dragDisabled ?? treeState.dragDisabled}
-      dropDisabled={itemModel.dropDisabled ?? treeState.dropDisabled}
-      editable={itemModel.editable ?? treeState.editableItems}
-      expanded={itemModel.expanded}
-      expandableButton={
-        itemModel.expandableButton ?? treeState.expandableButton
+      disabled={
+        useGxRender
+          ? (itemModel as GXRender<true>).enabled === false
+          : (itemModel as GXRender<false>).disabled
       }
+      downloading={itemModel.downloading}
+      dragDisabled={
+        useGxRender
+          ? gxDragDisabled(itemModel, treeState)
+          : (itemModel as GXRender<false>).dragDisabled ??
+            treeState.dragDisabled
+      }
+      dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
+      editable={itemModel.editable ?? treeState.editableItems}
+      endImageSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              itemModel.endImgSrc,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : itemModel.endImgSrc
+      }
+      expanded={itemModel.expanded}
+      expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
       leaf={itemModel.leaf}
-      leftImgSrc={itemModel.leftImgSrc}
       level={level}
       metadata={itemModel.metadata}
-      rightImgSrc={itemModel.rightImgSrc}
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
+      }
+      startImageSrc={
+        useGxRender
+          ? fromGxImageToURL(
+              itemModel.startImgSrc,
+              treeState.gxSettings,
+              treeState.gxImageConstructor
+            )
+          : itemModel.startImgSrc
       }
     >
       {!itemModel.leaf &&
@@ -121,76 +185,26 @@ const defaultRenderItem = (
               (treeHasFilter && itemModel.lastItemId !== undefined
                 ? subModel.id === itemModel.lastItemId
                 : index === itemModel.items.length - 1),
-            level + 1
-          )
-        )}
-    </ch-tree-view-item>
-  );
+            level + 1,
 
-const GXRenderItem = (
-  itemModel: TreeViewGXItemModel,
-  treeState: ChTreeViewRender,
-  treeHasFilter: boolean,
-  lastItem: boolean,
-  level: number
-) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && (
-    <ch-tree-view-item
-      key={itemModel.id}
-      id={itemModel.id}
-      caption={itemModel.caption}
-      checkbox={itemModel.checkbox ?? treeState.checkbox}
-      checked={itemModel.checked ?? treeState.checked}
-      class={itemModel.class}
-      downloading={itemModel.downloading}
-      dragDisabled={
-        itemModel.dragEnabled != null
-          ? !itemModel.dragEnabled
-          : treeState.dragDisabled
-      }
-      dropDisabled={
-        itemModel.dropEnabled != null
-          ? !itemModel.dropEnabled
-          : treeState.dropDisabled
-      }
-      editable={itemModel.editable ?? treeState.editableItems}
-      expanded={itemModel.expanded}
-      expandOnClick={treeState.expandOnClick}
-      indeterminate={itemModel.indeterminate}
-      lastItem={lastItem}
-      lazyLoad={itemModel.lazy}
-      leaf={itemModel.leaf}
-      leftImgSrc={fromGxImageToURL(
-        itemModel.leftImage,
-        treeState.gxSettings,
-        treeState.gxImageConstructor
-      )}
-      level={level}
-      metadata={itemModel.metadata}
-      selected={itemModel.selected}
-      showLines={treeState.showLines}
-      toggleCheckboxes={
-        itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
-      }
-    >
-      {!itemModel.leaf &&
-        itemModel.items != null &&
-        itemModel.items.map((subModel, index) =>
-          GXRenderItem(
-            subModel,
-            treeState,
-            treeHasFilter,
-            treeState.showLines !== "none" &&
-              // If there is a filter applied in the current list, use the
-              // lastItemId value to calculate the last item
-              (treeHasFilter && itemModel.lastItemId !== undefined
-                ? subModel.id === itemModel.lastItemId
-                : index === itemModel.items.length - 1),
-            level + 1
+            // When dragging "before" and "after" an item and the direct parent
+            // has drops disabled, don't render the ch-tree-view-drop elements.
+            treeState.dropMode !== "above" &&
+              isItemDisabled(itemModel, treeState, useGxRender) !== true,
+            useGxRender
           )
         )}
-    </ch-tree-view-item>
-  );
+    </ch-tree-view-item>,
+
+    dropBeforeAndAfterEnabled && lastItem && (
+      <ch-tree-view-drop
+        id={treeDropId(itemModel.id) + "-after"}
+        level={level}
+        treeItemId={itemModel.id}
+        type="after"
+      ></ch-tree-view-drop>
+    )
+  ];
 
 const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
   subModel.sort((a, b) => {
@@ -289,6 +303,12 @@ export class ChTreeViewRender {
   ) => Promise<{ acceptDrop: boolean; items?: TreeViewItemModel[] }>;
 
   /**
+   * This attribute lets you specify which kind of drop operation can be
+   * effected in the items.
+   */
+  @Prop() readonly dropMode: "above" | "before-and-after" | "all" = "above";
+
+  /**
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
    */
@@ -319,7 +339,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filter: string;
   @Watch("filter")
-  handleFilterChange() {
+  filterChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.#scheduleFilterProcessing();
     }
@@ -334,7 +354,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterDebounce: number = 250;
   @Watch("filterDebounce")
-  handleFilterDebounceChange() {
+  filterDebounceChanged() {
     if (this.filterType === "caption" || this.filterType === "metadata") {
       this.#scheduleFilterProcessing();
     }
@@ -346,7 +366,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterList: string[] = [];
   @Watch("filterList")
-  handleFilterListChange() {
+  filterListChanged() {
     // Use a Set to efficiently check for ids
     this.#filterListAsSet = new Set(this.filterList);
 
@@ -361,7 +381,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterOptions: TreeViewFilterOptions = {};
   @Watch("filterOptions")
-  handleFilterOptionsChange() {
+  filterOptionsChanged() {
     this.#scheduleFilterProcessing();
   }
 
@@ -380,7 +400,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
-  handleFilterTypeChange() {
+  filterTypeChanged() {
     this.#scheduleFilterProcessing();
   }
 
@@ -412,7 +432,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly multiSelection: boolean = false;
   @Watch("multiSelection")
-  handleMultiSelectionChange(newMultiSelection: boolean) {
+  multiSelectionChanged(newMultiSelection: boolean) {
     // MultiSelection is disabled. We must select the last updated item
     if (!newMultiSelection) {
       this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
@@ -422,12 +442,14 @@ export class ChTreeViewRender {
   /**
    * This property allows us to implement custom rendering of tree items.
    */
-  @Prop({ mutable: true }) renderItem: (
+  @Prop() readonly renderItem: (
     itemModel: TreeViewItemModel | any,
     treeState: ChTreeViewRender,
     treeHasFilter: boolean,
     lastItem: boolean,
-    level: number
+    level: number,
+    dropBeforeAndAfterEnabled: boolean,
+    useGxRender?: boolean
   ) => any = defaultRenderItem;
 
   /**
@@ -455,7 +477,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly treeModel: TreeViewItemModel[] = [];
   @Watch("treeModel")
-  handleTreeModelChange() {
+  treeModelChanged() {
     this.#flattenModel();
   }
 
@@ -537,14 +559,36 @@ export class ChTreeViewRender {
     }
 
     const newParentId = dataTransferInfo.newContainer.id;
-    const newParentUIModel = this.#flattenedTreeModel.get(newParentId).item;
+    const newParentUIModel = this.#flattenedTreeModel.get(newParentId);
+    const dropType = dataTransferInfo.dropType;
+
+    // When the dropType is "before" or "after", the target node must be
+    // the parent
+    const actualParent =
+      dropType === "above"
+        ? newParentUIModel.item
+        : newParentUIModel.parentItem;
 
     // Only move the items to the new parent, keeping the state
     if (dataTransferInfo.dropInTheSameTree) {
+      let specificIndexToInsert: { index: number } = undefined;
+
+      if (dropType !== "above") {
+        specificIndexToInsert = {
+          index: actualParent.items.findIndex(
+            item => item.id === dataTransferInfo.newContainer.id
+          )
+        };
+
+        if (dropType === "after") {
+          specificIndexToInsert.index++;
+        }
+      }
+
       // Add the UI models to the new container and remove the UI models from
       // the old containers
       dataTransferInfo.draggedItems.forEach(
-        this.#moveItemToNewParent(newParentUIModel)
+        this.#moveItemToNewParent(actualParent, specificIndexToInsert)
       );
 
       // When the selected items are moved, the tree must update its internal
@@ -560,16 +604,16 @@ export class ChTreeViewRender {
       }
 
       // Add new items to the parent
-      newParentUIModel.items.push(...items);
+      actualParent.items.push(...items);
 
       // Flatten the new UI models
-      items.forEach(this.#flattenItemUIModel(newParentUIModel));
+      items.forEach(this.#flattenItemUIModel(actualParent));
     }
 
-    this.#sortItems(newParentUIModel.items);
+    this.#sortItems(actualParent.items);
 
     // Open the item to visualize the new subitems
-    newParentUIModel.expanded = true;
+    actualParent.expanded = true;
 
     // Re-sync checked items
     this.#scheduleCheckedItemsChange();
@@ -872,18 +916,21 @@ export class ChTreeViewRender {
    * @param newContainerId ID of the container where the drag is trying to be made.
    * @param draggedItems Information about the dragged items.
    * @param validDrop Current state of the droppable zone.
+   * @param dropType Type of drop that wants to be effected
    */
   @Method()
   async updateValidDropZone(
     requestTimestamp: number,
     newContainerId: string,
     draggedItems: GxDataTransferInfo[],
+    dropType: TreeViewDropType,
     validDrop: boolean
   ) {
     this.#treeRef.updateValidDropZone(
       requestTimestamp,
       newContainerId,
       draggedItems,
+      dropType,
       validDrop
     );
   }
@@ -1003,6 +1050,7 @@ export class ChTreeViewRender {
         requestTimestamp,
         dropInformation.newContainer.id,
         dropInformation.draggedItems,
+        dropInformation.dropType,
         validDrop
       );
     });
@@ -1115,26 +1163,41 @@ export class ChTreeViewRender {
   };
 
   #moveItemToNewParent =
-    (newParentUIModel: TreeViewItemModel) =>
-    (dataTransferInfo: GxDataTransferInfo) => {
+    (newParentItem: TreeViewItemModel, specificIndex?: { index: number }) =>
+    (dataTransferInfo: GxDataTransferInfo, index: number) => {
       const itemUIModelExtended = this.#flattenedTreeModel.get(
         dataTransferInfo.id
       );
       const item = itemUIModelExtended.item;
       const oldParentItem = itemUIModelExtended.parentItem;
 
+      const oldIndex = oldParentItem.items.findIndex(el => el.id === item.id);
+
       // Remove the UI model from the previous parent. The equality function
       // must be by index, not by object reference
-      oldParentItem.items.splice(
-        oldParentItem.items.findIndex(el => el.id === item.id),
-        1
-      );
+      removeElement(oldParentItem.items, oldIndex);
 
-      // Add the UI Model to the new parent
-      newParentUIModel.items.push(item);
+      // The item must be inserted in a specific position, because the dropMode
+      // has "before" and "after" enabled
+      if (specificIndex !== undefined) {
+        let newIndex = specificIndex.index + index;
+
+        // The item is moved in the same parent, so no new items are added
+        // The specificIndex must be decreased to balance the increment
+        if (oldParentItem.id === newParentItem.id && oldIndex < newIndex) {
+          newIndex--;
+          specificIndex.index--;
+        }
+
+        insertIntoIndex(newParentItem.items, item, newIndex);
+      }
+      // Add the UI Model to the new parent by pushing it at the end
+      else {
+        newParentItem.items.push(item);
+      }
 
       // Reference the new parent in the item
-      itemUIModelExtended.parentItem = newParentUIModel;
+      itemUIModelExtended.parentItem = newParentItem;
     };
 
   #flattenSubModel = (model: TreeViewItemModel) => {
@@ -1189,8 +1252,8 @@ export class ChTreeViewRender {
   #treeHasFilters = () => treeViewHasFilters(this.filterType, this.filter);
 
   #sortItems = (items: TreeViewItemModel[]) => {
-    // Ensure that items are sorted
-    if (this.sortItemsCallback) {
+    // Ensure that items are sorted if the dropMode enables it
+    if (this.dropMode === "above" && this.sortItemsCallback) {
       this.sortItemsCallback(items);
     }
   };
@@ -1448,10 +1511,6 @@ export class ChTreeViewRender {
   };
 
   componentWillLoad() {
-    if (this.useGxRender) {
-      this.renderItem = GXRenderItem;
-    }
-
     this.#flattenModel();
   }
 
@@ -1495,7 +1554,9 @@ export class ChTreeViewRender {
             this,
             this.#treeHasFilters(),
             this.showLines !== "none" && index === this.treeModel.length - 1,
-            0
+            0,
+            this.dropMode !== "above" && this.dropDisabled !== true,
+            this.useGxRender
           )
         )}
       </ch-tree-view>

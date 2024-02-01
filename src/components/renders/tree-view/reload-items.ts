@@ -1,5 +1,8 @@
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
-import { LazyLoadTreeItemsCallback, TreeViewItemModelExtended } from "./types";
+import {
+  LazyLoadTreeItemsCallback,
+  TreeViewItemModel,
+  TreeViewItemModelExtended
+} from "./types";
 
 export const reloadItems = async (
   elementRef: HTMLChTreeViewRenderElement,

@@ -34,8 +34,6 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
-const POPOVER_STAY_IN_THE_SAME_LAYER = "--ch-popover-stay-in-the-same-layer";
-
 // Utils
 const fromPxToNumber = (pxValue: string) =>
   Number(pxValue.replace("px", "").trim());
@@ -45,9 +43,10 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
 
 const addPopoverTargetElement = (
   actionElement: PopoverActionElement,
-  popoverElement: HTMLElement
+  popoverElement: HTMLElement,
+  addAction: boolean
 ) => {
-  if (actionElement) {
+  if (actionElement && addAction) {
     actionElement.popoverTargetElement = popoverElement;
   }
 };
@@ -97,6 +96,13 @@ export class ChPopover {
   @State() relativePopover = false;
 
   /**
+   * `true` if the `actionElement` binds the ch-popover using an external ID.
+   * If so, the `popoverTargetElement` property won't be configured in the
+   * action element.
+   */
+  @Prop() readonly actionById: boolean = false;
+
+  /**
    * Specifies a reference of the action that controls the popover control.
    */
   @Prop() readonly actionElement?: PopoverActionElement;
@@ -111,7 +117,7 @@ export class ChPopover {
 
     // Remove previous action element
     removePopoverTargetElement(oldActionElement);
-    addPopoverTargetElement(newActionElement, this.el);
+    addPopoverTargetElement(newActionElement, this.el, !this.actionById);
 
     // Schedule update for watchers
     this.#checkWatchers = true;
@@ -134,10 +140,15 @@ export class ChPopover {
   }
 
   /**
+   * `true` if the control is not stacked with another top layer.
+   */
+  @Prop() readonly firstLayer: boolean;
+
+  /**
    * Specifies whether the popover is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true }) hidden = true;
+  @Prop({ mutable: true, reflect: true }) hidden = true;
   @Watch("hidden")
   handleHiddenChange(newHiddenValue: boolean) {
     // Schedule update for watchers
@@ -145,13 +156,13 @@ export class ChPopover {
 
     // Update the popover visualization
     if (newHiddenValue) {
-      if (!this.relativePopover) {
-        this.el.hidePopover();
+      if (this.firstLayer) {
+        this.#avoidFlickeringInTheNextRender(true);
       }
 
-      this.#avoidFlickeringInTheNextRender(true);
+      this.el.hidePopover();
     } else {
-      this.#showPopover();
+      this.el.showPopover();
     }
   }
 
@@ -189,14 +200,6 @@ export class ChPopover {
    */
   @Event() popoverClosed: EventEmitter;
 
-  #showPopover = () => {
-    if (!this.relativePopover) {
-      this.el.showPopover();
-    } else {
-      this.hidden &&= false;
-    }
-  };
-
   #avoidFlickeringInTheNextRender = (addClass: boolean) => {
     if (addClass) {
       // Class to prevent flickering in the first position adjustment
@@ -227,7 +230,11 @@ export class ChPopover {
     this.#updatePosition();
 
     // The popover's position is now set, so we no longer have to hide it
-    this.#avoidFlickeringInTheNextRender(false);
+    if (this.firstLayer) {
+      requestAnimationFrame(() => {
+        this.#avoidFlickeringInTheNextRender(false);
+      });
+    }
 
     // Listeners
     this.#windowRef.addEventListener("resize", this.#updatePositionRAF, {
@@ -376,7 +383,9 @@ export class ChPopover {
 
   #handleDragEnd = () => {
     // Cancel RAF to prevent access to undefined references
-    this.#dragRAF.cancel();
+    if (this.#dragRAF) {
+      this.#dragRAF.cancel();
+    }
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementDragRAF, {
@@ -413,12 +422,9 @@ export class ChPopover {
       }
     });
 
-    // Check if the popover must stay in the same layer, due to is already
-    // contained in another popover at the top layer
-    this.relativePopover =
-      getComputedStyle(this.el).getPropertyValue(
-        POPOVER_STAY_IN_THE_SAME_LAYER
-      ) === "true";
+    if (this.firstLayer) {
+      this.#avoidFlickeringInTheNextRender(true);
+    }
 
     // Observe the dir attribute in the document
     this.#rtlWatcher.observe(document.documentElement, {
@@ -440,16 +446,14 @@ export class ChPopover {
   }
 
   componentDidLoad() {
-    this.#avoidFlickeringInTheNextRender(true);
-
     // Initialize popoverTargetElement
-    addPopoverTargetElement(this.actionElement, this.el);
+    addPopoverTargetElement(this.actionElement, this.el, !this.actionById);
 
     // Initialize watchers
     this.#setPositionWatcher();
 
     if (!this.hidden) {
-      this.#showPopover();
+      this.el.showPopover();
     }
   }
 
@@ -474,10 +478,9 @@ export class ChPopover {
       <Host
         class={{
           "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
-          "gx-popover-dragging": this.dragging,
-          "gx-popover-same-layer": this.relativePopover
+          "gx-popover-dragging": this.dragging
         }}
-        popover={this.relativePopover ? null : this.mode}
+        popover={this.mode}
         onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         onToggle={this.#handlePopoverToggle}
       >

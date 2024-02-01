@@ -1,6 +1,17 @@
+/**
+ * Useful key codes that must be used in KeyboardEvent.code
+ */
 export const KEY_CODES = {
-  ENTER: "Enter"
-};
+  ARROW_UP: "ArrowUp",
+  ARROW_RIGHT: "ArrowRight",
+  ARROW_DOWN: "ArrowDown",
+  ARROW_LEFT: "ArrowLeft",
+  END: "End",
+  ENTER: "Enter",
+  ESCAPE: "Escape",
+  HOME: "Home",
+  TAB: "Tab"
+} as const;
 
 export const DISABLED_CLASS = "ch-disabled";
 

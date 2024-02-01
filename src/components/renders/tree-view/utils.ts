@@ -1,7 +1,19 @@
 import { forceUpdate } from "@stencil/core";
 import { removeElement } from "../../../common/array";
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
-import { TreeViewItemModelExtended, TreeViewRemoveItemsResult } from "./types";
+import {
+  TreeViewItemModel,
+  TreeViewItemModelExtended,
+  TreeViewRemoveItemsResult
+} from "./types";
+
+export const INITIAL_LEVEL = 0;
+
+// Parts
+export const EVEN_LEVEL = "even-level";
+export const ODD_LEVEL = "odd-level";
+
+export const getTreeItemLevelPart = (evenLevel: boolean) =>
+  evenLevel ? EVEN_LEVEL : ODD_LEVEL;
 
 export const removeTreeViewItems = (
   items: string[] | undefined,

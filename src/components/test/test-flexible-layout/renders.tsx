@@ -12,7 +12,7 @@ import {
   preferencesModel
 } from "../../../pages/assets/models/tree.js";
 import { GXWebModel } from "../../../pages/assets/models/action-group.js";
-import { TreeViewItemModel } from "../../tree-view/tree-view/types";
+import { TreeViewItemModel } from "../../renders/tree-view/types";
 
 const MENU_BAR = "menu-bar";
 const KB_EXPLORER = "kb-explorer";

@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -26,7 +27,6 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
-import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -43,6 +43,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
 export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -61,7 +62,6 @@ export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
-export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -270,9 +270,13 @@ export namespace Components {
          */
         "collapseDropdown": () => Promise<void>;
         /**
-          * Specifies the src for the right img.
+          * Specifies the src of the end image.
          */
         "endImgSrc": string;
+        /**
+          * Specifies how the end image will be rendered.
+         */
+        "endImgType": ImageRender;
         /**
           * Expand the content of the dropdown.
          */
@@ -325,6 +329,10 @@ export namespace Components {
           * Specifies the src for the left img.
          */
         "startImgSrc": string;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType": ImageRender;
     }
     interface ChDropdownItemSeparator {
     }
@@ -941,6 +949,10 @@ export namespace Components {
          */
         "closeButtonAccessibleName": string;
         /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden": boolean;
+        /**
           * Specifies the flexible layout type.
          */
         "direction": ListDirection;
@@ -976,6 +988,10 @@ export namespace Components {
           * Specifies the selected item of the widgets array.
          */
         "selectedId": string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions": boolean;
     }
     interface ChNextDataModeling {
     }
@@ -1729,11 +1745,11 @@ export namespace Components {
         /**
           * Specifies the src of the end image.
          */
-        "endImageSrc": string;
+        "endImgSrc": string;
         /**
           * Specifies how the end image will be rendered.
          */
-        "endImageType": ImageRender;
+        "endImgType": ImageRender;
         /**
           * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
          */
@@ -1805,11 +1821,11 @@ export namespace Components {
         /**
           * Specifies the src of the start image.
          */
-        "startImageSrc": string;
+        "startImgSrc": string;
         /**
           * Specifies how the start image will be rendered.
          */
-        "startImageType": ImageRender;
+        "startImgType": ImageRender;
         /**
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
          */
@@ -3555,9 +3571,13 @@ declare namespace LocalJSX {
          */
         "caption"?: string;
         /**
-          * Specifies the src for the right img.
+          * Specifies the src of the end image.
          */
         "endImgSrc"?: string;
+        /**
+          * Specifies how the end image will be rendered.
+         */
+        "endImgType"?: ImageRender;
         /**
           * `true` to display the dropdown section.
          */
@@ -3606,6 +3626,10 @@ declare namespace LocalJSX {
           * Specifies the src for the left img.
          */
         "startImgSrc"?: string;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType"?: ImageRender;
     }
     interface ChDropdownItemSeparator {
     }
@@ -4212,6 +4236,10 @@ declare namespace LocalJSX {
          */
         "closeButtonAccessibleName"?: string;
         /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden"?: boolean;
+        /**
           * Specifies the flexible layout type.
          */
         "direction"?: ListDirection;
@@ -4247,6 +4275,10 @@ declare namespace LocalJSX {
           * Specifies the selected item of the widgets array.
          */
         "selectedId"?: string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions"?: boolean;
     }
     interface ChNextDataModeling {
     }
@@ -5081,11 +5113,11 @@ declare namespace LocalJSX {
         /**
           * Specifies the src of the end image.
          */
-        "endImageSrc"?: string;
+        "endImgSrc"?: string;
         /**
           * Specifies how the end image will be rendered.
          */
-        "endImageType"?: ImageRender;
+        "endImgType"?: ImageRender;
         /**
           * `true` to expand the control on click interaction. If `false`, with mouse interaction the control will only be expanded on double click.
          */
@@ -5169,11 +5201,11 @@ declare namespace LocalJSX {
         /**
           * Specifies the src of the start image.
          */
-        "startImageSrc"?: string;
+        "startImgSrc"?: string;
         /**
           * Specifies how the start image will be rendered.
          */
-        "startImageType"?: ImageRender;
+        "startImgType"?: ImageRender;
         /**
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked.
          */

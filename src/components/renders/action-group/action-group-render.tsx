@@ -118,7 +118,7 @@ export class ChActionGroupRender {
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#getImagePath(item.endImage)}
+          endImgSrc={this.#getImagePath(item.endImgSrc)}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -129,7 +129,7 @@ export class ChActionGroupRender {
               : item.itemsPosition) || "OutsideEnd_InsideStart"
           }
           shortcut={item.shortcut}
-          startImgSrc={this.#getImagePath(item.startImage)}
+          startImgSrc={this.#getImagePath(item.startImgSrc)}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpanded
@@ -183,13 +183,13 @@ export class ChActionGroupRender {
         actionGroupParent={true}
         caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
-        endImgSrc={this.#getImagePath(item.endImage)}
+        endImgSrc={this.#getImagePath(item.endImgSrc)}
         href={item.link?.url}
         leaf={!hasItems}
         level={level}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
-        startImgSrc={this.#getImagePath(item.startImage)}
+        startImgSrc={this.#getImagePath(item.startImgSrc)}
         onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
@@ -243,7 +243,7 @@ export class ChActionGroupRender {
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
-          endImgSrc={this.#getImagePath(item.endImage)}
+          endImgSrc={this.#getImagePath(item.endImgSrc)}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -252,7 +252,7 @@ export class ChActionGroupRender {
             item.itemsResponsiveCollapsePosition || "OutsideEnd_InsideStart"
           }
           shortcut={item.shortcut}
-          startImgSrc={this.#getImagePath(item.startImage)}
+          startImgSrc={this.#getImagePath(item.startImgSrc)}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpandedInMoreActions

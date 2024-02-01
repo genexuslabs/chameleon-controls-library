@@ -4,13 +4,13 @@ export type DropdownItemModel = {
   id?: string;
   caption: string;
   class?: string;
-  endImage?: string;
+  endImgSrc?: string;
   items?: DropdownItemModel[];
   itemsPosition?: DropdownPosition;
   link?: Link;
   separatorClass?: string;
   shortcut?: string;
-  startImage?: string;
+  startImgSrc?: string;
   showSeparator?: boolean;
 
   /**

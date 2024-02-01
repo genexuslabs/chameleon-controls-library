@@ -177,11 +177,9 @@ ch-test-flexible-layout {
 
 .tree-view-item--folder::part(action)::before,
 .tree-view-item--module::part(action)::before {
-  grid-area: left-img;
   content: "";
-  width: 14px;
-  height: 14px;
-  margin-inline-end: 4px;
+  width: var(--ch-tree-view-item__image-size);
+  height: var(--ch-tree-view-item__image-size);
   background-repeat: no-repeat;
 }
 
@@ -201,11 +199,15 @@ ch-test-flexible-layout {
   background-image: url("assets/icons/module-open.svg");
 }
 
-.tree-view-item--pending-commit::part(action)::before {
-  content: "";
+/* PENDING COMMIT */
+.tree-view-item--pending-commit::part(action) {
   position: relative;
+}
+
+.tree-view-item--pending-commit::part(action)::after {
+  content: "";
+  position: absolute;
   z-index: 1;
-  grid-area: left-img;
   width: 5px;
   height: 5px;
   align-self: end;
@@ -214,7 +216,6 @@ ch-test-flexible-layout {
   background-color: rgb(44, 59, 146);
   border-radius: 50%;
 }
-
 .configuration {
   display: grid;
   grid-template-columns: repeat(5, max-content);

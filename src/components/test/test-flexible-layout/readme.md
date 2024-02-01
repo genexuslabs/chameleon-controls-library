@@ -42,6 +42,7 @@ graph TD;
   ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
   ch-tree-view-render --> ch-tree-view
+  ch-tree-view-render --> ch-tree-view-drop
   ch-tree-view-render --> ch-tree-view-item
   ch-tree-view-item --> ch-checkbox
   ch-grid --> ch-grid-settings

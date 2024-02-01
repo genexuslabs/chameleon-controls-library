@@ -1,4 +1,5 @@
 import { Component } from "./interfaces";
+import { ImageRender } from "./types";
 
 export function debounce(
   func: () => void,
@@ -69,3 +70,6 @@ export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;
 const resetDragImage = new Image();
 export const removeDragImage = (event: DragEvent) =>
   event.dataTransfer.setDragImage(resetDragImage, 0, 0);
+
+export const isPseudoElementImg = (src?: string, imageType?: ImageRender) =>
+  src && imageType !== "img";

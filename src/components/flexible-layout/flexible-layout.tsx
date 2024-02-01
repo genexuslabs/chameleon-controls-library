@@ -392,8 +392,10 @@ export class ChFlexibleLayout {
       slot={viewInfo.id}
       part={`view ${getTabDirection(tabType)} ${tabType}`}
       exportparts={viewInfo.exportParts}
+      closeButtonHidden={viewInfo.closeButtonHidden}
       items={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
+      showCaptions={viewInfo.showCaptions}
       direction={getTabDirection(tabType)}
       onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}

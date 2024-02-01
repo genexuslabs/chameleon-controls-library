@@ -61,7 +61,9 @@ export const createAndSetViewInfo = (
   return {
     id: viewId,
     exportParts,
+    closeButtonHidden: flexibleLayoutLeaf.closeButtonHidden ?? false,
     selectedWidgetId: selectedWidgetId,
+    showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
     type: viewType,
     widgets: widgets
   };

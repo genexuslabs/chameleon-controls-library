@@ -33,7 +33,9 @@ export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
 
 export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
   accessibleRole?: ViewAccessibleRole;
+  closeButtonHidden?: boolean;
   selectedWidgetId?: string;
+  showCaptions?: boolean;
   viewType: ViewType;
   widgets: FlexibleLayoutWidget[];
 };
@@ -94,9 +96,19 @@ export type FlexibleLayoutLeafInfo = {
   id: string;
 
   type: ViewType;
+
+  /**
+   * Defaults to `false`
+   */
+  closeButtonHidden?: boolean;
   expanded?: boolean;
   exportParts: string;
   selectedWidgetId?: string;
+
+  /**
+   * Defaults to `true`
+   */
+  showCaptions?: boolean;
   widgets: FlexibleLayoutWidget[];
 };
 

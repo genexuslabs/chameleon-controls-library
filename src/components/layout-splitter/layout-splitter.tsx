@@ -365,6 +365,7 @@ export class ChLayoutSplitter implements ChComponent {
           class={DIRECTION_CLASS(
             (item as LayoutSplitterDistributionGroup).direction
           )}
+          part={item.id}
           style={TEMPLATE_STYLE(
             (item as LayoutSplitterDistributionGroup).items,
             this.#itemsInfo,

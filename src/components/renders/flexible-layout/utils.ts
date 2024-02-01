@@ -61,7 +61,9 @@ export const createAndSetViewInfo = (
   return {
     id: viewId,
     exportParts,
+    closeButtonHidden: flexibleLayoutLeaf.closeButtonHidden ?? false,
     selectedWidgetId: selectedWidgetId,
+    showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
     type: viewType,
     widgets: widgets
   };
@@ -111,6 +113,8 @@ const updateFlexibleSubModels = (
           parentItem: parentItem
         };
       itemsInfo.set(group.id, flexibleItemExtended);
+
+      layoutSplitterParts.add(group.id);
 
       updateFlexibleSubModels(
         group.items, // Subitems

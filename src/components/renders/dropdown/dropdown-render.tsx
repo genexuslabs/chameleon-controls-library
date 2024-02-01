@@ -97,12 +97,13 @@ export class ChDropdownRender {
         endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
-                item.endImage,
+                item.endImgSrc,
                 this.gxSettings,
                 this.gxImageConstructor
               )
-            : item.endImage
+            : item.endImgSrc
         }
+        endImgType={item.endImgType ?? "background"}
         href={item.link?.url}
         leaf={!hasItems}
         level={level}
@@ -111,12 +112,13 @@ export class ChDropdownRender {
         startImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
-                item.startImage,
+                item.startImgSrc,
                 this.gxSettings,
                 this.gxImageConstructor
               )
-            : item.startImage
+            : item.startImgSrc
         }
+        startImgType={item.startImgType ?? "background"}
         onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpanded ? this.#handleItemExpanded(item) : null

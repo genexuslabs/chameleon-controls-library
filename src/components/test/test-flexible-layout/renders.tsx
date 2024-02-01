@@ -229,10 +229,12 @@ export const layout3: FlexibleLayout = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
+          closeButtonHidden: true,
           expanded: true,
           size: "300px",
           viewType: "inlineStart",
           selectedWidgetId: KB_EXPLORER,
+          showCaptions: false,
           widgets: [
             {
               id: KB_EXPLORER,
@@ -319,8 +321,10 @@ export const layout3: FlexibleLayout = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
+          closeButtonHidden: true,
           expanded: true,
           size: "300px",
+          showCaptions: false,
           viewType: "inlineEnd",
           widgets: [
             {

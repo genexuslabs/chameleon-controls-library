@@ -202,23 +202,19 @@
 
 // Background
 .start-img-type--background::before {
-  background-image: var(--ch-start-img);
-  background-size: 100%;
+  background: no-repeat center / 100% var(--ch-start-img);
 }
 .end-img-type--background::after {
-  background-image: var(--ch-end-img);
-  background-size: 100%;
+  background: no-repeat center / 100% var(--ch-end-img);
 }
 
 // Mask
 .start-img-type--mask::before {
-  -webkit-mask-image: var(--ch-start-img);
-  -webkit-mask-size: 100% 100%;
+  -webkit-mask: var(--ch-start-img) 50% 50% / 100% 100% no-repeat;
   background-color: currentColor;
 }
 .end-img-type--mask::after {
-  -webkit-mask-image: var(--ch-end-img);
-  -webkit-mask-size: 100% 100%;
+  -webkit-mask: var(--ch-end-img) 50% 50% / 100% 100% no-repeat;
   background-color: currentColor;
 }
 

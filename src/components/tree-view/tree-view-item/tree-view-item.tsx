@@ -195,12 +195,12 @@ export class ChTreeViewItem {
   /**
    * Specifies the src of the end image.
    */
-  @Prop() readonly endImageSrc: string;
+  @Prop() readonly endImgSrc: string;
 
   /**
    * Specifies how the end image will be rendered.
    */
-  @Prop() readonly endImageType: ImageRender = "background";
+  @Prop() readonly endImgType: ImageRender = "background";
 
   /**
    * Specifies what kind of expandable button is displayed.
@@ -305,12 +305,12 @@ export class ChTreeViewItem {
   /**
    * Specifies the src of the start image.
    */
-  @Prop() readonly startImageSrc: string;
+  @Prop() readonly startImgSrc: string;
 
   /**
    * Specifies how the start image will be rendered.
    */
-  @Prop() readonly startImageType: ImageRender = "background";
+  @Prop() readonly startImgType: ImageRender = "background";
 
   /**
    * Set this attribute if you want all the children item's checkboxes to be
@@ -836,13 +836,10 @@ export class ChTreeViewItem {
     const levelPart = getTreeItemLevelPart(evenLevel);
 
     const pseudoStartImage = isPseudoElementImg(
-      this.startImageSrc,
-      this.startImageType
+      this.startImgSrc,
+      this.startImgType
     );
-    const pseudoEndImage = isPseudoElementImg(
-      this.endImageSrc,
-      this.endImageType
-    );
+    const pseudoEndImage = isPseudoElementImg(this.endImgSrc, this.endImgType);
 
     return (
       <Host
@@ -931,11 +928,11 @@ export class ChTreeViewItem {
               <div
                 class={{
                   action: true,
-                  "action--end-img": !!this.endImageSrc,
+                  "action--end-img": !!this.endImgSrc,
 
-                  [`start-img-type--${this.startImageType} pseudo-img--start`]:
+                  [`start-img-type--${this.startImgType} pseudo-img--start`]:
                     pseudoStartImage,
-                  [`end-img-type--${this.endImageType} pseudo-img--end`]:
+                  [`end-img-type--${this.endImgType} pseudo-img--end`]:
                     pseudoEndImage,
                   "readonly-mode": !this.editing
                 }}
@@ -944,18 +941,18 @@ export class ChTreeViewItem {
                 }`}
                 style={{
                   "--ch-start-img": pseudoStartImage
-                    ? `url("${this.startImageSrc}")`
+                    ? `url("${this.startImgSrc}")`
                     : null,
                   "--ch-end-img": pseudoEndImage
-                    ? `url("${this.endImageSrc}")`
+                    ? `url("${this.endImgSrc}")`
                     : null
                 }}
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
                 {this.#renderImg(
                   "img start-img",
-                  this.startImageSrc,
-                  this.startImageType
+                  this.startImgSrc,
+                  this.startImgType
                 )}
 
                 {this.editable && this.editing ? (
@@ -975,8 +972,8 @@ export class ChTreeViewItem {
 
                 {this.#renderImg(
                   "img end-img",
-                  this.endImageSrc,
-                  this.endImageType
+                  this.endImgSrc,
+                  this.endImgType
                 )}
               </div>,
 

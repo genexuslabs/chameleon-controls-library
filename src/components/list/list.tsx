@@ -225,8 +225,6 @@ export class ChList implements DraggableView {
 
   #selectedIndex: number = -1;
 
-  #showCaptions: boolean;
-
   #lastDragEvent: MouseEvent;
   #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
 
@@ -331,6 +329,11 @@ export class ChList implements DraggableView {
   @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
+   * `true` to hide the close button in the items.
+   */
+  @Prop() readonly closeButtonHidden: boolean = false;
+
+  /**
    * Specifies the flexible layout type.
    */
   @Prop({ reflect: true }) readonly direction: ListDirection;
@@ -369,6 +372,11 @@ export class ChList implements DraggableView {
   handleSelectedIdChange(newSelectedId: string) {
     this.#renderedPages.add(newSelectedId);
   }
+
+  /**
+   * `true` to show the captions of the items.
+   */
+  @Prop() readonly showCaptions: boolean = true;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -773,7 +781,7 @@ export class ChList implements DraggableView {
           id={CAPTION_ID(item.id)}
           role="tab"
           aria-controls={PAGE_ID(item.id)}
-          aria-label={!this.#showCaptions ? item.name : null}
+          aria-label={!this.showCaptions ? item.name : null}
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.#classes.BUTTON]: true,
@@ -823,9 +831,9 @@ export class ChList implements DraggableView {
         >
           {this.#imgRender(item)}
 
-          {this.#showCaptions && item.name}
+          {this.showCaptions && item.name}
 
-          {this.#showCaptions && (
+          {!this.closeButtonHidden && (
             <button
               aria-label={this.closeButtonAccessibleName}
               class="close-button"
@@ -912,7 +920,7 @@ export class ChList implements DraggableView {
         >
           {this.#imgRender(draggedElement)}
 
-          {this.#showCaptions && draggedElement.name}
+          {this.showCaptions && draggedElement.name}
         </button>
       </div>
     );
@@ -923,8 +931,6 @@ export class ChList implements DraggableView {
 
     // Initialize classes and parts
     this.#setClassesAndParts(direction);
-
-    this.#showCaptions = isBlockDirection(direction);
   };
 
   #setClassesAndParts = (direction: ListDirection) => {

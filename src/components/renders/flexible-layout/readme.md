@@ -23,13 +23,13 @@ the sibling view that its added with.
 
 #### Parameters
 
-| Name                               | Type                                                                                                                                                        | Description |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `parentGroup`                      | `string`                                                                                                                                                    |             |
-| `siblingItem`                      | `string`                                                                                                                                                    |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                       |             |
-| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; selectedWidgetId?: string; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                   |             |
+| Name                               | Type                                                                                                                                                                                                             | Description |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                                                                                                                         |             |
+| `siblingItem`                      | `string`                                                                                                                                                                                                         |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                                                                            |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; closeButtonHidden?: boolean; selectedWidgetId?: string; showCaptions?: boolean; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                                                                        |             |
 
 #### Returns
 

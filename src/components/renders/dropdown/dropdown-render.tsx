@@ -103,6 +103,7 @@ export class ChDropdownRender {
               )
             : item.endImgSrc
         }
+        endImgType={item.endImgType ?? "background"}
         href={item.link?.url}
         leaf={!hasItems}
         level={level}
@@ -117,6 +118,7 @@ export class ChDropdownRender {
               )
             : item.startImgSrc
         }
+        startImgType={item.startImgType ?? "background"}
         onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpanded ? this.#handleItemExpanded(item) : null

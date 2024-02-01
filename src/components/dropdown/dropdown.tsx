@@ -16,6 +16,8 @@ import { ChWindowAlign } from "../window/ch-window";
 import { DropdownAlign, DropdownPosition } from "./types";
 import { focusComposedPath } from "../common/helpers";
 import { ChDropdownCustomEvent } from "../../components";
+import { isPseudoElementImg } from "../../common/utils";
+import { ImageRender } from "../../common/types";
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChWindowAlign;
@@ -63,6 +65,16 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly caption: string;
 
   /**
+   * Specifies the src of the end image.
+   */
+  @Prop() readonly endImgSrc: string;
+
+  /**
+   * Specifies how the end image will be rendered.
+   */
+  @Prop() readonly endImgType: ImageRender = "background";
+
+  /**
    * `true` to display the dropdown section.
    */
   @Prop({ mutable: true }) expanded = false;
@@ -102,11 +114,6 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly leaf: boolean = false;
 
   /**
-   * Specifies the src for the left img.
-   */
-  @Prop() readonly startImgSrc: string;
-
-  /**
    * Level in the render at which the item is placed.
    */
   @Prop() readonly level: number;
@@ -131,11 +138,6 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly position: DropdownPosition = "Center_OutsideEnd";
 
   /**
-   * Specifies the src for the right img.
-   */
-  @Prop() readonly endImgSrc: string;
-
-  /**
    * Specifies the shortcut caption that the control will display.
    */
   @Prop() readonly shortcut: string;
@@ -149,6 +151,16 @@ export class ChDropDown implements ChComponent {
    * `true` to make available a slot to show a header element.
    */
   @Prop() readonly showHeader: boolean = false;
+
+  /**
+   * Specifies the src for the left img.
+   */
+  @Prop() readonly startImgSrc: string;
+
+  /**
+   * Specifies how the start image will be rendered.
+   */
+  @Prop() readonly startImgType: ImageRender = "background";
 
   /**
    * Fired when the visibility of the dropdown section is changed by user
@@ -336,16 +348,24 @@ export class ChDropDown implements ChComponent {
     </button>
   );
 
-  #actionRender = () =>
-    this.href ? (
+  #actionRender = () => {
+    const pseudoStartImage = isPseudoElementImg(
+      this.startImgSrc,
+      this.startImgType
+    );
+    const pseudoEndImage = isPseudoElementImg(this.endImgSrc, this.endImgType);
+
+    return this.href ? (
       <a
         aria-controls={!this.leaf ? WINDOW_ID : null}
         aria-expanded={!this.leaf ? this.expanded.toString() : null}
         aria-haspopup={!this.leaf ? "true" : null}
         class={{
           action: true,
-          "start-img": !!this.startImgSrc,
-          "end-img": !!this.endImgSrc
+
+          [`start-img-type--${this.startImgType} pseudo-img--start`]:
+            pseudoStartImage,
+          [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
         part={
           this.leaf
@@ -369,8 +389,10 @@ export class ChDropDown implements ChComponent {
         aria-haspopup={!this.leaf ? "true" : null}
         class={{
           action: true,
-          "start-img": !!this.startImgSrc,
-          "end-img": !!this.endImgSrc
+
+          [`start-img-type--${this.startImgType} pseudo-img--start`]:
+            pseudoStartImage,
+          [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
         part={
           this.leaf
@@ -387,6 +409,7 @@ export class ChDropDown implements ChComponent {
         {this.#dropDownItemContent()}
       </button>
     );
+  };
 
   #popoverRender = () => {
     this.#firstExpanded ||= this.expanded;

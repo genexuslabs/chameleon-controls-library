@@ -119,6 +119,7 @@ export class ChActionGroupRender {
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           endImgSrc={this.#getImagePath(item.endImgSrc)}
+          endImgType={item.endImgType ?? "background"}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -130,6 +131,7 @@ export class ChActionGroupRender {
           }
           shortcut={item.shortcut}
           startImgSrc={this.#getImagePath(item.startImgSrc)}
+          startImgType={item.startImgType ?? "background"}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpanded
@@ -184,12 +186,14 @@ export class ChActionGroupRender {
         caption={item.caption}
         class={item.actionClass || DEFAULT_ACTION_CLASS}
         endImgSrc={this.#getImagePath(item.endImgSrc)}
+        endImgType={item.endImgType ?? "background"}
         href={item.link?.url}
         leaf={!hasItems}
         level={level}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
         startImgSrc={this.#getImagePath(item.startImgSrc)}
+        startImgType={item.startImgType ?? "background"}
         onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
@@ -244,6 +248,7 @@ export class ChActionGroupRender {
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
           endImgSrc={this.#getImagePath(item.endImgSrc)}
+          endImgType={item.endImgType ?? "background"}
           href={item.link?.url}
           leaf={!hasItems}
           level={level}
@@ -253,6 +258,7 @@ export class ChActionGroupRender {
           }
           shortcut={item.shortcut}
           startImgSrc={this.#getImagePath(item.startImgSrc)}
+          startImgType={item.startImgType ?? "background"}
           onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpandedInMoreActions

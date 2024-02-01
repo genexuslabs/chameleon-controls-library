@@ -1,3 +1,4 @@
+import { ImageRender } from "../../../common/types";
 import { DropdownPosition } from "../../dropdown/types";
 
 export type DropdownItemModel = {
@@ -5,12 +6,14 @@ export type DropdownItemModel = {
   caption: string;
   class?: string;
   endImgSrc?: string;
+  endImgType?: Exclude<ImageRender, "img">;
   items?: DropdownItemModel[];
   itemsPosition?: DropdownPosition;
   link?: Link;
   separatorClass?: string;
   shortcut?: string;
   startImgSrc?: string;
+  startImgType?: Exclude<ImageRender, "img">;
   showSeparator?: boolean;
 
   /**

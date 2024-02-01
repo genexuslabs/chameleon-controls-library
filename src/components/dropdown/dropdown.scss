@@ -88,8 +88,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 // - - - - - - - - - - - - - - - -
 //             Images
 // - - - - - - - - - - - - - - - -
-.start-img::before,
-.end-img::after {
+.pseudo-img--start::before,
+.pseudo-img--end::after {
   content: "";
   display: block;
   inline-size: var(--ch-dropdown-item__image-size);
@@ -97,14 +97,22 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   min-inline-size: var(--ch-dropdown-item__image-size);
 }
 
-.start-img::before {
-  background-image: var(--ch-dropdown-item-start-img);
-  background-size: 100%;
+.start-img-type--background::before {
+  background: no-repeat center / 100% var(--ch-dropdown-item-start-img);
 }
 
-.end-img::after {
-  background-image: var(--ch-dropdown-item-end-img);
-  background-size: 100%;
+.end-img-type--background::after {
+  background: no-repeat center / 100% var(--ch-dropdown-item-end-img);
+}
+
+.start-img-type--mask::before {
+  -webkit-mask: var(--ch-dropdown-item-start-img) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
+}
+
+.end-img-type--mask::after {
+  -webkit-mask: var(--ch-dropdown-item-end-img) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
 }
 
 .content {

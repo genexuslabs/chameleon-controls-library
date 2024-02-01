@@ -32,10 +32,12 @@ export const GXWebModel = [
     items: [
       {
         caption: "New",
+        subActionClass: "dropdown-item dropdown-item-web",
         itemsPosition: "OutsideEnd_InsideStart",
         items: [
           {
             caption: "New Knowledge Base",
+            subActionClass: "dropdown-item dropdown-item-web",
             shortcut: "Ctrl+Alt+Shift+N",
             startImage: "assets/icons/knowledge-base.svg"
           },
@@ -61,11 +63,15 @@ export const GXWebModel = [
       },
       {
         caption: "Save",
+        subActionClass: "dropdown-item dropdown-item-web",
+
         shortcut: "Ctrl+S",
         startImage: "assets/icons/save.svg"
       },
       {
         caption: "Save All",
+        subActionClass: "dropdown-item dropdown-item-web",
+
         shortcut: "Ctrl+Shift+S",
         startImage: "assets/icons/save-all.svg"
       }
@@ -78,6 +84,7 @@ export const GXWebModel = [
     items: [
       {
         caption: "Domains",
+        subActionClass: "dropdown-item dropdown-item-web",
         startImage: "assets/icons/domain.svg"
       },
       {

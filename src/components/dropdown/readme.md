@@ -85,13 +85,12 @@ and the last one for the dropdown footer.
 
 ### Depends on
 
-- [ch-window](../window)
+- [ch-popover](../popover)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-dropdown --> ch-window
-  ch-window --> ch-window-close
+  ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
   ch-dropdown-item --> ch-dropdown
   ch-dropdown-render --> ch-dropdown

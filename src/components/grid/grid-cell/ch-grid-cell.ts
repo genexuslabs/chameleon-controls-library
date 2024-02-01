@@ -156,9 +156,11 @@ export default class HTMLChGridCellElement extends HTMLElement {
 
   private defineFocusHandler() {
     this.addEventListener("focusin", () => {
-      this.dispatchEvent(
-        new CustomEvent("cellFocused", { bubbles: true, composed: true })
-      );
+      if (!this.rowSelector) {
+        this.dispatchEvent(
+          new CustomEvent("cellFocused", { bubbles: true, composed: true })
+        );
+      }
     });
   }
 

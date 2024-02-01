@@ -257,7 +257,7 @@ export class ChActionGroup {
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
-              exportparts="expandable-button:more-actions-button,separation:more-actions-separation,list:more-actions-list,section:more-actions-section,mask:more-actions-mask"
+              exportparts="expandable-button:more-actions-button,separation:more-actions-separation,window:more-actions-list"
               buttonLabel={this.buttonLabel}
               class="more-actions"
               part="more-actions"

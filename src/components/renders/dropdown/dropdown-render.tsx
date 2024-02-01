@@ -1,9 +1,7 @@
-import { Component, Element, h, Prop } from "@stencil/core";
+import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
-
-const DEFAULT_DROPDOWN_ITEM_CLASS = "dropdown-item";
 
 @Component({
   tag: "ch-dropdown-render",
@@ -53,6 +51,12 @@ export class ChDropdownRender {
   ) => void;
 
   /**
+   * A CSS class to set as the `ch-dropdown-item` element class.
+   * This default class is used for the items that don't have an explicit class.
+   */
+  @Prop() readonly itemCssClass: string = "dropdown-item";
+
+  /**
    * This property lets you define the model of the ch-dropdown control.
    */
   @Prop() readonly model: DropdownItemModel[];
@@ -81,14 +85,17 @@ export class ChDropdownRender {
 
   private handleItemClick =
     (target: string, itemId: string) => (event: UIEvent) => {
-      this.itemClickCallback(event, target, itemId);
+      if (this.itemClickCallback) {
+        this.itemClickCallback(event, target, itemId);
+      }
     };
 
   private renderItem = (item: DropdownItemModel) => [
     <ch-dropdown-item
       slot="items"
       id={item.id}
-      class={item.class || DEFAULT_DROPDOWN_ITEM_CLASS}
+      caption={item.caption}
+      class={item.class || this.itemCssClass}
       expandBehavior={this.expandBehavior}
       href={item.link?.url}
       leftImgSrc={
@@ -113,12 +120,27 @@ export class ChDropdownRender {
       }
       shortcut={item.shortcut}
       onClick={this.handleItemClick(item.link?.url, item.id)}
+      onExpandedChange={
+        !item.wasExpanded ? this.#handleItemExpanded(item) : null
+      }
     >
-      {item.caption}
+      {item.items?.length > 0 &&
+        item.wasExpanded &&
+        item.items.map(this.renderItem)}
 
-      {item.items != null && item.items.map(this.renderItem)}
+      {
+        // Render a dummy element if the control was not expanded and has items
+        item.items?.length > 0 && !item.wasExpanded && (
+          <ch-dropdown-item></ch-dropdown-item>
+        )
+      }
     </ch-dropdown-item>
   ];
+
+  #handleItemExpanded = (item: DropdownItemModel) => () => {
+    item.wasExpanded = true;
+    forceUpdate(this);
+  };
 
   componentWillLoad() {
     this.showHeader = !!this.el.querySelector(':scope>[slot="header"]');
@@ -129,7 +151,7 @@ export class ChDropdownRender {
     return (
       <ch-dropdown
         buttonLabel={this.buttonLabel}
-        class={this.cssClass || null}
+        class={this.cssClass}
         expandBehavior={this.expandBehavior}
         openOnFocus={this.openOnFocus}
         position={this.position}

@@ -27,6 +27,11 @@ export class ChDropDownItem implements ChComponent {
   @State() hasItems = false;
 
   /**
+   * Specifies the caption that the control will display.
+   */
+  @Prop() readonly caption: string;
+
+  /**
    * Determine which actions on the expandable button display the dropdown
    * section.
    * Only works if the control has subitems.
@@ -97,38 +102,14 @@ export class ChDropDownItem implements ChComponent {
   }
 
   private dropDownItemContent = () => [
-    !!this.leftImgSrc && (
-      <img
-        slot="action"
-        aria-hidden="true"
-        class="start-img"
-        part="start-img"
-        alt=""
-        src={this.leftImgSrc}
-        loading="lazy"
-      />
-    ),
-
     <span slot="action" class="content" part="content">
-      <slot />
+      {this.caption}
     </span>,
 
     !!this.shortcut && (
       <span aria-hidden="true" slot="action" part="shortcut">
         {this.shortcut}
       </span>
-    ),
-
-    !!this.rightImgSrc && (
-      <img
-        slot="action"
-        aria-hidden="true"
-        class="end-img"
-        part="end-img"
-        alt=""
-        src={this.rightImgSrc}
-        loading="lazy"
-      />
     )
   ];
 
@@ -139,7 +120,11 @@ export class ChDropDownItem implements ChComponent {
   private noItemsRender = () =>
     this.href ? (
       <a
-        class="action"
+        class={{
+          action: true,
+          "start-img": !!this.leftImgSrc,
+          "end-img": !!this.rightImgSrc
+        }}
         part="action link"
         href={this.href}
         onClick={this.handleActionClick}
@@ -152,7 +137,11 @@ export class ChDropDownItem implements ChComponent {
       </a>
     ) : (
       <button
-        class="action"
+        class={{
+          action: true,
+          "start-img": !!this.leftImgSrc,
+          "end-img": !!this.rightImgSrc
+        }}
         part="action button"
         type="button"
         onClick={this.handleActionClick}
@@ -167,8 +156,12 @@ export class ChDropDownItem implements ChComponent {
 
   private itemsRender = () => (
     <ch-dropdown
-      class="action"
-      exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,section,mask,header,footer,window"
+      class={{
+        action: true,
+        "start-img-part": !!this.leftImgSrc,
+        "end-img-part": !!this.rightImgSrc
+      }}
+      exportparts="expandable-button:action,expandable-button:button,expandable-button:expandable-action,separation,list,window"
       expandBehavior={this.expandBehavior}
       nestedDropdown={true}
       openOnFocus={this.openOnFocus}
@@ -194,7 +187,17 @@ export class ChDropDownItem implements ChComponent {
 
   render() {
     return (
-      <Host role="listitem">
+      <Host
+        role="listitem"
+        style={
+          !!this.leftImgSrc || !!this.rightImgSrc
+            ? {
+                "--ch-dropdown-item-start-img": `url("${this.leftImgSrc}")`,
+                "--ch-dropdown-item-end-img": `url("${this.rightImgSrc}")`
+              }
+            : undefined
+        }
+      >
         {this.hasItems ? this.itemsRender() : this.noItemsRender()}
       </Host>
     );

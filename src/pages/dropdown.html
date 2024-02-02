@@ -34,8 +34,9 @@
         line-height: 24px;
       }
 
-      .action-group-item::part(action) {
+      .dropdown::part(action) {
         padding-inline: 8px;
+        border: 1px solid;
       }
 
       .action-group-item::part(action):hover {
@@ -130,43 +131,13 @@
         </select>
       </label>
 
-      <label>
-        Expand behavior
-        <select name="Expand Behavior" id="dropdown-expand-behavior">
-          <option value="Click">Click</option>
-          <option value="ClickOrHover" selected>ClickOrHover</option>
-        </select>
-      </label>
-
-      <label>
-        Items Overflow Behavior
-        <select
-          name="Items Overflow Behavior"
-          id="dropdown-items-overflow-behavior"
-        >
-          <option value="AddScroll">AddScroll</option>
-          <option value="Multiline">Multiline</option>
-          <option value="ResponsiveCollapse" selected>
-            ResponsiveCollapse
-          </option>
-        </select>
-      </label>
-
       <button id="medium-model">Medium model</button>
       <button id="gx-web-model">GX Web model</button>
-
+      <!-- 
       <label>
         Separation
         <input id="separation" type="number" value="0" />
-      </label>
-
-      <ch-checkbox
-        id="open-on-focus"
-        checkedValue="true"
-        unCheckedValue="false"
-        checked-value="false"
-        caption="Open on focus"
-      ></ch-checkbox>
+      </label> -->
     </div>
 
     <script src="./assets/common.js"></script>
@@ -419,53 +390,31 @@
         }
         appLoadFinish = true;
 
-        const actionGroupTest = document.querySelector("ch-dropdown-render");
-        actionGroupTest.model = GXWebModel;
-
-        const openOnFocusElem = document.getElementById("open-on-focus");
-        openOnFocusElem.addEventListener("input", event => {
-          console.log(event.link.checked);
-
-          actionGroupTest.openOnFocus = event.link.checked;
-        });
+        const dropdownRender = document.querySelector("ch-dropdown-render");
+        dropdownRender.model = GXWebModel;
 
         const selectPositionElem = document.getElementById("dropdown-position");
-        selectPositionElem.addEventListener("change", event => {
-          actionGroupTest.moreActionsDropdownPosition = event.link.value;
+        selectPositionElem.addEventListener("input", event => {
+          dropdownRender.position = event.target.value;
         });
 
-        const expandBehaviorElem = document.getElementById(
-          "dropdown-expand-behavior"
-        );
-        expandBehaviorElem.addEventListener("change", event => {
-          actionGroupTest.expandBehavior = event.link.value;
-        });
-
-        const itemsOverflowBehaviorElem = document.getElementById(
-          "dropdown-items-overflow-behavior"
-        );
-        itemsOverflowBehaviorElem.addEventListener("change", event => {
-          console.log("Holaaa", event.link.value);
-          actionGroupTest.itemsOverflowBehavior = event.link.value;
-        });
-
-        const separationElem = document.getElementById("separation");
-        separationElem.addEventListener("input", event => {
-          actionGroupTest.separation = event.link.value;
-        });
+        // const separationElem = document.getElementById("separation");
+        // separationElem.addEventListener("input", event => {
+        //   dropdownRender.separation = event.link.value;
+        // });
 
         const mediumModelBtn = document.getElementById("medium-model");
         mediumModelBtn.addEventListener("click", () => {
-          actionGroupTest.model = modelMediumMinimal;
+          dropdownRender.model = modelMediumMinimal;
         });
 
         const gxWebModelBtn = document.getElementById("gx-web-model");
         gxWebModelBtn.addEventListener("click", () => {
-          actionGroupTest.model = GXWebModel;
+          dropdownRender.model = GXWebModel;
         });
 
         // Eager large model
-        actionGroupTest.model = eagerLargeModel;
+        dropdownRender.model = eagerLargeModel;
       });
     </script>
   </body>

@@ -41,8 +41,15 @@
 
       .scroll-context {
         display: grid;
-        max-height: calc(100vh - 274px);
+        block-size: 100%;
         overflow: auto;
+        position: relative;
+      }
+
+      .absolute-content {
+        display: grid;
+        position: absolute;
+        inset: 0;
       }
 
       .main-container {
@@ -57,7 +64,8 @@
 
       .section-dev {
         display: grid;
-        grid-template-columns: 250px 500px max-content;
+        grid-template-columns: 400px 1fr;
+        margin-inline-start: 300px;
         gap: 32px;
         height: 100%;
       }
@@ -213,252 +221,30 @@
   <body>
     <div class="main-container">
       <div class="section-dev">
-        <ch-tree-view
-          id="markup-tree"
-          toggle-checkboxes="false"
-          show-lines
-          multi-selection
-        >
-          <ch-tree-view-item
-            opened
-            start-img-src="/build/ch-icon-assets/generator.svg"
-            caption="Meats"
-            checkbox
-          >
-            <ch-tree-view-item
-              checkbox
-              checked
-              toggle-checkboxes
-              start-img-src="/build/ch-icon-assets/patterns.svg"
-              caption="White meats"
-            >
-              <ch-tree-view-item
-                checkbox
-                start-img-src="./assets/icons/file.svg"
-                caption="Chicken"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/java.svg"
-                caption="Turkey"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="./assets/icons/file.svg"
-                caption="Duck"
-                leaf
-              >
-              </ch-tree-view-item>
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              start-img-src="/build/ch-icon-assets/knowledge-base.svg"
-              caption="Red meats"
-            >
-              <ch-tree-view-item
-                start-img-src="./assets/icons/file.svg"
-                caption="Beef"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                start-img-src="./assets/icons/file.svg"
-                caption="Lamb and mutton"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                start-img-src="/build/tree-item-assets/download.svg"
-                caption="Pork"
-                leaf
-              >
-              </ch-tree-view-item>
-            </ch-tree-view-item>
-          </ch-tree-view-item>
-          <ch-tree-view-item
-            id="fish"
-            start-img-src="./assets/icons/file.svg"
-            checkbox
-            checked="false"
-            disabled
-            right-img-src="/build/tree-item-assets/download.svg"
-            caption="Fish"
-          >
-          </ch-tree-view-item>
-          <ch-tree-view-item
-            start-img-src="/build/tree-item-assets/download.svg"
-            caption="Fruits"
-            checked="false"
-          >
-            <ch-tree-view-item
-              checkbox
-              start-img-src="/build/ch-icon-assets/java.svg"
-              caption="Orange"
-              leaf
-            >
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              checkbox
-              start-img-src="./assets/icons/file.svg"
-              opened
-              caption="Banana"
-            >
-              <ch-tree-view-item
-                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                checkbox
-                caption="Pisang"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/java.svg"
-                caption="Red Banana"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                caption="Cavendish"
-                show-expandable-button="false"
-              >
-                <ch-tree-view-item
-                  caption="Big"
-                  leaf
-                  show-expandable-button="false"
-                >
-                </ch-tree-view-item>
-                <ch-tree-view-item
-                  start-img-src="assets/icons/patterns.svg"
-                  caption="Small"
-                  leaf
-                >
-                </ch-tree-view-item>
-                <ch-tree-view-item
-                  start-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                  caption="Mini (empty items)"
-                >
-                </ch-tree-view-item>
-              </ch-tree-view-item>
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              checkbox
-              start-img-src="./assets/icons/file.svg"
-              caption="Strawberry"
-              expanded
-              show-expandable-button="false"
-            >
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/java.svg"
-                caption="Albion"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/java.svg"
-                opened
-                caption="Tillamook"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/knowledge-base.svg"
-                caption="Northeaster"
-                leaf
-              >
-              </ch-tree-view-item>
-            </ch-tree-view-item>
-          </ch-tree-view-item>
-          <ch-tree-view-item
-            opened
-            expanded
-            start-img-src="/build/ch-icon-assets/java.svg"
-            empty-tree
-            caption="Nuts"
-            show-expandable-button="false"
-          >
-            <ch-tree-view-item
-              opened
-              checkbox
-              start-img-src="assets/icons/patterns.svg"
-              caption="Almonds"
-            >
-              <ch-tree-view-item
-                checkbox
-                start-img-src="assets/icons/patterns.svg"
-                opened
-                caption="Mollar de Tarragona"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="/build/ch-icon-assets/java.svg"
-                caption="Ferragnès"
-                leaf
-              >
-              </ch-tree-view-item>
-              <ch-tree-view-item
-                checkbox
-                start-img-src="assets/icons/patterns.svg"
-                caption="Verdal"
-                leaf
-              >
-              </ch-tree-view-item>
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              start-img-src="assets/icons/patterns.svg"
-              opened
-              caption="Brazil nuts"
-              leaf
-            >
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              checkbox
-              start-img-src="assets/icons/patterns.svg"
-              caption="Cashews (lazy)"
-              lazy-load
-            >
-            </ch-tree-view-item>
-            <ch-tree-view-item
-              checkbox
-              start-img-src="assets/icons/patterns.svg"
-              caption="Chestnuts (lazy)"
-              lazy-load
-              drag-enabled="false"
-            >
-            </ch-tree-view-item>
-          </ch-tree-view-item>
-        </ch-tree-view>
-
         <ch-tree-view-render
           show-lines="all"
           multi-selection="true"
         ></ch-tree-view-render>
 
         <div class="scroll-context">
-          <ch-textblock id="contextmenu-textblock"
-            >+ + + + + + + Context + + + + + + +</ch-textblock
-          >
+          <div class="absolute-content">
+            <ch-textblock id="contextmenu-textblock"
+              >+ + + + + + + Context + + + + + + +</ch-textblock
+            >
 
-          <ch-textblock id="open-reference-textblock"
-            ><br />+ + + + + Open Reference + + + + +</ch-textblock
-          >
+            <ch-textblock id="open-reference-textblock"
+              ><br />+ + + + + Open Reference + + + + +</ch-textblock
+            >
 
-          <ch-textblock id="selected-items-textblock"
-            ><br />+ + + + + Selected Items + + + + +</ch-textblock
-          >
+            <ch-textblock id="selected-items-textblock"
+              ><br />+ + + + + Selected Items + + + + +</ch-textblock
+            >
 
-          <ch-textblock id="checked-items-textblock"
-            ><br />+ + + + + Checked items + + + + +<br /><br />+ + + + +
-            Unchecked items + + + + +</ch-textblock
-          >
+            <ch-textblock id="checked-items-textblock"
+              ><br />+ + + + + Checked items + + + + +<br /><br />+ + + + +
+              Unchecked items + + + + +</ch-textblock
+            >
+          </div>
         </div>
       </div>
 
@@ -1728,7 +1514,7 @@
         testTreeX.sortItemsCallback = sortItems;
 
         // Eager large model
-        testTreeX.treeModel = eagerLargeModel;
+        // testTreeX.treeModel = eagerLargeModel;
       });
     </script>
 

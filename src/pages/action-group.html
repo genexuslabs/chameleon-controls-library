@@ -113,8 +113,8 @@
       "
     >
       <label>
-        Position
-        <select name="DropdownPosition" id="dropdown-position">
+        More actions dropdown position
+        <select name="DropdownPosition" id="more-actions-dropdown-position">
           <option value="OutsideStart_OutsideStart">
             OutsideStart_OutsideStart
           </option>
@@ -137,18 +137,12 @@
           <option value="OutsideStart_OutsideEnd">
             OutsideStart_OutsideEnd
           </option>
-          <option value="InsideStart_OutsideEnd">InsideStart_OutsideEnd</option>
-          <option value="Center_OutsideEnd" selected>Center_OutsideEnd</option>
+          <option value="InsideStart_OutsideEnd" selected>
+            InsideStart_OutsideEnd
+          </option>
+          <option value="Center_OutsideEnd">Center_OutsideEnd</option>
           <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
           <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
-        </select>
-      </label>
-
-      <label>
-        Expand behavior
-        <select name="Expand Behavior" id="dropdown-expand-behavior">
-          <option value="Click">Click</option>
-          <option value="ClickOrHover" selected>ClickOrHover</option>
         </select>
       </label>
 
@@ -169,18 +163,10 @@
       <button id="medium-model">Medium model</button>
       <button id="gx-web-model">GX Web model</button>
 
-      <label>
+      <!-- <label>
         Separation
         <input id="separation" type="number" value="0" />
-      </label>
-
-      <ch-checkbox
-        id="open-on-focus"
-        checkedValue="true"
-        unCheckedValue="false"
-        checked-value="false"
-        caption="Open on focus"
-      ></ch-checkbox>
+      </label> -->
     </div>
 
     <script src="./assets/common.js"></script>
@@ -437,23 +423,11 @@
         );
         actionGroupTest.model = GXWebModel;
 
-        const openOnFocusElem = document.getElementById("open-on-focus");
-        openOnFocusElem.addEventListener("input", event => {
-          console.log(event.link.checked);
-
-          actionGroupTest.openOnFocus = event.link.checked;
-        });
-
-        const selectPositionElem = document.getElementById("dropdown-position");
-        selectPositionElem.addEventListener("change", event => {
-          actionGroupTest.moreActionsDropdownPosition = event.link.value;
-        });
-
-        const expandBehaviorElem = document.getElementById(
-          "dropdown-expand-behavior"
+        const selectPositionElem = document.getElementById(
+          "more-actions-dropdown-position"
         );
-        expandBehaviorElem.addEventListener("change", event => {
-          actionGroupTest.expandBehavior = event.link.value;
+        selectPositionElem.addEventListener("input", event => {
+          actionGroupTest.moreActionsDropdownPosition = event.target.value;
         });
 
         const itemsOverflowBehaviorElem = document.getElementById(
@@ -463,10 +437,10 @@
           actionGroupTest.itemsOverflowBehavior = event.target.value;
         });
 
-        const separationElem = document.getElementById("separation");
-        separationElem.addEventListener("input", event => {
-          actionGroupTest.separation = event.link.value;
-        });
+        // const separationElem = document.getElementById("separation");
+        // separationElem.addEventListener("input", event => {
+        //   actionGroupTest.separation = event.link.value;
+        // });
 
         const mediumModelBtn = document.getElementById("medium-model");
         mediumModelBtn.addEventListener("click", () => {

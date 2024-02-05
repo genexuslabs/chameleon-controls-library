@@ -20,26 +20,32 @@
   </head>
   <body class="unanimo">
     <ch-layout-splitter>
-      <header slot="header">
-        <p>
-          <a class="home" href="#" aria-label="Home">Chameleon</a>
-          4.4.6
-        </p>
+      <header slot="header" class="header">
+        <div class="header-start">
+          <a class="home heading-2" href="#" aria-label="Home">Chameleon</a>
+          <span class="text-body-2">4.4.6</span>
+        </div>
       </header>
 
       <aside slot="aside">
-        <input type="search" aria-label="Search" placeholder="Search" />
+        <input
+          type="search"
+          class="form-input form-input-search"
+          aria-label="Search"
+          placeholder="Search"
+        />
 
         <ch-tree-view-render
           css-class="tree-view-navigation"
           tree-view-item-css-class="tree-view-item-navigation"
+          filter-type="caption"
         ></ch-tree-view-render>
       </aside>
 
       <main slot="main">
-        <div class="main-page" hidden>
-          <p>Chameleon</p>
-          <h1>
+        <div class="main-page text-body-2" hidden>
+          <p class="heading-1">Chameleon</p>
+          <h1 class="heading-4">
             A library of white-label, highly-customizable and reusable web
             components.
           </h1>
@@ -54,39 +60,49 @@
             <li>Open source 😃</li>
           </ul>
 
-          <h2 id="quick-start">
-            Quick start
+          <div class="sections">
+            <section>
+              <h2 id="quick-start" class="heading-2">
+                Quick start
 
-            <a href="#quick-start" aria-label='Direct link to "Quick Start"'
-              >#</a
-            >
-          </h2>
+                <a href="#quick-start" aria-label='Direct link to "Quick Start"'
+                  >#</a
+                >
+              </h2>
+            </section>
 
-          <h2 id="goals-and-objectives">
-            Goals And Objectives
+            <section>
+              <h2 id="goals-and-objectives" class="heading-2">
+                Goals And Objectives
 
-            <a
-              href="#goals-and-objectives"
-              aria-label='Direct link to "Goals And Objectives"'
-              >#</a
-            >
-          </h2>
+                <a
+                  href="#goals-and-objectives"
+                  aria-label='Direct link to "Goals And Objectives"'
+                  >#</a
+                >
+              </h2>
+            </section>
 
-          <h2 id="browser-support">
-            Browser support
+            <section>
+              <h2 id="browser-support" class="heading-2">
+                Browser support
 
-            <a
-              href="#browser-support"
-              aria-label='Direct link to "Browser support"'
-              >#</a
-            >
-          </h2>
+                <a
+                  href="#browser-support"
+                  aria-label='Direct link to "Browser support"'
+                  >#</a
+                >
+              </h2>
+            </section>
 
-          <h2 id="license">
-            License
+            <section>
+              <h2 id="license" class="heading-2">
+                License
 
-            <a href="#license" aria-label='Direct link to "License"'>#</a>
-          </h2>
+                <a href="#license" aria-label='Direct link to "License"'>#</a>
+              </h2>
+            </section>
+          </div>
         </div>
 
         <iframe hidden class="sample" frameborder="0"></iframe>
@@ -99,6 +115,7 @@
       window.addEventListener("appload", () => {
         const layoutSplitterRef = document.querySelector("ch-layout-splitter");
         const treeViewRef = document.querySelector("ch-tree-view-render");
+        const searchInputRef = document.querySelector(".form-input-search");
         const mainPage = document.querySelector(".main-page");
         const sample = document.querySelector(".sample");
         const home = document.querySelector(".home");
@@ -118,7 +135,7 @@
           id: "root",
           direction: "rows",
           items: [
-            { id: "header", size: "48px" },
+            { id: "header", size: "48px", dragBar: { hidden: true } },
             {
               id: "content",
               direction: "columns",
@@ -143,6 +160,10 @@
 
         layoutSplitterRef.layout = layoutSplitterModel;
         treeViewRef.treeModel = treeViewComponents;
+
+        searchInputRef.addEventListener("input", () => {
+          treeViewRef.filter = searchInputRef.value;
+        });
 
         // When the selected item of the Tree View changes, the iframe must be visible
         treeViewRef.addEventListener("selectedItemsChange", () => {

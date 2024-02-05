@@ -20,7 +20,7 @@ const components = [
   "notifications",
   "paginator",
   "popover",
-  "qr",
+  ["qr", "QR"],
   "select",
   "shortcuts",
   "sidebar",
@@ -44,8 +44,15 @@ const components = [
 /**
  * @param {TreeXItemModel[]} subModel
  */
-export const treeViewComponents = components.map(el => ({
-  id: el,
-  caption: el,
-  leaf: true
-}));
+export const treeViewComponents = components.map(el =>
+  Array.isArray(el)
+    ? { id: el[0], caption: el[1], leaf: true }
+    : {
+        id: el,
+        caption: el
+          .split("-")
+          .map(word => word.replace(word[0], word[0].toUpperCase()))
+          .join(" "),
+        leaf: true
+      }
+);

@@ -9,55 +9,151 @@
     <title>Stencil Component Starter</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
+    <script src="./showcase/types/types.js"></script>
+
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./pages/assets/styles/styles.css" />
-    <script>
-      const components = [
-        "accordion",
-        "action-group",
-        "dropdown",
-        "checkbox",
-        "flexible-layout",
-        "grid",
-        "notifications",
-        "layout-splitter",
-        "paginator",
-        "popover",
-        "qr",
-        "select",
-        "sidebar",
-        "textblock",
-        "tree",
-        "window",
-        "suggest",
-        "alert",
-        "style",
-        "tooltip",
-        "shortcuts"
-      ];
-    </script>
+    <link href="showcase/index.css" rel="stylesheet" />
+    <link
+      href="showcase/design-systems/chameleon/tree-view.css"
+      rel="stylesheet"
+    />
   </head>
-  <body class="home dark">
-    <div class="container">
-      <h1 class="title h2">Chameleon</h1>
-      <p>
-        About A library of white-label, highly-customizable and reusable web
-        components.
-      </p>
-      <ul class="list unstyled" id="componentsList">
-        <!-- populated dinamically with javascript -->
-      </ul>
-    </div>
-    <script>
-      //Completed
-      const componentsList = document.getElementById("componentsList");
-      components.sort().forEach(el => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.setAttribute("href", `/pages/${el}.html`);
-        a.innerText = el;
-        li.appendChild(a);
-        componentsList.appendChild(li);
+  <body class="unanimo">
+    <ch-layout-splitter>
+      <header slot="header">
+        <p>
+          <a class="home" href="#" aria-label="Home">Chameleon</a>
+          4.4.6
+        </p>
+      </header>
+
+      <aside slot="aside">
+        <input type="search" aria-label="Search" placeholder="Search" />
+
+        <ch-tree-view-render
+          css-class="tree-view-navigation"
+          tree-view-item-css-class="tree-view-item-navigation"
+        ></ch-tree-view-render>
+      </aside>
+
+      <main slot="main">
+        <div class="main-page" hidden>
+          <p>Chameleon</p>
+          <h1>
+            A library of white-label, highly-customizable and reusable web
+            components.
+          </h1>
+
+          <ul>
+            <li>Works with all frameworks 🧩</li>
+            <li>Fully customizable with CSS 🎨</li>
+            <li>White-label components 🏷️</li>
+            <li>Built with accessibility in mind ♿️</li>
+            <li>Blazing fast performance 🚀</li>
+            <li>Full RTL support 💬</li>
+            <li>Open source 😃</li>
+          </ul>
+
+          <h2 id="quick-start">
+            Quick start
+
+            <a href="#quick-start" aria-label='Direct link to "Quick Start"'
+              >#</a
+            >
+          </h2>
+
+          <h2 id="goals-and-objectives">
+            Goals And Objectives
+
+            <a
+              href="#goals-and-objectives"
+              aria-label='Direct link to "Goals And Objectives"'
+              >#</a
+            >
+          </h2>
+
+          <h2 id="browser-support">
+            Browser support
+
+            <a
+              href="#browser-support"
+              aria-label='Direct link to "Browser support"'
+              >#</a
+            >
+          </h2>
+
+          <h2 id="license">
+            License
+
+            <a href="#license" aria-label='Direct link to "License"'>#</a>
+          </h2>
+        </div>
+
+        <iframe hidden class="sample" frameborder="0"></iframe>
+      </main>
+    </ch-layout-splitter>
+
+    <script type="module">
+      import { treeViewComponents } from "./showcase/models/components.js";
+
+      window.addEventListener("appload", () => {
+        const layoutSplitterRef = document.querySelector("ch-layout-splitter");
+        const treeViewRef = document.querySelector("ch-tree-view-render");
+        const mainPage = document.querySelector(".main-page");
+        const sample = document.querySelector(".sample");
+        const home = document.querySelector(".home");
+
+        // Initialize sample
+        if (window.location.hash && window.location.hash !== "#") {
+          const pageToNavigate = window.location.hash.replace("#", "");
+          sample.src = pageToNavigate;
+          sample.hidden = false;
+        }
+        // Go to Main page
+        else {
+          mainPage.hidden = false;
+        }
+
+        const layoutSplitterModel = {
+          id: "root",
+          direction: "rows",
+          items: [
+            { id: "header", size: "48px" },
+            {
+              id: "content",
+              direction: "columns",
+              size: "1fr",
+              items: [
+                {
+                  id: "aside",
+                  size: "200px",
+                  dragBar: {
+                    hidden: false,
+                    size: 1
+                  }
+                },
+                {
+                  id: "main",
+                  size: "1fr"
+                }
+              ]
+            }
+          ]
+        };
+
+        layoutSplitterRef.layout = layoutSplitterModel;
+        treeViewRef.treeModel = treeViewComponents;
+
+        // When the selected item of the Tree View changes, the iframe must be visible
+        treeViewRef.addEventListener("selectedItemsChange", () => {
+          if (event.detail?.length > 0) {
+            console.log(event.detail[0].item.id);
+
+            mainPage.hidden = true;
+            sample.hidden = false;
+            sample.src = `showcase/pages/${event.detail[0].item.id}.html`;
+          }
+        });
       });
     </script>
   </body>

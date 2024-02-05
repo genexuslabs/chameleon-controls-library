@@ -1,3 +1,6 @@
+// Resets
+@import "../resets";
+
 // Tokens
 @import "./tokens/border-radius";
 @import "./tokens/box-shadow";
@@ -5,14 +8,24 @@
 @import "./tokens/font-size";
 @import "./tokens/spacing";
 
-// Resets
-@import "../resets";
+// Base classes
+@import "./base/button";
+@import "./base/form-controls";
+@import "./base/typography";
 
 // Components
+@import "./components/header";
 @import "./components/tree-view";
 @import "./components/tree-view-navigation";
 
 @mixin unanimo(
+  // Resets
+  $resets: true,
+  $box-sizing-reset: true,
+  $button-reset: true,
+  $input-reset: true,
+  $typography-reset: true,
+
   // Theme
   $light-theme: true,
   $dark-theme: true,
@@ -28,25 +41,30 @@
   // Font face
   $font-face: true,
 
-  // Resets
-  $resets: true,
-  $box-sizing-reset: true,
-  $button-reset: true,
-  $input-reset: true,
-  $typography-reset: true,
+  // Base
+  $base-classes: true,
+  $button-classes: true,
+  $form-controls-classes: true,
+  $typography-classes: true,
 
   // Components
   $components: true,
   $action-group: true,
   $dropdown: true,
+  $header: true,
   $tree-view: true,
   $tree-view-navigation: true
 ) {
   // font-face
   @if $font-face == true {
     @font-face {
-      font-family: SourceSansPro_Regular;
+      font-family: SourceSansPro_Regular; // 400
       src: url("./assets/fonts/SourceSansPro_Regular.woff2");
+    }
+
+    @font-face {
+      font-family: SourceSansPro_Bold; // 700
+      src: url("./assets/fonts/SourceSansPro_Bold.woff2");
     }
   }
 
@@ -72,6 +90,12 @@
 
   :root {
     @if $tokens == true {
+      // Default background-color and color
+      @if $colors == true {
+        background-color: var(--surface-un-surface--alternative);
+        color: var(--text-un-text__on-surface--positive);
+      }
+
       // border-radius
       @if $border-radius == true {
         @include border-radius();
@@ -128,9 +152,34 @@
   }
 
   // - - - - - - - - - - - - - - - - - - - -
+  //              Base classes
+  // - - - - - - - - - - - - - - - - - - - -
+  @if $base-classes == true {
+    // Button classes
+    @if $button-classes == true {
+      @include button-classes();
+    }
+
+    // Form control classes
+    @if $form-controls-classes == true {
+      @include form-controls-classes();
+    }
+
+    // Typography classes
+    @if $typography-classes == true {
+      @include typography-classes();
+    }
+  }
+
+  // - - - - - - - - - - - - - - - - - - - -
   //               Components
   // - - - - - - - - - - - - - - - - - - - -
   @if $components == true {
+    // header
+    @if $header == true {
+      @include header();
+    }
+
     // tree-view
     @if $tree-view == true {
       @include tree-view();

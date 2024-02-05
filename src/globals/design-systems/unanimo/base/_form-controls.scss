@@ -1,0 +1,90 @@
+@import "./common";
+
+%form-input__text {
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.2px;
+}
+
+%form-input__label {
+  font-family: SourceSansPro_SemiBold;
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.2px;
+}
+
+%form-input__helper {
+  font-size: 11px;
+  line-height: 13px; // 118.182%
+  letter-spacing: 0.2px;
+}
+
+@mixin form-controls-classes() {
+  // TODO: IMPROVE STYLE. Unanimo's implementation does not work well in Sidebar Menus
+
+  .form-input {
+    @extend %form-input__text;
+
+    position: relative;
+    max-block-size: 32px;
+    padding-inline: 8px 16px;
+    padding-block: 8px;
+    border-radius: var(--border-radius-un-border__radius--m);
+    border: var(--border-radius-un-border__radius--xs) solid
+      var(--borders-un-border-color__strong);
+    color: var(--body-texts-un-body-m__font-color--positive);
+
+    &::placeholder {
+      --ch-placeholder-text-color: var(
+        --body-texts-un-body-m__font-color--gray
+      );
+      color: var(--body-texts-un-body-m__font-color--gray);
+    }
+
+    &:focus {
+      outline: 2px solid currentColor;
+      outline-offset: -1px;
+    }
+
+    &:disabled,
+    &--disabled {
+      border-color: var(--borders-un-border-color__disabled);
+      color: var(--text-un-text__disabled);
+    }
+
+    &--error {
+      border-color: var(--borders-un-border-color__error);
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset-block: calc(50% - var(--spacing-un-spacing--l) / 2);
+        inset-inline-start: calc(
+          100% + 1px + var(--spacing-un-spacing--xs)
+        ); // 1px of border-width
+
+        inline-size: var(--spacing-un-spacing--xl);
+        block-size: var(--spacing-un-spacing--xl);
+        -webkit-mask: url("../assets/icons/error.svg") 50% 50% /
+          var(--spacing-un-spacing--l) var(--spacing-un-spacing--l) no-repeat;
+        background-color: var(--icons-un-icon__error);
+      }
+    }
+  }
+
+  .form-input__label {
+    @extend %form-input__label;
+
+    &--disabled {
+      color: var(--text-un-text__disabled);
+    }
+  }
+
+  .form-input__helper {
+    @extend %form-input__helper;
+
+    &--disabled {
+      color: var(--text-un-text__disabled);
+    }
+  }
+}

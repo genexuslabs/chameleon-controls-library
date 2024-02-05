@@ -107,7 +107,7 @@
     --colors-foundation-un-color-red--100
   );
   --un-alert-notification__background-color: var(
-    --accents-un-accent-primary-dim--hover
+    --accents-un-accent__primary-dim--hover
   );
   --un-alert-success__background-color: var(
     --colors-foundation-un-color-green--100
@@ -122,33 +122,33 @@
     --colors-foundation-un-color-gray--300
   );
   --chatbot-un-chatbot-header__background-color: var(
-    --accents-un-accent-secondary
+    --accents-un-accent__secondary
   );
   --header-un-header-primary__background-color: var(
-    --accents-un-accent-secondary
+    --accents-un-accent__secondary
   );
   --header-un-header-primary__background-color--active: var(
-    --accents-un-accent-secondary--active
+    --accents-un-accent__secondary--active
   );
   --header-un-header-primary__background-color--hover: var(
-    --accents-un-accent-secondary--hover
+    --accents-un-accent__secondary--hover
   );
-  --header-un-header-primary-border-color: var(--accents-un-accent-primary);
+  --header-un-header-primary__border-color: var(--accents-un-accent__primary);
   --sidebar-un-sidebar-dropdown__background-color: var(
-    --accents-un-accent-secondary--active
+    --accents-un-accent__secondary--active
   );
-  --sidebar-un-sidebar__background-color: var(--accents-un-accent-secondary);
+  --sidebar-un-sidebar__background-color: var(--accents-un-accent__secondary);
   --sidebar-un-sidebar__background-color--active: var(
-    --accents-un-accent-secondary--active
+    --accents-un-accent__secondary--active
   );
   --sidebar-un-sidebar__background-color--hover: var(
-    --accents-un-accent-secondary--hover
+    --accents-un-accent__secondary--hover
   );
   --tag-un-tag__background-color--error: var(
     --colors-foundation-un-color-red--100
   );
   --tag-un-tag__background-color--primary: var(
-    --accents-un-accent-primary-dim--hover
+    --accents-un-accent__primary-dim--hover
   );
   --tag-un-tag__background-color--success: var(
     --colors-foundation-un-color-green--100
@@ -181,7 +181,7 @@
   --header-un-header-primary__background-color--hover: var(
     --colors-foundation-un-color-gray--800
   );
-  --header-un-header-primary-border-color: var(
+  --header-un-header-primary__border-color: var(
     --colors-foundation-un-color-gray--300
   );
   --sidebar-un-sidebar-dropdown__background-color: var(
@@ -201,29 +201,29 @@
 }
 
 @mixin semantic-colors--general() {
-  --accents-un-accent-destructive: var(--colors-foundation-un-color-red--300);
-  --accents-un-accent-disabled: var(--colors-foundation-un-color-gray--400);
-  --accents-un-accent-primary: var(--colors-foundation-un-color-purple--100);
-  --accents-un-accent-primary--active: var(
+  --accents-un-accent__destructive: var(--colors-foundation-un-color-red--300);
+  --accents-un-accent__disabled: var(--colors-foundation-un-color-gray--400);
+  --accents-un-accent__primary: var(--colors-foundation-un-color-purple--100);
+  --accents-un-accent__primary--active: var(
     --colors-foundation-un-color-purple--300
   );
-  --accents-un-accent-primary--hover: var(
+  --accents-un-accent__primary--hover: var(
     --colors-foundation-un-color-purple--200
   );
-  --accents-un-accent-primary-dim--hover: var(
+  --accents-un-accent__primary-dim--hover: var(
     --colors-foundation-un-color-purple--10
   );
-  --accents-un-accent-secondary: var(--colors-foundation-un-color-purple--600);
-  --accents-un-accent-secondary--active: var(
+  --accents-un-accent__secondary: var(--colors-foundation-un-color-purple--600);
+  --accents-un-accent__secondary--active: var(
     --colors-foundation-un-color-purple--400
   );
-  --accents-un-accent-secondary--hover: var(
+  --accents-un-accent__secondary--hover: var(
     --colors-foundation-un-color-purple--500
   );
-  --body-texts-un-body-m-font-color--gray: var(
+  --body-texts-un-body-m__font-color--gray: var(
     --colors-foundation-un-color-gray--500
   );
-  --body-texts-un-body-m-font-color--positive: var(
+  --body-texts-un-body-m__font-color--positive: var(
     --text-un-text__on-surface--positive
   );
   --body-texts-un-body-s-font-color--gray: var(
@@ -232,49 +232,53 @@
   --body-texts-un-body-s-font-color--positive: var(
     --text-un-text__on-surface--positive
   );
-  --borders-un-border-color-destructive: var(--accents-un-accent-destructive);
-  --borders-un-border-color-disabled: var(--accents-un-accent-disabled);
-  --borders-un-border-color-error: var(--colors-foundation-un-color-red--300);
-  --borders-un-border-color-focused: var(--accents-un-accent-secondary);
-  --borders-un-border-color-mild: var(--colors-foundation-un-color-gray--300);
-  --borders-un-border-color-primary: var(--accents-un-accent-primary);
-  --borders-un-border-color-primary--active: var(
-    --accents-un-accent-primary--active
+  --borders-un-border-color__destructive: var(--accents-un-accent__destructive);
+  --borders-un-border-color__disabled: var(--accents-un-accent__disabled);
+  --borders-un-border-color__error: var(--colors-foundation-un-color-red--300);
+  --borders-un-border-color__focused: var(--accents-un-accent__secondary);
+  --borders-un-border-color__mild: var(--colors-foundation-un-color-gray--300);
+  --borders-un-border-color__primary: var(--accents-un-accent__primary);
+  --borders-un-border-color__primary--active: var(
+    --accents-un-accent__primary--active
   );
-  --borders-un-border-color-primary--hover: var(
-    --accents-un-accent-primary--hover
+  --borders-un-border-color__primary--hover: var(
+    --accents-un-accent__primary--hover
   );
-  --borders-un-border-color-strong: var(--colors-foundation-un-color-gray--600);
-  --borders-un-border-color-success: var(
+  --borders-un-border-color__strong: var(
+    --colors-foundation-un-color-gray--600
+  );
+  --borders-un-border-color__success: var(
     --colors-foundation-un-color-green--200
   );
-  --borders-un-border-color-warning: var(
+  --borders-un-border-color__warning: var(
     --colors-foundation-un-color-orange--200
   );
   --headings-un-h1-font-color--positive: var(
     --text-un-text__on-surface--positive
   );
-  --icons-un-icon-destructive: var(--colors-foundation-un-color-red--300);
-  --icons-un-icon-disabled: var(--colors-foundation-un-color-gray--400);
-  --icons-un-icon-error: var(--colors-foundation-un-color-red--300);
-  --icons-un-icon-on-alert: var(--colors-foundation-un-color-positive);
-  --icons-un-icon-on-disabled: var(--colors-foundation-un-color-gray--300);
-  --icons-un-icon-on-primary: var(--colors-foundation-un-color-positive);
-  --icons-un-icon-on-secondary: var(--colors-foundation-un-color-white);
-  --icons-un-icon-on-surface--positive: var(
+  --icons-un-icon__destructive: var(--colors-foundation-un-color-red--300);
+  --icons-un-icon__disabled: var(--colors-foundation-un-color-gray--400);
+  --icons-un-icon__error: var(--colors-foundation-un-color-red--300);
+  --icons-un-icon__on-alert: var(--colors-foundation-un-color-positive);
+  --icons-un-icon__on-disabled: var(--colors-foundation-un-color-gray--300);
+  --icons-un-icon__on-primary: var(--colors-foundation-un-color-positive);
+  --icons-un-icon__on-secondary: var(--colors-foundation-un-color-white);
+  --icons-un-icon__on-surface--positive: var(
     --colors-foundation-un-color-negative
   );
-  --icons-un-icon-primary: var(--colors-foundation-un-color-purple--100);
-  --icons-un-icon-primary--active: var(
+  --icons-un-icon__primary: var(--colors-foundation-un-color-purple--100);
+  --icons-un-icon__primary--active: var(
     --colors-foundation-un-color-purple--300
   );
-  --icons-un-icon-primary--hover: var(--colors-foundation-un-color-purple--200);
-  --icons-un-icon-success: var(--colors-foundation-un-color-green--200);
-  --icons-un-icon-warning: var(--colors-foundation-un-color-orange--200);
-  --link-un-link-font-color: var(--text-un-text-primary);
-  --text-un-text-destructive: var(--colors-foundation-un-color-red--300);
-  --text-un-text-disabled: var(--colors-foundation-un-color-gray--400);
-  --text-un-text-error: var(--colors-foundation-un-color-red--300);
+  --icons-un-icon__primary--hover: var(
+    --colors-foundation-un-color-purple--200
+  );
+  --icons-un-icon__success: var(--colors-foundation-un-color-green--200);
+  --icons-un-icon__warning: var(--colors-foundation-un-color-orange--200);
+  --link-un-link-font-color: var(--text-un-text__primary);
+  --text-un-text__destructive: var(--colors-foundation-un-color-red--300);
+  --text-un-text__disabled: var(--colors-foundation-un-color-gray--400);
+  --text-un-text__error: var(--colors-foundation-un-color-red--300);
   --text-un-text__on-alert: var(--colors-foundation-un-color-positive);
   --text-un-text__on-disabled: var(--colors-foundation-un-color-gray--300);
   --text-un-text__on-primary: var(--colors-foundation-un-color-positive);
@@ -288,7 +292,9 @@
   --text-un-text__on-surface--positive: var(
     --colors-foundation-un-color-negative
   );
-  --text-un-text-primary: var(--accents-un-accent-primary);
-  --text-un-text-primary--active: var(--colors-foundation-un-color-purple--300);
-  --text-un-text-primary--hover: var(--accents-un-accent-primary--hover);
+  --text-un-text__primary: var(--accents-un-accent__primary);
+  --text-un-text__primary--active: var(
+    --colors-foundation-un-color-purple--300
+  );
+  --text-un-text__primary--hover: var(--accents-un-accent__primary--hover);
 }

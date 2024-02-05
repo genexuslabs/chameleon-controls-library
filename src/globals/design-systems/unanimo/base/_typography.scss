@@ -1,0 +1,65 @@
+%heading-1 {
+  font-family: SourceSansPro_Bold;
+  font-size: 28px;
+  line-height: 32px; // 114.286%
+  letter-spacing: 0.4px;
+}
+
+%heading-2 {
+  font-family: SourceSansPro_Bold;
+  font-size: 22px;
+  line-height: 24px; // 109.091%
+  letter-spacing: 0.8px;
+}
+
+%heading-4 {
+  font-family: SourceSansPro_Bold;
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.4px;
+}
+
+%text-body-1 {
+  font-size: 16px;
+  line-height: 24px; // 150%
+  letter-spacing: 0.4px;
+}
+
+%text-body-2 {
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.2px;
+}
+
+%tab {
+  font-family: SourceSansPro_SemiBold;
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.8px;
+}
+
+@mixin typography-classes() {
+  .heading-1 {
+    @extend %heading-1;
+  }
+
+  .heading-2 {
+    @extend %heading-2;
+  }
+
+  .heading-4 {
+    @extend %heading-4;
+  }
+
+  .text-body-1 {
+    @extend %text-body-1;
+  }
+
+  .text-body-2 {
+    @extend %text-body-2;
+  }
+
+  .tab {
+    @extend %tab;
+  }
+}

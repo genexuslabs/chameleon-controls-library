@@ -1,4 +1,10 @@
+@import "../base/typography";
+
 @mixin tree-view-navigation() {
+  .tree-view-navigation {
+    @extend %text-body-2;
+  }
+
   .ch-tree-view-not-dragging-item
     .tree-view-item:not([selected])::part(header):hover {
     background-color: rgb(232, 232, 233);

@@ -14,10 +14,13 @@ export const config: Config = {
     {
       type: "www",
       serviceWorker: null,
-      copy: [{ src: "pages" }]
+      copy: [
+        { src: "showcase" },
+        { src: "globals/design-systems", dest: "design-systems" }
+      ]
     }
   ],
-  globalStyle: "src/globals/globals.scss",
+  globalStyle: "src/globals/global.scss",
   plugins: [sass()],
   bundles: [
     {

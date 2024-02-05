@@ -1,0 +1,19 @@
+@import "./design-systems/unanimo/unanimo.scss";
+
+@include unanimo($components: false);
+
+body.unanimo {
+  @include unanimo($tokens: false, $resets: false);
+}
+
+body {
+  display: grid;
+  margin: 0;
+  text-align: start;
+  min-height: 100vh;
+}
+
+/* Remove StencilJS' iframe */
+iframe[aria-hidden="true"] {
+  display: none !important;
+}

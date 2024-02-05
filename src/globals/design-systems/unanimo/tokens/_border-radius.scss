@@ -1,0 +1,9 @@
+@mixin border-radius() {
+  --border-radius-un-border__radius--0: 0px;
+  --border-radius-un-border__radius--xs: 1px;
+  --border-radius-un-border__radius--s: 2px;
+  --border-radius-un-border__radius--m: 4px;
+  --border-radius-un-border__radius--l: 8px;
+  --border-radius-un-border__radius--xl: 16px;
+  --border-radius-un-border__radius--xxl: 32px;
+}

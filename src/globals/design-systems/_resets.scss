@@ -1,0 +1,53 @@
+@mixin typography-reset() {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    font: unset;
+    margin: 0;
+    padding: 0;
+    color: unset;
+  }
+}
+
+@mixin button-reset() {
+  :where(button, a) {
+    all: unset;
+    display: flex;
+    align-items: center;
+
+    // Disallow selecting the text
+    user-select: none;
+
+    // Avoid zooming on double tap on iOS devices
+    touch-action: manipulation;
+
+    // Allow user drag
+    -webkit-user-drag: element;
+
+    cursor: pointer;
+  }
+}
+
+@mixin input-reset() {
+  input {
+    padding: 0;
+    margin: 0;
+    background-color: unset;
+    border: unset;
+    color: unset;
+    font: unset;
+    outline: unset;
+  }
+}
+
+@mixin box-sizing() {
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+  }
+}

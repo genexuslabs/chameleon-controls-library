@@ -1987,6 +1987,10 @@ export namespace Components {
          */
         "treeModel": TreeViewItemModel[];
         /**
+          * A CSS class to set as the `ch-tree-view-item` element default class.
+         */
+        "treeViewItemCssClass": string;
+        /**
           * Given a subset of item's properties, it updates all item UI models.
          */
         "updateAllItemsProperties": (properties: { expanded?: boolean; checked?: boolean; }) => Promise<void>;
@@ -5347,6 +5351,10 @@ declare namespace LocalJSX {
           * This property lets you define the model of the ch-tree-view-render control.
          */
         "treeModel"?: TreeViewItemModel[];
+        /**
+          * A CSS class to set as the `ch-tree-view-item` element default class.
+         */
+        "treeViewItemCssClass"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */

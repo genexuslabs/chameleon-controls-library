@@ -25,6 +25,7 @@
   $box-sizing-reset: true,
   $button-reset: true,
   $input-reset: true,
+  $other-reset: true,
   $typography-reset: true,
 
   // Theme
@@ -62,6 +63,11 @@
     @font-face {
       font-family: SourceSansPro_Regular; // 400
       src: url("./assets/fonts/SourceSansPro_Regular.woff2");
+    }
+
+    @font-face {
+      font-family: SourceSansPro_SemiBold; // 700
+      src: url("./assets/fonts/SourceSansPro_SemiBold.woff2");
     }
 
     @font-face {
@@ -147,6 +153,11 @@
 
     @if $input-reset == true {
       @include input-reset();
+    }
+
+    // <hr> reset
+    @if $other-reset == true {
+      @include other-reset();
     }
 
     // Typography reset

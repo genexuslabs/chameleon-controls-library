@@ -44,6 +44,16 @@
   }
 }
 
+@mixin other-reset() {
+  hr {
+    block-size: 1px;
+    margin: unset;
+    padding: unset;
+    border: unset;
+    background-color: currentColor;
+  }
+}
+
 @mixin box-sizing() {
   *,
   ::after,

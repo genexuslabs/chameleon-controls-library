@@ -57,7 +57,6 @@ const ROOT_ID = null;
 
 const DEFAULT_DRAG_DISABLED_VALUE = false;
 const DEFAULT_DROP_DISABLED_VALUE = false;
-const DEFAULT_CLASS_VALUE = "tree-view-item";
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
@@ -124,7 +123,7 @@ const defaultRenderItem = <T extends true | false>(
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? treeState.checkbox}
       checked={itemModel.checked ?? treeState.checked}
-      class={itemModel.class}
+      class={itemModel.class || treeState.treeViewItemCssClass}
       disabled={
         useGxRender
           ? (itemModel as GXRender<true>).enabled === false
@@ -482,6 +481,11 @@ export class ChTreeViewRender {
   treeModelChanged() {
     this.#flattenModel();
   }
+
+  /**
+   * A CSS class to set as the `ch-tree-view-item` element default class.
+   */
+  @Prop() readonly treeViewItemCssClass: string = "tree-view-item";
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -1234,7 +1238,6 @@ export class ChTreeViewRender {
 
       // Make sure the properties are with their default values to avoid issues
       // when reusing DOM nodes
-      item.class ||= DEFAULT_CLASS_VALUE;
       item.expanded ??= DEFAULT_EXPANDED_VALUE;
       item.indeterminate ??= DEFAULT_INDETERMINATE_VALUE;
       item.lazy ??= DEFAULT_LAZY_VALUE;

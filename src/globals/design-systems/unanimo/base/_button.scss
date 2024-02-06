@@ -4,6 +4,7 @@
   %button-base {
     display: grid;
     gap: var(--spacing-un-spacing--s); // Used when the button has icons
+    min-block-size: 32px;
     font-family: SourceSansPro_SemiBold;
     font-size: 14px;
     line-height: 18px; // 128.571%
@@ -16,18 +17,19 @@
     @extend %button-base;
     background-color: var(--accents-un-accent__primary);
     border-radius: var(--border-radius-un-border__radius--s);
+    color: var(--text-un-text__on-primary);
     padding-inline: var(--spacing-un-spacing--xl);
 
     &:focus-visible {
       @include focus-style();
     }
 
-    &:active {
-      background-color: var(--accents-un-accent__primary--active);
-    }
-
     &:hover {
       background-color: var(--accents-un-accent__primary--hover);
+    }
+
+    &:active {
+      background-color: var(--accents-un-accent__primary--active);
     }
 
     &:disabled,
@@ -47,21 +49,22 @@
     border: var(--border-radius-un-border__radius--xs) solid
       var(--borders-un-border-color__primary);
     border-radius: var(--border-radius-un-border__radius--s);
+    color: var(--text-un-text__primary);
     padding-inline: var(--spacing-un-spacing--xl);
 
     &:focus-visible {
       @include focus-style();
     }
 
-    &:active {
-      color: var(--text-un-text__primary--active);
-      border-color: var(--borders-un-border-color__primary--active);
-    }
-
     &:hover {
       background-color: var(--accents-un-accent__primary-dim--hover);
       border-color: var(--borders-un-border-color__primary--hover);
       color: var(--text-un-text__primary--hover);
+    }
+
+    &:active {
+      color: var(--text-un-text__primary--active);
+      border-color: var(--borders-un-border-color__primary--active);
     }
 
     &:disabled,
@@ -79,19 +82,20 @@
   // Button tertiary
   .button-tertiary {
     @extend %button-base;
+    color: var(--text-un-text__primary);
     padding-inline: var(--spacing-un-spacing--l);
 
     &:focus-visible {
       @include focus-style();
     }
 
-    &:active {
-      color: var(--text-un-text__primary--active);
-    }
-
     &:hover {
       background-color: var(--accents-un-accent__primary-dim--hover);
       color: var(--text-un-text__primary--hover);
+    }
+
+    &:active {
+      color: var(--text-un-text__primary--active);
     }
 
     &:disabled,

@@ -1378,6 +1378,10 @@ export namespace Components {
          */
         "suspend": boolean;
     }
+    interface ChShowcase {
+        "pageName": string;
+        "pageSrc": string;
+    }
     interface ChSidebarMenu {
         /**
           * The active item
@@ -2975,6 +2979,12 @@ declare global {
         prototype: HTMLChShortcutsElement;
         new (): HTMLChShortcutsElement;
     };
+    interface HTMLChShowcaseElement extends Components.ChShowcase, HTMLStencilElement {
+    }
+    var HTMLChShowcaseElement: {
+        prototype: HTMLChShowcaseElement;
+        new (): HTMLChShowcaseElement;
+    };
     interface HTMLChSidebarMenuElementEventMap {
         "itemClicked": any;
         "collapseBtnClicked": any;
@@ -3334,6 +3344,7 @@ declare global {
         "ch-select": HTMLChSelectElement;
         "ch-select-option": HTMLChSelectOptionElement;
         "ch-shortcuts": HTMLChShortcutsElement;
+        "ch-showcase": HTMLChShowcaseElement;
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
@@ -4719,6 +4730,10 @@ declare namespace LocalJSX {
          */
         "suspend"?: boolean;
     }
+    interface ChShowcase {
+        "pageName"?: string;
+        "pageSrc"?: string;
+    }
     interface ChSidebarMenu {
         /**
           * The active item
@@ -5541,6 +5556,7 @@ declare namespace LocalJSX {
         "ch-select": ChSelect;
         "ch-select-option": ChSelectOption;
         "ch-shortcuts": ChShortcuts;
+        "ch-showcase": ChShowcase;
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
@@ -5682,6 +5698,7 @@ declare module "@stencil/core" {
             "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
             "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
             "ch-shortcuts": LocalJSX.ChShortcuts & JSXBase.HTMLAttributes<HTMLChShortcutsElement>;
+            "ch-showcase": LocalJSX.ChShowcase & JSXBase.HTMLAttributes<HTMLChShowcaseElement>;
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;

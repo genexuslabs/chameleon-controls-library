@@ -6,7 +6,8 @@ export const config: Config = {
   outputTargets: [
     {
       type: "dist",
-      esmLoaderPath: "../loader"
+      esmLoaderPath: "../loader",
+      copy: [{ src: "globals/design-systems", dest: "design-systems" }]
     },
     {
       type: "docs-readme"

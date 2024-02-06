@@ -1,0 +1,144 @@
+@import "./common";
+
+@mixin button-classes() {
+  %button-base {
+    display: grid;
+    gap: var(--spacing-un-spacing--s); // Used when the button has icons
+    min-block-size: 32px;
+    font-family: SourceSansPro_SemiBold;
+    font-size: 14px;
+    line-height: 18px; // 128.571%
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+
+  // Button primary
+  .button-primary {
+    @extend %button-base;
+    background-color: var(--accents-un-accent__primary);
+    border-radius: var(--border-radius-un-border__radius--s);
+    color: var(--text-un-text__on-primary);
+    padding-inline: var(--spacing-un-spacing--xl);
+
+    &:focus-visible {
+      @include focus-style();
+    }
+
+    &:hover {
+      background-color: var(--accents-un-accent__primary--hover);
+    }
+
+    &:active {
+      background-color: var(--accents-un-accent__primary--active);
+    }
+
+    &:disabled,
+    &--disabled {
+      background-color: var(--accents-un-accent__disabled);
+      color: var(--text-un-text__on-disabled);
+    }
+
+    &--error {
+      background: var(--accents-un-accent__destructive);
+    }
+  }
+
+  // Button secondary
+  .button-secondary {
+    @extend %button-base;
+    border: var(--border-radius-un-border__radius--xs) solid
+      var(--borders-un-border-color__primary);
+    border-radius: var(--border-radius-un-border__radius--s);
+    color: var(--text-un-text__primary);
+    padding-inline: var(--spacing-un-spacing--xl);
+
+    &:focus-visible {
+      @include focus-style();
+    }
+
+    &:hover {
+      background-color: var(--accents-un-accent__primary-dim--hover);
+      border-color: var(--borders-un-border-color__primary--hover);
+      color: var(--text-un-text__primary--hover);
+    }
+
+    &:active {
+      color: var(--text-un-text__primary--active);
+      border-color: var(--borders-un-border-color__primary--active);
+    }
+
+    &:disabled,
+    &--disabled {
+      border-color: var(--borders-un-border-color__disabled);
+      color: var(--text-un-text__on-disabled);
+    }
+
+    &--error {
+      border-color: var(--borders-un-border-color__destructive);
+      color: var(--text-un-text__destructive);
+    }
+  }
+
+  // Button tertiary
+  .button-tertiary {
+    @extend %button-base;
+    color: var(--text-un-text__primary);
+    padding-inline: var(--spacing-un-spacing--l);
+
+    &:focus-visible {
+      @include focus-style();
+    }
+
+    &:hover {
+      background-color: var(--accents-un-accent__primary-dim--hover);
+      color: var(--text-un-text__primary--hover);
+    }
+
+    &:active {
+      color: var(--text-un-text__primary--active);
+    }
+
+    &:disabled,
+    &--disabled {
+      color: var(--text-un-text__on-disabled);
+    }
+
+    &--error {
+      color: var(--text-un-text__destructive);
+    }
+  }
+
+  // Button with icon
+  .button-icon-only::before,
+  .button-icon-and-text::before,
+  .button-icon-after-and-text::before {
+    content: "";
+    display: block;
+    inline-size: var(--spacing-un-spacing--xl);
+    block-size: var(--spacing-un-spacing--xl);
+    -webkit-mask: var(--ch-button-icon) 50% 50% / 100% 100% no-repeat;
+    background-color: currentColor;
+  }
+
+  .button-icon-only {
+    padding-inline: var(--spacing-un-spacing--s);
+  }
+
+  .button-icon-and-text,
+  .button-icon-after-and-text {
+    padding-inline: var(--spacing-un-spacing--l);
+  }
+
+  .button-icon-after-and-text::before {
+    order: 1;
+  }
+}
+
+@mixin hyperlink() {
+  .text-link {
+    font-size: 14px;
+    line-height: 18px; // 128.571%
+    letter-spacing: 0.4px;
+    text-decoration-line: underline;
+  }
+}

@@ -10,7 +10,6 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
 
     <style>
       body {
@@ -20,7 +19,8 @@
       .dropdown-container {
         width: 450px;
         height: 30px;
-        margin: auto;
+        margin-block-start: 100px;
+        margin-inline: auto;
         resize: auto;
         border: 1px solid;
         overflow: auto;
@@ -89,32 +89,31 @@
         margin-inline-start: 128px;
       }
 
-      *,
-      ::after,
-      ::before {
-        box-sizing: border-box;
+      body {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: var(--spacing-un-spacing--l);
       }
     </style>
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
-  <body>
-    <div class="container">WIP</div>
-
-    <div class="dropdown-container">
-      <ch-action-group-render></ch-action-group-render>
+  <body class="white-label">
+    <div class="card">
+      <div class="dropdown-container">
+        <ch-action-group-render></ch-action-group-render>
+      </div>
     </div>
 
     <div
-      style="
-        display: flex;
-        flex-direction: column;
-        row-gap: 16px;
-        margin-block-start: 100px;
-      "
+      class="card"
+      style="display: flex; flex-direction: column; row-gap: 16px"
     >
-      <label>
+      <label class="form-input__label">
         More actions dropdown position
-        <select name="DropdownPosition" id="more-actions-dropdown-position">
+        <select
+          class="form-input"
+          name="DropdownPosition"
+          id="more-actions-dropdown-position"
+        >
           <option value="OutsideStart_OutsideStart">
             OutsideStart_OutsideStart
           </option>
@@ -146,9 +145,12 @@
         </select>
       </label>
 
-      <label>
+      <hr />
+
+      <label class="form-input__label">
         Items Overflow Behavior
         <select
+          class="form-input"
           name="Items Overflow Behavior"
           id="dropdown-items-overflow-behavior"
         >
@@ -160,7 +162,12 @@
         </select>
       </label>
 
+      <hr />
+
       <button id="medium-model">Medium model</button>
+
+      <hr />
+
       <button id="gx-web-model">GX Web model</button>
 
       <!-- <label>
@@ -169,7 +176,6 @@
       </label> -->
     </div>
 
-    <script src="./assets/common.js"></script>
     <script type="module">
       import { GXWebModel } from "./assets/models/action-group.js";
 

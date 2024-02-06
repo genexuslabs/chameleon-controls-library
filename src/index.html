@@ -6,58 +6,189 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>Stencil Component Starter</title>
+    <title>Chameleon</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
+    <script src="./showcase/types/types.js"></script>
+
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./pages/assets/styles/styles.css" />
-    <script>
-      const components = [
-        "accordion",
-        "action-group",
-        "dropdown",
-        "checkbox",
-        "flexible-layout",
-        "grid",
-        "notifications",
-        "layout-splitter",
-        "paginator",
-        "popover",
-        "qr",
-        "select",
-        "sidebar",
-        "textblock",
-        "tree",
-        "window",
-        "suggest",
-        "alert",
-        "style",
-        "tooltip",
-        "shortcuts"
-      ];
-    </script>
+    <link href="showcase/index.css" rel="stylesheet" />
+    <link
+      href="showcase/design-systems/chameleon/tree-view.css"
+      rel="stylesheet"
+    />
   </head>
-  <body class="home dark">
-    <div class="container">
-      <h1 class="title h2">Chameleon</h1>
-      <p>
-        About A library of white-label, highly-customizable and reusable web
-        components.
-      </p>
-      <ul class="list unstyled" id="componentsList">
-        <!-- populated dinamically with javascript -->
-      </ul>
-    </div>
-    <script>
-      //Completed
-      const componentsList = document.getElementById("componentsList");
-      components.sort().forEach(el => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.setAttribute("href", `/pages/${el}.html`);
-        a.innerText = el;
-        li.appendChild(a);
-        componentsList.appendChild(li);
+  <body class="unanimo">
+    <ch-layout-splitter>
+      <header slot="header" class="header">
+        <div class="header-start">
+          <a class="home heading-2" href="#" aria-label="Home">Chameleon</a>
+          <span class="text-body-2">4.4.6</span>
+        </div>
+
+        <div class="header-end">
+          <a
+            href="https://github.com/genexuslabs/chameleon-controls-library"
+            aria-label="Chameleon's GitHub"
+            class="button-icon-only github-logo"
+            target="_blank"
+            title="Chameleon's GitHub"
+          ></a>
+        </div>
+      </header>
+
+      <aside slot="aside">
+        <input
+          type="search"
+          class="form-input form-input-search"
+          aria-label="Search"
+          placeholder="Search"
+        />
+
+        <ch-tree-view-render
+          css-class="tree-view-navigation"
+          tree-view-item-css-class="tree-view-item-navigation"
+          filter-type="caption"
+        ></ch-tree-view-render>
+      </aside>
+
+      <main slot="main">
+        <div class="main-page text-body-2" hidden>
+          <p class="heading-1">Chameleon</p>
+          <h1 class="heading-4">
+            A library of white-label, highly-customizable and reusable web
+            components.
+          </h1>
+
+          <ul class="chameleon-features">
+            <li class="card text-body-1">🧩 Works with all frameworks</li>
+            <li class="card text-body-1">🎨 Fully customizable with CSS</li>
+            <li class="card text-body-1">🏷️ White-label components</li>
+            <li class="card text-body-1">
+              ♿️ Built with accessibility in mind
+            </li>
+            <li class="card text-body-1">🚀 Blazing fast performance</li>
+            <li class="card text-body-1 card__rtl">Full RTL support</li>
+            <li class="card text-body-1">😃 Open source</li>
+          </ul>
+
+          <div class="sections">
+            <section>
+              <h2 id="quick-start" class="heading-2">
+                Quick start
+
+                <a href="#quick-start" aria-label='Direct link to "Quick Start"'
+                  >#</a
+                >
+              </h2>
+            </section>
+
+            <section>
+              <h2 id="goals-and-objectives" class="heading-2">
+                Goals And Objectives
+
+                <a
+                  href="#goals-and-objectives"
+                  aria-label='Direct link to "Goals And Objectives"'
+                  >#</a
+                >
+              </h2>
+            </section>
+
+            <section>
+              <h2 id="browser-support" class="heading-2">
+                Browser support
+
+                <a
+                  href="#browser-support"
+                  aria-label='Direct link to "Browser support"'
+                  >#</a
+                >
+              </h2>
+            </section>
+
+            <section>
+              <h2 id="license" class="heading-2">
+                License
+
+                <a href="#license" aria-label='Direct link to "License"'>#</a>
+              </h2>
+            </section>
+          </div>
+        </div>
+
+        <ch-showcase></ch-showcase>
+      </main>
+    </ch-layout-splitter>
+
+    <script type="module">
+      import { treeViewComponents } from "./showcase/models/components.js";
+
+      window.addEventListener("appload", () => {
+        const layoutSplitterRef = document.querySelector("ch-layout-splitter");
+        const treeViewRef = document.querySelector("ch-tree-view-render");
+        const searchInputRef = document.querySelector(".form-input-search");
+        const mainPage = document.querySelector(".main-page");
+        const showcase = document.querySelector("ch-showcase");
+        const home = document.querySelector(".home");
+
+        // Initialize sample
+        if (window.location.hash && window.location.hash !== "#") {
+          const pageToNavigate = window.location.hash.replace("#", "");
+          showcase.pageSrc = pageToNavigate;
+          showcase.pageName = "hello";
+          showcase.hidden = false;
+        }
+        // Go to Main page
+        else {
+          mainPage.hidden = false;
+        }
+
+        const layoutSplitterModel = {
+          id: "root",
+          direction: "rows",
+          items: [
+            { id: "header", size: "48px", dragBar: { hidden: true } },
+            {
+              id: "content",
+              direction: "columns",
+              size: "1fr",
+              items: [
+                {
+                  id: "aside",
+                  size: "200px",
+                  dragBar: {
+                    hidden: false,
+                    size: 1
+                  }
+                },
+                {
+                  id: "main",
+                  size: "1fr"
+                }
+              ]
+            }
+          ]
+        };
+
+        layoutSplitterRef.layout = layoutSplitterModel;
+        treeViewRef.treeModel = treeViewComponents;
+
+        searchInputRef.addEventListener("input", () => {
+          treeViewRef.filter = searchInputRef.value;
+        });
+
+        // When the selected item of the Tree View changes, the iframe must be visible
+        treeViewRef.addEventListener("selectedItemsChange", () => {
+          if (event.detail?.length > 0) {
+            console.log(event.detail[0].item.id);
+
+            mainPage.hidden = true;
+            showcase.hidden = false;
+            showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;
+            showcase.pageName = event.detail[0].item.caption;
+          }
+        });
       });
     </script>
   </body>

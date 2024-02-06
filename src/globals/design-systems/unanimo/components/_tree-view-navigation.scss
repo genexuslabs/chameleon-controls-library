@@ -1,0 +1,81 @@
+@import "../base/typography";
+
+@mixin tree-view-navigation() {
+  .tree-view-navigation {
+    @extend %text-body-2;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--accents-un-accent__secondary)
+      var(--colors-foundation-un-color__gray--400);
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--accents-un-accent__secondary);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--colors-foundation-un-color__gray--400);
+    }
+
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+  }
+
+  .ch-tree-view-not-dragging-item
+    .tree-view-item:not([selected])::part(header):hover {
+    background-color: rgb(232, 232, 233);
+  }
+
+  .ch-tree-view-item--drag-enter {
+    background-color: #eee;
+    box-shadow: inset 0 0 1px 0px black;
+
+    &[selected]::part(header) {
+      background-color: #eee;
+    }
+  }
+
+  .tree-view-item-navigation {
+    background-color: var(--sidebar-un-sidebar__background-color);
+    color: var(--text-un-text__on-secondary);
+
+    &::part(header):hover {
+      background-color: var(--sidebar-un-sidebar__background-color--hover);
+    }
+
+    &::part(header):active,
+    &[selected]::part(header) {
+      background-color: var(--sidebar-un-sidebar__background-color--active);
+    }
+
+    // Focus when not editing
+    &:not(.ch-tree-view-item--editing)::part(header):focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: -2px;
+      z-index: 1;
+    }
+
+    // Not editing and Editing
+    &:not(.ch-tree-view-item--editing)::part(action),
+    &::part(edit-name) {
+      padding-inline: var(--spacing-un-spacing--m);
+      padding-block: 5px;
+    }
+
+    // Editing
+    &::part(edit-name) {
+      outline: 1px solid currentColor;
+      outline-offset: -1px;
+    }
+  }
+
+  .ch-tree-view-drag-info {
+    padding-inline: 6px;
+    padding-block: 2px;
+    background-color: rgb(207, 222, 230);
+    border: 1px solid rgb(2, 102, 160);
+    border-radius: 10px;
+    font-size: 8px;
+  }
+}

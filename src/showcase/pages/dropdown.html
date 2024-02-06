@@ -6,17 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-dropdown</title>
+    <title>Dropdown</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
 
     <style>
-      body {
-        min-height: 100vh;
-      }
-
       .dropdown-container {
         width: 450px;
         height: 30px;
@@ -70,38 +65,35 @@
         margin: 4px;
       }
 
-      *,
-      ::after,
-      ::before {
-        box-sizing: border-box;
+      body {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: var(--spacing-un-spacing--l);
       }
     </style>
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
-  <body>
-    <div class="container">WIP</div>
 
-    <div class="dropdown-container">
-      <ch-dropdown-render>
-        <div slot="header">Content of the header</div>
+  <body class="white-label">
+    <div class="card">
+      <div class="dropdown-container">
+        <ch-dropdown-render>
+          <div slot="header">Content of the header</div>
 
-        <span slot="action">Click me</span>
+          <span slot="action">Click me</span>
 
-        <div slot="footer">Content of the footer</div>
-      </ch-dropdown-render>
+          <div slot="footer">Content of the footer</div>
+        </ch-dropdown-render>
+      </div>
     </div>
 
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        row-gap: 16px;
-        margin-block-start: 100px;
-      "
-    >
-      <label>
+    <div class="card card-properties">
+      <label class="form-input__label">
         Position
-        <select name="DropdownPosition" id="dropdown-position">
+        <select
+          class="form-input"
+          name="DropdownPosition"
+          id="dropdown-position"
+        >
           <option value="OutsideStart_OutsideStart">
             OutsideStart_OutsideStart
           </option>
@@ -131,7 +123,12 @@
         </select>
       </label>
 
+      <hr />
+
       <button id="medium-model">Medium model</button>
+
+      <hr />
+
       <button id="gx-web-model">GX Web model</button>
       <!-- 
       <label>

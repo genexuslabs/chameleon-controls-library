@@ -10,8 +10,8 @@ import {
   lazyLoadItemsDictionary,
   kbExplorerModel,
   preferencesModel
-} from "../../../pages/assets/models/tree.js";
-import { GXWebModel } from "../../../pages/assets/models/action-group.js";
+} from "../../../showcase/pages/assets/models/tree.js";
+import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../renders/tree-view/types";
 
 const MENU_BAR = "menu-bar";

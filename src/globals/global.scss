@@ -1,0 +1,66 @@
+@import "./design-systems/unanimo/unanimo.scss";
+
+@include unanimo($components: false);
+
+body.unanimo {
+  @include unanimo($tokens: false, $resets: false);
+}
+
+body.white-label {
+  @include unanimo(
+    $tokens: false,
+    $resets: false,
+    $card: true,
+    $tree-view: false,
+    $tree-view-navigation: false
+  );
+
+  .card {
+    margin: 4px; // Necessary to avoid iframe's "overflow: clip" issues
+    padding: var(--spacing-un-spacing--l);
+
+    hr {
+      margin-inline: calc(var(--spacing-un-spacing--l) * -1);
+    }
+  }
+
+  .card-properties {
+    display: grid;
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+    gap: var(--spacing-un-spacing--l);
+
+    label {
+      display: grid;
+      grid-template-rows: max-content max-content;
+    }
+  }
+}
+
+body {
+  display: grid;
+  margin: 0;
+  text-align: start;
+  min-height: 100vh;
+}
+
+// WA to import fonts outside of Unanimo
+@font-face {
+  font-family: SourceSansPro_Regular;
+  src: url("../showcase/assets/fonts/SourceSansPro_Regular.woff2");
+}
+
+@font-face {
+  font-family: SourceSansPro_SemiBold;
+  src: url("../showcase/assets/fonts/SourceSansPro_SemiBold.woff2");
+}
+
+@font-face {
+  font-family: SourceSansPro_Bold;
+  src: url("../showcase/assets/fonts/SourceSansPro_Bold.woff2");
+}
+
+/* Remove StencilJS' iframe */
+iframe[aria-hidden="true"] {
+  display: none !important;
+}

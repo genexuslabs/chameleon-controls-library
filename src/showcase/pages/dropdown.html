@@ -67,7 +67,7 @@
 
       body {
         display: grid;
-        grid-template-columns: 1fr 250px;
+        grid-template-columns: 1fr 260px;
         gap: var(--spacing-un-spacing--l);
       }
     </style>
@@ -86,65 +86,55 @@
       </div>
     </div>
 
-    <div class="card">
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          row-gap: 16px;
-          margin-block-start: 100px;
-        "
-      >
-        <label>
-          Position
-          <select name="DropdownPosition" id="dropdown-position">
-            <option value="OutsideStart_OutsideStart">
-              OutsideStart_OutsideStart
-            </option>
-            <option value="InsideStart_OutsideStart">
-              InsideStart_OutsideStart
-            </option>
-            <option value="Center_OutsideStart">Center_OutsideStart</option>
-            <option value="InsideEnd_OutsideStart">
-              InsideEnd_OutsideStart
-            </option>
-            <option value="OutsideEnd_OutsideStart">
-              OutsideEnd_OutsideStart
-            </option>
-            <option value="OutsideStart_InsideStart">
-              OutsideStart_InsideStart
-            </option>
-            <option value="OutsideEnd_InsideStart">
-              OutsideEnd_InsideStart
-            </option>
-            <option value="OutsideStart_Center">OutsideStart_Center</option>
-            <option value="OutsideEnd_Center">OutsideEnd_Center</option>
-            <option value="OutsideStart_InsideEnd">
-              OutsideStart_InsideEnd
-            </option>
-            <option value="OutsideEnd_InsideEnd">OutsideEnd_InsideEnd</option>
-            <option value="OutsideStart_OutsideEnd">
-              OutsideStart_OutsideEnd
-            </option>
-            <option value="InsideStart_OutsideEnd">
-              InsideStart_OutsideEnd
-            </option>
-            <option value="Center_OutsideEnd" selected>
-              Center_OutsideEnd
-            </option>
-            <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
-            <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
-          </select>
-        </label>
+    <div class="card card-properties">
+      <label class="form-input__label">
+        Position
+        <select
+          class="form-input"
+          name="DropdownPosition"
+          id="dropdown-position"
+        >
+          <option value="OutsideStart_OutsideStart">
+            OutsideStart_OutsideStart
+          </option>
+          <option value="InsideStart_OutsideStart">
+            InsideStart_OutsideStart
+          </option>
+          <option value="Center_OutsideStart">Center_OutsideStart</option>
+          <option value="InsideEnd_OutsideStart">InsideEnd_OutsideStart</option>
+          <option value="OutsideEnd_OutsideStart">
+            OutsideEnd_OutsideStart
+          </option>
+          <option value="OutsideStart_InsideStart">
+            OutsideStart_InsideStart
+          </option>
+          <option value="OutsideEnd_InsideStart">OutsideEnd_InsideStart</option>
+          <option value="OutsideStart_Center">OutsideStart_Center</option>
+          <option value="OutsideEnd_Center">OutsideEnd_Center</option>
+          <option value="OutsideStart_InsideEnd">OutsideStart_InsideEnd</option>
+          <option value="OutsideEnd_InsideEnd">OutsideEnd_InsideEnd</option>
+          <option value="OutsideStart_OutsideEnd">
+            OutsideStart_OutsideEnd
+          </option>
+          <option value="InsideStart_OutsideEnd">InsideStart_OutsideEnd</option>
+          <option value="Center_OutsideEnd" selected>Center_OutsideEnd</option>
+          <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
+          <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
+        </select>
+      </label>
 
-        <button id="medium-model">Medium model</button>
-        <button id="gx-web-model">GX Web model</button>
-        <!-- 
+      <hr />
+
+      <button id="medium-model">Medium model</button>
+
+      <hr />
+
+      <button id="gx-web-model">GX Web model</button>
+      <!-- 
       <label>
         Separation
         <input id="separation" type="number" value="0" />
       </label> -->
-      </div>
     </div>
 
     <script src="./assets/common.js"></script>

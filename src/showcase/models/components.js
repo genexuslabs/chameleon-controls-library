@@ -14,7 +14,6 @@ const components = [
   "checkbox",
   "flexible-layout",
   "grid",
-  "icon",
   "layout-splitter",
   "notifications",
   "paginator",

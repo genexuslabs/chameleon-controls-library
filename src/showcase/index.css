@@ -1,18 +1,3 @@
-@font-face {
-  font-family: SourceSansPro_Regular;
-  src: url("./assets/fonts/SourceSansPro_Regular.woff2");
-}
-
-@font-face {
-  font-family: SourceSansPro_SemiBold;
-  src: url("./assets/fonts/SourceSansPro_SemiBold.woff2");
-}
-
-@font-face {
-  font-family: SourceSansPro_Bold;
-  src: url("./assets/fonts/SourceSansPro_Bold.woff2");
-}
-
 aside {
   display: flex;
   flex-direction: column;

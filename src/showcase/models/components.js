@@ -28,7 +28,7 @@ const components = [
   "tab",
   "textblock",
   "tooltip",
-  "tree",
+  ["tree", "Tree View"],
   "window"
 ];
 

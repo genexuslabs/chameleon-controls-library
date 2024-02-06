@@ -10,27 +10,20 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
 
     <style>
-      @font-face {
-        font-family: SourceSansPro_Regular;
-        src: url("assets/fonts/SourceSansPro_Regular.woff2");
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        display: flex;
-        margin: 0;
-        min-height: 100vh;
-      }
-
       fieldset {
         display: grid;
-        grid-template-columns: max-content max-content max-content;
+        grid-auto-flow: row;
+        grid-auto-rows: max-content;
+        gap: 8px;
+        border: unset;
+        padding: unset;
+      }
+
+      fieldset > div {
+        display: flex;
+        flex-wrap: wrap;
         gap: 8px;
       }
 
@@ -216,10 +209,21 @@
         border-radius: 10px;
         font-size: 8px;
       }
+
+      body {
+        display: grid;
+        grid-template-columns: 1fr 500px;
+        gap: var(--spacing-un-spacing--l);
+      }
+
+      .card-properties > fieldset > legend {
+        margin-block-end: var(--spacing-un-spacing--m);
+      }
     </style>
   </head>
-  <body>
-    <div class="main-container">
+
+  <body class="white-label">
+    <div class="card">
       <div class="section-dev">
         <ch-tree-view-render
           show-lines="all"
@@ -247,233 +251,294 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="configuration">
+    <div class="card card-properties">
+      <fieldset>
+        <legend class="form-input__label">Properties</legend>
+
         <div>
-          <fieldset>
-            <legend>Properties</legend>
+          <ch-checkbox
+            id="multi-selection"
+            checked-value="true"
+            un-checked-value="false"
+            value="true"
+            caption="Multi selection"
+          ></ch-checkbox>
 
-            <ch-checkbox
-              id="multi-selection"
-              checked-value="true"
-              un-checked-value="false"
-              value="true"
-              caption="Multi selection"
-            ></ch-checkbox>
+          <ch-checkbox
+            id="editable"
+            checked-value="true"
+            un-checked-value="false"
+            value="true"
+            caption="Editable Items"
+          ></ch-checkbox>
 
-            <ch-checkbox
-              id="editable"
-              checked-value="true"
-              un-checked-value="false"
-              value="true"
-              caption="Editable Items"
-            ></ch-checkbox>
-
-            <label style="display: flex; flex-direction: column">
-              Lines
-              <select name="lines" id="lines">
-                <option value="all" selected>All lines</option>
-                <option value="last">Last line</option>
-                <option value="none">None</option>
-              </select>
-            </label>
-
-            <ch-checkbox
-              id="drag-enabled"
-              checked-value="true"
-              un-checked-value="false"
-              value="true"
-              caption="Drag Enabled"
-            ></ch-checkbox>
-
-            <ch-checkbox
-              id="drop-enabled"
-              checked-value="true"
-              un-checked-value="false"
-              value="true"
-              caption="Drop Enabled"
-            ></ch-checkbox>
-
-            <label style="display: flex; flex-direction: column">
-              Expandable button
-              <select name="expandable-button" id="expandable-button">
-                <option value="action">Action</option>
-                <option value="decorative" selected>Decorative</option>
-                <option value="no">None</option>
-              </select>
-            </label>
-
-            <ch-checkbox
-              id="expand-on-click"
-              checked-value="true"
-              un-checked-value="false"
-              value="true"
-              caption="Expand on click"
-            ></ch-checkbox>
-
-            <label style="display: flex; flex-direction: column">
-              Drop mode
-              <select name="drop-mode" id="drop-mode">
-                <option value="above" selected>Above</option>
-                <option value="before-after">Before and After</option>
-                <option value="all">All</option>
-              </select>
-            </label>
-          </fieldset>
-
-          <fieldset>
-            <legend>Methods</legend>
-
-            <div style="display: grid; gap: 8px">
-              <button id="expand-all" type="button">Expand All</button>
-              <button id="collapse-all" type="button">Collapse All</button>
-            </div>
-
-            <fieldset style="grid-template-columns: max-content max-content">
-              <legend>Update items properties</legend>
-
-              <div class="flex-container" style="flex-direction: column">
-                <ch-checkbox
-                  id="update-items-properties-selected"
-                  checked-value="true"
-                  un-checked-value="false"
-                  value="false"
-                  caption="Selected"
-                ></ch-checkbox>
-
-                <ch-checkbox
-                  id="update-items-properties-checked"
-                  checked-value="true"
-                  un-checked-value="false"
-                  value="false"
-                  caption="Checked"
-                ></ch-checkbox>
-              </div>
-
-              <div class="flex-container">
-                <input
-                  aria-label="Items to update"
-                  id="items-to-update"
-                  placeholder="ItemId1,ItemId2,ItemId3"
-                  type="text"
-                />
-                <button id="button-items-to-update">Update items</button>
-              </div>
-            </fieldset>
-
-            <fieldset style="grid-template-columns: max-content max-content">
-              <legend>Scroll into visible</legend>
-
-              <div class="flex-container" style="flex-direction: column">
-                <ch-checkbox
-                  id="scroll-into-visible-selected"
-                  checked-value="true"
-                  un-checked-value="false"
-                  value="false"
-                  caption="Selected"
-                ></ch-checkbox>
-
-                <ch-checkbox
-                  id="scroll-into-visible-checked"
-                  checked-value="true"
-                  un-checked-value="false"
-                  value="false"
-                  caption="Checked"
-                ></ch-checkbox>
-              </div>
-
-              <div class="flex-container">
-                <input id="input-scroll-into-visible" type="text" />
-                <button id="btn-scroll-into-visible" type="button">
-                  Scroll into visible
-                </button>
-              </div>
-            </fieldset>
-
-            <ch-checkbox
-              id="check-all"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Check / uncheck all"
-            ></ch-checkbox>
-
-            <div class="flex-container">
-              <input
-                aria-label="Reload items"
-                id="item-id-to-reload"
-                placeholder="ItemId1"
-                type="text"
-              />
-              <button id="button-to-reload-items">Reload items</button>
-            </div>
-
-            <div class="flex-container">
-              <input
-                aria-label="Remove items"
-                id="items-to-remove"
-                placeholder="ItemId1,ItemId2,ItemId3"
-                type="text"
-              />
-              <button id="button-items-to-remove">Remove items</button>
-            </div>
-          </fieldset>
+          <ch-checkbox
+            id="expand-on-click"
+            checked-value="true"
+            un-checked-value="false"
+            value="true"
+            caption="Expand on click"
+          ></ch-checkbox>
         </div>
 
         <div>
-          <fieldset>
-            <legend>Filters</legend>
+          <ch-checkbox
+            id="drag-enabled"
+            checked-value="true"
+            un-checked-value="false"
+            value="true"
+            caption="Drag Enabled"
+          ></ch-checkbox>
 
-            <label>
-              Filter type
-              <select name="filter-type" id="filter-type">
-                <option value="checked">Checked</option>
-                <option value="unchecked">Unchecked</option>
-                <option value="caption">Caption</option>
-                <option value="metadata">Metadata</option>
-                <option value="id-list">List of ids</option>
-                <option value="none" selected>None</option>
-              </select>
-            </label>
+          <ch-checkbox
+            id="drop-enabled"
+            checked-value="true"
+            un-checked-value="false"
+            value="true"
+            caption="Drop Enabled"
+          ></ch-checkbox>
+        </div>
 
-            <label>
-              Filter
-              <input id="filter" value="" />
-            </label>
+        <div>
+          <label
+            class="form-input__label"
+            style="display: flex; flex-direction: column"
+          >
+            Lines
+            <select class="form-input" name="lines" id="lines">
+              <option value="all" selected>All lines</option>
+              <option value="last">Last line</option>
+              <option value="none">None</option>
+            </select>
+          </label>
 
+          <label
+            class="form-input__label"
+            style="display: flex; flex-direction: column"
+          >
+            Expandable button
+            <select
+              class="form-input"
+              name="expandable-button"
+              id="expandable-button"
+            >
+              <option value="action">Action</option>
+              <option value="decorative" selected>Decorative</option>
+              <option value="no">None</option>
+            </select>
+          </label>
+
+          <label
+            class="form-input__label"
+            style="display: flex; flex-direction: column"
+          >
+            Drop mode
+            <select class="form-input" name="drop-mode" id="drop-mode">
+              <option value="above" selected>Above</option>
+              <option value="before-after">Before and After</option>
+              <option value="all">All</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <hr />
+
+      <fieldset>
+        <legend class="form-input__label">Methods</legend>
+
+        <div>
+          <button class="button-primary" id="expand-all" type="button">
+            Expand All
+          </button>
+          <button class="button-primary" id="collapse-all" type="button">
+            Collapse All
+          </button>
+
+          <ch-checkbox
+            id="check-all"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Check / uncheck all"
+          ></ch-checkbox>
+        </div>
+
+        <fieldset style="grid-template-columns: max-content max-content">
+          <legend class="form-input__label">Update items properties</legend>
+
+          <div class="flex-container" style="flex-direction: column">
             <ch-checkbox
-              id="camel-case"
+              id="update-items-properties-selected"
               checked-value="true"
               un-checked-value="false"
               value="false"
-              caption="Apply camel casing to filter"
+              caption="Selected"
             ></ch-checkbox>
 
             <ch-checkbox
-              id="hide-matches"
+              id="update-items-properties-checked"
               checked-value="true"
               un-checked-value="false"
               value="false"
-              caption="Hide matches and show non-matches"
+              caption="Checked"
             ></ch-checkbox>
-          </fieldset>
+          </div>
 
-          <fieldset>
-            <legend>Models</legend>
-
-            <button id="load-model-btn">Load model (click first)</button>
-            <button id="update-model-btn">Update model (click second)</button>
-            <button id="update-model-again-btn">
-              Update model again (click third)
+          <div class="flex-container">
+            <input
+              class="form-input"
+              aria-label="Items to update"
+              id="items-to-update"
+              placeholder="ItemId1,ItemId2,ItemId3"
+              type="text"
+            />
+            <button class="button-primary" id="button-items-to-update">
+              Update items
             </button>
-            <button id="update-big-model-btn">Set big model</button>
-            <button id="update-file-system-btn">File system model</button>
+          </div>
+        </fieldset>
 
-            <button id="kb-explorer-model-btn">KB Explorer</button>
-            <button id="import-objects-model-btn">Import Objects</button>
-          </fieldset>
+        <fieldset style="grid-template-columns: max-content max-content">
+          <legend class="form-input__label">Scroll into visible</legend>
+
+          <div class="flex-container" style="flex-direction: column">
+            <ch-checkbox
+              id="scroll-into-visible-selected"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Selected"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="scroll-into-visible-checked"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Checked"
+            ></ch-checkbox>
+          </div>
+
+          <div class="flex-container">
+            <input
+              class="form-input"
+              id="input-scroll-into-visible"
+              type="text"
+            />
+            <button
+              class="button-primary"
+              id="btn-scroll-into-visible"
+              type="button"
+            >
+              Scroll into visible
+            </button>
+          </div>
+        </fieldset>
+
+        <div class="flex-container">
+          <input
+            class="form-input"
+            aria-label="Reload items"
+            id="item-id-to-reload"
+            placeholder="ItemId1"
+            type="text"
+          />
+          <button class="button-primary" id="button-to-reload-items">
+            Reload items
+          </button>
         </div>
-      </div>
+
+        <div class="flex-container">
+          <input
+            class="form-input"
+            aria-label="Remove items"
+            id="items-to-remove"
+            placeholder="ItemId1,ItemId2,ItemId3"
+            type="text"
+          />
+          <button class="button-primary" id="button-items-to-remove">
+            Remove items
+          </button>
+        </div>
+      </fieldset>
+
+      <hr />
+
+      <fieldset>
+        <legend class="form-input__label">Filters</legend>
+
+        <label class="form-input__label">
+          Filter type
+          <select class="form-input" name="filter-type" id="filter-type">
+            <option value="checked">Checked</option>
+            <option value="unchecked">Unchecked</option>
+            <option value="caption">Caption</option>
+            <option value="metadata">Metadata</option>
+            <option value="id-list">List of ids</option>
+            <option value="none" selected>None</option>
+          </select>
+        </label>
+
+        <label class="form-input__label">
+          Filter
+          <input class="form-input" id="filter" value="" />
+        </label>
+
+        <div>
+          <ch-checkbox
+            id="camel-case"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Apply camel casing"
+          ></ch-checkbox>
+
+          <ch-checkbox
+            id="hide-matches"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Hide matches and show non-matches"
+          ></ch-checkbox>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend class="form-input__label">Models</legend>
+
+        <div>
+          <button class="button-primary" id="update-file-system-btn">
+            File system
+          </button>
+
+          <button class="button-primary" id="kb-explorer-model-btn">
+            KB Explorer
+          </button>
+          <button class="button-primary" id="import-objects-model-btn">
+            Import Objects
+          </button>
+        </div>
+
+        <div>
+          <button class="button-primary" id="load-model-btn">
+            Simple model 1
+          </button>
+          <button class="button-primary" id="update-model-again-btn">
+            Simple model 2
+          </button>
+
+          <button class="button-primary" id="update-big-model-btn">
+            Large model
+          </button>
+
+          <button class="button-primary" id="update-model-btn">
+            Disabled items
+          </button>
+        </div>
+      </fieldset>
     </div>
 
     <script type="module">
@@ -1517,7 +1582,5 @@
         // testTreeX.treeModel = eagerLargeModel;
       });
     </script>
-
-    <script src="./assets/common.js"></script>
   </body>
 </html>

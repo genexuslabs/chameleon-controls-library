@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>Stencil Component Starter</title>
+    <title>Chameleon</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <script src="./showcase/types/types.js"></script>
@@ -105,7 +105,7 @@
           </div>
         </div>
 
-        <iframe hidden class="sample" frameborder="0"></iframe>
+        <ch-showcase></ch-showcase>
       </main>
     </ch-layout-splitter>
 
@@ -117,14 +117,15 @@
         const treeViewRef = document.querySelector("ch-tree-view-render");
         const searchInputRef = document.querySelector(".form-input-search");
         const mainPage = document.querySelector(".main-page");
-        const sample = document.querySelector(".sample");
+        const showcase = document.querySelector("ch-showcase");
         const home = document.querySelector(".home");
 
         // Initialize sample
         if (window.location.hash && window.location.hash !== "#") {
           const pageToNavigate = window.location.hash.replace("#", "");
-          sample.src = pageToNavigate;
-          sample.hidden = false;
+          showcase.pageSrc = pageToNavigate;
+          showcase.pageName = "hello";
+          showcase.hidden = false;
         }
         // Go to Main page
         else {
@@ -171,8 +172,9 @@
             console.log(event.detail[0].item.id);
 
             mainPage.hidden = true;
-            sample.hidden = false;
-            sample.src = `showcase/pages/${event.detail[0].item.id}.html`;
+            showcase.hidden = false;
+            showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;
+            showcase.pageName = event.detail[0].item.caption;
           }
         });
       });

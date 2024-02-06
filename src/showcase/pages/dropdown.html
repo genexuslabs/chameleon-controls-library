@@ -6,17 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-dropdown</title>
+    <title>Dropdown</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles.css" />
 
     <style>
-      body {
-        min-height: 100vh;
-      }
-
       .dropdown-container {
         width: 450px;
         height: 30px;
@@ -70,74 +65,86 @@
         margin: 4px;
       }
 
-      *,
-      ::after,
-      ::before {
-        box-sizing: border-box;
+      body {
+        display: grid;
+        grid-template-columns: 1fr 250px;
+        gap: var(--spacing-un-spacing--l);
       }
     </style>
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
   </head>
-  <body>
-    <div class="container">WIP</div>
 
-    <div class="dropdown-container">
-      <ch-dropdown-render>
-        <div slot="header">Content of the header</div>
+  <body class="white-label">
+    <div class="card">
+      <div class="dropdown-container">
+        <ch-dropdown-render>
+          <div slot="header">Content of the header</div>
 
-        <span slot="action">Click me</span>
+          <span slot="action">Click me</span>
 
-        <div slot="footer">Content of the footer</div>
-      </ch-dropdown-render>
+          <div slot="footer">Content of the footer</div>
+        </ch-dropdown-render>
+      </div>
     </div>
 
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        row-gap: 16px;
-        margin-block-start: 100px;
-      "
-    >
-      <label>
-        Position
-        <select name="DropdownPosition" id="dropdown-position">
-          <option value="OutsideStart_OutsideStart">
-            OutsideStart_OutsideStart
-          </option>
-          <option value="InsideStart_OutsideStart">
-            InsideStart_OutsideStart
-          </option>
-          <option value="Center_OutsideStart">Center_OutsideStart</option>
-          <option value="InsideEnd_OutsideStart">InsideEnd_OutsideStart</option>
-          <option value="OutsideEnd_OutsideStart">
-            OutsideEnd_OutsideStart
-          </option>
-          <option value="OutsideStart_InsideStart">
-            OutsideStart_InsideStart
-          </option>
-          <option value="OutsideEnd_InsideStart">OutsideEnd_InsideStart</option>
-          <option value="OutsideStart_Center">OutsideStart_Center</option>
-          <option value="OutsideEnd_Center">OutsideEnd_Center</option>
-          <option value="OutsideStart_InsideEnd">OutsideStart_InsideEnd</option>
-          <option value="OutsideEnd_InsideEnd">OutsideEnd_InsideEnd</option>
-          <option value="OutsideStart_OutsideEnd">
-            OutsideStart_OutsideEnd
-          </option>
-          <option value="InsideStart_OutsideEnd">InsideStart_OutsideEnd</option>
-          <option value="Center_OutsideEnd" selected>Center_OutsideEnd</option>
-          <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
-          <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
-        </select>
-      </label>
+    <div class="card">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          row-gap: 16px;
+          margin-block-start: 100px;
+        "
+      >
+        <label>
+          Position
+          <select name="DropdownPosition" id="dropdown-position">
+            <option value="OutsideStart_OutsideStart">
+              OutsideStart_OutsideStart
+            </option>
+            <option value="InsideStart_OutsideStart">
+              InsideStart_OutsideStart
+            </option>
+            <option value="Center_OutsideStart">Center_OutsideStart</option>
+            <option value="InsideEnd_OutsideStart">
+              InsideEnd_OutsideStart
+            </option>
+            <option value="OutsideEnd_OutsideStart">
+              OutsideEnd_OutsideStart
+            </option>
+            <option value="OutsideStart_InsideStart">
+              OutsideStart_InsideStart
+            </option>
+            <option value="OutsideEnd_InsideStart">
+              OutsideEnd_InsideStart
+            </option>
+            <option value="OutsideStart_Center">OutsideStart_Center</option>
+            <option value="OutsideEnd_Center">OutsideEnd_Center</option>
+            <option value="OutsideStart_InsideEnd">
+              OutsideStart_InsideEnd
+            </option>
+            <option value="OutsideEnd_InsideEnd">OutsideEnd_InsideEnd</option>
+            <option value="OutsideStart_OutsideEnd">
+              OutsideStart_OutsideEnd
+            </option>
+            <option value="InsideStart_OutsideEnd">
+              InsideStart_OutsideEnd
+            </option>
+            <option value="Center_OutsideEnd" selected>
+              Center_OutsideEnd
+            </option>
+            <option value="InsideEnd_OutsideEnd">InsideEnd_OutsideEnd</option>
+            <option value="OutsideEnd_OutsideEnd">OutsideEnd_OutsideEnd</option>
+          </select>
+        </label>
 
-      <button id="medium-model">Medium model</button>
-      <button id="gx-web-model">GX Web model</button>
-      <!-- 
+        <button id="medium-model">Medium model</button>
+        <button id="gx-web-model">GX Web model</button>
+        <!-- 
       <label>
         Separation
         <input id="separation" type="number" value="0" />
       </label> -->
+      </div>
     </div>
 
     <script src="./assets/common.js"></script>

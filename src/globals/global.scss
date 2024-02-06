@@ -6,6 +6,20 @@ body.unanimo {
   @include unanimo($tokens: false, $resets: false);
 }
 
+body.white-label {
+  @include unanimo(
+    $tokens: false,
+    $resets: false,
+    $card: true,
+    $tree-view: false,
+    $tree-view-navigation: false
+  );
+
+  .card {
+    margin: 4px; // Necessary to avoid iframe's "overflow: clip" issues
+  }
+}
+
 body {
   display: grid;
   margin: 0;

@@ -24,6 +24,10 @@ aside {
   color: var(--text-un-text__on-secondary);
 }
 
+main {
+  display: grid;
+}
+
 header {
   position: sticky;
   inset-block-start: 0px;
@@ -35,16 +39,6 @@ header {
   grid-template-columns: max-content max-content;
   align-items: baseline;
   gap: var(--spacing-un-spacing--s);
-}
-
-.sample {
-  display: grid;
-  block-size: 100%;
-  inline-size: 100%;
-}
-
-iframe[hidden] {
-  display: none; /* Override .sample specificity */
 }
 
 .main-page {

@@ -13,6 +13,37 @@ main {
   display: grid;
 }
 
+.chameleon-features {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-un-spacing--l);
+  margin: var(--spacing-un-spacing--l);
+  padding: 0;
+
+  & > .card {
+    display: grid;
+    justify-items: center;
+    inline-size: 180px;
+    min-block-size: 180px;
+    text-align: center;
+    padding: var(--spacing-un-spacing--l);
+
+    &::before {
+      content: "";
+      display: block;
+      inline-size: 100px;
+      block-size: 100px;
+      -webkit-mask: var(--ch-image) 50% 50% / 100% 100% no-repeat;
+      background-color: currentColor;
+    }
+  }
+
+  & > .card__rtl {
+    --ch-image: url("../design-systems/unanimo/assets/icons/chat.svg");
+  }
+}
+
 header {
   display: grid;
   grid-template-columns: 1fr max-content;

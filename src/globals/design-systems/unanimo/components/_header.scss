@@ -1,8 +1,5 @@
 @mixin header() {
   .header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     background-color: var(--header-un-header-primary__background-color);
     border-block-end: var(--border-radius-un-border__radius--s) solid
       var(--header-un-header-primary__border-color);

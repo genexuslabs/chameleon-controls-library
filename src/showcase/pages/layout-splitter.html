@@ -47,7 +47,7 @@
         >
           Start
 
-          <input type="text" style="height: 80px" />
+          <input class="form-input" type="text" style="height: 80px" />
         </div>
         <div
           slot="end-component"
@@ -58,17 +58,23 @@
         >
           End
 
-          <input type="text" style="height: 80px" />
+          <input class="form-input" type="text" style="height: 80px" />
         </div>
 
         <div
           slot="end-end-component"
           class="components"
-          style="background-color: var(--icons-un-icon__success)"
+          style="
+            background-color: color-mix(
+              in srgb,
+              var(--icons-un-icon__error),
+              transparent 60%
+            );
+          "
         >
           End End
 
-          <input type="text" style="height: 80px" />
+          <input class="form-input" type="text" style="height: 80px" />
         </div>
 
         <div
@@ -78,7 +84,7 @@
         >
           Center 2
 
-          <input type="text" style="height: 80px" />
+          <input class="form-input" type="text" style="height: 80px" />
         </div>
 
         <div
@@ -88,7 +94,7 @@
         >
           Center
 
-          <input type="text" style="height: 80px" />
+          <input class="form-input" type="text" style="height: 80px" />
         </div>
       </ch-layout-splitter>
     </div>

@@ -6,24 +6,16 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-drag-bar</title>
+    <title>Layout Splitter</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
 
     <style>
       body {
-        display: flex;
-        height: 100vh;
-        font-family: SourceSansPro_Regular;
-        margin: 0;
-      }
-
-      *,
-      ::after,
-      ::before {
-        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 1fr 250px;
+        gap: var(--spacing-un-spacing--l);
       }
 
       .components {
@@ -37,78 +29,86 @@
         grid-template-columns: max-content;
         gap: 8px;
       }
+
+      .splitter-container {
+        margin: 4px;
+      }
     </style>
   </head>
-  <body>
-    <div>
-      <div>
-        <fieldset>
-          <legend>Layout configuration</legend>
+  <body class="white-label">
+    <div class="splitter-container">
+      <ch-layout-splitter>
+        <div
+          slot="start-component"
+          class="components"
+          style="
+            background-color: var(--colors-foundation-un-color__purple--10);
+          "
+        >
+          Start
 
-          <button id="layout-1">Configuration 1</button>
-          <button id="layout-2">Configuration 2</button>
-          <button id="layout-3">Configuration 3</button>
-          <button id="layout-4">Configuration 4</button>
-          <button id="layout-5">Configuration 5</button>
-          <button id="layout-6">Configuration 6</button>
-          <button id="layout-7">Configuration 7</button>
-          <button id="layout-8">Configuration 8</button>
-        </fieldset>
-      </div>
+          <input type="text" style="height: 80px" />
+        </div>
+        <div
+          slot="end-component"
+          class="components"
+          style="
+            background-color: var(--colors-foundation-un-color__orange--200);
+          "
+        >
+          End
+
+          <input type="text" style="height: 80px" />
+        </div>
+
+        <div
+          slot="end-end-component"
+          class="components"
+          style="background-color: var(--icons-un-icon__success)"
+        >
+          End End
+
+          <input type="text" style="height: 80px" />
+        </div>
+
+        <div
+          slot="center-2-component"
+          class="components"
+          style="background-color: var(--accents-un-accent__disabled)"
+        >
+          Center 2
+
+          <input type="text" style="height: 80px" />
+        </div>
+
+        <div
+          slot="center-component"
+          class="components"
+          style="background-color: var(--un-alert-warning__background-color)"
+        >
+          Center
+
+          <input type="text" style="height: 80px" />
+        </div>
+      </ch-layout-splitter>
     </div>
 
-    <ch-layout-splitter>
-      <div
-        slot="start-component"
-        class="components"
-        style="background-color: beige"
-      >
-        Start
+    <div class="card">
+      <label>
+        Layout configuration
+        <select name="LayoutConfiguration" id="layout-configuration">
+          <option value="config-1">Configuration 1</option>
+          <option value="config-2" selected>Configuration 2</option>
+          <option value="config-3">Configuration 3</option>
+          <option value="config-4">Configuration 4</option>
+          <option value="config-5">Configuration 5</option>
+          <option value="config-6">Configuration 6</option>
+          <option value="config-7">Configuration 7</option>
+          <option value="config-8">Configuration 8</option>
+        </select>
+      </label>
+    </div>
 
-        <input type="text" style="height: 80px" />
-      </div>
-      <div
-        slot="end-component"
-        class="components"
-        style="background-color: burlywood"
-      >
-        End
-
-        <input type="text" style="height: 80px" />
-      </div>
-
-      <div
-        slot="end-end-component"
-        class="components"
-        style="background-color: rgb(80, 91, 131)"
-      >
-        End End
-
-        <input type="text" style="height: 80px" />
-      </div>
-
-      <div
-        slot="center-2-component"
-        class="components"
-        style="background-color: rgb(196, 226, 122)"
-      >
-        Center 2
-
-        <input type="text" style="height: 80px" />
-      </div>
-
-      <div
-        slot="center-component"
-        class="components"
-        style="background-color: rgb(22, 151, 95)"
-      >
-        Center
-
-        <input type="text" style="height: 80px" />
-      </div>
-    </ch-layout-splitter>
-
-    <script src="./assets/scripts/common.js"></script>
     <script>
       window.addEventListener("appload", () => {
         const layoutSplitter = document.querySelector("ch-layout-splitter");
@@ -276,45 +276,23 @@
 
         layoutSplitter.layout = layout2;
 
-        const button1 = document.querySelector("#layout-1");
-        const button2 = document.querySelector("#layout-2");
-        const button3 = document.querySelector("#layout-3");
-        const button4 = document.querySelector("#layout-4");
-        const button5 = document.querySelector("#layout-5");
-        const button6 = document.querySelector("#layout-6");
-        const button7 = document.querySelector("#layout-7");
-        const button8 = document.querySelector("#layout-8");
+        const layoutConfigurationDictionary = {
+          "config-1": layout1,
+          "config-2": layout2,
+          "config-3": layout3,
+          "config-4": layout4,
+          "config-5": layout5,
+          "config-6": layout6,
+          "config-7": layout7,
+          "config-8": layout8
+        };
 
-        button1.addEventListener("click", () => {
-          layoutSplitter.layout = layout1;
-        });
-
-        button2.addEventListener("click", () => {
-          layoutSplitter.layout = layout2;
-        });
-
-        button3.addEventListener("click", () => {
-          layoutSplitter.layout = layout3;
-        });
-
-        button4.addEventListener("click", () => {
-          layoutSplitter.layout = layout4;
-        });
-
-        button5.addEventListener("click", () => {
-          layoutSplitter.layout = layout5;
-        });
-
-        button6.addEventListener("click", () => {
-          layoutSplitter.layout = layout6;
-        });
-
-        button7.addEventListener("click", () => {
-          layoutSplitter.layout = layout7;
-        });
-
-        button8.addEventListener("click", () => {
-          layoutSplitter.layout = layout8;
+        const layoutConfigurationSelect = document.getElementById(
+          "layout-configuration"
+        );
+        layoutConfigurationSelect.addEventListener("input", event => {
+          layoutSplitter.layout =
+            layoutConfigurationDictionary[event.target.value];
         });
       });
     </script>

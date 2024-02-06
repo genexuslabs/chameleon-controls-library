@@ -29,6 +29,9 @@ main {
 }
 
 header {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
   position: sticky;
   inset-block-start: 0px;
   z-index: 2; /* Avoid displaying the resize bar above the header  */
@@ -64,4 +67,8 @@ header {
 
 .form-input {
   margin: 8px;
+}
+
+.github-logo {
+  --ch-button-icon: url("../showcase/assets/icons/github.svg");
 }

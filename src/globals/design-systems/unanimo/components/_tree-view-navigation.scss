@@ -3,6 +3,23 @@
 @mixin tree-view-navigation() {
   .tree-view-navigation {
     @extend %text-body-2;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--accents-un-accent__secondary)
+      var(--colors-foundation-un-color__gray--400);
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--accents-un-accent__secondary);
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: var(--colors-foundation-un-color__gray--400);
+    }
+
+    &::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
   }
 
   .ch-tree-view-not-dragging-item

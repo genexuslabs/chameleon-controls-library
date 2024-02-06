@@ -14,6 +14,7 @@
 @import "./base/typography";
 
 // Components
+@import "./components/card";
 @import "./components/header";
 @import "./components/tree-view";
 @import "./components/tree-view-navigation";
@@ -50,6 +51,7 @@
   // Components
   $components: true,
   $action-group: true,
+  $card: true,
   $dropdown: true,
   $header: true,
   $tree-view: true,
@@ -90,12 +92,6 @@
 
   :root {
     @if $tokens == true {
-      // Default background-color and color
-      @if $colors == true {
-        background-color: var(--surface-un-surface--alternative);
-        color: var(--text-un-text__on-surface--positive);
-      }
-
       // border-radius
       @if $border-radius == true {
         @include border-radius();
@@ -124,6 +120,14 @@
 
     @if $font-face == true {
       font-family: SourceSansPro_Regular;
+    }
+  }
+
+  // Default background-color and color
+  @if $tokens == true and $colors == true {
+    body {
+      background-color: var(--surface-un-surface--alternative);
+      color: var(--text-un-text__on-surface--positive);
     }
   }
 
@@ -175,6 +179,11 @@
   //               Components
   // - - - - - - - - - - - - - - - - - - - -
   @if $components == true {
+    // card
+    @if $card == true {
+      @include card();
+    }
+
     // header
     @if $header == true {
       @include header();

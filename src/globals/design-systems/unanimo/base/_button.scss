@@ -1,5 +1,13 @@
 @import "./common";
 
+%text-link {
+  color: var(--link-un-link__font-color);
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.4px;
+  text-decoration-line: underline;
+}
+
 @mixin button-classes() {
   %button-base {
     display: grid;
@@ -136,9 +144,6 @@
 
 @mixin hyperlink() {
   .text-link {
-    font-size: 14px;
-    line-height: 18px; // 128.571%
-    letter-spacing: 0.4px;
-    text-decoration-line: underline;
+    @extend %text-link;
   }
 }

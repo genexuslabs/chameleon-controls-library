@@ -1,0 +1,87 @@
+@import "../base/typography";
+@import "../base/common";
+
+@mixin markdown() {
+  .markdown {
+    @extend %text-body-2;
+
+    h1 {
+      @extend %heading-1;
+      margin-block: var(--spacing-un-spacing--l);
+    }
+
+    h2 {
+      @extend %heading-2;
+      margin-block: 12px; // It does not exists the --spacing-un-spacing--xm value
+    }
+
+    h3 {
+      // @extend %heading-2;
+      margin-block: var(--spacing-un-spacing--m);
+    }
+
+    h4 {
+      @extend %heading-4;
+      margin-block: var(--spacing-un-spacing--s);
+    }
+
+    p,
+    ul,
+    ol,
+    table {
+      margin-block: var(--spacing-un-spacing--m);
+    }
+
+    ul,
+    ol {
+      padding-inline-start: var(--spacing-un-spacing--xxl);
+    }
+
+    a {
+      @extend %text-link;
+    }
+
+    blockquote {
+      margin-block: var(--spacing-un-spacing--m);
+      margin-inline: var(--spacing-un-spacing--xxl);
+
+      & > p {
+        margin-block: 0px;
+      }
+    }
+
+    strong {
+      font-weight: unset;
+      font-family: SourceSansPro_Bold;
+    }
+
+    // Table
+    table {
+      border: 1px solid var(--borders-un-border-color__mild);
+      border-spacing: 0;
+
+      & > thead > tr {
+        @extend %heading-4;
+        font-weight: unset;
+      }
+    }
+
+    // Cells
+    td {
+      border-block-start: 1px solid var(--borders-un-border-color__mild);
+    }
+
+    // Header and body cells
+    th,
+    td {
+      padding: var(--spacing-un-spacing--m);
+      border-inline-start: 1px solid var(--borders-un-border-color__mild);
+    }
+
+    // Remove left border in the first cell of each row
+    tr > td:first-child,
+    tr > th:first-child {
+      border-inline-start: unset;
+    }
+  }
+}

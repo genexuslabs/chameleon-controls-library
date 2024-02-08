@@ -15,6 +15,7 @@ const components = [
   "flexible-layout",
   "grid",
   "layout-splitter",
+  "markdown",
   "notifications",
   "paginator",
   "popover",

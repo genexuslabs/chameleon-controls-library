@@ -1,14 +1,6 @@
 import { Component, Element, Prop } from "@stencil/core";
 
-// import rehypeHighlight from "rehype-highlight";
-// import { micromark } from "micromark";
-// import { gfm, gfmHtml } from "micromark-extension-gfm";
-
-// import rehypeHighlight from "rehype-highlight";
-import markdownit from "markdown-it";
-
-// const md = markdownit.use(rehypeHighlight);
-const md = markdownit();
+import { parseMarkdown } from "@genexus/markdown-parser";
 
 @Component({
   shadow: false,
@@ -28,15 +20,8 @@ export class ChMarkdown {
       return "";
     }
 
-    const result = md.render(this.markdown);
-
-    // this.el.innerHTML = micromark(this.markdown, {
-    //   extensions: [gfm()],
-    //   htmlExtensions: [gfmHtml()]
-    // });
-
-    this.el.innerHTML = result;
-
-    return "";
+    parseMarkdown(this.markdown).then(result => {
+      this.el.innerHTML = result;
+    });
   }
 }

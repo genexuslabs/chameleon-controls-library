@@ -16,7 +16,7 @@
 @mixin button-reset() {
   :where(button, a) {
     all: unset;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
     // Disallow selecting the text

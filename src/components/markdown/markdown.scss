@@ -2,3 +2,15 @@ ch-markdown {
   display: grid;
   grid-auto-rows: max-content;
 }
+
+.ch-markdown-table-column-start {
+  text-align: start;
+}
+
+.ch-markdown-table-column-center {
+  text-align: center;
+}
+
+.ch-markdown-table-column-end {
+  text-align: end;
+}

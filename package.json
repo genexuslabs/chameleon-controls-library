@@ -39,6 +39,7 @@
     "@stencil/core": "~4.9.0",
     "@stencil/sass": "~3.0.8",
     "@types/jest": "~29.5.1",
+    "@types/mdast": "^4.0.3",
     "@types/prettier": "~2.4.0",
     "@types/puppeteer": "~5.4.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",

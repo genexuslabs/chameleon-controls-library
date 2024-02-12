@@ -7,28 +7,41 @@
 
     h1 {
       @extend %heading-1;
-      margin-block: var(--spacing-un-spacing--l);
+      margin-block: var(--spacing-un-spacing--l) var(--spacing-un-spacing--m);
+      padding-block-end: var(--spacing-un-spacing--m);
     }
 
     h2 {
       @extend %heading-2;
-      margin-block: 12px; // It does not exists the --spacing-un-spacing--xm value
+      margin-block: 12px 6px; // It does not exists the --spacing-un-spacing--xm value
+      padding-block-end: 6px; // It does not exists the --spacing-un-spacing--xm value
     }
 
     h3 {
       // @extend %heading-2;
-      margin-block: var(--spacing-un-spacing--m);
+      margin-block: var(--spacing-un-spacing--m) var(--spacing-un-spacing--s);
+      padding-block-end: var(--spacing-un-spacing--s);
     }
 
     h4 {
       @extend %heading-4;
-      margin-block: var(--spacing-un-spacing--s);
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      border-block-end: 1px solid var(--body-texts-un-body-m__font-color--gray);
     }
 
     p,
     ul,
     ol,
-    table {
+    table,
+    // Multiline code
+    pre {
       margin-block: var(--spacing-un-spacing--m);
     }
 
@@ -43,7 +56,12 @@
 
     blockquote {
       margin-block: var(--spacing-un-spacing--m);
-      margin-inline: var(--spacing-un-spacing--xxl);
+      margin-inline: 0;
+      padding-block: var(--spacing-un-spacing--m);
+      padding-inline: calc(var(--spacing-un-spacing--xxl) - 4px)
+        var(--spacing-un-spacing--xxl);
+      border-inline-start: 4px solid
+        var(--colors-foundation-un-color__gray--400);
 
       & > p {
         margin-block: 0px;
@@ -82,6 +100,27 @@
     tr > td:first-child,
     tr > th:first-child {
       border-inline-start: unset;
+    }
+
+    // Multiline code
+    pre > code {
+      display: block;
+      overflow: auto;
+      // Override inline padding
+      padding: var(--spacing-un-spacing--l);
+
+      // Override inline border-radius
+      border-radius: var(--border-radius-un-border__radius--m);
+    }
+
+    // Inline code
+    code {
+      padding-block: var(--spacing-un-spacing--xs);
+      padding-inline: var(--spacing-un-spacing--s);
+
+      background-color: var(--surface-un-surface--alternative);
+      border-radius: var(--border-radius-un-border__radius--s);
+      font-size: calc(1em - 2px);
     }
   }
 }

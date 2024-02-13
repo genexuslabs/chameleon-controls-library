@@ -11,18 +11,26 @@ import {
   setLinkDefinition
 } from "./link-resolver";
 
+/**
+ * Regex to match the id of the heading.
+ *
+ * @input `"# Hello, world {#something} "`
+ * @output `something`
+ */
+const HEADING_ID_REGEX = /\{#(.*?)\}/;
+
 // Lazy load the code parser implementation
 let codeToJSX: typeof parseCodeToJSX;
 let HTMLToJSX: typeof rawHTMLToJSX;
 
 const depthToHeading = {
-  1: (content: any) => <h1>{content}</h1>,
-  2: (content: any) => <h2>{content}</h2>,
-  3: (content: any) => <h3>{content}</h3>,
-  4: (content: any) => <h4>{content}</h4>,
-  5: (content: any) => <h5>{content}</h5>,
-  6: (content: any) => <h6>{content}</h6>
-};
+  1: (content: any, id?: string) => <h1 id={id}>{content}</h1>,
+  2: (content: any, id?: string) => <h2 id={id}>{content}</h2>,
+  3: (content: any, id?: string) => <h3 id={id}>{content}</h3>,
+  4: (content: any, id?: string) => <h4 id={id}>{content}</h4>,
+  5: (content: any, id?: string) => <h5 id={id}>{content}</h5>,
+  6: (content: any, id?: string) => <h6 id={id}>{content}</h6>
+} as const;
 
 const tableAlignmentDictionary: { [key in AlignType]: string } = {
   left: "ch-markdown-table-column-start",
@@ -135,9 +143,25 @@ export const renderDictionary: {
   footnoteReference: () => "",
 
   heading: async (element, rawHTML, allowDangerousHtml) => {
+    // Check if the heading has an id
+    const lastChild = element.children.at(-1);
+    let headingId: string;
+
+    if (lastChild?.type === "text") {
+      const match = lastChild.value.match(HEADING_ID_REGEX);
+
+      if (match && match.length > 1) {
+        headingId = match[1];
+
+        // Remove markdown id from the header text
+        lastChild.value = lastChild.value.replace(`{#${headingId}}`, "");
+      }
+    }
+
+    // Render the content after the heading id processing
     const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
 
-    return depthToHeading[element.depth](content);
+    return depthToHeading[element.depth](content, headingId);
   },
 
   html: async (element, rawHTML, allowDangerousHtml) => {

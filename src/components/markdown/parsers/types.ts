@@ -14,7 +14,7 @@ import {
   Yaml
 } from "mdast";
 
-export type ElementsWithoutChildren = Exclude<
+export type ElementsWithChildren = Exclude<
   RootContent,
   | Break
   | Code

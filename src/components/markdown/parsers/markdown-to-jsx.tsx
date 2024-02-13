@@ -2,9 +2,14 @@ import { h } from "@stencil/core";
 import { AlignType, Root, Table } from "mdast";
 import { markdownToMdAST } from "@genexus/markdown-parser";
 
-import { ElementsWithoutChildren, ElementsWithoutCustomRender } from "./types";
+import { ElementsWithChildren, ElementsWithoutCustomRender } from "./types";
 import { parseCodeToJSX } from "./code-highlight"; // The implementation is not used in the initial load, only the type.
 import { rawHTMLToJSX } from "./raw-html-to-jsx";
+import {
+  clearLinkDefinitions,
+  getLinkDefinition,
+  setLinkDefinition
+} from "./link-resolver";
 
 // Lazy load the code parser implementation
 let codeToJSX: typeof parseCodeToJSX;
@@ -28,28 +33,57 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
 const getTableAlignment = (table: Table, index: number) =>
   tableAlignmentDictionary[table.align[index]];
 
-const tableRender = (table: Table) => {
+const tableRender = async (
+  table: Table,
+  rawHTML: boolean,
+  allowDangerousHtml: boolean
+) => {
   const tableHeadRow = table.children[0];
   const tableBodyRows = table.children.slice(1);
+  const columnCount = tableHeadRow.children.length;
+
+  // Head cell promises
+  const headCellPromises = tableHeadRow.children.map(tableCell =>
+    mdASTtoJSX(tableCell, rawHTML, allowDangerousHtml)
+  );
+
+  const bodyCellPromises = [];
+
+  // Body cell promises
+  tableBodyRows.forEach(tableHead => {
+    tableHead.children.forEach(tableCell => {
+      bodyCellPromises.push(mdASTtoJSX(tableCell, rawHTML, allowDangerousHtml));
+    });
+  });
+
+  // Wait for all results to be completed in parallel
+  const tableHeadContent = await Promise.allSettled(headCellPromises);
+  const tableBodyContent = await Promise.allSettled(bodyCellPromises);
+
+  // Return the JSX array
+  const headCells = tableHeadContent.map(
+    jsx => (jsx as PromiseFulfilledResult<any>).value
+  );
+  const bodyCells = tableBodyContent.map(
+    jsx => (jsx as PromiseFulfilledResult<any>).value
+  );
 
   return (
     <table>
       <thead>
         <tr>
-          {tableHeadRow.children.map((tableCell, index) => (
-            <th class={getTableAlignment(table, index)}>
-              {renderChildren(tableCell)}
-            </th>
+          {tableHeadRow.children.map((_, index) => (
+            <th class={getTableAlignment(table, index)}>{headCells[index]}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
-        {tableBodyRows.map(tableHead => (
+        {tableBodyRows.map((tableHead, rowIndex) => (
           <tr>
-            {tableHead.children.map((tableCell, index) => (
-              <td class={getTableAlignment(table, index)}>
-                {renderChildren(tableCell)}
+            {tableHead.children.map((_, cellIndex) => (
+              <td class={getTableAlignment(table, cellIndex)}>
+                {bodyCells[columnCount * rowIndex + cellIndex]}
               </td>
             ))}
           </tr>
@@ -64,30 +98,47 @@ export const renderDictionary: {
     element: ElementsWithoutCustomRender[key],
     rawHTML: boolean,
     allowDangerousHtml: boolean
-  ) => any | Promise<any>;
+  ) => Promise<any> | any;
 } = {
-  blockquote: element => <blockquote>{renderChildren(element)}</blockquote>, // TODO: Check if code can be inside this tag
+  blockquote: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return <blockquote>{content}</blockquote>;
+  }, // TODO: Check if code can be inside this tag
 
   break: () => <br />,
 
   code: async element => {
     // Load the parser implementation
     codeToJSX ||= (await import("./code-highlight")).parseCodeToJSX;
+    const content = await codeToJSX(element.lang, element.value);
 
-    return codeToJSX(element.lang, element.value);
+    return content;
   },
 
-  definition: () => "",
+  definition: element => setLinkDefinition(element.identifier, element.url),
 
-  delete: element => <del>{renderChildren(element)}</del>, // TODO: Check if code can be inside this tag
+  delete: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
 
-  emphasis: element => <em>{renderChildren(element)}</em>, // TODO: Check if code can be inside this tag
+    return <del>{content}</del>;
+  }, // TODO: Check if code can be inside this tag
+
+  emphasis: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return <em>{content}</em>;
+  }, // TODO: Check if code can be inside this tag
 
   footnoteDefinition: () => "",
 
   footnoteReference: () => "",
 
-  heading: element => depthToHeading[element.depth](renderChildren(element)), // TODO: Check if code can be inside this tag
+  heading: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return depthToHeading[element.depth](content);
+  },
 
   html: async (element, rawHTML, allowDangerousHtml) => {
     if (rawHTML && !HTMLToJSX) {
@@ -103,36 +154,78 @@ export const renderDictionary: {
     return rawHTML ? element.value : element.value;
   },
 
-  image: () => "",
+  image: element => (
+    <img
+      src={element.url}
+      alt={element.alt}
+      title={element.title}
+      loading="lazy"
+    />
+  ),
 
   imageReference: () => "",
 
   inlineCode: element => <code class="hljs">{element.value}</code>,
 
-  link: element => (
-    <a
-      aria-label={element.title || null}
-      title={element.title || null}
-      href={element.url}
-    >
-      {renderChildren(element)}
-    </a>
-  ), // TODO: Sanitize href?
+  link: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
 
-  linkReference: () => "",
+    return (
+      <a
+        aria-label={element.title || null}
+        title={element.title || null}
+        href={element.url}
+      >
+        {content}
+      </a>
+    );
+  }, // TODO: Sanitize href?
 
-  list: element =>
-    element.ordered ? (
-      <ol start={element.start}>{renderChildren(element)}</ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
+  linkReference: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+    let url = "";
+
+    // TODO: Implement the rest of alternatives for "referenceType"
+    if (element.referenceType === "shortcut") {
+      url = await getLinkDefinition(element.identifier);
+    }
+
+    // TODO: It's unnecessary to set aria-label when referenceType === "shortcut"
+
+    return (
+      <a aria-label={element.label || null} href={url}>
+        {content}
+      </a>
+    );
+  },
+
+  list: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return element.ordered ? (
+      <ol start={element.start}>{content}</ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
     ) : (
-      <ul>{renderChildren(element)}</ul> // TODO: Implement spread  // TODO: Check if code can be inside this tag
-    ),
+      <ul>{content}</ul> // TODO: Implement spread  // TODO: Check if code can be inside this tag
+    );
+  },
 
-  listItem: element => <li>{renderChildren(element)}</li>, // TODO: Implement spread  // TODO: Check if code can be inside this tag
+  listItem: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
 
-  paragraph: element => <p>{renderChildren(element)}</p>, // TODO: Check if code can be inside this tag
+    return <li>{content}</li>;
+  }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
-  strong: element => <strong>{renderChildren(element)}</strong>, // TODO: Check if code can be inside this tag
+  paragraph: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return <p>{content}</p>;
+  }, // TODO: Check if code can be inside this tag
+
+  strong: async (element, rawHTML, allowDangerousHtml) => {
+    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+
+    return <strong>{content}</strong>;
+  }, // TODO: Check if code can be inside this tag
 
   table: tableRender, // TODO: Check if code can be inside this tag
 
@@ -143,18 +236,14 @@ export const renderDictionary: {
   yaml: () => ""
 } as const;
 
-function renderChildren(element: ElementsWithoutChildren) {
-  return element.children.map(child => renderDictionary[child.type](child));
-}
-
 /**
  * Converts markdown abstract syntax tree (mdast) into JSX.
  */
-const mdASTtoJSX = async (
-  root: Root,
+async function mdASTtoJSX(
+  root: ElementsWithChildren | Root,
   rawHTML: boolean,
   allowDangerousHtml: boolean
-) => {
+) {
   // Get the async JSX
   const asyncJSX = root.children.map(child =>
     renderDictionary[child.type](child, rawHTML, allowDangerousHtml)
@@ -165,15 +254,18 @@ const mdASTtoJSX = async (
 
   // Return the JSX array
   return renderedContent.map(jsx => (jsx as PromiseFulfilledResult<any>).value);
-};
+}
 
-export const markdownToJSX = (
+export const markdownToJSX = async (
   markdown: string,
   rawHTML: boolean,
   allowDangerousHtml: boolean
 ) => {
   const mdAST: Root = markdownToMdAST(markdown);
-  console.log("Markdown AST", mdAST);
+  console.log(mdAST);
 
-  return mdASTtoJSX(mdAST, rawHTML, allowDangerousHtml);
+  const JSX = await mdASTtoJSX(mdAST, rawHTML, allowDangerousHtml);
+  clearLinkDefinitions();
+
+  return JSX;
 };

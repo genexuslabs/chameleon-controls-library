@@ -21,7 +21,7 @@
     }
 
     h3 {
-      // @extend %heading-2;
+      @extend %heading-3;
       margin-block: var(--spacing-un-spacing--m) var(--spacing-un-spacing--s);
       padding-block-end: var(--spacing-un-spacing--s);
     }
@@ -65,8 +65,14 @@
       border-inline-start: 4px solid
         var(--colors-foundation-un-color__gray--400);
 
-      & > p {
-        margin-block: 0px;
+      // First <p> don't add margin-block-start, because the <blockquote> adds it
+      & > p:first-of-type {
+        margin-block-start: 0;
+      }
+
+      // Last <p> don't add margin-block-end, because the <blockquote> adds it
+      & > p:last-of-type {
+        margin-block-end: 0;
       }
     }
 
@@ -111,7 +117,7 @@
 
     thead > tr,
     tbody > tr:nth-child(2n) {
-      background-color: var(--surface-un-surface--alternative);
+      background-color: var(--colors-foundation-un-color__gray--100);
     }
 
     // - - - - - - - - - - - - - - - - - - - -

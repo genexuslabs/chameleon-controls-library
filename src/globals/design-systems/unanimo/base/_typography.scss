@@ -12,6 +12,14 @@
   letter-spacing: 0.8px;
 }
 
+%heading-3 {
+  // WA. This is not the heading 3 definition from Unanimo
+  font-family: SourceSansPro_Bold;
+  font-size: 18px;
+  line-height: 20px; // 109.091%
+  letter-spacing: 0.4px;
+}
+
 %heading-4 {
   font-family: SourceSansPro_Bold;
   font-size: 14px;

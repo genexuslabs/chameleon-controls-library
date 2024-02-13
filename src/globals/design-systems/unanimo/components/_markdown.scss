@@ -5,6 +5,9 @@
   .markdown {
     @extend %text-body-2;
 
+    // - - - - - - - - - - - - - - - - - - - -
+    //                 Heading
+    // - - - - - - - - - - - - - - - - - - - -
     h1 {
       @extend %heading-1;
       margin-block: var(--spacing-un-spacing--l) var(--spacing-un-spacing--m);
@@ -40,7 +43,6 @@
     ul,
     ol,
     table,
-    // Multiline code
     pre {
       margin-block: var(--spacing-un-spacing--m);
     }
@@ -73,8 +75,13 @@
       font-family: SourceSansPro_Bold;
     }
 
+    // - - - - - - - - - - - - - - - - - - - -
+    //                  Table
+    // - - - - - - - - - - - - - - - - - - - -
     // Table
     table {
+      display: block;
+      inline-size: max-content;
       border: 1px solid var(--borders-un-border-color__mild);
       border-spacing: 0;
 
@@ -102,6 +109,14 @@
       border-inline-start: unset;
     }
 
+    thead > tr,
+    tbody > tr:nth-child(2n) {
+      background-color: var(--surface-un-surface--alternative);
+    }
+
+    // - - - - - - - - - - - - - - - - - - - -
+    //                  Code
+    // - - - - - - - - - - - - - - - - - - - -
     // Multiline code
     pre > code {
       display: block;
@@ -121,6 +136,11 @@
       background-color: var(--surface-un-surface--alternative);
       border-radius: var(--border-radius-un-border__radius--s);
       font-size: calc(1em - 2px);
+    }
+
+    img {
+      display: inline-block;
+      max-inline-size: 25%;
     }
   }
 }

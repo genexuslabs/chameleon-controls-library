@@ -23,7 +23,11 @@ function renderCodeChildren(element: HElement) {
   return element.children.map(child => codeToJSXDictionary[child.type](child));
 }
 
-export const parseCodeToJSX = async (code: string, language: string) => {
+export const parseCodeToJSX = async (
+  code: string,
+  language: string,
+  renderCode: (language: string, content: any) => any
+) => {
   const actualLanguage = getActualLanguageWithoutAlias(language || "txt");
 
   // Register the language
@@ -31,11 +35,14 @@ export const parseCodeToJSX = async (code: string, language: string) => {
 
   const tree: Root = parseCodeToHAST(actualLanguage, code);
 
-  return (
-    <pre>
-      <code class={`hljs language-${actualLanguage}`}>
-        {tree.children.map(child => codeToJSXDictionary[child.type](child))}
-      </code>
-    </pre>
+  return renderCode(
+    language,
+    tree.children.map(child => codeToJSXDictionary[child.type](child))
   );
 };
+
+export const defaultCodeRender = (language: string, content: any): any => (
+  <pre>
+    <code class={`hljs language-${language}`}>{content}</code>
+  </pre>
+);

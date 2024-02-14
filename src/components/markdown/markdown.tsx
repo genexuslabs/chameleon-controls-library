@@ -1,5 +1,6 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
 import { markdownToJSX } from "./parsers/markdown-to-jsx";
+import { defaultCodeRender } from "./parsers/code-highlight";
 
 @Component({
   shadow: false,
@@ -26,29 +27,28 @@ export class ChMarkdown {
    */
   @Prop() readonly rawHtml: boolean = false;
 
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode: (language: string, content: any) => any =
+    defaultCodeRender;
+
   async componentWillRender() {
     if (!this.markdown) {
       return;
     }
 
-    this.#JSXTree = await markdownToJSX(
-      this.markdown,
-      this.rawHtml,
-      this.allowDangerousHtml
-    );
+    this.#JSXTree = await markdownToJSX(this.markdown, {
+      rawHTML: this.rawHtml,
+      allowDangerousHtml: this.allowDangerousHtml,
+      renderCode: this.renderCode
+    });
   }
 
   render() {
     if (!this.markdown) {
       return "";
     }
-
-    // parseMarkdown(this.markdown).then(result => {
-    //   console.log("result", result);
-    //   // this.el.innerHTML = result;
-    // });
-
-    // console.log(mdAST);
 
     return <Host>{this.#JSXTree}</Host>;
   }

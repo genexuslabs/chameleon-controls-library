@@ -2,7 +2,11 @@ import { h } from "@stencil/core";
 import { AlignType, Root, Table } from "mdast";
 import { markdownToMdAST } from "@genexus/markdown-parser";
 
-import { ElementsWithChildren, ElementsWithoutCustomRender } from "./types";
+import {
+  ElementsWithChildren,
+  ElementsWithoutCustomRender,
+  MarkdownToJSXMetadata
+} from "./types";
 import { parseCodeToJSX } from "./code-highlight"; // The implementation is not used in the initial load, only the type.
 import { rawHTMLToJSX } from "./raw-html-to-jsx";
 import {
@@ -41,18 +45,14 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
 const getTableAlignment = (table: Table, index: number) =>
   tableAlignmentDictionary[table.align[index]];
 
-const tableRender = async (
-  table: Table,
-  rawHTML: boolean,
-  allowDangerousHtml: boolean
-) => {
+const tableRender = async (table: Table, metadata: MarkdownToJSXMetadata) => {
   const tableHeadRow = table.children[0];
   const tableBodyRows = table.children.slice(1);
   const columnCount = tableHeadRow.children.length;
 
   // Head cell promises
   const headCellPromises = tableHeadRow.children.map(tableCell =>
-    mdASTtoJSX(tableCell, rawHTML, allowDangerousHtml)
+    mdASTtoJSX(tableCell, metadata)
   );
 
   const bodyCellPromises = [];
@@ -60,7 +60,7 @@ const tableRender = async (
   // Body cell promises
   tableBodyRows.forEach(tableHead => {
     tableHead.children.forEach(tableCell => {
-      bodyCellPromises.push(mdASTtoJSX(tableCell, rawHTML, allowDangerousHtml));
+      bodyCellPromises.push(mdASTtoJSX(tableCell, metadata));
     });
   });
 
@@ -104,36 +104,39 @@ const tableRender = async (
 export const renderDictionary: {
   [key in keyof ElementsWithoutCustomRender]: (
     element: ElementsWithoutCustomRender[key],
-    rawHTML: boolean,
-    allowDangerousHtml: boolean
+    metadata: MarkdownToJSXMetadata
   ) => Promise<any> | any;
 } = {
-  blockquote: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  blockquote: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <blockquote>{content}</blockquote>;
   }, // TODO: Check if code can be inside this tag
 
   break: () => <br />,
 
-  code: async element => {
+  code: async (element, metadata) => {
     // Load the parser implementation
     codeToJSX ||= (await import("./code-highlight")).parseCodeToJSX; // TODO: Resolve race condition
-    const content = await codeToJSX(element.value, element.lang);
+    const content = await codeToJSX(
+      element.value,
+      element.lang,
+      metadata.renderCode
+    );
 
     return content;
   },
 
   definition: element => setLinkDefinition(element.identifier, element.url),
 
-  delete: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  delete: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <del>{content}</del>;
   }, // TODO: Check if code can be inside this tag
 
-  emphasis: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  emphasis: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <em>{content}</em>;
   }, // TODO: Check if code can be inside this tag
@@ -142,7 +145,7 @@ export const renderDictionary: {
 
   footnoteReference: () => "",
 
-  heading: async (element, rawHTML, allowDangerousHtml) => {
+  heading: async (element, metadata) => {
     // Check if the heading has an id
     const lastChild = element.children.at(-1);
     let headingId: string;
@@ -159,23 +162,23 @@ export const renderDictionary: {
     }
 
     // Render the content after the heading id processing
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+    const content = await mdASTtoJSX(element, metadata);
 
     return depthToHeading[element.depth](content, headingId); // TODO: Add anchor icon at the start of the heading
   },
 
-  html: async (element, rawHTML, allowDangerousHtml) => {
-    if (rawHTML && !HTMLToJSX) {
+  html: async (element, metadata) => {
+    if (metadata.rawHTML && !HTMLToJSX) {
       // Load the parser implementation
       HTMLToJSX = (await import("./raw-html-to-jsx")).rawHTMLToJSX;
     }
 
     // TESTTTTT
-    if (rawHTML) {
-      console.log(HTMLToJSX(element.value, allowDangerousHtml));
+    if (metadata.rawHTML) {
+      console.log(HTMLToJSX(element.value, metadata.allowDangerousHtml));
     }
 
-    return rawHTML ? element.value : element.value;
+    return metadata.rawHTML ? element.value : element.value;
   },
 
   image: element => (
@@ -191,8 +194,8 @@ export const renderDictionary: {
 
   inlineCode: element => <code class="hljs">{element.value}</code>,
 
-  link: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  link: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return (
       <a
@@ -205,8 +208,8 @@ export const renderDictionary: {
     );
   }, // TODO: Sanitize href?
 
-  linkReference: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  linkReference: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
     let url = "";
 
     // TODO: Implement the rest of alternatives for "referenceType"
@@ -224,8 +227,8 @@ export const renderDictionary: {
     );
   },
 
-  list: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  list: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return element.ordered ? (
       <ol start={element.start}>{content}</ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
@@ -234,20 +237,20 @@ export const renderDictionary: {
     );
   },
 
-  listItem: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  listItem: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <li>{content}</li>;
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
-  paragraph: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  paragraph: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <p>{content}</p>;
   }, // TODO: Check if code can be inside this tag
 
-  strong: async (element, rawHTML, allowDangerousHtml) => {
-    const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
+  strong: async (element, metadata) => {
+    const content = await mdASTtoJSX(element, metadata);
 
     return <strong>{content}</strong>;
   }, // TODO: Check if code can be inside this tag
@@ -266,12 +269,11 @@ export const renderDictionary: {
  */
 async function mdASTtoJSX(
   root: ElementsWithChildren | Root,
-  rawHTML: boolean,
-  allowDangerousHtml: boolean
+  metadata: MarkdownToJSXMetadata
 ) {
   // Get the async JSX
   const asyncJSX = root.children.map(child =>
-    renderDictionary[child.type](child, rawHTML, allowDangerousHtml)
+    renderDictionary[child.type](child, metadata)
   );
 
   // Wait for all results to be completed in parallel
@@ -283,13 +285,12 @@ async function mdASTtoJSX(
 
 export const markdownToJSX = async (
   markdown: string,
-  rawHTML: boolean,
-  allowDangerousHtml: boolean
+  metadata: MarkdownToJSXMetadata
 ) => {
   const mdAST: Root = markdownToMdAST(markdown);
   console.log(mdAST);
 
-  const JSX = await mdASTtoJSX(mdAST, rawHTML, allowDangerousHtml);
+  const JSX = await mdASTtoJSX(mdAST, metadata);
   clearLinkDefinitions();
 
   return JSX;

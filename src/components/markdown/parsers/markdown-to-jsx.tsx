@@ -118,8 +118,8 @@ export const renderDictionary: {
 
   code: async element => {
     // Load the parser implementation
-    codeToJSX ||= (await import("./code-highlight")).parseCodeToJSX;
-    const content = await codeToJSX(element.lang, element.value);
+    codeToJSX ||= (await import("./code-highlight")).parseCodeToJSX; // TODO: Resolve race condition
+    const content = await codeToJSX(element.value, element.lang);
 
     return content;
   },
@@ -161,7 +161,7 @@ export const renderDictionary: {
     // Render the content after the heading id processing
     const content = await mdASTtoJSX(element, rawHTML, allowDangerousHtml);
 
-    return depthToHeading[element.depth](content, headingId);
+    return depthToHeading[element.depth](content, headingId); // TODO: Add anchor icon at the start of the heading
   },
 
   html: async (element, rawHTML, allowDangerousHtml) => {
@@ -215,6 +215,7 @@ export const renderDictionary: {
     }
 
     // TODO: It's unnecessary to set aria-label when referenceType === "shortcut"
+    // TODO: The title is not supported well. See "An Example Putting the Parts Together" section in markdown.html
 
     return (
       <a aria-label={element.label || null} href={url}>

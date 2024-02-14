@@ -2,43 +2,11 @@ import { h } from "@stencil/core";
 import { Element as HElement, Text as HText } from "hast";
 
 import {
+  getActualLanguageWithoutAlias,
   parseCodeToHAST,
-  lowLight,
-  SUPPORTED_LANGUAGES
+  registerLanguage
 } from "@genexus/markdown-parser/dist/parse-code.js";
 import { Root } from "mdast";
-
-// Mark which languages are registered in the code parser. Useful to defer the
-// loading of all languagasync es
-let registeredLanguages: Set<string>; // Allocated at runtime to save memory
-
-const registerLanguage = async (language: string) => {
-  registeredLanguages ??= new Set();
-
-  // Already registered or inexistent language
-  if (registeredLanguages.has(language) || !SUPPORTED_LANGUAGES.has(language)) {
-    return;
-  }
-
-  // Register the language in the set
-  // registeredLanguages.add(language);
-
-  try {
-    // Load its module
-    const javascript = (
-      await import(
-        "highlight.js/es/languages/javascript.js"
-        // `../../../node_modules/@genexus/markdown-parser/dist/languages/${language}.js`
-      )
-    ).default;
-
-    // Register the language in the parser
-    lowLight.register({ javascript: javascript });
-    // register(language, languageModule);
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 const codeToJSXDictionary = {
   element: (element: HElement) => {
@@ -55,15 +23,17 @@ function renderCodeChildren(element: HElement) {
   return element.children.map(child => codeToJSXDictionary[child.type](child));
 }
 
-export const parseCodeToJSX = async (language: string, code: string) => {
-  // Register the language
-  await registerLanguage(language);
+export const parseCodeToJSX = async (code: string, language: string) => {
+  const actualLanguage = getActualLanguageWithoutAlias(language || "txt");
 
-  const tree: Root = parseCodeToHAST("js", code);
+  // Register the language
+  await registerLanguage(actualLanguage);
+
+  const tree: Root = parseCodeToHAST(actualLanguage, code);
 
   return (
     <pre>
-      <code class={`hljs language-${"js"}`}>
+      <code class={`hljs language-${actualLanguage}`}>
         {tree.children.map(child => codeToJSXDictionary[child.type](child))}
       </code>
     </pre>

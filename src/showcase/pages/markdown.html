@@ -37,7 +37,9 @@
       .hljs-type,
       .hljs-variable.language_ {
         /* prettylights-syntax-keyword */
-        color: var(--colors-foundation-un-color__purple--300);
+        color: var(
+          --colors-foundation-un-color__purple--400
+        ); /* Light var(--colors-foundation-un-color__purple--100); */
       }
 
       .hljs-title,
@@ -57,7 +59,9 @@
       .hljs-selector-attr,
       .hljs-selector-class,
       .hljs-selector-id {
-        color: var(--text-un-text__primary);
+        color: var(
+          --colors-foundation-un-color__purple--200
+        ); /* Previously: --text-un-text__primary */
       }
 
       .hljs-regexp,
@@ -144,6 +148,7 @@ Chameleon Markdown Parser
 The [ch-markdown] control lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML.  This demo page will let you type anything you like and see how it gets converted.  Live.  No more waiting around.
 
 ## Table of content
+Based on [Markdown basic syntax](https://www.markdownguide.org/basic-syntax/)
 
 * [Why Markdown?](#why-markdown)
 * [How To Use The Demo](#how-to-use-the-demo)
@@ -174,6 +179,19 @@ The [ch-markdown] control lets you convert [Markdown] into HTML. Markdown is a s
     + [Escaping Backticks](#escaping-backticks)
   - [Code block](#code-block)
     + [Syntax Highlighting](#syntax-highlighting)
+  - [Horizontal Rules](#horizontal-rules)
+  - [Links](#links)
+    + [Adding Titles](#links-adding-titles)
+    + [URLs and Email Addresses](#links-urls-and-email-addresses)
+    + [Formatting Links](#links-formatting-links)
+    + [Reference-style Links](#links-reference-style-links)
+      * [Formatting the First Part of the Link](#links-formatting-the-first-part-of-the-link)
+      * [Formatting the Second Part of the Link](#links-formatting-the-second-part-of-the-link)
+      * [An Example Putting the Parts Together](#links-an-example-putting-the-parts-together)
+  - [Images](#images)
+    + [Linking Images](#linking-images)
+  - [Escaping Characters](#escaping-characters)
+
 
 * [GitHub flavored markdown (GFM)](#gfm)
 
@@ -474,9 +492,145 @@ To add syntax highlighting, specify a language next to the backticks before the 
 }
 ```
 
+### Horizontal Rules {#horizontal-rules}
+To create a horizontal rule, use three or more asterisks (`***`), dashes (`---`), or underscores (`___`) on a line by themselves.
+
+Asterisks:
+
+***
+
+Dashes:
+
+---
+
+Underscores:
+_________________
+
+### Links {#links}
+To create a link, enclose the link text in brackets (e.g., `[ch-markdown]`) and then follow it immediately with the URL in parentheses (e.g., `(https://github.com/genexuslabs/chameleon-controls-library)`).
+
+My favorite markdown viewer is [ch-markdown](https://github.com/genexuslabs/chameleon-controls-library).
+
+#### Adding Titles {#links-adding-titles}
+You can optionally add a title for a link. This will appear as a tooltip when the user hovers over the link. To add a title, enclose it in quotation marks after the URL.
+
+My favorite markdown viewer is [ch-markdown](https://github.com/genexuslabs/chameleon-controls-library "The best markdown viewer").
+
+#### URLs and Email Addresses {#links-urls-and-email-addresses}
+To quickly turn a URL or email address into a link, enclose it in angle brackets `<>`.
+
+<https://github.com/genexuslabs/chameleon-controls-library>
+
+<jdoe@example.com>
+
+#### Formatting Links {#links-formatting-links}
+To emphasize links, add asterisks before and after the brackets and parentheses. To denote links as code, add backticks in the brackets.
+
+I love the **[ch-markdown control](https://github.com/genexuslabs/chameleon-controls-library)**.
+
+This is the *[ch-markdown readme](https://github.com/genexuslabs/chameleon-controls-library)*.
+
+See the section on [`code`](#code).
+
+#### Reference-style Links {#links-reference-style-links}
+Reference-style links are a special kind of link that make URLs easier to display and read in Markdown. Reference-style links are constructed in two parts: the part you keep inline with your text and the part you store somewhere else in the file to keep the text easy to read.
+
+##### Formatting the First Part of the Link {#links-formatting-the-first-part-of-the-link}
+The first part of a reference-style link is formatted with two sets of brackets. The first set of brackets surrounds the text that should appear linked. The second set of brackets displays a label used to point to the link you’re storing elsewhere in your document.
+
+Although not required, you can include a space between the first and second set of brackets. The label in the second set of brackets is not case sensitive and can include letters, numbers, spaces, or punctuation.
+
+This means the following example formats are roughly equivalent for the first part of the link:
+
+  - `[hobbit-hole][1]`
+  - `[hobbit-hole] [1]`
+
+##### Formatting the Second Part of the Link {#links-formatting-the-second-part-of-the-link}
+The second part of a reference-style link is formatted with the following attributes:
+
+ 1. The label, in brackets, followed immediately by a colon and at least one space (e.g., `[label]:` ).
+ 2. The URL for the link, which you can optionally enclose in angle brackets.
+ 3. The optional title for the link, which you can enclose in double quotes, single quotes, or parentheses.
+
+This means the following example formats are all roughly equivalent for the second part of the link:
+
+  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle`
+  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"`
+  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle 'Hobbit lifestyles'`
+  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle (Hobbit lifestyles)`
+  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"`
+  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> 'Hobbit lifestyles'`
+  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> (Hobbit lifestyles)`
+
+You can place this second part of the link anywhere in your Markdown document. Some people place them immediately after the paragraph in which they appear while other people place them at the end of the document (like endnotes or footnotes).
+
+##### An Example Putting the Parts Together {#links-an-example-putting-the-parts-together}
+Say you add a URL as a standard URL link to a paragraph and it looks like this in Markdown:
+
+```
+In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
+of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
+eat: it was a [hobbit-hole](https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"), and that means comfort.
+```
+
+Though it may point to interesting additional information, the URL as displayed really doesn’t add much to the existing raw text other than making it harder to read. To fix that, you could format the URL like this instead:
+
+```
+In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
+of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
+eat: it was a [hobbit-hole][1], and that means comfort.
+
+[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"
+```
+
+In both instances above, the rendered output would be identical:
+
+> In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
+> of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
+> eat: it was a [hobbit-hole](https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"), and that means comfort.
+
+> In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
+> of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
+> eat: it was a [hobbit-hole][1], and that means comfort.
+
+[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"
+
+
+### Images {#images}
+To add an image, add an exclamation mark (`!`), followed by alt text in brackets, and the path or URL to the image asset in parentheses. You can optionally add a title in quotation marks after the path or URL.
+
+![Old angular logo](./assets/icons/angular.svg "Old angular logo")
+
+#### Linking Images {#linking-images}
+To add a link to an image, enclose the Markdown for the image in brackets, and then add the link in parentheses.
+
+[![Old angular logo](./assets/icons/angular.svg "Old angular logo")](https://blog.angular.io/introducing-angular-v17-4d7033312e4b)
+
+### Escaping Characters {#escaping-characters}
+To display a literal character that would otherwise be used to format text in a Markdown document, add a backslash (`\`) in front of the character.
+
+\* Without the backslash, this would be a bullet in an unordered list.
+
+Characters you can escape:
+
+| Character | Name |
+| --        | :--   |
+| \ | backslash |
+| ` | backtick |
+| * | asterisk |
+| _ | underscore |
+| { } | curly braces |
+| [ ] | brackets |
+| < > | angle brackets |
+| ( ) | parentheses |
+| # | pound sign |
+| + | plus sign |
+| - | minus sign (hyphen) |
+| . | dot |
+| ! | exclamation mark |
+| \| | pipe |
 
 ## GitHub flavored markdown (GFM) {#gfm}
-
 </textarea
       >
 

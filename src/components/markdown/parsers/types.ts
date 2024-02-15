@@ -34,7 +34,7 @@ export type ElementsWithoutCustomRender = Omit<
   "tableCell" | "tableRow"
 >;
 
-export type MarkdownToJSXMetadata = {
+export type MarkdownToJSXCommonMetadata = {
   rawHTML: boolean;
   allowDangerousHtml: boolean;
   renderCode: (language: string, content: any) => any;

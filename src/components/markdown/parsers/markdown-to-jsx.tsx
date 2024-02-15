@@ -5,7 +5,7 @@ import { markdownToMdAST } from "@genexus/markdown-parser";
 import {
   ElementsWithChildren,
   ElementsWithoutCustomRender,
-  MarkdownToJSXMetadata
+  MarkdownToJSXCommonMetadata
 } from "./types";
 import { parseCodeToJSX } from "./code-highlight"; // The implementation is not used in the initial load, only the type.
 import { rawHTMLToJSX } from "./raw-html-to-jsx";
@@ -45,7 +45,10 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
 const getTableAlignment = (table: Table, index: number) =>
   tableAlignmentDictionary[table.align[index]];
 
-const tableRender = async (table: Table, metadata: MarkdownToJSXMetadata) => {
+const tableRender = async (
+  table: Table,
+  metadata: MarkdownToJSXCommonMetadata
+) => {
   const tableHeadRow = table.children[0];
   const tableBodyRows = table.children.slice(1);
   const columnCount = tableHeadRow.children.length;
@@ -104,7 +107,7 @@ const tableRender = async (table: Table, metadata: MarkdownToJSXMetadata) => {
 export const renderDictionary: {
   [key in keyof ElementsWithoutCustomRender]: (
     element: ElementsWithoutCustomRender[key],
-    metadata: MarkdownToJSXMetadata
+    metadata: MarkdownToJSXCommonMetadata
   ) => Promise<any> | any;
 } = {
   blockquote: async (element, metadata) => {
@@ -269,7 +272,7 @@ export const renderDictionary: {
  */
 async function mdASTtoJSX(
   root: ElementsWithChildren | Root,
-  metadata: MarkdownToJSXMetadata
+  metadata: MarkdownToJSXCommonMetadata
 ) {
   // Get the async JSX
   const asyncJSX = root.children.map(child =>
@@ -285,10 +288,9 @@ async function mdASTtoJSX(
 
 export const markdownToJSX = async (
   markdown: string,
-  metadata: MarkdownToJSXMetadata
+  metadata: MarkdownToJSXCommonMetadata
 ) => {
   const mdAST: Root = markdownToMdAST(markdown);
-  console.log(mdAST);
 
   const JSX = await mdASTtoJSX(mdAST, metadata);
   clearLinkDefinitions();

@@ -274,10 +274,15 @@ async function mdASTtoJSX(
   root: ElementsWithChildren | Root,
   metadata: MarkdownToJSXCommonMetadata
 ) {
+  const childrenLength = root.children.length;
+  const asyncJSX = new Array(childrenLength);
+
   // Get the async JSX
-  const asyncJSX = root.children.map(child =>
-    renderDictionary[child.type](child, metadata)
-  );
+  for (let index = 0; index < childrenLength; index++) {
+    const child = root.children[index];
+
+    asyncJSX.push(renderDictionary[child.type](child, metadata));
+  }
 
   // Wait for all results to be completed in parallel
   const renderedContent = await Promise.allSettled(asyncJSX);

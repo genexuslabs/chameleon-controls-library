@@ -1,6 +1,7 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
 import { markdownToJSX } from "./parsers/markdown-to-jsx";
 import { defaultCodeRender } from "./parsers/code-highlight";
+import { MarkdownCodeRender } from "./parsers/types";
 
 @Component({
   shadow: false,
@@ -30,8 +31,7 @@ export class ChMarkdown {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: (language: string, content: any) => any =
-    defaultCodeRender;
+  @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
 
   async componentWillRender() {
     if (!this.markdown) {

@@ -1,5 +1,5 @@
 import { h } from "@stencil/core";
-import { AlignType, Root, Table } from "mdast";
+import { AlignType, Code, Root, Table } from "mdast";
 import { markdownToMdAST } from "@genexus/markdown-parser";
 
 import {
@@ -23,17 +23,47 @@ import {
  */
 const HEADING_ID_REGEX = /\{#(.*?)\}/;
 
+export const LAST_NESTED_CHILD_CLASS = "last-nested-child";
+
 // Lazy load the code parser implementation
 let codeToJSX: typeof parseCodeToJSX;
 let HTMLToJSX: typeof rawHTMLToJSX;
+let lastNestedChild: Root | ElementsWithChildren | Code;
+
+const checkAndGetLastNestedChildClass = (element: ElementsWithChildren) =>
+  element === lastNestedChild ? LAST_NESTED_CHILD_CLASS : undefined;
 
 const depthToHeading = {
-  1: (content: any, id?: string) => <h1 id={id}>{content}</h1>,
-  2: (content: any, id?: string) => <h2 id={id}>{content}</h2>,
-  3: (content: any, id?: string) => <h3 id={id}>{content}</h3>,
-  4: (content: any, id?: string) => <h4 id={id}>{content}</h4>,
-  5: (content: any, id?: string) => <h5 id={id}>{content}</h5>,
-  6: (content: any, id?: string) => <h6 id={id}>{content}</h6>
+  1: (content: any, classes: string | null, id?: string) => (
+    <h1 class={classes} id={id}>
+      {content}
+    </h1>
+  ),
+  2: (content: any, classes: string | null, id?: string) => (
+    <h2 class={classes} id={id}>
+      {content}
+    </h2>
+  ),
+  3: (content: any, classes: string | null, id?: string) => (
+    <h3 class={classes} id={id}>
+      {content}
+    </h3>
+  ),
+  4: (content: any, classes: string | null, id?: string) => (
+    <h4 class={classes} id={id}>
+      {content}
+    </h4>
+  ),
+  5: (content: any, classes: string | null, id?: string) => (
+    <h5 class={classes} id={id}>
+      {content}
+    </h5>
+  ),
+  6: (content: any, classes: string | null, id?: string) => (
+    <h6 class={classes} id={id}>
+      {content}
+    </h6>
+  )
 } as const;
 
 const tableAlignmentDictionary: { [key in AlignType]: string } = {
@@ -41,9 +71,6 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
   center: "ch-markdown-table-column-center",
   right: "ch-markdown-table-column-end"
 };
-
-const getTableAlignment = (table: Table, index: number) =>
-  tableAlignmentDictionary[table.align[index]];
 
 const tableRender = async (
   table: Table,
@@ -79,12 +106,23 @@ const tableRender = async (
     jsx => (jsx as PromiseFulfilledResult<any>).value
   );
 
+  const alignments = table.align.map(
+    alignment => tableAlignmentDictionary[alignment]
+  );
+
   return (
     <table>
       <thead>
         <tr>
-          {tableHeadRow.children.map((_, index) => (
-            <th class={getTableAlignment(table, index)}>{headCells[index]}</th>
+          {tableHeadRow.children.map((tableCell, index) => (
+            <th
+              class={{
+                [alignments[index]]: !!alignments[index],
+                [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
+              }}
+            >
+              {headCells[index]}
+            </th>
           ))}
         </tr>
       </thead>
@@ -92,8 +130,13 @@ const tableRender = async (
       <tbody>
         {tableBodyRows.map((tableHead, rowIndex) => (
           <tr>
-            {tableHead.children.map((_, cellIndex) => (
-              <td class={getTableAlignment(table, cellIndex)}>
+            {tableHead.children.map((tableCell, cellIndex) => (
+              <td
+                class={{
+                  [alignments[cellIndex]]: !!alignments[cellIndex],
+                  [LAST_NESTED_CHILD_CLASS]: tableCell === lastNestedChild
+                }}
+              >
                 {bodyCells[columnCount * rowIndex + cellIndex]}
               </td>
             ))}
@@ -113,7 +156,11 @@ export const renderDictionary: {
   blockquote: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <blockquote>{content}</blockquote>;
+    return (
+      <blockquote class={checkAndGetLastNestedChildClass(element)}>
+        {content}
+      </blockquote>
+    );
   }, // TODO: Check if code can be inside this tag
 
   break: () => <br />,
@@ -124,7 +171,8 @@ export const renderDictionary: {
     const content = await codeToJSX(
       element.value,
       element.lang,
-      metadata.renderCode
+      metadata.renderCode,
+      element === lastNestedChild
     );
 
     return content;
@@ -135,13 +183,15 @@ export const renderDictionary: {
   delete: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <del>{content}</del>;
+    return (
+      <del class={checkAndGetLastNestedChildClass(element)}>{content}</del>
+    );
   }, // TODO: Check if code can be inside this tag
 
   emphasis: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <em>{content}</em>;
+    return <em class={checkAndGetLastNestedChildClass(element)}>{content}</em>;
   }, // TODO: Check if code can be inside this tag
 
   footnoteDefinition: () => "",
@@ -166,8 +216,9 @@ export const renderDictionary: {
 
     // Render the content after the heading id processing
     const content = await mdASTtoJSX(element, metadata);
+    const classes = checkAndGetLastNestedChildClass(element);
 
-    return depthToHeading[element.depth](content, headingId); // TODO: Add anchor icon at the start of the heading
+    return depthToHeading[element.depth](content, classes, headingId); // TODO: Add anchor icon at the start of the heading
   },
 
   html: async (element, metadata) => {
@@ -204,6 +255,7 @@ export const renderDictionary: {
       <a
         aria-label={element.title || null}
         title={element.title || null}
+        class={checkAndGetLastNestedChildClass(element)}
         href={element.url}
       >
         {content}
@@ -224,7 +276,11 @@ export const renderDictionary: {
     // TODO: The title is not supported well. See "An Example Putting the Parts Together" section in markdown.html
 
     return (
-      <a aria-label={element.label || null} href={url}>
+      <a
+        aria-label={element.label || null}
+        class={checkAndGetLastNestedChildClass(element)}
+        href={url}
+      >
         {content}
       </a>
     );
@@ -234,28 +290,37 @@ export const renderDictionary: {
     const content = await mdASTtoJSX(element, metadata);
 
     return element.ordered ? (
-      <ol start={element.start}>{content}</ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
+      <ol
+        class={checkAndGetLastNestedChildClass(element)}
+        start={element.start}
+      >
+        {content}
+      </ol> // TODO: Implement spread  // TODO: Check if code can be inside this tag
     ) : (
-      <ul>{content}</ul> // TODO: Implement spread  // TODO: Check if code can be inside this tag
+      <ul class={checkAndGetLastNestedChildClass(element)}>{content}</ul> // TODO: Implement spread  // TODO: Check if code can be inside this tag
     );
   },
 
   listItem: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <li>{content}</li>;
+    return <li class={checkAndGetLastNestedChildClass(element)}>{content}</li>;
   }, // TODO: Implement spread  // TODO: Check if code can be inside this tag
 
   paragraph: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <p>{content}</p>;
+    return <p class={checkAndGetLastNestedChildClass(element)}>{content}</p>;
   }, // TODO: Check if code can be inside this tag
 
   strong: async (element, metadata) => {
     const content = await mdASTtoJSX(element, metadata);
 
-    return <strong>{content}</strong>;
+    return (
+      <strong class={checkAndGetLastNestedChildClass(element)}>
+        {content}
+      </strong>
+    );
   }, // TODO: Check if code can be inside this tag
 
   table: tableRender, // TODO: Check if code can be inside this tag
@@ -266,6 +331,23 @@ export const renderDictionary: {
 
   yaml: () => ""
 } as const;
+
+const findLastNestedChild = (
+  elementWithChildren: ElementsWithChildren | Root
+) => {
+  const lastChild = elementWithChildren.children.at(-1);
+
+  // The last element have children. We must check its sub children
+  if ((lastChild as ElementsWithChildren).children?.length > 0) {
+    return findLastNestedChild(lastChild as ElementsWithChildren);
+  }
+
+  if (lastChild.type === "code") {
+    return lastChild;
+  }
+
+  return elementWithChildren;
+};
 
 /**
  * Converts markdown abstract syntax tree (mdast) into JSX.
@@ -297,7 +379,15 @@ export const markdownToJSX = async (
 ) => {
   const mdAST: Root = markdownToMdAST(markdown);
 
+  // First, find the last nested child. Useful to set a marker in the element
+  // that accomplish this condition
+  lastNestedChild = findLastNestedChild(mdAST);
+
+  // Render the markdown as JSX
   const JSX = await mdASTtoJSX(mdAST, metadata);
+
+  // Clear all definitions used to render the current markdown, so the next
+  // render does not have old information
   clearLinkDefinitions();
 
   return JSX;

@@ -37,5 +37,11 @@ export type ElementsWithoutCustomRender = Omit<
 export type MarkdownToJSXCommonMetadata = {
   rawHTML: boolean;
   allowDangerousHtml: boolean;
-  renderCode: (language: string, content: any) => any;
+  renderCode: MarkdownCodeRender;
 };
+
+export type MarkdownCodeRender = (
+  language: string,
+  nestedChildIsCodeTag: boolean,
+  content: any
+) => any;

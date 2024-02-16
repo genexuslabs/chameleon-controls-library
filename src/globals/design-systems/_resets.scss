@@ -16,7 +16,7 @@
 @mixin button-reset() {
   :where(button, a) {
     all: unset;
-    display: flex;
+    display: inline-flex;
     align-items: center;
 
     // Disallow selecting the text
@@ -55,14 +55,14 @@
     background-color: currentColor;
   }
 
-  fieldset {
-    margin: 0;
-    padding: 0;
-  }
-
+  fieldset,
   legend {
     padding: 0;
     margin: 0;
+  }
+
+  img {
+    display: block;
   }
 }
 

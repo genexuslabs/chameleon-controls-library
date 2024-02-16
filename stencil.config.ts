@@ -32,6 +32,8 @@ export const config: Config = {
       ]
     },
 
+    { components: ["ch-markdown"] }, // Make sure the ch-markdown control is not bundled with other components
+
     {
       components: [
         "ch-dropdown",

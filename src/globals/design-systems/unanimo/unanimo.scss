@@ -16,6 +16,7 @@
 // Components
 @import "./components/card";
 @import "./components/header";
+@import "./components/markdown";
 @import "./components/tree-view";
 @import "./components/tree-view-navigation";
 
@@ -55,6 +56,7 @@
   $card: true,
   $dropdown: true,
   $header: true,
+  $markdown: true,
   $tree-view: true,
   $tree-view-navigation: true
 ) {
@@ -198,6 +200,11 @@
     // header
     @if $header == true {
       @include header();
+    }
+
+    // markdown
+    @if $markdown == true {
+      @include markdown();
     }
 
     // tree-view

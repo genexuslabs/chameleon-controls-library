@@ -1,0 +1,169 @@
+@import "../base/typography";
+@import "../base/common";
+@import "../base/button";
+
+@mixin markdown() {
+  .markdown {
+    @extend %text-body-2;
+
+    // - - - - - - - - - - - - - - - - - - - -
+    //                 Heading
+    // - - - - - - - - - - - - - - - - - - - -
+    h1 {
+      @extend %heading-1;
+      margin-block: var(--spacing-un-spacing--l) var(--spacing-un-spacing--m);
+      padding-block-end: var(--spacing-un-spacing--m);
+    }
+
+    h2 {
+      @extend %heading-2;
+      margin-block: 12px 6px; // It does not exists the --spacing-un-spacing--xm value
+      padding-block-end: 6px; // It does not exists the --spacing-un-spacing--xm value
+    }
+
+    h3 {
+      @extend %heading-3;
+      margin-block: var(--spacing-un-spacing--m) var(--spacing-un-spacing--s);
+      padding-block-end: var(--spacing-un-spacing--s);
+    }
+
+    h4 {
+      @extend %heading-4;
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
+    h5 {
+      @extend %heading-4; // WA to improve visualization
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
+    h6 {
+      @extend %heading-4; // WA to improve visualization
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      border-block-end: 1px solid var(--body-texts-un-body-m__font-color--gray);
+    }
+
+    p,
+    ul,
+    ol,
+    table,
+    pre {
+      margin-block: var(--spacing-un-spacing--m);
+    }
+
+    ul,
+    ol {
+      padding-inline-start: var(--spacing-un-spacing--xxl);
+    }
+
+    a {
+      @extend %text-link;
+    }
+
+    blockquote {
+      margin-block: var(--spacing-un-spacing--m);
+      margin-inline: 0;
+      padding-block: var(--spacing-un-spacing--m);
+      padding-inline: calc(var(--spacing-un-spacing--xxl) - 4px)
+        var(--spacing-un-spacing--xxl);
+      border-inline-start: 4px solid
+        var(--colors-foundation-un-color__gray--400);
+
+      // First <p> don't add margin-block-start, because the <blockquote> adds it
+      & > p:first-of-type {
+        margin-block-start: 0;
+      }
+
+      // Last <p> don't add margin-block-end, because the <blockquote> adds it
+      & > p:last-of-type {
+        margin-block-end: 0;
+      }
+    }
+
+    strong {
+      font-weight: unset;
+      font-family: SourceSansPro_Bold;
+    }
+
+    // - - - - - - - - - - - - - - - - - - - -
+    //                  Table
+    // - - - - - - - - - - - - - - - - - - - -
+    // Table
+    table {
+      display: block;
+      inline-size: max-content;
+      border: 1px solid var(--borders-un-border-color__mild);
+      border-spacing: 0;
+
+      & > thead > tr {
+        @extend %heading-4;
+        font-weight: unset;
+      }
+    }
+
+    // Cells
+    td {
+      border-block-start: 1px solid var(--borders-un-border-color__mild);
+    }
+
+    // Header and body cells
+    th,
+    td {
+      padding: var(--spacing-un-spacing--m);
+      border-inline-start: 1px solid var(--borders-un-border-color__mild);
+    }
+
+    // Remove left border in the first cell of each row
+    tr > td:first-child,
+    tr > th:first-child {
+      border-inline-start: unset;
+    }
+
+    thead > tr,
+    tbody > tr:nth-child(2n) {
+      background-color: var(--colors-foundation-un-color__gray--100);
+    }
+
+    // - - - - - - - - - - - - - - - - - - - -
+    //                  Code
+    // - - - - - - - - - - - - - - - - - - - -
+    // Multiline code
+    pre > code {
+      display: block;
+      overflow: auto;
+      // Override inline padding
+      padding: var(--spacing-un-spacing--l);
+
+      // Override inline border-radius
+      border-radius: var(--border-radius-un-border__radius--m);
+    }
+
+    // Inline code
+    code {
+      padding-block: var(--spacing-un-spacing--xs);
+      padding-inline: var(--spacing-un-spacing--s);
+
+      background-color: var(
+        --surface-un-surface--alternative
+      ); // color-mix(in srgb, var(--surface-un-surface--alternative) 70%, var(--colors-foundation-un-color__gray--100))
+      border-radius: var(--border-radius-un-border__radius--s);
+      font-size: calc(1em - 2px);
+    }
+
+    img {
+      display: inline-block;
+      max-inline-size: 25%;
+    }
+  }
+}

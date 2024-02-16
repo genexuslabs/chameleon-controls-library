@@ -3,6 +3,10 @@ import { markdownToJSX } from "./parsers/markdown-to-jsx";
 import { defaultCodeRender } from "./parsers/code-highlight";
 import { MarkdownCodeRender } from "./parsers/types";
 
+/**
+ * A control to render markdown syntax. It supports GitHub Flavored Markdown
+ * (GFM) and code highlighting.
+ */
 @Component({
   shadow: false,
   styleUrl: "markdown.scss",
@@ -14,14 +18,10 @@ export class ChMarkdown {
   @Element() el: HTMLChMarkdownElement;
 
   /**
-   *
+   * `true` to render potentially dangerous user content when rendering HTML
+   * with the option `rawHtml === true`
    */
   @Prop() readonly allowDangerousHtml: boolean = false;
-
-  /**
-   *
-   */
-  @Prop() readonly markdown: string;
 
   /**
    * `true` to render raw HTML with sanitization.
@@ -33,12 +33,17 @@ export class ChMarkdown {
    */
   @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
 
+  /**
+   * Specifies the markdown string to parse.
+   */
+  @Prop() readonly value: string;
+
   async componentWillRender() {
-    if (!this.markdown) {
+    if (!this.value) {
       return;
     }
 
-    this.#JSXTree = await markdownToJSX(this.markdown, {
+    this.#JSXTree = await markdownToJSX(this.value, {
       rawHTML: this.rawHtml,
       allowDangerousHtml: this.allowDangerousHtml,
       renderCode: this.renderCode
@@ -46,7 +51,7 @@ export class ChMarkdown {
   }
 
   render() {
-    if (!this.markdown) {
+    if (!this.value) {
       return "";
     }
 

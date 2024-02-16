@@ -67,7 +67,9 @@
       .hljs-regexp,
       .hljs-string,
       .hljs-meta .hljs-string {
-        color: var(--colors-foundation-un-color__orange--200);
+        color: var(
+          --colors-foundation-un-color__orange--200
+        ); /* DARK: color-mix(in srgb, var(--colors-foundation-un-color__red--300) 60%, #000) */
       }
 
       .hljs-built_in,
@@ -492,6 +494,22 @@ To add syntax highlighting, specify a language next to the backticks before the 
 }
 ```
 
+```javascript
+import React from 'react'
+import ReactDOM from 'react-dom'
+import Markdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight'
+
+const markdown = `
+# Your markdown here
+`
+
+ReactDOM.render(
+  <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
+  document.querySelector('#content')
+)
+```
+
 ### Horizontal Rules {#horizontal-rules}
 To create a horizontal rule, use three or more asterisks (`***`), dashes (`---`), or underscores (`___`) on a line by themselves.
 
@@ -647,10 +665,10 @@ Characters you can escape:
         const textareaRef = document.querySelector("textarea");
         const markdownRef = document.querySelector("ch-markdown");
 
-        markdownRef.markdown = textareaRef.value;
+        markdownRef.value = textareaRef.value;
 
         textareaRef.addEventListener("input", () => {
-          markdownRef.markdown = textareaRef.value;
+          markdownRef.value = textareaRef.value;
         });
       });
     </script>

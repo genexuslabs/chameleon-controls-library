@@ -1,5 +1,6 @@
 @import "../base/typography";
 @import "../base/common";
+@import "../base/button";
 
 @mixin markdown() {
   .markdown {
@@ -32,10 +33,24 @@
       padding-block-end: var(--spacing-un-spacing--xs);
     }
 
+    h5 {
+      @extend %heading-4; // WA to improve visualization
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
+    h6 {
+      @extend %heading-4; // WA to improve visualization
+      margin-block: var(--spacing-un-spacing--s) var(--spacing-un-spacing--xs);
+      padding-block-end: var(--spacing-un-spacing--xs);
+    }
+
     h1,
     h2,
     h3,
-    h4 {
+    h4,
+    h5,
+    h6 {
       border-block-end: 1px solid var(--body-texts-un-body-m__font-color--gray);
     }
 
@@ -139,7 +154,9 @@
       padding-block: var(--spacing-un-spacing--xs);
       padding-inline: var(--spacing-un-spacing--s);
 
-      background-color: var(--surface-un-surface--alternative);
+      background-color: var(
+        --surface-un-surface--alternative
+      ); // color-mix(in srgb, var(--surface-un-surface--alternative) 70%, var(--colors-foundation-un-color__gray--100))
       border-radius: var(--border-radius-un-border__radius--s);
       font-size: calc(1em - 2px);
     }

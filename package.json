@@ -28,15 +28,16 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@genexus/markdown-parser": "~0.1.1",
     "qr-creator": "^1.0.0",
     "resize-observer-polyfill": "^1.5.1",
-    "stencil-click-outside": "^1.8.0",
-    "@genexus/markdown-parser": "0.0.1"
+    "stencil-click-outside": "^1.8.0"
   },
   "devDependencies": {
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.9.0",
     "@stencil/sass": "~3.0.8",
+    "@types/hast": "^3.0.4",
     "@types/jest": "~29.5.1",
     "@types/mdast": "^4.0.3",
     "@types/prettier": "~2.4.0",

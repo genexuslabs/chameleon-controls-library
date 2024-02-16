@@ -18,6 +18,7 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
 import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
+import { MarkdownCodeRender } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -53,6 +54,7 @@ export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./components/icon/icon";
 export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
+export { MarkdownCodeRender } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -992,6 +994,28 @@ export namespace Components {
           * `true` to show the captions of the items.
          */
         "showCaptions": boolean;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     */
+    interface ChMarkdown {
+        /**
+          * `true` to render potentially dangerous user content when rendering HTML with the option `rawHtml === true`
+         */
+        "allowDangerousHtml": boolean;
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml": boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode": MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value": string;
     }
     interface ChNextDataModeling {
     }
@@ -2773,6 +2797,16 @@ declare global {
         prototype: HTMLChListElement;
         new (): HTMLChListElement;
     };
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     */
+    interface HTMLChMarkdownElement extends Components.ChMarkdown, HTMLStencilElement {
+    }
+    var HTMLChMarkdownElement: {
+        prototype: HTMLChMarkdownElement;
+        new (): HTMLChMarkdownElement;
+    };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
     var HTMLChNextDataModelingElement: {
@@ -3330,6 +3364,7 @@ declare global {
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-list": HTMLChListElement;
+        "ch-markdown": HTMLChMarkdownElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -4294,6 +4329,28 @@ declare namespace LocalJSX {
           * `true` to show the captions of the items.
          */
         "showCaptions"?: boolean;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     */
+    interface ChMarkdown {
+        /**
+          * `true` to render potentially dangerous user content when rendering HTML with the option `rawHtml === true`
+         */
+        "allowDangerousHtml"?: boolean;
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml"?: boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode"?: MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value"?: string;
     }
     interface ChNextDataModeling {
     }
@@ -5542,6 +5599,7 @@ declare namespace LocalJSX {
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
         "ch-list": ChList;
+        "ch-markdown": ChMarkdown;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -5671,6 +5729,11 @@ declare module "@stencil/core" {
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
             "ch-list": LocalJSX.ChList & JSXBase.HTMLAttributes<HTMLChListElement>;
+            /**
+             * A control to render markdown syntax. It supports GitHub Flavored Markdown
+             * (GFM) and code highlighting.
+             */
+            "ch-markdown": LocalJSX.ChMarkdown & JSXBase.HTMLAttributes<HTMLChMarkdownElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;

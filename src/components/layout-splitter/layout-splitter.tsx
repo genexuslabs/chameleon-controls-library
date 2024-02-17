@@ -27,9 +27,8 @@ import {
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
-import { isRTL } from "../../common/utils";
+import { ROOT_VIEW, isRTL } from "../../common/utils";
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
-import { ROOT_VIEW } from "../renders/flexible-layout/utils";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 

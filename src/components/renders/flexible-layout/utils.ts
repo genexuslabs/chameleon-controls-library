@@ -8,8 +8,7 @@ import {
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo
 } from "../../flexible-layout/types";
-
-export const ROOT_VIEW: null = null;
+import { ROOT_VIEW } from "../../../common/utils";
 
 export const createAndSetViewInfo = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,

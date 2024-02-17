@@ -1,4 +1,4 @@
-import { ROOT_VIEW } from "../renders/flexible-layout/utils";
+import { ROOT_VIEW } from "../../common/utils";
 import {
   DragBarMouseDownEventInfo,
   GroupExtended,

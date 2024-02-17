@@ -29,6 +29,8 @@ export function debounce(
 
 export const isRTL = () => document.documentElement.dir === "rtl";
 
+export const ROOT_VIEW: null = null;
+
 /*  This functions overrides a method adding calls before (`before()`) and
     after (`after()`) 
 */

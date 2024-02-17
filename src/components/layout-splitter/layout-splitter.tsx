@@ -338,10 +338,16 @@ export class ChLayoutSplitter implements ChComponent {
       );
     };
 
-  #renderItems = (direction: LayoutSplitterDirection, layoutItems: Item[]) => {
-    const lastComponentIndex = layoutItems.length - 1;
+  #renderItem = (
+    direction: LayoutSplitterDirection,
+    lastComponentIndex: number,
+    layoutItems: Item[],
+    item: Item,
+    index: number
+  ) => {
+    const itemInfo = this.#itemsInfo.get(item.id);
 
-    return layoutItems.map((item, index) => [
+    return [
       (item as Group).items ? (
         <div
           id={item.id}
@@ -350,10 +356,14 @@ export class ChLayoutSplitter implements ChComponent {
           style={TEMPLATE_STYLE(
             (item as Group).items,
             this.#itemsInfo,
-            (this.#itemsInfo.get(item.id) as GroupExtended).fixedSizesSum
+            (itemInfo as GroupExtended).fixedSizesSum
           )}
         >
-          {this.#renderItems((item as Group).direction, (item as Group).items)}
+          {this.#renderItems(
+            (item as Group).direction,
+            (item as Group).items,
+            (item as Group).items.length - 1
+          )}
         </div>
       ) : (
         <div id={item.id} class="leaf">
@@ -390,8 +400,17 @@ export class ChLayoutSplitter implements ChComponent {
           }
         ></div>
       )
-    ]);
+    ];
   };
+
+  #renderItems = (
+    direction: LayoutSplitterDirection,
+    layoutItems: Item[],
+    lastComponentIndex: number
+  ) =>
+    layoutItems.map((item, index) =>
+      this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
+    );
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
     // Clear old information
@@ -432,7 +451,11 @@ export class ChLayoutSplitter implements ChComponent {
           this.#fixedSizesSumRoot
         )}
       >
-        {this.#renderItems(layoutModel.direction, layoutModel.items)}
+        {this.#renderItems(
+          layoutModel.direction,
+          layoutModel.items,
+          layoutModel.items.length - 1
+        )}
       </div>
     );
   }

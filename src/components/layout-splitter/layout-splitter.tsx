@@ -32,6 +32,10 @@ import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
+type Leaf = LayoutSplitterDistributionLeaf;
+type Group = LayoutSplitterDistributionGroup;
+type Item = LayoutSplitterDistributionItem;
+
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
 
@@ -39,7 +43,7 @@ const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
   `group direction--${direction}`;
 
 const TEMPLATE_STYLE = (
-  items: LayoutSplitterDistributionItem[],
+  items: Item[],
   itemsInfo: Map<string, ItemExtended>,
   fixedSizesSum: number
 ) => ({
@@ -51,10 +55,8 @@ const TEMPLATE_STYLE = (
   [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`
 });
 
-const getAriaControls = (
-  layoutItems: LayoutSplitterDistributionItem[],
-  index: number
-) => `${layoutItems[index].id} ${layoutItems[index + 1].id}`;
+const getAriaControls = (layoutItems: Item[], index: number) =>
+  `${layoutItems[index].id} ${layoutItems[index + 1].id}`;
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -133,7 +135,7 @@ export class ChLayoutSplitter implements ChComponent {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    leafInfo: LayoutSplitterDistributionLeaf,
+    leafInfo: Leaf,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<LayoutSplitterItemAddResult> {
     const result = addSiblingLeaf(
@@ -248,7 +250,7 @@ export class ChLayoutSplitter implements ChComponent {
   #initializeDragBarValuesForResizeProcessing = (
     direction: LayoutSplitterDirection,
     index: number,
-    layoutItems: LayoutSplitterDistributionItem[],
+    layoutItems: Item[],
     event: Event
   ) => {
     // Initialize the values needed for drag processing
@@ -273,11 +275,7 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   #mouseDownHandler =
-    (
-      direction: LayoutSplitterDirection,
-      index: number,
-      layoutItems: LayoutSplitterDistributionItem[]
-    ) =>
+    (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: MouseEvent) => {
       // Necessary to prevent selecting the inner image (or other elements) of
       // the bar item when the mouse is down
@@ -308,11 +306,7 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
   #handleResize =
-    (
-      direction: LayoutSplitterDirection,
-      index: number,
-      layoutItems: LayoutSplitterDistributionItem[]
-    ) =>
+    (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: KeyboardEvent) => {
       if (
         (direction === "rows" &&
@@ -345,30 +339,22 @@ export class ChLayoutSplitter implements ChComponent {
       );
     };
 
-  #renderItems = (
-    direction: LayoutSplitterDirection,
-    layoutItems: LayoutSplitterDistributionItem[]
-  ) => {
+  #renderItems = (direction: LayoutSplitterDirection, layoutItems: Item[]) => {
     const lastComponentIndex = layoutItems.length - 1;
 
     return layoutItems.map((item, index) => [
-      (item as LayoutSplitterDistributionGroup).items ? (
+      (item as Group).items ? (
         <div
           id={item.id}
-          class={DIRECTION_CLASS(
-            (item as LayoutSplitterDistributionGroup).direction
-          )}
+          class={DIRECTION_CLASS((item as Group).direction)}
           part={item.id}
           style={TEMPLATE_STYLE(
-            (item as LayoutSplitterDistributionGroup).items,
+            (item as Group).items,
             this.#itemsInfo,
             (this.#itemsInfo.get(item.id) as GroupExtended).fixedSizesSum
           )}
         >
-          {this.#renderItems(
-            (item as LayoutSplitterDistributionGroup).direction,
-            (item as LayoutSplitterDistributionGroup).items
-          )}
+          {this.#renderItems((item as Group).direction, (item as Group).items)}
         </div>
       ) : (
         <div id={item.id} class="leaf">

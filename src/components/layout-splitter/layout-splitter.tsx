@@ -31,6 +31,7 @@ import { isRTL } from "../../common/utils";
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { ROOT_VIEW } from "../renders/flexible-layout/utils";
 import { addSiblingLeaf } from "./add-sibling-item";
+import { SyncWithRAF } from "../../common/sync-with-frames";
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
@@ -74,7 +75,8 @@ const ARROW_LEFT = "ArrowLeft";
   tag: "ch-layout-splitter"
 })
 export class ChLayoutSplitter implements ChComponent {
-  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  // Sync computations with frames
+  #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
 
   #mouseDownInfo: DragBarMouseDownEventInfo;
   #lastMousePosition: number;
@@ -208,28 +210,19 @@ export class ChLayoutSplitter implements ChComponent {
       this.#mouseDownInfo.direction
     );
 
-    this.#handleBarDragRAF();
+    this.#dragRAF.perform(this.#handleBarDragRAF);
   };
 
   #handleBarDragRAF = (incrementInPx?: number) => {
-    if (!this.#needForRAF) {
-      return;
-    }
-    this.#needForRAF = false; // No need to call RAF up until next frame
+    updateComponentsAndDragBar(
+      this.#mouseDownInfo,
+      this.#itemsInfo,
+      incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
+      GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
+    );
 
-    requestAnimationFrame(() => {
-      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
-
-      updateComponentsAndDragBar(
-        this.#mouseDownInfo,
-        this.#itemsInfo,
-        incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
-        GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
-      );
-
-      // Sync new position with last
-      this.#lastMousePosition = this.#newMousePosition;
-    });
+    // Sync new position with last
+    this.#lastMousePosition = this.#newMousePosition;
   };
 
   // Handler to remove mouse down
@@ -244,6 +237,11 @@ export class ChLayoutSplitter implements ChComponent {
 
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
+    // Cancel RAF to prevent access to undefined references
+    if (this.#dragRAF) {
+      this.#dragRAF.cancel();
+    }
+
     this.#removeMouseMoveHandler();
 
     document.removeEventListener("mouseup", this.#mouseUpHandler, {
@@ -291,6 +289,8 @@ export class ChLayoutSplitter implements ChComponent {
       // Necessary to prevent selecting the inner image (or other elements) of
       // the bar item when the mouse is down
       event.preventDefault();
+
+      this.#dragRAF ??= new SyncWithRAF();
 
       this.#initializeDragBarValuesForResizeProcessing(
         direction,

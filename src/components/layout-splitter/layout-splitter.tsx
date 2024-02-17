@@ -253,7 +253,8 @@ export class ChLayoutSplitter implements ChComponent {
     event: Event
   ) => {
     // Initialize the values needed for drag processing
-    const dragBarContainer = (event.target as HTMLElement).parentElement;
+    const dragBar = event.target as HTMLElement;
+    const dragBarContainer = dragBar.parentElement;
 
     this.#mouseDownInfo = {
       container: dragBarContainer,
@@ -262,6 +263,7 @@ export class ChLayoutSplitter implements ChComponent {
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
       direction: direction,
+      dragBarContainer: dragBar,
       fixedSizesSumRoot: this.#fixedSizesSumRoot,
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
@@ -345,7 +347,7 @@ export class ChLayoutSplitter implements ChComponent {
     item: Item,
     index: number
   ) => {
-    const itemInfo = this.#itemsInfo.get(item.id);
+    const itemUIModel = this.#itemsInfo.get(item.id);
 
     return [
       (item as Group).items ? (
@@ -356,7 +358,7 @@ export class ChLayoutSplitter implements ChComponent {
           style={TEMPLATE_STYLE(
             (item as Group).items,
             this.#itemsInfo,
-            (itemInfo as GroupExtended).fixedSizesSum
+            (itemUIModel as GroupExtended).fixedSizesSum
           )}
         >
           {this.#renderItems(
@@ -379,6 +381,7 @@ export class ChLayoutSplitter implements ChComponent {
           aria-disabled={this.dragBarDisabled ? "true" : null}
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
+          aria-valuetext={itemUIModel.actualSize}
           title={this.barAccessibleName}
           tabindex="0"
           // - - - - - - - - - - - - -

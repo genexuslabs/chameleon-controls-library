@@ -214,6 +214,9 @@ export const updateComponentsAndDragBar = (
     gridTemplateDirectionCustomVar,
     sizesToGridTemplate(layoutItems, itemsInfo, layoutItems.length - 1)
   );
+
+  // Update the current value in the drag bar
+  info.dragBarContainer.ariaValueText = startItemUIModel.actualSize;
 };
 
 export const getMousePosition = (

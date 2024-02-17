@@ -1,29 +1,25 @@
 import { ROOT_VIEW } from "../renders/flexible-layout/utils";
 import {
   DragBarMouseDownEventInfo,
+  GroupExtended,
+  ItemExtended,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended,
   LayoutSplitterSize
 } from "./types";
 
 export const FIXED_SIZES_SUM_CUSTOM_VAR =
   "--ch-layout-splitter-fixed-sizes-sum";
 
-export const findItemInParent = (
-  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-) => {
+export const findItemInParent = (itemToFind: ItemExtended) => {
   const itemId = itemToFind.item.id;
   return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
 };
 
 export const sizesToGridTemplate = (
   items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   lastItemIndex: number
 ) =>
   items
@@ -62,40 +58,27 @@ const getComponentSize = (item: LayoutSplitterDistributionItem): string =>
     ? item.size
     : getItemFrSize(item);
 
-export const setPxSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setPxSize = (itemUIModel: ItemExtended, newValue: number) => {
   const newValueString: LayoutSplitterSize = `${newValue}px`;
 
   itemUIModel.item.size = newValueString;
   itemUIModel.actualSize = newValueString;
 };
 
-export const updatePxSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number
-) => setPxSize(itemUIModel, getPxValue(itemUIModel.item) + increment);
+export const updatePxSize = (itemUIModel: ItemExtended, increment: number) =>
+  setPxSize(itemUIModel, getPxValue(itemUIModel.item) + increment);
 
-export const setFrSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setFrSize = (itemUIModel: ItemExtended, newValue: number) => {
   const newValueString: LayoutSplitterSize = `${newValue}fr`;
 
   itemUIModel.item.size = newValueString;
   itemUIModel.actualSize = getItemFrSize(itemUIModel.item);
 };
 
-export const updateFrSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number
-) => setFrSize(itemUIModel, getFrValue(itemUIModel.item) + increment);
+export const updateFrSize = (itemUIModel: ItemExtended, increment: number) =>
+  setFrSize(itemUIModel, getFrValue(itemUIModel.item) + increment);
 
-export const setOffsetSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setOffsetSize = (itemUIModel: ItemExtended, newValue: number) => {
   const itemInfo = itemUIModel.item;
 
   itemInfo.fixedOffsetSize = newValue;
@@ -103,7 +86,7 @@ export const setOffsetSize = (
 };
 
 export const incrementOffsetSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  itemUIModel: ItemExtended,
   increment: number
 ) =>
   setOffsetSize(
@@ -113,18 +96,12 @@ export const incrementOffsetSize = (
 
 export const fixAndUpdateLayoutModel = (
   layout: LayoutSplitterDistribution,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  itemsInfo: Map<string, ItemExtended>
 ): number => fixAndUpdateSubModel(layout.items, itemsInfo, ROOT_VIEW);
 
 function fixAndUpdateSubModel(
   items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   parentItem: LayoutSplitterDistributionGroup
 ): number {
   let frSum = 0;
@@ -161,21 +138,18 @@ function fixAndUpdateSubModel(
 
   // Update the actualSizes and fixedSizes maps
   items.forEach(item => {
-    const itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem> =
-      {
-        item: item,
-        parentItem: parentItem,
-        actualSize: getComponentSize(item)
-      };
+    const itemUIModel: ItemExtended = {
+      item: item,
+      parentItem: parentItem,
+      actualSize: getComponentSize(item)
+    };
 
     if ((item as LayoutSplitterDistributionGroup).items != null) {
       // eslint-disable-next-line prettier/prettier
       const group = item as LayoutSplitterDistributionGroup;
       const fixedSizesSum = fixAndUpdateSubModel(group.items, itemsInfo, group);
 
-      (
-        itemUIModel as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-      ).fixedSizesSum = fixedSizesSum;
+      (itemUIModel as GroupExtended).fixedSizesSum = fixedSizesSum;
     }
 
     itemsInfo.set(item.id, itemUIModel);
@@ -186,10 +160,7 @@ function fixAndUpdateSubModel(
 
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   incrementInPx: number,
   gridTemplateDirectionCustomVar: string
 ) => {
@@ -205,11 +176,8 @@ export const updateComponentsAndDragBar = (
   const fixedSizesSumParent =
     startItemUIModel.parentItem === ROOT_VIEW
       ? info.fixedSizesSumRoot
-      : (
-          itemsInfo.get(
-            startItemUIModel.parentItem.id
-          ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-        ).fixedSizesSum;
+      : (itemsInfo.get(startItemUIModel.parentItem.id) as GroupExtended)
+          .fixedSizesSum;
 
   const layoutItems = info.layoutItems;
 

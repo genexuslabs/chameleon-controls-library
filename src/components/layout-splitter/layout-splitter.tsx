@@ -11,11 +11,11 @@ import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
   GroupExtended,
+  ItemExtended,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended,
   LayoutSplitterDistributionLeaf,
   LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
@@ -41,10 +41,7 @@ const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
 
 const TEMPLATE_STYLE = (
   items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   fixedSizesSum: number
 ) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
@@ -85,10 +82,7 @@ export class ChLayoutSplitter implements ChComponent {
   #fixedSizesSumRoot: number;
 
   // Distribution of elements
-  #itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  > = new Map();
+  #itemsInfo: Map<string, ItemExtended> = new Map();
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -369,11 +363,7 @@ export class ChLayoutSplitter implements ChComponent {
           style={TEMPLATE_STYLE(
             (item as LayoutSplitterDistributionGroup).items,
             this.#itemsInfo,
-            (
-              this.#itemsInfo.get(
-                item.id
-              ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-            ).fixedSizesSum
+            (this.#itemsInfo.get(item.id) as GroupExtended).fixedSizesSum
           )}
         >
           {this.#renderItems(

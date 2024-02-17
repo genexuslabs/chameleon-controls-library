@@ -1,9 +1,9 @@
 import { removeElement } from "../../common/array";
 import {
   GroupExtended,
+  ItemExtended,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended,
   LayoutSplitterItemRemoveResult,
   LayoutSplitterReconnectedSubtree
 } from "./types";
@@ -26,10 +26,7 @@ export const NO_FIXED_SIZES_TO_UPDATE = 0;
 
 export const removeItem = (
   itemId: string,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  itemsInfo: Map<string, ItemExtended>
 ): LayoutSplitterItemRemoveResult => {
   const itemToRemoveUIModel = itemsInfo.get(itemId);
   let reconnectedSubtree: LayoutSplitterReconnectedSubtree = undefined;
@@ -163,8 +160,8 @@ export const removeItem = (
 };
 
 function addSpaceToItemAndGetNewFixesSizes(
-  itemToSubtractUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  itemToAddUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  itemToSubtractUIModel: ItemExtended,
+  itemToAddUIModel: ItemExtended,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _itemToAddSpaceIsBefore: boolean
 ): number {

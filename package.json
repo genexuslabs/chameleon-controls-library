@@ -22,6 +22,7 @@
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "stencil build --dev --watch --serve --docs",
     "test": "stencil test --spec --e2e",
+    "test.coverage": "stencil test --spec --e2e --coverage --no-cache",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "validate": "npm run lint && npm run test && npm run build",
     "validate.ci": "npm run lint && npm run build -- --max-workers 1 --debug"

@@ -143,12 +143,13 @@
               size: "1fr",
               direction: "columns",
               items: [
-                { id: "start-component", size: "300px" },
-                { id: "center-component", size: "1fr" },
-                { id: "end-component", size: "270px" }
+                { id: "start-component", size: "100px", minSize: "200px" },
+                { id: "center-component", size: "1fr", minSize: "250px" },
+                { id: "end-component", size: "270px", minSize: "400px" }
               ]
             },
-            { id: "end-end-component", size: "250px" }
+            { id: "end-end-component", size: "250px", minSize: "249px" },
+            { id: "end-end-component-2", size: "250px", minSize: "251px" }
           ]
         };
 

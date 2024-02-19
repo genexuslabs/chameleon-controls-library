@@ -69,7 +69,13 @@ export const tokenMap = (tokens: { [key: string]: boolean }) =>
  */
 export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;
 
-const resetDragImage = new Image();
+let resetDragImage;
+
+/* @__PURE__ */ if (!window.Image) {
+  resetDragImage = "test";
+}
+
+resetDragImage ??= new Image();
 export const removeDragImage = (event: DragEvent) =>
   event.dataTransfer.setDragImage(resetDragImage, 0, 0);
 

@@ -19,6 +19,7 @@ export type LayoutSplitterDistributionLeaf = {
   dragBar?: LayoutSplitterDragBarConfig;
   fixedOffsetSize?: number;
   size: LayoutSplitterSize;
+  minSize?: `${number}px`;
 };
 
 export type LayoutSplitterDistributionGroup = LayoutSplitterDistributionLeaf & {

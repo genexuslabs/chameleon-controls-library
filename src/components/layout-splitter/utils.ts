@@ -17,6 +17,28 @@ export const findItemInParent = (itemToFind: ItemExtended) => {
   return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
 };
 
+export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
+  Number(item.size.replace("fr", "").trim());
+
+export const getPxValue = (
+  item: LayoutSplitterDistributionItem,
+  type: "size" | "min" = "size"
+): number => {
+  const value = type === "size" ? item.size : item.minSize;
+  return Number(value.replace("px", "").trim());
+};
+
+export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
+  item.size.includes("px");
+
+export const hasMinSize = (item: LayoutSplitterDistributionItem) =>
+  item.minSize && item.minSize !== "0px";
+
+const getItemMinMaxSizeInTemplate = (itemUIModel: ItemExtended) =>
+  !hasAbsoluteValue(itemUIModel.item) && hasMinSize(itemUIModel.item)
+    ? `minmax(${itemUIModel.item.minSize},${itemUIModel.actualSize})`
+    : itemUIModel.actualSize;
+
 export const sizesToGridTemplate = (
   items: LayoutSplitterDistributionItem[],
   itemsInfo: Map<string, ItemExtended>,
@@ -26,19 +48,12 @@ export const sizesToGridTemplate = (
     .map(
       (item, index) =>
         item.dragBar?.hidden !== true && index !== lastItemIndex
-          ? `${itemsInfo.get(item.id).actualSize} ${item.dragBar?.size ?? 0}px` // Add a column to place the drag bar
-          : itemsInfo.get(item.id).actualSize // Last item or not resizable
+          ? `${getItemMinMaxSizeInTemplate(itemsInfo.get(item.id))} ${
+              item.dragBar?.size ?? 0
+            }px` // Add a column to place the drag bar
+          : getItemMinMaxSizeInTemplate(itemsInfo.get(item.id)) // Last item or not resizable
     )
     .join(" ");
-
-export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
-  Number(item.size.replace("fr", "").trim());
-
-export const getPxValue = (item: LayoutSplitterDistributionItem): number =>
-  Number(item.size.replace("px", "").trim());
-
-export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
-  item.size.includes("px");
 
 const getItemFrSize = (item: LayoutSplitterDistributionItem): string => {
   // If the component has fr value, take into account the sum of fixed values
@@ -94,6 +109,16 @@ export const incrementOffsetSize = (
     increment + (itemUIModel.item.fixedOffsetSize ?? 0)
   );
 
+/**
+ * If the item has `minSize` and its greater that the `size` value, it updates
+ * the `size` to be equal to the `minSize`.
+ */
+const checkAndSetInitialValue = (item: LayoutSplitterDistributionItem) => {
+  if (hasMinSize(item) && getPxValue(item) < getPxValue(item, "min")) {
+    item.size = item.minSize;
+  }
+};
+
 export const fixAndUpdateLayoutModel = (
   layout: LayoutSplitterDistribution,
   itemsInfo: Map<string, ItemExtended>
@@ -112,6 +137,8 @@ function fixAndUpdateSubModel(
   // Get the sum of all fr values. Also, store the sum of fixed sizes
   items.forEach((item, index) => {
     if (hasAbsoluteValue(item)) {
+      checkAndSetInitialValue(item);
+
       fixedSizesSum += getPxValue(item);
     } else {
       frSum += getFrValue(item);

@@ -10,6 +10,7 @@ const components = [
   "accordion",
   "action-group",
   "alert",
+  "barcode-scanner",
   "dropdown",
   "checkbox",
   "flexible-layout",

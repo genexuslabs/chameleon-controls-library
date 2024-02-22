@@ -212,6 +212,47 @@ export namespace Components {
          */
         "timerInterval": 50;
     }
+    /**
+     * This component allows you to scan a wide variety of types of barcode and QR
+     * codes.
+     */
+    interface ChBarcodeScanner {
+        /**
+          * Specifies the ID of the selected camera. Only works if `cameraPreference === "SelectedById"`.
+         */
+        "cameraId"?: string;
+        /**
+          * Specifies the camera preference for scanning.
+         */
+        "cameraPreference": | "Default"
+    | "FrontCamera"
+    | "BackCamera"
+    | "SelectedById";
+        /**
+          * Specifies how much time (in ms) should pass before to emit the read event with the same last decoded text. If the last decoded text is different from the new decoded text, this property is ignored.
+         */
+        "intervalBetweenReadsForTheSameDecode": number;
+        /**
+          * The height (in pixels) of the QR box displayed at the center of the video.
+         */
+        "qrBoxHeight": number;
+        /**
+          * The width (in pixels) of the QR box displayed at the center of the video.
+         */
+        "qrBoxWidth": number;
+        /**
+          * Scan a file a return a promise with the decoded text.
+         */
+        "scan": (imageFile: File) => Promise<string>;
+        /**
+          * @todo Add support
+         */
+        "scanMode": "camera" | "file";
+        /**
+          * `true` if the control should stop the scanning.
+         */
+        "stopped": boolean;
+    }
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -2177,6 +2218,10 @@ export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAlertElement;
 }
+export interface ChBarcodeScannerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChBarcodeScannerElement;
+}
 export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
@@ -2389,6 +2434,28 @@ declare global {
     var HTMLChAlertElement: {
         prototype: HTMLChAlertElement;
         new (): HTMLChAlertElement;
+    };
+    interface HTMLChBarcodeScannerElementEventMap {
+        "read": string;
+        "cameras": string[];
+    }
+    /**
+     * This component allows you to scan a wide variety of types of barcode and QR
+     * codes.
+     */
+    interface HTMLChBarcodeScannerElement extends Components.ChBarcodeScanner, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChBarcodeScannerElementEventMap>(type: K, listener: (this: HTMLChBarcodeScannerElement, ev: ChBarcodeScannerCustomEvent<HTMLChBarcodeScannerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChBarcodeScannerElementEventMap>(type: K, listener: (this: HTMLChBarcodeScannerElement, ev: ChBarcodeScannerCustomEvent<HTMLChBarcodeScannerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChBarcodeScannerElement: {
+        prototype: HTMLChBarcodeScannerElement;
+        new (): HTMLChBarcodeScannerElement;
     };
     interface HTMLChCheckboxElementEventMap {
         "click": any;
@@ -3349,6 +3416,7 @@ declare global {
         "ch-action-group-item": HTMLChActionGroupItemElement;
         "ch-action-group-render": HTMLChActionGroupRenderElement;
         "ch-alert": HTMLChAlertElement;
+        "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
@@ -3568,6 +3636,51 @@ declare namespace LocalJSX {
           * Sets the desired interval
          */
         "timerInterval"?: 50;
+    }
+    /**
+     * This component allows you to scan a wide variety of types of barcode and QR
+     * codes.
+     */
+    interface ChBarcodeScanner {
+        /**
+          * Specifies the ID of the selected camera. Only works if `cameraPreference === "SelectedById"`.
+         */
+        "cameraId"?: string;
+        /**
+          * Specifies the camera preference for scanning.
+         */
+        "cameraPreference"?: | "Default"
+    | "FrontCamera"
+    | "BackCamera"
+    | "SelectedById";
+        /**
+          * Specifies how much time (in ms) should pass before to emit the read event with the same last decoded text. If the last decoded text is different from the new decoded text, this property is ignored.
+         */
+        "intervalBetweenReadsForTheSameDecode"?: number;
+        /**
+          * Fired when the control is first rendered. Contains the ids about all available cameras.
+         */
+        "onCameras"?: (event: ChBarcodeScannerCustomEvent<string[]>) => void;
+        /**
+          * Fired when the menu action is activated.
+         */
+        "onRead"?: (event: ChBarcodeScannerCustomEvent<string>) => void;
+        /**
+          * The height (in pixels) of the QR box displayed at the center of the video.
+         */
+        "qrBoxHeight"?: number;
+        /**
+          * The width (in pixels) of the QR box displayed at the center of the video.
+         */
+        "qrBoxWidth"?: number;
+        /**
+          * @todo Add support
+         */
+        "scanMode"?: "camera" | "file";
+        /**
+          * `true` if the control should stop the scanning.
+         */
+        "stopped"?: boolean;
     }
     interface ChCheckbox {
         /**
@@ -5590,6 +5703,7 @@ declare namespace LocalJSX {
         "ch-action-group-item": ChActionGroupItem;
         "ch-action-group-render": ChActionGroupRender;
         "ch-alert": ChAlert;
+        "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
@@ -5668,6 +5782,11 @@ declare module "@stencil/core" {
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
             "ch-action-group-render": LocalJSX.ChActionGroupRender & JSXBase.HTMLAttributes<HTMLChActionGroupRenderElement>;
             "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
+            /**
+             * This component allows you to scan a wide variety of types of barcode and QR
+             * codes.
+             */
+            "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;

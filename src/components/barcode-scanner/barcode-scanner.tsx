@@ -22,9 +22,9 @@ const cameraPreferenceDictionary = {
 } as const;
 
 /**
- * @slot readerContainer - The slot where live the code reader tool.
+ * This component allows you to scan a wide variety of types of barcode and QR
+ * codes.
  */
-
 @Component({
   tag: "ch-barcode-scanner",
   styleUrl: "barcode-scanner.scss",

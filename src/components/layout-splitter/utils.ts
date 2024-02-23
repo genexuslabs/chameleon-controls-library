@@ -241,6 +241,78 @@ function fixAndUpdateSubModel(
   return fixedSizesSum;
 }
 
+const sizeIncrementDictionary: {
+  [key in "px-px" | "px-fr" | "fr-px" | "fr-fr"]: (
+    startItemUIModel: ItemExtended,
+    endItemUIModel: ItemExtended,
+    incrementInPx: number,
+    remainingRelativeSizeInPixels: number
+  ) => void;
+} = {
+  "px-px": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    updatePxSize(startItemUIModel, incrementInPx);
+    updatePxSize(endItemUIModel, -incrementInPx);
+  },
+
+  "px-fr": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    updatePxSize(startItemUIModel, incrementInPx);
+    incrementOffsetSize(endItemUIModel, -incrementInPx);
+  },
+
+  "fr-px": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    incrementOffsetSize(startItemUIModel, incrementInPx);
+    updatePxSize(endItemUIModel, -incrementInPx);
+  },
+
+  "fr-fr": (
+    startItemUIModel,
+    endItemUIModel,
+    incrementInPx,
+    remainingRelativeSizeInPixels
+  ) => {
+    const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
+    updateFrSize(startItemUIModel, incrementInFr);
+    updateFrSize(endItemUIModel, -incrementInFr);
+  }
+};
+
+const addSizeIncrementInComponents = (
+  startItemUIModel: ItemExtended,
+  endItemUIModel: ItemExtended,
+  incrementInPx: number,
+  remainingRelativeSizeInPixels: number
+) => {
+  let actualIncrement = incrementInPx;
+
+  const resizeOperationStatus = canResizeBothItems(
+    startItemUIModel,
+    endItemUIModel,
+    "px",
+    "px",
+    incrementInPx
+  );
+
+  if (resizeOperationStatus.status === "deny") {
+    return;
+  }
+  if (resizeOperationStatus.status === "not-enough-space") {
+    actualIncrement =
+      resizeOperationStatus.availableIncrement * Math.sign(actualIncrement);
+  }
+
+  const startItemSizeType = hasAbsoluteValue(startItemUIModel.item)
+    ? "px"
+    : "fr";
+  const endItemSizeType = hasAbsoluteValue(endItemUIModel.item) ? "px" : "fr";
+
+  sizeIncrementDictionary[`${startItemSizeType}-${endItemSizeType}`](
+    startItemUIModel,
+    endItemUIModel,
+    actualIncrement,
+    remainingRelativeSizeInPixels
+  );
+};
+
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
   itemsInfo: Map<string, ItemExtended>,
@@ -266,47 +338,13 @@ export const updateComponentsAndDragBar = (
 
   const remainingRelativeSizeInPixels =
     info.containerSize - fixedSizesSumParent;
-  const incrementInFr = incrementInPxRTL / remainingRelativeSizeInPixels;
 
-  // px / px
-  if (
-    hasAbsoluteValue(startItemUIModel.item) &&
-    hasAbsoluteValue(endItemUIModel.item)
-  ) {
-    const resizeOperationStatus = canResizeBothItems(
-      startItemUIModel,
-      endItemUIModel,
-      "px",
-      "px",
-      incrementInPxRTL
-    );
-
-    if (resizeOperationStatus.status === "deny") {
-      return;
-    }
-    if (resizeOperationStatus.status === "not-enough-space") {
-      incrementInPxRTL =
-        resizeOperationStatus.availableIncrement * Math.sign(incrementInPxRTL);
-    }
-
-    updatePxSize(startItemUIModel, incrementInPxRTL);
-    updatePxSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // px / fr
-  else if (hasAbsoluteValue(startItemUIModel.item)) {
-    updatePxSize(startItemUIModel, incrementInPxRTL);
-    incrementOffsetSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // fr / px
-  else if (hasAbsoluteValue(endItemUIModel.item)) {
-    incrementOffsetSize(startItemUIModel, incrementInPxRTL);
-    updatePxSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // fr / fr
-  else {
-    updateFrSize(startItemUIModel, incrementInFr);
-    updateFrSize(endItemUIModel, -incrementInFr);
-  }
+  addSizeIncrementInComponents(
+    startItemUIModel,
+    endItemUIModel,
+    incrementInPxRTL,
+    remainingRelativeSizeInPixels
+  );
 
   // Update in the DOM the grid distribution
   info.container.style.setProperty(

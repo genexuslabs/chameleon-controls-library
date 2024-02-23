@@ -119,6 +119,62 @@ const checkAndSetInitialValue = (item: LayoutSplitterDistributionItem) => {
   }
 };
 
+/**
+ * Given the two items to resize and its increment (`incrementInPx`), return if
+ * both items can be resized or the resize operation must be adjusted or
+ * canceled.
+ */
+const canResizeBothItems = (
+  startItemUIModel: ItemExtended,
+  endItemUIModel: ItemExtended,
+  startItemSizeType: "px" | "fr",
+  endItemSizeType: "px" | "fr",
+  incrementInPx: number
+): {
+  status: "ok" | "deny" | "not-enough-space";
+  availableIncrement?: number;
+} => {
+  // The start item has min size
+  if (hasMinSize(startItemUIModel.item)) {
+    const minSize = getPxValue(startItemUIModel.item, "min");
+    const size =
+      startItemSizeType === "px"
+        ? getPxValue(startItemUIModel.item)
+        : getPxValue(startItemUIModel.item); // TODO: Get the DOM reference and update this value
+
+    const availableIncrement = size - minSize;
+
+    // It means the startItem must be shrunk, but it does not have enough space
+    if (availableIncrement + incrementInPx <= 0) {
+      return {
+        status: availableIncrement === 0 ? "deny" : "not-enough-space",
+        availableIncrement: availableIncrement
+      };
+    }
+  }
+
+  // The end item has min size
+  if (hasMinSize(endItemUIModel.item)) {
+    const minSize = getPxValue(endItemUIModel.item, "min");
+    const size =
+      endItemSizeType === "px"
+        ? getPxValue(endItemUIModel.item)
+        : getPxValue(endItemUIModel.item); // TODO: Get the DOM reference and update this value
+
+    const availableIncrement = size - minSize;
+
+    // It means the endItem must be shrunk, but it does not have enough space
+    if (availableIncrement - incrementInPx <= 0) {
+      return {
+        status: availableIncrement === 0 ? "deny" : "not-enough-space",
+        availableIncrement: availableIncrement
+      };
+    }
+  }
+
+  return { status: "ok" };
+};
+
 export const fixAndUpdateLayoutModel = (
   layout: LayoutSplitterDistribution,
   itemsInfo: Map<string, ItemExtended>
@@ -193,7 +249,7 @@ export const updateComponentsAndDragBar = (
 ) => {
   // - - - - - - - - - Increments - - - - - - - - -
   // When the language is RTL, the increment is in the opposite direction
-  const incrementInPxRTL =
+  let incrementInPxRTL =
     info.direction === "columns" && info.RTL ? -incrementInPx : incrementInPx;
 
   // Components at each position of the drag bar
@@ -217,6 +273,22 @@ export const updateComponentsAndDragBar = (
     hasAbsoluteValue(startItemUIModel.item) &&
     hasAbsoluteValue(endItemUIModel.item)
   ) {
+    const resizeOperationStatus = canResizeBothItems(
+      startItemUIModel,
+      endItemUIModel,
+      "px",
+      "px",
+      incrementInPxRTL
+    );
+
+    if (resizeOperationStatus.status === "deny") {
+      return;
+    }
+    if (resizeOperationStatus.status === "not-enough-space") {
+      incrementInPxRTL =
+        resizeOperationStatus.availableIncrement * Math.sign(incrementInPxRTL);
+    }
+
     updatePxSize(startItemUIModel, incrementInPxRTL);
     updatePxSize(endItemUIModel, -incrementInPxRTL);
   }

@@ -14,6 +14,7 @@ import { isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { getAlignmentValue } from "./utils";
 
+const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
 
 // Custom vars
@@ -81,6 +82,7 @@ export class ChPopover {
   // Drag
   #draggedDistanceX: number = 0;
   #draggedDistanceY: number = 0;
+  #dragging = false;
   #initialDragEvent: MouseEvent;
   #lastDragEvent: MouseEvent;
   #isRTLDirection: boolean;
@@ -92,7 +94,6 @@ export class ChPopover {
 
   @State() actualBlockAlign: ChPopoverAlign;
   @State() actualInlineAlign: ChPopoverAlign;
-  @State() dragging = false;
   @State() relativePopover = false;
 
   /**
@@ -199,6 +200,15 @@ export class ChPopover {
    * Emitted when the popover is closed.
    */
   @Event() popoverClosed: EventEmitter;
+
+  #addDraggingClass = () => {
+    if (!this.#dragging) {
+      this.el.classList.add(DRAGGING_CLASS);
+      this.#dragging = true;
+    }
+  };
+
+  #removeDraggingClass = () => this.el.classList.remove(DRAGGING_CLASS);
 
   #avoidFlickeringInTheNextRender = (addClass: boolean) => {
     if (addClass) {
@@ -329,18 +339,15 @@ export class ChPopover {
   };
 
   #handleMouseDown = (event: MouseEvent) => {
-    // Necessary to avoid selecting the text of other elements
-    event.preventDefault();
+    // We should not add preventDefault in this instance, because we would
+    // prevent some normal actions like clicking a button or focusing an input
 
     this.#dragRAF ||= new SyncWithRAF();
-
-    this.dragging = true;
     this.#initialDragEvent = event;
 
     // Add listeners
     document.addEventListener("mousemove", this.#trackElementDragRAF, {
-      capture: true,
-      passive: true
+      capture: true
     });
 
     document.addEventListener("mouseup", this.#handleDragEnd, {
@@ -351,6 +358,14 @@ export class ChPopover {
 
   #trackElementDragRAF = (event: MouseEvent) => {
     this.#dragRAF.perform(this.#trackElementDrag, () => {
+      // Improve drag UX by not selecting any button or clicking interactive
+      // elements
+      event.preventDefault();
+
+      // We remove the pointer-events and user-select properties after the first
+      // "mousemove", otherwise double clicking to select text would not work
+      this.#addDraggingClass();
+
       this.#lastDragEvent = event;
     });
   };
@@ -396,7 +411,7 @@ export class ChPopover {
       capture: true
     });
 
-    this.dragging = false;
+    this.#removeDraggingClass();
 
     // Free the memory
     this.#dragRAF = null;
@@ -477,8 +492,7 @@ export class ChPopover {
     return (
       <Host
         class={{
-          "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
-          "gx-popover-dragging": this.dragging
+          "gx-popover-header-drag": !this.hidden && this.allowDrag === "header"
         }}
         popover={this.mode}
         onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}

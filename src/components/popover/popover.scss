@@ -103,6 +103,7 @@ $ch-popover-y--same-layer: calc(
   // Remove any type of pointer when dragging, to make "cursor: move" effective
   ::slotted(*) {
     pointer-events: none;
+    user-select: none;
   }
 }
 

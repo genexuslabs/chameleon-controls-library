@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>Checkbox</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+
+    <style>
+      body {
+        display: grid;
+        grid-template-rows: 1fr 100px;
+        gap: var(--spacing-un-spacing--l);
+      }
+    </style>
+  </head>
+  <body class="white-label">
+    <div class="card">
+      <ch-barcode-scanner></ch-barcode-scanner>
+    </div>
+
+    <div class="card">
+      Content:
+
+      <span></span>
+    </div>
+
+    <script>
+      window.addEventListener("appload", () => {
+        const bardCodeScanner = document.querySelector("ch-barcode-scanner");
+        const spanContent = document.querySelector("span");
+
+        bardCodeScanner.addEventListener("read", event => {
+          spanContent.textContent = event.detail;
+        });
+      });
+    </script>
+  </body>
+</html>

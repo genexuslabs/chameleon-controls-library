@@ -68,7 +68,13 @@
   <body class="white-label">
     <div class="main-container">
       <ch-popover id="popover1">
-        <div slot="header">Header title <button>Close</button></div>
+        <div
+          slot="header"
+          style="display: flex; justify-content: space-between"
+        >
+          Header title
+          <button id="close-button-2" class="button-primary">Close</button>
+        </div>
         Popover content
 
         <div>
@@ -76,7 +82,7 @@
             Any content
             <input class="form-input" type="text" />
           </label>
-          <button id="close-button" class="button-primary">Close</button>
+          <button id="close-button-1" class="button-primary">Close</button>
         </div>
       </ch-popover>
 
@@ -212,8 +218,15 @@
         const checkboxVisible1 = document.querySelector("#popover-1-visible");
         const checkboxVisible2 = document.querySelector("#popover-2-visible");
 
-        const closeButton = document.querySelector("#close-button");
-        closeButton.addEventListener("click", () => {
+        const closeButton1 = document.querySelector("#close-button-1");
+        const closeButton2 = document.querySelector("#close-button-2");
+
+        closeButton1.addEventListener("click", () => {
+          popoverElement1.hidden = true;
+          checkboxVisible1.value = false;
+        });
+
+        closeButton2.addEventListener("click", () => {
           popoverElement1.hidden = true;
           checkboxVisible1.value = false;
         });

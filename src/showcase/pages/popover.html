@@ -6,28 +6,12 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>ch-tree</title>
+    <title>Popover</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
 
     <style>
-      @font-face {
-        font-family: SourceSansPro_Regular;
-        src: url("assets/fonts/SourceSansPro_Regular.woff2");
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      body {
-        display: flex;
-        margin: 0;
-        min-height: 100vh;
-      }
-
       fieldset {
         display: flex;
         flex-wrap: wrap;
@@ -81,11 +65,19 @@
       } */
     </style>
   </head>
-  <body>
+  <body class="white-label">
     <div class="main-container">
       <ch-popover id="popover1">
         <div slot="header">Header title <button>Close</button></div>
         Popover content
+
+        <div>
+          <label>
+            Any content
+            <input class="form-input" type="text" />
+          </label>
+          <button id="close-button" class="button-primary">Close</button>
+        </div>
       </ch-popover>
 
       <button id="action1">Open popover</button>
@@ -220,6 +212,12 @@
         const checkboxVisible1 = document.querySelector("#popover-1-visible");
         const checkboxVisible2 = document.querySelector("#popover-2-visible");
 
+        const closeButton = document.querySelector("#close-button");
+        closeButton.addEventListener("click", () => {
+          popoverElement1.hidden = true;
+          checkboxVisible1.value = false;
+        });
+
         popoverElement1.actionElement = actionElement1;
         popoverElement2.actionElement = actionElement2;
 
@@ -308,7 +306,5 @@
         });
       });
     </script>
-
-    <script src="./assets/scripts/common.js"></script>
   </body>
 </html>

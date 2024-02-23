@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>Dialog</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+
+    <style></style>
+  </head>
+  <body class="white-label">
+    <div class="card">
+      <!-- ch-dialog -->
+      <ch-dialog>
+        <input type="text" id="my-input" />
+        <button id="my-button">button</button>
+      </ch-dialog>
+
+      <!-- actions -->
+      <button id="show-dialog-btn">show dialog</button>
+      <script>
+        const showDialogBtn = document.getElementById("show-dialog-btn");
+        const chDialog = document.querySelector("ch-dialog");
+        showDialogBtn.addEventListener("click", () => {
+          chDialog.hidden = false;
+        });
+        const myInput = document.getElementById("my-input");
+        const myButton = document.getElementById("my-button");
+        myButton.addEventListener("click", e => {
+          console.log("clicked");
+        });
+      </script>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+@import "../../common/base";
+
+@include box-sizing();
+
+$ch-dialog-x: calc((var(--ch-dialog-dragged-x)) * var(--ch-dialog-rtl));
+
+$ch-dialog-y: calc(var(--ch-dialog-dragged-y));
+
+$ch-dialog-x--same-layer: calc(
+  (var(--ch-dialog-inline) + var(--ch-dialog-dragged-x)) * var(--ch-dialog-rtl)
+);
+
+$ch-dialog-y--same-layer: calc(
+  var(--ch-dialog-block) + var(--ch-dialog-dragged-y)
+);
+
+:host {
+  /**
+   * @prop --ch-dialog-separation-x:
+   * Specifies the separation between the action and dialog in the x axis.
+   * @default 0px
+   */
+  --ch-dialog-separation-x: 0px;
+
+  /**
+   * @prop --ch-dialog-separation-y:
+   * Specifies the separation between the action and dialog in the y axis.
+   * @default 0px
+   */
+  --ch-dialog-separation-y: 0px;
+
+  --ch-dialog-dragged-x: 0px;
+  --ch-dialog-dragged-y: 0px;
+  --ch-dialog-rtl: 1;
+
+  // Necessary when the dialog is not placed in a new top layer. For example,
+  // when nesting dropdowns
+  //position: fixed;
+
+  // Reset browser defaults
+  margin: 0;
+  padding: 0;
+  background-color: unset;
+  border: unset;
+  color: unset;
+  overflow: visible;
+
+  top: 0;
+  inset-inline-start: 0;
+
+  // Alignment and Drag
+  //translate: $ch-dialog-x $ch-dialog-y;
+}
+
+dialog {
+  position: fixed;
+  translate: $ch-dialog-x $ch-dialog-y;
+}
+
+// - - - - - - - - - - - - - - - -
+//             Hidden
+// - - - - - - - - - - - - - - - -
+:host([hidden]) {
+  display: block !important;
+  visibility: hidden;
+}
+
+// content-visibility: hidden is faster for rendering the content back, as
+// it preserves the rendering state of the content (display: none does not)
+@supports (content-visibility: hidden) {
+  :host([hidden]) {
+    content-visibility: hidden;
+  }
+}
+
+@supports not (content-visibility: hidden) {
+  :host([hidden]) {
+    visibility: hidden;
+  }
+}
+
+// Prevents initial flickering
+:host(.gx-dialog-prevent-flickering) {
+  // Necessary to override visibility: inherit from Stencil's hydration
+  visibility: hidden !important;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Drag
+// - - - - - - - - - - - - - - - -
+:host(.gx-dialog-header-drag) {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+
+.gx-dialog-dragging {
+  cursor: move;
+  // Remove any type of pointer when dragging, to make "cursor: move" effective
+  ::slotted(*) {
+    opacity: 0.2;
+    pointer-events: none !important;
+    user-select: none;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//         Block alignment
+// - - - - - - - - - - - - - - - -
+// :host([block-align="outside-start"]) {
+//   --ch-dialog-block: calc(-100% + var(--ch-dialog-separation-y) * -1);
+// }
+
+// :host([block-align="inside-start"]) {
+//   --ch-dialog-block: var(--ch-dialog-separation-y);
+// }
+
+// :host([block-align="center"]) {
+//   --ch-dialog-block: calc(
+//     var(--ch-dialog-action-height) / 2 - 50% + var(--ch-dialog-separation-y)
+//   );
+// }
+
+// :host([block-align="inside-end"]) {
+//   --ch-dialog-block: calc(
+//     var(--ch-dialog-action-height) - (100% + var(--ch-dialog-separation-y))
+//   );
+// }
+
+// :host([block-align="outside-end"]) {
+//   --ch-dialog-block: calc(
+//     var(--ch-dialog-action-height) + var(--ch-dialog-separation-y)
+//   );
+// }
+
+// // - - - - - - - - - - - - - - - -
+// //        Inline alignment
+// // - - - - - - - - - - - - - - - -
+// :host([inline-align="outside-start"]) {
+//   --ch-dialog-inline: calc(-100% + var(--ch-dialog-separation-x) * -1);
+// }
+
+// :host([inline-align="inside-start"]) {
+//   --ch-dialog-inline: var(--ch-dialog-separation-x);
+// }
+
+// :host([inline-align="center"]) {
+//   --ch-dialog-inline: calc(
+//     var(--ch-dialog-action-width) / 2 - 50% + var(--ch-dialog-separation-x)
+//   );
+// }
+
+// :host([inline-align="inside-end"]) {
+//   --ch-dialog-inline: calc(
+//     var(--ch-dialog-action-width) - (100% + var(--ch-dialog-separation-x))
+//   );
+// }
+
+// :host([inline-align="outside-end"]) {
+//   --ch-dialog-inline: calc(
+//     var(--ch-dialog-action-width) + var(--ch-dialog-separation-x)
+//   );
+// }

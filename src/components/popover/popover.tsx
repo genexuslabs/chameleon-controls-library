@@ -208,7 +208,10 @@ export class ChPopover {
     }
   };
 
-  #removeDraggingClass = () => this.el.classList.remove(DRAGGING_CLASS);
+  #removeDraggingClass = () => {
+    this.el.classList.remove(DRAGGING_CLASS);
+    this.#dragging = false;
+  };
 
   #avoidFlickeringInTheNextRender = (addClass: boolean) => {
     if (addClass) {

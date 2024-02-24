@@ -306,7 +306,7 @@ const addSizeIncrementInComponents = (
   remainingRelativeSizeInPixels: number,
   dragBarContainer: HTMLElement,
   direction: LayoutSplitterDirection
-) => {
+): boolean => {
   let actualIncrement = incrementInPx;
 
   const resizeOperationStatus = canResizeBothItems(
@@ -320,7 +320,7 @@ const addSizeIncrementInComponents = (
   );
 
   if (resizeOperationStatus.status === "deny") {
-    return;
+    return false;
   }
   if (resizeOperationStatus.status === "not-enough-space") {
     actualIncrement =
@@ -338,6 +338,8 @@ const addSizeIncrementInComponents = (
     actualIncrement,
     remainingRelativeSizeInPixels
   );
+
+  return true;
 };
 
 export const updateComponentsAndDragBar = (
@@ -348,7 +350,7 @@ export const updateComponentsAndDragBar = (
 ) => {
   // - - - - - - - - - Increments - - - - - - - - -
   // When the language is RTL, the increment is in the opposite direction
-  let incrementInPxRTL =
+  const incrementInPxRTL =
     info.direction === "columns" && info.RTL ? -incrementInPx : incrementInPx;
 
   // Components at each position of the drag bar
@@ -366,7 +368,7 @@ export const updateComponentsAndDragBar = (
   const remainingRelativeSizeInPixels =
     info.containerSize - fixedSizesSumParent;
 
-  addSizeIncrementInComponents(
+  const mustUpdateTheDOM = addSizeIncrementInComponents(
     startItemUIModel,
     endItemUIModel,
     incrementInPxRTL,
@@ -374,6 +376,11 @@ export const updateComponentsAndDragBar = (
     info.dragBarContainer,
     info.direction
   );
+
+  // No resizing can be done, so there is no need to update the DOM
+  if (!mustUpdateTheDOM) {
+    return;
+  }
 
   // Update in the DOM the grid distribution
   info.container.style.setProperty(

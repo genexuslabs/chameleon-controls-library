@@ -33,6 +33,22 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
   shadow: true
 })
 export class ChDialog {
+  /*
+  INDEX:
+  1.OWN PROPERTIES
+  2.REFERENCE TO ELEMENTS
+  3.STATE() VARIABLES
+  4.PUBLIC PROPERTY API / WATCH'S
+  5.EVENTS (EMIT)
+  6.COMPONENT LIFECYCLE EVENTS
+  7.LISTENERS
+  8.PUBLIC METHODS API
+  9.LOCAL METHODS
+  10.RENDER() FUNCTION
+  */
+
+  // 1.OWN PROPERTIES //
+
   // Sync computations with frames
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
 
@@ -48,13 +64,19 @@ export class ChDialog {
   #lastDragEvent: MouseEvent;
   #isRTLDirection: boolean;
 
+  // 2. REFERENCE TO ELEMENTS //
+
   // Refs
   #dialogRef: HTMLDialogElement;
 
   @Element() el: HTMLChDialogElement;
 
+  // 3.STATE() VARIABLES //
+
   @State() dragging = false;
   @State() relativeDialog = false;
+
+  // 4.PUBLIC PROPERTY API / WATCH'S //
 
   /**
    * Specifies the drag behavior of the dialog.
@@ -93,6 +115,8 @@ export class ChDialog {
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly showHeader = true;
 
+  // 5.EVENTS (EMIT) //
+
   /**
    * Emitted when the dialog is opened.
    */
@@ -102,6 +126,53 @@ export class ChDialog {
    * Emitted when the dialog is closed.
    */
   @Event() dialogClosed: EventEmitter;
+
+  // 6.COMPONENT LIFECYCLE EVENTS //
+
+  connectedCallback() {
+    // Set RTL watcher
+    this.#rtlWatcher = new MutationObserver(() => {
+      this.#isRTLDirection = isRTL();
+
+      if (this.#isRTLDirection) {
+        this.el.style.setProperty(DIALOG_RTL, DIALOG_RTL_VALUE);
+      } else {
+        this.el.style.removeProperty(DIALOG_RTL);
+      }
+    });
+
+    // Observe the dir attribute in the document
+    this.#rtlWatcher.observe(document.documentElement, {
+      attributeFilter: ["dir"]
+    });
+  }
+
+  componentWillRender() {
+    this.#checkWatchers &&= false;
+  }
+
+  componentDidLoad() {
+    if (!this.hidden) {
+      this.el.showPopover();
+    }
+  }
+
+  disconnectedCallback() {
+    // Defensive programming. Make sure the document does not have any unwanted handler
+    this.#handleDragEnd();
+
+    // Disconnect RTL watcher
+    if (this.#rtlWatcher) {
+      this.#rtlWatcher.disconnect();
+      this.#rtlWatcher = null; // Free the memory
+    }
+  }
+
+  // 7.LISTENERS //
+
+  // 8.PUBLIC METHODS API //
+
+  // 9.LOCAL METHODS //
 
   #addDraggingClass = () => {
     if (!this.#dragging) {
@@ -212,44 +283,7 @@ export class ChDialog {
     this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
   };
 
-  connectedCallback() {
-    // Set RTL watcher
-    this.#rtlWatcher = new MutationObserver(() => {
-      this.#isRTLDirection = isRTL();
-
-      if (this.#isRTLDirection) {
-        this.el.style.setProperty(DIALOG_RTL, DIALOG_RTL_VALUE);
-      } else {
-        this.el.style.removeProperty(DIALOG_RTL);
-      }
-    });
-
-    // Observe the dir attribute in the document
-    this.#rtlWatcher.observe(document.documentElement, {
-      attributeFilter: ["dir"]
-    });
-  }
-
-  componentWillRender() {
-    this.#checkWatchers &&= false;
-  }
-
-  componentDidLoad() {
-    if (!this.hidden) {
-      this.el.showPopover();
-    }
-  }
-
-  disconnectedCallback() {
-    // Defensive programming. Make sure the document does not have any unwanted handler
-    this.#handleDragEnd();
-
-    // Disconnect RTL watcher
-    if (this.#rtlWatcher) {
-      this.#rtlWatcher.disconnect();
-      this.#rtlWatcher = null; // Free the memory
-    }
-  }
+  // 10.RENDER() FUNCTION //
 
   render() {
     return (
@@ -264,13 +298,13 @@ export class ChDialog {
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         >
           {this.showHeader && (
-            <div
+            <header
               class="header"
               part="header"
               onMouseDown={this.#handleMouseDown}
             >
               <slot name="header" />
-            </div>
+            </header>
           )}
           <slot />
         </dialog>

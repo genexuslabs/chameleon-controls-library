@@ -24,6 +24,7 @@ import {
   FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
+  hasMinSize,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
@@ -263,7 +264,7 @@ export class ChLayoutSplitter implements ChComponent {
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
       direction: direction,
-      dragBarContainer: dragBar,
+      dragBar: dragBar,
       fixedSizesSumRoot: this.#fixedSizesSumRoot,
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
@@ -368,7 +369,7 @@ export class ChLayoutSplitter implements ChComponent {
           )}
         </div>
       ) : (
-        <div id={item.id} class="leaf">
+        <div id={item.id} class={!hasMinSize(item) ? "leaf" : undefined}>
           <slot key={item.id} name={item.id} />
         </div>
       ),

@@ -68,7 +68,7 @@ export type DragBarMouseDownEventInfo = {
   container: HTMLElement;
   containerSize: number;
   direction: LayoutSplitterDirection;
-  dragBarContainer: HTMLElement;
+  dragBar: HTMLElement;
   fixedSizesSumRoot: number;
   itemStartId: string;
   itemEndId: string;

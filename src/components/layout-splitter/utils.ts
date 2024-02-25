@@ -124,11 +124,10 @@ const getItemSizeUsingReference = (
   dragBarContainer: HTMLElement,
   itemUIModel: ItemExtended,
   direction: LayoutSplitterDirection
-) => {
+): number => {
   const itemRef = dragBarContainer.querySelector(
     `[id="${itemUIModel.item.id}"]`
   );
-
   return direction === "columns" ? itemRef.clientWidth : itemRef.clientHeight;
 };
 
@@ -180,7 +179,7 @@ const canResizeBothItems = (
         ? getPxValue(endItemUIModel.item)
         : getItemSizeUsingReference(
             dragBarContainer,
-            startItemUIModel,
+            endItemUIModel,
             direction
           );
 
@@ -307,13 +306,17 @@ const addSizeIncrementInComponents = (
   dragBarContainer: HTMLElement,
   direction: LayoutSplitterDirection
 ): boolean => {
+  const startItemSizeType = hasAbsoluteValue(startItemUIModel.item)
+    ? "px"
+    : "fr";
+  const endItemSizeType = hasAbsoluteValue(endItemUIModel.item) ? "px" : "fr";
   let actualIncrement = incrementInPx;
 
   const resizeOperationStatus = canResizeBothItems(
     startItemUIModel,
     endItemUIModel,
-    "px",
-    "px",
+    startItemSizeType,
+    endItemSizeType,
     incrementInPx,
     dragBarContainer,
     direction
@@ -326,11 +329,6 @@ const addSizeIncrementInComponents = (
     actualIncrement =
       resizeOperationStatus.availableIncrement * Math.sign(actualIncrement);
   }
-
-  const startItemSizeType = hasAbsoluteValue(startItemUIModel.item)
-    ? "px"
-    : "fr";
-  const endItemSizeType = hasAbsoluteValue(endItemUIModel.item) ? "px" : "fr";
 
   sizeIncrementDictionary[`${startItemSizeType}-${endItemSizeType}`](
     startItemUIModel,
@@ -373,7 +371,7 @@ export const updateComponentsAndDragBar = (
     endItemUIModel,
     incrementInPxRTL,
     remainingRelativeSizeInPixels,
-    info.dragBarContainer,
+    info.container,
     info.direction
   );
 
@@ -389,7 +387,7 @@ export const updateComponentsAndDragBar = (
   );
 
   // Update the current value in the drag bar
-  info.dragBarContainer.ariaValueText = startItemUIModel.actualSize;
+  info.dragBar.ariaValueText = startItemUIModel.actualSize;
 };
 
 export const getMousePosition = (

@@ -288,6 +288,10 @@ export class ChDialog {
     this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
   };
 
+  #closeHandler = () => {
+    this.hidden = true;
+  };
+
   // 10.RENDER() FUNCTION //
 
   render() {
@@ -311,6 +315,7 @@ export class ChDialog {
               <slot name="header-start" />
               {this.caption && <h2 part="caption">{this.caption}</h2>}
               <slot name="header-end" />
+              <button part="close" onClick={this.#closeHandler}></button>
             </header>
           )}
           <slot />

@@ -303,7 +303,8 @@ export class ChDialog {
               part="header"
               onMouseDown={this.#handleMouseDown}
             >
-              <slot name="header" />
+              <slot name="header-start" />
+              <slot name="header-end" />
             </header>
           )}
           <slot />

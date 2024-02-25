@@ -3,7 +3,6 @@ import {
   DragBarMouseDownEventInfo,
   GroupExtended,
   ItemExtended,
-  LayoutSplitterDirection,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
@@ -121,14 +120,13 @@ const checkAndSetInitialValue = (item: LayoutSplitterDistributionItem) => {
 };
 
 const getItemSizeUsingReference = (
-  dragBarContainer: HTMLElement,
-  itemUIModel: ItemExtended,
-  direction: LayoutSplitterDirection
+  info: DragBarMouseDownEventInfo,
+  itemUIModel: ItemExtended
 ): number => {
-  const itemRef = dragBarContainer.querySelector(
-    `[id="${itemUIModel.item.id}"]`
-  );
-  return direction === "columns" ? itemRef.clientWidth : itemRef.clientHeight;
+  const itemRef = info.container.querySelector(`[id="${itemUIModel.item.id}"]`);
+  return info.direction === "columns"
+    ? itemRef.clientWidth
+    : itemRef.clientHeight;
 };
 
 /**
@@ -142,8 +140,7 @@ const canResizeBothItems = (
   startItemSizeType: "px" | "fr",
   endItemSizeType: "px" | "fr",
   incrementInPx: number,
-  dragBarContainer: HTMLElement,
-  direction: LayoutSplitterDirection
+  info: DragBarMouseDownEventInfo
 ): {
   status: "ok" | "deny" | "not-enough-space";
   availableIncrement?: number;
@@ -154,11 +151,7 @@ const canResizeBothItems = (
     const size =
       startItemSizeType === "px"
         ? getPxValue(startItemUIModel.item)
-        : getItemSizeUsingReference(
-            dragBarContainer,
-            startItemUIModel,
-            direction
-          );
+        : getItemSizeUsingReference(info, startItemUIModel);
 
     const availableIncrement = size - minSize;
 
@@ -177,11 +170,7 @@ const canResizeBothItems = (
     const size =
       endItemSizeType === "px"
         ? getPxValue(endItemUIModel.item)
-        : getItemSizeUsingReference(
-            dragBarContainer,
-            endItemUIModel,
-            direction
-          );
+        : getItemSizeUsingReference(info, endItemUIModel);
 
     const availableIncrement = size - minSize;
 
@@ -303,8 +292,7 @@ const addSizeIncrementInComponents = (
   endItemUIModel: ItemExtended,
   incrementInPx: number,
   remainingRelativeSizeInPixels: number,
-  dragBarContainer: HTMLElement,
-  direction: LayoutSplitterDirection
+  info: DragBarMouseDownEventInfo
 ): boolean => {
   const startItemSizeType = hasAbsoluteValue(startItemUIModel.item)
     ? "px"
@@ -318,8 +306,7 @@ const addSizeIncrementInComponents = (
     startItemSizeType,
     endItemSizeType,
     incrementInPx,
-    dragBarContainer,
-    direction
+    info
   );
 
   if (resizeOperationStatus.status === "deny") {
@@ -371,8 +358,7 @@ export const updateComponentsAndDragBar = (
     endItemUIModel,
     incrementInPxRTL,
     remainingRelativeSizeInPixels,
-    info.container,
-    info.direction
+    info
   );
 
   // No resizing can be done, so there is no need to update the DOM

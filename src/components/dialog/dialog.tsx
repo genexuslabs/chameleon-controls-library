@@ -115,6 +115,11 @@ export class ChDialog {
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly showHeader = true;
 
+  /**
+   * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+   */
+  @Prop() readonly caption: string;
+
   // 5.EVENTS (EMIT) //
 
   /**
@@ -304,6 +309,7 @@ export class ChDialog {
               onMouseDown={this.#handleMouseDown}
             >
               <slot name="header-start" />
+              {this.caption && <h2 part="caption">{this.caption}</h2>}
               <slot name="header-end" />
             </header>
           )}

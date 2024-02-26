@@ -106,6 +106,9 @@ export class ChPopover {
 
   // Resize
   #currentEdge: ChPopoverResizeElement;
+  #draggedDistanceXForResize: number = 0;
+  #draggedDistanceYForResize: number = 0;
+
   #resizeDictionary: {
     [key in ChPopoverResizeElement]: (popoverRect: DOMRect) => void;
   } = {
@@ -113,9 +116,12 @@ export class ChPopover {
       const currentDraggedDistanceY =
         this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
 
+      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
+
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
       setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
     },
 
@@ -137,9 +143,12 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
+      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
+
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
     },
 
@@ -167,10 +176,16 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
+      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
+      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
+
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
+      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
+
       setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
     },
@@ -185,10 +200,14 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
+      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
+
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
+
       setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
     },
@@ -203,10 +222,14 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
+      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
+
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
+
       setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
     },
@@ -585,6 +608,12 @@ export class ChPopover {
     this.#currentEdge = edge;
     this.#initialDragEvent = event;
 
+    // Initialize drag variables to improve block-start and inline-start
+    // resizing. Otherwise, the popover will always remain in the same X and Y
+    // position, even when the block-start or inline-start edges are resized
+    this.#draggedDistanceXForResize = this.#draggedDistanceX;
+    this.#draggedDistanceYForResize = this.#draggedDistanceY;
+
     // Avoid repositioning the popover
     this.#removePositionWatcher();
 
@@ -632,6 +661,10 @@ export class ChPopover {
     if (this.#resizeRAF) {
       this.#resizeRAF.cancel();
     }
+
+    // Reset dragged distance to its original value
+    setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceX);
+    setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceY);
 
     // Update the position of the popover when the resize ends
     this.#setPositionWatcher();

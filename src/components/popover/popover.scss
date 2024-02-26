@@ -237,6 +237,21 @@ $ch-popover-y--same-layer: calc(
   }
 }
 
+// "Rotate" resize cursors for the corners
+:host(.ch-popover-rtl) {
+  .corner__block-start-inline-start,
+  .corner__block-end-inline-end {
+    cursor: nesw-resize;
+  }
+}
+
+:host(.ch-popover-rtl) {
+  .corner__block-start-inline-end,
+  .corner__block-end-inline-start {
+    cursor: nwse-resize;
+  }
+}
+
 // - - - - - - - - - - - - - - - -
 //         Block alignment
 // - - - - - - - - - - - - - - - -

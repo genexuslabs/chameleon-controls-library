@@ -45,6 +45,7 @@ const POPOVER_BORDER_INLINE_START_SIZE =
   "--ch-popover-border-inline-start-width";
 const POPOVER_BORDER_INLINE_END_SIZE = "--ch-popover-border-inline-end-width";
 
+const POPOVER_RTL_CLASS = "ch-popover-rtl";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
@@ -129,8 +130,12 @@ export class ChPopover {
     },
 
     "inline-start": popoverRect => {
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
 
@@ -139,8 +144,12 @@ export class ChPopover {
     },
 
     "inline-end": popoverRect => {
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
 
@@ -151,8 +160,12 @@ export class ChPopover {
     "block-start-inline-start": popoverRect => {
       const currentDraggedDistanceY =
         this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
@@ -165,8 +178,12 @@ export class ChPopover {
     "block-start-inline-end": popoverRect => {
       const currentDraggedDistanceY =
         this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
@@ -179,8 +196,12 @@ export class ChPopover {
     "block-end-inline-start": popoverRect => {
       const currentDraggedDistanceY =
         this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
@@ -193,8 +214,12 @@ export class ChPopover {
     "block-end-inline-end": popoverRect => {
       const currentDraggedDistanceY =
         this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
-      const currentDraggedDistanceX =
+      let currentDraggedDistanceX =
         this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
 
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
@@ -700,8 +725,10 @@ export class ChPopover {
 
       if (this.#isRTLDirection) {
         this.el.style.setProperty(POPOVER_RTL, POPOVER_RTL_VALUE);
+        this.el.classList.add(POPOVER_RTL_CLASS);
       } else {
         this.el.style.removeProperty(POPOVER_RTL);
+        this.el.classList.remove(POPOVER_RTL_CLASS);
       }
     });
 

@@ -39,6 +39,12 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 const POPOVER_BLOCK_SIZE = "--ch-popover-block-size";
 const POPOVER_INLINE_SIZE = "--ch-popover-inline-size";
 
+const POPOVER_BORDER_BLOCK_START_SIZE = "--ch-popover-border-block-start-width";
+const POPOVER_BORDER_BLOCK_END_SIZE = "--ch-popover-border-block-end-width";
+const POPOVER_BORDER_INLINE_START_SIZE =
+  "--ch-popover-border-inline-start-width";
+const POPOVER_BORDER_INLINE_END_SIZE = "--ch-popover-border-inline-end-width";
+
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
 
@@ -83,7 +89,9 @@ export class ChPopover {
   #adjustAlignment = false;
 
   // Watchers
-  #checkWatchers = false;
+  #checkPositionWatcher = false;
+  #checkBorderSizeWatcher = false;
+  #borderSizeObserver: ResizeObserver;
   #resizeObserver: ResizeObserver;
   #rtlWatcher: MutationObserver;
 
@@ -198,6 +206,8 @@ export class ChPopover {
   };
 
   // Refs
+  #blockStartEdge: HTMLDivElement;
+  #inlineStartEdge: HTMLDivElement;
   #windowRef: Window;
 
   @Element() el: HTMLChPopoverElement;
@@ -231,7 +241,7 @@ export class ChPopover {
     addPopoverTargetElement(newActionElement, this.el, !this.actionById);
 
     // Schedule update for watchers
-    this.#checkWatchers = true;
+    this.#checkPositionWatcher = true;
   }
 
   /**
@@ -263,7 +273,8 @@ export class ChPopover {
   @Watch("hidden")
   handleHiddenChange(newHiddenValue: boolean) {
     // Schedule update for watchers
-    this.#checkWatchers = true;
+    this.#checkBorderSizeWatcher = true;
+    this.#checkPositionWatcher = true;
 
     // Update the popover visualization
     if (newHiddenValue) {
@@ -457,6 +468,9 @@ export class ChPopover {
     }
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                           Drag implementation
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleMouseDown = (event: MouseEvent) => {
     // We should not add preventDefault in this instance, because we would
     // prevent some normal actions like clicking a button or focusing an input
@@ -538,6 +552,9 @@ export class ChPopover {
     this.#lastDragEvent = null;
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                          Resize implementation
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleEdgeResize = (edge: ChPopoverResizeElement) => (event: MouseEvent) => {
     this.#resizeRAF ||= new SyncWithRAF();
     this.#currentEdge = edge;
@@ -545,6 +562,9 @@ export class ChPopover {
 
     // Avoid repositioning the popover
     this.#removePositionWatcher();
+
+    // Avoid watching border changes during the resize
+    this.#removeBorderSizeWatcher();
 
     // Add listeners
     document.addEventListener("mousemove", this.#trackElementResizeRAF, {
@@ -591,6 +611,9 @@ export class ChPopover {
     // Update the position of the popover when the resize ends
     this.#setPositionWatcher();
 
+    // Start again watching border size changes
+    this.#setBorderSizeWatcher();
+
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementResizeRAF, {
       capture: true
@@ -606,6 +629,62 @@ export class ChPopover {
     this.#resizeRAF = null;
     this.#initialDragEvent = null;
     this.#lastDragEvent = null;
+  };
+
+  /**
+   * This observer watches the size of each border in the control to adjust the
+   * position of the resize edges and corners.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #setBorderSizeWatcher = () => {
+    if (!this.resizable || this.hidden) {
+      this.#removeBorderSizeWatcher();
+      return;
+    }
+
+    this.#borderSizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
+
+    // Observe the size of the edges to know if the border
+    this.#borderSizeObserver.observe(this.el, { box: "border-box" });
+    this.#borderSizeObserver.observe(this.#blockStartEdge);
+    this.#borderSizeObserver.observe(this.#inlineStartEdge);
+  };
+
+  #updateBorderSizeRAF = () => {
+    this.#positionAdjustRAF.perform(this.#updateBorderSize);
+  };
+
+  #updateBorderSize = () => {
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const computedStyle = getComputedStyle(this.el);
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    this.el.style.setProperty(
+      POPOVER_BORDER_BLOCK_START_SIZE,
+      computedStyle.borderBlockStartWidth
+    );
+
+    this.el.style.setProperty(
+      POPOVER_BORDER_BLOCK_END_SIZE,
+      computedStyle.borderBlockEndWidth
+    );
+
+    this.el.style.setProperty(
+      POPOVER_BORDER_INLINE_START_SIZE,
+      computedStyle.borderInlineStartWidth
+    );
+
+    this.el.style.setProperty(
+      POPOVER_BORDER_INLINE_END_SIZE,
+      computedStyle.borderInlineEndWidth
+    );
+  };
+
+  #removeBorderSizeWatcher = () => {
+    if (this.#borderSizeObserver) {
+      this.#borderSizeObserver.disconnect();
+      this.#borderSizeObserver = null; // Free the memory
+    }
   };
 
   connectedCallback() {
@@ -637,11 +716,20 @@ export class ChPopover {
   }
 
   componentWillRender() {
-    if (this.#checkWatchers) {
-      this.#checkWatchers = false;
+    if (this.#checkPositionWatcher) {
+      this.#checkPositionWatcher = false;
 
       // Update watchers
       this.#setPositionWatcher();
+    }
+
+    if (this.#checkBorderSizeWatcher) {
+      this.#checkBorderSizeWatcher = false;
+
+      // Wait until the resize edges have been rendered
+      requestAnimationFrame(() => {
+        this.#setBorderSizeWatcher();
+      });
     }
 
     if (this.#adjustAlignment) {
@@ -655,6 +743,7 @@ export class ChPopover {
 
     // Initialize watchers
     this.#setPositionWatcher();
+    this.#setBorderSizeWatcher();
 
     if (!this.hidden) {
       this.el.showPopover();
@@ -663,6 +752,7 @@ export class ChPopover {
 
   disconnectedCallback() {
     this.#removePositionWatcher();
+    this.#removeBorderSizeWatcher();
 
     // If the action element still exists, remove the reference
     removePopoverTargetElement(this.actionElement);
@@ -700,6 +790,7 @@ export class ChPopover {
             <div
               class="edge__block-start"
               onMouseDown={this.#handleEdgeResize("block-start")}
+              ref={el => (this.#blockStartEdge = el)}
             ></div>, // Top
             <div
               class="edge__inline-end"
@@ -712,6 +803,7 @@ export class ChPopover {
             <div
               class="edge__inline-start"
               onMouseDown={this.#handleEdgeResize("inline-start")}
+              ref={el => (this.#inlineStartEdge = el)}
             ></div>, // Left
 
             <div

@@ -38,6 +38,7 @@
       ch-popover {
         background-color: aliceblue;
         box-shadow: 0 0 1px 2px rgb(0, 0, 0, 0.2);
+        border: 10px solid black;
       }
 
       #action1,
@@ -142,6 +143,14 @@
             </label>
 
             <ch-checkbox
+              id="resizable"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Resizable"
+            ></ch-checkbox>
+
+            <ch-checkbox
               id="popover-1-visible"
               checked-value="true"
               un-checked-value="false"
@@ -222,6 +231,7 @@
         const actionElement2 = document.querySelector("#action2");
         const popoverElement1 = document.querySelector("#popover1");
         const popoverElement2 = document.querySelector("#popover2");
+        const checkboxResizable = document.querySelector("#resizable");
         const checkboxVisible1 = document.querySelector("#popover-1-visible");
         const checkboxVisible2 = document.querySelector("#popover-2-visible");
 
@@ -270,6 +280,10 @@
           checkboxVisible2.value = false;
         });
 
+        checkboxResizable.addEventListener("input", event => {
+          popoverElement1.resizable = event.target.checked;
+          popoverElement2.resizable = event.target.checked;
+        });
         checkboxVisible1.addEventListener("input", event => {
           popoverElement1.hidden = !event.target.checked;
         });

@@ -9,7 +9,11 @@ import {
   State,
   h
 } from "@stencil/core";
-import { ChPopoverAlign, PopoverActionElement } from "./types";
+import {
+  ChPopoverAlign,
+  ChPopoverResizeElement,
+  PopoverActionElement
+} from "./types";
 import { isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { getAlignmentValue } from "./utils";
@@ -31,6 +35,9 @@ const POPOVER_ACTION_TOP = "--ch-popover-action-top";
 
 const POPOVER_DRAGGED_X = "--ch-popover-dragged-x";
 const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
+
+const POPOVER_BLOCK_SIZE = "--ch-popover-block-size";
+const POPOVER_INLINE_SIZE = "--ch-popover-inline-size";
 
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
@@ -71,6 +78,7 @@ export class ChPopover {
   // Sync computations with frames
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
   #positionAdjustRAF: SyncWithRAF; // Don't allocate memory until needed
+  #resizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
 
   #adjustAlignment = false;
 
@@ -86,6 +94,108 @@ export class ChPopover {
   #initialDragEvent: MouseEvent;
   #lastDragEvent: MouseEvent;
   #isRTLDirection: boolean;
+
+  // Resize
+  #currentEdge: ChPopoverResizeElement;
+  #resizeDictionary: {
+    [key in ChPopoverResizeElement]: (popoverRect: DOMRect) => void;
+  } = {
+    "block-start": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
+
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+    },
+
+    "block-end": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
+
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+    },
+
+    "inline-start": popoverRect => {
+      const currentDraggedDistanceX =
+        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    },
+
+    "inline-end": popoverRect => {
+      const currentDraggedDistanceX =
+        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    },
+
+    "block-start-inline-start": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
+      const currentDraggedDistanceX =
+        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    },
+
+    "block-start-inline-end": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
+      const currentDraggedDistanceX =
+        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    },
+
+    "block-end-inline-start": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
+      const currentDraggedDistanceX =
+        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    },
+
+    "block-end-inline-end": popoverRect => {
+      const currentDraggedDistanceY =
+        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
+      const currentDraggedDistanceX =
+        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    }
+  };
 
   // Refs
   #windowRef: Window;
@@ -190,6 +300,12 @@ export class ChPopover {
    * the window.
    */
   @Prop() readonly responsiveAlignment: boolean = true;
+
+  /**
+   * Specifies whether the control can be resized. If `true` the control can be
+   * resized at runtime by dragging the edges or corners.
+   */
+  @Prop() readonly resizable: boolean = false;
 
   /**
    * Emitted when the popover is opened.
@@ -422,6 +538,76 @@ export class ChPopover {
     this.#lastDragEvent = null;
   };
 
+  #handleEdgeResize = (edge: ChPopoverResizeElement) => (event: MouseEvent) => {
+    this.#resizeRAF ||= new SyncWithRAF();
+    this.#currentEdge = edge;
+    this.#initialDragEvent = event;
+
+    // Avoid repositioning the popover
+    this.#removePositionWatcher();
+
+    // Add listeners
+    document.addEventListener("mousemove", this.#trackElementResizeRAF, {
+      capture: true
+    });
+
+    document.addEventListener("mouseup", this.#handleResizeEnd, {
+      capture: true,
+      passive: true
+    });
+  };
+
+  #trackElementResizeRAF = (event: MouseEvent) => {
+    this.#resizeRAF.perform(this.#trackElementResize, () => {
+      // Improve drag UX by not selecting any button or clicking interactive
+      // elements
+      event.preventDefault();
+
+      // We remove the pointer-events and user-select properties after the first
+      // "mousemove", otherwise double clicking to select text would not work
+      this.#addDraggingClass();
+
+      this.#lastDragEvent = event;
+    });
+  };
+
+  #trackElementResize = () => {
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const popoverRect = this.el.getBoundingClientRect();
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    this.#resizeDictionary[this.#currentEdge](popoverRect);
+
+    // Update last point
+    this.#initialDragEvent = this.#lastDragEvent;
+  };
+
+  #handleResizeEnd = () => {
+    // Cancel RAF to prevent access to undefined references
+    if (this.#resizeRAF) {
+      this.#resizeRAF.cancel();
+    }
+
+    // Update the position of the popover when the resize ends
+    this.#setPositionWatcher();
+
+    // Remove listeners
+    document.removeEventListener("mousemove", this.#trackElementResizeRAF, {
+      capture: true
+    });
+
+    document.removeEventListener("mouseup", this.#handleResizeEnd, {
+      capture: true
+    });
+
+    this.#removeDraggingClass();
+
+    // Free the memory
+    this.#resizeRAF = null;
+    this.#initialDragEvent = null;
+    this.#lastDragEvent = null;
+  };
+
   connectedCallback() {
     this.#windowRef = window;
 
@@ -508,6 +694,43 @@ export class ChPopover {
         )}
 
         <slot />
+
+        {this.resizable &&
+          !this.hidden && [
+            <div
+              class="edge__block-start"
+              onMouseDown={this.#handleEdgeResize("block-start")}
+            ></div>, // Top
+            <div
+              class="edge__inline-end"
+              onMouseDown={this.#handleEdgeResize("inline-end")}
+            ></div>, // Right
+            <div
+              class="edge__block-end"
+              onMouseDown={this.#handleEdgeResize("block-end")}
+            ></div>, // Bottom
+            <div
+              class="edge__inline-start"
+              onMouseDown={this.#handleEdgeResize("inline-start")}
+            ></div>, // Left
+
+            <div
+              class="corner__block-start-inline-start"
+              onMouseDown={this.#handleEdgeResize("block-start-inline-start")}
+            ></div>, // Top Left
+            <div
+              class="corner__block-start-inline-end"
+              onMouseDown={this.#handleEdgeResize("block-start-inline-end")}
+            ></div>, // Top Right
+            <div
+              class="corner__block-end-inline-start"
+              onMouseDown={this.#handleEdgeResize("block-end-inline-start")}
+            ></div>, // Bottom Left
+            <div
+              class="corner__block-end-inline-end"
+              onMouseDown={this.#handleEdgeResize("block-end-inline-end")}
+            ></div> // Bottom Right
+          ]}
       </Host>
     );
   }

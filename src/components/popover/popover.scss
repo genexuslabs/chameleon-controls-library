@@ -25,6 +25,29 @@ $ch-popover-y--same-layer: calc(
 
 :host {
   /**
+   * @prop --ch-popover-block-size:
+   * Specifies the block size of the popover. Useful for scenarios where the
+   * popover is resizable. of the threshold to resize the popover.
+   * @default max-content
+   */
+  --ch-popover-block-size: max-content;
+
+  /**
+   * @prop --ch-popover-inline-size:
+   * Specifies the inline size of the popover. Useful for scenarios where the
+   * popover is resizable. of the threshold to resize the popover.
+   * @default max-content
+   */
+  --ch-popover-inline-size: max-content;
+
+  /**
+   * @prop --ch-popover-resize-threshold:
+   * Specifies the size of the threshold to resize the popover.
+   * @default 4px
+   */
+  --ch-popover-resize-threshold: 8px;
+
+  /**
    * @prop --ch-popover-separation-x:
    * Specifies the separation between the action and popover in the x axis.
    * @default 0px
@@ -38,6 +61,10 @@ $ch-popover-y--same-layer: calc(
    */
   --ch-popover-separation-y: 0px;
 
+  --ch-popover-resize-threshold--half-negative: calc(
+    var(--ch-popover-resize-threshold) * -0.5
+  );
+
   --ch-popover-dragged-x: 0px;
   --ch-popover-dragged-y: 0px;
   --ch-popover-rtl: 1;
@@ -45,6 +72,9 @@ $ch-popover-y--same-layer: calc(
   // Necessary when the popover is not placed in a new top layer. For example,
   // when nesting dropdowns
   position: fixed;
+
+  inline-size: var(--ch-popover-inline-size);
+  block-size: var(--ch-popover-block-size);
 
   // Reset browser defaults
   margin: 0;
@@ -104,6 +134,81 @@ $ch-popover-y--same-layer: calc(
   ::slotted(*) {
     pointer-events: none;
     user-select: none;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//            Resizable
+// - - - - - - - - - - - - - - - -
+.edge {
+  &__block-start,
+  &__block-end {
+    position: fixed;
+    inset-inline: 0;
+    block-size: var(--ch-popover-resize-threshold);
+    cursor: ns-resize;
+  }
+
+  &__inline-start,
+  &__inline-end {
+    position: fixed;
+    inset-block: 0;
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: ew-resize;
+  }
+
+  &__block-start {
+    inset-block-start: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__block-end {
+    inset-block-end: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__inline-start {
+    inset-inline-start: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__inline-end {
+    inset-inline-end: var(--ch-popover-resize-threshold--half-negative);
+  }
+}
+
+.corner {
+  &__block-start-inline-start,
+  &__block-end-inline-end {
+    position: fixed;
+    block-size: var(--ch-popover-resize-threshold);
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: nwse-resize;
+  }
+
+  &__block-start-inline-end,
+  &__block-end-inline-start {
+    position: fixed;
+    block-size: var(--ch-popover-resize-threshold);
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: nesw-resize;
+  }
+
+  &__block-start-inline-start {
+    inset-block-start: var(--ch-popover-resize-threshold--half-negative);
+    inset-inline-start: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__block-end-inline-end {
+    inset-block-end: var(--ch-popover-resize-threshold--half-negative);
+    inset-inline-end: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__block-start-inline-end {
+    inset-block-start: var(--ch-popover-resize-threshold--half-negative);
+    inset-inline-end: var(--ch-popover-resize-threshold--half-negative);
+  }
+
+  &__block-end-inline-start {
+    inset-block-end: var(--ch-popover-resize-threshold--half-negative);
+    inset-inline-start: var(--ch-popover-resize-threshold--half-negative);
   }
 }
 

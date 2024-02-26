@@ -22,6 +22,8 @@
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "stencil build --dev --watch --serve --docs",
     "test": "stencil test --spec --e2e",
+    "test.coverage": "stencil test --spec --e2e --coverage --no-cache",
+    "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "validate": "npm run lint && npm run test && npm run build",
     "validate.ci": "npm run lint && npm run build -- --max-workers 1 --debug"
@@ -55,7 +57,7 @@
     "jest-cli": "~29.7.0",
     "lint-staged": "~13.0.0",
     "prettier": "~2.7.0",
-    "puppeteer": "~15.2.0",
+    "puppeteer": "~22.1.0",
     "typescript": "~5.2.0"
   },
   "husky": {

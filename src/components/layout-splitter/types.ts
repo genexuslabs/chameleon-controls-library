@@ -19,6 +19,7 @@ export type LayoutSplitterDistributionLeaf = {
   dragBar?: LayoutSplitterDragBarConfig;
   fixedOffsetSize?: number;
   size: LayoutSplitterSize;
+  minSize?: `${number}px`;
 };
 
 export type LayoutSplitterDistributionGroup = LayoutSplitterDistributionLeaf & {
@@ -67,6 +68,7 @@ export type DragBarMouseDownEventInfo = {
   container: HTMLElement;
   containerSize: number;
   direction: LayoutSplitterDirection;
+  dragBar: HTMLElement;
   fixedSizesSumRoot: number;
   itemStartId: string;
   itemEndId: string;

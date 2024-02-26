@@ -139,6 +139,13 @@ ch-test-flexible-layout {
   }
 }
 
+// - - - - - - - - - - - - - - - -
+//            Tree View
+// - - - - - - - - - - - - - - - -
+.tree-view > .ch-tree-view-container {
+  min-inline-size: max-content;
+}
+
 .ch-tree-view-item--success::part(action)::before {
   grid-area: first-img;
   content: "";

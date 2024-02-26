@@ -1,48 +1,59 @@
-import { ROOT_VIEW } from "../renders/flexible-layout/utils";
+import { ROOT_VIEW } from "../../common/utils";
 import {
   DragBarMouseDownEventInfo,
+  GroupExtended,
+  ItemExtended,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended,
   LayoutSplitterSize
 } from "./types";
 
 export const FIXED_SIZES_SUM_CUSTOM_VAR =
   "--ch-layout-splitter-fixed-sizes-sum";
 
-export const findItemInParent = (
-  itemToFind: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-) => {
+export const findItemInParent = (itemToFind: ItemExtended) => {
   const itemId = itemToFind.item.id;
   return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
 };
 
+export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
+  Number(item.size.replace("fr", "").trim());
+
+export const getPxValue = (
+  item: LayoutSplitterDistributionItem,
+  type: "size" | "min" = "size"
+): number => {
+  const value = type === "size" ? item.size : item.minSize;
+  return Number(value.replace("px", "").trim());
+};
+
+export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
+  item.size.includes("px");
+
+export const hasMinSize = (item: LayoutSplitterDistributionItem) =>
+  item.minSize && item.minSize !== "0px";
+
+const getItemMinMaxSizeInTemplate = (itemUIModel: ItemExtended) =>
+  !hasAbsoluteValue(itemUIModel.item) && hasMinSize(itemUIModel.item)
+    ? `minmax(${itemUIModel.item.minSize},${itemUIModel.actualSize})`
+    : itemUIModel.actualSize;
+
 export const sizesToGridTemplate = (
   items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   lastItemIndex: number
 ) =>
   items
     .map(
       (item, index) =>
         item.dragBar?.hidden !== true && index !== lastItemIndex
-          ? `${itemsInfo.get(item.id).actualSize} ${item.dragBar?.size ?? 0}px` // Add a column to place the drag bar
-          : itemsInfo.get(item.id).actualSize // Last item or not resizable
+          ? `${getItemMinMaxSizeInTemplate(itemsInfo.get(item.id))} ${
+              item.dragBar?.size ?? 0
+            }px` // Add a column to place the drag bar
+          : getItemMinMaxSizeInTemplate(itemsInfo.get(item.id)) // Last item or not resizable
     )
     .join(" ");
-
-export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
-  Number(item.size.replace("fr", "").trim());
-
-export const getPxValue = (item: LayoutSplitterDistributionItem): number =>
-  Number(item.size.replace("px", "").trim());
-
-export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
-  item.size.includes("px");
 
 const getItemFrSize = (item: LayoutSplitterDistributionItem): string => {
   // If the component has fr value, take into account the sum of fixed values
@@ -62,40 +73,27 @@ const getComponentSize = (item: LayoutSplitterDistributionItem): string =>
     ? item.size
     : getItemFrSize(item);
 
-export const setPxSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setPxSize = (itemUIModel: ItemExtended, newValue: number) => {
   const newValueString: LayoutSplitterSize = `${newValue}px`;
 
   itemUIModel.item.size = newValueString;
   itemUIModel.actualSize = newValueString;
 };
 
-export const updatePxSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number
-) => setPxSize(itemUIModel, getPxValue(itemUIModel.item) + increment);
+export const updatePxSize = (itemUIModel: ItemExtended, increment: number) =>
+  setPxSize(itemUIModel, getPxValue(itemUIModel.item) + increment);
 
-export const setFrSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setFrSize = (itemUIModel: ItemExtended, newValue: number) => {
   const newValueString: LayoutSplitterSize = `${newValue}fr`;
 
   itemUIModel.item.size = newValueString;
   itemUIModel.actualSize = getItemFrSize(itemUIModel.item);
 };
 
-export const updateFrSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  increment: number
-) => setFrSize(itemUIModel, getFrValue(itemUIModel.item) + increment);
+export const updateFrSize = (itemUIModel: ItemExtended, increment: number) =>
+  setFrSize(itemUIModel, getFrValue(itemUIModel.item) + increment);
 
-export const setOffsetSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
-  newValue: number
-) => {
+export const setOffsetSize = (itemUIModel: ItemExtended, newValue: number) => {
   const itemInfo = itemUIModel.item;
 
   itemInfo.fixedOffsetSize = newValue;
@@ -103,7 +101,7 @@ export const setOffsetSize = (
 };
 
 export const incrementOffsetSize = (
-  itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>,
+  itemUIModel: ItemExtended,
   increment: number
 ) =>
   setOffsetSize(
@@ -111,20 +109,91 @@ export const incrementOffsetSize = (
     increment + (itemUIModel.item.fixedOffsetSize ?? 0)
   );
 
+/**
+ * If the item has `minSize` and its greater that the `size` value, it updates
+ * the `size` to be equal to the `minSize`.
+ */
+const checkAndSetInitialValue = (item: LayoutSplitterDistributionItem) => {
+  if (hasMinSize(item) && getPxValue(item) < getPxValue(item, "min")) {
+    item.size = item.minSize;
+  }
+};
+
+const getItemSizeUsingReference = (
+  info: DragBarMouseDownEventInfo,
+  itemUIModel: ItemExtended
+): number => {
+  const itemRef = info.container.querySelector(`[id="${itemUIModel.item.id}"]`);
+  return info.direction === "columns"
+    ? itemRef.clientWidth
+    : itemRef.clientHeight;
+};
+
+/**
+ * Given the two items to resize and its increment (`incrementInPx`), return if
+ * both items can be resized or the resize operation must be adjusted or
+ * canceled.
+ */
+const canResizeBothItems = (
+  startItemUIModel: ItemExtended,
+  endItemUIModel: ItemExtended,
+  startItemSizeType: "px" | "fr",
+  endItemSizeType: "px" | "fr",
+  incrementInPx: number,
+  info: DragBarMouseDownEventInfo
+): {
+  status: "ok" | "deny" | "not-enough-space";
+  availableIncrement?: number;
+} => {
+  // The start item has min size
+  if (hasMinSize(startItemUIModel.item)) {
+    const minSize = getPxValue(startItemUIModel.item, "min");
+    const size =
+      startItemSizeType === "px"
+        ? getPxValue(startItemUIModel.item)
+        : getItemSizeUsingReference(info, startItemUIModel);
+
+    const availableIncrement = size - minSize;
+
+    // It means the startItem must be shrunk, but it does not have enough space
+    if (availableIncrement + incrementInPx <= 0) {
+      return {
+        status: availableIncrement === 0 ? "deny" : "not-enough-space",
+        availableIncrement: availableIncrement
+      };
+    }
+  }
+
+  // The end item has min size
+  if (hasMinSize(endItemUIModel.item)) {
+    const minSize = getPxValue(endItemUIModel.item, "min");
+    const size =
+      endItemSizeType === "px"
+        ? getPxValue(endItemUIModel.item)
+        : getItemSizeUsingReference(info, endItemUIModel);
+
+    const availableIncrement = size - minSize;
+
+    // It means the endItem must be shrunk, but it does not have enough space
+    if (availableIncrement - incrementInPx <= 0) {
+      return {
+        status: availableIncrement === 0 ? "deny" : "not-enough-space",
+        availableIncrement: availableIncrement
+      };
+    }
+  }
+
+  return { status: "ok" };
+};
+
 export const fixAndUpdateLayoutModel = (
   layout: LayoutSplitterDistribution,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >
+  itemsInfo: Map<string, ItemExtended>
 ): number => fixAndUpdateSubModel(layout.items, itemsInfo, ROOT_VIEW);
 
 function fixAndUpdateSubModel(
   items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   parentItem: LayoutSplitterDistributionGroup
 ): number {
   let frSum = 0;
@@ -135,6 +204,8 @@ function fixAndUpdateSubModel(
   // Get the sum of all fr values. Also, store the sum of fixed sizes
   items.forEach((item, index) => {
     if (hasAbsoluteValue(item)) {
+      checkAndSetInitialValue(item);
+
       fixedSizesSum += getPxValue(item);
     } else {
       frSum += getFrValue(item);
@@ -161,21 +232,18 @@ function fixAndUpdateSubModel(
 
   // Update the actualSizes and fixedSizes maps
   items.forEach(item => {
-    const itemUIModel: LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem> =
-      {
-        item: item,
-        parentItem: parentItem,
-        actualSize: getComponentSize(item)
-      };
+    const itemUIModel: ItemExtended = {
+      item: item,
+      parentItem: parentItem,
+      actualSize: getComponentSize(item)
+    };
 
     if ((item as LayoutSplitterDistributionGroup).items != null) {
       // eslint-disable-next-line prettier/prettier
       const group = item as LayoutSplitterDistributionGroup;
       const fixedSizesSum = fixAndUpdateSubModel(group.items, itemsInfo, group);
 
-      (
-        itemUIModel as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-      ).fixedSizesSum = fixedSizesSum;
+      (itemUIModel as GroupExtended).fixedSizesSum = fixedSizesSum;
     }
 
     itemsInfo.set(item.id, itemUIModel);
@@ -184,12 +252,84 @@ function fixAndUpdateSubModel(
   return fixedSizesSum;
 }
 
+const sizeIncrementDictionary: {
+  [key in "px-px" | "px-fr" | "fr-px" | "fr-fr"]: (
+    startItemUIModel: ItemExtended,
+    endItemUIModel: ItemExtended,
+    incrementInPx: number,
+    remainingRelativeSizeInPixels: number
+  ) => void;
+} = {
+  "px-px": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    updatePxSize(startItemUIModel, incrementInPx);
+    updatePxSize(endItemUIModel, -incrementInPx);
+  },
+
+  "px-fr": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    updatePxSize(startItemUIModel, incrementInPx);
+    incrementOffsetSize(endItemUIModel, -incrementInPx);
+  },
+
+  "fr-px": (startItemUIModel, endItemUIModel, incrementInPx) => {
+    incrementOffsetSize(startItemUIModel, incrementInPx);
+    updatePxSize(endItemUIModel, -incrementInPx);
+  },
+
+  "fr-fr": (
+    startItemUIModel,
+    endItemUIModel,
+    incrementInPx,
+    remainingRelativeSizeInPixels
+  ) => {
+    const incrementInFr = incrementInPx / remainingRelativeSizeInPixels;
+    updateFrSize(startItemUIModel, incrementInFr);
+    updateFrSize(endItemUIModel, -incrementInFr);
+  }
+};
+
+const addSizeIncrementInComponents = (
+  startItemUIModel: ItemExtended,
+  endItemUIModel: ItemExtended,
+  incrementInPx: number,
+  remainingRelativeSizeInPixels: number,
+  info: DragBarMouseDownEventInfo
+): boolean => {
+  const startItemSizeType = hasAbsoluteValue(startItemUIModel.item)
+    ? "px"
+    : "fr";
+  const endItemSizeType = hasAbsoluteValue(endItemUIModel.item) ? "px" : "fr";
+  let actualIncrement = incrementInPx;
+
+  const resizeOperationStatus = canResizeBothItems(
+    startItemUIModel,
+    endItemUIModel,
+    startItemSizeType,
+    endItemSizeType,
+    incrementInPx,
+    info
+  );
+
+  if (resizeOperationStatus.status === "deny") {
+    return false;
+  }
+  if (resizeOperationStatus.status === "not-enough-space") {
+    actualIncrement =
+      resizeOperationStatus.availableIncrement * Math.sign(actualIncrement);
+  }
+
+  sizeIncrementDictionary[`${startItemSizeType}-${endItemSizeType}`](
+    startItemUIModel,
+    endItemUIModel,
+    actualIncrement,
+    remainingRelativeSizeInPixels
+  );
+
+  return true;
+};
+
 export const updateComponentsAndDragBar = (
   info: DragBarMouseDownEventInfo,
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  itemsInfo: Map<string, ItemExtended>,
   incrementInPx: number,
   gridTemplateDirectionCustomVar: string
 ) => {
@@ -205,40 +345,25 @@ export const updateComponentsAndDragBar = (
   const fixedSizesSumParent =
     startItemUIModel.parentItem === ROOT_VIEW
       ? info.fixedSizesSumRoot
-      : (
-          itemsInfo.get(
-            startItemUIModel.parentItem.id
-          ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-        ).fixedSizesSum;
+      : (itemsInfo.get(startItemUIModel.parentItem.id) as GroupExtended)
+          .fixedSizesSum;
 
   const layoutItems = info.layoutItems;
 
   const remainingRelativeSizeInPixels =
     info.containerSize - fixedSizesSumParent;
-  const incrementInFr = incrementInPxRTL / remainingRelativeSizeInPixels;
 
-  // px / px
-  if (
-    hasAbsoluteValue(startItemUIModel.item) &&
-    hasAbsoluteValue(endItemUIModel.item)
-  ) {
-    updatePxSize(startItemUIModel, incrementInPxRTL);
-    updatePxSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // px / fr
-  else if (hasAbsoluteValue(startItemUIModel.item)) {
-    updatePxSize(startItemUIModel, incrementInPxRTL);
-    incrementOffsetSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // fr / px
-  else if (hasAbsoluteValue(endItemUIModel.item)) {
-    incrementOffsetSize(startItemUIModel, incrementInPxRTL);
-    updatePxSize(endItemUIModel, -incrementInPxRTL);
-  }
-  // fr / fr
-  else {
-    updateFrSize(startItemUIModel, incrementInFr);
-    updateFrSize(endItemUIModel, -incrementInFr);
+  const mustUpdateTheDOM = addSizeIncrementInComponents(
+    startItemUIModel,
+    endItemUIModel,
+    incrementInPxRTL,
+    remainingRelativeSizeInPixels,
+    info
+  );
+
+  // No resizing can be done, so there is no need to update the DOM
+  if (!mustUpdateTheDOM) {
+    return;
   }
 
   // Update in the DOM the grid distribution
@@ -246,6 +371,9 @@ export const updateComponentsAndDragBar = (
     gridTemplateDirectionCustomVar,
     sizesToGridTemplate(layoutItems, itemsInfo, layoutItems.length - 1)
   );
+
+  // Update the current value in the drag bar
+  info.dragBar.ariaValueText = startItemUIModel.actualSize;
 };
 
 export const getMousePosition = (

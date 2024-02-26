@@ -109,50 +109,29 @@ export class ChPopover {
   #draggedDistanceXForResize: number = 0;
   #draggedDistanceYForResize: number = 0;
 
-  #resizeDictionary: {
-    [key in ChPopoverResizeElement]: (popoverRect: DOMRect) => void;
-  } = {
-    "block-start": popoverRect => {
-      const currentDraggedDistanceY =
-        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
-
-      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
-
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
-    },
-
-    "block-end": popoverRect => {
-      const currentDraggedDistanceY =
+  #resizeByDirectionDictionary = {
+    block: (popoverRect: DOMRect, direction: "start" | "end") => {
+      let currentDraggedDistanceY =
         this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
 
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+      // By resizing the start edge the control is translated to improve the UX
+      if (direction === "start") {
+        this.#draggedDistanceYForResize += currentDraggedDistanceY;
+        currentDraggedDistanceY = -currentDraggedDistanceY;
+
+        setProperty(
+          this.el,
+          POPOVER_DRAGGED_Y,
+          this.#draggedDistanceYForResize
+        );
+      }
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
       setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
     },
 
-    "inline-start": popoverRect => {
-      let currentDraggedDistanceX =
-        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
-
-      if (this.#isRTLDirection) {
-        currentDraggedDistanceX = -currentDraggedDistanceX;
-      }
-
-      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
-
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
-    },
-
-    "inline-end": popoverRect => {
+    inline: (popoverRect: DOMRect, direction: "start" | "end") => {
       let currentDraggedDistanceX =
         this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
 
@@ -160,96 +139,57 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
-    },
-
-    "block-start-inline-start": popoverRect => {
-      const currentDraggedDistanceY =
-        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
-      let currentDraggedDistanceX =
-        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
-
-      if (this.#isRTLDirection) {
+      // By resizing the start edge the control is translated to improve the UX
+      if (direction === "start") {
+        this.#draggedDistanceXForResize += currentDraggedDistanceX;
         currentDraggedDistanceX = -currentDraggedDistanceX;
+
+        setProperty(
+          this.el,
+          POPOVER_DRAGGED_X,
+          this.#draggedDistanceXForResize
+        );
       }
 
-      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
-      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
-
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
-      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
-
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+    }
+  };
+
+  #resizeEdgesAndCornersDictionary: {
+    [key in ChPopoverResizeElement]: (popoverRect: DOMRect) => void;
+  } = {
+    "block-start": popoverRect =>
+      this.#resizeByDirectionDictionary.block(popoverRect, "start"),
+
+    "block-end": popoverRect =>
+      this.#resizeByDirectionDictionary.block(popoverRect, "end"),
+
+    "inline-start": popoverRect =>
+      this.#resizeByDirectionDictionary.inline(popoverRect, "start"),
+
+    "inline-end": popoverRect =>
+      this.#resizeByDirectionDictionary.inline(popoverRect, "end"),
+
+    "block-start-inline-start": popoverRect => {
+      this.#resizeByDirectionDictionary.block(popoverRect, "start");
+      this.#resizeByDirectionDictionary.inline(popoverRect, "start");
     },
 
     "block-start-inline-end": popoverRect => {
-      const currentDraggedDistanceY =
-        this.#initialDragEvent.clientY - this.#lastDragEvent.clientY;
-      let currentDraggedDistanceX =
-        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
-
-      if (this.#isRTLDirection) {
-        currentDraggedDistanceX = -currentDraggedDistanceX;
-      }
-
-      this.#draggedDistanceYForResize -= currentDraggedDistanceY;
-
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_DRAGGED_Y, this.#draggedDistanceYForResize);
-
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+      this.#resizeByDirectionDictionary.block(popoverRect, "start");
+      this.#resizeByDirectionDictionary.inline(popoverRect, "end");
     },
 
     "block-end-inline-start": popoverRect => {
-      const currentDraggedDistanceY =
-        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
-      let currentDraggedDistanceX =
-        this.#initialDragEvent.clientX - this.#lastDragEvent.clientX;
-
-      if (this.#isRTLDirection) {
-        currentDraggedDistanceX = -currentDraggedDistanceX;
-      }
-
-      this.#draggedDistanceXForResize -= currentDraggedDistanceX;
-
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceXForResize);
-
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+      this.#resizeByDirectionDictionary.block(popoverRect, "end");
+      this.#resizeByDirectionDictionary.inline(popoverRect, "start");
     },
 
     "block-end-inline-end": popoverRect => {
-      const currentDraggedDistanceY =
-        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
-      let currentDraggedDistanceX =
-        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
-
-      if (this.#isRTLDirection) {
-        currentDraggedDistanceX = -currentDraggedDistanceX;
-      }
-
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+      this.#resizeByDirectionDictionary.block(popoverRect, "end");
+      this.#resizeByDirectionDictionary.inline(popoverRect, "end");
     }
   };
 
@@ -650,7 +590,7 @@ export class ChPopover {
     const popoverRect = this.el.getBoundingClientRect();
 
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    this.#resizeDictionary[this.#currentEdge](popoverRect);
+    this.#resizeEdgesAndCornersDictionary[this.#currentEdge](popoverRect);
 
     // Update last point
     this.#initialDragEvent = this.#lastDragEvent;

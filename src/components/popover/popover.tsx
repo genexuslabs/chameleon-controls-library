@@ -253,7 +253,7 @@ export class ChPopover {
   /**
    * `true` if the control is not stacked with another top layer.
    */
-  @Prop() readonly firstLayer: boolean;
+  @Prop() readonly firstLayer: boolean = true;
 
   /**
    * Specifies whether the popover is hidden or visible.

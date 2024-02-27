@@ -41,6 +41,22 @@ $ch-popover-y--same-layer: calc(
   --ch-popover-inline-size: max-content;
 
   /**
+   * @prop --ch-popover-max-block-size:
+   * Specifies the maximum block size of the popover. Useful for scenarios where the
+   * popover is resizable.
+   * @default auto
+   */
+  --ch-popover-max-block-size: auto;
+
+  /**
+     * @prop --ch-popover-max-inline-size:
+     * Specifies the maximum inline size of the popover. Useful for scenarios
+     * where the popover is resizable.
+     * @default auto
+     */
+  --ch-popover-max-inline-size: auto;
+
+  /**
    * @prop --ch-popover-min-block-size:
    * Specifies the minimum block size of the popover. Useful for scenarios where the
    * popover is resizable.
@@ -118,6 +134,8 @@ $ch-popover-y--same-layer: calc(
   block-size: var(--ch-popover-block-size);
   min-inline-size: var(--ch-popover-min-inline-size);
   min-block-size: var(--ch-popover-min-block-size);
+  max-inline-size: var(--ch-popover-max-inline-size);
+  max-block-size: var(--ch-popover-max-block-size);
 
   // Reset browser defaults
   margin: 0;

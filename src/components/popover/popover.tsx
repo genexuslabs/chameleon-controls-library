@@ -14,7 +14,7 @@ import {
   ChPopoverResizeElement,
   PopoverActionElement
 } from "./types";
-import { isRTL } from "../../common/utils";
+import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { getAlignmentValue } from "./utils";
 
@@ -109,6 +109,8 @@ export class ChPopover {
   #currentEdge: ChPopoverResizeElement;
   #draggedDistanceXForResize: number = 0;
   #draggedDistanceYForResize: number = 0;
+  #maxBlockSize: number = 0;
+  #maxInlineSize: number = 0;
   #minBlockSize: number = 0;
   #minInlineSize: number = 0;
 
@@ -134,7 +136,7 @@ export class ChPopover {
       setProperty(
         this.el,
         POPOVER_BLOCK_SIZE,
-        Math.max(newBlockSize, this.#minBlockSize)
+        forceCSSMinMax(newBlockSize, this.#minBlockSize, this.#maxBlockSize)
       );
     },
 
@@ -163,7 +165,7 @@ export class ChPopover {
       setProperty(
         this.el,
         POPOVER_INLINE_SIZE,
-        Math.max(newInlineSize, this.#minInlineSize)
+        forceCSSMinMax(newInlineSize, this.#minInlineSize, this.#maxInlineSize)
       );
     }
   } as const;
@@ -569,8 +571,10 @@ export class ChPopover {
     this.#draggedDistanceXForResize = this.#draggedDistanceX;
     this.#draggedDistanceYForResize = this.#draggedDistanceY;
 
-    // Get minimum sizes on first resize operation
+    // Get minimum and maximum sizes on first resize operation
     const computedStyle = getComputedStyle(this.el);
+    this.#maxBlockSize = fromPxToNumber(computedStyle.maxBlockSize);
+    this.#maxInlineSize = fromPxToNumber(computedStyle.maxInlineSize);
     this.#minBlockSize = fromPxToNumber(computedStyle.minBlockSize);
     this.#minInlineSize = fromPxToNumber(computedStyle.minInlineSize);
 

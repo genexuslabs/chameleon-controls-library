@@ -256,6 +256,7 @@ $ch-popover-y--same-layer: calc(
 .resize-layer {
   position: fixed;
   inset: 0;
+  pointer-events: none;
 }
 
 // - - - - - - - - - - - - - - - -

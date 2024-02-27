@@ -129,7 +129,7 @@ export class ChPopover {
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-      setProperty(this.el, POPOVER_BLOCK_SIZE, newBlockSize);
+      setProperty(this.el, POPOVER_BLOCK_SIZE, Math.max(newBlockSize, 0));
     },
 
     inline: (popoverRect: DOMRect, direction: "start" | "end") => {
@@ -154,7 +154,7 @@ export class ChPopover {
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
+      setProperty(this.el, POPOVER_INLINE_SIZE, Math.max(newInlineSize, 0));
     }
   } as const;
 

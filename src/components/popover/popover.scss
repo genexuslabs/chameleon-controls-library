@@ -169,7 +169,26 @@ $ch-popover-y--same-layer: calc(
   &__block-start,
   &__block-end {
     position: fixed;
-    inset-inline: 0;
+    // This calc improves edge positioning when the border-width is much larger
+    // than the threshold
+    inset-inline: min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-inline-start-width)
+            ) / 2
+        )
+      )
+      min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-inline-end-width)
+            ) / 2
+        )
+      );
     block-size: var(--ch-popover-resize-threshold);
     cursor: ns-resize;
   }
@@ -177,7 +196,26 @@ $ch-popover-y--same-layer: calc(
   &__inline-start,
   &__inline-end {
     position: fixed;
-    inset-block: 0;
+    // This calc improves edge positioning when the border-width is much larger
+    // than the threshold
+    inset-block: min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-block-start-width)
+            ) / 2
+        )
+      )
+      min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-block-end-width)
+            ) / 2
+        )
+      );
     inline-size: var(--ch-popover-resize-threshold);
     cursor: ew-resize;
   }

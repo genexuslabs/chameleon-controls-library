@@ -109,6 +109,8 @@ export class ChPopover {
   #currentEdge: ChPopoverResizeElement;
   #draggedDistanceXForResize: number = 0;
   #draggedDistanceYForResize: number = 0;
+  #minBlockSize: number = 0;
+  #minInlineSize: number = 0;
 
   #resizeByDirectionDictionary = {
     block: (popoverRect: DOMRect, direction: "start" | "end") => {
@@ -129,7 +131,11 @@ export class ChPopover {
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-      setProperty(this.el, POPOVER_BLOCK_SIZE, Math.max(newBlockSize, 0));
+      setProperty(
+        this.el,
+        POPOVER_BLOCK_SIZE,
+        Math.max(newBlockSize, this.#minBlockSize)
+      );
     },
 
     inline: (popoverRect: DOMRect, direction: "start" | "end") => {
@@ -154,7 +160,11 @@ export class ChPopover {
 
       // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      setProperty(this.el, POPOVER_INLINE_SIZE, Math.max(newInlineSize, 0));
+      setProperty(
+        this.el,
+        POPOVER_INLINE_SIZE,
+        Math.max(newInlineSize, this.#minInlineSize)
+      );
     }
   } as const;
 
@@ -558,6 +568,11 @@ export class ChPopover {
     // position, even when the block-start or inline-start edges are resized
     this.#draggedDistanceXForResize = this.#draggedDistanceX;
     this.#draggedDistanceYForResize = this.#draggedDistanceY;
+
+    // Get minimum sizes on first resize operation
+    const computedStyle = getComputedStyle(this.el);
+    this.#minBlockSize = fromPxToNumber(computedStyle.minBlockSize);
+    this.#minInlineSize = fromPxToNumber(computedStyle.minInlineSize);
 
     // Avoid repositioning the popover
     this.#removePositionWatcher();

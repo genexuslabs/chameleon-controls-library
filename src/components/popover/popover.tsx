@@ -20,6 +20,7 @@ import { getAlignmentValue } from "./utils";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
+const RESIZING_CLASS = "ch-popover-resizing";
 
 // Custom vars
 const POPOVER_ALIGN_BLOCK = "--ch-popover-block";
@@ -48,6 +49,33 @@ const POPOVER_BORDER_INLINE_END_SIZE = "--ch-popover-border-inline-end-width";
 const POPOVER_RTL_CLASS = "ch-popover-rtl";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
+
+const addCursorInDocument = (cursor: string) =>
+  (document.body.style.cursor = cursor);
+
+const resizingCursorDictionary: {
+  [key in ChPopoverResizeElement]: (rtl: boolean) => void;
+} = {
+  "block-start": () => addCursorInDocument("ns-resize"),
+
+  "block-end": () => addCursorInDocument("ns-resize"),
+
+  "inline-start": () => addCursorInDocument("ew-resize"),
+
+  "inline-end": () => addCursorInDocument("ew-resize"),
+
+  "block-start-inline-start": rtl =>
+    addCursorInDocument(rtl ? "nesw-resize" : "nwse-resize"),
+
+  "block-start-inline-end": rtl =>
+    addCursorInDocument(rtl ? "nwse-resize" : "nesw-resize"),
+
+  "block-end-inline-start": rtl =>
+    addCursorInDocument(rtl ? "nwse-resize" : "nesw-resize"),
+
+  "block-end-inline-end": rtl =>
+    addCursorInDocument(rtl ? "nesw-resize" : "nwse-resize")
+};
 
 // Utils
 const fromPxToNumber = (pxValue: string) =>
@@ -215,6 +243,7 @@ export class ChPopover {
   @State() actualBlockAlign: ChPopoverAlign;
   @State() actualInlineAlign: ChPopoverAlign;
   @State() relativePopover = false;
+  @State() resizing = false;
 
   /**
    * `true` if the `actionElement` binds the ch-popover using an external ID.
@@ -561,9 +590,14 @@ export class ChPopover {
   //                          Resize implementation
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleEdgeResize = (edge: ChPopoverResizeElement) => (event: MouseEvent) => {
+    this.resizing = true;
     this.#resizeRAF ||= new SyncWithRAF();
     this.#currentEdge = edge;
     this.#initialDragEvent = event;
+
+    // Specify the cursor for the resize operation. Useful to avoid showing
+    // incorrect cursors during resizing
+    resizingCursorDictionary[this.#currentEdge](this.#isRTLDirection);
 
     // Initialize drag variables to improve block-start and inline-start
     // resizing. Otherwise, the popover will always remain in the same X and Y
@@ -621,10 +655,15 @@ export class ChPopover {
   };
 
   #handleResizeEnd = () => {
+    this.resizing = false;
+
     // Cancel RAF to prevent access to undefined references
     if (this.#resizeRAF) {
       this.#resizeRAF.cancel();
     }
+
+    // Reset document cursor back to normal
+    document.body.style.cursor = null;
 
     // Reset dragged distance to its original value
     setProperty(this.el, POPOVER_DRAGGED_X, this.#draggedDistanceX);
@@ -797,7 +836,8 @@ export class ChPopover {
     return (
       <Host
         class={{
-          "gx-popover-header-drag": !this.hidden && this.allowDrag === "header"
+          "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
+          [RESIZING_CLASS]: this.resizing
         }}
         popover={this.mode}
         onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}

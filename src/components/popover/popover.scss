@@ -201,6 +201,11 @@ $ch-popover-y--same-layer: calc(
 // - - - - - - - - - - - - - - - -
 //            Resizable
 // - - - - - - - - - - - - - - - -
+:host(.ch-popover-resizing) {
+  pointer-events: none;
+  user-select: none;
+}
+
 .edge {
   &__block-start,
   &__block-end {

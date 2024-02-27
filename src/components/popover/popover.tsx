@@ -147,10 +147,28 @@ export class ChPopover {
       let currentDraggedDistanceY =
         this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
 
+      // Start direction inverts the increment
+      if (direction === "start") {
+        currentDraggedDistanceY = -currentDraggedDistanceY;
+      }
+
+      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
+      const newRestrictedBlockSize = forceCSSMinMax(
+        newBlockSize,
+        this.#minBlockSize,
+        this.#maxBlockSize
+      );
+
+      // Do not apply resizes or translations if the control is at the minimum
+      // or maximum size
+      if (newRestrictedBlockSize === popoverRect.height) {
+        return;
+      }
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       // By resizing the start edge the control is translated to improve the UX
       if (direction === "start") {
-        this.#draggedDistanceYForResize += currentDraggedDistanceY;
-        currentDraggedDistanceY = -currentDraggedDistanceY;
+        this.#draggedDistanceYForResize -= currentDraggedDistanceY;
 
         setProperty(
           this.el,
@@ -159,13 +177,7 @@ export class ChPopover {
         );
       }
 
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      const newBlockSize = popoverRect.height + currentDraggedDistanceY;
-      setProperty(
-        this.el,
-        POPOVER_BLOCK_SIZE,
-        forceCSSMinMax(newBlockSize, this.#minBlockSize, this.#maxBlockSize)
-      );
+      setProperty(this.el, POPOVER_BLOCK_SIZE, newRestrictedBlockSize);
     },
 
     inline: (popoverRect: DOMRect, direction: "start" | "end") => {
@@ -176,10 +188,28 @@ export class ChPopover {
         currentDraggedDistanceX = -currentDraggedDistanceX;
       }
 
+      // Start direction inverts the increment
+      if (direction === "start") {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
+
+      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
+      const newRestrictedInlineSize = forceCSSMinMax(
+        newInlineSize,
+        this.#minInlineSize,
+        this.#maxInlineSize
+      );
+
+      // Do not apply resizes or translations if the control is at the minimum
+      // or maximum size
+      if (newRestrictedInlineSize === popoverRect.width) {
+        return;
+      }
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
       // By resizing the start edge the control is translated to improve the UX
       if (direction === "start") {
-        this.#draggedDistanceXForResize += currentDraggedDistanceX;
-        currentDraggedDistanceX = -currentDraggedDistanceX;
+        this.#draggedDistanceXForResize -= currentDraggedDistanceX;
 
         setProperty(
           this.el,
@@ -188,13 +218,7 @@ export class ChPopover {
         );
       }
 
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      const newInlineSize = popoverRect.width + currentDraggedDistanceX;
-      setProperty(
-        this.el,
-        POPOVER_INLINE_SIZE,
-        forceCSSMinMax(newInlineSize, this.#minInlineSize, this.#maxInlineSize)
-      );
+      setProperty(this.el, POPOVER_INLINE_SIZE, newRestrictedInlineSize);
     }
   } as const;
 

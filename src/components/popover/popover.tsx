@@ -83,6 +83,7 @@ const removePopoverTargetElement = (actionElement: PopoverActionElement) => {
 })
 export class ChPopover {
   // Sync computations with frames
+  #borderSizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
   #positionAdjustRAF: SyncWithRAF; // Don't allocate memory until needed
   #resizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
@@ -194,8 +195,7 @@ export class ChPopover {
   };
 
   // Refs
-  #blockStartEdge: HTMLDivElement;
-  #inlineStartEdge: HTMLDivElement;
+  #resizeLayer: HTMLDivElement;
   #windowRef: Window;
 
   @Element() el: HTMLChPopoverElement;
@@ -305,6 +305,11 @@ export class ChPopover {
    * resized at runtime by dragging the edges or corners.
    */
   @Prop() readonly resizable: boolean = false;
+  @Watch("resizable")
+  resizableChanged() {
+    // Schedule update for border size watcher
+    this.#checkBorderSizeWatcher = true;
+  }
 
   /**
    * Emitted when the popover is opened.
@@ -631,7 +636,7 @@ export class ChPopover {
 
   /**
    * This observer watches the size of each border in the control to adjust the
-   * position of the resize edges and corners.
+   * position of the invisible resize elements (edges and corners).
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #setBorderSizeWatcher = () => {
@@ -640,16 +645,16 @@ export class ChPopover {
       return;
     }
 
+    this.#borderSizeRAF ??= new SyncWithRAF();
     this.#borderSizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
 
     // Observe the size of the edges to know if the border
     this.#borderSizeObserver.observe(this.el, { box: "border-box" });
-    this.#borderSizeObserver.observe(this.#blockStartEdge);
-    this.#borderSizeObserver.observe(this.#inlineStartEdge);
+    this.#borderSizeObserver.observe(this.#resizeLayer);
   };
 
   #updateBorderSizeRAF = () => {
-    this.#positionAdjustRAF.perform(this.#updateBorderSize);
+    this.#borderSizeRAF.perform(this.#updateBorderSize);
   };
 
   #updateBorderSize = () => {
@@ -683,6 +688,8 @@ export class ChPopover {
       this.#borderSizeObserver.disconnect();
       this.#borderSizeObserver = null; // Free the memory
     }
+
+    this.#borderSizeRAF = null; // Free the memory
   };
 
   connectedCallback() {
@@ -790,7 +797,6 @@ export class ChPopover {
             <div
               class="edge__block-start"
               onMouseDown={this.#handleEdgeResize("block-start")}
-              ref={el => (this.#blockStartEdge = el)}
             ></div>, // Top
             <div
               class="edge__inline-end"
@@ -803,7 +809,6 @@ export class ChPopover {
             <div
               class="edge__inline-start"
               onMouseDown={this.#handleEdgeResize("inline-start")}
-              ref={el => (this.#inlineStartEdge = el)}
             ></div>, // Left
 
             <div
@@ -821,7 +826,12 @@ export class ChPopover {
             <div
               class="corner__block-end-inline-end"
               onMouseDown={this.#handleEdgeResize("block-end-inline-end")}
-            ></div> // Bottom Right
+            ></div>, // Bottom Right
+
+            <div
+              class="resize-layer"
+              ref={el => (this.#resizeLayer = el)}
+            ></div>
           ]}
       </Host>
     );

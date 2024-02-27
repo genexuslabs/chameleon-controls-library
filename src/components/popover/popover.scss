@@ -252,6 +252,12 @@ $ch-popover-y--same-layer: calc(
   }
 }
 
+// Useful for observing changes in border size
+.resize-layer {
+  position: fixed;
+  inset: 0;
+}
+
 // - - - - - - - - - - - - - - - -
 //         Block alignment
 // - - - - - - - - - - - - - - - -

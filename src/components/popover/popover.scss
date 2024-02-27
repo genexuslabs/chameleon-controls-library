@@ -25,6 +25,61 @@ $ch-popover-y--same-layer: calc(
 
 :host {
   /**
+   * @prop --ch-popover-block-size:
+   * Specifies the block size of the popover. Useful for scenarios where the
+   * popover is resizable.
+   * @default max-content
+   */
+  --ch-popover-block-size: max-content;
+
+  /**
+   * @prop --ch-popover-inline-size:
+   * Specifies the inline size of the popover. Useful for scenarios where the
+   * popover is resizable.
+   * @default max-content
+   */
+  --ch-popover-inline-size: max-content;
+
+  /**
+   * @prop --ch-popover-max-block-size:
+   * Specifies the maximum block size of the popover. Useful for scenarios where the
+   * popover is resizable.
+   * @default auto
+   */
+  --ch-popover-max-block-size: auto;
+
+  /**
+     * @prop --ch-popover-max-inline-size:
+     * Specifies the maximum inline size of the popover. Useful for scenarios
+     * where the popover is resizable.
+     * @default auto
+     */
+  --ch-popover-max-inline-size: auto;
+
+  /**
+   * @prop --ch-popover-min-block-size:
+   * Specifies the minimum block size of the popover. Useful for scenarios where the
+   * popover is resizable.
+   * @default auto
+   */
+  --ch-popover-min-block-size: auto;
+
+  /**
+    * @prop --ch-popover-min-inline-size:
+    * Specifies the minimum inline size of the popover. Useful for scenarios
+    * where the popover is resizable.
+    * @default auto
+    */
+  --ch-popover-min-inline-size: auto;
+
+  /**
+   * @prop --ch-popover-resize-threshold:
+   * Specifies the size of the threshold to resize the popover.
+   * @default 4px
+   */
+  --ch-popover-resize-threshold: 8px;
+
+  /**
    * @prop --ch-popover-separation-x:
    * Specifies the separation between the action and popover in the x axis.
    * @default 0px
@@ -38,6 +93,35 @@ $ch-popover-y--same-layer: calc(
    */
   --ch-popover-separation-y: 0px;
 
+  --ch-popover-resize-threshold--half-negative: calc(
+    var(--ch-popover-resize-threshold) * -0.5
+  );
+
+  --ch-popover-border-inline-start-width: 0px;
+  --ch-popover-border-inline-end-width: 0px;
+  --ch-popover-border-block-start-width: 0px;
+  --ch-popover-border-block-end-width: 0px;
+
+  --ch-popover-resize__inline-start: calc(
+    var(--ch-popover-resize-threshold--half-negative) -
+      var(--ch-popover-border-inline-start-width) * 0.5
+  );
+
+  --ch-popover-resize__inline-end: calc(
+    var(--ch-popover-resize-threshold--half-negative) -
+      var(--ch-popover-border-inline-end-width) * 0.5
+  );
+
+  --ch-popover-resize__block-start: calc(
+    var(--ch-popover-resize-threshold--half-negative) -
+      var(--ch-popover-border-block-start-width) * 0.5
+  );
+
+  --ch-popover-resize__block-end: calc(
+    var(--ch-popover-resize-threshold--half-negative) -
+      var(--ch-popover-border-block-end-width) * 0.5
+  );
+
   --ch-popover-dragged-x: 0px;
   --ch-popover-dragged-y: 0px;
   --ch-popover-rtl: 1;
@@ -45,6 +129,13 @@ $ch-popover-y--same-layer: calc(
   // Necessary when the popover is not placed in a new top layer. For example,
   // when nesting dropdowns
   position: fixed;
+
+  inline-size: var(--ch-popover-inline-size);
+  block-size: var(--ch-popover-block-size);
+  min-inline-size: var(--ch-popover-min-inline-size);
+  min-block-size: var(--ch-popover-min-block-size);
+  max-inline-size: var(--ch-popover-max-inline-size);
+  max-block-size: var(--ch-popover-max-block-size);
 
   // Reset browser defaults
   margin: 0;
@@ -105,6 +196,146 @@ $ch-popover-y--same-layer: calc(
     pointer-events: none;
     user-select: none;
   }
+}
+
+// - - - - - - - - - - - - - - - -
+//            Resizable
+// - - - - - - - - - - - - - - - -
+:host(.ch-popover-resizing) {
+  pointer-events: none;
+  user-select: none;
+}
+
+.edge {
+  &__block-start,
+  &__block-end {
+    position: fixed;
+    // This calc improves edge positioning when the border-width is much larger
+    // than the threshold
+    inset-inline: min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-inline-start-width)
+            ) / 2
+        )
+      )
+      min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-inline-end-width)
+            ) / 2
+        )
+      );
+    block-size: var(--ch-popover-resize-threshold);
+    cursor: ns-resize;
+  }
+
+  &__inline-start,
+  &__inline-end {
+    position: fixed;
+    // This calc improves edge positioning when the border-width is much larger
+    // than the threshold
+    inset-block: min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-block-start-width)
+            ) / 2
+        )
+      )
+      min(
+        0px,
+        calc(
+          (
+              var(--ch-popover-resize-threshold) -
+                var(--ch-popover-border-block-end-width)
+            ) / 2
+        )
+      );
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: ew-resize;
+  }
+
+  &__block-start {
+    inset-block-start: var(--ch-popover-resize__block-start);
+  }
+
+  &__block-end {
+    inset-block-end: var(--ch-popover-resize__block-end);
+  }
+
+  &__inline-start {
+    inset-inline-start: var(--ch-popover-resize__inline-start);
+  }
+
+  &__inline-end {
+    inset-inline-end: var(--ch-popover-resize__inline-end);
+  }
+}
+
+.corner {
+  &__block-start-inline-start,
+  &__block-end-inline-end {
+    position: fixed;
+    block-size: var(--ch-popover-resize-threshold);
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: nwse-resize;
+  }
+
+  &__block-start-inline-end,
+  &__block-end-inline-start {
+    position: fixed;
+    block-size: var(--ch-popover-resize-threshold);
+    inline-size: var(--ch-popover-resize-threshold);
+    cursor: nesw-resize;
+  }
+
+  &__block-start-inline-start {
+    inset-block-start: var(--ch-popover-resize__block-start);
+    inset-inline-start: var(--ch-popover-resize__inline-start);
+  }
+
+  &__block-end-inline-end {
+    inset-block-end: var(--ch-popover-resize__block-end);
+    inset-inline-end: var(--ch-popover-resize__inline-end);
+  }
+
+  &__block-start-inline-end {
+    inset-block-start: var(--ch-popover-resize__block-start);
+    inset-inline-end: var(--ch-popover-resize__inline-end);
+  }
+
+  &__block-end-inline-start {
+    inset-block-end: var(--ch-popover-resize__block-end);
+    inset-inline-start: var(--ch-popover-resize__inline-start);
+  }
+}
+
+// "Rotate" resize cursors for the corners
+:host(.ch-popover-rtl) {
+  .corner__block-start-inline-start,
+  .corner__block-end-inline-end {
+    cursor: nesw-resize;
+  }
+}
+
+:host(.ch-popover-rtl) {
+  .corner__block-start-inline-end,
+  .corner__block-end-inline-start {
+    cursor: nwse-resize;
+  }
+}
+
+// Useful for observing changes in border size
+.resize-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
 }
 
 // - - - - - - - - - - - - - - - -

@@ -1359,6 +1359,10 @@ export namespace Components {
          */
         "mode": "auto" | "manual";
         /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable": boolean;
+        /**
           * Specifies if the popover is automatically aligned is the content overflow the window.
          */
         "responsiveAlignment": boolean;
@@ -4808,6 +4812,10 @@ declare namespace LocalJSX {
           * Emitted when the popover is opened.
          */
         "onPopoverOpened"?: (event: ChPopoverCustomEvent<any>) => void;
+        /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable"?: boolean;
         /**
           * Specifies if the popover is automatically aligned is the content overflow the window.
          */

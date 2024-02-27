@@ -155,7 +155,7 @@ export class ChPopover {
       const newInlineSize = popoverRect.width + currentDraggedDistanceX;
       setProperty(this.el, POPOVER_INLINE_SIZE, newInlineSize);
     }
-  };
+  } as const;
 
   #resizeEdgesAndCornersDictionary: {
     [key in ChPopoverResizeElement]: (popoverRect: DOMRect) => void;

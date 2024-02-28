@@ -33,12 +33,32 @@ export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
 
 export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
   accessibleRole?: ViewAccessibleRole;
-  closeButtonHidden?: boolean;
-  selectedWidgetId?: string;
-  showCaptions?: boolean;
-  viewType: ViewType;
-  widgets: FlexibleLayoutWidget[];
-};
+} & FlexibleLayoutLeafConfiguration;
+
+export type FlexibleLayoutLeafConfiguration =
+  | {
+      closeButtonHidden?: boolean;
+      selectedWidgetId?: string;
+      showCaptions?: boolean;
+      tabOrientation: FlexibleLayoutLeafTabOrientation;
+
+      /**
+       * Specifies whether the tab is displayed before or after of its content.
+       * If not specified, defaults to `"start"`
+       */
+      tabPosition: FlexibleLayoutLeafTabPosition;
+      type: Extract<FlexibleLayoutLeafType, "tabbed">;
+      widgets: FlexibleLayoutWidget[];
+    }
+  | {
+      type: Extract<FlexibleLayoutLeafType, "single-content">;
+      widgetId: string;
+    };
+
+export type FlexibleLayoutLeafType = "tabbed" | "single-content";
+
+export type FlexibleLayoutLeafTabOrientation = "block" | "inline";
+export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
 export type FlexibleLayoutGroup = Omit<
   LayoutSplitterDistributionGroup,

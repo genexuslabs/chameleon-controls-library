@@ -20,6 +20,18 @@ To run the unit tests for the custom elements, run:
 npm test
 ```
 
+To run the spec tests for a specific custom elements, run:
+
+```bash
+npm run test.spec <component-name-without-prefix>
+```
+
+For example:
+
+```bash
+npm run test.spec layout-splitter
+```
+
 ## Building for production
 
 To build the design for production, run:

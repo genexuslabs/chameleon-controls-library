@@ -11,11 +11,11 @@ import { Component as ChComponent } from "../../common/interfaces";
 import {
   DragBarMouseDownEventInfo,
   GroupExtended,
+  ItemExtended,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionItemExtended,
   LayoutSplitterDistributionLeaf,
   LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
@@ -24,13 +24,17 @@ import {
   FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
+  hasMinSize,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
-import { isRTL } from "../../common/utils";
+import { ROOT_VIEW, isRTL } from "../../common/utils";
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
-import { ROOT_VIEW } from "../renders/flexible-layout/utils";
 import { addSiblingLeaf } from "./add-sibling-item";
+import { SyncWithRAF } from "../../common/sync-with-frames";
+
+type Group = LayoutSplitterDistributionGroup;
+type Item = LayoutSplitterDistributionItem;
 
 const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
@@ -39,11 +43,8 @@ const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
   `group direction--${direction}`;
 
 const TEMPLATE_STYLE = (
-  items: LayoutSplitterDistributionItem[],
-  itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  >,
+  items: Item[],
+  itemsInfo: Map<string, ItemExtended>,
   fixedSizesSum: number
 ) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
@@ -54,10 +55,8 @@ const TEMPLATE_STYLE = (
   [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`
 });
 
-const getAriaControls = (
-  layoutItems: LayoutSplitterDistributionItem[],
-  index: number
-) => `${layoutItems[index].id} ${layoutItems[index + 1].id}`;
+const getAriaControls = (layoutItems: Item[], index: number) =>
+  `${layoutItems[index].id} ${layoutItems[index + 1].id}`;
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -74,7 +73,8 @@ const ARROW_LEFT = "ArrowLeft";
   tag: "ch-layout-splitter"
 })
 export class ChLayoutSplitter implements ChComponent {
-  #needForRAF = true; // To prevent redundant RAF (request animation frame) calls
+  // Sync computations with frames
+  #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
 
   #mouseDownInfo: DragBarMouseDownEventInfo;
   #lastMousePosition: number;
@@ -83,10 +83,7 @@ export class ChLayoutSplitter implements ChComponent {
   #fixedSizesSumRoot: number;
 
   // Distribution of elements
-  #itemsInfo: Map<
-    string,
-    LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>
-  > = new Map();
+  #itemsInfo: Map<string, ItemExtended> = new Map();
 
   @Element() el: HTMLChLayoutSplitterElement;
 
@@ -208,28 +205,19 @@ export class ChLayoutSplitter implements ChComponent {
       this.#mouseDownInfo.direction
     );
 
-    this.#handleBarDragRAF();
+    this.#dragRAF.perform(this.#handleBarDragRAF);
   };
 
   #handleBarDragRAF = (incrementInPx?: number) => {
-    if (!this.#needForRAF) {
-      return;
-    }
-    this.#needForRAF = false; // No need to call RAF up until next frame
+    updateComponentsAndDragBar(
+      this.#mouseDownInfo,
+      this.#itemsInfo,
+      incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
+      GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
+    );
 
-    requestAnimationFrame(() => {
-      this.#needForRAF = true; // RAF now consumes the movement instruction so a new one can come
-
-      updateComponentsAndDragBar(
-        this.#mouseDownInfo,
-        this.#itemsInfo,
-        incrementInPx ?? this.#newMousePosition - this.#lastMousePosition, // Increment in px
-        GRID_TEMPLATE_DIRECTION_CUSTOM_VAR
-      );
-
-      // Sync new position with last
-      this.#lastMousePosition = this.#newMousePosition;
-    });
+    // Sync new position with last
+    this.#lastMousePosition = this.#newMousePosition;
   };
 
   // Handler to remove mouse down
@@ -244,6 +232,11 @@ export class ChLayoutSplitter implements ChComponent {
 
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
+    // Cancel RAF to prevent access to undefined references
+    if (this.#dragRAF) {
+      this.#dragRAF.cancel();
+    }
+
     this.#removeMouseMoveHandler();
 
     document.removeEventListener("mouseup", this.#mouseUpHandler, {
@@ -257,11 +250,12 @@ export class ChLayoutSplitter implements ChComponent {
   #initializeDragBarValuesForResizeProcessing = (
     direction: LayoutSplitterDirection,
     index: number,
-    layoutItems: LayoutSplitterDistributionItem[],
+    layoutItems: Item[],
     event: Event
   ) => {
     // Initialize the values needed for drag processing
-    const dragBarContainer = (event.target as HTMLElement).parentElement;
+    const dragBar = event.target as HTMLElement;
+    const dragBarContainer = dragBar.parentElement;
 
     this.#mouseDownInfo = {
       container: dragBarContainer,
@@ -270,6 +264,7 @@ export class ChLayoutSplitter implements ChComponent {
           ? dragBarContainer.clientWidth
           : dragBarContainer.clientHeight,
       direction: direction,
+      dragBar: dragBar,
       fixedSizesSumRoot: this.#fixedSizesSumRoot,
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
@@ -282,15 +277,13 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   #mouseDownHandler =
-    (
-      direction: LayoutSplitterDirection,
-      index: number,
-      layoutItems: LayoutSplitterDistributionItem[]
-    ) =>
+    (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: MouseEvent) => {
       // Necessary to prevent selecting the inner image (or other elements) of
       // the bar item when the mouse is down
       event.preventDefault();
+
+      this.#dragRAF ??= new SyncWithRAF();
 
       this.#initializeDragBarValuesForResizeProcessing(
         direction,
@@ -315,11 +308,7 @@ export class ChLayoutSplitter implements ChComponent {
     };
 
   #handleResize =
-    (
-      direction: LayoutSplitterDirection,
-      index: number,
-      layoutItems: LayoutSplitterDistributionItem[]
-    ) =>
+    (direction: LayoutSplitterDirection, index: number, layoutItems: Item[]) =>
     (event: KeyboardEvent) => {
       if (
         (direction === "rows" &&
@@ -352,37 +341,35 @@ export class ChLayoutSplitter implements ChComponent {
       );
     };
 
-  #renderItems = (
+  #renderItem = (
     direction: LayoutSplitterDirection,
-    layoutItems: LayoutSplitterDistributionItem[]
+    lastComponentIndex: number,
+    layoutItems: Item[],
+    item: Item,
+    index: number
   ) => {
-    const lastComponentIndex = layoutItems.length - 1;
+    const itemUIModel = this.#itemsInfo.get(item.id);
 
-    return layoutItems.map((item, index) => [
-      (item as LayoutSplitterDistributionGroup).items ? (
+    return [
+      (item as Group).items ? (
         <div
           id={item.id}
-          class={DIRECTION_CLASS(
-            (item as LayoutSplitterDistributionGroup).direction
-          )}
+          class={DIRECTION_CLASS((item as Group).direction)}
           part={item.id}
           style={TEMPLATE_STYLE(
-            (item as LayoutSplitterDistributionGroup).items,
+            (item as Group).items,
             this.#itemsInfo,
-            (
-              this.#itemsInfo.get(
-                item.id
-              ) as LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>
-            ).fixedSizesSum
+            (itemUIModel as GroupExtended).fixedSizesSum
           )}
         >
           {this.#renderItems(
-            (item as LayoutSplitterDistributionGroup).direction,
-            (item as LayoutSplitterDistributionGroup).items
+            (item as Group).direction,
+            (item as Group).items,
+            (item as Group).items.length - 1
           )}
         </div>
       ) : (
-        <div id={item.id} class="leaf">
+        <div id={item.id} class={!hasMinSize(item) ? "leaf" : undefined}>
           <slot key={item.id} name={item.id} />
         </div>
       ),
@@ -395,6 +382,7 @@ export class ChLayoutSplitter implements ChComponent {
           aria-disabled={this.dragBarDisabled ? "true" : null}
           aria-label={this.barAccessibleName}
           aria-orientation={direction === "columns" ? "vertical" : "horizontal"}
+          aria-valuetext={itemUIModel.actualSize}
           title={this.barAccessibleName}
           tabindex="0"
           // - - - - - - - - - - - - -
@@ -416,8 +404,17 @@ export class ChLayoutSplitter implements ChComponent {
           }
         ></div>
       )
-    ]);
+    ];
   };
+
+  #renderItems = (
+    direction: LayoutSplitterDirection,
+    layoutItems: Item[],
+    lastComponentIndex: number
+  ) =>
+    layoutItems.map((item, index) =>
+      this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
+    );
 
   private updateLayoutInfo(layout: LayoutSplitterDistribution) {
     // Clear old information
@@ -458,7 +455,11 @@ export class ChLayoutSplitter implements ChComponent {
           this.#fixedSizesSumRoot
         )}
       >
-        {this.#renderItems(layoutModel.direction, layoutModel.items)}
+        {this.#renderItems(
+          layoutModel.direction,
+          layoutModel.items,
+          layoutModel.items.length - 1
+        )}
       </div>
     );
   }

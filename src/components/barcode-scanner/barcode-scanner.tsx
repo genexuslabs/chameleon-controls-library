@@ -39,7 +39,7 @@ export class ChBarcodeScanner {
 
   #resizeObserver: ResizeObserver;
 
-  #cameraChange = false;
+  #cameraIdOrScanningChange = false;
   #cameras: string[];
 
   #currentCameraId: string | MediaTrackConstraints;
@@ -51,69 +51,61 @@ export class ChBarcodeScanner {
   @Element() el: HTMLChBarcodeScannerElement;
 
   /**
+   * The width (in pixels) of the QR box displayed at the center of the video.
+   */
+  @Prop() readonly barcodeBoxWidth: number = 200;
+
+  /**
+   * The height (in pixels) of the QR box displayed at the center of the video.
+   */
+  @Prop() readonly barcodeBoxHeight: number = 200;
+
+  /**
    * Specifies the ID of the selected camera. Only works if
    * `cameraPreference === "SelectedById"`.
    */
   @Prop() readonly cameraId?: string;
   @Watch("cameraId")
   cameraChange() {
-    this.#cameraChange = true;
+    this.#cameraIdOrScanningChange = true;
   }
 
   /**
    * Specifies the camera preference for scanning.
    */
-  @Prop() readonly cameraPreference:
-    | "Default"
-    | "FrontCamera"
-    | "BackCamera"
-    | "SelectedById" = "Default";
+  @Prop() readonly cameraPreference: "Default" | "FrontCamera" | "BackCamera" =
+    "Default";
 
   /**
    * Specifies how much time (in ms) should pass before to emit the read event
    * with the same last decoded text. If the last decoded text is different
    * from the new decoded text, this property is ignored.
    */
-  @Prop() readonly intervalBetweenReadsForTheSameDecode: number = 200;
+  @Prop() readonly readDebounce: number = 200;
 
   /**
-   * @todo Add support
+   * `true` if the control is scanning.
    */
-  @Prop() readonly scanMode: "camera" | "file" = "camera";
-
-  /**
-   * `true` if the control should stop the scanning.
-   */
-  @Prop() readonly stopped: boolean;
-  @Watch("stopped")
-  stoppedChange(newStoppedValue: boolean) {
-    if (newStoppedValue) {
-      this.#destroyScanner();
+  @Prop() readonly scanning: boolean = true;
+  @Watch("scanning")
+  scanningChange(newScanningValue: boolean) {
+    if (newScanningValue) {
+      this.#initializeScanning(newScanningValue);
     } else {
-      this.#initializeScanning();
+      this.#destroyScanner();
     }
   }
-
-  /**
-   * The width (in pixels) of the QR box displayed at the center of the video.
-   */
-  @Prop() readonly qrBoxWidth: number = 200;
-
-  /**
-   * The height (in pixels) of the QR box displayed at the center of the video.
-   */
-  @Prop() readonly qrBoxHeight: number = 200;
-
-  /**
-   * Fired when the menu action is activated.
-   */
-  @Event() read: EventEmitter<string>;
 
   /**
    * Fired when the control is first rendered. Contains the ids about all
    * available cameras.
    */
   @Event() cameras: EventEmitter<string[]>;
+
+  /**
+   * Fired when a new barcode is decoded.
+   */
+  @Event() read: EventEmitter<string>;
 
   /**
    * Scan a file a return a promise with the decoded text.
@@ -132,9 +124,7 @@ export class ChBarcodeScanner {
       const elapsedTimeBetweenSameRead =
         currentDateTime.getTime() - this.#lastScanDateTime.getTime();
 
-      if (
-        elapsedTimeBetweenSameRead < this.intervalBetweenReadsForTheSameDecode
-      ) {
+      if (elapsedTimeBetweenSameRead < this.readDebounce) {
         this.#lastScanDateTime = currentDateTime;
 
         return;
@@ -174,7 +164,7 @@ export class ChBarcodeScanner {
       this.#currentCameraId,
       {
         fps: 30, // Frame per seconds for QR code scanning
-        qrbox: { width: this.qrBoxWidth, height: this.qrBoxWidth },
+        qrbox: { width: this.barcodeBoxWidth, height: this.barcodeBoxHeight },
         aspectRatio: Math.max(1, aspectRatio) // At least, aspect ratio 1/1 when the height is greater than the width
       },
       this.#onScanSuccess,
@@ -198,24 +188,28 @@ export class ChBarcodeScanner {
     this.#resizeObserver.observe(this.el);
   };
 
-  #initializeScanning = () => {
-    if (
-      this.#cameras == null ||
-      this.#cameras.length === 0 ||
-      (this.cameraPreference === "SelectedById" && !this.cameraId)
-    ) {
+  #selectCameraId = () => {
+    if (this.cameraId) {
+      this.#currentCameraId = this.cameraId;
       return;
     }
 
-    if (this.cameraId && this.cameraPreference === "SelectedById") {
-      this.#currentCameraId = this.cameraId;
-    } else {
-      this.#currentCameraId =
-        this.cameraPreference === "Default"
-          ? this.#cameras[0] // Take the first camera when default
-          : cameraPreferenceDictionary[this.cameraPreference];
+    this.#currentCameraId =
+      this.cameraPreference === "Default"
+        ? this.#cameras[0] // Take the first camera when default
+        : cameraPreferenceDictionary[this.cameraPreference];
+  };
+
+  #initializeScanning = (scanning: boolean) => {
+    if (!scanning) {
+      return;
     }
 
+    if (this.#cameras == null || this.#cameras.length === 0) {
+      return;
+    }
+
+    this.#selectCameraId();
     this.#startScanner();
     this.#setResizeObserver();
   };
@@ -224,34 +218,19 @@ export class ChBarcodeScanner {
     this.#scannerId = `ch-barcode-scanner-${autoId++}`;
   }
 
-  componentWillRender() {
-    if (!this.#cameraChange) {
-      return;
-    }
-    this.#cameraChange = false;
-
-    if (this.cameraPreference !== "SelectedById") {
-      return;
-    }
-
-    if (this.cameraId) {
-      this.#currentCameraId = this.cameraId;
-      this.#startScanner();
-    } else {
-      this.#destroyScanner();
+  componentWillUpdate() {
+    if (this.#cameraIdOrScanningChange) {
+      this.#cameraIdOrScanningChange = false;
+      this.#initializeScanning(this.scanning);
     }
   }
 
-  componentDidLoad() {
-    Html5Qrcode.getCameras().then(devices => {
-      this.#cameras = devices == null ? [] : devices.map(device => device.id);
+  async componentDidLoad() {
+    const devices = await Html5Qrcode.getCameras();
+    this.#cameras = devices == null ? [] : devices.map(device => device.id);
 
-      this.cameras.emit(this.#cameras);
-
-      if (!this.stopped) {
-        this.#initializeScanning();
-      }
-    });
+    this.cameras.emit(this.#cameras);
+    this.#initializeScanning(this.scanning);
   }
 
   disconnectedCallback() {

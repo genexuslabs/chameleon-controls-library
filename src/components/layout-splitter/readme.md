@@ -26,13 +26,13 @@ This component allows us to design a layout composed by columns and rows.
 
 #### Parameters
 
-| Name                               | Type                                                                                                         | Description |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------ | ----------- |
-| `parentGroup`                      | `string`                                                                                                     |             |
-| `siblingItem`                      | `string`                                                                                                     |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                        |             |
-| `leafInfo`                         | `{ id: string; dragBar?: LayoutSplitterDragBarConfig; fixedOffsetSize?: number; size: LayoutSplitterSize; }` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                    |             |
+| Name                               | Type                                                                                                                                  | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                                              |             |
+| `siblingItem`                      | `string`                                                                                                                              |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                 |             |
+| `leafInfo`                         | `{ id: string; dragBar?: LayoutSplitterDragBarConfig; fixedOffsetSize?: number; size: LayoutSplitterSize; minSize?: `${number}px`; }` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                             |             |
 
 #### Returns
 

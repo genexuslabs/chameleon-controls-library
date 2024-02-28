@@ -29,6 +29,8 @@ export function debounce(
 
 export const isRTL = () => document.documentElement.dir === "rtl";
 
+export const ROOT_VIEW: null = null;
+
 /*  This functions overrides a method adding calls before (`before()`) and
     after (`after()`) 
 */
@@ -67,9 +69,31 @@ export const tokenMap = (tokens: { [key: string]: boolean }) =>
  */
 export const inBetween = (x: number, y: number, z: number) => x <= y && y <= z;
 
-const resetDragImage = new Image();
+let resetDragImage;
+
+/* @__PURE__ */ if (!window.Image) {
+  resetDragImage = "test";
+}
+
+resetDragImage ??= new Image();
 export const removeDragImage = (event: DragEvent) =>
   event.dataTransfer.setDragImage(resetDragImage, 0, 0);
 
 export const isPseudoElementImg = (src?: string, imageType?: ImageRender) =>
   src && imageType !== "img";
+
+/**
+ * Force a value to follow CSS minimum and maximum rules. Note that the minimum
+ * value can be greater than the maximum value, as implemented by the CSS
+ * specification.
+ * The maximum value can be `NaN`. In this case only the minimum value rule
+ * will be apply.
+ */
+export const forceCSSMinMax = (
+  value: number,
+  minimum: number,
+  maximum: number
+): number =>
+  Number.isNaN(maximum)
+    ? Math.max(value, minimum)
+    : Math.max(Math.min(value, maximum), minimum);

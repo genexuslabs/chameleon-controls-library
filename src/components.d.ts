@@ -218,40 +218,33 @@ export namespace Components {
      */
     interface ChBarcodeScanner {
         /**
+          * The height (in pixels) of the QR box displayed at the center of the video.
+         */
+        "barcodeBoxHeight": number;
+        /**
+          * The width (in pixels) of the QR box displayed at the center of the video.
+         */
+        "barcodeBoxWidth": number;
+        /**
           * Specifies the ID of the selected camera. Only works if `cameraPreference === "SelectedById"`.
          */
         "cameraId"?: string;
         /**
           * Specifies the camera preference for scanning.
          */
-        "cameraPreference": | "Default"
-    | "FrontCamera"
-    | "BackCamera"
-    | "SelectedById";
+        "cameraPreference": "Default" | "FrontCamera" | "BackCamera";
         /**
           * Specifies how much time (in ms) should pass before to emit the read event with the same last decoded text. If the last decoded text is different from the new decoded text, this property is ignored.
          */
-        "intervalBetweenReadsForTheSameDecode": number;
-        /**
-          * The height (in pixels) of the QR box displayed at the center of the video.
-         */
-        "qrBoxHeight": number;
-        /**
-          * The width (in pixels) of the QR box displayed at the center of the video.
-         */
-        "qrBoxWidth": number;
+        "readDebounce": number;
         /**
           * Scan a file a return a promise with the decoded text.
          */
         "scan": (imageFile: File) => Promise<string>;
         /**
-          * @todo Add support
+          * `true` if the control is scanning.
          */
-        "scanMode": "camera" | "file";
-        /**
-          * `true` if the control should stop the scanning.
-         */
-        "stopped": boolean;
+        "scanning": boolean;
     }
     interface ChCheckbox {
         /**
@@ -1366,6 +1359,10 @@ export namespace Components {
          */
         "mode": "auto" | "manual";
         /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable": boolean;
+        /**
           * Specifies if the popover is automatically aligned is the content overflow the window.
          */
         "responsiveAlignment": boolean;
@@ -2436,8 +2433,8 @@ declare global {
         new (): HTMLChAlertElement;
     };
     interface HTMLChBarcodeScannerElementEventMap {
-        "read": string;
         "cameras": string[];
+        "read": string;
     }
     /**
      * This component allows you to scan a wide variety of types of barcode and QR
@@ -3643,44 +3640,37 @@ declare namespace LocalJSX {
      */
     interface ChBarcodeScanner {
         /**
+          * The height (in pixels) of the QR box displayed at the center of the video.
+         */
+        "barcodeBoxHeight"?: number;
+        /**
+          * The width (in pixels) of the QR box displayed at the center of the video.
+         */
+        "barcodeBoxWidth"?: number;
+        /**
           * Specifies the ID of the selected camera. Only works if `cameraPreference === "SelectedById"`.
          */
         "cameraId"?: string;
         /**
           * Specifies the camera preference for scanning.
          */
-        "cameraPreference"?: | "Default"
-    | "FrontCamera"
-    | "BackCamera"
-    | "SelectedById";
-        /**
-          * Specifies how much time (in ms) should pass before to emit the read event with the same last decoded text. If the last decoded text is different from the new decoded text, this property is ignored.
-         */
-        "intervalBetweenReadsForTheSameDecode"?: number;
+        "cameraPreference"?: "Default" | "FrontCamera" | "BackCamera";
         /**
           * Fired when the control is first rendered. Contains the ids about all available cameras.
          */
         "onCameras"?: (event: ChBarcodeScannerCustomEvent<string[]>) => void;
         /**
-          * Fired when the menu action is activated.
+          * Fired when a new barcode is decoded.
          */
         "onRead"?: (event: ChBarcodeScannerCustomEvent<string>) => void;
         /**
-          * The height (in pixels) of the QR box displayed at the center of the video.
+          * Specifies how much time (in ms) should pass before to emit the read event with the same last decoded text. If the last decoded text is different from the new decoded text, this property is ignored.
          */
-        "qrBoxHeight"?: number;
+        "readDebounce"?: number;
         /**
-          * The width (in pixels) of the QR box displayed at the center of the video.
+          * `true` if the control is scanning.
          */
-        "qrBoxWidth"?: number;
-        /**
-          * @todo Add support
-         */
-        "scanMode"?: "camera" | "file";
-        /**
-          * `true` if the control should stop the scanning.
-         */
-        "stopped"?: boolean;
+        "scanning"?: boolean;
     }
     interface ChCheckbox {
         /**
@@ -4822,6 +4812,10 @@ declare namespace LocalJSX {
           * Emitted when the popover is opened.
          */
         "onPopoverOpened"?: (event: ChPopoverCustomEvent<any>) => void;
+        /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable"?: boolean;
         /**
           * Specifies if the popover is automatically aligned is the content overflow the window.
          */

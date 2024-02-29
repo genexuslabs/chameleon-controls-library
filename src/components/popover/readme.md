@@ -2,6 +2,7 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Overview
 
 The `ch-popover` component represents a popover container that is positioned
@@ -22,6 +23,7 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `resizable`           | `resizable`            | Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.                                                                                                                                                                              | `boolean`                                                                        | `false`     |
 | `responsiveAlignment` | `responsive-alignment` | Specifies if the popover is automatically aligned is the content overflow the window.                                                                                                                                                                                                                        | `boolean`                                                                        | `true`      |
 
+
 ## Events
 
 | Event           | Description                         | Type               |
@@ -29,11 +31,13 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `popoverClosed` | Emitted when the popover is closed. | `CustomEvent<any>` |
 | `popoverOpened` | Emitted when the popover is opened. | `CustomEvent<any>` |
 
+
 ## Shadow Parts
 
 | Part       | Description |
 | ---------- | ----------- |
 | `"header"` |             |
+
 
 ## CSS Custom Properties
 
@@ -49,21 +53,20 @@ relative to an element, but placed on the top layer using `position: fixed`.
 | `--ch-popover-separation-x`     | Specifies the separation between the action and popover in the x axis. @default 0px                                  |
 | `--ch-popover-separation-y`     | Specifies the separation between the action and popover in the y axis. @default 0px                                  |
 
+
 ## Dependencies
 
 ### Used by
 
-- [ch-dropdown](../dropdown)
+ - [ch-dropdown](../dropdown)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-dropdown --> ch-popover
   style ch-popover fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
-
+*Built with [StencilJS](https://stenciljs.com/)*

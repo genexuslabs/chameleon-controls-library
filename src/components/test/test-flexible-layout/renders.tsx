@@ -31,11 +31,10 @@ export const defaultLayout: FlexibleLayout = {
   direction: "rows",
   items: [
     {
-      id: "sub-group-1",
+      id: MENU_BAR,
       accessibleRole: "banner",
       size: "32px",
-      viewType: "blockStart",
-      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+      type: "single-content"
     },
     {
       id: "sub-group-2",
@@ -45,9 +44,9 @@ export const defaultLayout: FlexibleLayout = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
-          expanded: true,
           size: "300px",
-          viewType: "inlineStart",
+          type: "tabbed",
+          tabDirection: "inline",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -71,7 +70,8 @@ export const defaultLayout: FlexibleLayout = {
           id: "sub-group-2-2",
           accessibleRole: "main",
           size: "1fr",
-          viewType: "main",
+          type: "tabbed",
+          tabDirection: "block",
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
@@ -82,9 +82,10 @@ export const defaultLayout: FlexibleLayout = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
-          expanded: true,
           size: "300px",
-          viewType: "inlineEnd",
+          type: "tabbed",
+          tabDirection: "inline",
+          tabPosition: "end",
           widgets: [
             {
               id: PROPERTIES,
@@ -99,7 +100,8 @@ export const defaultLayout: FlexibleLayout = {
       id: "sub-group-3",
       accessibleRole: "contentinfo",
       size: "200px",
-      viewType: "blockEnd",
+      type: "tabbed",
+      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -116,12 +118,11 @@ export const layout2: FlexibleLayout = {
   direction: "rows",
   items: [
     {
-      id: "sub-group-1",
+      id: MENU_BAR,
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      viewType: "blockStart",
-      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+      type: "single-content"
     },
     {
       id: "sub-group-2",
@@ -131,9 +132,9 @@ export const layout2: FlexibleLayout = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
-          expanded: true,
           size: "300px",
-          viewType: "inlineStart",
+          type: "tabbed",
+          tabDirection: "inline",
           selectedWidgetId: KB_EXPLORER,
           widgets: [
             {
@@ -162,14 +163,16 @@ export const layout2: FlexibleLayout = {
             {
               id: "sub-group-2-2-1",
               size: "1fr",
-              viewType: "main",
+              type: "tabbed",
+              tabDirection: "block",
               selectedWidgetId: START_PAGE,
               widgets: [{ id: START_PAGE, name: "Start Page" }]
             },
             {
               id: "sub-group-2-2-2",
               size: "1fr",
-              viewType: "main",
+              type: "tabbed",
+              tabDirection: "block",
               widgets: [
                 { id: GRID, name: "Grid" },
                 { id: STRUCT_EDITOR, name: "Struct Editor" }
@@ -180,9 +183,10 @@ export const layout2: FlexibleLayout = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
-          expanded: true,
           size: "300px",
-          viewType: "inlineEnd",
+          type: "tabbed",
+          tabDirection: "inline",
+          tabPosition: "end",
           widgets: [
             {
               id: PROPERTIES,
@@ -197,7 +201,8 @@ export const layout2: FlexibleLayout = {
       id: "sub-group-3",
       accessibleRole: "contentinfo",
       size: "200px",
-      viewType: "blockEnd",
+      type: "tabbed",
+      tabDirection: "block",
       widgets: [
         {
           id: OUTPUT,
@@ -214,12 +219,11 @@ export const layout3: FlexibleLayout = {
   direction: "rows",
   items: [
     {
-      id: "sub-group-1",
+      id: MENU_BAR,
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      viewType: "blockStart",
-      widgets: [{ id: MENU_BAR, name: MENU_BAR }]
+      type: "single-content"
     },
     {
       id: "sub-group-2",
@@ -230,9 +234,9 @@ export const layout3: FlexibleLayout = {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
           closeButtonHidden: true,
-          expanded: true,
           size: "300px",
-          viewType: "inlineStart",
+          type: "tabbed",
+          tabDirection: "inline",
           selectedWidgetId: KB_EXPLORER,
           showCaptions: false,
           widgets: [
@@ -269,7 +273,8 @@ export const layout3: FlexibleLayout = {
                   id: "sub-group-2-2-1-1",
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
-                  viewType: "main",
+                  type: "tabbed",
+                  tabDirection: "block",
                   selectedWidgetId: START_PAGE,
                   widgets: [{ id: START_PAGE, name: "Start Page" }]
                 },
@@ -277,13 +282,13 @@ export const layout3: FlexibleLayout = {
                   id: "sub-group-2-2-1-2",
                   direction: "rows",
                   size: "0.5fr",
-                  viewType: "main",
                   items: [
                     {
                       id: "sub-group-2-2-1-2-1",
                       dragBar: { part: "visible", size: 1 },
                       size: "0.5fr",
-                      viewType: "main",
+                      type: "tabbed",
+                      tabDirection: "block",
                       widgets: [
                         { id: GRID, name: "Grid" },
                         { id: STRUCT_EDITOR, name: "Struct Editor" },
@@ -296,7 +301,8 @@ export const layout3: FlexibleLayout = {
                     {
                       id: "sub-group-2-2-1-2-2",
                       size: "0.5fr",
-                      viewType: "main",
+                      type: "tabbed",
+                      tabDirection: "block",
                       widgets: [{ id: IMPORT_OBJECTS, name: "Import Objects" }]
                     }
                   ]
@@ -307,7 +313,8 @@ export const layout3: FlexibleLayout = {
               id: "sub-group-2-2-2",
               accessibleRole: "contentinfo",
               size: "200px",
-              viewType: "blockEnd",
+              type: "tabbed",
+              tabDirection: "block",
               widgets: [
                 {
                   id: OUTPUT,
@@ -322,10 +329,11 @@ export const layout3: FlexibleLayout = {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
           closeButtonHidden: true,
-          expanded: true,
           size: "300px",
           showCaptions: false,
-          viewType: "inlineEnd",
+          type: "tabbed",
+          tabDirection: "inline",
+          tabPosition: "end",
           widgets: [
             {
               id: PROPERTIES,

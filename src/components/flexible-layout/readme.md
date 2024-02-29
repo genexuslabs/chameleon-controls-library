@@ -9,7 +9,7 @@
 
 | Property              | Attribute               | Description                                                     | Type                                                                                           | Default     |
 | --------------------- | ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------- |
-| `itemsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>`                                  | `undefined` |
+| `itemsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>>`          | `undefined` |
 | `layoutModel`         | --                      | Specifies the distribution of the items in the flexible layout. | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `undefined` |
 | `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                                       | `undefined` |
 
@@ -31,13 +31,13 @@
 
 #### Parameters
 
-| Name                               | Type                                                                                                                                                                                                             | Description |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `parentGroup`                      | `string`                                                                                                                                                                                                         |             |
-| `siblingItem`                      | `string`                                                                                                                                                                                                         |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                                                                            |             |
-| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; closeButtonHidden?: boolean; selectedWidgetId?: string; showCaptions?: boolean; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                                                                        |             |
+| Name                               | Type                                                                                                          | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                      |             |
+| `siblingItem`                      | `string`                                                                                                      |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                         |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; } & FlexibleLayoutLeafConfiguration` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                     |             |
 
 #### Returns
 

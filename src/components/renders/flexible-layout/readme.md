@@ -23,13 +23,13 @@ the sibling view that its added with.
 
 #### Parameters
 
-| Name                               | Type                                                                                                                                                                                                             | Description |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `parentGroup`                      | `string`                                                                                                                                                                                                         |             |
-| `siblingItem`                      | `string`                                                                                                                                                                                                         |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                                                                            |             |
-| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; closeButtonHidden?: boolean; selectedWidgetId?: string; showCaptions?: boolean; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                                                                        |             |
+| Name                               | Type                                                                                                          | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                      |             |
+| `siblingItem`                      | `string`                                                                                                      |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                         |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; } & FlexibleLayoutLeafConfiguration` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                     |             |
 
 #### Returns
 
@@ -37,7 +37,7 @@ Type: `Promise<boolean>`
 
 
 
-### `removeView(viewId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
+### `removeView(leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes a view and optionally all its rendered widget from the render.
 The reserved space will be given to the closest view.
@@ -46,7 +46,7 @@ The reserved space will be given to the closest view.
 
 | Name                    | Type      | Description |
 | ----------------------- | --------- | ----------- |
-| `viewId`                | `string`  |             |
+| `leafId`                | `string`  |             |
 | `removeRenderedWidgets` | `boolean` |             |
 
 #### Returns

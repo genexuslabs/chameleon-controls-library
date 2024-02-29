@@ -17,6 +17,7 @@ import {
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
+  FlexibleLayoutLeafType,
   FlexibleLayoutViewRemoveResult,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
@@ -26,11 +27,7 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import {
-  ListItemCloseInfo,
-  ListSelectedItemInfo,
-  ListType
-} from "../list/types";
+import { ListItemCloseInfo, ListSelectedItemInfo } from "../list/types";
 import { ChListCustomEvent } from "../../components";
 import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
@@ -38,11 +35,8 @@ import {
   handleWidgetDrag,
   removeDroppableAreaStyles
 } from "./utils";
-import { getViewInfo } from "../renders/flexible-layout/utils";
+import { getLeafInfo } from "../renders/flexible-layout/utils";
 import { isRTL } from "../../common/utils";
-
-const getTabDirection = (tabType: ListType) =>
-  tabType === "main" || tabType === "blockEnd" ? "block" : "inline";
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -83,7 +77,7 @@ export class ChFlexibleLayout {
    */
   @Prop() readonly itemsInfo: Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
   >;
 
   /**
@@ -165,7 +159,7 @@ export class ChFlexibleLayout {
     itemId: string,
     forceRerender = true
   ) {
-    const viewInfo = this.#getViewInfo(viewId);
+    const viewInfo = this.#getLeafInfo(viewId);
     if (!viewInfo) {
       return;
     }
@@ -176,15 +170,21 @@ export class ChFlexibleLayout {
     await viewRef.removePage(itemId, forceRerender);
   }
 
-  #getViewInfo = (viewId: string): FlexibleLayoutLeafInfo =>
-    getViewInfo(this.itemsInfo, viewId);
+  #getLeafInfo = (
+    leafId: string
+  ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> =>
+    getLeafInfo(this.itemsInfo, leafId);
 
-  #getAllViews = (): FlexibleLayoutLeafInfo[] => {
-    const views: FlexibleLayoutLeafInfo[] = [];
+  #getAllLeafs = (): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType>[] => {
+    const views: FlexibleLayoutLeafInfo<FlexibleLayoutLeafType>[] = [];
 
     this.itemsInfo.forEach(item => {
-      const itemView = (item as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
-        .view;
+      const itemView = (
+        item as FlexibleLayoutItemExtended<
+          FlexibleLayoutLeaf,
+          FlexibleLayoutLeafType
+        >
+      ).leafInfo;
 
       if (itemView != null) {
         views.push(itemView);
@@ -212,21 +212,21 @@ export class ChFlexibleLayout {
   //   forceUpdate(this);
   // }
 
-  private handleMainGroupExpand = () => {
-    // if (this.layout.inlineStart) {
-    //   this.layout.inlineStart.expanded = false;
-    // }
+  // private handleMainGroupExpand = () => {
+  //   // if (this.layout.inlineStart) {
+  //   //   this.layout.inlineStart.expanded = false;
+  //   // }
 
-    // if (this.layout.inlineEnd) {
-    //   this.layout.inlineEnd.expanded = false;
-    // }
+  //   // if (this.layout.inlineEnd) {
+  //   //   this.layout.inlineEnd.expanded = false;
+  //   // }
 
-    // if (this.layout.blockEnd) {
-    //   this.layout.blockEnd.expanded = false;
-    // }
+  //   // if (this.layout.blockEnd) {
+  //   //   this.layout.blockEnd.expanded = false;
+  //   // }
 
-    forceUpdate(this);
-  };
+  //   forceUpdate(this);
+  // };
 
   private handleItemChange =
     (viewId: string) => (event: ChListCustomEvent<ListSelectedItemInfo>) => {
@@ -385,19 +385,25 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (tabType: ListType, viewInfo: FlexibleLayoutLeafInfo) => (
+  private renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => (
     <ch-list
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
-      part={`view ${getTabDirection(tabType)} ${tabType} ${viewInfo.id}`}
+      class={{
+        [`ch-list-${viewInfo.tabDirection}--end`]:
+          viewInfo.tabPosition === "end"
+      }}
+      part={`leaf ${viewInfo.tabDirection} ${viewInfo.tabPosition ?? "start"} ${
+        viewInfo.id
+      }`}
       exportparts={viewInfo.exportParts}
       closeButtonHidden={viewInfo.closeButtonHidden}
       items={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
-      direction={getTabDirection(tabType)}
-      onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
+      direction={viewInfo.tabDirection}
+      // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onItemDragStart={this.handleDragStart(viewInfo.id)}
       onSelectedItemChange={this.handleItemChange(viewInfo.id)}
@@ -409,13 +415,13 @@ export class ChFlexibleLayout {
     </ch-list>
   );
 
-  private renderView = (view: FlexibleLayoutLeafInfo) =>
-    view.type === "blockStart" ? (
-      <header key={view.id} slot={view.id}>
-        <slot />
-      </header>
+  private renderView = <T extends FlexibleLayoutLeafType>(
+    leaf: FlexibleLayoutLeafInfo<T>
+  ) =>
+    leaf.type === "single-content" ? (
+      <slot key={leaf.id} slot={leaf.id} name={leaf.id} />
     ) : (
-      this.renderTab(view.type, view)
+      this.renderTab(leaf)
     );
 
   render() {
@@ -433,7 +439,7 @@ export class ChFlexibleLayout {
           exportparts={"bar," + this.layoutSplitterParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >
-          {this.#getAllViews().map(this.renderView)}
+          {this.#getAllLeafs().map(this.renderView)}
         </ch-layout-splitter>
 
         <div

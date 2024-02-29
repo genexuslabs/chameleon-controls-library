@@ -19,8 +19,20 @@
 
   background-color: color-mix(in srgb, currentColor 15%, transparent);
 
-  transition-property: inset;
-  transition-duration: 150ms;
-  transition-timing-function: ease-in-out;
+  transition: inset 150ms ease-in-out;
   pointer-events: none; // Avoid the capture of pointer events
+}
+
+.ch-list-inline--end {
+  grid-template-columns: 1fr max-content;
+}
+
+.ch-list-block--end {
+  grid-template-rows: 1fr max-content;
+}
+
+// Change the visual order, but no the order in the HTML
+.ch-list-inline--end::part(tab-list),
+.ch-list-block--end::part(tab-list) {
+  order: 1;
 }

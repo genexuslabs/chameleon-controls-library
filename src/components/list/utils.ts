@@ -1,4 +1,8 @@
-import { FlexibleLayoutWidget } from "../flexible-layout/types";
+import {
+  FlexibleLayoutLeafTabDirection,
+  FlexibleLayoutLeafTabPosition,
+  FlexibleLayoutWidget
+} from "../flexible-layout/types";
 import { ListType } from "./types";
 
 // Classes and parts
@@ -63,22 +67,22 @@ const partsArray = [
 
 const PARTS = partsArray.join(",");
 
-export const INLINE_START_PARTS = PARTS + ",inline,inline:inlineStart";
+export const INLINE_START_PARTS = PARTS + ",inline,inline:start";
+export const INLINE_END_PARTS = PARTS + ",inline,inline:end";
 
-export const MAIN_PARTS = PARTS + ",block,block:main";
-
-export const INLINE_END_PARTS = PARTS + ",inline,inline:inlineEnd";
-
-export const BLOCK_END_PARTS = PARTS + ",block,block:blockEnd";
+export const BLOCK_START_PARTS = PARTS + ",block,block:start";
+export const BLOCK_END_PARTS = PARTS + ",block,block:end";
 
 export const CAPTION_PARTS = (widgets: FlexibleLayoutWidget[]) =>
   widgets.map(item => CAPTION_ID(item.id)).join(",");
 
 export const tabTypeToPart: {
-  [key in ListType]: (widgets: FlexibleLayoutWidget[]) => string;
+  [key in `${FlexibleLayoutLeafTabDirection}-${FlexibleLayoutLeafTabPosition}`]: (
+    widgets: FlexibleLayoutWidget[]
+  ) => string;
 } = {
-  inlineStart: widgets => INLINE_START_PARTS + "," + CAPTION_PARTS(widgets),
-  main: widgets => MAIN_PARTS + "," + CAPTION_PARTS(widgets),
-  inlineEnd: widgets => INLINE_END_PARTS + "," + CAPTION_PARTS(widgets),
-  blockEnd: widgets => BLOCK_END_PARTS + "," + CAPTION_PARTS(widgets)
-};
+  "inline-start": widgets => INLINE_START_PARTS + "," + CAPTION_PARTS(widgets),
+  "inline-end": widgets => INLINE_END_PARTS + "," + CAPTION_PARTS(widgets),
+  "block-start": widgets => BLOCK_START_PARTS + "," + CAPTION_PARTS(widgets),
+  "block-end": widgets => BLOCK_END_PARTS + "," + CAPTION_PARTS(widgets)
+} as const;

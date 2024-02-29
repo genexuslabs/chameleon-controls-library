@@ -6,35 +6,56 @@ import {
   FlexibleLayoutItem,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
-  FlexibleLayoutLeafInfo
+  FlexibleLayoutLeafInfo,
+  FlexibleLayoutLeafType
 } from "../../flexible-layout/types";
 import { ROOT_VIEW } from "../../../common/utils";
 
-export const createAndSetViewInfo = (
-  flexibleLayoutLeaf: FlexibleLayoutLeaf,
-  blockStartWidgets: Set<string>,
-  renderedWidgets: Set<string>
-): FlexibleLayoutLeafInfo => {
-  let selectedWidgetId = flexibleLayoutLeaf.selectedWidgetId;
-  const viewId = flexibleLayoutLeaf.id;
-  const viewType = flexibleLayoutLeaf.viewType;
-  const widgets = flexibleLayoutLeaf.widgets;
+// Aliases
+type ItemExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutItem,
+  FlexibleLayoutLeafType
+>;
 
-  if (viewType === "blockStart") {
-    // Add the widgets to the blockStart section
-    widgets.forEach(widget => {
-      blockStartWidgets.add(widget.id);
-    });
+type LeafExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafType
+>;
+
+type GroupExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutGroup,
+  FlexibleLayoutLeafType
+>;
+
+export const createAndSetLeafInfo = (
+  flexibleLayoutLeaf: FlexibleLayoutLeaf,
+  renderedWidgets: Set<string>
+): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> => {
+  const leafId = flexibleLayoutLeaf.id;
+  const leafType = flexibleLayoutLeaf.type;
+
+  if (leafType === "single-content") {
+    // Mark the widget as rendered
+    renderedWidgets.add(leafId);
 
     return {
-      id: viewId,
-      type: viewType,
-      exportParts: "",
-      widgets: widgets
+      id: leafId,
+      type: leafType,
+      exportParts: ""
     };
   }
 
-  const exportParts = tabTypeToPart[viewType](widgets);
+  let selectedWidgetId = flexibleLayoutLeaf.selectedWidgetId;
+  const widgets = flexibleLayoutLeaf.widgets;
+  const tabOrientation = flexibleLayoutLeaf.tabDirection;
+  const tabPosition = flexibleLayoutLeaf.tabPosition;
+
+  const exportParts =
+    tabTypeToPart[
+      `${tabOrientation}-${
+        tabPosition ?? "start"
+      }` as keyof typeof tabTypeToPart
+    ](widgets);
 
   widgets.forEach(widget => {
     if (widget.wasRendered || selectedWidgetId === widget.id) {
@@ -48,22 +69,23 @@ export const createAndSetViewInfo = (
   // If there is no widget selected by default, select one
   if (selectedWidgetId == null) {
     const selectedWidget =
-      widgets[
-        viewType === "main" || viewType === "blockEnd" ? widgets.length - 1 : 0
-      ];
+      widgets[tabOrientation === "block" ? widgets.length - 1 : 0];
     selectedWidgetId = selectedWidget.id;
     selectedWidget.wasRendered = true;
 
+    // Mark the widget as rendered
     renderedWidgets.add(selectedWidgetId);
   }
 
   return {
-    id: viewId,
+    id: leafId,
     exportParts,
     closeButtonHidden: flexibleLayoutLeaf.closeButtonHidden ?? false,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
-    type: viewType,
+    tabDirection: tabOrientation,
+    tabPosition: flexibleLayoutLeaf.tabPosition,
+    type: leafType,
     widgets: widgets
   };
 };
@@ -77,26 +99,24 @@ const addCustomBehavior = (
   }
 };
 
-export const addNewViewToInfo = (
+export const addNewLeafToInfo = (
   leaf: FlexibleLayoutLeaf,
   parentItem: FlexibleLayoutGroup,
-  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
-  blockStartWidgets: Set<string>,
+  itemsInfo: Map<string, ItemExtended>,
   renderedWidgets: Set<string>
 ) => {
-  const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutLeaf> = {
+  const flexibleLeafExtended: LeafExtended = {
     item: leaf,
     parentItem: parentItem,
-    view: createAndSetViewInfo(leaf, blockStartWidgets, renderedWidgets)
+    leafInfo: createAndSetLeafInfo(leaf, renderedWidgets)
   };
 
-  itemsInfo.set(leaf.id, flexibleItemExtended);
+  itemsInfo.set(leaf.id, flexibleLeafExtended);
 };
 
 const updateFlexibleSubModels = (
   flexibleLayoutItems: FlexibleLayoutItem[],
-  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
-  blockStartWidgets: Set<string>,
+  itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,
   parentItem: FlexibleLayoutGroup
@@ -106,11 +126,10 @@ const updateFlexibleSubModels = (
     if ((flexibleItem as FlexibleLayoutGroup).items != null) {
       const group = flexibleItem as FlexibleLayoutGroup;
 
-      const flexibleItemExtended: FlexibleLayoutItemExtended<FlexibleLayoutGroup> =
-        {
-          item: group,
-          parentItem: parentItem
-        };
+      const flexibleItemExtended: GroupExtended = {
+        item: group,
+        parentItem: parentItem
+      };
       itemsInfo.set(group.id, flexibleItemExtended);
 
       layoutSplitterParts.add(group.id);
@@ -118,7 +137,6 @@ const updateFlexibleSubModels = (
       updateFlexibleSubModels(
         group.items, // Subitems
         itemsInfo,
-        blockStartWidgets,
         layoutSplitterParts,
         renderedWidgets,
         group
@@ -126,11 +144,10 @@ const updateFlexibleSubModels = (
     }
     // Leaf
     else {
-      addNewViewToInfo(
+      addNewLeafToInfo(
         flexibleItem as FlexibleLayoutLeaf,
         parentItem,
         itemsInfo,
-        blockStartWidgets,
         renderedWidgets
       );
     }
@@ -142,23 +159,20 @@ const updateFlexibleSubModels = (
 
 export const updateFlexibleModels = (
   flexibleLayout: FlexibleLayout,
-  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
-  blockStartWidgets: Set<string>,
+  itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>
 ) =>
   updateFlexibleSubModels(
     flexibleLayout.items,
     itemsInfo,
-    blockStartWidgets,
     layoutSplitterParts,
     renderedWidgets,
     ROOT_VIEW // Root item
   );
 
-export const getViewInfo = (
-  itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>,
-  viewId: string
-): FlexibleLayoutLeafInfo =>
-  (itemsInfo.get(viewId) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
-    .view;
+export const getLeafInfo = (
+  itemsInfo: Map<string, ItemExtended>,
+  leafId: string
+): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> =>
+  (itemsInfo.get(leafId) as LeafExtended).leafInfo;

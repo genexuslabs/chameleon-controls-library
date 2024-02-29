@@ -12,11 +12,28 @@ import {
   FlexibleLayoutViewRemoveResult,
   FlexibleLayoutGroup,
   DroppableArea,
-  FlexibleLayoutWidget
+  FlexibleLayoutWidget,
+  FlexibleLayoutLeafType
 } from "../../flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { removeElement } from "../../../common/array";
-import { addNewViewToInfo, getViewInfo, updateFlexibleModels } from "./utils";
+import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
+
+// Aliases
+type ItemExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutItem,
+  FlexibleLayoutLeafType
+>;
+
+type LeafExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafType
+>;
+
+type GroupExtended = FlexibleLayoutItemExtended<
+  FlexibleLayoutGroup,
+  FlexibleLayoutLeafType
+>;
 
 const GENERATE_GUID = () => {
   let currentDate = new Date().getTime();
@@ -43,10 +60,7 @@ export class ChFlexibleLayoutRender {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderedWidgets: Set<string> = new Set();
 
-  #blockStartWidgets: Set<string> = new Set();
-
-  #itemsInfo: Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>> =
-    new Map();
+  #itemsInfo: Map<string, ItemExtended> = new Map();
 
   #layoutSplitterParts = "";
 
@@ -96,11 +110,10 @@ export class ChFlexibleLayoutRender {
       return false;
     }
 
-    addNewViewToInfo(
+    addNewLeafToInfo(
       viewInfo,
       this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroup,
       this.#itemsInfo,
-      this.#blockStartWidgets,
       this.#renderedWidgets
     );
 
@@ -115,24 +128,25 @@ export class ChFlexibleLayoutRender {
    */
   @Method()
   async removeView(
-    viewId: string,
+    leafId: string,
     removeRenderedWidgets: boolean
   ): Promise<FlexibleLayoutViewRemoveResult> {
-    const itemInfo = this.#itemsInfo.get(viewId);
+    const itemInfo = this.#itemsInfo.get(leafId);
 
     if (!itemInfo) {
       return { success: false, reconnectedSubtree: undefined };
     }
-    const viewToRemoveInfo = (
-      itemInfo as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
-    ).view;
+    const leafInfoToRemove = (itemInfo as LeafExtended).leafInfo;
 
-    // The item is not a view (leaf). It's a group.
-    if (viewToRemoveInfo == null) {
+    // The item is not a leaf (it's a group) or is not "tabbed".
+    if (
+      leafInfoToRemove == null ||
+      leafInfoToRemove.type === "single-content"
+    ) {
       return { success: false, reconnectedSubtree: undefined };
     }
 
-    const result = await this.#flexibleLayoutRef.removeView(viewId);
+    const result = await this.#flexibleLayoutRef.removeView(leafId);
 
     if (!result.success) {
       return result;
@@ -174,17 +188,13 @@ export class ChFlexibleLayoutRender {
       );
 
       // The node to reconnect is still a group. We must reconnect its children
-      if (
-        (nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>)
-          .view == null
-      ) {
-        const itemsOfNodeToRemove = (
-          nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutGroup>
-        ).item.items;
+      if ((nodeToRemoveUIModel as LeafExtended).leafInfo == null) {
+        const itemsOfNodeToRemove = (nodeToRemoveUIModel as GroupExtended).item
+          .items;
 
         const nodeToReconnectUIModel = this.#itemsInfo.get(
           reconnectedSubtree.nodeToReconnect
-        ) as FlexibleLayoutItemExtended<FlexibleLayoutGroup>;
+        ) as GroupExtended;
 
         // Reconnect the parent of the removedNode subtree
         itemsOfNodeToRemove.forEach(itemToUpdateItsParent => {
@@ -196,15 +206,15 @@ export class ChFlexibleLayoutRender {
       else {
         const nodeToReconnectUIModel = this.#itemsInfo.get(
           reconnectedSubtree.nodeToReconnect
-        ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+        ) as LeafExtended;
 
         // Add view information
-        nodeToReconnectUIModel.view = (
-          nodeToRemoveUIModel as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>
-        ).view;
+        nodeToReconnectUIModel.leafInfo = (
+          nodeToRemoveUIModel as LeafExtended
+        ).leafInfo;
 
         // Update view id
-        nodeToReconnectUIModel.view.id = reconnectedSubtree.nodeToReconnect;
+        nodeToReconnectUIModel.leafInfo.id = reconnectedSubtree.nodeToReconnect;
       }
 
       // Delete the old item
@@ -213,13 +223,13 @@ export class ChFlexibleLayoutRender {
 
     // Remove rendered widgets
     if (removeRenderedWidgets) {
-      viewToRemoveInfo.widgets.forEach(widget => {
+      leafInfoToRemove.widgets.forEach(widget => {
         this.#renderedWidgets.delete(widget.id);
       });
     }
 
     // Delete the view
-    this.#itemsInfo.delete(viewId);
+    this.#itemsInfo.delete(leafId);
 
     // Queue re-renders
     forceUpdate(this);
@@ -237,7 +247,6 @@ export class ChFlexibleLayoutRender {
     updateFlexibleModels(
       layout,
       this.#itemsInfo,
-      this.#blockStartWidgets,
       layoutSplitterPartsSet,
       this.#renderedWidgets
     );
@@ -245,39 +254,45 @@ export class ChFlexibleLayoutRender {
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 
-  #getViewInfo = (viewId: string): FlexibleLayoutLeafInfo =>
-    getViewInfo(this.#itemsInfo, viewId);
+  #getLeafInfo = (
+    leafId: string
+  ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> =>
+    getLeafInfo(this.#itemsInfo, leafId);
 
-  #handleViewItemChange = (
+  #handleLeafSelectedWidgetChange = (
     event: ChFlexibleLayoutCustomEvent<ViewSelectedItemInfo>
   ) => {
     event.stopPropagation();
 
     const selectedItemInfo = event.detail;
-    const viewInfo = this.#getViewInfo(selectedItemInfo.viewId);
+    const leafInfo = this.#getLeafInfo(
+      selectedItemInfo.viewId
+    ) as FlexibleLayoutLeafInfo<"tabbed">;
 
     // Mark the item as rendered
     this.#renderedWidgets.add(selectedItemInfo.newSelectedId);
 
     // Mark the item as rendered
-    const newSelectedItem = viewInfo.widgets[selectedItemInfo.newSelectedIndex];
+    const newSelectedItem = leafInfo.widgets[selectedItemInfo.newSelectedIndex];
     newSelectedItem.wasRendered = true;
 
     // Select the new item
-    this.#updateSelectedWidget(viewInfo, selectedItemInfo.newSelectedId);
+    this.#updateSelectedWidget(leafInfo, selectedItemInfo.newSelectedId);
 
     // Queue re-renders
     forceUpdate(this);
     forceUpdate(this.#flexibleLayoutRef);
   };
 
-  #handleViewItemClose = (
+  #handleLeafWidgetClose = (
     event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>
   ) => {
     event.stopPropagation();
 
     const itemCloseInfo = event.detail;
-    const viewInfo = this.#getViewInfo(itemCloseInfo.viewId);
+    const viewInfo = this.#getLeafInfo(
+      itemCloseInfo.viewId
+    ) as FlexibleLayoutLeafInfo<"tabbed">;
 
     // Last item from the view. Destroy the view and adjust the layout
     if (viewInfo.widgets.length === 1) {
@@ -312,7 +327,7 @@ export class ChFlexibleLayoutRender {
   };
 
   #removeWidget = (
-    viewInfo: FlexibleLayoutLeafInfo,
+    viewInfo: FlexibleLayoutLeafInfo<"tabbed">,
     itemIndex: number,
     skipRenderRemoval = false
   ) => {
@@ -329,33 +344,41 @@ export class ChFlexibleLayoutRender {
   };
 
   #updateSelectedWidget = (
-    viewInfo: FlexibleLayoutLeafInfo,
+    leafInfo: FlexibleLayoutLeafInfo<"tabbed">,
     selectedId: string
   ) => {
-    viewInfo.selectedWidgetId = selectedId;
+    leafInfo.selectedWidgetId = selectedId;
   };
 
-  #handleViewItemReorder = async (
+  /**
+   * This handler can only be triggered by "tabbed" leafs.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #handleLeafWidgetReorder = async (
     event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>
   ) => {
     const reorderInfo = event.detail;
-    const viewId = reorderInfo.viewId;
+    const leafId = reorderInfo.viewId;
     const viewIdTarget = reorderInfo.viewIdTarget;
     const dropAreaTarget = reorderInfo.dropAreaTarget;
 
-    const viewInfo = this.#getViewInfo(viewId);
+    const leafInfo = this.#getLeafInfo(
+      leafId
+    ) as FlexibleLayoutLeafInfo<"tabbed">;
 
     // Dropping in the same view. Nothing to change
     if (
-      viewId === viewIdTarget &&
-      (dropAreaTarget === "center" || viewInfo.widgets.length === 1)
+      leafId === viewIdTarget &&
+      (dropAreaTarget === "center" || leafInfo.widgets.length === 1)
     ) {
       return;
     }
 
-    const viewTargetInfo = this.#getViewInfo(viewIdTarget);
+    const viewTargetInfo = this.#getLeafInfo(
+      viewIdTarget
+    ) as FlexibleLayoutLeafInfo<"tabbed">;
     const widgetIndex = reorderInfo.index;
-    const widgetToMove = viewInfo.widgets[widgetIndex];
+    const widgetToMove = leafInfo.widgets[widgetIndex];
 
     // Mark the item as rendered, because the drag does not have to trigger item
     // selection (which trigger item rendering)
@@ -377,8 +400,8 @@ export class ChFlexibleLayoutRender {
     }
 
     // Remove the view, since it has no more items
-    if (viewInfo.widgets.length === 1) {
-      await this.removeView(viewId, false);
+    if (leafInfo.widgets.length === 1) {
+      await this.removeView(leafId, false);
 
       // Refresh reference to force re-render
       // this.#layoutSplitterModels = { ...this.#layoutSplitterModels }; // TODO: UPDATE THIS
@@ -386,20 +409,20 @@ export class ChFlexibleLayoutRender {
     // Remove the item in the view that belongs
     else {
       // Select the previous item if the removed item was selected
-      if (viewInfo.selectedWidgetId === widgetToMove.id) {
+      if (leafInfo.selectedWidgetId === widgetToMove.id) {
         const newSelectedIndex = widgetIndex === 0 ? 1 : widgetIndex - 1;
-        const newSelectedItem = viewInfo.widgets[newSelectedIndex];
+        const newSelectedItem = leafInfo.widgets[newSelectedIndex];
 
         // Mark the item as rendered
         this.#renderedWidgets.add(newSelectedItem.id);
         newSelectedItem.wasRendered = true;
 
         // Mark the item as selected
-        this.#updateSelectedWidget(viewInfo, newSelectedItem.id);
+        this.#updateSelectedWidget(leafInfo, newSelectedItem.id);
       }
 
       // Remove the item from the view
-      this.#removeWidget(viewInfo, widgetIndex, true);
+      this.#removeWidget(leafInfo, widgetIndex, true);
 
       // Queue re-renders
       forceUpdate(this); // Update rendered items
@@ -411,7 +434,7 @@ export class ChFlexibleLayoutRender {
 
   #handleViewItemReorderCreateView = async (
     widget: FlexibleLayoutWidget,
-    viewTargetInfo: FlexibleLayoutLeafInfo,
+    viewTargetInfo: FlexibleLayoutLeafInfo<"tabbed">,
     dropAreaTarget: DroppableArea
   ) => {
     // Implementation note: If the direction matches the dropAreaTarget
@@ -423,16 +446,17 @@ export class ChFlexibleLayoutRender {
     // ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
     const viewTargetUIModel = this.#itemsInfo.get(
       viewTargetInfo.id
-    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
+    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf, "tabbed">;
     const viewTargetParentInfo = viewTargetUIModel.parentItem; // TODO: CHECK FOR ROOT NODE <------------------
 
-    const newViewToAddId = GENERATE_GUID();
-    const newViewToAdd: FlexibleLayoutLeaf = {
-      id: newViewToAddId,
-      size: undefined,
-      viewType: viewTargetUIModel.item.viewType,
-      widgets: [widget],
+    const newLeafToAddId = GENERATE_GUID();
+    const newLeafToAdd: FlexibleLayoutLeaf = {
+      id: newLeafToAddId,
       selectedWidgetId: widget.id,
+      size: undefined,
+      tabDirection: viewTargetUIModel.leafInfo.tabDirection,
+      type: "tabbed",
+      widgets: [widget],
       dragBar: {
         size: viewTargetUIModel.item.dragBar?.size,
         part: viewTargetUIModel.item.dragBar?.part // TODO: IMPROVE THIS
@@ -453,7 +477,7 @@ export class ChFlexibleLayoutRender {
         dropAreaTarget === "block-start" || dropAreaTarget === "inline-start"
           ? "before"
           : "after",
-        newViewToAdd,
+        newLeafToAdd,
         true
       );
     }
@@ -484,13 +508,11 @@ export class ChFlexibleLayoutRender {
         layoutModel={this.layout}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
-        onViewItemClose={this.#handleViewItemClose}
-        onViewItemReorder={this.#handleViewItemReorder}
-        onSelectedViewItemChange={this.#handleViewItemChange}
+        onViewItemClose={this.#handleLeafWidgetClose}
+        onViewItemReorder={this.#handleLeafWidgetReorder}
+        onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
         ref={el => (this.#flexibleLayoutRef = el)}
       >
-        {[...this.#blockStartWidgets].map(widgetId => this.renders[widgetId]())}
-
         {[...this.#renderedWidgets.values()].map(widget => (
           <div
             key={widget}

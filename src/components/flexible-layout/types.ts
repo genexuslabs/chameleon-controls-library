@@ -36,28 +36,31 @@ export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
 } & FlexibleLayoutLeafConfiguration;
 
 export type FlexibleLayoutLeafConfiguration =
-  | {
-      closeButtonHidden?: boolean;
-      selectedWidgetId?: string;
-      showCaptions?: boolean;
-      tabOrientation: FlexibleLayoutLeafTabOrientation;
+  | FlexibleLayoutLeafConfigurationTabbed
+  | FlexibleLayoutLeafConfigurationSingleContent;
 
-      /**
-       * Specifies whether the tab is displayed before or after of its content.
-       * If not specified, defaults to `"start"`
-       */
-      tabPosition: FlexibleLayoutLeafTabPosition;
-      type: Extract<FlexibleLayoutLeafType, "tabbed">;
-      widgets: FlexibleLayoutWidget[];
-    }
-  | {
-      type: Extract<FlexibleLayoutLeafType, "single-content">;
-      widgetId: string;
-    };
+export type FlexibleLayoutLeafConfigurationTabbed = {
+  closeButtonHidden?: boolean;
+  selectedWidgetId?: string;
+  showCaptions?: boolean;
+  tabDirection: FlexibleLayoutLeafTabDirection;
+
+  /**
+   * Specifies whether the tab is displayed before or after of its content.
+   * If not specified, defaults to `"start"`
+   */
+  tabPosition?: FlexibleLayoutLeafTabPosition;
+  type: Extract<FlexibleLayoutLeafType, "tabbed">;
+  widgets: FlexibleLayoutWidget[];
+};
+
+export type FlexibleLayoutLeafConfigurationSingleContent = {
+  type: Extract<FlexibleLayoutLeafType, "single-content">;
+};
 
 export type FlexibleLayoutLeafType = "tabbed" | "single-content";
 
-export type FlexibleLayoutLeafTabOrientation = "block" | "inline";
+export type FlexibleLayoutLeafTabDirection = "block" | "inline";
 export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
 export type FlexibleLayoutGroup = Omit<
@@ -65,7 +68,6 @@ export type FlexibleLayoutGroup = Omit<
   "items"
 > & {
   accessibleRole?: ViewAccessibleRole;
-  expanded?: boolean;
   items: FlexibleLayoutItem[];
 };
 
@@ -97,40 +99,29 @@ export type FlexibleLayoutRenders = { [key: string]: () => any };
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayoutItemExtended<
-  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf
+  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf,
+  R extends FlexibleLayoutLeafType
 > = T extends FlexibleLayoutLeaf
   ? {
       item: FlexibleLayoutLeaf;
       parentItem: FlexibleLayoutGroup;
-      view: FlexibleLayoutLeafInfo;
+      leafInfo: FlexibleLayoutLeafInfo<R>;
     }
   : {
       item: FlexibleLayoutGroup;
       parentItem: FlexibleLayoutGroup;
     };
 
-export type FlexibleLayoutLeafInfo = {
+export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {
   /**
    * Same as the leaf id (item.id).
    */
   id: string;
 
-  type: ViewType;
-
-  /**
-   * Defaults to `false`
-   */
-  closeButtonHidden?: boolean;
-  expanded?: boolean;
   exportParts: string;
-  selectedWidgetId?: string;
-
-  /**
-   * Defaults to `true`
-   */
-  showCaptions?: boolean;
-  widgets: FlexibleLayoutWidget[];
-};
+} & (T extends "tabbed"
+  ? FlexibleLayoutLeafConfigurationTabbed
+  : FlexibleLayoutLeafConfigurationSingleContent);
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Event info

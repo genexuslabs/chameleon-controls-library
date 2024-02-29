@@ -3,7 +3,6 @@ import {
   FlexibleLayoutLeafTabPosition,
   FlexibleLayoutWidget
 } from "../flexible-layout/types";
-import { ListType } from "./types";
 
 // Classes and parts
 export const BUTTON_CLASS = "button";

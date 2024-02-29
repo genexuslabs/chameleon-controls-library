@@ -102,6 +102,10 @@ export class ChDialog {
   #maxInlineSize: number = 0;
   #minBlockSize: number = 0;
   #minInlineSize: number = 0;
+  #justResized: boolean = false;
+
+  // Other
+  #clickedOnDocumentAlready = false;
 
   #resizeByDirectionDictionary = {
     block: (dialogRect: DOMRect, direction: "start" | "end") => {
@@ -458,6 +462,7 @@ export class ChDialog {
     // this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
     if (this.modal) {
       this.#dialogRef.showModal();
+      document.addEventListener("click", this.#evaluateClickOnDocument);
     } else {
       this.#dialogRef.show();
     }
@@ -465,6 +470,20 @@ export class ChDialog {
 
   #closeHandler = () => {
     this.hidden = true;
+  };
+
+  #evaluateClickOnDocument = (e: MouseEvent) => {
+    const conditionToClose =
+      !e.composedPath().includes(this.#dialogRef) && !this.#justResized;
+    if (!this.#clickedOnDocumentAlready && conditionToClose) {
+      // The dialog was opened probably by clicking on a button outside the dialog, or it was resized from a border. Ignore in this cases.
+      this.#clickedOnDocumentAlready = true;
+    } else if (this.#clickedOnDocumentAlready && conditionToClose) {
+      this.hidden = true;
+      this.#clickedOnDocumentAlready = false;
+      document.removeEventListener("click", this.#evaluateClickOnDocument);
+    }
+    this.#justResized = false;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -508,6 +527,8 @@ export class ChDialog {
       capture: true,
       passive: true
     });
+
+    this.#justResized = true;
   };
 
   #trackElementResizeRAF = (event: MouseEvent) => {

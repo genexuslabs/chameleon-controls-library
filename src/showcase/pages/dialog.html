@@ -16,13 +16,16 @@
   <body class="white-label">
     <div class="card">
       <!-- ch-dialog -->
-      <ch-dialog>
+      <ch-dialog caption="The dialog title" allow-drag="box" resizable>
         <input type="text" id="my-input" />
         <button id="my-button">button</button>
       </ch-dialog>
 
       <!-- actions -->
-      <button id="show-dialog-btn">show dialog</button>
+      <div>
+        <button id="show-dialog-btn">show dialog</button>
+      </div>
+
       <script>
         const showDialogBtn = document.getElementById("show-dialog-btn");
         const chDialog = document.querySelector("ch-dialog");

@@ -9,7 +9,8 @@ import {
   State,
   h
 } from "@stencil/core";
-import { isRTL } from "../../common/utils";
+import { ChDialogResizeElement } from "./types";
+import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
 // Custom vars
@@ -19,8 +20,49 @@ const DIALOG_DRAGGED_Y = "--ch-dialog-dragged-y";
 const DIALOG_RTL = "--ch-dialog-rtl";
 const DIALOG_RTL_VALUE = "-1";
 const DRAGGING_CLASS = "gx-dialog-dragging";
+const RESIZING_CLASS = "ch-dialog-resizing";
+
+const DIALOG_BLOCK_SIZE = "--ch-dialog-block-size";
+const DIALOG_INLINE_SIZE = "--ch-dialog-inline-size";
+
+const DIALOG_BORDER_BLOCK_START_SIZE = "--ch-dialog-border-block-start-width";
+const DIALOG_BORDER_BLOCK_END_SIZE = "--ch-dialog-border-block-end-width";
+const DIALOG_BORDER_INLINE_START_SIZE = "--ch-dialog-border-inline-start-width";
+const DIALOG_BORDER_INLINE_END_SIZE = "--ch-dialog-border-inline-end-width";
+
+const DIALOG_RTL_CLASS = "ch-dialog-rtl";
+
+const addCursorInDocument = (cursor: string) =>
+  (document.body.style.cursor = cursor);
+
+const resizingCursorDictionary: {
+  [key in ChDialogResizeElement]: (rtl: boolean) => void;
+} = {
+  "block-start": () => addCursorInDocument("ns-resize"),
+
+  "block-end": () => addCursorInDocument("ns-resize"),
+
+  "inline-start": () => addCursorInDocument("ew-resize"),
+
+  "inline-end": () => addCursorInDocument("ew-resize"),
+
+  "block-start-inline-start": rtl =>
+    addCursorInDocument(rtl ? "nesw-resize" : "nwse-resize"),
+
+  "block-start-inline-end": rtl =>
+    addCursorInDocument(rtl ? "nwse-resize" : "nesw-resize"),
+
+  "block-end-inline-start": rtl =>
+    addCursorInDocument(rtl ? "nwse-resize" : "nesw-resize"),
+
+  "block-end-inline-end": rtl =>
+    addCursorInDocument(rtl ? "nesw-resize" : "nwse-resize")
+};
 
 // Utils
+const fromPxToNumber = (pxValue: string) =>
+  Number(pxValue.replace("px", "").trim());
+
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
 
@@ -33,27 +75,15 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
   shadow: true
 })
 export class ChDialog {
-  /*
-  INDEX:
-  1.OWN PROPERTIES
-  2.REFERENCE TO ELEMENTS
-  3.STATE() VARIABLES
-  4.PUBLIC PROPERTY API / WATCH'S
-  5.EVENTS (EMIT)
-  6.COMPONENT LIFECYCLE EVENTS
-  7.LISTENERS
-  8.PUBLIC METHODS API
-  9.LOCAL METHODS
-  10.RENDER() FUNCTION
-  */
-
-  // 1.OWN PROPERTIES //
-
   // Sync computations with frames
+  #borderSizeRAF: SyncWithRAF; // Don't allocate memory until
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
+  #resizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
 
   // Watchers
-  #checkWatchers = false;
+  #checkPositionWatcher = false;
+  #checkBorderSizeWatcher = false;
+  #borderSizeObserver: ResizeObserver;
   #rtlWatcher: MutationObserver;
 
   // Drag
@@ -64,19 +94,131 @@ export class ChDialog {
   #lastDragEvent: MouseEvent;
   #isRTLDirection: boolean;
 
-  // 2. REFERENCE TO ELEMENTS //
+  // Resize
+  #currentEdge: ChDialogResizeElement;
+  #draggedDistanceXForResize: number = 0;
+  #draggedDistanceYForResize: number = 0;
+  #maxBlockSize: number = 0;
+  #maxInlineSize: number = 0;
+  #minBlockSize: number = 0;
+  #minInlineSize: number = 0;
+
+  #resizeByDirectionDictionary = {
+    block: (dialogRect: DOMRect, direction: "start" | "end") => {
+      let currentDraggedDistanceY =
+        this.#lastDragEvent.clientY - this.#initialDragEvent.clientY;
+
+      // Start direction inverts the increment
+      if (direction === "start") {
+        currentDraggedDistanceY = -currentDraggedDistanceY;
+      }
+
+      const newBlockSize = dialogRect.height + currentDraggedDistanceY;
+      const newRestrictedBlockSize = forceCSSMinMax(
+        newBlockSize,
+        this.#minBlockSize,
+        this.#maxBlockSize
+      );
+
+      // Do not apply resizes or translations if the control is at the minimum
+      // or maximum size
+      if (newRestrictedBlockSize === dialogRect.height) {
+        return;
+      }
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      // By resizing the start edge the control is translated to improve the UX
+      if (direction === "start") {
+        this.#draggedDistanceYForResize -= currentDraggedDistanceY;
+        setProperty(this.el, DIALOG_DRAGGED_Y, this.#draggedDistanceYForResize);
+      }
+
+      setProperty(this.el, DIALOG_BLOCK_SIZE, newRestrictedBlockSize);
+    },
+
+    inline: (dialogRect: DOMRect, direction: "start" | "end") => {
+      let currentDraggedDistanceX =
+        this.#lastDragEvent.clientX - this.#initialDragEvent.clientX;
+
+      if (this.#isRTLDirection) {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
+
+      // Start direction inverts the increment
+      if (direction === "start") {
+        currentDraggedDistanceX = -currentDraggedDistanceX;
+      }
+
+      const newInlineSize = dialogRect.width + currentDraggedDistanceX;
+      const newRestrictedInlineSize = forceCSSMinMax(
+        newInlineSize,
+        this.#minInlineSize,
+        this.#maxInlineSize
+      );
+
+      // Do not apply resizes or translations if the control is at the minimum
+      // or maximum size
+      if (newRestrictedInlineSize === dialogRect.width) {
+        return;
+      }
+
+      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+      // By resizing the start edge the control is translated to improve the UX
+      if (direction === "start") {
+        this.#draggedDistanceXForResize -= currentDraggedDistanceX;
+
+        setProperty(this.el, DIALOG_DRAGGED_X, this.#draggedDistanceXForResize);
+      }
+
+      setProperty(this.el, DIALOG_INLINE_SIZE, newRestrictedInlineSize);
+    }
+  } as const;
+
+  #resizeEdgesAndCornersDictionary: {
+    [key in ChDialogResizeElement]: (dialogRect: DOMRect) => void;
+  } = {
+    "block-start": dialogRect =>
+      this.#resizeByDirectionDictionary.block(dialogRect, "start"),
+
+    "block-end": dialogRect =>
+      this.#resizeByDirectionDictionary.block(dialogRect, "end"),
+
+    "inline-start": dialogRect =>
+      this.#resizeByDirectionDictionary.inline(dialogRect, "start"),
+
+    "inline-end": dialogRect =>
+      this.#resizeByDirectionDictionary.inline(dialogRect, "end"),
+
+    "block-start-inline-start": dialogRect => {
+      this.#resizeByDirectionDictionary.block(dialogRect, "start");
+      this.#resizeByDirectionDictionary.inline(dialogRect, "start");
+    },
+
+    "block-start-inline-end": dialogRect => {
+      this.#resizeByDirectionDictionary.block(dialogRect, "start");
+      this.#resizeByDirectionDictionary.inline(dialogRect, "end");
+    },
+
+    "block-end-inline-start": dialogRect => {
+      this.#resizeByDirectionDictionary.block(dialogRect, "end");
+      this.#resizeByDirectionDictionary.inline(dialogRect, "start");
+    },
+
+    "block-end-inline-end": dialogRect => {
+      this.#resizeByDirectionDictionary.block(dialogRect, "end");
+      this.#resizeByDirectionDictionary.inline(dialogRect, "end");
+    }
+  };
 
   // Refs
+  #resizeLayer: HTMLDivElement;
   #dialogRef: HTMLDialogElement;
 
   @Element() el: HTMLChDialogElement;
 
-  // 3.STATE() VARIABLES //
-
   @State() dragging = false;
   @State() relativeDialog = false;
-
-  // 4.PUBLIC PROPERTY API / WATCH'S //
+  @State() resizing = false;
 
   /**
    * Specifies the drag behavior of the dialog.
@@ -91,12 +233,13 @@ export class ChDialog {
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop({ mutable: true, reflect: true }) hidden = true;
   @Watch("hidden")
-  handleHiddenChange(newHiddenValue: boolean) {
+  handleHiddenChange(hidden: boolean) {
     // Schedule update for watchers
-    this.#checkWatchers = true;
+    this.#checkBorderSizeWatcher = true;
+    this.#checkPositionWatcher = true;
 
     // Update the dialog visualization
-    if (newHiddenValue) {
+    if (hidden) {
       this.#dialogRef.close();
     } else {
       this.#showMethod();
@@ -120,7 +263,21 @@ export class ChDialog {
    */
   @Prop() readonly caption: string;
 
-  // 5.EVENTS (EMIT) //
+  /**
+   * `true` if the control is not stacked with another top layer.
+   */
+  @Prop() readonly firstLayer: boolean = true;
+
+  /**
+   * Specifies whether the control can be resized. If `true` the control can be
+   * resized at runtime by dragging the edges or corners.
+   */
+  @Prop() readonly resizable: boolean = false;
+  @Watch("resizable")
+  resizableChanged() {
+    // Schedule update for border size watcher
+    this.#checkBorderSizeWatcher = true;
+  }
 
   /**
    * Emitted when the dialog is opened.
@@ -132,8 +289,6 @@ export class ChDialog {
    */
   @Event() dialogClosed: EventEmitter;
 
-  // 6.COMPONENT LIFECYCLE EVENTS //
-
   connectedCallback() {
     // Set RTL watcher
     this.#rtlWatcher = new MutationObserver(() => {
@@ -141,8 +296,10 @@ export class ChDialog {
 
       if (this.#isRTLDirection) {
         this.el.style.setProperty(DIALOG_RTL, DIALOG_RTL_VALUE);
+        this.el.classList.add(DIALOG_RTL_CLASS);
       } else {
         this.el.style.removeProperty(DIALOG_RTL);
+        this.el.classList.remove(DIALOG_RTL_CLASS);
       }
     });
 
@@ -153,18 +310,34 @@ export class ChDialog {
   }
 
   componentWillRender() {
-    this.#checkWatchers &&= false;
+    this.#checkPositionWatcher &&= false;
+
+    if (this.#checkBorderSizeWatcher) {
+      this.#checkBorderSizeWatcher = false;
+
+      // Wait until the resize edges have been rendered
+      requestAnimationFrame(() => {
+        this.#setBorderSizeWatcher();
+      });
+    }
   }
 
   componentDidLoad() {
     if (!this.hidden) {
-      this.el.showPopover();
+      // Schedule update for watchers
+      this.#checkBorderSizeWatcher = true;
+      this.#checkPositionWatcher = true;
+      this.#showMethod();
     }
+
+    // Initialize watchers
+    this.#setBorderSizeWatcher();
   }
 
   disconnectedCallback() {
     // Defensive programming. Make sure the document does not have any unwanted handler
     this.#handleDragEnd();
+    this.#removeBorderSizeWatcher();
 
     // Disconnect RTL watcher
     if (this.#rtlWatcher) {
@@ -172,12 +345,6 @@ export class ChDialog {
       this.#rtlWatcher = null; // Free the memory
     }
   }
-
-  // 7.LISTENERS //
-
-  // 8.PUBLIC METHODS API //
-
-  // 9.LOCAL METHODS //
 
   #addDraggingClass = () => {
     if (!this.#dragging) {
@@ -191,7 +358,7 @@ export class ChDialog {
     this.#dragging = false;
   };
 
-  #handlePopoverToggle = (event: ToggleEvent) => {
+  #handleDialogToggle = (event: ToggleEvent) => {
     const willBeHidden = !(event.newState === "open");
     this.hidden = willBeHidden;
 
@@ -203,6 +370,9 @@ export class ChDialog {
     }
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                           Drag implementation
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleMouseDown = (event: MouseEvent) => {
     // We should not add preventDefault in this instance, because we would prevent some normal actions like clicking a button or focusing an input
 
@@ -285,24 +455,192 @@ export class ChDialog {
   };
 
   #showMethod = () => {
-    this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
+    // this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
+    if (this.modal) {
+      this.#dialogRef.showModal();
+    } else {
+      this.#dialogRef.show();
+    }
   };
 
   #closeHandler = () => {
     this.hidden = true;
   };
 
-  // 10.RENDER() FUNCTION //
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                          Resize implementation
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #handleEdgeResize = (edge: ChDialogResizeElement) => (event: MouseEvent) => {
+    this.resizing = true;
+    this.#resizeRAF ||= new SyncWithRAF();
+    this.#currentEdge = edge;
+    this.#initialDragEvent = event;
+
+    // Specify the cursor for the resize operation. Useful to avoid showing
+    // incorrect cursors during resizing
+    resizingCursorDictionary[this.#currentEdge](this.#isRTLDirection);
+
+    // Initialize drag variables to improve block-start and inline-start
+    // resizing. Otherwise, the dialog will always remain in the same X and Y
+    // position, even when the block-start or inline-start edges are resized
+    this.#draggedDistanceXForResize = this.#draggedDistanceX;
+    this.#draggedDistanceYForResize = this.#draggedDistanceY;
+
+    // Get minimum and maximum sizes on first resize operation
+    const computedStyle = getComputedStyle(this.#dialogRef);
+    this.#maxBlockSize = fromPxToNumber(computedStyle.maxBlockSize);
+    this.#maxInlineSize = fromPxToNumber(computedStyle.maxInlineSize);
+    this.#minBlockSize = fromPxToNumber(computedStyle.minBlockSize);
+    this.#minInlineSize = fromPxToNumber(computedStyle.minInlineSize);
+
+    // Avoid repositioning the dialog
+    // this.#removePositionWatcher();
+
+    // Avoid watching border changes during the resize
+    this.#removeBorderSizeWatcher();
+
+    // Add listeners
+    document.addEventListener("mousemove", this.#trackElementResizeRAF, {
+      capture: true
+    });
+
+    document.addEventListener("mouseup", this.#handleResizeEnd, {
+      capture: true,
+      passive: true
+    });
+  };
+
+  #trackElementResizeRAF = (event: MouseEvent) => {
+    this.#resizeRAF.perform(this.#trackElementResize, () => {
+      // Improve drag UX by not selecting any button or clicking interactive
+      // elements
+      event.preventDefault();
+
+      // We remove the pointer-events and user-select properties after the first
+      // "mousemove", otherwise double clicking to select text would not work
+      this.#addDraggingClass();
+
+      this.#lastDragEvent = event;
+    });
+  };
+
+  #trackElementResize = () => {
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const dialogRect = this.#dialogRef.getBoundingClientRect();
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    this.#resizeEdgesAndCornersDictionary[this.#currentEdge](dialogRect);
+
+    // Update last point
+    this.#initialDragEvent = this.#lastDragEvent;
+  };
+
+  #handleResizeEnd = () => {
+    this.resizing = false;
+
+    // Cancel RAF to prevent access to undefined references
+    if (this.#resizeRAF) {
+      this.#resizeRAF.cancel();
+    }
+
+    // Reset document cursor back to normal
+    document.body.style.cursor = null;
+
+    // Reset dragged distance to its original value
+    setProperty(this.el, DIALOG_DRAGGED_X, this.#draggedDistanceX);
+    setProperty(this.el, DIALOG_DRAGGED_Y, this.#draggedDistanceY);
+
+    // Update the position of the dialog when the resize ends
+    // this.#setPositionWatcher();
+
+    // Start again watching border size changes
+    this.#setBorderSizeWatcher();
+
+    // Remove listeners
+    document.removeEventListener("mousemove", this.#trackElementResizeRAF, {
+      capture: true
+    });
+
+    document.removeEventListener("mouseup", this.#handleResizeEnd, {
+      capture: true
+    });
+
+    this.#removeDraggingClass();
+
+    // Free the memory
+    this.#resizeRAF = null;
+    this.#initialDragEvent = null;
+    this.#lastDragEvent = null;
+  };
+
+  /**
+   * This observer watches the size of each border in the control to adjust the
+   * position of the invisible resize elements (edges and corners).
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #setBorderSizeWatcher = () => {
+    if (!this.resizable || this.hidden) {
+      this.#removeBorderSizeWatcher();
+      return;
+    }
+
+    this.#borderSizeRAF ??= new SyncWithRAF();
+    this.#borderSizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
+
+    // Observe the size of the edges to know if the border
+    this.#borderSizeObserver.observe(this.el, { box: "border-box" });
+    this.#borderSizeObserver.observe(this.#resizeLayer);
+  };
+
+  #updateBorderSizeRAF = () => {
+    this.#borderSizeRAF.perform(this.#updateBorderSize);
+  };
+
+  #updateBorderSize = () => {
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const computedStyle = getComputedStyle(this.el);
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    this.el.style.setProperty(
+      DIALOG_BORDER_BLOCK_START_SIZE,
+      computedStyle.borderBlockStartWidth
+    );
+
+    this.el.style.setProperty(
+      DIALOG_BORDER_BLOCK_END_SIZE,
+      computedStyle.borderBlockEndWidth
+    );
+
+    this.el.style.setProperty(
+      DIALOG_BORDER_INLINE_START_SIZE,
+      computedStyle.borderInlineStartWidth
+    );
+
+    this.el.style.setProperty(
+      DIALOG_BORDER_INLINE_END_SIZE,
+      computedStyle.borderInlineEndWidth
+    );
+  };
+
+  #removeBorderSizeWatcher = () => {
+    if (this.#borderSizeObserver) {
+      this.#borderSizeObserver.disconnect();
+      this.#borderSizeObserver = null; // Free the memory
+    }
+
+    this.#borderSizeRAF = null; // Free the memory
+  };
 
   render() {
     return (
       <Host
         class={{
-          "gx-dialog-header-drag": !this.hidden && this.allowDrag === "header"
+          "gx-dialog-header-drag": !this.hidden && this.allowDrag === "header",
+          [RESIZING_CLASS]: this.resizing
         }}
       >
         <dialog
-          onClose={this.#handlePopoverToggle}
+          onClose={this.#handleDialogToggle}
           ref={el => (this.#dialogRef = el)}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         >
@@ -310,7 +648,9 @@ export class ChDialog {
             <header
               class="header"
               part="header"
-              onMouseDown={this.#handleMouseDown}
+              onMouseDown={
+                this.allowDrag === "header" ? this.#handleMouseDown : null
+              }
             >
               <slot name="header-start" />
               {this.caption && <h2 part="caption">{this.caption}</h2>}
@@ -319,6 +659,47 @@ export class ChDialog {
             </header>
           )}
           <slot />
+          {this.resizable &&
+            !this.hidden && [
+              <div
+                class="edge__block-start resize-border"
+                onMouseDown={this.#handleEdgeResize("block-start")}
+              ></div>, // Top
+              <div
+                class="edge__inline-end resize-border"
+                onMouseDown={this.#handleEdgeResize("inline-end")}
+              ></div>, // Right
+              <div
+                class="edge__block-end resize-border"
+                onMouseDown={this.#handleEdgeResize("block-end")}
+              ></div>, // Bottom
+              <div
+                class="edge__inline-start resize-border"
+                onMouseDown={this.#handleEdgeResize("inline-start")}
+              ></div>, // Left
+
+              <div
+                class="corner__block-start-inline-start resize-border"
+                onMouseDown={this.#handleEdgeResize("block-start-inline-start")}
+              ></div>, // Top Left
+              <div
+                class="corner__block-start-inline-end resize-border"
+                onMouseDown={this.#handleEdgeResize("block-start-inline-end")}
+              ></div>, // Top Right
+              <div
+                class="corner__block-end-inline-start resize-border"
+                onMouseDown={this.#handleEdgeResize("block-end-inline-start")}
+              ></div>, // Bottom Left
+              <div
+                class="corner__block-end-inline-end resize-border"
+                onMouseDown={this.#handleEdgeResize("block-end-inline-end")}
+              ></div>, // Bottom Right
+
+              <div
+                class="resize-layer"
+                ref={el => (this.#resizeLayer = el)}
+              ></div>
+            ]}
         </dialog>
       </Host>
     );

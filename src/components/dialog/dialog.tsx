@@ -102,7 +102,6 @@ export class ChDialog {
   #maxInlineSize: number = 0;
   #minBlockSize: number = 0;
   #minInlineSize: number = 0;
-  #justResized: boolean = false;
 
   // Other
   #clickedOnDocumentAlready = false;
@@ -462,7 +461,9 @@ export class ChDialog {
     // this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
     if (this.modal) {
       this.#dialogRef.showModal();
-      document.addEventListener("click", this.#evaluateClickOnDocument);
+      document.addEventListener("click", this.#evaluateClickOnDocument, {
+        capture: true
+      });
     } else {
       this.#dialogRef.show();
     }
@@ -473,17 +474,14 @@ export class ChDialog {
   };
 
   #evaluateClickOnDocument = (e: MouseEvent) => {
-    const conditionToClose =
-      !e.composedPath().includes(this.#dialogRef) && !this.#justResized;
-    if (!this.#clickedOnDocumentAlready && conditionToClose) {
-      // The dialog was opened probably by clicking on a button outside the dialog, or it was resized from a border. Ignore in this cases.
-      this.#clickedOnDocumentAlready = true;
-    } else if (this.#clickedOnDocumentAlready && conditionToClose) {
+    console.log(e.composedPath());
+    const conditionToClose = !e.composedPath().includes(this.#dialogRef);
+    if (conditionToClose) {
       this.hidden = true;
-      this.#clickedOnDocumentAlready = false;
-      document.removeEventListener("click", this.#evaluateClickOnDocument);
+      document.removeEventListener("click", this.#evaluateClickOnDocument, {
+        capture: true
+      });
     }
-    this.#justResized = false;
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -520,6 +518,11 @@ export class ChDialog {
     // Avoid watching border changes during the resize
     this.#removeBorderSizeWatcher();
 
+    // Avoid listener on document click
+    document.removeEventListener("click", this.#evaluateClickOnDocument, {
+      capture: true
+    });
+
     // Add listeners
     document.addEventListener("mousemove", this.#trackElementResizeRAF, {
       capture: true
@@ -529,8 +532,6 @@ export class ChDialog {
       capture: true,
       passive: true
     });
-
-    this.#justResized = true;
   };
 
   #trackElementResizeRAF = (event: MouseEvent) => {
@@ -560,6 +561,7 @@ export class ChDialog {
 
   #handleResizeEnd = () => {
     this.#unfixDialog();
+
     this.resizing = false;
 
     // Cancel RAF to prevent access to undefined references
@@ -699,36 +701,36 @@ export class ChDialog {
           {this.resizable &&
             !this.hidden && [
               <div
-                class="edge__block-start resize-border"
+                class="edge__block-start"
                 onMouseDown={this.#handleEdgeResize("block-start")}
               ></div>, // Top
               <div
-                class="edge__inline-end resize-border"
+                class="edge__inline-end"
                 onMouseDown={this.#handleEdgeResize("inline-end")}
               ></div>, // Right
               <div
-                class="edge__block-end resize-border"
+                class="edge__block-end"
                 onMouseDown={this.#handleEdgeResize("block-end")}
               ></div>, // Bottom
               <div
-                class="edge__inline-start resize-border"
+                class="edge__inline-start"
                 onMouseDown={this.#handleEdgeResize("inline-start")}
               ></div>, // Left
 
               <div
-                class="corner__block-start-inline-start resize-border"
+                class="corner__block-start-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-start")}
               ></div>, // Top Left
               <div
-                class="corner__block-start-inline-end resize-border"
+                class="corner__block-start-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-end")}
               ></div>, // Top Right
               <div
-                class="corner__block-end-inline-start resize-border"
+                class="corner__block-end-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-start")}
               ></div>, // Bottom Left
               <div
-                class="corner__block-end-inline-end resize-border"
+                class="corner__block-end-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-end")}
               ></div>, // Bottom Right
 

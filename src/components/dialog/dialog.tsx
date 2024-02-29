@@ -490,6 +490,8 @@ export class ChDialog {
   //                          Resize implementation
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleEdgeResize = (edge: ChDialogResizeElement) => (event: MouseEvent) => {
+    this.#fixDialog();
+
     this.resizing = true;
     this.#resizeRAF ||= new SyncWithRAF();
     this.#currentEdge = edge;
@@ -557,6 +559,7 @@ export class ChDialog {
   };
 
   #handleResizeEnd = () => {
+    this.#unfixDialog();
     this.resizing = false;
 
     // Cancel RAF to prevent access to undefined references
@@ -650,6 +653,19 @@ export class ChDialog {
     }
 
     this.#borderSizeRAF = null; // Free the memory
+  };
+
+  #fixDialog = () => {
+    const dialogRect = this.#dialogRef.getBoundingClientRect();
+    const dialogX = dialogRect.left;
+    const dialogY = dialogRect.top;
+    this.#dialogRef.style.marginInlineStart = `${dialogX}px`;
+    this.#dialogRef.style.marginBlockStart = `${dialogY}px`;
+  };
+
+  #unfixDialog = () => {
+    this.#dialogRef.style.marginInlineStart = "auto";
+    this.#dialogRef.style.marginBlockStart = "auto";
   };
 
   render() {

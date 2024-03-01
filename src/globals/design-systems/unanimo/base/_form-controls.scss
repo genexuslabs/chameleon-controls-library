@@ -20,26 +20,32 @@
   letter-spacing: 0.2px;
 }
 
+%form-input {
+  @extend %form-input__text;
+
+  position: relative;
+  block-size: 32px;
+  max-block-size: 32px;
+  padding-inline: 8px 16px;
+  border-radius: var(--border-radius-un-border__radius--m);
+  border: var(--border-radius-un-border__radius--xs) solid
+    var(--borders-un-border-color__strong);
+  color: var(--body-texts-un-body-m__font-color--positive);
+}
+
+%form-input__placeholder {
+  --ch-placeholder-text-color: var(--body-texts-un-body-m__font-color--gray);
+  color: var(--body-texts-un-body-m__font-color--gray);
+}
+
 @mixin form-controls-classes() {
   // TODO: IMPROVE STYLE. Unanimo's implementation does not work well in Sidebar Menus
 
   .form-input {
-    @extend %form-input__text;
-
-    position: relative;
-    block-size: 32px;
-    max-block-size: 32px;
-    padding-inline: 8px 16px;
-    border-radius: var(--border-radius-un-border__radius--m);
-    border: var(--border-radius-un-border__radius--xs) solid
-      var(--borders-un-border-color__strong);
-    color: var(--body-texts-un-body-m__font-color--positive);
+    @extend %form-input;
 
     &::placeholder {
-      --ch-placeholder-text-color: var(
-        --body-texts-un-body-m__font-color--gray
-      );
-      color: var(--body-texts-un-body-m__font-color--gray);
+      @extend %form-input__placeholder;
     }
 
     &:focus {

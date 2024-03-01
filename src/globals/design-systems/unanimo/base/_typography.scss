@@ -39,7 +39,7 @@
   letter-spacing: 0.2px;
 }
 
-%tab {
+%tab-text {
   font-family: SourceSansPro_SemiBold;
   font-size: 14px;
   line-height: 18px; // 128.571%
@@ -67,7 +67,7 @@
     @extend %text-body-2;
   }
 
-  .tab {
-    @extend %tab;
+  .tab-text {
+    @extend %tab-text;
   }
 }

@@ -20,10 +20,82 @@
     </style>
   </head>
   <body class="white-label">
-    <div class="card">To be done.</div>
+    <div class="card">
+      <ch-list
+        class="tab"
+        id="list1"
+        direction="block"
+        selected-id="item1"
+        close-button-hidden="true"
+      >
+        <div slot="item1">
+          Content of the item 1
+
+          <label>
+            Any text
+            <input type="text" />
+          </label>
+        </div>
+
+        <div slot="item2">Content of the item 2</div>
+
+        <div slot="item3">Content of the item 3</div>
+
+        <div slot="item4">Content of the item 4</div>
+      </ch-list>
+
+      <ch-list class="tab" id="list2" direction="inline" selected-id="item1">
+        <div slot="item1">
+          Content of the item 1
+
+          <label>
+            Any text
+            <input type="text" />
+          </label>
+        </div>
+
+        <div slot="item2">Content of the item 2</div>
+
+        <div slot="item3">Content of the item 3</div>
+
+        <div slot="item4">Content of the item 4</div>
+      </ch-list>
+    </div>
 
     <div class="card">
       <div></div>
     </div>
+
+    <script>
+      window.addEventListener("appload", () => {
+        const list1 = document.querySelector("#list1");
+        const list2 = document.querySelector("#list2");
+
+        list1.items = [
+          {
+            id: "item1",
+            name: "Item 1",
+            startImageSrc: "./assets/icons/angular.svg"
+          },
+          {
+            id: "item2",
+            name: "Item 2",
+            startImageSrc: "./assets/icons/api.svg"
+          },
+          { id: "item3", name: "Item 3" },
+          { id: "item4", name: "", startImageSrc: "./assets/icons/dso.svg" }
+        ];
+
+        list2.items = [
+          { id: "item1", name: "Item 1" },
+          { id: "item2", name: "Item 2" },
+          { id: "item3", name: "Item 3" },
+          { id: "item4", name: "Item 4" }
+        ];
+
+        list1.selectedId = "item2";
+        list2.selectedId = "item1";
+      });
+    </script>
   </body>
 </html>

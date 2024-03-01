@@ -6,6 +6,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
   --ch-list-transition-duration: 150ms;
+  --ch-list-mask-image-size: 100%;
+  --ch-list-image-size: 18px;
 
   display: grid;
   block-size: 100%;
@@ -47,13 +49,14 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .caption-image,
 .decorative-image::before {
   display: block;
-  block-size: 18px;
-  inline-size: 18px;
+  block-size: var(--ch-list-image-size);
+  inline-size: var(--ch-list-image-size);
 }
 
 .decorative-image::before {
   content: "";
-  -webkit-mask: var(--ch-list-decorative-image) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: var(--ch-list-decorative-image) 50% 50% /
+    var(--ch-list-mask-image-size) var(--ch-list-mask-image-size) no-repeat;
   background-color: currentColor;
 }
 

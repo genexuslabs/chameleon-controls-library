@@ -505,7 +505,7 @@ export class ChFlexibleLayoutRender {
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
-        layoutModel={this.layout}
+        layout={this.layout}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
         onViewItemClose={this.#handleLeafWidgetClose}

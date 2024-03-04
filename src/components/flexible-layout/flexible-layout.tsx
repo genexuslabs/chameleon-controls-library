@@ -13,6 +13,7 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
+  FlexibleLayout,
   FlexibleLayoutItem,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
@@ -29,7 +30,6 @@ import {
 
 import { ListItemCloseInfo, ListSelectedItemInfo } from "../list/types";
 import { ChListCustomEvent } from "../../components";
-import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
@@ -65,7 +65,7 @@ export class ChFlexibleLayout {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly layoutModel: LayoutSplitterDistribution;
+  @Prop() readonly layout: FlexibleLayout;
 
   /**
    * Specifies additional parts to export.
@@ -425,7 +425,7 @@ export class ChFlexibleLayout {
     );
 
   render() {
-    const layoutModel = this.layoutModel;
+    const layoutModel = this.layout;
 
     if (layoutModel == null) {
       return "";

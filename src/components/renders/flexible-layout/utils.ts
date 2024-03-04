@@ -7,7 +7,8 @@ import {
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
-  FlexibleLayoutLeafType
+  FlexibleLayoutLeafType,
+  FlexibleLayoutWidget
 } from "../../flexible-layout/types";
 import { ROOT_VIEW } from "../../../common/utils";
 
@@ -29,7 +30,8 @@ type GroupExtended = FlexibleLayoutItemExtended<
 
 export const createAndSetLeafInfo = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,
-  renderedWidgets: Set<string>
+  renderedWidgets: Set<string>,
+  widgetsInfo: Map<string, FlexibleLayoutWidget>
 ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> => {
   const leafId = flexibleLayoutLeaf.id;
   const leafType = flexibleLayoutLeaf.type;
@@ -37,6 +39,10 @@ export const createAndSetLeafInfo = (
   if (leafType === "single-content") {
     // Mark the widget as rendered
     renderedWidgets.add(leafId);
+
+    // Store the widget info. Since the single-content widgets does not have a
+    // name, we use `null`
+    widgetsInfo.set(leafId, { id: leafId, name: null });
 
     return {
       id: leafId,
@@ -64,6 +70,9 @@ export const createAndSetLeafInfo = (
 
       renderedWidgets.add(widget.id);
     }
+
+    // Store the widget info
+    widgetsInfo.set(widget.id, widget);
   });
 
   // If there is no widget selected by default, select one
@@ -103,12 +112,13 @@ export const addNewLeafToInfo = (
   leaf: FlexibleLayoutLeaf,
   parentItem: FlexibleLayoutGroup,
   itemsInfo: Map<string, ItemExtended>,
-  renderedWidgets: Set<string>
+  renderedWidgets: Set<string>,
+  widgetsInfo: Map<string, FlexibleLayoutWidget>
 ) => {
   const flexibleLeafExtended: LeafExtended = {
     item: leaf,
     parentItem: parentItem,
-    leafInfo: createAndSetLeafInfo(leaf, renderedWidgets)
+    leafInfo: createAndSetLeafInfo(leaf, renderedWidgets, widgetsInfo)
   };
 
   itemsInfo.set(leaf.id, flexibleLeafExtended);
@@ -119,6 +129,7 @@ const updateFlexibleSubModels = (
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,
+  widgetsInfo: Map<string, FlexibleLayoutWidget>,
   parentItem: FlexibleLayoutGroup
 ) => {
   flexibleLayoutItems.forEach(flexibleItem => {
@@ -139,6 +150,7 @@ const updateFlexibleSubModels = (
         itemsInfo,
         layoutSplitterParts,
         renderedWidgets,
+        widgetsInfo,
         group
       );
     }
@@ -148,7 +160,8 @@ const updateFlexibleSubModels = (
         flexibleItem as FlexibleLayoutLeaf,
         parentItem,
         itemsInfo,
-        renderedWidgets
+        renderedWidgets,
+        widgetsInfo
       );
     }
 
@@ -161,13 +174,15 @@ export const updateFlexibleModels = (
   flexibleLayout: FlexibleLayout,
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
-  renderedWidgets: Set<string>
+  renderedWidgets: Set<string>,
+  widgetsInfo: Map<string, FlexibleLayoutWidget>
 ) =>
   updateFlexibleSubModels(
     flexibleLayout.items,
     itemsInfo,
     layoutSplitterParts,
     renderedWidgets,
+    widgetsInfo,
     ROOT_VIEW // Root item
   );
 

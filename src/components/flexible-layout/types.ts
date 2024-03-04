@@ -102,7 +102,9 @@ export type FlexibleLayoutItemBase = {
   name: string;
 };
 
-export type FlexibleLayoutRenders = { [key: string]: () => any };
+export type FlexibleLayoutRenders = {
+  [key: string]: (widgetInfo: FlexibleLayoutWidget) => any;
+};
 
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally

@@ -60,6 +60,8 @@ export class ChFlexibleLayoutRender {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderedWidgets: Set<string> = new Set();
 
+  #widgetsInfo: Map<string, FlexibleLayoutWidget> = new Map();
+
   #itemsInfo: Map<string, ItemExtended> = new Map();
 
   #layoutSplitterParts = "";
@@ -114,7 +116,8 @@ export class ChFlexibleLayoutRender {
       viewInfo,
       this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroup,
       this.#itemsInfo,
-      this.#renderedWidgets
+      this.#renderedWidgets,
+      this.#widgetsInfo
     );
 
     // Queue re-render
@@ -248,7 +251,8 @@ export class ChFlexibleLayoutRender {
       layout,
       this.#itemsInfo,
       layoutSplitterPartsSet,
-      this.#renderedWidgets
+      this.#renderedWidgets,
+      this.#widgetsInfo
     );
 
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
@@ -338,6 +342,7 @@ export class ChFlexibleLayoutRender {
     // Remove the item from the flexible-layout-render to optimize resources
     if (itemUIModel.conserveRenderState !== true && !skipRenderRemoval) {
       this.#renderedWidgets.delete(itemUIModel.id);
+      this.#widgetsInfo.delete(itemUIModel.id);
 
       // TODO: Remove item in this.layout???
     }
@@ -492,6 +497,20 @@ export class ChFlexibleLayoutRender {
     // CHECK IF THE PREVIOUS VIEW HAS ONLY ONE ITEM TO REUSE ITS VIEW ID?
   };
 
+  #renderWidget = (widgetId: string) => {
+    const widgetInfo = this.#widgetsInfo.get(widgetId);
+
+    return (
+      <div
+        key={widgetId}
+        slot={widgetId}
+        class="ch-flexible-layout-render-slot"
+      >
+        {this.renders[widgetInfo.renderId ?? widgetId](widgetInfo)}
+      </div>
+    );
+  };
+
   componentWillLoad() {
     this.#updateFlexibleModels(this.layout);
   }
@@ -513,15 +532,7 @@ export class ChFlexibleLayoutRender {
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}
         ref={el => (this.#flexibleLayoutRef = el)}
       >
-        {[...this.#renderedWidgets.values()].map(widget => (
-          <div
-            key={widget}
-            slot={widget}
-            class="ch-flexible-layout-render-slot"
-          >
-            {this.renders[widget]()}
-          </div>
-        ))}
+        {[...this.#renderedWidgets.values()].map(this.#renderWidget)}
       </ch-flexible-layout>
     );
   }

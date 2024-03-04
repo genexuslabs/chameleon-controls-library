@@ -30,6 +30,10 @@
 
     cursor: pointer;
   }
+
+  button:disabled {
+    pointer-events: none;
+  }
 }
 
 @mixin input-reset() {

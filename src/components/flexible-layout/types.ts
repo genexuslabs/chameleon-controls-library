@@ -73,6 +73,13 @@ export type FlexibleLayoutGroup = Omit<
 
 export type FlexibleLayoutWidget = {
   /**
+   * If `true` a div will be rendered as a parent wrapper for the widget render.
+   * Only use `false` in StencilJS contexts where the `slot={widgetId}` and
+   * `key={widgetId}` must be added.
+   */
+  addWrapper?: boolean;
+
+  /**
    * If `true` when a widget is closed its render state and DOM nodes won't be
    * destroyed. Defaults to `false`.
    */

@@ -499,15 +499,18 @@ export class ChFlexibleLayoutRender {
 
   #renderWidget = (widgetId: string) => {
     const widgetInfo = this.#widgetsInfo.get(widgetId);
+    const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
 
-    return (
+    return widgetInfo.addWrapper ? (
       <div
         key={widgetId}
         slot={widgetId}
         class="ch-flexible-layout-render-slot"
       >
-        {this.renders[widgetInfo.renderId ?? widgetId](widgetInfo)}
+        {widgetRender(widgetInfo)}
       </div>
+    ) : (
+      widgetRender(widgetInfo)
     );
   };
 

@@ -152,11 +152,8 @@
       @extend %button-primary--active;
     }
 
-    &:disabled {
-      @extend %button-primary--disabled;
-    }
-
     @if $add--disabled == true {
+      &:disabled,
       &--disabled {
         @extend %button-primary--disabled;
       }
@@ -190,11 +187,8 @@
       @extend %button-secondary--active;
     }
 
-    &:disabled {
-      @extend %button-secondary--disabled;
-    }
-
     @if $add--disabled == true {
+      &:disabled,
       &--disabled {
         @extend %button-secondary--disabled;
       }
@@ -228,11 +222,8 @@
       @extend %button-tertiary--active;
     }
 
-    &:disabled {
-      @extend %button-tertiary--disabled;
-    }
-
     @if $add--disabled == true {
+      &:disabled,
       &--disabled {
         @extend %button-tertiary--disabled;
       }

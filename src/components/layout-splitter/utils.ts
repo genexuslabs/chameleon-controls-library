@@ -12,7 +12,7 @@ import {
 export const FIXED_SIZES_SUM_CUSTOM_VAR =
   "--ch-layout-splitter-fixed-sizes-sum";
 
-export const findItemInParent = (itemToFind: ItemExtended) => {
+export const findItemInParent = (itemToFind: ItemExtended): number => {
   const itemId = itemToFind.item.id;
   return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
 };

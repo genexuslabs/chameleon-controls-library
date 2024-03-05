@@ -56,6 +56,7 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
 
 export type FlexibleLayoutLeafConfigurationSingleContent = {
   type: Extract<FlexibleLayoutLeafType, "single-content">;
+  widget: FlexibleLayoutWidget;
 } & FlexibleLayoutWidgetRender;
 
 export type FlexibleLayoutLeafType = "tabbed" | "single-content";

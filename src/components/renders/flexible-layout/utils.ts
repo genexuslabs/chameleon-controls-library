@@ -37,17 +37,19 @@ export const createAndSetLeafInfo = (
   const leafType = flexibleLayoutLeaf.type;
 
   if (leafType === "single-content") {
-    // Mark the widget as rendered
-    renderedWidgets.add(leafId);
+    const widget = flexibleLayoutLeaf.widget;
 
-    // Store the widget info. Since the single-content widgets does not have a
-    // name, we use `null`
-    widgetsInfo.set(leafId, { id: leafId, name: null });
+    // Mark the widget as rendered
+    renderedWidgets.add(widget.id);
+
+    // Store the widget info
+    widgetsInfo.set(leafId, widget);
 
     return {
       id: leafId,
       type: leafType,
-      exportParts: ""
+      exportParts: "",
+      widget: widget
     };
   }
 

@@ -56,7 +56,8 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
 
 export type FlexibleLayoutLeafConfigurationSingleContent = {
   type: Extract<FlexibleLayoutLeafType, "single-content">;
-};
+  widget: FlexibleLayoutWidget;
+} & FlexibleLayoutWidgetRender;
 
 export type FlexibleLayoutLeafType = "tabbed" | "single-content";
 
@@ -71,7 +72,19 @@ export type FlexibleLayoutGroup = Omit<
   items: FlexibleLayoutItem[];
 };
 
+export type FlexibleLayoutWidgetExtended = {
+  parentLeafId: string;
+  info: FlexibleLayoutWidget;
+};
+
 export type FlexibleLayoutWidget = {
+  /**
+   * If `true` a div will be rendered as a parent wrapper for the widget render.
+   * Only use `false` in StencilJS contexts where the `slot={widgetId}` and
+   * `key={widgetId}` must be added.
+   */
+  addWrapper?: boolean;
+
   /**
    * If `true` when a widget is closed its render state and DOM nodes won't be
    * destroyed. Defaults to `false`.
@@ -79,6 +92,7 @@ export type FlexibleLayoutWidget = {
   conserveRenderState?: boolean;
   id: string;
   name: string;
+
   startImageSrc?: string;
 
   /**
@@ -86,6 +100,14 @@ export type FlexibleLayoutWidget = {
    */
   startImageType?: ImageRender;
   wasRendered?: boolean;
+} & FlexibleLayoutWidgetRender;
+
+type FlexibleLayoutWidgetRender = {
+  /**
+   * Specifies the render of the widget. If not specified, the id of the widget
+   * will be used as the `renderId`.
+   */
+  renderId?: string;
 };
 
 export type FlexibleLayoutItemBase = {
@@ -93,7 +115,9 @@ export type FlexibleLayoutItemBase = {
   name: string;
 };
 
-export type FlexibleLayoutRenders = { [key: string]: () => any };
+export type FlexibleLayoutRenders = {
+  [key: string]: (widgetInfo: FlexibleLayoutWidget) => any;
+};
 
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally

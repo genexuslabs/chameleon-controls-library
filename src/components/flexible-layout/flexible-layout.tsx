@@ -13,6 +13,7 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
+  FlexibleLayout,
   FlexibleLayoutItem,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeaf,
@@ -29,7 +30,6 @@ import {
 
 import { ListItemCloseInfo, ListSelectedItemInfo } from "../list/types";
 import { ChListCustomEvent } from "../../components";
-import { LayoutSplitterDistribution } from "../layout-splitter/types";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
@@ -37,6 +37,8 @@ import {
 } from "./utils";
 import { getLeafInfo } from "../renders/flexible-layout/utils";
 import { isRTL } from "../../common/utils";
+
+const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
 // Keys
 const ESCAPE_KEY = "Escape";
@@ -65,7 +67,7 @@ export class ChFlexibleLayout {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly layoutModel: LayoutSplitterDistribution;
+  @Prop() readonly layout: FlexibleLayout;
 
   /**
    * Specifies additional parts to export.
@@ -96,15 +98,6 @@ export class ChFlexibleLayout {
   @Event() viewItemReorder: EventEmitter<WidgetReorderInfo>;
 
   /**
-   * Schedules a new render of the control even if no state changed.
-   */
-  @Method()
-  async refreshLayout() {
-    forceUpdate(this);
-    this.#layoutSplitterRef.refreshLayout();
-  }
-
-  /**
    *
    */
   @Method()
@@ -129,6 +122,20 @@ export class ChFlexibleLayout {
     }
 
     return result.success;
+  }
+
+  /**
+   * Schedules a new render for a leaf even if no state changed.
+   */
+  @Method()
+  async refreshLeaf(leafId: string) {
+    const leafRef = this.el.shadowRoot.querySelector(LEAF_SELECTOR(leafId));
+
+    if (!leafRef) {
+      return;
+    }
+
+    forceUpdate(leafRef);
   }
 
   /**
@@ -425,7 +432,7 @@ export class ChFlexibleLayout {
     );
 
   render() {
-    const layoutModel = this.layoutModel;
+    const layoutModel = this.layout;
 
     if (layoutModel == null) {
       return "";

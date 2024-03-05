@@ -13,7 +13,12 @@ import {
 } from "../../../showcase/pages/assets/models/tree.js";
 import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../renders/tree-view/types";
+import {
+  ChTreeViewRenderCustomEvent,
+  TreeViewItemOpenReferenceInfo
+} from "../../../components";
 
+// IDs
 const MENU_BAR = "menu-bar";
 const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
@@ -25,6 +30,11 @@ const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
 const OUTPUT = "output";
 const IMPORT_OBJECTS = "import-objects";
+const PANEL1 = "panel-1";
+const PANEL2 = "panel-2";
+
+// Common renders
+const PANEL = "Panel";
 
 export const defaultLayout: FlexibleLayout = {
   id: "root",
@@ -34,7 +44,11 @@ export const defaultLayout: FlexibleLayout = {
       id: MENU_BAR,
       accessibleRole: "banner",
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -122,7 +136,11 @@ export const layout2: FlexibleLayout = {
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -223,7 +241,11 @@ export const layout3: FlexibleLayout = {
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -303,7 +325,11 @@ export const layout3: FlexibleLayout = {
                       size: "0.5fr",
                       type: "tabbed",
                       tabDirection: "block",
-                      widgets: [{ id: IMPORT_OBJECTS, name: "Import Objects" }]
+                      widgets: [
+                        { id: PANEL1, name: "Panel 1", renderId: PANEL },
+                        { id: PANEL2, name: "Panel 2", renderId: PANEL },
+                        { id: IMPORT_OBJECTS, name: "Import Objects" }
+                      ]
                     }
                   ]
                 }
@@ -358,20 +384,48 @@ const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
     }, 50); // Resolves or rejects after 50 milliseconds
   });
 
+const openNewPanel = (
+  event: ChTreeViewRenderCustomEvent<TreeViewItemOpenReferenceInfo>
+) => {
+  const referenceInfo = event.detail;
+
+  if (referenceInfo.metadata !== "Panel") {
+    return;
+  }
+
+  const flexibleLayoutRender = event.target.parentElement
+    .parentElement as HTMLChFlexibleLayoutRenderElement;
+
+  flexibleLayoutRender.addWidget("sub-group-2-2-1-1", {
+    id: referenceInfo.id,
+    name: referenceInfo.id,
+    renderId: PANEL
+  });
+};
+
 export const layoutRenders: FlexibleLayoutRenders = {
   [MENU_BAR]: () => (
-    <ch-action-group-render model={GXWebModel}></ch-action-group-render>
+    <ch-action-group-render
+      slot={MENU_BAR}
+      key={MENU_BAR}
+      model={GXWebModel}
+    ></ch-action-group-render>
   ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
+      slot={KB_EXPLORER}
+      key={KB_EXPLORER}
       treeModel={kbExplorerModel}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
       multiSelection
       showLines="last"
+      onItemOpenReference={openNewPanel}
     ></ch-tree-view-render>
   ),
   [PREFERENCES]: () => (
     <ch-tree-view-render
+      slot={PREFERENCES}
+      key={PREFERENCES}
       treeModel={preferencesModel}
       dragDisabled={true}
       dropDisabled={true}
@@ -382,7 +436,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
     ></ch-tree-view-render>
   ),
   [START_PAGE]: () => (
-    <div>
+    <div slot={START_PAGE} key={START_PAGE}>
       <h1
         style={{
           display: "flex",
@@ -397,7 +451,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
     </div>
   ),
   [GRID]: () => (
-    <div>
+    <div slot={GRID} key={GRID}>
       Grid render... <input type="text" />
       <ch-grid>
         <ch-grid-columnset>
@@ -524,23 +578,29 @@ export const layoutRenders: FlexibleLayoutRenders = {
     </div>
   ),
   [STRUCT_EDITOR]: () => (
-    <div>
+    <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
       Struct Editor... <input type="text" />
     </div>
   ),
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
-    <div>
+    <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
       Panel AttrsContainersAndOthers <input type="text" />
     </div>
   ),
   [PROPERTIES]: () => (
-    <div>
+    <div slot={PROPERTIES} key={PROPERTIES}>
       Properties render... <input type="text" />
     </div>
   ),
-  [OUTPUT]: () => <div>Output render... </div>,
+  [OUTPUT]: () => (
+    <div slot={OUTPUT} key={OUTPUT}>
+      Output render...
+    </div>
+  ),
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
+      slot={HEAVY_TREE}
+      key={HEAVY_TREE}
       treeModel={eagerLargeModel}
       dragDisabled={true}
       dropDisabled={true}
@@ -551,6 +611,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [IMPORT_OBJECTS]: () => (
     <ch-tree-view-render
+      slot={IMPORT_OBJECTS}
+      key={IMPORT_OBJECTS}
       treeModel={importObjectsModel}
       checkbox
       checked
@@ -562,5 +624,10 @@ export const layoutRenders: FlexibleLayoutRenders = {
       multiSelection
       showLines="all"
     ></ch-tree-view-render>
+  ),
+  [PANEL]: widget => (
+    <div slot={widget.id} key={widget.id}>
+      This is the render for the <strong>{widget.id}</strong> widget
+    </div>
   )
 };

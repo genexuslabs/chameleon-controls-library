@@ -214,6 +214,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .page--selected {
+  display: grid;
   grid-area: selected;
 }
 

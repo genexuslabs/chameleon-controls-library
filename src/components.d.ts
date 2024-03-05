@@ -10,13 +10,13 @@ import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
+import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 import { MarkdownCodeRender } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -46,13 +46,13 @@ export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./components/icon/icon";
+export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 export { MarkdownCodeRender } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -430,15 +430,15 @@ export namespace Components {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layoutModel": LayoutSplitterDistribution;
+        "layout": FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */
         "layoutSplitterParts": string;
         /**
-          * Schedules a new render of the control even if no state changed.
+          * Schedules a new render for a leaf even if no state changed.
          */
-        "refreshLayout": () => Promise<void>;
+        "refreshLeaf": (leafId: string) => Promise<void>;
         /**
           * Given the view ID and the item id, remove the page of the item from the view.
          */
@@ -454,6 +454,10 @@ export namespace Components {
          */
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
+          * Add a widget in a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type. If a widget with the same ID already exists, this method has not effect.  To add a widget in a `"single-content"` type leaf, use the `addSiblingView` method.
+         */
+        "addWidget": (leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>;
+        /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass": string;
@@ -465,6 +469,10 @@ export namespace Components {
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
         "removeView": (leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>;
+        /**
+          * Remove a widget from a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type.  To remove a widget from a `"single-content"` type leaf, use the `removeView` method.
+         */
+        "removeWidget": (widgetId: string) => Promise<void>;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -3855,7 +3863,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layoutModel"?: LayoutSplitterDistribution;
+        "layout"?: FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */

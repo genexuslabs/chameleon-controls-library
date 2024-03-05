@@ -11,7 +11,7 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 | ---------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------- |
 | `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                                       | `"flexible-layout"` |
 | `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }` | `undefined`         |
-| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: () => any; }`                                                | `undefined`         |
+| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`                | `undefined`         |
 
 
 ## Methods
@@ -37,6 +37,29 @@ Type: `Promise<boolean>`
 
 
 
+### `addWidget(leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>`
+
+Add a widget in a `"tabbed"` type leaf.
+Only works if the parent leaf is `"tabbed"` type.
+If a widget with the same ID already exists, this method has not effect.
+
+To add a widget in a `"single-content"` type leaf, use the
+`addSiblingView` method.
+
+#### Parameters
+
+| Name           | Type                                                                                                                                                                                           | Description |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `leafId`       | `string`                                                                                                                                                                                       |             |
+| `widget`       | `{ addWrapper?: boolean; conserveRenderState?: boolean; id: string; name: string; startImageSrc?: string; startImageType?: ImageRender; wasRendered?: boolean; } & FlexibleLayoutWidgetRender` |             |
+| `selectWidget` | `boolean`                                                                                                                                                                                      |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `removeView(leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
 Removes a view and optionally all its rendered widget from the render.
@@ -52,6 +75,26 @@ The reserved space will be given to the closest view.
 #### Returns
 
 Type: `Promise<FlexibleLayoutViewRemoveResult>`
+
+
+
+### `removeWidget(widgetId: string) => Promise<void>`
+
+Remove a widget from a `"tabbed"` type leaf.
+Only works if the parent leaf is `"tabbed"` type.
+
+To remove a widget from a `"single-content"` type leaf, use the
+`removeView` method.
+
+#### Parameters
+
+| Name       | Type     | Description |
+| ---------- | -------- | ----------- |
+| `widgetId` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
 
 
 

@@ -424,7 +424,7 @@ export class ChFlexibleLayoutRender {
   ) => {
     const reorderInfo = event.detail;
     const leafId = reorderInfo.viewId;
-    const viewIdTarget = reorderInfo.viewIdTarget;
+    const leafIdTarget = reorderInfo.viewIdTarget;
     const dropAreaTarget = reorderInfo.dropAreaTarget;
 
     const leafInfo = this.#getLeafInfo(
@@ -433,17 +433,20 @@ export class ChFlexibleLayoutRender {
 
     // Dropping in the same view. Nothing to change
     if (
-      leafId === viewIdTarget &&
+      leafId === leafIdTarget &&
       (dropAreaTarget === "center" || leafInfo.widgets.length === 1)
     ) {
       return;
     }
 
-    const viewTargetInfo = this.#getLeafInfo(
-      viewIdTarget
+    const leafTargetInfo = this.#getLeafInfo(
+      leafIdTarget
     ) as FlexibleLayoutLeafInfo<"tabbed">;
     const widgetIndex = reorderInfo.index;
     const widgetToMove = leafInfo.widgets[widgetIndex];
+
+    // Update parent leaf id in the widget to move
+    this.#widgetsInfo.get(widgetToMove.id).parentLeafId = leafIdTarget;
 
     // Mark the item as rendered, because the drag does not have to trigger item
     // selection (which trigger item rendering)
@@ -452,14 +455,14 @@ export class ChFlexibleLayoutRender {
 
     // The drop does not create a new view
     if (dropAreaTarget === "center") {
-      viewTargetInfo.widgets.push(widgetToMove);
+      leafTargetInfo.widgets.push(widgetToMove);
 
       // Update the selected widget in the target view
-      this.#updateSelectedWidget(viewTargetInfo, widgetToMove.id);
+      this.#updateSelectedWidget(leafTargetInfo, widgetToMove.id);
     } else {
       await this.#handleViewItemReorderCreateView(
         widgetToMove,
-        viewTargetInfo,
+        leafTargetInfo,
         dropAreaTarget
       );
     }

@@ -38,6 +38,8 @@ import {
 import { getLeafInfo } from "../renders/flexible-layout/utils";
 import { isRTL } from "../../common/utils";
 
+const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
+
 // Keys
 const ESCAPE_KEY = "Escape";
 // const KEY_B = "KeyB";
@@ -96,15 +98,6 @@ export class ChFlexibleLayout {
   @Event() viewItemReorder: EventEmitter<WidgetReorderInfo>;
 
   /**
-   * Schedules a new render of the control even if no state changed.
-   */
-  @Method()
-  async refreshLayout() {
-    forceUpdate(this);
-    this.#layoutSplitterRef.refreshLayout();
-  }
-
-  /**
    *
    */
   @Method()
@@ -129,6 +122,20 @@ export class ChFlexibleLayout {
     }
 
     return result.success;
+  }
+
+  /**
+   * Schedules a new render for a leaf even if no state changed.
+   */
+  @Method()
+  async refreshLeaf(leafId: string) {
+    const leafRef = this.el.shadowRoot.querySelector(LEAF_SELECTOR(leafId));
+
+    if (!leafRef) {
+      return;
+    }
+
+    forceUpdate(leafRef);
   }
 
   /**

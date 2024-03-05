@@ -127,6 +127,46 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
+   * Add a widget in a `"tabbed"` type leaf.
+   * Only works if the parent leaf is `"tabbed"` type.
+   * If a widget with the same ID already exists, this method has not effect.
+   *
+   * To add a widget in a `"single-content"` type leaf, use the
+   * `addSiblingView` method.
+   */
+  @Method()
+  async addWidget(
+    leafId: string,
+    widget: FlexibleLayoutWidget,
+    selectWidget = true
+  ) {
+    const leafUIModel = this.#itemsInfo.get(leafId) as LeafExtended;
+
+    if (
+      !leafUIModel ||
+      leafUIModel.leafInfo == null ||
+      leafUIModel.leafInfo.type === "single-content" ||
+      this.#widgetsInfo.has(widget.id)
+    ) {
+      return;
+    }
+
+    leafUIModel.leafInfo.widgets.push(widget);
+    this.#widgetsInfo.set(widget.id, { parentLeafId: leafId, info: widget });
+
+    if (selectWidget) {
+      this.#updateSelectedWidget(leafUIModel.leafInfo, widget);
+
+      // Queue re-renders
+      forceUpdate(this);
+      forceUpdate(this.#flexibleLayoutRef);
+    } else {
+      // Queue re-render for the specific leaf
+      this.#flexibleLayoutRef.refreshLeaf(leafId);
+    }
+  }
+
+  /**
    * Removes a view and optionally all its rendered widget from the render.
    * The reserved space will be given to the closest view.
    */
@@ -314,14 +354,10 @@ export class ChFlexibleLayoutRender {
     ) as FlexibleLayoutLeafInfo<"tabbed">;
 
     // Mark the item as rendered
-    this.#renderedWidgets.add(selectedItemInfo.newSelectedId);
-
-    // Mark the item as rendered
     const newSelectedItem = leafInfo.widgets[selectedItemInfo.newSelectedIndex];
-    newSelectedItem.wasRendered = true;
 
     // Select the new item
-    this.#updateSelectedWidget(leafInfo, selectedItemInfo.newSelectedId);
+    this.#updateSelectedWidget(leafInfo, newSelectedItem);
 
     // Queue re-renders
     forceUpdate(this);
@@ -365,11 +401,8 @@ export class ChFlexibleLayoutRender {
           ? viewWidgets[widgetsCount - 2] // Select the previous
           : viewWidgets[widgetIndex + 1]; // Otherwise, select the next
 
-      this.#renderedWidgets.add(newSelectedItem.id);
-
       // Mark the item as selected and rendered
-      this.#updateSelectedWidget(viewInfo, newSelectedItem.id);
-      newSelectedItem.wasRendered = true;
+      this.#updateSelectedWidget(viewInfo, newSelectedItem);
     }
 
     this.#removeWidget(viewInfo, widgetIndex);
@@ -410,9 +443,15 @@ export class ChFlexibleLayoutRender {
 
   #updateSelectedWidget = (
     leafInfo: FlexibleLayoutLeafInfo<"tabbed">,
-    selectedId: string
+    widget: FlexibleLayoutWidget
   ) => {
-    leafInfo.selectedWidgetId = selectedId;
+    // Mark the item as rendered
+    this.#renderedWidgets.add(widget.id);
+
+    // Mark the item as rendered
+    widget.wasRendered = true;
+
+    leafInfo.selectedWidgetId = widget.id;
   };
 
   /**
@@ -458,7 +497,7 @@ export class ChFlexibleLayoutRender {
       leafTargetInfo.widgets.push(widgetToMove);
 
       // Update the selected widget in the target view
-      this.#updateSelectedWidget(leafTargetInfo, widgetToMove.id);
+      this.#updateSelectedWidget(leafTargetInfo, widgetToMove);
     } else {
       await this.#handleViewItemReorderCreateView(
         widgetToMove,
@@ -482,12 +521,8 @@ export class ChFlexibleLayoutRender {
         const newSelectedIndex = widgetIndex === 0 ? 1 : widgetIndex - 1;
         const newSelectedItem = leafInfo.widgets[newSelectedIndex];
 
-        // Mark the item as rendered
-        this.#renderedWidgets.add(newSelectedItem.id);
-        newSelectedItem.wasRendered = true;
-
-        // Mark the item as selected
-        this.#updateSelectedWidget(leafInfo, newSelectedItem.id);
+        // Mark the item as selected and rendered
+        this.#updateSelectedWidget(leafInfo, newSelectedItem);
       }
 
       // Remove the item from the view

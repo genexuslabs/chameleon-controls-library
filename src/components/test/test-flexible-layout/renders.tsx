@@ -13,6 +13,10 @@ import {
 } from "../../../showcase/pages/assets/models/tree.js";
 import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../renders/tree-view/types";
+import {
+  ChTreeViewRenderCustomEvent,
+  TreeViewItemOpenReferenceInfo
+} from "../../../components";
 
 // IDs
 const MENU_BAR = "menu-bar";
@@ -40,7 +44,11 @@ export const defaultLayout: FlexibleLayout = {
       id: MENU_BAR,
       accessibleRole: "banner",
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -128,7 +136,11 @@ export const layout2: FlexibleLayout = {
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -229,7 +241,11 @@ export const layout3: FlexibleLayout = {
       accessibleRole: "banner",
       dragBar: { hidden: true },
       size: "32px",
-      type: "single-content"
+      type: "single-content",
+      widget: {
+        id: MENU_BAR,
+        name: null
+      }
     },
     {
       id: "sub-group-2",
@@ -368,6 +384,25 @@ const lazyLoadTreeItems = (modelId: string): Promise<TreeViewItemModel[]> =>
     }, 50); // Resolves or rejects after 50 milliseconds
   });
 
+const openNewPanel = (
+  event: ChTreeViewRenderCustomEvent<TreeViewItemOpenReferenceInfo>
+) => {
+  const referenceInfo = event.detail;
+
+  if (referenceInfo.metadata !== "Panel") {
+    return;
+  }
+
+  const flexibleLayoutRender = event.target.parentElement
+    .parentElement as HTMLChFlexibleLayoutRenderElement;
+
+  flexibleLayoutRender.addWidget("sub-group-2-2-1-1", {
+    id: referenceInfo.id,
+    name: referenceInfo.id,
+    renderId: PANEL
+  });
+};
+
 export const layoutRenders: FlexibleLayoutRenders = {
   [MENU_BAR]: () => (
     <ch-action-group-render
@@ -384,6 +419,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
       multiSelection
       showLines="last"
+      onItemOpenReference={openNewPanel}
     ></ch-tree-view-render>
   ),
   [PREFERENCES]: () => (

@@ -8,7 +8,8 @@ import {
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
   FlexibleLayoutLeafType,
-  FlexibleLayoutWidget
+  FlexibleLayoutWidget,
+  FlexibleLayoutWidgetExtended
 } from "../../flexible-layout/types";
 import { ROOT_VIEW } from "../../../common/utils";
 
@@ -31,7 +32,7 @@ type GroupExtended = FlexibleLayoutItemExtended<
 export const createAndSetLeafInfo = (
   flexibleLayoutLeaf: FlexibleLayoutLeaf,
   renderedWidgets: Set<string>,
-  widgetsInfo: Map<string, FlexibleLayoutWidget>
+  widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>
 ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> => {
   const leafId = flexibleLayoutLeaf.id;
   const leafType = flexibleLayoutLeaf.type;
@@ -43,7 +44,7 @@ export const createAndSetLeafInfo = (
     renderedWidgets.add(widget.id);
 
     // Store the widget info
-    widgetsInfo.set(leafId, widget);
+    widgetsInfo.set(leafId, { parentItem: flexibleLayoutLeaf, info: widget });
 
     return {
       id: leafId,
@@ -74,7 +75,10 @@ export const createAndSetLeafInfo = (
     }
 
     // Store the widget info
-    widgetsInfo.set(widget.id, widget);
+    widgetsInfo.set(widget.id, {
+      parentItem: flexibleLayoutLeaf,
+      info: widget
+    });
   });
 
   // If there is no widget selected by default, select one
@@ -115,7 +119,7 @@ export const addNewLeafToInfo = (
   parentItem: FlexibleLayoutGroup,
   itemsInfo: Map<string, ItemExtended>,
   renderedWidgets: Set<string>,
-  widgetsInfo: Map<string, FlexibleLayoutWidget>
+  widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>
 ) => {
   const flexibleLeafExtended: LeafExtended = {
     item: leaf,
@@ -131,7 +135,7 @@ const updateFlexibleSubModels = (
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,
-  widgetsInfo: Map<string, FlexibleLayoutWidget>,
+  widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>,
   parentItem: FlexibleLayoutGroup
 ) => {
   flexibleLayoutItems.forEach(flexibleItem => {
@@ -177,7 +181,7 @@ export const updateFlexibleModels = (
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,
-  widgetsInfo: Map<string, FlexibleLayoutWidget>
+  widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>
 ) =>
   updateFlexibleSubModels(
     flexibleLayout.items,

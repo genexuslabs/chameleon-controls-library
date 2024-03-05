@@ -13,7 +13,8 @@ import {
   FlexibleLayoutGroup,
   DroppableArea,
   FlexibleLayoutWidget,
-  FlexibleLayoutLeafType
+  FlexibleLayoutLeafType,
+  FlexibleLayoutWidgetExtended
 } from "../../flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../../components";
 import { removeElement } from "../../../common/array";
@@ -60,7 +61,7 @@ export class ChFlexibleLayoutRender {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #renderedWidgets: Set<string> = new Set();
 
-  #widgetsInfo: Map<string, FlexibleLayoutWidget> = new Map();
+  #widgetsInfo: Map<string, FlexibleLayoutWidgetExtended> = new Map();
 
   #itemsInfo: Map<string, ItemExtended> = new Map();
 
@@ -498,7 +499,7 @@ export class ChFlexibleLayoutRender {
   };
 
   #renderWidget = (widgetId: string) => {
-    const widgetInfo = this.#widgetsInfo.get(widgetId);
+    const widgetInfo = this.#widgetsInfo.get(widgetId).info;
     const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
 
     return widgetInfo.addWrapper ? (

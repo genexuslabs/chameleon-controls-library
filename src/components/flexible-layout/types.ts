@@ -72,6 +72,11 @@ export type FlexibleLayoutGroup = Omit<
   items: FlexibleLayoutItem[];
 };
 
+export type FlexibleLayoutWidgetExtended = {
+  parentItem: FlexibleLayoutLeaf;
+  info: FlexibleLayoutWidget;
+};
+
 export type FlexibleLayoutWidget = {
   /**
    * If `true` a div will be rendered as a parent wrapper for the widget render.

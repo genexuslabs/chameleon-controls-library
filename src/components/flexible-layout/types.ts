@@ -73,7 +73,7 @@ export type FlexibleLayoutGroup = Omit<
 };
 
 export type FlexibleLayoutWidgetExtended = {
-  parentItem: FlexibleLayoutLeaf;
+  parentLeafId: string;
   info: FlexibleLayoutWidget;
 };
 

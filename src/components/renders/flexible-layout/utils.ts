@@ -8,7 +8,6 @@ import {
   FlexibleLayoutLeaf,
   FlexibleLayoutLeafInfo,
   FlexibleLayoutLeafType,
-  FlexibleLayoutWidget,
   FlexibleLayoutWidgetExtended
 } from "../../flexible-layout/types";
 import { ROOT_VIEW } from "../../../common/utils";
@@ -44,7 +43,7 @@ export const createAndSetLeafInfo = (
     renderedWidgets.add(widget.id);
 
     // Store the widget info
-    widgetsInfo.set(leafId, { parentItem: flexibleLayoutLeaf, info: widget });
+    widgetsInfo.set(leafId, { parentLeafId: leafId, info: widget });
 
     return {
       id: leafId,
@@ -75,10 +74,7 @@ export const createAndSetLeafInfo = (
     }
 
     // Store the widget info
-    widgetsInfo.set(widget.id, {
-      parentItem: flexibleLayoutLeaf,
-      info: widget
-    });
+    widgetsInfo.set(widget.id, { parentLeafId: leafId, info: widget });
   });
 
   // If there is no widget selected by default, select one

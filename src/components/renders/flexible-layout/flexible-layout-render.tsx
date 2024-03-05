@@ -137,6 +137,7 @@ export class ChFlexibleLayoutRender {
   ): Promise<FlexibleLayoutViewRemoveResult> {
     const itemInfo = this.#itemsInfo.get(leafId);
 
+    // The leaf didn't exist
     if (!itemInfo) {
       return { success: false, reconnectedSubtree: undefined };
     }
@@ -166,11 +167,11 @@ export class ChFlexibleLayoutRender {
       //                              / \
       //                           /       \
       //                        /             \
-      //     (Id x) reconnectedSubtree  Other items...
+      //        (Id x) nodeToReconnect  Other items...
       //                       / \
       //                    /       \
       //                 /             \
-      // (Id y) viewToRemoveInfo  (Id z) nodeToRemove
+      // (Id y) leafInfoToRemove  (Id z) nodeToRemove
       //                                     / \
       //                                  /       \
       //                              subtree or widgets
@@ -181,7 +182,7 @@ export class ChFlexibleLayoutRender {
       //                         / \
       //                      /       \
       //                   /             \
-      // (Id x) reconnectedSubtree  Other items...
+      //    (Id x) nodeToReconnect  Other items...
       //                / \
       //             /       \
       //         subtree or widgets
@@ -191,7 +192,8 @@ export class ChFlexibleLayoutRender {
         reconnectedSubtree.nodeToRemove
       );
 
-      // The node to reconnect is still a group. We must reconnect its children
+      // The node to reconnect is still a group (since the nodeToRemove is a group).
+      // We must reconnect the nodeToRemove's children
       if ((nodeToRemoveUIModel as LeafExtended).leafInfo == null) {
         const itemsOfNodeToRemove = (nodeToRemoveUIModel as GroupExtended).item
           .items;
@@ -206,19 +208,31 @@ export class ChFlexibleLayoutRender {
             nodeToReconnectUIModel.item;
         });
       }
-      // The node to reconnect is a leaf
+      // The node to reconnect is a leaf, since the nodeToRemove is a leaf
       else {
         const nodeToReconnectUIModel = this.#itemsInfo.get(
           reconnectedSubtree.nodeToReconnect
         ) as LeafExtended;
 
-        // Add view information
+        // Add leaf information
         nodeToReconnectUIModel.leafInfo = (
           nodeToRemoveUIModel as LeafExtended
         ).leafInfo;
+        const nodeToReconnectLeafInfo = nodeToReconnectUIModel.leafInfo;
 
-        // Update view id
-        nodeToReconnectUIModel.leafInfo.id = reconnectedSubtree.nodeToReconnect;
+        // Update leaf id
+        nodeToReconnectLeafInfo.id = reconnectedSubtree.nodeToReconnect;
+
+        const widgetsToUpdateParentLeafId: FlexibleLayoutWidget[] =
+          nodeToReconnectLeafInfo.type === "single-content"
+            ? [nodeToReconnectLeafInfo.widget]
+            : nodeToReconnectLeafInfo.widgets;
+
+        // Update the parent leaf id in the reconnected widgets
+        widgetsToUpdateParentLeafId.forEach(widget => {
+          const widgetUIModel = this.#widgetsInfo.get(widget.id);
+          widgetUIModel.parentLeafId = nodeToReconnectLeafInfo.id;
+        });
       }
 
       // Delete the old item
@@ -227,9 +241,7 @@ export class ChFlexibleLayoutRender {
 
     // Remove rendered widgets
     if (removeRenderedWidgets) {
-      leafInfoToRemove.widgets.forEach(widget => {
-        this.#renderedWidgets.delete(widget.id);
-      });
+      leafInfoToRemove.widgets.forEach(this.#deleteRenderedWidget);
     }
 
     // Delete the view
@@ -238,6 +250,33 @@ export class ChFlexibleLayoutRender {
     // Queue re-renders
     forceUpdate(this);
     return result;
+  }
+
+  /**
+   * Remove a widget from a `"tabbed"` type leaf.
+   * Only works if the parent leaf is `"tabbed"` type.
+   *
+   * To remove a widget from a `"single-content"` type leaf, use the
+   * `removeView` method.
+   */
+  @Method()
+  async removeWidget(widgetId: string) {
+    const widgetUIModel = this.#widgetsInfo.get(widgetId);
+
+    if (!widgetUIModel) {
+      return;
+    }
+    const leafInfo = this.#getLeafInfo(widgetUIModel.parentLeafId);
+
+    if (leafInfo.type === "single-content") {
+      return;
+    }
+
+    this.#checkViewStateToRemoveWidget(
+      leafInfo,
+      widgetUIModel.info,
+      leafInfo.widgets.findIndex(widget => widget.id === widgetId) // Find the index of the widget
+    );
   }
 
   #updateFlexibleModels = (layout: FlexibleLayout) => {
@@ -299,6 +338,17 @@ export class ChFlexibleLayoutRender {
       itemCloseInfo.viewId
     ) as FlexibleLayoutLeafInfo<"tabbed">;
 
+    const widgetIndex = itemCloseInfo.itemIndex;
+    const widgetInfo = viewInfo.widgets[widgetIndex];
+
+    this.#checkViewStateToRemoveWidget(viewInfo, widgetInfo, widgetIndex);
+  };
+
+  #checkViewStateToRemoveWidget = (
+    viewInfo: FlexibleLayoutLeafInfo<"tabbed">,
+    widgetInfo: FlexibleLayoutWidget,
+    widgetIndex: number
+  ) => {
     // Last item from the view. Destroy the view and adjust the layout
     if (viewInfo.widgets.length === 1) {
       this.removeView(viewInfo.id, true);
@@ -306,16 +356,14 @@ export class ChFlexibleLayoutRender {
     }
 
     const viewWidgets = viewInfo.widgets;
-    const widgetsCount = viewWidgets.length;
-    const itemIndex = itemCloseInfo.itemIndex;
-    const itemUIModel = viewWidgets[itemIndex];
+    const widgetsCount = viewInfo.widgets.length;
 
     // If the item was selected, select another item
-    if (itemUIModel.id === viewInfo.selectedWidgetId) {
+    if (widgetInfo.id === viewInfo.selectedWidgetId) {
       const newSelectedItem =
-        itemIndex === widgetsCount - 1 // If it's the last item
+        widgetIndex === widgetsCount - 1 // If it's the last item
           ? viewWidgets[widgetsCount - 2] // Select the previous
-          : viewWidgets[itemIndex + 1]; // Otherwise, select the next
+          : viewWidgets[widgetIndex + 1]; // Otherwise, select the next
 
       this.#renderedWidgets.add(newSelectedItem.id);
 
@@ -324,29 +372,40 @@ export class ChFlexibleLayoutRender {
       newSelectedItem.wasRendered = true;
     }
 
-    this.#removeWidget(viewInfo, itemIndex);
+    this.#removeWidget(viewInfo, widgetIndex);
 
     // Queue re-renders
     forceUpdate(this);
     forceUpdate(this.#flexibleLayoutRef);
   };
 
+  /**
+   * @param skipRenderRemoval Useful to determine if the render of the widget must not be destroyed.
+   * Used when the widget of the leaf must be reconnected in another parent
+   */
   #removeWidget = (
-    viewInfo: FlexibleLayoutLeafInfo<"tabbed">,
+    leafInfo: FlexibleLayoutLeafInfo<"tabbed">,
     itemIndex: number,
     skipRenderRemoval = false
   ) => {
     // Remove the item from the view
-    const itemUIModel = removeElement(viewInfo.widgets, itemIndex);
-    this.#flexibleLayoutRef.removeItemPageInView(viewInfo.id, itemUIModel.id);
+    const widgetInfo = removeElement(leafInfo.widgets, itemIndex);
+    this.#flexibleLayoutRef.removeItemPageInView(leafInfo.id, widgetInfo.id);
 
     // Remove the item from the flexible-layout-render to optimize resources
-    if (itemUIModel.conserveRenderState !== true && !skipRenderRemoval) {
-      this.#renderedWidgets.delete(itemUIModel.id);
-      this.#widgetsInfo.delete(itemUIModel.id);
-
-      // TODO: Remove item in this.layout???
+    if (!skipRenderRemoval) {
+      this.#deleteRenderedWidget(widgetInfo);
     }
+  };
+
+  #deleteRenderedWidget = (widgetInfo: FlexibleLayoutWidget) => {
+    if (widgetInfo.conserveRenderState === true) {
+      return;
+    }
+
+    // Remove the item from the flexible-layout-render to optimize resources
+    this.#renderedWidgets.delete(widgetInfo.id);
+    this.#widgetsInfo.delete(widgetInfo.id);
   };
 
   #updateSelectedWidget = (
@@ -405,7 +464,8 @@ export class ChFlexibleLayoutRender {
       );
     }
 
-    // Remove the view, since it has no more items
+    // Remove the view, since it has no more items, but don't destroy the
+    // render of the widget, since the widget is only moved
     if (leafInfo.widgets.length === 1) {
       await this.removeView(leafId, false);
 

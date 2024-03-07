@@ -1,8 +1,10 @@
 @import "./common";
 
 %button-base {
-  display: grid;
+  display: inline-grid;
   grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  justify-content: center;
   gap: var(--spacing-un-spacing--s); // Used when the button has icons
   min-block-size: 32px;
   font-family: SourceSansPro_SemiBold;
@@ -81,7 +83,7 @@
   padding-inline: var(--spacing-un-spacing--l);
 
   &--focus-visible {
-    @include focus-style();
+    @include focus-style($outline: true);
   }
 
   &--hover {

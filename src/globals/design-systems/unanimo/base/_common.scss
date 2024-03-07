@@ -1,6 +1,8 @@
-@mixin focus-style() {
-  border: 2px solid var(--borders-un-border-color__focused);
-
-  // outline: 2px solid currentColor;
-  // outline-offset: -1px;
+@mixin focus-style($outline: false) {
+  @if $outline == true {
+    outline: 2px solid var(--borders-un-border-color__focused);
+    outline-offset: -1px;
+  } @else {
+    border: 2px solid var(--borders-un-border-color__focused);
+  }
 }

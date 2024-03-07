@@ -142,11 +142,27 @@
     pre > code {
       display: block;
       overflow: auto;
-      // Override inline padding
-      padding: var(--spacing-un-spacing--l);
+
+      padding: 0;
 
       // Override inline border-radius
+      border: 1px solid var(--borders-un-border-color__mild);
       border-radius: var(--border-radius-un-border__radius--m);
+
+      & > .code-block__header {
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        align-items: center;
+        padding-inline: var(--spacing-un-spacing--l);
+        padding-block: var(--spacing-un-spacing--m);
+        background-color: var(--surface-un-surface--alternative);
+        font-family: SourceSansPro_Regular;
+      }
+
+      & > .code-block__content {
+        // Override inline padding
+        padding: var(--spacing-un-spacing--l);
+      }
     }
 
     // Inline code
@@ -155,7 +171,7 @@
       padding-inline: var(--spacing-un-spacing--s);
 
       background-color: var(
-        --surface-un-surface--alternative
+        --surface-un-surface--positive
       ); // color-mix(in srgb, var(--surface-un-surface--alternative) 70%, var(--colors-foundation-un-color__gray--100))
       border-radius: var(--border-radius-un-border__radius--s);
       font-size: calc(1em - 2px);
@@ -164,6 +180,117 @@
     img {
       display: inline-block;
       max-inline-size: 25%;
+    }
+
+    .hljs-doctag,
+    .hljs-keyword,
+    .hljs-meta .hljs-keyword,
+    .hljs-template-tag,
+    .hljs-template-variable,
+    .hljs-type,
+    .hljs-variable.language_ {
+      /* prettylights-syntax-keyword */
+      color: var(
+        --colors-foundation-un-color__purple--400
+      ); /* Light var(--colors-foundation-un-color__purple--100); */
+    }
+
+    .hljs-title,
+    .hljs-title.class_,
+    .hljs-title.class_.inherited__,
+    .hljs-title.function_ {
+      color: var(--text-un-text__on-surface--alternative);
+    }
+
+    .hljs-attr,
+    .hljs-attribute,
+    .hljs-literal,
+    .hljs-meta,
+    .hljs-number,
+    .hljs-operator,
+    .hljs-variable,
+    .hljs-selector-attr,
+    .hljs-selector-class,
+    .hljs-selector-id {
+      color: var(
+        --colors-foundation-un-color__purple--200
+      ); /* Previously: --text-un-text__primary */
+    }
+
+    .hljs-regexp,
+    .hljs-string,
+    .hljs-meta .hljs-string {
+      color: var(
+        --colors-foundation-un-color__orange--200
+      ); /* DARK: color-mix(in srgb, var(--colors-foundation-un-color__red--300) 60%, #000) */
+    }
+
+    .hljs-built_in,
+    .hljs-symbol {
+      /* prettylights-syntax-variable */
+      color: #e36209;
+    }
+
+    .hljs-comment,
+    .hljs-code,
+    .hljs-formula {
+      color: var(--colors-foundation-un-color__green--200);
+    }
+
+    .hljs-name,
+    .hljs-quote,
+    .hljs-selector-tag,
+    .hljs-selector-pseudo {
+      color: var(--colors-foundation-un-color__green--200);
+    }
+
+    .hljs-subst {
+      /* prettylights-syntax-storage-modifier-import */
+      color: #24292e;
+    }
+
+    .hljs-section {
+      /* prettylights-syntax-markup-heading */
+      color: #005cc5;
+      font-weight: bold;
+    }
+
+    .hljs-bullet {
+      /* prettylights-syntax-markup-list */
+      color: #735c0f;
+    }
+
+    .hljs-emphasis {
+      /* prettylights-syntax-markup-italic */
+      color: #24292e;
+      font-style: italic;
+    }
+
+    .hljs-strong {
+      /* prettylights-syntax-markup-bold */
+      color: #24292e;
+      font-weight: bold;
+    }
+
+    .hljs-addition {
+      /* prettylights-syntax-markup-inserted */
+      color: #22863a;
+      background-color: #f0fff4;
+    }
+
+    .hljs-deletion {
+      /* prettylights-syntax-markup-deleted */
+      color: #b31d28;
+      background-color: #ffeef0;
+    }
+
+    .hljs-char.escape_,
+    .hljs-link,
+    .hljs-params,
+    .hljs-property,
+    .hljs-punctuation,
+    .hljs-tag {
+      /* purposely ignored */
     }
   }
 }

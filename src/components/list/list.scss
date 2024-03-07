@@ -206,6 +206,11 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   grid-auto-columns: max-content;
 }
 
+.page {
+  contain: strict;
+  display: grid;
+}
+
 .page-container {
   display: grid;
   grid-template: "selected" 1fr / 1fr;
@@ -214,7 +219,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .page--selected {
-  display: grid;
   grid-area: selected;
 }
 

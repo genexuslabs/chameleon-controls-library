@@ -182,6 +182,16 @@
       max-inline-size: 25%;
     }
 
+    // Don't add margin-block-start in the first element of the markdown
+    & > :first-child {
+      margin-block-start: 0px;
+    }
+
+    // Don't add margin-block-end in the last element of the markdown
+    & > :last-child {
+      margin-block-end: 0px;
+    }
+
     .hljs-doctag,
     .hljs-keyword,
     .hljs-meta .hljs-keyword,

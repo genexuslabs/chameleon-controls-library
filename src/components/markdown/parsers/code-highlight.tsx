@@ -6,7 +6,7 @@ import {
   parseCodeToHAST,
   registerLanguage
 } from "@genexus/markdown-parser/dist/parse-code.js";
-import { MarkdownCodeRender } from "./types";
+import { MarkdownCodeRender, MarkdownCodeRenderOptions } from "./types";
 import { LAST_NESTED_CHILD_CLASS } from "./markdown-to-jsx";
 
 let lastNestedChild: HRoot | HElement;
@@ -59,7 +59,7 @@ export const parseCodeToJSX = async (
   renderCode: MarkdownCodeRender,
   isLastNestedChild: boolean
 ) => {
-  const actualLanguage = getActualLanguageWithoutAlias(language || "txt");
+  const actualLanguage = getActualLanguageWithoutAlias(language || "plaintext");
 
   // Register the language
   await registerLanguage(actualLanguage);
@@ -74,26 +74,27 @@ export const parseCodeToJSX = async (
 
   const nestedChildIsCodeTag = isLastNestedChild && tree === lastNestedChild;
 
-  return renderCode(
-    language,
-    nestedChildIsCodeTag,
-    tree.children.map(child => codeToJSXDictionary[child.type](child))
-  );
+  return renderCode({
+    language: language || "plaintext",
+    nestedChildIsCodeTag: nestedChildIsCodeTag,
+    plainText: code,
+    renderedContent: tree.children.map(child =>
+      codeToJSXDictionary[child.type](child)
+    )
+  });
 };
 
 export const defaultCodeRender: MarkdownCodeRender = (
-  language,
-  nestedChildIsCodeTag,
-  content
+  options: MarkdownCodeRenderOptions
 ): any => (
   <pre>
     <code
       class={{
-        [`hljs language-${language}`]: true,
-        [LAST_NESTED_CHILD_CLASS]: nestedChildIsCodeTag
+        [`hljs language-${options.language}`]: true,
+        [LAST_NESTED_CHILD_CLASS]: options.nestedChildIsCodeTag
       }}
     >
-      <div class="code-block__content">{content}</div>
+      <div class="code-block__content">{options.renderedContent}</div>
     </code>
   </pre>
 );

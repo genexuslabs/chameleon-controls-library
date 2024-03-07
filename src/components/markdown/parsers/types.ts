@@ -40,8 +40,11 @@ export type MarkdownToJSXCommonMetadata = {
   renderCode: MarkdownCodeRender;
 };
 
-export type MarkdownCodeRender = (
-  language: string,
-  nestedChildIsCodeTag: boolean,
-  content: any
-) => any;
+export type MarkdownCodeRender = (options: MarkdownCodeRenderOptions) => any;
+
+export type MarkdownCodeRenderOptions = {
+  language: string;
+  nestedChildIsCodeTag: boolean;
+  plainText: string;
+  renderedContent: any;
+};

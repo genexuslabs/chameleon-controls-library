@@ -93,7 +93,7 @@ export const defaultCodeRender: MarkdownCodeRender = (
         [LAST_NESTED_CHILD_CLASS]: nestedChildIsCodeTag
       }}
     >
-      {content}
+      <div class="code-block__content">{content}</div>
     </code>
   </pre>
 );

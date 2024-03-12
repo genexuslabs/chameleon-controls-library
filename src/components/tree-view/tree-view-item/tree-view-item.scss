@@ -85,8 +85,6 @@
   block-size: var(--ch-tree-view-item__expandable-button-size);
   z-index: 1;
   cursor: pointer;
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-tree-view-item__expandable-button-size);
 }
 
 .expandable-button {

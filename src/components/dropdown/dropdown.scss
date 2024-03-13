@@ -2,8 +2,17 @@
 
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
-:where(button) {
+:where(a, button) {
   all: unset;
+}
+
+a,
+button {
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+  cursor: pointer;
 }
 
 // Must be placed after the ":where(a, button)"
@@ -24,19 +33,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .expandable-button {
-  display: flex;
-  align-items: center;
   justify-content: center;
   align-self: center;
   position: relative;
-  inline-size: 100%;
-  block-size: 100%;
-  cursor: pointer;
   z-index: $z-index-gx-navbar-item + 1;
-
-  &:focus-visible {
-    outline: 1px solid currentColor;
-  }
 }
 
 // Remove focus of the button content
@@ -74,16 +74,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .action {
-  display: flex;
-  align-items: center;
-  inline-size: 100%;
-  block-size: 100%;
-  cursor: pointer;
   text-align: start;
-
-  &:focus-visible {
-    outline: 1px solid currentColor;
-  }
 }
 
 // - - - - - - - - - - - - - - - -

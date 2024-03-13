@@ -11,6 +11,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
   --ch-dropdown-item__image-size: #{$default-decorative-image-size};
+  --ch-dropdown-item__background-image-size: 100%;
 
   --separation: 0px;
   --separation-x: var(--separation);
@@ -97,21 +98,25 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   min-inline-size: var(--ch-dropdown-item__image-size);
 }
 
-.start-img-type--background::before {
-  background: no-repeat center / 100% var(--ch-dropdown-item-start-img);
+.pseudo-img--start {
+  --ch-dropdown-item-img: var(--ch-dropdown-item-start-img);
 }
 
+.pseudo-img--end {
+  --ch-dropdown-item-img: var(--ch-dropdown-item-end-img);
+}
+
+.start-img-type--background::before,
 .end-img-type--background::after {
-  background: no-repeat center / 100% var(--ch-dropdown-item-end-img);
+  background: no-repeat center / var(--ch-dropdown-item__background-image-size)
+    var(--ch-dropdown-item-img);
 }
 
-.start-img-type--mask::before {
-  -webkit-mask: var(--ch-dropdown-item-start-img) 50% 50% / 100% 100% no-repeat;
-  background-color: currentColor;
-}
-
+.start-img-type--mask::before,
 .end-img-type--mask::after {
-  -webkit-mask: var(--ch-dropdown-item-end-img) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: var(--ch-dropdown-item-img) 50% 50% /
+    var(--ch-dropdown-item__background-image-size)
+    var(--ch-dropdown-item__background-image-size) no-repeat;
   background-color: currentColor;
 }
 

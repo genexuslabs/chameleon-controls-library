@@ -48,6 +48,7 @@ button {
 //           Separation
 // - - - - - - - - - - - - - - - -
 ch-popover {
+  // display: grid; // Consider adding display: grid to support gap property
   --ch-popover-separation-x: var(--ch-dropdown-separation-x);
   --ch-popover-separation-y: var(--ch-dropdown-separation-y);
 }

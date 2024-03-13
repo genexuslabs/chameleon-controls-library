@@ -22,9 +22,9 @@ button {
   --ch-dropdown-item__image-size: #{$default-decorative-image-size};
   --ch-dropdown-item__background-image-size: 100%;
 
-  --separation: 0px;
-  --separation-x: var(--separation);
-  --separation-y: var(--separation);
+  --ch-dropdown-separation: 0px;
+  --ch-dropdown-separation-x: var(--ch-dropdown-separation);
+  --ch-dropdown-separation-y: var(--ch-dropdown-separation);
 
   display: flex;
   position: relative;
@@ -47,6 +47,10 @@ button {
 // - - - - - - - - - - - - - - - -
 //           Separation
 // - - - - - - - - - - - - - - - -
+ch-popover {
+  --ch-popover-separation-x: var(--ch-dropdown-separation-x);
+  --ch-popover-separation-y: var(--ch-dropdown-separation-y);
+}
 // Dummy separation to keep opened the popup when expand-behavior === "ClickOrHover"
 // ch-window[y-align="outside-start"] {
 //   --ch-window-separation: var(--separation-y);

@@ -16,7 +16,7 @@
   <body>
     <div class="container">
       <section class="section-dev basic" data-title="basic">
-        <ch-grid row-selection-mode="none">
+        <ch-grid row-selection-mode="none" keyboard-navigation-mode="focus">
           <ch-grid-columnset>
             <ch-grid-column
               column-id="code"
@@ -212,9 +212,9 @@
 
       <section
         class="section-dev selection-simple"
-        data-title="selection-simple"
+        data-title="selection-simple | keyboard-focus"
       >
-        <ch-grid row-selection-mode="simple">
+        <ch-grid row-selection-mode="simple" keyboard-navigation-mode="focus">
           <ch-grid-columnset>
             <ch-grid-column
               column-id="code"
@@ -296,10 +296,95 @@
       </section>
 
       <section
+      class="section-dev selection-simple"
+      data-title="selection-simple | keyboard-select"
+    >
+      <ch-grid row-selection-mode="simple" keyboard-navigation-mode="select">
+        <ch-grid-columnset>
+          <ch-grid-column
+            column-id="code"
+            column-name="Country Code"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-id="name"
+            column-name="Country Name"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-id="population"
+            column-name="Country Population"
+            settingable="false"
+          ></ch-grid-column>
+          <ch-grid-column
+            column-id="language"
+            column-name="Country Language"
+            settingable="false"
+          ></ch-grid-column>
+        </ch-grid-columnset>
+
+        <ch-grid-row rowid="ar">
+          <ch-grid-cell>AR</ch-grid-cell>
+          <ch-grid-cell>Argentina</ch-grid-cell>
+          <ch-grid-cell>45.400.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="bo">
+          <ch-grid-cell>BO</ch-grid-cell>
+          <ch-grid-cell>Bolivia</ch-grid-cell>
+          <ch-grid-cell>11.800.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="br">
+          <ch-grid-cell>BR</ch-grid-cell>
+          <ch-grid-cell>Brasil</ch-grid-cell>
+          <ch-grid-cell>212.600.000</ch-grid-cell>
+          <ch-grid-cell>Português</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="cl">
+          <ch-grid-cell>CL</ch-grid-cell>
+          <ch-grid-cell>Chile</ch-grid-cell>
+          <ch-grid-cell>19.500.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="ec">
+          <ch-grid-cell>EC</ch-grid-cell>
+          <ch-grid-cell>Ecuador</ch-grid-cell>
+          <ch-grid-cell>17.600.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="py">
+          <ch-grid-cell>PY</ch-grid-cell>
+          <ch-grid-cell>Paraguay</ch-grid-cell>
+          <ch-grid-cell>7.500.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="pe">
+          <ch-grid-cell>PE</ch-grid-cell>
+          <ch-grid-cell>Perú</ch-grid-cell>
+          <ch-grid-cell>32.800.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="uy">
+          <ch-grid-cell>UY</ch-grid-cell>
+          <ch-grid-cell>Uruguay</ch-grid-cell>
+          <ch-grid-cell>3.500.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+        <ch-grid-row rowid="ve">
+          <ch-grid-cell>VE</ch-grid-cell>
+          <ch-grid-cell>Venezuela</ch-grid-cell>
+          <ch-grid-cell>28.500.000</ch-grid-cell>
+          <ch-grid-cell>Español</ch-grid-cell>
+        </ch-grid-row>
+      </ch-grid>
+    </section>
+
+      <section
         class="section-dev selection-multiple"
-        data-title="selection-multiple"
+        data-title="selection-multiple | keyboard-focus"
       >
-        <ch-grid row-selection-mode="multiple">
+        <ch-grid row-selection-mode="multiple" keyboard-navigation-mode="focus">
           <ch-grid-columnset>
             <ch-grid-column
               column-id="code"
@@ -382,8 +467,95 @@
         </ch-grid>
       </section>
 
-      <section class="section-dev row-mark" data-title="row-mark" id="ch-grid-row-mark">
-        <ch-grid row-selection-mode="multiple">
+      <section
+        class="section-dev selection-multiple"
+        data-title="selection-multiple | keyboard-select"
+      >
+        <ch-grid row-selection-mode="multiple" keyboard-navigation-mode="select">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              column-type="rich"
+              rich-row-selector
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
+      </section>
+
+      <section class="section-dev row-mark" data-title="row-mark | keyboard-select" id="ch-grid-row-mark">
+        <ch-grid row-selection-mode="multiple" keyboard-navigation-mode="select">
           <ch-grid-columnset>
             <ch-grid-column
               column-id="code"
@@ -465,13 +637,91 @@
             <ch-grid-cell>Español</ch-grid-cell>
           </ch-grid-row>
         </ch-grid>
+      </section>
 
-        <script>
-          const chGridRowMark = document.getElementById("ch-grid-row-mark");
-          chGridRowMark.addEventListener("rowMarkingChanged", e => {
-            console.log(e.detail);
-          })
-        </script>
+      <section class="section-dev row-mark" data-title="row-mark | keyboard-focus" id="ch-grid-row-mark">
+        <ch-grid row-selection-mode="multiple" keyboard-navigation-mode="focus">
+          <ch-grid-columnset>
+            <ch-grid-column
+              column-id="code"
+              column-name="Country Code"
+              column-type="rich"
+              rich-row-selector
+              rich-row-selector-mode="mark"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+            ></ch-grid-column>
+            <ch-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+            ></ch-grid-column>
+          </ch-grid-columnset>
+
+          <ch-grid-row rowid="ar">
+            <ch-grid-cell>AR</ch-grid-cell>
+            <ch-grid-cell>Argentina</ch-grid-cell>
+            <ch-grid-cell>45.400.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="bo">
+            <ch-grid-cell>BO</ch-grid-cell>
+            <ch-grid-cell>Bolivia</ch-grid-cell>
+            <ch-grid-cell>11.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="br">
+            <ch-grid-cell>BR</ch-grid-cell>
+            <ch-grid-cell>Brasil</ch-grid-cell>
+            <ch-grid-cell>212.600.000</ch-grid-cell>
+            <ch-grid-cell>Português</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="cl">
+            <ch-grid-cell>CL</ch-grid-cell>
+            <ch-grid-cell>Chile</ch-grid-cell>
+            <ch-grid-cell>19.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ec">
+            <ch-grid-cell>EC</ch-grid-cell>
+            <ch-grid-cell>Ecuador</ch-grid-cell>
+            <ch-grid-cell>17.600.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="py">
+            <ch-grid-cell>PY</ch-grid-cell>
+            <ch-grid-cell>Paraguay</ch-grid-cell>
+            <ch-grid-cell>7.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="pe">
+            <ch-grid-cell>PE</ch-grid-cell>
+            <ch-grid-cell>Perú</ch-grid-cell>
+            <ch-grid-cell>32.800.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="uy">
+            <ch-grid-cell>UY</ch-grid-cell>
+            <ch-grid-cell>Uruguay</ch-grid-cell>
+            <ch-grid-cell>3.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+          <ch-grid-row rowid="ve">
+            <ch-grid-cell>VE</ch-grid-cell>
+            <ch-grid-cell>Venezuela</ch-grid-cell>
+            <ch-grid-cell>28.500.000</ch-grid-cell>
+            <ch-grid-cell>Español</ch-grid-cell>
+          </ch-grid-row>
+        </ch-grid>
       </section>
 
       <section class="section-dev row-reorder" data-title="row-reorder">
@@ -1168,12 +1418,16 @@
     <script>
       document.addEventListener("rowClicked", eventInfo =>
         console.log(
-          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}`
+          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}, columnId:${eventInfo.detail.columnId}`
         )
       );
       document.addEventListener("selectionChanged", eventInfo =>
         console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`)
       );
+      document.addEventListener("rowMarkingChanged", eventInfo => {
+        console.log(`[rowMarkingChanged] rowsId:${eventInfo.detail.rowsId}`);
+      })
+
     </script>
     <script src="./assets/scripts/common.js"></script>
   </body>

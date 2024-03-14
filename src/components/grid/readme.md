@@ -9,17 +9,18 @@ The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
 
 ## Properties
 
-| Property              | Attribute               | Description                                                                                                                                                                                                                                                         | Type                               | Default     |
-| --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------- |
-| `allowColumnReorder`  | `allow-column-reorder`  | A boolean indicating whether the user can drag column headers to reorder columns.                                                                                                                                                                                   | `boolean`                          | `true`      |
-| `columnResizeMode`    | `column-resize-mode`    | One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width. | `"single" \| "splitter"`           | `"single"`  |
-| `localization`        | --                      | An object that contains localized strings for the grid.                                                                                                                                                                                                             | `GridLocalization`                 | `undefined` |
-| `rowFocusedClass`     | `row-focused-class`     | A CSS class name applied to a row when it is focused.                                                                                                                                                                                                               | `string`                           | `undefined` |
-| `rowHighlightEnabled` | `row-highlight-enabled` | One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".                                                                           | `"auto" \| boolean`                | `"auto"`    |
-| `rowHighlightedClass` | `row-highlighted-class` | A CSS class name applied to a row when it is hovered.                                                                                                                                                                                                               | `string`                           | `undefined` |
-| `rowMarkedClass`      | `row-marked-class`      | A CSS class name applied to a row when it is marked.                                                                                                                                                                                                                | `string`                           | `undefined` |
-| `rowSelectedClass`    | `row-selected-class`    | A CSS class name applied to a row when it is selected.                                                                                                                                                                                                              | `string`                           | `undefined` |
-| `rowSelectionMode`    | `row-selection-mode`    | One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.                    | `"multiple" \| "none" \| "single"` | `"single"`  |
+| Property                 | Attribute                  | Description                                                                                                                                                                                                                                                                                           | Type                               | Default     |
+| ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ----------- |
+| `allowColumnReorder`     | `allow-column-reorder`     | A boolean indicating whether the user can drag column headers to reorder columns.                                                                                                                                                                                                                     | `boolean`                          | `true`      |
+| `columnResizeMode`       | `column-resize-mode`       | One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.                                   | `"single" \| "splitter"`           | `"single"`  |
+| `keyboardNavigationMode` | `keyboard-navigation-mode` | Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection. | `"focus" \| "none" \| "select"`    | `"select"`  |
+| `localization`           | --                         | An object that contains localized strings for the grid.                                                                                                                                                                                                                                               | `GridLocalization`                 | `undefined` |
+| `rowFocusedClass`        | `row-focused-class`        | A CSS class name applied to a row when it is focused.                                                                                                                                                                                                                                                 | `string`                           | `undefined` |
+| `rowHighlightEnabled`    | `row-highlight-enabled`    | One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".                                                                                                             | `"auto" \| boolean`                | `"auto"`    |
+| `rowHighlightedClass`    | `row-highlighted-class`    | A CSS class name applied to a row when it is hovered.                                                                                                                                                                                                                                                 | `string`                           | `undefined` |
+| `rowMarkedClass`         | `row-marked-class`         | A CSS class name applied to a row when it is marked.                                                                                                                                                                                                                                                  | `string`                           | `undefined` |
+| `rowSelectedClass`       | `row-selected-class`       | A CSS class name applied to a row when it is selected.                                                                                                                                                                                                                                                | `string`                           | `undefined` |
+| `rowSelectionMode`       | `row-selection-mode`       | One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.                                                      | `"multiple" \| "none" \| "single"` | `"single"`  |
 
 
 ## Events
@@ -82,6 +83,16 @@ Expands a row, showing its children.
 #### Returns
 
 Type: `Promise<void>`
+
+
+
+### `getFocusedCell() => Promise<{ cellId: string; rowId: string; columnId: string; }>`
+
+Retrieves information about the currently focused cell.
+
+#### Returns
+
+Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 
 
@@ -271,6 +282,22 @@ Selects or deselects a row.
 | ---------- | --------- | ------------------------------------------------------------- |
 | `rowId`    | `string`  | - The rowId of the row to select or deselect.                 |
 | `selected` | `boolean` | - A boolean indicating whether to select or deselect the row. |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `syncRowState(el: HTMLElement) => Promise<void>`
+
+Synchronizes the state of a row in the grid.
+
+#### Parameters
+
+| Name | Type          | Description |
+| ---- | ------------- | ----------- |
+| `el` | `HTMLElement` |             |
 
 #### Returns
 

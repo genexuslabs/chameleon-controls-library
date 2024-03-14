@@ -52,12 +52,15 @@ export default class HTMLChGridCellElement extends HTMLElement {
       this.cellType = value as ChGridCellType;
     }
     if (name === "row-drag") {
+      this.cellType = ChGridCellType.Rich;
       this.rowDrag = value !== null ? value !== "false" : false;
     }
     if (name === "row-selector") {
+      this.cellType = ChGridCellType.Rich;
       this.rowSelector = value !== null ? value !== "false" : false;
     }
     if (name === "row-actions") {
+      this.cellType = ChGridCellType.Rich;
       this.rowActions = value !== null ? value !== "false" : false;
     }
   }
@@ -122,6 +125,21 @@ export default class HTMLChGridCellElement extends HTMLElement {
       this.setAttribute("selected", "");
     } else {
       this.removeAttribute("selected");
+    }
+  }
+
+  /**
+   * A boolean value indicating whether the cell is focused.
+   */
+  get focused(): boolean {
+    return this.hasAttribute("focused");
+  }
+
+  set focused(value: boolean) {
+    if (value === true) {
+      this.setAttribute("focused", "");
+    } else {
+      this.removeAttribute("focused");
     }
   }
 
@@ -280,6 +298,9 @@ export default class HTMLChGridCellElement extends HTMLElement {
         this.selector.addEventListener("mousedown", (eventInfo: MouseEvent) =>
           eventInfo.stopPropagation()
         );
+        this.selector.addEventListener("touchend", (eventInfo: TouchEvent) =>
+          eventInfo.stopPropagation()
+        );
         this.selector.addEventListener(
           "click",
           this.selectorClickHandler.bind(this)
@@ -290,6 +311,10 @@ export default class HTMLChGridCellElement extends HTMLElement {
         );
         this.selectorLabel.addEventListener(
           "mousedown",
+          (eventInfo: MouseEvent) => eventInfo.stopPropagation()
+        );
+        this.selectorLabel.addEventListener(
+          "touchend",
           (eventInfo: MouseEvent) => eventInfo.stopPropagation()
         );
         this.selectorLabel.addEventListener(

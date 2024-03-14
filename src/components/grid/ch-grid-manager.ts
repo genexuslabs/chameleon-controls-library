@@ -194,15 +194,8 @@ export class ChGridManager {
 
     if (state === "visible") {
       return rows.filter(row => row.isVisible());
-    } else {
-      return rows;
     }
-  }
-
-  getRowsSelected(): HTMLChGridRowElement[] {
-    return Array.from(
-      this.grid.querySelectorAll(`ch-grid-row[selected]`)
-    ) as HTMLChGridRowElement[];
+    return rows;
   }
 
   getRowsRange(
@@ -243,7 +236,8 @@ export class ChGridManager {
   ): HTMLChGridCellElement {
     if (cellId) {
       return this.grid.querySelector(`ch-grid-cell[cellid="${cellId}"]`);
-    } else if (rowId && columnId) {
+    }
+    if (rowId && columnId) {
       const row = this.getRow(rowId);
       const column = this.columns.getColumn(columnId);
 

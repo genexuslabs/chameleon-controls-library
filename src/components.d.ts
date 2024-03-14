@@ -536,6 +536,10 @@ export namespace Components {
          */
         "expandRow": (rowId: string) => Promise<void>;
         /**
+          * Retrieves information about the currently focused cell.
+         */
+        "getFocusedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
           * Retrieves the rowId of the currently focused row.
          */
         "getFocusedRow": () => Promise<string>;
@@ -571,6 +575,10 @@ export namespace Components {
           * Retrieves the list of rowId of the selected rows.
          */
         "getSelectedRows": () => Promise<string[]>;
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode": "none" | "select" | "focus";
         /**
           * An object that contains localized strings for the grid.
          */
@@ -634,6 +642,10 @@ export namespace Components {
           * @param selected - A boolean indicating whether to select or deselect the row.
          */
         "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
+        /**
+          * Synchronizes the state of a row in the grid.
+         */
+        "syncRowState": (el: HTMLElement) => Promise<void>;
     }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
@@ -3938,6 +3950,10 @@ declare namespace LocalJSX {
           * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
          */
         "columnResizeMode"?: "single" | "splitter";
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode"?: "none" | "select" | "focus";
         /**
           * An object that contains localized strings for the grid.
          */

@@ -61,7 +61,6 @@ export class ChGrid {
   @Element() el: HTMLChGridElement;
 
   @State() rowFocused: HTMLChGridRowElement;
-
   @Watch("rowFocused")
   rowFocusedHandler(row: HTMLChGridRowElement, previous: HTMLChGridRowElement) {
     if (row) {
@@ -72,8 +71,21 @@ export class ChGrid {
     }
   }
 
-  @State() rowHighlighted: HTMLChGridRowElement;
+  @State() cellFocused: HTMLChGridCellElement;
+  @Watch("cellFocused")
+  cellFocusedHandler(
+    cell: HTMLChGridCellElement,
+    previous: HTMLChGridCellElement
+  ) {
+    if (cell) {
+      cell.focused = true;
+    }
+    if (previous) {
+      previous.focused = false;
+    }
+  }
 
+  @State() rowHighlighted: HTMLChGridRowElement;
   @Watch("rowHighlighted")
   rowHighlightedHandler(
     row: HTMLChGridRowElement,
@@ -96,29 +108,16 @@ export class ChGrid {
   }
 
   @State() rowsMarked: HTMLChGridRowElement[] = [];
-
   @Watch("rowsMarked")
   rowsMarkedHandler(
     rows: HTMLChGridRowElement[],
     previous: HTMLChGridRowElement[]
   ) {
     this.manager.selection.syncRowSelector(rows, previous, "mark");
-    this.rowMarkingChanged.emit({
-      rowsId: rows.map(row => row.rowId),
-      addedRowsId: rows
-        .filter(row => !previous.includes(row))
-        .map(row => row.rowId),
-      removedRowsId: previous
-        .filter(row => !rows.includes(row))
-        .map(row => row.rowId),
-      unalteredRowsId: rows
-        .filter(row => previous.includes(row))
-        .map(row => row.rowId)
-    });
+    this.rowMarkingChanged.emit(this.getChangedEventDetail(rows, previous));
   }
 
   @State() rowsSelected: HTMLChGridRowElement[] = [];
-
   @Watch("rowsSelected")
   rowsSelectedHandler(
     rows: HTMLChGridRowElement[],
@@ -134,11 +133,10 @@ export class ChGrid {
     }
 
     this.manager.selection.syncRowSelector(rows, previous, "select");
-    this.selectionChanged.emit({ rowsId: rows.map(row => row.rowId) });
+    this.selectionChanged.emit(this.getChangedEventDetail(rows, previous));
   }
 
   @State() cellSelected: HTMLChGridCellElement;
-
   @Watch("cellSelected")
   cellSelectedHandler(
     cell: HTMLChGridCellElement,
@@ -167,6 +165,15 @@ export class ChGrid {
    * "multiple" if multiple rows can be selected at once.
    */
   @Prop() readonly rowSelectionMode: "none" | "single" | "multiple" = "single";
+
+  /**
+   * Specifies the keyboard navigation mode for the component.
+   * - "none": Disables keyboard navigation for the grid rows.
+   * - "select": Allows keyboard navigation by changing the selection of grid rows.
+   * - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+   */
+  @Prop() readonly keyboardNavigationMode: "none" | "select" | "focus" =
+    "select";
 
   /**
    * One of "false", "true" or "auto", indicating whether or not rows can be highlighted.
@@ -250,7 +257,6 @@ export class ChGrid {
   componentWillLoad() {
     this.manager = new ChGridManager(this.el);
     this.gridStyle = this.manager.getGridStyle();
-    this.rowsSelected = this.manager.getRowsSelected();
   }
 
   componentDidLoad() {
@@ -271,18 +277,24 @@ export class ChGrid {
 
   @Listen("focus", { passive: true })
   focusHandler() {
-    if (this.rowSelectionMode !== "none") {
-      this.rowFocused = this.rowsSelected[0] || this.manager.getFirstRow();
+    if (this.keyboardNavigationMode !== "none") {
+      this.rowFocused ||= this.rowsSelected[0] ?? this.manager.getFirstRow();
+      this.cellFocused = this.rowFocused?.getCell(
+        this.cellSelected?.column || this.manager.getFirstColumn()
+      );
+
+      this.selectByKeyboardEvent(false, false);
     }
   }
 
   @Listen("blur", { passive: true })
   blurHandler() {
     this.rowFocused = null;
+    this.cellFocused = null;
   }
 
   @Listen("cellFocused", { passive: true })
-  cellFocusedHandler(eventInfo: CustomEvent) {
+  cellFocusedEventHandler(eventInfo: CustomEvent) {
     const cell = eventInfo.target as HTMLChGridCellElement;
     if (this.rowSelectionMode !== "none" && !cell.selected) {
       this.setCellSelected(cell);
@@ -313,10 +325,19 @@ export class ChGrid {
 
   @Listen("keydown", { passive: true })
   keyDownHandler(eventInfo: KeyboardEvent) {
-    if (focusComposedPath()[0] === this.el) {
+    if (
+      focusComposedPath()[0] === this.el &&
+      this.keyboardNavigationMode !== "none"
+    ) {
+      const range = eventInfo.shiftKey;
+      const append = mouseEventModifierKey(eventInfo);
+
       switch (eventInfo.key) {
         case " ":
-          this.toggleRowsMarked();
+          this.spacePressedEvent(
+            mouseEventModifierKey(eventInfo),
+            eventInfo.shiftKey
+          );
           break;
         case "+":
           this.setRowCollapsed(this.rowFocused, false);
@@ -325,59 +346,59 @@ export class ChGrid {
           this.setRowCollapsed(this.rowFocused, true);
           break;
         case "Home":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectFirstRow.bind(this.manager.selection),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.moveFirstRow,
+            range,
+            append
           );
           break;
         case "End":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectLastRow.bind(this.manager.selection),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.moveLastRow,
+            range,
+            append
           );
           break;
         case "PageUp":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectPreviousPageRow.bind(
-              this.manager.selection
-            ),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.movePreviousPageRow,
+            range,
+            append
           );
           break;
         case "PageDown":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectNextPageRow.bind(
-              this.manager.selection
-            ),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.moveNextPageRow,
+            range,
+            append
           );
           break;
         case "ArrowUp":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectPreviousRow.bind(
-              this.manager.selection
-            ),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.movePreviousRow,
+            range,
+            append
           );
           break;
         case "ArrowDown":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectNextRow.bind(this.manager.selection),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.moveNextRow,
+            range,
+            append
           );
           break;
         case "ArrowLeft":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectPreviousCell.bind(
-              this.manager.selection
-            ),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.movePreviousCell,
+            range,
+            append
           );
           break;
         case "ArrowRight":
-          this.selectByKeyboardEvent(
-            this.manager.selection.selectNextCell.bind(this.manager.selection),
-            eventInfo.shiftKey
+          this.moveByKeyboardEvent(
+            this.manager.selection.moveNextCell,
+            range,
+            append
           );
           break;
         case "Enter":
@@ -439,9 +460,7 @@ export class ChGrid {
 
   @Listen("mouseleave", { passive: true })
   mouseLeaveHandler() {
-    if (this.rowHighlighted) {
-      this.rowHighlighted = null;
-    }
+    this.rowHighlighted &&= null;
   }
 
   @Listen("mousedown", { passive: true })
@@ -450,12 +469,6 @@ export class ChGrid {
     const cell = this.manager.getCellEventTarget(eventInfo);
 
     if (row) {
-      this.rowClicked.emit({
-        rowId: row.rowId,
-        cellId: cell?.cellId,
-        columnId: cell?.column.columnId
-      });
-
       this.manager.selection.selecting = true;
       this.selectByPointerEvent(
         row,
@@ -469,7 +482,10 @@ export class ChGrid {
 
   @Listen("mouseup", { passive: true })
   mouseUpHandler() {
-    this.stopSelecting();
+    if (this.manager.selection.selecting) {
+      this.stopSelecting();
+      this.emitRowClicked(this.rowFocused, this.cellFocused);
+    }
   }
 
   @Listen("dblclick", { passive: true })
@@ -483,6 +499,36 @@ export class ChGrid {
         cellId: cell?.cellId,
         columnId: cell?.column.columnId
       });
+    }
+  }
+
+  @Listen("touchstart", { passive: true })
+  touchstartHandler(eventInfo: TouchEvent) {
+    this.manager.selection.touchStart(eventInfo);
+  }
+
+  @Listen("touchend", { passive: false })
+  touchendHandler(eventInfo: TouchEvent) {
+    if (eventInfo.cancelable) {
+      eventInfo.preventDefault();
+    }
+
+    if (this.manager.selection.isTouchEndSelection(eventInfo)) {
+      const columnSelector = this.manager.columns.getColumnSelector();
+      const row = this.manager.getRowEventTarget(eventInfo);
+      const cell = this.manager.getCellEventTarget(eventInfo);
+
+      if (row) {
+        this.selectByPointerEvent(
+          row,
+          cell,
+          columnSelector?.richRowSelectorMode !== "select",
+          false,
+          false
+        );
+
+        this.emitRowClicked(row, cell);
+      }
     }
   }
 
@@ -674,6 +720,22 @@ export class ChGrid {
   }
 
   /**
+   * Retrieves information about the currently focused cell.
+   */
+  @Method()
+  async getFocusedCell(): Promise<{
+    cellId: string;
+    rowId: string;
+    columnId: string;
+  }> {
+    return {
+      cellId: this.cellFocused ? this.cellFocused.cellId : null,
+      rowId: this.cellFocused ? this.cellFocused.row.rowId : null,
+      columnId: this.cellFocused ? this.cellFocused.column.columnId : null
+    };
+  }
+
+  /**
    * Retrieves information about the currently selected cell.
    */
   @Method()
@@ -699,11 +761,12 @@ export class ChGrid {
     const row = this.manager.getRow(rowId);
 
     if (row) {
-      const { rowFocused, rowsSelected, cellSelected } =
+      const { rowFocused, rowsSelected, cellFocused, cellSelected } =
         this.manager.selection.selectSet(
           {
             rowFocused: this.rowFocused,
             rowsSelected: this.rowsSelected,
+            cellFocused: this.cellFocused,
             cellSelected: this.cellSelected
           },
           row,
@@ -713,6 +776,7 @@ export class ChGrid {
 
       this.rowFocused = rowFocused;
       this.rowsSelected = rowsSelected;
+      this.cellFocused = cellFocused;
       this.cellSelected = cellSelected;
 
       rowFocused?.ensureVisible();
@@ -888,35 +952,158 @@ export class ChGrid {
     };
   }
 
+  /**
+   * Synchronizes the state of a row in the grid.
+   */
+  @Method()
+  async syncRowState(el: HTMLElement) {
+    const row = el as HTMLChGridRowElement;
+    const columnSelector = this.manager.columns.getColumnSelector();
+
+    if (this.rowSelectionMode !== "none") {
+      this.syncRowStateSelected(row);
+    }
+    if (columnSelector?.richRowSelectorMode === "mark") {
+      this.syncRowStateMarked(row);
+    }
+
+    if (columnSelector) {
+      this.syncRowStateSelector(row, columnSelector);
+
+      if (columnSelector.richRowSelectorMode === "select") {
+        this.manager.selection.syncColumnSelector(
+          this.rowsSelected.length,
+          columnSelector
+        );
+      } else if (columnSelector.richRowSelectorMode === "mark") {
+        this.manager.selection.syncColumnSelector(
+          this.rowsMarked.length,
+          columnSelector
+        );
+      }
+    }
+  }
+
+  private syncRowStateSelected(row: HTMLChGridRowElement) {
+    if (row.selected && this.rowSelectionMode === "single") {
+      this.rowsSelected[0] = row;
+    }
+    if (
+      row.selected &&
+      this.rowSelectionMode === "multiple" &&
+      !this.rowsSelected.includes(row)
+    ) {
+      this.rowsSelected.push(row);
+    }
+
+    if (!row.selected) {
+      const index = this.rowsSelected.indexOf(row);
+
+      if (index !== -1) {
+        this.rowsSelected.splice(index, 1);
+      }
+    }
+  }
+
+  private syncRowStateMarked(row: HTMLChGridRowElement) {
+    if (row.marked && !this.rowsMarked.includes(row)) {
+      this.rowsMarked.push(row);
+    }
+
+    if (!row.marked) {
+      const index = this.rowsMarked.indexOf(row);
+
+      if (index !== -1) {
+        this.rowsMarked.splice(index, 1);
+      }
+    }
+  }
+
+  private syncRowStateSelector(
+    row: HTMLChGridRowElement,
+    columnSelector: HTMLChGridColumnElement
+  ) {
+    const cell = row.getCell(columnSelector);
+    const value =
+      (columnSelector.richRowSelectorMode === "select" && row.selected) ||
+      (columnSelector.richRowSelectorMode === "mark" && row.marked);
+
+    cell.setSelectorChecked(value);
+  }
+
+  private getChangedEventDetail(
+    rows: HTMLChGridRowElement[],
+    previous: HTMLChGridRowElement[]
+  ): ChGridSelectionChangedEvent | ChGridMarkingChangedEvent {
+    return {
+      rowsId: rows.map(row => row.rowId),
+      addedRowsId: rows
+        .filter(row => !previous.includes(row))
+        .map(row => row.rowId),
+      removedRowsId: previous
+        .filter(row => !rows.includes(row))
+        .map(row => row.rowId),
+      unalteredRowsId: rows
+        .filter(row => previous.includes(row))
+        .map(row => row.rowId)
+    };
+  }
+
   private enterPressedHandler() {
     if (this.rowFocused) {
-      const cellFocused =
-        this.cellSelected?.row === this.rowFocused ? this.cellSelected : null;
-
       this.rowEnterPressed.emit({
         rowId: this.rowFocused.rowId,
-        cellId: cellFocused ? cellFocused.cellId : null,
-        columnId: cellFocused ? cellFocused.column.columnId : null
+        cellId: this.cellFocused ? this.cellFocused.cellId : null,
+        columnId: this.cellFocused ? this.cellFocused.column.columnId : null
       });
     }
   }
 
-  private toggleRowsMarked() {
+  private spacePressedEvent(ctrl: boolean, shift: boolean) {
+    if (this.keyboardNavigationMode === "focus") {
+      this.selectByKeyboardEvent(ctrl, shift);
+    } else if (this.keyboardNavigationMode === "select") {
+      this.markByKeyboardEvent();
+    }
+
+    this.emitRowClicked(this.rowFocused, this.cellFocused);
+  }
+
+  private markByKeyboardEvent() {
     const columnSelector = this.manager.columns.getColumnSelector();
 
     if (columnSelector?.richRowSelectorMode === "mark") {
-      const value = !this.rowFocused.marked;
-
-      if (value) {
-        this.rowsMarked = Array.from(
-          new Set(this.rowsMarked.concat(this.rowsSelected))
-        );
-      } else {
-        this.rowsMarked = this.rowsMarked.filter(
-          row => !this.rowsSelected.includes(row)
-        );
-      }
+      this.rowsMarked = this.manager.selection.markRows(
+        this.rowFocused,
+        this.rowsMarked,
+        this.rowsSelected
+      );
     }
+  }
+
+  private selectByKeyboardEvent(append: boolean, range: boolean) {
+    const { rowFocused, rowsSelected, cellFocused, cellSelected } =
+      this.manager.selection.select(
+        {
+          rowFocused: this.rowFocused,
+          rowsSelected: this.rowsSelected,
+          cellFocused: this.cellFocused,
+          cellSelected: this.cellSelected
+        },
+        this.rowFocused,
+        this.cellFocused,
+        true,
+        append,
+        range,
+        false
+      );
+
+    this.rowFocused = rowFocused;
+    this.rowsSelected = rowsSelected;
+    this.cellFocused = cellFocused;
+    this.cellSelected = cellSelected;
+
+    (cellFocused || rowFocused)?.ensureVisible();
   }
 
   private selectByPointerEvent(
@@ -926,15 +1113,17 @@ export class ChGrid {
     range: boolean,
     context: boolean
   ) {
-    const { rowFocused, rowsSelected, cellSelected } =
+    const { rowFocused, rowsSelected, cellFocused, cellSelected } =
       this.manager.selection.select(
         {
           rowFocused: this.rowFocused,
           rowsSelected: this.rowsSelected,
+          cellFocused: this.cellFocused,
           cellSelected: this.cellSelected
         },
         row,
         cell,
+        true,
         append,
         range,
         context
@@ -942,48 +1131,51 @@ export class ChGrid {
 
     this.rowFocused = rowFocused;
     this.rowsSelected = rowsSelected;
+    this.cellFocused = cellFocused;
     this.cellSelected = cellSelected;
 
-    if (cellSelected) {
-      cellSelected.ensureVisible();
-    } else {
-      rowFocused?.ensureVisible();
-    }
+    (cellFocused || rowFocused)?.ensureVisible();
   }
 
-  private selectByKeyboardEvent(
+  private moveByKeyboardEvent(
     fn: (
       state: ManagerSelectionState,
+      select: boolean,
+      range: boolean,
       append: boolean
     ) => ManagerSelectionState,
+    range: boolean,
     append: boolean
   ) {
-    const { rowFocused, rowsSelected, cellSelected } = fn(
+    const { rowFocused, rowsSelected, cellFocused, cellSelected } = fn.call(
+      this.manager.selection,
       {
         rowFocused: this.rowFocused,
         rowsSelected: this.rowsSelected,
+        cellFocused: this.cellFocused,
         cellSelected: this.cellSelected
       },
-      append
+      this.rowSelectionMode !== "none" &&
+        this.keyboardNavigationMode === "select",
+      this.rowSelectionMode === "multiple" ? range : false,
+      this.rowSelectionMode === "multiple" ? range && append : false
     );
 
     this.rowFocused = rowFocused;
     this.rowsSelected = rowsSelected;
+    this.cellFocused = cellFocused;
     this.cellSelected = cellSelected;
 
-    if (cellSelected) {
-      cellSelected.ensureVisible();
-    } else {
-      rowFocused?.ensureVisible();
-    }
+    (cellFocused || rowFocused)?.ensureVisible();
   }
 
   private selectAll(value = true) {
-    const { rowFocused, rowsSelected, cellSelected } =
+    const { rowFocused, rowsSelected, cellFocused, cellSelected } =
       this.manager.selection.selectAll(
         {
           rowFocused: this.rowFocused,
           rowsSelected: this.rowsSelected,
+          cellFocused: this.cellFocused,
           cellSelected: this.cellSelected
         },
         value
@@ -991,13 +1183,10 @@ export class ChGrid {
 
     this.rowFocused = rowFocused;
     this.rowsSelected = rowsSelected;
+    this.cellFocused = cellFocused;
     this.cellSelected = cellSelected;
 
-    if (cellSelected) {
-      cellSelected.ensureVisible();
-    } else {
-      rowFocused?.ensureVisible();
-    }
+    (cellFocused || rowFocused)?.ensureVisible();
   }
 
   private setRowCollapsed(row: HTMLChGridRowElement, collapsed: boolean) {
@@ -1011,11 +1200,12 @@ export class ChGrid {
   }
 
   private setCellSelected(cell: HTMLChGridCellElement, selected = true) {
-    const { rowFocused, rowsSelected, cellSelected } =
+    const { rowFocused, rowsSelected, cellFocused, cellSelected } =
       this.manager.selection.selectSet(
         {
           rowFocused: this.rowFocused,
           rowsSelected: this.rowsSelected,
+          cellFocused: this.cellFocused,
           cellSelected: this.cellSelected
         },
         cell.row,
@@ -1025,9 +1215,21 @@ export class ChGrid {
 
     this.rowFocused = rowFocused;
     this.rowsSelected = rowsSelected;
+    this.cellFocused = cellFocused;
     this.cellSelected = cellSelected;
 
-    rowFocused?.ensureVisible();
+    (cellFocused || rowFocused)?.ensureVisible();
+  }
+
+  private emitRowClicked(
+    row: HTMLChGridRowElement,
+    cell: HTMLChGridCellElement
+  ) {
+    this.rowClicked.emit({
+      rowId: row.rowId,
+      cellId: cell?.cellId,
+      columnId: cell?.column.columnId
+    });
   }
 
   private stopSelecting() {
@@ -1069,7 +1271,7 @@ export class ChGrid {
 
   render() {
     return (
-      <Host tabindex={this.rowSelectionMode !== "none" ? "0" : false}>
+      <Host tabindex={this.keyboardNavigationMode !== "none" ? "0" : false}>
         <header part="header">
           <slot name="header"></slot>
         </header>

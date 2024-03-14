@@ -1,5 +1,8 @@
 export interface ChGridSelectionChangedEvent {
   rowsId: string[];
+  addedRowsId: string[];
+  removedRowsId: string[];
+  unalteredRowsId: string[];
 }
 
 export interface ChGridMarkingChangedEvent {

@@ -661,9 +661,16 @@ export class ChTreeViewItem {
     // Ctrl key
     if (mouseEventModifierKey(event)) {
       this.#toggleSelected();
+      return;
     }
+
+    // Double click was triggered, don't update the selection or expand
+    if (event.detail >= 2) {
+      return;
+    }
+
     // Expand on click interaction
-    else if (this.expandOnClick) {
+    if (this.expandOnClick) {
       this.#toggleExpand(event);
     }
     // Click only selects the item
@@ -724,6 +731,7 @@ export class ChTreeViewItem {
       return;
     }
 
+    // The action was provoked by the keyboard, emit openReference event
     this.#emitOpenReference();
 
     // Enter or space

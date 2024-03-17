@@ -182,7 +182,7 @@ const defaultRenderItem = <T extends true | false>(
       {!itemModel.leaf &&
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
-          defaultRenderItem(
+          treeState.renderItem(
             subModel,
             treeState,
             treeHasFilter,

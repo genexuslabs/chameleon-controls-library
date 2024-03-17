@@ -28,6 +28,7 @@ import {
   TreeViewFilterInfo,
   TreeViewFilterOptions,
   TreeViewFilterType,
+  TreeViewImagePathCallback,
   TreeViewItemModel,
   TreeViewItemModelExtended,
   TreeViewOperationStatusModifyCaption,
@@ -70,6 +71,19 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   filterType !== "none" &&
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
+
+const defaultGetImagePath: TreeViewImagePathCallback = (
+  imgSrc: string,
+  treeState: ChTreeViewRender,
+  useGxRender?: boolean
+) =>
+  useGxRender
+    ? fromGxImageToURL(
+        imgSrc,
+        treeState.gxSettings,
+        treeState.gxImageConstructor
+      )
+    : imgSrc;
 
 const gxDragDisabled = (
   itemModel: TreeViewGXItemModel,
@@ -138,15 +152,11 @@ const defaultRenderItem = <T extends true | false>(
       }
       dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
-      endImgSrc={
+      endImgSrc={treeState.getImagePathCallback(
+        itemModel.endImgSrc,
+        treeState,
         useGxRender
-          ? fromGxImageToURL(
-              itemModel.endImgSrc,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : itemModel.endImgSrc
-      }
+      )}
       endImgType={itemModel.endImgType ?? "background"}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
@@ -162,15 +172,11 @@ const defaultRenderItem = <T extends true | false>(
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
       }
-      startImgSrc={
+      startImgSrc={treeState.getImagePathCallback(
+        itemModel.startImgSrc,
+        treeState,
         useGxRender
-          ? fromGxImageToURL(
-              itemModel.startImgSrc,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : itemModel.startImgSrc
-      }
+      )}
       startImgType={itemModel.startImgType ?? "background"}
     >
       {!itemModel.leaf &&
@@ -414,6 +420,15 @@ export class ChTreeViewRender {
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxSettings: any;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * item image needs to be resolved. With this callback, there is no need to
+   * re-implement item rendering (`renderItem` property) just to change the
+   * path used for the images.
+   */
+  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
+    defaultGetImagePath;
 
   /**
    * Callback that is executed when a item request to load its subitems.

@@ -85,6 +85,7 @@ const defaultGetImagePath: TreeViewImagePathCallback = (
       )
     : imgSrc;
 
+// GeneXus implementation
 const gxDragDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender
@@ -93,6 +94,7 @@ const gxDragDisabled = (
     ? !itemModel.dragEnabled
     : treeState.dragDisabled;
 
+// GeneXus implementation
 const gxDropDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender
@@ -101,7 +103,7 @@ const gxDropDisabled = (
     ? !itemModel.dropEnabled
     : treeState.dropDisabled;
 
-const isItemDisabled = (
+const isDropDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender,
   useGxRender: boolean
@@ -150,7 +152,7 @@ const defaultRenderItem = <T extends true | false>(
           : (itemModel as GXRender<false>).dragDisabled ??
             treeState.dragDisabled
       }
-      dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
+      dropDisabled={isDropDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
       endImgSrc={treeState.getImagePathCallback(
         itemModel.endImgSrc,
@@ -197,7 +199,7 @@ const defaultRenderItem = <T extends true | false>(
             // When dragging "before" and "after" an item and the direct parent
             // has drops disabled, don't render the ch-tree-view-drop elements.
             treeState.dropMode !== "above" &&
-              isItemDisabled(itemModel, treeState, useGxRender) !== true,
+              isDropDisabled(itemModel, treeState, useGxRender) !== true,
             useGxRender
           )
         )}

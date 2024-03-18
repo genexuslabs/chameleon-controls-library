@@ -21,6 +21,16 @@ const PARTS = (checked: boolean, indeterminate: boolean) =>
     indeterminate ? " indeterminate" : ""
   }`;
 
+/**
+ * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
+ * @part input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".
+ * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
+ * @part label - The label that is rendered when the `caption` property is not empty.
+ *
+ * @part checked - Present in the `option` and `container` parts when the control is checked (`value` === `checkedValue`).
+ * @part unchecked - Present in the `option` and `container` parts when the control is unchecked (`value` === `unCheckedValue`).
+ * @part indeterminate - Present in the `option` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
+ */
 @Component({
   shadow: true,
   styleUrl: "checkbox.scss",

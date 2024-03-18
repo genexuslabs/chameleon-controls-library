@@ -45,7 +45,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   /**
    * The value when the checkbox is 'on'
    */
-  @Prop() readonly checkedValue: string;
+  @Prop() readonly checkedValue!: string;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -74,12 +74,12 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   /**
    * The value when the checkbox is 'off'
    */
-  @Prop() readonly unCheckedValue: string;
+  @Prop() readonly unCheckedValue!: string;
 
   /**
    * The value of the control.
    */
-  @Prop({ mutable: true }) value: string;
+  @Prop({ mutable: true }) value!: string;
 
   /**
    * Emitted when the element is clicked or the space key is pressed and

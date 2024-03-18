@@ -17,7 +17,9 @@ import {
 const CHECKBOX_ID = "checkbox";
 
 const PARTS = (checked: boolean, indeterminate: boolean) =>
-  `${checked ? " checked" : ""}${indeterminate ? " indeterminate" : ""}`;
+  ` ${checked ? "checked" : "unchecked"}${
+    indeterminate ? " indeterminate" : ""
+  }`;
 
 @Component({
   shadow: true,

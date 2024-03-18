@@ -1,3 +1,5 @@
+@import "../common/_base";
+
 $option-size: min(1em, 20px);
 
 $option-checked-background-color: var(--option-checked-color, #ffffff00);
@@ -8,11 +10,7 @@ $option-checked-box-shadow-size: min(0.15em, 2px);
 
 $space-between-container-and-label: min(0.35em, 7px);
 
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+@include box-sizing();
 
 :host {
   display: flex;

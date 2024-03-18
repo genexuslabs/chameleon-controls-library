@@ -2,9 +2,10 @@ import {
   Component,
   Event,
   EventEmitter,
-  Prop,
-  Watch,
   Host,
+  Prop,
+  State,
+  Watch,
   h
 } from "@stencil/core";
 import { DISABLED_CLASS } from "../../common/reserverd-names";
@@ -38,6 +39,12 @@ const PARTS = (checked: boolean, indeterminate: boolean) =>
 })
 export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   /**
+   * This State is computed from the `value`, `checkedValue` and
+   * `unCheckedValue` properties.
+   */
+  @State() checked: boolean;
+
+  /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element.
@@ -48,11 +55,6 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
    * Specifies the label of the checkbox.
    */
   @Prop() readonly caption: string;
-
-  /**
-   * Indicates that the control is selected by default.
-   */
-  @Prop({ mutable: true }) checked: boolean;
 
   /**
    * The value when the checkbox is 'on'

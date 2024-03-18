@@ -324,6 +324,18 @@ export class ChDropDown implements ChComponent {
     //   this.#closeDropdownSibling();
     // }
 
+    // WA: When clicking a leaf, its dropdown ancestors must be closed
+    if (this.leaf) {
+      this.el.dispatchEvent(
+        new CustomEvent("recursiveClose", {
+          bubbles: true,
+          detail: this.level + 1
+        })
+      );
+
+      return;
+    }
+
     this.expanded = !this.expanded;
     this.expandedChange.emit(!this.expanded);
   };

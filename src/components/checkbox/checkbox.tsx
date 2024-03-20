@@ -76,7 +76,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   /**
    * `true` if the control's value is indeterminate.
    */
-  @Prop() readonly indeterminate: boolean = false;
+  @Prop({ mutable: true }) indeterminate: boolean = false;
 
   /**
    * This attribute indicates that the user cannot modify the value of the control.
@@ -141,6 +141,10 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
     this.checked = checked;
     this.value = value;
     inputRef.value = value; // Update input's value before emitting the event
+
+    // When the checked value is updated by the user, the control must no
+    // longer be indeterminate
+    this.indeterminate = false;
 
     this.input.emit(event);
 

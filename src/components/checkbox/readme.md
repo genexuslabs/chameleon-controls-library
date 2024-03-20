@@ -7,18 +7,17 @@
 
 ## Properties
 
-| Property         | Attribute          | Description                                                                                                                                                                                                      | Type      | Default     |
-| ---------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `accessibleName` | `accessible-name`  | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                                                | `string`  | `undefined` |
-| `caption`        | `caption`          | Specifies the label of the checkbox.                                                                                                                                                                             | `string`  | `undefined` |
-| `checked`        | `checked`          | Indicates that the control is selected by default.                                                                                                                                                               | `boolean` | `undefined` |
-| `checkedValue`   | `checked-value`    | The value when the checkbox is 'on'                                                                                                                                                                              | `string`  | `undefined` |
-| `disabled`       | `disabled`         | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).                                                         | `boolean` | `false`     |
-| `highlightable`  | `highlightable`    | True to highlight control when an action is fired.                                                                                                                                                               | `boolean` | `false`     |
-| `indeterminate`  | `indeterminate`    | `true` if the control's value is indeterminate.                                                                                                                                                                  | `boolean` | `false`     |
-| `readonly`       | `readonly`         | This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements. | `boolean` | `false`     |
-| `unCheckedValue` | `un-checked-value` | The value when the checkbox is 'off'                                                                                                                                                                             | `string`  | `undefined` |
-| `value`          | `value`            | The value of the control.                                                                                                                                                                                        | `string`  | `undefined` |
+| Property                      | Attribute          | Description                                                                                                                                                                                                      | Type      | Default     |
+| ----------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `accessibleName`              | `accessible-name`  | Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.                                                | `string`  | `undefined` |
+| `caption`                     | `caption`          | Specifies the label of the checkbox.                                                                                                                                                                             | `string`  | `undefined` |
+| `checkedValue` _(required)_   | `checked-value`    | The value when the checkbox is 'on'                                                                                                                                                                              | `string`  | `undefined` |
+| `disabled`                    | `disabled`         | This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).                                                         | `boolean` | `false`     |
+| `highlightable`               | `highlightable`    | True to highlight control when an action is fired.                                                                                                                                                               | `boolean` | `false`     |
+| `indeterminate`               | `indeterminate`    | `true` if the control's value is indeterminate.                                                                                                                                                                  | `boolean` | `false`     |
+| `readonly`                    | `readonly`         | This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements. | `boolean` | `false`     |
+| `unCheckedValue` _(required)_ | `un-checked-value` | The value when the checkbox is 'off'                                                                                                                                                                             | `string`  | `undefined` |
+| `value` _(required)_          | `value`            | The value of the control.                                                                                                                                                                                        | `string`  | `undefined` |
 
 
 ## Events
@@ -31,10 +30,23 @@
 
 ## Shadow Parts
 
-| Part      | Description |
-| --------- | ----------- |
-| `"input"` |             |
-| `"label"` |             |
+| Part              | Description                                                                                                                                                    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"checked"`       | Present in the `option` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
+| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                 |
+| `"disabled"`      | Present in the `option` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
+| `"indeterminate"` | Present in the `option` and `container` parts when the control is indeterminate (`indeterminate` === `true`).                                                  |
+| `"input"`         | The invisible input element that implements the interactions for the component. This part must be kept "invisible".                                            |
+| `"label"`         | The label that is rendered when the `caption` property is not empty.                                                                                           |
+| `"option"`        | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                                     |
+| `"unchecked"`     | Present in the `option` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
+
+
+## CSS Custom Properties
+
+| Name                           | Description                                                                                        |
+| ------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `--ch-checkbox-container-size` | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px) |
 
 
 ## Dependencies

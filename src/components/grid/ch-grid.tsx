@@ -283,7 +283,9 @@ export class ChGrid {
         this.cellSelected?.column || this.manager.getFirstColumn()
       );
 
-      this.selectByKeyboardEvent(false, false);
+      if (this.keyboardNavigationMode === "select") {
+        this.selectByKeyboardEvent(false, false, "focus");
+      }
     }
   }
 

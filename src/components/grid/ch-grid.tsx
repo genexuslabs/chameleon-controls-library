@@ -283,7 +283,9 @@ export class ChGrid {
         this.cellSelected?.column || this.manager.getFirstColumn()
       );
 
-      this.selectByKeyboardEvent(false, false);
+      if (this.keyboardNavigationMode === "select") {
+        this.selectByKeyboardEvent(false, false, "focus");
+      }
     }
   }
 
@@ -1061,7 +1063,7 @@ export class ChGrid {
 
   private spacePressedEvent(ctrl: boolean, shift: boolean) {
     if (this.keyboardNavigationMode === "focus") {
-      this.selectByKeyboardEvent(ctrl, shift);
+      this.selectByKeyboardEvent(ctrl, shift, "last-selected");
     } else if (this.keyboardNavigationMode === "select") {
       this.markByKeyboardEvent();
     }
@@ -1081,7 +1083,11 @@ export class ChGrid {
     }
   }
 
-  private selectByKeyboardEvent(append: boolean, range: boolean) {
+  private selectByKeyboardEvent(
+    append: boolean,
+    range: boolean,
+    rangeStartOn: "focus" | "last-selected"
+  ) {
     const { rowFocused, rowsSelected, cellFocused, cellSelected } =
       this.manager.selection.select(
         {
@@ -1095,6 +1101,7 @@ export class ChGrid {
         true,
         append,
         range,
+        rangeStartOn,
         false
       );
 
@@ -1126,6 +1133,7 @@ export class ChGrid {
         true,
         append,
         range,
+        "last-selected",
         context
       );
 

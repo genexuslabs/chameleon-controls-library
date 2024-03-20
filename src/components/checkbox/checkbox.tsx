@@ -30,8 +30,8 @@ const PARTS = (checked: boolean, indeterminate: boolean) => {
  * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
  * @part label - The label that is rendered when the `caption` property is not empty.
  *
- * @part checked - Present in the `option` and `container` parts when the control is checked (`value` === `checkedValue`).
- * @part unchecked - Present in the `option` and `container` parts when the control is unchecked (`value` === `unCheckedValue`).
+ * @part checked - Present in the `option` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).
+ * @part unchecked - Present in the `option` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
  * @part indeterminate - Present in the `option` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
  */
 @Component({

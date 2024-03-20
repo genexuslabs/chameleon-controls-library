@@ -256,10 +256,6 @@ export namespace Components {
          */
         "caption": string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked": boolean;
-        /**
           * The value when the checkbox is 'on'
          */
         "checkedValue": string;
@@ -3706,13 +3702,9 @@ declare namespace LocalJSX {
          */
         "caption"?: string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked"?: boolean;
-        /**
           * The value when the checkbox is 'on'
          */
-        "checkedValue"?: string;
+        "checkedValue": string;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -3740,11 +3732,11 @@ declare namespace LocalJSX {
         /**
           * The value when the checkbox is 'off'
          */
-        "unCheckedValue"?: string;
+        "unCheckedValue": string;
         /**
           * The value of the control.
          */
-        "value"?: string;
+        "value": string;
     }
     interface ChDropdown {
         /**

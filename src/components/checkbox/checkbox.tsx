@@ -17,12 +17,21 @@ import {
 
 const CHECKBOX_ID = "checkbox";
 
-const PARTS = (checked: boolean, indeterminate: boolean) => {
+const CHECKED_PART = "checked";
+const DISABLED_PART = "disabled";
+const INDETERMINATE_PART = "indeterminate";
+const UNCHECKED_PART = "unchecked";
+
+const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
-    return "indeterminate";
+    return disabled
+      ? `${DISABLED_PART} ${INDETERMINATE_PART}`
+      : INDETERMINATE_PART;
   }
 
-  return checked ? "checked" : "unchecked";
+  const checkedValue = checked ? CHECKED_PART : UNCHECKED_PART;
+
+  return disabled ? `${DISABLED_PART} ${checkedValue}` : checkedValue;
 };
 /**
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
@@ -31,8 +40,9 @@ const PARTS = (checked: boolean, indeterminate: boolean) => {
  * @part label - The label that is rendered when the `caption` property is not empty.
  *
  * @part checked - Present in the `option` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).
- * @part unchecked - Present in the `option` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
+ * @part disabled - Present in the `option` and `container` parts when the control is disabled (`disabled` === `true`).
  * @part indeterminate - Present in the `option` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
+ * @part unchecked - Present in the `option` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
  */
 @Component({
   shadow: true,
@@ -156,7 +166,11 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   };
 
   render() {
-    const additionalParts = PARTS(this.checked, this.indeterminate);
+    const additionalParts = PARTS(
+      this.checked,
+      this.indeterminate,
+      this.disabled
+    );
 
     return (
       <Host

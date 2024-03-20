@@ -193,7 +193,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             container: true,
             "container--checked": this.checked
           }}
-          part={`${CONTAINER_PART}${additionalParts}`}
+          part={`${CONTAINER_PART} ${additionalParts}`}
         >
           <input
             aria-label={
@@ -219,7 +219,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
               "option--checked": this.checked && !this.indeterminate,
               "option--indeterminate": this.indeterminate
             }}
-            part={`${OPTION_PART}${additionalParts}`}
+            part={`${OPTION_PART} ${additionalParts}`}
             aria-hidden="true"
           ></div>
         </div>

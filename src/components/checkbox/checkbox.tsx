@@ -14,13 +14,19 @@ import {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
+import { CheckboxParts } from "./types";
 
 const CHECKBOX_ID = "checkbox";
 
-const CHECKED_PART = "checked";
-const DISABLED_PART = "disabled";
-const INDETERMINATE_PART = "indeterminate";
-const UNCHECKED_PART = "unchecked";
+const CONTAINER_PART: CheckboxParts = "container";
+const INPUT_PART: CheckboxParts = "input";
+const OPTION_PART: CheckboxParts = "option";
+const LABEL_PART: CheckboxParts = "label";
+
+const CHECKED_PART: CheckboxParts = "checked";
+const DISABLED_PART: CheckboxParts = "disabled";
+const INDETERMINATE_PART: CheckboxParts = "indeterminate";
+const UNCHECKED_PART: CheckboxParts = "unchecked";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
@@ -33,6 +39,7 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
 
   return disabled ? `${DISABLED_PART} ${checkedValue}` : checkedValue;
 };
+
 /**
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
  * @part input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".
@@ -186,7 +193,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             container: true,
             "container--checked": this.checked
           }}
-          part={`container${additionalParts}`}
+          part={`${CONTAINER_PART}${additionalParts}`}
         >
           <input
             aria-label={
@@ -197,7 +204,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             }
             id={this.caption ? CHECKBOX_ID : null}
             class="input"
-            part="input"
+            part={INPUT_PART}
             type="checkbox"
             checked={this.checked}
             disabled={this.disabled || this.readonly}
@@ -212,7 +219,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
               "option--checked": this.checked && !this.indeterminate,
               "option--indeterminate": this.indeterminate
             }}
-            part={`option${additionalParts}`}
+            part={`${OPTION_PART}${additionalParts}`}
             aria-hidden="true"
           ></div>
         </div>
@@ -220,7 +227,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
         {this.caption && (
           <label
             class="label"
-            part="label"
+            part={LABEL_PART}
             htmlFor={CHECKBOX_ID}
             onClick={this.#handleClick}
           >

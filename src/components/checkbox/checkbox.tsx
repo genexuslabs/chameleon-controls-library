@@ -17,11 +17,13 @@ import {
 
 const CHECKBOX_ID = "checkbox";
 
-const PARTS = (checked: boolean, indeterminate: boolean) =>
-  ` ${checked ? "checked" : "unchecked"}${
-    indeterminate ? " indeterminate" : ""
-  }`;
+const PARTS = (checked: boolean, indeterminate: boolean) => {
+  if (indeterminate) {
+    return "indeterminate";
+  }
 
+  return checked ? "checked" : "unchecked";
+};
 /**
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
  * @part input - The invisible input element that implements the interactions for the component. This part must be kept "invisible".

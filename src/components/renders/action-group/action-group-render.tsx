@@ -121,6 +121,7 @@ export class ChActionGroupRender {
           endImgSrc={this.#getImagePath(item.endImgSrc)}
           endImgType={item.endImgType ?? "background"}
           href={item.link?.url}
+          itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
           leaf={!hasItems}
           level={level}
           openOnFocus={this.openOnFocus}
@@ -132,7 +133,6 @@ export class ChActionGroupRender {
           shortcut={item.shortcut}
           startImgSrc={this.#getImagePath(item.startImgSrc)}
           startImgType={item.startImgType ?? "background"}
-          onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpanded
               ? this.#handleItemExpanded(item, "wasExpanded")
@@ -188,13 +188,13 @@ export class ChActionGroupRender {
         endImgSrc={this.#getImagePath(item.endImgSrc)}
         endImgType={item.endImgType ?? "background"}
         href={item.link?.url}
+        itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
         leaf={!hasItems}
         level={level}
         openOnFocus={this.openOnFocus}
         position={item.itemsPosition || "Center_OutsideEnd"}
         startImgSrc={this.#getImagePath(item.startImgSrc)}
         startImgType={item.startImgType ?? "background"}
-        onClick={this.#handleItemClick(item.link?.url, item.id)}
         onExpandedChange={
           !item.wasExpandedInFirstLevel
             ? this.#handleItemExpanded(item, "wasExpandedInFirstLevel")
@@ -250,6 +250,7 @@ export class ChActionGroupRender {
           endImgSrc={this.#getImagePath(item.endImgSrc)}
           endImgType={item.endImgType ?? "background"}
           href={item.link?.url}
+          itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
           leaf={!hasItems}
           level={level}
           openOnFocus={this.openOnFocus}
@@ -259,7 +260,6 @@ export class ChActionGroupRender {
           shortcut={item.shortcut}
           startImgSrc={this.#getImagePath(item.startImgSrc)}
           startImgType={item.startImgType ?? "background"}
-          onClick={this.#handleItemClick(item.link?.url, item.id)}
           onExpandedChange={
             !item.wasExpandedInMoreActions
               ? this.#handleItemExpanded(item, "wasExpandedInMoreActions")

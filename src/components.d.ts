@@ -326,6 +326,10 @@ export namespace Components {
          */
         "href": string;
         /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback": (event: UIEvent) => void;
+        /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
         "leaf": boolean;
@@ -3763,6 +3767,10 @@ declare namespace LocalJSX {
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href"?: string;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback"?: (event: UIEvent) => void;
         /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */

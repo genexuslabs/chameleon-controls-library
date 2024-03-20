@@ -1,7 +1,5 @@
 @import "../../common/_base";
 
-$option-size: min(1em, 20px);
-
 $option-checked-background-color: var(--option-checked-color, #ffffff00);
 $option-checked-border-color: var(--option-border-color, currentColor);
 $option-checked-color: currentColor;
@@ -13,6 +11,13 @@ $space-between-container-and-label: min(0.35em, 7px);
 @include box-sizing();
 
 :host {
+  /**
+   * @prop --ch-checkbox-container-size:
+   * Specifies the size for the container of the `input` and `option` elements.
+   * @default min(1em, 20px)
+   */
+  --ch-checkbox-container-size: min(1em, 20px);
+
   display: flex;
   align-items: center;
   align-self: stretch;
@@ -34,8 +39,8 @@ $space-between-container-and-label: min(0.35em, 7px);
 
 .container {
   position: relative;
-  width: $option-size;
-  height: $option-size;
+  inline-size: var(--ch-checkbox-container-size);
+  block-size: var(--ch-checkbox-container-size);
   border: 1px solid $option-checked-border-color;
   border-radius: 18.75%;
 
@@ -50,8 +55,8 @@ $space-between-container-and-label: min(0.35em, 7px);
 
 .input {
   display: flex;
-  width: 100%;
-  height: 100%;
+  inline-size: 100%;
+  block-size: 100%;
   opacity: 0;
   margin: 0;
   padding: 0;
@@ -62,8 +67,8 @@ $space-between-container-and-label: min(0.35em, 7px);
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
-  height: 50%;
+  inline-size: 50%;
+  block-size: 50%;
   background-color: $option-checked-color;
   opacity: 0;
   pointer-events: none;

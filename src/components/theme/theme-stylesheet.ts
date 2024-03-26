@@ -1,3 +1,5 @@
+import { removeElement } from "../../common/array";
+
 const THEMES = new Map<string, Theme>();
 
 type Theme = {
@@ -31,7 +33,7 @@ export function removeThemeElement(el: HTMLChThemeElement) {
   const index = theme.elements.indexOf(el);
 
   if (theme && index >= 0) {
-    theme.elements.splice(index, 1);
+    removeElement(theme.elements, index);
   }
 }
 

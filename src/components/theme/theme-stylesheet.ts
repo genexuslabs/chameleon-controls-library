@@ -11,6 +11,8 @@ export interface ChThemeLoadEvent {
   name: string;
 }
 
+const isEnableTheme = (theme: Theme): boolean => !theme.styleSheet.disabled;
+
 export function instanceTheme(el: HTMLChThemeElement) {
   const theme = addTheme(el);
 
@@ -81,10 +83,6 @@ function attachTheme(el: HTMLChThemeElement, theme: Theme) {
 
 function enableTheme(theme: Theme) {
   theme.styleSheet.disabled = false;
-}
-
-function isEnableTheme(theme: Theme): boolean {
-  return !theme.styleSheet.disabled;
 }
 
 function notifyTheme(el: HTMLChThemeElement) {

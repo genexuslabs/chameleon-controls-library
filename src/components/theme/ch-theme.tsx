@@ -8,8 +8,7 @@ import { instanceTheme, removeThemeElement } from "./ch-theme-stylesheet";
  * either in the Document or in a Shadow-Root.
  */
 @Component({
-  tag: "ch-theme",
-  styleUrl: "ch-theme.scss"
+  tag: "ch-theme"
 })
 export class ChTheme {
   @Element() el: HTMLChThemeElement;
@@ -23,6 +22,10 @@ export class ChTheme {
    * Specifies the location of the stylesheet theme
    */
   @Prop({ reflect: true }) readonly href: string;
+
+  connectedCallback() {
+    this.el.hidden = true;
+  }
 
   componentDidLoad() {
     instanceTheme(this.el);

@@ -17,7 +17,7 @@ either in the Document or in a Shadow-Root.
 | Property | Attribute | Description                                    | Type     | Default     |
 | -------- | --------- | ---------------------------------------------- | -------- | ----------- |
 | `href`   | `href`    | Specifies the location of the stylesheet theme | `string` | `undefined` |
-| `name`   | `name`    | Specifies the name of the theme                | `string` | `undefined` |
+| `name`   | `name`    | Specifies the name of the theme to instantiate | `string` | `undefined` |
 
 
 ----------------------------------------------

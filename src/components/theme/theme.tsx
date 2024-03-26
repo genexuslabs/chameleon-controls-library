@@ -1,5 +1,5 @@
 import { Component, Element, Prop } from "@stencil/core";
-import { instanceTheme, removeThemeElement } from "./ch-theme-stylesheet";
+import { instanceTheme, removeThemeElement } from "./theme-stylesheet";
 
 /**
  * It allows you to load a style sheet in a similar way to the

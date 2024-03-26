@@ -1622,6 +1622,22 @@ export namespace Components {
          */
         "tooltipShowMode": "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href": string;
+        /**
+          * Specifies the name of the theme
+         */
+        "name": string;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -3251,6 +3267,18 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface HTMLChThemeElement extends Components.ChTheme, HTMLStencilElement {
+    }
+    var HTMLChThemeElement: {
+        prototype: HTMLChThemeElement;
+        new (): HTMLChThemeElement;
+    };
     interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
     }
     var HTMLChTimerElement: {
@@ -3489,6 +3517,7 @@ declare global {
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-theme": HTMLChThemeElement;
         "ch-timer": HTMLChTimerElement;
         "ch-tooltip": HTMLChTooltipElement;
         "ch-tree": HTMLChTreeElement;
@@ -5114,6 +5143,22 @@ declare namespace LocalJSX {
          */
         "tooltipShowMode"?: "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href"?: string;
+        /**
+          * Specifies the name of the theme
+         */
+        "name"?: string;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -5777,6 +5822,7 @@ declare namespace LocalJSX {
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
+        "ch-theme": ChTheme;
         "ch-timer": ChTimer;
         "ch-tooltip": ChTooltip;
         "ch-tree": ChTree;
@@ -5941,6 +5987,13 @@ declare module "@stencil/core" {
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            /**
+             * It allows you to load a style sheet in a similar way to the
+             * native LINK or STYLE tags, but assigning it a name so that
+             * it can be reused in different contexts,
+             * either in the Document or in a Shadow-Root.
+             */
+            "ch-theme": LocalJSX.ChTheme & JSXBase.HTMLAttributes<HTMLChThemeElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tooltip": LocalJSX.ChTooltip & JSXBase.HTMLAttributes<HTMLChTooltipElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;

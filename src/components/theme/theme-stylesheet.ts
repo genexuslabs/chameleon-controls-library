@@ -1,10 +1,12 @@
 import { removeElement } from "../../common/array";
 
 const THEMES = new Map<string, Theme>();
+const BASEURL_REGEX =
+  /(url\((?!\s*["']?(?:\/|https?:|data:))\s*["']?)([^'")]+)/g;
 
 type Theme = {
   elements: HTMLChThemeElement[];
-  styleSheet: CSSStyleSheet;
+  styleSheet?: CSSStyleSheet;
 };
 
 /**
@@ -14,36 +16,37 @@ export interface ChThemeLoadedEvent {
   name: string;
 }
 
-const isEnableTheme = (theme: Theme): boolean => !theme.styleSheet.disabled;
+const isEnabledTheme = (theme: Theme): boolean =>
+  theme.styleSheet ? !theme.styleSheet.disabled : false;
 
 /**
  * Initializes a theme instance within the Document or ShadowRoot to which the HTMLChThemeElement belongs.
  * If the HTMLChThemeElement indicates the source of the theme, it loads the theme.
  */
 export function instanceTheme(el: HTMLChThemeElement) {
-  const theme = addTheme(el);
+  const theme = addThemeElement(el);
 
   /**
-   * Loads the theme asynchronously if the HTMLChThemeElement has a URL or inline CSS text.
-   * If the source is a URL, skips loading if the URL has already been loaded by another HTMLChThemeElement.
+   * If the theme is already loaded and enabled,
+   * just attach it and mark as loaded in HTMLChThemeElement context
+   */
+  if (isEnabledTheme(theme)) {
+    attachTheme(el, theme);
+    setLoadedTheme(el);
+    return;
+  }
+
+  /**
+   * Otherwise, load the theme asynchronously,
+   * then attach it and mark as loaded in all HTMLChThemeElement contexts
    */
   loadTheme(el, theme).then(loaded => {
     if (loaded) {
       enableTheme(theme);
+      attachAllTheme(theme);
       setLoadedAllTheme(theme);
     }
   });
-
-  /**
-   * Add the theme to the Document or ShadowRoot.
-   * If the theme is enabled, set a flag indicating it's been loaded.
-   * The theme is initially added in a disabled state if it hasn't loaded
-   * by another HTMLChThemeElement or if current instance is pending the loadTheme execution.
-   */
-  attachTheme(el, theme);
-  if (isEnableTheme(theme)) {
-    setLoadedTheme(el);
-  }
 }
 
 /**
@@ -59,19 +62,11 @@ export function removeThemeElement(el: HTMLChThemeElement) {
   }
 }
 
-function addTheme(el: HTMLChThemeElement): Theme {
-  let theme: Theme;
+function addThemeElement(el: HTMLChThemeElement): Theme {
+  const theme =
+    THEMES.get(el.name) ?? THEMES.set(el.name, { elements: [] }).get(el.name);
 
-  if (THEMES.has(el.name)) {
-    theme = THEMES.get(el.name);
-  } else {
-    theme = {
-      elements: [],
-      styleSheet: new CSSStyleSheet({ disabled: true })
-    };
-    THEMES.set(el.name, theme);
-  }
-  THEMES.get(el.name).elements.push(el);
+  theme.elements.push(el);
 
   return theme;
 }
@@ -80,15 +75,36 @@ async function loadTheme(
   el: HTMLChThemeElement,
   theme: Theme
 ): Promise<boolean> {
-  let load = false;
+  let loaded = false;
 
-  if (typeof el.href === "string" && el.href.trim() !== "") {
-    load = await appendThemeStyleSheetUrl(el, theme);
+  if (
+    typeof el.href === "string" &&
+    el.href.trim() !== "" &&
+    !theme.elements.some(item => item !== el && item.href === el.href)
+  ) {
+    loaded = await appendThemeStyleSheetUrl(
+      el.href,
+      getThemeStyleSheet(el, theme),
+      el.baseUrl
+    );
   } else if (!el.innerText.match(/^\s*$/)) {
-    load = await appendThemeStyleSheetText(el, theme);
+    loaded = await appendThemeStyleSheetText(
+      el.innerText,
+      getThemeStyleSheet(el, theme),
+      el.baseUrl
+    );
   }
 
-  return load;
+  return loaded;
+}
+
+function getThemeStyleSheet(el: HTMLChThemeElement, theme: Theme) {
+  theme.styleSheet ||= new CSSStyleSheet({
+    disabled: true,
+    baseURL: el.baseUrl
+  });
+
+  return theme.styleSheet;
 }
 
 function attachTheme(el: HTMLChThemeElement, theme: Theme) {
@@ -101,6 +117,10 @@ function attachTheme(el: HTMLChThemeElement, theme: Theme) {
   }
 }
 
+function attachAllTheme(theme: Theme) {
+  theme.elements.forEach(el => attachTheme(el, theme));
+}
+
 function enableTheme(theme: Theme) {
   theme.styleSheet.disabled = false;
 }
@@ -110,16 +130,17 @@ function setLoadedTheme(el: HTMLChThemeElement) {
 }
 
 function setLoadedAllTheme(theme: Theme) {
-  theme.elements.forEach(el => (el.loaded = true));
+  theme.elements.forEach(el => setLoadedTheme(el));
 }
 
 function appendThemeStyleSheetText(
-  el: HTMLChThemeElement,
-  theme: Theme
+  cssText: string,
+  styleSheet: CSSStyleSheet,
+  baseUrl: string
 ): Promise<boolean> {
   return new Promise(async resolve => {
     try {
-      resolve(appendCssText(theme.styleSheet, el.innerText));
+      resolve(appendCssText(styleSheet, applyBaseUrl(baseUrl, cssText)));
     } catch (error) {
       resolve(false);
     }
@@ -127,18 +148,17 @@ function appendThemeStyleSheetText(
 }
 
 async function appendThemeStyleSheetUrl(
-  el: HTMLChThemeElement,
-  theme: Theme
+  url: string,
+  styleSheet: CSSStyleSheet,
+  baseUrl: string
 ): Promise<boolean> {
   return new Promise(async resolve => {
-    if (theme.elements.some(item => item !== el && item.href === el.href)) {
-      resolve(false);
-      return;
-    }
-
     try {
       resolve(
-        appendCssText(theme.styleSheet, await requestStyleSheet(el.href))
+        appendCssText(
+          styleSheet,
+          applyBaseUrl(baseUrl, await requestStyleSheet(url))
+        )
       );
     } catch (error) {
       resolve(false);
@@ -177,4 +197,11 @@ function appendCssText(
       resolve(false);
     }
   });
+}
+
+function applyBaseUrl(baseUrl: string, cssText: string): string {
+  if (baseUrl) {
+    return cssText.replace(BASEURL_REGEX, `$1${baseUrl}$2`);
+  }
+  return cssText;
 }

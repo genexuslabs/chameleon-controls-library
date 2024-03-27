@@ -35,6 +35,11 @@ export class ChTheme {
   @Prop({ reflect: true }) readonly href: string;
 
   /**
+   * A string containing the baseURL used to resolve relative URLs in the stylesheet
+   */
+  @Prop({ reflect: true }) readonly baseUrl: string;
+
+  /**
    * Indicates whether the theme has successfully loaded
    */
   @Prop() readonly loaded: boolean = false;

@@ -1632,6 +1632,10 @@ export namespace Components {
      */
     interface ChTheme {
         /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl": string;
+        /**
           * Specifies the location of the stylesheet theme
          */
         "href": string;
@@ -5171,6 +5175,10 @@ declare namespace LocalJSX {
      * either in the Document or in a Shadow-Root.
      */
     interface ChTheme {
+        /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl"?: string;
         /**
           * Specifies the location of the stylesheet theme
          */

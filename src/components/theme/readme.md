@@ -14,11 +14,12 @@ either in the Document or in a Shadow-Root.
 
 ## Properties
 
-| Property | Attribute | Description                                         | Type      | Default     |
-| -------- | --------- | --------------------------------------------------- | --------- | ----------- |
-| `href`   | `href`    | Specifies the location of the stylesheet theme      | `string`  | `undefined` |
-| `loaded` | `loaded`  | Indicates whether the theme has successfully loaded | `boolean` | `false`     |
-| `name`   | `name`    | Specifies the name of the theme to instantiate      | `string`  | `undefined` |
+| Property  | Attribute  | Description                                                                     | Type      | Default     |
+| --------- | ---------- | ------------------------------------------------------------------------------- | --------- | ----------- |
+| `baseUrl` | `base-url` | A string containing the baseURL used to resolve relative URLs in the stylesheet | `string`  | `undefined` |
+| `href`    | `href`     | Specifies the location of the stylesheet theme                                  | `string`  | `undefined` |
+| `loaded`  | `loaded`   | Indicates whether the theme has successfully loaded                             | `boolean` | `false`     |
+| `name`    | `name`     | Specifies the name of the theme to instantiate                                  | `string`  | `undefined` |
 
 
 ## Events

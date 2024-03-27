@@ -30,7 +30,6 @@ export function instanceTheme(el: HTMLChThemeElement) {
   loadTheme(el, theme).then(loaded => {
     if (loaded) {
       enableTheme(theme);
-      attachTheme(el, theme);
       setLoadedAllTheme(theme);
     }
   });

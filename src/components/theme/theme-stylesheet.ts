@@ -7,29 +7,50 @@ type Theme = {
   styleSheet: CSSStyleSheet;
 };
 
+/**
+ * Event interface for when a theme is loaded.
+ */
 export interface ChThemeLoadedEvent {
   name: string;
 }
 
 const isEnableTheme = (theme: Theme): boolean => !theme.styleSheet.disabled;
 
+/**
+ * Initializes a theme instance within the Document or ShadowRoot to which the HTMLChThemeElement belongs.
+ * If the HTMLChThemeElement indicates the source of the theme, it loads the theme.
+ */
 export function instanceTheme(el: HTMLChThemeElement) {
   const theme = addTheme(el);
 
-  loadTheme(el, theme).then(load => {
-    if (load) {
+  /**
+   * Loads the theme asynchronously if the HTMLChThemeElement has a URL or inline CSS text.
+   * If the source is a URL, skips loading if the URL has already been loaded by another HTMLChThemeElement.
+   */
+  loadTheme(el, theme).then(loaded => {
+    if (loaded) {
       enableTheme(theme);
       attachTheme(el, theme);
       setLoadedAllTheme(theme);
     }
   });
 
+  /**
+   * Add the theme to the Document or ShadowRoot.
+   * If the theme is enabled, set a flag indicating it's been loaded.
+   * The theme is initially added in a disabled state if it hasn't loaded
+   * by another HTMLChThemeElement or if current instance is pending the loadTheme execution.
+   */
   attachTheme(el, theme);
   if (isEnableTheme(theme)) {
     setLoadedTheme(el);
   }
 }
 
+/**
+ * Removes a theme element.
+ * @param el The HTMLChThemeElement to remove the theme from.
+ */
 export function removeThemeElement(el: HTMLChThemeElement) {
   const theme = THEMES.get(el.name);
   const index = theme.elements.indexOf(el);

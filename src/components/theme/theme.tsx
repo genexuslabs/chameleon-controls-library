@@ -1,5 +1,16 @@
-import { Component, Element, Prop } from "@stencil/core";
-import { instanceTheme, removeThemeElement } from "./theme-stylesheet";
+import {
+  Component,
+  Element,
+  Event,
+  EventEmitter,
+  Prop,
+  Watch
+} from "@stencil/core";
+import {
+  ChThemeLoadedEvent,
+  instanceTheme,
+  removeThemeElement
+} from "./theme-stylesheet";
 
 /**
  * It allows you to load a style sheet in a similar way to the
@@ -23,11 +34,28 @@ export class ChTheme {
    */
   @Prop({ reflect: true }) readonly href: string;
 
+  /**
+   * Indicates whether the theme has successfully loaded
+   */
+  @Prop() readonly loaded: boolean = false;
+  @Watch("loaded")
+  loadedHandler() {
+    if (this.loaded) {
+      this.themeLoaded.emit({ name: this.name ?? "" });
+    }
+  }
+
+  /**
+   * Event emitted when the theme has successfully loaded
+   */
+  @Event({ bubbles: true, composed: false })
+  themeLoaded: EventEmitter<ChThemeLoadedEvent>;
+
   connectedCallback() {
     this.el.hidden = true;
   }
 
-  componentDidLoad() {
+  componentWillLoad() {
     instanceTheme(this.el);
   }
 

@@ -14,10 +14,18 @@ either in the Document or in a Shadow-Root.
 
 ## Properties
 
-| Property | Attribute | Description                                    | Type     | Default     |
-| -------- | --------- | ---------------------------------------------- | -------- | ----------- |
-| `href`   | `href`    | Specifies the location of the stylesheet theme | `string` | `undefined` |
-| `name`   | `name`    | Specifies the name of the theme to instantiate | `string` | `undefined` |
+| Property | Attribute | Description                                         | Type      | Default     |
+| -------- | --------- | --------------------------------------------------- | --------- | ----------- |
+| `href`   | `href`    | Specifies the location of the stylesheet theme      | `string`  | `undefined` |
+| `loaded` | `loaded`  | Indicates whether the theme has successfully loaded | `boolean` | `false`     |
+| `name`   | `name`    | Specifies the name of the theme to instantiate      | `string`  | `undefined` |
+
+
+## Events
+
+| Event         | Description                                          | Type                              |
+| ------------- | ---------------------------------------------------- | --------------------------------- |
+| `themeLoaded` | Event emitted when the theme has successfully loaded | `CustomEvent<ChThemeLoadedEvent>` |
 
 
 ----------------------------------------------

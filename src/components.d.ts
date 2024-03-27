@@ -31,6 +31,7 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -67,6 +68,7 @@ export { ecLevel } from "./components/qr/ch-qr";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -1634,7 +1636,11 @@ export namespace Components {
          */
         "href": string;
         /**
-          * Specifies the name of the theme
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded": boolean;
+        /**
+          * Specifies the name of the theme to instantiate
          */
         "name": string;
     }
@@ -2374,6 +2380,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChThemeElement;
 }
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3267,6 +3277,9 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChThemeElementEventMap {
+        "themeLoaded": ChThemeLoadedEvent;
+    }
     /**
      * It allows you to load a style sheet in a similar way to the
      * native LINK or STYLE tags, but assigning it a name so that
@@ -3274,6 +3287,14 @@ declare global {
      * either in the Document or in a Shadow-Root.
      */
     interface HTMLChThemeElement extends Components.ChTheme, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChThemeElement: {
         prototype: HTMLChThemeElement;
@@ -5155,9 +5176,17 @@ declare namespace LocalJSX {
          */
         "href"?: string;
         /**
-          * Specifies the name of the theme
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded"?: boolean;
+        /**
+          * Specifies the name of the theme to instantiate
          */
         "name"?: string;
+        /**
+          * Event emitted when the theme has successfully loaded
+         */
+        "onThemeLoaded"?: (event: ChThemeCustomEvent<ChThemeLoadedEvent>) => void;
     }
     interface ChTimer {
         /**

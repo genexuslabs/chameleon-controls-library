@@ -7,7 +7,7 @@ type Theme = {
   styleSheet: CSSStyleSheet;
 };
 
-export interface ChThemeLoadEvent {
+export interface ChThemeLoadedEvent {
   name: string;
 }
 
@@ -20,13 +20,13 @@ export function instanceTheme(el: HTMLChThemeElement) {
     if (load) {
       enableTheme(theme);
       attachTheme(el, theme);
-      notifyAllTheme(theme, el.name);
+      setLoadedAllTheme(theme);
     }
   });
 
   attachTheme(el, theme);
   if (isEnableTheme(theme)) {
-    notifyTheme(el);
+    setLoadedTheme(el);
   }
 }
 
@@ -85,12 +85,12 @@ function enableTheme(theme: Theme) {
   theme.styleSheet.disabled = false;
 }
 
-function notifyTheme(el: HTMLChThemeElement) {
-  el.dispatchEvent(getEvent(el.name));
+function setLoadedTheme(el: HTMLChThemeElement) {
+  el.loaded = true;
 }
 
-function notifyAllTheme(theme: Theme, name: string) {
-  theme.elements.forEach(el => el.dispatchEvent(getEvent(name)));
+function setLoadedAllTheme(theme: Theme) {
+  theme.elements.forEach(el => (el.loaded = true));
 }
 
 function appendThemeStyleSheetText(
@@ -156,13 +156,5 @@ function appendCssText(
     } catch (error) {
       resolve(false);
     }
-  });
-}
-
-function getEvent(name: string): CustomEvent<ChThemeLoadEvent> {
-  return new CustomEvent<ChThemeLoadEvent>("themeLoad", {
-    bubbles: true,
-    composed: false,
-    detail: { name }
   });
 }

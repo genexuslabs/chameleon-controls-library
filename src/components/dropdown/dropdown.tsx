@@ -456,7 +456,7 @@ export class ChDropDown implements ChComponent {
         actionById={true}
         actionElement={this.#mainAction as HTMLButtonElement}
         firstLayer={this.level === -1 || this.actionGroupParent}
-        mode="manual"
+        popover="manual"
         hidden={!this.expanded}
         inlineAlign={xAlignMapping}
         blockAlign={yAlignMapping}

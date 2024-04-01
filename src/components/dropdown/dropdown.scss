@@ -51,17 +51,6 @@ ch-popover {
   // display: grid; // Consider adding display: grid to support gap property
   --ch-popover-separation-x: var(--ch-dropdown-separation-x);
   --ch-popover-separation-y: var(--ch-dropdown-separation-y);
-
-  // Prevent initial flickering when the control is not hydrated. Since the
-  // popover bundle is separated from its use, the first display of the
-  // control at runtime may cause flickering, due to "position: fixed" not yet
-  // been downloaded
-  position: fixed;
-  opacity: 0;
-
-  &.hydrated {
-    opacity: 1;
-  }
 }
 // Dummy separation to keep opened the popup when expand-behavior === "ClickOrHover"
 // ch-window[y-align="outside-start"] {

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ComboBox</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="/build/chameleon.css" rel="stylesheet" />
+
+    <style>
+      body {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: var(--spacing-un-spacing--l);
+      }
+
+      ch-combo-box {
+        border: 8px solid;
+        padding: 8px;
+        margin: 4px;
+        background-color: aliceblue;
+      }
+
+      ch-combo-box:focus-visible {
+        border-color: blueviolet;
+      }
+
+      ch-combo-box::part(window) {
+        background-color: beige;
+        border: 1px solid;
+        padding: 8px;
+      }
+
+      ch-combo-box::part(item disabled),
+      ch-combo-box::part(group disabled) {
+        opacity: 0.5;
+      }
+
+      ch-combo-box::part(item nested) {
+        margin-inline-start: 1em;
+      }
+
+      ch-combo-box::part(item) {
+        border: 1px solid;
+        background-color: rgb(215, 179, 136);
+      }
+
+      ch-combo-box::part(item):hover {
+        filter: brightness(0.85);
+      }
+
+      ch-combo-box::part(group__caption) {
+        font-family: SourceSansPro_Bold;
+      }
+    </style>
+  </head>
+  <body class="white-label">
+    <div class="card">
+      <form id="myForm">
+        <div>
+          <label for="combobox-1">Label for combobox-1</label>
+          <ch-combo-box
+            name="combobox-1"
+            id="combobox-1"
+            placeholder="Choose a value..."
+          ></ch-combo-box>
+        </div>
+
+        <div>
+          <label>
+            Label for combobox-2
+            <ch-combo-box></ch-combo-box>
+          </label>
+        </div>
+
+        <label for="combobox-3">Label for combobox-3</label>
+        <ch-combo-box
+          accessible-name="Custom label 3"
+          id="combobox-3"
+          value="Value 3"
+        ></ch-combo-box>
+
+        <label>
+          Label for combobox-4
+          <ch-combo-box
+            name="checkboxxxxx"
+            accessible-name="Custom label 4"
+            value="Value 4"
+          ></ch-combo-box>
+        </label>
+
+        <label>
+          Native input checkbox
+          <input
+            name="native"
+            type="checkbox"
+            aria-label="Holaa"
+            value="nativeeee"
+          />
+        </label>
+
+        <div>
+          <label>
+            "Native" Select
+            <select id="native-select">
+              <option value="1">Value 1</option>
+              <option value="2">Value 2</option>
+              <option value="3">Value 3</option>
+              <option value="4">Value 4</option>
+            </select>
+          </label>
+        </div>
+
+        <div>
+          <label>
+            "Native" Web Component
+            <ch-native></ch-native>
+          </label>
+        </div>
+
+        <label for="lname">Last name:</label>
+        <input type="text" id="lname" name="lname" value="Doe" />
+
+        <div>
+          <label style="display: grid">
+            Last name 2:
+            <input type="checkbox" name="lname" value="Doe" />
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div></div>
+    </div>
+
+    <script>
+      const comboBox1 = document.getElementById("combobox-1");
+      const nativeSelect = document.getElementById("native-select");
+
+      nativeSelect.addEventListener("input", () => {
+        console.log("Native select input... - - - Value:", nativeSelect.value);
+      });
+
+      nativeSelect.addEventListener("change", () => {
+        console.log("Native select change... - - - Value:", nativeSelect.value);
+      });
+
+      comboBox1.addEventListener("input", () => {
+        console.log("ComboBox 1 input... - - - Value:", comboBox1.value);
+      });
+
+      comboBox1.addEventListener("change", () => {
+        console.log("ComboBox 1 change... - - - Value:", comboBox1.value);
+      });
+
+      const comboBox1Items = [
+        { value: "Value 1", caption: "Etiqueta para el valor 1" },
+        {
+          value: "Value 2",
+          caption: "Etiqueta para el valor 2",
+          items: [
+            { value: "Value 2.1", caption: "Etiqueta para el valor 2.1" },
+            { value: "Value 2.2", caption: "Etiqueta para el valor 2.2" }
+          ]
+        },
+        {
+          value: "Value 3",
+          caption: "Etiqueta para el valor 3",
+          disabled: true
+        },
+        { value: "Value 4", caption: "Etiqueta para el valor 4" },
+        {
+          value: "Value 5",
+          caption: "Etiqueta para el valor 5",
+          disabled: true,
+          items: [
+            { value: "Value 5.1", caption: "Etiqueta para el valor 5.1" },
+            { value: "Value 5.2", caption: "Etiqueta para el valor 5.2" },
+            {
+              value: "Value 5.3",
+              caption: "Etiqueta para el valor 5.3",
+              disabled: false
+            },
+            { value: "Value 5.4", caption: "Etiqueta para el valor 5.4" }
+          ]
+        },
+        {
+          value: "Value 6",
+          caption: "Etiqueta para el valor 6",
+          items: [
+            {
+              value: "Value 6.1",
+              caption: "Etiqueta para el valor 6.1",
+              disabled: true
+            },
+            {
+              value: "Value 6.2",
+              caption: "Etiqueta para el valor 6.2",
+              disabled: true
+            },
+            {
+              value: "Value 6.3",
+              caption: "Etiqueta para el valor 6.3",
+              disabled: false
+            },
+            { value: "Value 6.4", caption: "Etiqueta para el valor 6.4" }
+          ]
+        },
+        {
+          value: "Value 7",
+          caption: "Etiqueta para el valor 7",
+          disabled: true
+        },
+        { value: "Value 8", caption: "Etiqueta para el valor 8" }
+      ];
+
+      comboBox1.items = comboBox1Items;
+
+      class PopupInfo extends HTMLElement {
+        static formAssociated = true;
+        #internals;
+
+        constructor() {
+          // Always call super first in constructor
+          super();
+          this.#internals = this.attachInternals();
+        }
+
+        connectedCallback() {
+          // Create a shadow root
+          const shadow = this.attachShadow({
+            mode: "open",
+            delegatesFocus: true
+          });
+
+          this.shadowRoot.innerHTML = "<textarea></textarea>";
+        }
+      }
+
+      customElements.define("ch-native", PopupInfo);
+    </script>
+  </body>
+</html>

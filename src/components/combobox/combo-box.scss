@@ -1,0 +1,130 @@
+@import "../../common/_base";
+
+@include button-reset(); // Should be placed before the box-sizing reset
+@include box-sizing();
+
+:host {
+  --ch-combo-box-item__image-size: #{$default-decorative-image-size};
+  --ch-combo-box-item__background-image-size: 100%;
+
+  --ch-combo-box-separation: 0px;
+  --ch-combo-box-separation-x: var(--ch-combo-box-separation);
+  --ch-combo-box-separation-y: var(--ch-combo-box-separation);
+
+  --ch-combo-box__picker: url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>');
+  --ch-combo-box__picker-color: currentColor;
+  --ch-combo-box__picker-size: 1em;
+  --ch-combo-box__picker-mask-size: 1em;
+
+  --ch-combo-box-border-inline-start-width: 0px;
+  --ch-combo-box-border-inline-end-width: 0px;
+  --ch-combo-box-border-block-start-width: 0px;
+  --ch-combo-box-border-block-end-width: 0px;
+
+  display: grid;
+  grid-template: "value picker" 1fr / 1fr max-content;
+  align-items: center;
+  align-self: stretch;
+  position: relative;
+
+  // Remove outline of the focus state. This selector must not have higher
+  // specificity, since it should be overridden by the class applied to the control
+  outline: unset;
+
+  // Remove text selection on double click
+  user-select: none;
+
+  &::after {
+    content: "";
+    grid-area: picker;
+    inline-size: var(--ch-combo-box__picker-size);
+    block-size: var(--ch-combo-box__picker-size);
+    -webkit-mask: var(--ch-combo-box__picker) 50% 50% /
+      var(--ch-combo-box__picker-mask-size)
+      var(--ch-combo-box__picker-mask-size) no-repeat;
+    background-color: var(--ch-combo-box__picker-color);
+    pointer-events: none;
+  }
+}
+
+:host(.ch-disabled) {
+  pointer-events: none;
+}
+
+select {
+  all: unset;
+  display: grid;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.mask,
+select {
+  position: absolute;
+  inset-inline: var(--ch-combo-box-mask-inline-start)
+    var(--ch-combo-box-mask-inline-end);
+  inset-block: var(--ch-combo-box-mask-block-start)
+    var(--ch-combo-box-mask-block-end);
+
+  cursor: pointer;
+}
+
+.value {
+  grid-area: value;
+}
+
+// - - - - - - - - - - - - - - - -
+//           Separation
+// - - - - - - - - - - - - - - - -
+ch-popover {
+  --ch-combo-box-separation-x: var(--ch-dropdown-separation-x);
+  --ch-combo-box-separation-y: var(--ch-dropdown-separation-y);
+
+  // --ch-popover-min-inline-size: var(--ch-popover-action-width);
+
+  display: grid;
+  grid-auto-rows: max-content;
+
+  &:not(.hydrated) {
+    opacity: 0;
+  }
+}
+
+.group {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+.img--start::before,
+.img--end::after {
+  content: "";
+  display: block;
+  inline-size: var(--ch-combo-box-item__image-size);
+  block-size: var(--ch-combo-box-item__image-size);
+  min-inline-size: var(--ch-combo-box-item__image-size);
+}
+
+.img--start {
+  --ch-combo-box-item-img: var(--ch-combo-box-item-start-img);
+}
+
+.img--end {
+  --ch-combo-box-item-img: var(--ch-combo-box-item-end-img);
+}
+
+.start-img-type--background::before,
+.end-img-type--background::after {
+  background: no-repeat center / var(--ch-combo-box-item__background-image-size)
+    var(--ch-combo-box-item-img);
+}
+
+.start-img-type--mask::before,
+.end-img-type--mask::after {
+  -webkit-mask: var(--ch-combo-box-item-img) 50% 50% /
+    var(--ch-combo-box-item__background-image-size)
+    var(--ch-combo-box-item__background-image-size) no-repeat;
+  background-color: currentColor;
+}

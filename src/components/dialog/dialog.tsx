@@ -317,10 +317,6 @@ export class ChDialog {
     });
   }
 
-  componentWillLoad() {
-    console.log("will load", this.hidden);
-  }
-
   componentWillRender() {
     this.#checkPositionWatcher &&= false;
 
@@ -695,6 +691,8 @@ export class ChDialog {
   };
 
   render() {
+    const dialogParts = this.showHeader ? "dialog has-header" : "dialog";
+
     return (
       <Host
         class={{
@@ -703,7 +701,7 @@ export class ChDialog {
         }}
       >
         <dialog
-          part="dialog"
+          part={dialogParts}
           onClose={this.#handleDialogToggle}
           ref={el => (this.#dialogRef = el)}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
@@ -737,35 +735,43 @@ export class ChDialog {
             !this.hidden && [
               <div
                 class="edge__block-start"
+                part="dragger edge-block-start"
                 onMouseDown={this.#handleEdgeResize("block-start")}
               ></div>, // Top
               <div
                 class="edge__inline-end"
+                part="dragger edge-inline-end"
                 onMouseDown={this.#handleEdgeResize("inline-end")}
               ></div>, // Right
               <div
                 class="edge__block-end"
+                part="dragger edge-block-end"
                 onMouseDown={this.#handleEdgeResize("block-end")}
               ></div>, // Bottom
               <div
                 class="edge__inline-start"
+                part="dragger edge-inline-start"
                 onMouseDown={this.#handleEdgeResize("inline-start")}
               ></div>, // Left
 
               <div
                 class="corner__block-start-inline-start"
+                part="dragger corner-block-start-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-start")}
               ></div>, // Top Left
               <div
                 class="corner__block-start-inline-end"
+                part="dragger corner-block-start-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-start-inline-end")}
               ></div>, // Top Right
               <div
                 class="corner__block-end-inline-start"
+                part="dragger corner-block-end-inline-start"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-start")}
               ></div>, // Bottom Left
               <div
                 class="corner__block-end-inline-end"
+                part="dragger corner-block-end-inline-end"
                 onMouseDown={this.#handleEdgeResize("block-end-inline-end")}
               ></div>, // Bottom Right
 

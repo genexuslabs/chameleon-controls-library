@@ -293,6 +293,10 @@ export namespace Components {
      */
     interface ChDialog {
         /**
+          * `true` if the dialog should be repositioned after resize.
+         */
+        "adjustPositionAfterResize": boolean;
+        /**
           * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
          */
         "allowDrag": "box" | "header" | "no";
@@ -3785,6 +3789,10 @@ declare namespace LocalJSX {
      * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
      */
     interface ChDialog {
+        /**
+          * `true` if the dialog should be repositioned after resize.
+         */
+        "adjustPositionAfterResize"?: boolean;
         /**
           * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
          */

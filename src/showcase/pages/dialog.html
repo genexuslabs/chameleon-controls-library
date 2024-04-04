@@ -11,25 +11,76 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="/build/chameleon.css" rel="stylesheet" />
 
-    <style></style>
+    <style>
+      /*ch-dialog*/
+      ch-dialog::part(dialog) {
+        background-color: #fff;
+      }
+      ch-dialog::part(header) {
+        background-color: aquamarine;
+        padding: 12px;
+        display: flex;
+        justify-content: space-between;
+      }
+      ch-dialog::part(caption) {
+        color: black;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      ch-dialog::part(close) {
+        width: 20px;
+        height: 20px;
+      }
+      ch-dialog::part(close):hover {
+        opacity: 0.7;
+        cursor: pointer;
+      }
+      ch-dialog::part(close):after {
+        content: "❌";
+      }
+      ch-dialog::part(container) {
+        background-color: burlywood;
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      /*slot*/
+      input {
+        border: 1px solid black;
+        padding: 4px 8px;
+        color: black;
+      }
+      button {
+        background-color: blue;
+        padding: 5px 10px;
+      }
+    </style>
   </head>
   <body class="white-label">
     <div class="card">
       <!-- ch-dialog -->
-      <ch-dialog caption="The dialog title" allow-drag="box" resizable>
+      <ch-dialog
+        caption="The dialog title"
+        allow-drag="box"
+        id="ch-dialog"
+        resizable
+      >
         <input type="text" id="my-input" />
         <button id="my-button">button</button>
       </ch-dialog>
 
       <!-- actions -->
       <div>
-        <button id="show-dialog-btn">show dialog</button>
+        <button id="show-dialog-btn" class="close-button">show dialog</button>
       </div>
 
       <script>
         const showDialogBtn = document.getElementById("show-dialog-btn");
-        const chDialog = document.querySelector("ch-dialog");
+        const chDialog = document.getElementById("ch-dialog");
         showDialogBtn.addEventListener("click", () => {
+          console.log(chDialog);
           chDialog.hidden = false;
         });
         const myInput = document.getElementById("my-input");
@@ -37,6 +88,9 @@
         myButton.addEventListener("click", e => {
           console.log("clicked");
         });
+
+        console.log(chDialog);
+        chDialog.showHeader = true;
       </script>
     </div>
   </body>

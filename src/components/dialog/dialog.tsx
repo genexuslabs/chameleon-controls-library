@@ -16,6 +16,8 @@ import { SyncWithRAF } from "../../common/sync-with-frames";
 // Custom vars
 const DIALOG_DRAGGED_X = "--ch-dialog-dragged-x";
 const DIALOG_DRAGGED_Y = "--ch-dialog-dragged-y";
+const DIALOG_INLINE_START = "--ch-dialog-inline-start";
+const DIALOG_BLOCK_START = "--ch-dialog-block-start";
 
 const DIALOG_RTL = "--ch-dialog-rtl";
 const DIALOG_RTL_VALUE = "-1";
@@ -102,9 +104,6 @@ export class ChDialog {
   #maxInlineSize: number = 0;
   #minBlockSize: number = 0;
   #minInlineSize: number = 0;
-
-  // Other
-  #clickedOnDocumentAlready = false;
 
   #resizeByDirectionDictionary = {
     block: (dialogRect: DOMRect, direction: "start" | "end") => {
@@ -234,7 +233,7 @@ export class ChDialog {
    * Specifies whether the dialog is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop({ mutable: true, reflect: true }) hidden = true;
+  @Prop({ mutable: true, reflect: true }) hidden = false;
   @Watch("hidden")
   handleHiddenChange(hidden: boolean) {
     // Schedule update for watchers
@@ -269,7 +268,13 @@ export class ChDialog {
   /**
    * `true` if the control is not stacked with another top layer.
    */
+  // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly firstLayer: boolean = true;
+
+  /**
+   * `true` if the dialog should be repositioned after resize.
+   */
+  @Prop() readonly adjustPositionAfterResize: boolean = false;
 
   /**
    * Specifies whether the control can be resized. If `true` the control can be
@@ -310,6 +315,10 @@ export class ChDialog {
     this.#rtlWatcher.observe(document.documentElement, {
       attributeFilter: ["dir"]
     });
+  }
+
+  componentWillLoad() {
+    console.log("will load", this.hidden);
   }
 
   componentWillRender() {
@@ -458,7 +467,6 @@ export class ChDialog {
   };
 
   #showMethod = () => {
-    // this.modal ? this.#dialogRef.showModal() : this.#dialogRef.show();
     if (this.modal) {
       this.#dialogRef.showModal();
       document.addEventListener("click", this.#evaluateClickOnDocument, {
@@ -474,7 +482,6 @@ export class ChDialog {
   };
 
   #evaluateClickOnDocument = (e: MouseEvent) => {
-    console.log(e.composedPath());
     const conditionToClose = !e.composedPath().includes(this.#dialogRef);
     if (conditionToClose) {
       this.hidden = true;
@@ -488,9 +495,9 @@ export class ChDialog {
   //                          Resize implementation
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleEdgeResize = (edge: ChDialogResizeElement) => (event: MouseEvent) => {
-    this.#fixDialog();
+    this.#fixDialogPosition();
 
-    this.resizing = true;
+    // this.resizing = true;
     this.#resizeRAF ||= new SyncWithRAF();
     this.#currentEdge = edge;
     this.#initialDragEvent = event;
@@ -511,9 +518,6 @@ export class ChDialog {
     this.#maxInlineSize = fromPxToNumber(computedStyle.maxInlineSize);
     this.#minBlockSize = fromPxToNumber(computedStyle.minBlockSize);
     this.#minInlineSize = fromPxToNumber(computedStyle.minInlineSize);
-
-    // Avoid repositioning the dialog
-    // this.#removePositionWatcher();
 
     // Avoid watching border changes during the resize
     this.#removeBorderSizeWatcher();
@@ -560,7 +564,11 @@ export class ChDialog {
   };
 
   #handleResizeEnd = () => {
-    this.#unfixDialog();
+    if (this.adjustPositionAfterResize) {
+      this.#unfixDialogPosition();
+    } else {
+      this.#fixDialogPosition();
+    }
 
     this.resizing = false;
 
@@ -575,9 +583,6 @@ export class ChDialog {
     // Reset dragged distance to its original value
     setProperty(this.el, DIALOG_DRAGGED_X, this.#draggedDistanceX);
     setProperty(this.el, DIALOG_DRAGGED_Y, this.#draggedDistanceY);
-
-    // Update the position of the dialog when the resize ends
-    // this.#setPositionWatcher();
 
     // Start again watching border size changes
     this.#setBorderSizeWatcher();
@@ -597,6 +602,13 @@ export class ChDialog {
     this.#resizeRAF = null;
     this.#initialDragEvent = null;
     this.#lastDragEvent = null;
+
+    // Avoid listener on document click
+    requestAnimationFrame(() => {
+      document.addEventListener("click", this.#evaluateClickOnDocument, {
+        capture: true
+      });
+    });
   };
 
   /**
@@ -657,17 +669,29 @@ export class ChDialog {
     this.#borderSizeRAF = null; // Free the memory
   };
 
-  #fixDialog = () => {
+  #fixDialogPosition = () => {
     const dialogRect = this.#dialogRef.getBoundingClientRect();
-    const dialogX = dialogRect.left;
-    const dialogY = dialogRect.top;
-    this.#dialogRef.style.marginInlineStart = `${dialogX}px`;
-    this.#dialogRef.style.marginBlockStart = `${dialogY}px`;
+    const inlineStart = this.#isRTLDirection
+      ? document.documentElement.getBoundingClientRect().width -
+        (dialogRect.left + dialogRect.width)
+      : dialogRect.left;
+    const blockStart = dialogRect.top;
+
+    setProperty(
+      this.#dialogRef,
+      DIALOG_INLINE_START,
+      inlineStart - this.#draggedDistanceX
+    );
+    setProperty(
+      this.#dialogRef,
+      DIALOG_BLOCK_START,
+      blockStart - this.#draggedDistanceY
+    );
   };
 
-  #unfixDialog = () => {
-    this.#dialogRef.style.marginInlineStart = "auto";
-    this.#dialogRef.style.marginBlockStart = "auto";
+  #unfixDialogPosition = () => {
+    this.#dialogRef.style.removeProperty(DIALOG_INLINE_START);
+    this.#dialogRef.style.removeProperty(DIALOG_BLOCK_START);
   };
 
   render() {
@@ -679,6 +703,7 @@ export class ChDialog {
         }}
       >
         <dialog
+          part="dialog"
           onClose={this.#handleDialogToggle}
           ref={el => (this.#dialogRef = el)}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
@@ -692,12 +717,22 @@ export class ChDialog {
               }
             >
               <slot name="header-start" />
-              {this.caption && <h2 part="caption">{this.caption}</h2>}
+              {this.caption && (
+                <h2 part="caption" class="caption">
+                  {this.caption}
+                </h2>
+              )}
               <slot name="header-end" />
-              <button part="close" onClick={this.#closeHandler}></button>
+              <button
+                part="close"
+                class="close-button"
+                onClick={this.#closeHandler}
+              ></button>
             </header>
           )}
-          <slot />
+          <div part="container">
+            <slot />
+          </div>
           {this.resizable &&
             !this.hidden && [
               <div

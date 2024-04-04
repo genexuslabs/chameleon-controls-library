@@ -90,13 +90,7 @@
   <body class="white-label">
     <div class="card">
       <!-- ch-dialog -->
-      <ch-dialog
-        caption="The dialog title"
-        allow-drag="box"
-        id="ch-dialog"
-        resizable
-        hidden
-      >
+      <ch-dialog caption="The dialog title" id="ch-dialog" resizable hidden>
         <input type="text" id="my-input" />
         <button id="my-button">button</button>
         <p>
@@ -152,6 +146,16 @@
         value="true"
         caption="Resizable"
       ></ch-checkbox>
+
+      <label class="form-input__label">
+        allowDrag:
+        <br /><br />
+        <select class="form-input" id="allow-drag">
+          <option value="box" selected>box</option>
+          <option value="header">header</option>
+          <option value="no">no</option>
+        </select>
+      </label>
     </div>
 
     <script>
@@ -193,6 +197,13 @@
       chDialog.resizable = resizableCheckbox.getAttribute("value");
       resizableCheckbox.addEventListener("input", e => {
         chDialog.resizable = event.target.checked;
+      });
+
+      /*allow drag*/
+      const allowDrag = document.getElementById("allow-drag");
+      chDialog.allowDrag = allowDrag.value;
+      allowDrag.addEventListener("input", event => {
+        chDialog.allowDrag = event.target.value;
       });
     </script>
   </body>

@@ -12,9 +12,25 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
 
     <style>
+      body {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: var(--spacing-un-spacing--l);
+      }
+
       /*ch-dialog*/
+      ch-dialog {
+        --ch-dialog-inline-size: 400px;
+        --ch-dialog-block-size: 200px;
+        overflow: hidden;
+      }
       ch-dialog::part(dialog) {
+        display: grid;
+        grid-template-rows: auto auto;
         background-color: #fff;
+      }
+      ch-dialog::part(dialog has-header) {
+        grid-template-rows: auto 1fr;
       }
       ch-dialog::part(header) {
         background-color: aquamarine;
@@ -41,11 +57,23 @@
       ch-dialog::part(container) {
         background-color: burlywood;
         padding: 8px;
-        display: flex;
+        /* display: flex;
+        flex-direction: column;
         justify-content: space-between;
-        gap: 8px;
+        gap: 8px; */
+        overflow: scroll;
       }
-
+      ch-dialog::part(dragger):hover {
+        background-color: blue;
+      }
+      .box {
+        width: 100%;
+        height: 500px;
+        border: 2px solid black;
+        background-color: darkseagreen;
+        margin-top: 8px;
+        display: none;
+      }
       /*slot*/
       input {
         border: 1px solid black;
@@ -58,6 +86,7 @@
       }
     </style>
   </head>
+
   <body class="white-label">
     <div class="card">
       <!-- ch-dialog -->
@@ -66,32 +95,105 @@
         allow-drag="box"
         id="ch-dialog"
         resizable
+        hidden
       >
         <input type="text" id="my-input" />
         <button id="my-button">button</button>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+          repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste
+          amet laudantium deleniti iusto, commodi dolor omnis laboriosam quod
+          magni, quis voluptatem.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
+          repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste
+          amet laudantium deleniti iusto, commodi dolor omnis laboriosam quod
+          magni, quis voluptatem.
+        </p>
+        <div class="box"></div>
       </ch-dialog>
-
-      <!-- actions -->
-      <div>
-        <button id="show-dialog-btn" class="close-button">show dialog</button>
-      </div>
-
-      <script>
-        const showDialogBtn = document.getElementById("show-dialog-btn");
-        const chDialog = document.getElementById("ch-dialog");
-        showDialogBtn.addEventListener("click", () => {
-          console.log(chDialog);
-          chDialog.hidden = false;
-        });
-        const myInput = document.getElementById("my-input");
-        const myButton = document.getElementById("my-button");
-        myButton.addEventListener("click", e => {
-          console.log("clicked");
-        });
-
-        console.log(chDialog);
-        chDialog.showHeader = true;
-      </script>
     </div>
+
+    <div class="card card-properties">
+      <button id="show-dialog-btn" class="close-button">show dialog</button>
+      <!-- show header -->
+      <ch-checkbox
+        id="show-header"
+        checked-value="true"
+        un-checked-value="false"
+        value="true"
+        caption="Show header"
+      ></ch-checkbox>
+
+      <!-- modal -->
+      <ch-checkbox
+        id="modal"
+        checked-value="true"
+        un-checked-value="false"
+        value="true"
+        caption="Modal"
+      ></ch-checkbox>
+
+      <!-- adjust position after resize -->
+      <ch-checkbox
+        id="adjust-position-after-resize"
+        checked-value="true"
+        un-checked-value="false"
+        value="true"
+        caption="Adjust position after resize"
+      ></ch-checkbox>
+
+      <!-- resizable -->
+      <ch-checkbox
+        id="resizable"
+        checked-value="true"
+        un-checked-value="false"
+        value="true"
+        caption="Resizable"
+      ></ch-checkbox>
+    </div>
+
+    <script>
+      /*ch-dialog*/
+      const chDialog = document.getElementById("ch-dialog");
+
+      /*show dialog*/
+      const showDialogBtn = document.getElementById("show-dialog-btn");
+      showDialogBtn.addEventListener("click", () => {
+        chDialog.hidden = false;
+      });
+
+      /*show header*/
+      const showHeaderCheckbox = document.getElementById("show-header");
+      chDialog.showHeader = showHeaderCheckbox.getAttribute("value");
+      showHeaderCheckbox.addEventListener("input", e => {
+        chDialog.showHeader = event.target.checked;
+      });
+
+      /*display as modal*/
+      const modalCheckbox = document.getElementById("modal");
+      chDialog.modal = modalCheckbox.getAttribute("value");
+      modalCheckbox.addEventListener("input", e => {
+        chDialog.modal = event.target.checked;
+      });
+
+      /*adjust position after resize*/
+      const adjustPositionCheckbox = document.getElementById(
+        "adjust-position-after-resize"
+      );
+      chDialog.adjustPositionAfterResize =
+        adjustPositionCheckbox.getAttribute("value");
+      adjustPositionCheckbox.addEventListener("input", e => {
+        chDialog.adjustPositionAfterResize = event.target.checked;
+      });
+
+      /*resizable*/
+      const resizableCheckbox = document.getElementById("resizable");
+      chDialog.resizable = resizableCheckbox.getAttribute("value");
+      resizableCheckbox.addEventListener("input", e => {
+        chDialog.resizable = event.target.checked;
+      });
+    </script>
   </body>
 </html>

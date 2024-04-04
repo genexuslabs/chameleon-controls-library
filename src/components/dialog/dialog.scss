@@ -2,9 +2,18 @@
 
 @include box-sizing();
 
-$ch-dialog-x: calc((var(--ch-dialog-dragged-x)) * var(--ch-dialog-rtl));
+.caption,
+.close-button,
+dialog {
+  @include reset-browser-defaults-properties-1();
+}
 
-$ch-dialog-y: calc(var(--ch-dialog-dragged-y));
+$ch-dialog-x: calc(
+  (var(--ch-dialog-inline-start) + var(--ch-dialog-dragged-x)) *
+    var(--ch-dialog-rtl)
+);
+
+$ch-dialog-y: calc(var(--ch-dialog-block-start) + var(--ch-dialog-dragged-y));
 
 $ch-dialog-x--same-layer: calc(
   (var(--ch-dialog-inline) + var(--ch-dialog-dragged-x)) * var(--ch-dialog-rtl)
@@ -19,6 +28,9 @@ $ch-dialog-y--same-layer: calc(
 }
 
 :host {
+  --ch-dialog-block-start: calc(50dvh - 50%);
+  --ch-dialog-inline-start: calc(50dvw - 50%);
+
   /**
    * @prop --ch-dialog-block-size:
    * Specifies the block size of the dialog. Useful for scenarios where the
@@ -123,7 +135,7 @@ $ch-dialog-y--same-layer: calc(
 
   // Necessary when the dialog is not placed in a new top layer. For example,
   // when nesting dropdowns
-  //position: fixed;
+  position: fixed;
 
   // Reset browser defaults
   margin: 0;
@@ -137,9 +149,14 @@ $ch-dialog-y--same-layer: calc(
   inset-inline-start: 0;
 }
 
+// - - - - - - - - - - - - - - - -
+//           Dialog
+// - - - - - - - - - - - - - - - -
 dialog {
+  // Reset browser default
+  margin: unset;
+
   position: fixed;
-  translate: $ch-dialog-x $ch-dialog-y;
   overflow: visible;
 
   inline-size: var(--ch-dialog-inline-size);
@@ -148,6 +165,11 @@ dialog {
   min-block-size: var(--ch-dialog-min-block-size);
   max-inline-size: var(--ch-dialog-max-inline-size);
   max-block-size: var(--ch-dialog-max-block-size);
+
+  //Positioning
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  translate: $ch-dialog-x $ch-dialog-y;
 }
 
 // - - - - - - - - - - - - - - - -
@@ -190,7 +212,6 @@ dialog {
   cursor: move;
   // Remove any type of pointer when dragging, to make "cursor: move" effective
   ::slotted(*) {
-    opacity: 0.2;
     pointer-events: none !important;
     user-select: none;
   }

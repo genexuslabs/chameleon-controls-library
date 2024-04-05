@@ -25,7 +25,7 @@
         background-color: aliceblue;
       }
 
-      ch-combo-box:focus-visible {
+      ch-combo-box:focus {
         border-color: blueviolet;
       }
 
@@ -47,6 +47,10 @@
       ch-combo-box::part(item) {
         border: 1px solid;
         background-color: rgb(215, 179, 136);
+      }
+
+      ch-combo-box::part(item selected) {
+        outline: 2px solid;
       }
 
       ch-combo-box::part(item):hover {

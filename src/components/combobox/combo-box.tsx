@@ -19,6 +19,7 @@ import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
+import { focusComposedPath } from "../common/helpers";
 
 const SELECTED_PART = "selected";
 const DISABLED_PART = "disabled";
@@ -537,7 +538,12 @@ export class ChComboBox
     // The focus must return to the Host when the popover is closed using the
     // Escape key
     this.expanded = false;
-    this.el.focus();
+
+    // Return the focus to the control if the popover was closed with the
+    // escape key or by clicking again the combo-box
+    if (focusComposedPath().includes(this.el)) {
+      this.el.focus();
+    }
 
     this.#checkAndEmitValueChange();
   };

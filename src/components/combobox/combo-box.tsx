@@ -580,6 +580,8 @@ export class ChComboBox
       ) : (
         <button
           key={item.value}
+          role="option"
+          aria-selected={item.value === this.currentSelectedValue}
           tabindex="-1"
           class={
             hasImages
@@ -695,10 +697,10 @@ export class ChComboBox
       <Host
         role={!mobileDevice ? "combobox" : null}
         aria-controls={!mobileDevice ? this.#popoverId : null}
-        aria-disabled={this.disabled ? "true" : null}
+        aria-disabled={!mobileDevice && this.disabled ? "true" : null}
         aria-expanded={!mobileDevice ? this.expanded.toString() : null}
-        aria-haspopup="true"
-        aria-placeholder={!mobileDevice ? this.placeholder : null}
+        aria-haspopup={!mobileDevice ? "true" : null}
+        // ComboBox controls do not have aria-placeholder attr
         tabindex={!mobileDevice ? "0" : null}
         class={this.disabled ? "ch-disabled" : null}
         onKeyDown={
@@ -735,6 +737,7 @@ export class ChComboBox
               <ch-popover
                 id={this.#popoverId}
                 role="listbox"
+                aria-hidden="false"
                 part="window"
                 actionById
                 actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it

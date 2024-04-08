@@ -483,8 +483,10 @@ export class ChDialog {
   };
 
   #evaluateClickOnDocument = (e: MouseEvent) => {
-    const conditionToClose = !e.composedPath().includes(this.#dialogRef);
-    if (conditionToClose) {
+    const clickWasMadeOutsideTheDialog = !e
+      .composedPath()
+      .includes(this.#dialogRef);
+    if (clickWasMadeOutsideTheDialog) {
       this.hidden = true;
       document.removeEventListener("click", this.#evaluateClickOnDocument, {
         capture: true

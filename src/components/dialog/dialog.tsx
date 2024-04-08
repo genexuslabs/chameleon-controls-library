@@ -707,6 +707,7 @@ export class ChDialog {
         }}
       >
         <dialog
+          aria-labelledby={this.caption ? "heading" : null}
           part={dialogParts}
           onClose={this.#handleDialogToggle}
           ref={el => (this.#dialogRef = el)}
@@ -722,7 +723,7 @@ export class ChDialog {
             >
               <slot name="header-start" />
               {this.caption && (
-                <h2 part="caption" class="caption">
+                <h2 id="heading" part="caption" class="caption">
                   {this.caption}
                 </h2>
               )}

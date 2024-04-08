@@ -570,6 +570,9 @@ export class ChDialog {
     if (this.adjustPositionAfterResize) {
       this.#unfixDialogPosition();
     } else {
+      /**
+       * If the resize was performed from a block-start or inline-start edge, or any of the continuous vertices, it is necessary to reset DIALOG_BLOCK_START or DIALOG_INLINE_START, as they configure the block-start or inline-start of the dialog. This is only necessary if the dialog is not repositioned after the resize.
+       */
       this.#fixDialogPosition();
     }
 

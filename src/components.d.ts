@@ -286,43 +286,6 @@ export namespace Components {
          */
         "value": string;
     }
-    /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
-     */
-    interface ChDialog {
-        /**
-          * `true` if the dialog should be repositioned after resize.
-         */
-        "adjustPositionAfterResize": boolean;
-        /**
-          * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
-         */
-        "allowDrag": "box" | "header" | "no";
-        /**
-          * Refers to the dialog title. I will ve visible if 'showHeader´is true.
-         */
-        "caption": string;
-        /**
-          * `true` if the control is not stacked with another top layer.
-         */
-        "firstLayer": boolean;
-        /**
-          * Specifies whether the dialog is hidden or visible.
-         */
-        "hidden": boolean;
-        /**
-          * Specifies whether the dialog is a modal or not.
-         */
-        "modal": true;
-        /**
-          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
-         */
-        "resizable": boolean;
-        /**
-          * Specifies whether the dialog header is hidden or visible.
-         */
-        "showHeader": true;
-    }
     interface ChDropdown {
         /**
           * Specifies if the current parent of the item is the action-group control.
@@ -2306,10 +2269,6 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
-export interface ChDialogCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChDialogElement;
-}
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
@@ -2562,27 +2521,6 @@ declare global {
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
-    };
-    interface HTMLChDialogElementEventMap {
-        "dialogOpened": any;
-        "dialogClosed": any;
-    }
-    /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
-     */
-    interface HTMLChDialogElement extends Components.ChDialog, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChDialogElementEventMap>(type: K, listener: (this: HTMLChDialogElement, ev: ChDialogCustomEvent<HTMLChDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChDialogElementEventMap>(type: K, listener: (this: HTMLChDialogElement, ev: ChDialogCustomEvent<HTMLChDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChDialogElement: {
-        prototype: HTMLChDialogElement;
-        new (): HTMLChDialogElement;
     };
     interface HTMLChDropdownElementEventMap {
         "expandedChange": boolean;
@@ -3550,7 +3488,6 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
-        "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
@@ -3854,51 +3791,6 @@ declare namespace LocalJSX {
           * The value of the control.
          */
         "value": string;
-    }
-    /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
-     */
-    interface ChDialog {
-        /**
-          * `true` if the dialog should be repositioned after resize.
-         */
-        "adjustPositionAfterResize"?: boolean;
-        /**
-          * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
-         */
-        "allowDrag"?: "box" | "header" | "no";
-        /**
-          * Refers to the dialog title. I will ve visible if 'showHeader´is true.
-         */
-        "caption"?: string;
-        /**
-          * `true` if the control is not stacked with another top layer.
-         */
-        "firstLayer"?: boolean;
-        /**
-          * Specifies whether the dialog is hidden or visible.
-         */
-        "hidden"?: boolean;
-        /**
-          * Specifies whether the dialog is a modal or not.
-         */
-        "modal"?: true;
-        /**
-          * Emitted when the dialog is closed.
-         */
-        "onDialogClosed"?: (event: ChDialogCustomEvent<any>) => void;
-        /**
-          * Emitted when the dialog is opened.
-         */
-        "onDialogOpened"?: (event: ChDialogCustomEvent<any>) => void;
-        /**
-          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
-         */
-        "resizable"?: boolean;
-        /**
-          * Specifies whether the dialog header is hidden or visible.
-         */
-        "showHeader"?: true;
     }
     interface ChDropdown {
         /**
@@ -5913,7 +5805,6 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
-        "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
@@ -5998,10 +5889,6 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
-            /**
-             * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
-             */
-            "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;

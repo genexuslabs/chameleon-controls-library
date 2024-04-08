@@ -734,7 +734,7 @@ export class ChDialog {
               ></button>
             </header>
           )}
-          <div part="container">
+          <div part="content">
             <slot />
           </div>
           {this.resizable &&

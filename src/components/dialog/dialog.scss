@@ -28,7 +28,18 @@ $ch-dialog-y--same-layer: calc(
 }
 
 :host {
+  /**
+   * @prop --ch-dialog-block-start:
+   * This specifies the value used in calculating the dialog's position along the y-axis. The default value centers the dialog along the y-axis.
+   * @default calc(50dvh - 50%)
+   */
   --ch-dialog-block-start: calc(50dvh - 50%);
+
+  /**
+   * @prop --ch-dialog-inline-start:
+   * This specifies the value used in calculating the dialog's position along the x-axis. The default value centers the dialog along the x-axis.
+   * @default calc(50dvw - 50%);
+   */
   --ch-dialog-inline-start: calc(50dvw - 50%);
 
   /**

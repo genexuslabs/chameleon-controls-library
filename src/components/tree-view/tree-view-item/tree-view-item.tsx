@@ -34,6 +34,7 @@ import {
   getTreeItemLevelPart
 } from "../../renders/tree-view/utils";
 import { ImageRender } from "../../../common/types";
+import { CheckboxParts } from "../../checkbox/types";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -64,15 +65,44 @@ const ESCAPE_KEY = "Escape";
 const getCheckboxExportPart = (part: string): string =>
   `${part}:checkbox__${part}`;
 
+const CONTAINER_PART: CheckboxParts = "container";
+const INPUT_PART: CheckboxParts = "input";
+const OPTION_PART: CheckboxParts = "option";
+const LABEL_PART: CheckboxParts = "label";
+
+const CHECKED_PART: CheckboxParts = "checked";
+const DISABLED_PART: CheckboxParts = "disabled";
+const INDETERMINATE_PART: CheckboxParts = "indeterminate";
+const UNCHECKED_PART: CheckboxParts = "unchecked";
+
 const CHECKBOX_EXPORT_PARTS = [
-  "container",
-  "input",
-  "option",
-  "checked",
-  "indeterminate"
+  CONTAINER_PART,
+  INPUT_PART,
+  OPTION_PART,
+  LABEL_PART,
+  CHECKED_PART,
+  DISABLED_PART,
+  INDETERMINATE_PART,
+  UNCHECKED_PART
 ]
   .map(getCheckboxExportPart)
   .join(",");
+
+const getCheckboxParts = (
+  checked: boolean,
+  indeterminate: boolean,
+  disabled: boolean
+) => {
+  if (indeterminate) {
+    return disabled
+      ? `${DISABLED_PART} ${INDETERMINATE_PART}`
+      : INDETERMINATE_PART;
+  }
+
+  const checkedValue = checked ? CHECKED_PART : UNCHECKED_PART;
+
+  return disabled ? `${DISABLED_PART} ${checkedValue}` : checkedValue;
+};
 
 @Component({
   tag: "ch-tree-view-item",
@@ -661,9 +691,16 @@ export class ChTreeViewItem {
     // Ctrl key
     if (mouseEventModifierKey(event)) {
       this.#toggleSelected();
+      return;
     }
+
+    // Double click was triggered, don't update the selection or expand
+    if (event.detail >= 2) {
+      return;
+    }
+
     // Expand on click interaction
-    else if (this.expandOnClick) {
+    if (this.expandOnClick) {
       this.#toggleExpand(event);
     }
     // Click only selects the item
@@ -724,6 +761,7 @@ export class ChTreeViewItem {
       return;
     }
 
+    // The action was provoked by the keyboard, emit openReference event
     this.#emitOpenReference();
 
     // Enter or space
@@ -752,8 +790,9 @@ export class ChTreeViewItem {
 
   #handleCheckedChange = (event: ChCheckboxCustomEvent<any> & InputEvent) => {
     event.stopPropagation();
+    const chCheckboxRef = event.target;
 
-    const checked = (event.target as HTMLChCheckboxElement).checked;
+    const checked = chCheckboxRef.checkedValue === chCheckboxRef.value;
     this.checked = checked;
     this.indeterminate = false; // Changing the checked value makes it no longer indeterminate
 
@@ -909,9 +948,11 @@ export class ChTreeViewItem {
               accessibleName={this.caption}
               class="checkbox"
               exportparts={CHECKBOX_EXPORT_PARTS}
-              part={`checkbox${this.disabled ? " disabled" : ""}${
-                this.checked ? " checked" : ""
-              }${this.indeterminate ? " indeterminate" : ""}`}
+              part={`checkbox ${getCheckboxParts(
+                this.checked,
+                this.indeterminate,
+                this.disabled
+              )}`}
               checkedValue="true"
               disabled={this.disabled}
               indeterminate={this.indeterminate}

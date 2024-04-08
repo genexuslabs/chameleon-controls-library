@@ -372,6 +372,10 @@ export class ChGridColumn {
     eventInfo.stopPropagation();
   };
 
+  private selectorTouchEndHandler = (eventInfo: TouchEvent) => {
+    eventInfo.stopPropagation();
+  };
+
   render() {
     return (
       <Host>
@@ -416,6 +420,7 @@ export class ChGridColumn {
               .filter(part => part !== "")
               .join(" ")}
             onClick={this.selectorClickHandler}
+            onTouchEnd={this.selectorTouchEndHandler}
             checked={this.richRowSelectorState === "checked"}
             indeterminate={this.richRowSelectorState === "indeterminate"}
           />

@@ -10,13 +10,13 @@ import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./components/icon/icon";
+import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 import { MarkdownCodeRender } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -31,6 +31,7 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -46,13 +47,13 @@ export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./components/icon/icon";
+export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
 export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 export { MarkdownCodeRender } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -67,6 +68,7 @@ export { ecLevel } from "./components/qr/ch-qr";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -256,10 +258,6 @@ export namespace Components {
          */
         "caption": string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked": boolean;
-        /**
           * The value when the checkbox is 'on'
          */
         "checkedValue": string;
@@ -367,6 +365,10 @@ export namespace Components {
          */
         "href": string;
         /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback": (event: UIEvent) => void;
+        /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
         "leaf": boolean;
@@ -462,20 +464,20 @@ export namespace Components {
          */
         "itemsInfo": Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
   >;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layoutModel": LayoutSplitterDistribution;
+        "layout": FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */
         "layoutSplitterParts": string;
         /**
-          * Schedules a new render of the control even if no state changed.
+          * Schedules a new render for a leaf even if no state changed.
          */
-        "refreshLayout": () => Promise<void>;
+        "refreshLeaf": (leafId: string) => Promise<void>;
         /**
           * Given the view ID and the item id, remove the page of the item from the view.
          */
@@ -491,6 +493,10 @@ export namespace Components {
          */
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
+          * Add a widget in a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type. If a widget with the same ID already exists, this method has not effect.  To add a widget in a `"single-content"` type leaf, use the `addSiblingView` method.
+         */
+        "addWidget": (leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>;
+        /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass": string;
@@ -501,7 +507,11 @@ export namespace Components {
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
-        "removeView": (viewId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>;
+        "removeView": (leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>;
+        /**
+          * Remove a widget from a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type.  To remove a widget from a `"single-content"` type leaf, use the `removeView` method.
+         */
+        "removeWidget": (widgetId: string) => Promise<void>;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -565,6 +575,10 @@ export namespace Components {
          */
         "expandRow": (rowId: string) => Promise<void>;
         /**
+          * Retrieves information about the currently focused cell.
+         */
+        "getFocusedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
           * Retrieves the rowId of the currently focused row.
          */
         "getFocusedRow": () => Promise<string>;
@@ -600,6 +614,10 @@ export namespace Components {
           * Retrieves the list of rowId of the selected rows.
          */
         "getSelectedRows": () => Promise<string[]>;
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode": "none" | "select" | "focus";
         /**
           * An object that contains localized strings for the grid.
          */
@@ -663,6 +681,10 @@ export namespace Components {
           * @param selected - A boolean indicating whether to select or deselect the row.
          */
         "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
+        /**
+          * Synchronizes the state of a row in the grid.
+         */
+        "syncRowState": (el: HTMLElement) => Promise<void>;
     }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
@@ -1639,6 +1661,30 @@ export namespace Components {
          */
         "tooltipShowMode": "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl": string;
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href": string;
+        /**
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded": boolean;
+        /**
+          * Specifies the name of the theme to instantiate
+         */
+        "name": string;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -2379,6 +2425,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChThemeElement;
 }
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3293,6 +3343,29 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChThemeElementEventMap {
+        "themeLoaded": ChThemeLoadedEvent;
+    }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface HTMLChThemeElement extends Components.ChTheme, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChThemeElement: {
+        prototype: HTMLChThemeElement;
+        new (): HTMLChThemeElement;
+    };
     interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
     }
     var HTMLChTimerElement: {
@@ -3532,6 +3605,7 @@ declare global {
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-theme": HTMLChThemeElement;
         "ch-timer": HTMLChTimerElement;
         "ch-tooltip": HTMLChTooltipElement;
         "ch-tree": HTMLChTreeElement;
@@ -3745,13 +3819,9 @@ declare namespace LocalJSX {
          */
         "caption"?: string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked"?: boolean;
-        /**
           * The value when the checkbox is 'on'
          */
-        "checkedValue"?: string;
+        "checkedValue": string;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -3779,11 +3849,11 @@ declare namespace LocalJSX {
         /**
           * The value when the checkbox is 'off'
          */
-        "unCheckedValue"?: string;
+        "unCheckedValue": string;
         /**
           * The value of the control.
          */
-        "value"?: string;
+        "value": string;
     }
     /**
      * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
@@ -3859,6 +3929,10 @@ declare namespace LocalJSX {
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href"?: string;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback"?: (event: UIEvent) => void;
         /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
@@ -3958,12 +4032,12 @@ declare namespace LocalJSX {
          */
         "itemsInfo"?: Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem>
+    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
   >;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layoutModel"?: LayoutSplitterDistribution;
+        "layout"?: FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */
@@ -4038,6 +4112,10 @@ declare namespace LocalJSX {
           * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
          */
         "columnResizeMode"?: "single" | "splitter";
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode"?: "none" | "select" | "focus";
         /**
           * An object that contains localized strings for the grid.
          */
@@ -5198,6 +5276,34 @@ declare namespace LocalJSX {
          */
         "tooltipShowMode"?: "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl"?: string;
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href"?: string;
+        /**
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded"?: boolean;
+        /**
+          * Specifies the name of the theme to instantiate
+         */
+        "name"?: string;
+        /**
+          * Event emitted when the theme has successfully loaded
+         */
+        "onThemeLoaded"?: (event: ChThemeCustomEvent<ChThemeLoadedEvent>) => void;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -5862,6 +5968,7 @@ declare namespace LocalJSX {
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
+        "ch-theme": ChTheme;
         "ch-timer": ChTimer;
         "ch-tooltip": ChTooltip;
         "ch-tree": ChTree;
@@ -6030,6 +6137,13 @@ declare module "@stencil/core" {
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            /**
+             * It allows you to load a style sheet in a similar way to the
+             * native LINK or STYLE tags, but assigning it a name so that
+             * it can be reused in different contexts,
+             * either in the Document or in a Shadow-Root.
+             */
+            "ch-theme": LocalJSX.ChTheme & JSXBase.HTMLAttributes<HTMLChThemeElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tooltip": LocalJSX.ChTooltip & JSXBase.HTMLAttributes<HTMLChTooltipElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;

@@ -108,6 +108,11 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly href: string;
 
   /**
+   * This callback is executed when an item is clicked.
+   */
+  @Prop() readonly itemClickCallback: (event: UIEvent) => void;
+
+  /**
    * Specifies whether the item contains a subtree. `true` if the item does not
    * have a subtree.
    */
@@ -303,6 +308,10 @@ export class ChDropDown implements ChComponent {
   #handleButtonClick = (event: PointerEvent) => {
     event.stopPropagation();
 
+    if (this.level !== -1 && this.itemClickCallback) {
+      this.itemClickCallback(event);
+    }
+
     // If the nested dropdown is expanded and its expandable button is clicked
     // with the MOUSE and not the keyboard, do not change the visibility
     if (this.nestedDropdown && this.expanded && event.pointerType) {
@@ -314,6 +323,18 @@ export class ChDropDown implements ChComponent {
     //   // mouse we could have expanded a different dropdown
     //   this.#closeDropdownSibling();
     // }
+
+    // WA: When clicking a leaf, its dropdown ancestors must be closed
+    if (this.leaf) {
+      this.el.dispatchEvent(
+        new CustomEvent("recursiveClose", {
+          bubbles: true,
+          detail: this.level + 1
+        })
+      );
+
+      return;
+    }
 
     this.expanded = !this.expanded;
     this.expandedChange.emit(!this.expanded);

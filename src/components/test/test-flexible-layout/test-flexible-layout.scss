@@ -10,26 +10,17 @@ ch-test-flexible-layout {
 
 .flexible-layout {
   &::part(bar visible) {
-    background-color: #e7e7e7;
+    background-color: var(--colors-foundation-un-color__gray--400);
   }
 
   &::part(page-container inline) {
-    background-color: #f2f2f2;
+    background-color: var(--colors-foundation-un-color__gray--200);
   }
 
   &::part(tab-list inline) {
-    background-color: #e8e8e9;
+    background-color: var(--colors-foundation-un-color__gray--300);
     inline-size: 48px;
     gap: 4px;
-  }
-
-  &::part(view inlineEnd) {
-    grid-template-columns: 1fr max-content;
-  }
-
-  // Change the visual order, but no the order in the HTML
-  &::part(tab-list inlineEnd) {
-    order: 1;
   }
 
   &::part(button inline) {
@@ -92,7 +83,7 @@ ch-test-flexible-layout {
     padding-block: 6px;
     padding-inline: 16px 8px;
     gap: 8px;
-    background-color: #ececec;
+    background-color: var(--colors-foundation-un-color__gray--200);
 
     &:focus-visible {
       outline: 1px solid currentColor;
@@ -101,7 +92,7 @@ ch-test-flexible-layout {
   }
 
   &::part(button block selected) {
-    background-color: #fff;
+    background-color: var(--elevation-un-elevation--2);
   }
 
   &::part(button block selected blockEnd) {
@@ -119,7 +110,7 @@ ch-test-flexible-layout {
   }
 
   &::part(tab-list block) {
-    background-color: #f7f7f7;
+    background-color: var(--colors-foundation-un-color__gray--200);
     overflow: auto;
   }
 

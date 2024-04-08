@@ -33,23 +33,58 @@ export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
 
 export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
   accessibleRole?: ViewAccessibleRole;
+} & FlexibleLayoutLeafConfiguration;
+
+export type FlexibleLayoutLeafConfiguration =
+  | FlexibleLayoutLeafConfigurationTabbed
+  | FlexibleLayoutLeafConfigurationSingleContent;
+
+export type FlexibleLayoutLeafConfigurationTabbed = {
   closeButtonHidden?: boolean;
   selectedWidgetId?: string;
   showCaptions?: boolean;
-  viewType: ViewType;
+  tabDirection: FlexibleLayoutLeafTabDirection;
+
+  /**
+   * Specifies whether the tab is displayed before or after of its content.
+   * If not specified, defaults to `"start"`
+   */
+  tabPosition?: FlexibleLayoutLeafTabPosition;
+  type: Extract<FlexibleLayoutLeafType, "tabbed">;
   widgets: FlexibleLayoutWidget[];
 };
+
+export type FlexibleLayoutLeafConfigurationSingleContent = {
+  type: Extract<FlexibleLayoutLeafType, "single-content">;
+  widget: FlexibleLayoutWidget;
+} & FlexibleLayoutWidgetRender;
+
+export type FlexibleLayoutLeafType = "tabbed" | "single-content";
+
+export type FlexibleLayoutLeafTabDirection = "block" | "inline";
+export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
 export type FlexibleLayoutGroup = Omit<
   LayoutSplitterDistributionGroup,
   "items"
 > & {
   accessibleRole?: ViewAccessibleRole;
-  expanded?: boolean;
   items: FlexibleLayoutItem[];
 };
 
+export type FlexibleLayoutWidgetExtended = {
+  parentLeafId: string;
+  info: FlexibleLayoutWidget;
+};
+
 export type FlexibleLayoutWidget = {
+  /**
+   * If `true` a div will be rendered as a parent wrapper for the widget render.
+   * Only use `false` in StencilJS contexts where the `slot={widgetId}` and
+   * `key={widgetId}` must be added.
+   */
+  addWrapper?: boolean;
+
   /**
    * If `true` when a widget is closed its render state and DOM nodes won't be
    * destroyed. Defaults to `false`.
@@ -57,6 +92,7 @@ export type FlexibleLayoutWidget = {
   conserveRenderState?: boolean;
   id: string;
   name: string;
+
   startImageSrc?: string;
 
   /**
@@ -64,6 +100,14 @@ export type FlexibleLayoutWidget = {
    */
   startImageType?: ImageRender;
   wasRendered?: boolean;
+} & FlexibleLayoutWidgetRender;
+
+type FlexibleLayoutWidgetRender = {
+  /**
+   * Specifies the render of the widget. If not specified, the id of the widget
+   * will be used as the `renderId`.
+   */
+  renderId?: string;
 };
 
 export type FlexibleLayoutItemBase = {
@@ -71,46 +115,37 @@ export type FlexibleLayoutItemBase = {
   name: string;
 };
 
-export type FlexibleLayoutRenders = { [key: string]: () => any };
+export type FlexibleLayoutRenders = {
+  [key: string]: (widgetInfo: FlexibleLayoutWidget) => any;
+};
 
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayoutItemExtended<
-  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf
+  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf,
+  R extends FlexibleLayoutLeafType
 > = T extends FlexibleLayoutLeaf
   ? {
       item: FlexibleLayoutLeaf;
       parentItem: FlexibleLayoutGroup;
-      view: FlexibleLayoutLeafInfo;
+      leafInfo: FlexibleLayoutLeafInfo<R>;
     }
   : {
       item: FlexibleLayoutGroup;
       parentItem: FlexibleLayoutGroup;
     };
 
-export type FlexibleLayoutLeafInfo = {
+export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {
   /**
    * Same as the leaf id (item.id).
    */
   id: string;
 
-  type: ViewType;
-
-  /**
-   * Defaults to `false`
-   */
-  closeButtonHidden?: boolean;
-  expanded?: boolean;
   exportParts: string;
-  selectedWidgetId?: string;
-
-  /**
-   * Defaults to `true`
-   */
-  showCaptions?: boolean;
-  widgets: FlexibleLayoutWidget[];
-};
+} & (T extends "tabbed"
+  ? FlexibleLayoutLeafConfigurationTabbed
+  : FlexibleLayoutLeafConfigurationSingleContent);
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Event info

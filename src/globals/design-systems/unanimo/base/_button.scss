@@ -1,5 +1,131 @@
 @import "./common";
 
+%button-base {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  justify-content: center;
+  gap: var(--spacing-un-spacing--s); // Used when the button has icons
+  min-block-size: 32px;
+  font-family: SourceSansPro_SemiBold;
+  font-size: 14px;
+  line-height: 18px; // 128.571%
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+%button-primary {
+  @extend %button-base;
+  background-color: var(--accents-un-accent__primary);
+  border-radius: var(--border-radius-un-border__radius--s);
+  color: var(--text-un-text__on-primary);
+  padding-inline: var(--spacing-un-spacing--xl);
+
+  &--focus-visible {
+    @include focus-style();
+  }
+
+  &--hover {
+    background-color: var(--accents-un-accent__primary--hover);
+  }
+
+  &--active {
+    background-color: var(--accents-un-accent__primary--active);
+  }
+
+  &--disabled {
+    background-color: var(--accents-un-accent__disabled);
+    color: var(--text-un-text__on-disabled);
+  }
+
+  &--error {
+    background: var(--accents-un-accent__destructive);
+  }
+}
+
+%button-secondary {
+  @extend %button-base;
+  border: var(--border-radius-un-border__radius--xs) solid
+    var(--borders-un-border-color__primary);
+  border-radius: var(--border-radius-un-border__radius--s);
+  color: var(--text-un-text__primary);
+  padding-inline: var(--spacing-un-spacing--xl);
+
+  &--focus-visible {
+    @include focus-style();
+  }
+
+  &--hover {
+    background-color: var(--accents-un-accent__primary-dim--hover);
+    border-color: var(--borders-un-border-color__primary--hover);
+    color: var(--text-un-text__primary--hover);
+  }
+
+  &--active {
+    color: var(--text-un-text__primary--active);
+    border-color: var(--borders-un-border-color__primary--active);
+  }
+
+  &--disabled {
+    border-color: var(--borders-un-border-color__disabled);
+    color: var(--text-un-text__on-disabled);
+  }
+
+  &--error {
+    border-color: var(--borders-un-border-color__destructive);
+    color: var(--text-un-text__destructive);
+  }
+}
+
+%button-tertiary {
+  @extend %button-base;
+  color: var(--text-un-text__primary);
+  padding-inline: var(--spacing-un-spacing--l);
+
+  &--focus-visible {
+    @include focus-style($outline: true);
+  }
+
+  &--hover {
+    background-color: var(--accents-un-accent__primary-dim--hover);
+    color: var(--text-un-text__primary--hover);
+  }
+
+  &--active {
+    color: var(--text-un-text__primary--active);
+  }
+
+  &--disabled {
+    color: var(--text-un-text__on-disabled);
+  }
+
+  &--error {
+    color: var(--text-un-text__destructive);
+  }
+}
+
+%button-icon {
+  content: "";
+  display: block;
+  inline-size: var(--spacing-un-spacing--xl);
+  block-size: var(--spacing-un-spacing--xl);
+  -webkit-mask: var(--ch-button-icon) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
+}
+
+%button-icon-only {
+  padding-inline: var(--spacing-un-spacing--s);
+}
+
+%button-icon-and-text,
+%button-icon-after-and-text {
+  padding-inline: var(--spacing-un-spacing--l);
+}
+
+%button-icon-after-and-text--before {
+  order: 1;
+}
+
 %text-link {
   color: var(--link-un-link__font-color);
   font-size: 14px;
@@ -8,137 +134,139 @@
   text-decoration-line: underline;
 }
 
-@mixin button-classes() {
-  %button-base {
-    display: grid;
-    gap: var(--spacing-un-spacing--s); // Used when the button has icons
-    min-block-size: 32px;
-    font-family: SourceSansPro_SemiBold;
-    font-size: 14px;
-    line-height: 18px; // 128.571%
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-  }
-
-  // Button primary
-  .button-primary {
-    @extend %button-base;
-    background-color: var(--accents-un-accent__primary);
-    border-radius: var(--border-radius-un-border__radius--s);
-    color: var(--text-un-text__on-primary);
-    padding-inline: var(--spacing-un-spacing--xl);
+@mixin button-primary(
+  $selector: ".button-primary",
+  $add--disabled: true,
+  $add--error: true
+) {
+  #{$selector} {
+    @extend %button-primary;
 
     &:focus-visible {
-      @include focus-style();
+      @extend %button-primary--focus-visible;
     }
 
     &:hover {
-      background-color: var(--accents-un-accent__primary--hover);
+      @extend %button-primary--hover;
     }
 
     &:active {
-      background-color: var(--accents-un-accent__primary--active);
+      @extend %button-primary--active;
     }
 
-    &:disabled,
-    &--disabled {
-      background-color: var(--accents-un-accent__disabled);
-      color: var(--text-un-text__on-disabled);
+    @if $add--disabled == true {
+      &:disabled,
+      &--disabled {
+        @extend %button-primary--disabled;
+      }
     }
 
-    &--error {
-      background: var(--accents-un-accent__destructive);
+    @if $add--error == true {
+      &--error {
+        @extend %button-primary--error;
+      }
     }
   }
+}
+
+@mixin button-secondary(
+  $selector: ".button-secondary",
+  $add--disabled: true,
+  $add--error: true
+) {
+  #{$selector} {
+    @extend %button-secondary;
+
+    &:focus-visible {
+      @extend %button-secondary--focus-visible;
+    }
+
+    &:hover {
+      @extend %button-secondary--hover;
+    }
+
+    &:active {
+      @extend %button-secondary--active;
+    }
+
+    @if $add--disabled == true {
+      &:disabled,
+      &--disabled {
+        @extend %button-secondary--disabled;
+      }
+    }
+
+    @if $add--error == true {
+      &--error {
+        @extend %button-secondary--error;
+      }
+    }
+  }
+}
+
+@mixin button-tertiary(
+  $selector: ".button-tertiary",
+  $add--disabled: true,
+  $add--error: true
+) {
+  #{$selector} {
+    @extend %button-tertiary;
+
+    &:focus-visible {
+      @extend %button-tertiary--focus-visible;
+    }
+
+    &:hover {
+      @extend %button-tertiary--hover;
+    }
+
+    &:active {
+      @extend %button-tertiary--active;
+    }
+
+    @if $add--disabled == true {
+      &:disabled,
+      &--disabled {
+        @extend %button-tertiary--disabled;
+      }
+    }
+
+    @if $add--error == true {
+      &--error {
+        @extend %button-tertiary--error;
+      }
+    }
+  }
+}
+
+@mixin button-classes() {
+  // Button primary
+  @include button-primary();
 
   // Button secondary
-  .button-secondary {
-    @extend %button-base;
-    border: var(--border-radius-un-border__radius--xs) solid
-      var(--borders-un-border-color__primary);
-    border-radius: var(--border-radius-un-border__radius--s);
-    color: var(--text-un-text__primary);
-    padding-inline: var(--spacing-un-spacing--xl);
-
-    &:focus-visible {
-      @include focus-style();
-    }
-
-    &:hover {
-      background-color: var(--accents-un-accent__primary-dim--hover);
-      border-color: var(--borders-un-border-color__primary--hover);
-      color: var(--text-un-text__primary--hover);
-    }
-
-    &:active {
-      color: var(--text-un-text__primary--active);
-      border-color: var(--borders-un-border-color__primary--active);
-    }
-
-    &:disabled,
-    &--disabled {
-      border-color: var(--borders-un-border-color__disabled);
-      color: var(--text-un-text__on-disabled);
-    }
-
-    &--error {
-      border-color: var(--borders-un-border-color__destructive);
-      color: var(--text-un-text__destructive);
-    }
-  }
+  @include button-secondary();
 
   // Button tertiary
-  .button-tertiary {
-    @extend %button-base;
-    color: var(--text-un-text__primary);
-    padding-inline: var(--spacing-un-spacing--l);
-
-    &:focus-visible {
-      @include focus-style();
-    }
-
-    &:hover {
-      background-color: var(--accents-un-accent__primary-dim--hover);
-      color: var(--text-un-text__primary--hover);
-    }
-
-    &:active {
-      color: var(--text-un-text__primary--active);
-    }
-
-    &:disabled,
-    &--disabled {
-      color: var(--text-un-text__on-disabled);
-    }
-
-    &--error {
-      color: var(--text-un-text__destructive);
-    }
-  }
+  @include button-tertiary();
 
   // Button with icon
   .button-icon-only::before,
   .button-icon-and-text::before,
   .button-icon-after-and-text::before {
-    content: "";
-    display: block;
-    inline-size: var(--spacing-un-spacing--xl);
-    block-size: var(--spacing-un-spacing--xl);
-    -webkit-mask: var(--ch-button-icon) 50% 50% / 100% 100% no-repeat;
-    background-color: currentColor;
+    @extend %button-icon;
   }
 
   .button-icon-only {
-    padding-inline: var(--spacing-un-spacing--s);
+    @extend %button-icon-only;
   }
 
   .button-icon-and-text,
   .button-icon-after-and-text {
-    padding-inline: var(--spacing-un-spacing--l);
+    @extend %button-icon-and-text;
   }
 
   .button-icon-after-and-text::before {
-    order: 1;
+    @extend %button-icon-after-and-text--before;
   }
 }
 

@@ -14,7 +14,7 @@
 
 %heading-3 {
   // WA. This is not the heading 3 definition from Unanimo
-  font-family: SourceSansPro_Bold;
+  font-family: SourceSansPro_Regular;
   font-size: 18px;
   line-height: 20px; // 109.091%
   letter-spacing: 0.4px;
@@ -39,7 +39,7 @@
   letter-spacing: 0.2px;
 }
 
-%tab {
+%tab-text {
   font-family: SourceSansPro_SemiBold;
   font-size: 14px;
   line-height: 18px; // 128.571%
@@ -67,7 +67,7 @@
     @extend %text-body-2;
   }
 
-  .tab {
-    @extend %tab;
+  .tab-text {
+    @extend %tab-text;
   }
 }

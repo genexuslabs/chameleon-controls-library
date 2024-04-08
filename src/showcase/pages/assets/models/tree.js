@@ -283,6 +283,7 @@ const kbExplorerModel_MainPrograms = [
     dropDisabled: true,
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
   {
@@ -580,6 +581,7 @@ const kbExplorerModel_RootModule_General_UI = [
     class: "tree-view-item tree-view-item--pending-commit",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   }
 ];
@@ -590,6 +592,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     caption: "ContactUs",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
   {
@@ -598,6 +601,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     class: "tree-view-item tree-view-item--pending-commit",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
   {
@@ -605,6 +609,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     caption: "MyApps",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   }
 ];
@@ -742,12 +747,14 @@ const importOBjectsPanelModel = [
     id: "Panel.ActionGroupTests",
     caption: "ActionGroupTests",
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     leaf: true
   },
   {
     id: "Panel.DropdownTests",
     caption: "DropdownTests",
     startImgSrc: "assets/icons/panel-for-sd.svg",
+    metadata: "Panel",
     leaf: true
   }
 ];

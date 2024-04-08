@@ -17,6 +17,7 @@
 @import "./components/card";
 @import "./components/header";
 @import "./components/markdown";
+@import "./components/tab";
 @import "./components/tree-view";
 @import "./components/tree-view-navigation";
 
@@ -57,6 +58,7 @@
   $dropdown: true,
   $header: true,
   $markdown: true,
+  $tab: true,
   $tree-view: true,
   $tree-view-navigation: true
 ) {
@@ -125,10 +127,6 @@
         @include spacing();
       }
     }
-
-    @if $font-face == true {
-      font-family: SourceSansPro_Regular;
-    }
   }
 
   // Default background-color and color
@@ -136,6 +134,10 @@
     body {
       background-color: var(--surface-un-surface--alternative);
       color: var(--text-un-text__on-surface--positive);
+
+      @if $font-face == true {
+        font-family: SourceSansPro_Regular;
+      }
     }
   }
 
@@ -205,6 +207,11 @@
     // markdown
     @if $markdown == true {
       @include markdown();
+    }
+
+    // tab
+    @if $tab == true {
+      @include tab();
     }
 
     // tree-view

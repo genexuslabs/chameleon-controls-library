@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property              | Attribute               | Description                                                     | Type                                                                                           | Default     |
-| --------------------- | ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ----------- |
-| `itemsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem>>`                                  | `undefined` |
-| `layoutModel`         | --                      | Specifies the distribution of the items in the flexible layout. | `{ id: "root"; direction: LayoutSplitterDirection; items: LayoutSplitterDistributionItem[]; }` | `undefined` |
-| `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                                       | `undefined` |
+| Property              | Attribute               | Description                                                     | Type                                                                                  | Default     |
+| --------------------- | ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------- |
+| `itemsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>>` | `undefined` |
+| `layout`              | --                      | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }`        | `undefined` |
+| `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                              | `undefined` |
 
 
 ## Events
@@ -31,13 +31,13 @@
 
 #### Parameters
 
-| Name                               | Type                                                                                                                                                                                                             | Description |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `parentGroup`                      | `string`                                                                                                                                                                                                         |             |
-| `siblingItem`                      | `string`                                                                                                                                                                                                         |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                                                                                                                            |             |
-| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; closeButtonHidden?: boolean; selectedWidgetId?: string; showCaptions?: boolean; viewType: ViewType; widgets: FlexibleLayoutWidget[]; }` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                                                                                                                        |             |
+| Name                               | Type                                                                                                          | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------- |
+| `parentGroup`                      | `string`                                                                                                      |             |
+| `siblingItem`                      | `string`                                                                                                      |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                         |             |
+| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; } & FlexibleLayoutLeafConfiguration` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                     |             |
 
 #### Returns
 
@@ -45,9 +45,15 @@ Type: `Promise<boolean>`
 
 
 
-### `refreshLayout() => Promise<void>`
+### `refreshLeaf(leafId: string) => Promise<void>`
 
-Schedules a new render of the control even if no state changed.
+Schedules a new render for a leaf even if no state changed.
+
+#### Parameters
+
+| Name     | Type     | Description |
+| -------- | -------- | ----------- |
+| `leafId` | `string` |             |
 
 #### Returns
 

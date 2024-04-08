@@ -85,8 +85,6 @@
   block-size: var(--ch-tree-view-item__expandable-button-size);
   z-index: 1;
   cursor: pointer;
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-tree-view-item__expandable-button-size);
 }
 
 .expandable-button {
@@ -132,11 +130,7 @@
   // Necessary to avoid CLS when the ch-checkbox control is downloaded after
   // the tree-view-item did render
   inline-size: var(--ch-tree-view-item__checkbox-size);
-
-  &::part(container) {
-    inline-size: var(--ch-tree-view-item__checkbox-size);
-    block-size: var(--ch-tree-view-item__checkbox-size);
-  }
+  --ch-checkbox-container-size: var(--ch-tree-view-item__checkbox-size);
 }
 
 // - - - - - - - - - - - - - - - -

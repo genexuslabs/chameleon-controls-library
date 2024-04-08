@@ -10,12 +10,31 @@ export default class HTMLChGridRowElement
 {
   private parentGrid: HTMLChGridElement;
 
+  static get observedAttributes() {
+    return ["selected", "marked"];
+  }
+
   constructor() {
     super();
   }
 
   connectedCallback() {
     this.addEventListener("cellCaretClicked", this.cellCaretClickedHandler);
+
+    if (this.selected || this.marked) {
+      this.grid.syncRowState(this);
+    }
+  }
+
+  attributeChangedCallback(name: string, _oldValue: string, value: string) {
+    if (name === "selected") {
+      this.selected = value !== null ? value !== "false" : false;
+    }
+    if (name === "marked") {
+      this.marked = value !== null ? value !== "false" : false;
+    }
+
+    this.grid?.syncRowState(this);
   }
 
   /**
@@ -66,7 +85,9 @@ export default class HTMLChGridRowElement
     const selectedClasses = this.grid.rowSelectedClass?.split(" ");
 
     if (value === true) {
-      this.setAttribute("selected", "");
+      if (!this.hasAttribute("selected")) {
+        this.setAttribute("selected", "");
+      }
       if (this.grid.rowSelectedClass) {
         this.classList.add(...selectedClasses);
       }
@@ -89,7 +110,9 @@ export default class HTMLChGridRowElement
     const markedClasses = this.grid.rowMarkedClass?.split(" ");
 
     if (value === true) {
-      this.setAttribute("marked", "");
+      if (!this.hasAttribute("marked")) {
+        this.setAttribute("marked", "");
+      }
       if (this.grid.rowMarkedClass) {
         this.classList.add(...markedClasses);
       }

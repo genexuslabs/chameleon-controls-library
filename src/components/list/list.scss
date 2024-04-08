@@ -6,6 +6,8 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
   --ch-list-transition-duration: 150ms;
+  --ch-list-mask-image-size: 100%;
+  --ch-list-image-size: 18px;
 
   display: grid;
   block-size: 100%;
@@ -47,25 +49,31 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .caption-image,
 .decorative-image::before {
   display: block;
-  block-size: 18px;
-  inline-size: 18px;
+  block-size: var(--ch-list-image-size);
+  inline-size: var(--ch-list-image-size);
 }
 
 .decorative-image::before {
   content: "";
-  -webkit-mask: var(--ch-list-decorative-image) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: var(--ch-list-decorative-image) 50% 50% /
+    var(--ch-list-mask-image-size) var(--ch-list-mask-image-size) no-repeat;
   background-color: currentColor;
 }
 
-.close-button::after {
-  content: "";
-  display: flex;
-  block-size: 1em;
-  inline-size: 1em;
-  -webkit-mask: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 2L15.5 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 2L2 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
-    50% 50% / 0.75em 0.75em no-repeat;
-  background-color: currentColor;
-  opacity: 0;
+.close-button {
+  // Send the close button at the end of the line
+  margin-inline-start: auto;
+
+  &::after {
+    content: "";
+    display: flex;
+    block-size: 1em;
+    inline-size: 1em;
+    -webkit-mask: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 2L15.5 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 2L2 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+      50% 50% / 0.75em 0.75em no-repeat;
+    background-color: currentColor;
+    opacity: 0;
+  }
 }
 
 .button {
@@ -196,6 +204,11 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: max-content;
+}
+
+.page {
+  contain: strict;
+  display: grid;
 }
 
 .page-container {

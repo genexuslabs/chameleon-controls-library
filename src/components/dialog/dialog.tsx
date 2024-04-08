@@ -253,6 +253,11 @@ export class ChDialog {
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly modal = true;
+  @Watch("modal")
+  watchModalHandler() {
+    // Prevent DOMException "... The dialog is already open ..."
+    !this.hidden && (this.hidden = true);
+  }
 
   /**
    * Specifies whether the dialog header is hidden or visible.

@@ -155,24 +155,24 @@ $ch-popover-y--same-layer: calc(
 // - - - - - - - - - - - - - - - -
 //             Hidden
 // - - - - - - - - - - - - - - - -
-:host([hidden]) {
-  display: block !important;
-  visibility: hidden;
-}
+// :host([hidden]) {
+//   display: grid !important;
+//   visibility: hidden;
+// }
 
-// content-visibility: hidden is faster for rendering the content back, as
-// it preserves the rendering state of the content (display: none does not)
-@supports (content-visibility: hidden) {
-  :host([hidden]) {
-    content-visibility: hidden;
-  }
-}
+// // content-visibility: hidden is faster for rendering the content back, as
+// // it preserves the rendering state of the content (display: none does not)
+// @supports (content-visibility: hidden) {
+//   :host([hidden]) {
+//     content-visibility: hidden;
+//   }
+// }
 
-@supports not (content-visibility: hidden) {
-  :host([hidden]) {
-    visibility: hidden;
-  }
-}
+// @supports not (content-visibility: hidden) {
+//   :host([hidden]) {
+//     visibility: hidden;
+//   }
+// }
 
 // Prevents initial flickering
 :host(.gx-popover-prevent-flickering) {

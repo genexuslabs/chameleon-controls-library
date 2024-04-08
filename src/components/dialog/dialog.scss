@@ -86,20 +86,6 @@ $ch-dialog-y--same-layer: calc(
     */
   --ch-dialog-resize-threshold: 8px;
 
-  /**
-   * @prop --ch-dialog-separation-x:
-   * Specifies the separation between the action and dialog in the x axis.
-   * @default 0px
-   */
-  --ch-dialog-separation-x: 0px;
-
-  /**
-   * @prop --ch-dialog-separation-y:
-   * Specifies the separation between the action and dialog in the y axis.
-   * @default 0px
-   */
-  --ch-dialog-separation-y: 0px;
-
   --ch-dialog-resize-threshold--half-negative: calc(
     var(--ch-dialog-resize-threshold) * -0.5
   );

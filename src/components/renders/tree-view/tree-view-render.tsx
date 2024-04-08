@@ -53,6 +53,13 @@ import {
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
 import { insertIntoIndex, removeElement } from "../../../common/array";
+import {
+  removeSubscription,
+  subscribe,
+  syncStateWithObservableAncestors
+} from "../../sidebar/expanded-change-obervables";
+
+let autoId = 0;
 
 const ROOT_ID = null;
 
@@ -181,7 +188,8 @@ const defaultRenderItem = <T extends true | false>(
       )}
       startImgType={itemModel.startImgType ?? "background"}
     >
-      {!itemModel.leaf &&
+      {treeState.expanded &&
+        !itemModel.leaf &&
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
           treeState.renderItem(
@@ -255,10 +263,19 @@ export class ChTreeViewRender {
   #filterTimeout: NodeJS.Timeout;
   #filterListAsSet: Set<string>;
 
+  /**
+   * This ID is used to identify the Tree View. Necessary to subscribe for
+   * expand/collapse changes in the ancestor nodes.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #treeViewId: string;
+
   // Refs
   #treeRef: HTMLChTreeViewElement;
 
   @Element() el: HTMLChTreeViewRenderElement;
+
+  @State() expanded: boolean = true;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -1532,6 +1549,21 @@ export class ChTreeViewRender {
     return selectedItemsInfo;
   };
 
+  connectedCallback() {
+    this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
+
+    // Subscribe to expand/collapse changes in the ancestor nodes
+    subscribe(this.#treeViewId, {
+      getSubscriberRef: () => this.el,
+      observerCallback: expanded => {
+        this.expanded = expanded;
+      }
+    });
+
+    // Initialize the state
+    syncStateWithObservableAncestors(this.#treeViewId);
+  }
+
   componentWillLoad() {
     this.#flattenModel();
   }
@@ -1554,6 +1586,10 @@ export class ChTreeViewRender {
     }
 
     this.#validateCheckedAndSelectedItems();
+  }
+
+  disconnectedCallback() {
+    removeSubscription(this.#treeViewId);
   }
 
   render() {

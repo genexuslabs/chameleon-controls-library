@@ -605,11 +605,12 @@ export class ChDialog {
     this.#lastDragEvent = null;
 
     // Avoid listener on document click
-    requestAnimationFrame(() => {
-      document.addEventListener("click", this.#evaluateClickOnDocument, {
-        capture: true
+    this.modal &&
+      requestAnimationFrame(() => {
+        document.addEventListener("click", this.#evaluateClickOnDocument, {
+          capture: true
+        });
       });
-    });
   };
 
   /**

@@ -130,8 +130,7 @@ $ch-dialog-y--same-layer: calc(
   --ch-dialog-dragged-y: 0px;
   --ch-dialog-rtl: 1;
 
-  // Necessary when the dialog is not placed in a new top layer. For example,
-  // when nesting dropdowns
+  // Required to ensure that the ch-dialog element does not take up space in the containing element
   position: fixed;
 
   // Reset browser defaults

@@ -604,13 +604,16 @@ export class ChDialog {
     this.#initialDragEvent = null;
     this.#lastDragEvent = null;
 
-    // Avoid listener on document click
-    this.modal &&
+    if (this.modal) {
+      /**
+       * requestAnimationFrame is needed to prevent the dialog from closing, by scheduling the close after the document click.
+       */
       requestAnimationFrame(() => {
         document.addEventListener("click", this.#evaluateClickOnDocument, {
           capture: true
         });
       });
+    }
   };
 
   /**

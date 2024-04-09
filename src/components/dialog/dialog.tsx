@@ -14,10 +14,10 @@ import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
 // Custom vars
+const DIALOG_BLOCK_START = "--ch-dialog-block-start";
+const DIALOG_INLINE_START = "--ch-dialog-inline-start";
 const DIALOG_DRAGGED_X = "--ch-dialog-dragged-x";
 const DIALOG_DRAGGED_Y = "--ch-dialog-dragged-y";
-const DIALOG_INLINE_START = "--ch-dialog-inline-start";
-const DIALOG_BLOCK_START = "--ch-dialog-block-start";
 
 const DIALOG_RTL = "--ch-dialog-rtl";
 const DIALOG_RTL_VALUE = "-1";

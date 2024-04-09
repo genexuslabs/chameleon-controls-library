@@ -12,8 +12,15 @@ import {
 import { DropdownPosition } from "../../dropdown/types";
 import { ItemsOverflowBehavior } from "./types";
 import { ChDropdownCustomEvent } from "../../../components";
+import {
+  ACTION_GROUP_PARTS_DICTIONARY,
+  DROPDOWN_PARTS_DICTIONARY
+} from "../../../common/reserverd-names";
 
 const FLOATING_POINT_ERROR = 1;
+
+const MORE_ACTION_EXPORT_PARTS =
+  `${DROPDOWN_PARTS_DICTIONARY.ACTION}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_BUTTON},${DROPDOWN_PARTS_DICTIONARY.WINDOW}:${ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS_WINDOW}` as const;
 
 /**
  * @part actions - The container of the visible actions.
@@ -251,9 +258,9 @@ export class ChActionGroup {
         {this.itemsOverflowBehavior === "ResponsiveCollapse" &&
           this.#totalItems !== this.displayedItems && (
             <ch-dropdown
-              exportparts="action:more-actions-button,window:more-actions-window"
+              exportparts={MORE_ACTION_EXPORT_PARTS}
               class="more-actions"
-              part="more-actions"
+              part={ACTION_GROUP_PARTS_DICTIONARY.MORE_ACTIONS}
               actionGroupParent={true}
               buttonAccessibleName={this.moreActionsAccessibleName}
               leaf={false}
@@ -275,7 +282,7 @@ export class ChActionGroup {
             "actions--responsive":
               this.itemsOverflowBehavior === "ResponsiveCollapse"
           }}
-          part="actions"
+          part={ACTION_GROUP_PARTS_DICTIONARY.ACTIONS}
           ref={el => (this.#actionsContainer = el)}
         >
           <slot

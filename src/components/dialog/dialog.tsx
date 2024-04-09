@@ -264,15 +264,16 @@ export class ChDialog {
   }
 
   /**
-   * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.
+   * Specifies whether the dialog is a modal or not. Modal dialog boxes
+   * interrupt interaction with the rest of the page being inert, while
+   * non-modal dialog boxes allow interaction with the rest of the page.
+   *
+   * Note: If `hidden !== false`, this property does not reflect changes on
+   * runtime, since at the time of writing browsers do not support switching
+   * from modal to not-modal, (or vice-versa).
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly modal = true;
-  @Watch("modal")
-  watchModalHandler() {
-    // Prevent DOMException "... The dialog is already open ..."
-    !this.hidden && (this.hidden = true);
-  }
 
   /**
    * Specifies whether the control can be resized. If `true` the control can be

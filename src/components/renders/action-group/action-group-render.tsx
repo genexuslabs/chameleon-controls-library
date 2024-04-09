@@ -4,6 +4,10 @@ import { DropdownPosition } from "../../dropdown/types";
 import { ChActionGroupCustomEvent } from "../../../components";
 import { ItemsOverflowBehavior } from "../../action-group/action-group/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
+import {
+  ACTION_GROUP_EXPORT_PARTS,
+  DROPDOWN_EXPORT_PARTS
+} from "../../../common/reserverd-names";
 
 const DEFAULT_ACTION_CLASS = "action-group-item";
 const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";
@@ -24,9 +28,21 @@ export class ChActionGroupRender {
   @Prop() readonly moreActionsAccessibleName: string = "Show options";
 
   /**
+   * Specifies the parts that are exported by the internal action-group. This
+   * property is useful to override the exported parts.
+   */
+  @Prop() readonly actionGroupExportParts: string = ACTION_GROUP_EXPORT_PARTS;
+
+  /**
    * A CSS class to set as the `ch-action-group` element class.
    */
   @Prop() readonly cssClass: string = "action-group";
+
+  /**
+   * Specifies the parts that are exported by the internal dropdown. This
+   * property is useful to override the exported parts.
+   */
+  @Prop() readonly dropdownExportParts: string = DROPDOWN_EXPORT_PARTS;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -114,6 +130,7 @@ export class ChActionGroupRender {
 
       return [
         <ch-dropdown
+          exportparts={this.dropdownExportParts}
           key={item.id || item.caption || index}
           id={item.id}
           caption={item.caption}
@@ -180,6 +197,7 @@ export class ChActionGroupRender {
 
     return [
       <ch-dropdown
+        exportparts={this.dropdownExportParts}
         key={item.id || item.caption || index}
         id={item.id}
         actionGroupParent={true}
@@ -244,6 +262,7 @@ export class ChActionGroupRender {
         <ch-dropdown
           slot="more-items"
           key={item.id || item.caption || index}
+          exportparts={this.dropdownExportParts}
           id={item.id}
           caption={item.caption}
           class={item.subActionClass || DEFAULT_SUB_ACTION_CLASS}
@@ -313,6 +332,7 @@ export class ChActionGroupRender {
 
     return (
       <ch-action-group
+        exportparts={this.actionGroupExportParts}
         class={this.cssClass || null}
         itemsOverflowBehavior={this.itemsOverflowBehavior}
         moreActionsAccessibleName={this.moreActionsAccessibleName}

@@ -287,7 +287,8 @@ export namespace Components {
         "value": string;
     }
     /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
      */
     interface ChDialog {
         /**
@@ -295,7 +296,7 @@ export namespace Components {
          */
         "adjustPositionAfterResize": boolean;
         /**
-          * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
+          * "box" will allow the dialog to be draggable from both the header and the content "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
          */
         "allowDrag": "box" | "header" | "no";
         /**
@@ -311,7 +312,7 @@ export namespace Components {
          */
         "hidden": boolean;
         /**
-          * Specifies whether the dialog is a modal or not.
+          * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
          */
         "modal": true;
         /**
@@ -2568,7 +2569,8 @@ declare global {
         "dialogClosed": any;
     }
     /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
      */
     interface HTMLChDialogElement extends Components.ChDialog, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChDialogElementEventMap>(type: K, listener: (this: HTMLChDialogElement, ev: ChDialogCustomEvent<HTMLChDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3856,7 +3858,8 @@ declare namespace LocalJSX {
         "value": string;
     }
     /**
-     * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
      */
     interface ChDialog {
         /**
@@ -3864,7 +3867,7 @@ declare namespace LocalJSX {
          */
         "adjustPositionAfterResize"?: boolean;
         /**
-          * Specifies the drag behavior of the dialog. If `allowDrag === "header"`, a slot with the `"header"` name will be available to place the header content.
+          * "box" will allow the dialog to be draggable from both the header and the content "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
          */
         "allowDrag"?: "box" | "header" | "no";
         /**
@@ -3880,7 +3883,7 @@ declare namespace LocalJSX {
          */
         "hidden"?: boolean;
         /**
-          * Specifies whether the dialog is a modal or not.
+          * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
          */
         "modal"?: true;
         /**
@@ -5999,7 +6002,8 @@ declare module "@stencil/core" {
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             /**
-             * The `ch-dialog` component represents a modal or non-modal dialog box or other interactive component.
+             * The `ch-dialog` component represents a modal or non-modal dialog box or other
+             * interactive component.
              */
             "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;

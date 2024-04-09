@@ -1,5 +1,3 @@
-export type DialogActionElement = HTMLButtonElement | HTMLInputElement;
-
 export type ChDialogResizeElement =
   | "block-start" // Top
   | "inline-end" // Right

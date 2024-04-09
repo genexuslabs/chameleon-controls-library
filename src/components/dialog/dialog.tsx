@@ -265,7 +265,7 @@ export class ChDialog {
   }
 
   /**
-   * Specifies whether the dialog is a modal or not.
+   * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
   @Prop() readonly modal = true;

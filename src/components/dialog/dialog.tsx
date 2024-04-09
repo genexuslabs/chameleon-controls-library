@@ -228,9 +228,8 @@ export class ChDialog {
   @Prop() readonly adjustPositionAfterResize: boolean = false;
 
   /**
-   * Specifies the drag behavior of the dialog.
-   * If `allowDrag === "header"`, a slot with the `"header"` name will be
-   * available to place the header content.
+   * "box" will allow the dialog to be draggable from both the header and the content "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
+   *
    */
   @Prop() readonly allowDrag: "box" | "header" | "no" = "box";
 

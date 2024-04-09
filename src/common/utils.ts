@@ -28,6 +28,10 @@ export function debounce(
 }
 
 export const isRTL = () => document.documentElement.dir === "rtl";
+export const isMobileDevice = () =>
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 
 export const ROOT_VIEW: null = null;
 

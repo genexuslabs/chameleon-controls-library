@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { ComboBoxItem } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -45,6 +46,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { ComboBoxItem } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -285,6 +287,36 @@ export namespace Components {
           * The value of the control.
          */
         "value": string;
+    }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items": ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple": boolean;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder": string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * Specifies the value (selected item) of the control.
+         */
+        "value"?: string;
     }
     interface ChDropdown {
         /**
@@ -2003,7 +2035,7 @@ export namespace Components {
          */
         "expandOnClick": boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
          */
         "expandableButton": "action" | "decorative" | "no";
         /**
@@ -2269,6 +2301,10 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
+export interface ChComboBoxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChComboBoxElement;
+}
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
@@ -2521,6 +2557,23 @@ declare global {
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
+    };
+    interface HTMLChComboBoxElementEventMap {
+        "input": string;
+    }
+    interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChComboBoxElement: {
+        prototype: HTMLChComboBoxElement;
+        new (): HTMLChComboBoxElement;
     };
     interface HTMLChDropdownElementEventMap {
         "expandedChange": boolean;
@@ -3488,6 +3541,7 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-combo-box": HTMLChComboBoxElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
@@ -3791,6 +3845,40 @@ declare namespace LocalJSX {
           * The value of the control.
          */
         "value": string;
+    }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items"?: ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple"?: boolean;
+        /**
+          * The `input` event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChComboBoxCustomEvent<string>) => void;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder"?: string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * Specifies the value (selected item) of the control.
+         */
+        "value"?: string;
     }
     interface ChDropdown {
         /**
@@ -5564,7 +5652,7 @@ declare namespace LocalJSX {
          */
         "expandOnClick"?: boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
          */
         "expandableButton"?: "action" | "decorative" | "no";
         /**
@@ -5805,6 +5893,7 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-combo-box": ChComboBox;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
@@ -5889,6 +5978,7 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;

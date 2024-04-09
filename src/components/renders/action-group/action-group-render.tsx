@@ -22,12 +22,6 @@ export class ChActionGroupRender {
   @State() moreActionsButtonWasExpanded = false;
 
   /**
-   * This attribute lets you specify the label for the more actions button.
-   * Important for accessibility.
-   */
-  @Prop() readonly moreActionsAccessibleName: string = "Show options";
-
-  /**
    * Specifies the parts that are exported by the internal action-group. This
    * property is useful to override the exported parts.
    */
@@ -82,11 +76,10 @@ export class ChActionGroupRender {
   @Prop() readonly model: ActionGroupItemModel[];
 
   /**
-   * Determine if the dropdown section should be opened when the expandable
-   * button of the control is focused.
-   * TODO: Add implementation
+   * This attribute lets you specify the label for the more actions button.
+   * Important for accessibility.
    */
-  @Prop() readonly openOnFocus: boolean = false;
+  @Prop() readonly moreActionsAccessibleName: string = "Show options";
 
   /**
    * Specifies the position of the dropdown section that is placed relative to
@@ -94,6 +87,13 @@ export class ChActionGroupRender {
    */
   @Prop() readonly moreActionsDropdownPosition: DropdownPosition =
     "InsideStart_OutsideEnd";
+
+  /**
+   * Determine if the dropdown section should be opened when the expandable
+   * button of the control is focused.
+   * TODO: Add implementation
+   */
+  @Prop() readonly openOnFocus: boolean = false;
 
   /**
    * A CSS class to set as the `ch-dropdown-item` element class.

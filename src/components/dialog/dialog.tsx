@@ -78,9 +78,9 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
 })
 export class ChDialog {
   // Sync computations with frames
-  #borderSizeRAF: SyncWithRAF; // Don't allocate memory until
+  #borderSizeRAF: SyncWithRAF; // Don't allocate memory until the control is rendered
   #dragRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
-  #resizeRAF: SyncWithRAF; // Don't allocate memory until needed when dragging
+  #resizeRAF: SyncWithRAF; // Don't allocate memory until needed when resizing
 
   // Watchers
   #checkPositionWatcher = false;

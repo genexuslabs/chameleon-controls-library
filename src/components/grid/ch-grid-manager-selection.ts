@@ -13,6 +13,7 @@ export class ChGridManagerSelection {
   private manager: ChGridManager;
   private rangeStart: HTMLChGridRowElement;
   private rangeValue: boolean;
+  private lastSelected: HTMLChGridRowElement;
   private lastRowMarked: HTMLChGridRowElement;
   private selectionStateNone: ManagerSelectionState = {
     rowFocused: null,
@@ -57,6 +58,7 @@ export class ChGridManagerSelection {
     select: boolean,
     append: boolean,
     range: boolean,
+    rangeStartOn: "focus" | "last-selected",
     context: boolean
   ): ManagerSelectionState {
     const grid = this.manager.grid;
@@ -80,6 +82,16 @@ export class ChGridManagerSelection {
     rowFocused = row;
     cellFocused = cell;
     if (range) {
+      if (!this.rangeStart) {
+        if (rangeStartOn === "focus") {
+          this.rangeStart = state.rowFocused;
+          this.rangeValue = append ? !state.rowFocused.selected : true;
+        } else if (rangeStartOn === "last-selected") {
+          this.rangeStart = this.lastSelected ?? state.rowFocused;
+          this.rangeValue = append ? this.lastSelected.selected : true;
+        }
+      }
+
       const rangeRows = this.manager.getRowsRange(this.rangeStart ?? row, row);
 
       if (this.rangeValue) {
@@ -101,8 +113,8 @@ export class ChGridManagerSelection {
         cellSelected = null;
       }
     } else if (append) {
-      this.rangeStart = row;
-      this.rangeValue = !row.selected;
+      this.rangeStart = null;
+      this.lastSelected = row;
 
       if (rowsSelected.includes(row)) {
         rowsSelected = rowsSelected.filter(rowSelected => rowSelected !== row);
@@ -113,18 +125,18 @@ export class ChGridManagerSelection {
           cell ||
           row.getCell(cellSelected?.column || this.manager.getFirstColumn());
       }
-    } else {
-      this.rangeStart = row;
-      this.rangeValue = true;
+    } else if (select) {
+      this.rangeStart = null;
+      this.lastSelected = row;
 
-      if (select) {
-        if (!(context && state.rowsSelected.includes(row))) {
-          rowsSelected = this.preserveInstanceIfSame([row], state.rowsSelected);
-        }
-        cellSelected =
-          cell ||
-          row.getCell(cellSelected?.column || this.manager.getFirstColumn());
+      if (!(context && state.rowsSelected.includes(row))) {
+        rowsSelected = this.preserveInstanceIfSame([row], state.rowsSelected);
       }
+      cellSelected =
+        cell ||
+        row.getCell(cellSelected?.column || this.manager.getFirstColumn());
+    } else {
+      this.rangeStart = null;
     }
 
     return { rowFocused, rowsSelected, cellFocused, cellSelected };
@@ -214,6 +226,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -236,6 +249,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -258,6 +272,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -280,6 +295,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -305,6 +321,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -332,6 +349,7 @@ export class ChGridManagerSelection {
         select,
         append,
         range,
+        "focus",
         false
       );
     }
@@ -353,6 +371,7 @@ export class ChGridManagerSelection {
         select,
         false,
         range,
+        "focus",
         false
       );
     }
@@ -374,6 +393,7 @@ export class ChGridManagerSelection {
         select,
         false,
         range,
+        "focus",
         false
       );
     }

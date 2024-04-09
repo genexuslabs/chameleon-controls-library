@@ -13,6 +13,7 @@ const components = [
   "barcode-scanner",
   "dropdown",
   "checkbox",
+  "combo-box",
   "flexible-layout",
   "grid",
   "layout-splitter",

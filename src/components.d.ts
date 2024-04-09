@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { ComboBoxItem } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -31,6 +32,7 @@ import { ecLevel } from "./components/qr/ch-qr";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./components/tree/ch-tree";
 import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -44,6 +46,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { ComboBoxItem } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -67,6 +70,7 @@ export { ecLevel } from "./components/qr/ch-qr";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./components/tree/ch-tree";
 export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
@@ -256,10 +260,6 @@ export namespace Components {
          */
         "caption": string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked": boolean;
-        /**
           * The value when the checkbox is 'on'
          */
         "checkedValue": string;
@@ -287,6 +287,36 @@ export namespace Components {
           * The value of the control.
          */
         "value": string;
+    }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items": ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple": boolean;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder": string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * Specifies the value (selected item) of the control.
+         */
+        "value"?: string;
     }
     interface ChDropdown {
         /**
@@ -329,6 +359,10 @@ export namespace Components {
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href": string;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback": (event: UIEvent) => void;
         /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
@@ -1622,6 +1656,30 @@ export namespace Components {
          */
         "tooltipShowMode": "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl": string;
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href": string;
+        /**
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded": boolean;
+        /**
+          * Specifies the name of the theme to instantiate
+         */
+        "name": string;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -1977,7 +2035,7 @@ export namespace Components {
          */
         "expandOnClick": boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
          */
         "expandableButton": "action" | "decorative" | "no";
         /**
@@ -2243,6 +2301,10 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
+export interface ChComboBoxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChComboBoxElement;
+}
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
@@ -2358,6 +2420,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChThemeElement;
 }
 export interface ChTreeItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2491,6 +2557,23 @@ declare global {
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
+    };
+    interface HTMLChComboBoxElementEventMap {
+        "input": string;
+    }
+    interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChComboBoxElement: {
+        prototype: HTMLChComboBoxElement;
+        new (): HTMLChComboBoxElement;
     };
     interface HTMLChDropdownElementEventMap {
         "expandedChange": boolean;
@@ -3251,6 +3334,29 @@ declare global {
         prototype: HTMLChTextblockElement;
         new (): HTMLChTextblockElement;
     };
+    interface HTMLChThemeElementEventMap {
+        "themeLoaded": ChThemeLoadedEvent;
+    }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface HTMLChThemeElement extends Components.ChTheme, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChThemeElementEventMap>(type: K, listener: (this: HTMLChThemeElement, ev: ChThemeCustomEvent<HTMLChThemeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChThemeElement: {
+        prototype: HTMLChThemeElement;
+        new (): HTMLChThemeElement;
+    };
     interface HTMLChTimerElement extends Components.ChTimer, HTMLStencilElement {
     }
     var HTMLChTimerElement: {
@@ -3435,6 +3541,7 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-combo-box": HTMLChComboBoxElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
@@ -3489,6 +3596,7 @@ declare global {
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
+        "ch-theme": HTMLChThemeElement;
         "ch-timer": HTMLChTimerElement;
         "ch-tooltip": HTMLChTooltipElement;
         "ch-tree": HTMLChTreeElement;
@@ -3702,13 +3810,9 @@ declare namespace LocalJSX {
          */
         "caption"?: string;
         /**
-          * Indicates that the control is selected by default.
-         */
-        "checked"?: boolean;
-        /**
           * The value when the checkbox is 'on'
          */
-        "checkedValue"?: string;
+        "checkedValue": string;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -3736,9 +3840,43 @@ declare namespace LocalJSX {
         /**
           * The value when the checkbox is 'off'
          */
-        "unCheckedValue"?: string;
+        "unCheckedValue": string;
         /**
           * The value of the control.
+         */
+        "value": string;
+    }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items"?: ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple"?: boolean;
+        /**
+          * The `input` event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChComboBoxCustomEvent<string>) => void;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder"?: string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * Specifies the value (selected item) of the control.
          */
         "value"?: string;
     }
@@ -3771,6 +3909,10 @@ declare namespace LocalJSX {
           * Specifies the hyperlink of the item. If this property is defined, the control will render an anchor tag with this `href`. Otherwise, it will render a button tag.
          */
         "href"?: string;
+        /**
+          * This callback is executed when an item is clicked.
+         */
+        "itemClickCallback"?: (event: UIEvent) => void;
         /**
           * Specifies whether the item contains a subtree. `true` if the item does not have a subtree.
          */
@@ -5114,6 +5256,34 @@ declare namespace LocalJSX {
          */
         "tooltipShowMode"?: "always" | "line-clamp";
     }
+    /**
+     * It allows you to load a style sheet in a similar way to the
+     * native LINK or STYLE tags, but assigning it a name so that
+     * it can be reused in different contexts,
+     * either in the Document or in a Shadow-Root.
+     */
+    interface ChTheme {
+        /**
+          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+         */
+        "baseUrl"?: string;
+        /**
+          * Specifies the location of the stylesheet theme
+         */
+        "href"?: string;
+        /**
+          * Indicates whether the theme has successfully loaded
+         */
+        "loaded"?: boolean;
+        /**
+          * Specifies the name of the theme to instantiate
+         */
+        "name"?: string;
+        /**
+          * Event emitted when the theme has successfully loaded
+         */
+        "onThemeLoaded"?: (event: ChThemeCustomEvent<ChThemeLoadedEvent>) => void;
+    }
     interface ChTimer {
         /**
           * Sets the accesible name of the timer.
@@ -5482,7 +5652,7 @@ declare namespace LocalJSX {
          */
         "expandOnClick"?: boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
          */
         "expandableButton"?: "action" | "decorative" | "no";
         /**
@@ -5723,6 +5893,7 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-combo-box": ChComboBox;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
@@ -5777,6 +5948,7 @@ declare namespace LocalJSX {
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
+        "ch-theme": ChTheme;
         "ch-timer": ChTimer;
         "ch-tooltip": ChTooltip;
         "ch-tree": ChTree;
@@ -5806,6 +5978,7 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
@@ -5941,6 +6114,13 @@ declare module "@stencil/core" {
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
+            /**
+             * It allows you to load a style sheet in a similar way to the
+             * native LINK or STYLE tags, but assigning it a name so that
+             * it can be reused in different contexts,
+             * either in the Document or in a Shadow-Root.
+             */
+            "ch-theme": LocalJSX.ChTheme & JSXBase.HTMLAttributes<HTMLChThemeElement>;
             "ch-timer": LocalJSX.ChTimer & JSXBase.HTMLAttributes<HTMLChTimerElement>;
             "ch-tooltip": LocalJSX.ChTooltip & JSXBase.HTMLAttributes<HTMLChTooltipElement>;
             "ch-tree": LocalJSX.ChTree & JSXBase.HTMLAttributes<HTMLChTreeElement>;

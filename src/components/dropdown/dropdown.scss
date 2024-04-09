@@ -51,6 +51,10 @@ ch-popover {
   // display: grid; // Consider adding display: grid to support gap property
   --ch-popover-separation-x: var(--ch-dropdown-separation-x);
   --ch-popover-separation-y: var(--ch-dropdown-separation-y);
+
+  &:not(.hydrated) {
+    opacity: 0;
+  }
 }
 // Dummy separation to keep opened the popup when expand-behavior === "ClickOrHover"
 // ch-window[y-align="outside-start"] {

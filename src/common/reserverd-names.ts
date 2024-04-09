@@ -1,3 +1,6 @@
+const joinParts = (parts: { [key in string]: string }) =>
+  [...Object.values(parts)].join(",");
+
 /**
  * Useful key codes that must be used in KeyboardEvent.code
  */
@@ -22,3 +25,35 @@ export const DISABLED_CLASS = "ch-disabled";
 export const HEIGHT_MEASURING = "height-measuring";
 export const LINE_CLAMP = "line-clamp";
 export const LINE_MEASURING = "line-measuring";
+
+// - - - - - - - - - - - - - - - - - - - -
+//           Action Group Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const ACTION_GROUP_PARTS_DICTIONARY = {
+  ACTIONS: "actions",
+  MORE_ACTIONS: "more-actions",
+  MORE_ACTIONS_BUTTON: "more-actions-button",
+  MORE_ACTIONS_WINDOW: "more-actions-window"
+} as const;
+
+export const ACTION_GROUP_EXPORT_PARTS = joinParts(
+  ACTION_GROUP_PARTS_DICTIONARY
+);
+
+// - - - - - - - - - - - - - - - - - - - -
+//             Dropdown Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const DROPDOWN_PARTS_DICTIONARY = {
+  CONTENT: "content",
+  SHORTCUT: "shortcut",
+  ACTION: "action",
+  BUTTON: "button",
+  LINK: "link",
+  EXPANDABLE_ACTION: "expandable-action",
+  EXPANDABLE_BUTTON: "expandable-button",
+  EXPANDABLE_LINK: "expandable-link",
+  WINDOW: "window",
+  LIST: "list"
+} as const;
+
+export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);

@@ -223,11 +223,27 @@ export class ChDialog {
   @State() resizing = false;
 
   /**
+   * `true` if the dialog should be repositioned after resize.
+   */
+  @Prop() readonly adjustPositionAfterResize: boolean = false;
+
+  /**
    * Specifies the drag behavior of the dialog.
    * If `allowDrag === "header"`, a slot with the `"header"` name will be
    * available to place the header content.
    */
   @Prop() readonly allowDrag: "box" | "header" | "no" = "box";
+
+  /**
+   * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+   */
+  @Prop() readonly caption: string;
+
+  /**
+   * `true` if the control is not stacked with another top layer.
+   */
+  // eslint-disable-next-line @stencil-community/ban-default-true
+  @Prop() readonly firstLayer: boolean = true;
 
   /**
    * Specifies whether the dialog is hidden or visible.
@@ -260,28 +276,6 @@ export class ChDialog {
   }
 
   /**
-   * Specifies whether the dialog header is hidden or visible.
-   */
-  // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly showHeader = true;
-
-  /**
-   * Refers to the dialog title. I will ve visible if 'showHeader´is true.
-   */
-  @Prop() readonly caption: string;
-
-  /**
-   * `true` if the control is not stacked with another top layer.
-   */
-  // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly firstLayer: boolean = true;
-
-  /**
-   * `true` if the dialog should be repositioned after resize.
-   */
-  @Prop() readonly adjustPositionAfterResize: boolean = false;
-
-  /**
    * Specifies whether the control can be resized. If `true` the control can be
    * resized at runtime by dragging the edges or corners.
    */
@@ -291,6 +285,12 @@ export class ChDialog {
     // Schedule update for border size watcher
     this.#checkBorderSizeWatcher = true;
   }
+
+  /**
+   * Specifies whether the dialog header is hidden or visible.
+   */
+  // eslint-disable-next-line @stencil-community/ban-default-true
+  @Prop() readonly showHeader = true;
 
   /**
    * Emitted when the dialog is opened.

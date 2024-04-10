@@ -76,13 +76,13 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
  * @part header - The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.
  * @part content - The dialog content. It is a div element that acts as a wrapper of the slotted content.
  *
- * @part edge - Represents any of the dialog edges that appear before, after, above or below the dialog. These corners are used to resize the dialog dimensions  by dragging.
+ * @part edge - Represents any of the dialog edges that appear before, after, above or below the dialog. These corners are used to resize the dialog dimensions by dragging.
  * @part edge-block-start - Represents the "block-start" dialog edge (see also "edge" part).
  * @part edge-block-end - Represents the "block-end" dialog edge (see also "edge" part).
  * @part edge-inline-end - Represents the "inline-end" dialog edge (see also "edge" part).
  * @part edge-inline-start - Represents the "inline-start" dialog edge (see also "edge" part).
  *
- * @part corner - Represents any of the dialog corners that appear in-between the edges. These corners are used to resize the dialog dimensions  by dragging.
+ * @part corner - Represents any of the dialog corners that appear in-between the edges. These corners are used to resize the dialog dimensions by dragging.
  * @part corner-block-start-inline-start - Represents the dialog corner in-between the "edge-block-start" and "edge-inline-start" parts (see also "corner" part).
  * @part corner-block-start-inline-end - Represents the dialog corner in-between the "edge-block-start" and "edge-inline-end" parts (see also "corner" part).
  * @part corner-block-end-inline-start - Represents the dialog corner in-between the "edge-block-end" and "edge-inline-start" parts (see also "corner" part).

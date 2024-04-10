@@ -25,12 +25,7 @@
         overflow: hidden;
       }
       ch-dialog::part(dialog) {
-        display: grid;
-        grid-template-rows: auto auto;
         background-color: #fff;
-      }
-      ch-dialog::part(dialog has-header) {
-        grid-template-rows: auto 1fr;
       }
       ch-dialog::part(header) {
         background-color: aquamarine;
@@ -60,7 +55,8 @@
         color: black;
         overflow-x: auto;
       }
-      ch-dialog::part(dragger):hover {
+      ch-dialog::part(edge):hover,
+      ch-dialog::part(corner):hover {
         background-color: blue;
       }
       ch-dialog button {
@@ -96,7 +92,7 @@
   <body class="white-label">
     <div class="card">
       <!-- ch-dialog -->
-      <ch-dialog caption="The dialog title" id="ch-dialog" resizable hidden>
+      <ch-dialog caption="The dialog title" id="ch-dialog" resizable>
         <input type="text" id="my-input" />
         <button id="my-button">button</button>
         <p>

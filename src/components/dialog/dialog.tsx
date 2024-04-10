@@ -305,11 +305,6 @@ export class ChDialog {
   @Prop() readonly showHeader: boolean = true;
 
   /**
-   * Emitted when the dialog is opened.
-   */
-  @Event() dialogOpened: EventEmitter;
-
-  /**
    * Emitted when the dialog is closed.
    */
   @Event() dialogClosed: EventEmitter;

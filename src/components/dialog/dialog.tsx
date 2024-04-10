@@ -230,7 +230,7 @@ export class ChDialog {
 
   /**
    * "box" will allow the dialog to be draggable from both the header and the
-   * content "header" will allow the dialog to be draggable only from the header.
+   * content. "header" will allow the dialog to be draggable only from the header.
    * "no" disables dragging completely.
    */
   @Prop() readonly allowDrag: "box" | "header" | "no" = "box";

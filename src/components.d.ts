@@ -134,6 +134,10 @@ export namespace Components {
          */
         "cssClass": string;
         /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "dropdownExportParts": string;
+        /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "gxImageConstructor": (name: string) => any;
@@ -415,6 +419,10 @@ export namespace Components {
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass": string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "exportParts": string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -2035,7 +2043,7 @@ export namespace Components {
          */
         "expandOnClick": boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
          */
         "expandableButton": "action" | "decorative" | "no";
         /**
@@ -3676,6 +3684,10 @@ declare namespace LocalJSX {
          */
         "cssClass"?: string;
         /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "dropdownExportParts"?: string;
+        /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "gxImageConstructor"?: (name: string) => any;
@@ -3969,6 +3981,10 @@ declare namespace LocalJSX {
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass"?: string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "exportParts"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -5652,7 +5668,7 @@ declare namespace LocalJSX {
          */
         "expandOnClick"?: boolean;
         /**
-          * Specifies what kind of expandable button is displayed in the items by default.  - `"action"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.  - `"no"`: The expandable button won't be rendered.
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"expandableButton"`: Expandable button that allows to expand/collapse     the items of the control.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
          */
         "expandableButton"?: "action" | "decorative" | "no";
         /**

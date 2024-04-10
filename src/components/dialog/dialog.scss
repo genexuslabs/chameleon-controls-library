@@ -171,11 +171,6 @@ dialog {
 // - - - - - - - - - - - - - - - -
 //              Drag
 // - - - - - - - - - - - - - - - -
-:host(.gx-dialog-header-drag) {
-  display: grid;
-  grid-template-rows: max-content 1fr;
-}
-
 .gx-dialog-dragging {
   cursor: move;
   // Remove any type of pointer when dragging, to make "cursor: move" effective

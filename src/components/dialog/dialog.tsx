@@ -483,6 +483,7 @@ export class ChDialog {
     const clickWasMadeOutsideTheDialog = !e
       .composedPath()
       .includes(this.#dialogRef);
+
     if (clickWasMadeOutsideTheDialog) {
       this.hidden = true;
       document.removeEventListener("click", this.#evaluateClickOnDocument, {

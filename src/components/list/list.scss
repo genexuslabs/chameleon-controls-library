@@ -61,9 +61,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .close-button {
-  // Send the close button at the end of the line
-  margin-inline-start: auto;
-
   &::after {
     content: "";
     display: flex;
@@ -79,6 +76,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .button {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   &:hover > .close-button::after,
   &:focus-within > .close-button::after,

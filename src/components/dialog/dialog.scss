@@ -24,6 +24,7 @@ $ch-dialog-y--same-layer: calc(
 );
 
 ::backdrop {
+  // Needed to capture the click event outside the dialog, in order to close it.
   pointer-events: none;
 }
 

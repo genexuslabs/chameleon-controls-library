@@ -151,6 +151,7 @@ $ch-dialog-y--same-layer: calc(
 //           Dialog
 // - - - - - - - - - - - - - - - -
 dialog {
+  display: grid;
   // Reset browser default
   margin: unset;
   position: fixed;
@@ -167,6 +168,10 @@ dialog {
   inset-block-start: 0;
   inset-inline-start: 0;
   translate: $ch-dialog-x $ch-dialog-y;
+}
+
+.dialog--header {
+  grid-template-rows: max-content 1fr;
 }
 
 // - - - - - - - - - - - - - - - -

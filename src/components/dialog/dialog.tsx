@@ -302,7 +302,7 @@ export class ChDialog {
    * Specifies whether the dialog header is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly showHeader = true;
+  @Prop() readonly showHeader: boolean = true;
 
   /**
    * Emitted when the dialog is opened.
@@ -721,8 +721,6 @@ export class ChDialog {
   };
 
   render() {
-    const dialogParts = this.showHeader ? "dialog has-header" : "dialog";
-
     return (
       <Host
         class={{
@@ -731,8 +729,9 @@ export class ChDialog {
         }}
       >
         <dialog
+          class={this.showHeader ? "dialog--header" : null}
           aria-labelledby={this.caption ? "heading" : null}
-          part={dialogParts}
+          part="dialog"
           onClose={this.#handleDialogClose}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
           ref={el => (this.#dialogRef = el)}

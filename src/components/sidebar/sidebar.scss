@@ -1,3 +1,8 @@
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+
 :host {
   --ch-sidebar-inline-size--expanded: auto;
   --ch-sidebar-inline-size--collapsed: auto;

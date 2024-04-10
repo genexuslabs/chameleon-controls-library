@@ -73,7 +73,7 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
  * interactive component.
  *
  * @part dialog - The dialog html element, which is the first element inside the host.
- * @part header - The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button
+ * @part header - The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.
  * @part content - The dialog content. It is a div element that acts as a wrapper of the slotted content.
  * @part edge - Represents any of the dialog edges that appear before, after, above or below the dialog. These corners are used to resize the dialog dimensions  by dragging.
  * @part edge-block-start - Represents the "block-start" dialog edge (see also "edge" part).

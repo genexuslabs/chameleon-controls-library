@@ -718,8 +718,8 @@ export class ChDialog {
           aria-labelledby={this.caption ? "heading" : null}
           part={dialogParts}
           onClose={this.#handleDialogClose}
-          ref={el => (this.#dialogRef = el)}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
+          ref={el => (this.#dialogRef = el)}
         >
           {this.showHeader && (
             <header

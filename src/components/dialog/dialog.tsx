@@ -353,6 +353,10 @@ export class ChDialog {
       this.#rtlWatcher.disconnect();
       this.#rtlWatcher = null; // Free the memory
     }
+
+    document.removeEventListener("click", this.#evaluateClickOnDocument, {
+      capture: true
+    });
   }
 
   #addDraggingClass = () => {

@@ -241,12 +241,6 @@ export class ChDialog {
   @Prop() readonly caption: string;
 
   /**
-   * `true` if the control is not stacked with another top layer.
-   */
-  // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly firstLayer: boolean = true;
-
-  /**
    * Specifies whether the dialog is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true

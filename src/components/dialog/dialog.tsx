@@ -269,7 +269,7 @@ export class ChDialog {
    * from modal to not-modal, (or vice-versa).
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly modal = true;
+  @Prop() readonly modal: boolean = true;
 
   /**
    * Specifies whether the control can be resized. If `true` the control can be

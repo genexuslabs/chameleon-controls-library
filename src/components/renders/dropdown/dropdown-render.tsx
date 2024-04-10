@@ -3,6 +3,7 @@ import { DropdownItemModel } from "./types";
 import { DropdownPosition } from "../../dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
+import { DROPDOWN_EXPORT_PARTS } from "../../../common/reserverd-names";
 
 @Component({
   tag: "ch-dropdown-render",
@@ -27,6 +28,12 @@ export class ChDropdownRender {
    * A CSS class to set as the `ch-dropdown` element class.
    */
   @Prop() readonly cssClass: string = "dropdown";
+
+  /**
+   * Specifies the parts that are exported by the internal dropdown. This
+   * property is useful to override the exported parts.
+   */
+  @Prop() readonly exportParts: string = DROPDOWN_EXPORT_PARTS;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -91,6 +98,7 @@ export class ChDropdownRender {
 
     return [
       <ch-dropdown
+        exportparts={this.exportParts}
         id={item.id}
         caption={item.caption}
         class={item.class || this.itemCssClass}
@@ -174,6 +182,7 @@ export class ChDropdownRender {
   render() {
     return (
       <ch-dropdown
+        exportparts={this.exportParts}
         buttonAccessibleName={this.buttonAccessibleName}
         class={this.cssClass}
         level={-1}

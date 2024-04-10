@@ -14,6 +14,7 @@ const components = [
   "dropdown",
   "dialog",
   "checkbox",
+  "combo-box",
   "flexible-layout",
   "grid",
   "layout-splitter",

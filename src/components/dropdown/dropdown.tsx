@@ -18,6 +18,7 @@ import { focusComposedPath } from "../common/helpers";
 import { ChDropdownCustomEvent } from "../../components";
 import { isPseudoElementImg } from "../../common/utils";
 import { ImageRender } from "../../common/types";
+import { DROPDOWN_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChWindowAlign;
@@ -28,6 +29,19 @@ const mapDropdownAlignToChWindowAlign: {
   InsideEnd: "inside-end",
   OutsideEnd: "outside-end"
 };
+
+// Parts
+const ACTION_LINK =
+  `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.LINK}` as const;
+
+const ACTION_LINK_EXPANDABLE =
+  `${ACTION_LINK} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_ACTION} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_LINK}` as const;
+
+const ACTION_BUTTON =
+  `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.BUTTON}` as const;
+
+const ACTION_BUTTON_EXPANDABLE =
+  `${ACTION_BUTTON} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_ACTION} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}` as const;
 
 const DROPDOWN_TAG_NAME = "ch-dropdown";
 const WINDOW_ID = "window";
@@ -341,12 +355,20 @@ export class ChDropDown implements ChComponent {
   };
 
   #dropDownItemContent = () => [
-    <span slot="action" class="content" part="content">
+    <span
+      slot="action"
+      class="content"
+      part={DROPDOWN_PARTS_DICTIONARY.CONTENT}
+    >
       {this.caption}
     </span>,
 
     !!this.shortcut && (
-      <span aria-hidden="true" slot="action" part="shortcut">
+      <span
+        aria-hidden="true"
+        slot="action"
+        part={DROPDOWN_PARTS_DICTIONARY.SHORTCUT}
+      >
         {this.shortcut}
       </span>
     )
@@ -360,7 +382,7 @@ export class ChDropDown implements ChComponent {
       aria-haspopup="true"
       aria-label={this.buttonAccessibleName}
       class="expandable-button"
-      part="action button expandable-action expandable-button"
+      part={ACTION_BUTTON_EXPANDABLE}
       type="button"
       onClick={this.#handleButtonClick}
       ref={el => (this.#mainAction = el)}
@@ -388,11 +410,7 @@ export class ChDropDown implements ChComponent {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={
-          this.leaf
-            ? "action link"
-            : "action link expandable-action expandable-link"
-        }
+        part={this.leaf ? ACTION_LINK : ACTION_LINK_EXPANDABLE}
         href={this.href}
         onClick={this.#handleButtonClick}
         onMouseEnter={
@@ -415,11 +433,7 @@ export class ChDropDown implements ChComponent {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={
-          this.leaf
-            ? "action button"
-            : "action button expandable-action expandable-button"
-        }
+        part={this.leaf ? ACTION_BUTTON : ACTION_BUTTON_EXPANDABLE}
         type="button"
         onMouseEnter={
           !this.leaf && !this.actionGroupParent ? this.#handleMouseEnter : null
@@ -452,7 +466,7 @@ export class ChDropDown implements ChComponent {
       <ch-popover
         role={noNeedToAddDivListWrapper ? "list" : null}
         id={WINDOW_ID}
-        part="window"
+        part={DROPDOWN_PARTS_DICTIONARY.WINDOW}
         actionById={true}
         actionElement={this.#mainAction as HTMLButtonElement}
         firstLayer={this.level === -1 || this.actionGroupParent}
@@ -467,7 +481,7 @@ export class ChDropDown implements ChComponent {
           [
             this.showHeader && <slot name="header" />,
 
-            <div role="list" class="list" part="list">
+            <div role="list" class="list" part={DROPDOWN_PARTS_DICTIONARY.LIST}>
               <slot />
             </div>,
 

@@ -391,6 +391,9 @@ export class ChDialog {
     this.hidden = false;
     // Emit events only when the action is committed by the user
     this.dialogClosed.emit();
+    document.removeEventListener("click", this.#evaluateClickOnDocument, {
+      capture: true
+    });
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -501,10 +504,7 @@ export class ChDialog {
       .includes(this.#dialogRef);
 
     if (clickWasMadeOutsideTheDialog) {
-      this.hidden = true;
-      document.removeEventListener("click", this.#evaluateClickOnDocument, {
-        capture: true
-      });
+      this.#handleDialogClose();
     }
   };
 

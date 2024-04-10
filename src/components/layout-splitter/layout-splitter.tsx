@@ -369,7 +369,7 @@ export class ChLayoutSplitter implements ChComponent {
           )}
         </div>
       ) : (
-        <div id={item.id} class={!hasMinSize(item) ? "leaf" : undefined}>
+        <div id={item.id} class={hasMinSize(item) ? "leaf--rendered" : "leaf"}>
           <slot key={item.id} name={item.id} />
         </div>
       ),

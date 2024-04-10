@@ -367,16 +367,10 @@ export class ChDialog {
     this.#dragging = false;
   };
 
-  #handleDialogToggle = (event: ToggleEvent) => {
-    const willBeHidden = !(event.newState === "open");
-    this.hidden = willBeHidden;
-
+  #handleDialogClose = () => {
+    this.hidden = false;
     // Emit events only when the action is committed by the user
-    if (willBeHidden) {
-      this.dialogClosed.emit();
-    } else {
-      this.dialogOpened.emit();
-    }
+    this.dialogClosed.emit();
   };
 
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -723,7 +717,7 @@ export class ChDialog {
         <dialog
           aria-labelledby={this.caption ? "heading" : null}
           part={dialogParts}
-          onClose={this.#handleDialogToggle}
+          onClose={this.#handleDialogClose}
           ref={el => (this.#dialogRef = el)}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
         >

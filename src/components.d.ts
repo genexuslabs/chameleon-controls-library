@@ -318,7 +318,7 @@ export namespace Components {
         /**
           * Specifies whether the dialog header is hidden or visible.
          */
-        "showHeader": true;
+        "showHeader": boolean;
     }
     interface ChDropdown {
         /**
@@ -2561,7 +2561,6 @@ declare global {
         new (): HTMLChCheckboxElement;
     };
     interface HTMLChDialogElementEventMap {
-        "dialogOpened": any;
         "dialogClosed": any;
     }
     /**
@@ -3883,17 +3882,13 @@ declare namespace LocalJSX {
          */
         "onDialogClosed"?: (event: ChDialogCustomEvent<any>) => void;
         /**
-          * Emitted when the dialog is opened.
-         */
-        "onDialogOpened"?: (event: ChDialogCustomEvent<any>) => void;
-        /**
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable"?: boolean;
         /**
           * Specifies whether the dialog header is hidden or visible.
          */
-        "showHeader"?: true;
+        "showHeader"?: boolean;
     }
     interface ChDropdown {
         /**

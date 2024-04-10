@@ -296,7 +296,7 @@ export namespace Components {
          */
         "adjustPositionAfterResize": boolean;
         /**
-          * "box" will allow the dialog to be draggable from both the header and the content "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
+          * "box" will allow the dialog to be draggable from both the header and the content. "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
          */
         "allowDrag": "box" | "header" | "no";
         /**
@@ -304,17 +304,13 @@ export namespace Components {
          */
         "caption": string;
         /**
-          * `true` if the control is not stacked with another top layer.
-         */
-        "firstLayer": boolean;
-        /**
           * Specifies whether the dialog is hidden or visible.
          */
         "hidden": boolean;
         /**
           * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
          */
-        "modal": true;
+        "modal": boolean;
         /**
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
@@ -3867,7 +3863,7 @@ declare namespace LocalJSX {
          */
         "adjustPositionAfterResize"?: boolean;
         /**
-          * "box" will allow the dialog to be draggable from both the header and the content "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
+          * "box" will allow the dialog to be draggable from both the header and the content. "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
          */
         "allowDrag"?: "box" | "header" | "no";
         /**
@@ -3875,17 +3871,13 @@ declare namespace LocalJSX {
          */
         "caption"?: string;
         /**
-          * `true` if the control is not stacked with another top layer.
-         */
-        "firstLayer"?: boolean;
-        /**
           * Specifies whether the dialog is hidden or visible.
          */
         "hidden"?: boolean;
         /**
           * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
          */
-        "modal"?: true;
+        "modal"?: boolean;
         /**
           * Emitted when the dialog is closed.
          */

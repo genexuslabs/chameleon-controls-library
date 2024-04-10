@@ -377,10 +377,9 @@ export class ChDialog {
   //                           Drag implementation
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleMouseDown = (event: MouseEvent) => {
-    /**
-     We should not add preventDefault in this instance, because we would prevent
-    some normal actions like clicking a button or focusing an input
-    */
+    // We should not add preventDefault in this instance, because we would
+    // prevent some normal actions like clicking a button or focusing an input.
+
     this.#dragRAF ||= new SyncWithRAF();
     this.#initialDragEvent = event;
 
@@ -400,10 +399,9 @@ export class ChDialog {
       // Improve drag UX by not selecting any button or clicking interactive elements
       event.preventDefault();
 
-      /**
-       We remove the pointer-events and user-select properties after the first
-      "mousemove", otherwise double clicking to select text would not work
-      */
+      // We remove the pointer-events and user-select properties after the first
+      // "mousemove", otherwise double clicking to select text would not work.
+
       this.#addDraggingClass();
 
       this.#lastDragEvent = event;
@@ -565,13 +563,11 @@ export class ChDialog {
     if (this.adjustPositionAfterResize) {
       this.#unfixDialogPosition();
     } else {
-      /**
-       * If the resize was performed from a block-start or inline-start edge, or any
-       * of the continuous vertices, it is necessary to reset DIALOG_BLOCK_START or
-       * DIALOG_INLINE_START, as they configure the block-start or inline-start of
-       * the dialog. This is only necessary if the dialog is not repositioned after
-       * the resize.
-       */
+      // If the resize was performed from a block-start or inline-start edge, or any
+      // of the continuous vertices, it is necessary to reset DIALOG_BLOCK_START or
+      // DIALOG_INLINE_START, as they configure the block-start or inline-start of
+      // the dialog. This is only necessary if the dialog is not repositioned after
+      // the resize.
       this.#fixDialogPosition();
     }
 
@@ -609,10 +605,9 @@ export class ChDialog {
     this.#lastDragEvent = null;
 
     if (this.modal) {
-      /**
-       * requestAnimationFrame is needed to prevent the dialog from closing, by
-       * scheduling the close after the document click.
-       */
+      // requestAnimationFrame is needed to prevent the dialog from closing, by
+      // scheduling the close after the document click.
+
       requestAnimationFrame(() => {
         document.addEventListener("click", this.#evaluateClickOnDocument, {
           capture: true

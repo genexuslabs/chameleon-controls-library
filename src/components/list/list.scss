@@ -40,10 +40,12 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   // Avoid zooming on double tap on iOS devices
   touch-action: manipulation;
 
+  cursor: pointer;
+}
+
+.sortable {
   // Allow user drag
   -webkit-user-drag: element;
-
-  cursor: pointer;
 }
 
 .caption-image,

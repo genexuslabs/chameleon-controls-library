@@ -28,6 +28,7 @@ import {
   TreeViewFilterInfo,
   TreeViewFilterOptions,
   TreeViewFilterType,
+  TreeViewImagePathCallback,
   TreeViewItemModel,
   TreeViewItemModelExtended,
   TreeViewOperationStatusModifyCaption,
@@ -52,6 +53,13 @@ import {
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
 import { insertIntoIndex, removeElement } from "../../../common/array";
+import {
+  removeSubscription,
+  subscribe,
+  syncStateWithObservableAncestors
+} from "../../sidebar/expanded-change-obervables";
+
+let autoId = 0;
 
 const ROOT_ID = null;
 
@@ -71,6 +79,20 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
 
+const defaultGetImagePath: TreeViewImagePathCallback = (
+  imgSrc: string,
+  treeState: ChTreeViewRender,
+  useGxRender?: boolean
+) =>
+  useGxRender
+    ? fromGxImageToURL(
+        imgSrc,
+        treeState.gxSettings,
+        treeState.gxImageConstructor
+      )
+    : imgSrc;
+
+// GeneXus implementation
 const gxDragDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender
@@ -79,6 +101,7 @@ const gxDragDisabled = (
     ? !itemModel.dragEnabled
     : treeState.dragDisabled;
 
+// GeneXus implementation
 const gxDropDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender
@@ -87,7 +110,7 @@ const gxDropDisabled = (
     ? !itemModel.dropEnabled
     : treeState.dropDisabled;
 
-const isItemDisabled = (
+const isDropDisabled = (
   itemModel: TreeViewGXItemModel,
   treeState: ChTreeViewRender,
   useGxRender: boolean
@@ -136,17 +159,13 @@ const defaultRenderItem = <T extends true | false>(
           : (itemModel as GXRender<false>).dragDisabled ??
             treeState.dragDisabled
       }
-      dropDisabled={isItemDisabled(itemModel, treeState, useGxRender)}
+      dropDisabled={isDropDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
-      endImgSrc={
+      endImgSrc={treeState.getImagePathCallback(
+        itemModel.endImgSrc,
+        treeState,
         useGxRender
-          ? fromGxImageToURL(
-              itemModel.endImgSrc,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : itemModel.endImgSrc
-      }
+      )}
       endImgType={itemModel.endImgType ?? "background"}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
@@ -162,21 +181,18 @@ const defaultRenderItem = <T extends true | false>(
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
       }
-      startImgSrc={
+      startImgSrc={treeState.getImagePathCallback(
+        itemModel.startImgSrc,
+        treeState,
         useGxRender
-          ? fromGxImageToURL(
-              itemModel.startImgSrc,
-              treeState.gxSettings,
-              treeState.gxImageConstructor
-            )
-          : itemModel.startImgSrc
-      }
+      )}
       startImgType={itemModel.startImgType ?? "background"}
     >
-      {!itemModel.leaf &&
+      {treeState.expanded &&
+        !itemModel.leaf &&
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
-          defaultRenderItem(
+          treeState.renderItem(
             subModel,
             treeState,
             treeHasFilter,
@@ -191,7 +207,7 @@ const defaultRenderItem = <T extends true | false>(
             // When dragging "before" and "after" an item and the direct parent
             // has drops disabled, don't render the ch-tree-view-drop elements.
             treeState.dropMode !== "above" &&
-              isItemDisabled(itemModel, treeState, useGxRender) !== true,
+              isDropDisabled(itemModel, treeState, useGxRender) !== true,
             useGxRender
           )
         )}
@@ -247,10 +263,19 @@ export class ChTreeViewRender {
   #filterTimeout: NodeJS.Timeout;
   #filterListAsSet: Set<string>;
 
+  /**
+   * This ID is used to identify the Tree View. Necessary to subscribe for
+   * expand/collapse changes in the ancestor nodes.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #treeViewId: string;
+
   // Refs
   #treeRef: HTMLChTreeViewElement;
 
   @Element() el: HTMLChTreeViewRenderElement;
+
+  @State() expanded: boolean = true;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -414,6 +439,15 @@ export class ChTreeViewRender {
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxSettings: any;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * item image needs to be resolved. With this callback, there is no need to
+   * re-implement item rendering (`renderItem` property) just to change the
+   * path used for the images.
+   */
+  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
+    defaultGetImagePath;
 
   /**
    * Callback that is executed when a item request to load its subitems.
@@ -1515,6 +1549,21 @@ export class ChTreeViewRender {
     return selectedItemsInfo;
   };
 
+  connectedCallback() {
+    this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
+
+    // Subscribe to expand/collapse changes in the ancestor nodes
+    subscribe(this.#treeViewId, {
+      getSubscriberRef: () => this.el,
+      observerCallback: expanded => {
+        this.expanded = expanded;
+      }
+    });
+
+    // Initialize the state
+    syncStateWithObservableAncestors(this.#treeViewId);
+  }
+
   componentWillLoad() {
     this.#flattenModel();
   }
@@ -1537,6 +1586,10 @@ export class ChTreeViewRender {
     }
 
     this.#validateCheckedAndSelectedItems();
+  }
+
+  disconnectedCallback() {
+    removeSubscription(this.#treeViewId);
   }
 
   render() {

@@ -25,6 +25,7 @@ const components = [
   "select",
   "shortcuts",
   "sidebar",
+  "sidebar-old",
   "step-list",
   "style",
   "suggest",

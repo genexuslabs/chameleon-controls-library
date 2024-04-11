@@ -41,8 +41,24 @@ export type FlexibleLayoutLeafConfiguration =
 
 export type FlexibleLayoutLeafConfigurationTabbed = {
   closeButtonHidden?: boolean;
+
+  /**
+   * When the control is sortable, the items can be dragged outside of the
+   * tab-list. This property lets you specify if this behavior is disabled.
+   * If not specified, defaults to `false`
+   */
+  dragOutsideDisabled?: boolean;
+
   selectedWidgetId?: string;
   showCaptions?: boolean;
+
+  /**
+   * `true` to enable sorting the tab buttons by dragging them in the tab-list.
+   * If sortable !== true, the tab buttons can not be dragged out either.
+   * If not specified, defaults to `true`
+   */
+  sortable?: boolean;
+
   tabDirection: FlexibleLayoutLeafTabDirection;
 
   /**
@@ -144,7 +160,7 @@ export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {
 
   exportParts: string;
 } & (T extends "tabbed"
-  ? FlexibleLayoutLeafConfigurationTabbed
+  ? Required<FlexibleLayoutLeafConfigurationTabbed>
   : FlexibleLayoutLeafConfigurationSingleContent);
 
 // - - - - - - - - - - - - - - - - - - - -

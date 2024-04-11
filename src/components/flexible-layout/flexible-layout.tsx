@@ -406,10 +406,12 @@ export class ChFlexibleLayout {
       }`}
       exportparts={viewInfo.exportParts}
       closeButtonHidden={viewInfo.closeButtonHidden}
+      dragOutsideDisabled={viewInfo.dragOutsideDisabled}
+      direction={viewInfo.tabDirection}
       items={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
-      direction={viewInfo.tabDirection}
+      sortable={viewInfo.sortable}
       // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onItemDragStart={this.handleDragStart(viewInfo.id)}

@@ -379,6 +379,12 @@ export class ChList implements DraggableView {
   @Prop() readonly showCaptions: boolean = true;
 
   /**
+   * `true` to enable sorting the tab buttons by dragging them in the tab-list.
+   * If sortable !== true, the tab buttons can not be dragged out either.
+   */
+  @Prop() readonly sortable: boolean = false;
+
+  /**
    * Fired when an item of the main group is double clicked.
    */
   @Event() expandMainGroup: EventEmitter<string>;
@@ -832,7 +838,7 @@ export class ChList implements DraggableView {
           //   this.direction === "main" ? this.#handleItemDblClick : null
           // }
           // Drag and drop
-          onDragStart={this.#handleDragStart(index)}
+          onDragStart={this.sortable ? this.#handleDragStart(index) : null}
         >
           {this.#imgRender(item)}
 

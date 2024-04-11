@@ -58,11 +58,13 @@ relative to an element, but placed on the top layer using `position: fixed`.
 
 ### Used by
 
+ - [ch-combo-box](../combobox)
  - [ch-dropdown](../dropdown)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-combo-box --> ch-popover
   ch-dropdown --> ch-popover
   style ch-popover fill:#f9f,stroke:#333,stroke-width:4px
 ```

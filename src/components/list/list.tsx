@@ -343,10 +343,10 @@ export class ChList implements DraggableView {
   }
 
   /**
-   * This attribute lets you specify if the drag operation is disabled in the
-   * captions of the control. If `true`, the captions can't be dragged.
+   * When the control is sortable, the items can be dragged outside of the
+   * tab-list. This property lets you specify if this behavior is disabled.
    */
-  @Prop() readonly dragDisabled: boolean = false;
+  @Prop() readonly dragOutsideDisabled: boolean = false;
 
   /**
    * `true` if the group has is view section expanded. Otherwise, only the
@@ -526,13 +526,15 @@ export class ChList implements DraggableView {
     const mouseDistanceToButtonLeftEdge = mousePositionX - buttonSizes.xStart;
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
 
-    // Mouse limits
-    this.#mouseBoundingLimits = {
-      xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
-      xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
-      yStart: tabListSizes.yStart - mouseDistanceToButtonBottomEdge,
-      yEnd: tabListSizes.yEnd + mouseDistanceToButtonTopEdge
-    };
+    // Update mouse limits if drag outside is enabled
+    if (!this.dragOutsideDisabled) {
+      this.#mouseBoundingLimits = {
+        xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
+        xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
+        yStart: tabListSizes.yStart - mouseDistanceToButtonBottomEdge,
+        yEnd: tabListSizes.yEnd + mouseDistanceToButtonTopEdge
+      };
+    }
 
     // Store initial mouse position
     this.#initialMousePosition = isBlockDirection(direction)
@@ -661,20 +663,23 @@ export class ChList implements DraggableView {
 
       const mouseLimits = this.#mouseBoundingLimits;
 
-      const draggedButtonIsInsideTheTabList =
-        inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
-        inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
+      // Check mouse limits if drag outside is enabled
+      if (!this.dragOutsideDisabled) {
+        const draggedButtonIsInsideTheTabList =
+          inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
+          inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
 
-      // Emit the itemDragStart event the first time the button is out of the
-      // mouse bounds (`mouseBoundingLimits`)
-      if (!draggedButtonIsInsideTheTabList) {
-        this.hasCrossedBoundaries = true;
+        // Emit the itemDragStart event the first time the button is out of the
+        // mouse bounds (`mouseBoundingLimits`)
+        if (!draggedButtonIsInsideTheTabList) {
+          this.hasCrossedBoundaries = true;
 
-        // Remove transition before the render to avoid flickering in the animation
-        this.el.style.setProperty(TRANSITION_DURATION, "0s");
+          // Remove transition before the render to avoid flickering in the animation
+          this.el.style.setProperty(TRANSITION_DURATION, "0s");
 
-        this.itemDragStart.emit(this.draggedElementIndex);
-        return;
+          this.itemDragStart.emit(this.draggedElementIndex);
+          return;
+        }
       }
 
       // There is no need to re-order the items in the preview
@@ -827,7 +832,7 @@ export class ChList implements DraggableView {
           //   this.direction === "main" ? this.#handleItemDblClick : null
           // }
           // Drag and drop
-          onDragStart={!this.dragDisabled ? this.#handleDragStart(index) : null}
+          onDragStart={this.#handleDragStart(index)}
         >
           {this.#imgRender(item)}
 

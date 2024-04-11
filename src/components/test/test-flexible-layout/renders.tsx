@@ -256,6 +256,8 @@ export const layout3: FlexibleLayout = {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
           closeButtonHidden: true,
+          // dragOutsideDisabled: true,
+          // sortable: false,
           size: "300px",
           type: "tabbed",
           tabDirection: "inline",

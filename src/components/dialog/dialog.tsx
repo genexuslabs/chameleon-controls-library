@@ -272,7 +272,7 @@ export class ChDialog {
     if (hidden) {
       this.#dialogRef.close();
     } else {
-      this.#showMethod();
+      this.#showModal();
     }
   }
 
@@ -348,7 +348,7 @@ export class ChDialog {
       // Schedule update for watchers
       this.#checkBorderSizeWatcher = true;
       this.#checkPositionWatcher = true;
-      this.#showMethod();
+      this.#showModal();
     }
 
     // Initialize watchers
@@ -479,7 +479,7 @@ export class ChDialog {
     this.#lastDragEvent = null;
   };
 
-  #showMethod = () => {
+  #showModal = () => {
     if (this.modal) {
       this.#dialogRef.showModal();
       document.addEventListener("click", this.#evaluateClickOnDocument, {

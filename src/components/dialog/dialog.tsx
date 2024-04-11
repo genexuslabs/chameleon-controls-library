@@ -725,8 +725,8 @@ export class ChDialog {
         }}
       >
         <dialog
-          class={this.showHeader ? "dialog--header" : null}
           aria-labelledby={this.caption ? "heading" : null}
+          class={this.showHeader ? "dialog--header" : null}
           part="dialog"
           onClose={this.#handleDialogClose}
           onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}

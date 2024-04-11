@@ -1,0 +1,17 @@
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+
+:host {
+  --ch-sidebar-inline-size--expanded: auto;
+  --ch-sidebar-inline-size--collapsed: auto;
+
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  inline-size: var(--ch-sidebar-inline-size--expanded);
+}
+
+:host(.ch-sidebar--collapsed) {
+  inline-size: var(--ch-sidebar-inline-size--collapsed);
+}

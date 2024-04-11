@@ -58,7 +58,12 @@
 //           Containers
 // - - - - - - - - - - - - - - - -
 .leaf {
+  // Leafs that don't have a minimum size can skip its box render
   display: contents;
+
+  &--rendered {
+    display: grid;
+  }
 }
 
 .group {

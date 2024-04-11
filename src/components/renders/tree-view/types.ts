@@ -1,4 +1,5 @@
 import { ImageRender } from "../../../components";
+import { ChTreeViewRender } from "./tree-view-render";
 
 export type TreeViewItemModel = {
   id: string;
@@ -116,3 +117,9 @@ export type TreeViewRemoveItemsResult = {
 export type LazyLoadTreeItemsCallback = (
   treeItemId: string
 ) => Promise<TreeViewItemModel[]>;
+
+export type TreeViewImagePathCallback = (
+  imgSrc: string,
+  treeState: ChTreeViewRender,
+  useGxRender?: boolean
+) => string;

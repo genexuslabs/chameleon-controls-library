@@ -112,20 +112,6 @@ Type: `Promise<void>`
 
 
 
-## Shadow Parts
-
-| Part                  | Description |
-| --------------------- | ----------- |
-| `"action"`            |             |
-| `"button"`            |             |
-| `"content"`           |             |
-| `"expandable-action"` |             |
-| `"expandable-button"` |             |
-| `"list"`              |             |
-| `"shortcut"`          |             |
-| `"window"`            |             |
-
-
 ## Dependencies
 
 ### Used by

@@ -38,7 +38,7 @@ import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 import { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -76,7 +76,7 @@ export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 export { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 export { ChWindowAlign } from "./components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -1550,6 +1550,17 @@ export namespace Components {
         "pageName": string;
         "pageSrc": string;
     }
+    interface ChSidebar {
+        "expandButtonAccessibleName": string;
+        /**
+          * Specifies whether the control is expanded or collapsed.
+         */
+        "expanded": boolean;
+        /**
+          * `true` to display a expandable button at the bottom of the control.
+         */
+        "showExpandButton": boolean;
+    }
     interface ChSidebarMenu {
         /**
           * The active item
@@ -2105,6 +2116,10 @@ export namespace Components {
          */
         "filterType": TreeViewFilterType;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved. With this callback, there is no need to re-implement item rendering (`renderItem` property) just to change the path used for the images.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * Given a list of ids, it returns an array of the items that exists in the given list.
          */
         "getItemsInfo": (itemsId: string[]) => Promise<TreeViewItemModelExtended[]>;
@@ -2450,6 +2465,10 @@ export interface ChSelectCustomEvent<T> extends CustomEvent<T> {
 export interface ChSelectOptionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSelectOptionElement;
+}
+export interface ChSidebarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSidebarElement;
 }
 export interface ChSidebarMenuCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3269,6 +3288,23 @@ declare global {
         prototype: HTMLChShowcaseElement;
         new (): HTMLChShowcaseElement;
     };
+    interface HTMLChSidebarElementEventMap {
+        "expandedChange": boolean;
+    }
+    interface HTMLChSidebarElement extends Components.ChSidebar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSidebarElementEventMap>(type: K, listener: (this: HTMLChSidebarElement, ev: ChSidebarCustomEvent<HTMLChSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSidebarElementEventMap>(type: K, listener: (this: HTMLChSidebarElement, ev: ChSidebarCustomEvent<HTMLChSidebarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSidebarElement: {
+        prototype: HTMLChSidebarElement;
+        new (): HTMLChSidebarElement;
+    };
     interface HTMLChSidebarMenuElementEventMap {
         "itemClicked": any;
         "collapseBtnClicked": any;
@@ -3656,6 +3692,7 @@ declare global {
         "ch-select-option": HTMLChSelectOptionElement;
         "ch-shortcuts": HTMLChShortcutsElement;
         "ch-showcase": HTMLChShowcaseElement;
+        "ch-sidebar": HTMLChSidebarElement;
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
@@ -5204,6 +5241,21 @@ declare namespace LocalJSX {
         "pageName"?: string;
         "pageSrc"?: string;
     }
+    interface ChSidebar {
+        "expandButtonAccessibleName"?: string;
+        /**
+          * Specifies whether the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Emitted when the element is clicked or the space key is pressed and released.
+         */
+        "onExpandedChange"?: (event: ChSidebarCustomEvent<boolean>) => void;
+        /**
+          * `true` to display a expandable button at the bottom of the control.
+         */
+        "showExpandButton"?: boolean;
+    }
     interface ChSidebarMenu {
         /**
           * The active item
@@ -5798,6 +5850,10 @@ declare namespace LocalJSX {
          */
         "filterType"?: TreeViewFilterType;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved. With this callback, there is no need to re-implement item rendering (`renderItem` property) just to change the path used for the images.
+         */
+        "getImagePathCallback"?: TreeViewImagePathCallback;
+        /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "gxImageConstructor"?: (name: string) => any;
@@ -6059,6 +6115,7 @@ declare namespace LocalJSX {
         "ch-select-option": ChSelectOption;
         "ch-shortcuts": ChShortcuts;
         "ch-showcase": ChShowcase;
+        "ch-sidebar": ChSidebar;
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
@@ -6224,6 +6281,7 @@ declare module "@stencil/core" {
             "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
             "ch-shortcuts": LocalJSX.ChShortcuts & JSXBase.HTMLAttributes<HTMLChShortcutsElement>;
             "ch-showcase": LocalJSX.ChShowcase & JSXBase.HTMLAttributes<HTMLChShowcaseElement>;
+            "ch-sidebar": LocalJSX.ChSidebar & JSXBase.HTMLAttributes<HTMLChSidebarElement>;
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;

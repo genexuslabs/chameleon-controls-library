@@ -32,23 +32,23 @@ interactive component.
 
 ## Shadow Parts
 
-| Part                                | Description                                                                                                                                                   |
-| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"caption"`                         |                                                                                                                                                               |
-| `"close-button"`                    |                                                                                                                                                               |
-| `"content"`                         | The dialog content. It is a div element that acts as a wrapper of the slotted content.                                                                        |
-| `"corner"`                          | Represents any of the dialog corners that appear in-between the edges. These corners are used to resize the dialog dimensions  by dragging.                   |
-| `"corner-block-end-inline-end"`     | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-end" parts (see also "corner" part).                                            |
-| `"corner-block-end-inline-start"`   | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-start" parts (see also "corner" part).                                          |
-| `"corner-block-start-inline-end"`   | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-end" parts (see also "corner" part).                                          |
-| `"corner-block-start-inline-start"` | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-start" parts (see also "corner" part).                                        |
-| `"dialog"`                          | The dialog html element, which is the first element inside the host.                                                                                          |
-| `"edge"`                            | Represents any of the dialog edges that appear before, after, above or below the dialog. These corners are used to resize the dialog dimensions  by dragging. |
-| `"edge-block-end"`                  | Represents the "block-end" dialog edge (see also "edge" part).                                                                                                |
-| `"edge-block-start"`                | Represents the "block-start" dialog edge (see also "edge" part).                                                                                              |
-| `"edge-inline-end"`                 | Represents the "inline-end" dialog edge (see also "edge" part).                                                                                               |
-| `"edge-inline-start"`               | Represents the "inline-start" dialog edge (see also "edge" part).                                                                                             |
-| `"header"`                          | The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.                                |
+| Part                                | Description                                                                                                                                                |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"caption"`                         |                                                                                                                                                            |
+| `"close-button"`                    |                                                                                                                                                            |
+| `"content"`                         | The dialog content. It is a div element that acts as a wrapper of the slotted content.                                                                     |
+| `"corner"`                          | Represents any of the dialog corners that appear in-between the edges. These corners are used to resize the dialog dimensions by dragging.                 |
+| `"corner-block-end-inline-end"`     | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-end" parts (see also "corner" part).                                         |
+| `"corner-block-end-inline-start"`   | Represents the dialog corner in-between the "edge-block-end" and "edge-inline-start" parts (see also "corner" part).                                       |
+| `"corner-block-start-inline-end"`   | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-end" parts (see also "corner" part).                                       |
+| `"corner-block-start-inline-start"` | Represents the dialog corner in-between the "edge-block-start" and "edge-inline-start" parts (see also "corner" part).                                     |
+| `"dialog"`                          | The dialog html element, which is the first element inside the host.                                                                                       |
+| `"edge"`                            | Represents any of the dialog edges that appear before, after, above or below the dialog. These edges are used to resize the dialog dimensions by dragging. |
+| `"edge-block-end"`                  | Represents the "block-end" dialog edge (see also "edge" part).                                                                                             |
+| `"edge-block-start"`                | Represents the "block-start" dialog edge (see also "edge" part).                                                                                           |
+| `"edge-inline-end"`                 | Represents the "inline-end" dialog edge (see also "edge" part).                                                                                            |
+| `"edge-inline-start"`               | Represents the "inline-start" dialog edge (see also "edge" part).                                                                                          |
+| `"header"`                          | The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.                             |
 
 
 ## CSS Custom Properties
@@ -63,7 +63,7 @@ interactive component.
 | `--ch-dialog-max-inline-size`  | Specifies the maximum inline size of the dialog. Useful for scenarios where the dialog is resizable. @default auto                                                      |
 | `--ch-dialog-min-block-size`   | Specifies the minimum block size of the dialog. Useful for scenarios where the dialog is resizable. @default auto                                                       |
 | `--ch-dialog-min-inline-size`  | Specifies the minimum inline size of the dialog. Useful for scenarios where the dialog is resizable. @default auto                                                      |
-| `--ch-dialog-resize-threshold` | Specifies the size of the threshold to resize the dialog. @default 4px                                                                                                  |
+| `--ch-dialog-resize-threshold` | Specifies the size of the threshold to resize the dialog. @default 8px                                                                                                  |
 
 
 ----------------------------------------------

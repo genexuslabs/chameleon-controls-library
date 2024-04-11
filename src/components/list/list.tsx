@@ -816,7 +816,9 @@ export class ChList implements DraggableView {
             "shifted-element--end":
               thereAreShiftedElements &&
               this.draggedElementNewIndex <= index &&
-              index < this.draggedElementIndex
+              index < this.draggedElementIndex,
+
+            sortable: this.sortable
           }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,

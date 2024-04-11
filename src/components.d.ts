@@ -1093,9 +1093,9 @@ export namespace Components {
          */
         "direction": ListDirection;
         /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
          */
-        "dragDisabled": boolean;
+        "dragOutsideDisabled": boolean;
         /**
           * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
          */
@@ -1128,6 +1128,10 @@ export namespace Components {
           * `true` to show the captions of the items.
          */
         "showCaptions": boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -4734,9 +4738,9 @@ declare namespace LocalJSX {
          */
         "direction"?: ListDirection;
         /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
          */
-        "dragDisabled"?: boolean;
+        "dragOutsideDisabled"?: boolean;
         /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
@@ -4769,6 +4773,10 @@ declare namespace LocalJSX {
           * `true` to show the captions of the items.
          */
         "showCaptions"?: boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown

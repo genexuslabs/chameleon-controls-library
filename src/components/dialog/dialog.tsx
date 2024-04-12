@@ -258,6 +258,13 @@ export class ChDialog {
   @Prop() readonly caption: string;
 
   /**
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the element. This label is used for the close button of the header.
+   */
+  @Prop() readonly closeButtonAccessibleName?: string;
+
+  /**
    * Specifies whether the dialog is hidden or visible.
    */
   // eslint-disable-next-line @stencil-community/ban-default-true
@@ -747,6 +754,7 @@ export class ChDialog {
                 </h2>
               )}
               <button
+                aria-label={this.closeButtonAccessibleName || null}
                 class="close-button"
                 part="close-button"
                 type="button"

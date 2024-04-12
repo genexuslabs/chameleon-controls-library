@@ -1,9 +1,9 @@
 @import "../../common/base";
 
+@include button-reset();
 @include box-sizing();
 
 .caption,
-.close-button,
 dialog {
   @include reset-browser-defaults-properties-1();
 }

@@ -749,7 +749,7 @@ export class ChDialog {
               }
             >
               {this.caption && (
-                <h2 id="heading" part="caption" class="caption">
+                <h2 id="heading" class="caption" part="caption">
                   {this.caption}
                 </h2>
               )}

@@ -151,6 +151,23 @@ $ch-dialog-y--same-layer: calc(
 }
 
 // - - - - - - - - - - - - - - - -
+//             Header
+// - - - - - - - - - - - - - - - -
+.header {
+  display: grid;
+  grid-template: "caption close-button" 1fr / 1fr max-content;
+  align-items: center;
+}
+
+.caption {
+  grid-area: caption;
+}
+
+.close-button {
+  grid-area: close-button;
+}
+
+// - - - - - - - - - - - - - - - -
 //           Dialog
 // - - - - - - - - - - - - - - - -
 dialog {

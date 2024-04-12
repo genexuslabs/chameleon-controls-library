@@ -24,6 +24,9 @@ $ch-dialog-y--same-layer: calc(
 );
 
 ::backdrop {
+  // Reset browser default
+  background: unset;
+
   // Needed to capture the click event outside the dialog, in order to close it.
   pointer-events: none;
 }

@@ -250,7 +250,7 @@ export class ChDialog {
    * content. "header" will allow the dialog to be draggable only from the header.
    * "no" disables dragging completely.
    */
-  @Prop() readonly allowDrag: "box" | "header" | "no" = "box";
+  @Prop() readonly allowDrag: "box" | "header" | "no" = "no";
 
   /**
    * Refers to the dialog title. I will ve visible if 'showHeader´is true.
@@ -302,8 +302,7 @@ export class ChDialog {
   /**
    * Specifies whether the dialog header is hidden or visible.
    */
-  // eslint-disable-next-line @stencil-community/ban-default-true
-  @Prop() readonly showHeader: boolean = true;
+  @Prop() readonly showHeader: boolean = false;
 
   /**
    * Emitted when the dialog is closed.

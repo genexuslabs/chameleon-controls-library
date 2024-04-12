@@ -130,21 +130,21 @@ $ch-dialog-y--same-layer: calc(
   --ch-dialog-dragged-x: 0px;
   --ch-dialog-dragged-y: 0px;
   --ch-dialog-rtl: 1;
+}
 
+// Modal dialog will cover all the containing element to give us an alternative
+// to style the backdrop. Since the backdrop can not be styled outside the
+// Shadow, we use the ch-dialog tag as the backdrop in this case
+:host(.ch-dialog--modal) {
   // Required to ensure that the ch-dialog element does not take up space in
   // the containing element
   position: fixed;
+  inset: 0;
+}
 
-  // Reset browser defaults
-  margin: 0;
-  padding: 0;
-  background-color: unset;
-  border: unset;
-  color: unset;
-  overflow: visible;
-
-  top: 0;
-  inset-inline-start: 0;
+// Non modal mode won't render the box of the ch-dialog tag
+:host(.ch-dialog--non-modal) {
+  display: contents;
 }
 
 // - - - - - - - - - - - - - - - -

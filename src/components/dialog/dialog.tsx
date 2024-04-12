@@ -721,6 +721,8 @@ export class ChDialog {
       <Host
         class={{
           "gx-dialog-header-drag": !this.hidden && this.allowDrag === "header",
+          "ch-dialog--modal": this.modal,
+          "ch-dialog--non-modal": !this.modal,
           [RESIZING_CLASS]: this.resizing
         }}
       >

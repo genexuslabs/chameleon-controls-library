@@ -344,6 +344,10 @@ export namespace Components {
          */
         "caption": string;
         /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the header.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
           * Specifies whether the dialog is hidden or visible.
          */
         "hidden": boolean;
@@ -4018,6 +4022,10 @@ declare namespace LocalJSX {
           * Refers to the dialog title. I will ve visible if 'showHeader´is true.
          */
         "caption"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the header.
+         */
+        "closeButtonAccessibleName"?: string;
         /**
           * Specifies whether the dialog is hidden or visible.
          */

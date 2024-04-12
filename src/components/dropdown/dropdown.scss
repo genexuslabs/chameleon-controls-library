@@ -52,7 +52,7 @@ ch-popover {
   --ch-popover-separation-x: var(--ch-dropdown-separation-x);
   --ch-popover-separation-y: var(--ch-dropdown-separation-y);
 
-  &:not(:defined) {
+  &:not(.hydrated) {
     opacity: 0;
   }
 }

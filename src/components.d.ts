@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 import { DropdownPosition } from "./components/dropdown/types";
 import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { ComboBoxItem } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/renders/dropdown/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -37,7 +38,7 @@ import { chTreeItemData } from "./components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 import { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 import { ChWindowAlign } from "./components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -45,6 +46,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
 export { DropdownPosition } from "./components/dropdown/types";
 export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { ComboBoxItem } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/renders/dropdown/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
@@ -74,7 +76,7 @@ export { chTreeItemData } from "./components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
 export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
 export { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
 export { ChWindowAlign } from "./components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -128,9 +130,17 @@ export namespace Components {
     }
     interface ChActionGroupRender {
         /**
+          * Specifies the parts that are exported by the internal action-group. This property is useful to override the exported parts.
+         */
+        "actionGroupExportParts": string;
+        /**
           * A CSS class to set as the `ch-action-group` element class.
          */
         "cssClass": string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "dropdownExportParts": string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -286,6 +296,70 @@ export namespace Components {
          */
         "value": string;
     }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items": ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple": boolean;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder": string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * Specifies the value (selected item) of the control.
+         */
+        "value"?: string;
+    }
+    /**
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
+     */
+    interface ChDialog {
+        /**
+          * `true` if the dialog should be repositioned after resize.
+         */
+        "adjustPositionAfterResize": boolean;
+        /**
+          * "box" will allow the dialog to be draggable from both the header and the content. "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
+         */
+        "allowDrag": "box" | "header" | "no";
+        /**
+          * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+         */
+        "caption": string;
+        /**
+          * Specifies whether the dialog is hidden or visible.
+         */
+        "hidden": boolean;
+        /**
+          * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
+         */
+        "modal": boolean;
+        /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable": boolean;
+        /**
+          * Specifies whether the dialog header is hidden or visible.
+         */
+        "showHeader": boolean;
+    }
     interface ChDropdown {
         /**
           * Specifies if the current parent of the item is the action-group control.
@@ -383,6 +457,10 @@ export namespace Components {
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass": string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "exportParts": string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -1015,9 +1093,9 @@ export namespace Components {
          */
         "direction": ListDirection;
         /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
          */
-        "dragDisabled": boolean;
+        "dragOutsideDisabled": boolean;
         /**
           * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
          */
@@ -1050,6 +1128,10 @@ export namespace Components {
           * `true` to show the captions of the items.
          */
         "showCaptions": boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -1471,6 +1553,17 @@ export namespace Components {
     interface ChShowcase {
         "pageName": string;
         "pageSrc": string;
+    }
+    interface ChSidebar {
+        "expandButtonAccessibleName": string;
+        /**
+          * Specifies whether the control is expanded or collapsed.
+         */
+        "expanded": boolean;
+        /**
+          * `true` to display a expandable button at the bottom of the control.
+         */
+        "showExpandButton": boolean;
     }
     interface ChSidebarMenu {
         /**
@@ -2027,6 +2120,10 @@ export namespace Components {
          */
         "filterType": TreeViewFilterType;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved. With this callback, there is no need to re-implement item rendering (`renderItem` property) just to change the path used for the images.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * Given a list of ids, it returns an array of the items that exists in the given list.
          */
         "getItemsInfo": (itemsId: string[]) => Promise<TreeViewItemModelExtended[]>;
@@ -2269,6 +2366,14 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
+export interface ChComboBoxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChComboBoxElement;
+}
+export interface ChDialogCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChDialogElement;
+}
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
@@ -2364,6 +2469,10 @@ export interface ChSelectCustomEvent<T> extends CustomEvent<T> {
 export interface ChSelectOptionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSelectOptionElement;
+}
+export interface ChSidebarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSidebarElement;
 }
 export interface ChSidebarMenuCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2521,6 +2630,44 @@ declare global {
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
+    };
+    interface HTMLChComboBoxElementEventMap {
+        "input": string;
+    }
+    interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChComboBoxElement: {
+        prototype: HTMLChComboBoxElement;
+        new (): HTMLChComboBoxElement;
+    };
+    interface HTMLChDialogElementEventMap {
+        "dialogClosed": any;
+    }
+    /**
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
+     */
+    interface HTMLChDialogElement extends Components.ChDialog, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChDialogElementEventMap>(type: K, listener: (this: HTMLChDialogElement, ev: ChDialogCustomEvent<HTMLChDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChDialogElementEventMap>(type: K, listener: (this: HTMLChDialogElement, ev: ChDialogCustomEvent<HTMLChDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChDialogElement: {
+        prototype: HTMLChDialogElement;
+        new (): HTMLChDialogElement;
     };
     interface HTMLChDropdownElementEventMap {
         "expandedChange": boolean;
@@ -3145,6 +3292,23 @@ declare global {
         prototype: HTMLChShowcaseElement;
         new (): HTMLChShowcaseElement;
     };
+    interface HTMLChSidebarElementEventMap {
+        "expandedChange": boolean;
+    }
+    interface HTMLChSidebarElement extends Components.ChSidebar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSidebarElementEventMap>(type: K, listener: (this: HTMLChSidebarElement, ev: ChSidebarCustomEvent<HTMLChSidebarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSidebarElementEventMap>(type: K, listener: (this: HTMLChSidebarElement, ev: ChSidebarCustomEvent<HTMLChSidebarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSidebarElement: {
+        prototype: HTMLChSidebarElement;
+        new (): HTMLChSidebarElement;
+    };
     interface HTMLChSidebarMenuElementEventMap {
         "itemClicked": any;
         "collapseBtnClicked": any;
@@ -3488,6 +3652,8 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-combo-box": HTMLChComboBoxElement;
+        "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
@@ -3530,6 +3696,7 @@ declare global {
         "ch-select-option": HTMLChSelectOptionElement;
         "ch-shortcuts": HTMLChShortcutsElement;
         "ch-showcase": HTMLChShowcaseElement;
+        "ch-sidebar": HTMLChSidebarElement;
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
@@ -3618,9 +3785,17 @@ declare namespace LocalJSX {
     }
     interface ChActionGroupRender {
         /**
+          * Specifies the parts that are exported by the internal action-group. This property is useful to override the exported parts.
+         */
+        "actionGroupExportParts"?: string;
+        /**
           * A CSS class to set as the `ch-action-group` element class.
          */
         "cssClass"?: string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "dropdownExportParts"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -3792,6 +3967,78 @@ declare namespace LocalJSX {
          */
         "value": string;
     }
+    interface ChComboBox {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies the items of the control
+         */
+        "items"?: ComboBoxItem[];
+        /**
+          * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
+         */
+        "multiple"?: boolean;
+        /**
+          * The `input` event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChComboBoxCustomEvent<string>) => void;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder"?: string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * Specifies the value (selected item) of the control.
+         */
+        "value"?: string;
+    }
+    /**
+     * The `ch-dialog` component represents a modal or non-modal dialog box or other
+     * interactive component.
+     */
+    interface ChDialog {
+        /**
+          * `true` if the dialog should be repositioned after resize.
+         */
+        "adjustPositionAfterResize"?: boolean;
+        /**
+          * "box" will allow the dialog to be draggable from both the header and the content. "header" will allow the dialog to be draggable only from the header. "no" disables dragging completely.
+         */
+        "allowDrag"?: "box" | "header" | "no";
+        /**
+          * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+         */
+        "caption"?: string;
+        /**
+          * Specifies whether the dialog is hidden or visible.
+         */
+        "hidden"?: boolean;
+        /**
+          * Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa).
+         */
+        "modal"?: boolean;
+        /**
+          * Emitted when the dialog is closed.
+         */
+        "onDialogClosed"?: (event: ChDialogCustomEvent<any>) => void;
+        /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable"?: boolean;
+        /**
+          * Specifies whether the dialog header is hidden or visible.
+         */
+        "showHeader"?: boolean;
+    }
     interface ChDropdown {
         /**
           * Specifies if the current parent of the item is the action-group control.
@@ -3881,6 +4128,10 @@ declare namespace LocalJSX {
           * A CSS class to set as the `ch-dropdown` element class.
          */
         "cssClass"?: string;
+        /**
+          * Specifies the parts that are exported by the internal dropdown. This property is useful to override the exported parts.
+         */
+        "exportParts"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
@@ -4487,9 +4738,9 @@ declare namespace LocalJSX {
          */
         "direction"?: ListDirection;
         /**
-          * This attribute lets you specify if the drag operation is disabled in the captions of the control. If `true`, the captions can't be dragged.
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
          */
-        "dragDisabled"?: boolean;
+        "dragOutsideDisabled"?: boolean;
         /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
@@ -4522,6 +4773,10 @@ declare namespace LocalJSX {
           * `true` to show the captions of the items.
          */
         "showCaptions"?: boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -4993,6 +5248,21 @@ declare namespace LocalJSX {
     interface ChShowcase {
         "pageName"?: string;
         "pageSrc"?: string;
+    }
+    interface ChSidebar {
+        "expandButtonAccessibleName"?: string;
+        /**
+          * Specifies whether the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Emitted when the element is clicked or the space key is pressed and released.
+         */
+        "onExpandedChange"?: (event: ChSidebarCustomEvent<boolean>) => void;
+        /**
+          * `true` to display a expandable button at the bottom of the control.
+         */
+        "showExpandButton"?: boolean;
     }
     interface ChSidebarMenu {
         /**
@@ -5588,6 +5858,10 @@ declare namespace LocalJSX {
          */
         "filterType"?: TreeViewFilterType;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved. With this callback, there is no need to re-implement item rendering (`renderItem` property) just to change the path used for the images.
+         */
+        "getImagePathCallback"?: TreeViewImagePathCallback;
+        /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "gxImageConstructor"?: (name: string) => any;
@@ -5805,6 +6079,8 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-combo-box": ChComboBox;
+        "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
@@ -5847,6 +6123,7 @@ declare namespace LocalJSX {
         "ch-select-option": ChSelectOption;
         "ch-shortcuts": ChShortcuts;
         "ch-showcase": ChShowcase;
+        "ch-sidebar": ChSidebar;
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
@@ -5889,6 +6166,12 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
+            /**
+             * The `ch-dialog` component represents a modal or non-modal dialog box or other
+             * interactive component.
+             */
+            "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
@@ -6006,6 +6289,7 @@ declare module "@stencil/core" {
             "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
             "ch-shortcuts": LocalJSX.ChShortcuts & JSXBase.HTMLAttributes<HTMLChShortcutsElement>;
             "ch-showcase": LocalJSX.ChShowcase & JSXBase.HTMLAttributes<HTMLChShowcaseElement>;
+            "ch-sidebar": LocalJSX.ChSidebar & JSXBase.HTMLAttributes<HTMLChSidebarElement>;
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;

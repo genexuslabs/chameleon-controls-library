@@ -1,5 +1,22 @@
 @import "../../common/_base";
 
+// - - - - - - - - - - - - - - - -
+//         Caption button
+// - - - - - - - - - - - - - - - -
+:where(button) {
+  all: unset;
+  display: flex;
+  align-items: center;
+
+  // Disallow selecting the text
+  user-select: none;
+
+  // Avoid zooming on double tap on iOS devices
+  touch-action: manipulation;
+
+  cursor: pointer;
+}
+
 @include box-sizing();
 
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
@@ -26,24 +43,9 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   grid-template-columns: max-content 1fr;
 }
 
-// - - - - - - - - - - - - - - - -
-//         Caption button
-// - - - - - - - - - - - - - - - -
-:where(button) {
-  all: unset;
-  display: flex;
-  align-items: center;
-
-  // Disallow selecting the text
-  user-select: none;
-
-  // Avoid zooming on double tap on iOS devices
-  touch-action: manipulation;
-
+.sortable {
   // Allow user drag
   -webkit-user-drag: element;
-
-  cursor: pointer;
 }
 
 .caption-image,
@@ -61,9 +63,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 }
 
 .close-button {
-  // Send the close button at the end of the line
-  margin-inline-start: auto;
-
   &::after {
     content: "";
     display: flex;
@@ -79,6 +78,7 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .button {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   &:hover > .close-button::after,
   &:focus-within > .close-button::after,

@@ -6,7 +6,7 @@ export interface AccessibleNameComponent {
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  accessibleName: string;
+  accessibleName?: string;
 }
 
 export interface DisableableComponent {

@@ -126,6 +126,8 @@ $ch-popover-y--same-layer: calc(
   --ch-popover-dragged-y: 0px;
   --ch-popover-rtl: 1;
 
+  display: grid; // Necessary to support gap property
+
   // Necessary when the popover is not placed in a new top layer. For example,
   // when nesting dropdowns
   position: fixed;

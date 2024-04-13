@@ -49,11 +49,9 @@ export const DROPDOWN_PARTS_DICTIONARY = {
   ACTION: "action",
   BUTTON: "button",
   LINK: "link",
-  EXPANDABLE_ACTION: "expandable-action",
   EXPANDABLE_BUTTON: "expandable-button",
-  EXPANDABLE_LINK: "expandable-link",
-  WINDOW: "window",
-  LIST: "list"
+  EXPANDABLE: "expandable",
+  WINDOW: "window"
 } as const;
 
 export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);

@@ -55,12 +55,6 @@ export class ChDropdownRender {
   ) => void;
 
   /**
-   * A CSS class to set as the `ch-dropdown-item` element class.
-   * This default class is used for the items that don't have an explicit class.
-   */
-  @Prop() readonly itemCssClass: string = "dropdown-item";
-
-  /**
    * This property lets you define the model of the ch-dropdown control.
    */
   @Prop() readonly model: DropdownItemModel[];
@@ -101,7 +95,7 @@ export class ChDropdownRender {
         exportparts={this.exportParts}
         id={item.id}
         caption={item.caption}
-        class={item.class || this.itemCssClass}
+        class={item.class || this.cssClass}
         endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(

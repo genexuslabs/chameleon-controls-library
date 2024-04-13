@@ -35,13 +35,13 @@ const ACTION_LINK =
   `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.LINK}` as const;
 
 const ACTION_LINK_EXPANDABLE =
-  `${ACTION_LINK} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_ACTION} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_LINK}` as const;
+  `${ACTION_LINK} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const ACTION_BUTTON =
   `${DROPDOWN_PARTS_DICTIONARY.ACTION} ${DROPDOWN_PARTS_DICTIONARY.BUTTON}` as const;
 
 const ACTION_BUTTON_EXPANDABLE =
-  `${ACTION_BUTTON} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_ACTION} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}` as const;
+  `${ACTION_BUTTON} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
 const DROPDOWN_TAG_NAME = "ch-dropdown";
 const WINDOW_ID = "window";
@@ -384,7 +384,7 @@ export class ChDropDown implements ChComponent {
       aria-haspopup="true"
       aria-label={this.buttonAccessibleName}
       class="expandable-button"
-      part={ACTION_BUTTON_EXPANDABLE}
+      part={DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}
       type="button"
       onClick={this.#handleButtonClick}
       ref={el => (this.#mainAction = el)}
@@ -483,7 +483,7 @@ export class ChDropDown implements ChComponent {
           [
             this.showHeader && <slot name="header" />,
 
-            <div role="list" class="list" part={DROPDOWN_PARTS_DICTIONARY.LIST}>
+            <div role="list" class="list">
               <slot />
             </div>,
 

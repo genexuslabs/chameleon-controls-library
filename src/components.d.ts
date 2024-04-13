@@ -482,10 +482,6 @@ export namespace Components {
     itemId: string
   ) => void;
         /**
-          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
-         */
-        "itemCssClass": string;
-        /**
           * This property lets you define the model of the ch-dropdown control.
          */
         "model": DropdownItemModel[];
@@ -4156,10 +4152,6 @@ declare namespace LocalJSX {
     target: string,
     itemId: string
   ) => void;
-        /**
-          * A CSS class to set as the `ch-dropdown-item` element class. This default class is used for the items that don't have an explicit class.
-         */
-        "itemCssClass"?: string;
         /**
           * This property lets you define the model of the ch-dropdown control.
          */

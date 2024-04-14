@@ -23,6 +23,7 @@ const components = [
   "paginator",
   "popover",
   ["qr", "QR"],
+  "segmented-control",
   "select",
   "shortcuts",
   "sidebar",

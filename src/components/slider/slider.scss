@@ -96,13 +96,13 @@
 }
 
 .track__selected {
-  background-color: var(--ch-slider-selected-track-background-color);
+  background-color: var(--ch-slider-track__selected-background-color);
   inline-size: var(--slider-selected-value);
   block-size: 100%;
 }
 
 .track__unselected {
-  background-color: var(--ch-slider-unselected-track-background-color);
+  background-color: var(--ch-slider-track__unselected-background-color);
   inline-size: var(--slider-unselected-value);
   block-size: 100%;
 }

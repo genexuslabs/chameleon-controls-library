@@ -20,8 +20,7 @@
 
       .action-group::part(more-actions-window),
       .action-group-item::part(window),
-      .dropdown::part(window),
-      .dropdown-item::part(window) {
+      .dropdown::part(window) {
         width: max-content;
         padding-block: 4px;
         background-color: #fff;
@@ -29,7 +28,7 @@
         line-height: 24px;
       }
 
-      .dropdown::part(action) {
+      .dropdown::part(expandable-button) {
         padding-inline: 8px;
         border: 1px solid;
       }
@@ -38,18 +37,18 @@
         background-color: rgba(0, 0, 0, 0.1);
       }
 
-      .dropdown-item::part(action) {
+      .dropdown::part(action) {
         padding-block: 2px;
         padding-inline: 32px;
         gap: 6px;
       }
 
-      .dropdown-item::part(action):hover {
+      .dropdown::part(action):hover {
         background-color: rgb(0, 96, 192);
         color: white;
       }
 
-      .dropdown-item::part(start-img) {
+      .dropdown::part(start-img) {
         width: 18px;
         height: 18px;
         min-width: 18px;
@@ -57,7 +56,7 @@
         padding: 1px;
       }
 
-      .dropdown-item::part(shortcut) {
+      .dropdown::part(shortcut) {
         margin-inline-start: 128px;
       }
 

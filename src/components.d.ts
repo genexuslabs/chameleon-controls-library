@@ -29,6 +29,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
+import { SegmentedControlItem } from "./components/renders/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -67,6 +68,7 @@ export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
+export { SegmentedControlItem } from "./components/renders/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -1501,6 +1503,77 @@ export namespace Components {
          */
         "text": string | undefined;
     }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     * This control represents and item of the ch-segmented-control-render
+     */
+    interface ChSegmentedControlItem {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * `true` if the control is the not the first or last item in the ch-segmented-control-render.
+         */
+        "between": boolean;
+        /**
+          * Specifies the caption that the control will display.
+         */
+        "caption"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies the src of the end image.
+         */
+        "endImgSrc": string;
+        /**
+          * Specifies how the end image will be rendered.
+         */
+        "endImgType": Exclude<ImageRender, "img">;
+        /**
+          * `true` if the control is the first item in the ch-segmented-control-render.
+         */
+        "first": boolean;
+        /**
+          * `true` if the control is the last item in the ch-segmented-control-render.
+         */
+        "last": boolean;
+        /**
+          * Specifies if the control is selected.
+         */
+        "selected": boolean;
+        /**
+          * Specifies the src of the start image.
+         */
+        "startImgSrc": string;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
+    }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     */
+    interface ChSegmentedControlRender {
+        /**
+          * Specifies the parts that are exported by the internal segmented-control-item. This property is useful to override the exported parts.
+         */
+        "exportParts": string;
+        /**
+          * A CSS class to set as the `ch-segmented-control-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "itemCssClass": string;
+        /**
+          * This property lets you define the items of the ch-segmented-control-render control.
+         */
+        "items"?: SegmentedControlItem[];
+        /**
+          * Specifies the ID of the selected item
+         */
+        "selectedId": string;
+    }
     interface ChSelect {
         "arrowIconSrc": string;
         /**
@@ -1614,6 +1687,43 @@ export namespace Components {
           * If this attribute is present the item will be initially uncollapsed
          */
         "uncollapsed": boolean;
+    }
+    /**
+     * The slider control is a input where the user selects a value from within a given range.
+     */
+    interface ChSlider {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled": false;
+        /**
+          * Specifies an id for the internal input. Useful to label the internal input by using a label tag.
+         */
+        "inputId"?: string;
+        /**
+          * This attribute lets you specify maximum value of the slider.
+         */
+        "maxValue": number;
+        /**
+          * This attribute lets you specify minimum value of the slider.
+         */
+        "minValue": number;
+        /**
+          * This attribute lets you indicate whether the control should display a bubble with the current value upon interaction.
+         */
+        "showValue": false;
+        /**
+          * This attribute lets you specify the step of the slider.  This attribute is useful when the values of the slider can only take some discrete values. For example, if valid values are `[10, 20, 30]` set the `minValue` to `10`, the maxValue to `30`, and the step to `10`. If the step is `0`, the any intermediate value is valid.
+         */
+        "step": number;
+        /**
+          * The value of the control.
+         */
+        "value": number;
     }
     interface ChStepList {
     }
@@ -2466,6 +2576,14 @@ export interface ChPopoverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChPopoverElement;
 }
+export interface ChSegmentedControlItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSegmentedControlItemElement;
+}
+export interface ChSegmentedControlRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSegmentedControlRenderElement;
+}
 export interface ChSelectCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSelectElement;
@@ -2485,6 +2603,10 @@ export interface ChSidebarMenuCustomEvent<T> extends CustomEvent<T> {
 export interface ChSidebarMenuListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSidebarMenuListItemElement;
+}
+export interface ChSliderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSliderElement;
 }
 export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3249,6 +3371,47 @@ declare global {
         prototype: HTMLChQrElement;
         new (): HTMLChQrElement;
     };
+    interface HTMLChSegmentedControlItemElementEventMap {
+        "selectedChange": string;
+    }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     * This control represents and item of the ch-segmented-control-render
+     */
+    interface HTMLChSegmentedControlItemElement extends Components.ChSegmentedControlItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSegmentedControlItemElementEventMap>(type: K, listener: (this: HTMLChSegmentedControlItemElement, ev: ChSegmentedControlItemCustomEvent<HTMLChSegmentedControlItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSegmentedControlItemElementEventMap>(type: K, listener: (this: HTMLChSegmentedControlItemElement, ev: ChSegmentedControlItemCustomEvent<HTMLChSegmentedControlItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSegmentedControlItemElement: {
+        prototype: HTMLChSegmentedControlItemElement;
+        new (): HTMLChSegmentedControlItemElement;
+    };
+    interface HTMLChSegmentedControlRenderElementEventMap {
+        "selectedItemChange": string;
+    }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     */
+    interface HTMLChSegmentedControlRenderElement extends Components.ChSegmentedControlRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSegmentedControlRenderElementEventMap>(type: K, listener: (this: HTMLChSegmentedControlRenderElement, ev: ChSegmentedControlRenderCustomEvent<HTMLChSegmentedControlRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSegmentedControlRenderElementEventMap>(type: K, listener: (this: HTMLChSegmentedControlRenderElement, ev: ChSegmentedControlRenderCustomEvent<HTMLChSegmentedControlRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSegmentedControlRenderElement: {
+        prototype: HTMLChSegmentedControlRenderElement;
+        new (): HTMLChSegmentedControlRenderElement;
+    };
     interface HTMLChSelectElementEventMap {
         "onToggle": any;
         "optionClickedEvent": any;
@@ -3353,6 +3516,27 @@ declare global {
     var HTMLChSidebarMenuListItemElement: {
         prototype: HTMLChSidebarMenuListItemElement;
         new (): HTMLChSidebarMenuListItemElement;
+    };
+    interface HTMLChSliderElementEventMap {
+        "change": number;
+        "input": number;
+    }
+    /**
+     * The slider control is a input where the user selects a value from within a given range.
+     */
+    interface HTMLChSliderElement extends Components.ChSlider, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSliderElementEventMap>(type: K, listener: (this: HTMLChSliderElement, ev: ChSliderCustomEvent<HTMLChSliderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSliderElementEventMap>(type: K, listener: (this: HTMLChSliderElement, ev: ChSliderCustomEvent<HTMLChSliderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSliderElement: {
+        prototype: HTMLChSliderElement;
+        new (): HTMLChSliderElement;
     };
     interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
     }
@@ -3696,6 +3880,8 @@ declare global {
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
         "ch-popover": HTMLChPopoverElement;
         "ch-qr": HTMLChQrElement;
+        "ch-segmented-control-item": HTMLChSegmentedControlItemElement;
+        "ch-segmented-control-render": HTMLChSegmentedControlRenderElement;
         "ch-select": HTMLChSelectElement;
         "ch-select-option": HTMLChSelectOptionElement;
         "ch-shortcuts": HTMLChShortcutsElement;
@@ -3704,6 +3890,7 @@ declare global {
         "ch-sidebar-menu": HTMLChSidebarMenuElement;
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
+        "ch-slider": HTMLChSliderElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
         "ch-style": HTMLChStyleElement;
@@ -5188,6 +5375,85 @@ declare namespace LocalJSX {
          */
         "text"?: string | undefined;
     }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     * This control represents and item of the ch-segmented-control-render
+     */
+    interface ChSegmentedControlItem {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * `true` if the control is the not the first or last item in the ch-segmented-control-render.
+         */
+        "between"?: boolean;
+        /**
+          * Specifies the caption that the control will display.
+         */
+        "caption"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies the src of the end image.
+         */
+        "endImgSrc"?: string;
+        /**
+          * Specifies how the end image will be rendered.
+         */
+        "endImgType"?: Exclude<ImageRender, "img">;
+        /**
+          * `true` if the control is the first item in the ch-segmented-control-render.
+         */
+        "first"?: boolean;
+        /**
+          * `true` if the control is the last item in the ch-segmented-control-render.
+         */
+        "last"?: boolean;
+        /**
+          * Fired when the control is selected by user interaction.
+         */
+        "onSelectedChange"?: (event: ChSegmentedControlItemCustomEvent<string>) => void;
+        /**
+          * Specifies if the control is selected.
+         */
+        "selected"?: boolean;
+        /**
+          * Specifies the src of the start image.
+         */
+        "startImgSrc"?: string;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
+    }
+    /**
+     * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+     */
+    interface ChSegmentedControlRender {
+        /**
+          * Specifies the parts that are exported by the internal segmented-control-item. This property is useful to override the exported parts.
+         */
+        "exportParts"?: string;
+        /**
+          * A CSS class to set as the `ch-segmented-control-item` element class. This default class is used for the items that don't have an explicit class.
+         */
+        "itemCssClass"?: string;
+        /**
+          * This property lets you define the items of the ch-segmented-control-render control.
+         */
+        "items"?: SegmentedControlItem[];
+        /**
+          * Fired when the selected item change. It contains the information about the new selected id.
+         */
+        "onSelectedItemChange"?: (event: ChSegmentedControlRenderCustomEvent<string>) => void;
+        /**
+          * Specifies the ID of the selected item
+         */
+        "selectedId"?: string;
+    }
     interface ChSelect {
         "arrowIconSrc"?: string;
         /**
@@ -5323,6 +5589,51 @@ declare namespace LocalJSX {
           * If this attribute is present the item will be initially uncollapsed
          */
         "uncollapsed"?: boolean;
+    }
+    /**
+     * The slider control is a input where the user selects a value from within a given range.
+     */
+    interface ChSlider {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled"?: false;
+        /**
+          * Specifies an id for the internal input. Useful to label the internal input by using a label tag.
+         */
+        "inputId"?: string;
+        /**
+          * This attribute lets you specify maximum value of the slider.
+         */
+        "maxValue"?: number;
+        /**
+          * This attribute lets you specify minimum value of the slider.
+         */
+        "minValue"?: number;
+        /**
+          * The `change` event is emitted when a change to the element's value is committed by the user.
+         */
+        "onChange"?: (event: ChSliderCustomEvent<number>) => void;
+        /**
+          * The `input` event is fired synchronously when the value is changed.
+         */
+        "onInput"?: (event: ChSliderCustomEvent<number>) => void;
+        /**
+          * This attribute lets you indicate whether the control should display a bubble with the current value upon interaction.
+         */
+        "showValue"?: false;
+        /**
+          * This attribute lets you specify the step of the slider.  This attribute is useful when the values of the slider can only take some discrete values. For example, if valid values are `[10, 20, 30]` set the `minValue` to `10`, the maxValue to `30`, and the step to `10`. If the step is `0`, the any intermediate value is valid.
+         */
+        "step"?: number;
+        /**
+          * The value of the control.
+         */
+        "value"?: number;
     }
     interface ChStepList {
     }
@@ -6127,6 +6438,8 @@ declare namespace LocalJSX {
         "ch-paginator-pages": ChPaginatorPages;
         "ch-popover": ChPopover;
         "ch-qr": ChQr;
+        "ch-segmented-control-item": ChSegmentedControlItem;
+        "ch-segmented-control-render": ChSegmentedControlRender;
         "ch-select": ChSelect;
         "ch-select-option": ChSelectOption;
         "ch-shortcuts": ChShortcuts;
@@ -6135,6 +6448,7 @@ declare namespace LocalJSX {
         "ch-sidebar-menu": ChSidebarMenu;
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
+        "ch-slider": ChSlider;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
         "ch-style": ChStyle;
@@ -6293,6 +6607,15 @@ declare module "@stencil/core" {
              */
             "ch-popover": LocalJSX.ChPopover & JSXBase.HTMLAttributes<HTMLChPopoverElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
+            /**
+             * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+             * This control represents and item of the ch-segmented-control-render
+             */
+            "ch-segmented-control-item": LocalJSX.ChSegmentedControlItem & JSXBase.HTMLAttributes<HTMLChSegmentedControlItemElement>;
+            /**
+             * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
+             */
+            "ch-segmented-control-render": LocalJSX.ChSegmentedControlRender & JSXBase.HTMLAttributes<HTMLChSegmentedControlRenderElement>;
             "ch-select": LocalJSX.ChSelect & JSXBase.HTMLAttributes<HTMLChSelectElement>;
             "ch-select-option": LocalJSX.ChSelectOption & JSXBase.HTMLAttributes<HTMLChSelectOptionElement>;
             "ch-shortcuts": LocalJSX.ChShortcuts & JSXBase.HTMLAttributes<HTMLChShortcutsElement>;
@@ -6301,6 +6624,10 @@ declare module "@stencil/core" {
             "ch-sidebar-menu": LocalJSX.ChSidebarMenu & JSXBase.HTMLAttributes<HTMLChSidebarMenuElement>;
             "ch-sidebar-menu-list": LocalJSX.ChSidebarMenuList & JSXBase.HTMLAttributes<HTMLChSidebarMenuListElement>;
             "ch-sidebar-menu-list-item": LocalJSX.ChSidebarMenuListItem & JSXBase.HTMLAttributes<HTMLChSidebarMenuListItemElement>;
+            /**
+             * The slider control is a input where the user selects a value from within a given range.
+             */
+            "ch-slider": LocalJSX.ChSlider & JSXBase.HTMLAttributes<HTMLChSliderElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
             /**

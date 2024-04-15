@@ -42,13 +42,8 @@
   appearance: none;
   opacity: 0;
 
-  // &::after {
-  //   inline-size: var(--slider-unselected-value);
-  //   inset-inline-end: 0;
-  // }
-
   // - - - - - - - - - - - - - - - -
-  //              Thumb
+  //           Thumb reset
   // - - - - - - - - - - - - - - - -
   &::-webkit-slider-thumb {
     appearance: none;
@@ -71,7 +66,6 @@
 .track {
   display: flex;
   position: absolute;
-  color: inherit;
   inline-size: 100%;
   block-size: var(--ch-slider-track-block-size);
   overflow: hidden;

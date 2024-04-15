@@ -21,6 +21,7 @@ interactive component.
 | `hidden`                    | `hidden`                       | Specifies whether the dialog is hidden or visible.                                                                                                                                                                                                                                                                                                                                                  | `boolean`                   | `true`      |
 | `modal`                     | `modal`                        | Specifies whether the dialog is a modal or not. Modal dialog boxes interrupt interaction with the rest of the page being inert, while non-modal dialog boxes allow interaction with the rest of the page.  Note: If `hidden !== false`, this property does not reflect changes on runtime, since at the time of writing browsers do not support switching from modal to not-modal, (or vice-versa). | `boolean`                   | `true`      |
 | `resizable`                 | `resizable`                    | Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.                                                                                                                                                                                                                                                                     | `boolean`                   | `false`     |
+| `showFooter`                | `show-footer`                  | Specifies whether the dialog footer is hidden or visible.                                                                                                                                                                                                                                                                                                                                           | `boolean`                   | `false`     |
 | `showHeader`                | `show-header`                  | Specifies whether the dialog header is hidden or visible.                                                                                                                                                                                                                                                                                                                                           | `boolean`                   | `false`     |
 
 
@@ -29,6 +30,14 @@ interactive component.
 | Event          | Description                        | Type               |
 | -------------- | ---------------------------------- | ------------------ |
 | `dialogClosed` | Emitted when the dialog is closed. | `CustomEvent<any>` |
+
+
+## Slots
+
+| Slot        | Description                                                                                                                             |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `"content"` | Main content of the dialog.                                                                                                             |
+| `"footer"`  | Rendered below the content of the dialog if `showFooter === true`. It is used to place content that is considered footer of the dialog. |
 
 
 ## Shadow Parts
@@ -49,7 +58,8 @@ interactive component.
 | `"edge-block-start"`                | Represents the "block-start" dialog edge (see also "edge" part).                                                                                           |
 | `"edge-inline-end"`                 | Represents the "inline-end" dialog edge (see also "edge" part).                                                                                            |
 | `"edge-inline-start"`               | Represents the "inline-start" dialog edge (see also "edge" part).                                                                                          |
-| `"header"`                          | The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.                             |
+| `"footer"`                          | The dialog footer which is only rendered if `showFooter === true`. The footer displays the caption and a close button.                                     |
+| `"header"`                          | The dialog header which is only rendered if `showHeader === true`. The header displays the caption and a close button.                                     |
 
 
 ## CSS Custom Properties

@@ -154,6 +154,7 @@ $ch-dialog-y--same-layer: calc(
 //             Header
 // - - - - - - - - - - - - - - - -
 .header {
+  grid-area: header;
   display: grid;
   grid-template: "caption close-button" 1fr / 1fr max-content;
   align-items: center;
@@ -172,6 +173,8 @@ $ch-dialog-y--same-layer: calc(
 // - - - - - - - - - - - - - - - -
 dialog {
   display: grid;
+  grid-template: "header" max-content "content" 1fr "footer" max-content / 1fr;
+
   // Reset browser default
   margin: unset;
   position: fixed;
@@ -190,8 +193,15 @@ dialog {
   translate: $ch-dialog-x $ch-dialog-y;
 }
 
-.dialog--header {
-  grid-template-rows: max-content 1fr;
+.content {
+  grid-area: content;
+  display: grid;
+}
+
+.footer {
+  grid-area: footer;
+  display: flex;
+  justify-content: flex-end;
 }
 
 // - - - - - - - - - - - - - - - -

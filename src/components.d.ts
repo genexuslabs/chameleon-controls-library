@@ -362,6 +362,10 @@ export namespace Components {
          */
         "resizable": boolean;
         /**
+          * Specifies whether the dialog footer is hidden or visible.
+         */
+        "showFooter": boolean;
+        /**
           * Specifies whether the dialog header is hidden or visible.
          */
         "showHeader": boolean;
@@ -4225,6 +4229,10 @@ declare namespace LocalJSX {
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable"?: boolean;
+        /**
+          * Specifies whether the dialog footer is hidden or visible.
+         */
+        "showFooter"?: boolean;
         /**
           * Specifies whether the dialog header is hidden or visible.
          */

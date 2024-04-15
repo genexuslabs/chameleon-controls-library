@@ -1,0 +1,87 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
+@mixin slider-thumb() {
+  appearance: none;
+  background-color: var(--ch-slider-thumb-color);
+  border: unset; // Required reset due to Mozilla
+  inline-size: var(--ch-slider-thumb-size);
+  block-size: var(--ch-slider-thumb-size);
+  border-radius: 50%;
+}
+
+ch-slider {
+  // Track defaults
+  --ch-slider-selected-track-background-color: color-mix(
+    in srgb,
+    currentColor 15%,
+    transparent
+  );
+
+  --ch-slider-unselected-track-background-color: color-mix(
+    in srgb,
+    currentColor 15%,
+    transparent
+  );
+
+  // Thumb defaults
+  --ch-slider-thumb-size: clamp(8px, 1.5em, 24px);
+
+  --ch-slider-thumb-color: currentColor;
+
+  --ch-slider-track-block-size: clamp(3px, 0.25em, 16px);
+
+  display: inline-grid;
+  position: relative;
+
+  & > .ch-slider__slider {
+    display: grid;
+    block-size: var(--ch-slider-track-block-size);
+    cursor: pointer;
+    z-index: 1; // Necessary to show the thumb above the track
+
+    // Reset browser defaults
+    appearance: none;
+
+    // &::after {
+    //   inline-size: var(--slider-unselected-value);
+    //   inset-inline-end: 0;
+    // }
+
+    // - - - - - - - - - - - - - - - -
+    //              Thumb
+    // - - - - - - - - - - - - - - - -
+    &::-webkit-slider-thumb {
+      @include slider-thumb;
+    }
+
+    &::-moz-range-thumb {
+      @include slider-thumb;
+    }
+  }
+
+  // - - - - - - - - - - - - - - - -
+  //              Track
+  // - - - - - - - - - - - - - - - -
+  > .ch-slider__track {
+    display: flex;
+    position: absolute;
+    color: inherit;
+    inline-size: 100%;
+    block-size: var(--ch-slider-track-block-size);
+    overflow: hidden;
+
+    > .ch-slider__track--selected {
+      background-color: var(--ch-slider-selected-track-background-color);
+      inline-size: var(--slider-selected-value);
+      block-size: 100%;
+    }
+
+    > .ch-slider__track--unselected {
+      background-color: var(--ch-slider-unselected-track-background-color);
+      inline-size: var(--slider-unselected-value);
+      block-size: 100%;
+    }
+  }
+}

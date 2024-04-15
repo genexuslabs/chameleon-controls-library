@@ -26,6 +26,7 @@ const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
   tag: "ch-slider"
 })
 export class ChSlider implements AccessibleNameComponent {
+  #accessibleNameFromExternalLabel: string | undefined;
   #lastModifiedValue = 0;
   #valuePositionRAF = new SyncWithRAF();
 
@@ -139,6 +140,13 @@ export class ChSlider implements AccessibleNameComponent {
   connectedCallback() {
     // Set form value
     this.internals.setFormValue(this.value.toString());
+
+    const labels = this.internals.labels;
+
+    // Get external aria-label
+    if (!this.accessibleName && labels?.length > 0) {
+      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
+    }
   }
 
   render() {
@@ -158,7 +166,9 @@ export class ChSlider implements AccessibleNameComponent {
       <Host>
         <div class="position-absolute-wrapper">
           <input
-            aria-label={this.accessibleName || null}
+            aria-label={
+              this.accessibleName ?? this.#accessibleNameFromExternalLabel
+            }
             class="slider"
             disabled={this.disabled}
             type="range"

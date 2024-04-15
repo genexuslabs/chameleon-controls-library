@@ -73,7 +73,8 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
  * interactive component.
  *
  * @part dialog - The dialog html element, which is the first element inside the host.
- * @part header - The dialog header which is only rendered if 'showHeader' property is true. The header displays the caption and a close button.
+ * @part footer - The dialog footer which is only rendered if `showFooter === true`. The footer displays the caption and a close button.
+ * @part header - The dialog header which is only rendered if `showHeader === true`. The header displays the caption and a close button.
  * @part content - The dialog content. It is a div element that acts as a wrapper of the slotted content.
  *
  * @part edge - Represents any of the dialog edges that appear before, after, above or below the dialog. These edges are used to resize the dialog dimensions by dragging.
@@ -88,6 +89,8 @@ const setProperty = (element: HTMLElement, property: string, value: number) =>
  * @part corner-block-end-inline-start - Represents the dialog corner in-between the "edge-block-end" and "edge-inline-start" parts (see also "corner" part).
  * @part corner-block-end-inline-end - Represents the dialog corner in-between the "edge-block-end" and "edge-inline-end" parts (see also "corner" part).
  *
+ * @slot content - Main content of the dialog.
+ * @slot footer - Rendered below the content of the dialog if `showFooter === true`. It is used to place content that is considered footer of the dialog.
  */
 @Component({
   tag: "ch-dialog",
@@ -305,6 +308,11 @@ export class ChDialog {
     // Schedule update for border size watcher
     this.#checkBorderSizeWatcher = true;
   }
+
+  /**
+   * Specifies whether the dialog footer is hidden or visible.
+   */
+  @Prop() readonly showFooter: boolean = false;
 
   /**
    * Specifies whether the dialog header is hidden or visible.
@@ -742,6 +750,7 @@ export class ChDialog {
         >
           {this.showHeader && (
             <div
+              key="header"
               class="header"
               part="header"
               onMouseDown={
@@ -762,12 +771,21 @@ export class ChDialog {
               ></button>
             </div>
           )}
-          <div part="content">
+
+          <div key="content" class="content" part="content">
             <slot />
           </div>
+
+          {this.showFooter && (
+            <div key="footer" class="footer" part="footer">
+              <slot name="footer" />
+            </div>
+          )}
+
           {this.resizable &&
             !this.hidden && [
               <div
+                key="edge-block-start"
                 class="edge__block-start"
                 part="edge edge-block-start"
                 onMouseDown={this.#handleEdgeResize("block-start")}

@@ -10,6 +10,11 @@ export interface AccessibleNameComponent {
 }
 
 export interface DisableableComponent {
+  /**
+   * This attribute allows you specify if the element is disabled.
+   * If disabled, it will not trigger any user interaction related event
+   * (for example, click event).
+   */
   disabled: boolean;
 }
 

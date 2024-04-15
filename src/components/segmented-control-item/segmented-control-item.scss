@@ -1,0 +1,47 @@
+@import "../../common/_base";
+
+@include button-reset();
+
+// Must be placed after the button-reset()
+@include box-sizing();
+
+:host {
+  --ch-segmented-control-item__image-size: #{$default-decorative-image-size};
+  --ch-segmented-control-item__background-image-size: 100%;
+
+  display: contents;
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+.img--start::before,
+.img--end::after {
+  content: "";
+  display: block;
+  inline-size: var(--ch-segmented-control-item__image-size);
+  block-size: var(--ch-segmented-control-item__image-size);
+  min-inline-size: var(--ch-segmented-control-item__image-size);
+}
+
+.img--start {
+  --ch-img: var(--ch-start-img);
+}
+
+.img--end {
+  --ch-img: var(--ch-end-img);
+}
+
+.start-img-type--background::before,
+.end-img-type--background::after {
+  background: no-repeat center /
+    var(--ch-segmented-control-item__background-image-size) var(--ch-img);
+}
+
+.start-img-type--mask::before,
+.end-img-type--mask::after {
+  -webkit-mask: var(--ch-img) 50% 50% /
+    var(--ch-segmented-control-item__background-image-size)
+    var(--ch-segmented-control-item__background-image-size) no-repeat;
+  background-color: currentColor;
+}

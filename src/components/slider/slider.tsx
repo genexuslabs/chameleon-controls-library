@@ -180,15 +180,19 @@ export class ChSlider implements AccessibleNameComponent {
             onInput={this.#handleInput}
           />
 
-          <div class="track" part="track" aria-hidden="true">
+          <div
+            class="track"
+            part={`track${this.disabled ? " disabled" : ""}`}
+            aria-hidden="true"
+          >
             <div
-              class="track--selected"
-              part="track--selected"
+              class="track__selected"
+              part={`track__selected${this.disabled ? " disabled" : ""}`}
               style={{ "--slider-selected-value": `${valueInPercentage}%` }}
             ></div>
             <div
-              class="track--unselected"
-              part="track--unselected"
+              class="track__unselected"
+              part={`track__unselected${this.disabled ? " disabled" : ""}`}
               style={{
                 "--slider-unselected-value": `${100 - valueInPercentage}%`
               }}
@@ -197,7 +201,7 @@ export class ChSlider implements AccessibleNameComponent {
 
           <div
             class="thumb"
-            part="thumb"
+            part={`thumb${this.disabled ? " disabled" : ""}`}
             style={{
               "--slider-thumb-position": `${valueInPercentage}%`,
               "--slider-value": `${valueInPercentage / 100}`

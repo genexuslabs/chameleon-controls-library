@@ -4,23 +4,48 @@
 @include box-sizing();
 
 :host {
-  // Track defaults
+  /**
+   * @prop --ch-slider-thumb-background-color:
+   * Specifies the background-color of the thumb. 
+   * @default currentColor
+   */
+  --ch-slider-thumb-background-color: currentColor;
+
+  /**
+    * @prop --ch-slider-thumb-size:
+    * Specifies the size of the thumb. 
+    * @default clamp(8px, 1.5em, 24px)
+    */
+  --ch-slider-thumb-size: clamp(8px, 1.5em, 24px);
+
+  /**
+   * @prop --ch-slider-track__unselected-background-color:
+   * Specifies the block size of the track. 
+   * @default clamp(3px, 0.25em, 16px)
+   */
+  --ch-slider-track-block-size: clamp(3px, 0.25em, 16px);
+
+  /**
+   * @prop --ch-slider-track__selected-background-color:
+   * Specifies the background-color of the selected portion of the track. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
   --ch-slider-track__selected-background-color: color-mix(
     in srgb,
     currentColor 15%,
     transparent
   );
 
+  /**
+   * @prop --ch-slider-track__unselected-background-color:
+   * Specifies the background-color of the unselected portion of the track. 
+   * @default color-mix(in srgb, currentColor 15%, transparent)
+   */
   --ch-slider-track__unselected-background-color: color-mix(
     in srgb,
     currentColor 15%,
     transparent
   );
-  --ch-slider-track-block-size: clamp(3px, 0.25em, 16px);
-
-  // Thumb defaults
-  --ch-slider-thumb-background-color: currentColor;
-  --ch-slider-thumb-size: clamp(8px, 1.5em, 24px);
 
   display: inline-grid;
 }

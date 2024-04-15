@@ -17,7 +17,13 @@ const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 /**
  * The slider control is a input where the user selects a value from within a given range.
  *
- * @part input - ...
+ * @part track - The track of the slider element.
+ * @part thumb - The thumb of the slider element.
+ *
+ * @part track__selected - Represents the portion of the track that is selected, that is, the portion of the track that starts at the min value and goes to the current value.
+ * @part track__unselected - Represents the portion of the track that is not selected, that is, the portion of the track that starts at the current value and goes to the max value.
+ *
+ * @part disabled - Present in all parts when the control is disabled (`disabled` === `true`).
  */
 @Component({
   formAssociated: true,

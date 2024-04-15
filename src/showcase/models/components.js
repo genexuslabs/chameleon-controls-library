@@ -28,6 +28,7 @@ const components = [
   "shortcuts",
   "sidebar",
   "sidebar-old",
+  "slider",
   "step-list",
   "style",
   "suggest",

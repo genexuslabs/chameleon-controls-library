@@ -1,4 +1,5 @@
 import {
+  AttachInternals,
   Component,
   Element,
   Event,
@@ -16,16 +17,26 @@ const DEFAULT_PERCENTAGE_VALUE_WHEN_MIN_EQUALS_MAX = 0;
 /**
  * The slider control is a input where the user selects a value from within a given range.
  *
- * @part input - ...
+ * @part track - The track of the slider element.
+ * @part thumb - The thumb of the slider element.
+ *
+ * @part track__selected - Represents the portion of the track that is selected, that is, the portion of the track that starts at the min value and goes to the current value.
+ * @part track__unselected - Represents the portion of the track that is not selected, that is, the portion of the track that starts at the current value and goes to the max value.
+ *
+ * @part disabled - Present in all parts when the control is disabled (`disabled` === `true`).
  */
 @Component({
-  shadow: false,
+  formAssociated: true,
+  shadow: { delegatesFocus: true },
   styleUrl: "slider.scss",
   tag: "ch-slider"
 })
 export class ChSlider implements AccessibleNameComponent {
+  #accessibleNameFromExternalLabel: string | undefined;
   #lastModifiedValue = 0;
   #valuePositionRAF = new SyncWithRAF();
+
+  @AttachInternals() internals: ElementInternals;
 
   @Element() el: HTMLChSliderElement;
 
@@ -42,12 +53,6 @@ export class ChSlider implements AccessibleNameComponent {
    * (for example, click event).
    */
   @Prop() readonly disabled = false;
-
-  /**
-   * Specifies an id for the internal input. Useful to label the internal input
-   * by using a label tag.
-   */
-  @Prop() readonly inputId?: string;
 
   /**
    * This attribute lets you specify maximum value of the slider.
@@ -111,6 +116,9 @@ export class ChSlider implements AccessibleNameComponent {
   };
 
   #updateValue = () => {
+    // Set form value
+    this.internals.setFormValue(this.#lastModifiedValue.toString());
+
     this.value = this.#lastModifiedValue;
     this.input.emit(this.#lastModifiedValue);
   };
@@ -135,6 +143,18 @@ export class ChSlider implements AccessibleNameComponent {
     this.#valuePositionRAF.cancel();
   }
 
+  connectedCallback() {
+    // Set form value
+    this.internals.setFormValue(this.value.toString());
+
+    const labels = this.internals.labels;
+
+    // Get external aria-label
+    if (!this.accessibleName && labels?.length > 0) {
+      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
+    }
+  }
+
   render() {
     const actualMaxValue = Math.max(this.minValue, this.maxValue);
     const actualValue = this.#ensureValueIsInBetween(
@@ -150,32 +170,50 @@ export class ChSlider implements AccessibleNameComponent {
 
     return (
       <Host>
-        <div class="ch-slider__track" aria-hidden="true">
+        <div class="position-absolute-wrapper">
+          <input
+            aria-label={
+              this.accessibleName ?? this.#accessibleNameFromExternalLabel
+            }
+            class="slider"
+            disabled={this.disabled}
+            type="range"
+            min={this.minValue}
+            max={actualMaxValue}
+            step={this.step}
+            value={actualValue}
+            onChange={this.#handleChange}
+            onInput={this.#handleInput}
+          />
+
           <div
-            class="ch-slider__track--selected"
-            style={{ "--slider-selected-value": `${valueInPercentage}%` }}
-          ></div>
+            class="track"
+            part={`track${this.disabled ? " disabled" : ""}`}
+            aria-hidden="true"
+          >
+            <div
+              class="track__selected"
+              part={`track__selected${this.disabled ? " disabled" : ""}`}
+              style={{ "--slider-selected-value": `${valueInPercentage}%` }}
+            ></div>
+            <div
+              class="track__unselected"
+              part={`track__unselected${this.disabled ? " disabled" : ""}`}
+              style={{
+                "--slider-unselected-value": `${100 - valueInPercentage}%`
+              }}
+            ></div>
+          </div>
+
           <div
-            class="ch-slider__track--unselected"
+            class="thumb"
+            part={`thumb${this.disabled ? " disabled" : ""}`}
             style={{
-              "--slider-unselected-value": `${100 - valueInPercentage}%`
+              "--slider-thumb-position": `${valueInPercentage}%`,
+              "--slider-value": `${valueInPercentage / 100}`
             }}
           ></div>
         </div>
-
-        <input
-          id={this.inputId || null}
-          aria-label={this.accessibleName || null}
-          class="ch-slider__slider"
-          disabled={this.disabled}
-          type="range"
-          min={this.minValue}
-          max={actualMaxValue}
-          step={this.step}
-          value={actualValue}
-          onChange={this.#handleChange}
-          onInput={this.#handleInput}
-        />
       </Host>
     );
   }

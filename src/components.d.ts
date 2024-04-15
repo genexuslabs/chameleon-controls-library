@@ -1701,10 +1701,6 @@ export namespace Components {
          */
         "disabled": false;
         /**
-          * Specifies an id for the internal input. Useful to label the internal input by using a label tag.
-         */
-        "inputId"?: string;
-        /**
           * This attribute lets you specify maximum value of the slider.
          */
         "maxValue": number;
@@ -5602,10 +5598,6 @@ declare namespace LocalJSX {
           * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
          */
         "disabled"?: false;
-        /**
-          * Specifies an id for the internal input. Useful to label the internal input by using a label tag.
-         */
-        "inputId"?: string;
         /**
           * This attribute lets you specify maximum value of the slider.
          */

@@ -30,23 +30,24 @@
 
 ## Shadow Parts
 
-| Part              | Description                                                                                                                                                    |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"checked"`       | Present in the `option` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
-| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                 |
-| `"disabled"`      | Present in the `option` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
-| `"indeterminate"` | Present in the `option` and `container` parts when the control is indeterminate (`indeterminate` === `true`).                                                  |
-| `"input"`         | The invisible input element that implements the interactions for the component. This part must be kept "invisible".                                            |
-| `"label"`         | The label that is rendered when the `caption` property is not empty.                                                                                           |
-| `"option"`        | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                                     |
-| `"unchecked"`     | Present in the `option` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
+| Part              | Description                                                                                                                                                             |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"checked"`       | Present in the `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
+| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                          |
+| `"disabled"`      | Present in the `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
+| `"indeterminate"` | Present in the `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).                                                  |
+| `"input"`         | The invisible input element that implements the interactions for the component. This part must be kept "invisible".                                                     |
+| `"label"`         | The label that is rendered when the `caption` property is not empty.                                                                                                    |
+| `"option"`        | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                                              |
+| `"unchecked"`     | Present in the `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
 
 
 ## CSS Custom Properties
 
-| Name                           | Description                                                                                        |
-| ------------------------------ | -------------------------------------------------------------------------------------------------- |
-| `--ch-checkbox-container-size` | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px) |
+| Name                            | Description                                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `--ch-checkbox__container-size` | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px) |
+| `--ch-checkbox__option-size`    | Specifies the size for the `radio__option` element. @default 50%                                   |
 
 
 ## Dependencies

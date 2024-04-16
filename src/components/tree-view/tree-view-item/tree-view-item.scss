@@ -130,7 +130,7 @@
   // Necessary to avoid CLS when the ch-checkbox control is downloaded after
   // the tree-view-item did render
   inline-size: var(--ch-tree-view-item__checkbox-size);
-  --ch-checkbox-container-size: var(--ch-tree-view-item__checkbox-size);
+  --ch-checkbox__container-size: var(--ch-tree-view-item__checkbox-size);
 }
 
 // - - - - - - - - - - - - - - - -

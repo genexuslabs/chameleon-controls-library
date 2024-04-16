@@ -57,6 +57,23 @@ export const DROPDOWN_PARTS_DICTIONARY = {
 export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//            Radio item Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const RADIO_ITEM_PARTS_DICTIONARY = {
+  RADIO_ITEM: "radio-item",
+  CONTAINER: "radio__container",
+  INPUT: "radio__input",
+  OPTION: "radio__option",
+  LABEL: "radio__label",
+
+  CHECKED: "checked",
+  DISABLED: "disabled",
+  UNCHECKED: "unchecked"
+} as const;
+
+export const RADIO_ITEM_EXPORT_PARTS = joinParts(RADIO_ITEM_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //         Segmented control Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const SEGMENTED_CONTROL_PARTS_DICTIONARY = {

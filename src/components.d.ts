@@ -29,6 +29,7 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
+import { RadioItem } from "./components/renders/radio-group/types";
 import { SegmentedControlItem } from "./components/renders/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -68,6 +69,7 @@ export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
+export { RadioItem } from "./components/renders/radio-group/types";
 export { SegmentedControlItem } from "./components/renders/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -1504,6 +1506,24 @@ export namespace Components {
         "text": string | undefined;
     }
     /**
+     * The radio group control is used to render a short list of mutually exclusive options.
+     * It contains radio items to allow users to select one option from the list of options.
+     */
+    interface ChRadioGroupRender {
+        /**
+          * This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This property lets you define the items of the ch-radio-group-render control.
+         */
+        "items"?: RadioItem[];
+        /**
+          * The value of the control.
+         */
+        "value": string;
+    }
+    /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      * This control represents and item of the ch-segmented-control-render
      */
@@ -2572,6 +2592,10 @@ export interface ChPopoverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChPopoverElement;
 }
+export interface ChRadioGroupRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChRadioGroupRenderElement;
+}
 export interface ChSegmentedControlItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSegmentedControlItemElement;
@@ -3367,6 +3391,27 @@ declare global {
         prototype: HTMLChQrElement;
         new (): HTMLChQrElement;
     };
+    interface HTMLChRadioGroupRenderElementEventMap {
+        "change": string;
+    }
+    /**
+     * The radio group control is used to render a short list of mutually exclusive options.
+     * It contains radio items to allow users to select one option from the list of options.
+     */
+    interface HTMLChRadioGroupRenderElement extends Components.ChRadioGroupRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChRadioGroupRenderElementEventMap>(type: K, listener: (this: HTMLChRadioGroupRenderElement, ev: ChRadioGroupRenderCustomEvent<HTMLChRadioGroupRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChRadioGroupRenderElementEventMap>(type: K, listener: (this: HTMLChRadioGroupRenderElement, ev: ChRadioGroupRenderCustomEvent<HTMLChRadioGroupRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChRadioGroupRenderElement: {
+        prototype: HTMLChRadioGroupRenderElement;
+        new (): HTMLChRadioGroupRenderElement;
+    };
     interface HTMLChSegmentedControlItemElementEventMap {
         "selectedChange": string;
     }
@@ -3876,6 +3921,7 @@ declare global {
         "ch-paginator-pages": HTMLChPaginatorPagesElement;
         "ch-popover": HTMLChPopoverElement;
         "ch-qr": HTMLChQrElement;
+        "ch-radio-group-render": HTMLChRadioGroupRenderElement;
         "ch-segmented-control-item": HTMLChSegmentedControlItemElement;
         "ch-segmented-control-render": HTMLChSegmentedControlRenderElement;
         "ch-select": HTMLChSelectElement;
@@ -5372,6 +5418,28 @@ declare namespace LocalJSX {
         "text"?: string | undefined;
     }
     /**
+     * The radio group control is used to render a short list of mutually exclusive options.
+     * It contains radio items to allow users to select one option from the list of options.
+     */
+    interface ChRadioGroupRender {
+        /**
+          * This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property lets you define the items of the ch-radio-group-render control.
+         */
+        "items"?: RadioItem[];
+        /**
+          * Fired when the selected item change. It contains the information about the new selected value.
+         */
+        "onChange"?: (event: ChRadioGroupRenderCustomEvent<string>) => void;
+        /**
+          * The value of the control.
+         */
+        "value"?: string;
+    }
+    /**
      * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
      * This control represents and item of the ch-segmented-control-render
      */
@@ -6430,6 +6498,7 @@ declare namespace LocalJSX {
         "ch-paginator-pages": ChPaginatorPages;
         "ch-popover": ChPopover;
         "ch-qr": ChQr;
+        "ch-radio-group-render": ChRadioGroupRender;
         "ch-segmented-control-item": ChSegmentedControlItem;
         "ch-segmented-control-render": ChSegmentedControlRender;
         "ch-select": ChSelect;
@@ -6599,6 +6668,11 @@ declare module "@stencil/core" {
              */
             "ch-popover": LocalJSX.ChPopover & JSXBase.HTMLAttributes<HTMLChPopoverElement>;
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
+            /**
+             * The radio group control is used to render a short list of mutually exclusive options.
+             * It contains radio items to allow users to select one option from the list of options.
+             */
+            "ch-radio-group-render": LocalJSX.ChRadioGroupRender & JSXBase.HTMLAttributes<HTMLChRadioGroupRenderElement>;
             /**
              * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.
              * This control represents and item of the ch-segmented-control-render

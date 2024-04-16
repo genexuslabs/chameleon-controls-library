@@ -6,6 +6,7 @@ import {
   EventEmitter,
   Host,
   Prop,
+  Watch,
   h
 } from "@stencil/core";
 
@@ -84,6 +85,11 @@ export class ChSlider implements AccessibleNameComponent {
    * The value of the control.
    */
   @Prop({ mutable: true }) value = 0;
+  @Watch("value")
+  handleValueChange(newValue: number) {
+    // Update form value
+    this.internals.setFormValue(newValue.toString());
+  }
 
   /**
    * The `change` event is emitted when a change to the element's value is
@@ -116,9 +122,6 @@ export class ChSlider implements AccessibleNameComponent {
   };
 
   #updateValue = () => {
-    // Set form value
-    this.internals.setFormValue(this.#lastModifiedValue.toString());
-
     this.value = this.#lastModifiedValue;
     this.input.emit(this.#lastModifiedValue);
   };

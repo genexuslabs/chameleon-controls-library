@@ -369,6 +369,9 @@ export class ChComboBox
   @Watch("value")
   valueChange(newValue: string) {
     this.currentSelectedValue = newValue;
+
+    // Update form value
+    this.internals.setFormValue(newValue);
   }
 
   /**
@@ -413,9 +416,6 @@ export class ChComboBox
   #checkAndEmitValueChange = () => {
     if (!this.expanded && this.currentSelectedValue !== this.value) {
       this.value = this.currentSelectedValue;
-
-      // Set form value
-      this.internals.setFormValue(this.value);
 
       // Emit event
       this.input.emit(this.value);
@@ -504,9 +504,6 @@ export class ChComboBox
 
     this.value = this.#selectRef.value;
     this.currentSelectedValue = this.#selectRef.value;
-
-    // Set form value
-    this.internals.setFormValue(this.value);
 
     // Emit event
     this.input.emit(this.value);

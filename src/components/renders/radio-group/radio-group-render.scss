@@ -5,9 +5,22 @@
 $option-checked-background-color: transparent;
 $option-checked-border-color: currentColor;
 $option-checked-color: currentColor;
-$option-checked-box-shadow: currentColor;
 
 :host {
+  /**
+   * @prop --ch-radio-group__radio-container-size:
+   * Specifies the size for the container of the `radio__input` and `radio__option` elements.
+   * @default min(1em, 20px)
+   */
+  --ch-radio-group__radio-container-size: min(1em, 20px);
+
+  /**
+   * @prop --ch-radio-group__radio-option-size:
+   * Specifies the size for the `radio__option` element.
+   * @default 50%
+   */
+  --ch-radio-group__radio-option-size: 50%;
+
   display: inline-grid;
   grid-auto-rows: max-content;
 
@@ -17,13 +30,6 @@ $option-checked-box-shadow: currentColor;
 }
 
 .radio-item {
-  /**
-   * @prop --ch-radio-item__radio-container-size:
-   * Specifies the size for the container of the `radio__input` and `radio__option` elements.
-   * @default min(1em, 20px)
-   */
-  --ch-radio-item__radio-container-size: min(1em, 20px);
-
   display: flex;
   align-items: center;
   align-self: stretch;
@@ -37,8 +43,8 @@ $option-checked-box-shadow: currentColor;
   align-items: center;
   justify-content: center;
   position: relative;
-  inline-size: var(--ch-radio-item__radio-container-size);
-  block-size: var(--ch-radio-item__radio-container-size);
+  inline-size: var(--ch-radio-group__radio-container-size);
+  block-size: var(--ch-radio-group__radio-container-size);
   border: 1px solid $option-checked-border-color;
   border-radius: 50%;
 
@@ -63,8 +69,8 @@ $option-checked-box-shadow: currentColor;
 
 .option {
   position: absolute;
-  inline-size: 50%;
-  block-size: 50%;
+  inline-size: var(--ch-radio-group__radio-option-size);
+  block-size: var(--ch-radio-group__radio-option-size);
   background-color: $option-checked-color;
   border-radius: 50%;
   pointer-events: none;

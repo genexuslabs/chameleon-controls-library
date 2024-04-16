@@ -54,10 +54,8 @@ export class ChSegmentedControl {
   handleSelectedChange(event: ChSegmentedControlItemCustomEvent<string>) {
     event.stopPropagation();
 
-    this.selectedId === event.detail;
+    this.selectedId = event.detail;
     this.selectedItemChange.emit(event.detail);
-
-    console.log(this.selectedId, event.detail);
   }
 
   #itemRender = (item: SegmentedControlItem, index: number) => {

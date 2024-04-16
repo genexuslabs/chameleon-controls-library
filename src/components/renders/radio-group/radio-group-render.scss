@@ -1,0 +1,84 @@
+@import "../../../common/_base";
+
+@include box-sizing();
+
+$option-checked-background-color: transparent;
+$option-checked-border-color: currentColor;
+$option-checked-color: currentColor;
+$option-checked-box-shadow: currentColor;
+
+:host {
+  display: inline-grid;
+  grid-auto-rows: max-content;
+
+  // This property is necessary to ensure the focus is not delegated to the
+  // checked radio when clicking the background of the control, but not an item
+  pointer-events: none;
+}
+
+.radio-item {
+  /**
+   * @prop --ch-radio-item__radio-container-size:
+   * Specifies the size for the container of the `radio__input` and `radio__option` elements.
+   * @default min(1em, 20px)
+   */
+  --ch-radio-item__radio-container-size: min(1em, 20px);
+
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+
+  // Avoid zooming on double tap
+  touch-action: manipulation;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  inline-size: var(--ch-radio-item__radio-container-size);
+  block-size: var(--ch-radio-item__radio-container-size);
+  border: 1px solid $option-checked-border-color;
+  border-radius: 50%;
+
+  &--checked {
+    background-color: $option-checked-background-color;
+  }
+}
+
+.input {
+  display: flex;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+
+  &--enabled {
+    pointer-events: all;
+  }
+}
+
+.option {
+  position: absolute;
+  inline-size: 50%;
+  block-size: 50%;
+  background-color: $option-checked-color;
+  border-radius: 50%;
+  pointer-events: none;
+
+  &--unchecked {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.label {
+  cursor: pointer;
+
+  &--enabled {
+    pointer-events: all;
+  }
+}

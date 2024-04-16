@@ -216,6 +216,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
           <div
             class={{
               option: true,
+              "option--not-displayed": !this.checked && !this.indeterminate,
               "option--checked": this.checked && !this.indeterminate,
               "option--indeterminate": this.indeterminate
             }}

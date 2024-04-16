@@ -4,19 +4,23 @@ $option-checked-background-color: var(--option-checked-color, #ffffff00);
 $option-checked-border-color: var(--option-border-color, currentColor);
 $option-checked-color: currentColor;
 $option-checked-box-shadow: var(--option-highlight-color, currentColor);
-$option-checked-box-shadow-size: min(0.15em, 2px);
-
-$space-between-container-and-label: min(0.35em, 7px);
 
 @include box-sizing();
 
 :host {
   /**
-   * @prop --ch-checkbox-container-size:
+   * @prop --ch-checkbox__container-size:
    * Specifies the size for the container of the `input` and `option` elements.
    * @default min(1em, 20px)
    */
-  --ch-checkbox-container-size: min(1em, 20px);
+  --ch-checkbox__container-size: min(1em, 20px);
+
+  /**
+   * @prop --ch-checkbox__option-size:
+   * Specifies the size for the `radio__option` element.
+   * @default 50%
+   */
+  --ch-checkbox__option-size: 50%;
 
   display: flex;
   align-items: center;
@@ -38,18 +42,17 @@ $space-between-container-and-label: min(0.35em, 7px);
 }
 
 .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
-  inline-size: var(--ch-checkbox-container-size);
-  block-size: var(--ch-checkbox-container-size);
+  inline-size: var(--ch-checkbox__container-size);
+  block-size: var(--ch-checkbox__container-size);
   border: 1px solid $option-checked-border-color;
   border-radius: 18.75%;
 
   &--checked {
     background-color: $option-checked-background-color;
-  }
-
-  &:focus-within {
-    box-shadow: 0 0 1px 1px color-mix(in srgb, currentColor 25%, transparent);
   }
 }
 
@@ -64,25 +67,17 @@ $space-between-container-and-label: min(0.35em, 7px);
 
 .option {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  inline-size: 50%;
-  block-size: 50%;
+  inline-size: var(--ch-checkbox__option-size);
+  block-size: var(--ch-checkbox__option-size);
   background-color: $option-checked-color;
-  opacity: 0;
   pointer-events: none;
 
   &--checked {
-    opacity: 1;
     -webkit-mask: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>");
   }
 
-  &--indeterminate {
-    opacity: 1;
+  &--not-displayed {
+    opacity: 0;
+    visibility: hidden;
   }
-}
-
-.label {
-  margin-inline-start: $space-between-container-and-label;
 }

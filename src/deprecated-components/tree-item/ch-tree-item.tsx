@@ -23,7 +23,7 @@ let treeRef: HTMLChTreeElement;
 export class ChTreeItem {
   checkboxInput!: HTMLInputElement;
 
-  //PROPS
+  // PROPS
   /**
    * Set this attribute if you want the ch-tree-item to display a checkbox
    */
@@ -74,16 +74,16 @@ export class ChTreeItem {
    */
   @Prop({ mutable: true }) isLeaf: boolean = undefined;
 
-  //PROPS
+  // PROPS
   @Prop({ mutable: true }) hasChildTree = false;
   @Prop({ mutable: true }) firstTreeItem = false;
   @Prop({ mutable: true }) indeterminate: boolean;
   @Prop() readonly disabled: boolean = false;
 
-  //STATE
+  // STATE
   @State() numberOfParentTrees = 1;
   @State() itemPaddingLeft;
-  //@State() verticalLineHeight: string;
+  // @State() verticalLineHeight: string;
   @State() horizontalLinePaddingLeft = 0;
   @State() lastTreeItem = false;
   @State() firstTreeItemOfParentTree = false;
@@ -91,7 +91,7 @@ export class ChTreeItem {
   @State() rightIconColor: Color = "auto";
   @State() numberOfDirectTreeItemsDescendants = 0;
 
-  //EVENTS
+  // EVENTS
   @Event() liItemClicked: EventEmitter;
   @Event() toggleIconClicked: EventEmitter;
 
@@ -103,14 +103,12 @@ export class ChTreeItem {
   @Element() el: HTMLChTreeItemElement;
 
   componentWillLoad() {
-    if (!treeRef) {
-      treeRef = this.el.parentElement as HTMLChTreeElement;
-    }
+    treeRef ||= this.el.parentElement as HTMLChTreeElement;
 
-    //Count number of parent trees in order to set the apporpiate padding-left
+    // Count number of parent trees in order to set the apporpiate padding-left
     this.numberOfParentTrees = this.getParents(this.el);
 
-    //If tree item has not a tree-item inside, is leaf
+    // If tree item has not a tree-item inside, is leaf
     const treeItemHasTree = this.el.querySelector('[slot="tree"]');
     if (this.isLeaf === undefined) {
       if (treeItemHasTree === null) {
@@ -119,24 +117,24 @@ export class ChTreeItem {
         this.hasChildTree = true;
       }
     }
-    //If is first item of tree
+    // If is first item of tree
     const prevItem = this.el.previousElementSibling;
     if (prevItem === null) {
       this.firstTreeItem = true;
     }
-    //If is last item of tree
+    // If is last item of tree
     const nextItem = this.el.nextElementSibling;
     if (nextItem === null) {
       this.lastTreeItem = true;
     }
-    //If is first item of parent Tree
+    // If is first item of parent Tree
     if (this.numberOfParentTrees === 1) {
       const prevItem = this.el.previousElementSibling;
       if (prevItem === null) {
         this.firstTreeItemOfParentTree = true;
       }
     }
-    //If is last item of parent Tree
+    // If is last item of parent Tree
     if (this.numberOfParentTrees === 1) {
       const nextItem = this.el.nextElementSibling;
       if (nextItem === null) {
@@ -144,21 +142,21 @@ export class ChTreeItem {
       }
     }
 
-    //Set right icon color
+    // Set right icon color
     if (this.download && this.rightIcon.includes("download")) {
       this.rightIconColor = "primary-enabled";
     } else if (this.disabled) {
       this.rightIconColor = "disabled";
     }
 
-    //If this tree item has a source to download, this item has child tree, and is not leaf. Also, set the tree as not open
+    // If this tree item has a source to download, this item has child tree, and is not leaf. Also, set the tree as not open
     if (this.download) {
       this.hasChildTree = true;
       this.isLeaf = false;
       this.opened = false;
     }
 
-    //CONFIGURATIONS THAT COME FROM FROM MASTER TREE
+    // CONFIGURATIONS THAT COME FROM FROM MASTER TREE
     if (treeRef.checkbox) {
       this.checkbox = true;
       this.checked = treeRef.checked;
@@ -169,17 +167,17 @@ export class ChTreeItem {
     const directTree = this.el.querySelector(":scope > ch-tree");
 
     if (directTree !== null && this.opened) {
-      //if tree item has a tree inside and is open...
+      // if tree item has a tree inside and is open...
       const visibleChildren = directTree.querySelectorAll(
         "ch-tree-item.visible"
       );
 
-      //direct descendants
+      // direct descendants
       const directDescendants = directTree.querySelectorAll(
         ":scope > ch-tree-item.visible"
       );
 
-      //last direct descendant
+      // last direct descendant
       const lastDirectDescendant =
         directDescendants[directDescendants.length - 1];
 
@@ -232,7 +230,7 @@ export class ChTreeItem {
   @Watch("downloaded")
   watchHandler(newValue: boolean) {
     if (newValue) {
-      //this.updateTreeVerticalLineHeight();
+      // this.updateTreeVerticalLineHeight();
     }
   }
 
@@ -258,7 +256,7 @@ export class ChTreeItem {
       this.opened = true;
     }
     this.setVisibleTreeItems();
-    //this.toggleIconClicked.emit();
+    // this.toggleIconClicked.emit();
     const event = this.toggleIconClicked.emit();
     event.stopPropagation();
     event.preventDefault();
@@ -280,20 +278,20 @@ export class ChTreeItem {
 
   liTextKeyDownPressed(e) {
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
-      e.preventDefault(); //prevents scrolling
+      e.preventDefault(); // prevents scrolling
     }
-    //ENTER
+    // ENTER
     if (e.key === "Enter") {
-      //Enter should check/uncheck the checkbox (if present)
+      // Enter should check/uncheck the checkbox (if present)
       this.checkboxClicked();
       if (this.download) {
-        //If the item has a resource to be downloaded, download.
+        // If the item has a resource to be downloaded, download.
         this.el.click();
       }
     }
-    //LEFT/RIGHT NAVIGATION
+    // LEFT/RIGHT NAVIGATION
     if (e.key === "ArrowRight" && !this.isLeaf) {
-      //Toggle the tree
+      // Toggle the tree
       if (!this.opened) {
         this.opened = true;
       } else {
@@ -304,7 +302,7 @@ export class ChTreeItem {
         (childTreeFirstChildrenLiText as HTMLElement).focus();
       }
       this.setVisibleTreeItems();
-      this.toggleIconClicked.emit(); //this recalculates the vertical line height
+      this.toggleIconClicked.emit(); // this recalculates the vertical line height
     }
 
     if (e.key === "ArrowLeft") {
@@ -326,90 +324,82 @@ export class ChTreeItem {
         const li = this.el.shadowRoot.querySelector("li");
         if (li.classList.contains("tree-open")) {
           this.opened = false;
-        } else {
-          if (hasParent) {
-            parentChTreeItemLiText.focus();
-          }
+        } else if (hasParent) {
+          parentChTreeItemLiText.focus();
         }
       }
       this.setVisibleTreeItems();
-      this.toggleIconClicked.emit(); //this recalculates the vertical line height
+      this.toggleIconClicked.emit(); // this recalculates the vertical line height
     }
 
     // UP/DOWN NAVIGATION
     if (e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey)) {
       e.preventDefault();
       if (!this.firstTreeItemOfParentTree) {
-        //Is not the first element of the parent
-        //Set focus on the prev item
+        // Is not the first element of the parent
+        // Set focus on the prev item
         let prevItem;
         const prevElementSibling = this.el.previousElementSibling;
 
         if (e.shiftKey && e.key !== "Tab") {
-          //if shift key was pressed, navigate to the previous sibling
+          // if shift key was pressed, navigate to the previous sibling
           if (prevElementSibling !== null) {
             prevItem =
               prevElementSibling.shadowRoot.querySelector("li .li-text");
           }
+        } else if (prevElementSibling === null) {
+          const parentItem = this.el.parentElement;
+          const parentParentItem = parentItem.parentElement;
+          prevItem = parentParentItem.shadowRoot.querySelector("li .li-text");
         } else {
-          if (prevElementSibling === null) {
-            const parentItem = this.el.parentElement;
-            const parentParentItem = parentItem.parentElement;
-            prevItem = parentParentItem.shadowRoot.querySelector("li .li-text");
-          } else {
-            prevItem =
-              prevElementSibling.shadowRoot.querySelector("li .li-text");
-            if (prevElementSibling !== null) {
-              //If the preceding tree-item has tree inside...
-              const prevElementSiblingHasChildTree = (
+          prevItem = prevElementSibling.shadowRoot.querySelector("li .li-text");
+          if (prevElementSibling !== null) {
+            // If the preceding tree-item has tree inside...
+            const prevElementSiblingHasChildTree = (
+              prevElementSibling as unknown as ChTreeItem
+            ).hasChildTree;
+            if (prevElementSiblingHasChildTree) {
+              const prevElementSiblingHasOpenTree = (
                 prevElementSibling as unknown as ChTreeItem
-              ).hasChildTree;
-              if (prevElementSiblingHasChildTree) {
-                const prevElementSiblingHasOpenTree = (
-                  prevElementSibling as unknown as ChTreeItem
-                ).opened;
-                if (prevElementSiblingHasOpenTree && !this.download) {
-                  //If preceding tree-item tree is opened, then the prev item is the last item of that tree
-                  const prevElemSiblingTreeItem =
-                    this.el.previousElementSibling;
-                  const prevElemSiblingTreeItemTree =
-                    prevElemSiblingTreeItem.querySelector("ch-tree");
-                  //
+              ).opened;
+              if (prevElementSiblingHasOpenTree && !this.download) {
+                // If preceding tree-item tree is opened, then the prev item is the last item of that tree
+                const prevElemSiblingTreeItem = this.el.previousElementSibling;
+                const prevElemSiblingTreeItemTree =
+                  prevElemSiblingTreeItem.querySelector("ch-tree");
+                //
+                if (
+                  (
+                    prevElemSiblingTreeItemTree.lastElementChild as unknown as ChTreeItem
+                  ).hasChildTree
+                ) {
                   if (
-                    (
-                      prevElemSiblingTreeItemTree.lastElementChild as unknown as ChTreeItem
-                    ).hasChildTree
+                    prevElemSiblingTreeItemTree.lastElementChild.shadowRoot
+                      .querySelector("li")
+                      .classList.contains("tree-open")
                   ) {
-                    if (
-                      prevElemSiblingTreeItemTree.lastElementChild.shadowRoot
-                        .querySelector("li")
-                        .classList.contains("tree-open")
-                    ) {
-                      prevItem = prevElemSiblingTreeItemTree.lastElementChild
-                        .querySelector("ch-tree")
-                        .lastElementChild.shadowRoot.querySelector(
-                          "li .li-text"
-                        );
-                    } else {
-                      prevItem =
-                        prevElemSiblingTreeItemTree.lastElementChild.shadowRoot.querySelector(
-                          "li .li-text"
-                        );
-                    }
+                    prevItem = prevElemSiblingTreeItemTree.lastElementChild
+                      .querySelector("ch-tree")
+                      .lastElementChild.shadowRoot.querySelector("li .li-text");
                   } else {
                     prevItem =
                       prevElemSiblingTreeItemTree.lastElementChild.shadowRoot.querySelector(
                         "li .li-text"
                       );
                   }
-                  //
                 } else {
-                  //The preciding item has a tree, but it is closed
                   prevItem =
-                    this.el.previousElementSibling.shadowRoot.querySelector(
+                    prevElemSiblingTreeItemTree.lastElementChild.shadowRoot.querySelector(
                       "li .li-text"
                     );
                 }
+                //
+              } else {
+                // The preciding item has a tree, but it is closed
+                prevItem =
+                  this.el.previousElementSibling.shadowRoot.querySelector(
+                    "li .li-text"
+                  );
               }
             }
           }
@@ -423,60 +413,56 @@ export class ChTreeItem {
     if (e.key === "ArrowDown" || (e.key === "Tab" && !e.shiftKey)) {
       e.preventDefault();
       if (!this.lastTreeItemOfParentTree) {
-        //Set focus on the next item
+        // Set focus on the next item
         let nextItem;
 
         if (e.shiftKey) {
-          //if shift key was pressed, navigate to the next sibling
+          // if shift key was pressed, navigate to the next sibling
           if (this.el.nextElementSibling !== null) {
             nextItem =
               this.el.nextElementSibling.shadowRoot.querySelector(
                 "li .li-text"
               );
           }
-        } else {
-          if (this.lastTreeItem) {
-            if (this.hasChildTree && this.opened) {
-              nextItem =
-                this.el.firstElementChild.firstElementChild.shadowRoot.querySelector(
-                  ".li-text"
-                );
-            } else {
-              const thisTree = this.el.parentElement;
-              const thisTreeParent = thisTree.parentElement;
-              const thisTreeParentNextTree = thisTreeParent.nextElementSibling;
-              if (thisTreeParentNextTree === null) {
-                if (
-                  thisTreeParent.parentElement.parentElement
-                    .nextElementSibling !== null
-                ) {
-                  nextItem =
-                    thisTreeParent.parentElement.parentElement.nextElementSibling.shadowRoot.querySelector(
-                      ".li-text"
-                    );
-                }
-              } else {
-                nextItem = (
-                  thisTreeParentNextTree as HTMLElement
-                ).shadowRoot.querySelector(".li-text");
-              }
-            }
+        } else if (this.lastTreeItem) {
+          if (this.hasChildTree && this.opened) {
+            nextItem =
+              this.el.firstElementChild.firstElementChild.shadowRoot.querySelector(
+                ".li-text"
+              );
           } else {
-            if (this.hasChildTree && this.opened && !this.download) {
-              nextItem = this.el
-                .querySelector("ch-tree ch-tree-item")
-                .shadowRoot.querySelector("li .li-text");
+            const thisTree = this.el.parentElement;
+            const thisTreeParent = thisTree.parentElement;
+            const thisTreeParentNextTree = thisTreeParent.nextElementSibling;
+            if (thisTreeParentNextTree === null) {
+              if (
+                thisTreeParent.parentElement.parentElement
+                  .nextElementSibling !== null
+              ) {
+                nextItem =
+                  thisTreeParent.parentElement.parentElement.nextElementSibling.shadowRoot.querySelector(
+                    ".li-text"
+                  );
+              }
             } else {
-              nextItem =
-                this.el.nextElementSibling.shadowRoot.querySelector(".li-text");
+              nextItem = (
+                thisTreeParentNextTree as HTMLElement
+              ).shadowRoot.querySelector(".li-text");
             }
           }
+        } else if (this.hasChildTree && this.opened && !this.download) {
+          nextItem = this.el
+            .querySelector("ch-tree ch-tree-item")
+            .shadowRoot.querySelector("li .li-text");
+        } else {
+          nextItem =
+            this.el.nextElementSibling.shadowRoot.querySelector(".li-text");
         }
         if (nextItem !== null && nextItem !== undefined) {
           (nextItem as HTMLElement).focus();
         }
       } else {
-        //Last element of parent tree
+        // Last element of parent tree
         if (
           this.el.classList.contains("not-leaf") &&
           this.el.shadowRoot.querySelector("li").classList.contains("tree-open")
@@ -492,16 +478,15 @@ export class ChTreeItem {
   }
 
   returnToggleIconType() {
-    //Returns the type of icon : expand or collapse
+    // Returns the type of icon : expand or collapse
     if (!this.opened || this.download) {
       return "expand-icon";
-    } else {
-      return "collapse-icon";
     }
+    return "collapse-icon";
   }
 
   returnPaddingLeft() {
-    //returns the appropriate padding left to the .li-text element
+    // returns the appropriate padding left to the .li-text element
     let paddingLeft = 0;
 
     if (this.numberOfParentTrees !== 1) {
@@ -510,19 +495,18 @@ export class ChTreeItem {
       paddingLeft = 5;
     }
     if (!this.isLeaf && this.numberOfParentTrees !== 1) {
-      //paddingLeft -= 5;
+      // paddingLeft -= 5;
     }
     this.itemPaddingLeft = paddingLeft;
     return paddingLeft + "px";
   }
 
   returnVerticalLineLeftPosition() {
-    //Returns the left position of the vertical line that associates the chid-items with the parent item
+    // Returns the left position of the vertical line that associates the chid-items with the parent item
     if (this.numberOfParentTrees !== 1) {
       return this.itemPaddingLeft + 5 + "px";
-    } else {
-      return this.itemPaddingLeft + 5 + "px";
     }
+    return this.itemPaddingLeft + 5 + "px";
   }
 
   checkboxTabIndex() {
@@ -535,9 +519,8 @@ export class ChTreeItem {
   setIndeterminate() {
     if (this.indeterminate) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   checkboxClicked() {
@@ -560,7 +543,7 @@ export class ChTreeItem {
   }
 
   toggleTreeItemsCheckboxes(checked) {
-    //Only do if toggleCheckboxes property exists in parent tree
+    // Only do if toggleCheckboxes property exists in parent tree
     const parentTree = this.el.parentElement as unknown as ChTree;
     if (parentTree.toggleCheckboxes) {
       this.indeterminate = false;
@@ -581,17 +564,15 @@ export class ChTreeItem {
   resolveLeftIcon() {
     if (this.leftIcon !== undefined) {
       return this.leftIcon;
-    } else {
-      return "";
     }
+    return "";
   }
 
   resolveRightIcon() {
     if (this.rightIcon !== undefined) {
       return this.rightIcon;
-    } else {
-      return "";
     }
+    return "";
   }
 
   render() {
@@ -624,7 +605,7 @@ export class ChTreeItem {
                   <span
                     class={{ "vertical-line": true }}
                     style={{
-                      //height: this.verticalLineHeight,
+                      // height: this.verticalLineHeight,
                       height:
                         this.numberOfDirectTreeItemsDescendants * 20 -
                         10 +

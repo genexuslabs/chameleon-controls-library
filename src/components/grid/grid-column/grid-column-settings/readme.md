@@ -25,7 +25,7 @@ The `ch-grid-column-settings` component represents a settings window for a colum
 
 ### Depends on
 
-- [ch-window](../../../window)
+- [ch-window](../../../../deprecated-components/window)
 
 ### Graph
 ```mermaid

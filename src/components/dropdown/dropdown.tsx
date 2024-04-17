@@ -11,9 +11,9 @@ import {
   h
 } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { ChWindowAlign } from "../window/ch-window";
 
 import { DropdownAlign, DropdownPosition } from "./types";
+import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
 import { ChDropdownCustomEvent } from "../../components";
 import { isPseudoElementImg } from "../../common/utils";
@@ -21,7 +21,7 @@ import { ImageRender } from "../../common/types";
 import { DROPDOWN_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 const mapDropdownAlignToChWindowAlign: {
-  [key in DropdownAlign]: ChWindowAlign;
+  [key in DropdownAlign]: ChPopoverAlign;
 } = {
   OutsideStart: "outside-start",
   InsideStart: "inside-start",

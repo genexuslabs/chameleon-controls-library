@@ -1,5 +1,5 @@
-@import "../../globals/normalize";
-@import "../../globals/mixins";
+@import "../../deprecated-globals/normalize";
+@import "../../deprecated-globals/mixins";
 
 :host {
   // margin-bottom: var(--spacing-comp-03);
@@ -76,8 +76,8 @@
     height: var(--spacing-comp-04);
     width: var(--spacing-comp-04);
     //background-color: transparent;
-    border-width: 1px;//var(--border-width-sm);
-    border-style: solid;//var(--border-style-regular);
+    border-width: 1px; //var(--border-width-sm);
+    border-style: solid; //var(--border-style-regular);
     border-radius: 3px; //var(--border-radius-md);
     border-color: var(--gray-04);
     box-sizing: border-box;

@@ -37,9 +37,8 @@ export class ChGridManagerColumns {
   public getColumns(sorted = false): HTMLChGridColumnElement[] {
     if (sorted) {
       return this.columns.sort(this.fnSortByOrder);
-    } else {
-      return this.columns;
     }
+    return this.columns;
   }
 
   public getColumnsFirstLast(): {
@@ -103,9 +102,7 @@ export class ChGridManagerColumns {
   }
 
   private defineColumnId(column: HTMLChGridColumnElement) {
-    if (!column.columnId) {
-      column.columnId = this.getColumnUniqueId();
-    }
+    column.columnId ||= this.getColumnUniqueId();
   }
 
   private defineColumnIndex(column: HTMLChGridColumnElement) {
@@ -113,15 +110,11 @@ export class ChGridManagerColumns {
   }
 
   private defineColumnOrder(column: HTMLChGridColumnElement) {
-    if (!column.order) {
-      column.order = column.physicalOrder;
-    }
+    column.order ||= column.physicalOrder;
   }
 
   private defineColumnSize(column: HTMLChGridColumnElement) {
-    if (!column.size) {
-      column.size = "auto";
-    }
+    column.size ||= "auto";
   }
 
   private defineColumnDisplayObserver(column: HTMLChGridColumnElement) {

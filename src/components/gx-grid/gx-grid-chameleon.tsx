@@ -34,6 +34,7 @@ declare let gx: Gx;
   styleUrl: "gx-grid-chameleon.scss",
   tag: "gx-grid-chameleon"
 })
+// eslint-disable-next-line @stencil-community/required-prefix
 export class GridChameleon {
   /**
    * The GxGrid instance representing the data to be displayed in the grid.

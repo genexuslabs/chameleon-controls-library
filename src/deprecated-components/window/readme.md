@@ -55,12 +55,12 @@ relative to an element or the screen.
 
 ### Used by
 
- - [ch-grid-column-settings](../grid/grid-column/grid-column-settings)
- - [ch-grid-row-actions](../grid/grid-row-actions)
- - [ch-grid-settings](../grid/grid-settings)
- - [ch-shortcuts](../shortcuts)
- - [ch-suggest](../suggest)
- - [ch-tooltip](../tooltip)
+ - [ch-grid-column-settings](../../components/grid/grid-column/grid-column-settings)
+ - [ch-grid-row-actions](../../components/grid/grid-row-actions)
+ - [ch-grid-settings](../../components/grid/grid-settings)
+ - [ch-shortcuts](../../components/shortcuts)
+ - [ch-suggest](../../components/suggest)
+ - [ch-tooltip](../../components/tooltip)
 
 ### Depends on
 

@@ -1,7 +1,7 @@
 import { Component, Host, h, Prop, State } from "@stencil/core";
 import { Component as ChComponent } from "../../common/interfaces";
-import { ChWindowAlign } from "../window/ch-window";
 import { focusComposedPath } from "../common/helpers";
+import { ChPopoverAlign } from "../popover/types";
 
 export type TooltipAlign =
   | "OutsideStart"
@@ -11,7 +11,7 @@ export type TooltipAlign =
   | "OutsideEnd";
 
 const mapTooltipAlignToChWindowAlign: {
-  [key in TooltipAlign]: ChWindowAlign;
+  [key in TooltipAlign]: ChPopoverAlign;
 } = {
   OutsideStart: "outside-start",
   InsideStart: "inside-start",

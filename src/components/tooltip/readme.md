@@ -18,7 +18,7 @@
 
 ### Depends on
 
-- [ch-window](../window)
+- [ch-window](../../deprecated-components/window)
 
 ### Graph
 ```mermaid

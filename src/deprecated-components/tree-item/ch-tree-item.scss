@@ -1,9 +1,7 @@
-
-@import "../../globals/normalize.scss";
-@import "../../globals/mixins.scss";
+@import "../../deprecated-globals/normalize.scss";
+@import "../../deprecated-globals/mixins.scss";
 
 :host {
-
   /**
   * @prop --text-color: The color of the text
   */
@@ -36,7 +34,7 @@
   .text {
     padding-left: var(--spacing-comp-01);
   }
-  
+
   display: block;
   li {
     list-style: none;

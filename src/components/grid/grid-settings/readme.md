@@ -30,7 +30,7 @@ The `ch-grid-settings` component represents a settings window for a grid compone
 
 ### Depends on
 
-- [ch-window](../../window)
+- [ch-window](../../../deprecated-components/window)
 
 ### Graph
 ```mermaid

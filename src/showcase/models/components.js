@@ -25,19 +25,14 @@ const components = [
   ["qr", "QR"],
   "radio-group",
   "segmented-control",
-  "select",
   "shortcuts",
   "sidebar",
-  "sidebar-old",
   "slider",
-  "step-list",
-  "style",
   "suggest",
   "tab",
   "textblock",
   "tooltip",
-  ["tree", "Tree View"],
-  "window"
+  ["tree", "Tree View"]
 ];
 
 /**

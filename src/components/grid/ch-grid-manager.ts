@@ -7,7 +7,7 @@ import HTMLChGridCellElement from "./grid-cell/ch-grid-cell";
 import { ChGridManagerSelection } from "./ch-grid-manager-selection";
 import { ChGridManagerRowDrag } from "./ch-grid-manager-row-drag";
 import { ChGridManagerRowActions } from "./ch-grid-manager-row-actions";
-import { adoptGlobalStyleSheet } from "../style/ch-global-stylesheet";
+import { adoptGlobalStyleSheet } from "../../deprecated-components/style/ch-global-stylesheet";
 import { ChGridManagerColumnResize } from "./ch-grid-manager-column-resize";
 
 enum StyleRule {

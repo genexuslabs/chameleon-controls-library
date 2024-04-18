@@ -227,10 +227,10 @@ export const renderDictionary: {
       HTMLToJSX = (await import("./raw-html-to-jsx")).rawHTMLToJSX;
     }
 
-    // TESTTTTT
-    if (metadata.rawHTML) {
-      console.log(HTMLToJSX(element.value, metadata.allowDangerousHtml));
-    }
+    // // TESTTTTT
+    // if (metadata.rawHTML) {
+    //   console.log(HTMLToJSX(element.value, metadata.allowDangerousHtml));
+    // }
 
     return metadata.rawHTML ? element.value : element.value;
   },

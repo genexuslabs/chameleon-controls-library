@@ -11,6 +11,7 @@ module.exports = {
     project: "./tsconfig.json",
     sourceType: "module" // Allows for the use of imports
   },
+  ignorePatterns: ["src/deprecated-components/*"],
   rules: {
     // - - - - - - - - - - - -
     // ESLint

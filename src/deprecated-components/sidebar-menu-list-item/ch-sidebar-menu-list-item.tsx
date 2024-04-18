@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/own-methods-must-be-private */
 import {
   Component,
   Element,
@@ -60,6 +61,7 @@ export class ChSidebarMenuListItem {
     this.itemClickedEvent.emit({ "item-id": itemId });
   }
 
+  // @ts-expect-error: This control is deprecated, so we are avoiding this error
   firstListItemIcon() {
     if (this.itemIconSrc !== undefined) {
       return this.itemIconSrc;

@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/own-methods-must-be-private */
 /* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
@@ -148,12 +149,14 @@ export class ChSidebarMenu {
           "click",
           function (e) {
             e.stopPropagation();
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             if (!this.menu.classList.contains("collapsed")) {
               const itemTopPosition = item.getBoundingClientRect().y;
               const itemHeight =
                 item.shadowRoot.querySelector(".main-container").offsetHeight;
 
               if (
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.singleListOpen &&
                 item.classList.contains("list-one__item")
               ) {
@@ -164,13 +167,18 @@ export class ChSidebarMenu {
                     itemCopy.shadowRoot.querySelector(".main-container");
                   totalHeight += itemCopyMainContainer.offsetHeight;
                 }
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.indicator.style.top = totalHeight + "px";
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.indicator.style.height = itemHeight + "px";
               } else {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.indicator.style.top = itemTopPosition + "px";
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.indicator.style.height = itemHeight + "px";
               }
             }
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
           }.bind(this)
         );
       }.bind(this)
@@ -196,12 +204,16 @@ export class ChSidebarMenu {
             item.classList.add("item--active");
 
             // fede
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.GetCurrentItemIndicatorPos();
 
             // store the active item on the sessionStorage
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.storeSidebarActiveItem(item);
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.activeItem = item.id;
             // }
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
           }.bind(this)
         );
       }.bind(this)
@@ -247,16 +259,22 @@ export class ChSidebarMenu {
           function () {
             if (
               item.classList.contains("list-one__item") &&
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               this.menu.classList.contains("collapsed")
             ) {
               // If item clicked is type 1, and menu is collapsed, just uncollapse the menu.
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               this.collapseButton.click();
             } else {
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               this.toggleIcon(item); // This function has to be before  uncollapseList or collapseList.
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               this.setTransitionSpeed(item);
               if (item.classList.contains("uncollapsed")) {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.uncollapseList(item);
               } else {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.collapseList(item);
               }
               // If this item is type 2, then update list 1 transition speed and maxheight
@@ -264,14 +282,17 @@ export class ChSidebarMenu {
                 const parentItem1 = item.closest(".list-one__item");
                 const heightToTransition =
                   item.querySelector(".list-three").offsetHeight;
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.updateListItem1TransitionSpeed(
                   parentItem1,
                   heightToTransition
                 );
                 // Update list 1 max. height
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.updateListItem1MaxHeight(parentItem1);
               }
             }
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
           }.bind(this)
         );
       }.bind(this)
@@ -292,6 +313,7 @@ export class ChSidebarMenu {
           mainContainer.addEventListener(
             "click",
             function () {
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               if (!this.menu.classList.contains("collapsed")) {
                 const lastUl1Opened = document.querySelector(".lastUl1Opened");
                 if (
@@ -308,6 +330,7 @@ export class ChSidebarMenu {
                   item.classList.remove("lastUl1Opened");
                 }
               }
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
             }.bind(this)
           );
         }.bind(this)
@@ -322,52 +345,78 @@ export class ChSidebarMenu {
         "click",
         function () {
           let setTimeOutDelay = 0;
+          // @ts-expect-error: This control is deprecated, so we are avoiding this error
           if (this.menu.classList.contains("collapsed")) {
             // if menu is collapsed, the animation that shows the menu should be quicker
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.menu.classList.add("collapse-faster");
             setTimeOutDelay = 300; // This value should be the same as the #menu.collapse-faster transition speed value.
           } else {
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.menu.classList.remove("collapse-faster");
             setTimeOutDelay = 600; // This value should be the same as the #menu without .collapse-faster transition speed value.
           }
+          // @ts-expect-error: This control is deprecated, so we are avoiding this error
           this.menu.classList.add("collapsing");
+          // @ts-expect-error: This control is deprecated, so we are avoiding this error
           this.hideIndicator();
           setTimeout(
             function () {
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               if (this.menu.classList.contains("collapsed")) {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.uncollapseCollapsedLists();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.undoSwitchListOneOrder();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.menu.classList.remove("collapsed");
                 setTimeout(
                   function () {
+                    // @ts-expect-error: This control is deprecated, so we are avoiding this error
                     this.repositionIndicatorAfterMenuUncollapse();
+                    // @ts-expect-error: This control is deprecated, so we are avoiding this error
                   }.bind(this),
                   50
                 );
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.isCollapsed = false;
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.collapseMenuHandler();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.storeSidebarState();
               } else {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.collapseUncollapsedLists1();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.switchListOneOrder();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.menu.classList.add("collapsed");
                 setTimeout(
                   function () {
+                    // @ts-expect-error: This control is deprecated, so we are avoiding this error
                     this.repositionIndicatorAfterMenuCollapse();
+                    // @ts-expect-error: This control is deprecated, so we are avoiding this error
                   }.bind(this),
                   50
                 );
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.isCollapsed = true;
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.collapseMenuHandler();
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.storeSidebarState();
               }
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
               this.menu.classList.remove("collapsing");
               setTimeout(
                 function () {
+                  // @ts-expect-error: This control is deprecated, so we are avoiding this error
                   this.showIndicator();
+                  // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 }.bind(this),
                 400
               );
+              // @ts-expect-error: This control is deprecated, so we are avoiding this error
             }.bind(this),
             setTimeOutDelay
           );
@@ -391,20 +440,24 @@ export class ChSidebarMenu {
         mainContainer.addEventListener(
           "mouseenter",
           function () {
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             if (this.menu.classList.contains("collapsed")) {
               itemTooltip.classList.add("visible");
               itemTooltip.innerHTML = item.childNodes[0].nodeValue;
               const itemTopPosition = item.getBoundingClientRect().y;
               itemTooltip.style.top = itemTopPosition + "px";
             }
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
           }.bind(this)
         );
         mainContainer.addEventListener(
           "mouseleave",
           function () {
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             if (this.menu.classList.contains("collapsed")) {
               itemTooltip.classList.remove("visible");
             }
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
           }.bind(this)
         );
       }.bind(this)
@@ -414,6 +467,7 @@ export class ChSidebarMenu {
     this.main.addEventListener(
       "scroll",
       function () {
+        // @ts-expect-error: This control is deprecated, so we are avoiding this error
         this.GetCurrentItemIndicatorPos();
       }.bind(this)
     );
@@ -430,29 +484,40 @@ export class ChSidebarMenu {
           lastTop = 0;
         }
         // make menu.top a number
+        // @ts-expect-error: This control is deprecated, so we are avoiding this error
         const menuTop = Number(this.menu.style.top.split("px")[0]);
         if (menuTop > 0) {
           if (menuTop - (top - lastTop) > 0) {
             const scrollTopValue: number = top - lastTop;
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.menu.style.top = menuTop - scrollTopValue + "px";
             lastTop = top;
             /* Set main height*/
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             const mainTop = this.distanceToTop - top;
             const topStr = mainTop + "px";
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topStr})`;
             // reposition of active item indicator
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.GetCurrentItemIndicatorPos();
           } else {
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.menu.style.top = "0px";
             // reposition of active item indicator
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.GetCurrentItemIndicatorPos();
           }
         } else if (menuTop == 0) {
+          // @ts-expect-error: This control is deprecated, so we are avoiding this error
           if (top <= this.distanceToTop) {
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.menu.style.top = this.distanceToTop - top + "px";
             lastTop = top;
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${top})`;
             // reposition of active item indicator
+            // @ts-expect-error: This control is deprecated, so we are avoiding this error
             this.GetCurrentItemIndicatorPos();
           }
         }
@@ -494,6 +559,7 @@ export class ChSidebarMenu {
       }
       timer = setTimeout(
         function () {
+          // @ts-expect-error: This control is deprecated, so we are avoiding this error
           this.indicator.classList.remove("speed-zero");
         }.bind(this),
         50
@@ -744,6 +810,7 @@ export class ChSidebarMenu {
             this.menu.classList.add("collapsed");
             setTimeout(
               function () {
+                // @ts-expect-error: This control is deprecated, so we are avoiding this error
                 this.repositionIndicatorAfterMenuCollapse();
               }.bind(this),
               50

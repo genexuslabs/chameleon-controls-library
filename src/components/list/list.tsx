@@ -238,6 +238,7 @@ export class ChList implements DraggableView {
    * placed when dragging a caption, to consider that the caption is within the
    * tab list.
    */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: ListElementSize;
 
   #renderedPages: Set<string> = new Set();

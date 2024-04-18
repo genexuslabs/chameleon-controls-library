@@ -90,7 +90,7 @@ export class NextProgressBar implements ChComponent {
       partName += " checked";
     }
 
-    if (stepValue == amountOfSteps) {
+    if (stepValue === amountOfSteps) {
       partName += " last";
     }
 
@@ -149,7 +149,7 @@ export class NextProgressBar implements ChComponent {
                   class={{
                     step: true,
                     "step--checked": step <= calculatedCurrentStep,
-                    "step--last-checked": step == calculatedCurrentStep
+                    "step--last-checked": step === calculatedCurrentStep
                   }}
                   part={this.getStepPartName(step, amountOfSteps)}
                   style={{

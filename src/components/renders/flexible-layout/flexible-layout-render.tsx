@@ -416,6 +416,7 @@ export class ChFlexibleLayoutRender {
    * @param skipRenderRemoval Useful to determine if the render of the widget must not be destroyed.
    * Used when the widget of the leaf must be reconnected in another parent
    */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #removeWidget = (
     leafInfo: FlexibleLayoutLeafInfo<"tabbed">,
     itemIndex: number,

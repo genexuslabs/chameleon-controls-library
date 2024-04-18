@@ -22,7 +22,7 @@ import {
   TreeViewItemOpenReferenceInfo,
   TreeViewItemSelectedInfo,
   TreeViewDropType
-} from "../../tree-view/tree-view/types";
+} from "./internal/tree-view/types";
 import {
   LazyLoadTreeItemsCallback,
   TreeViewFilterInfo,
@@ -37,8 +37,8 @@ import {
 import {
   ChTreeViewCustomEvent,
   ChTreeViewItemCustomEvent
-} from "../../../components";
-import { GxDataTransferInfo } from "../../../common/types";
+} from "../../components";
+import { GxDataTransferInfo } from "../../common/types";
 import { computeFilter, itemHasCheckbox } from "./helpers";
 import {
   GXRender,
@@ -52,12 +52,12 @@ import {
 } from "./utils";
 import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
-import { insertIntoIndex, removeElement } from "../../../common/array";
+import { insertIntoIndex, removeElement } from "../../common/array";
 import {
   removeSubscription,
   subscribe,
   syncStateWithObservableAncestors
-} from "../../sidebar/expanded-change-obervables";
+} from "../sidebar/expanded-change-obervables";
 
 let autoId = 0;
 

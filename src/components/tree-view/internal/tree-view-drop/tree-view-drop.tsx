@@ -1,8 +1,5 @@
 import { Component, Host, Prop, h } from "@stencil/core";
-import {
-  INITIAL_LEVEL,
-  getTreeItemLevelPart
-} from "../../renders/tree-view/utils";
+import { INITIAL_LEVEL, getTreeItemLevelPart } from "../../utils";
 import { DragState } from "../tree-view-item/tree-view-item";
 import { TreeViewDropType } from "../tree-view/types";
 

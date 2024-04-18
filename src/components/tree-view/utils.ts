@@ -1,5 +1,5 @@
 import { forceUpdate } from "@stencil/core";
-import { removeElement } from "../../../common/array";
+import { removeElement } from "../../common/array";
 import {
   TreeViewItemModel,
   TreeViewItemModelExtended,

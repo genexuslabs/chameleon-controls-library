@@ -19,22 +19,19 @@ import {
   TreeViewItemOpenReferenceInfo,
   TreeViewItemSelected
 } from "../tree-view/types";
-import { mouseEventModifierKey } from "../../common/helpers";
+import { mouseEventModifierKey } from "../../../common/helpers";
 import {
   ChCheckboxCustomEvent,
   ChTreeViewItemCustomEvent
-} from "../../../components";
+} from "../../../../components";
 import {
   isPseudoElementImg,
   removeDragImage,
   tokenMap
-} from "../../../common/utils";
-import {
-  INITIAL_LEVEL,
-  getTreeItemLevelPart
-} from "../../renders/tree-view/utils";
-import { ImageRender } from "../../../common/types";
-import { CheckboxParts } from "../../checkbox/types";
+} from "../../../../common/utils";
+import { INITIAL_LEVEL, getTreeItemLevelPart } from "../../utils";
+import { ImageRender } from "../../../../common/types";
+import { CheckboxParts } from "../../../checkbox/types";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";

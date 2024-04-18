@@ -1,4 +1,4 @@
-import { GxDataTransferInfo } from "../../../common/types";
+import { GxDataTransferInfo } from "../../../../common/types";
 
 export type CheckedTreeItemInfo = {
   id: string;

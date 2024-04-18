@@ -24,10 +24,13 @@ import {
   TreeViewItemSelected,
   TreeViewDropType
 } from "./types";
-import { focusComposedPath, mouseEventModifierKey } from "../../common/helpers";
-import { scrollToEdge } from "../../../common/scroll-to-edge";
-import { GxDataTransferInfo } from "../../../common/types";
-import { ChTreeViewItemCustomEvent } from "../../../components";
+import {
+  focusComposedPath,
+  mouseEventModifierKey
+} from "../../../common/helpers";
+import { scrollToEdge } from "../../../../common/scroll-to-edge";
+import { GxDataTransferInfo } from "../../../../common/types";
+import { ChTreeViewItemCustomEvent } from "../../../../components";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
 const TREE_DROP_TAG_NAME = "ch-tree-view-drop";

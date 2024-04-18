@@ -1,4 +1,4 @@
-import { ImageRender } from "../../../components";
+import { ImageRender } from "../../components";
 import { ChTreeViewRender } from "./tree-view-render";
 
 export type TreeViewItemModel = {

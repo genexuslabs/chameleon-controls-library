@@ -22,13 +22,13 @@ export const removeObservable = (observableId: string) => {
 export const syncStateWithObservableAncestors = (subscriberId: string) => {
   // There is not any observable
   if (!observables) {
-    return DEFAULT_EXPAND_VALUE;
+    return;
   }
 
   const subscriberInfo = subscribers.get(subscriberId);
 
   if (!subscriberInfo) {
-    return DEFAULT_EXPAND_VALUE;
+    return;
   }
 
   let parentElement: Element = subscriberInfo.getSubscriberRef();

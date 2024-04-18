@@ -12,8 +12,10 @@ export function debounce(
     const later = function () {
       timeout = null;
       if (!immediate) {
+        // @ts-expect-error: TODO: This function will be removed when we refactor line-clamp implementation. So we are avoiding this error
         func.apply(this, args);
       }
+      // @ts-expect-error: TODO: This function will be removed when we refactor line-clamp implementation. So we are avoiding this error
     }.bind(this);
 
     const callNow = immediate && !timeout;
@@ -22,6 +24,7 @@ export function debounce(
     timeout = setTimeout(later, wait);
 
     if (callNow) {
+      // @ts-expect-error: TODO: This function will be removed when we refactor line-clamp implementation. So we are avoiding this error
       func.apply(this, args);
     }
   };

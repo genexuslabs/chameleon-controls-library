@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/own-methods-must-be-private */
 import {
   Component,
   Element,
@@ -41,7 +42,7 @@ export class ChSidebarMenuListItem {
   @State() listTypeItem: string;
 
   componentWillLoad() {
-    //SET THE TPYE OF ITEM
+    // SET THE TPYE OF ITEM
     if (this.el.parentElement.classList.contains("list-one")) {
       this.listTypeItem = "one";
     } else if (this.el.parentElement.classList.contains("list-two")) {
@@ -49,7 +50,7 @@ export class ChSidebarMenuListItem {
     } else {
       this.listTypeItem = "three";
     }
-    //SET COLLAPSABLE OR NOT
+    // SET COLLAPSABLE OR NOT
     if (this.el.querySelector("ch-sidebar-menu-list") !== null) {
       this.collapsable = true;
     }
@@ -60,6 +61,7 @@ export class ChSidebarMenuListItem {
     this.itemClickedEvent.emit({ "item-id": itemId });
   }
 
+  // @ts-expect-error: This control is deprecated, so we are avoiding this error
   firstListItemIcon() {
     if (this.itemIconSrc !== undefined) {
       return this.itemIconSrc;
@@ -67,7 +69,7 @@ export class ChSidebarMenuListItem {
   }
 
   listItemContent() {
-    if (this.listTypeItem === "one")
+    if (this.listTypeItem === "one") {
       return [
         <div class="main-container" onClick={this.itemClicked.bind(this)}>
           <div class="left-container">
@@ -93,7 +95,8 @@ export class ChSidebarMenuListItem {
         </div>,
         <slot name="list"></slot>
       ];
-    if (this.listTypeItem === "two")
+    }
+    if (this.listTypeItem === "two") {
       return [
         <div class="main-container" onClick={this.itemClicked.bind(this)}>
           {this.collapsable ? (
@@ -107,7 +110,8 @@ export class ChSidebarMenuListItem {
         </div>,
         <slot name="list"></slot>
       ];
-    if (this.listTypeItem === "three")
+    }
+    if (this.listTypeItem === "three") {
       return (
         <div class="main-container" onClick={this.itemClicked.bind(this)}>
           <span class="text">
@@ -115,6 +119,7 @@ export class ChSidebarMenuListItem {
           </span>
         </div>
       );
+    }
   }
 
   render() {

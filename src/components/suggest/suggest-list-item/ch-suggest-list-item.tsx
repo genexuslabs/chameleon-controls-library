@@ -74,6 +74,7 @@ INDEX:
 
   // 9.LOCAL METHODS //
 
+  // @ts-expect-error: TODO: Check if the notation in this function is correct
   private getItemIndexes = (): SuggestItemIndexes => {
     const parentElement = this.el.parentElement;
     if (parentElement.nodeName === "CH-SUGGEST") {
@@ -93,7 +94,8 @@ INDEX:
         itemIndex: itemIndex,
         listIndex: undefined // the items does not belongs to a list
       };
-    } else if (parentElement.nodeName === "CH-SUGGEST-LIST") {
+    }
+    if (parentElement.nodeName === "CH-SUGGEST-LIST") {
       const chSuggestList = parentElement;
       const chSuggestListsArray = Array.from(
         chSuggestList.parentElement.querySelectorAll(":scope > ch-suggest-list")

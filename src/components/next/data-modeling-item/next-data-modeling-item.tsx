@@ -838,6 +838,7 @@ export class NextDataModelingSubitem implements ChComponent {
       >
         {
           // Add new field layout (last cell of the collection/entity)
+          // eslint-disable-next-line no-nested-ternary
           this.mode === "add" && this.waitingMode !== "adding" ? (
             this.newFieldMode(captions, errorPart, disabledPart, actions)
           ) : this.level === 0 ? ( // Normal mode. Level === 0

@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
   Element,
@@ -71,7 +72,7 @@ export class ChSelect {
 
   @Element() el: HTMLChSelectElement;
 
-  //test
+  // test
   private optionsContainerEl?: HTMLDivElement;
   private selectContainerEl?: HTMLDivElement;
   private selectFlexContainerEl?: HTMLDivElement;
@@ -89,7 +90,9 @@ export class ChSelect {
   }
 
   calculateSelectWidth(width) {
-    if (width !== 0) this.selectContainerEl.style.width = width + "px";
+    if (width !== 0) {
+      this.selectContainerEl.style.width = width + "px";
+    }
   }
 
   calculateSelectHeight() {
@@ -105,7 +108,7 @@ export class ChSelect {
         this.toggleComponent();
         break;
       case "ArrowDown" || "ArrowUp":
-        //todo
+        // todo
         break;
       default:
         break;
@@ -114,8 +117,10 @@ export class ChSelect {
 
   @ClickOutside()
   closeSelect() {
-    //close the select when user clicks outside of component area.
-    if (this.toggle) this.toggleComponent();
+    // close the select when user clicks outside of component area.
+    if (this.toggle) {
+      this.toggleComponent();
+    }
   }
 
   @Listen("itemClicked")
@@ -136,17 +141,15 @@ export class ChSelect {
   resolveIcon() {
     if (this.iconSrc !== undefined) {
       return this.iconSrc;
-    } else {
-      return "";
     }
+    return "";
   }
 
   resolveArrowIcon() {
     if (this.arrowIconSrc !== undefined) {
       return this.arrowIconSrc;
-    } else {
-      return this.arrowTop;
     }
+    return this.arrowTop;
   }
 
   render() {

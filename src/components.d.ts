@@ -646,7 +646,7 @@ export namespace Components {
         /**
           * Retrieves the rowId of the next row relative to the currently selected cell.
          */
-        "getNextRow": () => Promise<string>;
+        "getNextRow": () => Promise<string | void>;
         /**
           * Retrieves information about the previous cell relative to the currently selected cell.
          */
@@ -654,7 +654,7 @@ export namespace Components {
         /**
           * Retrieves the rowId of the previous row relative to the currently selected cell.
          */
-        "getPreviousRow": () => Promise<string>;
+        "getPreviousRow": () => Promise<string | void>;
         /**
           * Retrieves information about the currently selected cell.
          */

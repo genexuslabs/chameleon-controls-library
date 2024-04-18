@@ -118,12 +118,14 @@ export default class HTMLChGridRowsetElement
     return this.parentElement.tagName === "CH-GRID-ROW";
   }
 
-  private getParentRowset(): HTMLChGridRowsetElement {
+  private getParentRowset(): HTMLChGridRowsetElement | undefined {
     const node = this.parentElement.closest("ch-grid-rowset, ch-grid");
 
     if (node.tagName === "CH-GRID-ROWSET") {
       return node as HTMLChGridRowsetElement;
     }
+
+    return undefined;
   }
 }
 

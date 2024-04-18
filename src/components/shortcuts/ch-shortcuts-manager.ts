@@ -228,9 +228,8 @@ function querySelectorAllPlus(
       .map(selectorItem => {
         if (selector.includes("::part")) {
           return querySelectorPlus(selectorItem, root);
-        } else {
-          return Array.from(root.querySelectorAll(selector)) as HTMLElement[];
         }
+        return Array.from(root.querySelectorAll(selector)) as HTMLElement[];
       })
       .flat() ?? []
   );
@@ -284,9 +283,8 @@ function querySelectorPlus(
     const partName = selectorItems[2];
 
     return querySelectorDeep(root.querySelector(entity), partName);
-  } else {
-    return root.querySelector(selector);
   }
+  return root.querySelector(selector);
 }
 
 interface ShortcutMap {

@@ -136,13 +136,13 @@ Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 
 
-### `getNextRow() => Promise<string>`
+### `getNextRow() => Promise<string | void>`
 
 Retrieves the rowId of the next row relative to the currently selected cell.
 
 #### Returns
 
-Type: `Promise<string>`
+Type: `Promise<string | void>`
 
 
 
@@ -156,13 +156,13 @@ Type: `Promise<{ cellId: string; rowId: string; columnId: string; }>`
 
 
 
-### `getPreviousRow() => Promise<string>`
+### `getPreviousRow() => Promise<string | void>`
 
 Retrieves the rowId of the previous row relative to the currently selected cell.
 
 #### Returns
 
-Type: `Promise<string>`
+Type: `Promise<string | void>`
 
 
 

@@ -138,9 +138,8 @@ export class ChPaginatorPages {
   private fillStart(render: boolean) {
     if (render) {
       return this.renderFirstLastPages ? [1, this.textDots] : [this.textDots];
-    } else {
-      return [];
     }
+    return [];
   }
 
   private fillEnd(render: boolean) {
@@ -148,9 +147,8 @@ export class ChPaginatorPages {
       return this.renderFirstLastPages
         ? [this.textDots, this.totalPages]
         : [this.textDots];
-    } else {
-      return [];
     }
+    return [];
   }
 
   private getRangeItems(start: number, end: number): number[] {
@@ -189,15 +187,14 @@ export class ChPaginatorPages {
                 </button>
               </li>
             );
-          } else {
-            return (
-              <li>
-                <button part="page button dots" disabled>
-                  {item}
-                </button>
-              </li>
-            );
           }
+          return (
+            <li>
+              <button part="page button dots" disabled>
+                {item}
+              </button>
+            </li>
+          );
         })}
       </ol>
     );

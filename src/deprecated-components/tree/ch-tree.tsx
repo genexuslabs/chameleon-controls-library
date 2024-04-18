@@ -18,7 +18,7 @@ export class ChTree {
   @Element() el: HTMLChTreeElement;
   ulTree!: HTMLElement;
 
-  //PROPS
+  // PROPS
   /**
    * Set this attribute if you want all this tree tree-items to have a checkbox
    */
@@ -34,17 +34,17 @@ export class ChTree {
    */
   @Prop({ mutable: true }) toggleCheckboxes = false;
 
-  //STATE
+  // STATE
   @State() nestedTree = false;
   @State() mainTree = false;
 
   componentWillLoad() {
-    //Check if this tree is nested
+    // Check if this tree is nested
     const parentElementTagName = this.el.parentElement.tagName;
     if (parentElementTagName === "CH-TREE-ITEM") {
       this.nestedTree = true;
     }
-    //if this is the main tree...
+    // if this is the main tree...
     const parentTreeTagName = this.el.parentElement.tagName;
     if (parentTreeTagName !== "CH-TREE-ITEM") {
       this.mainTree = true;
@@ -53,7 +53,7 @@ export class ChTree {
 
   @Listen("liItemClicked")
   liItemClickedHandler() {
-    //Remove 'selected' state from previous selected item
+    // Remove 'selected' state from previous selected item
     const chTreeItems = this.el.querySelectorAll("ch-tree-item");
     chTreeItems.forEach(chTreeItem => {
       (chTreeItem as unknown as ChTreeItem).selected = false;
@@ -62,7 +62,7 @@ export class ChTree {
 
   @Listen("toggleIconClicked")
   toggleIconClickedHandler() {
-    //Update not leaf tree items vertical line height
+    // Update not leaf tree items vertical line height
     const treeItems = this.el.querySelectorAll("ch-tree-item.not-leaf");
     treeItems.forEach(treeItem => {
       (treeItem as unknown as ChTreeItem).updateTreeVerticalLineHeight();

@@ -42,10 +42,11 @@ export class ChStepListItem {
     for (let i = 0; i < stepItems.length; i++) {
       const item: any = stepItems[i].shadowRoot.lastChild.childNodes[0];
 
-      //remove old item selected class
-      if (item.classList.contains("li-item--active"))
+      // remove old item selected class
+      if (item.classList.contains("li-item--active")) {
         item.classList.remove("li-item--active");
-      //set active item class
+      }
+      // set active item class
       if (stepItems[i].innerText === targetItem) {
         item.classList.add("li-item--active");
       }
@@ -55,9 +56,8 @@ export class ChStepListItem {
   resolveIcon() {
     if (this.iconSrc !== undefined) {
       return this.iconSrc;
-    } else {
-      return getAssetPath("step-list-item-assets/dot.svg");
     }
+    return getAssetPath("step-list-item-assets/dot.svg");
   }
 
   render() {
@@ -66,15 +66,15 @@ export class ChStepListItem {
         <li
           class={
             {
-              //"tree-open": this.opened,
-              //disabled: this.disabled,
+              // "tree-open": this.opened,
+              // disabled: this.disabled,
             }
           }
         >
           <div
             class={{
               "li-item": true
-              //"li-text--selected": this.selected,
+              // "li-text--selected": this.selected,
             }}
           >
             <span class="text" onClick={() => this.itemClickedHandler(this)}>

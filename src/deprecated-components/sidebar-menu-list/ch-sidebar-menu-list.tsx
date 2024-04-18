@@ -8,7 +8,7 @@ import { Component, Element, Host, h, State } from "@stencil/core";
 export class ChSidebarMenuList {
   @Element() el: HTMLChSidebarMenuListElement;
 
-  /*******************
+  /** *****************
    * STATE
    *******************/
   @State() listType = "list-one";

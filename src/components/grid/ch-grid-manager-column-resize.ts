@@ -107,9 +107,8 @@ export class ChGridManagerColumnResize {
       const number = parseFloat(match[1]);
       const unit = match[2];
       return { number, unit };
-    } else {
-      return null;
     }
+    return null;
   }
 
   private convertUnit(

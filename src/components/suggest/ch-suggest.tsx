@@ -233,6 +233,7 @@ INDEX:
     };
 
     if (!currentFocusedItem) {
+      // @ts-expect-error: TODO: Fix this error
       return;
     }
     let newFocusedItem =

@@ -35,7 +35,7 @@ describe("ch-action-group", () => {
     expect(dropdownGridColumn).toBe("3");
   });
 
-  //TODO: Find a way to simulate the work that Angular does to locate the item on its correspondent slot and trigger the displayedItemsCountChange event
+  // TODO: Find a way to simulate the work that Angular does to locate the item on its correspondent slot and trigger the displayedItemsCountChange event
   it.skip("Items hide inside more-action-btn when screen size is reduced", async () => {
     const page = await newE2EPage();
 

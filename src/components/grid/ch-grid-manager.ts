@@ -135,23 +135,25 @@ export class ChGridManager {
     }, null);
   }
 
-  getPreviousCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
+  getPreviousCell(
+    current: HTMLChGridCellElement
+  ): HTMLChGridCellElement | void {
     const previousColumn = this.getPreviousColumn(current.column);
 
     if (previousColumn) {
       return current.row.querySelector(
         `:scope > ch-grid-cell:nth-of-type(${previousColumn.physicalOrder})`
-      );
+      ) as HTMLChGridCellElement;
     }
   }
 
-  getNextCell(current: HTMLChGridCellElement): HTMLChGridCellElement {
+  getNextCell(current: HTMLChGridCellElement): HTMLChGridCellElement | void {
     const nextColumn = this.getNextColumn(current.column);
 
     if (nextColumn) {
       return current.row.querySelector(
         `:scope > ch-grid-cell:nth-of-type(${nextColumn.physicalOrder})`
-      );
+      ) as HTMLChGridCellElement;
     }
   }
 
@@ -233,9 +235,11 @@ export class ChGridManager {
     cellId?: string,
     rowId?: string,
     columnId?: string
-  ): HTMLChGridCellElement {
+  ): HTMLChGridCellElement | void {
     if (cellId) {
-      return this.grid.querySelector(`ch-grid-cell[cellid="${cellId}"]`);
+      return this.grid.querySelector(
+        `ch-grid-cell[cellid="${cellId}"]`
+      ) as HTMLChGridCellElement;
     }
     if (rowId && columnId) {
       const row = this.getRow(rowId);

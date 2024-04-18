@@ -263,6 +263,7 @@ export class ChGrid {
     this.manager.componentDidLoad(this.gridLayoutElement);
   }
 
+  // @ts-expect-error: TODO: Fix this error
   componentShouldUpdate(_newValue, _oldValue, name: string) {
     if (
       name === "rowFocused" ||
@@ -898,7 +899,7 @@ export class ChGrid {
    * Retrieves the rowId of the previous row relative to the currently selected cell.
    */
   @Method()
-  async getPreviousRow(): Promise<string> {
+  async getPreviousRow(): Promise<string | void> {
     const currentRow = this.cellSelected?.row;
 
     if (currentRow) {
@@ -910,7 +911,7 @@ export class ChGrid {
    * Retrieves the rowId of the next row relative to the currently selected cell.
    */
   @Method()
-  async getNextRow(): Promise<string> {
+  async getNextRow(): Promise<string | void> {
     const currentRow = this.cellSelected?.row;
 
     if (currentRow) {

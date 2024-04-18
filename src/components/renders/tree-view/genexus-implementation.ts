@@ -67,9 +67,9 @@ export const fromGxImageToURL = (
   gxImage: any,
   Settings: any,
   gxImageConstructor: (name: string) => any
-): string => {
+): string | undefined => {
   if (!gxImage) {
-    return;
+    return undefined;
   }
 
   let url = "";

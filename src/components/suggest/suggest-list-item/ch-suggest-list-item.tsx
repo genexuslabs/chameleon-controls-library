@@ -93,7 +93,8 @@ INDEX:
         itemIndex: itemIndex,
         listIndex: undefined // the items does not belongs to a list
       };
-    } else if (parentElement.nodeName === "CH-SUGGEST-LIST") {
+    }
+    if (parentElement.nodeName === "CH-SUGGEST-LIST") {
       const chSuggestList = parentElement;
       const chSuggestListsArray = Array.from(
         chSuggestList.parentElement.querySelectorAll(":scope > ch-suggest-list")

@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
   Element,
@@ -27,7 +28,7 @@ export class ChSidebarMenu {
   private topHeightSpeed = 300;
   private speedDivisionValue = 400;
 
-  /*******************
+  /** *****************
    * REFERENCES
    *******************/
   main!: HTMLElement;
@@ -36,7 +37,7 @@ export class ChSidebarMenu {
   footer!: HTMLElement;
   collapseButton!: HTMLElement;
 
-  /*******************
+  /** *****************
    * PROPS
    *******************/
 
@@ -75,13 +76,13 @@ export class ChSidebarMenu {
    */
   @Prop({ reflect: true, mutable: true }) isCollapsed: boolean;
 
-  /*******************
+  /** *****************
    * STATE
    *******************/
   @State() indicator: HTMLElement;
 
   componentDidLoad() {
-    //hide menu in mobile view
+    // hide menu in mobile view
     if (window.matchMedia("(max-width: 767px)").matches) {
       this.menu.classList.add("hidden-xs");
     }
@@ -89,7 +90,7 @@ export class ChSidebarMenu {
       .matchMedia("(max-width: 767px)")
       .addEventListener("change", this.handleMatchMedia.bind(this));
 
-    //get sidebar status from storage
+    // get sidebar status from storage
     this.getSidebarState();
 
     const titleHeight = this.title.offsetHeight;
@@ -97,14 +98,14 @@ export class ChSidebarMenu {
     const titleAndFooterHeight = titleHeight + footerHeight + "px";
     const collapsableItems = this.el.querySelectorAll(".collapsable");
 
-    /*Set menu top position*/
+    /* Set menu top position*/
     const topDistance = this.distanceToTop.toString() + "px";
     this.menu.style.top = topDistance;
 
-    /*Set main height*/
+    /* Set main height*/
     this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topDistance})`;
 
-    //SET INITAL ITEMS MAX HEIGHT
+    // SET INITAL ITEMS MAX HEIGHT
     const items = this.el.querySelectorAll(".item");
     Array.from(items as unknown as HTMLCollectionOf<HTMLElement>).forEach(
       function (item) {
@@ -113,17 +114,17 @@ export class ChSidebarMenu {
           (mainContainer as HTMLElement).offsetHeight + "px";
       }
     );
-    //AFTER INITIAL ITEMS MAX HEIGHT HAS BEEN DEFINED, REDEFINE MAX HEIGHT FOR THE UNCOLLAPSED ITEMS
+    // AFTER INITIAL ITEMS MAX HEIGHT HAS BEEN DEFINED, REDEFINE MAX HEIGHT FOR THE UNCOLLAPSED ITEMS
     const uncollapsedItems = this.el.querySelectorAll(".item.uncollapsed");
     const uncollapsedItemsArr = Array.prototype.slice
       .call(uncollapsedItems)
       .reverse();
 
     uncollapsedItemsArr.forEach(function (item) {
-      //mainContainer height
+      // mainContainer height
       const mainContainerHeight =
         item.shadowRoot.querySelector(".main-container").offsetHeight;
-      //menu list height
+      // menu list height
       const menuList = item.querySelector(":scope > ch-sidebar-menu-list");
       if (menuList) {
         const menuListHeight = (menuList as HTMLElement).offsetHeight;
@@ -131,14 +132,14 @@ export class ChSidebarMenu {
       }
     });
 
-    /**********************************
+    /** ********************************
     LATERAL ACTIVE ITEM INDICATOR LOGIC
     ***********************************/
     this.indicator = document.createElement("DIV");
     this.indicator.setAttribute("id", "indicator");
     this.main.appendChild(this.indicator);
 
-    //when active-item is loaded from session, recalculate indicator position
+    // when active-item is loaded from session, recalculate indicator position
     this.repositionIndicatorAfterMenuUncollapse();
 
     Array.from(items).forEach(
@@ -175,7 +176,7 @@ export class ChSidebarMenu {
       }.bind(this)
     );
 
-    /*********************
+    /** *******************
     SET ACTIVE ITEM LOGIC
     **********************/
     Array.from(items).forEach(
@@ -184,34 +185,34 @@ export class ChSidebarMenu {
           "click",
           function (e) {
             e.stopPropagation();
-            //fede
-            //if (!this.menu.classList.contains("collapsed")) {
-            //remove current active item class
+            // fede
+            // if (!this.menu.classList.contains("collapsed")) {
+            // remove current active item class
             const currentActiveItem = document.querySelector(".item--active");
             if (currentActiveItem !== null) {
               currentActiveItem.classList.remove("item--active");
             }
-            //set current item as active
+            // set current item as active
             item.classList.add("item--active");
 
-            //fede
+            // fede
             this.GetCurrentItemIndicatorPos();
 
-            //store the active item on the sessionStorage
+            // store the active item on the sessionStorage
             this.storeSidebarActiveItem(item);
             this.activeItem = item.id;
-            //}
+            // }
           }.bind(this)
         );
       }.bind(this)
     );
-    //SET ACTIVE CURRENT ACTIVE ITEM IF PRESENT
-    //if (this.activeItemId !== "") {
+    // SET ACTIVE CURRENT ACTIVE ITEM IF PRESENT
+    // if (this.activeItemId !== "") {
     if (this.activeItemId !== "" && !this.activeItem) {
       const activeItem = this.el.querySelector("#" + this.activeItemId);
       activeItem.classList.add("item--active");
 
-      //uncollapse item's parent if exists
+      // uncollapse item's parent if exists
       let parentEl = activeItem.parentElement;
       if (parentEl.hasAttribute("slot")) {
         parentEl = parentEl.parentElement;
@@ -224,8 +225,8 @@ export class ChSidebarMenu {
           grandpaEl.classList.add("uncollapsed");
         }
       }
-      //indicator
-      //let indicator = this.el.shadowRoot.querySelector("#indicator");
+      // indicator
+      // let indicator = this.el.shadowRoot.querySelector("#indicator");
       const activeItemTopPosition = activeItem.getBoundingClientRect().y;
       const activeItemHeight =
         activeItem.shadowRoot.querySelector<HTMLElement>(
@@ -235,7 +236,7 @@ export class ChSidebarMenu {
       this.indicator.style.height = activeItemHeight + "px";
     }
 
-    /****************************
+    /** **************************
     COLLAPSABLE LIST ITEMS LOGIC
     ****************************/
     Array.from(collapsableItems).forEach(
@@ -248,17 +249,17 @@ export class ChSidebarMenu {
               item.classList.contains("list-one__item") &&
               this.menu.classList.contains("collapsed")
             ) {
-              //If item clicked is type 1, and menu is collapsed, just uncollapse the menu.
+              // If item clicked is type 1, and menu is collapsed, just uncollapse the menu.
               this.collapseButton.click();
             } else {
-              this.toggleIcon(item); //This function has to be before  uncollapseList or collapseList.
+              this.toggleIcon(item); // This function has to be before  uncollapseList or collapseList.
               this.setTransitionSpeed(item);
               if (item.classList.contains("uncollapsed")) {
                 this.uncollapseList(item);
               } else {
                 this.collapseList(item);
               }
-              //If this item is type 2, then update list 1 transition speed and maxheight
+              // If this item is type 2, then update list 1 transition speed and maxheight
               if (item.classList.contains("list-two__item")) {
                 const parentItem1 = item.closest(".list-one__item");
                 const heightToTransition =
@@ -267,7 +268,7 @@ export class ChSidebarMenu {
                   parentItem1,
                   heightToTransition
                 );
-                //Update list 1 max. height
+                // Update list 1 max. height
                 this.updateListItem1MaxHeight(parentItem1);
               }
             }
@@ -276,11 +277,11 @@ export class ChSidebarMenu {
       }.bind(this)
     );
 
-    /*******************************
+    /** *****************************
     SINGLE UL1 OPEN AT A TIME LOGIC  
     *******************************/
-    //Only one list of type 1 can be open at the same time.
-    //This is an optional parameter. Applies if 'data-single-ul1-open' attribute is present on #menu
+    // Only one list of type 1 can be open at the same time.
+    // This is an optional parameter. Applies if 'data-single-ul1-open' attribute is present on #menu
     if (this.singleListOpen) {
       const collapsableListOneItems =
         document.querySelectorAll(".list-one__item");
@@ -313,7 +314,7 @@ export class ChSidebarMenu {
       );
     }
 
-    /*******************
+    /** *****************
     COLLAPSE MENU LOGIC
     *******************/
     if (this.collapsible) {
@@ -322,12 +323,12 @@ export class ChSidebarMenu {
         function () {
           let setTimeOutDelay = 0;
           if (this.menu.classList.contains("collapsed")) {
-            //if menu is collapsed, the animation that shows the menu should be quicker
+            // if menu is collapsed, the animation that shows the menu should be quicker
             this.menu.classList.add("collapse-faster");
-            setTimeOutDelay = 300; //This value should be the same as the #menu.collapse-faster transition speed value.
+            setTimeOutDelay = 300; // This value should be the same as the #menu.collapse-faster transition speed value.
           } else {
             this.menu.classList.remove("collapse-faster");
-            setTimeOutDelay = 600; //This value should be the same as the #menu without .collapse-faster transition speed value.
+            setTimeOutDelay = 600; // This value should be the same as the #menu without .collapse-faster transition speed value.
           }
           this.menu.classList.add("collapsing");
           this.hideIndicator();
@@ -376,7 +377,7 @@ export class ChSidebarMenu {
 
     this.getSidebarCollapsedState();
 
-    /******************
+    /** ****************
     ITEMS TOOLTIP LOGIC
     *******************/
     const itemTooltip = document.createElement("DIV");
@@ -409,7 +410,7 @@ export class ChSidebarMenu {
       }.bind(this)
     );
 
-    //REPOSITION INDICATOR ON SCROLL
+    // REPOSITION INDICATOR ON SCROLL
     this.main.addEventListener(
       "scroll",
       function () {
@@ -417,7 +418,7 @@ export class ChSidebarMenu {
       }.bind(this)
     );
 
-    //Calculation of menu top value and height on scroll
+    // Calculation of menu top value and height on scroll
     let lastTop: number;
     document.addEventListener(
       "scroll",
@@ -428,33 +429,31 @@ export class ChSidebarMenu {
         if (lastTop === undefined) {
           lastTop = 0;
         }
-        //make menu.top a number
+        // make menu.top a number
         const menuTop = Number(this.menu.style.top.split("px")[0]);
         if (menuTop > 0) {
           if (menuTop - (top - lastTop) > 0) {
             const scrollTopValue: number = top - lastTop;
             this.menu.style.top = menuTop - scrollTopValue + "px";
             lastTop = top;
-            /*Set main height*/
+            /* Set main height*/
             const mainTop = this.distanceToTop - top;
             const topStr = mainTop + "px";
             this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${topStr})`;
-            //reposition of active item indicator
+            // reposition of active item indicator
             this.GetCurrentItemIndicatorPos();
           } else {
             this.menu.style.top = "0px";
-            //reposition of active item indicator
+            // reposition of active item indicator
             this.GetCurrentItemIndicatorPos();
           }
-        } else {
-          if (menuTop == 0) {
-            if (top <= this.distanceToTop) {
-              this.menu.style.top = this.distanceToTop - top + "px";
-              lastTop = top;
-              this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${top})`;
-              //reposition of active item indicator
-              this.GetCurrentItemIndicatorPos();
-            }
+        } else if (menuTop == 0) {
+          if (top <= this.distanceToTop) {
+            this.menu.style.top = this.distanceToTop - top + "px";
+            lastTop = top;
+            this.main.style.height = `calc(100vh - ${titleAndFooterHeight} - ${top})`;
+            // reposition of active item indicator
+            this.GetCurrentItemIndicatorPos();
           }
         }
       }.bind(this)
@@ -471,7 +470,7 @@ export class ChSidebarMenu {
 
   @ClickOutside({ exclude: ".sidebar__toggle-ico" })
   closeSidebar() {
-    //close the sidebar when user clicks outside of component area (only in mobile view - xs media screens).
+    // close the sidebar when user clicks outside of component area (only in mobile view - xs media screens).
     const screenSize = window.matchMedia("(max-width: 767px)");
     if (screenSize.matches) {
       // Viewport is less or equal to 767 pixels wide
@@ -480,7 +479,7 @@ export class ChSidebarMenu {
     }
   }
 
-  //get position of current active item
+  // get position of current active item
   GetCurrentItemIndicatorPos() {
     let timer = null;
     const currentActiveItem = document.querySelector(".item--active");
@@ -489,7 +488,7 @@ export class ChSidebarMenu {
         currentActiveItem.getBoundingClientRect().y;
       this.indicator.classList.add("speed-zero");
       this.indicator.style.top = currentActiveItemTopPosition + "px";
-      //detect when scrolling has stopped
+      // detect when scrolling has stopped
       if (timer !== null) {
         clearTimeout(timer);
       }
@@ -502,7 +501,7 @@ export class ChSidebarMenu {
     }
   }
 
-  //REPOSITION INDICATOR AFTER MENU COLLAPSE
+  // REPOSITION INDICATOR AFTER MENU COLLAPSE
   repositionIndicatorAfterMenuCollapse() {
     const activeItem = this.el.querySelector(".item--active");
     if (activeItem !== null) {
@@ -515,7 +514,7 @@ export class ChSidebarMenu {
         this.indicator.style.top = topPosition + "px";
         this.indicator.style.height = height + "px";
       } else {
-        //else, the active item has no parent l ist. just reposition indicator
+        // else, the active item has no parent l ist. just reposition indicator
         const topPosition = activeItem.getBoundingClientRect().y;
         const height = (activeItem as HTMLElement).offsetHeight;
         this.indicator.style.top = topPosition + "px";
@@ -523,7 +522,7 @@ export class ChSidebarMenu {
       }
     }
   }
-  //REPOSITION INDICATOR AFTER MENU UNCOLLAPSE
+  // REPOSITION INDICATOR AFTER MENU UNCOLLAPSE
   repositionIndicatorAfterMenuUncollapse() {
     const activeItem = this.el.querySelector(".item--active");
     if (activeItem !== null) {
@@ -539,11 +538,11 @@ export class ChSidebarMenu {
     }
   }
 
-  //HIDE INDICATOR
+  // HIDE INDICATOR
   hideIndicator() {
     this.indicator.classList.add("hide");
   }
-  //SHOW INDICATOR
+  // SHOW INDICATOR
   showIndicator() {
     this.indicator.classList.remove("hide");
   }
@@ -595,7 +594,7 @@ export class ChSidebarMenu {
     });
   }
 
-  /*UPDATE LIST ITEM 1 TRANSITION SPEED*/
+  /* UPDATE LIST ITEM 1 TRANSITION SPEED*/
   updateListItem1TransitionSpeed(item, height) {
     if (height > this.topHeightSpeed) {
       height = this.topHeightSpeed;
@@ -603,7 +602,7 @@ export class ChSidebarMenu {
     item.style.transitionDuration = height / this.speedDivisionValue + "s";
   }
 
-  /*UPDATE LIST ITEM 1 MAX HEIGHT*/
+  /* UPDATE LIST ITEM 1 MAX HEIGHT*/
   updateListItem1MaxHeight(item) {
     const mainContainerHeight =
       item.shadowRoot.querySelector(".main-container").clientHeight;
@@ -619,7 +618,7 @@ export class ChSidebarMenu {
     item.style.maxHeight = totalMaxHeight + "px";
   }
 
-  /*TOGGLE ITEM ICON*/
+  /* TOGGLE ITEM ICON*/
   toggleIcon(item) {
     if (item.classList.contains("uncollapsed")) {
       item.classList.remove("uncollapsed");
@@ -628,7 +627,7 @@ export class ChSidebarMenu {
     }
   }
 
-  /*SET ITEM TRANSITION SPEED*/
+  /* SET ITEM TRANSITION SPEED*/
   setTransitionSpeed(item) {
     let transitionSpeed = 0;
     const childListHeight = item.querySelector(
@@ -643,16 +642,16 @@ export class ChSidebarMenu {
       transitionSpeed / this.speedDivisionValue + "s";
   }
 
-  /*COLLAPSE LIST*/
+  /* COLLAPSE LIST*/
   collapseList(item) {
     const mainContainerHeight =
       item.shadowRoot.querySelector(".main-container").offsetHeight;
     item.style.maxHeight = mainContainerHeight + "px";
 
-    //store the item's collapsed state
+    // store the item's collapsed state
     this.storeSidebarCollapsedItem(item);
   }
-  /*UNCOLLAPSE LIST*/
+  /* UNCOLLAPSE LIST*/
   uncollapseList(item) {
     const mainContainerHeight =
       item.shadowRoot.querySelector(".main-container").clientHeight;
@@ -661,7 +660,7 @@ export class ChSidebarMenu {
     ).clientHeight;
     item.style.maxHeight = mainContainerHeight + childListHeight + "px";
 
-    //store the item's uncollapsed state
+    // store the item's uncollapsed state
     this.storeSidebarUncollapsedItem(item);
   }
 
@@ -697,7 +696,7 @@ export class ChSidebarMenu {
     }
   }
 
-  /*GET SIDEBAR STATE*/
+  /* GET SIDEBAR STATE*/
   getSidebarState() {
     const storageHelper = new StorageHelper.SessionStorageWorker();
     const storageItems = storageHelper.getAllItems();
@@ -709,8 +708,8 @@ export class ChSidebarMenu {
           if (item) {
             item.classList.add("item--active");
             this.activeItem = item.id;
-            //fede
-            //const itemPos = item.offsetTop;
+            // fede
+            // const itemPos = item.offsetTop;
             /*
             this.main.scroll({
               top: 100, 
@@ -759,7 +758,7 @@ export class ChSidebarMenu {
     }
   }
 
-  //collapse menu button handler
+  // collapse menu button handler
   collapseMenuHandler() {
     this.collapseBtnClicked.emit({ isCollapsed: this.isCollapsed });
   }

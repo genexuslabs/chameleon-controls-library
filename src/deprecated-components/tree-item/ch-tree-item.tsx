@@ -1,3 +1,5 @@
+/* eslint-disable no-lonely-if */
+/* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
   Event,

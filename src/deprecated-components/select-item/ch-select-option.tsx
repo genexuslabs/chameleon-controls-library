@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
   Host,
@@ -78,20 +79,21 @@ export class ChSelectItem {
 
     for (let i = 0; i < selectItems.length; i++) {
       const item: any = selectItems[i].shadowRoot.lastChild;
-      //remove old item selected class
-      if (item.classList.contains("option-selected"))
+      // remove old item selected class
+      if (item.classList.contains("option-selected")) {
         item.classList.remove("option-selected");
+      }
       selectItems[i].removeAttribute("aria-selected");
-      //remove pre-selection attribute
+      // remove pre-selection attribute
       selectItems[i].removeAttribute("selected");
-      //set active item class
+      // set active item class
       if (selectItems[i].value === targetItem.trim()) {
         item.classList.add("option-selected");
         selectItems[i].setAttribute("aria-selected", "true");
         optionText = selectItems[i].innerHTML;
       }
     }
-    //update selected option text in select
+    // update selected option text in select
     const selectedOptionText: HTMLElement =
       this.el.parentElement.shadowRoot.querySelector("span.text");
     selectedOptionText.innerHTML = optionText;
@@ -100,17 +102,15 @@ export class ChSelectItem {
   resolveLeftIcon() {
     if (this.leftIconSrc !== undefined) {
       return this.leftIconSrc;
-    } else {
-      return "";
     }
+    return "";
   }
 
   resolveRightIcon() {
     if (this.rightIconSrc !== undefined) {
       return this.rightIconSrc;
-    } else {
-      return "";
     }
+    return "";
   }
 
   render() {

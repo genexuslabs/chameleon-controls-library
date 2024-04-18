@@ -1,3 +1,4 @@
+/* eslint-disable @stencil-community/required-jsdoc */
 import {
   Component,
   Element,
@@ -16,10 +17,10 @@ import {
 export class ChFormCheckbox {
   @Element() el: HTMLChFormCheckboxElement;
 
-  //A reference to the input
+  // A reference to the input
   checkboxInput!: HTMLInputElement;
 
-  /*********************************
+  /** *******************************
     PROPERTIES & STATE
     *********************************/
 
@@ -60,7 +61,7 @@ export class ChFormCheckbox {
 
   @Event() change: EventEmitter;
 
-  /*********************************
+  /** *******************************
     METHODS
     *********************************/
 
@@ -81,7 +82,7 @@ export class ChFormCheckbox {
 
   handlerOnKeyUp(event) {
     if (event.keyCode == 13) {
-      //Enter key was pressed
+      // Enter key was pressed
       if (!this.checked) {
         this.el.setAttribute("checked", "true");
       } else {
@@ -97,9 +98,8 @@ export class ChFormCheckbox {
   ariaChecked() {
     if (this.checked) {
       return "true";
-    } else {
-      return "false";
     }
+    return "false";
   }
 
   handleInputClick(e) {

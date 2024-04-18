@@ -74,6 +74,7 @@ INDEX:
 
   // 9.LOCAL METHODS //
 
+  // @ts-expect-error: TODO: Check if the notation in this function is correct
   private getItemIndexes = (): SuggestItemIndexes => {
     const parentElement = this.el.parentElement;
     if (parentElement.nodeName === "CH-SUGGEST") {

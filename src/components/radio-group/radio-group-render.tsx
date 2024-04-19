@@ -9,7 +9,7 @@ import {
   h
 } from "@stencil/core";
 import { RadioItem } from "./types";
-import { RADIO_ITEM_PARTS_DICTIONARY } from "../../../common/reserverd-names";
+import { RADIO_ITEM_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 const PARTS = (checked: boolean, disabled: boolean) => {
   const checkedValue = checked

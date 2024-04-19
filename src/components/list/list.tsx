@@ -482,6 +482,12 @@ export class ChList implements DraggableView {
         this.#renderedPages.add(item.id);
       }
     });
+
+    // The selected id must be added to the rendered pages, even if it was not
+    // marked as "wasRendered" in the UI Model
+    if (this.selectedId) {
+      this.#renderedPages.add(this.selectedId);
+    }
   };
 
   // #handleItemDblClick = (event: MouseEvent) => {

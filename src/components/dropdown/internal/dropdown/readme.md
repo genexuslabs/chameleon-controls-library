@@ -1,50 +1,5 @@
 # ch-dropdown
 
-A generic dropdown menu that has 4 slots. One for the layout of the button that
-displays the dropdown, one for the dropdown header, one for the dropdown items
-and the last one for the dropdown footer.
-
-```html
-<ch-dropdown
-  align="Center"
-  class="Class"
-  dropdown-separation="5"
-  expand-behavior="Click or hover"
-  open-on-focus="false"
-  position="Bottom"
->
-  <span slot="action">User info</span>
-
-  <div slot="header">
-    <h1>John Doe</h1>
-    <span>johndoe@example.com</span>
-  </div>
-
-  <ch-dropdown-item
-    slot="items"
-    class="dropdown-item--fancy"
-    href="https://..."
-    leftImgSrc="./MyProfile.svg"
-    rightImgSrc="AnotherImg"
-  >
-    My profile
-  </ch-dropdown-item>
-
-  <ch-dropdown-item-separator slot="items"></ch-dropdown-item-separator>
-
-  <ch-dropdown-item
-    slot="items"
-    id="2"
-    leftImgSrc="./Logout.svg"
-    rightImgSrc="item.RightImage"
-  >
-    Logout
-  </ch-dropdown-item>
-
-  <div slot="footer">...</div>
-</ch-dropdown>
-```
-
 <!-- Auto Generated Below -->
 
 

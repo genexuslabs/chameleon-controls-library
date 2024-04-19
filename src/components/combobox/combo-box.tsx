@@ -302,6 +302,13 @@ export class ChComboBox
     },
 
     Space: event => {
+      // When there are filters applied and the combo-box is expanded, the
+      // control is focused in the input, so the space character should not be
+      // processed
+      if (this.filterType !== "none" && this.expanded) {
+        return;
+      }
+
       event.preventDefault(); // Stop space key from scrolling
 
       // Only expands the ComboBox
@@ -321,7 +328,7 @@ export class ChComboBox
   };
 
   // Refs
-  #maskRef!: HTMLDivElement;
+  #inputRef: HTMLInputElement;
   #selectRef: HTMLSelectElement | undefined;
 
   /**
@@ -366,7 +373,7 @@ export class ChComboBox
    * filter.
    * Only works if `filterType = "caption" | "value"`.
    */
-  @Prop() readonly filter: string;
+  @Prop({ mutable: true }) filter: string;
   @Watch("filter")
   filterChanged() {
     if (this.filterType === "caption" || this.filterType === "value") {
@@ -469,6 +476,7 @@ export class ChComboBox
   @Watch("value")
   valueChange(newValue: string) {
     this.currentSelectedValue = newValue;
+    this.filter = this.#valueToItemInfo.get(newValue)?.caption;
 
     // Update form value
     this.internals.setFormValue(newValue);
@@ -619,7 +627,7 @@ export class ChComboBox
 
     // Observe the size of the edges to know if the border
     this.#resizeObserver.observe(this.el, { box: "border-box" });
-    this.#resizeObserver.observe(this.#maskRef ?? this.#selectRef);
+    this.#resizeObserver.observe(this.#inputRef ?? this.#selectRef);
   };
 
   #updateBorderSizeRAF = () => {
@@ -698,6 +706,12 @@ export class ChComboBox
       // The focus must return to the Host when the popover is closed using the
       // Escape key
       this.el.focus();
+
+      // The expanded property must not be toggled when there are filters, due
+      // to the input is interactive
+      if (this.filterType !== "none") {
+        return;
+      }
     }
     this.expanded = !this.expanded;
   };
@@ -725,6 +739,14 @@ export class ChComboBox
     }
 
     this.#checkAndEmitValueChange();
+  };
+
+  #handleInputFilterChange = (event: InputEvent) => {
+    event.stopPropagation();
+
+    // console.log("this.#inputRef.value", this.#inputRef.value);
+
+    this.filter = this.#inputRef.value;
   };
 
   #updateSelectedValue = (itemValue: string) => (event: MouseEvent) => {
@@ -825,7 +847,17 @@ export class ChComboBox
       </option>
     );
 
-  #nativeRender = () => (
+  #nativeRender = () => [
+    <span
+      aria-hidden={!this.currentSelectedValue ? "true" : null}
+      class="value"
+    >
+      {this.currentSelectedValue
+        ? this.#valueToItemInfo.get(this.currentSelectedValue)?.caption ??
+          this.placeholder
+        : this.placeholder}
+    </span>,
+
     <select
       aria-label={this.accessibleName ?? this.#accessibleNameFromExternalLabel}
       disabled={this.disabled}
@@ -834,13 +866,17 @@ export class ChComboBox
     >
       {this.items.map(this.#nativeItemRender)}
     </select>
-  );
+  ];
 
   connectedCallback() {
     this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
+    this.#mapValuesToItemInfo(this.items);
 
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;
+
+    this.filter = this.#valueToItemInfo.get(this.value)?.caption;
+    // console.log("connectedCallback", this.value, this.filter);
 
     const labels = this.internals.labels;
 
@@ -848,8 +884,6 @@ export class ChComboBox
     if (!this.accessibleName && labels?.length > 0) {
       this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
     }
-
-    this.#mapValuesToItemInfo(this.items);
   }
 
   componentWillRender() {
@@ -872,6 +906,14 @@ export class ChComboBox
   }
 
   componentDidRender() {
+    // Focus the input when there are filters and the control is expanded
+    if (this.filterType !== "none" && this.expanded) {
+      this.#focusSelectAfterNextRender = false;
+      this.#inputRef.focus();
+      return;
+    }
+
+    // Only focus elements when filter are not applied
     if (!this.#focusSelectAfterNextRender) {
       return;
     }
@@ -905,11 +947,6 @@ export class ChComboBox
 
     return (
       <Host
-        role={!mobileDevice ? "combobox" : null}
-        aria-controls={!mobileDevice ? this.#popoverId : null}
-        aria-disabled={!mobileDevice && this.disabled ? "true" : null}
-        aria-expanded={!mobileDevice ? this.expanded.toString() : null}
-        aria-haspopup={!mobileDevice ? "true" : null}
         // ComboBox controls do not have aria-placeholder attr
         tabindex={!mobileDevice ? "0" : null}
         class={this.disabled ? "ch-disabled" : null}
@@ -919,48 +956,72 @@ export class ChComboBox
             : null
         }
       >
-        <span
-          aria-hidden={!this.currentSelectedValue ? "true" : null}
-          class="value"
-        >
-          {this.currentSelectedValue
-            ? this.#valueToItemInfo.get(this.currentSelectedValue)?.caption ??
-              this.placeholder
-            : this.placeholder}
-        </span>
-
-        {!mobileDevice && (
-          <div
-            // This mask is used to capture click events that must open the
-            // popover. If we capture click events in the Host, clicking external
-            // label would open the combo-box's window
-            aria-hidden="true"
-            class="mask"
-            onClick={this.#handleExpandedChange}
-            ref={el => (this.#maskRef = el)}
-          ></div>
-        )}
-
         {mobileDevice
           ? this.#nativeRender()
-          : this.#firstExpanded && (
-              <ch-popover
-                id={this.#popoverId}
-                role="listbox"
-                aria-hidden="false"
-                part="window"
-                actionById
-                actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
-                blockAlign="outside-end"
-                hidden={!this.expanded}
-                popover="auto"
-                onPopoverClosed={this.#handlePopoverClose}
-              >
-                {this.items.map(
-                  this.#customItemRender(false, undefined, filtersAreApplied)
-                )}
-              </ch-popover>
-            )}
+          : [
+              <input
+                key="combobox"
+                role="combobox"
+                aria-controls="popover"
+                aria-disabled={this.disabled ? "true" : null}
+                aria-expanded={this.expanded.toString()}
+                aria-haspopup="true"
+                aria-label={
+                  this.accessibleName ?? this.#accessibleNameFromExternalLabel
+                }
+                class={{
+                  value: true,
+                  "value--filters": this.filterType !== "none"
+                }}
+                readOnly={this.filterType === "none"}
+                value={
+                  // eslint-disable-next-line no-nested-ternary
+                  this.filterType === "none"
+                    ? this.currentSelectedValue
+                      ? this.#valueToItemInfo.get(this.currentSelectedValue)
+                          ?.caption ?? this.placeholder
+                      : this.placeholder
+                    : this.filter
+                }
+                onClick={this.#handleExpandedChange}
+                onInput={this.#handleInputFilterChange}
+                ref={el => (this.#inputRef = el)}
+              ></input>,
+
+              // <div
+              //   key="mask"
+              //   // This mask is used to capture click events that must open the
+              //   // popover. If we capture click events in the Host, clicking external
+              //   // label would open the combo-box's window
+              //   aria-hidden="true"
+              //   class={{
+              //     mask: true,
+              //     "mask--filters": this.filterType !== "none"
+              //   }}
+
+              //   ref={el => (this.#maskRef = el)}
+              // ></div>,
+
+              this.#firstExpanded && (
+                <ch-popover
+                  key="popover"
+                  id="popover"
+                  role="listbox"
+                  aria-hidden="false"
+                  part="window"
+                  actionById
+                  actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
+                  blockAlign="outside-end"
+                  hidden={!this.expanded}
+                  popover="manual"
+                  onPopoverClosed={this.#handlePopoverClose}
+                >
+                  {this.items.map(
+                    this.#customItemRender(false, undefined, filtersAreApplied)
+                  )}
+                </ch-popover>
+              )
+            ]}
       </Host>
     );
   }

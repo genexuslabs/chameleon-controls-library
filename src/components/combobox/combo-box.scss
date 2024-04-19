@@ -1,5 +1,6 @@
 @import "../../common/_base";
 
+@include input-reset();
 @include button-reset(); // Should be placed before the box-sizing reset
 @include box-sizing();
 
@@ -58,7 +59,7 @@ select {
   overflow: hidden;
 }
 
-.mask,
+.value,
 select {
   position: absolute;
   inset-inline: var(--ch-combo-box-mask-inline-start)
@@ -70,7 +71,12 @@ select {
 }
 
 .value {
+  padding: inherit;
   grid-area: value;
+
+  &--filters {
+    cursor: text;
+  }
 }
 
 // - - - - - - - - - - - - - - - -

@@ -45,7 +45,7 @@ This control represents and item of the ch-segmented-control-render
 
 ### Used by
 
- - [ch-segmented-control-render](../renders/segmented-control)
+ - [ch-segmented-control-render](../..)
 
 ### Graph
 ```mermaid

@@ -108,12 +108,12 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 ### Used by
 
- - [ch-flexible-layout-render](../renders/flexible-layout)
+ - [ch-flexible-layout-render](../..)
 
 ### Depends on
 
-- [ch-list](../list)
-- [ch-layout-splitter](../layout-splitter)
+- [ch-list](../../../list)
+- [ch-layout-splitter](../../../layout-splitter)
 
 ### Graph
 ```mermaid

@@ -168,11 +168,11 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-tree-view-render](../../renders/tree-view)
+ - [ch-tree-view-render](../..)
 
 ### Depends on
 
-- [ch-checkbox](../../checkbox)
+- [ch-checkbox](../../../checkbox)
 
 ### Graph
 ```mermaid

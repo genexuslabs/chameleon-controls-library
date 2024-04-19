@@ -103,11 +103,11 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-flexible-layout](../../test/test-flexible-layout)
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
 
-- [ch-flexible-layout](../../flexible-layout)
+- [ch-flexible-layout](./internal/flexible-layout)
 
 ### Graph
 ```mermaid

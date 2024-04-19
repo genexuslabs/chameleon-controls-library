@@ -30,7 +30,7 @@ Segmented control is used to pick one choice from a linear set of closely relate
 
 ### Depends on
 
-- [ch-segmented-control-item](../../segmented-control-item)
+- [ch-segmented-control-item](./internal/segmented-control-item)
 
 ### Graph
 ```mermaid

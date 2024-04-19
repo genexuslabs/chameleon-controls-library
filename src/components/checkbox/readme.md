@@ -54,7 +54,7 @@
 
 ### Used by
 
- - [ch-tree-view-item](../tree-view/tree-view-item)
+ - [ch-tree-view-item](../tree-view/internal/tree-view-item)
 
 ### Graph
 ```mermaid

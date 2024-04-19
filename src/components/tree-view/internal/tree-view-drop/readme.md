@@ -19,7 +19,7 @@
 
 ### Used by
 
- - [ch-tree-view-render](../../renders/tree-view)
+ - [ch-tree-view-render](../..)
 
 ### Graph
 ```mermaid

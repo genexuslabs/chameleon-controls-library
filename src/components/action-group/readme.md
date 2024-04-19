@@ -32,9 +32,9 @@
 
 ### Depends on
 
-- [ch-dropdown](../dropdown)
-- [ch-action-group](action-group)
-- [ch-action-group-item](action-group-item)
+- [ch-dropdown](../dropdown/internal/dropdown)
+- [ch-action-group](./internal/action-group)
+- [ch-action-group-item](./internal/action-group-item)
 
 ### Graph
 ```mermaid

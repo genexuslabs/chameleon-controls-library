@@ -116,13 +116,13 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-action-group](../action-group/action-group)
- - [ch-action-group-render](../renders/action-group)
- - [ch-dropdown-render](../renders/dropdown)
+ - [ch-action-group](../../../action-group/internal/action-group)
+ - [ch-action-group-render](../../../action-group)
+ - [ch-dropdown-render](../..)
 
 ### Depends on
 
-- [ch-popover](../popover)
+- [ch-popover](../../../popover)
 
 ### Graph
 ```mermaid

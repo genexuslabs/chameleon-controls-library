@@ -25,7 +25,7 @@
 
 ### Depends on
 
-- [ch-dropdown](../../dropdown)
+- [ch-dropdown](./internal/dropdown)
 
 ### Graph
 ```mermaid

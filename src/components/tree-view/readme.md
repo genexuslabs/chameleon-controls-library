@@ -250,13 +250,13 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-test-flexible-layout](../../test/test-flexible-layout)
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
 
-- [ch-tree-view](../../tree-view/tree-view)
-- [ch-tree-view-drop](../../tree-view/tree-view-drop)
-- [ch-tree-view-item](../../tree-view/tree-view-item)
+- [ch-tree-view](./internal/tree-view)
+- [ch-tree-view-drop](./internal/tree-view-drop)
+- [ch-tree-view-item](./internal/tree-view-item)
 
 ### Graph
 ```mermaid

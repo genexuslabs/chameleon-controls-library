@@ -8,18 +8,27 @@ import {
   Prop,
   State,
   Watch,
+  forceUpdate,
   h
 } from "@stencil/core";
 import {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
-import { ComboBoxItem, ComboBoxItemGroup, ComboBoxItemLeaf } from "./types";
+import {
+  ComboBoxFilterOptions,
+  ComboBoxFilterType,
+  ComboBoxItemModel,
+  ComboBoxItemGroup,
+  ComboBoxItemLeaf,
+  ComboBoxFilterInfo
+} from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
 import { focusComposedPath } from "../common/helpers";
+import { computeFilter } from "./helpers";
 
 const SELECTED_PART = "selected";
 const DISABLED_PART = "disabled";
@@ -37,6 +46,13 @@ let autoId = 0;
 
 const negateBorderValue = (borderSize: string) =>
   borderSize === "0px" ? "0px" : `-${borderSize}`;
+
+// There are a filter applied and, if the type is "caption" or
+// "value", the filter property must be set
+const comboBoxHasFilters = (filterType: ComboBoxFilterType, filter: string) =>
+  filterType !== "none" &&
+  ((filterType !== "caption" && filterType !== "value") ||
+    (filter != null && filter.trim() !== ""));
 
 // Keys
 type KeyDownEvents =
@@ -83,7 +99,7 @@ const findSelectedIndex = (
 };
 
 const findNextSelectedIndex = (
-  items: ComboBoxItem[],
+  items: ComboBoxItemModel[],
   currentIndex: SelectedIndex,
   increment: 1 | -1
 ): SelectedIndex => {
@@ -155,6 +171,8 @@ const findNextSelectedIndex = (
   };
 };
 
+type ImmediateFilter = "immediate" | "debounced" | undefined;
+
 /**
  * @part ... - ...
  */
@@ -181,6 +199,18 @@ export class ChComboBox
 
   #valueToItemInfo: Map<string, { caption: string; index: SelectedIndex }> =
     new Map();
+
+  // Filters info
+  #applyFilters = false;
+  #immediateFilter: ImmediateFilter;
+  #filterTimeout: NodeJS.Timeout;
+  #filterListAsSet: Set<string>;
+
+  /**
+   * Collection of displayed values. If a filter is applied and the value
+   * belongs to this Set, the item is displayed.
+   */
+  #displayedValues: Set<string> | undefined; // Don't allocate memory until needed
 
   /**
    * When the control is used in a desktop environment, we need to manually
@@ -332,11 +362,81 @@ export class ChComboBox
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * This property lets you determine the expression that will be applied to the
+   * filter.
+   * Only works if `filterType = "caption" | "value"`.
+   */
+  @Prop() readonly filter: string;
+  @Watch("filter")
+  filterChanged() {
+    if (this.filterType === "caption" || this.filterType === "value") {
+      this.#scheduleFilterProcessing();
+    }
+  }
+
+  /**
+   * This property lets you determine the debounce time (in ms) that the
+   * control waits until it processes the changes to the filter property.
+   * Consecutive changes to the `filter` property between this range, reset the
+   * timeout to process the filter.
+   * Only works if `filterType = "caption" | "value"`.
+   */
+  @Prop() readonly filterDebounce: number = 250;
+  @Watch("filterDebounce")
+  filterDebounceChanged() {
+    if (this.filterType === "caption" || this.filterType === "value") {
+      this.#scheduleFilterProcessing();
+    }
+  }
+
+  /**
+   * This property lets you determine the list of items that will be filtered.
+   * Only works if `filterType = "list"`.
+   */
+  @Prop() readonly filterList: string[] = [];
+  @Watch("filterList")
+  filterListChanged() {
+    // Use a Set to efficiently check for ids
+    this.#filterListAsSet = new Set(this.filterList);
+
+    if (this.filterType === "list") {
+      this.#scheduleFilterProcessing();
+    }
+  }
+
+  /**
+   * This property lets you determine the options that will be applied to the
+   * filter.
+   */
+  @Prop() readonly filterOptions: ComboBoxFilterOptions = {};
+  @Watch("filterOptions")
+  filterOptionsChanged() {
+    this.#scheduleFilterProcessing();
+  }
+
+  /**
+   * This attribute lets you define what kind of filter is applied to items.
+   * Only items that satisfy the filter predicate will be displayed.
+   *
+   * | Value     | Details                                                                                        |
+   * | --------- | ---------------------------------------------------------------------------------------------- |
+   * | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
+   * | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  |
+   * | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. |
+   * | `none`    | Show all items.                                                                                |
+   */
+  @Prop() readonly filterType: ComboBoxFilterType = "none";
+  @Watch("filterType")
+  filterTypeChanged() {
+    this.#scheduleFilterProcessing();
+  }
+
+  /**
    * Specifies the items of the control
    */
-  @Prop() readonly items: ComboBoxItem[] = [];
+  @Prop() readonly items: ComboBoxItemModel[] = [];
   @Watch("items")
-  itemsChange(newItems: ComboBoxItem[]) {
+  itemsChange(newItems: ComboBoxItemModel[]) {
     this.#mapValuesToItemInfo(newItems);
   }
 
@@ -380,7 +480,89 @@ export class ChComboBox
    */
   @Event() input: EventEmitter<string>;
 
-  #mapValuesToItemInfo = (items: ComboBoxItem[]) => {
+  #scheduleFilterProcessing = (immediateFilter?: ImmediateFilter) => {
+    this.#applyFilters = true;
+
+    if (immediateFilter !== undefined) {
+      this.#immediateFilter ??= immediateFilter;
+    }
+  };
+
+  #updateFilters = () => {
+    if (this.filterType === "none") {
+      this.#displayedValues = undefined;
+      return;
+    }
+
+    // Remove queued filter processing
+    clearTimeout(this.#filterTimeout);
+
+    const processWithDebounce =
+      this.filterDebounce > 0 &&
+      (this.filterType === "caption" || this.filterType === "value");
+
+    this.#displayedValues ??= new Set();
+
+    const filterFunction = () => {
+      this.#displayedValues.clear();
+
+      for (let index = 0; index < this.items.length; index++) {
+        const item = this.items[index];
+
+        this.#filterSubModel(item, {
+          filter: this.filter,
+          filterOptions: this.filterOptions,
+          filterSet: this.#filterListAsSet
+        });
+      }
+    };
+
+    // Check if should filter with debounce
+    if (processWithDebounce && this.#immediateFilter !== "immediate") {
+      this.#filterTimeout = setTimeout(() => {
+        this.#immediateFilter = undefined;
+        filterFunction();
+        forceUpdate(this); // After the filter processing is completed, force a re-render
+      }, this.filterDebounce);
+    }
+    // No debounce
+    else {
+      this.#immediateFilter = undefined;
+      filterFunction();
+    }
+  };
+
+  #filterSubModel = (
+    item: ComboBoxItemModel,
+    filterInfo: ComboBoxFilterInfo
+  ): boolean => {
+    // Check if a subitem is rendered
+    let aSubItemIsRendered = false;
+    const itemSubGroup = (item as ComboBoxItemGroup).items;
+
+    if (itemSubGroup != null) {
+      for (let index = 0; index < itemSubGroup.length; index++) {
+        const itemLeaf = itemSubGroup[index];
+        const itemSatisfiesFilter = this.#filterSubModel(itemLeaf, filterInfo);
+
+        aSubItemIsRendered ||= itemSatisfiesFilter;
+      }
+    }
+
+    // The current item is rendered if it satisfies the filter condition or a
+    // subitem exists that needs to be rendered
+    const satisfiesFilter =
+      aSubItemIsRendered || computeFilter(this.filterType, item, filterInfo);
+
+    // Update selected and checkbox items
+    if (satisfiesFilter) {
+      this.#displayedValues.add(item.value);
+    }
+
+    return satisfiesFilter;
+  };
+
+  #mapValuesToItemInfo = (items: ComboBoxItemModel[]) => {
     this.#valueToItemInfo.clear();
 
     if (items == null) {
@@ -554,8 +736,16 @@ export class ChComboBox
   };
 
   #customItemRender =
-    (insideAGroup: boolean, disabled: boolean | undefined) =>
-    (item: ComboBoxItem, index: number) => {
+    (
+      insideAGroup: boolean,
+      disabled: boolean | undefined,
+      filtersAreApplied: boolean
+    ) =>
+    (item: ComboBoxItemModel, index: number) => {
+      if (filtersAreApplied && !this.#displayedValues.has(item.value)) {
+        return;
+      }
+
       const hasStartImg = !!item.startImgSrc;
       const hasEndImg = !!item.endImgSrc;
       const hasImages = hasStartImg || hasEndImg;
@@ -577,7 +767,7 @@ export class ChComboBox
           </span>
 
           {(item as ComboBoxItemGroup).items.map(
-            this.#customItemRender(true, isDisabled)
+            this.#customItemRender(true, isDisabled, filtersAreApplied)
           )}
         </div>
       ) : (
@@ -619,7 +809,7 @@ export class ChComboBox
       );
     };
 
-  #nativeItemRender = (item: ComboBoxItem) =>
+  #nativeItemRender = (item: ComboBoxItemModel) =>
     (item as ComboBoxItemGroup).items != null ? (
       <optgroup label={item.caption}>
         {(item as ComboBoxItemGroup).items.map(this.#nativeItemRender)}
@@ -662,6 +852,21 @@ export class ChComboBox
     this.#mapValuesToItemInfo(this.items);
   }
 
+  componentWillRender() {
+    if (!this.#applyFilters) {
+      return;
+    }
+
+    // If the filters must be applied, we must let the filters decided which
+    // are the selected and checked items
+    if (this.#applyFilters) {
+      this.#updateFilters();
+      this.#applyFilters = false;
+    }
+
+    // this.#validateCheckedAndSelectedItems();
+  }
+
   componentDidLoad() {
     this.#setResizeObserver();
   }
@@ -696,6 +901,8 @@ export class ChComboBox
   }
 
   render() {
+    const filtersAreApplied = comboBoxHasFilters(this.filterType, this.filter);
+
     return (
       <Host
         role={!mobileDevice ? "combobox" : null}
@@ -749,7 +956,9 @@ export class ChComboBox
                 popover="auto"
                 onPopoverClosed={this.#handlePopoverClose}
               >
-                {this.items.map(this.#customItemRender(false, undefined))}
+                {this.items.map(
+                  this.#customItemRender(false, undefined, filtersAreApplied)
+                )}
               </ch-popover>
             )}
       </Host>

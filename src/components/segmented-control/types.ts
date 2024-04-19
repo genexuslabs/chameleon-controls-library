@@ -1,4 +1,4 @@
-import { ImageRender } from "../../../common/types";
+import { ImageRender } from "../../common/types";
 
 export type SegmentedControlItem = {
   accessibleName?: string;

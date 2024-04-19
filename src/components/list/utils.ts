@@ -2,7 +2,7 @@ import {
   FlexibleLayoutLeafTabDirection,
   FlexibleLayoutLeafTabPosition,
   FlexibleLayoutWidget
-} from "../flexible-layout/types";
+} from "../flexible-layout/internal/flexible-layout/types";
 
 // Classes and parts
 export const BUTTON_CLASS = "button";

@@ -1,24 +1,27 @@
-export type DropdownAlign =
-  | "OutsideStart"
-  | "InsideStart"
-  | "Center"
-  | "InsideEnd"
-  | "OutsideEnd";
+import { ImageRender } from "../../common/types";
+import { DropdownPosition } from "./internal/dropdown/types";
 
-export type DropdownPosition =
-  | "OutsideStart_OutsideStart"
-  | "InsideStart_OutsideStart"
-  | "Center_OutsideStart"
-  | "InsideEnd_OutsideStart"
-  | "OutsideEnd_OutsideStart"
-  | "OutsideStart_InsideStart"
-  | "OutsideEnd_InsideStart"
-  | "OutsideStart_Center"
-  | "OutsideEnd_Center"
-  | "OutsideStart_InsideEnd"
-  | "OutsideEnd_InsideEnd"
-  | "OutsideStart_OutsideEnd"
-  | "InsideStart_OutsideEnd"
-  | "Center_OutsideEnd"
-  | "InsideEnd_OutsideEnd"
-  | "OutsideEnd_OutsideEnd";
+export type DropdownItemModel = {
+  id?: string;
+  caption: string;
+  class?: string;
+  endImgSrc?: string;
+  endImgType?: Exclude<ImageRender, "img">;
+  items?: DropdownItemModel[];
+  itemsPosition?: DropdownPosition;
+  link?: Link;
+  separatorClass?: string;
+  shortcut?: string;
+  startImgSrc?: string;
+  startImgType?: Exclude<ImageRender, "img">;
+  showSeparator?: boolean;
+
+  /**
+   * Only used for performance reasons. It is not used as public property
+   */
+  wasExpanded?: boolean;
+};
+
+type Link = {
+  url: string;
+};

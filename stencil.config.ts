@@ -36,8 +36,7 @@ export const config: Config = {
 
     {
       components: [
-        "ch-dropdown",
-        "ch-dropdown-item-separator"
+        "ch-dropdown"
         // "ch-dropdown-render" TODO: Consider adding the ch-dropdown-render, even if the action-group uses it
       ]
     },

@@ -5,13 +5,13 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
-import { DropdownPosition } from "./components/dropdown/types";
-import { ActionGroupItemModel } from "./components/renders/action-group/types";
+import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
+import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
+import { ActionGroupItemModel } from "./components/action-group/types";
 import { ComboBoxItem } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
-import { DropdownItemModel } from "./components/renders/dropdown/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+import { DropdownItemModel } from "./components/dropdown/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -29,29 +29,29 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
-import { RadioItem } from "./components/renders/radio-group/types";
-import { SegmentedControlItem } from "./components/renders/segmented-control/types";
+import { RadioItem } from "./components/radio-group/types";
+import { SegmentedControlItem } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 import { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
-import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
-import { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
-import { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
+import { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
+import { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
+import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
-export { ItemsOverflowBehavior } from "./components/action-group/action-group/types";
-export { DropdownPosition } from "./components/dropdown/types";
-export { ActionGroupItemModel } from "./components/renders/action-group/types";
+export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
+export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
+export { ActionGroupItemModel } from "./components/action-group/types";
 export { ComboBoxItem } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
-export { DropdownItemModel } from "./components/renders/dropdown/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/types";
+export { DropdownItemModel } from "./components/dropdown/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
@@ -69,18 +69,18 @@ export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
-export { RadioItem } from "./components/renders/radio-group/types";
-export { SegmentedControlItem } from "./components/renders/segmented-control/types";
+export { RadioItem } from "./components/radio-group/types";
+export { SegmentedControlItem } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 export { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
-export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/tree-view/types";
-export { DragState } from "./components/tree-view/tree-view-item/tree-view-item";
-export { DragState as DragState1 } from "./components/tree-view/tree-view-item/tree-view-item";
-export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/renders/tree-view/types";
+export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
+export { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
+export { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
+export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 export { ChWindowAlign } from "./deprecated-components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -457,8 +457,6 @@ export namespace Components {
           * Specifies how the start image will be rendered.
          */
         "startImgType": ImageRender;
-    }
-    interface ChDropdownItemSeparator {
     }
     interface ChDropdownRender {
         /**
@@ -2832,12 +2830,6 @@ declare global {
         prototype: HTMLChDropdownElement;
         new (): HTMLChDropdownElement;
     };
-    interface HTMLChDropdownItemSeparatorElement extends Components.ChDropdownItemSeparator, HTMLStencilElement {
-    }
-    var HTMLChDropdownItemSeparatorElement: {
-        prototype: HTMLChDropdownItemSeparatorElement;
-        new (): HTMLChDropdownItemSeparatorElement;
-    };
     interface HTMLChDropdownRenderElement extends Components.ChDropdownRender, HTMLStencilElement {
     }
     var HTMLChDropdownRenderElement: {
@@ -3884,7 +3876,6 @@ declare global {
         "ch-combo-box": HTMLChComboBoxElement;
         "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
-        "ch-dropdown-item-separator": HTMLChDropdownItemSeparatorElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
         "ch-flexible-layout": HTMLChFlexibleLayoutElement;
         "ch-flexible-layout-render": HTMLChFlexibleLayoutRenderElement;
@@ -4357,8 +4348,6 @@ declare namespace LocalJSX {
           * Specifies how the start image will be rendered.
          */
         "startImgType"?: ImageRender;
-    }
-    interface ChDropdownItemSeparator {
     }
     interface ChDropdownRender {
         /**
@@ -6461,7 +6450,6 @@ declare namespace LocalJSX {
         "ch-combo-box": ChComboBox;
         "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
-        "ch-dropdown-item-separator": ChDropdownItemSeparator;
         "ch-dropdown-render": ChDropdownRender;
         "ch-flexible-layout": ChFlexibleLayout;
         "ch-flexible-layout-render": ChFlexibleLayoutRender;
@@ -6556,7 +6544,6 @@ declare module "@stencil/core" {
              */
             "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
-            "ch-dropdown-item-separator": LocalJSX.ChDropdownItemSeparator & JSXBase.HTMLAttributes<HTMLChDropdownItemSeparatorElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;
             "ch-flexible-layout-render": LocalJSX.ChFlexibleLayoutRender & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutRenderElement>;

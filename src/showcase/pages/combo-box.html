@@ -18,6 +18,25 @@
         gap: var(--spacing-un-spacing--l);
       }
 
+      fieldset {
+        display: grid;
+        grid-auto-flow: row;
+        grid-auto-rows: max-content;
+        gap: 8px;
+        border: unset;
+        padding: unset;
+      }
+
+      fieldset > div {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .card-properties > fieldset > legend {
+        margin-block-end: var(--spacing-un-spacing--m);
+      }
+
       ch-combo-box {
         border: 8px solid;
         padding: 8px;
@@ -140,7 +159,44 @@
     </div>
 
     <div class="card">
-      <div></div>
+      <div>
+        <fieldset>
+          <legend class="form-input__label">Filters</legend>
+
+          <label class="form-input__label">
+            Filter type
+            <select class="form-input" name="filter-type" id="filter-type">
+              <option value="caption">Caption</option>
+              <option value="value">Value</option>
+              <option value="id-list">List of ids</option>
+              <option value="none" selected>None</option>
+            </select>
+          </label>
+
+          <label class="form-input__label">
+            Filter
+            <input class="form-input" id="filter" value="" />
+          </label>
+
+          <div>
+            <ch-checkbox
+              id="camel-case"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Apply camel casing"
+            ></ch-checkbox>
+
+            <ch-checkbox
+              id="hide-matches"
+              checked-value="true"
+              un-checked-value="false"
+              value="false"
+              caption="Hide matches and show non-matches"
+            ></ch-checkbox>
+          </div>
+        </fieldset>
+      </div>
     </div>
 
     <script>
@@ -164,67 +220,97 @@
       });
 
       const comboBox1Items = [
-        { value: "Value 1", caption: "Etiqueta para el valor 1" },
+        { value: "Value 1", caption: "Label for the value 1" },
         {
           value: "Value 2",
-          caption: "Etiqueta para el valor 2",
+          caption: "Label for the value 2",
           items: [
-            { value: "Value 2.1", caption: "Etiqueta para el valor 2.1" },
-            { value: "Value 2.2", caption: "Etiqueta para el valor 2.2" }
+            { value: "Value 2.1", caption: "Label for the value 2.1" },
+            { value: "Value 2.2", caption: "Label for the value 2.2" }
           ]
         },
         {
           value: "Value 3",
-          caption: "Etiqueta para el valor 3",
+          caption: "Label for the value 3",
           disabled: true
         },
-        { value: "Value 4", caption: "Etiqueta para el valor 4" },
+        { value: "Value 4", caption: "Label for the value 4" },
         {
           value: "Value 5",
-          caption: "Etiqueta para el valor 5",
+          caption: "Label for the value 5",
           disabled: true,
           items: [
-            { value: "Value 5.1", caption: "Etiqueta para el valor 5.1" },
-            { value: "Value 5.2", caption: "Etiqueta para el valor 5.2" },
+            { value: "Value 5.1", caption: "Label for the value 5.1" },
+            { value: "Value 5.2", caption: "Label for the value 5.2" },
             {
               value: "Value 5.3",
-              caption: "Etiqueta para el valor 5.3",
+              caption: "Label for the value 5.3",
               disabled: false
             },
-            { value: "Value 5.4", caption: "Etiqueta para el valor 5.4" }
+            { value: "Value 5.4", caption: "Label for the value 5.4" }
           ]
         },
         {
           value: "Value 6",
-          caption: "Etiqueta para el valor 6",
+          caption: "Label for the value 6",
           items: [
             {
               value: "Value 6.1",
-              caption: "Etiqueta para el valor 6.1",
+              caption: "Label for the value 6.1",
               disabled: true
             },
             {
               value: "Value 6.2",
-              caption: "Etiqueta para el valor 6.2",
+              caption: "Label for the value 6.2",
               disabled: true
             },
             {
               value: "Value 6.3",
-              caption: "Etiqueta para el valor 6.3",
+              caption: "Label for the value 6.3",
               disabled: false
             },
-            { value: "Value 6.4", caption: "Etiqueta para el valor 6.4" }
+            { value: "Value 6.4", caption: "Label for the value 6.4" }
           ]
         },
         {
           value: "Value 7",
-          caption: "Etiqueta para el valor 7",
+          caption: "Label for the value 7",
           disabled: true
         },
-        { value: "Value 8", caption: "Etiqueta para el valor 8" }
+        { value: "Value 8", caption: "Label for the value 8" }
       ];
 
       comboBox1.items = comboBox1Items;
+
+      const filterTypeSelect = document.getElementById("filter-type");
+      filterTypeSelect.addEventListener("input", event => {
+        const selectedFilterType = event.target.value;
+        comboBox1.filterType = selectedFilterType;
+      });
+
+      const filterInput = document.getElementById("filter");
+      filterInput.addEventListener("input", event => {
+        const filter = event.target.value;
+        comboBox1.filter = filter;
+      });
+
+      const camelCaseCheckbox = document.getElementById("camel-case");
+      camelCaseCheckbox.addEventListener("input", event => {
+        const checked = event.target.value === "true";
+
+        const newOptions = { ...comboBox1.filterOptions };
+        newOptions.matchCase = checked;
+        comboBox1.filterOptions = newOptions;
+      });
+
+      const hideMatchesCheckbox = document.getElementById("hide-matches");
+      hideMatchesCheckbox.addEventListener("input", event => {
+        const checked = event.target.value === "true";
+
+        const newOptions = { ...comboBox1.filterOptions };
+        newOptions.hideMatchesAndShowNonMatches = checked;
+        comboBox1.filterOptions = newOptions;
+      });
 
       class PopupInfo extends HTMLElement {
         static formAssociated = true;

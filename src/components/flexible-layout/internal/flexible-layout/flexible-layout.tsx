@@ -28,15 +28,15 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { ListItemCloseInfo, ListSelectedItemInfo } from "../list/types";
-import { ChListCustomEvent } from "../../components";
+import { ListItemCloseInfo, ListSelectedItemInfo } from "../../../list/types";
+import { ChListCustomEvent } from "../../../../components";
 import {
   getWidgetDropInfo,
   handleWidgetDrag,
   removeDroppableAreaStyles
 } from "./utils";
-import { getLeafInfo } from "../renders/flexible-layout/utils";
-import { isRTL } from "../../common/utils";
+import { getLeafInfo } from "../../utils";
+import { isRTL } from "../../../../common/utils";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 

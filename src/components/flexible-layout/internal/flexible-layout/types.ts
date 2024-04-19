@@ -1,11 +1,11 @@
-import { AccessibleRole, ImageRender } from "../../common/types";
+import { AccessibleRole, ImageRender } from "../../../../common/types";
 import {
   LayoutSplitterDistribution,
   LayoutSplitterDistributionGroup,
   LayoutSplitterDistributionLeaf,
   LayoutSplitterItemRemoveResult
-} from "../layout-splitter/types";
-import { ListType } from "../list/types";
+} from "../../../layout-splitter/types";
+import { ListType } from "../../../list/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model

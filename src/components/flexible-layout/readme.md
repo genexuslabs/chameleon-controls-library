@@ -1,33 +1,25 @@
-# ch-flexible-layout
+# ch-flexible-layout-render
 
-
+The `ch-flexible-layout-render` control is a shell composed of lightweight modular widgets that provide a solid foundation for draggable dock layouts.
 
 <!-- Auto Generated Below -->
 
 
 ## Properties
 
-| Property              | Attribute               | Description                                                     | Type                                                                                  | Default     |
-| --------------------- | ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------- |
-| `itemsInfo`           | --                      | Specifies the information of each view displayed.               | `Map<string, FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>>` | `undefined` |
-| `layout`              | --                      | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }`        | `undefined` |
-| `layoutSplitterParts` | `layout-splitter-parts` | Specifies additional parts to export.                           | `string`                                                                              | `undefined` |
-
-
-## Events
-
-| Event                    | Description                                             | Type                                                                                                           |
-| ------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `selectedViewItemChange` | Fired when the selected item change.                    | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; viewId: string; }>` |
-| `viewItemClose`          | Fired when a item of a view request to be closed.       | `CustomEvent<{ itemId: string; itemIndex: number; viewId: string; }>`                                          |
-| `viewItemReorder`        | Fired when a widget is dragged and dropped into a view. | `CustomEvent<WidgetDragInfo & WidgetDropInfo>`                                                                 |
+| Property   | Attribute   | Description                                                     | Type                                                                           | Default             |
+| ---------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------- |
+| `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                                       | `"flexible-layout"` |
+| `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }` | `undefined`         |
+| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`                | `undefined`         |
 
 
 ## Methods
 
 ### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
 
-
+Add a view with widgets to render. The view will take the half space of
+the sibling view that its added with.
 
 #### Parameters
 
@@ -45,15 +37,22 @@ Type: `Promise<boolean>`
 
 
 
-### `refreshLeaf(leafId: string) => Promise<void>`
+### `addWidget(leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>`
 
-Schedules a new render for a leaf even if no state changed.
+Add a widget in a `"tabbed"` type leaf.
+Only works if the parent leaf is `"tabbed"` type.
+If a widget with the same ID already exists, this method has not effect.
+
+To add a widget in a `"single-content"` type leaf, use the
+`addSiblingView` method.
 
 #### Parameters
 
-| Name     | Type     | Description |
-| -------- | -------- | ----------- |
-| `leafId` | `string` |             |
+| Name           | Type                                                                                                                                                                                           | Description |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `leafId`       | `string`                                                                                                                                                                                       |             |
+| `widget`       | `{ addWrapper?: boolean; conserveRenderState?: boolean; id: string; name: string; startImageSrc?: string; startImageType?: ImageRender; wasRendered?: boolean; } & FlexibleLayoutWidgetRender` |             |
+| `selectWidget` | `boolean`                                                                                                                                                                                      |             |
 
 #### Returns
 
@@ -61,34 +60,17 @@ Type: `Promise<void>`
 
 
 
-### `removeItemPageInView(viewId: string, itemId: string, forceRerender?: boolean) => Promise<void>`
+### `removeView(leafId: string, removeRenderedWidgets: boolean) => Promise<FlexibleLayoutViewRemoveResult>`
 
-Given the view ID and the item id, remove the page of the item from the view.
-
-#### Parameters
-
-| Name            | Type      | Description |
-| --------------- | --------- | ----------- |
-| `viewId`        | `string`  |             |
-| `itemId`        | `string`  |             |
-| `forceRerender` | `boolean` |             |
-
-#### Returns
-
-Type: `Promise<void>`
-
-
-
-### `removeView(itemId: string) => Promise<FlexibleLayoutViewRemoveResult>`
-
-Removes the view that is identified by the given ID.
-The layout is rearranged depending on the state of the removed view.
+Removes a view and optionally all its rendered widget from the render.
+The reserved space will be given to the closest view.
 
 #### Parameters
 
-| Name     | Type     | Description |
-| -------- | -------- | ----------- |
-| `itemId` | `string` |             |
+| Name                    | Type      | Description |
+| ----------------------- | --------- | ----------- |
+| `leafId`                | `string`  |             |
+| `removeRenderedWidgets` | `boolean` |             |
 
 #### Returns
 
@@ -96,32 +78,45 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 
 
+### `removeWidget(widgetId: string) => Promise<void>`
 
-## Shadow Parts
+Remove a widget from a `"tabbed"` type leaf.
+Only works if the parent leaf is `"tabbed"` type.
 
-| Part               | Description |
-| ------------------ | ----------- |
-| `"droppable-area"` |             |
+To remove a widget from a `"single-content"` type leaf, use the
+`removeView` method.
+
+#### Parameters
+
+| Name       | Type     | Description |
+| ---------- | -------- | ----------- |
+| `widgetId` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ## Dependencies
 
 ### Used by
 
- - [ch-flexible-layout-render](../renders/flexible-layout)
+ - [ch-test-flexible-layout](../../test/test-flexible-layout)
 
 ### Depends on
 
-- [ch-list](../list)
-- [ch-layout-splitter](../layout-splitter)
+- [ch-flexible-layout](../../flexible-layout)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
-  ch-flexible-layout-render --> ch-flexible-layout
-  style ch-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px
+  ch-test-flexible-layout --> ch-flexible-layout-render
+  style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

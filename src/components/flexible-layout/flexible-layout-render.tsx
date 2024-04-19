@@ -15,9 +15,9 @@ import {
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended
-} from "../../flexible-layout/types";
-import { ChFlexibleLayoutCustomEvent } from "../../../components";
-import { removeElement } from "../../../common/array";
+} from "./internal/flexible-layout/types";
+import { ChFlexibleLayoutCustomEvent } from "../../components";
+import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 
 // Aliases

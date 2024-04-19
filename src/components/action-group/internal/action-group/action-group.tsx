@@ -9,13 +9,13 @@ import {
   EventEmitter,
   Watch
 } from "@stencil/core";
-import { DropdownPosition } from "../../dropdown/types";
+import { DropdownPosition } from "../../../dropdown/types";
 import { ItemsOverflowBehavior } from "./types";
-import { ChDropdownCustomEvent } from "../../../components";
+import { ChDropdownCustomEvent } from "../../../../components";
 import {
   ACTION_GROUP_PARTS_DICTIONARY,
   DROPDOWN_PARTS_DICTIONARY
-} from "../../../common/reserverd-names";
+} from "../../../../common/reserverd-names";
 
 const FLOATING_POINT_ERROR = 1;
 

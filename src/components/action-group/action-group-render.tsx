@@ -1,13 +1,13 @@
 import { Component, forceUpdate, h, Prop, State } from "@stencil/core";
 import { ActionGroupItemModel } from "./types";
-import { DropdownPosition } from "../../dropdown/types";
-import { ChActionGroupCustomEvent } from "../../../components";
-import { ItemsOverflowBehavior } from "../../action-group/action-group/types";
+import { DropdownPosition } from "../dropdown/types";
+import { ChActionGroupCustomEvent } from "../../components";
+import { ItemsOverflowBehavior } from "./internal/action-group/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import {
   ACTION_GROUP_EXPORT_PARTS,
   DROPDOWN_EXPORT_PARTS
-} from "../../../common/reserverd-names";
+} from "../../common/reserverd-names";
 
 const DEFAULT_ACTION_CLASS = "action-group-item";
 const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";

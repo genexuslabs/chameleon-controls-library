@@ -28,13 +28,13 @@
 
 ### Used by
 
- - [ch-test-flexible-layout](../../test/test-flexible-layout)
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
 
-- [ch-dropdown](../../dropdown)
-- [ch-action-group](../../action-group/action-group)
-- [ch-action-group-item](../../action-group/action-group-item)
+- [ch-dropdown](../dropdown)
+- [ch-action-group](action-group)
+- [ch-action-group-item](action-group-item)
 
 ### Graph
 ```mermaid

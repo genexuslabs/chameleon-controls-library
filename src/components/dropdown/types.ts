@@ -1,5 +1,5 @@
 import { ImageRender } from "../../common/types";
-import { DropdownPosition } from "./internal/types";
+import { DropdownPosition } from "./internal/dropdown/types";
 
 export type DropdownItemModel = {
   id?: string;

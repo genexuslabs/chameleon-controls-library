@@ -10,15 +10,15 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { Component as ChComponent } from "../../../common/interfaces";
+import { Component as ChComponent } from "../../../../common/interfaces";
 
 import { DropdownAlign, DropdownPosition } from "./types";
-import { ChPopoverAlign } from "../../popover/types";
-import { focusComposedPath } from "../../common/helpers";
-import { ChDropdownCustomEvent } from "../../../components";
-import { isPseudoElementImg } from "../../../common/utils";
-import { ImageRender } from "../../../common/types";
-import { DROPDOWN_PARTS_DICTIONARY } from "../../../common/reserverd-names";
+import { ChPopoverAlign } from "../../../popover/types";
+import { focusComposedPath } from "../../../common/helpers";
+import { ChDropdownCustomEvent } from "../../../../components";
+import { isPseudoElementImg } from "../../../../common/utils";
+import { ImageRender } from "../../../../common/types";
+import { DROPDOWN_PARTS_DICTIONARY } from "../../../../common/reserverd-names";
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChPopoverAlign;

@@ -1,6 +1,6 @@
 import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
-import { DropdownPosition } from "./internal/types";
+import { DropdownPosition } from "./internal/dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
 import { DROPDOWN_EXPORT_PARTS } from "../../common/reserverd-names";

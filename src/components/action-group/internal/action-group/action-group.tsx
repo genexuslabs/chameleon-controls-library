@@ -9,7 +9,7 @@ import {
   EventEmitter,
   Watch
 } from "@stencil/core";
-import { DropdownPosition } from "../../../dropdown/types";
+import { DropdownPosition } from "../../../dropdown/internal/types";
 import { ItemsOverflowBehavior } from "./types";
 import { ChDropdownCustomEvent } from "../../../../components";
 import {

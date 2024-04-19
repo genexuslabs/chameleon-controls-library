@@ -1,9 +1,9 @@
 import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
 import { DropdownItemModel } from "./types";
-import { DropdownPosition } from "../../dropdown/types";
+import { DropdownPosition } from "./internal/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
-import { DROPDOWN_EXPORT_PARTS } from "../../../common/reserverd-names";
+import { DROPDOWN_EXPORT_PARTS } from "../../common/reserverd-names";
 
 @Component({
   tag: "ch-dropdown-render",

@@ -1,5 +1,5 @@
-import { DropdownPosition } from "../dropdown/types";
-import { DropdownItemModel } from "../renders/dropdown/types";
+import { DropdownPosition } from "../dropdown/internal/types";
+import { DropdownItemModel } from "../dropdown/types";
 
 type ReducedDropdownItemModel = Omit<DropdownItemModel, "items" | "class">;
 

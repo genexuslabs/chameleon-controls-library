@@ -1,5 +1,5 @@
 import { Component, Prop, h } from "@stencil/core";
-import { FlexibleLayout } from "../../flexible-layout/types";
+import { FlexibleLayout } from "../../flexible-layout/internal/flexible-layout/types";
 // import { defaultLayout, layout2, layoutRenders } from "./renders";
 import { layout3, layoutRenders } from "./renders";
 

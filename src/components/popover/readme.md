@@ -59,7 +59,7 @@ relative to an element, but placed on the top layer using `position: fixed`.
 ### Used by
 
  - [ch-combo-box](../combobox)
- - [ch-dropdown](../dropdown)
+ - [ch-dropdown](../dropdown/internal/dropdown)
 
 ### Graph
 ```mermaid

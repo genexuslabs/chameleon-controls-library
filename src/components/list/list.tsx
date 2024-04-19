@@ -15,7 +15,7 @@ import {
   DraggableView,
   DraggableViewInfo,
   FlexibleLayoutWidget
-} from "../flexible-layout/types";
+} from "../flexible-layout/internal/flexible-layout/types";
 import {
   inBetween,
   isPseudoElementImg,

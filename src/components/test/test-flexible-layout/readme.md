@@ -16,9 +16,9 @@
 
 ### Depends on
 
-- [ch-flexible-layout-render](../../renders/flexible-layout)
-- [ch-action-group-render](../../renders/action-group)
-- [ch-tree-view-render](../../renders/tree-view)
+- [ch-flexible-layout-render](../../flexible-layout)
+- [ch-action-group-render](../../action-group)
+- [ch-tree-view-render](../../tree-view)
 - [ch-grid](../../grid)
 - [ch-grid-columnset](../../grid/grid-columnset)
 - [ch-grid-column](../../grid/grid-column)

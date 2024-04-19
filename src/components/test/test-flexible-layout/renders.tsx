@@ -2,7 +2,7 @@ import { h } from "@stencil/core";
 import {
   FlexibleLayout,
   FlexibleLayoutRenders
-} from "../../flexible-layout/types";
+} from "../../flexible-layout/internal/flexible-layout/types";
 
 import {
   eagerLargeModel,
@@ -12,7 +12,7 @@ import {
   preferencesModel
 } from "../../../showcase/pages/assets/models/tree.js";
 import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
-import { TreeViewItemModel } from "../../renders/tree-view/types";
+import { TreeViewItemModel } from "../../tree-view/types";
 import {
   ChTreeViewRenderCustomEvent,
   TreeViewItemOpenReferenceInfo

@@ -1,0 +1,267 @@
+@import "../../../../common/base";
+
+@include box-sizing();
+
+:where(button) {
+  all: unset;
+  display: flex;
+
+  // Disallow selecting the text
+  user-select: none;
+
+  // Avoid zooming on double tap on iOS devices
+  touch-action: manipulation;
+
+  // Allow user drag
+  -webkit-user-drag: element;
+}
+
+:host {
+  display: grid;
+  grid-template-rows: min-content;
+  // overflow: hidden;
+}
+
+.header {
+  display: flex;
+  gap: var(--ch-tree-view-item-gap);
+  align-items: center;
+  min-block-size: calc(1em + 6px);
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//           Dashed Line
+// - - - - - - - - - - - - - - - -
+.dashed-line {
+  $parent-padding-inline-start: "var(--ch-tree-tab-size) * (var(--level) - 1) - var(--parent-offset, 0px) + var(--ch-tree-view-item-custom-padding-inline-start)";
+  $correction: "var(--ch-tree-view-item__expandable-button-size) * 0.5 + var(--ch-tree-view-item__dashed-line--inset-inline-start)";
+
+  --inset-inline-start: calc(#{$parent-padding-inline-start} + #{$correction});
+
+  position: absolute;
+  inset-inline-start: var(--inset-inline-start);
+  inline-size: calc(
+    var(--ch-tree-view-item-indentation) - var(--inset-inline-start) -
+      var(--ch-tree-view-item__dashed-line--inset-inline-end)
+  );
+  block-size: 1px;
+
+  border: 0 dashed color-mix(in srgb, currentColor 65%, transparent);
+  border-block-end-width: 1px;
+  pointer-events: none; // Improve hover effect
+  content-visibility: hidden;
+  z-index: 1;
+}
+
+// Last dashed line of the tree
+.last-all-line {
+  inset-block-start: 0;
+  height: calc(100% - var(--ch-tree-view-item-distance-to-checkbox));
+  border-inline-start-width: 1px;
+  border-end-start-radius: 2px;
+}
+
+.last-line {
+  inset-block-start: 0;
+  height: 100%;
+  border-inline-start-width: 1px;
+  border-style: solid;
+  border-block-end: unset;
+}
+
+// - - - - - - - - - - - - - - - -
+//        Expandable button
+// - - - - - - - - - - - - - - - -
+.expandable-button,
+.expandable-button-decorative::before {
+  display: grid;
+  place-items: center;
+  inline-size: var(--ch-tree-view-item__expandable-button-size);
+  block-size: var(--ch-tree-view-item__expandable-button-size);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.expandable-button {
+  &-decorative {
+    &::before {
+      content: "";
+      background-color: currentColor;
+      -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>')
+        50% 50% / calc(100% - 4px) calc(100% - 4px) no-repeat;
+
+      cursor: unset;
+    }
+
+    &--collapsed::before {
+      transform: rotate(-90deg); // TODO: Add RTL support
+    }
+  }
+
+  &::before {
+    content: "";
+    inline-size: calc(100% - 4px);
+    block-size: calc(100% - 4px);
+    background-color: currentColor;
+    -webkit-mask-size: calc(
+      var(--ch-tree-view-item__expandable-button-size) - 4px
+    );
+  }
+
+  &--collapsed::before {
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.15,8.5H8.54v5.61h-1V8.5H1.93v-1H7.54V1.89h1V7.5h5.61Z"/></svg>');
+  }
+
+  &--expanded::before {
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.15,8.5H1.93v-1H14.15Z"/></svg>');
+  }
+
+  &:focus-visible {
+    outline: 1px solid currentColor;
+  }
+}
+
+.checkbox {
+  // Necessary to avoid CLS when the ch-checkbox control is downloaded after
+  // the tree-view-item did render
+  inline-size: var(--ch-tree-view-item__checkbox-size);
+  --ch-checkbox__container-size: var(--ch-tree-view-item__checkbox-size);
+}
+
+// - - - - - - - - - - - - - - - -
+//             Action
+// - - - - - - - - - - - - - - - -
+.action {
+  display: grid;
+  grid-template: "start-img text" / max-content 1fr;
+  gap: var(--ch-tree-view-item-gap);
+  align-items: center;
+  block-size: 100%;
+  flex: 1;
+  cursor: pointer;
+
+  // This distinction is necessary to avoid displaying a separation at the end
+  // of the input when editing the caption
+  &--end-img {
+    grid-template: "start-img text end-img" / max-content 1fr max-content;
+  }
+}
+
+.readonly-mode {
+  padding-block: 0.75px;
+}
+
+.edit-name {
+  grid-area: text;
+  inline-size: 100%;
+  block-size: 100%;
+  padding: 0;
+  margin: 0;
+  background-color: unset;
+  border: unset;
+  color: unset;
+  font: unset;
+  outline: unset;
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+.pseudo-img--start::before,
+.pseudo-img--end::after,
+.img {
+  display: block;
+  inline-size: var(--ch-tree-view-item__image-size);
+  block-size: var(--ch-tree-view-item__image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-tree-view-item__image-size);
+}
+
+.pseudo-img--start::before,
+.start-img {
+  content: "";
+  grid-area: start-img;
+}
+
+.pseudo-img--end::after,
+.end-img {
+  content: "";
+  grid-area: end-img;
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center / 100% var(--ch-start-img);
+}
+.end-img-type--background::after {
+  background: no-repeat center / 100% var(--ch-end-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: var(--ch-start-img) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
+}
+.end-img-type--mask::after {
+  -webkit-mask: var(--ch-end-img) 50% 50% / 100% 100% no-repeat;
+  background-color: currentColor;
+}
+
+// - - - - - - - - - - - - - - - -
+//           Downloading
+// - - - - - - - - - - - - - - - -
+.downloading {
+  $delay-to-show-downloading: 75ms;
+
+  inline-size: 0.75em;
+  block-size: 0.75em;
+  // The "2px" separation is necessary to avoid issues with the horizontal scrollbar in Firefox
+  margin-inline: 8px 2px;
+  border: 2px solid currentColor;
+  border-inline-start-color: transparent;
+  border-radius: 50%;
+  opacity: 0.75;
+  animation: spin 1s linear infinite,
+    avoid-flickering $delay-to-show-downloading;
+}
+
+@keyframes avoid-flickering {
+  0%,
+  100% {
+    display: none;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//       Expandable content
+// - - - - - - - - - - - - - - - -
+.expandable {
+  display: grid;
+  grid-auto-rows: min-content;
+  position: relative;
+
+  &--lazy-loaded {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
+  }
+}
+
+.expandable--collapsed {
+  display: none;
+  overflow: hidden;
+}

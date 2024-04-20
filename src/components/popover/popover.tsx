@@ -314,6 +314,14 @@ export class ChPopover {
   }
 
   /**
+   * This property only applies for `"manual"` mode. In native popovers, when
+   * using `"manual"` mode the popover doesn't close when clicking outside the
+   * control. This property allows to close the popover when clicking outside
+   * in `"manual"` mode.
+   */
+  @Prop() readonly closeOnClickOutside: boolean = false;
+
+  /**
    * `true` if the control is not stacked with another top layer.
    */
   @Prop() readonly firstLayer: boolean = true;
@@ -337,7 +345,7 @@ export class ChPopover {
 
       this.el.hidePopover();
     } else {
-      this.el.showPopover();
+      this.#showPopover();
     }
   }
 
@@ -357,7 +365,7 @@ export class ChPopover {
    * always be explicitly hidden, but allow for use cases such as nested
    * popovers in menus.
    */
-  @Prop({ attribute: "popover" }) readonly mode!: "auto" | "manual";
+  @Prop({ attribute: "popover" }) readonly mode: "auto" | "manual" = "auto";
 
   /**
    * Specifies if the popover is automatically aligned is the content overflow
@@ -385,6 +393,39 @@ export class ChPopover {
    * Emitted when the popover is closed.
    */
   @Event() popoverClosed: EventEmitter;
+
+  #showPopover = () => {
+    this.el.showPopover();
+    this.#addClickOutsideWatcherIfNecessary();
+  };
+
+  #handlePopoverCloseOnClickOutside = (event: MouseEvent) => {
+    if (!event.composedPath().includes(this.el)) {
+      this.#removeClickOutsideWatcher();
+
+      this.hidden = true;
+      this.popoverClosed.emit();
+    }
+  };
+
+  #addClickOutsideWatcherIfNecessary = () => {
+    if (this.mode === "manual" && this.closeOnClickOutside) {
+      document.addEventListener(
+        "click",
+        this.#handlePopoverCloseOnClickOutside,
+        // We should not add "capture: true" to let other elements interrupt
+        // this event in the capture phase
+        { passive: true }
+      );
+    }
+  };
+
+  #removeClickOutsideWatcher = () => {
+    document.removeEventListener(
+      "click",
+      this.#handlePopoverCloseOnClickOutside
+    );
+  };
 
   #addDraggingClass = () => {
     if (!this.#dragging) {
@@ -642,6 +683,9 @@ export class ChPopover {
     // Avoid watching border changes during the resize
     this.#removeBorderSizeWatcher();
 
+    // Avoid closing the popover during the resize
+    this.#removeClickOutsideWatcher();
+
     // Add listeners
     document.addEventListener("mousemove", this.#trackElementResizeRAF, {
       capture: true
@@ -698,6 +742,9 @@ export class ChPopover {
 
     // Start again watching border size changes
     this.#setBorderSizeWatcher();
+
+    // Add again the click outside watcher if necessary
+    this.#addClickOutsideWatcherIfNecessary();
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementResizeRAF, {
@@ -835,7 +882,7 @@ export class ChPopover {
     this.#setBorderSizeWatcher();
 
     if (!this.hidden) {
-      this.el.showPopover();
+      this.#showPopover();
     }
   }
 
@@ -848,6 +895,9 @@ export class ChPopover {
 
     // Defensive programming. Make sure the document does not have any unwanted handler
     this.#handleDragEnd();
+
+    // Avoid leaving handlers in the document
+    this.#removeClickOutsideWatcher();
 
     // Disconnect RTL watcher
     if (this.#rtlWatcher) {

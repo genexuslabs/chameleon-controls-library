@@ -1453,6 +1453,10 @@ export namespace Components {
          */
         "blockAlign": ChPopoverAlign;
         /**
+          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
+         */
+        "closeOnClickOutside": boolean;
+        /**
           * `true` if the control is not stacked with another top layer.
          */
         "firstLayer": boolean;
@@ -5347,6 +5351,10 @@ declare namespace LocalJSX {
           * Specifies the block alignment of the window.
          */
         "blockAlign"?: ChPopoverAlign;
+        /**
+          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
+         */
+        "closeOnClickOutside"?: boolean;
         /**
           * `true` if the control is not stacked with another top layer.
          */

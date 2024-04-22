@@ -20,15 +20,14 @@ import {
   ComboBoxFilterType,
   ComboBoxItemModel,
   ComboBoxItemGroup,
-  ComboBoxItemLeaf,
-  ComboBoxFilterInfo
+  ComboBoxItemLeaf
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
 import { focusComposedPath } from "../common/helpers";
-import { computeFilter } from "./helpers";
+import { filterSubModel } from "./helpers";
 
 const SELECTED_PART = "selected";
 const DISABLED_PART = "disabled";
@@ -46,13 +45,6 @@ let autoId = 0;
 
 const negateBorderValue = (borderSize: string) =>
   borderSize === "0px" ? "0px" : `-${borderSize}`;
-
-// There are a filter applied and, if the type is "caption" or
-// "value", the filter property must be set
-const comboBoxHasFilters = (filterType: ComboBoxFilterType, filter: string) =>
-  filterType !== "none" &&
-  ((filterType !== "caption" && filterType !== "value") ||
-    (filter != null && filter.trim() !== ""));
 
 // Keys
 type KeyDownEvents =
@@ -210,6 +202,7 @@ export class ChComboBox
    * Collection of displayed values. If a filter is applied and the value
    * belongs to this Set, the item is displayed.
    */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #displayedValues: Set<string> | undefined; // Don't allocate memory until needed
 
   /**
@@ -302,13 +295,6 @@ export class ChComboBox
     },
 
     Space: event => {
-      // When there are filters applied and the combo-box is expanded, the
-      // control is focused in the input, so the space character should not be
-      // processed
-      if (this.filterType !== "none" && this.expanded) {
-        return;
-      }
-
       event.preventDefault(); // Stop space key from scrolling
 
       // Only expands the ComboBox
@@ -347,6 +333,12 @@ export class ChComboBox
 
     if (newExpandedValue && !mobileDevice) {
       this.#focusSelectAfterNextRender = true;
+
+      // When the control is expanded and has filters applied, we should
+      // refresh the rendered items without any debounce
+      if (this.filterType !== "none") {
+        this.#scheduleFilterProcessing("immediate");
+      }
     }
   }
 
@@ -407,7 +399,7 @@ export class ChComboBox
     this.#filterListAsSet = new Set(this.filterList);
 
     if (this.filterType === "list") {
-      this.#scheduleFilterProcessing();
+      this.#scheduleFilterProcessing("immediate");
     }
   }
 
@@ -418,7 +410,7 @@ export class ChComboBox
   @Prop() readonly filterOptions: ComboBoxFilterOptions = {};
   @Watch("filterOptions")
   filterOptionsChanged() {
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
   }
 
   /**
@@ -435,7 +427,7 @@ export class ChComboBox
   @Prop() readonly filterType: ComboBoxFilterType = "none";
   @Watch("filterType")
   filterTypeChanged() {
-    this.#scheduleFilterProcessing();
+    this.#scheduleFilterProcessing("immediate");
   }
 
   /**
@@ -514,14 +506,21 @@ export class ChComboBox
     const filterFunction = () => {
       this.#displayedValues.clear();
 
+      const filterOptions = {
+        filter: this.filter,
+        filterOptions: this.filterOptions,
+        filterSet: this.#filterListAsSet
+      };
+
       for (let index = 0; index < this.items.length; index++) {
         const item = this.items[index];
 
-        this.#filterSubModel(item, {
-          filter: this.filter,
-          filterOptions: this.filterOptions,
-          filterSet: this.#filterListAsSet
-        });
+        filterSubModel(
+          item,
+          this.filterType,
+          filterOptions,
+          this.#displayedValues
+        );
       }
     };
 
@@ -538,36 +537,6 @@ export class ChComboBox
       this.#immediateFilter = undefined;
       filterFunction();
     }
-  };
-
-  #filterSubModel = (
-    item: ComboBoxItemModel,
-    filterInfo: ComboBoxFilterInfo
-  ): boolean => {
-    // Check if a subitem is rendered
-    let aSubItemIsRendered = false;
-    const itemSubGroup = (item as ComboBoxItemGroup).items;
-
-    if (itemSubGroup != null) {
-      for (let index = 0; index < itemSubGroup.length; index++) {
-        const itemLeaf = itemSubGroup[index];
-        const itemSatisfiesFilter = this.#filterSubModel(itemLeaf, filterInfo);
-
-        aSubItemIsRendered ||= itemSatisfiesFilter;
-      }
-    }
-
-    // The current item is rendered if it satisfies the filter condition or a
-    // subitem exists that needs to be rendered
-    const satisfiesFilter =
-      aSubItemIsRendered || computeFilter(this.filterType, item, filterInfo);
-
-    // Update selected and checkbox items
-    if (satisfiesFilter) {
-      this.#displayedValues.add(item.value);
-    }
-
-    return satisfiesFilter;
   };
 
   #mapValuesToItemInfo = (items: ComboBoxItemModel[]) => {
@@ -705,7 +674,7 @@ export class ChComboBox
     if (this.expanded) {
       // The focus must return to the Host when the popover is closed using the
       // Escape key
-      this.el.focus();
+      // this.el.focus();
 
       // The expanded property must not be toggled when there are filters, due
       // to the input is interactive
@@ -718,11 +687,33 @@ export class ChComboBox
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
     const keyboardHandler = this.#keyEventsDictionary[event.code];
-
-    if (keyboardHandler) {
-      keyboardHandler(event);
-      this.#checkAndEmitValueChange();
+    if (!keyboardHandler) {
+      return;
     }
+
+    // When there are filters applied and the combo-box is expanded, the
+    // control is focused in the input, so the space character should not be
+    // processed
+    if (this.filterType !== "none") {
+      if (this.expanded && event.code === KEY_CODES.SPACE) {
+        return;
+      }
+
+      if (
+        event.code !== KEY_CODES.HOME &&
+        event.code !== KEY_CODES.END &&
+        event.code !== KEY_CODES.ESCAPE
+      ) {
+        // Update expanded value if the key pressed is not the tab key
+        this.expanded ||= event.code !== KEY_CODES.TAB;
+
+        keyboardHandler(event);
+      }
+    } else {
+      keyboardHandler(event);
+    }
+
+    this.#checkAndEmitValueChange();
   };
 
   #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
@@ -743,8 +734,6 @@ export class ChComboBox
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
-
-    // console.log("this.#inputRef.value", this.#inputRef.value);
 
     this.filter = this.#inputRef.value;
   };
@@ -876,7 +865,6 @@ export class ChComboBox
     this.currentSelectedValue = this.value;
 
     this.filter = this.#valueToItemInfo.get(this.value)?.caption;
-    // console.log("connectedCallback", this.value, this.filter);
 
     const labels = this.internals.labels;
 
@@ -886,19 +874,20 @@ export class ChComboBox
     }
   }
 
-  componentWillRender() {
-    if (!this.#applyFilters) {
-      return;
-    }
-
+  // Don't trigger the render method if the only changed property is "filter"
+  componentShouldUpdate(_newValue, _oldValue, name: string) {
     // If the filters must be applied, we must let the filters decided which
     // are the selected and checked items
     if (this.#applyFilters) {
-      this.#updateFilters();
+      this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
       this.#applyFilters = false;
     }
 
-    // this.#validateCheckedAndSelectedItems();
+    if (name === "filter") {
+      return false;
+    }
+
+    return true;
   }
 
   componentDidLoad() {
@@ -943,7 +932,7 @@ export class ChComboBox
   }
 
   render() {
-    const filtersAreApplied = comboBoxHasFilters(this.filterType, this.filter);
+    const filtersAreApplied = this.filterType !== "none";
 
     return (
       <Host
@@ -973,17 +962,15 @@ export class ChComboBox
                   value: true,
                   "value--filters": this.filterType !== "none"
                 }}
+                placeholder={this.placeholder}
                 readOnly={this.filterType === "none"}
                 value={
-                  // eslint-disable-next-line no-nested-ternary
                   this.filterType === "none"
-                    ? this.currentSelectedValue
-                      ? this.#valueToItemInfo.get(this.currentSelectedValue)
-                          ?.caption ?? this.placeholder
-                      : this.placeholder
+                    ? this.#valueToItemInfo.get(this.currentSelectedValue)
+                        ?.caption
                     : this.filter
                 }
-                onClick={this.#handleExpandedChange}
+                onClickCapture={this.#handleExpandedChange}
                 onInput={this.#handleInputFilterChange}
                 ref={el => (this.#inputRef = el)}
               ></input>,
@@ -1012,13 +999,20 @@ export class ChComboBox
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
                   blockAlign="outside-end"
+                  closeOnClickOutside
                   hidden={!this.expanded}
                   popover="manual"
                   onPopoverClosed={this.#handlePopoverClose}
                 >
-                  {this.items.map(
-                    this.#customItemRender(false, undefined, filtersAreApplied)
-                  )}
+                  <div class="window__content" part="window__content">
+                    {this.items.map(
+                      this.#customItemRender(
+                        false,
+                        undefined,
+                        filtersAreApplied
+                      )
+                    )}
+                  </div>
                 </ch-popover>
               )
             ]}

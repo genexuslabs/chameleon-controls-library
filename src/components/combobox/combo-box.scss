@@ -88,12 +88,15 @@ ch-popover {
 
   // --ch-popover-min-inline-size: var(--ch-popover-action-width);
 
-  display: grid;
-  grid-auto-rows: max-content;
-
   &:not(.hydrated) {
     opacity: 0;
   }
+}
+
+.window__content {
+  display: grid;
+  grid-auto-rows: max-content;
+  overflow: auto;
 }
 
 .group {

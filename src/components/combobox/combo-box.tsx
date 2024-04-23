@@ -771,7 +771,9 @@ export class ChComboBox
       if (
         event.code === KEY_CODES.ESCAPE ||
         event.code === KEY_CODES.HOME ||
-        event.code === KEY_CODES.END
+        event.code === KEY_CODES.END ||
+        event.code === KEY_CODES.ARROW_LEFT ||
+        event.code === KEY_CODES.ARROW_RIGHT
       ) {
         return;
       }

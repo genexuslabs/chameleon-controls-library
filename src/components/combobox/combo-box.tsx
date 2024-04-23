@@ -47,13 +47,19 @@ const negateBorderValue = (borderSize: string) =>
   borderSize === "0px" ? "0px" : `-${borderSize}`;
 
 // Keys
-type KeyDownEvents =
+type KeyDownNoFiltersEvents =
   | typeof KEY_CODES.ARROW_UP
   | typeof KEY_CODES.ARROW_DOWN
   | typeof KEY_CODES.HOME
   | typeof KEY_CODES.END
   | typeof KEY_CODES.ENTER
   | typeof KEY_CODES.SPACE
+  | typeof KEY_CODES.TAB;
+
+type KeyDownWithFiltersEvents =
+  | typeof KEY_CODES.ARROW_UP
+  | typeof KEY_CODES.ARROW_DOWN
+  | typeof KEY_CODES.ENTER
   | typeof KEY_CODES.TAB;
 
 type SelectedIndex =
@@ -119,11 +125,7 @@ const findNextSelectedIndex = (
 
     // If the index is not after the end of the array, the new selected value
     // was found
-    if (
-      isValidIndex(firstLevelItemItems, secondLevelIndex) &&
-      (!hasFilters ||
-        displayedValues.has(firstLevelItemItems[secondLevelIndex].value))
-    ) {
+    if (isValidIndex(firstLevelItemItems, secondLevelIndex)) {
       return {
         type: "nested",
         firstLevelIndex: firstLevelIndex,
@@ -139,9 +141,9 @@ const findNextSelectedIndex = (
 
   // Search for the next first level item that is not disabled and is not filtered
   while (
-    (isValidIndex(items, nextFirstLevelIndex) &&
-      items[nextFirstLevelIndex].disabled) ||
-    (hasFilters && !displayedValues.has(items[nextFirstLevelIndex].value))
+    isValidIndex(items, nextFirstLevelIndex) &&
+    (items[nextFirstLevelIndex].disabled ||
+      (hasFilters && !displayedValues.has(items[nextFirstLevelIndex].value)))
   ) {
     nextFirstLevelIndex += increment;
   }
@@ -271,8 +273,9 @@ export class ChComboBox
     }
   };
 
-  #keyEventsDictionary: {
-    [key in KeyDownEvents]: (event: KeyboardEvent) => void;
+  // Keyboard events when the control has no filters
+  #keyEventsNoFiltersDictionary: {
+    [key in KeyDownNoFiltersEvents]: (event: KeyboardEvent) => void;
   } = {
     ArrowUp: (event: KeyboardEvent) =>
       this.#selectNextIndex(
@@ -342,6 +345,37 @@ export class ChComboBox
         this.expanded = false;
       }
     }
+  };
+
+  // Keyboard events when the control has filters
+  #keyEventsWithFiltersDictionary: {
+    [key in KeyDownWithFiltersEvents]: (event: KeyboardEvent) => void;
+  } = {
+    ArrowUp: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#keyEventsNoFiltersDictionary.ArrowUp(event);
+      } else {
+        this.expanded = true;
+      }
+    },
+
+    ArrowDown: (event: KeyboardEvent) => {
+      if (this.expanded) {
+        this.#keyEventsNoFiltersDictionary.ArrowDown(event);
+      } else {
+        this.expanded = true;
+      }
+    },
+
+    Enter: () => {
+      // The focus must return to the Host when closing the popover
+      if (this.expanded) {
+        this.el.focus();
+        this.expanded = false;
+      }
+    },
+
+    Tab: this.#keyEventsNoFiltersDictionary.Tab
   };
 
   // Refs
@@ -726,49 +760,31 @@ export class ChComboBox
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
     if (this.filterType === "none") {
-      this.#processKeyEvent(event);
+      const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
+
+      if (keyboardHandler) {
+        keyboardHandler(event);
+      }
     }
-    // When there are filters applied and the combo-box is expanded, the
-    // control is focused in the input, so the space character should not be
-    // processed
+    // Keyboard implementation for filters
     else {
       if (
-        !this.expanded &&
-        (event.code === KEY_CODES.ARROW_UP ||
-          event.code === KEY_CODES.ARROW_DOWN)
+        event.code === KEY_CODES.ESCAPE ||
+        event.code === KEY_CODES.HOME ||
+        event.code === KEY_CODES.END
       ) {
-        this.expanded = true;
         return;
       }
+      const keyboardHandler = this.#keyEventsWithFiltersDictionary[event.code];
 
-      if (event.code === KEY_CODES.SPACE) {
-        this.expanded ||= true;
+      if (keyboardHandler) {
+        keyboardHandler(event);
         return;
       }
-
-      if (
-        event.code !== KEY_CODES.HOME &&
-        event.code !== KEY_CODES.END &&
-        event.code !== KEY_CODES.ESCAPE &&
-        event.code !== KEY_CODES.ENTER
-      ) {
-        // Update expanded value if the key pressed is not the tab key
-        this.expanded ||= event.code !== KEY_CODES.TAB;
-
-        this.#processKeyEvent(event);
-      }
+      this.expanded ||= true;
     }
 
     this.#checkAndEmitValueChange();
-  };
-
-  #processKeyEvent = (event: KeyboardEvent) => {
-    const keyboardHandler = this.#keyEventsDictionary[event.code];
-    if (!keyboardHandler) {
-      return;
-    }
-
-    keyboardHandler(event);
   };
 
   #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {

@@ -835,6 +835,23 @@ export class ChComboBox
     forceUpdate(this);
   };
 
+  #getItemImageCustomVars = (
+    item: ComboBoxItemModel,
+    hasImages: boolean,
+    hasStartImg: boolean,
+    hasEndImg: boolean
+  ) =>
+    hasImages
+      ? {
+          "--ch-combo-box-item-start-img": hasStartImg
+            ? `url("${item.startImgSrc}")`
+            : null,
+          "--ch-combo-box-item-end-img": hasEndImg
+            ? `url("${item.endImgSrc}")`
+            : null
+        }
+      : undefined;
+
   #customItemRender =
     (
       insideAGroup: boolean,
@@ -849,6 +866,13 @@ export class ChComboBox
       const hasStartImg = !!item.startImgSrc;
       const hasEndImg = !!item.endImgSrc;
       const hasImages = hasStartImg || hasEndImg;
+
+      const customVars = this.#getItemImageCustomVars(
+        item,
+        hasImages,
+        hasStartImg,
+        hasEndImg
+      );
 
       // This variable inherits the disabled state from group parents. Useful
       // to propagate the disabled state in the child buttons
@@ -870,22 +894,47 @@ export class ChComboBox
           {itemGroup.expandable ? (
             <button
               class={{
+                // eslint-disable-next-line camelcase
+                group__header: true,
                 "group--expandable": true,
                 "group--collapsed": !itemGroup.expanded
               }}
-              part={`group__caption expandable${
+              part={`group__header expandable${
                 this.disabled ? " disabled" : ""
               } ${this.expanded ? "expanded" : "collapsed"}`}
+              style={customVars}
               disabled={this.disabled}
               type="button"
               onClick={this.#toggleExpandInGroup(itemGroup)}
             >
-              {item.caption}
+              <span
+                class={{
+                  "group__header-caption": true,
+                  [`start-img-type--${
+                    item.startImgType ?? "background"
+                  } img--start`]: hasStartImg,
+                  [`end-img-type--${item.endImgType ?? "background"} img--end`]:
+                    hasEndImg
+                }}
+                part="group__header-caption"
+              >
+                {item.caption}
+              </span>
             </button>
           ) : (
             <span
               id={index.toString()}
-              part={`group__caption${this.disabled ? " disabled" : ""}`}
+              class={{
+                // eslint-disable-next-line camelcase
+                group__header: true,
+                [`start-img-type--${
+                  item.startImgType ?? "background"
+                } img--start`]: hasStartImg,
+                [`end-img-type--${item.endImgType ?? "background"} img--end`]:
+                  hasEndImg
+              }}
+              part={`group__header${this.disabled ? " disabled" : ""}`}
+              style={customVars}
             >
               {item.caption}
             </span>
@@ -918,6 +967,7 @@ export class ChComboBox
           class={
             hasImages
               ? {
+                  leaf: true,
                   [`start-img-type--${
                     item.startImgType ?? "background"
                   } img--start`]: hasStartImg,
@@ -927,18 +977,7 @@ export class ChComboBox
               : undefined
           }
           part={this.#itemLeafParts(item, insideAGroup, isDisabled)}
-          style={
-            hasImages
-              ? {
-                  "--ch-combo-box-item-start-img": hasStartImg
-                    ? `url("${item.startImgSrc}")`
-                    : undefined,
-                  "--ch-combo-box-item-end-img": hasEndImg
-                    ? `url("${item.endImgSrc}")`
-                    : undefined
-                }
-              : undefined
-          }
+          style={customVars}
           disabled={isDisabled}
           type="button"
           onClick={this.#updateSelectedValue(item.value)}

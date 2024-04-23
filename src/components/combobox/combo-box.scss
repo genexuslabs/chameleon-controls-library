@@ -12,6 +12,8 @@
   --ch-combo-box-group__expandable-button-size: #{$default-decorative-image-size};
   --ch-combo-box-group__image-size: #{$default-decorative-image-size};
 
+  --ch-combo-box-item-gap: 0px;
+
   --ch-combo-box-separation: 0px;
   --ch-combo-box-separation-x: var(--ch-combo-box-separation);
   --ch-combo-box-separation-y: var(--ch-combo-box-separation);
@@ -115,18 +117,20 @@ ch-popover {
   overflow: auto;
 }
 
+// - - - - - - - - - - - - - - - -
+//         Leaf and Group
+// - - - - - - - - - - - - - - - -
+.leaf,
+.group__header,
+.group__header-caption {
+  display: flex;
+  gap: var(--ch-combo-box-item-gap);
+  align-items: center;
+}
+
 .group {
   display: grid;
   grid-template-rows: max-content 1fr;
-
-  &__content {
-    display: grid;
-    grid-auto-rows: max-content;
-
-    &--collapsed {
-      display: none;
-    }
-  }
 
   &--expandable {
     &::before {
@@ -142,6 +146,15 @@ ch-popover {
 
   &--collapsed::before {
     transform: rotate(-90deg); // TODO: Add RTL support
+  }
+
+  &__content {
+    display: grid;
+    grid-auto-rows: max-content;
+
+    &--collapsed {
+      display: none;
+    }
   }
 }
 
@@ -163,6 +176,10 @@ ch-popover {
 
 .img--end {
   --ch-combo-box-item-img: var(--ch-combo-box-item-end-img);
+
+  &::after {
+    margin-inline-start: auto;
+  }
 }
 
 .start-img-type--background::before,

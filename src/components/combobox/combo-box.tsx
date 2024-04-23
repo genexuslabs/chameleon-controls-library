@@ -189,8 +189,10 @@ export class ChComboBox
   #lastMaskBlockStart = "0px";
   #lastMaskBlockEnd = "0px";
 
-  #valueToItemInfo: Map<string, { caption: string; index: SelectedIndex }> =
-    new Map();
+  #valueToItemInfo: Map<
+    string,
+    { caption: string; index: SelectedIndex; firstExpanded?: boolean }
+  > = new Map();
 
   // Filters info
   #applyFilters = false;
@@ -314,6 +316,7 @@ export class ChComboBox
   };
 
   // Refs
+  #maskRef: HTMLDivElement;
   #inputRef: HTMLInputElement;
   #selectRef: HTMLSelectElement | undefined;
 
@@ -480,11 +483,11 @@ export class ChComboBox
    */
   @Event() input: EventEmitter<string>;
 
-  #scheduleFilterProcessing = (immediateFilter?: ImmediateFilter) => {
+  #scheduleFilterProcessing = (newImmediateFilter?: ImmediateFilter) => {
     this.#applyFilters = true;
 
-    if (immediateFilter !== undefined) {
-      this.#immediateFilter ??= immediateFilter;
+    if (newImmediateFilter !== undefined) {
+      this.#immediateFilter ??= newImmediateFilter;
     }
   };
 
@@ -547,9 +550,21 @@ export class ChComboBox
     }
 
     items.forEach((item, firstLevelIndex) => {
-      const subItems = (item as ComboBoxItemGroup).items;
+      const itemGroup = item as ComboBoxItemGroup;
+      const subItems = itemGroup.items;
 
       if (subItems != null) {
+        // First level item
+        this.#valueToItemInfo.set(itemGroup.value, {
+          caption: itemGroup.caption,
+          index: {
+            type: "first-level",
+            firstLevelIndex: firstLevelIndex
+          },
+          firstExpanded: itemGroup.expandable && !!itemGroup.expanded
+        });
+
+        // Second level items
         subItems.forEach((subItem, secondLevelIndex) => {
           this.#valueToItemInfo.set(subItem.value, {
             caption: subItem.caption,
@@ -560,7 +575,9 @@ export class ChComboBox
             }
           });
         });
-      } else {
+      }
+      // First level item
+      else {
         this.#valueToItemInfo.set(item.value, {
           caption: item.caption,
           index: {
@@ -596,7 +613,7 @@ export class ChComboBox
 
     // Observe the size of the edges to know if the border
     this.#resizeObserver.observe(this.el, { box: "border-box" });
-    this.#resizeObserver.observe(this.#inputRef ?? this.#selectRef);
+    this.#resizeObserver.observe(this.#maskRef ?? this.#selectRef);
   };
 
   #updateBorderSizeRAF = () => {
@@ -670,50 +687,45 @@ export class ChComboBox
 
   #handleExpandedChange = (event: MouseEvent) => {
     event.stopPropagation();
-
-    if (this.expanded) {
-      // The focus must return to the Host when the popover is closed using the
-      // Escape key
-      // this.el.focus();
-
-      // The expanded property must not be toggled when there are filters, due
-      // to the input is interactive
-      if (this.filterType !== "none") {
-        return;
-      }
-    }
     this.expanded = !this.expanded;
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
-    const keyboardHandler = this.#keyEventsDictionary[event.code];
-    if (!keyboardHandler) {
-      return;
+    if (this.filterType === "none") {
+      this.#processKeyEvent(event);
     }
-
     // When there are filters applied and the combo-box is expanded, the
     // control is focused in the input, so the space character should not be
     // processed
-    if (this.filterType !== "none") {
-      if (this.expanded && event.code === KEY_CODES.SPACE) {
+    else {
+      if (event.code === KEY_CODES.SPACE) {
+        this.expanded ||= true;
         return;
       }
 
       if (
         event.code !== KEY_CODES.HOME &&
         event.code !== KEY_CODES.END &&
-        event.code !== KEY_CODES.ESCAPE
+        event.code !== KEY_CODES.ESCAPE &&
+        event.code !== KEY_CODES.ENTER
       ) {
         // Update expanded value if the key pressed is not the tab key
         this.expanded ||= event.code !== KEY_CODES.TAB;
 
-        keyboardHandler(event);
+        this.#processKeyEvent(event);
       }
-    } else {
-      keyboardHandler(event);
     }
 
     this.#checkAndEmitValueChange();
+  };
+
+  #processKeyEvent = (event: KeyboardEvent) => {
+    const keyboardHandler = this.#keyEventsDictionary[event.code];
+    if (!keyboardHandler) {
+      return;
+    }
+
+    keyboardHandler(event);
   };
 
   #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
@@ -734,7 +746,6 @@ export class ChComboBox
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
-
     this.filter = this.#inputRef.value;
   };
 
@@ -764,10 +775,15 @@ export class ChComboBox
       // This variable inherits the disabled state from group parents. Useful
       // to propagate the disabled state in the child buttons
       const isDisabled = disabled ?? item.disabled;
+      const itemGroup = item as ComboBoxItemGroup;
 
-      return (item as ComboBoxItemGroup).items != null ? (
+      return itemGroup.items != null ? (
         <div
           key={item.value}
+          aria-controls={itemGroup.expandable ? `${index}__content` : null}
+          aria-expanded={
+            itemGroup.expandable ? (!!itemGroup.expanded).toString() : null
+          }
           aria-labelledby={index.toString()}
           role="group"
           class="group"
@@ -777,9 +793,22 @@ export class ChComboBox
             {item.caption}
           </span>
 
-          {(item as ComboBoxItemGroup).items.map(
-            this.#customItemRender(true, isDisabled, filtersAreApplied)
-          )}
+          <div
+            id={itemGroup.expandable ? `${index}__content` : null}
+            class={{
+              // eslint-disable-next-line camelcase
+              group__content: true,
+              "group__content--collapsed":
+                itemGroup.expandable && !itemGroup.expanded
+            }}
+            part="group__content"
+          >
+            {(!itemGroup.expandable ||
+              this.#valueToItemInfo.get(itemGroup.value).firstExpanded) &&
+              itemGroup.items.map(
+                this.#customItemRender(true, isDisabled, filtersAreApplied)
+              )}
+          </div>
         </div>
       ) : (
         <button
@@ -876,18 +905,32 @@ export class ChComboBox
 
   // Don't trigger the render method if the only changed property is "filter"
   componentShouldUpdate(_newValue, _oldValue, name: string) {
-    // If the filters must be applied, we must let the filters decided which
-    // are the selected and checked items
-    if (this.#applyFilters) {
-      this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
-      this.#applyFilters = false;
-    }
-
     if (name === "filter") {
+      // We need to check this condition here, because only the "filter" prop
+      // could be updated and because we return false (to avoid extra re-renders)
+      // the componentWillRender method won't be dispatched
+      if (this.#applyFilters) {
+        this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
+        this.#applyFilters = false;
+      }
+
       return false;
     }
 
     return true;
+  }
+
+  componentWillRender() {
+    // If the "filter" property was not updated, we still have to check if we
+    // should update filters. This verification MUST NOT be implemented in the
+    // componentShouldUpdate method, because not all properties are updated in
+    // that method, leaving to race-conditions in some cases when checking
+    // filters in the componentShouldUpdate method
+
+    if (this.#applyFilters) {
+      this.#updateFilters(); // TODO: THERE IS A BUG IF THE COMBO-BOX STARTS WITH FILTERS APPLIED
+      this.#applyFilters = false;
+    }
   }
 
   componentDidLoad() {
@@ -948,46 +991,51 @@ export class ChComboBox
         {mobileDevice
           ? this.#nativeRender()
           : [
-              <input
-                key="combobox"
-                role="combobox"
-                aria-controls="popover"
-                aria-disabled={this.disabled ? "true" : null}
-                aria-expanded={this.expanded.toString()}
-                aria-haspopup="true"
-                aria-label={
-                  this.accessibleName ?? this.#accessibleNameFromExternalLabel
-                }
+              <div
+                key="mask"
+                // This mask is used to capture click events that must open the
+                // popover. If we capture click events in the Host, clicking external
+                // label would open the combo-box's window
+                aria-hidden="true"
                 class={{
-                  value: true,
-                  "value--filters": this.filterType !== "none"
+                  mask: true,
+                  "mask--filters": this.filterType !== "none"
                 }}
-                placeholder={this.placeholder}
-                readOnly={this.filterType === "none"}
-                value={
-                  this.filterType === "none"
-                    ? this.#valueToItemInfo.get(this.currentSelectedValue)
-                        ?.caption
-                    : this.filter
+                onClickCapture={
+                  !filtersAreApplied ? this.#handleExpandedChange : null
                 }
-                onClickCapture={this.#handleExpandedChange}
-                onInput={this.#handleInputFilterChange}
-                ref={el => (this.#inputRef = el)}
-              ></input>,
-
-              // <div
-              //   key="mask"
-              //   // This mask is used to capture click events that must open the
-              //   // popover. If we capture click events in the Host, clicking external
-              //   // label would open the combo-box's window
-              //   aria-hidden="true"
-              //   class={{
-              //     mask: true,
-              //     "mask--filters": this.filterType !== "none"
-              //   }}
-
-              //   ref={el => (this.#maskRef = el)}
-              // ></div>,
+                ref={el => (this.#maskRef = el)}
+              >
+                <input
+                  // We must place the input inside the mask, otherwise it
+                  // won't stretch to the Host size
+                  key="combobox"
+                  role="combobox"
+                  aria-controls="popover"
+                  aria-disabled={this.disabled ? "true" : null}
+                  aria-expanded={this.expanded.toString()}
+                  aria-haspopup="true"
+                  aria-label={
+                    this.accessibleName ?? this.#accessibleNameFromExternalLabel
+                  }
+                  class={{
+                    value: true,
+                    "value--filters": filtersAreApplied,
+                    "value--readonly": !filtersAreApplied
+                  }}
+                  placeholder={this.placeholder}
+                  value={
+                    filtersAreApplied
+                      ? this.#valueToItemInfo.get(this.currentSelectedValue)
+                          ?.caption
+                      : this.filter
+                  }
+                  onInputCapture={
+                    filtersAreApplied ? this.#handleInputFilterChange : null
+                  }
+                  ref={el => (this.#inputRef = el)}
+                ></input>
+              </div>,
 
               this.#firstExpanded && (
                 <ch-popover

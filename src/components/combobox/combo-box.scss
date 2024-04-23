@@ -59,7 +59,7 @@ select {
   overflow: hidden;
 }
 
-.value,
+.mask,
 select {
   position: absolute;
   inset-inline: var(--ch-combo-box-mask-inline-start)
@@ -70,12 +70,24 @@ select {
   cursor: pointer;
 }
 
-.value {
+.mask {
   padding: inherit;
-  grid-area: value;
+}
 
-  &--filters {
-    cursor: text;
+.value {
+  grid-area: value;
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  border-inline-start-width: calc(var(--ch-combo-box-mask-inline-start) * -1);
+  border-inline-end-width: calc(var(--ch-combo-box-mask-inline-end) * -1);
+  border-block-start-width: calc(var(--ch-combo-box-mask-block-start) * -1);
+  border-block-end-width: calc(var(--ch-combo-box-mask-block-end) * -1);
+  border-color: transparent;
+  border-style: solid;
+
+  &--readonly {
+    pointer-events: none;
   }
 }
 
@@ -101,7 +113,16 @@ ch-popover {
 
 .group {
   display: grid;
-  grid-auto-rows: max-content;
+  grid-template-rows: max-content 1fr;
+
+  &__content {
+    display: grid;
+    grid-auto-rows: max-content;
+
+    &--collapsed {
+      display: none;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - -

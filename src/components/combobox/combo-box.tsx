@@ -808,6 +808,16 @@ export class ChComboBox
     this.filter = this.#inputRef.value;
   };
 
+  #displayPopoverWhenFiltersApplied = (event: MouseEvent) => {
+    event.stopPropagation();
+    this.expanded = true;
+  };
+
+  #focusInnerInputWhenFiltersApplied = (event: MouseEvent) => {
+    event.stopPropagation();
+    this.#inputRef.focus();
+  };
+
   #updateSelectedValue = (itemValue: string) => (event: MouseEvent) => {
     event.stopPropagation();
 
@@ -1038,12 +1048,18 @@ export class ChComboBox
 
     return (
       <Host
-        // ComboBox controls do not have aria-placeholder attr
-        tabindex={!mobileDevice ? "0" : null}
+        // Make the host focusable since the input is disabled when there are no
+        // filters
+        tabindex={!mobileDevice && !filtersAreApplied ? "0" : null}
         class={this.disabled ? "ch-disabled" : null}
         onKeyDown={
-          !mobileDevice && !this.disabled
+          !mobileDevice && !this.disabled && !this.readonly
             ? this.#handleExpandedChangeWithKeyBoard
+            : null
+        }
+        onClick={
+          !mobileDevice && filtersAreApplied && !this.disabled && !this.readonly
+            ? this.#focusInnerInputWhenFiltersApplied
             : null
         }
       >
@@ -1071,7 +1087,12 @@ export class ChComboBox
                   key="combobox"
                   role="combobox"
                   aria-controls="popover"
-                  aria-disabled={this.disabled ? "true" : null}
+                  // This reset is necessary, since we use "disabled" to
+                  // disallow the focus and text selection in the input when
+                  // the combo-box has no filters
+                  aria-disabled={
+                    !this.disabled && !filtersAreApplied ? "false" : null
+                  }
                   aria-expanded={this.expanded.toString()}
                   aria-haspopup="true"
                   aria-label={
@@ -1082,15 +1103,27 @@ export class ChComboBox
                     "value--filters": filtersAreApplied,
                     "value--readonly": !filtersAreApplied
                   }}
+                  disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
+                  readOnly={this.readonly || !filtersAreApplied}
                   value={
                     filtersAreApplied
                       ? this.filter
                       : this.#valueToItemInfo.get(this.currentSelectedValue)
                           ?.caption
                   }
+                  onClickCapture={
+                    filtersAreApplied &&
+                    !this.expanded &&
+                    !this.readonly &&
+                    !this.disabled
+                      ? this.#displayPopoverWhenFiltersApplied
+                      : null
+                  }
                   onInputCapture={
-                    filtersAreApplied ? this.#handleInputFilterChange : null
+                    filtersAreApplied && !this.readonly && !this.disabled
+                      ? this.#handleInputFilterChange
+                      : null
                   }
                   ref={el => (this.#inputRef = el)}
                 ></input>

@@ -42,6 +42,7 @@
         padding: 8px;
         margin: 4px;
         background-color: aliceblue;
+        box-sizing: border-box;
       }
 
       ch-combo-box:focus {
@@ -51,6 +52,9 @@
       ch-combo-box::part(window) {
         background-color: beige;
         border: 1px solid;
+      }
+
+      ch-combo-box::part(window__content) {
         padding: 8px;
       }
 
@@ -227,7 +231,7 @@
         { value: "Value 1", caption: "Label for the value 1" },
         {
           value: "Value 2",
-          caption: "Label for the value 2",
+          caption: "Label for the value 222",
           items: [
             { value: "Value 2.1", caption: "Label for the value 2.1" },
             { value: "Value 2.2", caption: "Label for the value 2.2" }
@@ -243,6 +247,7 @@
           value: "Value 5",
           caption: "Label for the value 5",
           disabled: true,
+          expandable: true,
           items: [
             { value: "Value 5.1", caption: "Label for the value 5.1" },
             { value: "Value 5.2", caption: "Label for the value 5.2" },
@@ -257,6 +262,8 @@
         {
           value: "Value 6",
           caption: "Label for the value 6",
+          expandable: true,
+          expanded: true,
           items: [
             {
               value: "Value 6.1",
@@ -284,7 +291,16 @@
         { value: "Value 8", caption: "Label for the value 8" }
       ];
 
+      const comboBox2Items = [
+        { value: "chocolate", caption: "Chocolate" },
+        { value: "coconut", caption: "Coconut" },
+        { value: "mint", caption: "Mint" },
+        { value: "strawberry", caption: "Strawberry" },
+        { value: "vanilla", caption: "Vanilla" }
+      ];
+
       comboBox1.items = comboBox1Items;
+      // comboBox1.items = comboBox2Items;
 
       const filterTypeSelect = document.getElementById("filter-type");
       filterTypeSelect.addEventListener("input", event => {

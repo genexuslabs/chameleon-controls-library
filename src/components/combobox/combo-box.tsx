@@ -113,12 +113,12 @@ const findNextSelectedIndex = (
     const firstLevelItemItems = (items[firstLevelIndex] as ComboBoxItemGroup)
       .items;
 
-    // Search in the nested level skipping disabled items
+    // Search in the nested level skipping disabled and not rendered items
     while (
       isValidIndex(firstLevelItemItems, secondLevelIndex) &&
-      firstLevelItemItems[secondLevelIndex].disabled &&
-      (!hasFilters ||
-        displayedValues.has(firstLevelItemItems[secondLevelIndex].value))
+      (firstLevelItemItems[secondLevelIndex].disabled ||
+        (hasFilters &&
+          !displayedValues.has(firstLevelItemItems[secondLevelIndex].value)))
     ) {
       secondLevelIndex += increment;
     }

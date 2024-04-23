@@ -93,7 +93,9 @@ const findSelectedIndex = (
 const findNextSelectedIndex = (
   items: ComboBoxItemModel[],
   currentIndex: SelectedIndex,
-  increment: 1 | -1
+  increment: 1 | -1,
+  hasFilters: boolean,
+  displayedValues: Set<string>
 ): SelectedIndex => {
   if (currentIndex.type === "not-exists") {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
@@ -108,14 +110,20 @@ const findNextSelectedIndex = (
     // Search in the nested level skipping disabled items
     while (
       isValidIndex(firstLevelItemItems, secondLevelIndex) &&
-      firstLevelItemItems[secondLevelIndex].disabled
+      firstLevelItemItems[secondLevelIndex].disabled &&
+      (!hasFilters ||
+        displayedValues.has(firstLevelItemItems[secondLevelIndex].value))
     ) {
       secondLevelIndex += increment;
     }
 
     // If the index is not after the end of the array, the new selected value
     // was found
-    if (isValidIndex(firstLevelItemItems, secondLevelIndex)) {
+    if (
+      isValidIndex(firstLevelItemItems, secondLevelIndex) &&
+      (!hasFilters ||
+        displayedValues.has(firstLevelItemItems[secondLevelIndex].value))
+    ) {
       return {
         type: "nested",
         firstLevelIndex: firstLevelIndex,
@@ -129,10 +137,11 @@ const findNextSelectedIndex = (
   // in the first level
   let nextFirstLevelIndex = firstLevelIndex + increment;
 
-  // Search for the next first level item that is not disabled
+  // Search for the next first level item that is not disabled and is not filtered
   while (
-    isValidIndex(items, nextFirstLevelIndex) &&
-    items[nextFirstLevelIndex].disabled === true
+    (isValidIndex(items, nextFirstLevelIndex) &&
+      items[nextFirstLevelIndex].disabled) ||
+    (hasFilters && !displayedValues.has(items[nextFirstLevelIndex].value))
   ) {
     nextFirstLevelIndex += increment;
   }
@@ -153,7 +162,9 @@ const findNextSelectedIndex = (
         firstLevelIndex: nextFirstLevelIndex,
         secondLevelIndex: increment === 1 ? -1 : nestedLevel.length // The algorithm will sum 1 (or -1) to the start index
       },
-      increment
+      increment,
+      hasFilters,
+      displayedValues
     );
   }
 
@@ -197,7 +208,7 @@ export class ChComboBox
   // Filters info
   #applyFilters = false;
   #immediateFilter: ImmediateFilter;
-  #filterTimeout: NodeJS.Timeout;
+  #queuedFilterId: NodeJS.Timeout;
   #filterListAsSet: Set<string>;
 
   /**
@@ -217,7 +228,9 @@ export class ChComboBox
   #selectNextIndex = (
     event: KeyboardEvent,
     currentSelectedIndex: SelectedIndex,
-    increment: 1 | -1
+    increment: 1 | -1,
+    hasFilters: boolean,
+    displayedValues: Set<string>
   ) => {
     event.preventDefault(); // Stop ArrowDown key from scrolling
 
@@ -229,9 +242,17 @@ export class ChComboBox
               type: "first-level",
               firstLevelIndex: increment === 1 ? -1 : this.items.length
             },
-            increment
+            increment,
+            hasFilters,
+            displayedValues
           )
-        : findNextSelectedIndex(this.items, currentSelectedIndex, increment);
+        : findNextSelectedIndex(
+            this.items,
+            currentSelectedIndex,
+            increment,
+            hasFilters,
+            displayedValues
+          );
 
     if (nextSelectedIndex.type === "not-exists") {
       return;
@@ -257,14 +278,18 @@ export class ChComboBox
       this.#selectNextIndex(
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
-        -1
+        -1,
+        this.filterType !== "none",
+        this.#displayedValues
       ),
 
     ArrowDown: (event: KeyboardEvent) =>
       this.#selectNextIndex(
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
-        1
+        1,
+        this.filterType !== "none",
+        this.#displayedValues
       ),
 
     Home: (event: KeyboardEvent) =>
@@ -274,7 +299,9 @@ export class ChComboBox
           type: "first-level",
           firstLevelIndex: -1
         }, // The algorithm will sum 1 to the start index
-        1
+        1,
+        this.filterType !== "none",
+        this.#displayedValues
       ),
 
     End: (event: KeyboardEvent) =>
@@ -284,7 +311,9 @@ export class ChComboBox
           type: "first-level",
           firstLevelIndex: this.items.length
         }, // The algorithm will sum -1 to the start index
-        -1
+        -1,
+        this.filterType !== "none",
+        this.#displayedValues
       ),
 
     Enter: () => {
@@ -498,7 +527,7 @@ export class ChComboBox
     }
 
     // Remove queued filter processing
-    clearTimeout(this.#filterTimeout);
+    clearTimeout(this.#queuedFilterId);
 
     const processWithDebounce =
       this.filterDebounce > 0 &&
@@ -525,11 +554,16 @@ export class ChComboBox
           this.#displayedValues
         );
       }
+
+      // Remove the selected value if it is no longer rendered
+      if (!this.#displayedValues.has(this.currentSelectedValue)) {
+        this.currentSelectedValue = undefined;
+      }
     };
 
     // Check if should filter with debounce
     if (processWithDebounce && this.#immediateFilter !== "immediate") {
-      this.#filterTimeout = setTimeout(() => {
+      this.#queuedFilterId = setTimeout(() => {
         this.#immediateFilter = undefined;
         filterFunction();
         forceUpdate(this); // After the filter processing is completed, force a re-render
@@ -698,6 +732,15 @@ export class ChComboBox
     // control is focused in the input, so the space character should not be
     // processed
     else {
+      if (
+        !this.expanded &&
+        (event.code === KEY_CODES.ARROW_UP ||
+          event.code === KEY_CODES.ARROW_DOWN)
+      ) {
+        this.expanded = true;
+        return;
+      }
+
       if (event.code === KEY_CODES.SPACE) {
         this.expanded ||= true;
         return;
@@ -1026,9 +1069,9 @@ export class ChComboBox
                   placeholder={this.placeholder}
                   value={
                     filtersAreApplied
-                      ? this.#valueToItemInfo.get(this.currentSelectedValue)
+                      ? this.filter
+                      : this.#valueToItemInfo.get(this.currentSelectedValue)
                           ?.caption
-                      : this.filter
                   }
                   onInputCapture={
                     filtersAreApplied ? this.#handleInputFilterChange : null

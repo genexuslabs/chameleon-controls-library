@@ -828,6 +828,13 @@ export class ChComboBox
     this.#checkAndEmitValueChange();
   };
 
+  #toggleExpandInGroup = (itemGroup: ComboBoxItemGroup) => () => {
+    this.#valueToItemInfo.get(itemGroup.value).firstExpanded = true;
+    itemGroup.expanded = !itemGroup.expanded;
+
+    forceUpdate(this);
+  };
+
   #customItemRender =
     (
       insideAGroup: boolean,
@@ -860,11 +867,32 @@ export class ChComboBox
           class="group"
           part={`group${isDisabled ? ` ${DISABLED_PART}` : ""}`}
         >
-          <span id={index.toString()} part="group__caption">
-            {item.caption}
-          </span>
+          {itemGroup.expandable ? (
+            <button
+              class={{
+                "group--expandable": true,
+                "group--collapsed": !itemGroup.expanded
+              }}
+              part={`group__caption expandable${
+                this.disabled ? " disabled" : ""
+              } ${this.expanded ? "expanded" : "collapsed"}`}
+              disabled={this.disabled}
+              type="button"
+              onClick={this.#toggleExpandInGroup(itemGroup)}
+            >
+              {item.caption}
+            </button>
+          ) : (
+            <span
+              id={index.toString()}
+              part={`group__caption${this.disabled ? " disabled" : ""}`}
+            >
+              {item.caption}
+            </span>
+          )}
 
           <div
+            key={`${index}__content`}
             id={itemGroup.expandable ? `${index}__content` : null}
             class={{
               // eslint-disable-next-line camelcase

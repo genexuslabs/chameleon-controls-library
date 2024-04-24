@@ -29,7 +29,7 @@
   --ch-combo-box-border-block-end-width: 0px;
 
   display: grid;
-  grid-template: "value picker" 1fr / 1fr max-content;
+  grid-template-columns: 1fr max-content;
   align-items: center;
   align-self: stretch;
   position: relative;
@@ -43,7 +43,6 @@
 
   &::after {
     content: "";
-    grid-area: picker;
     inline-size: var(--ch-combo-box__picker-size);
     block-size: var(--ch-combo-box__picker-size);
     -webkit-mask: var(--ch-combo-box__picker) 50% 50% /
@@ -84,7 +83,6 @@ select {
 }
 
 .value {
-  grid-area: value;
   position: absolute;
   inset-inline: var(--ch-combo-box-mask-inline-start)
     var(--ch-combo-box-mask-inline-end);

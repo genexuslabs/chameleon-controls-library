@@ -91,9 +91,11 @@ select {
   border-block-end-width: calc(var(--ch-combo-box-mask-block-end) * -1);
   border-color: transparent;
   border-style: solid;
+  margin-inline-end: var(--ch-combo-box__picker-size);
 
   &--readonly {
     pointer-events: none;
+    text-overflow: ellipsis;
   }
 }
 

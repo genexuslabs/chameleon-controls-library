@@ -38,6 +38,7 @@
       }
 
       ch-combo-box {
+        --ch-combo-box-item-gap: 5px;
         border: 8px solid;
         padding: 8px;
         margin: 4px;
@@ -64,7 +65,10 @@
       }
 
       ch-combo-box::part(item nested) {
-        margin-inline-start: 1em;
+        padding-inline-start: calc(
+          var(--ch-combo-box-group__image-size) * 2 +
+            var(--ch-combo-box-item-gap) * 2
+        );
       }
 
       ch-combo-box::part(item) {
@@ -98,6 +102,7 @@
             name="combobox-1"
             id="combobox-1"
             placeholder="Choose a value..."
+            style="width: 150px"
             value="Value 1"
           ></ch-combo-box>
         </div>
@@ -166,50 +171,85 @@
       </form>
     </div>
 
-    <div class="card">
-      <div>
-        <fieldset>
-          <legend class="form-input__label">Filters</legend>
+    <div class="card card-properties">
+      <fieldset>
+        <label class="form-input__label" for="current-value"
+          >Current value</label
+        >
+        <input id="current-value" class="form-input" readonly value="Value 1" />
+      </fieldset>
 
-          <label class="form-input__label">
-            Filter type
-            <select class="form-input" name="filter-type" id="filter-type">
-              <option value="caption">Caption</option>
-              <option value="value">Value</option>
-              <option value="id-list">List of ids</option>
-              <option value="none" selected>None</option>
-            </select>
-          </label>
+      <hr />
 
-          <label class="form-input__label">
-            Filter
-            <input class="form-input" id="filter" value="" />
-          </label>
+      <fieldset>
+        <legend class="form-input__label">Properties</legend>
 
-          <div>
-            <ch-checkbox
-              id="camel-case"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Apply camel casing"
-            ></ch-checkbox>
+        <div>
+          <ch-checkbox
+            id="disabled"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Disabled"
+          ></ch-checkbox>
 
-            <ch-checkbox
-              id="hide-matches"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Hide matches and show non-matches"
-            ></ch-checkbox>
-          </div>
-        </fieldset>
-      </div>
+          <ch-checkbox
+            id="readonly"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Readonly"
+          ></ch-checkbox>
+        </div>
+      </fieldset>
+
+      <hr />
+
+      <fieldset>
+        <legend class="form-input__label">Filters</legend>
+
+        <label class="form-input__label">
+          Filter type
+          <select class="form-input" name="filter-type" id="filter-type">
+            <option value="caption">Caption</option>
+            <option value="value">Value</option>
+            <option value="id-list">List of ids</option>
+            <option value="none" selected>None</option>
+          </select>
+        </label>
+
+        <label class="form-input__label">
+          Filter
+          <input class="form-input" id="filter" value="" />
+        </label>
+
+        <div>
+          <ch-checkbox
+            id="camel-case"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Apply camel casing"
+          ></ch-checkbox>
+
+          <ch-checkbox
+            id="hide-matches"
+            checked-value="true"
+            un-checked-value="false"
+            value="false"
+            caption="Hide matches and show non-matches"
+          ></ch-checkbox>
+        </div>
+      </fieldset>
     </div>
 
     <script>
       const comboBox1 = document.getElementById("combobox-1");
       const nativeSelect = document.getElementById("native-select");
+
+      const currentValueInputRef = document.getElementById("current-value");
+      const disabledCheckboxRef = document.getElementById("disabled");
+      const readonlyCheckboxRef = document.getElementById("readonly");
 
       nativeSelect.addEventListener("input", () => {
         console.log("Native select input... - - - Value:", nativeSelect.value);
@@ -219,12 +259,23 @@
         console.log("Native select change... - - - Value:", nativeSelect.value);
       });
 
+      // Current value input
       comboBox1.addEventListener("input", () => {
-        console.log("ComboBox 1 input... - - - Value:", comboBox1.value);
+        currentValueInputRef.value = comboBox1.value;
       });
 
       comboBox1.addEventListener("change", () => {
-        console.log("ComboBox 1 change... - - - Value:", comboBox1.value);
+        currentValueInputRef.value = comboBox1.value;
+      });
+
+      // Disabled checkbox
+      disabledCheckboxRef.addEventListener("input", () => {
+        comboBox1.disabled = disabledCheckboxRef.value === "true";
+      });
+
+      // Readonly checkbox
+      readonlyCheckboxRef.addEventListener("input", () => {
+        comboBox1.readonly = readonlyCheckboxRef.value === "true";
       });
 
       const comboBox1Items = [
@@ -288,10 +339,25 @@
           caption: "Label for the value 7",
           disabled: true
         },
-        { value: "Value 8", caption: "Label for the value 8" }
+        { value: "Value 8", caption: "Label for the value 8" },
+        {
+          value: "Value 9",
+          caption: "Label for the value 9",
+          expandable: true,
+          items: [
+            { value: "Value 9.1", caption: "Label for the value 9.1" },
+            { value: "Value 9.2", caption: "Label for the value 9.2" },
+            {
+              value: "Value 9.3",
+              caption: "Label for the value 9.3",
+              disabled: false
+            },
+            { value: "Value 9.4", caption: "Label for the value 9.4" }
+          ]
+        }
       ];
 
-      const comboBox2Items = [
+      const comboBoxItems2 = [
         { value: "chocolate", caption: "Chocolate" },
         { value: "coconut", caption: "Coconut" },
         { value: "mint", caption: "Mint" },
@@ -299,8 +365,160 @@
         { value: "vanilla", caption: "Vanilla" }
       ];
 
-      comboBox1.items = comboBox1Items;
-      // comboBox1.items = comboBox2Items;
+      const comboBoxItemsGeneXus = [
+        {
+          value: "Basics",
+          caption: "Basics",
+          expandable: true,
+          expanded: true,
+          items: [
+            { value: "Audio", caption: "Audio" },
+            { value: "Blob", caption: "Blob" },
+            { value: "BlobFile", caption: "BlobFile" },
+            { value: "Boolean", caption: "Boolean" },
+            { value: "Character", caption: "Character" },
+            { value: "Date", caption: "Date" },
+            { value: "DateTime", caption: "DateTime" },
+            { value: "Geography", caption: "Geography" },
+            { value: "GeoLine", caption: "GeoLine" },
+            { value: "GeoPoint", caption: "GeoPoint" },
+            { value: "GeoPolygon", caption: "GeoPolygon" },
+            { value: "GUID", caption: "GUID" },
+            { value: "Image", caption: "Image" },
+            { value: "LongVarChar", caption: "LongVarChar" },
+            { value: "Numeric", caption: "Numeric" },
+            { value: "VarChar", caption: "VarChar" },
+            { value: "Video", caption: "Video" }
+          ]
+        },
+        {
+          value: "Extended Types",
+          caption: "Extended Types",
+          expandable: true,
+          items: [
+            { value: "Cache", caption: "Cache" },
+            { value: "ContentInfo", caption: "ContentInfo" },
+            { value: "Cookie", caption: "Cookie" },
+            {
+              value: "CryptoAsymmetricEncrypt",
+              caption: "CryptoAsymmetricEncrypt"
+            },
+            { value: "CryptoCertificate", caption: "CryptoCertificate" },
+            { value: "CryptoHash", caption: "CryptoHash" },
+            { value: "CryptoSign", caption: "CryptoSign" },
+            { value: "CryptoSignXml", caption: "CryptoSignXml" },
+            {
+              value: "CryptoSymmetricEncrypt",
+              caption: "CryptoSymmetricEncrypt"
+            },
+            { value: "DBConnection", caption: "DBConnection" },
+            { value: "Directory", caption: "Directory" },
+            { value: "ExcelDocument", caption: "ExcelDocument" },
+            { value: "Expression", caption: "Expression" },
+            { value: "File", caption: "File" },
+            { value: "HttpClient", caption: "HttpClient" },
+            { value: "HttpRequest", caption: "HttpRequest" },
+            { value: "HttpResponse", caption: "HttpResponse" }
+          ]
+        },
+        {
+          value: "Structured Data Types",
+          caption: "Structured Data Types",
+          expandable: true,
+          items: [
+            {
+              value: "GeneXus.Common.AnalyticsKeyValue",
+              caption: "AnalyticsKeyValue, GeneXus.Common"
+            },
+            {
+              value: "GeneXus.Common.AnalyticsKeyPurchase",
+              caption: "AnalyticsKeyPurchase, GeneXus.Common"
+            },
+            {
+              value: "GeneXus.Common.AnalyticsKeyPurchase.Item",
+              caption: "AnalyticsKeyPurchase.Item, GeneXus.Common"
+            },
+            {
+              value: "GeneXus.SD.Media.AudioPlayerCustomAction",
+              caption: "AudioPlayerCustomAction, GeneXus.SD.Media"
+            },
+            {
+              value: "GeneXus.SD.Media.AudioPlayerSettings",
+              caption: "AudioPlayerSettings, GeneXus.SD.Media"
+            },
+            {
+              value: "GeneXus.SD.BeaconInfo",
+              caption: "BeaconInfo, GeneXus.SD"
+            },
+            {
+              value: "GeneXus.SD.BeaconProximityAlert",
+              caption: "BeaconProximityAlert, GeneXus.SD"
+            },
+            {
+              value: "GeneXus.SD.BeaconRegion",
+              caption: "BeaconRegion, GeneXus.SD"
+            },
+            {
+              value: "GeneXus.SD.BeaconState",
+              caption: "BeaconState, GeneXus.SD"
+            },
+            {
+              value: "GeneXus.SD.CardInformation",
+              caption: "CardInformation, GeneXus.SD"
+            },
+            {
+              value: "GeneXus.Common.Notifications.Configuration",
+              caption: "Configuration, GeneXus.Common.Notifications"
+            },
+            {
+              value: "GeneXus.Common.Notifications.ConfigurationProperty",
+              caption: "ConfigurationProperty, GeneXus.Common.Notifications"
+            }
+          ]
+        },
+        {
+          value: "External Objects",
+          caption: "External Objects",
+          expandable: true,
+          startImgSrc: "./assets/icons/external-object.svg",
+          items: [
+            {
+              value: "GeneXus.SD.Actions",
+              caption: "Actions, GeneXus.SD",
+              startImgSrc: "./assets/icons/external-object.svg",
+              endImgSrc: "./assets/icons/external-object.svg"
+            },
+            {
+              value: "GeneXus.SD.Ads",
+              caption: "Ads, GeneXus.SD",
+              startImgSrc: "./assets/icons/external-object.svg",
+              endImgSrc: "./assets/icons/external-object.svg"
+            },
+            {
+              value: "GeneXus.Common.Analytics",
+              caption: "Analytics, GeneXus.Common",
+              startImgSrc: "./assets/icons/external-object.svg",
+              endImgSrc: "./assets/icons/external-object.svg"
+            },
+            {
+              value: "GeneXus.Common.AnyObject",
+              caption: "AnyObject, GeneXus.Common",
+              startImgSrc: "./assets/icons/external-object.svg",
+              endImgSrc: "./assets/icons/external-object.svg"
+            },
+            {
+              value: "GeneXus.Common.UI.Appearance",
+              caption: "Appearance, GeneXus.Common.UI",
+              startImgSrc: "./assets/icons/external-object.svg",
+              endImgSrc: "./assets/icons/external-object.svg"
+            }
+          ]
+        }
+      ];
+
+      // comboBox1.items = comboBox1Items;
+      // comboBox1.items = comboBoxItems2;
+      comboBox1.items = comboBoxItemsGeneXus;
 
       const filterTypeSelect = document.getElementById("filter-type");
       filterTypeSelect.addEventListener("input", event => {

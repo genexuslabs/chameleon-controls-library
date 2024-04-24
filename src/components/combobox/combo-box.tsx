@@ -1119,7 +1119,9 @@ export class ChComboBox
       <Host
         // Make the host focusable since the input is disabled when there are no
         // filters
-        tabindex={!mobileDevice && !filtersAreApplied ? "0" : null}
+        tabindex={
+          !mobileDevice && !filtersAreApplied && !this.disabled ? "0" : null
+        }
         class={this.disabled ? "ch-disabled" : null}
         onKeyDown={
           !mobileDevice && !this.disabled && !this.readonly
@@ -1143,10 +1145,12 @@ export class ChComboBox
                 aria-hidden="true"
                 class={{
                   mask: true,
-                  "mask--filters": this.filterType !== "none"
+                  "mask--no-filters": this.filterType === "none"
                 }}
                 onClickCapture={
-                  !filtersAreApplied ? this.#handleExpandedChange : null
+                  !filtersAreApplied && !this.disabled && !this.readonly
+                    ? this.#handleExpandedChange
+                    : null
                 }
                 ref={el => (this.#maskRef = el)}
               >

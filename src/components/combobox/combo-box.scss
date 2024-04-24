@@ -70,8 +70,14 @@ select {
     var(--ch-combo-box-mask-inline-end);
   inset-block: var(--ch-combo-box-mask-block-start)
     var(--ch-combo-box-mask-block-end);
+}
 
-  cursor: pointer;
+.mask {
+  cursor: text;
+
+  &--no-filters {
+    cursor: pointer;
+  }
 }
 
 .mask,

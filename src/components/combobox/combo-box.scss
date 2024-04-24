@@ -29,9 +29,7 @@
   --ch-combo-box-border-block-end-width: 0px;
 
   display: grid;
-  grid-template-columns: 1fr max-content;
   align-items: center;
-  align-self: stretch;
   position: relative;
 
   // Remove outline of the focus state. This selector must not have higher
@@ -43,6 +41,7 @@
 
   &::after {
     content: "";
+    justify-self: flex-end;
     inline-size: var(--ch-combo-box__picker-size);
     block-size: var(--ch-combo-box__picker-size);
     -webkit-mask: var(--ch-combo-box__picker) 50% 50% /

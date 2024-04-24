@@ -1212,6 +1212,7 @@ export class ChComboBox
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
                   blockAlign="outside-end"
+                  inlineAlign="inside-start"
                   closeOnClickOutside
                   hidden={!this.expanded}
                   popover="manual"

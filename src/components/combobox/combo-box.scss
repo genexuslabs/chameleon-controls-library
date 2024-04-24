@@ -76,21 +76,21 @@ select {
   cursor: pointer;
 }
 
-.mask {
+.mask,
+.value {
   padding: inherit;
+  border: inherit;
+  border-color: transparent;
 }
 
 .value {
   grid-area: value;
   position: absolute;
-  inset: 0;
-  padding: inherit;
-  border-inline-start-width: calc(var(--ch-combo-box-mask-inline-start) * -1);
-  border-inline-end-width: calc(var(--ch-combo-box-mask-inline-end) * -1);
-  border-block-start-width: calc(var(--ch-combo-box-mask-block-start) * -1);
-  border-block-end-width: calc(var(--ch-combo-box-mask-block-end) * -1);
-  border-color: transparent;
-  border-style: solid;
+  inset-inline: var(--ch-combo-box-mask-inline-start)
+    var(--ch-combo-box-mask-inline-end);
+  inset-block: var(--ch-combo-box-mask-block-start)
+    var(--ch-combo-box-mask-block-end);
+
   margin-inline-end: var(--ch-combo-box__picker-size);
 
   &--readonly {

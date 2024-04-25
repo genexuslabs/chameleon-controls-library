@@ -155,12 +155,12 @@ export class ChCodeEditor {
    */
   @Prop() readonly theme: string = "vs";
   @Watch("theme")
-  themeChanged(newTheme: unknown) {
+  themeChanged(newTheme: string) {
     if (this.mode === "editor") {
-      this.#monacoEditorInstance.updateOptions({ theme: newTheme as string });
+      this.#monacoEditorInstance.updateOptions({ theme: newTheme });
     } else {
       this.#monacoDiffEditorInstance.updateOptions({
-        theme: newTheme as string
+        theme: newTheme
       });
     }
   }
@@ -170,7 +170,7 @@ export class ChCodeEditor {
    */
   @Prop() readonly yamlSchemaUri: string = "";
   @Watch("yamlSchemaUri")
-  yamlSchemaUriChange(newUri: unknown) {
+  yamlSchemaUriChange(newUri: string) {
     if (this.language !== "yaml") {
       return;
     }
@@ -182,7 +182,7 @@ export class ChCodeEditor {
       configureMonacoYaml(monaco, {
         enableSchemaRequest: true,
         format: true,
-        schemas: this.getYamlSchemas()
+        schemas: this.#getYamlSchemas()
       });
     } else {
       configureMonacoYaml(monaco, {
@@ -201,7 +201,7 @@ export class ChCodeEditor {
     );
   }
 
-  private getYamlSchemas = () =>
+  #getYamlSchemas = () =>
     this.mode === "editor"
       ? [
           {
@@ -226,7 +226,7 @@ export class ChCodeEditor {
           }
         ];
 
-  private getCommonConfiguration = () => ({
+  #getCommonConfiguration = () => ({
     automaticLayout: true,
     mouseWheelScrollSensitivity: 4,
     mouseWheelZoom: true,
@@ -234,7 +234,7 @@ export class ChCodeEditor {
     tabSize: 2
   });
 
-  private setupNormalEditor() {
+  #setupNormalEditor() {
     const editorModel = monaco.editor.createModel(
       this.#valueBeforeFirstRender,
       this.language,
@@ -242,17 +242,17 @@ export class ChCodeEditor {
     );
 
     this.#monacoEditorInstance = monaco.editor.create(this.#monacoRef, {
-      ...this.getCommonConfiguration(),
+      ...this.#getCommonConfiguration(),
       readOnly: this.readonly ?? false,
       model: editorModel
     });
   }
 
-  private setupDiffEditor() {
+  #setupDiffEditor() {
     this.#monacoDiffEditorInstance = monaco.editor.createDiffEditor(
       this.#monacoRef,
       {
-        ...this.getCommonConfiguration(),
+        ...this.#getCommonConfiguration(),
         enableSplitViewResizing: this.enableSplitViewResizing,
         renderSideBySide: this.renderSideBySide,
         originalEditable: !(this.readonly ?? true),
@@ -274,12 +274,12 @@ export class ChCodeEditor {
     });
   }
 
-  private configureYaml() {
+  #configureYaml() {
     if (this.language === "yaml" && !!this.yamlSchemaUri) {
       configureMonacoYaml(monaco, {
         enableSchemaRequest: true,
         format: true,
-        schemas: this.getYamlSchemas()
+        schemas: this.#getYamlSchemas()
       });
     }
   }
@@ -289,12 +289,12 @@ export class ChCodeEditor {
   }
 
   componentDidLoad() {
-    this.configureYaml();
+    this.#configureYaml();
 
     if (this.mode === "editor") {
-      this.setupNormalEditor();
+      this.#setupNormalEditor();
     } else {
-      this.setupDiffEditor();
+      this.#setupDiffEditor();
     }
 
     this.#resizeObserver = new ResizeObserver(entries => {

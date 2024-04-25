@@ -106,8 +106,8 @@ select {
 //           Separation
 // - - - - - - - - - - - - - - - -
 ch-popover {
-  --ch-combo-box-separation-x: var(--ch-dropdown-separation-x);
-  --ch-combo-box-separation-y: var(--ch-dropdown-separation-y);
+  --ch-popover-separation-x: var(--ch-combo-box-separation-x);
+  --ch-popover-separation-y: var(--ch-combo-box-separation-y);
 
   // --ch-popover-min-inline-size: var(--ch-popover-action-width);
 

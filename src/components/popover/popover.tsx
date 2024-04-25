@@ -12,6 +12,7 @@ import {
 import {
   ChPopoverAlign,
   ChPopoverResizeElement,
+  ChPopoverSizeMatch,
   PopoverActionElement
 } from "./types";
 import { forceCSSMinMax, isRTL } from "../../common/utils";
@@ -39,6 +40,9 @@ const POPOVER_DRAGGED_Y = "--ch-popover-dragged-y";
 
 const POPOVER_BLOCK_SIZE = "--ch-popover-block-size";
 const POPOVER_INLINE_SIZE = "--ch-popover-inline-size";
+
+const POPOVER_MIN_BLOCK_SIZE = "--ch-popover-min-block-size";
+const POPOVER_MIN_INLINE_SIZE = "--ch-popover-min-inline-size";
 
 const POPOVER_BORDER_BLOCK_START_SIZE = "--ch-popover-border-block-start-width";
 const POPOVER_BORDER_BLOCK_END_SIZE = "--ch-popover-border-block-end-width";
@@ -141,6 +145,7 @@ export class ChPopover {
   #maxInlineSize: number = 0;
   #minBlockSize: number = 0;
   #minInlineSize: number = 0;
+  #resizeWasMade = false;
 
   #resizeByDirectionDictionary = {
     block: (popoverRect: DOMRect, direction: "start" | "end") => {
@@ -314,6 +319,39 @@ export class ChPopover {
   }
 
   /**
+   * Specifies how the popover adapts its block size.
+   *  - "content": The block size of the control will be determined by its
+   *    content block size.
+   *  - "action-element": The block size of the control will match the block
+   *    size of the `actionElement`.
+   *  - "action-element-as-minimum": The minimum block size of the control
+   *    will match the block size of the `actionElement`.
+   *
+   * If the control is resized at runtime, only the "action-element-as-minimum"
+   * value will still work.
+   */
+  @Prop() readonly blockSizeMatch: ChPopoverSizeMatch = "content";
+  @Watch("blockSizeMatch")
+  blockSizeWatchChange(newValue: ChPopoverSizeMatch) {
+    if (this.#resizeWasMade) {
+      return;
+    }
+
+    // Remove the size constrains
+    if (newValue === "content") {
+      this.el.style.removeProperty(POPOVER_BLOCK_SIZE);
+      this.el.style.removeProperty(POPOVER_MIN_BLOCK_SIZE);
+    } else if (newValue === "action-element") {
+      this.el.style.removeProperty(POPOVER_MIN_BLOCK_SIZE);
+    } else {
+      this.el.style.removeProperty(POPOVER_BLOCK_SIZE);
+    }
+
+    // Queue a position adjustment
+    this.#adjustAlignment = true;
+  }
+
+  /**
    * This property only applies for `"manual"` mode. In native popovers, when
    * using `"manual"` mode the popover doesn't close when clicking outside the
    * control. This property allows to close the popover when clicking outside
@@ -355,6 +393,39 @@ export class ChPopover {
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
   @Watch("inlineAlign")
   handleInlineChange() {
+    this.#adjustAlignment = true;
+  }
+
+  /**
+   * Specifies how the popover adapts its inline size.
+   *  - "content": The inline size of the control will be determined by its
+   *    content inline size.
+   *  - "action-element": The inline size of the control will match the inline
+   *    size of the `actionElement`.
+   *  - "action-element-as-minimum": The minimum inline size of the control
+   *    will match the inline size of the `actionElement`.
+   *
+   * If the control is resized at runtime, only the "action-element-as-minimum"
+   * value will still work.
+   */
+  @Prop() readonly inlineSizeMatch: ChPopoverSizeMatch = "content";
+  @Watch("inlineSizeMatch")
+  inlineSizeWatchChange(newValue: ChPopoverSizeMatch) {
+    if (this.#resizeWasMade) {
+      return;
+    }
+
+    // Remove the size constrains
+    if (newValue === "content") {
+      this.el.style.removeProperty(POPOVER_INLINE_SIZE);
+      this.el.style.removeProperty(POPOVER_MIN_INLINE_SIZE);
+    } else if (newValue === "action-element") {
+      this.el.style.removeProperty(POPOVER_MIN_INLINE_SIZE);
+    } else {
+      this.el.style.removeProperty(POPOVER_INLINE_SIZE);
+    }
+
+    // Queue a position adjustment
     this.#adjustAlignment = true;
   }
 
@@ -524,11 +595,20 @@ export class ChPopover {
     const separationX = computedStyle.getPropertyValue(POPOVER_SEPARATION_X);
     const separationY = computedStyle.getPropertyValue(POPOVER_SEPARATION_Y);
 
+    const popoverWidth = this.#getPopoverInlineSizeAndFixItIfNecessary(
+      actionRect,
+      popoverRect
+    );
+    const popoverHeight = this.#getPopoverBlockSizeAndFixItIfNecessary(
+      actionRect,
+      popoverRect
+    );
+
     // Alignment
     const blockAlignmentValue = getAlignmentValue(
       this.blockAlign,
       actionRect.height,
-      popoverRect.height,
+      popoverHeight,
       fromPxToNumber(separationY)
     );
     setProperty(this.el, POPOVER_ALIGN_BLOCK, blockAlignmentValue);
@@ -536,10 +616,48 @@ export class ChPopover {
     const inlineAlignmentValue = getAlignmentValue(
       this.inlineAlign,
       actionRect.width,
-      popoverRect.width,
+      popoverWidth,
       fromPxToNumber(separationX)
     );
     setProperty(this.el, POPOVER_ALIGN_INLINE, inlineAlignmentValue);
+  };
+
+  #getPopoverInlineSizeAndFixItIfNecessary = (
+    actionRect: DOMRect,
+    popoverRect: DOMRect
+  ) => {
+    if (this.inlineSizeMatch === "action-element-as-minimum") {
+      setProperty(this.el, POPOVER_MIN_INLINE_SIZE, actionRect.width);
+      return actionRect.width;
+    }
+
+    // Size is determined by the content
+    if (this.#resizeWasMade || this.inlineSizeMatch === "content") {
+      return popoverRect.width;
+    }
+
+    // Size is the same as the `actionElement`
+    setProperty(this.el, POPOVER_INLINE_SIZE, actionRect.width);
+    return actionRect.width;
+  };
+
+  #getPopoverBlockSizeAndFixItIfNecessary = (
+    actionRect: DOMRect,
+    popoverRect: DOMRect
+  ) => {
+    if (this.blockSizeMatch === "action-element-as-minimum") {
+      setProperty(this.el, POPOVER_MIN_BLOCK_SIZE, actionRect.height);
+      return actionRect.height;
+    }
+
+    // Size is determined by the content
+    if (this.#resizeWasMade || this.blockSizeMatch === "content") {
+      return popoverRect.height;
+    }
+
+    // Size is the same as the `actionElement`
+    setProperty(this.el, POPOVER_BLOCK_SIZE, actionRect.height);
+    return actionRect.height;
   };
 
   #removePositionWatcher = () => {
@@ -717,6 +835,7 @@ export class ChPopover {
 
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
     this.#resizeEdgesAndCornersDictionary[this.#currentEdge](popoverRect);
+    this.#resizeWasMade = true;
 
     // Update last point
     this.#initialDragEvent = this.#lastDragEvent;

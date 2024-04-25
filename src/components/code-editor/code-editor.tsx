@@ -37,6 +37,7 @@ export class ChCodeEditor {
    * Specifies the language of the auto created model in the editor.
    */
   @Prop() readonly language!: string;
+  @Watch("language")
   languageChanged(newLanguage: string) {
     if (this.mode === "editor") {
       monaco.editor.setModelLanguage(
@@ -92,6 +93,7 @@ export class ChCodeEditor {
    * `mode` === `"diff-editor"`.
    */
   @Prop() readonly renderSideBySide: boolean = true;
+  @Watch("renderSideBySide")
   renderSideBySideChanged(newRenderSideBySide: boolean) {
     if (this.mode === "diff-editor" && this.#monacoDiffEditorInstance) {
       this.#monacoDiffEditorInstance.updateOptions({

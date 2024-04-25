@@ -862,8 +862,10 @@ export class ChPopover {
     // Start again watching border size changes
     this.#setBorderSizeWatcher();
 
-    // Add again the click outside watcher if necessary
-    this.#addClickOutsideWatcherIfNecessary();
+    // Add again the click outside watcher if necessary. RAF is needed to
+    // prevent the popover from closing, since the document click event will be
+    // dispatched after the execution of this function (mouseup handler)
+    requestAnimationFrame(this.#addClickOutsideWatcherIfNecessary);
 
     // Remove listeners
     document.removeEventListener("mousemove", this.#trackElementResizeRAF, {

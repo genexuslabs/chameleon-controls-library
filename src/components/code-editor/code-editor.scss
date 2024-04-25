@@ -1,0 +1,13 @@
+// This is a WA to import required styles for the editor in production build
+@import "monaco-styles-after-build.scss";
+
+ch-code-editor {
+  display: grid;
+  position: relative;
+}
+
+.ch-code-editor-absolute-content {
+  display: grid;
+  position: absolute;
+  inset: 0;
+}

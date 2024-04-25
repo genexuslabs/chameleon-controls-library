@@ -45,8 +45,6 @@ export class ChCodeEditor {
         newLanguage
       );
     } else {
-      console.log(this.value, this.modifiedValue);
-
       this.#monacoDiffEditorInstance.setModel({
         original: monaco.editor.createModel(this.value, newLanguage),
         modified: monaco.editor.createModel(this.modifiedValue, newLanguage)

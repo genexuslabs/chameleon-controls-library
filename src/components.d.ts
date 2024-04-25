@@ -300,6 +300,48 @@ export namespace Components {
          */
         "value": string;
     }
+    interface ChCodeEditor {
+        /**
+          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
+         */
+        "enableSplitViewResizing": boolean;
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
+         */
+        "mode": "editor" | "diff-editor";
+        /**
+          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+         */
+        "modifiedValue": string;
+        /**
+          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+         */
+        "modifiedValueReadonly": boolean;
+        /**
+          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+         */
+        "readonly"?: boolean;
+        /**
+          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
+         */
+        "renderSideBySide": boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme": string;
+        /**
+          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+         */
+        "value": string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri": string;
+    }
     interface ChComboBox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -2779,6 +2821,12 @@ declare global {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
     };
+    interface HTMLChCodeEditorElement extends Components.ChCodeEditor, HTMLStencilElement {
+    }
+    var HTMLChCodeEditorElement: {
+        prototype: HTMLChCodeEditorElement;
+        new (): HTMLChCodeEditorElement;
+    };
     interface HTMLChComboBoxElementEventMap {
         "input": string;
     }
@@ -3877,6 +3925,7 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-code-editor": HTMLChCodeEditorElement;
         "ch-combo-box": HTMLChComboBoxElement;
         "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
@@ -4194,6 +4243,48 @@ declare namespace LocalJSX {
           * The value of the control.
          */
         "value": string;
+    }
+    interface ChCodeEditor {
+        /**
+          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
+         */
+        "enableSplitViewResizing"?: boolean;
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
+         */
+        "mode"?: "editor" | "diff-editor";
+        /**
+          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+         */
+        "modifiedValue"?: string;
+        /**
+          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+         */
+        "modifiedValueReadonly"?: boolean;
+        /**
+          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+         */
+        "readonly"?: boolean;
+        /**
+          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
+         */
+        "renderSideBySide"?: boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme"?: string;
+        /**
+          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+         */
+        "value"?: string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri"?: string;
     }
     interface ChComboBox {
         /**
@@ -6455,6 +6546,7 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-code-editor": ChCodeEditor;
         "ch-combo-box": ChComboBox;
         "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
@@ -6545,6 +6637,7 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
             "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             /**
              * The `ch-dialog` component represents a modal or non-modal dialog box or other

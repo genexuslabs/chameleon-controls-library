@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.0.0-next.1",
+  "version": "6.0.0-next.3",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -8,6 +8,7 @@
   "es2017": "dist/esm/index.js",
   "jsnext:main": "dist/esm/index.js",
   "types": "./dist/types/components.d.ts",
+  "type": "module",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/chameleon/chameleon.esm.js",
@@ -16,11 +17,14 @@
     "loader/"
   ],
   "scripts": {
-    "build": "stencil build --docs",
+    "build": "npm run build.monaco && stencil build --docs",
+    "build.light": "stencil build --docs",
+    "build.monaco": "vite build",
     "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
-    "start": "stencil build --dev --watch --serve",
+    "start": "npm run build.monaco && stencil build --dev --watch --serve",
+    "start.light": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.coverage": "stencil test --spec --e2e --coverage --no-cache",
     "test.spec": "stencil test --spec --coverage --no-cache",
@@ -32,11 +36,14 @@
   "dependencies": {
     "@genexus/markdown-parser": "~0.1.1",
     "html5-qrcode": "^2.3.8",
+    "monaco-editor": "^0.48.0",
+    "monaco-yaml": "^5.1.1",
     "qr-creator": "^1.0.0",
     "resize-observer-polyfill": "^1.5.1",
     "stencil-click-outside": "^1.8.0"
   },
   "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
     "@stencil-community/eslint-plugin": "~0.7.1",
     "@stencil/core": "~4.16.0",
     "@stencil/sass": "~3.0.11",
@@ -58,7 +65,8 @@
     "lint-staged": "~13.0.0",
     "prettier": "~2.8.8",
     "puppeteer": "~22.6.5",
-    "typescript": "~5.4.5"
+    "typescript": "~5.4.5",
+    "vite": "^5.2.10"
   },
   "husky": {
     "hooks": {

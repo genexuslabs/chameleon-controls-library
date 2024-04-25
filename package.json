@@ -8,6 +8,7 @@
   "es2017": "dist/esm/index.js",
   "jsnext:main": "dist/esm/index.js",
   "types": "./dist/types/components.d.ts",
+  "type": "module",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/chameleon/chameleon.esm.js",

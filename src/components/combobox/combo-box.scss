@@ -6,22 +6,94 @@
 @include box-sizing();
 
 :host {
+  /**
+   * @prop --ch-combo-box-group__expandable-button-size:
+   * Specifies the expandable button size in the group items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-combo-box-group__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-combo-box-group__expandable-button-image-size:
+   * Specifies the image size of the expandable button size in the group items. 
+   * @default 100%
+   */
+  --ch-combo-box-group__expandable-button-image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-combo-box-item__image-size:
+   * Specifies the box size that contains an image in the items. For example,
+   * the box for the startImgSrc and endImgSrc
+   * @default #{$default-decorative-image-size}
+   */
   --ch-combo-box-item__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-combo-box-item__background-image-size:
+   * Specifies the image size of the items. For example, the image size for the
+   * startImgSrc and endImgSrc
+   * @default 100%
+   */
   --ch-combo-box-item__background-image-size: 100%;
 
-  --ch-combo-box-group__expandable-button-size: #{$default-decorative-image-size};
-  --ch-combo-box-group__image-size: #{$default-decorative-image-size};
+  /**
+   * @prop --ch-combo-box__picker:
+   * Specifies the image of the combo-box's picker.
+   * @default url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>')
+   */
+  --ch-combo-box__picker: url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>');
 
+  /**
+   * @prop --ch-combo-box__picker-color:
+   * Specifies the color of the combo-box's picker.
+   * @default currentColor
+   */
+  --ch-combo-box__picker-color: currentColor;
+
+  /**
+   * @prop --ch-combo-box__picker-size:
+   * Specifies the box size that contains the combo-box's picker.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-combo-box__picker-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-combo-box__picker-mask-size:
+   * Specifies the image size of the combo-box's picker.
+   * @default 100%
+   */
+  --ch-combo-box__picker-image-size: 100%;
+
+  /**
+   * @prop --ch-combo-box-item-gap:
+   * Specifies the spacing between the images, text and the expandable button
+   * on items.
+   * @default 0px
+   */
   --ch-combo-box-item-gap: 0px;
 
+  /**
+   * @prop --ch-combo-box-separation:
+   * Specifies the separation between the combo-box and the displayed popover.
+   * @default 0px
+   */
   --ch-combo-box-separation: 0px;
-  --ch-combo-box-separation-x: var(--ch-combo-box-separation);
-  --ch-combo-box-separation-y: var(--ch-combo-box-separation);
 
-  --ch-combo-box__picker: url('data:image/svg+xml,<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path d="M4.16669 0.666626L7.66669 4.66663H0.666687L4.16669 0.666626ZM4.16669 11.3333L0.666687 7.33329H7.66669L4.16669 11.3333Z"/></svg>');
-  --ch-combo-box__picker-color: currentColor;
-  --ch-combo-box__picker-size: 1em;
-  --ch-combo-box__picker-mask-size: 1em;
+  /**
+   * @prop --ch-combo-box-separation-x:
+   * Specifies the separation between the combo-box and the popover displayed
+   * on the x-axis.
+   * @default var(--ch-combo-box-separation)
+   */
+  --ch-combo-box-separation-x: var(--ch-combo-box-separation);
+
+  /**
+   * @prop --ch-combo-box-separation-y:
+   * Specifies the separation between the combo-box and the popover displayed
+   * on the y-axis.
+   * @default var(--ch-combo-box-separation)
+   */
+  --ch-combo-box-separation-y: var(--ch-combo-box-separation);
 
   --ch-combo-box-border-inline-start-width: 0px;
   --ch-combo-box-border-inline-end-width: 0px;
@@ -45,8 +117,8 @@
     inline-size: var(--ch-combo-box__picker-size);
     block-size: var(--ch-combo-box__picker-size);
     -webkit-mask: var(--ch-combo-box__picker) 50% 50% /
-      var(--ch-combo-box__picker-mask-size)
-      var(--ch-combo-box__picker-mask-size) no-repeat;
+      var(--ch-combo-box__picker-image-size)
+      var(--ch-combo-box__picker-image-size) no-repeat;
     background-color: var(--ch-combo-box__picker-color);
     pointer-events: none;
   }
@@ -144,8 +216,8 @@ ch-popover {
       block-size: var(--ch-combo-box-group__expandable-button-size);
       background-color: currentColor;
       -webkit-mask: $expandable-icon 50% 50% /
-        var(--ch-combo-box-group__image-size)
-        var(--ch-combo-box-group__image-size) no-repeat;
+        var(--ch-combo-box-group__expandable-button-image-size)
+        var(--ch-combo-box-group__expandable-button-image-size) no-repeat;
     }
   }
 

@@ -19,9 +19,6 @@ export class ChCodeEditor {
   #monacoRef: HTMLDivElement;
   #absoluteContentRef: HTMLDivElement;
 
-  #valueBeforeFirstRender: string = "";
-  #modifiedValueBeforeFirstRender: string = "";
-
   /**
    * Allow the user to resize the diff editor split view. This property only
    * works if `mode` === `"diff-editor"`.
@@ -74,10 +71,6 @@ export class ChCodeEditor {
         .getModel()!
         .modified.setValue(newModifiedValue);
     }
-    // The control was not rendered yet
-    else {
-      this.#modifiedValueBeforeFirstRender = newModifiedValue;
-    }
   }
 
   /**
@@ -121,10 +114,6 @@ export class ChCodeEditor {
     // Diff editor
     else if (this.mode === "diff-editor" && this.#monacoDiffEditorInstance) {
       this.#monacoDiffEditorInstance.getModel()!.original.setValue(newValue);
-    }
-    // The control was not rendered yet
-    else {
-      this.#valueBeforeFirstRender = newValue;
     }
   }
 
@@ -236,7 +225,7 @@ export class ChCodeEditor {
 
   #setupNormalEditor() {
     const editorModel = monaco.editor.createModel(
-      this.#valueBeforeFirstRender,
+      this.value,
       this.language,
       monaco.Uri.parse(`file:///${this.#editorId}.txt`)
     );
@@ -262,12 +251,12 @@ export class ChCodeEditor {
 
     this.#monacoDiffEditorInstance.setModel({
       original: monaco.editor.createModel(
-        this.#valueBeforeFirstRender,
+        this.value,
         this.language,
         monaco.Uri.parse(`file:///${this.#editorId}.txt`)
       ),
       modified: monaco.editor.createModel(
-        this.#modifiedValueBeforeFirstRender,
+        this.modifiedValue,
         this.language,
         monaco.Uri.parse(`file:///${this.#editorId}-modified.txt`)
       )

@@ -17,11 +17,11 @@
     "loader/"
   ],
   "scripts": {
-    "build": "stencil build --docs",
+    "build": "vite build && stencil build --docs",
     "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
-    "start": "stencil build --dev --watch --serve",
+    "start": "vite build && stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.coverage": "stencil test --spec --e2e --coverage --no-cache",
     "test.spec": "stencil test --spec --coverage --no-cache",

@@ -21,3 +21,5 @@ export type ChPopoverSizeMatch =
   | "content"
   | "action-element"
   | "action-element-as-minimum";
+
+export type ChPopoverPositionTry = "flip-block" | "flip-inline" | "none";

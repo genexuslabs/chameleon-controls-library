@@ -17,7 +17,7 @@ import {
 } from "./types";
 import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
-import { getAlignmentValue } from "./utils";
+import { fromPxToNumber, setResponsiveAlignment } from "./utils";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
@@ -26,9 +26,6 @@ const RESIZING_CLASS = "ch-popover-resizing";
 // Custom vars
 const POPOVER_ALIGN_BLOCK = "--ch-popover-block";
 const POPOVER_ALIGN_INLINE = "--ch-popover-inline";
-
-const POPOVER_SEPARATION_X = "--ch-popover-separation-x";
-const POPOVER_SEPARATION_Y = "--ch-popover-separation-y";
 
 const POPOVER_ACTION_WIDTH = "--ch-popover-action-width";
 const POPOVER_ACTION_HEIGHT = "--ch-popover-action-height";
@@ -82,8 +79,6 @@ const resizingCursorDictionary: {
 };
 
 // Utils
-const fromPxToNumber = (pxValue: string) =>
-  Number(pxValue.replace("px", "").trim());
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -269,9 +264,6 @@ export class ChPopover {
 
   @Element() el: HTMLChPopoverElement;
 
-  @State() actualBlockAlign: ChPopoverAlign;
-  @State() actualInlineAlign: ChPopoverAlign;
-  @State() relativePopover = false;
   @State() resizing = false;
 
   /**
@@ -439,10 +431,10 @@ export class ChPopover {
   @Prop({ attribute: "popover" }) readonly mode: "auto" | "manual" = "auto";
 
   /**
-   * Specifies if the popover is automatically aligned is the content overflow
-   * the window.
+   * Specifies an alternate position to try when the control overflows the
+   * window.
    */
-  @Prop() readonly responsiveAlignment: boolean = true;
+  @Prop() readonly positionTry: "flip-block" | "flip-inline" | "none" = "none";
 
   /**
    * Specifies whether the control can be resized. If `true` the control can be
@@ -562,39 +554,46 @@ export class ChPopover {
 
   #updatePosition = () => {
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const computedStyle = getComputedStyle(this.el);
-
+    const documentRect = document.documentElement.getBoundingClientRect();
     const actionRect = this.actionElement.getBoundingClientRect();
     const popoverRect = this.el.getBoundingClientRect();
+    const computedStyle = getComputedStyle(this.el);
 
-    if (!this.relativePopover) {
-      const documentRect = document.documentElement.getBoundingClientRect();
-      const insetInlineStart = this.#isRTLDirection
-        ? documentRect.width - (actionRect.left + actionRect.width)
-        : actionRect.left;
+    const actionInlineStart = this.#getActionInlineStartPosition(
+      documentRect,
+      actionRect
+    );
 
-      // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-      setProperty(this.el, POPOVER_ACTION_WIDTH, actionRect.width);
-      setProperty(this.el, POPOVER_ACTION_HEIGHT, actionRect.height);
-      setProperty(this.el, POPOVER_ACTION_LEFT, insetInlineStart);
-      setProperty(this.el, POPOVER_ACTION_TOP, actionRect.top);
-    }
+    this.#setResponsiveAlignment(
+      documentRect,
+      actionRect,
+      actionInlineStart,
+      popoverRect,
+      computedStyle
+    );
 
-    this.#setResponsiveAlignment(actionRect, popoverRect, computedStyle);
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    setProperty(this.el, POPOVER_ACTION_WIDTH, actionRect.width);
+    setProperty(this.el, POPOVER_ACTION_HEIGHT, actionRect.height);
+    setProperty(this.el, POPOVER_ACTION_LEFT, actionInlineStart);
+    setProperty(this.el, POPOVER_ACTION_TOP, actionRect.top);
   };
 
+  #getActionInlineStartPosition = (
+    documentRect: DOMRect,
+    actionRect: DOMRect
+  ) =>
+    this.#isRTLDirection
+      ? documentRect.width - (actionRect.left + actionRect.width)
+      : actionRect.left;
+
   #setResponsiveAlignment = (
-    actionRect?: DOMRect,
-    popoverRect?: DOMRect,
-    computedStyle?: CSSStyleDeclaration
+    documentRect: DOMRect,
+    actionRect: DOMRect,
+    actionInlineStart: number,
+    popoverRect: DOMRect,
+    computedStyle: CSSStyleDeclaration
   ) => {
-    actionRect ??= this.actionElement.getBoundingClientRect();
-    popoverRect ??= this.el.getBoundingClientRect();
-    computedStyle ??= getComputedStyle(this.el);
-
-    const separationX = computedStyle.getPropertyValue(POPOVER_SEPARATION_X);
-    const separationY = computedStyle.getPropertyValue(POPOVER_SEPARATION_Y);
-
     const popoverWidth = this.#getPopoverInlineSizeAndFixItIfNecessary(
       actionRect,
       popoverRect
@@ -604,22 +603,21 @@ export class ChPopover {
       popoverRect
     );
 
-    // Alignment
-    const blockAlignmentValue = getAlignmentValue(
-      this.blockAlign,
-      actionRect.height,
-      popoverHeight,
-      fromPxToNumber(separationY)
-    );
-    setProperty(this.el, POPOVER_ALIGN_BLOCK, blockAlignmentValue);
-
-    const inlineAlignmentValue = getAlignmentValue(
-      this.inlineAlign,
-      actionRect.width,
+    const alignment = setResponsiveAlignment(
+      documentRect,
+      actionRect,
+      actionInlineStart,
       popoverWidth,
-      fromPxToNumber(separationX)
+      popoverHeight,
+      computedStyle,
+      this.inlineAlign,
+      this.blockAlign,
+      this.positionTry
     );
-    setProperty(this.el, POPOVER_ALIGN_INLINE, inlineAlignmentValue);
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    setProperty(this.el, POPOVER_ALIGN_INLINE, alignment[0]);
+    setProperty(this.el, POPOVER_ALIGN_BLOCK, alignment[1]);
   };
 
   #getPopoverInlineSizeAndFixItIfNecessary = (
@@ -945,10 +943,6 @@ export class ChPopover {
   connectedCallback() {
     this.#windowRef = window;
 
-    // Responsive alignments
-    this.actualBlockAlign = this.blockAlign;
-    this.actualInlineAlign = this.inlineAlign;
-
     // Set RTL watcher
     this.#rtlWatcher = new MutationObserver(() => {
       this.#isRTLDirection = isRTL();
@@ -990,7 +984,23 @@ export class ChPopover {
     }
 
     if (this.#adjustAlignment) {
-      this.#setResponsiveAlignment();
+      const documentRect = document.documentElement.getBoundingClientRect();
+      const actionRect = this.actionElement.getBoundingClientRect();
+      const popoverRect = this.el.getBoundingClientRect();
+      const computedStyle = getComputedStyle(this.el);
+
+      const actionInlineStart = this.#getActionInlineStartPosition(
+        documentRect,
+        actionRect
+      );
+
+      this.#setResponsiveAlignment(
+        documentRect,
+        actionRect,
+        actionInlineStart,
+        popoverRect,
+        computedStyle
+      );
     }
   }
 

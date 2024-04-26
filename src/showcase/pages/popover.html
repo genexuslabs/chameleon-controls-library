@@ -12,27 +12,29 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
 
     <style>
+      body {
+        display: grid;
+        grid-template-columns: 1fr 260px;
+        gap: var(--spacing-un-spacing--l);
+      }
+
       fieldset {
+        display: grid;
+        grid-auto-flow: row;
+        grid-auto-rows: max-content;
+        gap: 8px;
+        border: unset;
+        padding: unset;
+      }
+
+      fieldset > div {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
-      }
-
-      .main-container {
-        display: grid;
-        grid-template-rows: 1fr min-content;
-        align-self: stretch;
-        width: 100%;
-        padding-inline: 4px;
         gap: 8px;
-        margin: 16px;
       }
 
-      .section-dev {
-        display: grid;
-        grid-template-columns: 250px 500px max-content;
-        gap: 32px;
-        height: 100%;
+      .card-properties > fieldset > legend {
+        margin-block-end: var(--spacing-un-spacing--m);
       }
 
       ch-popover {
@@ -47,7 +49,7 @@
         justify-content: center;
         width: 120px;
         height: 60px;
-        margin: auto 80px;
+        margin: 160px;
         border: 1px solid;
         text-align: center;
       }
@@ -71,7 +73,7 @@
     </style>
   </head>
   <body class="white-label">
-    <div class="main-container">
+    <div class="card">
       <ch-popover id="popover1">
         <div
           slot="header"
@@ -84,21 +86,21 @@
 
         <div>
           <div>
-            <label>
+            <label class="form-input__label">
               Any content 1
-              <input class="form-input" type="text" />
+              <input class="form-input" class="form-input" type="text" />
             </label>
           </div>
 
-          <label>
+          <label class="form-input__label">
             Any content 2
-            <input class="form-input" type="text" />
+            <input class="form-input" class="form-input" type="text" />
           </label>
           <button id="close-button-1" class="button-primary">Close</button>
         </div>
       </ch-popover>
 
-      <button id="action1">Open popover</button>
+      <button id="action1" class="button-primary">Open popover</button>
 
       <div class="scroll-container">
         <div class="scroll-content">
@@ -120,113 +122,146 @@
             <div>Popover content</div>
           </ch-popover>
 
-          <input id="action2" placeholder="Open popover" />
+          <input class="form-input" id="action2" placeholder="Open popover" />
         </div>
       </div>
+    </div>
 
-      <div class="configuration">
-        <div>
-          <fieldset>
-            <legend>Properties</legend>
+    <div class="cardcard-properties">
+      <fieldset>
+        <legend class="heading-4">Properties</legend>
 
-            <label>
-              Mode
-              <select name="mode" id="mode">
-                <option value="auto" selected>Auto</option>
-                <option value="manual">Manual</option>
-              </select>
-            </label>
+        <label class="form-input__label">
+          Mode
+          <select class="form-input" name="mode" id="mode">
+            <option value="auto" selected>Auto</option>
+            <option value="manual">Manual</option>
+          </select>
+        </label>
 
-            <label>
-              Allow drag
-              <select name="allow-drag" id="allow-drag">
-                <option value="no" selected>No</option>
-                <option value="box">Box</option>
-                <option value="header">Header</option>
-              </select>
-            </label>
+        <label class="form-input__label">
+          Allow drag
+          <select class="form-input" name="allow-drag" id="allow-drag">
+            <option value="no" selected>No</option>
+            <option value="box">Box</option>
+            <option value="header">Header</option>
+          </select>
+        </label>
 
-            <ch-checkbox
-              id="resizable"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Resizable"
-            ></ch-checkbox>
+        <ch-checkbox
+          id="resizable"
+          checked-value="true"
+          un-checked-value="false"
+          value="false"
+          caption="Resizable"
+        ></ch-checkbox>
 
-            <ch-checkbox
-              id="popover-1-visible"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Popover 1 Visible"
-            ></ch-checkbox>
+        <ch-checkbox
+          id="popover-1-visible"
+          checked-value="true"
+          un-checked-value="false"
+          value="false"
+          caption="Popover 1 Visible"
+        ></ch-checkbox>
 
-            <ch-checkbox
-              id="popover-2-visible"
-              checked-value="true"
-              un-checked-value="false"
-              value="false"
-              caption="Popover 2 Visible"
-            ></ch-checkbox>
+        <ch-checkbox
+          id="popover-2-visible"
+          checked-value="true"
+          un-checked-value="false"
+          value="false"
+          caption="Popover 2 Visible"
+        ></ch-checkbox>
 
-            <label
-              >Popover content
-              <input
-                type="text"
-                id="popover-content"
-                placeholder="Set popover content..."
-              />
-            </label>
-          </fieldset>
+        <label class="form-input__label"
+          >Popover content
+          <input
+            class="form-input"
+            type="text"
+            id="popover-content"
+            placeholder="Set popover content..."
+          />
+        </label>
+      </fieldset>
 
-          <fieldset>
-            <legend>Alignment</legend>
+      <hr />
 
-            <label>
-              Block Alignment
-              <select name="block-align" id="block-align">
-                <option value="outside-start">Outside Start</option>
-                <option value="inside-start">Inside Start</option>
-                <option value="center" selected>Center</option>
-                <option value="inside-end">Inside End</option>
-                <option value="outside-end">Outside End</option>
-              </select>
-            </label>
+      <fieldset>
+        <legend class="heading-4">Alignment</legend>
 
-            <label>
-              Inline Alignment
-              <select name="inline-align" id="inline-align">
-                <option value="outside-start">Outside Start</option>
-                <option value="inside-start">Inside Start</option>
-                <option value="center" selected>Center</option>
-                <option value="inside-end">Inside End</option>
-                <option value="outside-end">Outside End</option>
-              </select>
-            </label>
+        <label class="form-input__label">
+          Block Alignment
+          <select class="form-input" name="block-align" id="block-align">
+            <option value="outside-start">Outside Start</option>
+            <option value="inside-start">Inside Start</option>
+            <option value="center" selected>Center</option>
+            <option value="inside-end">Inside End</option>
+            <option value="outside-end">Outside End</option>
+          </select>
+        </label>
 
-            <label>
-              Separation X
-              <input
-                type="number"
-                id="separation-x"
-                placeholder="Separation value..."
-                value="0"
-              />
-            </label>
+        <label class="form-input__label">
+          Inline Alignment
+          <select class="form-input" name="inline-align" id="inline-align">
+            <option value="outside-start">Outside Start</option>
+            <option value="inside-start">Inside Start</option>
+            <option value="center" selected>Center</option>
+            <option value="inside-end">Inside End</option>
+            <option value="outside-end">Outside End</option>
+          </select>
+        </label>
 
-            <label>
-              Separation Y
-              <input
-                type="number"
-                id="separation-y"
-                placeholder="Separation value..."
-                value="0"
-              />
-            </label>
-          </fieldset>
-        </div>
-      </div>
+        <label class="form-input__label">
+          Inline Size Match
+          <select
+            class="form-input"
+            name="inline-size-match"
+            id="inline-size-match"
+          >
+            <option value="content">Content</option>
+            <option value="action-element">Action Element</option>
+            <option value="action-element-as-minimum">
+              Action Element As Minimum
+            </option>
+          </select>
+        </label>
+
+        <label class="form-input__label">
+          Block Size Match
+          <select
+            class="form-input"
+            name="block-size-match"
+            id="block-size-match"
+          >
+            <option value="content">Content</option>
+            <option value="action-element">Action Element</option>
+            <option value="action-element-as-minimum">
+              Action Element As Minimum
+            </option>
+          </select>
+        </label>
+
+        <label class="form-input__label">
+          Separation X
+          <input
+            class="form-input"
+            type="number"
+            id="separation-x"
+            placeholder="Separation value..."
+            value="0"
+          />
+        </label>
+
+        <label class="form-input__label">
+          Separation Y
+          <input
+            class="form-input"
+            type="number"
+            id="separation-y"
+            placeholder="Separation value..."
+            value="0"
+          />
+        </label>
+      </fieldset>
     </div>
 
     <script type="module">
@@ -285,14 +320,14 @@
         });
 
         checkboxResizable.addEventListener("input", event => {
-          popoverElement1.resizable = event.target.checked;
-          popoverElement2.resizable = event.target.checked;
+          popoverElement1.resizable = event.target.value === "true";
+          popoverElement2.resizable = event.target.value === "true";
         });
         checkboxVisible1.addEventListener("input", event => {
-          popoverElement1.hidden = !event.target.checked;
+          popoverElement1.hidden = !(event.target.value === "true");
         });
         checkboxVisible2.addEventListener("input", event => {
-          popoverElement2.hidden = !event.target.checked;
+          popoverElement2.hidden = !(event.target.value === "true");
         });
 
         const blockAlignSelect = document.getElementById("block-align");
@@ -307,6 +342,24 @@
           const selectedOption = event.target.value;
           popoverElement1.inlineAlign = selectedOption;
           popoverElement2.inlineAlign = selectedOption;
+        });
+
+        // Inline size match
+        const inlineSizeMatchSelectRef =
+          document.getElementById("inline-size-match");
+        inlineSizeMatchSelectRef.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.inlineSizeMatch = selectedOption;
+          popoverElement2.inlineSizeMatch = selectedOption;
+        });
+
+        // Block size match
+        const blockSizeMatchSelectRef =
+          document.getElementById("block-size-match");
+        blockSizeMatchSelectRef.addEventListener("input", event => {
+          const selectedOption = event.target.value;
+          popoverElement1.blockSizeMatch = selectedOption;
+          popoverElement2.blockSizeMatch = selectedOption;
         });
 
         // - - - - - - - - - - - - Separation - - - - - - - - - - - -

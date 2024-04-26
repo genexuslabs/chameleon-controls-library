@@ -27,7 +27,7 @@ import { NotificationMessageWithDelay } from "./components/notifications/notific
 import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
-import { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
+import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
 import { RadioItem } from "./components/radio-group/types";
 import { SegmentedControlItem } from "./components/segmented-control/types";
@@ -67,7 +67,7 @@ export { NotificationMessageWithDelay } from "./components/notifications/notific
 export { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEvent } from "./components/paginator/ch-paginator";
 export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
-export { ChPopoverAlign, PopoverActionElement } from "./components/popover/types";
+export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
 export { RadioItem } from "./components/radio-group/types";
 export { SegmentedControlItem } from "./components/segmented-control/types";
@@ -1515,6 +1515,10 @@ export namespace Components {
          */
         "blockAlign": ChPopoverAlign;
         /**
+          * Specifies how the popover adapts its block size.  - "content": The block size of the control will be determined by its    content block size.  - "action-element": The block size of the control will match the block    size of the `actionElement`.  - "action-element-as-minimum": The minimum block size of the control    will match the block size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work.
+         */
+        "blockSizeMatch": ChPopoverSizeMatch;
+        /**
           * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
          */
         "closeOnClickOutside": boolean;
@@ -1531,17 +1535,21 @@ export namespace Components {
          */
         "inlineAlign": ChPopoverAlign;
         /**
+          * Specifies how the popover adapts its inline size.  - "content": The inline size of the control will be determined by its    content inline size.  - "action-element": The inline size of the control will match the inline    size of the `actionElement`.  - "action-element-as-minimum": The minimum inline size of the control    will match the inline size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work.
+         */
+        "inlineSizeMatch": ChPopoverSizeMatch;
+        /**
           * Popovers that have the `"auto"` state can be "light dismissed" by selecting outside the popover area, and generally only allow one popover to be displayed on-screen at a time. By contrast, `"manual"` popovers must always be explicitly hidden, but allow for use cases such as nested popovers in menus.
          */
         "mode": "auto" | "manual";
         /**
+          * Specifies an alternate position to try when the control overflows the window.
+         */
+        "positionTry": "flip-block" | "flip-inline" | "none";
+        /**
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable": boolean;
-        /**
-          * Specifies if the popover is automatically aligned is the content overflow the window.
-         */
-        "responsiveAlignment": boolean;
     }
     interface ChQr {
         /**
@@ -5483,6 +5491,10 @@ declare namespace LocalJSX {
          */
         "blockAlign"?: ChPopoverAlign;
         /**
+          * Specifies how the popover adapts its block size.  - "content": The block size of the control will be determined by its    content block size.  - "action-element": The block size of the control will match the block    size of the `actionElement`.  - "action-element-as-minimum": The minimum block size of the control    will match the block size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work.
+         */
+        "blockSizeMatch"?: ChPopoverSizeMatch;
+        /**
           * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
          */
         "closeOnClickOutside"?: boolean;
@@ -5499,6 +5511,10 @@ declare namespace LocalJSX {
          */
         "inlineAlign"?: ChPopoverAlign;
         /**
+          * Specifies how the popover adapts its inline size.  - "content": The inline size of the control will be determined by its    content inline size.  - "action-element": The inline size of the control will match the inline    size of the `actionElement`.  - "action-element-as-minimum": The minimum inline size of the control    will match the inline size of the `actionElement`.  If the control is resized at runtime, only the "action-element-as-minimum" value will still work.
+         */
+        "inlineSizeMatch"?: ChPopoverSizeMatch;
+        /**
           * Popovers that have the `"auto"` state can be "light dismissed" by selecting outside the popover area, and generally only allow one popover to be displayed on-screen at a time. By contrast, `"manual"` popovers must always be explicitly hidden, but allow for use cases such as nested popovers in menus.
          */
         "mode"?: "auto" | "manual";
@@ -5511,13 +5527,13 @@ declare namespace LocalJSX {
          */
         "onPopoverOpened"?: (event: ChPopoverCustomEvent<any>) => void;
         /**
+          * Specifies an alternate position to try when the control overflows the window.
+         */
+        "positionTry"?: "flip-block" | "flip-inline" | "none";
+        /**
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable"?: boolean;
-        /**
-          * Specifies if the popover is automatically aligned is the content overflow the window.
-         */
-        "responsiveAlignment"?: boolean;
     }
     interface ChQr {
         /**

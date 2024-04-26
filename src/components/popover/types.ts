@@ -16,3 +16,10 @@ export type ChPopoverResizeElement =
   | "block-start-inline-end" // Top Right
   | "block-end-inline-start" // Bottom Left
   | "block-end-inline-end"; // Bottom Right
+
+export type ChPopoverSizeMatch =
+  | "content"
+  | "action-element"
+  | "action-element-as-minimum";
+
+export type ChPopoverPositionTry = "flip-block" | "flip-inline" | "none";

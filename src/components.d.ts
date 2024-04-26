@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupItemModel } from "./components/action-group/types";
-import { ComboBoxItem } from "./components/combobox/types";
+import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxItemModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/dropdown/types";
 import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -48,7 +48,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupItemModel } from "./components/action-group/types";
-export { ComboBoxItem } from "./components/combobox/types";
+export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxItemModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/dropdown/types";
 export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -352,9 +352,29 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
+          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "value"`.
+         */
+        "filter": string;
+        /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "value"`.
+         */
+        "filterDebounce": number;
+        /**
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
+         */
+        "filterList": string[];
+        /**
+          * This property lets you determine the options that will be applied to the filter.
+         */
+        "filterOptions": ComboBoxFilterOptions;
+        /**
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                        | | --------- | ---------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. | | `none`    | Show all items.                                                                                |
+         */
+        "filterType": ComboBoxFilterType;
+        /**
           * Specifies the items of the control
          */
-        "items": ComboBoxItem[];
+        "items": ComboBoxItemModel[];
         /**
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */
@@ -4296,9 +4316,29 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
+          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "value"`.
+         */
+        "filter"?: string;
+        /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "value"`.
+         */
+        "filterDebounce"?: number;
+        /**
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
+         */
+        "filterList"?: string[];
+        /**
+          * This property lets you determine the options that will be applied to the filter.
+         */
+        "filterOptions"?: ComboBoxFilterOptions;
+        /**
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                        | | --------- | ---------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. | | `none`    | Show all items.                                                                                |
+         */
+        "filterType"?: ComboBoxFilterType;
+        /**
           * Specifies the items of the control
          */
-        "items"?: ComboBoxItem[];
+        "items"?: ComboBoxItemModel[];
         /**
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */

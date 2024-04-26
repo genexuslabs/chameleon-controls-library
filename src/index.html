@@ -13,6 +13,13 @@
       href="./showcase/assets/icons/favicon.ico"
     />
 
+    <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+    </style>
+
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <script src="./showcase/types/types.js"></script>

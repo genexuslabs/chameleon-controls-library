@@ -12,6 +12,11 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
 
     <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+
       body {
         display: grid;
         grid-template-columns: 1fr 250px;

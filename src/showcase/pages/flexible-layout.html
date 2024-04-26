@@ -12,6 +12,11 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
 
     <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+
       @font-face {
         font-family: SourceSansPro_Regular;
         src: url("assets/fonts/SourceSansPro_Regular.woff2");

@@ -12,6 +12,11 @@
     <link href="/build/chameleon.css" rel="stylesheet" />
 
     <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+
       body {
         min-height: 100vh;
       }

@@ -1217,6 +1217,7 @@ export class ChComboBox
                   hidden={!this.expanded}
                   inlineSizeMatch="action-element-as-minimum"
                   popover="manual"
+                  positionTry="flip-block"
                   onPopoverClosed={this.#handlePopoverClose}
                 >
                   <div class="window__content" part="window__content">

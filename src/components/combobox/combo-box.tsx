@@ -1215,6 +1215,7 @@ export class ChComboBox
                   inlineAlign="inside-start"
                   closeOnClickOutside
                   hidden={!this.expanded}
+                  inlineSizeMatch="action-element-as-minimum"
                   popover="manual"
                   onPopoverClosed={this.#handlePopoverClose}
                 >

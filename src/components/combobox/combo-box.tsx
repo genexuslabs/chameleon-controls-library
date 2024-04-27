@@ -546,6 +546,13 @@ export class ChComboBox
    */
   @Event() input: EventEmitter<string>;
 
+  /**
+   * Emitted when a change to the input filter is committed by the user. Only
+   * applies if `filterType !== "none"`. This event is debounced by the
+   * `filterDebounce` value.
+   */
+  @Event() filterChange: EventEmitter<string>;
+
   #scheduleFilterProcessing = (newImmediateFilter?: ImmediateFilter) => {
     this.#applyFilters = true;
 
@@ -570,6 +577,8 @@ export class ChComboBox
     this.#displayedValues ??= new Set();
 
     const filterFunction = () => {
+      this.filterChange.emit(this.filter);
+
       this.#displayedValues.clear();
 
       const filterOptions = {

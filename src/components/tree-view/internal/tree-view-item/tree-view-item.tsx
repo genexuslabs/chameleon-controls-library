@@ -947,7 +947,11 @@ export class ChTreeViewItem {
           // Drag and drop
           draggable={!this.dragDisabled}
           onDragStart={this.#handleDragStart}
-          onDragEnd={!this.dragDisabled ? this.#handleDragEnd : null}
+          onDragEnd={
+            !this.dragDisabled && this.dragState === "start"
+              ? this.#handleDragEnd
+              : null
+          }
           ref={el => (this.#headerRef = el)}
         >
           {!this.leaf && this.expandableButton === "action" && (

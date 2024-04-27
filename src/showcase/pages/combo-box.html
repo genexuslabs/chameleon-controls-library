@@ -32,7 +32,12 @@
         padding: unset;
       }
 
-      fieldset > div {
+      .card-fields {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+      }
+
+      .field {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
@@ -99,9 +104,9 @@
     </style>
   </head>
   <body class="white-label">
-    <div class="card">
+    <div class="card card-fields">
       <form id="myForm">
-        <div>
+        <div class="field">
           <label for="combobox-1">Label for combobox-1</label>
           <ch-combo-box
             name="combobox-1"
@@ -145,7 +150,7 @@
           />
         </label> -->
 
-        <div>
+        <!-- <div>
           <label>
             "Native" Select
             <select id="native-select">
@@ -172,8 +177,12 @@
             Last name 2:
             <input type="checkbox" name="lname" value="Doe" />
           </label>
-        </div>
+        </div> -->
       </form>
+
+      <ch-textblock id="filter-change-textblock"
+        >+ + + + + + + Filter Change + + + + + + +</ch-textblock
+      >
     </div>
 
     <div class="card card-properties">
@@ -250,19 +259,24 @@
 
     <script>
       const comboBox1 = document.getElementById("combobox-1");
-      const nativeSelect = document.getElementById("native-select");
+      // const nativeSelect = document.getElementById("native-select");
 
       const currentValueInputRef = document.getElementById("current-value");
       const disabledCheckboxRef = document.getElementById("disabled");
       const readonlyCheckboxRef = document.getElementById("readonly");
 
-      nativeSelect.addEventListener("input", () => {
-        console.log("Native select input... - - - Value:", nativeSelect.value);
-      });
+      // Textblock
+      const filterChangeTextBlock = document.getElementById(
+        "filter-change-textblock"
+      );
 
-      nativeSelect.addEventListener("change", () => {
-        console.log("Native select change... - - - Value:", nativeSelect.value);
-      });
+      // nativeSelect.addEventListener("input", () => {
+      //   console.log("Native select input... - - - Value:", nativeSelect.value);
+      // });
+
+      // nativeSelect.addEventListener("change", () => {
+      //   console.log("Native select change... - - - Value:", nativeSelect.value);
+      // });
 
       // Current value input
       comboBox1.addEventListener("input", () => {
@@ -281,6 +295,12 @@
       // Readonly checkbox
       readonlyCheckboxRef.addEventListener("input", () => {
         comboBox1.readonly = readonlyCheckboxRef.value === "true";
+      });
+
+      // Filter change
+      comboBox1.addEventListener("filterChange", event => {
+        filterChangeTextBlock.innerHTML = `+ + + + + + + Filter Change + + + + + + +<br>
+          ${event.detail}<br>`;
       });
 
       const comboBox1Items = [
@@ -554,29 +574,6 @@
         newOptions.hideMatchesAndShowNonMatches = checked;
         comboBox1.filterOptions = newOptions;
       });
-
-      class PopupInfo extends HTMLElement {
-        static formAssociated = true;
-        #internals;
-
-        constructor() {
-          // Always call super first in constructor
-          super();
-          this.#internals = this.attachInternals();
-        }
-
-        connectedCallback() {
-          // Create a shadow root
-          const shadow = this.attachShadow({
-            mode: "open",
-            delegatesFocus: true
-          });
-
-          this.shadowRoot.innerHTML = "<textarea></textarea>";
-        }
-      }
-
-      customElements.define("ch-native", PopupInfo);
     </script>
   </body>
 </html>

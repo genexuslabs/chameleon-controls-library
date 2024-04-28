@@ -4,7 +4,6 @@ import {
   Event,
   EventEmitter,
   Host,
-  Listen,
   Method,
   Prop,
   Watch,
@@ -345,6 +344,20 @@ export class ChTreeViewItem {
    * the parent item checkbox is unchecked.
    */
   @Prop() readonly toggleCheckboxes: boolean = false;
+  @Watch("toggleCheckboxes")
+  handleToggleCheckboxesChange(newToggleCheckboxesValue: boolean) {
+    if (newToggleCheckboxesValue) {
+      this.el.addEventListener(
+        "checkboxChange",
+        this.#handleCheckBoxChangeInItems
+      );
+    } else {
+      this.el.removeEventListener(
+        "checkboxChange",
+        this.#handleCheckBoxChangeInItems
+      );
+    }
+  }
 
   /**
    * Fired when the checkbox value of the control is changed.
@@ -388,41 +401,6 @@ export class ChTreeViewItem {
    * control.
    */
   @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
-
-  @Listen("checkboxChange")
-  updateCheckboxValue(
-    event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
-  ) {
-    // No need to update the checkbox value based on the children checkbox
-    if (!this.toggleCheckboxes || this.el === event.target) {
-      return;
-    }
-
-    const updatedCheck = event.detail.checked;
-    const treeItems = this.#getDirectTreeItems();
-
-    // Check if all the items have the same value as the updated item
-    const allItemsHaveTheSameCheckedValue = treeItems.every(
-      treeItem => treeItem.checked === updatedCheck
-    );
-
-    const eventMustBeEmitted =
-      this.checked !== updatedCheck ||
-      this.indeterminate !== !allItemsHaveTheSameCheckedValue;
-
-    this.#ignoreCheckboxChange = this.checked !== updatedCheck;
-    this.checked = updatedCheck;
-    this.indeterminate = !allItemsHaveTheSameCheckedValue;
-
-    // Sync with the UI Model
-    if (eventMustBeEmitted) {
-      this.checkboxToggleChange.emit({
-        id: this.el.id,
-        checked: updatedCheck,
-        indeterminate: !allItemsHaveTheSameCheckedValue
-      });
-    }
-  }
 
   /**
    * Focus the next item in the tree. If the control is expanded, it focuses
@@ -800,6 +778,40 @@ export class ChTreeViewItem {
     });
   };
 
+  #handleCheckBoxChangeInItems = (
+    event: ChTreeViewItemCustomEvent<TreeViewItemCheckedInfo>
+  ) => {
+    // No need to update the checkbox value based on the children checkbox
+    if (this.el === event.target) {
+      return;
+    }
+
+    const updatedCheck = event.detail.checked;
+    const treeItems = this.#getDirectTreeItems();
+
+    // Check if all the items have the same value as the updated item
+    const allItemsHaveTheSameCheckedValue = treeItems.every(
+      treeItem => treeItem.checked === updatedCheck
+    );
+
+    const eventMustBeEmitted =
+      this.checked !== updatedCheck ||
+      this.indeterminate !== !allItemsHaveTheSameCheckedValue;
+
+    this.#ignoreCheckboxChange = this.checked !== updatedCheck;
+    this.checked = updatedCheck;
+    this.indeterminate = !allItemsHaveTheSameCheckedValue;
+
+    // Sync with the UI Model
+    if (eventMustBeEmitted) {
+      this.checkboxToggleChange.emit({
+        id: this.el.id,
+        checked: updatedCheck,
+        indeterminate: !allItemsHaveTheSameCheckedValue
+      });
+    }
+  };
+
   #renderImg = (cssClass: string, src: string, imageType: ImageRender) =>
     imageType === "img" &&
     src && (
@@ -839,6 +851,15 @@ export class ChTreeViewItem {
     this.itemDragEnd.emit();
   };
 
+  connectedCallback() {
+    if (this.toggleCheckboxes) {
+      this.el.addEventListener(
+        "checkboxChange",
+        this.#handleCheckBoxChangeInItems
+      );
+    }
+  }
+
   componentWillLoad() {
     // Check if must lazy load
     this.#lazyLoadItems(this.expanded);
@@ -857,6 +878,11 @@ export class ChTreeViewItem {
     }
 
     this.#disconnectObserver();
+
+    this.el.removeEventListener(
+      "checkboxChange",
+      this.#handleCheckBoxChangeInItems
+    );
   }
 
   render() {
@@ -921,7 +947,11 @@ export class ChTreeViewItem {
           // Drag and drop
           draggable={!this.dragDisabled}
           onDragStart={this.#handleDragStart}
-          onDragEnd={!this.dragDisabled ? this.#handleDragEnd : null}
+          onDragEnd={
+            !this.dragDisabled && this.dragState === "start"
+              ? this.#handleDragEnd
+              : null
+          }
           ref={el => (this.#headerRef = el)}
         >
           {!this.leaf && this.expandableButton === "action" && (

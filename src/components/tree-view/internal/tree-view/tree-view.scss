@@ -1,139 +1,15 @@
-ch-tree-view {
-  --ch-tree-view-item__checkbox-size: 0.875em;
-  --ch-tree-view-item__expandable-button-size: 0.875em;
-  --ch-tree-view-item__image-size: 0.875em;
-
-  --ch-tree-view-item__dashed-line--inset-inline-start: 0px;
-  --ch-tree-view-item__dashed-line--inset-inline-end: 4px;
-  --ch-tree-view-item-gap: 5px;
-  --ch-tree-view-item-custom-padding-inline-start: 0px;
-
-  --ch-tree-tab-size: calc(
-    var(--ch-tree-view-item__image-size) +
-      var(--ch-tree-view-item__expandable-button-size) +
-      (var(--ch-tree-view-item-gap) * 2)
-  );
-
-  display: flex;
-  position: relative;
-  block-size: 100%;
-  inline-size: 100%;
-  overflow: auto;
-
-  & > .ch-tree-view-container {
-    position: absolute;
-    inset: 0;
-  }
-
-  // Reset useful droppable areas
-  &.ch-tree-view-dragging-item ch-tree-view-item {
-    pointer-events: var(--ch-tree-view-pointer-events, all);
-  }
-
-  // Remove un-useful droppable areas
-  &.ch-tree-view-dragging-item .ch-tree-view-list-item--deny-drop {
-    pointer-events: none;
-  }
-
-  // Remove droppable areas on selected items
-  &.ch-tree-view--dragging-selected-items ch-tree-view-item[selected] {
-    --ch-tree-view-pointer-events: none;
-  }
-
-  // Remove mouse actions when processing the drop of items
-  // @todo: Remove keyboard actions
-  &.ch-tree-view-waiting-drop-processing {
-    cursor: wait;
-
-    > .ch-tree-view-container {
-      pointer-events: none;
-    }
-  }
+:host {
+  display: contents;
 }
 
-// - - - - - - - - - - - - - - - -
-//        Item indentation
-// - - - - - - - - - - - - - - - -
-ch-tree-view-item::part(header),
-ch-tree-view-drop {
-  --own-offset: 0px;
-
-  --ch-tree-view-item-indentation: calc(
-    var(--ch-tree-tab-size) * var(--level) - var(--own-offset) -
-      var(--parent-offset, 0px) +
-      var(--ch-tree-view-item-custom-padding-inline-start)
-  );
-}
-
-ch-tree-view-item::part(header expand-button),
-ch-tree-view-drop {
-  --own-offset: calc(
-    var(--ch-tree-view-item__expandable-button-size) +
-      var(--ch-tree-view-item-gap)
-  );
-}
-
-// Even level
-ch-tree-view-item::part(header even-level),
-ch-tree-view-drop.gx-even-level {
-  --parent-offset: var(--parent-offset-odd);
-}
-
-// Odd level
-ch-tree-view-item::part(header odd-level),
-ch-tree-view-drop.gx-odd-level {
-  --parent-offset: var(--parent-offset-even);
-}
-
-ch-tree-view-drop {
-  margin-inline-start: var(--ch-tree-view-item-indentation);
-}
-
-ch-tree-view-item {
-  &::part(header) {
-    padding-inline-start: var(--ch-tree-view-item-indentation);
-  }
-
-  &::part(expandable even-level) {
-    --parent-offset-even: calc(
-      var(--ch-tree-view-item__expandable-button-size) +
-        var(--ch-tree-view-item-gap) + var(--parent-offset-odd, 0px)
-    );
-  }
-
-  &::part(expandable odd-level) {
-    --parent-offset-odd: calc(
-      var(--ch-tree-view-item__expandable-button-size) +
-        var(--ch-tree-view-item-gap) + var(--parent-offset-even, 0px)
-    );
-  }
-
-  // Improve the position of the first-child to avoid clipping the droppable
-  // area, since the parent has content-visibility: "auto" which creates a new
-  // containing block
-  & > ch-tree-view-drop:first-child {
-    transform: translateY(0);
-
-    &::after {
-      inset-block-start: 0px;
-    }
-  }
-
-  // Improve collision with the end drop (level N + 1) of a group and the next
-  // drop in the level N
-  & > ch-tree-view-drop:last-child {
-    transform: translateY(calc(var(--ch-tree-view-drop--size) * -1));
-
-    &::after {
-      inset-block-start: calc(var(--ch-tree-view-drop--size) * 0.5);
-    }
-  }
+:host(.rtl-direction) > .drag-info {
+  --rtl-offset: -100%;
 }
 
 // - - - - - - - - - - - - - - - -
 //            Drag info
 // - - - - - - - - - - - - - - - -
-.ch-tree-view-drag-info {
+.drag-info {
   --rtl-offset: 16px;
 
   position: fixed;
@@ -145,17 +21,23 @@ ch-tree-view-item {
   );
   pointer-events: none;
   z-index: 1; // Necessary to show the element above the expandable buttons
-  animation: ch-tree-view-drag-info-fade-in 10ms;
+  animation: fade-in 10ms;
+}
+
+// Remove mouse actions when processing the drop of items
+// @todo: Remove keyboard actions
+.waiting-drop-processing {
+  cursor: wait;
+
+  ::slotted(*) {
+    pointer-events: none;
+  }
 }
 
 // Wait until the custom var values are updated to avoid flickering
-@keyframes ch-tree-view-drag-info-fade-in {
+@keyframes fade-in {
   0%,
   100% {
     opacity: 0;
   }
-}
-
-html[dir="rtl"] .ch-tree-view-drag-info {
-  --rtl-offset: -100%;
 }

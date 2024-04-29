@@ -31,6 +31,12 @@ import {
 import { scrollToEdge } from "../../../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../../../common/types";
 import { ChTreeViewItemCustomEvent } from "../../../../components";
+import { TREE_VIEW_PARTS_DICTIONARY } from "../../../../common/reserverd-names";
+import {
+  isRTL,
+  subscribeToRTLChanges,
+  unsubscribeToRTLChanges
+} from "../../../../common/utils";
 
 const TREE_ITEM_TAG_NAME = "ch-tree-view-item";
 const TREE_DROP_TAG_NAME = "ch-tree-view-drop";
@@ -83,10 +89,12 @@ const getDroppableZoneKey = (
 const POSITION_X_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-x";
 const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
 
+let autoId = 0;
+
 @Component({
   tag: "ch-tree-view",
   styleUrl: "tree-view.scss",
-  shadow: false
+  shadow: true
 })
 export class ChTreeView {
   // @todo TODO: Check if key codes works in Safari
@@ -140,6 +148,12 @@ export class ChTreeView {
   #dragStartTimestamp: number; // Useful to avoid race conditions where the server response is slow
   #draggedItems: GxDataTransferInfo[];
 
+  /**
+   * Useful to identify the control and subscribe to RTL changes
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #treeViewId: string;
+
   // Refs
   #currentDraggedItem: HTMLChTreeViewItemElement;
   #lastOpenSubTreeItem: HTMLChTreeViewItemElement | HTMLChTreeViewDropElement;
@@ -157,6 +171,8 @@ export class ChTreeView {
   @State() draggingInTheDocument = false;
 
   @State() draggingInTree = false;
+
+  @State() rtlDirection = false;
 
   /**
    * Set this attribute if you want to allow multi selection of the items.
@@ -803,7 +819,20 @@ export class ChTreeView {
     });
   };
 
+  connectedCallback() {
+    this.#treeViewId = `ch-tree-view-id-${autoId++}`;
+
+    subscribeToRTLChanges(this.#treeViewId, (rtl: boolean) => {
+      this.rtlDirection = rtl;
+    });
+
+    // Initialize rtlDirection value
+    this.rtlDirection = isRTL();
+  }
+
   disconnectedCallback() {
+    unsubscribeToRTLChanges(this.#treeViewId);
+
     this.#resetVariables();
 
     // Remove dragover body event
@@ -814,24 +843,23 @@ export class ChTreeView {
     return (
       <Host
         class={{
-          "ch-tree-view-dragging-item": this.draggingInTheDocument,
-          "ch-tree-view-not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
-          "ch-tree-view--dragging-selected-items":
+          "dragging-item": this.draggingInTheDocument,
+          "not-dragging-item": !this.draggingInTheDocument, // WA for some bugs in GeneXus' DSO
+          "dragging-selected-items":
             this.draggingInTree && this.#draggingSelectedItems,
-          "ch-tree-view-waiting-drop-processing": this.waitDropProcessing
+          "rtl-direction": this.rtlDirection,
+          "waiting-drop-processing": this.waitDropProcessing
         }}
+        exportparts={TREE_VIEW_PARTS_DICTIONARY.DRAG_INFO}
       >
-        <div
-          role="tree"
-          part="tree-x-container"
-          aria-multiselectable={this.multiSelection.toString()}
-          class="ch-tree-view-container"
-        >
-          <slot />
-        </div>
+        <slot />
 
         {this.draggingInTree && (
-          <span aria-hidden="true" class="ch-tree-view-drag-info">
+          <span
+            aria-hidden="true"
+            class="drag-info"
+            part={TREE_VIEW_PARTS_DICTIONARY.DRAG_INFO}
+          >
             {this.#dragInfo}
           </span>
         )}

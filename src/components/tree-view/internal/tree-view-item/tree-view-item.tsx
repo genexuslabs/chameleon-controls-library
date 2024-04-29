@@ -28,9 +28,18 @@ import {
   removeDragImage,
   tokenMap
 } from "../../../../common/utils";
-import { INITIAL_LEVEL, getTreeItemLevelPart } from "../../utils";
+import {
+  INITIAL_LEVEL,
+  getTreeItemExpandedPart,
+  getTreeItemLevelPart
+} from "../../utils";
 import { ImageRender } from "../../../../common/types";
 import { CheckboxParts } from "../../../checkbox/types";
+import {
+  TREE_VIEW_ITEM_EXPORT_PARTS,
+  TREE_VIEW_ITEM_PARTS_DICTIONARY,
+  TREE_VIEW_PARTS_DICTIONARY
+} from "../../../../common/reserverd-names";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
@@ -46,11 +55,11 @@ const FIRST_ENABLED_SUB_ITEM = `${TREE_ITEM_TAG_NAME}:not([disabled])`;
 const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 
 // Custom classes
-const DOWNLOADING_CLASS = TREE_ITEM_TAG_NAME + "--downloading";
-const EDITING_CLASS = TREE_ITEM_TAG_NAME + "--editing";
-const NOT_EDITING_CLASS = TREE_ITEM_TAG_NAME + "--not-editing";
-const DRAG_ENTER_CLASS = TREE_ITEM_TAG_NAME + "--drag-enter";
-const DENY_DROP_CLASS = TREE_ITEM_TAG_NAME + "--deny-drop";
+const DENY_DROP_CLASS = `item-deny-drop`;
+
+// Custom parts
+const START_IMAGE_PARTS = `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.START_IMAGE}`;
+const END_IMAGE_PARTS = `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.END_IMAGE}`;
 
 // Keys
 const EXPANDABLE_ID = "expandable";
@@ -302,6 +311,15 @@ export class ChTreeViewItem {
    * when dragging the item.
    */
   @Prop() readonly metadata: string;
+
+  /**
+   * Specifies a set of parts to use in every DOM element of the control.
+   */
+  @Prop() readonly parts?: string;
+  @Watch("parts")
+  partsChanged(newParts: string) {
+    this.#setExportParts(newParts);
+  }
 
   /**
    * This attribute lets you specify if the item is selected
@@ -851,6 +869,18 @@ export class ChTreeViewItem {
     this.itemDragEnd.emit();
   };
 
+  #setExportParts = (exportparts: string | undefined) => {
+    if (exportparts) {
+      this.el.setAttribute(
+        "exportparts",
+        // Replace sequential empty characters with a comma
+        `${TREE_VIEW_ITEM_EXPORT_PARTS},${exportparts.replace(/\s+/g, ",")}`
+      );
+    } else {
+      this.el.setAttribute("exportparts", TREE_VIEW_ITEM_EXPORT_PARTS);
+    }
+  };
+
   connectedCallback() {
     if (this.toggleCheckboxes) {
       this.el.addEventListener(
@@ -858,6 +888,13 @@ export class ChTreeViewItem {
         this.#handleCheckBoxChangeInItems
       );
     }
+
+    // Static attributes that we including in the Host functional component to
+    // eliminate additional overhead
+    this.el.setAttribute("role", "treeitem");
+    this.el.setAttribute("aria-level", `${this.level + 1}`);
+    this.el.style.setProperty("--level", `${this.level}`);
+    this.#setExportParts(this.parts);
   }
 
   componentWillLoad() {
@@ -896,6 +933,7 @@ export class ChTreeViewItem {
       this.showLines === "last" && canShowLines && this.lastItem;
 
     const levelPart = getTreeItemLevelPart(evenLevel);
+    const expandedPart = getTreeItemExpandedPart(this.expanded);
 
     const pseudoStartImage = isPseudoElementImg(
       this.startImgSrc,
@@ -903,19 +941,17 @@ export class ChTreeViewItem {
     );
     const pseudoEndImage = isPseudoElementImg(this.endImgSrc, this.endImgType);
 
+    const hasParts = !!this.parts;
+
     return (
       <Host
-        role="treeitem"
-        aria-level={this.level + 1}
         aria-selected={this.selected ? "true" : null}
-        class={{
-          [DOWNLOADING_CLASS]: this.downloading,
-          [EDITING_CLASS]: this.editing,
-          [NOT_EDITING_CLASS]: !this.editing, // WA for some bugs in GeneXus' DSO
-          [DRAG_ENTER_CLASS]: this.dragState === "enter",
-          [DENY_DROP_CLASS]: this.leaf
-        }}
-        style={{ "--level": `${this.level}` }}
+        class={this.leaf ? DENY_DROP_CLASS : null}
+        part={tokenMap({
+          [TREE_VIEW_PARTS_DICTIONARY.ITEM]: true,
+          [TREE_VIEW_PARTS_DICTIONARY.DRAG_ENTER]: this.dragState === "enter",
+          [this.parts]: hasParts
+        })}
       >
         <button
           aria-controls={hasContent ? EXPANDABLE_ID : null}
@@ -933,12 +969,19 @@ export class ChTreeViewItem {
               !this.expanded
           }}
           part={tokenMap({
-            header: true,
-            disabled: this.disabled,
-            selected: this.selected,
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.HEADER]: true,
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.DRAG_ENTER]:
+              this.dragState === "enter",
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+            [TREE_VIEW_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
+              canShowLines && !this.leaf && this.expandableButton !== "no",
+            [this.editing
+              ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EDITING
+              : TREE_VIEW_ITEM_PARTS_DICTIONARY.NOT_EDITING]: true,
             [levelPart]: canShowLines,
-            "expand-button":
-              canShowLines && !this.leaf && this.expandableButton !== "no"
+            [this.parts]: hasParts
           })}
           type="button"
           disabled={this.disabled}
@@ -956,15 +999,19 @@ export class ChTreeViewItem {
         >
           {!this.leaf && this.expandableButton === "action" && (
             <button
+              key="expandable-button"
               type="button"
               class={{
                 "expandable-button": true,
                 "expandable-button--expanded": this.expanded,
                 "expandable-button--collapsed": !this.expanded
               }}
-              part={`expandable-button${this.disabled ? " disabled" : ""}${
-                this.expanded ? " expanded" : " collapsed"
-              }`}
+              part={tokenMap({
+                [TREE_VIEW_ITEM_PARTS_DICTIONARY.EXPANDABLE_BUTTON]: true,
+                [TREE_VIEW_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+                [expandedPart]: true,
+                [this.parts]: hasParts
+              })}
               disabled={this.disabled}
               onClick={this.#toggleExpand}
             ></button>
@@ -972,6 +1019,7 @@ export class ChTreeViewItem {
 
           {this.checkbox && (
             <ch-checkbox
+              key="checkbox"
               accessibleName={this.caption}
               class="checkbox"
               exportparts={CHECKBOX_EXPORT_PARTS}
@@ -1004,9 +1052,14 @@ export class ChTreeViewItem {
                     pseudoEndImage,
                   "readonly-mode": !this.editing
                 }}
-                part={`action${!this.editing ? " readonly-mode" : ""}${
-                  !this.leaf && this.expanded ? " expanded" : ""
-                }`}
+                part={tokenMap({
+                  [TREE_VIEW_ITEM_PARTS_DICTIONARY.ACTION]: true,
+                  [this.editing
+                    ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EDITING
+                    : TREE_VIEW_ITEM_PARTS_DICTIONARY.NOT_EDITING]: true,
+                  [expandedPart]: !this.leaf,
+                  [this.parts]: hasParts
+                })}
                 style={{
                   "--ch-start-img": pseudoStartImage
                     ? `url("${this.startImgSrc}")`
@@ -1018,15 +1071,22 @@ export class ChTreeViewItem {
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
                 {this.#renderImg(
-                  "img start-img",
+                  hasParts
+                    ? `${START_IMAGE_PARTS} ${this.parts}`
+                    : START_IMAGE_PARTS,
                   this.startImgSrc,
                   this.startImgType
                 )}
 
                 {this.editable && this.editing ? (
                   <input
-                    class="edit-name"
-                    part="edit-name"
+                    key="edit-caption"
+                    class="edit-caption"
+                    part={
+                      hasParts
+                        ? `${TREE_VIEW_ITEM_PARTS_DICTIONARY.EDIT_CAPTION} ${this.parts}`
+                        : TREE_VIEW_ITEM_PARTS_DICTIONARY.EDIT_CAPTION
+                    }
                     disabled={this.disabled}
                     type="text"
                     value={this.caption}
@@ -1039,26 +1099,40 @@ export class ChTreeViewItem {
                 )}
 
                 {this.#renderImg(
-                  "img end-img",
+                  hasParts
+                    ? `${END_IMAGE_PARTS} ${this.parts}`
+                    : END_IMAGE_PARTS,
                   this.endImgSrc,
                   this.endImgType
                 )}
               </div>,
 
               this.showDownloadingSpinner && !this.leaf && this.downloading && (
-                <div class="downloading" part="downloading"></div>
+                <div
+                  class="downloading"
+                  part={
+                    hasParts
+                      ? `${TREE_VIEW_ITEM_PARTS_DICTIONARY.DOWNLOADING} ${this.parts}`
+                      : TREE_VIEW_ITEM_PARTS_DICTIONARY.DOWNLOADING
+                  }
+                ></div>
               )
             ]
           )}
 
           {(showAllLines || showLastLine) && (
             <div
+              key="dashed-line"
               class={{
                 "dashed-line": true,
                 "last-all-line": showAllLines && this.lastItem,
                 "last-line": showLastLine
               }}
-              part={`dashed-line${this.lastItem ? " last-all-line" : ""}`}
+              part={tokenMap({
+                [TREE_VIEW_ITEM_PARTS_DICTIONARY.LINE]: true,
+                [TREE_VIEW_ITEM_PARTS_DICTIONARY.LAST_LINE]: this.lastItem,
+                [this.parts]: hasParts
+              })}
             ></div>
           )}
         </button>
@@ -1078,10 +1152,11 @@ export class ChTreeViewItem {
               "expandable--odd": canShowLines && !evenLevel
             }}
             part={tokenMap({
-              [EXPANDABLE_ID]: true,
-              [this.expanded ? "expanded" : "collapsed"]: true,
-              "lazy-loaded": !this.downloading,
-              [levelPart]: canShowLines
+              [TREE_VIEW_ITEM_PARTS_DICTIONARY.GROUP]: true,
+              [TREE_VIEW_ITEM_PARTS_DICTIONARY.LAZY_LOADED]: !this.downloading,
+              [expandedPart]: true,
+              [levelPart]: canShowLines,
+              [this.parts]: hasParts
             })}
           >
             <slot />

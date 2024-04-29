@@ -30,7 +30,7 @@
   min-block-size: calc(1em + 6px);
 
   &--disabled {
-    opacity: 0.5;
+    opacity: 0.5; // Remove this
     pointer-events: none;
   }
 }
@@ -157,7 +157,7 @@
   padding-block: 0.75px;
 }
 
-.edit-name {
+.edit-caption {
   grid-area: text;
   inline-size: 100%;
   block-size: 100%;

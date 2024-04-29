@@ -89,3 +89,58 @@ export const SEGMENTED_CONTROL_PARTS_DICTIONARY = {
 export const SEGMENTED_CONTROL_EXPORT_PARTS = joinParts(
   SEGMENTED_CONTROL_PARTS_DICTIONARY
 );
+
+// - - - - - - - - - - - - - - - - - - - -
+//             Tree view Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
+  ACTION: "item__action",
+  DOWNLOADING: "item__downloading",
+  EDIT_CAPTION: "item__edit-caption",
+  EXPANDABLE_BUTTON: "item__expandable-button",
+  GROUP: "item__group", // Old "expandable"
+  HEADER: "item__header",
+  IMAGE: "item__img",
+  LINE: "item__line", // Old "dashed-line"
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // HEADER, EXPANDABLE_BUTTON
+
+  EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
+  COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
+
+  EXPAND_BUTTON: "expand-button", // HEADER
+
+  EVEN_LEVEL: "even-level", // HEADER, GROUP
+  ODD_LEVEL: "odd-level", // HEADER, GROUP
+
+  LAST_LINE: "last-line", // LINE
+
+  LAZY_LOADED: "lazy-loaded", // GROUP
+
+  START_IMAGE: "start-img", // IMAGE
+  END_IMAGE: "end-img", // IMAGE
+
+  EDITING: "editing", // HEADER, ACTION
+  NOT_EDITING: "not-editing", // HEADER, ACTION
+
+  SELECTED: "selected", // HEADER
+  NOT_SELECTED: "not-selected", // HEADER
+
+  DRAG_ENTER: "drag-enter" // HEADER
+} as const;
+
+export const TREE_VIEW_ITEM_EXPORT_PARTS = joinParts(
+  TREE_VIEW_ITEM_PARTS_DICTIONARY
+);
+
+export const TREE_VIEW_PARTS_DICTIONARY = {
+  DRAG_INFO: "drag-info",
+  DRAG_PREVIEW: "drag-preview",
+  ITEM: "item",
+
+  // - - - - - - - - States - - - - - - - -
+  DRAG_ENTER: "drag-enter" // ITEM
+};
+
+export const TREE_VIEW_EXPORT_PARTS = joinParts(TREE_VIEW_PARTS_DICTIONARY);

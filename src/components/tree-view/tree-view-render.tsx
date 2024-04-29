@@ -9,7 +9,8 @@ import {
   Watch,
   State,
   forceUpdate,
-  Method
+  Method,
+  Host
 } from "@stencil/core";
 import {
   TreeViewDataTransferInfo,
@@ -146,7 +147,6 @@ const defaultRenderItem = <T extends true | false>(
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? treeState.checkbox}
       checked={itemModel.checked ?? treeState.checked}
-      class={itemModel.class || treeState.treeViewItemCssClass}
       disabled={
         useGxRender
           ? (itemModel as GXRender<true>).enabled === false
@@ -176,6 +176,7 @@ const defaultRenderItem = <T extends true | false>(
       leaf={itemModel.leaf}
       level={level}
       metadata={itemModel.metadata}
+      parts={itemModel.parts}
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
@@ -242,7 +243,7 @@ type ImmediateFilter = "immediate" | "debounced" | undefined;
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
-  shadow: false
+  shadow: true
 })
 export class ChTreeViewRender {
   // UI Models
@@ -1562,6 +1563,9 @@ export class ChTreeViewRender {
 
     // Initialize the state
     syncStateWithObservableAncestors(this.#treeViewId);
+
+    // Accessibility
+    this.el.setAttribute("role", "tree");
   }
 
   componentWillLoad() {
@@ -1594,30 +1598,31 @@ export class ChTreeViewRender {
 
   render() {
     return (
-      <ch-tree-view
-        class={this.cssClass || null}
-        multiSelection={this.multiSelection}
-        selectedItemsCallback={this.#getSelectedItemsCallback}
-        waitDropProcessing={this.waitDropProcessing}
-        onDroppableZoneEnter={this.#handleDroppableZoneEnter}
-        onExpandedItemChange={this.#handleExpandedItemChange}
-        onItemContextmenu={this.#handleItemContextmenu}
-        onItemsDropped={this.#handleItemsDropped}
-        onSelectedItemsChange={this.#handleSelectedItemsChange}
-        ref={el => (this.#treeRef = el)}
-      >
-        {this.treeModel.map((itemModel, index) =>
-          this.renderItem(
-            itemModel,
-            this,
-            this.#treeHasFilters(),
-            this.showLines !== "none" && index === this.treeModel.length - 1,
-            0,
-            this.dropMode !== "above" && this.dropDisabled !== true,
-            this.useGxRender
-          )
-        )}
-      </ch-tree-view>
+      <Host aria-multiselectable={this.multiSelection.toString()}>
+        <ch-tree-view
+          multiSelection={this.multiSelection}
+          selectedItemsCallback={this.#getSelectedItemsCallback}
+          waitDropProcessing={this.waitDropProcessing}
+          onDroppableZoneEnter={this.#handleDroppableZoneEnter}
+          onExpandedItemChange={this.#handleExpandedItemChange}
+          onItemContextmenu={this.#handleItemContextmenu}
+          onItemsDropped={this.#handleItemsDropped}
+          onSelectedItemsChange={this.#handleSelectedItemsChange}
+          ref={el => (this.#treeRef = el)}
+        >
+          {this.treeModel.map((itemModel, index) =>
+            this.renderItem(
+              itemModel,
+              this,
+              this.#treeHasFilters(),
+              this.showLines !== "none" && index === this.treeModel.length - 1,
+              0,
+              this.dropMode !== "above" && this.dropDisabled !== true,
+              this.useGxRender
+            )
+          )}
+        </ch-tree-view>
+      </Host>
     );
   }
 }

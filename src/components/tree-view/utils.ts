@@ -5,6 +5,7 @@ import {
   TreeViewItemModelExtended,
   TreeViewRemoveItemsResult
 } from "./types";
+import { TREE_VIEW_ITEM_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 export const INITIAL_LEVEL = 0;
 
@@ -13,7 +14,14 @@ export const EVEN_LEVEL = "even-level";
 export const ODD_LEVEL = "odd-level";
 
 export const getTreeItemLevelPart = (evenLevel: boolean) =>
-  evenLevel ? EVEN_LEVEL : ODD_LEVEL;
+  evenLevel
+    ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EVEN_LEVEL
+    : TREE_VIEW_ITEM_PARTS_DICTIONARY.ODD_LEVEL;
+
+export const getTreeItemExpandedPart = (expanded: boolean) =>
+  expanded
+    ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EXPANDED
+    : TREE_VIEW_ITEM_PARTS_DICTIONARY.COLLAPSED;
 
 export const removeTreeViewItems = (
   items: string[] | undefined,

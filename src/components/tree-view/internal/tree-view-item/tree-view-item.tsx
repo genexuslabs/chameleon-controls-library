@@ -34,8 +34,8 @@ import {
   getTreeItemLevelPart
 } from "../../utils";
 import { ImageRender } from "../../../../common/types";
-import { CheckboxParts } from "../../../checkbox/types";
 import {
+  TREE_VIEW_ITEM_CHECKBOX_EXPORT_PARTS,
   TREE_VIEW_ITEM_EXPORT_PARTS,
   TREE_VIEW_ITEM_PARTS_DICTIONARY,
   TREE_VIEW_PARTS_DICTIONARY
@@ -65,49 +65,6 @@ const END_IMAGE_PARTS = `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_IT
 const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
-
-// Export Parts
-const getCheckboxExportPart = (part: string): string =>
-  `${part}:checkbox__${part}`;
-
-const CONTAINER_PART: CheckboxParts = "container";
-const INPUT_PART: CheckboxParts = "input";
-const OPTION_PART: CheckboxParts = "option";
-const LABEL_PART: CheckboxParts = "label";
-
-const CHECKED_PART: CheckboxParts = "checked";
-const DISABLED_PART: CheckboxParts = "disabled";
-const INDETERMINATE_PART: CheckboxParts = "indeterminate";
-const UNCHECKED_PART: CheckboxParts = "unchecked";
-
-const CHECKBOX_EXPORT_PARTS = [
-  CONTAINER_PART,
-  INPUT_PART,
-  OPTION_PART,
-  LABEL_PART,
-  CHECKED_PART,
-  DISABLED_PART,
-  INDETERMINATE_PART,
-  UNCHECKED_PART
-]
-  .map(getCheckboxExportPart)
-  .join(",");
-
-const getCheckboxParts = (
-  checked: boolean,
-  indeterminate: boolean,
-  disabled: boolean
-) => {
-  if (indeterminate) {
-    return disabled
-      ? `${DISABLED_PART} ${INDETERMINATE_PART}`
-      : INDETERMINATE_PART;
-  }
-
-  const checkedValue = checked ? CHECKED_PART : UNCHECKED_PART;
-
-  return disabled ? `${DISABLED_PART} ${checkedValue}` : checkedValue;
-};
 
 @Component({
   tag: "ch-tree-view-item",
@@ -1022,12 +979,12 @@ export class ChTreeViewItem {
               key="checkbox"
               accessibleName={this.caption}
               class="checkbox"
-              exportparts={CHECKBOX_EXPORT_PARTS}
-              part={`checkbox ${getCheckboxParts(
-                this.checked,
-                this.indeterminate,
-                this.disabled
-              )}`}
+              exportparts={TREE_VIEW_ITEM_CHECKBOX_EXPORT_PARTS}
+              part={
+                hasParts
+                  ? `${TREE_VIEW_ITEM_PARTS_DICTIONARY.CHECKBOX} ${this.parts}`
+                  : TREE_VIEW_ITEM_PARTS_DICTIONARY.CHECKBOX
+              }
               checkedValue="true"
               disabled={this.disabled}
               indeterminate={this.indeterminate}

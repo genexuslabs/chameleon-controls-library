@@ -41,6 +41,24 @@ export const ACTION_GROUP_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Checkbox Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const CHECKBOX_PARTS_DICTIONARY = {
+  CONTAINER: "container",
+  INPUT: "input",
+  OPTION: "option",
+  LABEL: "label",
+
+  // - - - - - - - - States - - - - - - - -
+  CHECKED: "checked",
+  DISABLED: "disabled",
+  INDETERMINATE: "indeterminate",
+  UNCHECKED: "unchecked"
+} as const;
+
+export const CHECKBOX_EXPORT_PARTS = joinParts(CHECKBOX_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Dropdown Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const DROPDOWN_PARTS_DICTIONARY = {
@@ -93,8 +111,35 @@ export const SEGMENTED_CONTROL_EXPORT_PARTS = joinParts(
 // - - - - - - - - - - - - - - - - - - - -
 //             Tree view Parts
 // - - - - - - - - - - - - - - - - - - - -
+const TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY = {
+  CONTAINER: `item__checkbox-${CHECKBOX_PARTS_DICTIONARY.CONTAINER}`,
+  INPUT: `item__checkbox-${CHECKBOX_PARTS_DICTIONARY.INPUT}`,
+  OPTION: `item__checkbox-${CHECKBOX_PARTS_DICTIONARY.OPTION}`
+} as const;
+
+const TREE_VIEW_ITEM_CHECKBOX_PARTS_DICTIONARY = {
+  CHECKBOX_CONTAINER: `${CHECKBOX_PARTS_DICTIONARY.CONTAINER}:${TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.CONTAINER}`,
+  CHECKBOX_INPUT: `${CHECKBOX_PARTS_DICTIONARY.INPUT}:${TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.INPUT}`,
+  CHECKBOX_OPTION: `${CHECKBOX_PARTS_DICTIONARY.OPTION}:${TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.OPTION}`,
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: CHECKBOX_PARTS_DICTIONARY.DISABLED,
+  CHECKED: CHECKBOX_PARTS_DICTIONARY.CHECKED,
+  UNCHECKED: CHECKBOX_PARTS_DICTIONARY.UNCHECKED,
+  INDETERMINATE: CHECKBOX_PARTS_DICTIONARY.INDETERMINATE
+} as const;
+
+export const TREE_VIEW_ITEM_CHECKBOX_EXPORT_PARTS = joinParts(
+  TREE_VIEW_ITEM_CHECKBOX_PARTS_DICTIONARY
+);
+
 export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
+  CHECKBOX: "item__checkbox",
+  CHECKBOX_CONTAINER:
+    TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.CONTAINER,
+  CHECKBOX_INPUT: TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.INPUT,
+  CHECKBOX_OPTION: TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY.OPTION,
   DOWNLOADING: "item__downloading",
   EDIT_CAPTION: "item__edit-caption",
   EXPANDABLE_BUTTON: "item__expandable-button",
@@ -104,7 +149,7 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
   LINE: "item__line", // Old "dashed-line"
 
   // - - - - - - - - States - - - - - - - -
-  DISABLED: "disabled", // HEADER, EXPANDABLE_BUTTON
+  DISABLED: "disabled", // HEADER, EXPANDABLE_BUTTON, CHECKBOX
 
   EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
   COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
@@ -126,6 +171,10 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
 
   SELECTED: "selected", // HEADER
   NOT_SELECTED: "not-selected", // HEADER
+
+  CHECKED: TREE_VIEW_ITEM_CHECKBOX_PARTS_DICTIONARY.CHECKED, // CHECKBOX
+  UNCHECKED: TREE_VIEW_ITEM_CHECKBOX_PARTS_DICTIONARY.UNCHECKED, // CHECKBOX
+  INDETERMINATE: TREE_VIEW_ITEM_CHECKBOX_PARTS_DICTIONARY.INDETERMINATE, // CHECKBOX
 
   DRAG_ENTER: "drag-enter" // HEADER
 } as const;

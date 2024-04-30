@@ -23,7 +23,7 @@ const fileSystem_root = [
   {
     id: "dev",
     caption: "dev",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -33,7 +33,7 @@ const fileSystem_root = [
     id: "etc",
     caption: "etc",
     editable: false,
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     dragDisabled: true,
     dropDisabled: true,
     items: [
@@ -69,7 +69,7 @@ const fileSystem_root = [
   {
     id: "sbin",
     caption: "sbin",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -78,7 +78,7 @@ const fileSystem_root = [
   {
     id: "tmp",
     caption: "tmp",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -87,7 +87,7 @@ const fileSystem_root = [
   {
     id: "Users",
     caption: "Users",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -95,7 +95,7 @@ const fileSystem_root = [
       {
         id: "jdoe",
         caption: "jdoe",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -104,7 +104,7 @@ const fileSystem_root = [
       {
         id: "jmiller",
         caption: "jmiller",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -113,7 +113,7 @@ const fileSystem_root = [
       {
         id: "mysql",
         caption: "mysql",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -124,7 +124,7 @@ const fileSystem_root = [
   {
     id: "usr",
     caption: "usr",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -132,7 +132,7 @@ const fileSystem_root = [
       {
         id: "bin",
         caption: "bin",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -141,7 +141,7 @@ const fileSystem_root = [
       {
         id: "lib",
         caption: "lib",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -150,7 +150,7 @@ const fileSystem_root = [
       {
         id: "local",
         caption: "local",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -161,7 +161,7 @@ const fileSystem_root = [
   {
     id: "var",
     caption: "var",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -169,7 +169,7 @@ const fileSystem_root = [
       {
         id: "log",
         caption: "log",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -178,7 +178,7 @@ const fileSystem_root = [
       {
         id: "spool",
         caption: "spool",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -187,7 +187,7 @@ const fileSystem_root = [
       {
         id: "yp",
         caption: "yp",
-        class: "tree-view-item tree-view-item--folder",
+        parts: "item--folder",
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -201,7 +201,7 @@ export const fileSystemModel = [
   {
     id: "root",
     caption: "/",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     editable: false,
     expanded: true,
     dragDisabled: true,
@@ -225,7 +225,7 @@ const kbExplorer_root = [
     id: "Root_Module",
     caption: "Root Module",
     editable: false,
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     dragDisabled: true,
     lazy: true,
     order: 1
@@ -337,44 +337,44 @@ const kbExplorerModel_RootModule = [
   {
     id: "Root_Module.IDE",
     caption: "IDE",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.BL",
     caption: "BL",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General",
     caption: "General",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     lazy: true,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.AWS_internal",
     caption: "AWS_internal",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.DataModel",
     caption: "DataModel",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.Back",
     caption: "Back",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.Tests",
     caption: "Tests",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     order: KB_EXPLORER_ORDER.folder
   },
   {
@@ -500,19 +500,19 @@ const kbExplorerModel_RootModule_General = [
   {
     id: "Root_Module.General.Security",
     caption: "Security",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.Services",
     caption: "Services",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI",
     caption: "UI",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     lazy: true,
     order: KB_EXPLORER_ORDER.module
   },
@@ -542,26 +542,26 @@ const kbExplorerModel_RootModule_General_UI = [
   {
     id: "Root_Module.General.UI.DesignSystem",
     caption: "DesignSystem",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI.Q2",
     caption: "Q2",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     lazy: true,
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.General.UI.Popups",
     caption: "Popups",
-    class: "tree-view-item tree-view-item--module",
+    parts: "item--module",
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI.Stencils",
     caption: "Stencils",
-    class: "tree-view-item tree-view-item--folder",
+    parts: "item--folder",
     lazy: true,
     order: KB_EXPLORER_ORDER.folder
   },
@@ -578,7 +578,7 @@ const kbExplorerModel_RootModule_General_UI = [
   {
     id: "Root_Module.General.UI.Login",
     caption: "Login",
-    class: "tree-view-item tree-view-item--pending-commit",
+    parts: "item--pending-commit",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
     metadata: "Panel",
@@ -598,7 +598,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
   {
     id: "Root_Module.General.UI.Q2.ProjectDetail",
     caption: "ProjectDetail",
-    class: "tree-view-item tree-view-item--pending-commit",
+    parts: "item--pending-commit",
     leaf: true,
     startImgSrc: "assets/icons/panel-for-sd.svg",
     metadata: "Panel",

@@ -683,21 +683,26 @@ export class ChTreeView {
   };
 
   #updateDropEffect = (event: DragEvent) => {
-    const itemTarget = event.target as
-      | HTMLChTreeViewItemElement
-      | HTMLChTreeViewDropElement;
-    const containerTargetTagName = itemTarget.tagName.toLowerCase();
-
-    // Check if it is a valid item and the drag is performed over the current
-    // tree view
-    if (
-      !isTreeItemOrTreeDrop(containerTargetTagName) ||
-      itemTarget.closest(TREE_TAG_NAME) !== this.el
-    ) {
+    // Drag over was performed outside of the Tree View
+    if (!event.composedPath().includes(this.el)) {
       return;
     }
 
-    const targetIsTreeItem = containerTargetTagName === TREE_ITEM_TAG_NAME;
+    // We have to used composePath to find if an item is a target in the
+    // dragover event
+    const itemTarget = event.composedPath().find((element: HTMLElement) => {
+      if (!element.tagName) {
+        return false;
+      }
+
+      return (
+        isTreeItemOrTreeDrop(element.tagName.toLowerCase()) &&
+        element.closest(TREE_TAG_NAME) === this.el
+      );
+    }) as HTMLChTreeViewItemElement | HTMLChTreeViewDropElement;
+
+    const targetIsTreeItem =
+      itemTarget.tagName.toLowerCase() === TREE_ITEM_TAG_NAME;
     const dragEnterInformation = this.#getDropTypeAndTreeItemTarget(
       itemTarget,
       targetIsTreeItem

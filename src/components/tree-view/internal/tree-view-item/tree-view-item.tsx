@@ -66,6 +66,57 @@ const EXPANDABLE_ID = "expandable";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
+/**
+ * @part item__action - A sub element of the header (item__header part) that contains the main information related to the item (startImage, caption/edit-caption, endImage and downloading).
+ *
+ * @part item__checkbox - The host element of the checkbox.
+ * @part item__checkbox-container - The container that serves as a wrapper for the `input` and the `option` parts of the checkbox.
+ * @part item__checkbox-input - The input element that implements the interactions for the checkbox.
+ * @part item__checkbox-option - The actual "input" that is rendered above the `item__checkbox-input` part of the checkbox. This part has `position: absolute` and `pointer-events: none`.
+ *
+ * @part item__downloading - The spinner element that is rendered when the control is lazy loading its content. This element is rendered at the end of the `item__action` part.
+ *
+ * @part item__edit-caption - The input element that is rendered when the control is editing its caption. When rendered this element replaces the caption of the `item__action` part.
+ *
+ * @part item__expandable-button - The actionable expandable button element that is rendered when the control has subitems and the expandable button is interactive (`leaf !== true` and `expandableButton === "action"`). When rendered this element is placed at the start of the `item__action` part.
+ *
+ * @part item__group - The container element for the subitems of the control that is rendered when the content has been lazy loaded (`leaf !== true` and `lazyLoad !== true`).
+ *
+ * @part item__header - The container for all elements -excepts the subitems (`item__group` part)- of the control. It contains the `item__expandable-button`, `item_checkbox` and `item__action` parts.
+ *
+ * @part item__img - The img element that is rendered when the control has images (`startImgSrc` is defined and/or `endImgSrc` is defined).
+ *
+ * @part item__line - The element that is rendered to display the relationship between the control and its parent. Rendered if `level !== 0` and `showLines !== "none"`.
+ *
+ * @part disabled - Present in the `item__header`, `item__expandable-button`, `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the control is disabled (`disabled` === `true`).
+ *
+ * @part expanded - Present in the `item__action`, `item__expandable-button` and `item__group` parts when the control is expanded (`expanded` === `true`).
+ * @part collapsed - Present in the `item__action`, `item__expandable-button` and `item__group` parts when the control is collapsed (`expanded` !== `true`).
+ *
+ * @part expand-button - Present in the `item__header` part when the control has an expandable button (`level !== 0`, `leaf !== true` and `expandableButton !== "no"`).
+ *
+ * @part even-level - Present in the `item__group` and `item__header` parts when the control is in an even level (`level % 2 === 0`).
+ * @part odd-level - Present in the `item__group` and `item__header` parts when the control is in an odd level (`level % 2 !== 0`).
+ *
+ * @part last-line - Present in the `item__line` part if the control is the last control of its parent item in `showLines = "last"` mode (`showLines === "last"`, `level !== 0` and `lastItem === true`).
+ *
+ * @part lazy-loaded - Present in the `item__group` part when the content of the control has been loaded (`leaf !== true`, `lazyLoad !== true` and `downloading !== true`).
+ *
+ * @part start-img - Present in the `item__img` part when the control has an start image element (`startImgSrc` is defined and `startImgType` === "img").
+ * @part end-img - Present in the `item__img` part when the control has an end image element (`endImgSrc` is defined and `endImgType` === "img").
+ *
+ * @part editing - Present in the `item__header` and `item__action` parts when the control is in edit mode (`editable === true` and `editing === true`).
+ * @part not-editing - Present in the `item__header` and `item__action` parts when the control isn't in edit mode (`editable !== true` or `editing !== true`).
+ *
+ * @part selected - Present in the `item__header` part when the control is selected (`selected` === `true`).
+ * @part not-selected - Present in the `item__header` part when the control isn't selected (`selected` !== `true`).
+ *
+ * @part checked - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the control is checked and not indeterminate (`checked` === `true` and `indeterminate !== true`).
+ * @part indeterminate - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the control is indeterminate (`indeterminate` === `true`).
+ * @part unchecked - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the control is unchecked and not indeterminate (`checked` !== `true` and `indeterminate !== true`).
+ *
+ * @part drag-enter - Present in the `item__header` part when the control has `dragState === "enter"`.
+ */
 @Component({
   tag: "ch-tree-view-item",
   styleUrl: "tree-view-item.scss",

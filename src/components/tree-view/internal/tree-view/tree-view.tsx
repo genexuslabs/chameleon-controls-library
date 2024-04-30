@@ -92,7 +92,7 @@ const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
 let autoId = 0;
 
 /**
- * @part drag-preview - The element that contains the information to preview the current drag.
+ * @part drag-preview - The element that contains the preview information for the current drag.
  */
 @Component({
   tag: "ch-tree-view",

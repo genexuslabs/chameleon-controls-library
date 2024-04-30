@@ -2216,6 +2216,10 @@ export namespace Components {
          */
         "metadata": string;
         /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
+        /**
           * This attribute lets you specify if the item is selected
          */
         "selected": boolean;
@@ -6286,6 +6290,10 @@ declare namespace LocalJSX {
           * Fired when the selected state is updated by user interaction on the control.
          */
         "onSelectedItemChange"?: (event: ChTreeViewItemCustomEvent<TreeViewItemSelected>) => void;
+        /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
         /**
           * This attribute lets you specify if the item is selected
          */

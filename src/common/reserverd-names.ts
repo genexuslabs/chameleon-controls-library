@@ -143,10 +143,10 @@ export const TREE_VIEW_ITEM_PARTS_DICTIONARY = {
   DOWNLOADING: "item__downloading",
   EDIT_CAPTION: "item__edit-caption",
   EXPANDABLE_BUTTON: "item__expandable-button",
-  GROUP: "item__group", // Old "expandable"
+  GROUP: "item__group",
   HEADER: "item__header",
   IMAGE: "item__img",
-  LINE: "item__line", // Old "dashed-line"
+  LINE: "item__line",
 
   // - - - - - - - - States - - - - - - - -
   DISABLED: "disabled", // HEADER, EXPANDABLE_BUTTON, CHECKBOX

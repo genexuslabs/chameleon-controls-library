@@ -36,11 +36,11 @@
 }
 
 // - - - - - - - - - - - - - - - -
-//           Dashed Line
+//              Line
 // - - - - - - - - - - - - - - - -
-.dashed-line {
+.line {
   $parent-padding-inline-start: "var(--ch-tree-tab-size) * (var(--level) - 1) - var(--parent-offset, 0px) + var(--ch-tree-view-item-custom-padding-inline-start)";
-  $correction: "var(--ch-tree-view-item__expandable-button-size) * 0.5 + var(--ch-tree-view-item__dashed-line--inset-inline-start)";
+  $correction: "var(--ch-tree-view-item__expandable-button-size) * 0.5 + var(--ch-tree-view-item__line--inset-inline-start)";
 
   --inset-inline-start: calc(#{$parent-padding-inline-start} + #{$correction});
 
@@ -48,7 +48,7 @@
   inset-inline-start: var(--inset-inline-start);
   inline-size: calc(
     var(--ch-tree-view-item-indentation) - var(--inset-inline-start) -
-      var(--ch-tree-view-item__dashed-line--inset-inline-end)
+      var(--ch-tree-view-item__line--inset-inline-end)
   );
   block-size: 1px;
 
@@ -59,7 +59,7 @@
   z-index: 1;
 }
 
-// Last dashed line of the tree
+// Last line of the tree
 .last-all-line {
   inset-block-start: 0;
   height: calc(100% - var(--ch-tree-view-item-distance-to-checkbox));

@@ -39,21 +39,21 @@
   --ch-tree-view-item__image-size: #{$default-decorative-image-size};
 
   /**
-   * @prop --ch-tree-view-item__dashed-line--inset-inline-start:
+   * @prop --ch-tree-view-item__line--inset-inline-start:
    * Specifies an additional separation that only applies for the inline start
    * position of the item's line.
    * @default 0px
    */
-  --ch-tree-view-item__dashed-line--inset-inline-start: 0px;
+  --ch-tree-view-item__line--inset-inline-start: 0px;
 
   /**
-   * @prop --ch-tree-view-item__dashed-line--inset-inline-end:
+   * @prop --ch-tree-view-item__line--inset-inline-end:
    * Specifies the separation that only applies for the inline end position of
    * the item's line. This separation visually shows a gap between the line and
    * the item's header.
    * @default 4px
    */
-  --ch-tree-view-item__dashed-line--inset-inline-end: 4px;
+  --ch-tree-view-item__line--inset-inline-end: 4px;
 
   --ch-tree-tab-size: calc(
     var(--ch-tree-view-item__image-size) +

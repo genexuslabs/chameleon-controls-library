@@ -1079,9 +1079,9 @@ export class ChTreeViewItem {
 
           {(showAllLines || showLastLine) && (
             <div
-              key="dashed-line"
+              key="line"
               class={{
-                "dashed-line": true,
+                line: true,
                 "last-all-line": showAllLines && this.lastItem,
                 "last-line": showLastLine
               }}

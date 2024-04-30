@@ -184,7 +184,6 @@ export const TREE_VIEW_ITEM_EXPORT_PARTS = joinParts(
 );
 
 export const TREE_VIEW_PARTS_DICTIONARY = {
-  DRAG_INFO: "drag-info",
   DRAG_PREVIEW: "drag-preview",
   ITEM: "item",
 

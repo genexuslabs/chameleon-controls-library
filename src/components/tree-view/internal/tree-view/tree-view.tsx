@@ -91,6 +91,9 @@ const POSITION_Y_DRAG_CUSTOM_VAR = "--ch-tree-view-dragging-item-y";
 
 let autoId = 0;
 
+/**
+ * @part drag-preview - The element that contains the information to preview the current drag.
+ */
 @Component({
   tag: "ch-tree-view",
   styleUrl: "tree-view.scss",
@@ -855,7 +858,7 @@ export class ChTreeView {
           "rtl-direction": this.rtlDirection,
           "waiting-drop-processing": this.waitDropProcessing
         }}
-        exportparts={TREE_VIEW_PARTS_DICTIONARY.DRAG_INFO}
+        exportparts={TREE_VIEW_PARTS_DICTIONARY.DRAG_PREVIEW}
       >
         <slot />
 
@@ -863,7 +866,7 @@ export class ChTreeView {
           <span
             aria-hidden="true"
             class="drag-info"
-            part={TREE_VIEW_PARTS_DICTIONARY.DRAG_INFO}
+            part={TREE_VIEW_PARTS_DICTIONARY.DRAG_PREVIEW}
           >
             {this.#dragInfo}
           </span>

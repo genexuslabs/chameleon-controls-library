@@ -8,36 +8,32 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { DISABLED_CLASS } from "../../common/reserverd-names";
+import {
+  CHECKBOX_PARTS_DICTIONARY,
+  DISABLED_CLASS
+} from "../../common/reserverd-names";
 
 import {
   AccessibleNameComponent,
   DisableableComponent
 } from "../../common/interfaces";
-import { CheckboxParts } from "./types";
 
 const CHECKBOX_ID = "checkbox";
-
-const CONTAINER_PART: CheckboxParts = "container";
-const INPUT_PART: CheckboxParts = "input";
-const OPTION_PART: CheckboxParts = "option";
-const LABEL_PART: CheckboxParts = "label";
-
-const CHECKED_PART: CheckboxParts = "checked";
-const DISABLED_PART: CheckboxParts = "disabled";
-const INDETERMINATE_PART: CheckboxParts = "indeterminate";
-const UNCHECKED_PART: CheckboxParts = "unchecked";
 
 const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   if (indeterminate) {
     return disabled
-      ? `${DISABLED_PART} ${INDETERMINATE_PART}`
-      : INDETERMINATE_PART;
+      ? `${CHECKBOX_PARTS_DICTIONARY.DISABLED} ${CHECKBOX_PARTS_DICTIONARY.INDETERMINATE}`
+      : CHECKBOX_PARTS_DICTIONARY.INDETERMINATE;
   }
 
-  const checkedValue = checked ? CHECKED_PART : UNCHECKED_PART;
+  const checkedValue = checked
+    ? CHECKBOX_PARTS_DICTIONARY.CHECKED
+    : CHECKBOX_PARTS_DICTIONARY.UNCHECKED;
 
-  return disabled ? `${DISABLED_PART} ${checkedValue}` : checkedValue;
+  return disabled
+    ? `${CHECKBOX_PARTS_DICTIONARY.DISABLED} ${checkedValue}`
+    : checkedValue;
 };
 
 /**
@@ -46,10 +42,10 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
  * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
  * @part label - The label that is rendered when the `caption` property is not empty.
  *
- * @part checked - Present in the `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).
- * @part disabled - Present in the `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).
- * @part indeterminate - Present in the `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
- * @part unchecked - Present in the `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
+ * @part checked - Present in the `input`, `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).
+ * @part disabled - Present in the `input`, `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).
+ * @part indeterminate - Present in the `input`, `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).
+ * @part unchecked - Present in the `input`, `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
  */
 @Component({
   shadow: true,
@@ -193,7 +189,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             container: true,
             "container--checked": this.checked
           }}
-          part={`${CONTAINER_PART} ${additionalParts}`}
+          part={`${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}`}
         >
           <input
             aria-label={
@@ -204,7 +200,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             }
             id={this.caption ? CHECKBOX_ID : null}
             class="input"
-            part={INPUT_PART}
+            part={`${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}`}
             type="checkbox"
             checked={this.checked}
             disabled={this.disabled || this.readonly}
@@ -220,7 +216,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
               "option--checked": this.checked && !this.indeterminate,
               "option--indeterminate": this.indeterminate
             }}
-            part={`${OPTION_PART} ${additionalParts}`}
+            part={`${CHECKBOX_PARTS_DICTIONARY.OPTION} ${additionalParts}`}
             aria-hidden="true"
           ></div>
         </div>
@@ -228,7 +224,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
         {this.caption && (
           <label
             class="label"
-            part={`${LABEL_PART} ${additionalParts}`}
+            part={`${CHECKBOX_PARTS_DICTIONARY.LABEL} ${additionalParts}`}
             htmlFor={CHECKBOX_ID}
             onClick={this.#handleClick}
           >

@@ -62,8 +62,8 @@
 
       .section-dev {
         display: grid;
-        grid-template-columns: 400px 1fr;
-        margin-inline-start: 300px;
+        grid-template-columns: 300px 1fr;
+        margin-inline-start: 100px;
         gap: 32px;
         height: 100%;
       }
@@ -108,36 +108,36 @@
         z-index: 1;
       }
 
-      .tree-view-item--folder::part(action)::before,
-      .tree-view-item--module::part(action)::before {
+      ::part(item__action item--folder)::before,
+      ::part(item__action item--module)::before {
         content: "";
         width: var(--ch-tree-view-item__image-size);
         height: var(--ch-tree-view-item__image-size);
         background-repeat: no-repeat;
       }
 
-      .tree-view-item--folder::part(action)::before {
+      ::part(item__action item--folder)::before {
         background-image: url("assets/icons/folder.svg");
       }
 
-      .tree-view-item--folder::part(action expanded)::before {
+      ::part(item__action item--folder expanded)::before {
         background-image: url("assets/icons/folder-open.svg");
       }
 
-      .tree-view-item--module::part(action)::before {
+      ::part(item__action item--module)::before {
         background-image: url("assets/icons/module.svg");
       }
 
-      .tree-view-item--module::part(action expanded)::before {
+      ::part(item__action item--module expanded)::before {
         background-image: url("assets/icons/module-open.svg");
       }
 
       /* PENDING COMMIT */
-      .tree-view-item--pending-commit::part(action) {
+      ::part(item__action item--pending-commit) {
         position: relative;
       }
 
-      .tree-view-item--pending-commit::part(action)::after {
+      ::part(item__action item--pending-commit)::after {
         content: "";
         position: absolute;
         z-index: 1;
@@ -169,42 +169,40 @@
         row-gap: 8px;
       }
 
-      .ch-tree-view-not-dragging-item
-        .tree-view-item:not([selected])::part(header):hover {
+      ::part(item drag-enter) {
+        background-color: #eee;
+        box-shadow: inset 0 0 1px 0px black;
+      }
+
+      ::part(item__header) {
+        border: 1px solid transparent;
+      }
+
+      /* Hover state is not fired when dragging over an item */
+      ::part(item__header not-selected):hover {
         background-color: rgb(232, 232, 233);
       }
 
-      .ch-tree-view-item--drag-enter {
+      ::part(item__header selected drag-enter) {
         background-color: #eee;
-        box-shadow: inset 0 0 1px 0px black;
-
-        &[selected]::part(header) {
-          background-color: #eee;
-        }
       }
 
-      .tree-view-item {
-        &::part(header) {
-          border: 1px solid transparent;
-        }
-
-        &[selected]::part(header) {
-          background-color: rgb(207, 222, 230);
-          border-color: rgb(2, 102, 160);
-        }
-
-        &.ch-tree-view-item--editing::part(header) {
-          background-color: rgb(207, 222, 230, 0.5);
-          border-color: transparent;
-        }
-
-        &:not(.ch-tree-view-item--editing)::part(header):focus-visible {
-          border-color: black;
-          z-index: 1;
-        }
+      ::part(item__header selected) {
+        background-color: rgb(207, 222, 230);
+        border-color: rgb(2, 102, 160);
       }
 
-      .ch-tree-view-drag-info {
+      ::part(item__header editing) {
+        background-color: rgb(207, 222, 230, 0.5);
+        border-color: transparent;
+      }
+
+      ::part(item__header not-editing):focus-visible {
+        border-color: black;
+        z-index: 1;
+      }
+
+      ::part(drag-info) {
         padding-inline: 6px;
         padding-block: 2px;
         background-color: rgb(207, 222, 230);
@@ -258,10 +256,11 @@
 
     <div class="card card-properties">
       <fieldset>
-        <legend class="form-input__label">Properties</legend>
+        <legend class="heading-4">Properties</legend>
 
         <div>
           <ch-checkbox
+            class="checkbox"
             id="multi-selection"
             checked-value="true"
             un-checked-value="false"
@@ -270,6 +269,7 @@
           ></ch-checkbox>
 
           <ch-checkbox
+            class="checkbox"
             id="editable"
             checked-value="true"
             un-checked-value="false"
@@ -278,6 +278,7 @@
           ></ch-checkbox>
 
           <ch-checkbox
+            class="checkbox"
             id="expand-on-click"
             checked-value="true"
             un-checked-value="false"
@@ -288,6 +289,7 @@
 
         <div>
           <ch-checkbox
+            class="checkbox"
             id="drag-enabled"
             checked-value="true"
             un-checked-value="false"
@@ -296,6 +298,7 @@
           ></ch-checkbox>
 
           <ch-checkbox
+            class="checkbox"
             id="drop-enabled"
             checked-value="true"
             un-checked-value="false"
@@ -350,7 +353,43 @@
       <hr />
 
       <fieldset>
-        <legend class="form-input__label">Methods</legend>
+        <legend class="heading-4">Models</legend>
+
+        <div>
+          <button class="button-primary" id="update-file-system-btn">
+            File system
+          </button>
+
+          <button class="button-primary" id="kb-explorer-model-btn">
+            KB Explorer
+          </button>
+          <button class="button-primary" id="import-objects-model-btn">
+            Import Objects
+          </button>
+        </div>
+
+        <div>
+          <button class="button-primary" id="load-model-btn">
+            Simple model 1
+          </button>
+          <button class="button-primary" id="update-model-again-btn">
+            Simple model 2
+          </button>
+
+          <button class="button-primary" id="update-big-model-btn">
+            Large model
+          </button>
+
+          <button class="button-primary" id="update-model-btn">
+            Disabled items
+          </button>
+        </div>
+      </fieldset>
+
+      <hr />
+
+      <fieldset>
+        <legend class="heading-4">Methods</legend>
 
         <div>
           <button class="button-primary" id="expand-all" type="button">
@@ -361,6 +400,7 @@
           </button>
 
           <ch-checkbox
+            class="checkbox"
             id="check-all"
             checked-value="true"
             un-checked-value="false"
@@ -374,6 +414,7 @@
 
           <div class="flex-container" style="flex-direction: column">
             <ch-checkbox
+              class="checkbox"
               id="update-items-properties-selected"
               checked-value="true"
               un-checked-value="false"
@@ -382,6 +423,7 @@
             ></ch-checkbox>
 
             <ch-checkbox
+              class="checkbox"
               id="update-items-properties-checked"
               checked-value="true"
               un-checked-value="false"
@@ -409,6 +451,7 @@
 
           <div class="flex-container" style="flex-direction: column">
             <ch-checkbox
+              class="checkbox"
               id="scroll-into-visible-selected"
               checked-value="true"
               un-checked-value="false"
@@ -417,6 +460,7 @@
             ></ch-checkbox>
 
             <ch-checkbox
+              class="checkbox"
               id="scroll-into-visible-checked"
               checked-value="true"
               un-checked-value="false"
@@ -471,27 +515,30 @@
       <hr />
 
       <fieldset>
-        <legend class="form-input__label">Filters</legend>
+        <legend class="heading-4">Filters</legend>
 
-        <label class="form-input__label">
-          Filter type
-          <select class="form-input" name="filter-type" id="filter-type">
-            <option value="checked">Checked</option>
-            <option value="unchecked">Unchecked</option>
-            <option value="caption">Caption</option>
-            <option value="metadata">Metadata</option>
-            <option value="id-list">List of ids</option>
-            <option value="none" selected>None</option>
-          </select>
-        </label>
+        <div>
+          <label class="form-input__label">
+            Filter type
+            <select class="form-input" name="filter-type" id="filter-type">
+              <option value="checked">Checked</option>
+              <option value="unchecked">Unchecked</option>
+              <option value="caption">Caption</option>
+              <option value="metadata">Metadata</option>
+              <option value="id-list">List of ids</option>
+              <option value="none" selected>None</option>
+            </select>
+          </label>
 
-        <label class="form-input__label">
-          Filter
-          <input class="form-input" id="filter" value="" />
-        </label>
+          <label class="form-input__label" style="flex: 1">
+            Filter
+            <input class="form-input" id="filter" value="" />
+          </label>
+        </div>
 
         <div>
           <ch-checkbox
+            class="checkbox"
             id="camel-case"
             checked-value="true"
             un-checked-value="false"
@@ -500,46 +547,13 @@
           ></ch-checkbox>
 
           <ch-checkbox
+            class="checkbox"
             id="hide-matches"
             checked-value="true"
             un-checked-value="false"
             value="false"
             caption="Hide matches and show non-matches"
           ></ch-checkbox>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend class="form-input__label">Models</legend>
-
-        <div>
-          <button class="button-primary" id="update-file-system-btn">
-            File system
-          </button>
-
-          <button class="button-primary" id="kb-explorer-model-btn">
-            KB Explorer
-          </button>
-          <button class="button-primary" id="import-objects-model-btn">
-            Import Objects
-          </button>
-        </div>
-
-        <div>
-          <button class="button-primary" id="load-model-btn">
-            Simple model 1
-          </button>
-          <button class="button-primary" id="update-model-again-btn">
-            Simple model 2
-          </button>
-
-          <button class="button-primary" id="update-big-model-btn">
-            Large model
-          </button>
-
-          <button class="button-primary" id="update-model-btn">
-            Disabled items
-          </button>
         </div>
       </fieldset>
     </div>
@@ -1106,25 +1120,25 @@
         const multiSelectionCheckbox =
           document.getElementById("multi-selection");
         multiSelectionCheckbox.addEventListener("input", event => {
-          testTreeX.multiSelection = event.target.checked;
+          testTreeX.multiSelection = event.target.value === "true";
         });
 
         const editableCheckbox = document.getElementById("editable");
         editableCheckbox.addEventListener("input", event => {
-          testTreeX.editableItems = event.target.checked;
+          testTreeX.editableItems = event.target.value === "true";
         });
 
         // Expand on click
         const expandOnClickCheckbox =
           document.getElementById("expand-on-click");
         expandOnClickCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
           testTreeX.expandOnClick = checked;
         });
 
         const checkAllCheckbox = document.getElementById("check-all");
         checkAllCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
 
           checkAllCheckbox.indeterminate = false;
           testTreeX.updateAllItemsProperties({ checked: checked });
@@ -1142,14 +1156,14 @@
 
         const dragEnabledCheckbox = document.getElementById("drag-enabled");
         dragEnabledCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
 
           testTreeX.dragDisabled = !checked;
         });
 
         const dropEnabledCheckbox = document.getElementById("drop-enabled");
         dropEnabledCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
 
           testTreeX.dropDisabled = !checked;
         });
@@ -1190,7 +1204,7 @@
 
         const camelCaseCheckbox = document.getElementById("camel-case");
         camelCaseCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
 
           const newOptions = { ...testTreeX.filterOptions };
           newOptions.matchCase = checked;
@@ -1199,7 +1213,7 @@
 
         const hideMatchesCheckbox = document.getElementById("hide-matches");
         hideMatchesCheckbox.addEventListener("input", event => {
-          const checked = event.target.checked;
+          const checked = event.target.value === "true";
 
           const newOptions = { ...testTreeX.filterOptions };
           newOptions.hideMatchesAndShowNonMatches = checked;

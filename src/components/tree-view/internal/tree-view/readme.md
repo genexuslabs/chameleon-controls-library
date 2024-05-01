@@ -66,9 +66,9 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part                 | Description |
-| -------------------- | ----------- |
-| `"tree-x-container"` |             |
+| Part             | Description                                                             |
+| ---------------- | ----------------------------------------------------------------------- |
+| `"drag-preview"` | The element that contains the preview information for the current drag. |
 
 
 ## Dependencies

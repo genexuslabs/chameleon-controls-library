@@ -6,7 +6,6 @@ export type TreeViewItemModel = {
   caption: string;
   checkbox?: boolean;
   checked?: boolean;
-  class?: string;
   disabled?: boolean;
   downloading?: boolean;
   dragDisabled?: boolean;
@@ -34,6 +33,11 @@ export type TreeViewItemModel = {
    * Multiple items can have the same `order` value.
    */
   order?: number;
+
+  /**
+   * Specifies a set of parts to use in every DOM element of the item.
+   */
+  parts?: string;
 
   /**
    * `false` to not render the item.

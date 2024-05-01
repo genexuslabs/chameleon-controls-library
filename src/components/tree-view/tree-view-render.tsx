@@ -9,7 +9,8 @@ import {
   Watch,
   State,
   forceUpdate,
-  Method
+  Method,
+  Host
 } from "@stencil/core";
 import {
   TreeViewDataTransferInfo,
@@ -146,7 +147,6 @@ const defaultRenderItem = <T extends true | false>(
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? treeState.checkbox}
       checked={itemModel.checked ?? treeState.checked}
-      class={itemModel.class || treeState.treeViewItemCssClass}
       disabled={
         useGxRender
           ? (itemModel as GXRender<true>).enabled === false
@@ -176,6 +176,7 @@ const defaultRenderItem = <T extends true | false>(
       leaf={itemModel.leaf}
       level={level}
       metadata={itemModel.metadata}
+      parts={itemModel.parts}
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
@@ -239,10 +240,65 @@ const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
 
 type ImmediateFilter = "immediate" | "debounced" | undefined;
 
+/**
+ * @part drag-preview - The element that contains the preview information for the current drag.
+ *
+ * @part item - The host element of the each item.
+ *
+ * @part item__action - A sub element of the header (item__header part) that contains the main information related to the item (startImage, caption/edit-caption, endImage and downloading).
+ *
+ * @part item__checkbox - The host element of the item's checkbox.
+ * @part item__checkbox-container - The container that serves as a wrapper for the `input` and the `option` parts of the checkbox.
+ * @part item__checkbox-input - The input element that implements the interactions for the checkbox.
+ * @part item__checkbox-option - The actual "input" that is rendered above the `item__checkbox-input` part of the checkbox. This part has `position: absolute` and `pointer-events: none`.
+ *
+ * @part item__downloading - The spinner element that is rendered when an item is lazy loading its content. This element is rendered at the end of the `item__action` part.
+ *
+ * @part item__edit-caption - The input element that is rendered when an item is editing its caption. When rendered this element replaces the caption of the `item__action` part.
+ *
+ * @part item__expandable-button - The actionable expandable button element that is rendered when an item has subitems and the expandable button is interactive (`leaf !== true` and `expandableButton === "action"`). When rendered this element is placed at the start of the `item__action` part.
+ *
+ * @part item__group - The container element for the subitems that is rendered when the content of an item has been lazy loaded.
+ *
+ * @part item__header - The container for all elements -excepts the subitems (`item__group` part)- of an item. It contains the `item__expandable-button`, `item_checkbox` and `item__action` parts.
+ *
+ * @part item__img - The img element that is rendered when an item has images (`startImgSrc` is defined and/or `endImgSrc` is defined).
+ *
+ * @part item__line - The element that is rendered to display the relationship between the an item and its parent. Rendered if the item is not in the first level and `showLines !== "none"`.
+ *
+ * @part disabled - Present in the `item__header`, `item__expandable-button`, `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the item is disabled (`disabled` === `true`).
+ *
+ * @part expanded - Present in the `item__action`, `item__expandable-button` and `item__group` parts when the item is expanded (`expanded` === `true`).
+ * @part collapsed - Present in the `item__action`, `item__expandable-button` and `item__group` parts when the item is collapsed (`expanded` !== `true`).
+ *
+ * @part expand-button - Present in the `item__header` part when the item has an expandable button (`level !== 0`, `leaf !== true` and `expandableButton !== "no"`).
+ *
+ * @part even-level - Present in the `item__group` and `item__header` parts when the item is in an even level.
+ * @part odd-level - Present in the `item__group` and `item__header` parts when the item is in an odd level.
+ *
+ * @part last-line - Present in the `item__line` part if the item is the last item of its parent item in `showLines = "last"` mode (`showLines === "last"`, `level !== 0` and `lastItem === true`).
+ *
+ * @part lazy-loaded - Present in the `item__group` part when the content of the item has been loaded.
+ *
+ * @part start-img - Present in the `item__img` part when the item has an start image element (`startImgSrc` is defined and `startImgType` === "img").
+ * @part end-img - Present in the `item__img` part when the item has an end image element (`endImgSrc` is defined and `endImgType` === "img").
+ *
+ * @part editing - Present in the `item__header` and `item__action` parts when the item is in edit mode.
+ * @part not-editing - Present in the `item__header` and `item__action` parts when the item isn't in edit mode.
+ *
+ * @part selected - Present in the `item__header` part when the item is selected (`selected` === `true`).
+ * @part not-selected - Present in the `item__header` part when the item isn't selected (`selected` !== `true`).
+ *
+ * @part checked - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the item is checked and not indeterminate (`checked` === `true` and `indeterminate !== true`).
+ * @part indeterminate - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the item is indeterminate (`indeterminate` === `true`).
+ * @part unchecked - Present in the `item__checkbox-input`, `item__checkbox-option` and `item__checkbox-container` parts when the item is unchecked and not indeterminate (`checked` !== `true` and `indeterminate !== true`).
+ *
+ * @part drag-enter - Present in the `item` and `item__header` parts when a valid drop operation is over the item.
+ */
 @Component({
   tag: "ch-tree-view-render",
   styleUrl: "tree-view-render.scss",
-  shadow: false
+  shadow: true
 })
 export class ChTreeViewRender {
   // UI Models
@@ -1562,6 +1618,9 @@ export class ChTreeViewRender {
 
     // Initialize the state
     syncStateWithObservableAncestors(this.#treeViewId);
+
+    // Accessibility
+    this.el.setAttribute("role", "tree");
   }
 
   componentWillLoad() {
@@ -1594,30 +1653,31 @@ export class ChTreeViewRender {
 
   render() {
     return (
-      <ch-tree-view
-        class={this.cssClass || null}
-        multiSelection={this.multiSelection}
-        selectedItemsCallback={this.#getSelectedItemsCallback}
-        waitDropProcessing={this.waitDropProcessing}
-        onDroppableZoneEnter={this.#handleDroppableZoneEnter}
-        onExpandedItemChange={this.#handleExpandedItemChange}
-        onItemContextmenu={this.#handleItemContextmenu}
-        onItemsDropped={this.#handleItemsDropped}
-        onSelectedItemsChange={this.#handleSelectedItemsChange}
-        ref={el => (this.#treeRef = el)}
-      >
-        {this.treeModel.map((itemModel, index) =>
-          this.renderItem(
-            itemModel,
-            this,
-            this.#treeHasFilters(),
-            this.showLines !== "none" && index === this.treeModel.length - 1,
-            0,
-            this.dropMode !== "above" && this.dropDisabled !== true,
-            this.useGxRender
-          )
-        )}
-      </ch-tree-view>
+      <Host aria-multiselectable={this.multiSelection.toString()}>
+        <ch-tree-view
+          multiSelection={this.multiSelection}
+          selectedItemsCallback={this.#getSelectedItemsCallback}
+          waitDropProcessing={this.waitDropProcessing}
+          onDroppableZoneEnter={this.#handleDroppableZoneEnter}
+          onExpandedItemChange={this.#handleExpandedItemChange}
+          onItemContextmenu={this.#handleItemContextmenu}
+          onItemsDropped={this.#handleItemsDropped}
+          onSelectedItemsChange={this.#handleSelectedItemsChange}
+          ref={el => (this.#treeRef = el)}
+        >
+          {this.treeModel.map((itemModel, index) =>
+            this.renderItem(
+              itemModel,
+              this,
+              this.#treeHasFilters(),
+              this.showLines !== "none" && index === this.treeModel.length - 1,
+              0,
+              this.dropMode !== "above" && this.dropDisabled !== true,
+              this.useGxRender
+            )
+          )}
+        </ch-tree-view>
+      </Host>
     );
   }
 }

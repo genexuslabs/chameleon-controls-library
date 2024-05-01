@@ -30,7 +30,6 @@ export function debounce(
   };
 }
 
-export const isRTL = () => document.documentElement.dir === "rtl";
 export const isMobileDevice = () =>
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
@@ -65,11 +64,31 @@ export function overrideMethod(
 /**
  * Converts an object mapping token keys to booleans into a space-separated
  * string containing the token keys that map to truthy values.
+ * @example
+ *   part={tokenMap({
+ *     header: true,
+ *     disabled: this.disabled,
+ *     selected: this.selected,
+ *     [levelPart]: canShowLines,
+ *     "expand-button":
+ *       canShowLines && !this.leaf && this.expandableButton !== "no"
+ *   })}
  */
-export const tokenMap = (tokens: { [key: string]: boolean }) =>
-  Object.keys(tokens)
-    .filter(key => tokens[key])
-    .join(" ");
+export const tokenMap = (tokens: { [key: string]: boolean }) => {
+  const keys = Object.keys(tokens);
+  let result = "";
+
+  for (let index = 0; index < keys.length; index++) {
+    const tokenKey = keys[index];
+    const tokenValue = tokens[tokenKey];
+
+    if (tokenValue) {
+      result += result === "" ? tokenKey : ` ${tokenKey}`;
+    }
+  }
+
+  return result;
+};
 
 /**
  * `true` if `x` <= `y` <= `z`
@@ -104,3 +123,59 @@ export const forceCSSMinMax = (
   Number.isNaN(maximum)
     ? Math.max(value, minimum)
     : Math.max(Math.min(value, maximum), minimum);
+
+// - - - - - - - - - - - - - - - - - - - -
+//                RTL utils
+// - - - - - - - - - - - - - - - - - - - -
+export const isRTL = () => document.documentElement.dir === "rtl";
+
+let RTLWatcher: MutationObserver | undefined; // Don't allocate memory until needed
+let RTLSubscribers: Map<string, (rtl: boolean) => void> | undefined; // Don't allocate memory until needed
+
+const setRTLWatcher = () => {
+  if (RTLWatcher) {
+    return;
+  }
+
+  RTLWatcher = new MutationObserver(() => {
+    // Defensive programming. Check if there are subscribers
+    if (!RTLSubscribers || RTLSubscribers.size === 0) {
+      return;
+    }
+
+    const rtlDirection = isRTL();
+    const subscribers = [...RTLSubscribers.values()];
+
+    // Notify all subscribers
+    for (let index = 0; index < subscribers.length; index++) {
+      const subscriberCallback = subscribers[index];
+      subscriberCallback(rtlDirection);
+    }
+  });
+
+  // Observe the dir attribute in the document
+  RTLWatcher.observe(document.documentElement, {
+    attributeFilter: ["dir"]
+  });
+};
+
+export const subscribeToRTLChanges = (
+  subscriberId: string,
+  callback: (rtl: boolean) => void
+) => {
+  setRTLWatcher();
+
+  RTLSubscribers ??= new Map();
+  RTLSubscribers.set(subscriberId, callback);
+};
+
+export const unsubscribeToRTLChanges = (subscriberId: string) => {
+  RTLSubscribers.delete(subscriberId);
+
+  // Free the memory if no subscribers remaining
+  if (RTLSubscribers.size === 0) {
+    RTLWatcher.disconnect();
+    RTLWatcher = undefined;
+    RTLSubscribers = undefined;
+  }
+};

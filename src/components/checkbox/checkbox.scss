@@ -1,9 +1,7 @@
 @import "../../common/_base";
 
-$option-checked-background-color: var(--option-checked-color, #ffffff00);
-$option-checked-border-color: var(--option-border-color, currentColor);
+$option-checked-border-color: currentColor;
 $option-checked-color: currentColor;
-$option-checked-box-shadow: var(--option-highlight-color, currentColor);
 
 @include box-sizing();
 

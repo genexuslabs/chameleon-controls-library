@@ -48,21 +48,21 @@ $option-checked-box-shadow: var(--option-highlight-color, currentColor);
   position: relative;
   inline-size: var(--ch-checkbox__container-size);
   block-size: var(--ch-checkbox__container-size);
-  border: 1px solid $option-checked-border-color;
-  border-radius: 18.75%;
-
-  &--checked {
-    background-color: $option-checked-background-color;
-  }
 }
 
 .input {
   display: flex;
   inline-size: 100%;
   block-size: 100%;
-  opacity: 0;
+
+  // Reset browser defaults
+  appearance: none;
   margin: 0;
   padding: 0;
+  outline: unset;
+
+  border: 1px solid $option-checked-border-color;
+  border-radius: 18.75%;
 }
 
 .option {

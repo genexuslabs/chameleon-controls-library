@@ -13,9 +13,9 @@
    * @prop --ch-tree-view-item-gap:
    * Specifies the spacing between the images, checkbox, text and the
    * expandable button of the items.
-   * @default 5px
+   * @default 0px
    */
-  --ch-tree-view-item-gap: 5px;
+  --ch-tree-view-item-gap: 0px;
 
   /**
    * @prop --ch-tree-view-item__checkbox-size:
@@ -51,9 +51,9 @@
    * Specifies the separation that only applies for the inline end position of
    * the item's line. This separation visually shows a gap between the line and
    * the item's header.
-   * @default 4px
+   * @default 0px
    */
-  --ch-tree-view-item__line--inset-inline-end: 4px;
+  --ch-tree-view-item__line--inset-inline-end: 0px;
 
   --ch-tree-tab-size: calc(
     var(--ch-tree-view-item__image-size) +

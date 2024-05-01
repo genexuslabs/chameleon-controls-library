@@ -287,10 +287,10 @@ Type: `Promise<void>`
 | Name                                              | Description                                                                                                                                                                          |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `--ch-tree-view-item-custom-padding-inline-start` | Specifies an additional value for the padding-inline-start of the items without breaking the indentation of the items. @default 0px                                                  |
-| `--ch-tree-view-item-gap`                         | Specifies the spacing between the images, checkbox, text and the expandable button of the items. @default 5px                                                                        |
+| `--ch-tree-view-item-gap`                         | Specifies the spacing between the images, checkbox, text and the expandable button of the items. @default 0px                                                                        |
 | `--ch-tree-view-item__checkbox-size`              | Specifies the checkbox size of the items. @default 0.875em                                                                                                                           |
 | `--ch-tree-view-item__image-size`                 | Specifies the box size that contains the start or end images of the items. @default 0.875em                                                                                          |
-| `--ch-tree-view-item__line--inset-inline-end`     | Specifies the separation that only applies for the inline end position of the item's line. This separation visually shows a gap between the line and the item's header. @default 4px |
+| `--ch-tree-view-item__line--inset-inline-end`     | Specifies the separation that only applies for the inline end position of the item's line. This separation visually shows a gap between the line and the item's header. @default 0px |
 | `--ch-tree-view-item__line--inset-inline-start`   | Specifies an additional separation that only applies for the inline start position of the item's line. @default 0px                                                                  |
 
 

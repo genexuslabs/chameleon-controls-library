@@ -40,7 +40,7 @@ main {
   }
 
   & > .card__rtl {
-    --ch-image: url("../design-systems/unanimo/assets/icons/chat.svg");
+    --ch-image: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/chat.svg");
   }
 }
 
@@ -86,5 +86,10 @@ header {
 }
 
 .github-logo {
-  --ch-button-icon: url("../showcase/assets/icons/github.svg");
+  --icon-path: url("./assets/icons/github.svg");
+}
+
+/* Remove StencilJS' iframe */
+iframe[aria-hidden="true"] {
+  display: none !important;
 }

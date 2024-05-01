@@ -1,9 +1,7 @@
 @import "../../common/_base";
 
-$option-checked-background-color: var(--option-checked-color, #ffffff00);
-$option-checked-border-color: var(--option-border-color, currentColor);
+$option-checked-border-color: currentColor;
 $option-checked-color: currentColor;
-$option-checked-box-shadow: var(--option-highlight-color, currentColor);
 
 @include box-sizing();
 
@@ -16,15 +14,36 @@ $option-checked-box-shadow: var(--option-highlight-color, currentColor);
   --ch-checkbox__container-size: min(1em, 20px);
 
   /**
+   * @prop --ch-checkbox__checked-image:
+   * Specifies the image of the checkbox when is checked.
+   * @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")
+   */
+  --ch-checkbox__option-checked-image: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>");
+
+  /**
+   * @prop --ch-checkbox__option-indeterminate-image:
+   * Specifies the image of the checkbox when is indeterminate.
+   * @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")
+   */
+  --ch-checkbox__option-indeterminate-image: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><rect width='8' height='8'/></svg>");
+
+  /**
    * @prop --ch-checkbox__option-size:
-   * Specifies the size for the `radio__option` element.
+   * Specifies the size for the `option` element.
    * @default 50%
    */
   --ch-checkbox__option-size: 50%;
 
-  display: flex;
+  /**
+   * @prop --ch-checkbox__option-image-size:
+   * Specifies the image size of the `option` element.
+   * @default 100%
+   */
+  --ch-checkbox__option-image-size: 100%;
+
+  display: inline-grid;
+  grid-template-columns: max-content 1fr;
   align-items: center;
-  align-self: stretch;
 
   // Remove outline of the focus state. This selector must not have higher
   // specificity, since it should be overridden by the class applied to the control
@@ -48,21 +67,21 @@ $option-checked-box-shadow: var(--option-highlight-color, currentColor);
   position: relative;
   inline-size: var(--ch-checkbox__container-size);
   block-size: var(--ch-checkbox__container-size);
-  border: 1px solid $option-checked-border-color;
-  border-radius: 18.75%;
-
-  &--checked {
-    background-color: $option-checked-background-color;
-  }
 }
 
 .input {
   display: flex;
   inline-size: 100%;
   block-size: 100%;
-  opacity: 0;
+
+  // Reset browser defaults
+  appearance: none;
   margin: 0;
   padding: 0;
+  outline: unset;
+
+  border: 1px solid $option-checked-border-color;
+  border-radius: 18.75%;
 }
 
 .option {
@@ -73,7 +92,13 @@ $option-checked-box-shadow: var(--option-highlight-color, currentColor);
   pointer-events: none;
 
   &--checked {
-    -webkit-mask: url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>");
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-checked-image);
+  }
+
+  &--indeterminate {
+    -webkit-mask: no-repeat center / var(--ch-checkbox__option-image-size)
+      var(--ch-checkbox__option-indeterminate-image);
   }
 
   &--not-displayed {

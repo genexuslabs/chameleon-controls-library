@@ -30,24 +30,27 @@
 
 ## Shadow Parts
 
-| Part              | Description                                                                                                                                                             |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `"checked"`       | Present in the `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
-| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                          |
-| `"disabled"`      | Present in the `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
-| `"indeterminate"` | Present in the `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).                                                  |
-| `"input"`         | The invisible input element that implements the interactions for the component. This part must be kept "invisible".                                                     |
-| `"label"`         | The label that is rendered when the `caption` property is not empty.                                                                                                    |
-| `"option"`        | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                                              |
-| `"unchecked"`     | Present in the `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
+| Part              | Description                                                                                                                                                                      |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"checked"`       | Present in the `input`, `option`, `label` and `container` parts when the control is checked and not indeterminate (`value` === `checkedValue` and `indeterminate !== true`).     |
+| `"container"`     | The container that serves as a wrapper for the `input` and the `option` parts.                                                                                                   |
+| `"disabled"`      | Present in the `input`, `option`, `label` and `container` parts when the control is disabled (`disabled` === `true`).                                                            |
+| `"indeterminate"` | Present in the `input`, `option`, `label` and `container` parts when the control is indeterminate (`indeterminate` === `true`).                                                  |
+| `"input"`         | The input element that implements the interactions for the component.                                                                                                            |
+| `"label"`         | The label that is rendered when the `caption` property is not empty.                                                                                                             |
+| `"option"`        | The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.                                                       |
+| `"unchecked"`     | Present in the `input`, `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`). |
 
 
 ## CSS Custom Properties
 
-| Name                            | Description                                                                                        |
-| ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| `--ch-checkbox__container-size` | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px) |
-| `--ch-checkbox__option-size`    | Specifies the size for the `radio__option` element. @default 50%                                   |
+| Name                                        | Description                                                                                                                                                                                                                                                |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--ch-checkbox__checked-image`              | Specifies the image of the checkbox when is checked. @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>")       |
+| `--ch-checkbox__container-size`             | Specifies the size for the container of the `input` and `option` elements. @default min(1em, 20px)                                                                                                                                                         |
+| `--ch-checkbox__option-image-size`          | Specifies the image size of the `option` element. @default 100%                                                                                                                                                                                            |
+| `--ch-checkbox__option-indeterminate-image` | Specifies the image of the checkbox when is indeterminate. @default url("data:image/svg+xml, <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'><path fill='currentColor' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>") |
+| `--ch-checkbox__option-size`                | Specifies the size for the `option` element. @default 50%                                                                                                                                                                                                  |
 
 
 ## Dependencies

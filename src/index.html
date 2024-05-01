@@ -32,7 +32,7 @@
       <header slot="header" class="header">
         <div class="header-start">
           <a class="home heading-2" href="#" aria-label="Home">Chameleon</a>
-          <span class="text-body-2">6.0.0-next.0</span>
+          <span id="chameleon-version" class="text-body-2"></span>
         </div>
 
         <div class="header-end">
@@ -132,6 +132,16 @@
 
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
+
+      // Get the latest version
+      fetch(
+        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
+      )
+        .then(response => response.json())
+        .then(data => {
+          const chameleonVersion = document.getElementById("chameleon-version");
+          chameleonVersion.textContent = data.version;
+        });
 
       window.addEventListener("appload", () => {
         const layoutSplitterRef = document.querySelector("ch-layout-splitter");

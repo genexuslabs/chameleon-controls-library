@@ -23,7 +23,6 @@ export const config: Config = {
       ]
     }
   ],
-  globalStyle: "src/globals/global.scss",
   plugins: [sass()],
   bundles: [
     {

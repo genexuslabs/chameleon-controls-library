@@ -43,9 +43,9 @@ $option-checked-box-shadow: var(--option-highlight-color, currentColor);
    */
   --ch-checkbox__option-image-size: 100%;
 
-  display: flex;
+  display: inline-grid;
+  grid-template-columns: max-content 1fr;
   align-items: center;
-  align-self: stretch;
 
   // Remove outline of the focus state. This selector must not have higher
   // specificity, since it should be overridden by the class applied to the control

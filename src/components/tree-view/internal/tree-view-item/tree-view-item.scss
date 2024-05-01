@@ -27,10 +27,8 @@
   display: flex;
   gap: var(--ch-tree-view-item-gap);
   align-items: center;
-  min-block-size: calc(1em + 6px);
 
   &--disabled {
-    opacity: 0.5; // Remove this
     pointer-events: none;
   }
 }
@@ -151,10 +149,6 @@
   &--end-img {
     grid-template: "start-img text end-img" / max-content 1fr max-content;
   }
-}
-
-.readonly-mode {
-  padding-block: 0.75px;
 }
 
 .edit-caption {

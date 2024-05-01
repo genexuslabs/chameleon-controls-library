@@ -1057,8 +1057,7 @@ export class ChTreeViewItem {
                   [`start-img-type--${this.startImgType} pseudo-img--start`]:
                     pseudoStartImage,
                   [`end-img-type--${this.endImgType} pseudo-img--end`]:
-                    pseudoEndImage,
-                  "readonly-mode": !this.editing
+                    pseudoEndImage
                 }}
                 part={tokenMap({
                   [TREE_VIEW_ITEM_PARTS_DICTIONARY.ACTION]: true,

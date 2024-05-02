@@ -8,7 +8,12 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
 };
 
 export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
-  ShowcaseRenderProperty<T>[];
+  ShowcaseRenderPropertyGroup<T>[];
+
+export type ShowcaseRenderPropertyGroup<T extends ShowcaseAvailableStories> = {
+  caption: string;
+  properties: ShowcaseRenderProperty<T>[];
+};
 
 export type ShowcaseRenderProperty<T extends ShowcaseAvailableStories> =
   | ShowcaseRenderPropertyBoolean<T>
@@ -19,7 +24,7 @@ export type ShowcaseRenderPropertyBoolean<T extends ShowcaseAvailableStories> =
   {
     id: keyof T;
     caption: string;
-    default: boolean;
+    value: boolean;
     render?: "checkbox" | "switch";
     type: "boolean";
   };
@@ -27,7 +32,7 @@ export type ShowcaseRenderPropertyBoolean<T extends ShowcaseAvailableStories> =
 export type ShowcaseRenderPropertyString<T extends ShowcaseAvailableStories> = {
   id: keyof T;
   caption: string;
-  default: string;
+  value: string;
   render?: "input" | "textarea";
   type: "string";
 };
@@ -39,10 +44,10 @@ export type ShowcaseRenderPropertyEnum<
 > = {
   id: D;
   caption: string;
-  default: T[D];
+  value: T[D];
   render?: "combo-box" | "radio-group";
   type: "enum";
-  values: T[D][];
+  values: { caption: string; value: T[D] }[];
 };
 
 export type ShowcaseAvailableStories = Mutable<ChTreeViewRender>;

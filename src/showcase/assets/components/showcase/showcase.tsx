@@ -258,7 +258,7 @@ export class ChShowcase {
         </label>
         <ch-combo-box
           id={property.id}
-          class="combo-box form-input"
+          class="combo-box"
           items={this.#showcaseStoryComboBoxes.get(property.id).items}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(property.id).handler}
@@ -278,7 +278,7 @@ export class ChShowcase {
         </label>
         <ch-radio-group-render
           id={property.id}
-          class="radio-group form-input"
+          class="radio-group"
           items={this.#showcaseStoryRadioGroups.get(property.id).items}
           value={property.value.toString()}
           onInput={this.#showcaseStoryRadioGroups.get(property.id).handler}

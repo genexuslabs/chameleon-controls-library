@@ -18,3 +18,7 @@ export type AccessibleRole =
  * Specifies how the image will be rendered.
  */
 export type ImageRender = "background" | "img" | "mask";
+
+export type Mutable<Immutable> = {
+  -readonly [P in keyof Immutable]: Immutable[P];
+};

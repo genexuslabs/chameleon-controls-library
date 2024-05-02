@@ -33,7 +33,7 @@ const components = [
   "tab",
   "textblock",
   "tooltip",
-  ["tree", "Tree View"]
+  ["tree-view", "Tree View"]
 ];
 
 /**

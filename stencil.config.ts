@@ -8,7 +8,6 @@ export const config: Config = {
       type: "dist",
       esmLoaderPath: "../loader",
       copy: [
-        { src: "globals/design-systems", dest: "design-systems" },
         { src: "components/code-editor/monaco/output/assets", dest: "assets" }
       ]
     },
@@ -20,12 +19,10 @@ export const config: Config = {
       serviceWorker: null,
       copy: [
         { src: "components/code-editor/monaco/output/assets", dest: "assets" },
-        { src: "showcase" },
-        { src: "globals/design-systems", dest: "design-systems" }
+        { src: "showcase" }
       ]
     }
   ],
-  globalStyle: "src/globals/global.scss",
   plugins: [sass()],
   bundles: [
     {

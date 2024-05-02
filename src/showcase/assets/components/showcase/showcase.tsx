@@ -1,11 +1,13 @@
-import { Component, Prop, Host, h } from "@stencil/core";
+import { Component, Prop, Host, Watch, h } from "@stencil/core";
 
 @Component({
-  shadow: true,
+  shadow: false,
   styleUrl: "showcase.scss",
   tag: "ch-showcase"
 })
 export class ChShowcase {
+  #iframeRef: HTMLIFrameElement;
+
   /**
    *
    */
@@ -16,12 +18,28 @@ export class ChShowcase {
    */
   @Prop() readonly pageSrc: string;
 
+  /**
+   * Specifies the theme used in the iframe of the control
+   */
+  @Prop() readonly theme: "light" | "dark";
+  @Watch("theme")
+  themeChange(newThemeValue: "light" | "dark") {
+    this.#iframeRef.contentWindow.postMessage(
+      newThemeValue,
+      `${window.location.origin}/${this.pageSrc}`
+    );
+  }
+
   render() {
     return (
       <Host>
-        <h1 class="heading">{this.pageName}</h1>
+        <h1 class="heading-1">{this.pageName}</h1>
 
-        <iframe src={this.pageSrc} frameborder="0"></iframe>
+        <iframe
+          src={this.pageSrc}
+          frameborder="0"
+          ref={el => (this.#iframeRef = el)}
+        ></iframe>
       </Host>
     );
   }

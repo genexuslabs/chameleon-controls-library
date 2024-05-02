@@ -9,7 +9,16 @@
     <title>ch-tree</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
-    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link href="../base.css" rel="stylesheet" />
+    <script type="module">
+      import { setThemeInBrowser } from "../models/theme-manager.js";
+
+      window.addEventListener("message", event => {
+        if (event.data === "light" || event.data === "dark") {
+          setThemeInBrowser(event.data);
+        }
+      });
+    </script>
 
     <style>
       /* Avoid FOUC (Flash Of Unstyled Content) */
@@ -308,10 +317,7 @@
         </div>
 
         <div>
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="form-input__label">
             Lines
             <select class="form-input" name="lines" id="lines">
               <option value="all" selected>All lines</option>
@@ -320,10 +326,7 @@
             </select>
           </label>
 
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="form-input__label">
             Expandable button
             <select
               class="form-input"
@@ -336,10 +339,7 @@
             </select>
           </label>
 
-          <label
-            class="form-input__label"
-            style="display: flex; flex-direction: column"
-          >
+          <label class="form-input__label">
             Drop mode
             <select class="form-input" name="drop-mode" id="drop-mode">
               <option value="above" selected>Above</option>

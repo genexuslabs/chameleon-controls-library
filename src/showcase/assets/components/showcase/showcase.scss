@@ -1,21 +1,12 @@
-@import "../../../../globals/design-systems/resets";
-@import "../../../../globals/design-systems/unanimo/base/typography";
-
-@include typography-reset();
-
-.heading {
-  @extend %heading-1;
-}
-
-:host {
+ch-showcase {
   display: grid;
   grid-template-rows: max-content 1fr;
   margin: var(--spacing-un-spacing--l);
   gap: var(--spacing-un-spacing--l);
-}
 
-iframe {
-  display: grid;
-  block-size: 100%;
-  inline-size: 100%;
+  & > iframe {
+    display: grid;
+    block-size: 100%;
+    inline-size: 100%;
+  }
 }

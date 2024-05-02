@@ -1,8 +1,0 @@
-@mixin card() {
-  .card {
-    display: grid;
-    background-color: var(--elevation-un-elevation--1);
-    border-radius: var(--border-radius-un-border__radius--l);
-    box-shadow: var(--box-shadows-un-box-shadow--1);
-  }
-}

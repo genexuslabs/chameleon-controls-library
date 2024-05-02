@@ -197,10 +197,10 @@ export class ChComboBox
   #borderSizeRAF: SyncWithRAF | undefined;
   #resizeObserver: ResizeObserver | undefined;
 
-  #lastMaskInlineStart = "0px";
-  #lastMaskInlineEnd = "0px";
-  #lastMaskBlockStart = "0px";
-  #lastMaskBlockEnd = "0px";
+  #lastMaskInlineStart = undefined;
+  #lastMaskInlineEnd = undefined;
+  #lastMaskBlockStart = undefined;
+  #lastMaskBlockEnd = undefined;
 
   #valueToItemInfo: Map<
     string,

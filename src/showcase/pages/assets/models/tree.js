@@ -19,6 +19,8 @@ const FIRST_LEVEL_SIZE = 10;
 const SECOND_LEVEL_SIZE = 20;
 const THIRD_LEVEL_SIZE = 20;
 
+const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+
 const fileSystem_root = [
   {
     id: "dev",
@@ -43,7 +45,7 @@ const fileSystem_root = [
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
-        startImgSrc: "assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         leaf: true
       },
       {
@@ -52,7 +54,7 @@ const fileSystem_root = [
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
-        startImgSrc: "assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         leaf: true
       },
       {
@@ -61,7 +63,7 @@ const fileSystem_root = [
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
-        startImgSrc: "assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         leaf: true
       }
     ]
@@ -215,7 +217,7 @@ const kbExplorer_root = [
     id: "Main_Programs",
     caption: "Main Programs",
     editable: false,
-    startImgSrc: "assets/icons/category.svg",
+    startImgSrc: `${ASSETS_PREFIX}category.svg`,
     dragDisabled: true,
     dropDisabled: true,
     lazy: true,
@@ -234,7 +236,7 @@ const kbExplorer_root = [
     id: "References",
     caption: "References",
     editable: false,
-    startImgSrc: "assets/icons/references.svg",
+    startImgSrc: `${ASSETS_PREFIX}references.svg`,
     dragDisabled: true,
     dropDisabled: true,
     order: 2
@@ -243,7 +245,7 @@ const kbExplorer_root = [
     id: "Customization",
     caption: "Customization",
     editable: false,
-    startImgSrc: "assets/icons/customization.svg",
+    startImgSrc: `${ASSETS_PREFIX}customization.svg`,
     dragDisabled: true,
     dropDisabled: true,
     lazy: true,
@@ -254,7 +256,7 @@ const kbExplorer_root = [
     caption: "Documentation",
     editable: false,
     leaf: true,
-    startImgSrc: "assets/icons/document.svg",
+    startImgSrc: `${ASSETS_PREFIX}document.svg`,
     dragDisabled: true,
     dropDisabled: true,
     order: 4
@@ -268,7 +270,7 @@ export const kbExplorerModel = [
     editable: false,
     expanded: true,
     leaf: false,
-    startImgSrc: "assets/icons/version.svg",
+    startImgSrc: `${ASSETS_PREFIX}version.svg`,
     dragDisabled: true,
     dropDisabled: true,
     items: kbExplorer_root
@@ -282,7 +284,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
@@ -292,7 +294,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/api.svg",
+    startImgSrc: `${ASSETS_PREFIX}api.svg`,
     order: KB_EXPLORER_ORDER.api
   },
   {
@@ -301,7 +303,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/web-panel.svg",
+    startImgSrc: `${ASSETS_PREFIX}web-panel.svg`,
     order: KB_EXPLORER_ORDER.webPanel
   },
   {
@@ -310,7 +312,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/web-panel.svg",
+    startImgSrc: `${ASSETS_PREFIX}web-panel.svg`,
     order: KB_EXPLORER_ORDER.webPanel
   },
   {
@@ -319,7 +321,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/api.svg",
+    startImgSrc: `${ASSETS_PREFIX}api.svg`,
     order: KB_EXPLORER_ORDER.api
   },
   {
@@ -328,7 +330,7 @@ const kbExplorerModel_MainPrograms = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/procedure.svg",
+    startImgSrc: `${ASSETS_PREFIX}procedure.svg`,
     order: KB_EXPLORER_ORDER.procedure
   }
 ];
@@ -383,21 +385,21 @@ const kbExplorerModel_RootModule = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/image.svg",
+    startImgSrc: `${ASSETS_PREFIX}image.svg`,
     order: KB_EXPLORER_ORDER.images
   },
   {
     id: "Root_Module.GXNext",
     caption: "GXNext",
     leaf: true,
-    startImgSrc: "assets/icons/dso.svg",
+    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
     order: KB_EXPLORER_ORDER.dso
   },
   {
     id: "Root_Module.GeneXusNext",
     caption: "GeneXusNext",
     leaf: true,
-    startImgSrc: "assets/icons/dso.svg",
+    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
     order: KB_EXPLORER_ORDER.dso
   },
   {
@@ -407,7 +409,7 @@ const kbExplorerModel_RootModule = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/file.svg",
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
     order: KB_EXPLORER_ORDER.files
   },
   {
@@ -417,7 +419,7 @@ const kbExplorerModel_RootModule = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/domain.svg",
+    startImgSrc: `${ASSETS_PREFIX}domain.svg`,
     order: KB_EXPLORER_ORDER.domain
   }
 ];
@@ -429,7 +431,7 @@ const kbExplorerModel_Customization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/file.svg",
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
     order: KB_EXPLORER_ORDER.files
   },
   {
@@ -438,7 +440,7 @@ const kbExplorerModel_Customization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/image.svg",
+    startImgSrc: `${ASSETS_PREFIX}image.svg`,
     order: KB_EXPLORER_ORDER.images
   },
   {
@@ -447,7 +449,7 @@ const kbExplorerModel_Customization = [
     dragDisabled: true,
     dropDisabled: true,
     lazy: true,
-    startImgSrc: "assets/icons/lenguage.svg",
+    startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
     order: KB_EXPLORER_ORDER.localization
   }
 ];
@@ -460,7 +462,7 @@ const kbExplorerModel_Customization_Localization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/lenguage.svg",
+    startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
     order: KB_EXPLORER_ORDER.localization
   },
   {
@@ -471,7 +473,7 @@ const kbExplorerModel_Customization_Localization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/lenguage.svg",
+    startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
     order: KB_EXPLORER_ORDER.localization
   },
   {
@@ -481,7 +483,7 @@ const kbExplorerModel_Customization_Localization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/lenguage.svg",
+    startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
     order: KB_EXPLORER_ORDER.localization
   },
   {
@@ -491,7 +493,7 @@ const kbExplorerModel_Customization_Localization = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/lenguage.svg",
+    startImgSrc: `${ASSETS_PREFIX}lenguage.svg`,
     order: KB_EXPLORER_ORDER.localization
   }
 ];
@@ -523,7 +525,7 @@ const kbExplorerModel_RootModule_General = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/domain.svg",
+    startImgSrc: `${ASSETS_PREFIX}domain.svg`,
     order: KB_EXPLORER_ORDER.domain
   },
   {
@@ -533,7 +535,7 @@ const kbExplorerModel_RootModule_General = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/external-object.svg",
+    startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
     order: KB_EXPLORER_ORDER.globalEvents
   }
 ];
@@ -572,7 +574,7 @@ const kbExplorerModel_RootModule_General_UI = [
     dragDisabled: true,
     dropDisabled: true,
     leaf: true,
-    startImgSrc: "assets/icons/domain.svg",
+    startImgSrc: `${ASSETS_PREFIX}domain.svg`,
     order: KB_EXPLORER_ORDER.domain
   },
   {
@@ -580,7 +582,7 @@ const kbExplorerModel_RootModule_General_UI = [
     caption: "Login",
     parts: "item--pending-commit",
     leaf: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   }
@@ -591,7 +593,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     id: "Root_Module.General.UI.Q2.ContactUs",
     caption: "ContactUs",
     leaf: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
@@ -600,7 +602,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     caption: "ProjectDetail",
     parts: "item--pending-commit",
     leaf: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   },
@@ -608,7 +610,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
     id: "Root_Module.General.UI.Q2.MyApps",
     caption: "MyApps",
     leaf: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     order: KB_EXPLORER_ORDER.sdPanel
   }
@@ -619,7 +621,7 @@ const kbExplorerModel_RootModule_General_UI_Stencils = [
     id: "Root_Module.General.UI.Stencils.StencilPublishProject",
     caption: "StencilPublishProject",
     leaf: true,
-    startImgSrc: "assets/icons/stencil.svg",
+    startImgSrc: `${ASSETS_PREFIX}stencil.svg`,
     order: KB_EXPLORER_ORDER.stencil
   }
 ];
@@ -628,12 +630,12 @@ export const importObjectsModel = [
   {
     id: "Category",
     caption: "Category",
-    startImgSrc: "assets/icons/category.svg",
+    startImgSrc: `${ASSETS_PREFIX}category.svg`,
     items: [
       {
         id: "Category.Main_Programs",
         caption: "Main Programs",
-        startImgSrc: "assets/icons/category.svg",
+        startImgSrc: `${ASSETS_PREFIX}category.svg`,
         leaf: true
       }
     ]
@@ -641,36 +643,36 @@ export const importObjectsModel = [
   {
     id: "Design System",
     caption: "Design System",
-    startImgSrc: "assets/icons/dso.svg",
+    startImgSrc: `${ASSETS_PREFIX}dso.svg`,
     items: [
       {
         id: "Design_System.ActionGroup",
         caption: "ActionGroup",
-        startImgSrc: "assets/icons/dso.svg",
+        startImgSrc: `${ASSETS_PREFIX}dso.svg`,
         leaf: true
       },
       {
         id: "Design_System.DynamicActionGroup",
         caption: "DynamicActionGroup",
-        startImgSrc: "assets/icons/dso.svg",
+        startImgSrc: `${ASSETS_PREFIX}dso.svg`,
         leaf: true
       },
       {
         id: "Design_System.UserControls",
         caption: "UserControls",
-        startImgSrc: "assets/icons/dso.svg",
+        startImgSrc: `${ASSETS_PREFIX}dso.svg`,
         leaf: true
       },
       {
         id: "Design_System.Dropdown",
         caption: "Dropdown",
-        startImgSrc: "assets/icons/dso.svg",
+        startImgSrc: `${ASSETS_PREFIX}dso.svg`,
         leaf: true
       },
       {
         id: "Design_System.UnanimoAngularWithoutUserControls",
         caption: "UnanimoAngularWithoutUserControls",
-        startImgSrc: "assets/icons/dso.svg",
+        startImgSrc: `${ASSETS_PREFIX}dso.svg`,
         leaf: true
       }
     ]
@@ -678,45 +680,45 @@ export const importObjectsModel = [
   {
     id: "Module",
     caption: "Module",
-    startImgSrc: "assets/icons/module.svg",
+    startImgSrc: `${ASSETS_PREFIX}module.svg`,
     indeterminate: true,
     items: [
       {
         id: "Module.General",
         caption: "General",
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       },
       {
         id: "Module.General.UI",
         caption: "General.UI",
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       },
       {
         id: "Module.General.Services",
         caption: "General.Services",
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       },
       {
         id: "Module.GeneralReporting",
         caption: "GeneralReporting",
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       },
       {
         id: "Module.GeneXusUnanimo",
         caption: "GeneXusUnanimo",
         checked: false,
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       },
       {
         id: "Module.GeneXus",
         caption: "GeneXus",
         checked: false,
-        startImgSrc: "assets/icons/module.svg",
+        startImgSrc: `${ASSETS_PREFIX}module.svg`,
         leaf: true
       }
     ]
@@ -724,12 +726,12 @@ export const importObjectsModel = [
   {
     id: "Data Provider",
     caption: "Data Provider",
-    startImgSrc: "assets/icons/data-provider.svg",
+    startImgSrc: `${ASSETS_PREFIX}data-provider.svg`,
     items: [
       {
         id: "Data_Provider.General.UI.SidebarItemsDP",
         caption: "General.UI.SidebarItemsDP",
-        startImgSrc: "assets/icons/data-provider.svg",
+        startImgSrc: `${ASSETS_PREFIX}data-provider.svg`,
         leaf: true
       }
     ]
@@ -738,7 +740,7 @@ export const importObjectsModel = [
     id: "Panel",
     caption: "Panel",
     lazy: true,
-    startImgSrc: "assets/icons/panel-for-sd.svg"
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`
   }
 ];
 
@@ -746,14 +748,14 @@ const importOBjectsPanelModel = [
   {
     id: "Panel.ActionGroupTests",
     caption: "ActionGroupTests",
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     leaf: true
   },
   {
     id: "Panel.DropdownTests",
     caption: "DropdownTests",
-    startImgSrc: "assets/icons/panel-for-sd.svg",
+    startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
     leaf: true
   }
@@ -763,80 +765,80 @@ export const preferencesModel = [
   {
     id: "root",
     caption: "GeneXusNext",
-    startImgSrc: "assets/icons/knowledge-base.svg",
+    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
     expanded: true,
     items: [
       {
         id: "Environment.GeneXusNext",
         caption: "GeneXusNext Develop",
         lazy: true,
-        startImgSrc: "assets/icons/version.svg"
+        startImgSrc: `${ASSETS_PREFIX}version.sv`
       },
       {
         id: "Environment.TeamDev",
         caption: "Team Development",
         leaf: true,
-        startImgSrc: "assets/icons/teamdev.svg",
+        startImgSrc: `${ASSETS_PREFIX}teamdev.svg`,
         order: 1
       },
       {
         id: "Environment.Patterns",
         caption: "Patterns",
-        startImgSrc: "assets/icons/patterns.svg",
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
         order: 2,
         items: [
           {
             id: "Environment.Patterns.ConversationalFlows",
             caption: "Conversational Flows",
             leaf: true,
-            startImgSrc: "assets/icons/conversational-flows.svg"
+            startImgSrc: `${ASSETS_PREFIX}conversational-flows.sv`
           },
           {
             id: "Environment.Patterns.WorkWith",
             caption: "Work With",
             leaf: true,
-            startImgSrc: "assets/icons/workwith-for-sd.svg"
+            startImgSrc: `${ASSETS_PREFIX}workwith-for-sd.sv`
           },
           {
             id: "Environment.Patterns.WorkWithForWeb",
             caption: "Work With for Web",
             leaf: true,
-            startImgSrc: "assets/icons/work-with-web.svg"
+            startImgSrc: `${ASSETS_PREFIX}work-with-web.sv`
           }
         ]
       },
       {
         id: "Environment.Workflow",
         caption: "Workflow",
-        startImgSrc: "assets/icons/workflow.svg",
+        startImgSrc: `${ASSETS_PREFIX}workflow.svg`,
         order: 3,
         items: [
           {
             id: "Environment.Workflow.Roles",
             caption: "Roles",
             leaf: true,
-            startImgSrc: "assets/icons/roles.svg",
+            startImgSrc: `${ASSETS_PREFIX}roles.svg`,
             order: 0
           },
           {
             id: "Environment.Workflow.Documents",
             caption: "Documents",
             leaf: true,
-            startImgSrc: "assets/icons/document-workflow.svg",
+            startImgSrc: `${ASSETS_PREFIX}document-workflow.svg`,
             order: 1
           },
           {
             id: "Environment.Workflow.Calendars",
             caption: "Calendars",
             leaf: true,
-            startImgSrc: "assets/icons/calendars.svg",
+            startImgSrc: `${ASSETS_PREFIX}calendars.svg`,
             order: 2
           },
           {
             id: "Environment.Workflow.Notification_Templates",
             caption: "Notification templates",
             leaf: true,
-            startImgSrc: "assets/icons/notification-templates.svg",
+            startImgSrc: `${ASSETS_PREFIX}notification-templates.svg`,
             order: 3
           }
         ]
@@ -849,37 +851,37 @@ const Environment_GeneXusNext_preferencesModel = [
   {
     id: "Environment.GeneXusNext.JavaMySQL",
     caption: "JavaMySQL",
-    startImgSrc: "assets/icons/java.svg",
+    startImgSrc: `${ASSETS_PREFIX}java.svg`,
     items: [
       {
         id: "Environment.GeneXusNext.JavaMySQL.Backend",
         caption: "Back end",
-        startImgSrc: "assets/icons/generator.svg",
+        startImgSrc: `${ASSETS_PREFIX}generator.svg`,
         items: [
           {
             id: "Environment.GeneXusNext.JavaMySQL.Backend.DefaultJava",
             caption: "Default (Java)",
             leaf: true,
-            startImgSrc: "assets/icons/java.svg",
+            startImgSrc: `${ASSETS_PREFIX}java.svg`,
             order: 0
           },
           {
             id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores",
             caption: "Data Stores",
-            startImgSrc: "assets/icons/datastore.svg",
+            startImgSrc: `${ASSETS_PREFIX}datastore.svg`,
             order: 1,
             items: [
               {
                 id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.DefaultMySQL",
                 caption: "Default (MySQL)",
                 leaf: true,
-                startImgSrc: "assets/icons/mysql.svg"
+                startImgSrc: `${ASSETS_PREFIX}mysql.sv`
               },
               {
                 id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.GAMMySQL",
                 caption: "GAM (MySQL)",
                 leaf: true,
-                startImgSrc: "assets/icons/mysql.svg",
+                startImgSrc: `${ASSETS_PREFIX}mysql.svg`,
                 order: 1
               }
             ]
@@ -888,7 +890,7 @@ const Environment_GeneXusNext_preferencesModel = [
             id: "Environment.GeneXusNext.JavaMySQL.Backend.Services",
             caption: "Services",
             leaf: true,
-            startImgSrc: "assets/icons/datastore-green.svg",
+            startImgSrc: `${ASSETS_PREFIX}datastore-green.svg`,
             order: 2
           }
         ]
@@ -896,20 +898,20 @@ const Environment_GeneXusNext_preferencesModel = [
       {
         id: "Environment.GeneXusNext.JavaMySQL.Frontend",
         caption: "Front end",
-        startImgSrc: "assets/icons/sd.svg",
+        startImgSrc: `${ASSETS_PREFIX}sd.svg`,
         order: 1,
         items: [
           {
             id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebJava",
             caption: "Web (Java)",
             leaf: true,
-            startImgSrc: "assets/icons/java.svg"
+            startImgSrc: `${ASSETS_PREFIX}java.sv`
           },
           {
             id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebAngular",
             caption: "Web (Angular)",
             leaf: true,
-            startImgSrc: "assets/icons/angular.svg",
+            startImgSrc: `${ASSETS_PREFIX}angular.svg`,
             order: 1
           }
         ]
@@ -917,20 +919,20 @@ const Environment_GeneXusNext_preferencesModel = [
       {
         id: "Environment.GeneXusNext.JavaMySQL.Deployment",
         caption: "Deployment",
-        startImgSrc: "assets/icons/deployment-unit.svg",
+        startImgSrc: `${ASSETS_PREFIX}deployment-unit.svg`,
         order: 2,
         items: [
           {
             id: "Environment.GeneXusNext.JavaMySQL.Deployment.Backend",
             caption: "Backend",
             leaf: true,
-            startImgSrc: "assets/icons/deployment-unit.svg"
+            startImgSrc: `${ASSETS_PREFIX}deployment-unit.sv`
           },
           {
             id: "Environment.GeneXusNext.JavaMySQL.Deployment.Frontend",
             caption: "Frontend",
             leaf: true,
-            startImgSrc: "assets/icons/deployment-unit.svg"
+            startImgSrc: `${ASSETS_PREFIX}deployment-unit.sv`
           }
         ]
       }
@@ -989,7 +991,91 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
     caption: modelId,
     expanded: true,
     leaf: false,
-    startImgSrc: "assets/icons/patterns.svg",
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
     items: subEagerLargeModel
   });
 }
+
+const modelLazyUpdated1 = [
+  {
+    id: "lazy-loaded-1",
+    caption: "Lazy Loaded 1 (drag disabled)",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+    checkbox: true,
+    dragDisabled: true
+  },
+  {
+    id: "lazy-loaded-2",
+    caption: "Lazy Loaded 2 (lazy, drag disabled, drop disabled)",
+    leaf: false,
+    lazy: true,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+    checkbox: true,
+    dragDisabled: true,
+    dropDisabled: true,
+    toggleCheckboxes: true
+  }
+];
+
+const modelLazyUpdated2 = [
+  {
+    id: "lazy-loaded-3",
+    caption: "Lazy Loaded 3 (drag disabled)",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+    checkbox: true,
+    dragDisabled: true
+  },
+  {
+    id: "lazy-loaded-4",
+    caption: "Lazy Loaded 4 (drag disabled)",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+    checkbox: true,
+    dragDisabled: true
+  }
+];
+
+export const lazyLoadTreeItemsCallback = modelId =>
+  new Promise(resolve => {
+    let lazyModel =
+      modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
+
+    if (modelId.startsWith("item-")) {
+      lazyModel = [];
+
+      for (let j = 0; j < SECOND_LEVEL_SIZE; j++) {
+        const subModelId = modelId + "-" + j;
+        const subModelItems = [];
+
+        for (let k = 0; k < THIRD_LEVEL_SIZE; k++) {
+          subModelItems.push({
+            id: subModelId + "-" + k,
+            caption: subModelId + "-" + k,
+            leaf: true,
+            startImgSrc: "./assets/icons/file.svg"
+          });
+        }
+
+        lazyModel.push({
+          id: subModelId,
+          caption: subModelId,
+          expanded: true,
+          leaf: false,
+          startImgSrc: "./assets/icons/knowledge-base.svg",
+          items: subModelItems
+        });
+      }
+    }
+
+    const lazyModelResultFromDictionary = lazyLoadItemsDictionary[modelId];
+
+    if (lazyModelResultFromDictionary) {
+      lazyModel = lazyModelResultFromDictionary;
+    }
+
+    setTimeout(() => {
+      resolve(structuredClone(lazyModel));
+    }, 500); // Resolves or rejects after 500ms second
+  });

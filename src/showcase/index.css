@@ -81,10 +81,6 @@ header {
   margin-block-start: var(--spacing-un-spacing--xl);
 }
 
-.form-input {
-  margin: 8px;
-}
-
 .header-end {
   display: flex;
   align-items: center;

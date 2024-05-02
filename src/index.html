@@ -239,6 +239,7 @@
           if (event.detail?.length > 0) {
             mainPage.hidden = true;
             showcase.hidden = false;
+            showcase.componentName = event.detail[0].item.id;
             showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;
             showcase.pageName = event.detail[0].item.caption;
           }

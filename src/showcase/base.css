@@ -35,3 +35,14 @@ label {
   display: grid;
   grid-template-rows: max-content max-content;
 }
+
+fieldset {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spacing-un-spacing--m);
+  border: unset;
+}
+
+legend {
+  margin-block-end: var(--spacing-un-spacing--m);
+}

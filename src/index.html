@@ -17,14 +17,13 @@
     <script nomodule src="/build/chameleon.js"></script>
 
     <link href="showcase/base.css" rel="stylesheet" />
-    <link
+    <link href="showcase/index.css" rel="stylesheet" />
+    <!-- <link
       href="https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css"
       rel="stylesheet"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
-    />
-
-    <link href="showcase/index.css" rel="stylesheet" />
+    /> -->
 
     <style>
       /* Avoid FOUC (Flash Of Unstyled Content) */
@@ -42,7 +41,7 @@
         </div>
 
         <div class="header-end">
-          <button id="toggle-theme" type="button">Toggle theme</button>
+          <ch-segmented-control-render></ch-segmented-control-render>
 
           <a
             href="https://github.com/genexuslabs/chameleon-controls-library"
@@ -140,6 +139,11 @@
 
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
+      import {
+        getTheme,
+        setThemeInBrowser,
+        storeTheme
+      } from "./showcase/models/theme-manager.js";
 
       // Get the latest version
       fetch(
@@ -158,6 +162,22 @@
         const mainPage = document.querySelector(".main-page");
         const showcase = document.querySelector("ch-showcase");
         const home = document.querySelector(".home");
+        const toggleThemeRef = document.querySelector(
+          "ch-segmented-control-render"
+        );
+
+        toggleThemeRef.items = [
+          {
+            id: "dark",
+            caption: "Dark"
+          },
+          {
+            id: "light",
+            caption: "Light"
+          }
+        ];
+
+        toggleThemeRef.selectedId = getTheme();
 
         // Initialize sample
         if (window.location.hash && window.location.hash !== "#") {
@@ -170,6 +190,15 @@
         else {
           mainPage.hidden = false;
         }
+
+        // Add event lister for the theme changes
+        toggleThemeRef.addEventListener("selectedItemChange", () => {
+          const newTheme = getTheme() === "light" ? "dark" : "light";
+
+          storeTheme(newTheme);
+          setThemeInBrowser(newTheme);
+          showcase.theme = newTheme;
+        });
 
         const layoutSplitterModel = {
           id: "root",
@@ -208,8 +237,6 @@
         // When the selected item of the Tree View changes, the iframe must be visible
         treeViewRef.addEventListener("selectedItemsChange", () => {
           if (event.detail?.length > 0) {
-            console.log(event.detail[0].item.id);
-
             mainPage.hidden = true;
             showcase.hidden = false;
             showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;

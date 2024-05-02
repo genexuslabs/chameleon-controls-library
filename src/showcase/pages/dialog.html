@@ -9,7 +9,16 @@
     <title>Dialog</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
-    <link href="/build/chameleon.css" rel="stylesheet" />
+    <link href="../base.css" rel="stylesheet" />
+    <script type="module">
+      import { setThemeInBrowser } from "../models/theme-manager.js";
+
+      window.addEventListener("message", event => {
+        if (event.data === "light" || event.data === "dark") {
+          setThemeInBrowser(event.data);
+        }
+      });
+    </script>
 
     <style>
       /* Avoid FOUC (Flash Of Unstyled Content) */

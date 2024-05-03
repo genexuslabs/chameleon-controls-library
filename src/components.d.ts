@@ -388,6 +388,10 @@ export namespace Components {
          */
         "readonly": boolean;
         /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable": boolean;
+        /**
           * Specifies the value (selected item) of the control.
          */
         "value"?: string;
@@ -4363,6 +4367,10 @@ declare namespace LocalJSX {
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly"?: boolean;
+        /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable"?: boolean;
         /**
           * Specifies the value (selected item) of the control.
          */

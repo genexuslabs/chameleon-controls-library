@@ -197,10 +197,10 @@ export class ChComboBox
   #borderSizeRAF: SyncWithRAF | undefined;
   #resizeObserver: ResizeObserver | undefined;
 
-  #lastMaskInlineStart = "0px";
-  #lastMaskInlineEnd = "0px";
-  #lastMaskBlockStart = "0px";
-  #lastMaskBlockEnd = "0px";
+  #lastMaskInlineStart = undefined;
+  #lastMaskInlineEnd = undefined;
+  #lastMaskBlockStart = undefined;
+  #lastMaskBlockEnd = undefined;
 
   #valueToItemInfo: Map<
     string,
@@ -528,6 +528,12 @@ export class ChComboBox
   @Prop() readonly readonly: boolean = false;
 
   /**
+   * Specifies whether the control can be resized. If `true` the control can be
+   * resized at runtime by dragging the edges or corners.
+   */
+  @Prop() readonly resizable: boolean = false;
+
+  /**
    * Specifies the value (selected item) of the control.
    */
   @Prop({ mutable: true }) value?: string;
@@ -820,7 +826,12 @@ export class ChComboBox
     this.#inputRef.focus();
   };
 
-  #updateSelectedValue = (itemValue: string) => (event: MouseEvent) => {
+  #updateCurrentSelectedValue = (itemValue: string) => (event: MouseEvent) => {
+    event.stopPropagation();
+    this.currentSelectedValue = itemValue;
+  };
+
+  #selectedValue = (itemValue: string) => (event: MouseEvent) => {
     event.stopPropagation();
 
     this.expanded = false;
@@ -903,7 +914,7 @@ export class ChComboBox
                 this.disabled ? " disabled" : ""
               } ${this.expanded ? "expanded" : "collapsed"}`}
               style={customVars}
-              disabled={this.disabled}
+              disabled={this.disabled} // TODO: Update this
               type="button"
               onClick={this.#toggleExpandInGroup(itemGroup)}
             >
@@ -980,7 +991,10 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={this.#updateSelectedValue(item.value)}
+          onClick={!isDisabled ? this.#selectedValue(item.value) : null}
+          onMouseEnter={
+            !isDisabled ? this.#updateCurrentSelectedValue(item.value) : null
+          }
         >
           {item.caption}
         </button>
@@ -1171,6 +1185,7 @@ export class ChComboBox
                   aria-label={
                     this.accessibleName ?? this.#accessibleNameFromExternalLabel
                   }
+                  autocomplete="off"
                   class={{
                     value: true,
                     "value--filters": filtersAreApplied,
@@ -1216,6 +1231,8 @@ export class ChComboBox
                   closeOnClickOutside
                   hidden={!this.expanded}
                   popover="manual"
+                  resizable={this.resizable}
+                  inlineSizeMatch="action-element-as-minimum"
                   onPopoverClosed={this.#handlePopoverClose}
                 >
                   <div class="window__content" part="window__content">

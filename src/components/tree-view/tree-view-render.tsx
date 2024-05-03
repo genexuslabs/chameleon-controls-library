@@ -360,11 +360,6 @@ export class ChTreeViewRender {
   ) => Promise<boolean>;
 
   /**
-   * A CSS class to set as the `ch-tree-view` element class.
-   */
-  @Prop() readonly cssClass: string = "tree-view";
-
-  /**
    * This attribute lets you specify if the drag operation is disabled in all
    * items by default. If `true`, the items can't be dragged.
    */
@@ -571,11 +566,6 @@ export class ChTreeViewRender {
   treeModelChanged() {
     this.#flattenModel();
   }
-
-  /**
-   * A CSS class to set as the `ch-tree-view-item` element default class.
-   */
-  @Prop() readonly treeViewItemCssClass: string = "tree-view-item";
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.

@@ -1185,6 +1185,7 @@ export class ChComboBox
                   aria-label={
                     this.accessibleName ?? this.#accessibleNameFromExternalLabel
                   }
+                  autocomplete="off"
                   class={{
                     value: true,
                     "value--filters": filtersAreApplied,

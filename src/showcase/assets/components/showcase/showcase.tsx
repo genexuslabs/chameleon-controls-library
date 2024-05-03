@@ -306,6 +306,10 @@ export class ChShowcase {
   }
 
   render() {
+    if (!this.pageSrc && !this.componentName) {
+      return "";
+    }
+
     return (
       <Host>
         <h1 class="heading-1">{this.pageName}</h1>

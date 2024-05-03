@@ -36,7 +36,13 @@
     <ch-layout-splitter>
       <header slot="header" class="header">
         <div class="header-start">
-          <a class="home heading-2" href="#" aria-label="Home">Chameleon</a>
+          <a
+            id="chameleon-home"
+            class="home heading-2"
+            href="#"
+            aria-label="Home"
+            >Chameleon</a
+          >
           <span id="chameleon-version" class="text-body-2"></span>
         </div>
 
@@ -165,6 +171,7 @@
         const toggleThemeRef = document.querySelector(
           "ch-segmented-control-render"
         );
+        const chameleonHome = document.getElementById("chameleon-home");
 
         toggleThemeRef.items = [
           {
@@ -179,17 +186,42 @@
 
         toggleThemeRef.selectedId = getTheme();
 
+        const setPage = (componentName, pageCaption) => {
+          showcase.componentName = componentName;
+          showcase.pageSrc = `showcase/pages/${componentName}.html`;
+          showcase.pageName = pageCaption;
+
+          mainPage.hidden = true;
+          showcase.hidden = false;
+        };
+
         // Initialize sample
         if (window.location.hash && window.location.hash !== "#") {
-          const pageToNavigate = window.location.hash.replace("#", "");
-          showcase.pageSrc = pageToNavigate;
-          showcase.pageName = "hello";
-          showcase.hidden = false;
+          const componentName = window.location.hash.replace("#", "");
+          const treeItemInformation = treeViewComponents.find(
+            treeItem => treeItem.id === componentName
+          );
+
+          if (treeItemInformation) {
+            setPage(componentName, treeItemInformation.caption);
+          }
+          // Go to Main page
+          else {
+            mainPage.hidden = false;
+          }
         }
         // Go to Main page
         else {
           mainPage.hidden = false;
         }
+
+        // WA to reset the page when clicking in the logo
+        chameleonHome.addEventListener("click", () => {
+          mainPage.hidden = false;
+          showcase.hidden = true;
+          showcase.componentName = undefined;
+          showcase.pageSrc = undefined;
+        });
 
         // Add event lister for the theme changes
         toggleThemeRef.addEventListener("selectedItemChange", () => {
@@ -237,11 +269,12 @@
         // When the selected item of the Tree View changes, the iframe must be visible
         treeViewRef.addEventListener("selectedItemsChange", () => {
           if (event.detail?.length > 0) {
-            mainPage.hidden = true;
-            showcase.hidden = false;
-            showcase.componentName = event.detail[0].item.id;
-            showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;
-            showcase.pageName = event.detail[0].item.caption;
+            const componentName = event.detail[0].item.id;
+            const pageCaption = event.detail[0].item.caption;
+            setPage(componentName, pageCaption);
+
+            // This is a WA until we have the ch-navigation-list component
+            window.location.hash = `#${componentName}`;
           }
         });
       });

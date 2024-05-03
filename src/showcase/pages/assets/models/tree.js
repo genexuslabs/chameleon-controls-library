@@ -955,6 +955,19 @@ export const lazyLoadItemsDictionary = {
   "Environment.GeneXusNext": Environment_GeneXusNext_preferencesModel
 };
 
+export const lazyLargeModel = [];
+
+for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
+  lazyLargeModel.push({
+    id: "item-" + i,
+    caption: "item-" + i,
+    lazy: true,
+    leaf: false,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+    items: []
+  });
+}
+
 export const eagerLargeModel = [];
 
 for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
@@ -972,7 +985,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
         id: subSubModelId,
         caption: subSubModelId,
         leaf: true,
-        startImgSrc: "./assets/icons/file.svg"
+        startImgSrc: `${ASSETS_PREFIX}file.svg`
       });
     }
 
@@ -981,7 +994,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
       caption: subModelId,
       expanded: true,
       leaf: false,
-      startImgSrc: "./assets/icons/knowledge-base.svg",
+      startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
       items: subSubEagerLargeModel
     });
   }
@@ -1054,7 +1067,7 @@ export const lazyLoadTreeItemsCallback = modelId =>
             id: subModelId + "-" + k,
             caption: subModelId + "-" + k,
             leaf: true,
-            startImgSrc: "./assets/icons/file.svg"
+            startImgSrc: `${ASSETS_PREFIX}file.svg`
           });
         }
 
@@ -1063,7 +1076,7 @@ export const lazyLoadTreeItemsCallback = modelId =>
           caption: subModelId,
           expanded: true,
           leaf: false,
-          startImgSrc: "./assets/icons/knowledge-base.svg",
+          startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
           items: subModelItems
         });
       }
@@ -1079,3 +1092,354 @@ export const lazyLoadTreeItemsCallback = modelId =>
       resolve(structuredClone(lazyModel));
     }, 500); // Resolves or rejects after 500ms second
   });
+
+export const disabledItemsModel = [
+  {
+    id: "number-1",
+    caption: "number-1",
+    leaf: false,
+    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+    items: [
+      {
+        id: "number-1-1",
+        caption: "number-1-1",
+        class: "ch-tree-view-item--success",
+        leaf: false,
+        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+        items: [
+          {
+            id: "number-1-1-1",
+            caption: "number-1-1-1",
+            leaf: true,
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+          },
+          {
+            id: "number-1-1-2",
+            caption: "number-1-1-2",
+            leaf: false,
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+            items: [
+              {
+                id: "number-1-1-2-1",
+                caption: "number-1-1-2-1",
+                leaf: false,
+                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                items: [
+                  {
+                    id: "new-item-added-1",
+                    caption: "new-item-added-1",
+                    disabled: true,
+                    leaf: true,
+                    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                  },
+                  {
+                    id: "new-item-added-2",
+                    caption: "new-item-added-2",
+                    disabled: false,
+                    leaf: true,
+                    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                  },
+                  {
+                    id: "new-item-added-3",
+                    caption: "new-item-added-3",
+                    disabled: true,
+                    leaf: true,
+                    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                  },
+                  {
+                    id: "new-item-added-4",
+                    caption: "new-item-added-4",
+                    disabled: false,
+                    expanded: true,
+                    leaf: false,
+                    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                    items: [
+                      {
+                        id: "new-item-added-4-1",
+                        caption: "new-item-added-4-1",
+                        disabled: false,
+                        leaf: true,
+                        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                      },
+                      {
+                        id: "new-item-added-4-2",
+                        caption: "new-item-added-4-2",
+                        disabled: true,
+                        expanded: true,
+                        leaf: false,
+                        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                        items: [
+                          {
+                            id: "new-item-added-4-2-1",
+                            caption: "new-item-added-4-2-1",
+                            disabled: true,
+                            expanded: true,
+                            leaf: false,
+                            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                            items: [
+                              {
+                                id: "new-item-added-4-2-1-1",
+                                caption: "new-item-added-4-2-1-1",
+                                disabled: false,
+                                leaf: true,
+                                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                              },
+                              {
+                                id: "new-item-added-4-2-1-2",
+                                caption: "new-item-added-4-2-1-2",
+                                disabled: false,
+                                leaf: true,
+                                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                              },
+                              {
+                                id: "new-item-added-4-2-1-3",
+                                caption: "new-item-added-4-2-1-3",
+                                disabled: true,
+                                leaf: true,
+                                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                              },
+                              {
+                                id: "new-item-added-4-2-1-4",
+                                caption: "new-item-added-4-2-1-4",
+                                disabled: false,
+                                leaf: true,
+                                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                              }
+                            ]
+                          },
+                          {
+                            id: "new-item-added-4-2-2",
+                            caption: "new-item-added-4-2-2",
+                            disabled: true,
+                            leaf: true,
+                            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    id: "new-item-added-5",
+                    caption: "new-item-added-5",
+                    disabled: true,
+                    expanded: true,
+                    leaf: false,
+                    startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                    items: [
+                      {
+                        id: "new-item-added-5-1",
+                        caption: "new-item-added-5-1",
+                        disabled: false,
+                        leaf: true,
+                        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                      },
+                      {
+                        id: "new-item-added-5-2",
+                        caption: "new-item-added-5-2",
+                        disabled: true,
+                        leaf: true,
+                        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "number-1-1-2-2",
+                caption: "number-1-1-2-2",
+                leaf: true,
+                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "number-1-2",
+        caption: "number-1-2",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+      }
+    ]
+  },
+  {
+    id: "number-2",
+    caption: "number-2",
+    leaf: false,
+    startImgSrc: `${ASSETS_PREFIX}datastore.svg`,
+    items: [
+      {
+        id: "number-2-1",
+        caption: "number-2-1",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      },
+      {
+        id: "number-2-2",
+        caption: "number-2-2",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      },
+      {
+        id: "number-2-3",
+        caption: "number-2-3",
+        disabled: true,
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      }
+    ]
+  },
+  {
+    id: "number-3",
+    caption: "number-3",
+    leaf: false,
+    disabled: true,
+    expanded: true,
+    startImgSrc: `${ASSETS_PREFIX}datastore.svg`,
+    items: [
+      {
+        id: "number-3-1",
+        caption: "number-3-1",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      },
+      {
+        id: "number-3-2",
+        caption: "number-3-2",
+        disabled: true,
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      },
+      {
+        id: "number-3-3",
+        caption: "number-3-3",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+      }
+    ]
+  }
+];
+
+export const simpleModel1 = [
+  {
+    id: "number-1",
+    caption: "number-1 label (always editable)",
+    class: "tree-view-item tree-view-item--success",
+    leaf: false,
+    startImgSrc: `${ASSETS_PREFIX}datastore.svg`,
+    editable: true,
+    items: [
+      {
+        id: "number-1-1",
+        caption: "number-1-1 (always editable)",
+        leaf: false,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+        editable: true,
+        items: [
+          {
+            id: "number-1-1-1",
+            caption: "number-1-1-1",
+            leaf: true,
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+          },
+          {
+            id: "number-1-1-2",
+            caption: "number-1-1-2",
+            leaf: false,
+            startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+            items: [
+              {
+                id: "number-1-1-2-1",
+                caption: "number-1-1-2-1 (lazy, drag disabled)",
+                leaf: false,
+                startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                lazy: true,
+                checkbox: true,
+                dragDisabled: true,
+                toggleCheckboxes: true
+              },
+              {
+                id: "number-1-1-2-2",
+                caption: "number-1-1-2-2",
+                leaf: true,
+                startImgSrc: `${ASSETS_PREFIX}java.svg`
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "number-1-2",
+        caption: "number-1-2",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+      }
+    ]
+  },
+  {
+    id: "number-2",
+    caption: "number-2",
+    class: "tree-view-item tree-view-item--custom-image",
+    leaf: false,
+    items: [
+      {
+        id: "number-2-1",
+        caption: "number-2-1",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}java.svg`
+      },
+      {
+        id: "number-2-2",
+        caption: "number-2-2",
+        leaf: true,
+        startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`
+      }
+    ]
+  }
+];
+
+export const simpleModel2 = [
+  {
+    id: "number-a",
+    caption: "number-a (always editable)",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}apple.svg`,
+    editable: true
+  },
+  {
+    id: "number-b",
+    caption: "number-b",
+    leaf: false,
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
+    items: [
+      {
+        id: "number-2.1",
+        caption: "number-2.1",
+        leaf: false,
+        startImgSrc: `${ASSETS_PREFIX}patterns.svg`,
+        items: [
+          {
+            id: "number-2.1.1",
+            caption: "number-2.1.1",
+            leaf: false,
+            startImgSrc: `${ASSETS_PREFIX}java.svg`,
+            items: [
+              {
+                id: "number-2.1.1.1",
+                caption: "number-2.1.1.1",
+                leaf: true,
+                startImgSrc: `${ASSETS_PREFIX}mysql.svg`
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "number-3",
+    caption: "number-3",
+    leaf: true,
+    startImgSrc: `${ASSETS_PREFIX}patterns.svg`
+  }
+];

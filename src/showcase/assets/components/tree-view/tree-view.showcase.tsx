@@ -3,8 +3,15 @@ import { ChTreeViewRender } from "../../../../components/tree-view/tree-view-ren
 import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
 import { Mutable } from "../../../../common/types";
 import {
+  lazyLargeModel,
+  disabledItemsModel,
+  eagerLargeModel,
+  fileSystemModel,
   kbExplorerModel,
-  lazyLoadTreeItemsCallback
+  lazyLoadTreeItemsCallback,
+  importObjectsModel,
+  simpleModel1,
+  simpleModel2
 } from "../../../pages/assets/models/tree.js";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
@@ -32,14 +39,34 @@ const render = () => (
     showLines={state.showLines}
     sortItemsCallback={state.sortItemsCallback}
     toggleCheckboxes={state.toggleCheckboxes}
-    // treeModel={state.treeModel}
-    treeModel={kbExplorerModel}
+    treeModel={state.treeModel}
   ></ch-tree-view-render>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<
   Mutable<ChTreeViewRender>
 > = [
+  {
+    caption: "Models",
+    properties: [
+      {
+        id: "treeModel",
+        caption: "Model",
+        type: "enum",
+        values: [
+          { caption: "KB Explorer", value: kbExplorerModel },
+          { caption: "Import Objects", value: importObjectsModel },
+          { caption: "File System", value: fileSystemModel },
+          { caption: "Disabled items", value: disabledItemsModel },
+          { caption: "Simple model 1", value: simpleModel1 },
+          { caption: "Simple model 2", value: simpleModel2 },
+          { caption: "Lazy Large Tree (10x20x20)", value: lazyLargeModel },
+          { caption: "Eager Large Tree (10x20x20)", value: eagerLargeModel }
+        ],
+        value: kbExplorerModel
+      }
+    ]
+  },
   {
     caption: "Properties",
     properties: [

@@ -46,3 +46,27 @@ fieldset {
 legend {
   margin-block-end: var(--spacing-un-spacing--m);
 }
+
+::part(item__action item--folder)::before,
+::part(item__action item--module)::before {
+  content: "";
+  width: var(--ch-tree-view-item__image-size);
+  height: var(--ch-tree-view-item__image-size);
+  background-repeat: no-repeat;
+}
+
+::part(item__action item--folder)::before {
+  background-image: url("pages/assets/icons/folder.svg");
+}
+
+::part(item__action item--folder expanded)::before {
+  background-image: url("pages/assets/icons/folder-open.svg");
+}
+
+::part(item__action item--module)::before {
+  background-image: url("pages/assets/icons/module.svg");
+}
+
+::part(item__action item--module expanded)::before {
+  background-image: url("pages/assets/icons/module-open.svg");
+}

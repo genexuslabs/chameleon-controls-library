@@ -820,7 +820,12 @@ export class ChComboBox
     this.#inputRef.focus();
   };
 
-  #updateSelectedValue = (itemValue: string) => (event: MouseEvent) => {
+  #updateCurrentSelectedValue = (itemValue: string) => (event: MouseEvent) => {
+    event.stopPropagation();
+    this.currentSelectedValue = itemValue;
+  };
+
+  #selectedValue = (itemValue: string) => (event: MouseEvent) => {
     event.stopPropagation();
 
     this.expanded = false;
@@ -980,7 +985,8 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={this.#updateSelectedValue(item.value)}
+          onClick={this.#selectedValue(item.value)}
+          onMouseEnter={this.#updateCurrentSelectedValue(item.value)}
         >
           {item.caption}
         </button>

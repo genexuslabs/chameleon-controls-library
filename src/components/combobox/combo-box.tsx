@@ -908,7 +908,7 @@ export class ChComboBox
                 this.disabled ? " disabled" : ""
               } ${this.expanded ? "expanded" : "collapsed"}`}
               style={customVars}
-              disabled={this.disabled}
+              disabled={this.disabled} // TODO: Update this
               type="button"
               onClick={this.#toggleExpandInGroup(itemGroup)}
             >
@@ -985,8 +985,10 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={this.#selectedValue(item.value)}
-          onMouseEnter={this.#updateCurrentSelectedValue(item.value)}
+          onClick={!isDisabled ? this.#selectedValue(item.value) : null}
+          onMouseEnter={
+            !isDisabled ? this.#updateCurrentSelectedValue(item.value) : null
+          }
         >
           {item.caption}
         </button>

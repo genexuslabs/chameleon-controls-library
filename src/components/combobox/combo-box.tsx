@@ -528,6 +528,12 @@ export class ChComboBox
   @Prop() readonly readonly: boolean = false;
 
   /**
+   * Specifies whether the control can be resized. If `true` the control can be
+   * resized at runtime by dragging the edges or corners.
+   */
+  @Prop() readonly resizable: boolean = false;
+
+  /**
    * Specifies the value (selected item) of the control.
    */
   @Prop({ mutable: true }) value?: string;
@@ -1224,6 +1230,7 @@ export class ChComboBox
                   closeOnClickOutside
                   hidden={!this.expanded}
                   popover="manual"
+                  resizable={this.resizable}
                   onPopoverClosed={this.#handlePopoverClose}
                 >
                   <div class="window__content" part="window__content">

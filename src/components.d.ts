@@ -388,6 +388,10 @@ export namespace Components {
          */
         "readonly": boolean;
         /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable": boolean;
+        /**
           * Specifies the value (selected item) of the control.
          */
         "value"?: string;
@@ -1722,6 +1726,10 @@ export namespace Components {
     interface ChShowcase {
         "pageName": string;
         "pageSrc": string;
+        /**
+          * Specifies the theme used in the iframe of the control
+         */
+        "theme": "light" | "dark";
     }
     interface ChSidebar {
         "expandButtonAccessibleName": string;
@@ -2268,10 +2276,6 @@ export namespace Components {
          */
         "checked": boolean;
         /**
-          * A CSS class to set as the `ch-tree-view` element class.
-         */
-        "cssClass": string;
-        /**
           * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the items can't be dragged.
          */
         "dragDisabled": boolean;
@@ -2407,10 +2411,6 @@ export namespace Components {
           * This property lets you define the model of the ch-tree-view-render control.
          */
         "treeModel": TreeViewItemModel[];
-        /**
-          * A CSS class to set as the `ch-tree-view-item` element default class.
-         */
-        "treeViewItemCssClass": string;
         /**
           * Given a subset of item's properties, it updates all item UI models.
          */
@@ -4368,6 +4368,10 @@ declare namespace LocalJSX {
          */
         "readonly"?: boolean;
         /**
+          * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
+         */
+        "resizable"?: boolean;
+        /**
           * Specifies the value (selected item) of the control.
          */
         "value"?: string;
@@ -5734,6 +5738,10 @@ declare namespace LocalJSX {
     interface ChShowcase {
         "pageName"?: string;
         "pageSrc"?: string;
+        /**
+          * Specifies the theme used in the iframe of the control
+         */
+        "theme"?: "light" | "dark";
     }
     interface ChSidebar {
         "expandButtonAccessibleName"?: string;
@@ -6335,10 +6343,6 @@ declare namespace LocalJSX {
          */
         "checked"?: boolean;
         /**
-          * A CSS class to set as the `ch-tree-view` element class.
-         */
-        "cssClass"?: string;
-        /**
           * This attribute lets you specify if the drag operation is disabled in all items by default. If `true`, the items can't be dragged.
          */
         "dragDisabled"?: boolean;
@@ -6459,10 +6463,6 @@ declare namespace LocalJSX {
           * This property lets you define the model of the ch-tree-view-render control.
          */
         "treeModel"?: TreeViewItemModel[];
-        /**
-          * A CSS class to set as the `ch-tree-view-item` element default class.
-         */
-        "treeViewItemCssClass"?: string;
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */

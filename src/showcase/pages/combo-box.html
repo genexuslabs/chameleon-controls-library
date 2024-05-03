@@ -52,58 +52,27 @@
       }
 
       ch-combo-box {
-        --ch-combo-box-item-gap: 5px;
-        border: 8px solid;
-        padding: 8px;
-        margin: 4px;
-        background-color: aliceblue;
-        box-sizing: border-box;
-      }
+        --ch-combo-box-separation-y: 2px;
+        --ch-combo-box-item-gap: var(--spacing-un-spacing--s);
 
-      ch-combo-box:focus {
-        border-color: blueviolet;
-      }
-
-      ch-combo-box::part(window) {
-        background-color: beige;
-        border: 1px solid;
-      }
-
-      ch-combo-box::part(window__content) {
-        padding: 8px;
-      }
-
-      ch-combo-box::part(item disabled),
-      ch-combo-box::part(group disabled) {
-        opacity: 0.5;
-      }
-
-      ch-combo-box::part(item nested) {
-        padding-inline-start: calc(
-          var(--ch-combo-box-group__image-size) * 2 +
-            var(--ch-combo-box-item-gap) * 2
+        --ch-combo-box-item__image-size: var(--spacing-un-spacing--l);
+        --ch-combo-box-group__expandable-button-size: var(
+          --spacing-un-spacing--l
         );
+
+        --ch-combo-box-group__expandable-button-image-size: 12px;
+        --ch-combo-box-item__background-image-size: 12px;
       }
 
-      ch-combo-box::part(item) {
-        border: 1px solid;
-        background-color: rgb(215, 179, 136);
+      .combo-box::part(group__header) {
+        padding-block: var(--spacing-un-spacing--s);
       }
 
-      ch-combo-box::part(item selected) {
-        background-color: rgb(152, 215, 136);
-      }
-
-      ch-combo-box::part(item):focus {
-        outline: 2px solid;
-      }
-
-      ch-combo-box::part(item):hover {
-        filter: brightness(0.85);
-      }
-
-      ch-combo-box::part(group__caption) {
-        font-family: SourceSansPro_Bold;
+      .combo-box::part(item nested) {
+        padding-inline-start: calc(
+          var(--ch-combo-box-item-gap) +
+            var(--ch-combo-box-group__expandable-button-size)
+        );
       }
     </style>
   </head>
@@ -113,8 +82,10 @@
         <div>
           <label for="combobox-1">Label for combobox-1</label>
           <ch-combo-box
-            name="combobox-1"
             id="combobox-1"
+            class="combo-box"
+            name="combobox-1"
+            resizable
             placeholder="Choose a value..."
             style="width: 150px"
             value="Value 1"

@@ -12,7 +12,7 @@ import {
   importObjectsModel,
   simpleModel1,
   simpleModel2
-} from "../../../pages/assets/models/tree.js";
+} from "./tree";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
 
@@ -51,7 +51,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     properties: [
       {
         id: "treeModel",
-        caption: "Model",
+        accessibleName: "Model",
         type: "enum",
         values: [
           { caption: "KB Explorer", value: kbExplorerModel },

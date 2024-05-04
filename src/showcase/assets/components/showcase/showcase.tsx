@@ -5,6 +5,7 @@ import {
   ShowcaseRenderPropertyBoolean,
   ShowcaseRenderPropertyEnum,
   ShowcaseRenderPropertyGroup,
+  ShowcaseRenderPropertyString,
   ShowcaseStory
 } from "./types";
 import { showcaseStories } from "./showcase-stories";
@@ -43,7 +44,8 @@ const flexibleLayoutConfiguration: FlexibleLayout = {
 
 const defaultRenderForEachPropertyType = {
   boolean: "checkbox",
-  enum: "combo-box"
+  enum: "combo-box",
+  string: "input"
 } as const;
 
 @Component({
@@ -63,6 +65,8 @@ export class ChShowcase {
         }
       >
     | undefined;
+
+  #showcaseStoryInput: Map<string, (event: InputEvent) => void> | undefined;
   #showcaseStoryRadioGroups:
     | Map<
         string,
@@ -138,7 +142,7 @@ export class ChShowcase {
     this.#showcaseStoryRadioGroups = undefined; // Free the memory
 
     this.#showcaseStory = componentName
-      ? showcaseStories.get(componentName as any)
+      ? showcaseStories[componentName]
       : undefined;
 
     if (this.#showcaseStory) {
@@ -161,6 +165,23 @@ export class ChShowcase {
   ) => {
     const showcaseStoryState = this.#showcaseStory.state;
 
+    if (property.type === "string") {
+      if (property.render === "textarea") {
+        //
+      }
+      // Input by default
+      else {
+        this.#showcaseStoryInput ??= new Map();
+
+        this.#showcaseStoryInput.set(property.id, (event: InputEvent) => {
+          const inputCurrentValue = (event.target as HTMLInputElement).value;
+
+          showcaseStoryState[property.id as any] = inputCurrentValue;
+          forceUpdate(this);
+        });
+      }
+    }
+
     if (property.type === "boolean") {
       if (property.render === "switch") {
         // asd
@@ -171,7 +192,7 @@ export class ChShowcase {
 
         this.#showcaseStoryCheckboxes.set(property.id, () => {
           const checkboxCurrentValue = showcaseStoryState[
-            property.id
+            property.id as any
           ] as boolean;
 
           showcaseStoryState[property.id as any] = !checkboxCurrentValue;
@@ -252,17 +273,39 @@ export class ChShowcase {
         keyof ShowcaseAvailableStories
       >
     ) => (
-      <div>
-        <label class="form-input__label" htmlFor={property.id}>
-          {property.caption}
-        </label>
+      <div class="form-field">
+        {property.caption && (
+          <label class="form-input__label" htmlFor={property.id}>
+            {property.caption}
+          </label>
+        )}
         <ch-combo-box
           id={property.id}
+          accessibleName={property.accessibleName}
           class="combo-box"
           items={this.#showcaseStoryComboBoxes.get(property.id).items}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(property.id).handler}
         ></ch-combo-box>
+      </div>
+    ),
+
+    input: (
+      property: ShowcaseRenderPropertyString<ShowcaseAvailableStories>
+    ) => (
+      <div class="form-field">
+        {property.caption && (
+          <label class="form-input__label" htmlFor={property.id}>
+            {property.caption}
+          </label>
+        )}
+        <input
+          id={property.id}
+          aria-label={property.accessibleName ?? null}
+          class="form-input"
+          value={property.value.toString()}
+          onInput={this.#showcaseStoryInput.get(property.id)}
+        />
       </div>
     ),
 
@@ -272,7 +315,7 @@ export class ChShowcase {
         keyof ShowcaseAvailableStories
       >
     ) => (
-      <div>
+      <div class="form-field">
         <label class="form-input__label" htmlFor={property.id}>
           {property.caption}
         </label>
@@ -281,7 +324,7 @@ export class ChShowcase {
           class="radio-group"
           items={this.#showcaseStoryRadioGroups.get(property.id).items}
           value={property.value.toString()}
-          onInput={this.#showcaseStoryRadioGroups.get(property.id).handler}
+          onChange={this.#showcaseStoryRadioGroups.get(property.id).handler}
         ></ch-radio-group-render>
       </div>
     )

@@ -1,4 +1,6 @@
 import { Mutable } from "../../../../common/types";
+import { CheckBox } from "../../../../components/checkbox/checkbox";
+import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
 import { ChTreeViewRender } from "../../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
@@ -31,7 +33,8 @@ export type ShowcaseRenderPropertyBoolean<T extends ShowcaseAvailableStories> =
 
 export type ShowcaseRenderPropertyString<T extends ShowcaseAvailableStories> = {
   id: keyof T;
-  caption: string;
+  accessibleName?: string;
+  caption?: string;
   value: string;
   render?: "input" | "textarea";
   type: "string";
@@ -43,11 +46,15 @@ export type ShowcaseRenderPropertyEnum<
   D extends keyof T
 > = {
   id: D;
-  caption: string;
+  accessibleName?: string;
+  caption?: string;
   value: T[D];
   render?: "combo-box" | "radio-group";
   type: "enum";
-  values: { caption: string; value: T[D] }[];
+  values: { caption: string; value: any }[];
 };
 
-export type ShowcaseAvailableStories = Mutable<ChTreeViewRender>;
+export type ShowcaseAvailableStories =
+  | Mutable<ChTreeViewRender>
+  | Mutable<CheckBox>
+  | Mutable<ChDropdownRender>;

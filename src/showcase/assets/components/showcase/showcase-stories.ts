@@ -1,5 +1,9 @@
+import { checkboxShowcaseStory } from "../checkbox/checkbox.showcase";
+import { dropdownShowcaseStory } from "../dropdown/dropdown.showcase";
 import { treeViewShowcaseStory } from "../tree-view/tree-view.showcase";
 
-export const showcaseStories = new Map([
-  ["tree-view", treeViewShowcaseStory]
-] as const);
+export const showcaseStories = {
+  checkbox: checkboxShowcaseStory,
+  dropdown: dropdownShowcaseStory,
+  "tree-view": treeViewShowcaseStory
+} as const;

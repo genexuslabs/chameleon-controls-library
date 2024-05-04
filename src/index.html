@@ -186,34 +186,37 @@
 
         toggleThemeRef.selectedId = getTheme();
 
-        const setPage = (componentName, pageCaption) => {
-          showcase.componentName = componentName;
-          showcase.pageSrc = `showcase/pages/${componentName}.html`;
-          showcase.pageName = pageCaption;
+        const setMainPage = () => {
+          mainPage.hidden = false;
+          showcase.hidden = true;
+          showcase.componentName = undefined;
+        };
 
-          mainPage.hidden = true;
-          showcase.hidden = false;
+        const setPage = () => {
+          if (window.location.hash && window.location.hash !== "#") {
+            const componentName = window.location.hash.replace("#", "");
+            const treeItemInformation = treeViewComponents.find(
+              treeItem => treeItem.id === componentName
+            );
+
+            // If the hash is a valid page
+            if (treeItemInformation) {
+              showcase.componentName = componentName;
+              showcase.pageSrc = `showcase/pages/${componentName}.html`;
+              showcase.pageName = treeItemInformation.caption;
+
+              mainPage.hidden = true;
+              showcase.hidden = false;
+              return;
+            }
+          }
+
+          // Go to Main page
+          setMainPage();
         };
 
         // Initialize sample
-        if (window.location.hash && window.location.hash !== "#") {
-          const componentName = window.location.hash.replace("#", "");
-          const treeItemInformation = treeViewComponents.find(
-            treeItem => treeItem.id === componentName
-          );
-
-          if (treeItemInformation) {
-            setPage(componentName, treeItemInformation.caption);
-          }
-          // Go to Main page
-          else {
-            mainPage.hidden = false;
-          }
-        }
-        // Go to Main page
-        else {
-          mainPage.hidden = false;
-        }
+        setPage();
 
         // WA to reset the page when clicking in the logo
         chameleonHome.addEventListener("click", () => {
@@ -266,17 +269,17 @@
           treeViewRef.filter = searchInputRef.value;
         });
 
-        // When the selected item of the Tree View changes, the iframe must be visible
+        // When the selected item of the Tree View changes, the main page must be updated
         treeViewRef.addEventListener("selectedItemsChange", () => {
           if (event.detail?.length > 0) {
             const componentName = event.detail[0].item.id;
-            const pageCaption = event.detail[0].item.caption;
-            setPage(componentName, pageCaption);
 
             // This is a WA until we have the ch-navigation-list component
             window.location.hash = `#${componentName}`;
           }
         });
+
+        window.addEventListener("hashchange", setPage);
       });
     </script>
   </body>

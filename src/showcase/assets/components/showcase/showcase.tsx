@@ -5,7 +5,9 @@ import {
   ShowcaseRenderPropertyBoolean,
   ShowcaseRenderPropertyEnum,
   ShowcaseRenderPropertyGroup,
+  ShowcaseRenderPropertyNumber,
   ShowcaseRenderPropertyString,
+  ShowcaseRenderPropertyTypes,
   ShowcaseStory
 } from "./types";
 import { showcaseStories } from "./showcase-stories";
@@ -83,7 +85,109 @@ export class ChShowcase {
       >
     | undefined;
 
-  #iframeRef: HTMLIFrameElement;
+  #handlerInitializationMapping = {
+    boolean: (
+      property: ShowcaseRenderPropertyBoolean<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+
+      if (property.render === "switch") {
+        // TODO
+      }
+      // Checkbox by default
+      else {
+        this.#showcaseStoryCheckboxes ??= new Map();
+
+        this.#showcaseStoryCheckboxes.set(property.id, () => {
+          const checkboxCurrentValue = showcaseStoryState[
+            property.id as any
+          ] as boolean;
+
+          showcaseStoryState[property.id as any] = !checkboxCurrentValue;
+          forceUpdate(this);
+        });
+      }
+    },
+
+    enum: (
+      property: ShowcaseRenderPropertyEnum<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+
+      // Radio Group
+      if (property.render === "radio-group") {
+        this.#showcaseStoryRadioGroups ??= new Map();
+        this.#showcaseStoryRadioGroups.set(property.id, {
+          handler: event => {
+            showcaseStoryState[property.id as any] = event.detail;
+            forceUpdate(this);
+          },
+          items: property.values
+        });
+      }
+      // Combo Box by default
+      else {
+        this.#showcaseStoryComboBoxes ??= new Map();
+        this.#showcaseStoryComboBoxes.set(property.id, {
+          handler: event => {
+            showcaseStoryState[property.id as any] = event.detail;
+            forceUpdate(this);
+          },
+          items: property.values
+        });
+      }
+    },
+
+    number: (
+      property: ShowcaseRenderPropertyNumber<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+      this.#showcaseStoryInputNumber ??= new Map();
+
+      this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
+        const inputCurrentValue = (event.target as HTMLInputElement).value;
+
+        showcaseStoryState[property.id as any] = inputCurrentValue;
+        forceUpdate(this);
+      });
+    },
+
+    string: (
+      property: ShowcaseRenderPropertyString<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+      this.#showcaseStoryInput ??= new Map();
+
+      if (property.render === "textarea") {
+        // TODO
+      }
+      // Input by default
+      else {
+        this.#showcaseStoryInput.set(property.id, (event: InputEvent) => {
+          const inputCurrentValue = (event.target as HTMLInputElement).value;
+
+          showcaseStoryState[property.id as any] = inputCurrentValue;
+          forceUpdate(this);
+        });
+      }
+    }
+  } as const satisfies {
+    [key in ShowcaseRenderPropertyTypes]: (
+      property: ShowcaseRenderProperty<ShowcaseAvailableStories>
+    ) => void;
+  };
 
   #flexibleLayoutRender: FlexibleLayoutRenders = {
     [MAIN_WIDGET]: () => (
@@ -102,6 +206,8 @@ export class ChShowcase {
     )
   };
 
+  // Refs
+  #iframeRef: HTMLIFrameElement;
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
 
   /**
@@ -143,6 +249,8 @@ export class ChShowcase {
   #checkShowcaseStoryMapping = (componentName: string) => {
     this.#showcaseStoryCheckboxes = undefined; // Free the memory
     this.#showcaseStoryComboBoxes = undefined; // Free the memory
+    this.#showcaseStoryInput = undefined; // Free the memory
+    this.#showcaseStoryInputNumber = undefined; // Free the memory
     this.#showcaseStoryRadioGroups = undefined; // Free the memory
 
     this.#showcaseStory = componentName
@@ -158,88 +266,9 @@ export class ChShowcase {
         group.properties.forEach(property => {
           state[property.id as any] = property.value;
 
-          this.#initializeHandlers(property);
+          // TODO: Improve type inference
+          this.#handlerInitializationMapping[property.type](property as any);
         });
-      });
-    }
-  };
-
-  #initializeHandlers = (
-    property: ShowcaseRenderProperty<ShowcaseAvailableStories>
-  ) => {
-    const showcaseStoryState = this.#showcaseStory.state;
-
-    if (property.type === "string") {
-      if (property.render === "textarea") {
-        //
-      }
-      // Input by default
-      else {
-        this.#showcaseStoryInput ??= new Map();
-
-        this.#showcaseStoryInput.set(property.id, (event: InputEvent) => {
-          const inputCurrentValue = (event.target as HTMLInputElement).value;
-
-          showcaseStoryState[property.id as any] = inputCurrentValue;
-          forceUpdate(this);
-        });
-      }
-    }
-
-    if (property.type === "number") {
-      this.#showcaseStoryInputNumber ??= new Map();
-
-      this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
-        const inputCurrentValue = (event.target as HTMLInputElement).value;
-
-        showcaseStoryState[property.id as any] = inputCurrentValue;
-        forceUpdate(this);
-      });
-    }
-
-    if (property.type === "boolean") {
-      if (property.render === "switch") {
-        // asd
-      }
-      // Checkbox by default
-      else {
-        this.#showcaseStoryCheckboxes ??= new Map();
-
-        this.#showcaseStoryCheckboxes.set(property.id, () => {
-          const checkboxCurrentValue = showcaseStoryState[
-            property.id as any
-          ] as boolean;
-
-          showcaseStoryState[property.id as any] = !checkboxCurrentValue;
-          forceUpdate(this);
-        });
-      }
-    }
-
-    if (property.type !== "enum") {
-      return;
-    }
-
-    // Radio Group
-    if (property.render === "radio-group") {
-      this.#showcaseStoryRadioGroups ??= new Map();
-      this.#showcaseStoryRadioGroups.set(property.id, {
-        handler: event => {
-          showcaseStoryState[property.id as any] = event.detail;
-          forceUpdate(this);
-        },
-        items: property.values
-      });
-    }
-    // Combo Box by default
-    else {
-      this.#showcaseStoryComboBoxes ??= new Map();
-      this.#showcaseStoryComboBoxes.set(property.id, {
-        handler: event => {
-          showcaseStoryState[property.id as any] = event.detail;
-          forceUpdate(this);
-        },
-        items: property.values
       });
     }
   };

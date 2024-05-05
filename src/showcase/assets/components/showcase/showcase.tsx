@@ -6,6 +6,7 @@ import {
   ShowcaseRenderPropertyEnum,
   ShowcaseRenderPropertyGroup,
   ShowcaseRenderPropertyNumber,
+  ShowcaseRenderPropertyObject,
   ShowcaseRenderPropertyString,
   ShowcaseRenderPropertyTypes,
   ShowcaseStory
@@ -48,7 +49,8 @@ const defaultRenderForEachPropertyType = {
   boolean: "checkbox",
   enum: "combo-box",
   number: "input-number",
-  string: "input"
+  string: "input",
+  object: "independent-properties"
 } as const;
 
 @Component({
@@ -161,6 +163,25 @@ export class ChShowcase {
       });
     },
 
+    object: (
+      property: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+
+      console.log(property, showcaseStoryState);
+      // this.#showcaseStoryInputNumber ??= new Map();
+
+      // this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
+      //   const inputCurrentValue = (event.target as HTMLInputElement).value;
+
+      //   showcaseStoryState[property.id as any] = inputCurrentValue;
+      //   forceUpdate(this);
+      // });
+    },
+
     string: (
       property: ShowcaseRenderPropertyString<
         ShowcaseAvailableStories,
@@ -264,10 +285,12 @@ export class ChShowcase {
       // Initialize state with default values
       properties.forEach(group => {
         group.properties.forEach(property => {
-          state[property.id as any] = property.value;
+          if (property.type !== "object") {
+            state[property.id as any] = property.value;
 
-          // TODO: Improve type inference
-          this.#handlerInitializationMapping[property.type](property as any);
+            // TODO: Improve type inference
+            this.#handlerInitializationMapping[property.type](property as any);
+          }
         });
       });
     }

@@ -34,8 +34,8 @@ const flexibleLayoutConfiguration: FlexibleLayout = {
     },
     {
       id: CONFIGURATION_WIDGET,
-      size: "300px",
-      minSize: "200px",
+      size: "320px",
+      minSize: "250px",
       type: "single-content",
       widget: { id: CONFIGURATION_WIDGET, name: null }
     }
@@ -45,6 +45,7 @@ const flexibleLayoutConfiguration: FlexibleLayout = {
 const defaultRenderForEachPropertyType = {
   boolean: "checkbox",
   enum: "combo-box",
+  number: "input-number",
   string: "input"
 } as const;
 
@@ -67,6 +68,9 @@ export class ChShowcase {
     | undefined;
 
   #showcaseStoryInput: Map<string, (event: InputEvent) => void> | undefined;
+  #showcaseStoryInputNumber:
+    | Map<string, (event: InputEvent) => void>
+    | undefined;
   #showcaseStoryRadioGroups:
     | Map<
         string,
@@ -182,6 +186,17 @@ export class ChShowcase {
       }
     }
 
+    if (property.type === "number") {
+      this.#showcaseStoryInputNumber ??= new Map();
+
+      this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
+        const inputCurrentValue = (event.target as HTMLInputElement).value;
+
+        showcaseStoryState[property.id as any] = inputCurrentValue;
+        forceUpdate(this);
+      });
+    }
+
     if (property.type === "boolean") {
       if (property.render === "switch") {
         // asd
@@ -242,7 +257,13 @@ export class ChShowcase {
     index: number
   ) => [
     index !== 0 && <hr />,
-    <fieldset>
+    <fieldset
+      style={
+        group.columns
+          ? { "grid-template-columns": `repeat(${group.columns}, 1fr)` }
+          : null
+      }
+    >
       <legend class="heading-4">{group.caption}</legend>
 
       {group.properties.map(property =>
@@ -253,11 +274,31 @@ export class ChShowcase {
     </fieldset>
   ];
 
+  #propertyRenderWithLabel = (
+    property: ShowcaseRenderProperty<ShowcaseAvailableStories>,
+    content: any
+  ) => (
+    <div
+      class="form-field"
+      style={
+        property.columnSpan
+          ? { "grid-column": `1 / ${property.columnSpan + 1}` }
+          : null
+      }
+    >
+      {content}
+    </div>
+  );
+
   #propertyRender = {
     checkbox: (
-      property: ShowcaseRenderPropertyBoolean<ShowcaseAvailableStories>
+      property: ShowcaseRenderPropertyBoolean<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
     ) => (
       <ch-checkbox
+        accessibleName={property.accessibleName}
         caption={property.caption}
         class="checkbox"
         checkedValue="true"
@@ -272,13 +313,13 @@ export class ChShowcase {
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
       >
-    ) => (
-      <div class="form-field">
-        {property.caption && (
+    ) =>
+      this.#propertyRenderWithLabel(property, [
+        property.caption && (
           <label class="form-input__label" htmlFor={property.id}>
             {property.caption}
           </label>
-        )}
+        ),
         <ch-combo-box
           id={property.id}
           accessibleName={property.accessibleName}
@@ -287,47 +328,73 @@ export class ChShowcase {
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(property.id).handler}
         ></ch-combo-box>
-      </div>
-    ),
+      ]),
 
     input: (
-      property: ShowcaseRenderPropertyString<ShowcaseAvailableStories>
-    ) => (
-      <div class="form-field">
-        {property.caption && (
+      property: ShowcaseRenderPropertyString<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) =>
+      this.#propertyRenderWithLabel(property, [
+        property.caption && (
           <label class="form-input__label" htmlFor={property.id}>
             {property.caption}
           </label>
-        )}
+        ),
         <input
           id={property.id}
           aria-label={property.accessibleName ?? null}
           class="form-input"
+          type="text"
           value={property.value.toString()}
           onInput={this.#showcaseStoryInput.get(property.id)}
         />
-      </div>
-    ),
+      ]),
+
+    "input-number": (
+      property: ShowcaseRenderPropertyString<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) =>
+      this.#propertyRenderWithLabel(property, [
+        property.caption && (
+          <label class="form-input__label" htmlFor={property.id}>
+            {property.caption}
+          </label>
+        ),
+        <input
+          id={property.id}
+          aria-label={property.accessibleName ?? null}
+          class="form-input"
+          type="number"
+          value={property.value.toString()}
+          onInput={this.#showcaseStoryInputNumber.get(property.id)}
+        />
+      ]),
 
     "radio-group": (
       property: ShowcaseRenderPropertyEnum<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
       >
-    ) => (
-      <div class="form-field">
-        <label class="form-input__label" htmlFor={property.id}>
-          {property.caption}
-        </label>
+    ) =>
+      this.#propertyRenderWithLabel(property, [
+        property.caption && (
+          <label class="form-input__label" htmlFor={property.id}>
+            {property.caption}
+          </label>
+        ),
         <ch-radio-group-render
           id={property.id}
+          aria-label={property.accessibleName ?? null}
           class="radio-group"
           items={this.#showcaseStoryRadioGroups.get(property.id).items}
           value={property.value.toString()}
           onChange={this.#showcaseStoryRadioGroups.get(property.id).handler}
         ></ch-radio-group-render>
-      </div>
-    )
+      ])
   } as const;
 
   #iframeRender = () => (

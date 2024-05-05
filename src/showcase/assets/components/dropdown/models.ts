@@ -24,7 +24,7 @@ export const simpleModel1: DropdownItemModel[] = [
       },
       {
         id: "item-1-3",
-        startImgSrc: "./assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
         caption: "Item 1-3",
@@ -45,7 +45,7 @@ export const simpleModel1: DropdownItemModel[] = [
   },
   {
     id: "item-3",
-    startImgSrc: "./assets/icons/file.svg",
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
     startImgType: START_IMG_TYPE,
     items: [
       {
@@ -77,7 +77,7 @@ export const simpleModel1: DropdownItemModel[] = [
           },
           {
             id: "item-3-1-3",
-            startImgSrc: "./assets/icons/file.svg",
+            startImgSrc: `${ASSETS_PREFIX}file.svg`,
             startImgType: START_IMG_TYPE,
             items: [],
             caption: "Item 3-1-3",
@@ -98,7 +98,7 @@ export const simpleModel1: DropdownItemModel[] = [
       },
       {
         id: "item-3-3",
-        startImgSrc: "./assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
         caption: "Item 3-3",
@@ -149,7 +149,7 @@ export const simpleModel2: DropdownItemModel[] = [
       },
       {
         id: "item-2-3",
-        startImgSrc: "./assets/icons/file.svg",
+        startImgSrc: `${ASSETS_PREFIX}file.svg`,
         startImgType: START_IMG_TYPE,
         items: [],
         caption: "Item 3-3",
@@ -162,7 +162,7 @@ export const simpleModel2: DropdownItemModel[] = [
   },
   {
     id: "item-3",
-    startImgSrc: "./assets/icons/file.svg",
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
     startImgType: START_IMG_TYPE,
     link: { url: "https://www.google.com.uy" },
     caption: "Googleeeeeeee",
@@ -170,7 +170,7 @@ export const simpleModel2: DropdownItemModel[] = [
   },
   {
     id: "item-4",
-    startImgSrc: "./assets/icons/file.svg",
+    startImgSrc: `${ASSETS_PREFIX}file.svg`,
     startImgType: START_IMG_TYPE,
     link: { url: "https://www.google.com.uy" },
     caption: "Google",

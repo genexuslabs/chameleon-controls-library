@@ -14,27 +14,48 @@ export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
 
 export type ShowcaseRenderPropertyGroup<T extends ShowcaseAvailableStories> = {
   caption: string;
+  columns?: 1 | 2 | 3;
   properties: ShowcaseRenderProperty<T>[];
 };
 
 export type ShowcaseRenderProperty<T extends ShowcaseAvailableStories> =
-  | ShowcaseRenderPropertyBoolean<T>
-  | ShowcaseRenderPropertyString<T>
+  | ShowcaseRenderPropertyBoolean<T, keyof T>
+  | ShowcaseRenderPropertyNumber<T, keyof T>
+  | ShowcaseRenderPropertyString<T, keyof T>
   | ShowcaseRenderPropertyEnum<T, keyof T>;
 
-export type ShowcaseRenderPropertyBoolean<T extends ShowcaseAvailableStories> =
-  {
-    id: keyof T;
-    caption: string;
-    value: boolean;
-    render?: "checkbox" | "switch";
-    type: "boolean";
-  };
-
-export type ShowcaseRenderPropertyString<T extends ShowcaseAvailableStories> = {
-  id: keyof T;
+type ShowcaseRenderPropertyBase<
+  T extends ShowcaseAvailableStories,
+  D extends keyof T
+> = {
+  id: D;
   accessibleName?: string;
   caption?: string;
+  columnSpan?: 1 | 2 | 3;
+};
+
+export type ShowcaseRenderPropertyBoolean<
+  T extends ShowcaseAvailableStories,
+  D extends keyof T
+> = ShowcaseRenderPropertyBase<T, D> & {
+  value: boolean;
+  render?: "checkbox" | "switch";
+  type: "boolean";
+};
+
+export type ShowcaseRenderPropertyNumber<
+  T extends ShowcaseAvailableStories,
+  D extends keyof T
+> = ShowcaseRenderPropertyBase<T, D> & {
+  value: number;
+  render?: "input";
+  type: "number";
+};
+
+export type ShowcaseRenderPropertyString<
+  T extends ShowcaseAvailableStories,
+  D extends keyof T
+> = ShowcaseRenderPropertyBase<T, D> & {
   value: string;
   render?: "input" | "textarea";
   type: "string";
@@ -44,10 +65,7 @@ export type ShowcaseRenderPropertyString<T extends ShowcaseAvailableStories> = {
 export type ShowcaseRenderPropertyEnum<
   T extends ShowcaseAvailableStories,
   D extends keyof T
-> = {
-  id: D;
-  accessibleName?: string;
-  caption?: string;
+> = ShowcaseRenderPropertyBase<T, D> & {
   value: T[D];
   render?: "combo-box" | "radio-group";
   type: "enum";

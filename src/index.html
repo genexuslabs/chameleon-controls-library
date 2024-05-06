@@ -16,7 +16,7 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
 
-    <link href="showcase/base.css" rel="stylesheet" />
+    <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
     <link href="showcase/index.css" rel="stylesheet" />
     <!-- <link
       href="https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css"
@@ -62,14 +62,13 @@
       <aside slot="aside">
         <input
           type="search"
-          class="form-input form-input-search"
+          class="form-input form-input-search sidebar__search-input"
           aria-label="Search"
           placeholder="Search"
         />
 
         <ch-tree-view-render
-          css-class="tree-view-navigation"
-          tree-view-item-css-class="tree-view-item-navigation"
+          class="tree-view-primary"
           filter-type="caption"
         ></ch-tree-view-render>
       </aside>
@@ -207,6 +206,11 @@
 
               mainPage.hidden = true;
               showcase.hidden = false;
+
+              // Mark the new selected item in the Tree View
+              treeViewRef.updateItemsProperties([componentName], {
+                selected: true
+              });
               return;
             }
           }
@@ -248,6 +252,7 @@
                 {
                   id: "aside",
                   size: "200px",
+                  minSize: "180px",
                   dragBar: {
                     hidden: false,
                     size: 1
@@ -255,7 +260,8 @@
                 },
                 {
                   id: "main",
-                  size: "1fr"
+                  size: "1fr",
+                  minSize: "500px"
                 }
               ]
             }

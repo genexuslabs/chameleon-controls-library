@@ -11,18 +11,22 @@ import {
   lazyLoadTreeItemsCallback,
   importObjectsModel,
   simpleModel1,
-  simpleModel2
+  simpleModel2,
+  checkDroppableZoneCallback,
+  dropItemsCallback
 } from "./tree";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
 
 const render = () => (
   <ch-tree-view-render
+    class="tree-view-secondary"
     checkbox={state.checkbox}
     checked={state.checked}
+    checkDroppableZoneCallback={checkDroppableZoneCallback}
     dragDisabled={state.dragDisabled}
     dropDisabled={state.dropDisabled}
-    dropItemsCallback={state.dropItemsCallback}
+    dropItemsCallback={dropItemsCallback}
     dropMode={state.dropMode}
     editableItems={state.editableItems}
     expandOnClick={state.expandOnClick}
@@ -69,6 +73,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
   },
   {
     caption: "Properties",
+    columns: 2,
     properties: [
       { id: "checkbox", caption: "Checkbox", value: false, type: "boolean" },
       { id: "checked", caption: "Checked", value: false, type: "boolean" },
@@ -98,6 +103,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         type: "boolean"
       },
       {
+        id: "toggleCheckboxes",
+        columnSpan: 2,
+        caption: "Toggle Checkboxes",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "expandableButton",
         caption: "Expandable Button",
         value: "decorative",
@@ -121,6 +133,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       },
       {
         id: "showLines",
+        columnSpan: 2,
         caption: "Lines",
         value: "all",
         render: "radio-group",
@@ -132,8 +145,43 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         ]
       }
     ]
+  },
+  {
+    caption: "Filters",
+    columns: 2,
+    properties: [
+      {
+        id: "filterType",
+        caption: "Filter Type",
+        value: "none",
+        type: "enum",
+        values: [
+          { caption: "None", value: "none" },
+          { caption: "Caption", value: "caption" },
+          { caption: "Metadata", value: "metadata" },
+          { caption: "Checked", value: "checked" },
+          { caption: "Unchecked", value: "unchecked" },
+          { caption: "List", value: "list" }
+        ]
+      },
+      {
+        id: "filterDebounce",
+        caption: "Filter Debounce",
+        value: 250,
+        type: "number"
+      },
+      {
+        id: "filter",
+        columnSpan: 2,
+        caption: "Filter",
+        value: "",
+        type: "string"
+      }
+    ]
   }
 ];
+
+// Hide matches and show non-matches
 
 export const treeViewShowcaseStory: ShowcaseStory<Mutable<ChTreeViewRender>> = {
   properties: showcaseRenderProperties,

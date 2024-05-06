@@ -1,4 +1,8 @@
 import {
+  TreeViewDataTransferInfo,
+  TreeViewDropCheckInfo
+} from "../../../../components/tree-view/internal/tree-view/types";
+import {
   LazyLoadTreeItemsCallback,
   TreeViewItemModel
 } from "../../../../components/tree-view/types";
@@ -1448,3 +1452,26 @@ export const simpleModel2 = [
     startImgSrc: `${ASSETS_PREFIX}patterns.svg`
   }
 ];
+
+export const checkDroppableZoneCallback: (
+  dropInformation: TreeViewDropCheckInfo
+) => Promise<boolean> = () =>
+  new Promise(resolve => {
+    const accept = true;
+
+    setTimeout(() => {
+      resolve(accept);
+    }, 500); // Resolves after 500 ms
+  });
+
+export const dropItemsCallback: (
+  dataTransferInfo: TreeViewDataTransferInfo
+) => Promise<{
+  acceptDrop: boolean;
+  items?: TreeViewItemModel[];
+}> = () =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve({ acceptDrop: true, items: simpleModel1 });
+    }, 25); // Resolves after 25 ms
+  });

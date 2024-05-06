@@ -1,3 +1,12 @@
+import {
+  TreeViewDataTransferInfo,
+  TreeViewDropCheckInfo
+} from "../../../../components/tree-view/internal/tree-view/types";
+import {
+  LazyLoadTreeItemsCallback,
+  TreeViewItemModel
+} from "../../../../components/tree-view/types";
+
 const KB_EXPLORER_ORDER = {
   module: 1,
   folder: 2,
@@ -21,7 +30,7 @@ const THIRD_LEVEL_SIZE = 20;
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
-const fileSystem_root = [
+const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "dev",
     caption: "dev",
@@ -199,7 +208,7 @@ const fileSystem_root = [
   }
 ];
 
-export const fileSystemModel = [
+export const fileSystemModel: TreeViewItemModel[] = [
   {
     id: "root",
     caption: "/",
@@ -212,7 +221,7 @@ export const fileSystemModel = [
   }
 ];
 
-const kbExplorer_root = [
+const kbExplorer_root: TreeViewItemModel[] = [
   {
     id: "Main_Programs",
     caption: "Main Programs",
@@ -277,7 +286,7 @@ export const kbExplorerModel = [
   }
 ];
 
-const kbExplorerModel_MainPrograms = [
+const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
   {
     id: "Main_Programs.Prompt",
     caption: "Prompt",
@@ -335,7 +344,7 @@ const kbExplorerModel_MainPrograms = [
   }
 ];
 
-const kbExplorerModel_RootModule = [
+const kbExplorerModel_RootModule: TreeViewItemModel[] = [
   {
     id: "Root_Module.IDE",
     caption: "IDE",
@@ -424,7 +433,7 @@ const kbExplorerModel_RootModule = [
   }
 ];
 
-const kbExplorerModel_Customization = [
+const kbExplorerModel_Customization: TreeViewItemModel[] = [
   {
     id: "Customization.Files",
     caption: "Files",
@@ -454,7 +463,7 @@ const kbExplorerModel_Customization = [
   }
 ];
 
-const kbExplorerModel_Customization_Localization = [
+const kbExplorerModel_Customization_Localization: TreeViewItemModel[] = [
   {
     id: "Customization.Localization.Arabic",
     caption: "Arabic",
@@ -498,7 +507,7 @@ const kbExplorerModel_Customization_Localization = [
   }
 ];
 
-const kbExplorerModel_RootModule_General = [
+const kbExplorerModel_RootModule_General: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.Security",
     caption: "Security",
@@ -540,7 +549,7 @@ const kbExplorerModel_RootModule_General = [
   }
 ];
 
-const kbExplorerModel_RootModule_General_UI = [
+const kbExplorerModel_RootModule_General_UI: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.UI.DesignSystem",
     caption: "DesignSystem",
@@ -588,7 +597,7 @@ const kbExplorerModel_RootModule_General_UI = [
   }
 ];
 
-const kbExplorerModel_RootModule_General_UI_Q2 = [
+const kbExplorerModel_RootModule_General_UI_Q2: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.UI.Q2.ContactUs",
     caption: "ContactUs",
@@ -616,7 +625,7 @@ const kbExplorerModel_RootModule_General_UI_Q2 = [
   }
 ];
 
-const kbExplorerModel_RootModule_General_UI_Stencils = [
+const kbExplorerModel_RootModule_General_UI_Stencils: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.UI.Stencils.StencilPublishProject",
     caption: "StencilPublishProject",
@@ -744,7 +753,7 @@ export const importObjectsModel = [
   }
 ];
 
-const importOBjectsPanelModel = [
+const importOBjectsPanelModel: TreeViewItemModel[] = [
   {
     id: "Panel.ActionGroupTests",
     caption: "ActionGroupTests",
@@ -761,7 +770,7 @@ const importOBjectsPanelModel = [
   }
 ];
 
-export const preferencesModel = [
+export const preferencesModel: TreeViewItemModel[] = [
   {
     id: "root",
     caption: "GeneXusNext",
@@ -847,7 +856,7 @@ export const preferencesModel = [
   }
 ];
 
-const Environment_GeneXusNext_preferencesModel = [
+const Environment_GeneXusNext_preferencesModel: TreeViewItemModel[] = [
   {
     id: "Environment.GeneXusNext.JavaMySQL",
     caption: "JavaMySQL",
@@ -953,9 +962,9 @@ export const lazyLoadItemsDictionary = {
     kbExplorerModel_RootModule_General_UI_Stencils,
   Panel: importOBjectsPanelModel,
   "Environment.GeneXusNext": Environment_GeneXusNext_preferencesModel
-};
+} as const satisfies { [key in string]: TreeViewItemModel[] };
 
-export const lazyLargeModel = [];
+export const lazyLargeModel: TreeViewItemModel[] = [];
 
 for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   lazyLargeModel.push({
@@ -968,7 +977,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   });
 }
 
-export const eagerLargeModel = [];
+export const eagerLargeModel: TreeViewItemModel[] = [];
 
 for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   const subEagerLargeModel = [];
@@ -1009,7 +1018,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   });
 }
 
-const modelLazyUpdated1 = [
+const modelLazyUpdated1: TreeViewItemModel[] = [
   {
     id: "lazy-loaded-1",
     caption: "Lazy Loaded 1 (drag disabled)",
@@ -1031,7 +1040,7 @@ const modelLazyUpdated1 = [
   }
 ];
 
-const modelLazyUpdated2 = [
+const modelLazyUpdated2: TreeViewItemModel[] = [
   {
     id: "lazy-loaded-3",
     caption: "Lazy Loaded 3 (drag disabled)",
@@ -1050,7 +1059,7 @@ const modelLazyUpdated2 = [
   }
 ];
 
-export const lazyLoadTreeItemsCallback = modelId =>
+export const lazyLoadTreeItemsCallback: LazyLoadTreeItemsCallback = modelId =>
   new Promise(resolve => {
     let lazyModel =
       modelId === "lazy-loaded-2" ? modelLazyUpdated2 : modelLazyUpdated1;
@@ -1443,3 +1452,26 @@ export const simpleModel2 = [
     startImgSrc: `${ASSETS_PREFIX}patterns.svg`
   }
 ];
+
+export const checkDroppableZoneCallback: (
+  dropInformation: TreeViewDropCheckInfo
+) => Promise<boolean> = () =>
+  new Promise(resolve => {
+    const accept = true;
+
+    setTimeout(() => {
+      resolve(accept);
+    }, 500); // Resolves after 500 ms
+  });
+
+export const dropItemsCallback: (
+  dataTransferInfo: TreeViewDataTransferInfo
+) => Promise<{
+  acceptDrop: boolean;
+  items?: TreeViewItemModel[];
+}> = () =>
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve({ acceptDrop: true, items: simpleModel1 });
+    }, 25); // Resolves after 25 ms
+  });

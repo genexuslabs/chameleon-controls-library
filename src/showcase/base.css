@@ -35,3 +35,61 @@ label {
   display: grid;
   grid-template-rows: max-content max-content;
 }
+
+fieldset {
+  display: grid;
+  grid-auto-flow: row;
+  gap: var(--spacing-un-spacing--m);
+  border: unset;
+}
+
+legend {
+  margin-block-end: var(--spacing-un-spacing--m);
+}
+
+.form-field {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+.field-legend-test {
+  padding-inline-end: 16px;
+  border-block-end: 1px solid;
+}
+
+::part(item__action item--folder)::before,
+::part(item__action item--module)::before {
+  content: "";
+  width: var(--ch-tree-view-item__image-size);
+  height: var(--ch-tree-view-item__image-size);
+  background-repeat: no-repeat;
+}
+
+::part(item__action item--folder)::before {
+  background-image: url("pages/assets/icons/folder.svg");
+}
+
+::part(item__action item--folder expanded)::before {
+  background-image: url("pages/assets/icons/folder-open.svg");
+}
+
+::part(item__action item--module)::before {
+  background-image: url("pages/assets/icons/module.svg");
+}
+
+::part(item__action item--module expanded)::before {
+  background-image: url("pages/assets/icons/module-open.svg");
+}
+
+.checkbox-test-main-wrapper {
+  display: grid;
+  grid-auto-rows: 128px;
+}
+
+.dropdown-test-main-wrapper {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 128px;
+  grid-template-rows: 80px;
+  gap: var(--spacing-un-spacing--l);
+}

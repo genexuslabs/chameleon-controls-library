@@ -16,7 +16,7 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
 
-    <link href="showcase/base.css" rel="stylesheet" />
+    <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
     <link href="showcase/index.css" rel="stylesheet" />
     <!-- <link
       href="https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css"
@@ -36,7 +36,13 @@
     <ch-layout-splitter>
       <header slot="header" class="header">
         <div class="header-start">
-          <a class="home heading-2" href="#" aria-label="Home">Chameleon</a>
+          <a
+            id="chameleon-home"
+            class="home heading-2"
+            href="#"
+            aria-label="Home"
+            >Chameleon</a
+          >
           <span id="chameleon-version" class="text-body-2"></span>
         </div>
 
@@ -56,14 +62,13 @@
       <aside slot="aside">
         <input
           type="search"
-          class="form-input form-input-search"
+          class="form-input form-input-search sidebar__search-input"
           aria-label="Search"
           placeholder="Search"
         />
 
         <ch-tree-view-render
-          css-class="tree-view-navigation"
-          tree-view-item-css-class="tree-view-item-navigation"
+          class="tree-view-primary"
           filter-type="caption"
         ></ch-tree-view-render>
       </aside>
@@ -165,6 +170,7 @@
         const toggleThemeRef = document.querySelector(
           "ch-segmented-control-render"
         );
+        const chameleonHome = document.getElementById("chameleon-home");
 
         toggleThemeRef.items = [
           {
@@ -179,17 +185,50 @@
 
         toggleThemeRef.selectedId = getTheme();
 
-        // Initialize sample
-        if (window.location.hash && window.location.hash !== "#") {
-          const pageToNavigate = window.location.hash.replace("#", "");
-          showcase.pageSrc = pageToNavigate;
-          showcase.pageName = "hello";
-          showcase.hidden = false;
-        }
-        // Go to Main page
-        else {
+        const setMainPage = () => {
           mainPage.hidden = false;
-        }
+          showcase.hidden = true;
+          showcase.componentName = undefined;
+        };
+
+        const setPage = () => {
+          if (window.location.hash && window.location.hash !== "#") {
+            const componentName = window.location.hash.replace("#", "");
+            const treeItemInformation = treeViewComponents.find(
+              treeItem => treeItem.id === componentName
+            );
+
+            // If the hash is a valid page
+            if (treeItemInformation) {
+              showcase.componentName = componentName;
+              showcase.pageSrc = `showcase/pages/${componentName}.html`;
+              showcase.pageName = treeItemInformation.caption;
+
+              mainPage.hidden = true;
+              showcase.hidden = false;
+
+              // Mark the new selected item in the Tree View
+              treeViewRef.updateItemsProperties([componentName], {
+                selected: true
+              });
+              return;
+            }
+          }
+
+          // Go to Main page
+          setMainPage();
+        };
+
+        // Initialize sample
+        setPage();
+
+        // WA to reset the page when clicking in the logo
+        chameleonHome.addEventListener("click", () => {
+          mainPage.hidden = false;
+          showcase.hidden = true;
+          showcase.componentName = undefined;
+          showcase.pageSrc = undefined;
+        });
 
         // Add event lister for the theme changes
         toggleThemeRef.addEventListener("selectedItemChange", () => {
@@ -213,6 +252,7 @@
                 {
                   id: "aside",
                   size: "200px",
+                  minSize: "180px",
                   dragBar: {
                     hidden: false,
                     size: 1
@@ -220,7 +260,8 @@
                 },
                 {
                   id: "main",
-                  size: "1fr"
+                  size: "1fr",
+                  minSize: "500px"
                 }
               ]
             }
@@ -234,15 +275,17 @@
           treeViewRef.filter = searchInputRef.value;
         });
 
-        // When the selected item of the Tree View changes, the iframe must be visible
+        // When the selected item of the Tree View changes, the main page must be updated
         treeViewRef.addEventListener("selectedItemsChange", () => {
           if (event.detail?.length > 0) {
-            mainPage.hidden = true;
-            showcase.hidden = false;
-            showcase.pageSrc = `showcase/pages/${event.detail[0].item.id}.html`;
-            showcase.pageName = event.detail[0].item.caption;
+            const componentName = event.detail[0].item.id;
+
+            // This is a WA until we have the ch-navigation-list component
+            window.location.hash = `#${componentName}`;
           }
         });
+
+        window.addEventListener("hashchange", setPage);
       });
     </script>
   </body>

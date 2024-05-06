@@ -353,6 +353,11 @@ export class ChShowcase {
         accessibleName={property.accessibleName}
         caption={property.caption}
         class="checkbox"
+        style={
+          property.columnSpan
+            ? { "grid-column": `1 / ${property.columnSpan + 1}` }
+            : null
+        }
         checkedValue="true"
         unCheckedValue="false"
         value={property.value.toString()}

@@ -5,5 +5,5 @@ import { treeViewShowcaseStory } from "../tree-view/tree-view.showcase";
 export const showcaseStories = {
   checkbox: checkboxShowcaseStory,
   dropdown: dropdownShowcaseStory,
-  "tree-view": treeViewShowcaseStory
+  "tree-view-in-development": treeViewShowcaseStory
 } as const;

@@ -61,10 +61,9 @@ export type ComboBoxFilterOptions = {
   regularExpression?: boolean;
 };
 
-export type ComboBoxFilterType = "caption" | "list" | "value" | "none";
+export type ComboBoxFilterType = "caption" | "value" | "none";
 
 export type ComboBoxFilterInfo = {
   filter: string;
   filterOptions: ComboBoxFilterOptions;
-  filterSet: Set<string>;
 };

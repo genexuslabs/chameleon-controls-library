@@ -20,7 +20,8 @@ import {
   ComboBoxFilterType,
   ComboBoxItemModel,
   ComboBoxItemGroup,
-  ComboBoxItemLeaf
+  ComboBoxItemLeaf,
+  ComboBoxFilterInfo
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
@@ -211,7 +212,6 @@ export class ChComboBox
   #applyFilters = false;
   #immediateFilter: ImmediateFilter;
   #queuedFilterId: NodeJS.Timeout;
-  #filterListAsSet: Set<string>;
 
   /**
    * Collection of displayed values. If a filter is applied and the value
@@ -282,7 +282,7 @@ export class ChComboBox
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         -1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -291,7 +291,7 @@ export class ChComboBox
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -303,7 +303,7 @@ export class ChComboBox
           firstLevelIndex: -1
         }, // The algorithm will sum 1 to the start index
         1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -315,7 +315,7 @@ export class ChComboBox
           firstLevelIndex: this.items.length
         }, // The algorithm will sum -1 to the start index
         -1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -455,21 +455,6 @@ export class ChComboBox
   }
 
   /**
-   * This property lets you determine the list of items that will be filtered.
-   * Only works if `filterType = "list"`.
-   */
-  @Prop() readonly filterList: string[] = [];
-  @Watch("filterList")
-  filterListChanged() {
-    // Use a Set to efficiently check for ids
-    this.#filterListAsSet = new Set(this.filterList);
-
-    if (this.filterType === "list") {
-      this.#scheduleFilterProcessing("immediate");
-    }
-  }
-
-  /**
    * This property lets you determine the options that will be applied to the
    * filter.
    */
@@ -483,12 +468,11 @@ export class ChComboBox
    * This attribute lets you define what kind of filter is applied to items.
    * Only items that satisfy the filter predicate will be displayed.
    *
-   * | Value     | Details                                                                                        |
-   * | --------- | ---------------------------------------------------------------------------------------------- |
-   * | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  |
-   * | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  |
-   * | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. |
-   * | `none`    | Show all items.                                                                                |
+   * | Value     | Details                                                                                       |
+   * | --------- | --------------------------------------------------------------------------------------------- |
+   * | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. |
+   * | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   |
+   * | `none`    | Show all items.                                                                               |
    */
   @Prop() readonly filterType: ComboBoxFilterType = "none";
   @Watch("filterType")
@@ -547,6 +531,15 @@ export class ChComboBox
   }
 
   /**
+   * Emitted when a change to the element's filter is committed by the user.
+   * Only applies if `filterType !== "none"`. It contains the information about
+   * the new filter value.
+   *
+   * This event is debounced by the `filterDebounce` value.
+   */
+  @Event() filterChange: EventEmitter<string>;
+
+  /**
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
    */
@@ -560,11 +553,48 @@ export class ChComboBox
     }
   };
 
+  #filterFunction = (modelIsAlreadyFiltered: boolean) => {
+    // Reset immediate filter
+    this.#immediateFilter = undefined;
+
+    // New filter value
+    this.filterChange.emit(this.filter);
+
+    if (modelIsAlreadyFiltered) {
+      return;
+    }
+
+    this.#displayedValues.clear();
+
+    const filterOptions: ComboBoxFilterInfo = {
+      filter: this.filter,
+      filterOptions: this.filterOptions
+    };
+
+    for (let index = 0; index < this.items.length; index++) {
+      const item = this.items[index];
+
+      filterSubModel(
+        item,
+        this.filterType,
+        filterOptions,
+        this.#displayedValues
+      );
+    }
+
+    // Remove the selected value if it is no longer rendered
+    if (!this.#displayedValues.has(this.currentSelectedValue)) {
+      this.currentSelectedValue = undefined;
+    }
+  };
+
   #updateFilters = () => {
     if (this.filterType === "none") {
       this.#displayedValues = undefined;
       return;
     }
+
+    const modelIsAlreadyFiltered = this.#isModelAlreadyFiltered();
 
     // Remove queued filter processing
     clearTimeout(this.#queuedFilterId);
@@ -573,46 +603,21 @@ export class ChComboBox
       this.filterDebounce > 0 &&
       (this.filterType === "caption" || this.filterType === "value");
 
-    this.#displayedValues ??= new Set();
-
-    const filterFunction = () => {
-      this.#displayedValues.clear();
-
-      const filterOptions = {
-        filter: this.filter,
-        filterOptions: this.filterOptions,
-        filterSet: this.#filterListAsSet
-      };
-
-      for (let index = 0; index < this.items.length; index++) {
-        const item = this.items[index];
-
-        filterSubModel(
-          item,
-          this.filterType,
-          filterOptions,
-          this.#displayedValues
-        );
-      }
-
-      // Remove the selected value if it is no longer rendered
-      if (!this.#displayedValues.has(this.currentSelectedValue)) {
-        this.currentSelectedValue = undefined;
-      }
-    };
+    // Check if the model already contains the filtered items
+    if (!modelIsAlreadyFiltered) {
+      this.#displayedValues ??= new Set();
+    }
 
     // Check if should filter with debounce
     if (processWithDebounce && this.#immediateFilter !== "immediate") {
       this.#queuedFilterId = setTimeout(() => {
-        this.#immediateFilter = undefined;
-        filterFunction();
+        this.#filterFunction(modelIsAlreadyFiltered);
         forceUpdate(this); // After the filter processing is completed, force a re-render
       }, this.filterDebounce);
     }
     // No debounce
     else {
-      this.#immediateFilter = undefined;
-      filterFunction();
+      this.#filterFunction(modelIsAlreadyFiltered);
     }
   };
 
@@ -863,6 +868,8 @@ export class ChComboBox
         }
       : undefined;
 
+  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
+
   #customItemRender =
     (
       insideAGroup: boolean,
@@ -870,7 +877,11 @@ export class ChComboBox
       filtersAreApplied: boolean
     ) =>
     (item: ComboBoxItemModel, index: number) => {
-      if (filtersAreApplied && !this.#displayedValues.has(item.value)) {
+      if (
+        filtersAreApplied &&
+        !this.#isModelAlreadyFiltered() &&
+        !this.#displayedValues.has(item.value)
+      ) {
         return;
       }
 
@@ -1233,6 +1244,7 @@ export class ChComboBox
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  positionTry="flip-block"
                   onPopoverClosed={this.#handlePopoverClose}
                 >
                   <div class="window__content" part="window__content">

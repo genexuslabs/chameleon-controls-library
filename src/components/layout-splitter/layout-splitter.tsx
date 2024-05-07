@@ -24,11 +24,17 @@ import {
   FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
-  hasMinSize,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
-import { ROOT_VIEW, isRTL } from "../../common/utils";
+import {
+  ROOT_VIEW,
+  addCursorInDocument,
+  isRTL,
+  removePointerEventsInDocumentBody,
+  resetCursorInDocument,
+  resetPointerEventsInDocumentBody
+} from "../../common/utils";
 import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
@@ -36,7 +42,6 @@ import { SyncWithRAF } from "../../common/sync-with-frames";
 type Group = LayoutSplitterDistributionGroup;
 type Item = LayoutSplitterDistributionItem;
 
-const RESIZING_CLASS = "gx-layout-splitter--resizing";
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
 
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
@@ -116,7 +121,7 @@ export class ChLayoutSplitter implements ChComponent {
   };
   @Watch("layout")
   handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.updateLayoutInfo(newLayout);
+    this.#updateLayoutInfo(newLayout);
   }
 
   /**
@@ -205,6 +210,8 @@ export class ChLayoutSplitter implements ChComponent {
       this.#mouseDownInfo.direction
     );
 
+    this.#mouseDownInfo.mouseEvent = event;
+
     this.#dragRAF.perform(this.#handleBarDragRAF);
   };
 
@@ -227,9 +234,6 @@ export class ChLayoutSplitter implements ChComponent {
     });
   };
 
-  #addResizingStyle = () => this.el.classList.add(RESIZING_CLASS);
-  #removeResizingStyle = () => this.el.classList.remove(RESIZING_CLASS);
-
   // Remove mousemove and mouseup handlers when mouseup
   #mouseUpHandler = () => {
     // Cancel RAF to prevent access to undefined references
@@ -237,14 +241,16 @@ export class ChLayoutSplitter implements ChComponent {
       this.#dragRAF.cancel();
     }
 
+    // Remove handlers and state after finishing the resize
     this.#removeMouseMoveHandler();
+    resetCursorInDocument();
+
+    // Add again pointer-events
+    resetPointerEventsInDocumentBody();
 
     document.removeEventListener("mouseup", this.#mouseUpHandler, {
       capture: true
     });
-
-    // Add again pointer-events
-    this.#removeResizingStyle();
   };
 
   #initializeDragBarValuesForResizeProcessing = (
@@ -269,11 +275,9 @@ export class ChLayoutSplitter implements ChComponent {
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
       layoutItems: layoutItems,
+      mouseEvent: undefined, // MouseEvent is initialized as undefined, since this object is used for the keyboard event
       RTL: isRTL()
     };
-
-    // Remove pointer-events during drag
-    this.#addResizingStyle();
   };
 
   #mouseDownHandler =
@@ -291,6 +295,12 @@ export class ChLayoutSplitter implements ChComponent {
         layoutItems,
         event
       );
+
+      // Set mouse cursor in the document
+      addCursorInDocument(direction === "columns" ? "ew-resize" : "ns-resize");
+
+      // Remove pointer-events during drag
+      removePointerEventsInDocumentBody();
 
       // Mouse position
       const currentMousePosition = getMousePosition(event, direction);
@@ -369,7 +379,7 @@ export class ChLayoutSplitter implements ChComponent {
           )}
         </div>
       ) : (
-        <div id={item.id} class={hasMinSize(item) ? "leaf--rendered" : "leaf"}>
+        <div id={item.id} class="leaf">
           <slot key={item.id} name={item.id} />
         </div>
       ),
@@ -396,7 +406,6 @@ export class ChLayoutSplitter implements ChComponent {
               ? this.#handleResize(direction, index, layoutItems)
               : null
           }
-          onKeyUp={this.#removeResizingStyle}
           onMouseDown={
             !this.dragBarDisabled
               ? this.#mouseDownHandler(direction, index, layoutItems)
@@ -416,7 +425,7 @@ export class ChLayoutSplitter implements ChComponent {
       this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
     );
 
-  private updateLayoutInfo(layout: LayoutSplitterDistribution) {
+  #updateLayoutInfo = (layout: LayoutSplitterDistribution) => {
     // Clear old information
     this.#itemsInfo.clear();
 
@@ -425,13 +434,11 @@ export class ChLayoutSplitter implements ChComponent {
         layout,
         this.#itemsInfo
       );
-
-      // console.log(this.#itemsInfo);
     }
-  }
+  };
 
   connectedCallback() {
-    this.updateLayoutInfo(this.layout);
+    this.#updateLayoutInfo(this.layout);
   }
 
   disconnectedCallback() {

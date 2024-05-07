@@ -103,6 +103,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ch-showcase](../../showcase/assets/components/showcase)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -115,6 +116,7 @@ graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-list
   ch-flexible-layout --> ch-layout-splitter
+  ch-showcase --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-flexible-layout-render
   style ch-flexible-layout-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

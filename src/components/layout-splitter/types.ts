@@ -73,6 +73,7 @@ export type DragBarMouseDownEventInfo = {
   itemStartId: string;
   itemEndId: string;
   layoutItems: LayoutSplitterDistributionItem[];
+  mouseEvent: MouseEvent | undefined;
   RTL: boolean;
 };
 

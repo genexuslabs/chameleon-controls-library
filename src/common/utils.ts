@@ -1,5 +1,5 @@
 import { Component } from "./interfaces";
-import { ImageRender } from "./types";
+import { CssCursorProperty, ImageRender } from "./types";
 
 export function debounce(
   func: () => void,
@@ -123,6 +123,25 @@ export const forceCSSMinMax = (
   Number.isNaN(maximum)
     ? Math.max(value, minimum)
     : Math.max(Math.min(value, maximum), minimum);
+
+// - - - - - - - - - - - - - - - - - - - -
+//        Cursor and pointer events
+// - - - - - - - - - - - - - - - - - - - -
+export const addCursorInDocument = (cursor: CssCursorProperty) => {
+  document.documentElement.style.cursor = cursor;
+};
+
+export const resetCursorInDocument = () => {
+  document.documentElement.style.cursor = null;
+};
+
+export const removePointerEventsInDocumentBody = () => {
+  document.body.style.pointerEvents = "none";
+};
+
+export const resetPointerEventsInDocumentBody = () => {
+  document.body.style.pointerEvents = null;
+};
 
 // - - - - - - - - - - - - - - - - - - - -
 //                RTL utils

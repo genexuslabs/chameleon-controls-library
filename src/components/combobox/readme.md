@@ -62,6 +62,10 @@
 
 ## Dependencies
 
+### Used by
+
+ - [ch-showcase](../../showcase/assets/components/showcase)
+
 ### Depends on
 
 - [ch-popover](../popover)
@@ -70,6 +74,7 @@
 ```mermaid
 graph TD;
   ch-combo-box --> ch-popover
+  ch-showcase --> ch-combo-box
   style ch-combo-box fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

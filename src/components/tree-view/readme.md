@@ -296,6 +296,7 @@ Type: `Promise<void>`
 
 ### Used by
 
+ - [ch-showcase](../../showcase/assets/components/showcase)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -311,6 +312,7 @@ graph TD;
   ch-tree-view-render --> ch-tree-view-drop
   ch-tree-view-render --> ch-tree-view-item
   ch-tree-view-item --> ch-checkbox
+  ch-showcase --> ch-tree-view-render
   ch-test-flexible-layout --> ch-tree-view-render
   style ch-tree-view-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

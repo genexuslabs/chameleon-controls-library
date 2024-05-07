@@ -11,10 +11,6 @@
   inline-size: 100%;
 }
 
-:host(.gx-layout-splitter--resizing) ::slotted(*) {
-  pointer-events: none;
-}
-
 // - - - - - - - - - - - - - - - -
 //               Bar
 // - - - - - - - - - - - - - - - -
@@ -58,12 +54,9 @@
 //           Containers
 // - - - - - - - - - - - - - - - -
 .leaf {
-  // Leafs that don't have a minimum size can skip its box render
-  display: contents;
-
-  &--rendered {
-    display: grid;
-  }
+  // Leafs must always take space to calculate if their size is greater that
+  // zero, since all items have a minimum size of zero if the minSize is not set
+  display: grid;
 }
 
 .group {

@@ -49,6 +49,19 @@ It contains radio items to allow users to select one option from the list of opt
 | `--ch-radio-group__radio-option-size`    | Specifies the size for the `radio__option` element. @default 50%                                                 |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-showcase](../../showcase/assets/components/showcase)
+
+### Graph
+```mermaid
+graph TD;
+  ch-showcase --> ch-radio-group-render
+  style ch-radio-group-render fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

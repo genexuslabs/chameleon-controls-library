@@ -57,11 +57,13 @@
 
 ### Used by
 
+ - [ch-showcase](../../showcase/assets/components/showcase)
  - [ch-tree-view-item](../tree-view/internal/tree-view-item)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-showcase --> ch-checkbox
   ch-tree-view-item --> ch-checkbox
   style ch-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```

@@ -29,8 +29,7 @@ const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
 
   itemsFilteredByTheServer = comboBoxFilterChange(state.filterType, {
     filter: event.detail,
-    filterOptions: state.filterOptions,
-    filterSet: new Set() // Dummy set
+    filterOptions: state.filterOptions
   });
 
   console.log(state.items);
@@ -57,7 +56,6 @@ const render = () => (
         disabled={state.disabled}
         filter={state.filter}
         filterDebounce={state.filterDebounce}
-        filterList={state.filterList}
         filterOptions={state.filterOptions}
         filterType={state.filterType}
         items={

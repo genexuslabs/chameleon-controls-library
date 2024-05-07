@@ -277,8 +277,6 @@ const filterDictionary: {
         )
       : true,
 
-  list: (item, filterInfo) => filterInfo.filterSet.has(item.value),
-
   value: (item, filterInfo) =>
     filterInfo.filter
       ? filterWithString(

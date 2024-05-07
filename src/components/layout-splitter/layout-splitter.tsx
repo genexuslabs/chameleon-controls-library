@@ -205,6 +205,8 @@ export class ChLayoutSplitter implements ChComponent {
       this.#mouseDownInfo.direction
     );
 
+    this.#mouseDownInfo.mouseEvent = event;
+
     this.#dragRAF.perform(this.#handleBarDragRAF);
   };
 
@@ -269,6 +271,7 @@ export class ChLayoutSplitter implements ChComponent {
       itemStartId: layoutItems[index].id,
       itemEndId: layoutItems[index + 1].id,
       layoutItems: layoutItems,
+      mouseEvent: undefined, // MouseEvent is initialized as undefined, since this object is used for the keyboard event
       RTL: isRTL()
     };
 

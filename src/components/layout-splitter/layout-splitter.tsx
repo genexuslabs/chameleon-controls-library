@@ -435,8 +435,6 @@ export class ChLayoutSplitter implements ChComponent {
         layout,
         this.#itemsInfo
       );
-
-      // console.log(this.#itemsInfo);
     }
   }
 

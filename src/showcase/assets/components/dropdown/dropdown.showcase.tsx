@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import {
   GXWebModel,

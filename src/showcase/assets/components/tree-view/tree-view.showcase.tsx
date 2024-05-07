@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { ChTreeViewRender } from "../../../../components/tree-view/tree-view-render";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import {
   lazyLargeModel,

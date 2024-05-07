@@ -1,9 +1,9 @@
-import { Mutable } from "../../../../common/types";
-import { CheckBox } from "../../../../components/checkbox/checkbox";
-import { ChComboBox } from "../../../../components/combobox/combo-box";
-import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
-import { ChLayoutSplitter } from "../../../../components/layout-splitter/layout-splitter";
-import { ChTreeViewRender } from "../../../../components/tree-view/tree-view-render";
+import { Mutable } from "../../../common/types";
+import { CheckBox } from "../../../components/checkbox/checkbox";
+import { ChComboBox } from "../../../components/combobox/combo-box";
+import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
+import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
+import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   render: () => any;

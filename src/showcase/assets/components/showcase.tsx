@@ -19,7 +19,7 @@ import {
   FlexibleLayout,
   FlexibleLayoutRenders,
   RadioItem
-} from "../../../../components";
+} from "../../../components";
 
 const MAIN_WIDGET = "main";
 const CONFIGURATION_WIDGET = "configuration";

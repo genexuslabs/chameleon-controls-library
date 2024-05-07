@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { CheckBox } from "../../../../components/checkbox/checkbox";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 
 const state: Partial<Mutable<CheckBox>> = {};

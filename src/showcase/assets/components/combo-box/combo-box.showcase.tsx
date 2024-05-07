@@ -4,7 +4,7 @@ import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
   ShowcaseStory
-} from "../showcase/types";
+} from "../types";
 import { Mutable } from "../../../../common/types";
 import { dataTypeInGeneXus, simpleModel1, smallModel } from "./models";
 import { ComboBoxFilterOptions } from "../../../../components/combobox/types";

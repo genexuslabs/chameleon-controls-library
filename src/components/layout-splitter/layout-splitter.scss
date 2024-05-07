@@ -11,10 +11,6 @@
   inline-size: 100%;
 }
 
-:host(.gx-layout-splitter--resizing) ::slotted(*) {
-  pointer-events: none;
-}
-
 // - - - - - - - - - - - - - - - -
 //               Bar
 // - - - - - - - - - - - - - - - -

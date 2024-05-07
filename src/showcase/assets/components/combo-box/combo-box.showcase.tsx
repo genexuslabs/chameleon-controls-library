@@ -1,4 +1,4 @@
-import { h } from "@stencil/core";
+import { forceUpdate, h } from "@stencil/core";
 import { ChComboBox } from "../../../../components/combobox/combo-box";
 import {
   ShowcaseRenderProperties,
@@ -6,10 +6,44 @@ import {
   ShowcaseStory
 } from "../types";
 import { Mutable } from "../../../../common/types";
-import { dataTypeInGeneXus, simpleModel1, smallModel } from "./models";
-import { ComboBoxFilterOptions } from "../../../../components/combobox/types";
+import {
+  comboBoxFilterChange,
+  dataTypeInGeneXus,
+  simpleModel1,
+  smallModel
+} from "./models";
+import {
+  ComboBoxFilterOptions,
+  ComboBoxItemModel
+} from "../../../../components/combobox/types";
+import { ChComboBoxCustomEvent } from "../../../../components";
 
 const state: Partial<Mutable<ChComboBox>> = {};
+let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
+
+const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
+  // Filters on the client
+  if (state.filterOptions.alreadyProcessed !== true) {
+    return;
+  }
+
+  itemsFilteredByTheServer = comboBoxFilterChange(state.filterType, {
+    filter: event.detail,
+    filterOptions: state.filterOptions,
+    filterSet: new Set() // Dummy set
+  });
+
+  console.log(state.items);
+
+  // TODO: Until we support external slots in the ch-flexible-layout-render,
+  // this is a hack to update the render of the widget and thus re-render the
+  // combo-box updating the displayed items
+  const showcaseRef = event.target.closest("ch-showcase");
+
+  if (showcaseRef) {
+    forceUpdate(showcaseRef);
+  }
+};
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
@@ -26,9 +60,15 @@ const render = () => (
         filterList={state.filterList}
         filterOptions={state.filterOptions}
         filterType={state.filterType}
-        items={state.items}
+        items={
+          state.filterOptions.alreadyProcessed === true &&
+          state.filterType !== "none"
+            ? itemsFilteredByTheServer
+            : state.items
+        }
         readonly={state.readonly}
         value={state.value}
+        onFilterChange={handleFilterChange}
       ></ch-combo-box>
     </fieldset>
 
@@ -44,7 +84,12 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
-        items={state.items}
+        items={
+          state.filterOptions.alreadyProcessed === true &&
+          state.filterType !== "none"
+            ? itemsFilteredByTheServer
+            : state.items
+        }
         readonly={state.readonly}
         value={state.value}
       ></ch-combo-box>
@@ -63,7 +108,12 @@ const render = () => (
           placeholder={state.placeholder}
           class="combo-box"
           disabled={state.disabled}
-          items={state.items}
+          items={
+            state.filterOptions.alreadyProcessed === true &&
+            state.filterType !== "none"
+              ? itemsFilteredByTheServer
+              : state.items
+          }
           readonly={state.readonly}
           value={state.value}
         ></ch-combo-box>

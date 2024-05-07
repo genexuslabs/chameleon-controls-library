@@ -291,9 +291,11 @@ export class ChGrid {
   }
 
   @Listen("blur", { passive: true })
-  blurHandler() {
-    this.rowFocused = null;
-    this.cellFocused = null;
+  blurHandler(eventInfo: Event) {
+    if (!eventInfo.composedPath().includes(this.el)) {
+      this.rowFocused = null;
+      this.cellFocused = null;
+    }
   }
 
   @Listen("cellFocused", { passive: true })

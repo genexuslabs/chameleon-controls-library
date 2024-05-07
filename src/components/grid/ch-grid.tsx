@@ -489,8 +489,8 @@ export class ChGrid {
   mouseUpHandler() {
     if (this.manager.selection.selecting) {
       this.stopSelecting();
-      this.emitRowClicked(this.rowFocused, this.cellFocused);
     }
+    this.emitRowClicked(this.rowFocused, this.cellFocused);
   }
 
   @Listen("dblclick", { passive: true })

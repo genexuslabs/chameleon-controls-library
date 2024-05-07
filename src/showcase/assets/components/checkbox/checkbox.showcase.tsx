@@ -24,7 +24,7 @@ const render = () => (
     </fieldset>
 
     <fieldset>
-      <legend class="heading-4 field-legend-test">Label with for</legend>
+      <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
       <label class="form-input__label" htmlFor="checkbox-2">
         Label for checkbox 2

@@ -1233,6 +1233,7 @@ export class ChComboBox
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  positionTry="flip-block"
                   onPopoverClosed={this.#handlePopoverClose}
                 >
                   <div class="window__content" part="window__content">

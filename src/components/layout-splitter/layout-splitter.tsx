@@ -24,7 +24,6 @@ import {
   FIXED_SIZES_SUM_CUSTOM_VAR,
   fixAndUpdateLayoutModel,
   getMousePosition,
-  hasMinSize,
   sizesToGridTemplate,
   updateComponentsAndDragBar
 } from "./utils";
@@ -380,7 +379,7 @@ export class ChLayoutSplitter implements ChComponent {
           )}
         </div>
       ) : (
-        <div id={item.id} class={hasMinSize(item) ? "leaf--rendered" : "leaf"}>
+        <div id={item.id} class="leaf">
           <slot key={item.id} name={item.id} />
         </div>
       ),

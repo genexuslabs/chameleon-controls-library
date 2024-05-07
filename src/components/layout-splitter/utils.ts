@@ -12,6 +12,8 @@ import {
 export const FIXED_SIZES_SUM_CUSTOM_VAR =
   "--ch-layout-splitter-fixed-sizes-sum";
 
+const DEFAULT_MIN_SIZE = 0;
+
 export const findItemInParent = (itemToFind: ItemExtended): number => {
   const itemId = itemToFind.item.id;
   return itemToFind.parentItem.items.findIndex(item => item.id === itemId);
@@ -41,6 +43,9 @@ export const getPxValue = (
 export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
   item.size.includes("px");
 
+/**
+ * `true` if the item has a minimum size that is greater than 0px
+ */
 export const hasMinSize = (item: LayoutSplitterDistributionItem) =>
   item.minSize && item.minSize !== "0px";
 
@@ -140,8 +145,6 @@ const getItemSizeUsingReference = (
 };
 
 const checkIfMousePointerIsInsideOfTheValidResizeArea = (
-  startItemHasMinSize: boolean,
-  endItemHasMinSize: boolean,
   startItemAvailableIncrement: number,
   endItemAvailableIncrement: number,
   info: DragBarMouseDownEventInfo
@@ -150,10 +153,7 @@ const checkIfMousePointerIsInsideOfTheValidResizeArea = (
 } => {
   // The resize operation was performed using the keyboard or the items does not
   // have a minimum size. Nothing to check
-  if (
-    info.mouseEvent === undefined ||
-    (!startItemHasMinSize && !endItemHasMinSize)
-  ) {
+  if (info.mouseEvent === undefined) {
     return { status: "ok" };
   }
 
@@ -163,7 +163,7 @@ const checkIfMousePointerIsInsideOfTheValidResizeArea = (
 
   // If start item is its minimum position and the mouse is outside of the
   // valid area
-  if (startItemHasMinSize && startItemAvailableIncrement === 0) {
+  if (startItemAvailableIncrement === 0) {
     const mouseIsOutside =
       info.direction === "columns" && info.RTL
         ? mousePosition > dragBarPosition
@@ -176,7 +176,7 @@ const checkIfMousePointerIsInsideOfTheValidResizeArea = (
     }
   }
   // Check the same for the end item
-  if (endItemHasMinSize && endItemAvailableIncrement === 0) {
+  if (endItemAvailableIncrement === 0) {
     const mouseIsOutside =
       info.direction === "columns" && info.RTL
         ? mousePosition < dragBarPosition
@@ -208,47 +208,46 @@ const canResizeBothItems = (
   status: "ok" | "deny" | "not-enough-space";
   availableIncrement?: number;
 } => {
-  const startItemHasMinSize = hasMinSize(startItemUIModel.item);
-  let startItemAvailableIncrement: number;
+  // - - - - - - - - - - - - - - - -
+  //           Start item
+  // - - - - - - - - - - - - - - - -
+  const startItemMinSize = hasMinSize(startItemUIModel.item)
+    ? getPxValue(startItemUIModel.item, "min")
+    : DEFAULT_MIN_SIZE;
+  const startItemSize =
+    startItemSizeType === "px"
+      ? getPxValue(startItemUIModel.item)
+      : getItemSizeUsingReference(info, startItemUIModel);
 
-  // The start item has min size
-  if (startItemHasMinSize) {
-    const minSize = getPxValue(startItemUIModel.item, "min");
-    const size =
-      startItemSizeType === "px"
-        ? getPxValue(startItemUIModel.item)
-        : getItemSizeUsingReference(info, startItemUIModel);
+  const startItemAvailableIncrement = startItemSize - startItemMinSize;
 
-    startItemAvailableIncrement = size - minSize;
-
-    // It means the startItem must be shrunk, but it does not have enough space
-    if (startItemAvailableIncrement + incrementInPx <= 0) {
-      return {
-        status: startItemAvailableIncrement === 0 ? "deny" : "not-enough-space",
-        availableIncrement: startItemAvailableIncrement
-      };
-    }
+  // It means the startItem must be shrunk, but it does not have enough space
+  if (startItemAvailableIncrement + incrementInPx <= 0) {
+    return {
+      status: startItemAvailableIncrement === 0 ? "deny" : "not-enough-space",
+      availableIncrement: startItemAvailableIncrement
+    };
   }
-  const endItemHasMinSize = hasMinSize(endItemUIModel.item);
-  let endItemAvailableIncrement: number;
 
-  // The end item has min size
-  if (endItemHasMinSize) {
-    const minSize = getPxValue(endItemUIModel.item, "min");
-    const size =
-      endItemSizeType === "px"
-        ? getPxValue(endItemUIModel.item)
-        : getItemSizeUsingReference(info, endItemUIModel);
+  // - - - - - - - - - - - - - - - -
+  //            End item
+  // - - - - - - - - - - - - - - - -
+  const endItemMinSize = hasMinSize(endItemUIModel.item)
+    ? getPxValue(endItemUIModel.item, "min")
+    : DEFAULT_MIN_SIZE;
+  const endItemSize =
+    endItemSizeType === "px"
+      ? getPxValue(endItemUIModel.item)
+      : getItemSizeUsingReference(info, endItemUIModel);
 
-    endItemAvailableIncrement = size - minSize;
+  const endItemAvailableIncrement = endItemSize - endItemMinSize;
 
-    // It means the endItem must be shrunk, but it does not have enough space
-    if (endItemAvailableIncrement - incrementInPx <= 0) {
-      return {
-        status: endItemAvailableIncrement === 0 ? "deny" : "not-enough-space",
-        availableIncrement: endItemAvailableIncrement
-      };
-    }
+  // It means the endItem must be shrunk, but it does not have enough space
+  if (endItemAvailableIncrement - incrementInPx <= 0) {
+    return {
+      status: endItemAvailableIncrement === 0 ? "deny" : "not-enough-space",
+      availableIncrement: endItemAvailableIncrement
+    };
   }
 
   // In this instance, the drag operation is not modified, but we still don't
@@ -256,8 +255,6 @@ const canResizeBothItems = (
   // and the operation will increase one of its sizes, the mouse pointer must
   // not be out of the valid area
   return checkIfMousePointerIsInsideOfTheValidResizeArea(
-    startItemHasMinSize,
-    endItemHasMinSize,
     startItemAvailableIncrement,
     endItemAvailableIncrement,
     info

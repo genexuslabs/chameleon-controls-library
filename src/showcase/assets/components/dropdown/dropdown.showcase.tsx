@@ -80,7 +80,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
             value: "OutsideStart_OutsideStart",
             caption: "OutsideStart_OutsideStart"
           },
-          { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
+          {
+            value: "InsideStart_OutsideStart",
+            caption: "InsideStart_OutsideStart"
+          },
           { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
           {
             value: "InsideEnd_OutsideStart",

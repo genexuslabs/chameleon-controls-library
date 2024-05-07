@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { CheckBox } from "../../../../components/checkbox/checkbox";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 
 const state: Partial<Mutable<CheckBox>> = {};
@@ -24,7 +24,7 @@ const render = () => (
     </fieldset>
 
     <fieldset>
-      <legend class="heading-4 field-legend-test">Label with for</legend>
+      <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
       <label class="form-input__label" htmlFor="checkbox-2">
         Label for checkbox 2

@@ -1,8 +1,9 @@
-import { Mutable } from "../../../../common/types";
-import { CheckBox } from "../../../../components/checkbox/checkbox";
-import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
-import { ChLayoutSplitter } from "../../../../components/layout-splitter/layout-splitter";
-import { ChTreeViewRender } from "../../../../components/tree-view/tree-view-render";
+import { Mutable } from "../../../common/types";
+import { CheckBox } from "../../../components/checkbox/checkbox";
+import { ChComboBox } from "../../../components/combobox/combo-box";
+import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
+import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
+import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   render: () => any;
@@ -13,13 +14,13 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
 export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
   ShowcaseRenderPropertyGroup<T>[];
 
-export type ShowcaseRenderPropertyGroup<T extends ShowcaseAvailableStories> = {
+export type ShowcaseRenderPropertyGroup<T> = {
   caption: string;
   columns?: 1 | 2 | 3;
   properties: ShowcaseRenderProperty<T>[];
 };
 
-export type ShowcaseRenderProperty<T extends ShowcaseAvailableStories> =
+export type ShowcaseRenderProperty<T> =
   | ShowcaseRenderPropertyBoolean<T, keyof T>
   | ShowcaseRenderPropertyNumber<T, keyof T>
   | ShowcaseRenderPropertyString<T, keyof T>
@@ -31,10 +32,7 @@ export type ShowcaseRenderPropertyTypes = Pick<
   "type"
 >["type"];
 
-type ShowcaseRenderPropertyBase<
-  T extends ShowcaseAvailableStories,
-  D extends keyof T
-> = {
+type ShowcaseRenderPropertyBase<T, D extends keyof T> = {
   id: D;
   accessibleName?: string;
   caption?: string;
@@ -42,7 +40,7 @@ type ShowcaseRenderPropertyBase<
 };
 
 export type ShowcaseRenderPropertyBoolean<
-  T extends ShowcaseAvailableStories,
+  T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
   value: boolean;
@@ -51,7 +49,7 @@ export type ShowcaseRenderPropertyBoolean<
 };
 
 export type ShowcaseRenderPropertyNumber<
-  T extends ShowcaseAvailableStories,
+  T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
   value: number;
@@ -60,7 +58,7 @@ export type ShowcaseRenderPropertyNumber<
 };
 
 export type ShowcaseRenderPropertyString<
-  T extends ShowcaseAvailableStories,
+  T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
   value: string;
@@ -70,7 +68,7 @@ export type ShowcaseRenderPropertyString<
 
 // TODO: Improve the type safety for enums
 export type ShowcaseRenderPropertyEnum<
-  T extends ShowcaseAvailableStories,
+  T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
   value: T[D];
@@ -80,16 +78,17 @@ export type ShowcaseRenderPropertyEnum<
 };
 
 export type ShowcaseRenderPropertyObject<
-  T extends ShowcaseAvailableStories,
+  T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
-  properties: ShowcaseRenderProperty<T>[];
+  properties: ShowcaseRenderProperty<any>[];
   render?: "action-button" | "independent-properties";
   type: "object";
 };
 
 export type ShowcaseAvailableStories =
   | Mutable<CheckBox>
+  | Mutable<ChComboBox>
   | Mutable<ChDropdownRender>
   | Mutable<ChLayoutSplitter>
   | Mutable<ChTreeViewRender>;

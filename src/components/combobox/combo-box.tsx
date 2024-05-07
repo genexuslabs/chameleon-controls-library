@@ -282,7 +282,7 @@ export class ChComboBox
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         -1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -291,7 +291,7 @@ export class ChComboBox
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -303,7 +303,7 @@ export class ChComboBox
           firstLevelIndex: -1
         }, // The algorithm will sum 1 to the start index
         1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -315,7 +315,7 @@ export class ChComboBox
           firstLevelIndex: this.items.length
         }, // The algorithm will sum -1 to the start index
         -1,
-        this.filterType !== "none",
+        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -547,6 +547,15 @@ export class ChComboBox
   }
 
   /**
+   * Emitted when a change to the element's filter is committed by the user.
+   * Only applies if `filterType !== "none"`. It contains the information about
+   * the new filter value.
+   *
+   * This event is debounced by the `filterDebounce` value.
+   */
+  @Event() filterChange: EventEmitter<string>;
+
+  /**
    * The `input` event is emitted when a change to the element's value is
    * committed by the user.
    */
@@ -560,11 +569,49 @@ export class ChComboBox
     }
   };
 
+  #filterFunction = (modelIsAlreadyFiltered: boolean) => {
+    // Reset immediate filter
+    this.#immediateFilter = undefined;
+
+    // New filter value
+    this.filterChange.emit(this.filter);
+
+    if (modelIsAlreadyFiltered) {
+      return;
+    }
+
+    this.#displayedValues.clear();
+
+    const filterOptions = {
+      filter: this.filter,
+      filterOptions: this.filterOptions,
+      filterSet: this.#filterListAsSet
+    };
+
+    for (let index = 0; index < this.items.length; index++) {
+      const item = this.items[index];
+
+      filterSubModel(
+        item,
+        this.filterType,
+        filterOptions,
+        this.#displayedValues
+      );
+    }
+
+    // Remove the selected value if it is no longer rendered
+    if (!this.#displayedValues.has(this.currentSelectedValue)) {
+      this.currentSelectedValue = undefined;
+    }
+  };
+
   #updateFilters = () => {
     if (this.filterType === "none") {
       this.#displayedValues = undefined;
       return;
     }
+
+    const modelIsAlreadyFiltered = this.#isModelAlreadyFiltered();
 
     // Remove queued filter processing
     clearTimeout(this.#queuedFilterId);
@@ -573,46 +620,21 @@ export class ChComboBox
       this.filterDebounce > 0 &&
       (this.filterType === "caption" || this.filterType === "value");
 
-    this.#displayedValues ??= new Set();
-
-    const filterFunction = () => {
-      this.#displayedValues.clear();
-
-      const filterOptions = {
-        filter: this.filter,
-        filterOptions: this.filterOptions,
-        filterSet: this.#filterListAsSet
-      };
-
-      for (let index = 0; index < this.items.length; index++) {
-        const item = this.items[index];
-
-        filterSubModel(
-          item,
-          this.filterType,
-          filterOptions,
-          this.#displayedValues
-        );
-      }
-
-      // Remove the selected value if it is no longer rendered
-      if (!this.#displayedValues.has(this.currentSelectedValue)) {
-        this.currentSelectedValue = undefined;
-      }
-    };
+    // Check if the model already contains the filtered items
+    if (!modelIsAlreadyFiltered) {
+      this.#displayedValues ??= new Set();
+    }
 
     // Check if should filter with debounce
     if (processWithDebounce && this.#immediateFilter !== "immediate") {
       this.#queuedFilterId = setTimeout(() => {
-        this.#immediateFilter = undefined;
-        filterFunction();
+        this.#filterFunction(modelIsAlreadyFiltered);
         forceUpdate(this); // After the filter processing is completed, force a re-render
       }, this.filterDebounce);
     }
     // No debounce
     else {
-      this.#immediateFilter = undefined;
-      filterFunction();
+      this.#filterFunction(modelIsAlreadyFiltered);
     }
   };
 
@@ -863,6 +885,8 @@ export class ChComboBox
         }
       : undefined;
 
+  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
+
   #customItemRender =
     (
       insideAGroup: boolean,
@@ -870,7 +894,11 @@ export class ChComboBox
       filtersAreApplied: boolean
     ) =>
     (item: ComboBoxItemModel, index: number) => {
-      if (filtersAreApplied && !this.#displayedValues.has(item.value)) {
+      if (
+        filtersAreApplied &&
+        !this.#isModelAlreadyFiltered() &&
+        !this.#displayedValues.has(item.value)
+      ) {
         return;
       }
 

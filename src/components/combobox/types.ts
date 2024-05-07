@@ -20,6 +20,15 @@ export type ComboBoxItemGroup = ComboBoxItemLeaf & {
 
 export type ComboBoxFilterOptions = {
   /**
+   * `true` if the items of the combo-box are already filtered and the control
+   * does not have to apply any transformation to process the filter value.
+   * The utility of this property is to support filters on the server.
+   *
+   * If not specified, it defaults to `false`
+   */
+  alreadyProcessed?: boolean;
+
+  /**
    * When applying a new filter, expand the matches.
    */
   autoExpand?: boolean;

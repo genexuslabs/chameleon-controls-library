@@ -122,7 +122,7 @@ export class ChLayoutSplitter implements ChComponent {
   };
   @Watch("layout")
   handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.updateLayoutInfo(newLayout);
+    this.#updateLayoutInfo(newLayout);
   }
 
   /**
@@ -426,7 +426,7 @@ export class ChLayoutSplitter implements ChComponent {
       this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
     );
 
-  private updateLayoutInfo(layout: LayoutSplitterDistribution) {
+  #updateLayoutInfo = (layout: LayoutSplitterDistribution) => {
     // Clear old information
     this.#itemsInfo.clear();
 
@@ -436,10 +436,10 @@ export class ChLayoutSplitter implements ChComponent {
         this.#itemsInfo
       );
     }
-  }
+  };
 
   connectedCallback() {
-    this.updateLayoutInfo(this.layout);
+    this.#updateLayoutInfo(this.layout);
   }
 
   disconnectedCallback() {

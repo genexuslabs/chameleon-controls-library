@@ -92,9 +92,17 @@ export class ChShowcase {
       property: ShowcaseRenderPropertyBoolean<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
     ) => {
       const showcaseStoryState = this.#showcaseStory.state;
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      // Initialize state
+      showcaseStoryState[propertyGroupId as any] = property.value;
 
       if (property.render === "switch") {
         // TODO
@@ -103,12 +111,22 @@ export class ChShowcase {
       else {
         this.#showcaseStoryCheckboxes ??= new Map();
 
-        this.#showcaseStoryCheckboxes.set(property.id, () => {
+        this.#showcaseStoryCheckboxes.set(propertyGroupId, () => {
           const checkboxCurrentValue = showcaseStoryState[
-            property.id as any
+            propertyGroupId as any
           ] as boolean;
 
-          showcaseStoryState[property.id as any] = !checkboxCurrentValue;
+          showcaseStoryState[propertyGroupId as any] = !checkboxCurrentValue;
+
+          // Verify if the checkbox is inside of an object
+          if (parentObject) {
+            const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+
+            showcaseStoryState[parentObject.id as any] = {
+              ...oldGroupInfo,
+              [property.id]: !checkboxCurrentValue
+            };
+          }
           forceUpdate(this);
         });
       }
@@ -118,29 +136,51 @@ export class ChShowcase {
       property: ShowcaseRenderPropertyEnum<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
     ) => {
       const showcaseStoryState = this.#showcaseStory.state;
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      // Initialize state
+      showcaseStoryState[propertyGroupId as any] = property.value;
+
+      const eventHandler = (
+        event:
+          | ChRadioGroupRenderCustomEvent<string>
+          | ChComboBoxCustomEvent<string>
+          | InputEvent
+      ) => {
+        showcaseStoryState[propertyGroupId as any] = event.detail;
+
+        // Verify if the combo-box/radio-group is inside of an object
+        if (parentObject) {
+          const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+
+          showcaseStoryState[parentObject.id as any] = {
+            ...oldGroupInfo,
+            [property.id]: event.detail
+          };
+        }
+        forceUpdate(this);
+      };
 
       // Radio Group
       if (property.render === "radio-group") {
         this.#showcaseStoryRadioGroups ??= new Map();
-        this.#showcaseStoryRadioGroups.set(property.id, {
-          handler: event => {
-            showcaseStoryState[property.id as any] = event.detail;
-            forceUpdate(this);
-          },
+        this.#showcaseStoryRadioGroups.set(propertyGroupId, {
+          handler: eventHandler,
           items: property.values
         });
       }
       // Combo Box by default
       else {
         this.#showcaseStoryComboBoxes ??= new Map();
-        this.#showcaseStoryComboBoxes.set(property.id, {
-          handler: event => {
-            showcaseStoryState[property.id as any] = event.detail;
-            forceUpdate(this);
-          },
+        this.#showcaseStoryComboBoxes.set(propertyGroupId, {
+          handler: eventHandler,
           items: property.values
         });
       }
@@ -150,17 +190,38 @@ export class ChShowcase {
       property: ShowcaseRenderPropertyNumber<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
     ) => {
       const showcaseStoryState = this.#showcaseStory.state;
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      // Initialize state
+      showcaseStoryState[propertyGroupId as any] = property.value;
+
       this.#showcaseStoryInputNumber ??= new Map();
 
-      this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
-        const inputCurrentValue = (event.target as HTMLInputElement).value;
+      this.#showcaseStoryInputNumber.set(
+        propertyGroupId,
+        (event: InputEvent) => {
+          const inputCurrentValue = (event.target as HTMLInputElement).value;
+          showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
 
-        showcaseStoryState[property.id as any] = inputCurrentValue;
-        forceUpdate(this);
-      });
+          // Verify if the input-number is inside of an object
+          if (parentObject) {
+            const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+
+            showcaseStoryState[parentObject.id as any] = {
+              ...oldGroupInfo,
+              [property.id]: inputCurrentValue
+            };
+          }
+          forceUpdate(this);
+        }
+      );
     },
 
     object: (
@@ -171,24 +232,26 @@ export class ChShowcase {
     ) => {
       const showcaseStoryState = this.#showcaseStory.state;
 
-      console.log(property, showcaseStoryState);
-      // this.#showcaseStoryInputNumber ??= new Map();
-
-      // this.#showcaseStoryInputNumber.set(property.id, (event: InputEvent) => {
-      //   const inputCurrentValue = (event.target as HTMLInputElement).value;
-
-      //   showcaseStoryState[property.id as any] = inputCurrentValue;
-      //   forceUpdate(this);
-      // });
+      // Initialize the state as an empty object
+      showcaseStoryState[property.id as any] = {};
     },
 
     string: (
       property: ShowcaseRenderPropertyString<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
     ) => {
       const showcaseStoryState = this.#showcaseStory.state;
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      // Initialize state
+      showcaseStoryState[propertyGroupId as any] = property.value;
+
       this.#showcaseStoryInput ??= new Map();
 
       if (property.render === "textarea") {
@@ -196,10 +259,20 @@ export class ChShowcase {
       }
       // Input by default
       else {
-        this.#showcaseStoryInput.set(property.id, (event: InputEvent) => {
+        this.#showcaseStoryInput.set(propertyGroupId, (event: InputEvent) => {
           const inputCurrentValue = (event.target as HTMLInputElement).value;
 
-          showcaseStoryState[property.id as any] = inputCurrentValue;
+          showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
+
+          // Verify if the input-number is inside of an object
+          if (parentObject) {
+            const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+
+            showcaseStoryState[parentObject.id as any] = {
+              ...oldGroupInfo,
+              [property.id]: inputCurrentValue
+            };
+          }
           forceUpdate(this);
         });
       }
@@ -209,6 +282,14 @@ export class ChShowcase {
       property: ShowcaseRenderProperty<ShowcaseAvailableStories>
     ) => void;
   };
+
+  #getPropertyId = (
+    property: ShowcaseRenderProperty<ShowcaseAvailableStories>,
+    parentObject?: ShowcaseRenderPropertyObject<
+      ShowcaseAvailableStories,
+      keyof ShowcaseAvailableStories
+    >
+  ) => (parentObject ? `${parentObject.id}_${property.id}` : property.id);
 
   #flexibleLayoutRender: FlexibleLayoutRenders = {
     [MAIN_WIDGET]: () => (
@@ -280,19 +361,37 @@ export class ChShowcase {
 
     if (this.#showcaseStory) {
       const properties = this.#showcaseStory.properties;
-      const state = this.#showcaseStory.state;
 
       // Initialize state with default values
       properties.forEach(group => {
-        group.properties.forEach(property => {
-          if (property.type !== "object") {
-            state[property.id as any] = property.value;
-
-            // TODO: Improve type inference
-            this.#handlerInitializationMapping[property.type](property as any);
-          }
-        });
+        group.properties.forEach(property =>
+          this.#initializePropertyInState(property)
+        );
       });
+    }
+  };
+
+  #initializePropertyInState = (
+    property: ShowcaseRenderProperty<ShowcaseAvailableStories>,
+    object?: ShowcaseRenderPropertyObject<
+      ShowcaseAvailableStories,
+      keyof ShowcaseAvailableStories
+    >
+  ) => {
+    if (property.type === "object") {
+      // Initialize the object
+      this.#handlerInitializationMapping[property.type](property as any);
+
+      // Initialize all object properties. "property" in this case is the "object"
+      property.properties.forEach(childProperty =>
+        this.#initializePropertyInState(childProperty as any, property)
+      );
+    } else {
+      // TODO: Improve type inference
+      this.#handlerInitializationMapping[property.type](
+        property as any,
+        object
+      );
     }
   };
 
@@ -318,13 +417,22 @@ export class ChShowcase {
     >
       <legend class="heading-4">{group.caption}</legend>
 
-      {group.properties.map(property =>
-        this.#propertyRender[
-          property.render ?? defaultRenderForEachPropertyType[property.type]
-        ](property)
-      )}
+      {this.#renderProperties(group.properties)}
     </fieldset>
   ];
+
+  #renderProperties = (
+    properties: ShowcaseRenderProperty<any>[],
+    object?: ShowcaseRenderPropertyObject<
+      ShowcaseAvailableStories,
+      keyof ShowcaseAvailableStories
+    >
+  ) =>
+    properties.map(property =>
+      this.#propertyRender[
+        property.render ?? defaultRenderForEachPropertyType[property.type]
+      ](property, object)
+    );
 
   #propertyRenderWithLabel = (
     property: ShowcaseRenderProperty<ShowcaseAvailableStories>,
@@ -347,6 +455,10 @@ export class ChShowcase {
       property: ShowcaseRenderPropertyBoolean<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
     ) => (
       <ch-checkbox
@@ -361,7 +473,9 @@ export class ChShowcase {
         checkedValue="true"
         unCheckedValue="false"
         value={property.value.toString()}
-        onInput={this.#showcaseStoryCheckboxes.get(property.id)}
+        onInput={this.#showcaseStoryCheckboxes.get(
+          this.#getPropertyId(property, parentObject)
+        )}
       ></ch-checkbox>
     ),
 
@@ -369,89 +483,124 @@ export class ChShowcase {
       property: ShowcaseRenderPropertyEnum<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
-    ) =>
-      this.#propertyRenderWithLabel(property, [
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={property.id}>
+          <label class="form-input__label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <ch-combo-box
-          id={property.id}
+          id={propertyGroupId}
           accessibleName={property.accessibleName}
           class="combo-box"
-          items={this.#showcaseStoryComboBoxes.get(property.id).items}
+          items={this.#showcaseStoryComboBoxes.get(propertyGroupId).items}
           value={property.value.toString()}
-          onInput={this.#showcaseStoryComboBoxes.get(property.id).handler}
+          onInput={this.#showcaseStoryComboBoxes.get(propertyGroupId).handler}
         ></ch-combo-box>
-      ]),
+      ]);
+    },
 
     input: (
       property: ShowcaseRenderPropertyString<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
-    ) =>
-      this.#propertyRenderWithLabel(property, [
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={property.id}>
+          <label class="form-input__label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
-          id={property.id}
+          id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="text"
           value={property.value.toString()}
-          onInput={this.#showcaseStoryInput.get(property.id)}
+          onInput={this.#showcaseStoryInput.get(propertyGroupId)}
         />
-      ]),
+      ]);
+    },
 
     "input-number": (
       property: ShowcaseRenderPropertyString<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
-    ) =>
-      this.#propertyRenderWithLabel(property, [
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={property.id}>
+          <label class="form-input__label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <input
-          id={property.id}
+          id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="number"
           value={property.value.toString()}
-          onInput={this.#showcaseStoryInputNumber.get(property.id)}
+          onInput={this.#showcaseStoryInputNumber.get(propertyGroupId)}
         />
-      ]),
+      ]);
+    },
+
+    "independent-properties": (
+      property: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => this.#renderProperties(property.properties, property),
 
     "radio-group": (
       property: ShowcaseRenderPropertyEnum<
         ShowcaseAvailableStories,
         keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
       >
-    ) =>
-      this.#propertyRenderWithLabel(property, [
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
         property.caption && (
-          <label class="form-input__label" htmlFor={property.id}>
+          <label class="form-input__label" htmlFor={propertyGroupId}>
             {property.caption}
           </label>
         ),
         <ch-radio-group-render
-          id={property.id}
+          id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
           class="radio-group"
-          items={this.#showcaseStoryRadioGroups.get(property.id).items}
+          items={this.#showcaseStoryRadioGroups.get(propertyGroupId).items}
           value={property.value.toString()}
-          onChange={this.#showcaseStoryRadioGroups.get(property.id).handler}
+          onChange={this.#showcaseStoryRadioGroups.get(propertyGroupId).handler}
         ></ch-radio-group-render>
-      ])
+      ]);
+    }
   } as const;
 
   #iframeRender = () => (

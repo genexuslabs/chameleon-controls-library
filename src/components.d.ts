@@ -1724,7 +1724,17 @@ export namespace Components {
         "suspend": boolean;
     }
     interface ChShowcase {
+        /**
+          * Specifies the name of the control.
+         */
+        "componentName": string;
+        /**
+          * Specifies the title for the current showcase.
+         */
         "pageName": string;
+        /**
+          * Specifies the HTML directory where the showcase for the control is placed.
+         */
         "pageSrc": string;
         /**
           * Specifies the theme used in the iframe of the control
@@ -5736,7 +5746,17 @@ declare namespace LocalJSX {
         "suspend"?: boolean;
     }
     interface ChShowcase {
+        /**
+          * Specifies the name of the control.
+         */
+        "componentName"?: string;
+        /**
+          * Specifies the title for the current showcase.
+         */
         "pageName"?: string;
+        /**
+          * Specifies the HTML directory where the showcase for the control is placed.
+         */
         "pageSrc"?: string;
         /**
           * Specifies the theme used in the iframe of the control

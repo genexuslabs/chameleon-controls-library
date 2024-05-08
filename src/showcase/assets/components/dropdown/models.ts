@@ -1,11 +1,11 @@
-import { DropdownItemModel } from "../../../../components";
+import { DropdownModel } from "../../../../components/dropdown/types";
 
 const START_IMG_TYPE = "background";
 const END_IMG_TYPE = "background";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
-export const simpleModel1: DropdownItemModel[] = [
+export const simpleModel1: DropdownModel = [
   {
     id: "item-1",
     startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
@@ -111,7 +111,7 @@ export const simpleModel1: DropdownItemModel[] = [
   }
 ];
 
-export const simpleModel2: DropdownItemModel[] = [
+export const simpleModel2: DropdownModel = [
   {
     id: "item-1",
     startImgSrc: `${ASSETS_PREFIX}patterns.svg"`,
@@ -232,7 +232,7 @@ for (let i = 0; i < FIRST_LEVEL_SIZE; i++) {
   });
 }
 
-export const GXWebModel: DropdownItemModel[] = [
+export const GXWebModel: DropdownModel = [
   {
     caption: "File",
     itemsPosition: "InsideStart_OutsideEnd",

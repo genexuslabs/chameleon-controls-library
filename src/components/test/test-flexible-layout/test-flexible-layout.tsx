@@ -1,5 +1,5 @@
 import { Component, Prop, h } from "@stencil/core";
-import { FlexibleLayout } from "../../flexible-layout/internal/flexible-layout/types";
+import { FlexibleLayoutModel } from "../../flexible-layout/internal/flexible-layout/types";
 // import { defaultLayout, layout2, layoutRenders } from "./renders";
 import { layout3, layoutRenders } from "./renders";
 
@@ -12,7 +12,7 @@ export class ChTestFlexibleLayout {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly model: FlexibleLayout = layout3;
+  @Prop() readonly model: FlexibleLayoutModel = layout3;
 
   render() {
     return (

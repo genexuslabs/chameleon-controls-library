@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import {
-  FlexibleLayout,
+  FlexibleLayoutModel,
   FlexibleLayoutRenders
 } from "../../flexible-layout/internal/flexible-layout/types";
 
@@ -36,7 +36,7 @@ const PANEL2 = "panel-2";
 // Common renders
 const PANEL = "Panel";
 
-export const defaultLayout: FlexibleLayout = {
+export const defaultLayout: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -127,7 +127,7 @@ export const defaultLayout: FlexibleLayout = {
   ]
 };
 
-export const layout2: FlexibleLayout = {
+export const layout2: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -232,7 +232,7 @@ export const layout2: FlexibleLayout = {
   ]
 };
 
-export const layout3: FlexibleLayout = {
+export const layout3: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [

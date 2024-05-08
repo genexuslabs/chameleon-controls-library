@@ -1,12 +1,12 @@
 import {
   ItemExtended,
-  LayoutSplitterDistribution,
+  LayoutSplitterModel,
   LayoutSplitterGroupModel
 } from "../types";
 import { fixAndUpdateLayoutModel, sizesToGridTemplate } from "../utils";
 
 describe("[ch-layout-splitter] [sizesToGridTemplate]", () => {
-  const model: LayoutSplitterDistribution = {
+  const model: LayoutSplitterModel = {
     id: "root",
     direction: "rows",
     items: [

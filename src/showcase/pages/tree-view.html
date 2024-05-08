@@ -1538,7 +1538,7 @@
         testTreeX.dropItemsCallback = () =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              resolve({ acceptDrop: true, items: modelTiny });
+              resolve({ acceptDrop: true, model: modelTiny });
             }, 25); // Resolves after 25 ms
           });
 

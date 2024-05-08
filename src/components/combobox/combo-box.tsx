@@ -921,11 +921,11 @@ export class ChComboBox
                 "group--expandable": true,
                 "group--collapsed": !itemGroup.expanded
               }}
-              part={`group__header expandable${
-                this.disabled ? " disabled" : ""
-              } ${this.expanded ? "expanded" : "collapsed"}`}
+              part={`group__header expandable${isDisabled ? " disabled" : ""} ${
+                this.expanded ? "expanded" : "collapsed"
+              }`}
               style={customVars}
-              disabled={this.disabled} // TODO: Update this
+              disabled={isDisabled}
               type="button"
               onClick={this.#toggleExpandInGroup(itemGroup)}
             >

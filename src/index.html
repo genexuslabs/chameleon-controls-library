@@ -154,6 +154,11 @@
         setThemeInBrowser,
         storeTheme
       } from "./showcase/models/theme-manager.js";
+      import {
+        getLanguageDirection,
+        storeLanguageDirection,
+        setLanguageDirectionInBrowser
+      } from "./showcase/models/language-manager.js";
 
       // Get the latest version
       fetch(
@@ -203,7 +208,7 @@
         ];
 
         toggleThemeRef.selectedId = getTheme();
-        toggleRtlRef.selectedId = document.documentElement.dir;
+        toggleRtlRef.selectedId = getLanguageDirection();
 
         const setMainPage = () => {
           mainPage.hidden = false;
@@ -263,8 +268,10 @@
         // Add event lister for the language direction changes
         toggleRtlRef.addEventListener("selectedItemChange", () => {
           const newLanguageDirection =
-            document.documentElement.dir === "ltr" ? "rtl" : "ltr";
-          document.documentElement.dir = newLanguageDirection;
+            getLanguageDirection() === "rtl" ? "ltr" : "rtl";
+
+          storeLanguageDirection(newLanguageDirection);
+          setLanguageDirectionInBrowser(newLanguageDirection);
         });
 
         const layoutSplitterModel = {

@@ -622,7 +622,7 @@ export class ChShowcase {
   }
 
   render() {
-    if (!this.pageSrc && !this.componentName) {
+    if (!this.pageSrc || !this.componentName) {
       return "";
     }
 

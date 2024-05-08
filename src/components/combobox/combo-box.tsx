@@ -900,6 +900,7 @@ export class ChComboBox
       // to propagate the disabled state in the child buttons
       const isDisabled = disabled ?? item.disabled;
       const itemGroup = item as ComboBoxItemGroup;
+      const canAddListeners = !isDisabled && this.expanded;
 
       return itemGroup.items != null ? (
         <div
@@ -927,7 +928,9 @@ export class ChComboBox
               style={customVars}
               disabled={isDisabled}
               type="button"
-              onClick={this.#toggleExpandInGroup(itemGroup)}
+              onClick={
+                canAddListeners ? this.#toggleExpandInGroup(itemGroup) : null
+              }
             >
               <span
                 class={{
@@ -1002,9 +1005,11 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={!isDisabled ? this.#selectedValue(item.value) : null}
+          onClick={canAddListeners ? this.#selectedValue(item.value) : null}
           onMouseEnter={
-            !isDisabled ? this.#updateCurrentSelectedValue(item.value) : null
+            canAddListeners
+              ? this.#updateCurrentSelectedValue(item.value)
+              : null
           }
         >
           {item.caption}
@@ -1042,7 +1047,7 @@ export class ChComboBox
     <select
       aria-label={this.accessibleName ?? this.#accessibleNameFromExternalLabel}
       disabled={this.disabled}
-      onChange={this.#handleSelectChange}
+      onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
     >
       {this.items.map(this.#nativeItemRender)}
@@ -1139,6 +1144,7 @@ export class ChComboBox
 
   render() {
     const filtersAreApplied = this.filterType !== "none";
+    const comboBoxIsInteractive = !this.readonly && !this.disabled;
 
     return (
       <Host
@@ -1149,12 +1155,12 @@ export class ChComboBox
         }
         class={this.disabled ? "ch-disabled" : null}
         onKeyDown={
-          !mobileDevice && !this.disabled && !this.readonly
+          !mobileDevice && comboBoxIsInteractive
             ? this.#handleExpandedChangeWithKeyBoard
             : null
         }
         onClick={
-          !mobileDevice && filtersAreApplied && !this.disabled && !this.readonly
+          !mobileDevice && filtersAreApplied && comboBoxIsInteractive
             ? this.#focusInnerInputWhenFiltersApplied
             : null
         }
@@ -1173,7 +1179,7 @@ export class ChComboBox
                   "mask--no-filters": this.filterType === "none"
                 }}
                 onClickCapture={
-                  !filtersAreApplied && !this.disabled && !this.readonly
+                  !filtersAreApplied && comboBoxIsInteractive
                     ? this.#handleExpandedChange
                     : null
                 }
@@ -1212,15 +1218,12 @@ export class ChComboBox
                           ?.caption
                   }
                   onClickCapture={
-                    filtersAreApplied &&
-                    !this.expanded &&
-                    !this.readonly &&
-                    !this.disabled
+                    filtersAreApplied && !this.expanded && comboBoxIsInteractive
                       ? this.#displayPopoverWhenFiltersApplied
                       : null
                   }
                   onInputCapture={
-                    filtersAreApplied && !this.readonly && !this.disabled
+                    filtersAreApplied && comboBoxIsInteractive
                       ? this.#handleInputFilterChange
                       : null
                   }
@@ -1245,7 +1248,11 @@ export class ChComboBox
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
                   positionTry="flip-block"
-                  onPopoverClosed={this.#handlePopoverClose}
+                  onPopoverClosed={
+                    this.expanded && comboBoxIsInteractive
+                      ? this.#handlePopoverClose
+                      : null
+                  }
                 >
                   <div class="window__content" part="window__content">
                     {this.items.map(

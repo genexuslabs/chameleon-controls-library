@@ -54,6 +54,7 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
+        destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
         filterDebounce={state.filterDebounce}
         filterOptions={state.filterOptions}
@@ -82,6 +83,7 @@ const render = () => (
         placeholder={state.placeholder}
         class="combo-box"
         disabled={state.disabled}
+        destroyItemsOnClose={state.destroyItemsOnClose}
         items={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
@@ -106,6 +108,7 @@ const render = () => (
           placeholder={state.placeholder}
           class="combo-box"
           disabled={state.disabled}
+          destroyItemsOnClose={state.destroyItemsOnClose}
           items={
             state.filterOptions.alreadyProcessed === true &&
             state.filterType !== "none"
@@ -152,6 +155,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
           caption: "Placeholder",
           value: "Option",
           type: "string"
+        },
+        {
+          id: "destroyItemsOnClose",
+          caption: "Destroy Items On Close",
+          value: false,
+          type: "boolean"
         },
         {
           id: "disabled",

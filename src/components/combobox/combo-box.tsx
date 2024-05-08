@@ -427,6 +427,15 @@ export class ChComboBox
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * Specifies whether the items should not stay rendered in the DOM if the
+   * control is closed.
+   * `true` to destroy the rendered items when the control is closed.
+   * Note: By default, the control does not rendered the items until the first
+   * expansion. The same applies if the control have groups.
+   */
+  @Prop() readonly destroyItemsOnClose: boolean = false;
+
+  /**
    * This property lets you determine the expression that will be applied to the
    * filter.
    * Only works if `filterType = "caption" | "value"`.
@@ -807,6 +816,11 @@ export class ChComboBox
     // Escape key
     this.expanded = false;
 
+    // TODO: When destroyItemsOnClose === true, StencilJS would throw 'The
+    // "popoverClosed" event was emitted, but the dispatcher node is no longer
+    // connected to the dom.', because the popoverOnClose event is emitted twice
+    // in the ch-popover
+
     // Return the focus to the control if the popover was closed with the
     // escape key or by clicking again the combo-box
     if (focusComposedPath().includes(this.el)) {
@@ -900,6 +914,7 @@ export class ChComboBox
       // to propagate the disabled state in the child buttons
       const isDisabled = disabled ?? item.disabled;
       const itemGroup = item as ComboBoxItemGroup;
+      const canAddListeners = !isDisabled && this.expanded;
 
       return itemGroup.items != null ? (
         <div
@@ -921,13 +936,15 @@ export class ChComboBox
                 "group--expandable": true,
                 "group--collapsed": !itemGroup.expanded
               }}
-              part={`group__header expandable${
-                this.disabled ? " disabled" : ""
-              } ${this.expanded ? "expanded" : "collapsed"}`}
+              part={`group__header expandable${isDisabled ? " disabled" : ""} ${
+                this.expanded ? "expanded" : "collapsed"
+              }`}
               style={customVars}
-              disabled={this.disabled} // TODO: Update this
+              disabled={isDisabled}
               type="button"
-              onClick={this.#toggleExpandInGroup(itemGroup)}
+              onClick={
+                canAddListeners ? this.#toggleExpandInGroup(itemGroup) : null
+              }
             >
               <span
                 class={{
@@ -1002,9 +1019,11 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={!isDisabled ? this.#selectedValue(item.value) : null}
+          onClick={canAddListeners ? this.#selectedValue(item.value) : null}
           onMouseEnter={
-            !isDisabled ? this.#updateCurrentSelectedValue(item.value) : null
+            canAddListeners
+              ? this.#updateCurrentSelectedValue(item.value)
+              : null
           }
         >
           {item.caption}
@@ -1042,7 +1061,7 @@ export class ChComboBox
     <select
       aria-label={this.accessibleName ?? this.#accessibleNameFromExternalLabel}
       disabled={this.disabled}
-      onChange={this.#handleSelectChange}
+      onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
     >
       {this.items.map(this.#nativeItemRender)}
@@ -1139,6 +1158,8 @@ export class ChComboBox
 
   render() {
     const filtersAreApplied = this.filterType !== "none";
+    const comboBoxIsInteractive = !this.readonly && !this.disabled;
+    const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
     return (
       <Host
@@ -1149,12 +1170,12 @@ export class ChComboBox
         }
         class={this.disabled ? "ch-disabled" : null}
         onKeyDown={
-          !mobileDevice && !this.disabled && !this.readonly
+          !mobileDevice && comboBoxIsInteractive
             ? this.#handleExpandedChangeWithKeyBoard
             : null
         }
         onClick={
-          !mobileDevice && filtersAreApplied && !this.disabled && !this.readonly
+          !mobileDevice && filtersAreApplied && comboBoxIsInteractive
             ? this.#focusInnerInputWhenFiltersApplied
             : null
         }
@@ -1173,7 +1194,7 @@ export class ChComboBox
                   "mask--no-filters": this.filterType === "none"
                 }}
                 onClickCapture={
-                  !filtersAreApplied && !this.disabled && !this.readonly
+                  !filtersAreApplied && comboBoxIsInteractive
                     ? this.#handleExpandedChange
                     : null
                 }
@@ -1212,15 +1233,12 @@ export class ChComboBox
                           ?.caption
                   }
                   onClickCapture={
-                    filtersAreApplied &&
-                    !this.expanded &&
-                    !this.readonly &&
-                    !this.disabled
+                    filtersAreApplied && !this.expanded && comboBoxIsInteractive
                       ? this.#displayPopoverWhenFiltersApplied
                       : null
                   }
                   onInputCapture={
-                    filtersAreApplied && !this.readonly && !this.disabled
+                    filtersAreApplied && comboBoxIsInteractive
                       ? this.#handleInputFilterChange
                       : null
                   }
@@ -1228,7 +1246,7 @@ export class ChComboBox
                 ></input>
               </div>,
 
-              this.#firstExpanded && (
+              this.#firstExpanded && !destroyRender && (
                 <ch-popover
                   key="popover"
                   id="popover"
@@ -1245,7 +1263,11 @@ export class ChComboBox
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
                   positionTry="flip-block"
-                  onPopoverClosed={this.#handlePopoverClose}
+                  onPopoverClosed={
+                    this.expanded && comboBoxIsInteractive
+                      ? this.#handlePopoverClose
+                      : null
+                  }
                 >
                   <div class="window__content" part="window__content">
                     {this.items.map(

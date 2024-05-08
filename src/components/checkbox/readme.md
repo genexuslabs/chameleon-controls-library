@@ -57,7 +57,7 @@
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components/showcase)
+ - [ch-showcase](../../showcase/assets/components)
  - [ch-tree-view-item](../tree-view/internal/tree-view-item)
 
 ### Graph

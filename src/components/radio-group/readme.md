@@ -53,7 +53,7 @@ It contains radio items to allow users to select one option from the list of opt
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components/showcase)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid

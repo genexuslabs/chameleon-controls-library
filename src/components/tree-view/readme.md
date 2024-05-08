@@ -296,7 +296,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components/showcase)
+ - [ch-showcase](../../showcase/assets/components)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on

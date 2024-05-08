@@ -1,7 +1,7 @@
 import {
   ItemExtended,
   LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup
+  LayoutSplitterGroupModel
 } from "../types";
 import { fixAndUpdateLayoutModel, sizesToGridTemplate } from "../utils";
 
@@ -56,7 +56,7 @@ describe("[ch-layout-splitter] [sizesToGridTemplate]", () => {
 
   it("should return the correct grid-template-columns", async () => {
     const templateResult = sizesToGridTemplate(
-      (model.items[0] as LayoutSplitterDistributionGroup).items,
+      (model.items[0] as LayoutSplitterGroupModel).items,
       itemsInfo,
       5
     );

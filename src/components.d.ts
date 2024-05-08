@@ -11,13 +11,13 @@ import { ActionGroupItemModel } from "./components/action-group/types";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxItemModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownItemModel } from "./components/dropdown/types";
-import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+import { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
-import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+import { GroupExtended, LayoutSplitterDistribution, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel } from "./components/layout-splitter/types";
 import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 import { MarkdownCodeRender } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -29,8 +29,8 @@ import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { ecLevel } from "./components/qr/ch-qr";
-import { RadioItem } from "./components/radio-group/types";
-import { SegmentedControlItem } from "./components/segmented-control/types";
+import { RadioGroupItemModel } from "./components/radio-group/types";
+import { SegmentedControlItemModel } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -51,13 +51,13 @@ export { ActionGroupItemModel } from "./components/action-group/types";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxItemModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownItemModel } from "./components/dropdown/types";
-export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroup, FlexibleLayoutItem, FlexibleLayoutItemExtended, FlexibleLayoutLeaf, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+export { DraggableViewInfo, FlexibleLayout, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
-export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterDistributionLeaf, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult } from "./components/layout-splitter/types";
+export { GroupExtended, LayoutSplitterDistribution, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel } from "./components/layout-splitter/types";
 export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 export { MarkdownCodeRender } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -69,8 +69,8 @@ export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./comp
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { ecLevel } from "./components/qr/ch-qr";
-export { RadioItem } from "./components/radio-group/types";
-export { SegmentedControlItem } from "./components/segmented-control/types";
+export { RadioGroupItemModel } from "./components/radio-group/types";
+export { SegmentedControlItemModel } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
@@ -374,7 +374,7 @@ export namespace Components {
         /**
           * Specifies the items of the control
          */
-        "items": ComboBoxItemModel[];
+        "model": ComboBoxItemModel[];
         /**
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */
@@ -571,22 +571,22 @@ export namespace Components {
         "useGxRender": boolean;
     }
     interface ChFlexibleLayout {
-        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
           * Specifies the information of each view displayed.
          */
         "itemsInfo": Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
+    FlexibleLayoutItemExtended<FlexibleLayoutItemModel, FlexibleLayoutLeafType>
   >;
-        /**
-          * Specifies the distribution of the items in the flexible layout.
-         */
-        "layout": FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */
         "layoutSplitterParts": string;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "model": FlexibleLayout;
         /**
           * Schedules a new render for a leaf even if no state changed.
          */
@@ -604,7 +604,7 @@ export namespace Components {
         /**
           * Add a view with widgets to render. The view will take the half space of the sibling view that its added with.
          */
-        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
+        "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
           * Add a widget in a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type. If a widget with the same ID already exists, this method has not effect.  To add a widget in a `"single-content"` type leaf, use the `addSiblingView` method.
          */
@@ -616,7 +616,7 @@ export namespace Components {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layout": FlexibleLayout;
+        "model": FlexibleLayout;
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
@@ -1121,7 +1121,7 @@ export namespace Components {
         "topMargin": string;
     }
     interface ChLayoutSplitter {
-        "addSiblingLeaf": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterDistributionLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>;
+        "addSiblingLeaf": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", leafInfo: LayoutSplitterLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<LayoutSplitterItemAddResult>;
         /**
           * This attribute lets you specify the label for the drag bar. Important for accessibility.
          */
@@ -1137,7 +1137,7 @@ export namespace Components {
         /**
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
-        "layout": LayoutSplitterDistribution;
+        "model": LayoutSplitterDistribution;
         /**
           * Schedules a new render of the control even if no state changed.
          */
@@ -1183,7 +1183,7 @@ export namespace Components {
         /**
           * Specifies the items of the tab control.
          */
-        "items": FlexibleLayoutWidget[];
+        "model": FlexibleLayoutWidget[];
         /**
           * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
          */
@@ -1593,7 +1593,7 @@ export namespace Components {
         /**
           * This property lets you define the items of the ch-radio-group-render control.
          */
-        "items"?: RadioItem[];
+        "model"?: RadioGroupItemModel[];
         /**
           * The value of the control.
          */
@@ -1664,7 +1664,7 @@ export namespace Components {
         /**
           * This property lets you define the items of the ch-segmented-control-render control.
          */
-        "items"?: SegmentedControlItem[];
+        "model"?: SegmentedControlItemModel[];
         /**
           * Specifies the ID of the selected item
          */
@@ -1913,7 +1913,7 @@ export namespace Components {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layout": FlexibleLayout;
+        "model": FlexibleLayout;
     }
     interface ChTestSuggest {
         /**
@@ -2368,6 +2368,10 @@ export namespace Components {
          */
         "loadLazyContent": (itemId: string, items?: TreeViewItemModel[], downloading?: boolean, lazy?: boolean) => Promise<void>;
         /**
+          * This property lets you define the model of the ch-tree-view-render control.
+         */
+        "model": TreeViewItemModel[];
+        /**
           * Callback that is executed when a item request to modify its caption.
          */
         "modifyItemCaptionCallback": (
@@ -2421,10 +2425,6 @@ export namespace Components {
           * @returns The modified items after the method was called.
          */
         "toggleItems": (treeItemIds: string[], expand?: boolean) => Promise<TreeViewItemExpandedInfo[]>;
-        /**
-          * This property lets you define the model of the ch-tree-view-render control.
-         */
-        "treeModel": TreeViewItemModel[];
         /**
           * Given a subset of item's properties, it updates all item UI models.
          */
@@ -4365,7 +4365,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the items of the control
          */
-        "items"?: ComboBoxItemModel[];
+        "model"?: ComboBoxItemModel[];
         /**
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */
@@ -4571,16 +4571,16 @@ declare namespace LocalJSX {
          */
         "itemsInfo"?: Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
+    FlexibleLayoutItemExtended<FlexibleLayoutItemModel, FlexibleLayoutLeafType>
   >;
-        /**
-          * Specifies the distribution of the items in the flexible layout.
-         */
-        "layout"?: FlexibleLayout;
         /**
           * Specifies additional parts to export.
          */
         "layoutSplitterParts"?: string;
+        /**
+          * Specifies the distribution of the items in the flexible layout.
+         */
+        "model"?: FlexibleLayout;
         /**
           * Fired when the selected item change.
          */
@@ -4602,7 +4602,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layout"?: FlexibleLayout;
+        "model"?: FlexibleLayout;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -5114,7 +5114,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the list of component that are displayed. Each component will be separated via a drag bar.
          */
-        "layout"?: LayoutSplitterDistribution;
+        "model"?: LayoutSplitterDistribution;
     }
     interface ChList {
         /**
@@ -5144,7 +5144,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the items of the tab control.
          */
-        "items"?: FlexibleLayoutWidget[];
+        "model"?: FlexibleLayoutWidget[];
         /**
           * Fired when an item of the main group is double clicked.
          */
@@ -5600,7 +5600,7 @@ declare namespace LocalJSX {
         /**
           * This property lets you define the items of the ch-radio-group-render control.
          */
-        "items"?: RadioItem[];
+        "model"?: RadioGroupItemModel[];
         /**
           * Fired when the selected item change. It contains the information about the new selected value.
          */
@@ -5679,7 +5679,7 @@ declare namespace LocalJSX {
         /**
           * This property lets you define the items of the ch-segmented-control-render control.
          */
-        "items"?: SegmentedControlItem[];
+        "model"?: SegmentedControlItemModel[];
         /**
           * Fired when the selected item change. It contains the information about the new selected id.
          */
@@ -5978,7 +5978,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
-        "layout"?: FlexibleLayout;
+        "model"?: FlexibleLayout;
     }
     interface ChTestSuggest {
         /**
@@ -6442,6 +6442,10 @@ declare namespace LocalJSX {
          */
         "lazyLoadTreeItemsCallback"?: LazyLoadTreeItemsCallback;
         /**
+          * This property lets you define the model of the ch-tree-view-render control.
+         */
+        "model"?: TreeViewItemModel[];
+        /**
           * Callback that is executed when a item request to modify its caption.
          */
         "modifyItemCaptionCallback"?: (
@@ -6492,10 +6496,6 @@ declare namespace LocalJSX {
           * Set this attribute if you want all the children item's checkboxes to be checked when the parent item checkbox is checked, or to be unchecked when the parent item checkbox is unchecked. This attribute will be used in all items by default.
          */
         "toggleCheckboxes"?: boolean;
-        /**
-          * This property lets you define the model of the ch-tree-view-render control.
-         */
-        "treeModel"?: TreeViewItemModel[];
         /**
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */

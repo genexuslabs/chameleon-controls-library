@@ -18,7 +18,7 @@ import {
   ComboBoxItemModel,
   FlexibleLayout,
   FlexibleLayoutRenders,
-  RadioItem
+  RadioGroupItemModel
 } from "../../../components";
 
 const MAIN_WIDGET = "main";
@@ -79,7 +79,7 @@ export class ChShowcase {
     | Map<
         string,
         {
-          items: RadioItem[];
+          items: RadioGroupItemModel[];
           handler: (
             event: ChRadioGroupRenderCustomEvent<string> | InputEvent
           ) => void;

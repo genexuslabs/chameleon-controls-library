@@ -76,6 +76,9 @@ export class ChGridManagerSelection {
       append = false;
       range = false;
     }
+    if (!row) {
+      return state;
+    }
 
     let { rowFocused, rowsSelected, cellFocused, cellSelected } = state;
 
@@ -154,7 +157,7 @@ export class ChGridManagerSelection {
     let cellSelected = state.cellSelected;
 
     rowFocused ??= this.manager.getFirstRow();
-    cellFocused ??= rowFocused.getCell(
+    cellFocused ??= rowFocused?.getCell(
       state.cellFocused?.column || this.manager.getFirstColumn()
     );
 

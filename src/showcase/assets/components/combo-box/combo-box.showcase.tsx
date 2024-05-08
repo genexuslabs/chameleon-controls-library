@@ -32,7 +32,7 @@ const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
     filterOptions: state.filterOptions
   });
 
-  console.log(state.items);
+  console.log(state.model);
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
@@ -59,11 +59,11 @@ const render = () => (
         filterDebounce={state.filterDebounce}
         filterOptions={state.filterOptions}
         filterType={state.filterType}
-        items={
+        model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
             ? itemsFilteredByTheServer
-            : state.items
+            : state.model
         }
         readonly={state.readonly}
         value={state.value}
@@ -84,11 +84,11 @@ const render = () => (
         class="combo-box"
         disabled={state.disabled}
         destroyItemsOnClose={state.destroyItemsOnClose}
-        items={
+        model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
             ? itemsFilteredByTheServer
-            : state.items
+            : state.model
         }
         readonly={state.readonly}
         value={state.value}
@@ -109,11 +109,11 @@ const render = () => (
           class="combo-box"
           disabled={state.disabled}
           destroyItemsOnClose={state.destroyItemsOnClose}
-          items={
+          model={
             state.filterOptions.alreadyProcessed === true &&
             state.filterType !== "none"
               ? itemsFilteredByTheServer
-              : state.items
+              : state.model
           }
           readonly={state.readonly}
           value={state.value}
@@ -129,7 +129,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
       caption: "Models",
       properties: [
         {
-          id: "items",
+          id: "model",
           accessibleName: "Model",
           type: "enum",
           values: [

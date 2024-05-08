@@ -12,12 +12,12 @@ export class ChTestFlexibleLayout {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly layout: FlexibleLayout = layout3;
+  @Prop() readonly model: FlexibleLayout = layout3;
 
   render() {
     return (
       <ch-flexible-layout-render
-        layout={this.layout}
+        model={this.model}
         renders={layoutRenders}
       ></ch-flexible-layout-render>
     );

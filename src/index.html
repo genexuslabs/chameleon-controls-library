@@ -323,8 +323,8 @@
           ]
         };
 
-        layoutSplitterRef.layout = layoutSplitterModel;
-        treeViewRef.treeModel = treeViewComponents;
+        layoutSplitterRef.model = layoutSplitterModel;
+        treeViewRef.model = treeViewComponents;
 
         searchInputRef.addEventListener("input", () => {
           treeViewRef.filter = searchInputRef.value;

@@ -16,7 +16,7 @@ import {
 const state: Partial<Mutable<ChLayoutSplitter>> = {};
 
 const render = () => (
-  <ch-layout-splitter layout={state.layout}>
+  <ch-layout-splitter model={state.model}>
     <div
       slot="start-component"
       class="components"
@@ -79,7 +79,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     caption: "Models",
     properties: [
       {
-        id: "layout",
+        id: "model",
         accessibleName: "Model",
         type: "enum",
         values: [

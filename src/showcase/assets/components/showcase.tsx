@@ -421,8 +421,8 @@ export class ChShowcase {
 
   #customShowcaseRender = () => (
     <ch-flexible-layout-render
+      model={flexibleLayoutConfiguration}
       renders={this.#flexibleLayoutRender}
-      layout={flexibleLayoutConfiguration}
       ref={el => (this.#flexibleLayoutRef = el)}
     ></ch-flexible-layout-render>
   );
@@ -525,7 +525,7 @@ export class ChShowcase {
           id={propertyGroupId}
           accessibleName={property.accessibleName}
           class="combo-box"
-          items={this.#showcaseStoryComboBoxes.get(propertyGroupId).items}
+          model={this.#showcaseStoryComboBoxes.get(propertyGroupId).items}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(propertyGroupId).handler}
         ></ch-combo-box>
@@ -619,7 +619,7 @@ export class ChShowcase {
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
           class="radio-group"
-          items={this.#showcaseStoryRadioGroups.get(propertyGroupId).items}
+          model={this.#showcaseStoryRadioGroups.get(propertyGroupId).items}
           value={property.value.toString()}
           onChange={this.#showcaseStoryRadioGroups.get(propertyGroupId).handler}
         ></ch-radio-group-render>

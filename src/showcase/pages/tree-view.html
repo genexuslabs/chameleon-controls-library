@@ -1115,7 +1115,7 @@
 
         const testTreeX = document.querySelector("ch-tree-view-render");
 
-        testTreeX.treeModel = kbExplorerModel;
+        testTreeX.model = kbExplorerModel;
 
         const multiSelectionCheckbox =
           document.getElementById("multi-selection");
@@ -1222,19 +1222,19 @@
 
         const loadModelBtn = document.getElementById("load-model-btn");
         loadModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = model;
+          testTreeX.model = model;
         });
 
         const updateModelBtn = document.getElementById("update-model-btn");
         updateModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = updatedModel;
+          testTreeX.model = updatedModel;
         });
 
         const updateModelAgainBtn = document.getElementById(
           "update-model-again-btn"
         );
         updateModelAgainBtn.addEventListener("click", () => {
-          testTreeX.treeModel = modelTinyUpdatedAgain;
+          testTreeX.model = modelTinyUpdatedAgain;
         });
 
         // Big model
@@ -1242,7 +1242,7 @@
           "update-big-model-btn"
         );
         updateBigModelBtn.addEventListener("click", () => {
-          testTreeX.treeModel = bigModel;
+          testTreeX.model = bigModel;
         });
 
         // File system model
@@ -1250,7 +1250,7 @@
           "update-file-system-btn"
         );
         updateFileSystemBtn.addEventListener("click", () => {
-          testTreeX.treeModel = fileSystemModel;
+          testTreeX.model = fileSystemModel;
         });
 
         const kbExplorerBtn = document.getElementById("kb-explorer-model-btn");
@@ -1259,7 +1259,7 @@
           testTreeX.checked = false;
           testTreeX.toggleCheckboxes = false;
 
-          testTreeX.treeModel = kbExplorerModel;
+          testTreeX.model = kbExplorerModel;
         });
 
         const importObjectsBtn = document.getElementById(
@@ -1272,7 +1272,7 @@
 
           // It must be the last property updated, since with HTML the
           // properties change won't be queued to be updated in the same lifecycle
-          testTreeX.treeModel = importObjectsModel;
+          testTreeX.model = importObjectsModel;
         });
 
         // - - - - - - - - - - - - - -   Scroll into visible   - - - - - - - - - - - - - -
@@ -1433,8 +1433,8 @@
           checkAllCheckbox.checked = firstItemCheckedValue;
           checkAllCheckbox.indeterminate = !allItemsHaveTheSameCheckedValue;
 
-          // Dummy way to check if the current treeModel is "Import Objects"
-          if (testTreeX.treeModel[0]?.id === "Category") {
+          // Dummy way to check if the current model is "Import Objects"
+          if (testTreeX.model[0]?.id === "Category") {
             allItemsWithCheckbox.forEach(itemUIModel => {
               const itemInfo = itemUIModel.item;
 
@@ -1596,7 +1596,7 @@
         testTreeX.sortItemsCallback = sortItems;
 
         // Eager large model
-        // testTreeX.treeModel = eagerLargeModel;
+        // testTreeX.model = eagerLargeModel;
       });
     </script>
   </body>

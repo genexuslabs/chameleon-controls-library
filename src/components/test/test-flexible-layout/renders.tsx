@@ -418,8 +418,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
-      treeModel={kbExplorerModel}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={kbExplorerModel}
       multiSelection
       showLines="last"
       onItemOpenReference={openNewPanel}
@@ -430,11 +430,11 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
-      treeModel={preferencesModel}
       dragDisabled={true}
       dropDisabled={true}
       editableItems={false}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={preferencesModel}
       multiSelection
       showLines="all"
     ></ch-tree-view-render>
@@ -606,8 +606,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
-      treeModel={eagerLargeModel}
       dragDisabled={true}
+      model={eagerLargeModel}
       dropDisabled={true}
       editableItems={false}
       multiSelection
@@ -619,10 +619,10 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
-      treeModel={importObjectsModel}
       checkbox
       checked
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={importObjectsModel}
       toggleCheckboxes
       dragDisabled={true}
       dropDisabled={true}

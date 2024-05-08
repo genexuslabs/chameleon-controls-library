@@ -427,6 +427,15 @@ export class ChComboBox
   @Prop() readonly disabled: boolean = false;
 
   /**
+   * Specifies whether the items should not stay rendered in the DOM if the
+   * control is closed.
+   * `true` to destroy the rendered items when the control is closed.
+   * Note: By default, the control does not rendered the items until the first
+   * expansion. The same applies if the control have groups.
+   */
+  @Prop() readonly destroyItemsOnClose: boolean = false;
+
+  /**
    * This property lets you determine the expression that will be applied to the
    * filter.
    * Only works if `filterType = "caption" | "value"`.
@@ -807,6 +816,11 @@ export class ChComboBox
     // Escape key
     this.expanded = false;
 
+    // TODO: When destroyItemsOnClose === true, StencilJS would throw 'The
+    // "popoverClosed" event was emitted, but the dispatcher node is no longer
+    // connected to the dom.', because the popoverOnClose event is emitted twice
+    // in the ch-popover
+
     // Return the focus to the control if the popover was closed with the
     // escape key or by clicking again the combo-box
     if (focusComposedPath().includes(this.el)) {
@@ -1145,6 +1159,7 @@ export class ChComboBox
   render() {
     const filtersAreApplied = this.filterType !== "none";
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
+    const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
     return (
       <Host
@@ -1231,7 +1246,7 @@ export class ChComboBox
                 ></input>
               </div>,
 
-              this.#firstExpanded && (
+              this.#firstExpanded && !destroyRender && (
                 <ch-popover
                   key="popover"
                   id="popover"

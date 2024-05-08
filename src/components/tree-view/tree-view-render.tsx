@@ -526,6 +526,15 @@ export class ChTreeViewRender {
   }
 
   /**
+   * This property lets you define the model of the ch-tree-view-render control.
+   */
+  @Prop() readonly model: TreeViewItemModel[] = [];
+  @Watch("model")
+  modelChanged() {
+    this.#flattenModel();
+  }
+
+  /**
    * This property allows us to implement custom rendering of tree items.
    */
   @Prop() readonly renderItem: (
@@ -557,15 +566,6 @@ export class ChTreeViewRender {
    * This attribute will be used in all items by default.
    */
   @Prop() readonly toggleCheckboxes: boolean = false;
-
-  /**
-   * This property lets you define the model of the ch-tree-view-render control.
-   */
-  @Prop() readonly treeModel: TreeViewItemModel[] = [];
-  @Watch("treeModel")
-  treeModelChanged() {
-    this.#flattenModel();
-  }
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
@@ -1348,7 +1348,7 @@ export class ChTreeViewRender {
     this.#flattenedCheckboxTreeModel.clear();
     this.#selectedItems.clear();
 
-    this.#rootNode = { id: ROOT_ID, caption: ROOT_ID, items: this.treeModel };
+    this.#rootNode = { id: ROOT_ID, caption: ROOT_ID, items: this.model };
     this.#flattenSubModel(this.#rootNode);
 
     // Re-sync filters
@@ -1527,7 +1527,7 @@ export class ChTreeViewRender {
         {
           id: ROOT_ID,
           caption: ROOT_ID,
-          items: this.treeModel
+          items: this.model
         },
         {
           defaultCheckbox: this.checkbox,
@@ -1655,12 +1655,12 @@ export class ChTreeViewRender {
           onSelectedItemsChange={this.#handleSelectedItemsChange}
           ref={el => (this.#treeRef = el)}
         >
-          {this.treeModel.map((itemModel, index) =>
+          {this.model.map((itemModel, index) =>
             this.renderItem(
               itemModel,
               this,
               this.#treeHasFilters(),
-              this.showLines !== "none" && index === this.treeModel.length - 1,
+              this.showLines !== "none" && index === this.model.length - 1,
               0,
               this.dropMode !== "above" && this.dropDisabled !== true,
               this.useGxRender

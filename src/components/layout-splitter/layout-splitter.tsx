@@ -114,14 +114,14 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly layout: LayoutSplitterDistribution = {
+  @Prop() readonly model: LayoutSplitterDistribution = {
     id: "root",
     direction: "columns",
     items: []
   };
-  @Watch("layout")
-  handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.#updateLayoutInfo(newLayout);
+  @Watch("model")
+  modelChanged(newModel: LayoutSplitterDistribution) {
+    this.#updateLayoutInfo(newModel);
   }
 
   /**
@@ -438,7 +438,7 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   connectedCallback() {
-    this.#updateLayoutInfo(this.layout);
+    this.#updateLayoutInfo(this.model);
   }
 
   disconnectedCallback() {
@@ -447,7 +447,7 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    const layoutModel = this.layout;
+    const layoutModel = this.model;
 
     if (layoutModel?.items == null) {
       return "";

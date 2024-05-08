@@ -359,10 +359,10 @@ export class ChList implements DraggableView {
   /**
    * Specifies the items of the tab control.
    */
-  @Prop() readonly items: FlexibleLayoutWidget[];
-  @Watch("items")
-  handleItemsChange(newItems: FlexibleLayoutWidget[]) {
-    this.#updateRenderedPages(newItems);
+  @Prop() readonly model: FlexibleLayoutWidget[];
+  @Watch("model")
+  modelChanged(newModel: FlexibleLayoutWidget[]) {
+    this.#updateRenderedPages(newModel);
   }
 
   /**
@@ -609,8 +609,8 @@ export class ChList implements DraggableView {
 
     // Move the item to the new position
     if (anItemWasReordered) {
-      const itemToInsert = removeElement(this.items, this.draggedElementIndex);
-      insertIntoIndex(this.items, itemToInsert, this.draggedElementNewIndex);
+      const itemToInsert = removeElement(this.model, this.draggedElementIndex);
+      insertIntoIndex(this.model, itemToInsert, this.draggedElementNewIndex);
 
       // Update last selected index
       this.#adjustLastSelectedIndexValueAfterReorder();
@@ -696,7 +696,7 @@ export class ChList implements DraggableView {
       }
 
       // There is no need to re-order the items in the preview
-      if (this.items.length === 1) {
+      if (this.model.length === 1) {
         return;
       }
 
@@ -719,7 +719,7 @@ export class ChList implements DraggableView {
         // While it is not the last item and the distance traveled is greater
         // than half the size of the next item
         while (
-          newIndex < this.items.length - 1 &&
+          newIndex < this.model.length - 1 &&
           distanceTraveled - this.#itemSizes[newIndex + 1] / 2 > 0
         ) {
           distanceTraveled -= this.#itemSizes[newIndex + 1];
@@ -755,7 +755,7 @@ export class ChList implements DraggableView {
   };
 
   #handleTabFocus = (event: KeyboardEvent) => {
-    if (this.items.length < 2) {
+    if (this.model.length < 2) {
       return;
     }
 
@@ -793,7 +793,7 @@ export class ChList implements DraggableView {
       ref={el => (this.#tabListRef = el)}
       onKeyDown={this.#handleTabFocus}
     >
-      {this.items.map((item, index) => (
+      {this.model.map((item, index) => (
         <button
           key={CAPTION_ID(item.id)}
           id={CAPTION_ID(item.id)}
@@ -812,7 +812,7 @@ export class ChList implements DraggableView {
             "dragged-element--outside":
               this.draggedElementIndex === index &&
               this.hasCrossedBoundaries &&
-              this.items.length > 1,
+              this.model.length > 1,
             "shifted-element": this.draggedElementIndex !== -1,
 
             "shifted-element--start":
@@ -947,7 +947,7 @@ export class ChList implements DraggableView {
   };
 
   #initializeState = (direction: ListDirection) => {
-    this.#updateRenderedPages(this.items);
+    this.#updateRenderedPages(this.model);
 
     // Initialize classes and parts
     this.#setClassesAndParts(direction);
@@ -963,12 +963,12 @@ export class ChList implements DraggableView {
   }
 
   render() {
-    if (this.items == null || this.items.length === 0) {
+    if (this.model == null || this.model.length === 0) {
       return "";
     }
 
     const draggedIndex = this.draggedElementIndex;
-    const draggedElement = this.items[draggedIndex];
+    const draggedElement = this.model[draggedIndex];
     const thereAreShiftedElementsInPreview =
       !this.hasCrossedBoundaries &&
       this.draggedElementNewIndex !== -1 &&

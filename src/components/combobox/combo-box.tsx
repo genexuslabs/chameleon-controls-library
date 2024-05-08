@@ -239,17 +239,17 @@ export class ChComboBox
     const nextSelectedIndex =
       currentSelectedIndex.type === "not-exists"
         ? findNextSelectedIndex(
-            this.items,
+            this.model,
             {
               type: "first-level",
-              firstLevelIndex: increment === 1 ? -1 : this.items.length
+              firstLevelIndex: increment === 1 ? -1 : this.model.length
             },
             increment,
             hasFilters,
             displayedValues
           )
         : findNextSelectedIndex(
-            this.items,
+            this.model,
             currentSelectedIndex,
             increment,
             hasFilters,
@@ -263,8 +263,8 @@ export class ChComboBox
     // The new selected value is either in the first level or in the group
     const newSelectedValue =
       nextSelectedIndex.type === "first-level"
-        ? this.items[nextSelectedIndex.firstLevelIndex].value
-        : (this.items[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
+        ? this.model[nextSelectedIndex.firstLevelIndex].value
+        : (this.model[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
             .items[nextSelectedIndex.secondLevelIndex].value;
 
     if (this.currentSelectedValue !== newSelectedValue) {
@@ -312,7 +312,7 @@ export class ChComboBox
         event,
         {
           type: "first-level",
-          firstLevelIndex: this.items.length
+          firstLevelIndex: this.model.length
         }, // The algorithm will sum -1 to the start index
         -1,
         this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
@@ -492,10 +492,10 @@ export class ChComboBox
   /**
    * Specifies the items of the control
    */
-  @Prop() readonly items: ComboBoxItemModel[] = [];
-  @Watch("items")
-  itemsChange(newItems: ComboBoxItemModel[]) {
-    this.#mapValuesToItemInfo(newItems);
+  @Prop() readonly model: ComboBoxItemModel[] = [];
+  @Watch("model")
+  modelChanged(newModel: ComboBoxItemModel[]) {
+    this.#mapValuesToItemInfo(newModel);
   }
 
   /**
@@ -580,8 +580,8 @@ export class ChComboBox
       filterOptions: this.filterOptions
     };
 
-    for (let index = 0; index < this.items.length; index++) {
-      const item = this.items[index];
+    for (let index = 0; index < this.model.length; index++) {
+      const item = this.model[index];
 
       filterSubModel(
         item,
@@ -1064,13 +1064,13 @@ export class ChComboBox
       onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
     >
-      {this.items.map(this.#nativeItemRender)}
+      {this.model.map(this.#nativeItemRender)}
     </select>
   ];
 
   connectedCallback() {
     this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
-    this.#mapValuesToItemInfo(this.items);
+    this.#mapValuesToItemInfo(this.model);
 
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;
@@ -1270,7 +1270,7 @@ export class ChComboBox
                   }
                 >
                   <div class="window__content" part="window__content">
-                    {this.items.map(
+                    {this.model.map(
                       this.#customItemRender(
                         false,
                         undefined,

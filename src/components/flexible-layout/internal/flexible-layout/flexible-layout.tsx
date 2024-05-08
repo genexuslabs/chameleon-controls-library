@@ -65,11 +65,6 @@ export class ChFlexibleLayout {
   @State() dragBarDisabled = false;
 
   /**
-   * Specifies the distribution of the items in the flexible layout.
-   */
-  @Prop() readonly layout: FlexibleLayout;
-
-  /**
    * Specifies additional parts to export.
    */
   @Prop() readonly layoutSplitterParts: string;
@@ -81,6 +76,11 @@ export class ChFlexibleLayout {
     string,
     FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
   >;
+
+  /**
+   * Specifies the distribution of the items in the flexible layout.
+   */
+  @Prop() readonly model: FlexibleLayout;
 
   /**
    * Fired when a item of a view request to be closed.
@@ -408,7 +408,7 @@ export class ChFlexibleLayout {
       closeButtonHidden={viewInfo.closeButtonHidden}
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
-      items={viewInfo.widgets}
+      model={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
       sortable={viewInfo.sortable}
@@ -434,7 +434,7 @@ export class ChFlexibleLayout {
     );
 
   render() {
-    const layoutModel = this.layout;
+    const layoutModel = this.model;
 
     if (layoutModel == null) {
       return "";
@@ -444,7 +444,7 @@ export class ChFlexibleLayout {
       <Host>
         <ch-layout-splitter
           dragBarDisabled={this.dragBarDisabled}
-          layout={layoutModel}
+          model={layoutModel}
           exportparts={"bar," + this.layoutSplitterParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >

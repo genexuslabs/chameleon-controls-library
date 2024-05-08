@@ -55,7 +55,7 @@ export class ChRadioGroupRender {
   /**
    * This property lets you define the items of the ch-radio-group-render control.
    */
-  @Prop() readonly items?: RadioItem[];
+  @Prop() readonly model?: RadioItem[];
 
   /**
    * The value of the control.
@@ -139,6 +139,6 @@ export class ChRadioGroupRender {
   }
 
   render() {
-    return <Host role="radiogroup">{this.items?.map(this.#itemRender)}</Host>;
+    return <Host role="radiogroup">{this.model?.map(this.#itemRender)}</Host>;
   }
 }

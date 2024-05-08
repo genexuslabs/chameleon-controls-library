@@ -78,10 +78,10 @@ export class ChFlexibleLayoutRender {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly layout: FlexibleLayout;
-  @Watch("layout")
-  handleLayoutChange(newLayout: FlexibleLayout) {
-    this.#updateFlexibleModels(newLayout);
+  @Prop() readonly model: FlexibleLayout;
+  @Watch("model")
+  modelChanged(newModel: FlexibleLayout) {
+    this.#updateFlexibleModels(newModel);
   }
 
   /**
@@ -615,19 +615,19 @@ export class ChFlexibleLayoutRender {
   };
 
   componentWillLoad() {
-    this.#updateFlexibleModels(this.layout);
+    this.#updateFlexibleModels(this.model);
   }
 
   render() {
     // Check render against the "layout" property
-    if (this.layout == null) {
+    if (this.model == null) {
       return "";
     }
 
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
-        layout={this.layout}
+        model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
         onViewItemClose={this.#handleLeafWidgetClose}

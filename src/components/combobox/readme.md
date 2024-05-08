@@ -64,7 +64,7 @@
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components/showcase)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Depends on
 

@@ -291,9 +291,11 @@ export class ChGrid {
   }
 
   @Listen("blur", { passive: true })
-  blurHandler() {
-    this.rowFocused = null;
-    this.cellFocused = null;
+  blurHandler(eventInfo: Event) {
+    if (!eventInfo.composedPath().includes(this.el)) {
+      this.rowFocused = null;
+      this.cellFocused = null;
+    }
   }
 
   @Listen("cellFocused", { passive: true })
@@ -487,8 +489,8 @@ export class ChGrid {
   mouseUpHandler() {
     if (this.manager.selection.selecting) {
       this.stopSelecting();
-      this.emitRowClicked(this.rowFocused, this.cellFocused);
     }
+    this.emitRowClicked(this.rowFocused, this.cellFocused);
   }
 
   @Listen("dblclick", { passive: true })

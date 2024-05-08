@@ -10,7 +10,7 @@ import {
   lazyLoadItemsDictionary,
   kbExplorerModel,
   preferencesModel
-} from "../../../showcase/pages/assets/models/tree.js";
+} from "../../../showcase/assets/components/tree-view/models";
 import { GXWebModel } from "../../../showcase/pages/assets/models/action-group.js";
 import { TreeViewItemModel } from "../../tree-view/types";
 import {
@@ -415,6 +415,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
+      class="tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
       treeModel={kbExplorerModel}
@@ -426,6 +427,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [PREFERENCES]: () => (
     <ch-tree-view-render
+      class="tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
       treeModel={preferencesModel}
@@ -601,6 +603,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
+      class="tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
       treeModel={eagerLargeModel}
@@ -613,6 +616,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [IMPORT_OBJECTS]: () => (
     <ch-tree-view-render
+      class="tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
       treeModel={importObjectsModel}

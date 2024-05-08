@@ -14,7 +14,7 @@ import {
   simpleModel2,
   checkDroppableZoneCallback,
   dropItemsCallback
-} from "./tree";
+} from "./models";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
 

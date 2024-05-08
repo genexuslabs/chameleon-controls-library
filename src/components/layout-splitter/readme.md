@@ -80,7 +80,7 @@ Type: `Promise<LayoutSplitterItemRemoveResult>`
 ### Used by
 
  - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
- - [ch-showcase](../../showcase/assets/components/showcase)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid

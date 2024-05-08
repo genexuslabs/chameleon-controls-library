@@ -1,4 +1,4 @@
-const THEME_MANAGER_THEME_KEY = "gx-eai-theme";
+const THEME_MANAGER_THEME_KEY = "chameleon-theme";
 
 export const getTheme = () => localStorage.getItem(THEME_MANAGER_THEME_KEY);
 

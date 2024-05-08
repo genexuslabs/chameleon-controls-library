@@ -8,7 +8,7 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { RadioItem } from "./types";
+import { RadioGroupItemModel } from "./types";
 import { RADIO_ITEM_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 const PARTS = (checked: boolean, disabled: boolean) => {
@@ -55,7 +55,7 @@ export class ChRadioGroupRender {
   /**
    * This property lets you define the items of the ch-radio-group-render control.
    */
-  @Prop() readonly model?: RadioItem[];
+  @Prop() readonly model?: RadioGroupItemModel[];
 
   /**
    * The value of the control.
@@ -80,7 +80,7 @@ export class ChRadioGroupRender {
     this.change.emit(value);
   };
 
-  #itemRender = (item: RadioItem, index: number) => {
+  #itemRender = (item: RadioGroupItemModel, index: number) => {
     const checked = this.value === item.value;
     const disabled = item.disabled || this.disabled;
 

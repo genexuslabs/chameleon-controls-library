@@ -7,7 +7,7 @@ import {
   Prop,
   h
 } from "@stencil/core";
-import { SegmentedControlItem } from "./types";
+import { SegmentedControlItemModel } from "./types";
 import { ChSegmentedControlItemCustomEvent } from "../../components";
 import { SEGMENTED_CONTROL_EXPORT_PARTS } from "../../common/reserverd-names";
 
@@ -37,7 +37,7 @@ export class ChSegmentedControl {
    * This property lets you define the items of the ch-segmented-control-render
    * control.
    */
-  @Prop() readonly model?: SegmentedControlItem[];
+  @Prop() readonly model?: SegmentedControlItemModel[];
 
   /**
    * Specifies the ID of the selected item
@@ -58,7 +58,7 @@ export class ChSegmentedControl {
     this.selectedItemChange.emit(event.detail);
   }
 
-  #itemRender = (item: SegmentedControlItem, index: number) => {
+  #itemRender = (item: SegmentedControlItemModel, index: number) => {
     const first = index === 0;
     const last = index === this.model.length - 1;
     const between = !first && !last;

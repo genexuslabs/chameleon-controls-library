@@ -7,14 +7,14 @@ export type LayoutSplitterSize = `${number}px` | `${number}fr`;
 export type LayoutSplitterDistribution = {
   id: "root";
   direction: LayoutSplitterDirection;
-  items: LayoutSplitterDistributionItem[];
+  items: LayoutSplitterItemModel[];
 };
 
-export type LayoutSplitterDistributionItem =
-  | LayoutSplitterDistributionGroup
-  | LayoutSplitterDistributionLeaf;
+export type LayoutSplitterItemModel =
+  | LayoutSplitterGroupModel
+  | LayoutSplitterLeafModel;
 
-export type LayoutSplitterDistributionLeaf = {
+export type LayoutSplitterLeafModel = {
   id: string;
   dragBar?: LayoutSplitterDragBarConfig;
   fixedOffsetSize?: number;
@@ -22,9 +22,9 @@ export type LayoutSplitterDistributionLeaf = {
   minSize?: `${number}px`;
 };
 
-export type LayoutSplitterDistributionGroup = LayoutSplitterDistributionLeaf & {
+export type LayoutSplitterGroupModel = LayoutSplitterLeafModel & {
   direction: LayoutSplitterDirection;
-  items: LayoutSplitterDistributionItem[];
+  items: LayoutSplitterItemModel[];
 };
 
 export type LayoutSplitterDragBarConfig = {
@@ -36,30 +36,30 @@ export type LayoutSplitterDragBarConfig = {
 // - - - - - - - - - - - - - - - - - - - -
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
-export type LayoutSplitterDistributionItemExtended<
-  T extends LayoutSplitterDistributionGroup | LayoutSplitterDistributionLeaf
-> = T extends LayoutSplitterDistributionGroup
+export type LayoutSplitterItemModelExtended<
+  T extends LayoutSplitterGroupModel | LayoutSplitterLeafModel
+> = T extends LayoutSplitterGroupModel
   ? {
-      item: LayoutSplitterDistributionGroup;
-      parentItem: LayoutSplitterDistributionGroup;
+      item: LayoutSplitterGroupModel;
+      parentItem: LayoutSplitterGroupModel;
       actualSize: string;
       fixedSizesSum: number;
     }
   : {
-      item: LayoutSplitterDistributionLeaf;
-      parentItem: LayoutSplitterDistributionGroup;
+      item: LayoutSplitterLeafModel;
+      parentItem: LayoutSplitterGroupModel;
       actualSize: string;
     };
 
 // Aliases to improve code readability
 export type ItemExtended =
-  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionItem>;
+  LayoutSplitterItemModelExtended<LayoutSplitterItemModel>;
 
 export type LeafExtended =
-  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionLeaf>;
+  LayoutSplitterItemModelExtended<LayoutSplitterLeafModel>;
 
 export type GroupExtended =
-  LayoutSplitterDistributionItemExtended<LayoutSplitterDistributionGroup>;
+  LayoutSplitterItemModelExtended<LayoutSplitterGroupModel>;
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Event info
@@ -72,7 +72,7 @@ export type DragBarMouseDownEventInfo = {
   fixedSizesSumRoot: number;
   itemStartId: string;
   itemEndId: string;
-  layoutItems: LayoutSplitterDistributionItem[];
+  layoutItems: LayoutSplitterItemModel[];
   mouseEvent: MouseEvent | undefined;
   RTL: boolean;
 };

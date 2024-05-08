@@ -1,16 +1,16 @@
 import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
   FlexibleLayout,
-  FlexibleLayoutItem,
+  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutRenders,
   FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetReorderInfo,
   FlexibleLayoutViewRemoveResult,
-  FlexibleLayoutGroup,
+  FlexibleLayoutGroupModel,
   DroppableArea,
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
@@ -22,17 +22,17 @@ import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutItem,
+  FlexibleLayoutItemModel,
   FlexibleLayoutLeafType
 >;
 
 type LeafExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafType
 >;
 
 type GroupExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutGroup,
+  FlexibleLayoutGroupModel,
   FlexibleLayoutLeafType
 >;
 
@@ -98,7 +98,7 @@ export class ChFlexibleLayoutRender {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    viewInfo: FlexibleLayoutLeaf,
+    viewInfo: FlexibleLayoutLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<boolean> {
     const success = await this.#flexibleLayoutRef.addSiblingView(
@@ -115,7 +115,7 @@ export class ChFlexibleLayoutRender {
 
     addNewLeafToInfo(
       viewInfo,
-      this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroup,
+      this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroupModel,
       this.#itemsInfo,
       this.#renderedWidgets,
       this.#widgetsInfo
@@ -551,11 +551,11 @@ export class ChFlexibleLayoutRender {
     // ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
     const viewTargetUIModel = this.#itemsInfo.get(
       viewTargetInfo.id
-    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf, "tabbed">;
+    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeafModel, "tabbed">;
     const viewTargetParentInfo = viewTargetUIModel.parentItem; // TODO: CHECK FOR ROOT NODE <------------------
 
     const newLeafToAddId = GENERATE_GUID();
-    const newLeafToAdd: FlexibleLayoutLeaf = {
+    const newLeafToAdd: FlexibleLayoutLeafModel = {
       id: newLeafToAddId,
       selectedWidgetId: widget.id,
       size: undefined,

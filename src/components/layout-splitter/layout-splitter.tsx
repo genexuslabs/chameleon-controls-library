@@ -14,9 +14,9 @@ import {
   ItemExtended,
   LayoutSplitterDirection,
   LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionLeaf,
+  LayoutSplitterGroupModel,
+  LayoutSplitterItemModel,
+  LayoutSplitterLeafModel,
   LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
 } from "./types";
@@ -39,8 +39,8 @@ import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
-type Group = LayoutSplitterDistributionGroup;
-type Item = LayoutSplitterDistributionItem;
+type Group = LayoutSplitterGroupModel;
+type Item = LayoutSplitterItemModel;
 
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
 
@@ -140,7 +140,7 @@ export class ChLayoutSplitter implements ChComponent {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    leafInfo: LayoutSplitterDistributionLeaf,
+    leafInfo: LayoutSplitterLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<LayoutSplitterItemAddResult> {
     const result = addSiblingLeaf(

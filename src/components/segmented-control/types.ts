@@ -1,6 +1,6 @@
 import { ImageRender } from "../../common/types";
 
-export type SegmentedControlItem = {
+export type SegmentedControlItemModel = {
   accessibleName?: string;
   caption?: string;
   class?: string;

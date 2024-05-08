@@ -14,9 +14,9 @@ import {
   DraggableView,
   DraggableViewExtendedInfo,
   FlexibleLayout,
-  FlexibleLayoutItem,
+  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafInfo,
   FlexibleLayoutLeafType,
   FlexibleLayoutViewRemoveResult,
@@ -74,7 +74,7 @@ export class ChFlexibleLayout {
    */
   @Prop() readonly itemsInfo: Map<
     string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
+    FlexibleLayoutItemExtended<FlexibleLayoutItemModel, FlexibleLayoutLeafType>
   >;
 
   /**
@@ -105,7 +105,7 @@ export class ChFlexibleLayout {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    viewInfo: FlexibleLayoutLeaf,
+    viewInfo: FlexibleLayoutLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<boolean> {
     const result = await this.#layoutSplitterRef.addSiblingLeaf(
@@ -188,7 +188,7 @@ export class ChFlexibleLayout {
     this.itemsInfo.forEach(item => {
       const itemView = (
         item as FlexibleLayoutItemExtended<
-          FlexibleLayoutLeaf,
+          FlexibleLayoutLeafModel,
           FlexibleLayoutLeafType
         >
       ).leafInfo;

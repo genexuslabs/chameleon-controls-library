@@ -1,8 +1,8 @@
 import { AccessibleRole, ImageRender } from "../../../../common/types";
 import {
   LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionLeaf,
+  LayoutSplitterGroupModel,
+  LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
 import { ListType } from "../../../list/types";
@@ -26,12 +26,14 @@ export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 //   blockEnd?: FlexibleLayoutFooter;
 // };
 export type FlexibleLayout = Omit<LayoutSplitterDistribution, "items"> & {
-  items: FlexibleLayoutItem[];
+  items: FlexibleLayoutItemModel[];
 };
 
-export type FlexibleLayoutItem = FlexibleLayoutGroup | FlexibleLayoutLeaf;
+export type FlexibleLayoutItemModel =
+  | FlexibleLayoutGroupModel
+  | FlexibleLayoutLeafModel;
 
-export type FlexibleLayoutLeaf = LayoutSplitterDistributionLeaf & {
+export type FlexibleLayoutLeafModel = LayoutSplitterLeafModel & {
   accessibleRole?: ViewAccessibleRole;
 } & FlexibleLayoutLeafConfiguration;
 
@@ -80,12 +82,12 @@ export type FlexibleLayoutLeafType = "tabbed" | "single-content";
 export type FlexibleLayoutLeafTabDirection = "block" | "inline";
 export type FlexibleLayoutLeafTabPosition = "start" | "end";
 
-export type FlexibleLayoutGroup = Omit<
-  LayoutSplitterDistributionGroup,
+export type FlexibleLayoutGroupModel = Omit<
+  LayoutSplitterGroupModel,
   "items"
 > & {
   accessibleRole?: ViewAccessibleRole;
-  items: FlexibleLayoutItem[];
+  items: FlexibleLayoutItemModel[];
 };
 
 export type FlexibleLayoutWidgetExtended = {
@@ -139,17 +141,17 @@ export type FlexibleLayoutRenders = {
 //          Model used internally
 // - - - - - - - - - - - - - - - - - - - -
 export type FlexibleLayoutItemExtended<
-  T extends FlexibleLayoutGroup | FlexibleLayoutLeaf,
+  T extends FlexibleLayoutGroupModel | FlexibleLayoutLeafModel,
   R extends FlexibleLayoutLeafType
-> = T extends FlexibleLayoutLeaf
+> = T extends FlexibleLayoutLeafModel
   ? {
-      item: FlexibleLayoutLeaf;
-      parentItem: FlexibleLayoutGroup;
+      item: FlexibleLayoutLeafModel;
+      parentItem: FlexibleLayoutGroupModel;
       leafInfo: FlexibleLayoutLeafInfo<R>;
     }
   : {
-      item: FlexibleLayoutGroup;
-      parentItem: FlexibleLayoutGroup;
+      item: FlexibleLayoutGroupModel;
+      parentItem: FlexibleLayoutGroupModel;
     };
 
 export type FlexibleLayoutLeafInfo<T extends FlexibleLayoutLeafType> = {

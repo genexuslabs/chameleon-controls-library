@@ -2,8 +2,8 @@ import { removeElement } from "../../common/array";
 import {
   GroupExtended,
   ItemExtended,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionItem,
+  LayoutSplitterGroupModel,
+  LayoutSplitterItemModel,
   LayoutSplitterItemRemoveResult,
   LayoutSplitterReconnectedSubtree
 } from "./types";
@@ -20,7 +20,7 @@ import {
 /**
  * [parentArray, indexToRemove, idOfTheItem]
  */
-type ItemToRemove = [LayoutSplitterDistributionItem[], number, string];
+type ItemToRemove = [LayoutSplitterItemModel[], number, string];
 
 export const NO_FIXED_SIZES_TO_UPDATE = 0;
 
@@ -109,12 +109,10 @@ export const removeItem = (
     };
 
     // Reconnect the parent for the "itemToAddSpace" items
-    if ((itemToAddSpace as LayoutSplitterDistributionGroup).items != null) {
-      (itemToAddSpace as LayoutSplitterDistributionGroup).items.forEach(
-        subItem => {
-          itemsInfo.get(subItem.id).parentItem = parentItem;
-        }
-      );
+    if ((itemToAddSpace as LayoutSplitterGroupModel).items != null) {
+      (itemToAddSpace as LayoutSplitterGroupModel).items.forEach(subItem => {
+        itemsInfo.get(subItem.id).parentItem = parentItem;
+      });
     }
 
     // Update the fixedSizesSum even if it does not exists in the "itemToAddSpace"
@@ -125,7 +123,7 @@ export const removeItem = (
 
     // Update all properties in the new parent, except for some specific properties
     Object.keys(itemToAddSpace).forEach(
-      (key: keyof LayoutSplitterDistributionItem) => {
+      (key: keyof LayoutSplitterItemModel) => {
         if (
           key !== "id" &&
           key !== "size" &&

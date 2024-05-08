@@ -2,10 +2,10 @@
 import { tabTypeToPart } from "../list/utils";
 import {
   FlexibleLayout,
-  FlexibleLayoutGroup,
-  FlexibleLayoutItem,
+  FlexibleLayoutGroupModel,
+  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafInfo,
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended
@@ -14,22 +14,22 @@ import { ROOT_VIEW } from "../../common/utils";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutItem,
+  FlexibleLayoutItemModel,
   FlexibleLayoutLeafType
 >;
 
 type LeafExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafType
 >;
 
 type GroupExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutGroup,
+  FlexibleLayoutGroupModel,
   FlexibleLayoutLeafType
 >;
 
 export const createAndSetLeafInfo = (
-  flexibleLayoutLeaf: FlexibleLayoutLeaf,
+  flexibleLayoutLeaf: FlexibleLayoutLeafModel,
   renderedWidgets: Set<string>,
   widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>
 ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> => {
@@ -104,7 +104,7 @@ export const createAndSetLeafInfo = (
 };
 
 const addCustomBehavior = (
-  item: FlexibleLayoutItem,
+  item: FlexibleLayoutItemModel,
   layoutSplitterParts: Set<string>
 ) => {
   if (item.dragBar?.part) {
@@ -113,8 +113,8 @@ const addCustomBehavior = (
 };
 
 export const addNewLeafToInfo = (
-  leaf: FlexibleLayoutLeaf,
-  parentItem: FlexibleLayoutGroup,
+  leaf: FlexibleLayoutLeafModel,
+  parentItem: FlexibleLayoutGroupModel,
   itemsInfo: Map<string, ItemExtended>,
   renderedWidgets: Set<string>,
   widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>
@@ -129,17 +129,17 @@ export const addNewLeafToInfo = (
 };
 
 const updateFlexibleSubModels = (
-  flexibleLayoutItems: FlexibleLayoutItem[],
+  flexibleLayoutItems: FlexibleLayoutItemModel[],
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,
   widgetsInfo: Map<string, FlexibleLayoutWidgetExtended>,
-  parentItem: FlexibleLayoutGroup
+  parentItem: FlexibleLayoutGroupModel
 ) => {
   flexibleLayoutItems.forEach(flexibleItem => {
     // Group
-    if ((flexibleItem as FlexibleLayoutGroup).items != null) {
-      const group = flexibleItem as FlexibleLayoutGroup;
+    if ((flexibleItem as FlexibleLayoutGroupModel).items != null) {
+      const group = flexibleItem as FlexibleLayoutGroupModel;
 
       const flexibleItemExtended: GroupExtended = {
         item: group,
@@ -161,7 +161,7 @@ const updateFlexibleSubModels = (
     // Leaf
     else {
       addNewLeafToInfo(
-        flexibleItem as FlexibleLayoutLeaf,
+        flexibleItem as FlexibleLayoutLeafModel,
         parentItem,
         itemsInfo,
         renderedWidgets,

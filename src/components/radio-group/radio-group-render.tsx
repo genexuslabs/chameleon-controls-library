@@ -8,7 +8,7 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { RadioGroupItemModel } from "./types";
+import { RadioGroupItemModel, RadioGroupModel } from "./types";
 import { RADIO_ITEM_PARTS_DICTIONARY } from "../../common/reserverd-names";
 
 const PARTS = (checked: boolean, disabled: boolean) => {
@@ -55,7 +55,7 @@ export class ChRadioGroupRender {
   /**
    * This property lets you define the items of the ch-radio-group-render control.
    */
-  @Prop() readonly model?: RadioGroupItemModel[];
+  @Prop() readonly model?: RadioGroupModel;
 
   /**
    * The value of the control.

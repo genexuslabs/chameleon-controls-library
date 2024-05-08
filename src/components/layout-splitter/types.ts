@@ -4,7 +4,7 @@
 export type LayoutSplitterDirection = "rows" | "columns";
 export type LayoutSplitterSize = `${number}px` | `${number}fr`;
 
-export type LayoutSplitterDistribution = {
+export type LayoutSplitterModel = {
   id: "root";
   direction: LayoutSplitterDirection;
   items: LayoutSplitterItemModel[];

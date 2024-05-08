@@ -1,6 +1,8 @@
 import { ImageRender } from "../../components";
 import { ChTreeViewRender } from "./tree-view-render";
 
+export type TreeViewModel = TreeViewItemModel[];
+
 export type TreeViewItemModel = {
   id: string;
   caption: string;
@@ -25,7 +27,7 @@ export type TreeViewItemModel = {
   leaf?: boolean;
 
   indeterminate?: boolean;
-  items?: TreeViewItemModel[];
+  items?: TreeViewModel;
   metadata?: string;
 
   /**

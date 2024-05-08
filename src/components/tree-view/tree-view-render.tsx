@@ -32,6 +32,7 @@ import {
   TreeViewImagePathCallback,
   TreeViewItemModel,
   TreeViewItemModelExtended,
+  TreeViewModel,
   TreeViewOperationStatusModifyCaption,
   TreeViewRemoveItemsResult
 } from "./types";
@@ -224,7 +225,7 @@ const defaultRenderItem = <T extends true | false>(
     )
   ];
 
-const defaultSortItemsCallback = (subModel: TreeViewItemModel[]): void => {
+const defaultSortItemsCallback = (subModel: TreeViewModel): void => {
   subModel.sort((a, b) => {
     if (a.order < b.order) {
       return -1;
@@ -377,7 +378,7 @@ export class ChTreeViewRender {
    */
   @Prop() readonly dropItemsCallback: (
     dataTransferInfo: TreeViewDataTransferInfo
-  ) => Promise<{ acceptDrop: boolean; items?: TreeViewItemModel[] }>;
+  ) => Promise<{ acceptDrop: boolean; model?: TreeViewModel }>;
 
   /**
    * This attribute lets you specify which kind of drop operation can be
@@ -528,7 +529,7 @@ export class ChTreeViewRender {
   /**
    * This property lets you define the model of the ch-tree-view-render control.
    */
-  @Prop() readonly model: TreeViewItemModel[] = [];
+  @Prop() readonly model: TreeViewModel = [];
   @Watch("model")
   modelChanged() {
     this.#flattenModel();
@@ -554,9 +555,9 @@ export class ChTreeViewRender {
   @Prop() readonly showLines: TreeViewLines = "none";
 
   /**
-   * Callback that is executed when the treeModel is changed to order its items.
+   * Callback that is executed when the `model` is changed to order its items.
    */
-  @Prop() readonly sortItemsCallback: (subModel: TreeViewItemModel[]) => void =
+  @Prop() readonly sortItemsCallback: (subModel: TreeViewModel) => void =
     defaultSortItemsCallback;
 
   /**
@@ -638,7 +639,7 @@ export class ChTreeViewRender {
   async dropItems(
     acceptDrop: boolean,
     dataTransferInfo: TreeViewDataTransferInfo,
-    items?: TreeViewItemModel[]
+    model?: TreeViewModel
   ) {
     if (!acceptDrop) {
       return;
@@ -685,15 +686,15 @@ export class ChTreeViewRender {
     }
     // Add the new items
     else {
-      if (items == null) {
+      if (model == null) {
         return;
       }
 
       // Add new items to the parent
-      actualParent.items.push(...items);
+      actualParent.items.push(...model);
 
       // Flatten the new UI models
-      items.forEach(this.#flattenItemUIModel(actualParent));
+      model.forEach(this.#flattenItemUIModel(actualParent));
     }
 
     this.#sortItems(actualParent.items);
@@ -741,7 +742,7 @@ export class ChTreeViewRender {
   @Method()
   async loadLazyContent(
     itemId: string,
-    items?: TreeViewItemModel[],
+    model?: TreeViewModel,
     downloading = false,
     lazy = false
   ) {
@@ -752,12 +753,12 @@ export class ChTreeViewRender {
     itemToLazyLoadContent.lazy = lazy;
 
     // Check if there is items to add
-    if (items == null) {
+    if (model == null) {
       return;
     }
 
     // @todo What happens in the server when dropping items on a lazy node?
-    itemToLazyLoadContent.items = items;
+    itemToLazyLoadContent.items = model;
 
     this.#sortItems(itemToLazyLoadContent.items);
     this.#flattenSubModel(itemToLazyLoadContent);
@@ -1221,7 +1222,7 @@ export class ChTreeViewRender {
     this.waitDropProcessing = true;
 
     promise.then(async response => {
-      this.dropItems(response.acceptDrop, dataTransferInfo, response.items);
+      this.dropItems(response.acceptDrop, dataTransferInfo, response.model);
       this.waitDropProcessing = false;
     });
   };
@@ -1336,10 +1337,10 @@ export class ChTreeViewRender {
 
   #treeHasFilters = () => treeViewHasFilters(this.filterType, this.filter);
 
-  #sortItems = (items: TreeViewItemModel[]) => {
+  #sortItems = (model: TreeViewModel) => {
     // Ensure that items are sorted if the dropMode enables it
     if (this.dropMode === "above" && this.sortItemsCallback) {
-      this.sortItemsCallback(items);
+      this.sortItemsCallback(model);
     }
   };
 

@@ -13,7 +13,7 @@ import {
   GroupExtended,
   ItemExtended,
   LayoutSplitterDirection,
-  LayoutSplitterDistribution,
+  LayoutSplitterModel,
   LayoutSplitterGroupModel,
   LayoutSplitterItemModel,
   LayoutSplitterLeafModel,
@@ -114,13 +114,13 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly model: LayoutSplitterDistribution = {
+  @Prop() readonly model: LayoutSplitterModel = {
     id: "root",
     direction: "columns",
     items: []
   };
   @Watch("model")
-  modelChanged(newModel: LayoutSplitterDistribution) {
+  modelChanged(newModel: LayoutSplitterModel) {
     this.#updateLayoutInfo(newModel);
   }
 
@@ -425,7 +425,7 @@ export class ChLayoutSplitter implements ChComponent {
       this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
     );
 
-  #updateLayoutInfo = (layout: LayoutSplitterDistribution) => {
+  #updateLayoutInfo = (layout: LayoutSplitterModel) => {
     // Clear old information
     this.#itemsInfo.clear();
 

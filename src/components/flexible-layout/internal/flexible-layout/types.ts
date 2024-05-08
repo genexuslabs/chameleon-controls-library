@@ -1,6 +1,6 @@
 import { AccessibleRole, ImageRender } from "../../../../common/types";
 import {
-  LayoutSplitterDistribution,
+  LayoutSplitterModel,
   LayoutSplitterGroupModel,
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
@@ -25,7 +25,7 @@ export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 //   inlineEnd?: FlexibleLayoutAside;
 //   blockEnd?: FlexibleLayoutFooter;
 // };
-export type FlexibleLayout = Omit<LayoutSplitterDistribution, "items"> & {
+export type FlexibleLayoutModel = Omit<LayoutSplitterModel, "items"> & {
   items: FlexibleLayoutItemModel[];
 };
 

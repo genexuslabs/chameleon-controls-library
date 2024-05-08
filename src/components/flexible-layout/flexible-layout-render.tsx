@@ -1,6 +1,6 @@
 import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
-  FlexibleLayout,
+  FlexibleLayoutModel,
   FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeafModel,
@@ -78,9 +78,9 @@ export class ChFlexibleLayoutRender {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly model: FlexibleLayout;
+  @Prop() readonly model: FlexibleLayoutModel;
   @Watch("model")
-  modelChanged(newModel: FlexibleLayout) {
+  modelChanged(newModel: FlexibleLayoutModel) {
     this.#updateFlexibleModels(newModel);
   }
 
@@ -319,7 +319,7 @@ export class ChFlexibleLayoutRender {
     );
   }
 
-  #updateFlexibleModels = (layout: FlexibleLayout) => {
+  #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
     // Empty layout
     if (layout == null) {
       return;

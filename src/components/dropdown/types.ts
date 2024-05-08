@@ -1,13 +1,15 @@
 import { ImageRender } from "../../common/types";
 import { DropdownPosition } from "./internal/dropdown/types";
 
+export type DropdownModel = DropdownItemModel[];
+
 export type DropdownItemModel = {
   id?: string;
   caption: string;
   class?: string;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;
-  items?: DropdownItemModel[];
+  items?: DropdownModel;
   itemsPosition?: DropdownPosition;
   link?: Link;
   separatorClass?: string;

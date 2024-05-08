@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { tabTypeToPart } from "../list/utils";
 import {
-  FlexibleLayout,
+  FlexibleLayoutModel,
   FlexibleLayoutGroupModel,
   FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
@@ -175,7 +175,7 @@ const updateFlexibleSubModels = (
 };
 
 export const updateFlexibleModels = (
-  flexibleLayout: FlexibleLayout,
+  flexibleLayout: FlexibleLayoutModel,
   itemsInfo: Map<string, ItemExtended>,
   layoutSplitterParts: Set<string>,
   renderedWidgets: Set<string>,

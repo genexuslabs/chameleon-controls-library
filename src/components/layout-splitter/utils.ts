@@ -3,7 +3,7 @@ import {
   DragBarMouseDownEventInfo,
   GroupExtended,
   ItemExtended,
-  LayoutSplitterDistribution,
+  LayoutSplitterModel,
   LayoutSplitterGroupModel,
   LayoutSplitterItemModel,
   LayoutSplitterSize
@@ -262,7 +262,7 @@ const canResizeBothItems = (
 };
 
 export const fixAndUpdateLayoutModel = (
-  layout: LayoutSplitterDistribution,
+  layout: LayoutSplitterModel,
   itemsInfo: Map<string, ItemExtended>
 ): number => fixAndUpdateSubModel(layout.items, itemsInfo, ROOT_VIEW);
 

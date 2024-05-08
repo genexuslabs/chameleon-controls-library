@@ -7,7 +7,7 @@ import {
   Prop,
   h
 } from "@stencil/core";
-import { SegmentedControlItemModel } from "./types";
+import { SegmentedControlItemModel, SegmentedControlModel } from "./types";
 import { ChSegmentedControlItemCustomEvent } from "../../components";
 import { SEGMENTED_CONTROL_EXPORT_PARTS } from "../../common/reserverd-names";
 
@@ -37,7 +37,7 @@ export class ChSegmentedControl {
    * This property lets you define the items of the ch-segmented-control-render
    * control.
    */
-  @Prop() readonly model?: SegmentedControlItemModel[];
+  @Prop() readonly model?: SegmentedControlModel;
 
   /**
    * Specifies the ID of the selected item

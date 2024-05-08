@@ -1,5 +1,5 @@
 import { Component, Element, forceUpdate, h, Prop } from "@stencil/core";
-import { DropdownItemModel } from "./types";
+import { DropdownItemModel, DropdownModel } from "./types";
 import { DropdownPosition } from "./internal/dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
@@ -57,7 +57,7 @@ export class ChDropdownRender {
   /**
    * This property lets you define the model of the ch-dropdown control.
    */
-  @Prop() readonly model: DropdownItemModel[];
+  @Prop() readonly model: DropdownModel;
 
   /**
    * Specifies the position of the dropdown section that is placed relative to

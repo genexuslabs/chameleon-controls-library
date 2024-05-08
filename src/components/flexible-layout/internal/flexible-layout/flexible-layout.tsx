@@ -13,7 +13,7 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
-  FlexibleLayout,
+  FlexibleLayoutModel,
   FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
   FlexibleLayoutLeafModel,
@@ -65,11 +65,6 @@ export class ChFlexibleLayout {
   @State() dragBarDisabled = false;
 
   /**
-   * Specifies additional parts to export.
-   */
-  @Prop() readonly layoutSplitterParts: string;
-
-  /**
    * Specifies the information of each view displayed.
    */
   @Prop() readonly itemsInfo: Map<
@@ -78,9 +73,14 @@ export class ChFlexibleLayout {
   >;
 
   /**
+   * Specifies additional parts to export.
+   */
+  @Prop() readonly layoutSplitterParts: string;
+
+  /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly model: FlexibleLayout;
+  @Prop() readonly model: FlexibleLayoutModel;
 
   /**
    * Fired when a item of a view request to be closed.

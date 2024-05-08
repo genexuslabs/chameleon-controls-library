@@ -1,5 +1,5 @@
 import { Component, forceUpdate, h, Prop, State } from "@stencil/core";
-import { ActionGroupItemModel } from "./types";
+import { ActionGroupItemModel, ActionGroupModel } from "./types";
 import { DropdownPosition } from "../dropdown/internal/dropdown/types";
 import { ChActionGroupCustomEvent } from "../../components";
 import { ItemsOverflowBehavior } from "./internal/action-group/types";
@@ -73,7 +73,7 @@ export class ChActionGroupRender {
   /**
    * This property lets you define the model of the ch-action-group control.
    */
-  @Prop() readonly model: ActionGroupItemModel[];
+  @Prop() readonly model: ActionGroupModel;
 
   /**
    * This attribute lets you specify the label for the more actions button.

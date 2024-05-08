@@ -348,6 +348,10 @@ export namespace Components {
          */
         "accessibleName"?: string;
         /**
+          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
+         */
+        "destroyItemsOnClose": boolean;
+        /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
         "disabled": boolean;
@@ -4334,6 +4338,10 @@ declare namespace LocalJSX {
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
         "accessibleName"?: string;
+        /**
+          * Specifies whether the items should not stay rendered in the DOM if the control is closed. `true` to destroy the rendered items when the control is closed. Note: By default, the control does not rendered the items until the first expansion. The same applies if the control have groups.
+         */
+        "destroyItemsOnClose"?: boolean;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */

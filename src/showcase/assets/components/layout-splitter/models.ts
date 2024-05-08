@@ -1,6 +1,6 @@
-import { LayoutSplitterDistribution } from "../../../../components/layout-splitter/types";
+import { LayoutSplitterModel } from "../../../../components/layout-splitter/types";
 
-export const layout1: LayoutSplitterDistribution = {
+export const layout1: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -11,7 +11,7 @@ export const layout1: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout2: LayoutSplitterDistribution = {
+export const layout2: LayoutSplitterModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -40,7 +40,7 @@ export const layout2: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout3: LayoutSplitterDistribution = {
+export const layout3: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -58,7 +58,7 @@ export const layout3: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout4: LayoutSplitterDistribution = {
+export const layout4: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -84,7 +84,7 @@ export const layout4: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout5: LayoutSplitterDistribution = {
+export const layout5: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -96,7 +96,7 @@ export const layout5: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout6: LayoutSplitterDistribution = {
+export const layout6: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -108,7 +108,7 @@ export const layout6: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout7: LayoutSplitterDistribution = {
+export const layout7: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -140,7 +140,7 @@ export const layout7: LayoutSplitterDistribution = {
   ]
 };
 
-export const layout8: LayoutSplitterDistribution = {
+export const layout8: LayoutSplitterModel = {
   id: "root",
   direction: "columns",
   items: [

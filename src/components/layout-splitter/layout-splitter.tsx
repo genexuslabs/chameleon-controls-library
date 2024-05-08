@@ -13,10 +13,10 @@ import {
   GroupExtended,
   ItemExtended,
   LayoutSplitterDirection,
-  LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionItem,
-  LayoutSplitterDistributionLeaf,
+  LayoutSplitterModel,
+  LayoutSplitterGroupModel,
+  LayoutSplitterItemModel,
+  LayoutSplitterLeafModel,
   LayoutSplitterItemAddResult,
   LayoutSplitterItemRemoveResult
 } from "./types";
@@ -39,8 +39,8 @@ import { NO_FIXED_SIZES_TO_UPDATE, removeItem } from "./remove-item";
 import { addSiblingLeaf } from "./add-sibling-item";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 
-type Group = LayoutSplitterDistributionGroup;
-type Item = LayoutSplitterDistributionItem;
+type Group = LayoutSplitterGroupModel;
+type Item = LayoutSplitterItemModel;
 
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
 
@@ -114,14 +114,14 @@ export class ChLayoutSplitter implements ChComponent {
    * Specifies the list of component that are displayed. Each component will be
    * separated via a drag bar.
    */
-  @Prop() readonly layout: LayoutSplitterDistribution = {
+  @Prop() readonly model: LayoutSplitterModel = {
     id: "root",
     direction: "columns",
     items: []
   };
-  @Watch("layout")
-  handleComponentsChange(newLayout: LayoutSplitterDistribution) {
-    this.#updateLayoutInfo(newLayout);
+  @Watch("model")
+  modelChanged(newModel: LayoutSplitterModel) {
+    this.#updateLayoutInfo(newModel);
   }
 
   /**
@@ -140,7 +140,7 @@ export class ChLayoutSplitter implements ChComponent {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    leafInfo: LayoutSplitterDistributionLeaf,
+    leafInfo: LayoutSplitterLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<LayoutSplitterItemAddResult> {
     const result = addSiblingLeaf(
@@ -425,7 +425,7 @@ export class ChLayoutSplitter implements ChComponent {
       this.#renderItem(direction, lastComponentIndex, layoutItems, item, index)
     );
 
-  #updateLayoutInfo = (layout: LayoutSplitterDistribution) => {
+  #updateLayoutInfo = (layout: LayoutSplitterModel) => {
     // Clear old information
     this.#itemsInfo.clear();
 
@@ -438,7 +438,7 @@ export class ChLayoutSplitter implements ChComponent {
   };
 
   connectedCallback() {
-    this.#updateLayoutInfo(this.layout);
+    this.#updateLayoutInfo(this.model);
   }
 
   disconnectedCallback() {
@@ -447,7 +447,7 @@ export class ChLayoutSplitter implements ChComponent {
   }
 
   render() {
-    const layoutModel = this.layout;
+    const layoutModel = this.model;
 
     if (layoutModel?.items == null) {
       return "";

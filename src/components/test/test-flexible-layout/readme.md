@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description                                                     | Type                                                                           | Default   |
-| -------- | --------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------- |
-| `layout` | --        | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }` | `layout3` |
+| Property | Attribute | Description                                                     | Type                                                                         | Default   |
+| -------- | --------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------- |
+| `model`  | --        | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }` | `layout3` |
 
 
 ## Dependencies

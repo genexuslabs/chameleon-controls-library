@@ -3,10 +3,11 @@ import {
   ComboBoxFilterOptions,
   ComboBoxFilterType,
   ComboBoxItemGroup,
-  ComboBoxItemModel
+  ComboBoxItemModel,
+  ComboBoxModel
 } from "../../../../components/combobox/types";
 
-export const simpleModel1: ComboBoxItemModel[] = [
+export const simpleModel1: ComboBoxModel = [
   { value: "Value 1", caption: "Label for the value 1" },
   {
     value: "Value 2",
@@ -85,7 +86,7 @@ export const simpleModel1: ComboBoxItemModel[] = [
   }
 ];
 
-export const smallModel: ComboBoxItemModel[] = [
+export const smallModel: ComboBoxModel = [
   { value: "chocolate", caption: "Chocolate" },
   { value: "coconut", caption: "Coconut" },
   { value: "mint", caption: "Mint" },
@@ -93,7 +94,7 @@ export const smallModel: ComboBoxItemModel[] = [
   { value: "vanilla", caption: "Vanilla" }
 ];
 
-export const dataTypeInGeneXus: ComboBoxItemModel[] = [
+export const dataTypeInGeneXus: ComboBoxModel = [
   {
     value: "Basics",
     caption: "Basics",
@@ -302,12 +303,12 @@ const filterSubModel = (
   item: ComboBoxItemModel,
   filterType: ComboBoxFilterType,
   filterInfo: ComboBoxFilterInfo,
-  newModel: ComboBoxItemModel[]
+  newModel: ComboBoxModel
 ): boolean => {
   // Check if a subitem is rendered
   let aSubItemIsRendered = false;
   const itemSubGroup = (item as ComboBoxItemGroup).items;
-  const newSubItems: ComboBoxItemModel[] = [];
+  const newSubItems: ComboBoxModel = [];
 
   if (itemSubGroup != null) {
     for (let index = 0; index < itemSubGroup.length; index++) {
@@ -342,7 +343,7 @@ const filterSubModel = (
 export const comboBoxFilterChange = (
   filterType: ComboBoxFilterType,
   filterInfo: ComboBoxFilterInfo
-): ComboBoxItemModel[] => {
+): ComboBoxModel => {
   const filteredModel = [];
 
   for (let index = 0; index < dataTypeInGeneXus.length; index++) {

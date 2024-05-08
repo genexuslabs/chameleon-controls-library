@@ -15,16 +15,16 @@ import { showcaseStories } from "./showcase-stories";
 import {
   ChComboBoxCustomEvent,
   ChRadioGroupRenderCustomEvent,
-  ComboBoxItemModel,
-  FlexibleLayout,
+  ComboBoxModel,
+  FlexibleLayoutModel,
   FlexibleLayoutRenders,
-  RadioItem
+  RadioGroupModel
 } from "../../../components";
 
 const MAIN_WIDGET = "main";
 const CONFIGURATION_WIDGET = "configuration";
 
-const flexibleLayoutConfiguration: FlexibleLayout = {
+const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   id: "root",
   direction: "columns",
   items: [
@@ -65,7 +65,7 @@ export class ChShowcase {
     | Map<
         string,
         {
-          items: ComboBoxItemModel[];
+          model: ComboBoxModel;
           handler: (event: ChComboBoxCustomEvent<string> | InputEvent) => void;
         }
       >
@@ -79,7 +79,7 @@ export class ChShowcase {
     | Map<
         string,
         {
-          items: RadioItem[];
+          model: RadioGroupModel;
           handler: (
             event: ChRadioGroupRenderCustomEvent<string> | InputEvent
           ) => void;
@@ -173,7 +173,7 @@ export class ChShowcase {
         this.#showcaseStoryRadioGroups ??= new Map();
         this.#showcaseStoryRadioGroups.set(propertyGroupId, {
           handler: eventHandler,
-          items: property.values
+          model: property.values
         });
       }
       // Combo Box by default
@@ -181,7 +181,7 @@ export class ChShowcase {
         this.#showcaseStoryComboBoxes ??= new Map();
         this.#showcaseStoryComboBoxes.set(propertyGroupId, {
           handler: eventHandler,
-          items: property.values
+          model: property.values
         });
       }
     },
@@ -421,8 +421,8 @@ export class ChShowcase {
 
   #customShowcaseRender = () => (
     <ch-flexible-layout-render
+      model={flexibleLayoutConfiguration}
       renders={this.#flexibleLayoutRender}
-      layout={flexibleLayoutConfiguration}
       ref={el => (this.#flexibleLayoutRef = el)}
     ></ch-flexible-layout-render>
   );
@@ -525,7 +525,7 @@ export class ChShowcase {
           id={propertyGroupId}
           accessibleName={property.accessibleName}
           class="combo-box"
-          items={this.#showcaseStoryComboBoxes.get(propertyGroupId).items}
+          model={this.#showcaseStoryComboBoxes.get(propertyGroupId).model}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(propertyGroupId).handler}
         ></ch-combo-box>
@@ -619,7 +619,7 @@ export class ChShowcase {
           id={propertyGroupId}
           aria-label={property.accessibleName ?? null}
           class="radio-group"
-          items={this.#showcaseStoryRadioGroups.get(propertyGroupId).items}
+          model={this.#showcaseStoryRadioGroups.get(propertyGroupId).model}
           value={property.value.toString()}
           onChange={this.#showcaseStoryRadioGroups.get(propertyGroupId).handler}
         ></ch-radio-group-render>

@@ -2,7 +2,7 @@ import { insertIntoIndex } from "../../common/array";
 import {
   GroupExtended,
   ItemExtended,
-  LayoutSplitterDistributionLeaf,
+  LayoutSplitterLeafModel,
   LayoutSplitterItemAddResult,
   LeafExtended
 } from "./types";
@@ -33,7 +33,7 @@ export const addSiblingLeaf = (
   parentGroup: string,
   siblingItem: string,
   placedInTheSibling: "before" | "after",
-  leafInfo: LayoutSplitterDistributionLeaf,
+  leafInfo: LayoutSplitterLeafModel,
   itemsInfo: Map<string, ItemExtended>,
   takeHalfTheSpaceOfTheSiblingItem: boolean
 ): LayoutSplitterItemAddResult => {

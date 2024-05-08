@@ -21,7 +21,8 @@ import {
   ComboBoxItemModel,
   ComboBoxItemGroup,
   ComboBoxItemLeaf,
-  ComboBoxFilterInfo
+  ComboBoxFilterInfo,
+  ComboBoxModel
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
@@ -98,7 +99,7 @@ const findSelectedIndex = (
 };
 
 const findNextSelectedIndex = (
-  items: ComboBoxItemModel[],
+  model: ComboBoxModel,
   currentIndex: SelectedIndex,
   increment: 1 | -1,
   hasFilters: boolean,
@@ -111,7 +112,7 @@ const findNextSelectedIndex = (
 
   if (currentIndex.type === "nested") {
     let secondLevelIndex = currentIndex.secondLevelIndex + increment; // Start from the first valid index
-    const firstLevelItemItems = (items[firstLevelIndex] as ComboBoxItemGroup)
+    const firstLevelItemItems = (model[firstLevelIndex] as ComboBoxItemGroup)
       .items;
 
     // Search in the nested level skipping disabled and not rendered items
@@ -142,24 +143,24 @@ const findNextSelectedIndex = (
 
   // Search for the next first level item that is not disabled and is not filtered
   while (
-    isValidIndex(items, nextFirstLevelIndex) &&
-    (items[nextFirstLevelIndex].disabled ||
-      (hasFilters && !displayedValues.has(items[nextFirstLevelIndex].value)))
+    isValidIndex(model, nextFirstLevelIndex) &&
+    (model[nextFirstLevelIndex].disabled ||
+      (hasFilters && !displayedValues.has(model[nextFirstLevelIndex].value)))
   ) {
     nextFirstLevelIndex += increment;
   }
 
   // With this flag, we also say that we are at the end of the combo-box
   // and there isn't any new "next value" to select
-  if (!isValidIndex(items, nextFirstLevelIndex)) {
+  if (!isValidIndex(model, nextFirstLevelIndex)) {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
 
-  const nestedLevel = (items[nextFirstLevelIndex] as ComboBoxItemGroup).items;
+  const nestedLevel = (model[nextFirstLevelIndex] as ComboBoxItemGroup).items;
 
   if (nestedLevel != null) {
     return findNextSelectedIndex(
-      items,
+      model,
       {
         type: "nested",
         firstLevelIndex: nextFirstLevelIndex,
@@ -239,17 +240,17 @@ export class ChComboBox
     const nextSelectedIndex =
       currentSelectedIndex.type === "not-exists"
         ? findNextSelectedIndex(
-            this.items,
+            this.model,
             {
               type: "first-level",
-              firstLevelIndex: increment === 1 ? -1 : this.items.length
+              firstLevelIndex: increment === 1 ? -1 : this.model.length
             },
             increment,
             hasFilters,
             displayedValues
           )
         : findNextSelectedIndex(
-            this.items,
+            this.model,
             currentSelectedIndex,
             increment,
             hasFilters,
@@ -263,8 +264,8 @@ export class ChComboBox
     // The new selected value is either in the first level or in the group
     const newSelectedValue =
       nextSelectedIndex.type === "first-level"
-        ? this.items[nextSelectedIndex.firstLevelIndex].value
-        : (this.items[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
+        ? this.model[nextSelectedIndex.firstLevelIndex].value
+        : (this.model[nextSelectedIndex.firstLevelIndex] as ComboBoxItemGroup)
             .items[nextSelectedIndex.secondLevelIndex].value;
 
     if (this.currentSelectedValue !== newSelectedValue) {
@@ -312,7 +313,7 @@ export class ChComboBox
         event,
         {
           type: "first-level",
-          firstLevelIndex: this.items.length
+          firstLevelIndex: this.model.length
         }, // The algorithm will sum -1 to the start index
         -1,
         this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
@@ -492,10 +493,10 @@ export class ChComboBox
   /**
    * Specifies the items of the control
    */
-  @Prop() readonly items: ComboBoxItemModel[] = [];
-  @Watch("items")
-  itemsChange(newItems: ComboBoxItemModel[]) {
-    this.#mapValuesToItemInfo(newItems);
+  @Prop() readonly model: ComboBoxModel = [];
+  @Watch("model")
+  modelChanged(newModel: ComboBoxModel) {
+    this.#mapValuesToItemInfo(newModel);
   }
 
   /**
@@ -580,8 +581,8 @@ export class ChComboBox
       filterOptions: this.filterOptions
     };
 
-    for (let index = 0; index < this.items.length; index++) {
-      const item = this.items[index];
+    for (let index = 0; index < this.model.length; index++) {
+      const item = this.model[index];
 
       filterSubModel(
         item,
@@ -630,14 +631,14 @@ export class ChComboBox
     }
   };
 
-  #mapValuesToItemInfo = (items: ComboBoxItemModel[]) => {
+  #mapValuesToItemInfo = (model: ComboBoxModel) => {
     this.#valueToItemInfo.clear();
 
-    if (items == null) {
+    if (model == null) {
       return;
     }
 
-    items.forEach((item, firstLevelIndex) => {
+    model.forEach((item, firstLevelIndex) => {
       const itemGroup = item as ComboBoxItemGroup;
       const subItems = itemGroup.items;
 
@@ -1064,13 +1065,13 @@ export class ChComboBox
       onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
     >
-      {this.items.map(this.#nativeItemRender)}
+      {this.model.map(this.#nativeItemRender)}
     </select>
   ];
 
   connectedCallback() {
     this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
-    this.#mapValuesToItemInfo(this.items);
+    this.#mapValuesToItemInfo(this.model);
 
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;
@@ -1270,7 +1271,7 @@ export class ChComboBox
                   }
                 >
                   <div class="window__content" part="window__content">
-                    {this.items.map(
+                    {this.model.map(
                       this.#customItemRender(
                         false,
                         undefined,

@@ -1,12 +1,14 @@
 import { DropdownPosition } from "../dropdown/internal/dropdown/types";
 import { DropdownItemModel } from "../dropdown/types";
 
+export type ActionGroupModel = ActionGroupItemModel[];
+
 type ReducedDropdownItemModel = Omit<DropdownItemModel, "items" | "class">;
 
 export type ActionGroupItemModel = ReducedDropdownItemModel & {
   actionClass?: string;
   subActionClass?: string;
-  items?: ActionGroupItemModel[];
+  items?: ActionGroupModel;
   itemsResponsiveCollapsePosition?: DropdownPosition;
 
   /**

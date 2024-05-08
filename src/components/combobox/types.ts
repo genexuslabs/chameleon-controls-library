@@ -1,5 +1,7 @@
 import { ImageRender } from "../../common/types";
 
+export type ComboBoxModel = ComboBoxItemModel[];
+
 export type ComboBoxItemModel = ComboBoxItemGroup | ComboBoxItemLeaf;
 
 export type ComboBoxItemLeaf = {

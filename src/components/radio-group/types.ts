@@ -1,4 +1,6 @@
-export type RadioItem = {
+export type RadioGroupModel = RadioGroupItemModel[];
+
+export type RadioGroupItemModel = {
   accessibleName?: string;
   caption?: string;
   class?: string;

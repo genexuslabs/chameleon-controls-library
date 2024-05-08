@@ -1,16 +1,16 @@
 import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
 import {
-  FlexibleLayout,
-  FlexibleLayoutItem,
+  FlexibleLayoutModel,
+  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutRenders,
   FlexibleLayoutLeafInfo,
   ViewItemCloseInfo,
   ViewSelectedItemInfo,
   WidgetReorderInfo,
   FlexibleLayoutViewRemoveResult,
-  FlexibleLayoutGroup,
+  FlexibleLayoutGroupModel,
   DroppableArea,
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
@@ -22,17 +22,17 @@ import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutItem,
+  FlexibleLayoutItemModel,
   FlexibleLayoutLeafType
 >;
 
 type LeafExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafType
 >;
 
 type GroupExtended = FlexibleLayoutItemExtended<
-  FlexibleLayoutGroup,
+  FlexibleLayoutGroupModel,
   FlexibleLayoutLeafType
 >;
 
@@ -78,10 +78,10 @@ export class ChFlexibleLayoutRender {
   /**
    * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly layout: FlexibleLayout;
-  @Watch("layout")
-  handleLayoutChange(newLayout: FlexibleLayout) {
-    this.#updateFlexibleModels(newLayout);
+  @Prop() readonly model: FlexibleLayoutModel;
+  @Watch("model")
+  modelChanged(newModel: FlexibleLayoutModel) {
+    this.#updateFlexibleModels(newModel);
   }
 
   /**
@@ -98,7 +98,7 @@ export class ChFlexibleLayoutRender {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    viewInfo: FlexibleLayoutLeaf,
+    viewInfo: FlexibleLayoutLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<boolean> {
     const success = await this.#flexibleLayoutRef.addSiblingView(
@@ -115,7 +115,7 @@ export class ChFlexibleLayoutRender {
 
     addNewLeafToInfo(
       viewInfo,
-      this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroup,
+      this.#itemsInfo.get(parentGroup).item as FlexibleLayoutGroupModel,
       this.#itemsInfo,
       this.#renderedWidgets,
       this.#widgetsInfo
@@ -319,7 +319,7 @@ export class ChFlexibleLayoutRender {
     );
   }
 
-  #updateFlexibleModels = (layout: FlexibleLayout) => {
+  #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
     // Empty layout
     if (layout == null) {
       return;
@@ -551,11 +551,11 @@ export class ChFlexibleLayoutRender {
     // ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf>;
     const viewTargetUIModel = this.#itemsInfo.get(
       viewTargetInfo.id
-    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeaf, "tabbed">;
+    ) as FlexibleLayoutItemExtended<FlexibleLayoutLeafModel, "tabbed">;
     const viewTargetParentInfo = viewTargetUIModel.parentItem; // TODO: CHECK FOR ROOT NODE <------------------
 
     const newLeafToAddId = GENERATE_GUID();
-    const newLeafToAdd: FlexibleLayoutLeaf = {
+    const newLeafToAdd: FlexibleLayoutLeafModel = {
       id: newLeafToAddId,
       selectedWidgetId: widget.id,
       size: undefined,
@@ -615,19 +615,19 @@ export class ChFlexibleLayoutRender {
   };
 
   componentWillLoad() {
-    this.#updateFlexibleModels(this.layout);
+    this.#updateFlexibleModels(this.model);
   }
 
   render() {
     // Check render against the "layout" property
-    if (this.layout == null) {
+    if (this.model == null) {
       return "";
     }
 
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
-        layout={this.layout}
+        model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
         onViewItemClose={this.#handleLeafWidgetClose}

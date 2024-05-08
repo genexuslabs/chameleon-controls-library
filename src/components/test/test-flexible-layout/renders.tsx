@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import {
-  FlexibleLayout,
+  FlexibleLayoutModel,
   FlexibleLayoutRenders
 } from "../../flexible-layout/internal/flexible-layout/types";
 
@@ -36,7 +36,7 @@ const PANEL2 = "panel-2";
 // Common renders
 const PANEL = "Panel";
 
-export const defaultLayout: FlexibleLayout = {
+export const defaultLayout: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -127,7 +127,7 @@ export const defaultLayout: FlexibleLayout = {
   ]
 };
 
-export const layout2: FlexibleLayout = {
+export const layout2: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -232,7 +232,7 @@ export const layout2: FlexibleLayout = {
   ]
 };
 
-export const layout3: FlexibleLayout = {
+export const layout3: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
   items: [
@@ -418,8 +418,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
-      treeModel={kbExplorerModel}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={kbExplorerModel}
       multiSelection
       showLines="last"
       onItemOpenReference={openNewPanel}
@@ -430,11 +430,11 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
-      treeModel={preferencesModel}
       dragDisabled={true}
       dropDisabled={true}
       editableItems={false}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={preferencesModel}
       multiSelection
       showLines="all"
     ></ch-tree-view-render>
@@ -606,8 +606,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
-      treeModel={eagerLargeModel}
       dragDisabled={true}
+      model={eagerLargeModel}
       dropDisabled={true}
       editableItems={false}
       multiSelection
@@ -619,10 +619,10 @@ export const layoutRenders: FlexibleLayoutRenders = {
       class="tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
-      treeModel={importObjectsModel}
       checkbox
       checked
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
+      model={importObjectsModel}
       toggleCheckboxes
       dragDisabled={true}
       dropDisabled={true}

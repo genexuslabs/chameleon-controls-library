@@ -13,10 +13,10 @@ import {
 import {
   DraggableView,
   DraggableViewExtendedInfo,
-  FlexibleLayout,
-  FlexibleLayoutItem,
+  FlexibleLayoutModel,
+  FlexibleLayoutItemModel,
   FlexibleLayoutItemExtended,
-  FlexibleLayoutLeaf,
+  FlexibleLayoutLeafModel,
   FlexibleLayoutLeafInfo,
   FlexibleLayoutLeafType,
   FlexibleLayoutViewRemoveResult,
@@ -65,9 +65,12 @@ export class ChFlexibleLayout {
   @State() dragBarDisabled = false;
 
   /**
-   * Specifies the distribution of the items in the flexible layout.
+   * Specifies the information of each view displayed.
    */
-  @Prop() readonly layout: FlexibleLayout;
+  @Prop() readonly itemsInfo: Map<
+    string,
+    FlexibleLayoutItemExtended<FlexibleLayoutItemModel, FlexibleLayoutLeafType>
+  >;
 
   /**
    * Specifies additional parts to export.
@@ -75,12 +78,9 @@ export class ChFlexibleLayout {
   @Prop() readonly layoutSplitterParts: string;
 
   /**
-   * Specifies the information of each view displayed.
+   * Specifies the distribution of the items in the flexible layout.
    */
-  @Prop() readonly itemsInfo: Map<
-    string,
-    FlexibleLayoutItemExtended<FlexibleLayoutItem, FlexibleLayoutLeafType>
-  >;
+  @Prop() readonly model: FlexibleLayoutModel;
 
   /**
    * Fired when a item of a view request to be closed.
@@ -105,7 +105,7 @@ export class ChFlexibleLayout {
     parentGroup: string,
     siblingItem: string,
     placedInTheSibling: "before" | "after",
-    viewInfo: FlexibleLayoutLeaf,
+    viewInfo: FlexibleLayoutLeafModel,
     takeHalfTheSpaceOfTheSiblingItem: boolean
   ): Promise<boolean> {
     const result = await this.#layoutSplitterRef.addSiblingLeaf(
@@ -188,7 +188,7 @@ export class ChFlexibleLayout {
     this.itemsInfo.forEach(item => {
       const itemView = (
         item as FlexibleLayoutItemExtended<
-          FlexibleLayoutLeaf,
+          FlexibleLayoutLeafModel,
           FlexibleLayoutLeafType
         >
       ).leafInfo;
@@ -408,7 +408,7 @@ export class ChFlexibleLayout {
       closeButtonHidden={viewInfo.closeButtonHidden}
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
-      items={viewInfo.widgets}
+      model={viewInfo.widgets}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
       sortable={viewInfo.sortable}
@@ -434,7 +434,7 @@ export class ChFlexibleLayout {
     );
 
   render() {
-    const layoutModel = this.layout;
+    const layoutModel = this.model;
 
     if (layoutModel == null) {
       return "";
@@ -444,7 +444,7 @@ export class ChFlexibleLayout {
       <Host>
         <ch-layout-splitter
           dragBarDisabled={this.dragBarDisabled}
-          layout={layoutModel}
+          model={layoutModel}
           exportparts={"bar," + this.layoutSplitterParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >

@@ -7,29 +7,29 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 
 ## Properties
 
-| Property   | Attribute   | Description                                                     | Type                                                                           | Default             |
-| ---------- | ----------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------- |
-| `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                                       | `"flexible-layout"` |
-| `layout`   | --          | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterDistribution, "items"> & { items: FlexibleLayoutItem[]; }` | `undefined`         |
-| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`                | `undefined`         |
+| Property   | Attribute   | Description                                                     | Type                                                                         | Default             |
+| ---------- | ----------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------- |
+| `cssClass` | `css-class` | A CSS class to set as the `ch-flexible-layout` element class.   | `string`                                                                     | `"flexible-layout"` |
+| `model`    | --          | Specifies the distribution of the items in the flexible layout. | `Omit<LayoutSplitterModel, "items"> & { items: FlexibleLayoutItemModel[]; }` | `undefined`         |
+| `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`              | `undefined`         |
 
 
 ## Methods
 
-### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeaf, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
+### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
 
 Add a view with widgets to render. The view will take the half space of
 the sibling view that its added with.
 
 #### Parameters
 
-| Name                               | Type                                                                                                          | Description |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------- |
-| `parentGroup`                      | `string`                                                                                                      |             |
-| `siblingItem`                      | `string`                                                                                                      |             |
-| `placedInTheSibling`               | `"after" \| "before"`                                                                                         |             |
-| `viewInfo`                         | `LayoutSplitterDistributionLeaf & { accessibleRole?: ViewAccessibleRole; } & FlexibleLayoutLeafConfiguration` |             |
-| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                                     |             |
+| Name                               | Type                                                                                                   | Description |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------ | ----------- |
+| `parentGroup`                      | `string`                                                                                               |             |
+| `siblingItem`                      | `string`                                                                                               |             |
+| `placedInTheSibling`               | `"after" \| "before"`                                                                                  |             |
+| `viewInfo`                         | `LayoutSplitterLeafModel & { accessibleRole?: ViewAccessibleRole; } & FlexibleLayoutLeafConfiguration` |             |
+| `takeHalfTheSpaceOfTheSiblingItem` | `boolean`                                                                                              |             |
 
 #### Returns
 

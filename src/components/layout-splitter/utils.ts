@@ -3,9 +3,9 @@ import {
   DragBarMouseDownEventInfo,
   GroupExtended,
   ItemExtended,
-  LayoutSplitterDistribution,
-  LayoutSplitterDistributionGroup,
-  LayoutSplitterDistributionItem,
+  LayoutSplitterModel,
+  LayoutSplitterGroupModel,
+  LayoutSplitterItemModel,
   LayoutSplitterSize
 } from "./types";
 
@@ -29,24 +29,24 @@ export const getDragBarPosition = (
   direction: "columns" | "rows"
 ) => (direction === "columns" ? dragBarRect.left : dragBarRect.top);
 
-export const getFrValue = (item: LayoutSplitterDistributionItem): number =>
+export const getFrValue = (item: LayoutSplitterItemModel): number =>
   Number(item.size.replace("fr", "").trim());
 
 export const getPxValue = (
-  item: LayoutSplitterDistributionItem,
+  item: LayoutSplitterItemModel,
   type: "size" | "min" = "size"
 ): number => {
   const value = type === "size" ? item.size : item.minSize;
   return Number(value.replace("px", "").trim());
 };
 
-export const hasAbsoluteValue = (item: LayoutSplitterDistributionItem) =>
+export const hasAbsoluteValue = (item: LayoutSplitterItemModel) =>
   item.size.includes("px");
 
 /**
  * `true` if the item has a minimum size that is greater than 0px
  */
-export const hasMinSize = (item: LayoutSplitterDistributionItem) =>
+export const hasMinSize = (item: LayoutSplitterItemModel) =>
   item.minSize && item.minSize !== "0px";
 
 const getItemMinMaxSizeInTemplate = (itemUIModel: ItemExtended) =>
@@ -55,7 +55,7 @@ const getItemMinMaxSizeInTemplate = (itemUIModel: ItemExtended) =>
     : itemUIModel.actualSize;
 
 export const sizesToGridTemplate = (
-  items: LayoutSplitterDistributionItem[],
+  items: LayoutSplitterItemModel[],
   itemsInfo: Map<string, ItemExtended>,
   lastItemIndex: number
 ) =>
@@ -70,7 +70,7 @@ export const sizesToGridTemplate = (
     )
     .join(" ");
 
-const getItemFrSize = (item: LayoutSplitterDistributionItem): string => {
+const getItemFrSize = (item: LayoutSplitterItemModel): string => {
   // If the component has fr value, take into account the sum of fixed values
   // to calculate the actual relative value
   const frValue = getFrValue(item);
@@ -83,7 +83,7 @@ const getItemFrSize = (item: LayoutSplitterDistributionItem): string => {
     : `calc(${frString} + var(${FIXED_SIZES_SUM_CUSTOM_VAR}) * ${-frValue})`;
 };
 
-const getComponentSize = (item: LayoutSplitterDistributionItem): string =>
+const getComponentSize = (item: LayoutSplitterItemModel): string =>
   hasAbsoluteValue(item) // Pixel value
     ? item.size
     : getItemFrSize(item);
@@ -128,7 +128,7 @@ export const incrementOffsetSize = (
  * If the item has `minSize` and its greater that the `size` value, it updates
  * the `size` to be equal to the `minSize`.
  */
-const checkAndSetInitialValue = (item: LayoutSplitterDistributionItem) => {
+const checkAndSetInitialValue = (item: LayoutSplitterItemModel) => {
   if (hasMinSize(item) && getPxValue(item) < getPxValue(item, "min")) {
     item.size = item.minSize;
   }
@@ -262,14 +262,14 @@ const canResizeBothItems = (
 };
 
 export const fixAndUpdateLayoutModel = (
-  layout: LayoutSplitterDistribution,
+  layout: LayoutSplitterModel,
   itemsInfo: Map<string, ItemExtended>
 ): number => fixAndUpdateSubModel(layout.items, itemsInfo, ROOT_VIEW);
 
 function fixAndUpdateSubModel(
-  items: LayoutSplitterDistributionItem[],
+  items: LayoutSplitterItemModel[],
   itemsInfo: Map<string, ItemExtended>,
-  parentItem: LayoutSplitterDistributionGroup
+  parentItem: LayoutSplitterGroupModel
 ): number {
   let frSum = 0;
   let fixedSizesSum = 0;
@@ -313,8 +313,8 @@ function fixAndUpdateSubModel(
       actualSize: getComponentSize(item)
     };
 
-    if ((item as LayoutSplitterDistributionGroup).items != null) {
-      const group = item as LayoutSplitterDistributionGroup;
+    if ((item as LayoutSplitterGroupModel).items != null) {
+      const group = item as LayoutSplitterGroupModel;
       const fixedSizesSum = fixAndUpdateSubModel(group.items, itemsInfo, group);
 
       (itemUIModel as GroupExtended).fixedSizesSum = fixedSizesSum;

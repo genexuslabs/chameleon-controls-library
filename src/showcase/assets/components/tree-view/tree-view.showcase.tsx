@@ -38,12 +38,12 @@ const render = () => (
     filterType={state.filterType}
     getImagePathCallback={state.getImagePathCallback}
     lazyLoadTreeItemsCallback={lazyLoadTreeItemsCallback}
+    model={state.model}
     modifyItemCaptionCallback={state.modifyItemCaptionCallback}
     multiSelection={state.multiSelection}
     showLines={state.showLines}
     sortItemsCallback={state.sortItemsCallback}
     toggleCheckboxes={state.toggleCheckboxes}
-    treeModel={state.treeModel}
   ></ch-tree-view-render>
 );
 
@@ -54,7 +54,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     caption: "Models",
     properties: [
       {
-        id: "treeModel",
+        id: "model",
         accessibleName: "Model",
         type: "enum",
         values: [

@@ -1,10 +1,10 @@
 import { fixAndUpdateLayoutModel } from "../utils";
-import { ItemExtended, LayoutSplitterDistribution } from "../types";
+import { ItemExtended, LayoutSplitterModel } from "../types";
 
 describe("[ch-layout-splitter] [fixAndUpdateLayoutModel]", () => {
   const itemsInfo: Map<string, ItemExtended> = new Map();
 
-  const model: LayoutSplitterDistribution = {
+  const model: LayoutSplitterModel = {
     id: "root",
     direction: "rows",
     items: [
@@ -23,7 +23,7 @@ describe("[ch-layout-splitter] [fixAndUpdateLayoutModel]", () => {
     ]
   };
 
-  const resultModel: LayoutSplitterDistribution = {
+  const resultModel: LayoutSplitterModel = {
     id: "root",
     direction: "rows",
     items: [

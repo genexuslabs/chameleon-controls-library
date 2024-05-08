@@ -1038,18 +1038,29 @@ export class ChPopover {
   }
 
   render() {
+    const canAddListeners = !this.hidden;
+
     return (
       <Host
         class={{
-          "gx-popover-header-drag": !this.hidden && this.allowDrag === "header",
+          "gx-popover-header-drag":
+            canAddListeners && this.allowDrag === "header",
           [RESIZING_CLASS]: this.resizing
         }}
         popover={this.mode}
-        onMouseDown={this.allowDrag === "box" ? this.#handleMouseDown : null}
-        onToggle={this.#handlePopoverToggle}
+        onMouseDown={
+          canAddListeners && this.allowDrag === "box"
+            ? this.#handleMouseDown
+            : null
+        }
+        onToggle={this.#handlePopoverToggle} // Check if the actionElement is an instance of Button to add this handler
       >
         {this.allowDrag === "header" && (
-          <div class="header" part="header" onMouseDown={this.#handleMouseDown}>
+          <div
+            class="header"
+            part="header"
+            onMouseDown={canAddListeners ? this.#handleMouseDown : null}
+          >
             <slot name="header" />
           </div>
         )}

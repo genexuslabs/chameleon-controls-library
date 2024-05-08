@@ -13,11 +13,11 @@ It contains radio items to allow users to select one option from the list of opt
 
 ## Properties
 
-| Property   | Attribute  | Description                                                                                                                                                  | Type          | Default     |
-| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ----------- |
-| `disabled` | `disabled` | This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event). | `boolean`     | `false`     |
-| `items`    | --         | This property lets you define the items of the ch-radio-group-render control.                                                                                | `RadioItem[]` | `undefined` |
-| `value`    | `value`    | The value of the control.                                                                                                                                    | `string`      | `undefined` |
+| Property   | Attribute  | Description                                                                                                                                                  | Type                    | Default     |
+| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- | ----------- |
+| `disabled` | `disabled` | This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event). | `boolean`               | `false`     |
+| `model`    | --         | This property lets you define the items of the ch-radio-group-render control.                                                                                | `RadioGroupItemModel[]` | `undefined` |
+| `value`    | `value`    | The value of the control.                                                                                                                                    | `string`                | `undefined` |
 
 
 ## Events

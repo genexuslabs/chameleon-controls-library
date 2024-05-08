@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { ChLayoutSplitter } from "../../../../components/layout-splitter/layout-splitter";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import {
   layout1,

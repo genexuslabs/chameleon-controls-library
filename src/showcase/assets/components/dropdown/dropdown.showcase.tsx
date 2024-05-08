@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../showcase/types";
+import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import {
   GXWebModel,
@@ -80,7 +80,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
             value: "OutsideStart_OutsideStart",
             caption: "OutsideStart_OutsideStart"
           },
-          { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
+          {
+            value: "InsideStart_OutsideStart",
+            caption: "InsideStart_OutsideStart"
+          },
           { value: "Center_OutsideStart", caption: "Center_OutsideStart" },
           {
             value: "InsideEnd_OutsideStart",

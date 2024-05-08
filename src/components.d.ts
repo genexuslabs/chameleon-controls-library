@@ -360,15 +360,11 @@ export namespace Components {
          */
         "filterDebounce": number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
-         */
-        "filterList": string[];
-        /**
           * This property lets you determine the options that will be applied to the filter.
          */
         "filterOptions": ComboBoxFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                        | | --------- | ---------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. | | `none`    | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                       | | --------- | --------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   | | `none`    | Show all items.                                                                               |
          */
         "filterType": ComboBoxFilterType;
         /**
@@ -2870,6 +2866,7 @@ declare global {
         new (): HTMLChCodeEditorElement;
     };
     interface HTMLChComboBoxElementEventMap {
+        "filterChange": string;
         "input": string;
     }
     interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
@@ -4346,15 +4343,11 @@ declare namespace LocalJSX {
          */
         "filterDebounce"?: number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
-         */
-        "filterList"?: string[];
-        /**
           * This property lets you determine the options that will be applied to the filter.
          */
         "filterOptions"?: ComboBoxFilterOptions;
         /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                        | | --------- | ---------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property.  | | `list`    | Show only the items that are contained in the array determinate by the `filterList` property.  | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property. | | `none`    | Show all items.                                                                                |
+          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                       | | --------- | --------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   | | `none`    | Show all items.                                                                               |
          */
         "filterType"?: ComboBoxFilterType;
         /**
@@ -4365,6 +4358,10 @@ declare namespace LocalJSX {
           * This attribute indicates that multiple options can be selected in the list. If it is not specified, then only one option can be selected at a time. When multiple is specified, the control will show a scrolling list box instead of a single line dropdown.
          */
         "multiple"?: boolean;
+        /**
+          * Emitted when a change to the element's filter is committed by the user. Only applies if `filterType !== "none"`. It contains the information about the new filter value.  This event is debounced by the `filterDebounce` value.
+         */
+        "onFilterChange"?: (event: ChComboBoxCustomEvent<string>) => void;
         /**
           * The `input` event is emitted when a change to the element's value is committed by the user.
          */

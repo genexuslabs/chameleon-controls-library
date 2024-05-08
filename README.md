@@ -60,3 +60,13 @@ There are three strategies we recommend for using these web components.
 - Run `npm install @genexus/chameleon-controls-library --save`
 - Add an import to the library inside `src/index.ts`: `import "@genexus/chameleon-controls-library";`
 - Then you can use the web components anywhere in your template, JSX, html etc
+
+## Using this library
+
+## Meaning of development status in each control
+
+| Category              | Description                                                                                                                                                                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"experimental"`      | The control is in its early stages of the development. This phase is often useful for testing the control early, but it is very likely that the interface will change from the final version. <br><br> Breaking changes for the control can be applied in "patch" tags.                   |
+| `"developer-preview"` | The control is in its final stages of the development. The interface and behaviors to implement the control are almost complete. The interface of the control should not change so much from the final version. <br><br> Breaking changes for the control can be applied in "patch" tags. |
+| `"stable"`            | The control's development is stable and can be safety used in production environments. <br><br> Breaking changes for the control can be applied in "major" tags. In some cases, two "major" tags would be used to deprecate a behavior in the control.                                    |

@@ -31,7 +31,7 @@ const flexibleLayoutConfiguration: FlexibleLayout = {
     {
       id: MAIN_WIDGET,
       size: "1fr",
-      minSize: "200px",
+      minSize: "220px",
       type: "single-content",
       widget: { id: MAIN_WIDGET, name: null }
     },
@@ -646,7 +646,7 @@ export class ChShowcase {
   }
 
   render() {
-    if (!this.pageSrc && !this.componentName) {
+    if (!this.pageSrc || !this.componentName) {
       return "";
     }
 

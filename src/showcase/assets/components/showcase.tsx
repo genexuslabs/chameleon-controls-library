@@ -31,7 +31,7 @@ const flexibleLayoutConfiguration: FlexibleLayout = {
     {
       id: MAIN_WIDGET,
       size: "1fr",
-      minSize: "200px",
+      minSize: "220px",
       type: "single-content",
       widget: { id: MAIN_WIDGET, name: null }
     },

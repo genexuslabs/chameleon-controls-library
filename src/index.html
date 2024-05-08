@@ -47,7 +47,12 @@
         </div>
 
         <div class="header-end">
-          <ch-segmented-control-render></ch-segmented-control-render>
+          <ch-segmented-control-render
+            id="segmented-control-rtl"
+          ></ch-segmented-control-render>
+          <ch-segmented-control-render
+            id="segmented-control-theme"
+          ></ch-segmented-control-render>
 
           <a
             href="https://github.com/genexuslabs/chameleon-controls-library"
@@ -167,11 +172,13 @@
         const mainPage = document.querySelector(".main-page");
         const showcase = document.querySelector("ch-showcase");
         const home = document.querySelector(".home");
-        const toggleThemeRef = document.querySelector(
-          "ch-segmented-control-render"
+        const toggleThemeRef = document.getElementById(
+          "segmented-control-theme"
         );
+        const toggleRtlRef = document.getElementById("segmented-control-rtl");
         const chameleonHome = document.getElementById("chameleon-home");
 
+        // Initialize themes
         toggleThemeRef.items = [
           {
             id: "dark",
@@ -183,7 +190,20 @@
           }
         ];
 
+        // Initialize language directions
+        toggleRtlRef.items = [
+          {
+            id: "ltr",
+            caption: "LTR"
+          },
+          {
+            id: "rtl",
+            caption: "RTL"
+          }
+        ];
+
         toggleThemeRef.selectedId = getTheme();
+        toggleRtlRef.selectedId = document.documentElement.dir;
 
         const setMainPage = () => {
           mainPage.hidden = false;
@@ -237,6 +257,13 @@
           storeTheme(newTheme);
           setThemeInBrowser(newTheme);
           showcase.theme = newTheme;
+        });
+
+        // Add event lister for the language direction changes
+        toggleRtlRef.addEventListener("selectedItemChange", () => {
+          const newLanguageDirection =
+            document.documentElement.dir === "ltr" ? "rtl" : "ltr";
+          document.documentElement.dir = newLanguageDirection;
         });
 
         const layoutSplitterModel = {

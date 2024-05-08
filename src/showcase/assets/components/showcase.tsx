@@ -332,6 +332,30 @@ export class ChShowcase {
   @Prop() readonly pageSrc: string;
 
   /**
+   * Specifies the development status of the control.
+   *   - "experimental": The control is in its early stages of the development.
+   *     This phase is often useful for testing the control early, but it is
+   *     very likely that the interface will change from the final version.
+   *
+   *     Breaking changes for the control can be applied in "patch" tags.
+   *
+   *   - "developer-preview": The control is in its final stages of the
+   *     development. The interface and behaviors to implement the control are
+   *     almost complete. The interface of the control should not change so much
+   *     from the final version.
+   *
+   *     Breaking changes for the control can be applied in "major" tags.
+   *
+   *   - "stable": The control's development is stable and can be safety used
+   *     in production environments.
+   *
+   *     Breaking changes for the control can be applied in "major" tags. In
+   *     some cases, two "major" tags would be used to deprecate a behavior in
+   *     the control.
+   */
+  @Prop() readonly status: "developer-preview" | "experimental" | "stable";
+
+  /**
    * Specifies the theme used in the iframe of the control
    */
   @Prop() readonly theme: "light" | "dark";
@@ -628,7 +652,9 @@ export class ChShowcase {
 
     return (
       <Host>
-        <h1 class="heading-1">{this.pageName}</h1>
+        <h1 class="heading-1">
+          {this.pageName} {this.status}
+        </h1>
 
         {this.#showcaseStory
           ? this.#customShowcaseRender()

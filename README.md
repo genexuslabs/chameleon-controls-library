@@ -46,7 +46,7 @@ There are three strategies we recommend for using these web components.
 
 ### Script tag
 
-- Put a script tag similar to this `<script src="https://unpkg.com/@genexus/chameleon-controls-library@4.4.7/dist/chameleon/chameleon.esm.js"></script>` in the head of your index.html
+- Put a script tag similar to this `<script src="https://unpkg.com/@genexus/chameleon-controls-library@latest/dist/chameleon/chameleon.esm.js"></script>` in the head of your index.html
 - Then you can use the web components anywhere in your template, JSX, html etc
 
 ### Node Modules

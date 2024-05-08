@@ -61,8 +61,6 @@ There are three strategies we recommend for using these web components.
 - Add an import to the library inside `src/index.ts`: `import "@genexus/chameleon-controls-library";`
 - Then you can use the web components anywhere in your template, JSX, html etc
 
-## Using this library
-
 ## Meaning of development status in each control
 
 | Category              | Description                                                                                                                                                                                                                                                                               |

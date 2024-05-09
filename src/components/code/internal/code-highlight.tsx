@@ -87,8 +87,6 @@ export const parseCodeToJSX = async (
     ? findLastNestedChild(tree)
     : undefined;
 
-  console.log(tree, lastNestedChild);
-
   return {
     renderedCode: renderCodeChildren(
       tree,

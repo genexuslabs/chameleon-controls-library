@@ -59,7 +59,6 @@ export class ChCode {
 
       this.#JSXCodeBlock = result.renderedCode;
       this.#lastNestedChildIsRoot = result.lastNestedChildIsRoot;
-      console.log(result);
     } else {
       this.#JSXCodeBlock = "";
       this.#lastNestedChildIsRoot = true;

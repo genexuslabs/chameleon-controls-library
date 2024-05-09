@@ -2,17 +2,20 @@
 
 @font-face {
   font-family: SourceSansPro_Regular;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro_SemiBold;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro_Bold;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  font-display: swap;
 }
 
 .card {

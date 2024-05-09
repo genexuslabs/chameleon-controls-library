@@ -1,5 +1,6 @@
 import { Mutable } from "../../../common/types";
 import { CheckBox } from "../../../components/checkbox/checkbox";
+import { ChCode } from "../../../components/code/code";
 import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
@@ -88,6 +89,7 @@ export type ShowcaseRenderPropertyObject<
 
 export type ShowcaseAvailableStories =
   | Mutable<CheckBox>
+  | Mutable<ChCode>
   | Mutable<ChComboBox>
   | Mutable<ChDropdownRender>
   | Mutable<ChLayoutSplitter>

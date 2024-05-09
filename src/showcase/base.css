@@ -86,10 +86,29 @@ legend {
   grid-auto-rows: 128px;
 }
 
+.code-test-main-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--spacing-un-spacing--l);
+}
+
 .dropdown-test-main-wrapper {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 128px;
   grid-template-rows: 80px;
   gap: var(--spacing-un-spacing--l);
+}
+
+ch-code > pre > code {
+  contain: size;
+  overflow: auto;
+}
+
+ch-showcase textarea.form-input {
+  min-block-size: 32px;
+  block-size: 200px;
+  max-block-size: unset;
+  resize: vertical;
 }

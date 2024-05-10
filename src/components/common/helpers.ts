@@ -11,11 +11,12 @@ export function mouseEventHasButtonPressed(
 }
 
 export enum MouseEventButton {
-  LEFT,
-  WHEEL,
-  RIGHT,
-  BACK,
-  FORWARD
+  KEY_SHORTCUT = -1,
+  LEFT = 0,
+  WHEEL = 1,
+  RIGHT = 2,
+  BACK = 3,
+  FORWARD = 4
 }
 
 export enum MouseEventButtons {

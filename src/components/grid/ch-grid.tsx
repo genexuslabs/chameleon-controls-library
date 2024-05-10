@@ -541,7 +541,10 @@ export class ChGrid {
   contextmenuHandler(eventInfo: MouseEvent) {
     let targetRow: HTMLChGridRowElement;
 
-    if (eventInfo.target === this.el) {
+    if (
+      eventInfo.target === this.el &&
+      eventInfo.button === MouseEventButton.KEY_SHORTCUT
+    ) {
       targetRow = this.rowFocused;
     } else {
       targetRow = this.manager.getRowEventTarget(eventInfo);

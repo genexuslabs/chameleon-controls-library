@@ -246,6 +246,11 @@ export const renderDictionary: {
   inlineCode: element => <code class="hljs">{element.value}</code>,
 
   link: async (element, metadata) => {
+    // Sanitize scripts
+    if (element.url.includes("javascript:")) {
+      return;
+    }
+
     const content = await mdASTtoJSX(element, metadata);
 
     return (
@@ -271,6 +276,11 @@ export const renderDictionary: {
 
     // TODO: It's unnecessary to set aria-label when referenceType === "shortcut"
     // TODO: The title is not supported well. See "An Example Putting the Parts Together" section in markdown.html
+
+    // Sanitize scripts
+    if (url.includes("javascript:")) {
+      return;
+    }
 
     return (
       <a

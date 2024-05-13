@@ -37,7 +37,7 @@ export class ChMarkdown {
   /**
    * `true` to render raw HTML with sanitization.
    */
-  @Prop() readonly rawHtml: boolean = true;
+  @Prop() readonly rawHtml: boolean = false;
 
   /**
    * This property allows us to implement custom rendering for the code blocks.

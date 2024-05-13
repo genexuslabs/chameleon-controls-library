@@ -3,6 +3,21 @@ import { fromHTMLStringToHast } from "@genexus/markdown-parser/dist/parse-html.j
 // import { Root, RootContent, RootContentMap } from "hast";
 import { Element as HElement, Root, RootContentMap } from "hast";
 
+const tagsToSanitize = new Set([
+  "base",
+  "embed",
+  "head",
+  "html",
+  "iframe",
+  "link",
+  "meta",
+  "object",
+  "script",
+  "style",
+  "svg",
+  "title"
+]);
+
 const renderDictionary: {
   [key in keyof RootContentMap]: (element: RootContentMap[key]) => any;
 } = {
@@ -12,8 +27,7 @@ const renderDictionary: {
 
     // Minimal sanitization
     if (
-      element.tagName === "script" ||
-      element.tagName === "iframe" ||
+      tagsToSanitize.has(element.tagName) ||
       (element.tagName === "a" &&
         (properties.href as string)?.includes("javascript:"))
     ) {

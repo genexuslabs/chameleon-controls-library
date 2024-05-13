@@ -5,6 +5,7 @@ import { Element as HElement, Root, RootContentMap } from "hast";
 
 const tagsToSanitize = new Set([
   "base",
+  "body",
   "embed",
   "head",
   "html",

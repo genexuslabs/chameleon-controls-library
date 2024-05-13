@@ -1217,10 +1217,6 @@ export namespace Components {
      */
     interface ChMarkdown {
         /**
-          * `true` to render potentially dangerous user content when rendering HTML with the option `rawHtml === true`
-         */
-        "allowDangerousHtml": boolean;
-        /**
           * `true` to render raw HTML with sanitization.
          */
         "rawHtml": boolean;
@@ -5185,10 +5181,6 @@ declare namespace LocalJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChMarkdown {
-        /**
-          * `true` to render potentially dangerous user content when rendering HTML with the option `rawHtml === true`
-         */
-        "allowDangerousHtml"?: boolean;
         /**
           * `true` to render raw HTML with sanitization.
          */

@@ -13,6 +13,7 @@ const renderDictionary: {
     // Minimal sanitization
     if (
       element.tagName === "script" ||
+      element.tagName === "iframe" ||
       (element.tagName === "a" &&
         (properties.href as string)?.includes("javascript:"))
     ) {

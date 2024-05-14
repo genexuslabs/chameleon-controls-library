@@ -93,3 +93,13 @@ legend {
   grid-template-rows: 80px;
   gap: var(--spacing-un-spacing--l);
 }
+
+ch-action-list-render {
+  gap: 4px;
+
+  &::part(item__action) {
+    padding-inline: 8px;
+    padding-block: 4px;
+    border: 1px solid;
+  }
+}

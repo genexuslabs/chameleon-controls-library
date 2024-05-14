@@ -1,0 +1,79 @@
+@import "../../../../common/base";
+@import "../../../../common/icons";
+
+@include button-reset();
+@include box-sizing();
+
+:host {
+  display: grid;
+  grid-template-rows: min-content;
+}
+
+.action {
+  display: grid;
+  grid-template:
+    "stretch-start block-start stretch-end" max-content
+    "stretch-start inline-caption stretch-end" max-content
+    "stretch-start block-end stretch-end" max-content / max-content 1fr max-content;
+}
+
+.align-container {
+  display: grid;
+  grid-template: "start end" 1fr / max-content max-content;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//         First level containers
+// - - - - - - - - - - - - - - - - - - - -
+.stretch-start {
+  grid-area: stretch-start;
+}
+
+.block-start {
+  grid-area: block-start;
+}
+
+.inline-caption {
+  grid-area: inline-caption;
+}
+
+.block-end {
+  grid-area: block-end;
+}
+
+.stretch-end {
+  grid-area: stretch-end;
+}
+
+.stretch-start,
+.stretch-end {
+  align-self: stretch;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//         Second level containers
+// - - - - - - - - - - - - - - - - - - - -
+.valign-start {
+  align-self: self-start;
+}
+
+.valign-center {
+  align-self: center;
+}
+
+.valign-end {
+  align-self: self-end;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.pseudo-img--start::before,
+.pseudo-img--end::after,
+.img {
+  display: inline-block;
+  inline-size: var(--ch-action-list-item__image-size);
+  block-size: var(--ch-action-list-item__image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-action-list-item__image-size);
+}

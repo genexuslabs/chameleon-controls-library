@@ -1,0 +1,18 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-action-list-item__image-size:
+   * Specifies the box size that contains the start or end images of the items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-action-list-item__image-size: #{$default-decorative-image-size};
+
+  display: grid;
+  grid-auto-rows: max-content;
+  block-size: 100%;
+  overflow: auto;
+  contain: size;
+}

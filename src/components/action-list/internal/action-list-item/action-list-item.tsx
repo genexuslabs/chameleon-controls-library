@@ -1,0 +1,419 @@
+import {
+  Component,
+  Element,
+  Event,
+  EventEmitter,
+  Host,
+  Prop,
+  h
+} from "@stencil/core";
+import {
+  ActionListItemAdditionalAction,
+  ActionListItemAdditionalImage,
+  ActionListItemAdditionalInformation,
+  ActionListItemAdditionalItem,
+  ActionListItemAdditionalText
+} from "../../types";
+import { renderImg } from "../../../../common/renders";
+
+const additionalItemRenderDictionary = {
+  action: (item: ActionListItemAdditionalAction) => (
+    <button type="button" part="item__additional-item-action">
+      {item.caption && item.caption}
+    </button>
+  ),
+  text: (item: ActionListItemAdditionalText) => (
+    <span part="item__additional-item-text">{item.caption}</span>
+  ),
+  image: (item: ActionListItemAdditionalImage) =>
+    renderImg(
+      "img",
+      "item__additional-item-text",
+      item.src,
+      item.imageType ?? "img"
+    )
+};
+
+@Component({
+  tag: "ch-action-list-item",
+  styleUrl: "action-list-item.scss",
+  shadow: true
+})
+export class ChActionListItem {
+  @Element() el: HTMLChActionListItemElement;
+
+  /**
+   *
+   */
+  @Prop() readonly additionalInfo?: ActionListItemAdditionalInformation;
+
+  /**
+   * This attributes specifies the caption of the control
+   */
+  @Prop() readonly caption: string;
+
+  /**
+   * Set this attribute if you want display a checkbox in the control.
+   */
+  @Prop() readonly checkbox: boolean = false;
+
+  /**
+   * Set this attribute if you want the checkbox to be checked by default.
+   * Only works if `checkbox = true`
+   */
+  @Prop({ reflect: true, mutable: true }) checked = false;
+
+  /**
+   * Set this attribute if you want to set a custom render for the control, by
+   * passing a slot.
+   */
+  @Prop() readonly customRender: boolean = false;
+
+  /**
+   * This attribute lets you specify if the element is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
+   */
+  @Prop({ reflect: true }) readonly disabled: boolean = false;
+
+  /**
+   * This attribute lets you specify when items are being lazy loaded in the
+   * control.
+   */
+  @Prop({ mutable: true }) downloading = false;
+
+  /**
+   * This attribute lets you specify if the edit operation is enabled in the
+   * control. If `true`, the control can edit its caption in place.
+   */
+  @Prop() readonly editable: boolean;
+
+  /**
+   * Set this attribute when the item is in edit mode
+   */
+  @Prop({ mutable: true }) editing = false;
+  // @Watch("editing")
+  // editingChanged(isEditing: boolean) {
+  //   if (!isEditing) {
+  //     return;
+  //   }
+
+  //   document.addEventListener("click", this.#removeEditModeOnClick, {
+  //     capture: true
+  //   });
+
+  //   // Wait until the input is rendered to focus it
+  //   writeTask(() => {
+  //     requestAnimationFrame(() => {
+  //       if (this.#inputRef) {
+  //         this.#inputRef.focus();
+  //       }
+  //     });
+  //   });
+  // }
+
+  // /**
+  //  * Specifies what kind of expandable button is displayed.
+  //  * Only works if `leaf === false`.
+  //  *  - `"expandableButton"`: Expandable button that allows to expand/collapse
+  //  *     the items of the control.
+  //  *  - `"decorative"`: Only a decorative icon is rendered to display the state
+  //  *     of the item.
+  //  */
+  // @Prop() readonly expandableButton: "action" | "decorative" | "no" =
+  //   "decorative";
+
+  /**
+   * If the item has a sub-tree, this attribute determines if the subtree is
+   * displayed.
+   */
+  @Prop({ mutable: true }) expanded = false;
+  // @Watch("expanded")
+  // expandedChanged(isExpanded: boolean) {
+  //   // Wait until all properties are updated before lazy loading. Otherwise, the
+  //   // lazyLoad property could be updated just after the executing of the function
+  //   setTimeout(() => {
+  //     this.#lazyLoadItems(isExpanded);
+  //   });
+  // }
+
+  /**
+   * Determine if the items are lazy loaded when opening the first time the
+   * control.
+   */
+  @Prop({ mutable: true }) lazyLoad = false;
+
+  /**
+   * `true` if the checkbox's value is indeterminate.
+   */
+  @Prop({ mutable: true }) indeterminate = false;
+
+  /**
+   * This attribute represents additional info for the control that is included
+   * when dragging the item.
+   */
+  @Prop() readonly metadata: string;
+
+  /**
+   * Specifies a set of parts to use in every DOM element of the control.
+   */
+  @Prop() readonly parts?: string;
+  // @Watch("parts")
+  // partsChanged(newParts: string) {
+  //   this.#setExportParts(newParts);
+  // }
+
+  /**
+   * This attribute lets you specify if the item is selected
+   */
+  @Prop({ mutable: true, reflect: true }) selected = false;
+
+  /**
+   * `true` to show the downloading spinner when lazy loading the sub items of
+   * the control.
+   */
+  @Prop() readonly showDownloadingSpinner: boolean = true;
+
+  // /**
+  //  * Set this attribute if you want all the children item's checkboxes to be
+  //  * checked when the parent item checkbox is checked, or to be unchecked when
+  //  * the parent item checkbox is unchecked.
+  //  */
+  // @Prop() readonly toggleCheckboxes: boolean = false;
+  // @Watch("toggleCheckboxes")
+  // handleToggleCheckboxesChange(newToggleCheckboxesValue: boolean) {
+  //   if (newToggleCheckboxesValue) {
+  //     this.el.addEventListener(
+  //       "checkboxChange",
+  //       this.#handleCheckBoxChangeInItems
+  //     );
+  //   } else {
+  //     this.el.removeEventListener(
+  //       "checkboxChange",
+  //       this.#handleCheckBoxChangeInItems
+  //     );
+  //   }
+  // }
+
+  // /**
+  //  * Fired when the checkbox value of the control is changed.
+  //  */
+  // @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
+
+  // /**
+  //  * Fired when the checkbox value of the control is changed. This event only
+  //  * applies when the control has `toggleCheckboxes = true`
+  //  */
+  // @Event() checkboxToggleChange: EventEmitter<TreeViewItemCheckedInfo>;
+
+  // /**
+  //  * Fired when the item is being dragged.
+  //  */
+  // @Event() itemDragStart: EventEmitter<TreeViewItemDragStartInfo>;
+
+  /**
+   * Fired when the item is no longer being dragged.
+   */
+  @Event() itemDragEnd: EventEmitter;
+
+  /**
+   * Fired when the lazy control is expanded an its content must be loaded.
+   */
+  @Event() loadLazyContent: EventEmitter<string>;
+
+  // /**
+  //  * Fired when the item is asking to modify its caption.
+  //  */
+  // @Event() modifyCaption: EventEmitter<TreeViewItemNewCaption>;
+
+  // /**
+  //  * Fired when the selected state is updated by user interaction on the
+  //  * control.
+  //  */
+  // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
+
+  #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
+    additionalItems.map(
+      additionalItem =>
+        additionalItemRenderDictionary[additionalItem.type](
+          additionalItem as any
+        ) // TODO: Improve type safety
+    );
+
+  connectedCallback() {
+    this.el.setAttribute("role", "listitem");
+    this.el.setAttribute("exportparts", "item__action");
+  }
+
+  render() {
+    const additionalInfo = this.additionalInfo;
+    const hasAdditionalInfo = !!this.additionalInfo;
+
+    const stretchStart = hasAdditionalInfo && additionalInfo["stretch-start"];
+    const blockStart = hasAdditionalInfo && additionalInfo["block-start"];
+    const inlineCaption = hasAdditionalInfo && additionalInfo["inline-caption"];
+    const blockEnd = hasAdditionalInfo && additionalInfo["block-end"];
+    const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
+
+    return (
+      <Host>
+        <button class="action" part="item__action" type="button">
+          {stretchStart && (
+            <div
+              key="item__stretch-start"
+              class="align-container stretch-start"
+              part="item__stretch-start"
+            >
+              {stretchStart.start && (
+                <div
+                  key="item__stretch-start-start"
+                  class="align-start valign-start"
+                  part="item__stretch-start start"
+                >
+                  {this.#renderAdditionalItems(stretchStart.start)}
+                </div>
+              )}
+              {stretchStart.center && (
+                <div
+                  key="item__stretch-start-center"
+                  class="align-center valign-center"
+                  part="item__stretch-start center"
+                >
+                  {this.#renderAdditionalItems(stretchStart.center)}
+                </div>
+              )}
+              {stretchStart.end && (
+                <div
+                  key="item__stretch-start-end"
+                  class="align-end valign-end"
+                  part="item__stretch-start end"
+                >
+                  {this.#renderAdditionalItems(stretchStart.end)}
+                </div>
+              )}
+            </div>
+          )}
+
+          {blockStart && (
+            <div
+              key="item__block-start"
+              class="align-container block-start"
+              part="item__block-start"
+            >
+              {blockStart.start && (
+                <div
+                  key="item__block-start-start"
+                  class="align-start"
+                  part="item__block-start start"
+                >
+                  {this.#renderAdditionalItems(blockStart.start)}
+                </div>
+              )}
+              {blockStart.end && (
+                <div
+                  key="item__block-start-end"
+                  class="align-end"
+                  part="item__block-start end"
+                >
+                  {this.#renderAdditionalItems(blockStart.end)}
+                </div>
+              )}
+            </div>
+          )}
+
+          <div
+            key="item__inline-caption"
+            class="align-container inline-caption"
+            part="item__inline-caption"
+          >
+            {this.caption && this.caption}
+
+            {inlineCaption && [
+              inlineCaption.start && (
+                <div
+                  key="item__inline-caption-start"
+                  class="align-start"
+                  part="item__inline-caption start"
+                >
+                  {this.#renderAdditionalItems(inlineCaption.start)}
+                </div>
+              ),
+              inlineCaption.end && (
+                <div
+                  key="item__inline-caption-end"
+                  class="align-end"
+                  part="item__inline-caption end"
+                >
+                  {this.#renderAdditionalItems(inlineCaption.end)}
+                </div>
+              )
+            ]}
+          </div>
+
+          {blockEnd && (
+            <div
+              key="item__block-end"
+              class="align-container block-end"
+              part="item__block-end"
+            >
+              {blockEnd.start && (
+                <div
+                  key="item__block-end-start"
+                  class="align-start"
+                  part="item__block-end start"
+                >
+                  {this.#renderAdditionalItems(blockEnd.start)}
+                </div>
+              )}
+              {blockEnd.end && (
+                <div
+                  key="item__block-end-end"
+                  class="align-end"
+                  part="item__block-end end"
+                >
+                  {this.#renderAdditionalItems(blockEnd.end)}
+                </div>
+              )}
+            </div>
+          )}
+
+          {stretchEnd && (
+            <div
+              key="item__stretch-end"
+              class="align-container stretch-end"
+              part="item__stretch-end"
+            >
+              {stretchEnd.start && (
+                <div
+                  key="item__stretch-end-start"
+                  class="align-start valign-start"
+                  part="item__stretch-end start"
+                >
+                  {this.#renderAdditionalItems(stretchEnd.start)}
+                </div>
+              )}
+              {stretchEnd.center && (
+                <div
+                  key="item__stretch-end-center"
+                  class="align-center valign-center"
+                  part="item__stretch-end center"
+                >
+                  {this.#renderAdditionalItems(stretchEnd.center)}
+                </div>
+              )}
+              {stretchEnd.end && (
+                <div
+                  key="item__stretch-end-end"
+                  class="align-end valign-end"
+                  part="item__stretch-end end"
+                >
+                  {this.#renderAdditionalItems(stretchEnd.end)}
+                </div>
+              )}
+            </div>
+          )}
+        </button>
+      </Host>
+    );
+  }
+}

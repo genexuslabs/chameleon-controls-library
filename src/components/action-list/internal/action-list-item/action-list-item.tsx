@@ -212,34 +212,37 @@ export class ChActionListItem {
 
     // Button
     if (action) {
+      const actionTypeIsFix = action.type === "fix";
+      const actionTypeIsCustom = action.type === "custom";
+
       return (
         <button
           key={additionalAction.id}
           aria-label={additionalAction.accessibleName}
           class={{
-            [pseudoImageStartClass]: hasPseudoImage,
+            [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
             "show-on-mouse-hover":
-              (action.type === "fix" && !this.fixed) ||
-              (action.type !== "fix" && action.showOnHover),
+              (actionTypeIsFix && !this.fixed) ||
+              (!actionTypeIsFix && action.showOnHover),
             [action.type]: true,
-            fixed: action.type === "fix" && this.fixed,
-            "not-fixed": action.type === "fix" && !this.fixed
+            fixed: actionTypeIsFix && this.fixed,
+            "not-fixed": actionTypeIsFix && !this.fixed
           }}
           part={tokenMap({
             "item__additional-item-action": true,
             [action.type]: true,
-            fixed: action.type === "fix" && this.fixed,
-            "not-fixed": action.type === "fix" && !this.fixed
+            fixed: actionTypeIsFix && this.fixed,
+            "not-fixed": actionTypeIsFix && !this.fixed
           })}
           style={
-            hasPseudoImage
+            hasPseudoImage && actionTypeIsCustom
               ? { "--ch-start-img": `url(${item.imageSrc})` }
               : null
           }
           type="button"
           onClick={this.#handleAdditionalItemClick(action.type)}
         >
-          {imageTag}
+          {actionTypeIsCustom && imageTag}
           {item.caption && item.caption}
         </button>
       );
@@ -289,8 +292,12 @@ export class ChActionListItem {
   };
 
   #handleAdditionalItemClick =
-    (type: ActionListItemAdditionalItemActionType["type"]) => () =>
+    (type: ActionListItemAdditionalItemActionType["type"]) =>
+    (event: MouseEvent) => {
+      event.stopPropagation();
+
       this.#additionalItemListenerDictionary[type]();
+    };
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");

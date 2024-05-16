@@ -92,11 +92,19 @@
 }
 
 .fixed {
-  --ch-img: #{$unpin-outlined};
+  --ch-img: var(--ch-action-list-item__additional-item-fixed-image);
 }
 
 .not-fixed {
-  --ch-img: #{$pin-outlined};
+  --ch-img: var(--ch-action-list-item__additional-item-not-fixed-image);
+}
+
+.modify {
+  --ch-img: var(--ch-action-list-item__additional-item-modify-image);
+}
+
+.remove {
+  --ch-img: var(--ch-action-list-item__additional-item-remove-image);
 }
 
 // - - - - - - - - - - - - - - - - - - - -

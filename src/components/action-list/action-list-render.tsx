@@ -1,10 +1,27 @@
-import { Component, Element, Host, h, Prop, State } from "@stencil/core";
 import {
+  Component,
+  Element,
+  Host,
+  h,
+  Prop,
+  State,
+  Listen,
+  Watch,
+  forceUpdate
+} from "@stencil/core";
+import {
+  ActionListItemActionable,
+  ActionListItemGroup,
   ActionListItemModel,
+  ActionListItemModelExtended,
+  ActionListItemModelExtendedGroup,
+  ActionListItemModelExtendedRoot,
   ActionListItemModelMap,
   ActionListItemType,
   ActionListModel
 } from "./types";
+import { ChActionListItemCustomEvent } from "../../components";
+import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -28,6 +45,7 @@ const renderMapping: {
       checked={itemModel.checked ?? actionListRenderState.checked}
       disabled={itemModel.disabled}
       editable={itemModel.editable ?? actionListRenderState.editableItems}
+      fixed={itemModel.fixed}
       metadata={itemModel.metadata}
       selected={itemModel.selected}
     ></ch-action-list-item>
@@ -51,21 +69,48 @@ const defaultRenderItem = (
     actionListRenderState
   );
 
+const FIRST_ITEM_GREATER_THAN_SECOND = -1;
+const SECOND_ITEM_GREATER_THAN_FIRST = 0;
+
 const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   subModel.sort((a, b) => {
+    // Rules:
+    //   - Checks fixed value.
+    //   - If can't decide, checks "order" value.
+    //   - If can't decide, checks "caption" value.
+
+    // Both, "a" and "b" are fixed
+    if (a.type === "actionable" && b.type === "actionable") {
+      if (a.fixed && !b.fixed) {
+        return FIRST_ITEM_GREATER_THAN_SECOND;
+      }
+
+      if (!a.fixed && b.fixed) {
+        return SECOND_ITEM_GREATER_THAN_FIRST;
+      }
+    }
+    // Only "a" is fixed
+    else if (a.type === "actionable" && a.fixed) {
+      return FIRST_ITEM_GREATER_THAN_SECOND;
+    }
+    // Only "b" is fixed
+    else if (b.type === "actionable" && b.fixed) {
+      return SECOND_ITEM_GREATER_THAN_FIRST;
+    }
+
     if (a.order < b.order) {
-      return -1;
+      return FIRST_ITEM_GREATER_THAN_SECOND;
     }
 
     if (a.order > b.order) {
-      return 0;
+      return SECOND_ITEM_GREATER_THAN_FIRST;
     }
 
     return a.type === "actionable" &&
       b.type === "actionable" &&
       a.caption <= b.caption
-      ? -1
-      : 0;
+      ? FIRST_ITEM_GREATER_THAN_SECOND
+      : SECOND_ITEM_GREATER_THAN_FIRST;
   });
 };
 
@@ -77,6 +122,8 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   shadow: true
 })
 export class ChActionListRender {
+  #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
+
   @Element() el: HTMLChActionListRenderElement;
 
   @State() expanded: boolean = true;
@@ -109,6 +156,10 @@ export class ChActionListRender {
    * This property lets you define the model of the control.
    */
   @Prop() readonly model: ActionListModel = [];
+  @Watch("model")
+  modelChanged(newModel: ActionListModel) {
+    this.#flattenUIModel(newModel);
+  }
 
   // /**
   //  * This property lets you determine the expression that will be applied to the
@@ -277,33 +328,82 @@ export class ChActionListRender {
    */
   // @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
 
+  @Listen("fixedChange")
+  onFixedChange(
+    event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>
+  ) {
+    const detail = event.detail;
+
+    const itemUIModel = this.#flattenedModel.get(detail.itemId);
+    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    itemInfo.fixed = detail.value;
+
+    // Sort items in parent model
+    this.#sortModel(
+      (itemUIModel as ActionListItemModelExtendedRoot).root ??
+        (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
+    );
+
+    // Queue a re-render to update the fixed binding and the order of the items
+    forceUpdate(this);
+  }
+
+  #sortModel = (model: ActionListModel) => {
+    if (this.sortItemsCallback) {
+      this.sortItemsCallback(model);
+    }
+  };
+
+  #flattenUIModel = (model: ActionListModel) => {
+    this.#flattenedModel.clear();
+
+    if (!model) {
+      return;
+    }
+
+    // Traditional for loop is the faster "for"
+    for (let index = 0; index < model.length; index++) {
+      const itemInfo = model[index];
+
+      // Group
+      if (itemInfo.type === "group") {
+        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
+        this.#flattenSubUIModel(itemInfo.items, itemInfo);
+      }
+      // Actionable
+      else if (itemInfo.type === "actionable") {
+        this.#flattenedModel.set(itemInfo.id, { item: itemInfo, root: model });
+      }
+    }
+
+    this.#sortModel(model);
+  };
+
+  #flattenSubUIModel = (
+    model: ActionListItemActionable[],
+    parentItem: ActionListItemGroup
+  ) => {
+    if (!model) {
+      return;
+    }
+
+    // Traditional for loop is the faster "for"
+    for (let index = 0; index < model.length; index++) {
+      const itemInfo = model[index];
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        parentItem: parentItem
+      });
+    }
+
+    this.#sortModel(model);
+  };
+
+  connectedCallback() {
+    this.#flattenUIModel(this.model);
+  }
+
   render() {
     return <Host>{this.model?.map(item => this.renderItem(item, this))}</Host>;
-    // return (
-    //   <ch-tree-view
-    //     class={this.cssClass || null}
-    //     multiSelection={this.multiSelection}
-    //     selectedItemsCallback={this.#getSelectedItemsCallback}
-    //     waitDropProcessing={this.waitDropProcessing}
-    //     onDroppableZoneEnter={this.#handleDroppableZoneEnter}
-    //     onExpandedItemChange={this.#handleExpandedItemChange}
-    //     onItemContextmenu={this.#handleItemContextmenu}
-    //     onItemsDropped={this.#handleItemsDropped}
-    //     onSelectedItemsChange={this.#handleSelectedItemsChange}
-    //     ref={el => (this.#treeRef = el)}
-    //   >
-    //     {this.treeModel.map((itemModel, index) =>
-    //       this.renderItem(
-    //         itemModel,
-    //         this,
-    //         this.#treeHasFilters(),
-    //         this.showLines !== "none" && index === this.treeModel.length - 1,
-    //         0,
-    //         this.dropMode !== "above" && this.dropDisabled !== true,
-    //         this.useGxRender
-    //       )
-    //     )}
-    //   </ch-tree-view>
-    // );
   }
 }

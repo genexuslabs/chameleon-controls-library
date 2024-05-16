@@ -10,13 +10,16 @@ import {
 import {
   ActionListItemAdditionalAction,
   ActionListItemAdditionalInformation,
-  ActionListItemAdditionalItem
+  ActionListItemAdditionalItem,
+  ActionListItemAdditionalItemActionType
 } from "../../types";
 import { renderImg } from "../../../../common/renders";
 import {
   imageTypeDictionary,
   startPseudoImageTypeDictionary
 } from "../../../../common/reserverd-names";
+import { ActionListFixedChangeEventDetail } from "./types";
+import { tokenMap } from "../../../../common/utils";
 
 const ITEM_ADDITIONAL_IMAGE_PART = "item__additional-item-image";
 
@@ -26,6 +29,12 @@ const ITEM_ADDITIONAL_IMAGE_PART = "item__additional-item-image";
   shadow: true
 })
 export class ChActionListItem {
+  #additionalItemListenerDictionary = {
+    fix: () => {
+      this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed });
+    }
+  };
+
   @Element() el: HTMLChActionListItemElement;
 
   /**
@@ -101,7 +110,7 @@ export class ChActionListItem {
   /**
    *
    */
-  @Prop() readonly fixed = false;
+  @Prop() readonly fixed?: boolean = false;
 
   /**
    * If the item has a sub-tree, this attribute determines if the subtree is
@@ -154,15 +163,15 @@ export class ChActionListItem {
   // @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
 
   // /**
-  //  * Fired when the checkbox value of the control is changed. This event only
-  //  * applies when the control has `toggleCheckboxes = true`
-  //  */
-  // @Event() checkboxToggleChange: EventEmitter<TreeViewItemCheckedInfo>;
-
-  // /**
   //  * Fired when the item is being dragged.
   //  */
   // @Event() itemDragStart: EventEmitter<TreeViewItemDragStartInfo>;
+
+  /**
+   * Fired when the fixed value of the control is changed.
+   */
+  @Event({ composed: true })
+  fixedChange: EventEmitter<ActionListFixedChangeEventDetail>;
 
   /**
    * Fired when the item is no longer being dragged.
@@ -199,23 +208,36 @@ export class ChActionListItem {
         item.imageType
       );
 
+    const action = additionalAction.action;
+
     // Button
-    if (additionalAction.action) {
+    if (action) {
       return (
         <button
           key={additionalAction.id}
           aria-label={additionalAction.accessibleName}
           class={{
             [pseudoImageStartClass]: hasPseudoImage,
-            "show-on-mouse-hover": additionalAction.action.showOnHover
+            "show-on-mouse-hover":
+              (action.type === "fix" && !this.fixed) ||
+              (action.type !== "fix" && action.showOnHover),
+            [action.type]: true,
+            fixed: action.type === "fix" && this.fixed,
+            "not-fixed": action.type === "fix" && !this.fixed
           }}
-          part="item__additional-item-action"
+          part={tokenMap({
+            "item__additional-item-action": true,
+            [action.type]: true,
+            fixed: action.type === "fix" && this.fixed,
+            "not-fixed": action.type === "fix" && !this.fixed
+          })}
           style={
             hasPseudoImage
               ? { "--ch-start-img": `url(${item.imageSrc})` }
               : null
           }
           type="button"
+          onClick={this.#handleAdditionalItemClick(action.type)}
         >
           {imageTag}
           {item.caption && item.caption}
@@ -266,9 +288,16 @@ export class ChActionListItem {
     return undefined;
   };
 
+  #handleAdditionalItemClick =
+    (type: ActionListItemAdditionalItemActionType["type"]) => () =>
+      this.#additionalItemListenerDictionary[type]();
+
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
-    this.el.setAttribute("exportparts", "item__action");
+    this.el.setAttribute(
+      "exportparts",
+      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed"
+    );
   }
 
   render() {

@@ -20,6 +20,20 @@ export type ActionListItemModel =
   | ActionListItemGroup
   | ActionListItemSeparator;
 
+export type ActionListItemModelExtended =
+  | ActionListItemModelExtendedRoot
+  | ActionListItemModelExtendedGroup;
+
+export type ActionListItemModelExtendedRoot = {
+  root: ActionListModel;
+  item: ActionListItemModel;
+};
+
+export type ActionListItemModelExtendedGroup = {
+  parentItem: ActionListItemGroup;
+  item: ActionListItemModel;
+};
+
 export interface ActionListItemModelMap {
   actionable: ActionListItemActionable;
   group: ActionListItemGroup;
@@ -38,6 +52,7 @@ export type ActionListItemActionable = {
   checked?: boolean;
   disabled?: boolean;
   editable?: boolean;
+  fixed?: boolean;
 
   metadata?: string;
 
@@ -85,12 +100,21 @@ export type ActionListItemAdditionalAction = ActionListItemAdditionalBase & {
   action: ActionListItemAdditionalItemActionType;
 };
 
-export type ActionListItemAdditionalItemActionType = {
-  callback?: (id: string) => void;
-  type: "fix" | "modify" | "remove" | "custom";
-  showOnHover?: boolean;
-  showAcceptCancel?: boolean;
-};
+export type ActionListItemAdditionalItemActionType =
+  | {
+      type: "fix";
+    }
+  | {
+      type: "modify" | "remove";
+      showOnHover?: boolean;
+      showAcceptCancel?: boolean;
+    }
+  | {
+      callback?: (id: string) => void;
+      type: "custom";
+      showOnHover?: boolean;
+      showAcceptCancel?: boolean;
+    };
 
 // - - - - - - - - - - - - - - - - - - - -
 //            List Item Heading

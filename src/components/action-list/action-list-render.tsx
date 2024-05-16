@@ -32,7 +32,13 @@ const renderMapping: {
       selected={itemModel.selected}
     ></ch-action-list-item>
   ),
-  heading: () => {},
+  group: (itemModel, actionRenderState) => (
+    <ch-action-list-group key={itemModel.id} caption={itemModel.caption}>
+      {itemModel.items?.map(item =>
+        actionRenderState.renderItem(item, actionRenderState)
+      )}
+    </ch-action-list-group>
+  ),
   separator: () => {}
 };
 

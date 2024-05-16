@@ -1,6 +1,22 @@
-import { ActionListModel } from "../../../../components/action-list/types";
+import {
+  ActionListItemAdditionalInformation,
+  ActionListModel
+} from "../../../../components/action-list/types";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+const chatIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/chat.svg";
+
+const pinOutlinedIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/pin-outlined.svg";
+const unpinOutlinedIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/unpin-outlined.svg";
+
+const editIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/edit.svg";
+
+const deleteIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/delete.svg";
 
 export const GitHubHistoryModel: ActionListModel = [
   {
@@ -11,15 +27,14 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            type: "image",
-            src: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
-          { type: "text", caption: "Nicolás Cámera" },
-          { type: "text", caption: "6 days ago" }
+          { caption: "Nicolás Cámera" },
+          { caption: "6 days ago" }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "6.0.0-next.5" }]
+        center: [{ caption: "6.0.0-next.5" }]
       }
     }
   },
@@ -32,11 +47,10 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            type: "image",
-            src: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
-          { type: "text", caption: "Nicolás Cámera" },
-          { type: "text", caption: "6 days ago" }
+          { caption: "Nicolás Cámera" },
+          { caption: "6 days ago" }
         ]
       }
     }
@@ -50,11 +64,10 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            type: "image",
-            src: "https://avatars.githubusercontent.com/u/81186472?v=4"
+            imageSrc: "https://avatars.githubusercontent.com/u/81186472?v=4"
           },
-          { type: "text", caption: "Nicolás Cámera" },
-          { type: "text", caption: "6 days ago" }
+          { caption: "Nicolás Cámera" },
+          { caption: "6 days ago" }
         ]
       }
     }
@@ -67,11 +80,11 @@ export const GitHubHistoryModel: ActionListModel = [
       "block-end": {
         start: [
           {
-            type: "image",
-            src: "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
+            imageSrc:
+              "https://avatars.githubusercontent.com/u/49991370?s=96&v=4"
           },
-          { type: "text", caption: "Daniel Mariño" },
-          { type: "text", caption: "7 days ago" }
+          { caption: "Daniel Mariño" },
+          { caption: "7 days ago" }
         ]
       }
     }
@@ -88,14 +101,10 @@ export const GitHubChangesModel: ActionListModel = [
     additionalInformation: {
       "inline-caption": {
         start: [
-          {
-            type: "text",
-            caption: "src\\common\\",
-            part: "github-changes-directory"
-          },
-          { type: "text", caption: "renders.tsx", part: "github-changes-file" }
+          { caption: "src\\common\\", part: "github-changes-directory" },
+          { caption: "renders.tsx", part: "github-changes-file" }
         ],
-        end: [{ type: "image", src: "new" }]
+        end: [{ imageSrc: "new" }]
       }
     }
   },
@@ -109,17 +118,15 @@ export const GitHubChangesModel: ActionListModel = [
       "inline-caption": {
         start: [
           {
-            type: "text",
             caption: "src\\",
             part: "github-changes-directory"
           },
           {
-            type: "text",
             caption: "components.d.ts",
             part: "github-changes-file"
           }
         ],
-        end: [{ type: "image", src: "modified" }]
+        end: [{ imageSrc: "modified" }]
       }
     }
   },
@@ -133,17 +140,15 @@ export const GitHubChangesModel: ActionListModel = [
       "inline-caption": {
         start: [
           {
-            type: "text",
             caption: "src\\components\\action-list\\",
             part: "github-changes-directory"
           },
           {
-            type: "text",
             caption: "action-list-render.scss",
             part: "github-changes-file"
           }
         ],
-        end: [{ type: "image", src: "new" }]
+        end: [{ imageSrc: "new" }]
       }
     }
   },
@@ -157,18 +162,16 @@ export const GitHubChangesModel: ActionListModel = [
       "inline-caption": {
         start: [
           {
-            type: "text",
             caption:
               "src\\components\\action-list\\internal\\action-list-item\\",
             part: "github-changes-directory"
           },
           {
-            type: "text",
             caption: "action-list-item.scss",
             part: "github-changes-file"
           }
         ],
-        end: [{ type: "image", src: "new" }]
+        end: [{ imageSrc: "new" }]
       }
     }
   },
@@ -182,18 +185,16 @@ export const GitHubChangesModel: ActionListModel = [
       "inline-caption": {
         start: [
           {
-            type: "text",
             caption:
               "src\\components\\action-list\\internal\\action-list-item\\",
             part: "github-changes-directory"
           },
           {
-            type: "text",
             caption: "action-list-item.tsx",
             part: "github-changes-file"
           }
         ],
-        end: [{ type: "image", src: "new" }]
+        end: [{ imageSrc: "new" }]
       }
     }
   }
@@ -206,18 +207,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Pending", part: "pending" }]
+        start: [{ caption: "Pending", part: "pending" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Incorrect validation on user registratio..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Medium", part: "priority" }]
+        center: [{ caption: "Medium", part: "priority" }]
       }
     }
   },
@@ -227,18 +227,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Closed", part: "closed" }]
+        start: [{ caption: "Closed", part: "closed" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Image upload feature not working as ex..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "High", part: "priority" }]
+        center: [{ caption: "High", part: "priority" }]
       }
     }
   },
@@ -248,18 +247,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Error", part: "error" }]
+        start: [{ caption: "Error", part: "error" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Broken link in footer navigation leadin..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Medium", part: "priority" }]
+        center: [{ caption: "Medium", part: "priority" }]
       }
     }
   },
@@ -269,18 +267,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Processing", part: "processing" }]
+        start: [{ caption: "Processing", part: "processing" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Mismatch between email body content..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Medium", part: "priority" }]
+        center: [{ caption: "Medium", part: "priority" }]
       }
     }
   },
@@ -290,18 +287,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Pending", part: "pending" }]
+        start: [{ caption: "Pending", part: "pending" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "JavaScript error preventing checkout..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Medium", part: "priority" }]
+        center: [{ caption: "Medium", part: "priority" }]
       }
     }
   },
@@ -311,18 +307,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Open", part: "open" }]
+        start: [{ caption: "Open", part: "open" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Inconsistent behavior in mobile view..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Low", part: "priority" }]
+        center: [{ caption: "Low", part: "priority" }]
       }
     }
   },
@@ -332,18 +327,17 @@ export const agentTickets: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: {
       "block-start": {
-        start: [{ type: "text", caption: "Analyzing", part: "processing" }]
+        start: [{ caption: "Analyzing", part: "processing" }]
       },
       "block-end": {
         start: [
           {
-            type: "text",
             caption: "Mismatch between email body content..."
           }
         ]
       },
       "stretch-end": {
-        center: [{ type: "text", caption: "Medium", part: "priority" }]
+        center: [{ caption: "Medium", part: "priority" }]
       }
     }
   }
@@ -356,7 +350,7 @@ export const recentKBs: ActionListModel = [
     caption: "TestIDEWeb",
     additionalInformation: {
       "stretch-start": {
-        start: [{ type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -366,7 +360,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularVisualTests",
     additionalInformation: {
       "stretch-start": {
-        start: [{ type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -376,7 +370,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularPlayground",
     additionalInformation: {
       "stretch-start": {
-        start: [{ type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -386,7 +380,7 @@ export const recentKBs: ActionListModel = [
     caption: "AngularAccessibility",
     additionalInformation: {
       "stretch-start": {
-        start: [{ type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   },
@@ -396,7 +390,7 @@ export const recentKBs: ActionListModel = [
     caption: "UnanimoShowcase",
     additionalInformation: {
       "stretch-start": {
-        start: [{ type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }]
+        start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
       }
     }
   }
@@ -405,7 +399,7 @@ export const recentKBs: ActionListModel = [
 export const panelToolbox: ActionListModel = [
   {
     id: "Controls",
-    type: "heading",
+    type: "group",
     caption: "Controls",
     expandable: true,
     expanded: false,
@@ -416,9 +410,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Attribute/Variable",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -428,9 +420,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Button",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -440,9 +430,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Component",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -452,9 +440,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Image",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -464,9 +450,7 @@ export const panelToolbox: ActionListModel = [
         caption: "TextBlock",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -476,11 +460,118 @@ export const panelToolbox: ActionListModel = [
         caption: "User Control",
         additionalInformation: {
           "stretch-start": {
-            start: [
-              { type: "image", src: `${ASSETS_PREFIX}knowledge-base.svg` }
-            ]
+            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
+      }
+    ]
+  }
+];
+
+const GxEAIRecentChatsAdditionalInfoUnpinned: ActionListItemAdditionalInformation =
+  {
+    "stretch-start": {
+      center: [{ imageSrc: chatIconPath, imageType: "mask" }]
+    },
+    "stretch-end": {
+      center: [
+        {
+          accessibleName: "Edit caption",
+          imageSrc: editIconPath,
+          imageType: "mask",
+          action: {
+            type: "modify",
+            showOnHover: true
+          }
+        },
+        {
+          accessibleName: "Delete item",
+          imageSrc: deleteIconPath,
+          imageType: "mask",
+          action: {
+            type: "remove",
+            showOnHover: true
+          }
+        },
+        {
+          accessibleName: "Pin item",
+          imageSrc: pinOutlinedIconPath,
+          imageType: "mask",
+          action: {
+            type: "fix",
+            showOnHover: true
+          }
+        }
+      ]
+    }
+  };
+
+const GxEAIRecentChatsAdditionalInfoPinned: ActionListItemAdditionalInformation =
+  {
+    "stretch-start": {
+      center: [{ imageSrc: chatIconPath, imageType: "mask" }]
+    },
+    "stretch-end": {
+      center: [
+        {
+          accessibleName: "Edit caption",
+          imageSrc: editIconPath,
+          imageType: "mask",
+          action: {
+            type: "modify",
+            showOnHover: true
+          }
+        },
+        {
+          accessibleName: "Delete item",
+          imageSrc: deleteIconPath,
+          imageType: "mask",
+          action: {
+            type: "remove",
+            showOnHover: true
+          }
+        },
+        {
+          accessibleName: "Pin item",
+          imageSrc: unpinOutlinedIconPath,
+          imageType: "mask",
+          action: {
+            type: "fix"
+          }
+        }
+      ]
+    }
+  };
+
+export const GxEAIRecentChats: ActionListModel = [
+  {
+    id: "2023 employee contracts",
+    type: "actionable",
+    caption: "2023 employee contracts",
+    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+  },
+  {
+    id: "Investors reports",
+    type: "actionable",
+    caption: "Investors reports",
+    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+  },
+  {
+    id: "2022 employee contracts",
+    type: "actionable",
+    caption: "2022 employee contracts",
+    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+  },
+  {
+    id: "Yesterday",
+    type: "group",
+    caption: "Yesterday",
+    items: [
+      {
+        id: "Mars Exploration Contract",
+        type: "actionable",
+        caption: "Mars Exploration Contract",
+        additionalInformation: GxEAIRecentChatsAdditionalInfoPinned
       }
     ]
   }

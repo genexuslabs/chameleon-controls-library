@@ -9,6 +9,8 @@ import {
 } from "@stencil/core";
 import {
   ActionListItemAdditionalAction,
+  ActionListItemAdditionalBase,
+  ActionListItemAdditionalCustom,
   ActionListItemAdditionalInformation,
   ActionListItemAdditionalItem,
   ActionListItemAdditionalItemActionType
@@ -32,7 +34,11 @@ export class ChActionListItem {
   #additionalItemListenerDictionary = {
     fix: () => {
       this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed });
-    }
+    },
+    remove: () => {
+      this.remove.emit(this.el.id);
+    },
+    custom: callback => callback()
   };
 
   @Element() el: HTMLChActionListItemElement;
@@ -174,6 +180,11 @@ export class ChActionListItem {
   fixedChange: EventEmitter<ActionListFixedChangeEventDetail>;
 
   /**
+   * Fired when the remove button was clicked in the control.
+   */
+  @Event({ composed: true }) remove: EventEmitter<string>;
+
+  /**
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
@@ -190,9 +201,19 @@ export class ChActionListItem {
   // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
-    additionalItems.map(this.#renderAdditionalItem);
+    additionalItems.map(item =>
+      (item as ActionListItemAdditionalCustom).jsx
+        ? (item as ActionListItemAdditionalCustom).jsx()
+        : this.#renderAdditionalItem(
+            item as
+              | ActionListItemAdditionalBase
+              | ActionListItemAdditionalAction
+          )
+    );
 
-  #renderAdditionalItem = (item: ActionListItemAdditionalItem) => {
+  #renderAdditionalItem = (
+    item: ActionListItemAdditionalBase | ActionListItemAdditionalAction
+  ) => {
     const additionalAction = item as ActionListItemAdditionalAction;
     const hasImage = !!item.imageSrc;
     const hasPseudoImage = hasImage && item.imageType !== "background";
@@ -203,7 +224,9 @@ export class ChActionListItem {
       hasImage &&
       renderImg(
         "img",
-        ITEM_ADDITIONAL_IMAGE_PART,
+        item.part
+          ? `${ITEM_ADDITIONAL_IMAGE_PART} ${item.part}`
+          : ITEM_ADDITIONAL_IMAGE_PART,
         item.imageSrc,
         item.imageType
       );
@@ -232,7 +255,8 @@ export class ChActionListItem {
             "item__additional-item-action": true,
             [action.type]: true,
             fixed: actionTypeIsFix && this.fixed,
-            "not-fixed": actionTypeIsFix && !this.fixed
+            "not-fixed": actionTypeIsFix && !this.fixed,
+            [item.part]: !!item.part
           })}
           style={
             hasPseudoImage && actionTypeIsCustom
@@ -240,7 +264,10 @@ export class ChActionListItem {
               : null
           }
           type="button"
-          onClick={this.#handleAdditionalItemClick(action.type)}
+          onClick={this.#handleAdditionalItemClick(
+            action.type,
+            actionTypeIsCustom ? action.callback : undefined
+          )}
         >
           {actionTypeIsCustom && imageTag}
           {item.caption && item.caption}
@@ -254,7 +281,10 @@ export class ChActionListItem {
         <span
           key={additionalAction.id ?? null}
           class={pseudoImageStartClass ?? null}
-          part="item__additional-item-text"
+          part={tokenMap({
+            "item__additional-item-text": true,
+            [item.part]: !!item.part
+          })}
           style={
             hasPseudoImage
               ? { "--ch-start-img": `url(${item.imageSrc})` }
@@ -273,11 +303,10 @@ export class ChActionListItem {
         <div
           aria-hidden="true"
           class={imageTypeDictionary[item.imageType ?? "background"]}
-          part={
-            item.part
-              ? `${ITEM_ADDITIONAL_IMAGE_PART} ${item.part}`
-              : ITEM_ADDITIONAL_IMAGE_PART
-          }
+          part={tokenMap({
+            [ITEM_ADDITIONAL_IMAGE_PART]: true,
+            [item.part]: !!item.part
+          })}
           style={{ "--ch-img": `url(${item.imageSrc})` }}
         ></div>
       );
@@ -292,18 +321,25 @@ export class ChActionListItem {
   };
 
   #handleAdditionalItemClick =
-    (type: ActionListItemAdditionalItemActionType["type"]) =>
+    (
+      type: ActionListItemAdditionalItemActionType["type"],
+      callback?: (id: string) => void
+    ) =>
     (event: MouseEvent) => {
       event.stopPropagation();
 
-      this.#additionalItemListenerDictionary[type]();
+      if (callback) {
+        callback(this.el.id);
+      } else {
+        this.#additionalItemListenerDictionary[type]();
+      }
     };
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute(
       "exportparts",
-      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed"
+      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption"
     );
   }
 
@@ -388,7 +424,7 @@ export class ChActionListItem {
             class="align-container inline-caption"
             part="item__inline-caption"
           >
-            {this.caption && this.caption}
+            {this.caption && <span part="item__caption">{this.caption}</span>}
 
             {inlineCaption && [
               inlineCaption.start && (

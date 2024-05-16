@@ -84,13 +84,19 @@ export type ActionListItemAdditionalModel = {
 
 export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase
-  | ActionListItemAdditionalAction;
+  | ActionListItemAdditionalAction
+  | ActionListItemAdditionalCustom;
 
 export type ActionListItemAdditionalBase = {
   id?: string;
   caption?: string;
   imageSrc?: string;
   imageType?: ImageRender;
+  part?: string;
+};
+
+export type ActionListItemAdditionalCustom = {
+  jsx: () => any;
   part?: string;
 };
 

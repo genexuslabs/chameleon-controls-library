@@ -19,7 +19,8 @@
 
 .align-container {
   display: grid;
-  grid-template: "start end" 1fr / max-content max-content;
+  grid-auto-flow: column;
+  white-space: break-spaces; // Support for line breaks, like \n
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -53,6 +54,18 @@
 // - - - - - - - - - - - - - - - - - - - -
 //         Second level containers
 // - - - - - - - - - - - - - - - - - - - -
+.align-start {
+  justify-self: flex-start;
+}
+
+.align-center {
+  justify-self: center;
+}
+
+.align-end {
+  justify-self: flex-end;
+}
+
 .valign-start {
   display: flex;
   align-self: self-start;

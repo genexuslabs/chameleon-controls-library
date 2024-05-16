@@ -29,3 +29,9 @@
   overflow: auto;
   contain: size;
 }
+
+.separator {
+  display: grid;
+  block-size: 1px;
+  background-color: currentColor;
+}

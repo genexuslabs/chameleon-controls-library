@@ -8,6 +8,7 @@ import {
   Listen,
   Watch,
   forceUpdate
+  // EventEmitter
 } from "@stencil/core";
 import {
   ActionListItemActionable,
@@ -22,6 +23,7 @@ import {
 } from "./types";
 import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
+import { removeElement } from "../../common/array";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -57,7 +59,14 @@ const renderMapping: {
       )}
     </ch-action-list-group>
   ),
-  separator: () => {}
+  separator: () => (
+    <div
+      role="separator"
+      aria-hidden="true"
+      class="separator"
+      part="separator"
+    ></div>
+  )
 };
 
 const defaultRenderItem = (
@@ -123,6 +132,7 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 })
 export class ChActionListRender {
   #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
+  // #additionalItemsParts: Set<string> | undefined;
 
   @Element() el: HTMLChActionListRenderElement;
 
@@ -271,6 +281,15 @@ export class ChActionListRender {
   ) => any = defaultRenderItem;
 
   /**
+   * Callback that is executed when and item requests to be removed.
+   * If the callback is not defined, the item will be removed without further
+   * confirmation.
+   */
+  @Prop() readonly removeItemCallback?: (
+    itemInfo: ActionListItemActionable
+  ) => Promise<boolean>;
+
+  /**
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: ActionListModel) => void =
@@ -283,11 +302,6 @@ export class ChActionListRender {
   // @Event() checkedItemsChange: EventEmitter<
   //   Map<string, TreeViewItemModelExtended>
   // >;
-
-  // /**
-  //  * Fired when an element displays its contextmenu.
-  //  */
-  // @Event() itemContextmenu: EventEmitter<TreeViewItemContextMenu>;
 
   /**
    * Fired when the selected items change.
@@ -348,6 +362,43 @@ export class ChActionListRender {
     forceUpdate(this);
   }
 
+  @Listen("remove")
+  onRemove(event: ChActionListItemCustomEvent<string>) {
+    const itemUIModel = this.#flattenedModel.get(event.detail);
+
+    if (!this.removeItemCallback) {
+      this.#removeItem(itemUIModel);
+
+      return;
+    }
+
+    this.removeItemCallback(itemUIModel.item as ActionListItemActionable).then(
+      acceptRemove => {
+        if (acceptRemove) {
+          this.#removeItem(itemUIModel);
+        }
+      }
+    );
+  }
+
+  #removeItem = (itemUIModel: ActionListItemModelExtended) => {
+    const parentArray =
+      (itemUIModel as ActionListItemModelExtendedRoot).root ??
+      (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
+    const itemInfo = itemUIModel.item as ActionListItemActionable;
+
+    const itemToRemoveIndex = parentArray.findIndex(
+      el => (el as ActionListItemActionable).id === itemInfo.id
+    );
+
+    // Remove the UI model from the previous parent. The equality function
+    // must be by index, not by object reference
+    removeElement(parentArray, itemToRemoveIndex);
+
+    // Queue a re-render
+    forceUpdate(this);
+  };
+
   #sortModel = (model: ActionListModel) => {
     if (this.sortItemsCallback) {
       this.sortItemsCallback(model);
@@ -398,6 +449,12 @@ export class ChActionListRender {
 
     this.#sortModel(model);
   };
+
+  // #processAdditionalItemParts = () => {
+  //   this.#additionalItemsParts = undefined;
+
+  //   this.#additionalItemsParts ??= new Set();
+  // }
 
   connectedCallback() {
     this.#flattenUIModel(this.model);

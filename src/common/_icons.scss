@@ -1,1 +1,84 @@
 $expandable-icon: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" fill="none"><path d="M16.5 5L8.7 12.7L1 5" stroke="%23000" stroke-width="1.2" stroke-linecap="round"/></svg>');
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+/// @param {String} $start-image-path-custom-var [""] -
+/// @param {String} $end-image-path-custom-var [""] -
+/// @param {String} $image-size-custom-var [""] -
+/// @param {String} $background-image-size-custom-var [""] -
+@mixin images-with-pseudo-elements(
+  $start-image-path-custom-var: "",
+  $end-image-path-custom-var: "",
+  $image-size-custom-var: "",
+  $background-image-size-custom-var: ""
+) {
+  .pseudo-img--start::before,
+  .pseudo-img--end::after,
+  .img {
+    display: inline-block;
+    inline-size: #{$image-size-custom-var};
+    block-size: #{$image-size-custom-var};
+    content-visibility: auto;
+    contain-intrinsic-size: auto #{$image-size-custom-var};
+  }
+
+  .pseudo-img--start::before,
+  .img--start {
+    grid-area: start-img;
+    --ch-img: #{$start-image-path-custom-var};
+  }
+
+  .pseudo-img--end::after,
+  .img--end {
+    grid-area: end-img;
+    --ch-img: #{$end-image-path-custom-var};
+  }
+
+  // Background
+  .start-img-type--background::before,
+  .end-img-type--background::after {
+    content: "";
+    background: no-repeat center / #{$background-image-size-custom-var} var(--ch-img);
+  }
+
+  // Mask
+  .start-img-type--mask::before,
+  .end-img-type--mask::after {
+    content: "";
+    -webkit-mask: no-repeat center / #{$background-image-size-custom-var} var(--ch-img);
+    background-color: currentColor;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//             Images
+// - - - - - - - - - - - - - - - -
+/// @param {String} $image-path-custom-var [""] -
+/// @param {String} $image-size-custom-var [""] -
+/// @param {String} $background-image-size-custom-var [""] -
+@mixin images-without-pseudo-elements(
+  $image-path-custom-var: "",
+  $end-image-path-custom-var: "",
+  $image-size-custom-var: "",
+  $background-image-size-custom-var: ""
+) {
+  .img {
+    display: inline-block;
+    inline-size: #{$image-size-custom-var};
+    block-size: #{$image-size-custom-var};
+    content-visibility: auto;
+    contain-intrinsic-size: auto #{$image-size-custom-var};
+  }
+
+  // Background
+  .img-type--background {
+    background: no-repeat center / #{$background-image-size-custom-var} #{$image-path-custom-var};
+  }
+
+  // Mask
+  .img-type--mask {
+    -webkit-mask: no-repeat center / #{$background-image-size-custom-var} #{$image-path-custom-var};
+    background-color: currentColor;
+  }
+}

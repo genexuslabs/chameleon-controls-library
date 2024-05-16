@@ -54,26 +54,41 @@
 //         Second level containers
 // - - - - - - - - - - - - - - - - - - - -
 .valign-start {
+  display: flex;
   align-self: self-start;
 }
 
 .valign-center {
+  display: flex;
   align-self: center;
 }
 
 .valign-end {
+  display: flex;
   align-self: self-end;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//            Additional items
+// - - - - - - - - - - - - - - - - - - - -
+:host(:not(:hover)) .show-on-mouse-hover {
+  display: none;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -
-.pseudo-img--start::before,
-.pseudo-img--end::after,
-.img {
-  display: inline-block;
-  inline-size: var(--ch-action-list-item__image-size);
-  block-size: var(--ch-action-list-item__image-size);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-action-list-item__image-size);
-}
+@include images-without-pseudo-elements(
+  $image-path-custom-var: var(--ch-img),
+  $image-size-custom-var: var(--ch-action-list-item__image-size),
+  $background-image-size-custom-var:
+    var(--ch-action-list-item__background-image-size)
+);
+
+@include images-with-pseudo-elements(
+  $start-image-path-custom-var: var(--ch-start-img),
+  $end-image-path-custom-var: var(--ch-end-img),
+  $image-size-custom-var: var(--ch-action-list-item__image-size),
+  $background-image-size-custom-var:
+    var(--ch-action-list-item__background-image-size)
+);

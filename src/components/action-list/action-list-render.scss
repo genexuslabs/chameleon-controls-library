@@ -5,10 +5,17 @@
 :host {
   /**
    * @prop --ch-action-list-item__image-size:
-   * Specifies the box size that contains the start or end images of the items.
+   * Specifies the box size that contains the images for the additional images.
    * @default #{$default-decorative-image-size}
    */
   --ch-action-list-item__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-action-list-item__background-image-size:
+   * Specifies the image size of the additional images.
+   * @default 100%
+   */
+  --ch-action-list-item__background-image-size: 100%;
 
   display: grid;
   grid-auto-rows: max-content;

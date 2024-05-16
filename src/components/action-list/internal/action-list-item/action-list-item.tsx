@@ -9,30 +9,16 @@ import {
 } from "@stencil/core";
 import {
   ActionListItemAdditionalAction,
-  ActionListItemAdditionalImage,
   ActionListItemAdditionalInformation,
-  ActionListItemAdditionalItem,
-  ActionListItemAdditionalText
+  ActionListItemAdditionalItem
 } from "../../types";
 import { renderImg } from "../../../../common/renders";
+import {
+  imageTypeDictionary,
+  startPseudoImageTypeDictionary
+} from "../../../../common/reserverd-names";
 
-const additionalItemRenderDictionary = {
-  action: (item: ActionListItemAdditionalAction) => (
-    <button type="button" part="item__additional-item-action">
-      {item.caption && item.caption}
-    </button>
-  ),
-  text: (item: ActionListItemAdditionalText) => (
-    <span part="item__additional-item-text">{item.caption}</span>
-  ),
-  image: (item: ActionListItemAdditionalImage) =>
-    renderImg(
-      "img",
-      "item__additional-item-text",
-      item.src,
-      item.imageType ?? "img"
-    )
-};
+const ITEM_ADDITIONAL_IMAGE_PART = "item__additional-item-image";
 
 @Component({
   tag: "ch-action-list-item",
@@ -112,16 +98,10 @@ export class ChActionListItem {
   //   });
   // }
 
-  // /**
-  //  * Specifies what kind of expandable button is displayed.
-  //  * Only works if `leaf === false`.
-  //  *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-  //  *     the items of the control.
-  //  *  - `"decorative"`: Only a decorative icon is rendered to display the state
-  //  *     of the item.
-  //  */
-  // @Prop() readonly expandableButton: "action" | "decorative" | "no" =
-  //   "decorative";
+  /**
+   *
+   */
+  @Prop() readonly fixed = false;
 
   /**
    * If the item has a sub-tree, this attribute determines if the subtree is
@@ -136,12 +116,6 @@ export class ChActionListItem {
   //     this.#lazyLoadItems(isExpanded);
   //   });
   // }
-
-  /**
-   * Determine if the items are lazy loaded when opening the first time the
-   * control.
-   */
-  @Prop({ mutable: true }) lazyLoad = false;
 
   /**
    * `true` if the checkbox's value is indeterminate.
@@ -175,27 +149,6 @@ export class ChActionListItem {
   @Prop() readonly showDownloadingSpinner: boolean = true;
 
   // /**
-  //  * Set this attribute if you want all the children item's checkboxes to be
-  //  * checked when the parent item checkbox is checked, or to be unchecked when
-  //  * the parent item checkbox is unchecked.
-  //  */
-  // @Prop() readonly toggleCheckboxes: boolean = false;
-  // @Watch("toggleCheckboxes")
-  // handleToggleCheckboxesChange(newToggleCheckboxesValue: boolean) {
-  //   if (newToggleCheckboxesValue) {
-  //     this.el.addEventListener(
-  //       "checkboxChange",
-  //       this.#handleCheckBoxChangeInItems
-  //     );
-  //   } else {
-  //     this.el.removeEventListener(
-  //       "checkboxChange",
-  //       this.#handleCheckBoxChangeInItems
-  //     );
-  //   }
-  // }
-
-  // /**
   //  * Fired when the checkbox value of the control is changed.
   //  */
   // @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
@@ -216,11 +169,6 @@ export class ChActionListItem {
    */
   @Event() itemDragEnd: EventEmitter;
 
-  /**
-   * Fired when the lazy control is expanded an its content must be loaded.
-   */
-  @Event() loadLazyContent: EventEmitter<string>;
-
   // /**
   //  * Fired when the item is asking to modify its caption.
   //  */
@@ -233,12 +181,90 @@ export class ChActionListItem {
   // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
-    additionalItems.map(
-      additionalItem =>
-        additionalItemRenderDictionary[additionalItem.type](
-          additionalItem as any
-        ) // TODO: Improve type safety
-    );
+    additionalItems.map(this.#renderAdditionalItem);
+
+  #renderAdditionalItem = (item: ActionListItemAdditionalItem) => {
+    const additionalAction = item as ActionListItemAdditionalAction;
+    const hasImage = !!item.imageSrc;
+    const hasPseudoImage = hasImage && item.imageType !== "background";
+    const pseudoImageStartClass = hasPseudoImage
+      ? startPseudoImageTypeDictionary[item.imageType ?? "background"]
+      : null;
+    const imageTag =
+      hasImage &&
+      renderImg(
+        "img",
+        ITEM_ADDITIONAL_IMAGE_PART,
+        item.imageSrc,
+        item.imageType
+      );
+
+    // Button
+    if (additionalAction.action) {
+      return (
+        <button
+          key={additionalAction.id}
+          aria-label={additionalAction.accessibleName}
+          class={{
+            [pseudoImageStartClass]: hasPseudoImage,
+            "show-on-mouse-hover": additionalAction.action.showOnHover
+          }}
+          part="item__additional-item-action"
+          style={
+            hasPseudoImage
+              ? { "--ch-start-img": `url(${item.imageSrc})` }
+              : null
+          }
+          type="button"
+        >
+          {imageTag}
+          {item.caption && item.caption}
+        </button>
+      );
+    }
+
+    // Span
+    if (item.caption) {
+      return (
+        <span
+          key={additionalAction.id ?? null}
+          class={pseudoImageStartClass ?? null}
+          part="item__additional-item-text"
+          style={
+            hasPseudoImage
+              ? { "--ch-start-img": `url(${item.imageSrc})` }
+              : null
+          }
+        >
+          {imageTag}
+          {item.caption}
+        </span>
+      );
+    }
+
+    // Div with background or mask
+    if (hasPseudoImage) {
+      return (
+        <div
+          aria-hidden="true"
+          class={imageTypeDictionary[item.imageType ?? "background"]}
+          part={
+            item.part
+              ? `${ITEM_ADDITIONAL_IMAGE_PART} ${item.part}`
+              : ITEM_ADDITIONAL_IMAGE_PART
+          }
+          style={{ "--ch-img": `url(${item.imageSrc})` }}
+        ></div>
+      );
+    }
+
+    // Img
+    if (hasImage && item.imageType === "background") {
+      return imageTag;
+    }
+
+    return undefined;
+  };
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");

@@ -8,11 +8,11 @@ export type ActionListModel = ActionListItemModel[];
 // - - - - - - - - - - - - - - - - - - - -
 export type ActionListItemType =
   | ActionListItemTypeActionable
-  | ActionListItemTypeHeading
+  | ActionListItemTypeGroup
   | ActionListItemTypeSeparator;
 
 export type ActionListItemTypeActionable = "actionable";
-export type ActionListItemTypeHeading = "heading";
+export type ActionListItemTypeGroup = "group";
 export type ActionListItemTypeSeparator = "separator";
 
 export type ActionListItemModel =
@@ -22,7 +22,7 @@ export type ActionListItemModel =
 
 export interface ActionListItemModelMap {
   actionable: ActionListItemActionable;
-  heading: ActionListItemGroup;
+  group: ActionListItemGroup;
   separator: ActionListItemSeparator;
 }
 
@@ -68,29 +68,28 @@ export type ActionListItemAdditionalModel = {
 };
 
 export type ActionListItemAdditionalItem =
-  | ActionListItemAdditionalAction
-  | ActionListItemAdditionalImage
-  | ActionListItemAdditionalText;
+  | ActionListItemAdditionalBase
+  | ActionListItemAdditionalAction;
 
-export type ActionListItemAdditionalAction = {
+export type ActionListItemAdditionalBase = {
   id?: string;
-  accessibleName?: string;
   caption?: string;
-  part?: string;
-  type: "action";
-};
-
-export type ActionListItemAdditionalImage = {
-  src: string;
+  imageSrc?: string;
   imageType?: ImageRender;
   part?: string;
-  type: "image";
 };
 
-export type ActionListItemAdditionalText = {
-  caption: string;
-  part?: string;
-  type: "text";
+export type ActionListItemAdditionalAction = ActionListItemAdditionalBase & {
+  id: string;
+  accessibleName: string;
+  action: ActionListItemAdditionalItemActionType;
+};
+
+export type ActionListItemAdditionalItemActionType = {
+  callback?: (id: string) => void;
+  type: "fix" | "modify" | "remove" | "custom";
+  showOnHover?: boolean;
+  showAcceptCancel?: boolean;
 };
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -110,7 +109,7 @@ export type ActionListItemGroup = {
    */
   order?: number;
   part?: string;
-  type: ActionListItemTypeHeading;
+  type: ActionListItemTypeGroup;
 };
 
 // - - - - - - - - - - - - - - - - - - - -

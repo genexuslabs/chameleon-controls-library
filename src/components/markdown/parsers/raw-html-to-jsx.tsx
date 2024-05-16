@@ -60,6 +60,13 @@ const renderDictionary: {
       return;
     }
 
+    // Remove native attr listeners
+    for (const key in properties) {
+      if (key.startsWith("on")) {
+        delete properties[key];
+      }
+    }
+
     // Parse style to an object
     if (properties.style !== undefined) {
       properties.style = getStyleObjectFromString(

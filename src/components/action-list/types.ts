@@ -85,7 +85,8 @@ export type ActionListItemAdditionalModel = {
 export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase
   | ActionListItemAdditionalAction
-  | ActionListItemAdditionalCustom;
+  | ActionListItemAdditionalCustom
+  | ActionListItemAdditionalSlot;
 
 export type ActionListItemAdditionalBase = {
   id?: string;
@@ -93,6 +94,10 @@ export type ActionListItemAdditionalBase = {
   imageSrc?: string;
   imageType?: ImageRender;
   part?: string;
+};
+
+export type ActionListItemAdditionalSlot = {
+  slot: string;
 };
 
 export type ActionListItemAdditionalCustom = {

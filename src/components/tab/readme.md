@@ -1,7 +1,6 @@
-# ch-list
+# ch-tab-render
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -18,7 +17,6 @@
 | `showCaptions`              | `show-captions`                | `true` to show the captions of the items.                                                                                                                                                                                  | `boolean`                | `true`      |
 | `sortable`                  | `sortable`                     | `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.                                                                            | `boolean`                | `false`     |
 
-
 ## Events
 
 | Event                | Description                                                                                             | Type                                                                                           |
@@ -27,7 +25,6 @@
 | `itemClose`          | Fired the close button of an item is clicked.                                                           | `CustomEvent<{ itemId: string; itemIndex: number; }>`                                          |
 | `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list.                               | `CustomEvent<number>`                                                                          |
 | `selectedItemChange` | Fired when the selected item change. This event can be default prevented to prevent the item selection. | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
-
 
 ## Methods
 
@@ -40,8 +37,6 @@ keyboard interaction.
 
 Type: `Promise<void>`
 
-
-
 ### `getDraggableViews() => Promise<DraggableViewInfo>`
 
 Returns the info associated to the draggable view.
@@ -50,8 +45,6 @@ Returns the info associated to the draggable view.
 
 Type: `Promise<DraggableViewInfo>`
 
-
-
 ### `promoteDragPreviewToTopLayer() => Promise<void>`
 
 Promotes the drag preview to the top layer. Useful to avoid z-index issues.
@@ -59,8 +52,6 @@ Promotes the drag preview to the top layer. Useful to avoid z-index issues.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `removePage(pageId: string, forceRerender?: boolean) => Promise<void>`
 
@@ -77,17 +68,15 @@ Given an id, remove the page from the render
 
 Type: `Promise<void>`
 
-
-
-
 ## Dependencies
 
 ### Used by
 
- - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
- - [ch-showcase](../../showcase/assets/components)
+- [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
+- [ch-showcase](../../showcase/assets/components)
 
 ### Graph
+
 ```mermaid
 graph TD;
   ch-flexible-layout --> ch-list
@@ -95,6 +84,6 @@ graph TD;
   style ch-list fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

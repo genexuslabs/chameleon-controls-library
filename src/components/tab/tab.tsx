@@ -46,23 +46,23 @@ import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
 
 // Custom vars
-const TRANSITION_DURATION = "--ch-list-transition-duration";
+const TRANSITION_DURATION = "--ch-tab-transition-duration";
 
-const BUTTON_POSITION_X = "--ch-list-button-position-x";
-const BUTTON_POSITION_Y = "--ch-list-button-position-y";
+const BUTTON_POSITION_X = "--ch-tab-button-position-x";
+const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
 
-const BUTTON_SIZE = "--ch-list-button-size";
+const BUTTON_SIZE = "--ch-tab-button-size";
 
-const MOUSE_OFFSET_X = "--ch-list-mouse-offset-x";
-const MOUSE_OFFSET_Y = "--ch-list-mouse-offset-y";
+const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
+const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
 
-const MOUSE_POSITION_X = "--ch-list-mouse-position-x";
-const MOUSE_POSITION_Y = "--ch-list-mouse-position-y";
+const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
+const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 
-const TAB_LIST_EDGE_START_POSITION = "--ch-list-tab-list-start";
-const TAB_LIST_EDGE_END_POSITION = "--ch-list-tab-list-end";
+const TAB_LIST_EDGE_START_POSITION = "--ch-tab-list-start";
+const TAB_LIST_EDGE_END_POSITION = "--ch-tab-list-end";
 
-const DECORATIVE_IMAGE = "--ch-list-decorative-image";
+const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -127,7 +127,7 @@ const setTabListStartEndPosition = (
 };
 
 const getTabListSizesAndSetPosition = (
-  hostRef: HTMLChListElement,
+  hostRef: HTMLChTabRenderElement,
   tabListRef: HTMLElement,
   direction: ListDirection,
   buttonRect: DOMRect
@@ -199,10 +199,10 @@ const focusNextOrPreviousCaption = (
 
 @Component({
   shadow: true,
-  styleUrl: "list.scss",
-  tag: "ch-list"
+  styleUrl: "tab.scss",
+  tag: "ch-tab-render"
 })
-export class ChList implements DraggableView {
+export class ChTab implements DraggableView {
   #cancelId: number;
 
   // Styling
@@ -305,7 +305,7 @@ export class ChList implements DraggableView {
     }
   };
 
-  @Element() el: HTMLChListElement;
+  @Element() el: HTMLChTabRenderElement;
 
   @State() draggedElementIndex = -1;
   @State() draggedElementNewIndex = -1;
@@ -978,7 +978,7 @@ export class ChList implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host class={`ch-list-direction--${this.direction}`}>
+      <Host class={`ch-tab-direction--${this.direction}`}>
         {this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

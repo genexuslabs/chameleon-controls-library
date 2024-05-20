@@ -46,6 +46,11 @@ export class ChQr {
    */
   @Prop() readonly value: string | undefined = undefined;
 
+  #getColorValue = (color: string) =>
+    color?.includes("currentColor")
+      ? color.replace("currentColor", getComputedStyle(this.el).color)
+      : color;
+
   componentDidRender() {
     if (!this.value) {
       return;
@@ -56,8 +61,8 @@ export class ChQr {
         text: this.value,
         radius: this.radius, // 0.0 to 0.5
         ecLevel: this.errorCorrectionLevel, // L, M, Q, H
-        fill: this.fill, // foreground color
-        background: this.background, // color or null for transparent
+        fill: this.#getColorValue(this.fill), // foreground color
+        background: this.#getColorValue(this.background), // color or null for transparent
         size: this.size // in pixels
       },
       this.el.shadowRoot.querySelector("div")

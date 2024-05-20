@@ -44,29 +44,30 @@ export class ChQr {
    */
   @Prop() readonly size: number = 128;
 
-  componentDidLoad() {
-    if (this.value) {
-      QrCreator.render(
-        {
-          text: this.value,
-          radius: this.radius, // 0.0 to 0.5
-          ecLevel: this.errorCorrectionLevel, // L, M, Q, H
-          fill: this.fill, // foreground color
-          background: this.background, // color or null for transparent
-          size: this.size // in pixels
-        },
-        this.qrContainer
-      );
+  componentDidRender() {
+    if (!this.value) {
+      return;
     }
+
+    QrCreator.render(
+      {
+        text: this.value,
+        radius: this.radius, // 0.0 to 0.5
+        ecLevel: this.errorCorrectionLevel, // L, M, Q, H
+        fill: this.fill, // foreground color
+        background: this.background, // color or null for transparent
+        size: this.size // in pixels
+      },
+      this.qrContainer
+    );
   }
 
   render() {
     return (
       <Host>
-        <div
-          class="qr-container"
-          ref={el => (this.qrContainer = el as HTMLElement)}
-        ></div>
+        {this.value && (
+          <div ref={el => (this.qrContainer = el as HTMLElement)}></div>
+        )}
       </Host>
     );
   }

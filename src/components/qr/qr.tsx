@@ -35,20 +35,20 @@ export class ChQr {
   @Prop() readonly radius: number = 0;
 
   /**
+   * Any kind of text, also links, email addresses, any thing.
+   */
+  @Prop() readonly value: string | undefined = undefined;
+
+  /**
    * The total size of the final QR code in pixels.
    */
   @Prop() readonly size: number = 128;
 
-  /**
-   * Any kind of text, also links, email addresses, any thing.
-   */
-  @Prop() readonly text: string | undefined = undefined;
-
   componentDidLoad() {
-    if (this.text) {
+    if (this.value) {
       QrCreator.render(
         {
-          text: this.text,
+          text: this.value,
           radius: this.radius, // 0.0 to 0.5
           ecLevel: this.errorCorrectionLevel, // L, M, Q, H
           fill: this.fill, // foreground color

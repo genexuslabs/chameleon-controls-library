@@ -1,5 +1,6 @@
 import { Component, Host, h, Prop } from "@stencil/core";
 import QrCreator from "qr-creator";
+import { ErrorCorrectionLevel } from "./types";
 
 @Component({
   tag: "ch-qr",
@@ -20,7 +21,7 @@ export class ChQr {
    * bigger but chances are also higher that it will be read without errors
    * later on. This value is by default High (H).
    */
-  @Prop() readonly errorCorrectionLevel: QrCreator.ErrorCorrectionLevel = "H";
+  @Prop() readonly errorCorrectionLevel: ErrorCorrectionLevel = "H";
 
   /**
    * What color you want your QR code to be. By default is black.
@@ -28,12 +29,13 @@ export class ChQr {
   @Prop() readonly fill: string = "black";
 
   /**
-   * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5 (maximum round) are supported.
+   * Defines how round the blocks should be. Numbers from 0 (squares) to 0.5
+   * (maximum round) are supported.
    */
   @Prop() readonly radius: number = 0;
 
   /**
-   * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+   * The total size of the final QR code in pixels.
    */
   @Prop() readonly size: number = 128;
 
@@ -69,5 +71,3 @@ export class ChQr {
     );
   }
 }
-
-export type ecLevel = "L" | "M" | "Q" | "H";

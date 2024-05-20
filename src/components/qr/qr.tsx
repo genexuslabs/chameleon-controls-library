@@ -1,4 +1,4 @@
-import { Component, Host, h, Prop } from "@stencil/core";
+import { Component, Element, Host, h, Prop } from "@stencil/core";
 import QrCreator from "qr-creator";
 import { ErrorCorrectionLevel } from "./types";
 
@@ -8,7 +8,9 @@ import { ErrorCorrectionLevel } from "./types";
   shadow: true
 })
 export class ChQr {
-  private qrContainer!: HTMLElement;
+  #localKeyToDestroyPreviousQR = 0;
+
+  @Element() el!: HTMLChQrElement;
 
   /**
    * The background color. By default is transparent.
@@ -35,14 +37,14 @@ export class ChQr {
   @Prop() readonly radius: number = 0;
 
   /**
-   * Any kind of text, also links, email addresses, any thing.
-   */
-  @Prop() readonly value: string | undefined = undefined;
-
-  /**
    * The total size of the final QR code in pixels.
    */
   @Prop() readonly size: number = 128;
+
+  /**
+   * Any kind of text, also links, email addresses, any thing.
+   */
+  @Prop() readonly value: string | undefined = undefined;
 
   componentDidRender() {
     if (!this.value) {
@@ -58,16 +60,15 @@ export class ChQr {
         background: this.background, // color or null for transparent
         size: this.size // in pixels
       },
-      this.qrContainer
+      this.el.shadowRoot.querySelector("div")
     );
+    this.#localKeyToDestroyPreviousQR++;
   }
 
   render() {
     return (
       <Host>
-        {this.value && (
-          <div ref={el => (this.qrContainer = el as HTMLElement)}></div>
-        )}
+        {this.value && <div key={this.#localKeyToDestroyPreviousQR}></div>}
       </Host>
     );
   }

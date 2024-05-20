@@ -2,15 +2,11 @@ import {
   ActionListItemAdditionalInformation,
   ActionListModel
 } from "../../../../components/action-list/types";
+import { h } from "@stencil/core";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const chatIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/chat.svg";
-
-const pinOutlinedIconPath =
-  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/pin-outlined.svg";
-const unpinOutlinedIconPath =
-  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/unpin-outlined.svg";
 
 const editIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/edit.svg";
@@ -410,7 +406,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Attribute/Variable",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -420,7 +416,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Button",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -430,7 +426,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Component",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -440,7 +436,7 @@ export const panelToolbox: ActionListModel = [
         caption: "Image",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -450,7 +446,7 @@ export const panelToolbox: ActionListModel = [
         caption: "TextBlock",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       },
@@ -460,7 +456,7 @@ export const panelToolbox: ActionListModel = [
         caption: "User Control",
         additionalInformation: {
           "stretch-start": {
-            start: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
+            center: [{ imageSrc: `${ASSETS_PREFIX}knowledge-base.svg` }]
           }
         }
       }
@@ -468,99 +464,59 @@ export const panelToolbox: ActionListModel = [
   }
 ];
 
-const GxEAIRecentChatsAdditionalInfoUnpinned: ActionListItemAdditionalInformation =
-  {
-    "stretch-start": {
-      center: [{ imageSrc: chatIconPath, imageType: "mask" }]
-    },
-    "stretch-end": {
-      center: [
-        {
-          accessibleName: "Edit caption",
-          imageSrc: editIconPath,
-          imageType: "mask",
-          action: {
-            type: "modify",
-            showOnHover: true
-          }
-        },
-        {
-          accessibleName: "Delete item",
-          imageSrc: deleteIconPath,
-          imageType: "mask",
-          action: {
-            type: "remove",
-            showOnHover: true
-          }
-        },
-        {
-          accessibleName: "Pin item",
-          imageSrc: pinOutlinedIconPath,
-          imageType: "mask",
-          action: {
-            type: "fix",
-            showOnHover: true
-          }
+const GxEAIRecentChatsAdditionalInfo: ActionListItemAdditionalInformation = {
+  "stretch-start": {
+    center: [{ imageSrc: chatIconPath, imageType: "mask" }]
+  },
+  "stretch-end": {
+    center: [
+      {
+        accessibleName: "Edit caption",
+        imageSrc: editIconPath,
+        imageType: "mask",
+        action: {
+          type: "modify",
+          showOnHover: true
         }
-      ]
-    }
-  };
-
-const GxEAIRecentChatsAdditionalInfoPinned: ActionListItemAdditionalInformation =
-  {
-    "stretch-start": {
-      center: [{ imageSrc: chatIconPath, imageType: "mask" }]
-    },
-    "stretch-end": {
-      center: [
-        {
-          accessibleName: "Edit caption",
-          imageSrc: editIconPath,
-          imageType: "mask",
-          action: {
-            type: "modify",
-            showOnHover: true
-          }
-        },
-        {
-          accessibleName: "Delete item",
-          imageSrc: deleteIconPath,
-          imageType: "mask",
-          action: {
-            type: "remove",
-            showOnHover: true
-          }
-        },
-        {
-          accessibleName: "Pin item",
-          imageSrc: unpinOutlinedIconPath,
-          imageType: "mask",
-          action: {
-            type: "fix"
-          }
+      },
+      {
+        accessibleName: "Delete item",
+        imageSrc: deleteIconPath,
+        imageType: "mask",
+        action: {
+          type: "remove",
+          showOnHover: true
         }
-      ]
-    }
-  };
+      },
+      {
+        accessibleName: "Pin item",
+        imageType: "mask",
+        action: {
+          type: "fix"
+        }
+      }
+    ]
+  }
+};
 
 export const GxEAIRecentChats: ActionListModel = [
   {
     id: "2023 employee contracts",
     type: "actionable",
     caption: "2023 employee contracts",
-    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+    additionalInformation: GxEAIRecentChatsAdditionalInfo
   },
   {
     id: "Investors reports",
     type: "actionable",
     caption: "Investors reports",
-    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+    additionalInformation: GxEAIRecentChatsAdditionalInfo
   },
   {
     id: "2022 employee contracts",
     type: "actionable",
     caption: "2022 employee contracts",
-    additionalInformation: GxEAIRecentChatsAdditionalInfoUnpinned
+    additionalInformation: GxEAIRecentChatsAdditionalInfo
   },
   {
     id: "Yesterday",
@@ -568,11 +524,107 @@ export const GxEAIRecentChats: ActionListModel = [
     caption: "Yesterday",
     items: [
       {
+        id: "Pluto Exploration Contract",
+        type: "actionable",
+        caption: "Pluto Exploration Contract",
+        additionalInformation: GxEAIRecentChatsAdditionalInfo
+      },
+      {
+        id: "Saturn Exploration Contract",
+        type: "actionable",
+        fixed: true,
+        caption: "Saturn Exploration Contract",
+        additionalInformation: GxEAIRecentChatsAdditionalInfo
+      },
+      {
         id: "Mars Exploration Contract",
         type: "actionable",
         caption: "Mars Exploration Contract",
-        additionalInformation: GxEAIRecentChatsAdditionalInfoPinned
+        additionalInformation: GxEAIRecentChatsAdditionalInfo
       }
     ]
+  }
+];
+
+const redDotIconPath =
+  "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/error.svg";
+
+export const GxEAINotifications: ActionListModel = [
+  {
+    id: "Project Name 1",
+    type: "actionable",
+    caption: "Project Name",
+    additionalInformation: {
+      "inline-caption": { end: [{ imageSrc: redDotIconPath }] },
+      "block-end": {
+        start: [
+          { caption: "Ticket #ID Finalized" },
+          { caption: "Just now", part: "time" }
+        ]
+      }
+    }
+  },
+  { type: "separator" },
+  {
+    id: "Project Name 2",
+    type: "actionable",
+    caption: "We've updated our privacy policy.",
+    additionalInformation: {
+      "block-end": {
+        start: [
+          {
+            caption: "We've updated our privacy policy.\nCheck out the changes "
+          },
+          {
+            caption: "here",
+            action: {
+              type: "custom",
+              callback: () => {
+                console.log("hola");
+              }
+            },
+            part: "hyperlink-notification"
+          },
+          { caption: ". If you have any question, feel free to contact us!" },
+          { caption: "15 minutes ago", part: "time" }
+        ]
+      }
+    }
+  },
+  { type: "separator" },
+  {
+    id: "Project Name 3",
+    type: "actionable",
+    caption: "We've updated our privacy policy.",
+    additionalInformation: {
+      "block-end": {
+        start: [
+          {
+            caption: "We've updated our privacy policy.\nCheck out the changes "
+          },
+          {
+            caption: "here",
+            action: {
+              type: "custom",
+              callback: () => {
+                console.log("hola");
+              }
+            },
+            part: "hyperlink-notification"
+          },
+          { caption: ". If you have any question, feel free to contact us!" },
+          {
+            jsx: () => (
+              <ch-checkbox
+                caption="hola"
+                unCheckedValue="false"
+                checkedValue="true"
+                value=""
+              ></ch-checkbox>
+            )
+          }
+        ]
+      }
+    }
   }
 ];

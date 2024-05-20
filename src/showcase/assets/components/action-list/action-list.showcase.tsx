@@ -5,6 +5,7 @@ import { Mutable } from "../../../../common/types";
 import {
   GitHubChangesModel,
   GitHubHistoryModel,
+  GxEAINotifications,
   GxEAIRecentChats,
   agentTickets,
   panelToolbox,
@@ -39,9 +40,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Agent Tickets", value: agentTickets },
           { caption: "Recent KBs", value: recentKBs },
           { caption: "Panel Toolbox", value: panelToolbox },
-          { caption: "GX EAI recent chats", value: GxEAIRecentChats }
+          { caption: "GX EAI recent chats", value: GxEAIRecentChats },
+          { caption: "GX EAI notifications", value: GxEAINotifications }
         ],
-        value: GitHubHistoryModel
+        value: GxEAIRecentChats
       }
     ]
   },

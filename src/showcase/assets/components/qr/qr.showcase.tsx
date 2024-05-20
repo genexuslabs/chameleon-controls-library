@@ -24,7 +24,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
       {
         id: "value",
         caption: "Value",
-        value: "",
+        value: "https://gx-chameleon.netlify.app",
         type: "string"
       },
       {

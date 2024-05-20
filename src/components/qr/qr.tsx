@@ -20,11 +20,12 @@ export class ChQr {
   @Prop() readonly radius: number = 0;
 
   /**
-   * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR
-   * code for error correction respectively. So on one hand the code will get bigger but chances are also higher
-   * that it will be read without errors later on. This value is by default High (H)
+   * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR
+   * code for error correction respectively. So on one hand the code will get
+   * bigger but chances are also higher that it will be read without errors
+   * later on. This value is by default High (H).
    */
-  @Prop() readonly ecLevel: ecLevel = "H";
+  @Prop() readonly errorCorrectionLevel: QrCreator.ErrorCorrectionLevel = "H";
 
   /**
    * What color you want your QR code to be. By default is black.
@@ -47,7 +48,7 @@ export class ChQr {
         {
           text: this.text,
           radius: this.radius, // 0.0 to 0.5
-          ecLevel: this.ecLevel, // L, M, Q, H
+          ecLevel: this.errorCorrectionLevel, // L, M, Q, H
           fill: this.fill, // foreground color
           background: this.background, // color or null for transparent
           size: this.size // in pixels

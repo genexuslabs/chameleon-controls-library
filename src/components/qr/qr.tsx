@@ -3,7 +3,7 @@ import QrCreator from "qr-creator";
 
 @Component({
   tag: "ch-qr",
-  styleUrl: "ch-qr.scss",
+  styleUrl: "qr.scss",
   shadow: true
 })
 export class ChQr {

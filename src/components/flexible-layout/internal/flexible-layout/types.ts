@@ -5,7 +5,7 @@ import {
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
-import { ListType } from "../../../list/types";
+import { ListType } from "../../../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model

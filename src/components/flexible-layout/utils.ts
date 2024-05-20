@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { tabTypeToPart } from "../list/utils";
+import { tabTypeToPart } from "../tab/utils";
 import {
   FlexibleLayoutModel,
   FlexibleLayoutGroupModel,

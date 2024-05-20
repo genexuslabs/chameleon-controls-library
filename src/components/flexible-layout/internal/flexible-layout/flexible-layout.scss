@@ -23,16 +23,16 @@
   pointer-events: none; // Avoid the capture of pointer events
 }
 
-.ch-list-inline--end {
+.ch-tab-inline--end {
   grid-template-columns: 1fr max-content;
 }
 
-.ch-list-block--end {
+.ch-tab-block--end {
   grid-template-rows: 1fr max-content;
 }
 
 // Change the visual order, but no the order in the HTML
-.ch-list-inline--end::part(tab-list),
-.ch-list-block--end::part(tab-list) {
+.ch-tab-inline--end::part(tab-list),
+.ch-tab-block--end::part(tab-list) {
   order: 1;
 }

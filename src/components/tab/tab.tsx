@@ -202,7 +202,7 @@ const focusNextOrPreviousCaption = (
   styleUrl: "tab.scss",
   tag: "ch-tab-render"
 })
-export class ChTab implements DraggableView {
+export class ChTabRender implements DraggableView {
   #cancelId: number;
 
   // Styling

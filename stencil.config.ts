@@ -48,7 +48,7 @@ export const config: Config = {
       components: ["ch-layout-splitter"] // Make sure the ch-layout-splitter control is not bundled with other components
     },
     {
-      components: ["ch-list"] // Make sure the ch-list control is not bundled with other components
+      components: ["ch-tab-render"] // Make sure the ch-tab-render control is not bundled with other components
     },
     {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]

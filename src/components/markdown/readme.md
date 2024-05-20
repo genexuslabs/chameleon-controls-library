@@ -25,7 +25,7 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 
 | Property     | Attribute  | Description                                                                | Type                                          | Default             |
 | ------------ | ---------- | -------------------------------------------------------------------------- | --------------------------------------------- | ------------------- |
-| `rawHtml`    | `raw-html` | `true` to render raw HTML with sanitization.                               | `boolean`                                     | `true`              |
+| `rawHtml`    | `raw-html` | `true` to render raw HTML with sanitization.                               | `boolean`                                     | `false`             |
 | `renderCode` | --         | This property allows us to implement custom rendering for the code blocks. | `(options: MarkdownCodeRenderOptions) => any` | `defaultCodeRender` |
 | `value`      | `value`    | Specifies the markdown string to parse.                                    | `string`                                      | `undefined`         |
 

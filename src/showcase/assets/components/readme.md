@@ -26,6 +26,7 @@
 - [ch-radio-group-render](../../../components/radio-group)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-layout-splitter](../../../components/layout-splitter)
+- [ch-list](../../../components/list)
 - [ch-tree-view-render](../../../components/tree-view)
 
 ### Graph
@@ -37,6 +38,7 @@ graph TD;
   ch-showcase --> ch-radio-group-render
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-layout-splitter
+  ch-showcase --> ch-list
   ch-showcase --> ch-tree-view-render
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-list

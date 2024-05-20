@@ -5154,7 +5154,7 @@ declare namespace LocalJSX {
          */
         "onItemDragStart"?: (event: ChListCustomEvent<number>) => void;
         /**
-          * Fired when the selected item change.
+          * Fired when the selected item change. This event can be default prevented to prevent the item selection.
          */
         "onSelectedItemChange"?: (event: ChListCustomEvent<ListSelectedItemInfo>) => void;
         /**

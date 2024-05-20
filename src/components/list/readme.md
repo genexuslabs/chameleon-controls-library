@@ -21,12 +21,12 @@
 
 ## Events
 
-| Event                | Description                                                               | Type                                                                                           |
-| -------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `expandMainGroup`    | Fired when an item of the main group is double clicked.                   | `CustomEvent<string>`                                                                          |
-| `itemClose`          | Fired the close button of an item is clicked.                             | `CustomEvent<{ itemId: string; itemIndex: number; }>`                                          |
-| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list. | `CustomEvent<number>`                                                                          |
-| `selectedItemChange` | Fired when the selected item change.                                      | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
+| Event                | Description                                                                                             | Type                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `expandMainGroup`    | Fired when an item of the main group is double clicked.                                                 | `CustomEvent<string>`                                                                          |
+| `itemClose`          | Fired the close button of an item is clicked.                                                           | `CustomEvent<{ itemId: string; itemIndex: number; }>`                                          |
+| `itemDragStart`      | Fired the first time a caption button is dragged outside of its tab list.                               | `CustomEvent<number>`                                                                          |
+| `selectedItemChange` | Fired when the selected item change. This event can be default prevented to prevent the item selection. | `CustomEvent<{ lastSelectedIndex: number; newSelectedId: string; newSelectedIndex: number; }>` |
 
 
 ## Methods
@@ -85,11 +85,13 @@ Type: `Promise<void>`
 ### Used by
 
  - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-flexible-layout --> ch-list
+  ch-showcase --> ch-list
   style ch-list fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

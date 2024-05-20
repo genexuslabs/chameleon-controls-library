@@ -781,7 +781,7 @@ export const preferencesModel: TreeViewItemModel[] = [
         id: "Environment.GeneXusNext",
         caption: "GeneXusNext Develop",
         lazy: true,
-        startImgSrc: `${ASSETS_PREFIX}version.sv`
+        startImgSrc: `${ASSETS_PREFIX}version.svg`
       },
       {
         id: "Environment.TeamDev",
@@ -800,19 +800,19 @@ export const preferencesModel: TreeViewItemModel[] = [
             id: "Environment.Patterns.ConversationalFlows",
             caption: "Conversational Flows",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}conversational-flows.sv`
+            startImgSrc: `${ASSETS_PREFIX}conversational-flows.svg`
           },
           {
             id: "Environment.Patterns.WorkWith",
             caption: "Work With",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}workwith-for-sd.sv`
+            startImgSrc: `${ASSETS_PREFIX}workwith-for-sd.svg`
           },
           {
             id: "Environment.Patterns.WorkWithForWeb",
             caption: "Work With for Web",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}work-with-web.sv`
+            startImgSrc: `${ASSETS_PREFIX}work-with-web.svg`
           }
         ]
       },
@@ -884,7 +884,7 @@ const Environment_GeneXusNext_preferencesModel: TreeViewItemModel[] = [
                 id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.DefaultMySQL",
                 caption: "Default (MySQL)",
                 leaf: true,
-                startImgSrc: `${ASSETS_PREFIX}mysql.sv`
+                startImgSrc: `${ASSETS_PREFIX}mysql.svg`
               },
               {
                 id: "Environment.GeneXusNext.JavaMySQL.Backend.DataStores.GAMMySQL",
@@ -914,7 +914,7 @@ const Environment_GeneXusNext_preferencesModel: TreeViewItemModel[] = [
             id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebJava",
             caption: "Web (Java)",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}java.sv`
+            startImgSrc: `${ASSETS_PREFIX}java.svg`
           },
           {
             id: "Environment.GeneXusNext.JavaMySQL.Frontend.WebAngular",
@@ -935,13 +935,13 @@ const Environment_GeneXusNext_preferencesModel: TreeViewItemModel[] = [
             id: "Environment.GeneXusNext.JavaMySQL.Deployment.Backend",
             caption: "Backend",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}deployment-unit.sv`
+            startImgSrc: `${ASSETS_PREFIX}deployment-unit.svg`
           },
           {
             id: "Environment.GeneXusNext.JavaMySQL.Deployment.Frontend",
             caption: "Frontend",
             leaf: true,
-            startImgSrc: `${ASSETS_PREFIX}deployment-unit.sv`
+            startImgSrc: `${ASSETS_PREFIX}deployment-unit.svg`
           }
         ]
       }

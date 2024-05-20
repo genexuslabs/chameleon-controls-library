@@ -28,7 +28,7 @@ import {
 
 // import { mouseEventModifierKey } from "../../common/helpers";
 
-import { ListItemCloseInfo, ListSelectedItemInfo } from "../../../tab/types";
+import { TabItemCloseInfo, TabSelectedItemInfo } from "../../../tab/types";
 import { ChTabRenderCustomEvent } from "../../../../components";
 import {
   getWidgetDropInfo,
@@ -237,7 +237,7 @@ export class ChFlexibleLayout {
 
   private handleItemChange =
     (viewId: string) =>
-    (event: ChTabRenderCustomEvent<ListSelectedItemInfo>) => {
+    (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render
@@ -250,7 +250,7 @@ export class ChFlexibleLayout {
     };
 
   private handleItemClose =
-    (viewId: string) => (event: ChTabRenderCustomEvent<ListItemCloseInfo>) => {
+    (viewId: string) => (event: ChTabRenderCustomEvent<TabItemCloseInfo>) => {
       event.stopPropagation();
 
       // Add the view id to properly update the render

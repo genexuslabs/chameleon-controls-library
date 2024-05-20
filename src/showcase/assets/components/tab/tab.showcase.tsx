@@ -3,10 +3,8 @@ import { ChTabRender } from "../../../../components/tab/tab";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { simpleModel1, simpleModel2 } from "./models";
-import {
-  ChTabRenderCustomEvent,
-  ListSelectedItemInfo
-} from "../../../../components";
+import { ChTabRenderCustomEvent } from "../../../../components";
+import { TabSelectedItemInfo } from "../../../../components/tab/types";
 import {
   kbExplorerModel,
   lazyLoadTreeItemsCallback,
@@ -17,7 +15,7 @@ const state: Partial<Mutable<ChTabRender>> = {};
 const renderedItems = new Set(["item1"]);
 
 const selectedItemChangeHandler = (
-  event: ChTabRenderCustomEvent<ListSelectedItemInfo>
+  event: ChTabRenderCustomEvent<TabSelectedItemInfo>
 ) => {
   renderedItems.add(event.detail.newSelectedId);
   state.selectedId = event.detail.newSelectedId; // TODO: Automatic sync this value in the UI

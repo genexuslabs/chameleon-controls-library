@@ -1,19 +1,17 @@
-export type ListType = "inlineStart" | "main" | "inlineEnd" | "blockEnd";
+export type TabDirection = "block" | "inline";
 
-export type ListDirection = "block" | "inline";
-
-export type ListItemCloseInfo = {
+export type TabItemCloseInfo = {
   itemId: string;
   itemIndex: number;
 };
 
-export type ListSelectedItemInfo = {
+export type TabSelectedItemInfo = {
   lastSelectedIndex: number;
   newSelectedId: string;
   newSelectedIndex: number;
 };
 
-export type ListElementSize = {
+export type TabElementSize = {
   xStart: number;
   xEnd: number;
   yStart: number;

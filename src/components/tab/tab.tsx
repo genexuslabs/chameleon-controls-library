@@ -23,10 +23,10 @@ import {
   tokenMap
 } from "../../common/utils";
 import {
-  ListDirection,
-  ListElementSize,
-  ListItemCloseInfo,
-  ListSelectedItemInfo
+  TabDirection,
+  TabElementSize,
+  TabItemCloseInfo,
+  TabSelectedItemInfo
 } from "./types";
 import {
   CAPTION_ID,
@@ -89,7 +89,7 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
 
 // Utility functions
 
-const isBlockDirection = (direction: ListDirection) => direction === "block";
+const isBlockDirection = (direction: TabDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -129,13 +129,13 @@ const setTabListStartEndPosition = (
 const getTabListSizesAndSetPosition = (
   hostRef: HTMLChTabRenderElement,
   tabListRef: HTMLElement,
-  direction: ListDirection,
+  direction: TabDirection,
   buttonRect: DOMRect
-): ListElementSize => {
+): TabElementSize => {
   const tabListRect = tabListRef.getBoundingClientRect();
 
   // Tab List information
-  const tabListSizes: ListElementSize = {
+  const tabListSizes: TabElementSize = {
     xStart: tabListRect.x,
     xEnd: tabListRect.x + tabListRect.width,
     yStart: tabListRect.y,
@@ -239,7 +239,7 @@ export class ChTabRender implements DraggableView {
    * tab list.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #mouseBoundingLimits: ListElementSize;
+  #mouseBoundingLimits: TabElementSize;
 
   #renderedPages: Set<string> = new Set();
 
@@ -251,7 +251,7 @@ export class ChTabRender implements DraggableView {
   // Keyboard interactions
   #keyEvents: {
     [key in KeyEvents]: (
-      direction: ListDirection,
+      direction: TabDirection,
       event: KeyboardEvent,
       focusedCaption: HTMLButtonElement
     ) => void;
@@ -337,9 +337,9 @@ export class ChTabRender implements DraggableView {
   /**
    * Specifies the flexible layout type.
    */
-  @Prop({ reflect: true }) readonly direction: ListDirection;
+  @Prop({ reflect: true }) readonly direction: TabDirection;
   @Watch("direction")
-  directionChange(newDirection: ListDirection) {
+  directionChange(newDirection: TabDirection) {
     this.#initializeState(newDirection);
   }
 
@@ -393,13 +393,13 @@ export class ChTabRender implements DraggableView {
   /**
    * Fired the close button of an item is clicked.
    */
-  @Event() itemClose: EventEmitter<ListItemCloseInfo>;
+  @Event() itemClose: EventEmitter<TabItemCloseInfo>;
 
   /**
    * Fired when the selected item change.
    * This event can be default prevented to prevent the item selection.
    */
-  @Event() selectedItemChange: EventEmitter<ListSelectedItemInfo>;
+  @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
 
   /**
    * Fired the first time a caption button is dragged outside of its tab list.
@@ -530,7 +530,7 @@ export class ChTabRender implements DraggableView {
     );
 
     // Button information
-    const buttonSizes: ListElementSize = {
+    const buttonSizes: TabElementSize = {
       xStart: buttonRect.x,
       xEnd: buttonRect.x + buttonRect.width,
       yStart: buttonRect.y,
@@ -949,14 +949,14 @@ export class ChTabRender implements DraggableView {
     );
   };
 
-  #initializeState = (direction: ListDirection) => {
+  #initializeState = (direction: TabDirection) => {
     this.#updateRenderedPages(this.model);
 
     // Initialize classes and parts
     this.#setClassesAndParts(direction);
   };
 
-  #setClassesAndParts = (direction: ListDirection) => {
+  #setClassesAndParts = (direction: TabDirection) => {
     this.#classes = LIST_CLASSES;
     this.#parts = direction === "block" ? LIST_PART_BLOCK : LIST_PART_INLINE;
   };

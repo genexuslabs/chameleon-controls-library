@@ -5,12 +5,16 @@ import {
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
-import { ListType } from "../../../tab/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
-export type ViewType = ListType | "blockStart";
+export type ViewType =
+  | "inlineStart"
+  | "main"
+  | "inlineEnd"
+  | "blockEnd"
+  | "blockStart";
 export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 
 /*

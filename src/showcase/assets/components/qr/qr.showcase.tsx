@@ -8,6 +8,7 @@ const state: Partial<Mutable<ChQr>> = {};
 const render = () => (
   <ch-qr
     class="qr"
+    accessibleName={state.accessibleName}
     background={state.background}
     errorCorrectionLevel={state.errorCorrectionLevel}
     fill={state.fill}
@@ -25,6 +26,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
         id: "value",
         caption: "Value",
         value: "https://gx-chameleon.netlify.app",
+        type: "string"
+      },
+      {
+        id: "accessibleName",
+        caption: "Accessible Name",
+        value: "",
         type: "string"
       },
       {

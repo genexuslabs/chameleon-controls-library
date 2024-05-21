@@ -19,7 +19,7 @@ const render = () => (
 
 const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
   {
-    caption: "Properties",
+    caption: "Model",
     properties: [
       {
         id: "value",
@@ -38,7 +38,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
           { caption: "Q", value: "Q" }
         ],
         type: "enum"
-      },
+      }
+    ]
+  },
+  {
+    caption: "Customization",
+    properties: [
       {
         id: "background",
         caption: "Background",

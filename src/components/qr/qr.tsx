@@ -65,6 +65,7 @@ export class ChQr {
         background: this.#getColorValue(this.background), // color or null for transparent
         size: this.size // in pixels
       },
+      // Using a JSX' ref will give an error at runtime after the second re-render
       this.el.shadowRoot.querySelector("div")
     );
     this.#localKeyToDestroyPreviousQR++;
@@ -72,7 +73,7 @@ export class ChQr {
 
   render() {
     return (
-      <Host>
+      <Host role={this.value ? "img" : null}>
         {this.value && <div key={this.#localKeyToDestroyPreviousQR}></div>}
       </Host>
     );

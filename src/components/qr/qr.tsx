@@ -2,6 +2,9 @@ import { Component, Element, Host, h, Prop } from "@stencil/core";
 import QrCreator from "qr-creator";
 import { ErrorCorrectionLevel } from "./types";
 
+/**
+ * @status developer-preview
+ */
 @Component({
   tag: "ch-qr",
   styleUrl: "qr.scss",

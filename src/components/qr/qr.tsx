@@ -23,7 +23,8 @@ export class ChQr {
   @Prop() readonly accessibleName: string;
 
   /**
-   * The background color. By default is transparent.
+   * The background color of the render QR. If not specified, "transparent"
+   * will be used.
    */
   @Prop() readonly background: string | null = null;
 
@@ -36,7 +37,7 @@ export class ChQr {
   @Prop() readonly errorCorrectionLevel: ErrorCorrectionLevel = "H";
 
   /**
-   * What color you want your QR code to be. By default is black.
+   * What color you want your QR code to be.
    */
   @Prop() readonly fill: string = "black";
 

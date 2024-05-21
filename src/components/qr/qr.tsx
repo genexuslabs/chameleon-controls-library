@@ -13,6 +13,13 @@ export class ChQr {
   @Element() el!: HTMLChQrElement;
 
   /**
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for the element.
+   */
+  @Prop() readonly accessibleName: string;
+
+  /**
    * The background color. By default is transparent.
    */
   @Prop() readonly background: string | null = null;
@@ -73,7 +80,10 @@ export class ChQr {
 
   render() {
     return (
-      <Host role={this.value ? "img" : null}>
+      <Host
+        role={this.value ? "img" : null}
+        aria-label={this.value ? this.accessibleName : null}
+      >
         {this.value && <div key={this.#localKeyToDestroyPreviousQR}></div>}
       </Host>
     );

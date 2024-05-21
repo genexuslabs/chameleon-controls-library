@@ -27,7 +27,7 @@ const components = [
   ["notifications", "Notifications", EXPERIMENTAL],
   ["paginator", "Paginator", STABLE],
   ["popover", "Popover", EXPERIMENTAL],
-  ["qr", "QR", EXPERIMENTAL],
+  ["qr", "QR", DEVELOPER_PREVIEW],
   ["radio-group", "Radio Group", EXPERIMENTAL],
   ["segmented-control", "Segmented Control", EXPERIMENTAL],
   ["shortcuts", "Shortcuts", EXPERIMENTAL],

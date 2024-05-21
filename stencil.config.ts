@@ -60,6 +60,9 @@ export const config: Config = {
       components: ["ch-popover"] // Make sure the ch-popover control is not bundled with other components
     },
     {
+      components: ["ch-qr"] // Make sure the ch-qr control is not bundled with other components
+    },
+    {
       components: [
         "ch-tree-view",
         "ch-tree-view-drop",

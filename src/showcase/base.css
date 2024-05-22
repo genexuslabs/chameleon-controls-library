@@ -86,6 +86,20 @@ legend {
   grid-auto-rows: 128px;
 }
 
+.tab-test-main-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+
+  ch-list {
+    gap: 8px;
+
+    &::part(page-container) {
+      border: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+    }
+  }
+}
+
 .dropdown-test-main-wrapper {
   display: grid;
   grid-auto-flow: column;

@@ -368,7 +368,7 @@ export class ChList implements DraggableView {
   /**
    * Specifies the selected item of the widgets array.
    */
-  @Prop() readonly selectedId: string;
+  @Prop({ mutable: true }) selectedId: string;
   @Watch("selectedId")
   handleSelectedIdChange(newSelectedId: string) {
     this.#renderedPages.add(newSelectedId);
@@ -397,6 +397,7 @@ export class ChList implements DraggableView {
 
   /**
    * Fired when the selected item change.
+   * This event can be default prevented to prevent the item selection.
    */
   @Event() selectedItemChange: EventEmitter<ListSelectedItemInfo>;
 
@@ -460,14 +461,16 @@ export class ChList implements DraggableView {
     (index: number, itemId: string) => (event: MouseEvent) => {
       event.stopPropagation();
 
-      this.selectedItemChange.emit({
+      const eventInfo = this.selectedItemChange.emit({
         lastSelectedIndex: this.#selectedIndex,
         newSelectedId: itemId,
         newSelectedIndex: index
       });
 
-      this.#selectedIndex = index;
-      // this.selectedId = itemId;
+      if (!eventInfo.defaultPrevented) {
+        this.#selectedIndex = index;
+        this.selectedId = itemId;
+      }
     };
 
   /**

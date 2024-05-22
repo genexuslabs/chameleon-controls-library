@@ -4,6 +4,8 @@ import { CheckBox } from "../../../components/checkbox/checkbox";
 import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
+import { ChList } from "../../../components/list/list";
+import { ChQr } from "../../../components/qr/qr";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
@@ -93,4 +95,6 @@ export type ShowcaseAvailableStories =
   | Mutable<ChComboBox>
   | Mutable<ChDropdownRender>
   | Mutable<ChLayoutSplitter>
+  | Mutable<ChList>
+  | Mutable<ChQr>
   | Mutable<ChTreeViewRender>;

@@ -418,19 +418,21 @@ export class GridChameleon {
   }
 
   private renderPaginator() {
+    const hasRecordCount =
+      !!this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`];
     const recordCount =
       this.grid.ParentObject[`sub${this.grid.ControlName}_Recordcount`] ?? 0;
     const hasNextPage = !this.grid.isLastPage();
     const activePage = Math.ceil(
       (parseInt(this.grid.firstRecordOnPage) + 1) / this.grid.pageSize
     );
-    const totalPages = Math.ceil(recordCount / this.grid.pageSize);
+    const totalPages = Math.max(1, Math.ceil(recordCount / this.grid.pageSize));
 
     return (
       <ch-paginator
-        has-next-page={totalPages === 0 ? hasNextPage : null}
+        has-next-page={hasRecordCount ? null : hasNextPage}
         active-page={activePage}
-        total-pages={totalPages !== 0 ? totalPages : null}
+        total-pages={hasRecordCount ? totalPages : -1}
         class={this.grid.pagingBarClass}
         slot="footer"
       >

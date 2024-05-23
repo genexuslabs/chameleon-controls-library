@@ -27,7 +27,8 @@
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-layout-splitter](../../../components/layout-splitter)
 - [ch-qr](../../../components/qr)
-- [ch-list](../../../components/list)
+- [ch-slider](../../../components/slider)
+- [ch-tab-render](../../../components/tab)
 - [ch-tree-view-render](../../../components/tree-view)
 
 ### Graph
@@ -40,10 +41,11 @@ graph TD;
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-layout-splitter
   ch-showcase --> ch-qr
-  ch-showcase --> ch-list
+  ch-showcase --> ch-slider
+  ch-showcase --> ch-tab-render
   ch-showcase --> ch-tree-view-render
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-list
+  ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
   ch-combo-box --> ch-popover
   ch-dropdown-render --> ch-dropdown

@@ -91,7 +91,7 @@ legend {
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 
-  ch-list {
+  ch-tab-render {
     gap: 8px;
 
     &::part(page-container) {

@@ -112,13 +112,13 @@ Type: `Promise<FlexibleLayoutViewRemoveResult>`
 
 ### Depends on
 
-- [ch-list](../../../list)
+- [ch-tab-render](../../../tab)
 - [ch-layout-splitter](../../../layout-splitter)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-flexible-layout --> ch-list
+  ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
   ch-flexible-layout-render --> ch-flexible-layout
   style ch-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px

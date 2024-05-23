@@ -48,11 +48,11 @@ To add a widget in a `"single-content"` type leaf, use the
 
 #### Parameters
 
-| Name           | Type                                                                                                                                                                                           | Description |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| `leafId`       | `string`                                                                                                                                                                                       |             |
-| `widget`       | `{ addWrapper?: boolean; conserveRenderState?: boolean; id: string; name: string; startImageSrc?: string; startImageType?: ImageRender; wasRendered?: boolean; } & FlexibleLayoutWidgetRender` |             |
-| `selectWidget` | `boolean`                                                                                                                                                                                      |             |
+| Name           | Type                                                                                                                                                                                       | Description |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------- |
+| `leafId`       | `string`                                                                                                                                                                                   |             |
+| `widget`       | `{ addWrapper?: boolean; conserveRenderState?: boolean; id: string; name: string; startImgSrc?: string; startImgType?: ImageRender; wasRendered?: boolean; } & FlexibleLayoutWidgetRender` |             |
+| `selectWidget` | `boolean`                                                                                                                                                                                  |             |
 
 #### Returns
 
@@ -114,7 +114,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   ch-flexible-layout-render --> ch-flexible-layout
-  ch-flexible-layout --> ch-list
+  ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
   ch-showcase --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-flexible-layout-render

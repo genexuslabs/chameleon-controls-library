@@ -1,14 +1,6 @@
-/**
- * @typedef TreeViewItemModel
- * @type {object}
- * @property {string} id
- * @property {string} caption
- * @property {number=} order
- */
-
-const DEVELOPER_PREVIEW = "developer-preview";
-const EXPERIMENTAL = "experimental";
-const STABLE = "stable";
+const DEVELOPER_PREVIEW = "Developer Preview";
+const EXPERIMENTAL = "Experimental";
+const STABLE = "Stable";
 
 const components = [
   ["accordion", "Accordion", EXPERIMENTAL],
@@ -27,7 +19,7 @@ const components = [
   ["notifications", "Notifications", EXPERIMENTAL],
   ["paginator", "Paginator", STABLE],
   ["popover", "Popover", EXPERIMENTAL],
-  ["qr", "QR", EXPERIMENTAL],
+  ["qr", "QR", DEVELOPER_PREVIEW],
   ["radio-group", "Radio Group", EXPERIMENTAL],
   ["segmented-control", "Segmented Control", EXPERIMENTAL],
   ["shortcuts", "Shortcuts", EXPERIMENTAL],
@@ -57,19 +49,13 @@ const iconMapping = {
  * @property {number=} order
  */
 
-const removeDashesAndApplyUppercase = wordToFormat =>
-  wordToFormat
-    .split("-")
-    .map(word => word.replace(word[0], word[0].toUpperCase()))
-    .join(" ");
-
 /**
  * @param {TreeXItemModel[]} subModel
  */
 export const treeViewComponents = components.map(el => ({
   id: el[0],
   caption: el[1],
-  metadata: `(${removeDashesAndApplyUppercase(el[2])})`,
+  metadata: `${el[1]}---${el[2]}`,
   leaf: true,
   endImgSrc: iconMapping[el[2]],
   endImgType: "mask"

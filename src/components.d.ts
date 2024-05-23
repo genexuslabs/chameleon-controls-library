@@ -28,7 +28,7 @@ import { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 import { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-import { ecLevel } from "./components/qr/ch-qr";
+import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -68,7 +68,7 @@ export { ChPaginatorActivePageChangedEvent, ChPaginatorPageNavigationRequestedEv
 export { ChPaginatorNavigateClickedEvent, ChPaginatorNavigateType } from "./components/paginator/paginator-navigate/ch-paginator-navigate-types";
 export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginator-pages/ch-paginator-pages";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-export { ecLevel } from "./components/qr/ch-qr";
+export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -1551,17 +1551,24 @@ export namespace Components {
          */
         "resizable": boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChQr {
         /**
-          * The background color. By default is transparent.
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * The background color of the render QR. If not specified, "transparent" will be used.
          */
         "background": string | null;
         /**
-          * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+          * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H).
          */
-        "ecLevel": ecLevel;
+        "errorCorrectionLevel": ErrorCorrectionLevel;
         /**
-          * What color you want your QR code to be. By default is black.
+          * What color you want your QR code to be.
          */
         "fill": string;
         /**
@@ -1569,13 +1576,13 @@ export namespace Components {
          */
         "radius": number;
         /**
-          * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+          * The total size of the final QR code in pixels.
          */
         "size": number;
         /**
           * Any kind of text, also links, email addresses, any thing.
          */
-        "text": string | undefined;
+        "value": string | undefined;
     }
     /**
      * The radio group control is used to render a short list of mutually exclusive options.
@@ -3472,6 +3479,9 @@ declare global {
         prototype: HTMLChPopoverElement;
         new (): HTMLChPopoverElement;
     };
+    /**
+     * @status developer-preview
+     */
     interface HTMLChQrElement extends Components.ChQr, HTMLStencilElement {
     }
     var HTMLChQrElement: {
@@ -5554,17 +5564,24 @@ declare namespace LocalJSX {
          */
         "resizable"?: boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChQr {
         /**
-          * The background color. By default is transparent.
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * The background color of the render QR. If not specified, "transparent" will be used.
          */
         "background"?: string | null;
         /**
-          * Means "Error correction levels". The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H)
+          * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR code for error correction respectively. So on one hand the code will get bigger but chances are also higher that it will be read without errors later on. This value is by default High (H).
          */
-        "ecLevel"?: ecLevel;
+        "errorCorrectionLevel"?: ErrorCorrectionLevel;
         /**
-          * What color you want your QR code to be. By default is black.
+          * What color you want your QR code to be.
          */
         "fill"?: string;
         /**
@@ -5572,13 +5589,13 @@ declare namespace LocalJSX {
          */
         "radius"?: number;
         /**
-          * The total size of the final QR code in pixels - it will be a square. This value is by default "128"
+          * The total size of the final QR code in pixels.
          */
         "size"?: number;
         /**
           * Any kind of text, also links, email addresses, any thing.
          */
-        "text"?: string | undefined;
+        "value"?: string | undefined;
     }
     /**
      * The radio group control is used to render a short list of mutually exclusive options.
@@ -6844,6 +6861,9 @@ declare module "@stencil/core" {
              * relative to an element, but placed on the top layer using `position: fixed`.
              */
             "ch-popover": LocalJSX.ChPopover & JSXBase.HTMLAttributes<HTMLChPopoverElement>;
+            /**
+             * @status developer-preview
+             */
             "ch-qr": LocalJSX.ChQr & JSXBase.HTMLAttributes<HTMLChQrElement>;
             /**
              * The radio group control is used to render a short list of mutually exclusive options.

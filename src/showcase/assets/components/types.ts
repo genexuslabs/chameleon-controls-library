@@ -5,6 +5,7 @@ import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChList } from "../../../components/list/list";
 import { ChQr } from "../../../components/qr/qr";
+import { ChSlider } from "../../../components/slider/slider";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
@@ -95,4 +96,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChLayoutSplitter>
   | Mutable<ChList>
   | Mutable<ChQr>
+  | Mutable<ChSlider>
   | Mutable<ChTreeViewRender>;

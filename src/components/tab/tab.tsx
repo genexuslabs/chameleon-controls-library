@@ -13,8 +13,7 @@ import {
 } from "@stencil/core";
 import {
   DraggableView,
-  DraggableViewInfo,
-  FlexibleLayoutWidget
+  DraggableViewInfo
 } from "../flexible-layout/internal/flexible-layout/types";
 import {
   inBetween,
@@ -26,6 +25,8 @@ import {
   TabDirection,
   TabElementSize,
   TabItemCloseInfo,
+  TabItemModel,
+  TabModel,
   TabSelectedItemInfo
 } from "./types";
 import {
@@ -359,9 +360,9 @@ export class ChTabRender implements DraggableView {
   /**
    * Specifies the items of the tab control.
    */
-  @Prop() readonly model: FlexibleLayoutWidget[];
+  @Prop() readonly model: TabModel;
   @Watch("model")
-  modelChanged(newModel: FlexibleLayoutWidget[]) {
+  modelChanged(newModel: TabModel) {
     this.#updateRenderedPages(newModel);
   }
 
@@ -479,7 +480,7 @@ export class ChTabRender implements DraggableView {
    * performance by not re-ordering pages when the caption's order changes.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
+  #updateRenderedPages = (items: TabModel) => {
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
         this.#renderedPages.add(item.id);
@@ -774,15 +775,15 @@ export class ChTabRender implements DraggableView {
     keyEventHandler(this.direction, event, currentFocusedCaption);
   };
 
-  #imgRender = (item: FlexibleLayoutWidget) =>
-    item.startImageType === "img" &&
-    item.startImageSrc && (
+  #imgRender = (item: TabItemModel) =>
+    item.startImgType === "img" &&
+    item.startImgSrc && (
       <img
         aria-hidden="true"
         class={"caption-image " + this.#classes.IMAGE}
         part={this.#parts.IMAGE}
         alt=""
-        src={item.startImageSrc}
+        src={item.startImgSrc}
         loading="lazy"
       />
     );
@@ -807,8 +808,8 @@ export class ChTabRender implements DraggableView {
           class={{
             [this.#classes.BUTTON]: true,
             "decorative-image": isPseudoElementImg(
-              item.startImageSrc,
-              item.startImageType
+              item.startImgSrc,
+              item.startImgType
             ),
 
             "dragged-element": this.draggedElementIndex === index,
@@ -836,8 +837,8 @@ export class ChTabRender implements DraggableView {
             [SELECTED_PART]: item.id === this.selectedId
           })}
           style={
-            isPseudoElementImg(item.startImageSrc, item.startImageType)
-              ? { [DECORATIVE_IMAGE]: `url("${item.startImageSrc}")` }
+            isPseudoElementImg(item.startImgSrc, item.startImgType)
+              ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
               : null
           }
           onAuxClick={this.#handleClose(index, item.id)}
@@ -899,7 +900,7 @@ export class ChTabRender implements DraggableView {
     </div>
   );
 
-  #renderDragPreview = (draggedElement: FlexibleLayoutWidget) => {
+  #renderDragPreview = (draggedElement: TabItemModel) => {
     const classes = {
       [DRAG_PREVIEW]: true,
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
@@ -912,8 +913,8 @@ export class ChTabRender implements DraggableView {
     };
 
     const decorativeImage = isPseudoElementImg(
-      draggedElement.startImageSrc,
-      draggedElement.startImageType
+      draggedElement.startImgSrc,
+      draggedElement.startImgType
     );
 
     return (
@@ -937,7 +938,7 @@ export class ChTabRender implements DraggableView {
           })}
           style={
             decorativeImage
-              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImageSrc}")` }
+              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
               : null
           }
         >

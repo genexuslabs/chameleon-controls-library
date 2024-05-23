@@ -115,12 +115,12 @@ export type FlexibleLayoutWidget = {
   id: string;
   name: string;
 
-  startImageSrc?: string;
+  startImgSrc?: string;
 
   /**
-   * Specifies how the image will be rendered. Defaults to `"pseudo-element"`.
+   * Specifies how the image will be rendered. Defaults to `"background"`.
    */
-  startImageType?: ImageRender;
+  startImgType?: ImageRender;
   wasRendered?: boolean;
 } & FlexibleLayoutWidgetRender;
 

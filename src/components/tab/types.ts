@@ -1,4 +1,21 @@
+import { ImageRender } from "../../common/types";
+
 export type TabDirection = "block" | "inline";
+
+export type TabModel = TabItemModel[];
+
+export type TabItemModel = {
+  id: string;
+  name: string;
+
+  startImgSrc?: string;
+
+  /**
+   * Specifies how the image will be rendered. Defaults to `"background"`.
+   */
+  startImgType?: ImageRender;
+  wasRendered?: boolean;
+};
 
 export type TabItemCloseInfo = {
   itemId: string;

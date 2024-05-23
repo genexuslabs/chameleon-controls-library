@@ -18,7 +18,6 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 import { MarkdownCodeRender } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -33,6 +32,7 @@ import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -58,7 +58,6 @@ export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
 export { MarkdownCodeRender } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -73,6 +72,7 @@ export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -1147,64 +1147,6 @@ export namespace Components {
          */
         "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
-    interface ChList {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName": string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName": string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden": boolean;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "direction": ListDirection;
-        /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
-         */
-        "dragOutsideDisabled": boolean;
-        /**
-          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
-         */
-        "endDragPreview": () => Promise<void>;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded": boolean;
-        /**
-          * Returns the info associated to the draggable view.
-         */
-        "getDraggableViews": () => Promise<DraggableViewInfo>;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "model": FlexibleLayoutWidget[];
-        /**
-          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
-         */
-        "promoteDragPreviewToTopLayer": () => Promise<void>;
-        /**
-          * Given an id, remove the page from the render
-         */
-        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId": string;
-        /**
-          * `true` to show the captions of the items.
-         */
-        "showCaptions": boolean;
-        /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
-         */
-        "sortable": boolean;
-    }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
@@ -1911,6 +1853,64 @@ export namespace Components {
           * The item value
          */
         "value": any;
+    }
+    interface ChTabRender {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden": boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction": TabDirection;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+         */
+        "dragOutsideDisabled": boolean;
+        /**
+          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
+         */
+        "endDragPreview": () => Promise<void>;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded": boolean;
+        /**
+          * Returns the info associated to the draggable view.
+         */
+        "getDraggableViews": () => Promise<DraggableViewInfo>;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "model": TabModel;
+        /**
+          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+         */
+        "promoteDragPreviewToTopLayer": () => Promise<void>;
+        /**
+          * Given an id, remove the page from the render
+         */
+        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId": string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions": boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     interface ChTestFlexibleLayout {
         /**
@@ -2653,10 +2653,6 @@ export interface ChIntersectionObserverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChIntersectionObserverElement;
 }
-export interface ChListCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChListElement;
-}
 export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChNextDataModelingItemElement;
@@ -2732,6 +2728,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChTabRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabRenderElement;
 }
 export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3284,26 +3284,6 @@ declare global {
         prototype: HTMLChLayoutSplitterElement;
         new (): HTMLChLayoutSplitterElement;
     };
-    interface HTMLChListElementEventMap {
-        "expandMainGroup": string;
-        "itemClose": ListItemCloseInfo;
-        "selectedItemChange": ListSelectedItemInfo;
-        "itemDragStart": number;
-    }
-    interface HTMLChListElement extends Components.ChList, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChListElement: {
-        prototype: HTMLChListElement;
-        new (): HTMLChListElement;
-    };
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
@@ -3753,6 +3733,26 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChTabRenderElementEventMap {
+        "expandMainGroup": string;
+        "itemClose": TabItemCloseInfo;
+        "selectedItemChange": TabSelectedItemInfo;
+        "itemDragStart": number;
+    }
+    interface HTMLChTabRenderElement extends Components.ChTabRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabRenderElementEventMap>(type: K, listener: (this: HTMLChTabRenderElement, ev: ChTabRenderCustomEvent<HTMLChTabRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabRenderElementEventMap>(type: K, listener: (this: HTMLChTabRenderElement, ev: ChTabRenderCustomEvent<HTMLChTabRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabRenderElement: {
+        prototype: HTMLChTabRenderElement;
+        new (): HTMLChTabRenderElement;
+    };
     interface HTMLChTestFlexibleLayoutElement extends Components.ChTestFlexibleLayout, HTMLStencilElement {
     }
     var HTMLChTestFlexibleLayoutElement: {
@@ -4005,7 +4005,6 @@ declare global {
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
-        "ch-list": HTMLChListElement;
         "ch-markdown": HTMLChMarkdownElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
@@ -4036,6 +4035,7 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-tab-render": HTMLChTabRenderElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
@@ -5122,64 +5122,6 @@ declare namespace LocalJSX {
          */
         "model"?: LayoutSplitterModel;
     }
-    interface ChList {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName"?: string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName"?: string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden"?: boolean;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "direction"?: ListDirection;
-        /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
-         */
-        "dragOutsideDisabled"?: boolean;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded"?: boolean;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "model"?: FlexibleLayoutWidget[];
-        /**
-          * Fired when an item of the main group is double clicked.
-         */
-        "onExpandMainGroup"?: (event: ChListCustomEvent<string>) => void;
-        /**
-          * Fired the close button of an item is clicked.
-         */
-        "onItemClose"?: (event: ChListCustomEvent<ListItemCloseInfo>) => void;
-        /**
-          * Fired the first time a caption button is dragged outside of its tab list.
-         */
-        "onItemDragStart"?: (event: ChListCustomEvent<number>) => void;
-        /**
-          * Fired when the selected item change. This event can be default prevented to prevent the item selection.
-         */
-        "onSelectedItemChange"?: (event: ChListCustomEvent<ListSelectedItemInfo>) => void;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId"?: string;
-        /**
-          * `true` to show the captions of the items.
-         */
-        "showCaptions"?: boolean;
-        /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
-         */
-        "sortable"?: boolean;
-    }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
@@ -5983,6 +5925,64 @@ declare namespace LocalJSX {
          */
         "value"?: any;
     }
+    interface ChTabRender {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden"?: boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction"?: TabDirection;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+         */
+        "dragOutsideDisabled"?: boolean;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "model"?: TabModel;
+        /**
+          * Fired when an item of the main group is double clicked.
+         */
+        "onExpandMainGroup"?: (event: ChTabRenderCustomEvent<string>) => void;
+        /**
+          * Fired the close button of an item is clicked.
+         */
+        "onItemClose"?: (event: ChTabRenderCustomEvent<TabItemCloseInfo>) => void;
+        /**
+          * Fired the first time a caption button is dragged outside of its tab list.
+         */
+        "onItemDragStart"?: (event: ChTabRenderCustomEvent<number>) => void;
+        /**
+          * Fired when the selected item change. This event can be default prevented to prevent the item selection.
+         */
+        "onSelectedItemChange"?: (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => void;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId"?: string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions"?: boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
+    }
     interface ChTestFlexibleLayout {
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -6679,7 +6679,6 @@ declare namespace LocalJSX {
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
-        "ch-list": ChList;
         "ch-markdown": ChMarkdown;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
@@ -6710,6 +6709,7 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-tab-render": ChTabRender;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
@@ -6826,7 +6826,6 @@ declare module "@stencil/core" {
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
-            "ch-list": LocalJSX.ChList & JSXBase.HTMLAttributes<HTMLChListElement>;
             /**
              * A control to render markdown syntax. It supports GitHub Flavored Markdown
              * (GFM) and code highlighting.
@@ -6903,6 +6902,7 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            "ch-tab-render": LocalJSX.ChTabRender & JSXBase.HTMLAttributes<HTMLChTabRenderElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;

@@ -89,7 +89,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSlider>> = [
       {
         id: "step",
         caption: "Step",
-        value: 5,
+        value: 0.1,
         type: "number"
       }
     ]

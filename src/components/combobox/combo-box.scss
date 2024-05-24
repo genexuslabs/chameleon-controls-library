@@ -101,6 +101,7 @@
   --ch-combo-box-mask-block-end-width: 0px;
 
   display: inline-grid;
+  grid-template-columns: 1fr max-content;
   align-items: center;
   position: relative;
 
@@ -125,6 +126,11 @@
 }
 
 :host(.ch-disabled) {
+  pointer-events: none;
+}
+
+.invisible-text {
+  visibility: hidden;
   pointer-events: none;
 }
 

@@ -34,12 +34,18 @@ export function setDesignSystemInBrowser(designSystem) {
   }
   // Initialize the DS
   else {
+    document.body.style.display = "none"; // Necessary to avoid FOUC
+
     styleSheetLink = document.createElement("link");
     styleSheetLink.setAttribute("href", dsURL);
     styleSheetLink.setAttribute(CURRENT_DS_SELECTOR, designSystem);
     styleSheetLink.setAttribute("rel", "stylesheet");
     styleSheetLink.setAttribute("crossorigin", "anonymous");
     styleSheetLink.setAttribute("referrerpolicy", "no-referrer");
+    styleSheetLink.addEventListener("load", () => {
+      document.body.style.display = null; // Make visible the body again
+    });
+
     document.head.appendChild(styleSheetLink);
   }
 }

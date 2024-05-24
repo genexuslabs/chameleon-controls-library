@@ -48,6 +48,9 @@
 
         <div class="header-end">
           <ch-segmented-control-render
+            id="segmented-control-ds"
+          ></ch-segmented-control-render>
+          <ch-segmented-control-render
             id="segmented-control-rtl"
           ></ch-segmented-control-render>
           <ch-segmented-control-render
@@ -225,6 +228,11 @@
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
       import {
+        getDesignSystem,
+        setDesignSystemInBrowser,
+        storeDesignSystem
+      } from "./showcase/models/ds-manager.js";
+      import {
         getTheme,
         setThemeInBrowser,
         storeTheme
@@ -255,18 +263,31 @@
         const toggleThemeRef = document.getElementById(
           "segmented-control-theme"
         );
+        const toggleDSRef = document.getElementById("segmented-control-ds");
         const toggleRtlRef = document.getElementById("segmented-control-rtl");
         const chameleonHome = document.getElementById("chameleon-home");
+
+        // Initialize Design Systems
+        toggleDSRef.model = [
+          {
+            id: "unanimo",
+            caption: "Unanimo"
+          },
+          {
+            id: "mercury",
+            caption: "Mercury"
+          }
+        ];
 
         // Initialize themes
         toggleThemeRef.model = [
           {
-            id: "dark",
-            caption: "Dark"
-          },
-          {
             id: "light",
             caption: "Light"
+          },
+          {
+            id: "dark",
+            caption: "Dark"
           }
         ];
 
@@ -282,6 +303,7 @@
           }
         ];
 
+        toggleDSRef.selectedId = getDesignSystem();
         toggleThemeRef.selectedId = getTheme();
         toggleRtlRef.selectedId = getLanguageDirection();
 
@@ -334,13 +356,22 @@
           showcase.pageSrc = undefined;
         });
 
-        // Add event lister for the theme changes
-        toggleThemeRef.addEventListener("selectedItemChange", () => {
-          const newTheme = getTheme() === "light" ? "dark" : "light";
+        // Add event lister for the design system changes
+        toggleDSRef.addEventListener("selectedItemChange", () => {
+          const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
 
-          storeTheme(newTheme);
-          setThemeInBrowser(newTheme);
-          showcase.theme = newTheme;
+          storeDesignSystem(newDS);
+          setDesignSystemInBrowser(newDS);
+          showcase.designSystem = newDS;
+        });
+
+        // Add event lister for the color scheme changes
+        toggleThemeRef.addEventListener("selectedItemChange", () => {
+          const colorScheme = getTheme() === "light" ? "dark" : "light";
+
+          storeTheme(colorScheme);
+          setThemeInBrowser(colorScheme);
+          showcase.colorScheme = colorScheme;
         });
 
         // Add event lister for the language direction changes

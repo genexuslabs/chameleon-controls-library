@@ -12,11 +12,16 @@
     <link rel="stylesheet" href="./assets/styles/styles.css" />
     <link href="../base.css" rel="stylesheet" />
     <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
       import { setThemeInBrowser } from "../models/theme-manager.js";
 
       window.addEventListener("message", event => {
         if (event.data === "light" || event.data === "dark") {
           setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
         }
       });
     </script>

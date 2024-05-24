@@ -313,12 +313,46 @@ export class ChShowcase {
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
 
   /**
+   * Specifies the theme used in the iframe of the control
+   */
+  @Prop() readonly colorScheme: "light" | "dark";
+  @Watch("colorScheme")
+  colorSchemeChange(newColorSchemeValue: "light" | "dark") {
+    // The showcase does not render a iframe
+    if (this.#showcaseStory) {
+      return;
+    }
+
+    this.#iframeRef.contentWindow.postMessage(
+      newColorSchemeValue,
+      `${window.location.origin}/${this.pageSrc}`
+    );
+  }
+
+  /**
    * Specifies the name of the control.
    */
   @Prop() readonly componentName: string;
   @Watch("componentName")
   componentNameChange(newComponentName: string) {
     this.#checkShowcaseStoryMapping(newComponentName);
+  }
+
+  /**
+   * Specifies the design system used in the iframe of the control
+   */
+  @Prop() readonly designSystem: "mercury" | "unanimo";
+  @Watch("designSystem")
+  designSystemChange(newDSValue: "mercury" | "unanimo") {
+    // The showcase does not render a iframe
+    if (this.#showcaseStory) {
+      return;
+    }
+
+    this.#iframeRef.contentWindow.postMessage(
+      newDSValue,
+      `${window.location.origin}/${this.pageSrc}`
+    );
   }
 
   /**
@@ -354,23 +388,6 @@ export class ChShowcase {
    *     the control.
    */
   @Prop() readonly status: "developer-preview" | "experimental" | "stable";
-
-  /**
-   * Specifies the theme used in the iframe of the control
-   */
-  @Prop() readonly theme: "light" | "dark";
-  @Watch("theme")
-  themeChange(newThemeValue: "light" | "dark") {
-    // The showcase does not render a iframe
-    if (this.#showcaseStory) {
-      return;
-    }
-
-    this.#iframeRef.contentWindow.postMessage(
-      newThemeValue,
-      `${window.location.origin}/${this.pageSrc}`
-    );
-  }
 
   #checkShowcaseStoryMapping = (componentName: string) => {
     this.#showcaseStoryCheckboxes = undefined; // Free the memory

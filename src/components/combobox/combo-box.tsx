@@ -196,6 +196,13 @@ export class ChComboBox
   #popoverId: string | undefined;
   #firstExpanded = false;
 
+  /**
+   * This variable is used to emulate the behavior of the native select. The
+   * native select decides its min size based on the size of the largest option.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #largestValue: string;
+
   #borderSizeRAF: SyncWithRAF | undefined;
   #resizeObserver: ResizeObserver | undefined;
 
@@ -496,6 +503,7 @@ export class ChComboBox
   @Prop() readonly model: ComboBoxModel = [];
   @Watch("model")
   modelChanged(newModel: ComboBoxModel) {
+    this.#findLargestValue(this.model);
     this.#mapValuesToItemInfo(newModel);
   }
 
@@ -554,6 +562,29 @@ export class ChComboBox
    * committed by the user.
    */
   @Event() input: EventEmitter<string>;
+
+  #findLargestValue = (model: ComboBoxModel) => {
+    this.#largestValue = "";
+    let largestValueLength = 0;
+
+    model.forEach((itemGroup: ComboBoxItemGroup) => {
+      const subItems = itemGroup.items;
+
+      if (itemGroup.caption.length > largestValueLength) {
+        this.#largestValue = itemGroup.caption;
+        largestValueLength = itemGroup.caption.length;
+      }
+
+      if (subItems != null) {
+        subItems.forEach(leaf => {
+          if (leaf.caption.length > largestValueLength) {
+            this.#largestValue = leaf.caption;
+            largestValueLength = leaf.caption.length;
+          }
+        });
+      }
+    });
+  };
 
   #scheduleFilterProcessing = (newImmediateFilter?: ImmediateFilter) => {
     this.#applyFilters = true;
@@ -1071,6 +1102,7 @@ export class ChComboBox
 
   connectedCallback() {
     this.#popoverId ??= `ch-combo-box-popover-${autoId++}`;
+    this.#findLargestValue(this.model);
     this.#mapValuesToItemInfo(this.model);
 
     this.internals.setFormValue(this.value);
@@ -1184,6 +1216,10 @@ export class ChComboBox
         {mobileDevice
           ? this.#nativeRender()
           : [
+              <span class="invisible-text">
+                {this.#largestValue || this.placeholder}
+              </span>,
+
               <div
                 key="mask"
                 // This mask is used to capture click events that must open the

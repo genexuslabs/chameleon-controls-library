@@ -13,14 +13,26 @@ const positionTryFlipMap = {
   [key in Exclude<ChPopoverAlign, "center">]: string;
 };
 
-const checkIfContentOverflowsWindowY = (
+/**
+ * Returns how much (in negative value) the content overflows the window size
+ * in the "start" and "end" directions.
+ */
+const getOverflowingSize = (
   actionStartPosition: number,
   documentSize: number,
   popoverSize: number,
   popoverRelativePosition: number
-) =>
-  documentSize < popoverSize + actionStartPosition + popoverRelativePosition ||
-  actionStartPosition + popoverRelativePosition < 0;
+) => ({
+  start:
+    documentSize -
+    (popoverSize + actionStartPosition + popoverRelativePosition),
+  end: actionStartPosition + popoverRelativePosition
+});
+
+const contentOverflowsWindow = (overflowingSize: {
+  start: number;
+  end: number;
+}) => overflowingSize.start < 0 || overflowingSize.end < 0;
 
 const alignToImplementationMap: {
   [key in ChPopoverAlign]: (
@@ -66,14 +78,14 @@ const getAlignmentValue = (
   }
 
   // Check if the current alignment overflows the document window
-  const alignmentOverflowsWindow = checkIfContentOverflowsWindowY(
+  const alignmentOverflowingSize = getOverflowingSize(
     actionStartPosition,
     documentSize,
     popoverSize,
     popoverRelativePosition
   );
 
-  if (!alignmentOverflowsWindow) {
+  if (!contentOverflowsWindow(alignmentOverflowingSize)) {
     return popoverRelativePosition;
   }
 
@@ -83,16 +95,32 @@ const getAlignmentValue = (
     oppositeAlign
   ](actionSize, popoverSize, separation);
 
-  const oppositeAlignmentOverflowsWindow = checkIfContentOverflowsWindowY(
+  const oppositeAlignmentOverflowingSize = getOverflowingSize(
     actionStartPosition,
     documentSize,
     popoverSize,
     oppositePopoverRelativePosition
   );
 
-  return oppositeAlignmentOverflowsWindow
-    ? popoverRelativePosition
-    : oppositePopoverRelativePosition;
+  // The opposite alignment is the best fit
+  if (!contentOverflowsWindow(oppositeAlignmentOverflowingSize)) {
+    return oppositePopoverRelativePosition;
+  }
+
+  // Find which alignment is the best fit, even if both alignments overflow the
+  // window
+  const alignmentWorstOverflowingSize = Math.min(
+    alignmentOverflowingSize.start,
+    alignmentOverflowingSize.end
+  );
+  const oppositeAlignmentWorstOverflowingSize = Math.min(
+    oppositeAlignmentOverflowingSize.start,
+    oppositeAlignmentOverflowingSize.end
+  );
+
+  return alignmentWorstOverflowingSize < oppositeAlignmentWorstOverflowingSize
+    ? oppositePopoverRelativePosition
+    : popoverRelativePosition;
 };
 
 export const setResponsiveAlignment = (

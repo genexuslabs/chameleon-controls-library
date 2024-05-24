@@ -84,6 +84,10 @@ const render = () => (
         class="combo-box"
         disabled={state.disabled}
         destroyItemsOnClose={state.destroyItemsOnClose}
+        filter={state.filter}
+        filterDebounce={state.filterDebounce}
+        filterOptions={state.filterOptions}
+        filterType={state.filterType}
         model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
@@ -92,6 +96,7 @@ const render = () => (
         }
         readonly={state.readonly}
         value={state.value}
+        onFilterChange={handleFilterChange}
       ></ch-combo-box>
     </fieldset>
 
@@ -109,6 +114,10 @@ const render = () => (
           class="combo-box"
           disabled={state.disabled}
           destroyItemsOnClose={state.destroyItemsOnClose}
+          filter={state.filter}
+          filterDebounce={state.filterDebounce}
+          filterOptions={state.filterOptions}
+          filterType={state.filterType}
           model={
             state.filterOptions.alreadyProcessed === true &&
             state.filterType !== "none"
@@ -117,6 +126,7 @@ const render = () => (
           }
           readonly={state.readonly}
           value={state.value}
+          onFilterChange={handleFilterChange}
         ></ch-combo-box>
       </label>
     </fieldset>

@@ -61,6 +61,11 @@ export type ComboBoxFilterOptions = {
    * Determine whether the filter works as a regular expression.
    */
   regularExpression?: boolean;
+
+  /**
+   *
+   */
+  strict?: boolean;
 };
 
 export type ComboBoxFilterType = "caption" | "value" | "none";

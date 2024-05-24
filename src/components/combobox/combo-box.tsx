@@ -203,6 +203,12 @@ export class ChComboBox
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #largestValue: string;
 
+  /**
+   * Caption of the item identified by the value property
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #currentValueCaption: string;
+
   #borderSizeRAF: SyncWithRAF | undefined;
   #resizeObserver: ResizeObserver | undefined;
 
@@ -215,6 +221,8 @@ export class ChComboBox
     string,
     { caption: string; index: SelectedIndex; firstExpanded?: boolean }
   > = new Map();
+
+  #itemCaptionToItemValue: Map<string, string> = new Map();
 
   // Filters info
   #applyFilters = false;
@@ -375,15 +383,11 @@ export class ChComboBox
       }
     },
 
-    Enter: () => {
-      // The focus must return to the Host when closing the popover
-      if (this.expanded) {
-        this.el.focus();
-        this.expanded = false;
-      }
-    },
+    Enter: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event),
 
-    Tab: this.#keyEventsNoFiltersDictionary.Tab
+    Tab: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event)
   };
 
   // Refs
@@ -411,6 +415,7 @@ export class ChComboBox
       // When the control is expanded and has filters applied, we should
       // refresh the rendered items without any debounce
       if (this.filterType !== "none") {
+        this.currentSelectedValue = undefined; // Clear selected value when expanding with filters
         this.#scheduleFilterProcessing("immediate");
       }
     }
@@ -505,6 +510,7 @@ export class ChComboBox
   modelChanged(newModel: ComboBoxModel) {
     this.#findLargestValue(this.model);
     this.#mapValuesToItemInfo(newModel);
+    this.#checkIfCurrentSelectedValueIsNoLongerValid();
   }
 
   /**
@@ -542,7 +548,12 @@ export class ChComboBox
   @Watch("value")
   valueChange(newValue: string) {
     this.currentSelectedValue = newValue;
-    this.filter = this.#valueToItemInfo.get(newValue)?.caption;
+    this.#currentValueCaption = this.#getCaptionUsingValue(newValue);
+
+    // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
+    if (this.filterType === "none") {
+      this.filter = this.#currentValueCaption;
+    }
 
     // Update form value
     this.internals.setFormValue(newValue);
@@ -664,6 +675,7 @@ export class ChComboBox
 
   #mapValuesToItemInfo = (model: ComboBoxModel) => {
     this.#valueToItemInfo.clear();
+    this.#itemCaptionToItemValue.clear();
 
     if (model == null) {
       return;
@@ -684,6 +696,8 @@ export class ChComboBox
           firstExpanded: itemGroup.expandable && !!itemGroup.expanded
         });
 
+        this.#itemCaptionToItemValue.set(itemGroup.caption, itemGroup.value);
+
         // Second level items
         subItems.forEach((subItem, secondLevelIndex) => {
           this.#valueToItemInfo.set(subItem.value, {
@@ -694,6 +708,8 @@ export class ChComboBox
               secondLevelIndex: secondLevelIndex
             }
           });
+
+          this.#itemCaptionToItemValue.set(subItem.caption, subItem.value);
         });
       }
       // First level item
@@ -705,16 +721,76 @@ export class ChComboBox
             firstLevelIndex: firstLevelIndex
           }
         });
+        this.#itemCaptionToItemValue.set(item.caption, item.value);
       }
     });
   };
 
-  #checkAndEmitValueChange = () => {
-    if (!this.expanded && this.currentSelectedValue !== this.value) {
+  #checkIfCurrentSelectedValueIsNoLongerValid = () => {
+    // If the current selected does not exists in the new model, remove the
+    // current selected value. This is necessary to process filters
+    if (!this.#valueToItemInfo.get(this.currentSelectedValue)) {
+      this.currentSelectedValue = undefined;
+    }
+  };
+
+  #getCaptionUsingValue = (itemValue: string) =>
+    this.#valueToItemInfo.get(itemValue)?.caption;
+
+  #getValueUsingCaption = (itemCaption: string) =>
+    this.#itemCaptionToItemValue.get(itemCaption);
+
+  #checkAndEmitValueChangeWithNoFilter = () => {
+    if (this.currentSelectedValue !== this.value) {
       this.value = this.currentSelectedValue;
 
       // Emit event
       this.input.emit(this.value);
+    }
+  };
+
+  #checkAndEmitValueChangeWithFilters = (event: KeyboardEvent) => {
+    if (!this.expanded) {
+      return;
+    }
+    this.expanded = false;
+
+    // The focus must return to the Host when tabbing with the popover
+    // expanded
+    this.el.focus();
+    event.preventDefault();
+
+    // "Traditional selection". A value was selected pressing the enter key
+    if (this.currentSelectedValue) {
+      this.filter = this.#getCaptionUsingValue(this.currentSelectedValue);
+      this.#checkAndEmitValueChangeWithNoFilter();
+      return;
+    }
+
+    // No item was selected and the filters are not strict
+    if (!this.filterOptions?.strict) {
+      this.value = this.filter;
+
+      // Emit input event
+      this.input.emit(this.value);
+      return;
+    }
+
+    // Strict selection
+    const valueMatchingTheCaption = this.#getValueUsingCaption(this.filter);
+
+    if (valueMatchingTheCaption) {
+      this.value = valueMatchingTheCaption;
+
+      // Emit input event
+      this.input.emit(this.value);
+    }
+    // Revert change because the filter does not match any item value
+    else {
+      this.filter = this.#currentValueCaption;
+
+      // Emit filter change event to recover the previous state
+      this.filterChange.emit(this.filter);
     }
   };
 
@@ -814,31 +890,23 @@ export class ChComboBox
     if (this.filterType === "none") {
       const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
 
-      if (keyboardHandler) {
-        keyboardHandler(event);
+      if (!keyboardHandler) {
+        return;
+      }
+      keyboardHandler(event);
+
+      if (!this.expanded) {
+        this.#checkAndEmitValueChangeWithNoFilter();
       }
     }
     // Keyboard implementation for filters
     else {
-      if (
-        event.code === KEY_CODES.ESCAPE ||
-        event.code === KEY_CODES.HOME ||
-        event.code === KEY_CODES.END ||
-        event.code === KEY_CODES.ARROW_LEFT ||
-        event.code === KEY_CODES.ARROW_RIGHT
-      ) {
-        return;
-      }
       const keyboardHandler = this.#keyEventsWithFiltersDictionary[event.code];
 
       if (keyboardHandler) {
         keyboardHandler(event);
-        return;
       }
-      this.expanded ||= true;
     }
-
-    this.#checkAndEmitValueChange();
   };
 
   #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
@@ -859,11 +927,12 @@ export class ChComboBox
       this.el.focus();
     }
 
-    this.#checkAndEmitValueChange();
+    // this.#checkAndEmitValueChange();
   };
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
+    this.expanded = true;
     this.filter = this.#inputRef.value;
   };
 
@@ -882,12 +951,17 @@ export class ChComboBox
     this.currentSelectedValue = itemValue;
   };
 
-  #selectedValue = (itemValue: string) => (event: MouseEvent) => {
+  #selectValueAndClosePopover = (itemValue: string) => (event: MouseEvent) => {
     event.stopPropagation();
 
     this.expanded = false;
     this.currentSelectedValue = itemValue;
-    this.#checkAndEmitValueChange();
+
+    // Update current filter, even if no filters are applied. With this, if the
+    // filterType property is updated at runtime, the current selected caption
+    // won't change
+    this.filter = this.#getCaptionUsingValue(itemValue);
+    this.#checkAndEmitValueChangeWithNoFilter();
   };
 
   #toggleExpandInGroup = (itemGroup: ComboBoxItemGroup) => () => {
@@ -1051,7 +1125,11 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={canAddListeners ? this.#selectedValue(item.value) : null}
+          onClick={
+            canAddListeners
+              ? this.#selectValueAndClosePopover(item.value)
+              : null
+          }
           onMouseEnter={
             canAddListeners
               ? this.#updateCurrentSelectedValue(item.value)
@@ -1108,7 +1186,8 @@ export class ChComboBox
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;
 
-    this.filter = this.#valueToItemInfo.get(this.value)?.caption;
+    this.#currentValueCaption = this.#getCaptionUsingValue(this.value);
+    this.filter = this.#currentValueCaption;
 
     const labels = this.internals.labels;
 

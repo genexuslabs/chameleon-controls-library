@@ -1,16 +1,22 @@
 @font-face {
-  font-family: SourceSansPro_Regular;
+  font-family: SourceSansPro;
   src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  font-weight: 400;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: SourceSansPro_SemiBold;
+  font-family: SourceSansPro;
   src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  font-weight: 600;
+  font-display: swap;
 }
 
 @font-face {
-  font-family: SourceSansPro_Bold;
+  font-family: SourceSansPro;
   src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  font-weight: 700;
+  font-display: swap;
 }
 
 .card {

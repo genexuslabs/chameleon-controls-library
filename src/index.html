@@ -48,6 +48,9 @@
 
         <div class="header-end">
           <ch-segmented-control-render
+            id="segmented-control-ds"
+          ></ch-segmented-control-render>
+          <ch-segmented-control-render
             id="segmented-control-rtl"
           ></ch-segmented-control-render>
           <ch-segmented-control-render
@@ -225,6 +228,11 @@
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
       import {
+        getDesignSystem,
+        setDesignSystemInBrowser,
+        storeDesignSystem
+      } from "./showcase/models/ds-manager.js";
+      import {
         getTheme,
         setThemeInBrowser,
         storeTheme
@@ -255,8 +263,21 @@
         const toggleThemeRef = document.getElementById(
           "segmented-control-theme"
         );
+        const toggleDSRef = document.getElementById("segmented-control-ds");
         const toggleRtlRef = document.getElementById("segmented-control-rtl");
         const chameleonHome = document.getElementById("chameleon-home");
+
+        // Initialize Design Systems
+        toggleDSRef.model = [
+          {
+            id: "mercury",
+            caption: "Mercury"
+          },
+          {
+            id: "unanimo",
+            caption: "Unanimo"
+          }
+        ];
 
         // Initialize themes
         toggleThemeRef.model = [
@@ -282,6 +303,7 @@
           }
         ];
 
+        toggleDSRef.selectedId = getDesignSystem();
         toggleThemeRef.selectedId = getTheme();
         toggleRtlRef.selectedId = getLanguageDirection();
 
@@ -334,7 +356,16 @@
           showcase.pageSrc = undefined;
         });
 
-        // Add event lister for the theme changes
+        // Add event lister for the design system changes
+        toggleDSRef.addEventListener("selectedItemChange", () => {
+          const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
+
+          storeDesignSystem(newDS);
+          setDesignSystemInBrowser(newDS);
+          // showcase.theme = newDS;
+        });
+
+        // Add event lister for the color scheme changes
         toggleThemeRef.addEventListener("selectedItemChange", () => {
           const newTheme = getTheme() === "light" ? "dark" : "light";
 

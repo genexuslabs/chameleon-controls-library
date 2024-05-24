@@ -240,6 +240,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
               caption: "Hide matches and show non-matches",
               value: false,
               type: "boolean"
+            },
+            {
+              id: "strict",
+              columnSpan: 2,
+              caption: "Strict filter",
+              value: false,
+              type: "boolean"
             }
           ] satisfies ShowcaseRenderProperty<ComboBoxFilterOptions>[]
         }

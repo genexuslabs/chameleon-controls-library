@@ -362,16 +362,16 @@
 
           storeDesignSystem(newDS);
           setDesignSystemInBrowser(newDS);
-          // showcase.theme = newDS;
+          showcase.designSystem = newDS;
         });
 
         // Add event lister for the color scheme changes
         toggleThemeRef.addEventListener("selectedItemChange", () => {
-          const newTheme = getTheme() === "light" ? "dark" : "light";
+          const colorScheme = getTheme() === "light" ? "dark" : "light";
 
-          storeTheme(newTheme);
-          setThemeInBrowser(newTheme);
-          showcase.theme = newTheme;
+          storeTheme(colorScheme);
+          setThemeInBrowser(colorScheme);
+          showcase.colorScheme = colorScheme;
         });
 
         // Add event lister for the language direction changes

@@ -17,8 +17,8 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--spacing-un-spacing--l);
-  margin: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  margin: var(--spacing-un-spacing--l, var(--mer-spacing--md));
   padding: 0;
 
   & > .card {
@@ -27,7 +27,7 @@ main {
     inline-size: 180px;
     min-block-size: 180px;
     text-align: center;
-    padding: var(--spacing-un-spacing--l);
+    padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 
     &::before {
       inline-size: 100px;
@@ -69,11 +69,11 @@ header {
 }
 
 .main-page {
-  margin: var(--spacing-un-spacing--l);
+  margin: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 .heading-1 {
-  margin-block-end: var(--spacing-un-spacing--m);
+  margin-block-end: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
 }
 
 .heading-2 {
@@ -85,14 +85,14 @@ header {
 .sections {
   display: grid;
   grid-template-rows: max-content;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
   margin-block-start: var(--spacing-un-spacing--xl);
 }
 
 .header-end {
   display: flex;
   align-items: center;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 .github-logo {

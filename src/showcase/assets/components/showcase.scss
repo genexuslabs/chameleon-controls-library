@@ -1,8 +1,8 @@
 ch-showcase {
   display: grid;
   grid-template-rows: max-content 1fr;
-  margin: var(--spacing-un-spacing--l);
-  gap: var(--spacing-un-spacing--l);
+  margin: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 
   & > iframe {
     display: grid;

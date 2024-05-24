@@ -21,18 +21,20 @@
 
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
-  padding: var(--spacing-un-spacing--l);
+  padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 hr {
-  margin-inline: calc(var(--spacing-un-spacing--l) * -1);
+  margin-inline: calc(
+    var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1
+  );
 }
 
 .card-properties {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 label {
@@ -43,12 +45,12 @@ label {
 fieldset {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spacing-un-spacing--m);
+  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
   border: unset;
 }
 
 legend {
-  margin-block-end: var(--spacing-un-spacing--m);
+  margin-block-end: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
 }
 
 .form-field {
@@ -109,5 +111,9 @@ legend {
   grid-auto-flow: column;
   grid-auto-columns: 128px;
   grid-template-rows: 80px;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
+/* 
+.combo-box::part(item):hover {
+  background-color: var(--accents-un-accent__primary-dim--hover);
+} */

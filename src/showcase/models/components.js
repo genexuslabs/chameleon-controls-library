@@ -25,6 +25,7 @@ const components = [
   ["shortcuts", "Shortcuts", EXPERIMENTAL],
   ["sidebar", "Sidebar", EXPERIMENTAL],
   ["slider", "Slider", DEVELOPER_PREVIEW],
+  ["switch", "Switch", EXPERIMENTAL],
   ["suggest", "Suggest", EXPERIMENTAL],
   ["tab", "Tab", EXPERIMENTAL],
   ["textblock", "Textblock", EXPERIMENTAL],

@@ -5,6 +5,7 @@ import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChQr } from "../../../components/qr/qr";
 import { ChSlider } from "../../../components/slider/slider";
+import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
@@ -64,7 +65,7 @@ export type ShowcaseRenderPropertyString<
   T,
   D extends keyof T
 > = ShowcaseRenderPropertyBase<T, D> & {
-  value: string;
+  value: string | undefined;
   render?: "input" | "textarea";
   type: "string";
 };
@@ -96,5 +97,6 @@ export type ShowcaseAvailableStories =
   | Mutable<ChLayoutSplitter>
   | Mutable<ChQr>
   | Mutable<ChSlider>
+  | Mutable<ChSwitch>
   | Mutable<ChTabRender>
   | Mutable<ChTreeViewRender>;

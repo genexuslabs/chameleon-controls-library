@@ -92,6 +92,7 @@
   grid-auto-flow: column;
   grid-auto-columns: max-content;
   align-items: center;
+  min-block-size: var(--ch-switch-thumb-size);
   max-inline-size: max-content;
   cursor: pointer;
 }

@@ -7,7 +7,7 @@ const state: Partial<Mutable<CheckBox>> = {};
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">No label</legend>
 
       <ch-checkbox
@@ -23,7 +23,7 @@ const render = () => (
       ></ch-checkbox>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
       <label class="form-input__label" htmlFor="checkbox-2">
@@ -43,7 +43,7 @@ const render = () => (
       ></ch-checkbox>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">
         Component inside label
       </legend>

@@ -13,7 +13,7 @@ const state: Partial<Mutable<ChDropdownRender>> = {};
 
 const render = () => (
   <div class="dropdown-test-main-wrapper">
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="form-input__label field-legend-test">Primary</legend>
 
       <ch-dropdown-render
@@ -26,7 +26,7 @@ const render = () => (
       </ch-dropdown-render>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="form-input__label field-legend-test">Secondary</legend>
 
       <ch-dropdown-render

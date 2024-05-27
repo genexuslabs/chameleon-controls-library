@@ -47,7 +47,7 @@ const render = () => (
       >
         <ch-radio-group-render
           id="radio-group-1"
-          name="radio-group-1"
+          // name="radio-group-1"
           class="radio-group"
           disabled={state.disabled}
           model={state.model}
@@ -70,7 +70,7 @@ const render = () => (
 
         <ch-radio-group-render
           id="radio-group-2"
-          name="radio-group-2"
+          // name="radio-group-2"
           class="radio-group"
           disabled={state.disabled}
           model={state.model}
@@ -93,7 +93,7 @@ const render = () => (
           Label for switch 3
           <ch-radio-group-render
             id="radio-group-3"
-            name="radio-group-3"
+            // name="radio-group-3"
             class="radio-group"
             disabled={state.disabled}
             model={state.model}

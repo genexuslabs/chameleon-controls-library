@@ -2,15 +2,35 @@
 
 @include box-sizing();
 
-$slider-border-radius: min(0.25em, 5px);
-
 :host {
+  /**
+   * @prop --ch-switch-thumb__checked-background-color:
+   * Specifies the background color of the thumb when the control is unchecked. 
+   * @default currentColor
+   */
+  --ch-switch-thumb__checked-background-color: currentColor;
+
+  /**
+    * @prop --ch-switch-thumb__unchecked-background-color:
+    * Specifies the background color of the thumb when the control is unchecked. 
+    * @default #b2b2b2
+    */
+  --ch-switch-thumb__unchecked-background-color: #b2b2b2;
+
   /**
    * @prop --ch-switch-thumb-size:
    * Specifies the size of the thumb. 
    * @default clamp(8px, 1em, 24px)
    */
   --ch-switch-thumb-size: clamp(8px, 1em, 24px);
+
+  /**
+    * @prop --ch-switch-thumb__state-transition-duration:
+    * Specifies the transition duration of the thumb when switching between
+    * states.
+    * @default 0ms
+    */
+  --ch-switch-thumb__state-transition-duration: 0ms;
 
   /**
    * @prop --ch-switch-track-block-size:
@@ -26,27 +46,29 @@ $slider-border-radius: min(0.25em, 5px);
    */
   --ch-switch-track-inline-size: clamp(3px, 2em, 40px);
 
-  --ch-switch-track__on-background-color: color-mix(
-    in srgb,
-    currentColor 35%,
-    #b2b2b2
-  );
-  --ch-switch-track__off-background-color: color-mix(
+  /**
+   * @prop --ch-switch-track__checked-background-color:
+   * Specifies the background color of the track when the control is checked. 
+   * @default color-mix(in srgb, currentColor 35%, #b2b2b2)
+   */
+  --ch-switch-track__checked-background-color: color-mix(
     in srgb,
     currentColor 35%,
     #b2b2b2
   );
 
-  --ch-switch-thumb__on-background-color: currentColor;
-  --ch-switch-thumb__off-background-color: #b2b2b2;
-
-  --ch-switch-thumb__state-transition-duration: 0ms;
+  /**
+   * @prop --ch-switch-track__unchecked-background-color:
+   * Specifies the background color of the track when the control is unchecked. 
+   * @default color-mix(in srgb, currentColor 35%, #b2b2b2)
+   */
+  --ch-switch-track__unchecked-background-color: color-mix(
+    in srgb,
+    currentColor 35%,
+    #b2b2b2
+  );
 
   display: inline-grid;
-
-  // Remove outline of the focus state. This selector must not have higher
-  // specificity, since it should be overridden by the class applied to the control
-  // outline: unset;
 
   // Avoid zooming on double tap
   touch-action: manipulation;
@@ -54,6 +76,8 @@ $slider-border-radius: min(0.25em, 5px);
   // Remove text selection on double click
   user-select: none;
 
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
   pointer-events: none;
 }
 
@@ -82,8 +106,8 @@ $slider-border-radius: min(0.25em, 5px);
   inline-size: var(--ch-switch-track-inline-size);
   block-size: var(--ch-switch-track-block-size);
 
-  background-color: var(--ch-switch-track__off-background-color);
-  border-radius: $slider-border-radius;
+  background-color: var(--ch-switch-track__unchecked-background-color);
+  border-radius: calc(var(--ch-switch-track-block-size) / 2);
 
   // Switch slider has more priority to display in the width if there is
   // not enough space to display switch and label at the same time
@@ -91,7 +115,7 @@ $slider-border-radius: min(0.25em, 5px);
   pointer-events: none;
 
   &--checked {
-    background-color: var(--ch-switch-track__on-background-color);
+    background-color: var(--ch-switch-track__checked-background-color);
   }
 }
 
@@ -101,7 +125,7 @@ $slider-border-radius: min(0.25em, 5px);
 .thumb {
   display: flex;
   position: absolute;
-  background-color: var(--ch-switch-thumb__off-background-color);
+  background-color: var(--ch-switch-thumb__unchecked-background-color);
   border-radius: 50%;
   inline-size: var(--ch-switch-thumb-size);
   block-size: var(--ch-switch-thumb-size);
@@ -111,7 +135,7 @@ $slider-border-radius: min(0.25em, 5px);
   transition: inset linear var(--ch-switch-thumb__state-transition-duration);
 
   &--checked {
-    background-color: var(--ch-switch-thumb__on-background-color);
+    background-color: var(--ch-switch-thumb__checked-background-color);
 
     // We move the circle using margin-inline-start to support RTL
     inset-inline-start: calc(100% - var(--ch-switch-thumb-size));
@@ -128,7 +152,7 @@ input {
 
   display: flex;
   position: absolute;
-  background-color: var(--ch-switch-thumb__off-background-color);
+  background-color: var(--ch-switch-thumb__unchecked-background-color);
   border-radius: 50%;
   inline-size: var(--ch-switch-thumb-size);
   block-size: var(--ch-switch-thumb-size);
@@ -137,7 +161,7 @@ input {
   transition: inset linear var(--ch-switch-thumb__state-transition-duration);
 
   &--checked {
-    background-color: var(--ch-switch-thumb__on-background-color);
+    background-color: var(--ch-switch-thumb__checked-background-color);
 
     // We move the circle using margin-inline-start to support RTL
     inset-inline-start: calc(100% - var(--ch-switch-thumb-size));

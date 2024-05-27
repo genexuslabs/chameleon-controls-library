@@ -1,0 +1,152 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
+$slider-border-radius: min(0.25em, 5px);
+
+:host {
+  /**
+   * @prop --ch-switch-thumb-size:
+   * Specifies the size of the thumb. 
+   * @default clamp(8px, 1em, 24px)
+   */
+  --ch-switch-thumb-size: clamp(8px, 1em, 24px);
+
+  /**
+   * @prop --ch-switch-track-block-size:
+   * Specifies the block size of the track. 
+   * @default clamp(3px, 0.5em, 16px)
+   */
+  --ch-switch-track-block-size: clamp(3px, 0.5em, 16px);
+
+  /**
+   * @prop --ch-switch-track-inline-size:
+   * Specifies the inline size of the track. 
+   * @default clamp(3px, 0.5em, 16px)
+   */
+  --ch-switch-track-inline-size: clamp(3px, 2em, 40px);
+
+  --ch-switch-track__on-background-color: color-mix(
+    in srgb,
+    currentColor 35%,
+    #b2b2b2
+  );
+  --ch-switch-track__off-background-color: color-mix(
+    in srgb,
+    currentColor 35%,
+    #b2b2b2
+  );
+
+  --ch-switch-thumb__on-background-color: currentColor;
+  --ch-switch-thumb__off-background-color: #b2b2b2;
+
+  --ch-switch-thumb__state-transition-duration: 0ms;
+
+  display: inline-grid;
+
+  // Remove outline of the focus state. This selector must not have higher
+  // specificity, since it should be overridden by the class applied to the control
+  // outline: unset;
+
+  // Avoid zooming on double tap
+  touch-action: manipulation;
+
+  // Remove text selection on double click
+  user-select: none;
+
+  pointer-events: none;
+}
+
+// Necessary to implement to focus delegation to the input when clicking on
+// external labels
+:host(:not(.ch-disabled)) .wrapper-for-click-event {
+  pointer-events: all;
+}
+
+.wrapper-for-click-event {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+  max-inline-size: max-content;
+  cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Track
+// - - - - - - - - - - - - - - - -
+.track {
+  display: inline-grid;
+  position: relative;
+  align-items: center;
+  inline-size: var(--ch-switch-track-inline-size);
+  block-size: var(--ch-switch-track-block-size);
+
+  background-color: var(--ch-switch-track__off-background-color);
+  border-radius: $slider-border-radius;
+
+  // Switch slider has more priority to display in the width if there is
+  // not enough space to display switch and label at the same time
+  min-inline-size: var(--ch-switch-track-inline-size);
+  pointer-events: none;
+
+  &--checked {
+    background-color: var(--ch-switch-track__on-background-color);
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//              Thumb
+// - - - - - - - - - - - - - - - -
+.thumb {
+  display: flex;
+  position: absolute;
+  background-color: var(--ch-switch-thumb__off-background-color);
+  border-radius: 50%;
+  inline-size: var(--ch-switch-thumb-size);
+  block-size: var(--ch-switch-thumb-size);
+  inset-inline-start: 0px;
+
+  pointer-events: none;
+  transition: inset linear var(--ch-switch-thumb__state-transition-duration);
+
+  &--checked {
+    background-color: var(--ch-switch-thumb__on-background-color);
+
+    // We move the circle using margin-inline-start to support RTL
+    inset-inline-start: calc(100% - var(--ch-switch-thumb-size));
+  }
+}
+
+// We "hide" the input, but not its area to help accessibility readers
+input {
+  // Reset browser defaults
+  appearance: none;
+  margin: 0;
+  outline: unset;
+  font: unset; // Necessary to inherit the font-size and place the correct inline-size
+
+  display: flex;
+  position: absolute;
+  background-color: var(--ch-switch-thumb__off-background-color);
+  border-radius: 50%;
+  inline-size: var(--ch-switch-thumb-size);
+  block-size: var(--ch-switch-thumb-size);
+  inset-inline-start: 0px;
+  pointer-events: none;
+  transition: inset linear var(--ch-switch-thumb__state-transition-duration);
+
+  &--checked {
+    background-color: var(--ch-switch-thumb__on-background-color);
+
+    // We move the circle using margin-inline-start to support RTL
+    inset-inline-start: calc(100% - var(--ch-switch-thumb-size));
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//             Caption
+// - - - - - - - - - - - - - - - -
+.caption {
+  cursor: pointer;
+}

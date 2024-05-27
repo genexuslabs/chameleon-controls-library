@@ -10,13 +10,24 @@ import {
   h
 } from "@stencil/core";
 import { AccessibleNameComponent } from "../../common/interfaces";
-import { DISABLED_CLASS } from "../../common/reserverd-names";
+import {
+  DISABLED_CLASS,
+  SWITCH_PARTS_DICTIONARY
+} from "../../common/reserverd-names";
 import { tokenMap } from "../../common/utils";
 
 /**
  * @status experimental
  *
  * A switch/toggle control that enables you to select between options.
+ *
+ * @part track - The track of the switch element.
+ * @part thumb - The thumb of the switch element.
+ * @part caption - The caption (checked or unchecked) of the switch element.
+ *
+ * @part checked - Present in the `track`, `thumb` and `caption` parts when the control is checked (`value` === `checkedValue`).
+ * @part disabled - Present in the `track`, `thumb` and `caption` parts when the control is disabled (`disabled` === `true`).
+ * @part unchecked - Present in the `track`, `thumb` and `caption` parts when the control is unchecked (`value` === `unCheckedValue`).
  */
 @Component({
   formAssociated: true,
@@ -136,10 +147,10 @@ export class ChSwitch implements AccessibleNameComponent {
           <div
             class={{ track: true, "track--checked": checked }}
             part={tokenMap({
-              track: true,
-              disabled: this.disabled,
-              checked: checked,
-              unchecked: !checked
+              [SWITCH_PARTS_DICTIONARY.TRACK]: true,
+              [SWITCH_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [SWITCH_PARTS_DICTIONARY.CHECKED]: checked,
+              [SWITCH_PARTS_DICTIONARY.UNCHECKED]: !checked
             })}
           >
             <input
@@ -150,10 +161,10 @@ export class ChSwitch implements AccessibleNameComponent {
               }
               class={{ thumb: true, "thumb--checked": checked }}
               part={tokenMap({
-                thumb: true,
-                disabled: this.disabled,
-                checked: checked,
-                unchecked: !checked
+                [SWITCH_PARTS_DICTIONARY.THUMB]: true,
+                [SWITCH_PARTS_DICTIONARY.DISABLED]: this.disabled,
+                [SWITCH_PARTS_DICTIONARY.CHECKED]: checked,
+                [SWITCH_PARTS_DICTIONARY.UNCHECKED]: !checked
               })}
               checked={checked}
               disabled={this.disabled}
@@ -169,7 +180,12 @@ export class ChSwitch implements AccessibleNameComponent {
             // switch has the aria-valuetext attribute
             aria-hidden="true"
             class="caption"
-            part="caption"
+            part={tokenMap({
+              [SWITCH_PARTS_DICTIONARY.CAPTION]: true,
+              [SWITCH_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [SWITCH_PARTS_DICTIONARY.CHECKED]: checked,
+              [SWITCH_PARTS_DICTIONARY.UNCHECKED]: !checked
+            })}
           >
             {checked ? this.checkedCaption : this.unCheckedCaption}
           </span>

@@ -572,7 +572,7 @@ export class ChShowcase {
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="text"
-          value={property.value.toString()}
+          value={property.value?.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
         />
       ]);
@@ -601,7 +601,7 @@ export class ChShowcase {
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="number"
-          value={property.value.toString()}
+          value={property.value?.toString()}
           onInput={this.#showcaseStoryInputNumber.get(propertyGroupId)}
         />
       ]);

@@ -1858,6 +1858,44 @@ export namespace Components {
          */
         "value": any;
     }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface ChSwitch {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Caption displayed when the switch is 'on'
+         */
+        "checkedCaption": string;
+        /**
+          * The value when the switch is 'on'
+         */
+        "checkedValue": string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * Caption displayed when the switch is 'off'
+         */
+        "unCheckedCaption": string;
+        /**
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
+         */
+        "unCheckedValue": string;
+        /**
+          * The value of the control.
+         */
+        "value": string;
+    }
     interface ChTabRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -2732,6 +2770,10 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChSwitchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSwitchElement;
 }
 export interface ChTabRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3737,6 +3779,27 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChSwitchElementEventMap {
+        "input": any;
+    }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface HTMLChSwitchElement extends Components.ChSwitch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSwitchElementEventMap>(type: K, listener: (this: HTMLChSwitchElement, ev: ChSwitchCustomEvent<HTMLChSwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSwitchElementEventMap>(type: K, listener: (this: HTMLChSwitchElement, ev: ChSwitchCustomEvent<HTMLChSwitchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSwitchElement: {
+        prototype: HTMLChSwitchElement;
+        new (): HTMLChSwitchElement;
+    };
     interface HTMLChTabRenderElementEventMap {
         "expandMainGroup": string;
         "itemClose": TabItemCloseInfo;
@@ -4039,6 +4102,7 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-switch": HTMLChSwitchElement;
         "ch-tab-render": HTMLChTabRenderElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
@@ -5933,6 +5997,48 @@ declare namespace LocalJSX {
          */
         "value"?: any;
     }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface ChSwitch {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Caption displayed when the switch is 'on'
+         */
+        "checkedCaption"?: string;
+        /**
+          * The value when the switch is 'on'
+         */
+        "checkedValue": string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * The 'input' event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChSwitchCustomEvent<any>) => void;
+        /**
+          * Caption displayed when the switch is 'off'
+         */
+        "unCheckedCaption"?: string;
+        /**
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
+         */
+        "unCheckedValue"?: string;
+        /**
+          * The value of the control.
+         */
+        "value"?: string;
+    }
     interface ChTabRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -6717,6 +6823,7 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-switch": ChSwitch;
         "ch-tab-render": ChTabRender;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
@@ -6910,6 +7017,11 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            /**
+             * @status experimental
+             * A switch/toggle control that enables you to select between options.
+             */
+            "ch-switch": LocalJSX.ChSwitch & JSXBase.HTMLAttributes<HTMLChSwitchElement>;
             "ch-tab-render": LocalJSX.ChTabRender & JSXBase.HTMLAttributes<HTMLChTabRenderElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;

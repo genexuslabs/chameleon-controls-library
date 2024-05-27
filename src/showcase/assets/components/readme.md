@@ -29,6 +29,7 @@
 - [ch-layout-splitter](../../../components/layout-splitter)
 - [ch-qr](../../../components/qr)
 - [ch-slider](../../../components/slider)
+- [ch-switch](../../../components/switch)
 - [ch-tab-render](../../../components/tab)
 - [ch-tree-view-render](../../../components/tree-view)
 
@@ -43,6 +44,7 @@ graph TD;
   ch-showcase --> ch-layout-splitter
   ch-showcase --> ch-qr
   ch-showcase --> ch-slider
+  ch-showcase --> ch-switch
   ch-showcase --> ch-tab-render
   ch-showcase --> ch-tree-view-render
   ch-flexible-layout-render --> ch-flexible-layout

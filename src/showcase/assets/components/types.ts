@@ -4,6 +4,7 @@ import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChQr } from "../../../components/qr/qr";
+import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
 import { ChSlider } from "../../../components/slider/slider";
 import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
@@ -96,6 +97,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChDropdownRender>
   | Mutable<ChLayoutSplitter>
   | Mutable<ChQr>
+  | Mutable<ChRadioGroupRender>
   | Mutable<ChSlider>
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>

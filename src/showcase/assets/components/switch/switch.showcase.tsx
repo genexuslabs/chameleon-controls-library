@@ -38,7 +38,7 @@ const handleValueInput =
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">No label</legend>
       <form id="form-switch-1" ref={el => (formRefs["form-switch-1"] = el)}>
         <ch-switch
@@ -57,7 +57,7 @@ const render = () => (
       Form value: {formValues["switch-1"]}
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
       <form id="form-switch-2" ref={el => (formRefs["form-switch-2"] = el)}>
         <label class="form-input__label" htmlFor="switch-2">
@@ -81,7 +81,7 @@ const render = () => (
       Form value: {formValues["switch-2"]}
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">
         Component inside label
       </legend>

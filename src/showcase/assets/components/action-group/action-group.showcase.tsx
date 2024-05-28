@@ -1,48 +1,37 @@
 import { h } from "@stencil/core";
-import { ChDropdownRender } from "../../../../components/dropdown/dropdown-render";
+import { ChActionGroupRender } from "../../../../components/action-group/action-group-render";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
-import {
-  GXWebModel,
-  eagerLargeModel,
-  simpleModel1,
-  simpleModel2
-} from "./models";
+import { GXWebModel, eagerLargeModel, modelMinimal } from "./models";
 
-const state: Partial<Mutable<ChDropdownRender>> = {};
+const state: Partial<Mutable<ChActionGroupRender>> = {};
 
 const render = () => (
-  <div class="dropdown-test-main-wrapper">
-    <fieldset class="fieldset-test">
+  <div class="action-group-test-main-wrapper">
+    <div class="fieldset-test">
       <legend class="form-input__label field-legend-test">Primary</legend>
 
-      <ch-dropdown-render
+      <ch-action-group-render
         cssClass="dropdown-primary"
-        buttonAccessibleName={state.buttonAccessibleName}
-        position={state.position}
         model={state.model}
-      >
-        <div slot="action">Action</div>
-      </ch-dropdown-render>
-    </fieldset>
+        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+      ></ch-action-group-render>
+    </div>
 
-    <fieldset class="fieldset-test">
+    <div class="fieldset-test">
       <legend class="form-input__label field-legend-test">Secondary</legend>
 
-      <ch-dropdown-render
+      <ch-action-group-render
         cssClass="dropdown-secondary"
-        buttonAccessibleName={state.buttonAccessibleName}
-        position={state.position}
         model={state.model}
-      >
-        <div slot="action">John Doe</div>
-      </ch-dropdown-render>
-    </fieldset>
+        moreActionsDropdownPosition={state.moreActionsDropdownPosition}
+      ></ch-action-group-render>
+    </div>
   </div>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChDropdownRender>
+  Mutable<ChActionGroupRender>
 > = [
   {
     caption: "Models",
@@ -52,12 +41,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         accessibleName: "Model",
         type: "enum",
         values: [
-          { caption: "Simple model 1", value: simpleModel1 },
-          { caption: "Simple model 2", value: simpleModel2 },
+          { caption: "Simple model", value: modelMinimal },
           { caption: "GX Web Model", value: GXWebModel },
           { caption: "Eager Large Tree (10x20x20)", value: eagerLargeModel }
         ],
-        value: simpleModel1
+        value: modelMinimal
       }
     ]
   },
@@ -65,14 +53,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     caption: "Properties",
     properties: [
       {
-        id: "buttonAccessibleName",
-        caption: "Button Accessible Name",
-        value: "Action",
-        type: "string"
-      },
-      {
-        id: "position",
-        caption: "Position",
+        id: "moreActionsDropdownPosition",
+        caption: "More Actions Dropdown Position",
         value: "Center_OutsideEnd",
         type: "enum",
         values: [
@@ -125,7 +107,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
   }
 ];
 
-export const dropdownShowcaseStory: ShowcaseStory<Mutable<ChDropdownRender>> = {
+export const actionGroupShowcaseStory: ShowcaseStory<
+  Mutable<ChActionGroupRender>
+> = {
   properties: showcaseRenderProperties,
   render: render,
   state: state

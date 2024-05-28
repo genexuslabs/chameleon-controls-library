@@ -125,6 +125,20 @@ legend {
   }
 }
 
+.action-group-test-main-wrapper {
+  display: grid;
+  grid-template-rows: 100px 100px;
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+
+  .fieldset-test {
+    display: grid;
+    grid-auto-flow: row;
+    gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+    resize: inline;
+    overflow: auto;
+  }
+}
+
 .dropdown-test-main-wrapper {
   display: grid;
   grid-auto-flow: column;
@@ -132,6 +146,7 @@ legend {
   grid-template-rows: 80px;
   gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
+
 /* 
 .combo-box::part(item):hover {
   background-color: var(--accents-un-accent__primary-dim--hover);

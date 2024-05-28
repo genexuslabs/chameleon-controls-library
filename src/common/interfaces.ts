@@ -18,6 +18,18 @@ export interface DisableableComponent {
   disabled: boolean;
 }
 
+export interface FormComponent {
+  /**
+   * This property specifies the `name` of the control when used in a form.
+   */
+  name?: string;
+
+  /**
+   * This property specifies the value of the control.
+   */
+  value?: string;
+}
+
 export interface Component extends ComponentInterface {
   element?: any;
   render: () => any;

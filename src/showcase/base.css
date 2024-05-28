@@ -1,24 +1,3 @@
-@font-face {
-  font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
-  font-weight: 700;
-  font-display: swap;
-}
-
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
   padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
@@ -71,6 +50,11 @@ legend {
     );
   padding: 8px;
   margin-block-end: 16px;
+
+  form {
+    display: flex;
+    gap: 8px;
+  }
 }
 
 .field-legend-test {

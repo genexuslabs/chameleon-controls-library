@@ -1,5 +1,6 @@
 import { actionGroupShowcaseStory } from "./action-group/action-group.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
+import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
@@ -13,6 +14,7 @@ import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 export const showcaseStories = {
   "action-group-in-development": actionGroupShowcaseStory,
   checkbox: checkboxShowcaseStory,
+  code: codeShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
   dropdown: dropdownShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,

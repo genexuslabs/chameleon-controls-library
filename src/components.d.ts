@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
+import { MarkdownCodeRender } from "./components/code/internal/types";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
@@ -18,7 +19,7 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-import { MarkdownCodeRender } from "./components/markdown/parsers/types";
+import { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -48,6 +49,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
+export { MarkdownCodeRender } from "./components/code/internal/types";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
@@ -58,7 +60,7 @@ export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-export { MarkdownCodeRender } from "./components/markdown/parsers/types";
+export { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -306,6 +308,28 @@ export namespace Components {
           * The value of the control.
          */
         "value"?: string;
+    }
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChCode {
+        "addLastNestedChildClass": boolean;
+        /**
+          * Specifies the code language to highlight.
+         */
+        "language": string;
+        "lastNestedChildClass": string;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode": MarkdownCodeRender;
+        /**
+          * Specifies the code string to highlight.
+         */
+        "value": string;
     }
     interface ChCodeEditor {
         /**
@@ -1172,7 +1196,7 @@ export namespace Components {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode": MarkdownCodeRender;
+        "renderCode": MarkdownCodeRender1;
         /**
           * Specifies the markdown string to parse.
          */
@@ -1546,10 +1570,6 @@ export namespace Components {
           * This property lets you define the items of the ch-radio-group-render control.
          */
         "model"?: RadioGroupModel;
-        /**
-          * This property specifies the `name` of the control when used in a form.
-         */
-        "name"?: string;
         /**
           * The value of the control.
          */
@@ -2930,6 +2950,18 @@ declare global {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
     };
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface HTMLChCodeElement extends Components.ChCode, HTMLStencilElement {
+    }
+    var HTMLChCodeElement: {
+        prototype: HTMLChCodeElement;
+        new (): HTMLChCodeElement;
+    };
     interface HTMLChCodeEditorElement extends Components.ChCodeEditor, HTMLStencilElement {
     }
     var HTMLChCodeEditorElement: {
@@ -4059,6 +4091,7 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-code": HTMLChCodeElement;
         "ch-code-editor": HTMLChCodeEditorElement;
         "ch-combo-box": HTMLChComboBoxElement;
         "ch-dialog": HTMLChDialogElement;
@@ -4383,6 +4416,28 @@ declare namespace LocalJSX {
         "unCheckedValue"?: string | undefined;
         /**
           * The value of the control.
+         */
+        "value"?: string;
+    }
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChCode {
+        "addLastNestedChildClass"?: boolean;
+        /**
+          * Specifies the code language to highlight.
+         */
+        "language"?: string;
+        "lastNestedChildClass"?: string;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode"?: MarkdownCodeRender;
+        /**
+          * Specifies the code string to highlight.
          */
         "value"?: string;
     }
@@ -5229,7 +5284,7 @@ declare namespace LocalJSX {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode"?: MarkdownCodeRender;
+        "renderCode"?: MarkdownCodeRender1;
         /**
           * Specifies the markdown string to parse.
          */
@@ -5641,10 +5696,6 @@ declare namespace LocalJSX {
           * This property lets you define the items of the ch-radio-group-render control.
          */
         "model"?: RadioGroupModel;
-        /**
-          * This property specifies the `name` of the control when used in a form.
-         */
-        "name"?: string;
         /**
           * Fired when the selected item change. It contains the information about the new selected value.
          */
@@ -6791,6 +6842,7 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-code": ChCode;
         "ch-code-editor": ChCodeEditor;
         "ch-combo-box": ChComboBox;
         "ch-dialog": ChDialog;
@@ -6886,6 +6938,13 @@ declare module "@stencil/core" {
              * @status developer-preview
              */
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            /**
+             * A control to highlight code blocks.
+             * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+             * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+             * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+             */
+            "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
             "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             /**

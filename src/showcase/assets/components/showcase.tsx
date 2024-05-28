@@ -254,28 +254,22 @@ export class ChShowcase {
 
       this.#showcaseStoryInput ??= new Map();
 
-      if (property.render === "textarea") {
-        // TODO
-      }
-      // Input by default
-      else {
-        this.#showcaseStoryInput.set(propertyGroupId, (event: InputEvent) => {
-          const inputCurrentValue = (event.target as HTMLInputElement).value;
+      this.#showcaseStoryInput.set(propertyGroupId, (event: InputEvent) => {
+        const inputCurrentValue = (event.target as HTMLInputElement).value;
 
-          showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
+        showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
 
-          // Verify if the input-number is inside of an object
-          if (parentObject) {
-            const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+        // Verify if the input-number is inside of an object
+        if (parentObject) {
+          const oldGroupInfo = showcaseStoryState[parentObject.id as any];
 
-            showcaseStoryState[parentObject.id as any] = {
-              ...oldGroupInfo,
-              [property.id]: inputCurrentValue
-            };
-          }
-          forceUpdate(this);
-        });
-      }
+          showcaseStoryState[parentObject.id as any] = {
+            ...oldGroupInfo,
+            [property.id]: inputCurrentValue
+          };
+        }
+        forceUpdate(this);
+      });
     }
   } as const satisfies {
     [key in ShowcaseRenderPropertyTypes]: (
@@ -640,6 +634,34 @@ export class ChShowcase {
           value={property.value.toString()}
           onChange={this.#showcaseStoryRadioGroups.get(propertyGroupId).handler}
         ></ch-radio-group-render>
+      ]);
+    },
+
+    textarea: (
+      property: ShowcaseRenderPropertyString<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
+        property.caption && (
+          <label class="form-input__label" htmlFor={propertyGroupId}>
+            {property.caption}
+          </label>
+        ),
+        <textarea
+          id={propertyGroupId}
+          aria-label={property.accessibleName ?? null}
+          class="form-input"
+          value={property.value.toString()}
+          onInput={this.#showcaseStoryInput.get(propertyGroupId)}
+        ></textarea>
       ]);
     }
   } as const;

@@ -54,7 +54,7 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
   styleUrl: "checkbox.scss",
   tag: "ch-checkbox"
 })
-export class CheckBox
+export class ChCheckBox
   implements AccessibleNameComponent, DisableableComponent, FormComponent
 {
   #accessibleNameFromExternalLabel: string | undefined;

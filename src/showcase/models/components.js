@@ -7,7 +7,7 @@ const components = [
   ["action-group", "Action Group", EXPERIMENTAL],
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
-  ["checkbox", "Checkbox", EXPERIMENTAL],
+  ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
   ["code-editor", "Code Editor", EXPERIMENTAL],
   ["combo-box", "Combo Box", EXPERIMENTAL],
   ["dropdown", "Dropdown", EXPERIMENTAL],

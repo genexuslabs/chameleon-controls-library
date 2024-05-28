@@ -262,15 +262,18 @@ export namespace Components {
          */
         "scanning": boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
-        "accessibleName": string;
+        "accessibleName"?: string;
         /**
           * Specifies the label of the checkbox.
          */
-        "caption": string;
+        "caption"?: string;
         /**
           * The value when the checkbox is 'on'
          */
@@ -288,17 +291,21 @@ export namespace Components {
          */
         "indeterminate": boolean;
         /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly": boolean;
         /**
-          * The value when the checkbox is 'off'
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
-        "unCheckedValue": string;
+        "unCheckedValue"?: string | undefined;
         /**
           * The value of the control.
          */
-        "value": string;
+        "value"?: string;
     }
     interface ChCodeEditor {
         /**
@@ -1539,6 +1546,10 @@ export namespace Components {
           * This property lets you define the items of the ch-radio-group-render control.
          */
         "model"?: RadioGroupModel;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
         /**
           * The value of the control.
          */
@@ -2902,6 +2913,9 @@ declare global {
         "click": any;
         "input": any;
     }
+    /**
+     * @status developer-preview
+     */
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChCheckboxElementEventMap>(type: K, listener: (this: HTMLChCheckboxElement, ev: ChCheckboxCustomEvent<HTMLChCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4319,6 +4333,9 @@ declare namespace LocalJSX {
          */
         "scanning"?: boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -4345,6 +4362,10 @@ declare namespace LocalJSX {
          */
         "indeterminate"?: boolean;
         /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
           * Emitted when the element is clicked or the space key is pressed and released.
          */
         "onClick"?: (event: ChCheckboxCustomEvent<any>) => void;
@@ -4357,13 +4378,13 @@ declare namespace LocalJSX {
          */
         "readonly"?: boolean;
         /**
-          * The value when the checkbox is 'off'
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
-        "unCheckedValue": string;
+        "unCheckedValue"?: string | undefined;
         /**
           * The value of the control.
          */
-        "value": string;
+        "value"?: string;
     }
     interface ChCodeEditor {
         /**
@@ -5621,6 +5642,10 @@ declare namespace LocalJSX {
          */
         "model"?: RadioGroupModel;
         /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
           * Fired when the selected item change. It contains the information about the new selected value.
          */
         "onChange"?: (event: ChRadioGroupRenderCustomEvent<string>) => void;
@@ -6857,6 +6882,9 @@ declare module "@stencil/core" {
              * codes.
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
+            /**
+             * @status developer-preview
+             */
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
             "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;

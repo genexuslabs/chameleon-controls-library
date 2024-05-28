@@ -97,6 +97,11 @@ export class CheckBox
   @Prop({ mutable: true }) indeterminate: boolean = false;
 
   /**
+   * This property specifies the `name` of the control when used in a form.
+   */
+  @Prop({ reflect: true }) readonly name?: string;
+
+  /**
    * This attribute indicates that the user cannot modify the value of the control.
    * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
    * attribute for `input` elements.

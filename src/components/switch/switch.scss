@@ -1,0 +1,177 @@
+@import "../../common/_base";
+
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-switch-thumb__checked-background-color:
+   * Specifies the background color of the thumb when the control is unchecked. 
+   * @default currentColor
+   */
+  --ch-switch-thumb__checked-background-color: currentColor;
+
+  /**
+    * @prop --ch-switch-thumb__unchecked-background-color:
+    * Specifies the background color of the thumb when the control is unchecked. 
+    * @default #b2b2b2
+    */
+  --ch-switch-thumb__unchecked-background-color: #b2b2b2;
+
+  /**
+   * @prop --ch-switch-thumb-size:
+   * Specifies the size of the thumb. 
+   * @default clamp(8px, 1em, 24px)
+   */
+  --ch-switch-thumb-size: clamp(8px, 1em, 24px);
+
+  /**
+    * @prop --ch-switch-thumb__state-transition-duration:
+    * Specifies the transition duration of the thumb when switching between
+    * states.
+    * @default 0ms
+    */
+  --ch-switch-thumb__state-transition-duration: 0ms;
+
+  /**
+   * @prop --ch-switch-track-block-size:
+   * Specifies the block size of the track. 
+   * @default clamp(3px, 0.5em, 16px)
+   */
+  --ch-switch-track-block-size: clamp(3px, 0.5em, 16px);
+
+  /**
+   * @prop --ch-switch-track-inline-size:
+   * Specifies the inline size of the track. 
+   * @default clamp(3px, 0.5em, 16px)
+   */
+  --ch-switch-track-inline-size: clamp(3px, 2em, 40px);
+
+  /**
+   * @prop --ch-switch-track__checked-background-color:
+   * Specifies the background color of the track when the control is checked. 
+   * @default color-mix(in srgb, currentColor 35%, #b2b2b2)
+   */
+  --ch-switch-track__checked-background-color: color-mix(
+    in srgb,
+    currentColor 35%,
+    #b2b2b2
+  );
+
+  /**
+   * @prop --ch-switch-track__unchecked-background-color:
+   * Specifies the background color of the track when the control is unchecked. 
+   * @default color-mix(in srgb, currentColor 35%, #b2b2b2)
+   */
+  --ch-switch-track__unchecked-background-color: color-mix(
+    in srgb,
+    currentColor 35%,
+    #b2b2b2
+  );
+
+  display: inline-grid;
+
+  // Avoid zooming on double tap
+  touch-action: manipulation;
+
+  // Remove text selection on double click
+  user-select: none;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: none;
+}
+
+// Necessary to implement to focus delegation to the input when clicking on
+// external labels
+:host(:not(.ch-disabled)) .wrapper-for-click-event {
+  pointer-events: all;
+}
+
+.wrapper-for-click-event {
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+  min-block-size: var(--ch-switch-thumb-size);
+  max-inline-size: max-content;
+  cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - -
+//              Track
+// - - - - - - - - - - - - - - - -
+.track {
+  display: inline-grid;
+  position: relative;
+  align-items: center;
+  inline-size: var(--ch-switch-track-inline-size);
+  block-size: var(--ch-switch-track-block-size);
+
+  background-color: var(--ch-switch-track__unchecked-background-color);
+  border-radius: calc(var(--ch-switch-track-block-size) / 2);
+
+  // Switch slider has more priority to display in the width if there is
+  // not enough space to display switch and label at the same time
+  min-inline-size: var(--ch-switch-track-inline-size);
+  pointer-events: none;
+
+  &--checked {
+    background-color: var(--ch-switch-track__checked-background-color);
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//              Thumb
+// - - - - - - - - - - - - - - - -
+.thumb {
+  display: flex;
+  position: absolute;
+  background-color: var(--ch-switch-thumb__unchecked-background-color);
+  border-radius: 50%;
+  inline-size: var(--ch-switch-thumb-size);
+  block-size: var(--ch-switch-thumb-size);
+  inset-inline-start: 0px;
+
+  pointer-events: none;
+  transition: inset linear var(--ch-switch-thumb__state-transition-duration);
+
+  &--checked {
+    background-color: var(--ch-switch-thumb__checked-background-color);
+
+    // We move the circle using margin-inline-start to support RTL
+    inset-inline-start: calc(100% - var(--ch-switch-thumb-size));
+  }
+}
+
+// We "hide" the input, but not its area to help accessibility readers
+input {
+  // Reset browser defaults
+  appearance: none;
+  margin: 0;
+  outline: unset;
+  font: unset; // Necessary to inherit the font-size and place the correct inline-size
+
+  display: flex;
+  position: absolute;
+  background-color: var(--ch-switch-thumb__unchecked-background-color);
+  border-radius: 50%;
+  inline-size: var(--ch-switch-thumb-size);
+  block-size: var(--ch-switch-thumb-size);
+  inset-inline-start: 0px;
+  pointer-events: none;
+  transition: inset linear var(--ch-switch-thumb__state-transition-duration);
+
+  &--checked {
+    background-color: var(--ch-switch-thumb__checked-background-color);
+
+    // We move the circle using margin-inline-start to support RTL
+    inset-inline-start: calc(100% - var(--ch-switch-thumb-size));
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//             Caption
+// - - - - - - - - - - - - - - - -
+.caption {
+  cursor: pointer;
+}

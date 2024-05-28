@@ -33,7 +33,7 @@ const selectedItemChangeHandler = (
 const render = () => (
   <div class="tab-test-main-wrapper">
     <fieldset>
-      <legend class="heading-4 field-legend-test">Simple pages</legend>
+      <legend class="heading-4">Simple pages</legend>
 
       <ch-tab-render
         class="tab"
@@ -74,7 +74,7 @@ const render = () => (
     </fieldset>
 
     <fieldset>
-      <legend class="heading-4 field-legend-test">Heavy pages</legend>
+      <legend class="heading-4">Heavy pages</legend>
 
       <ch-tab-render
         class="tab"

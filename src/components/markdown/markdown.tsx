@@ -28,11 +28,11 @@ export class ChMarkdown {
 
   @Element() el: HTMLChMarkdownElement;
 
-  /**
-   * `true` to render potentially dangerous user content when rendering HTML
-   * with the option `rawHtml === true`
-   */
-  @Prop() readonly allowDangerousHtml: boolean = false;
+  // /**
+  //  * `true` to render potentially dangerous user content when rendering HTML
+  //  * with the option `rawHtml === true`
+  //  */
+  // @Prop() readonly allowDangerousHtml: boolean = false;
 
   /**
    * `true` to render raw HTML with sanitization.
@@ -56,7 +56,7 @@ export class ChMarkdown {
 
     this.#JSXTree = await markdownToJSX(this.value, {
       rawHTML: this.rawHtml,
-      allowDangerousHtml: this.allowDangerousHtml,
+      allowDangerousHtml: true, // Allow dangerous in this version
       renderCode: this.renderCode
     });
   }

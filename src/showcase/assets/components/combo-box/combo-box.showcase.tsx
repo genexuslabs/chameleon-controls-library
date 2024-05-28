@@ -46,7 +46,7 @@ const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
 
 const render = () => (
   <div class="checkbox-test-main-wrapper">
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">No label</legend>
 
       <ch-combo-box
@@ -71,7 +71,7 @@ const render = () => (
       ></ch-combo-box>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Label with HTML for</legend>
 
       <label class="form-input__label" htmlFor="checkbox-2">
@@ -84,6 +84,10 @@ const render = () => (
         class="combo-box"
         disabled={state.disabled}
         destroyItemsOnClose={state.destroyItemsOnClose}
+        filter={state.filter}
+        filterDebounce={state.filterDebounce}
+        filterOptions={state.filterOptions}
+        filterType={state.filterType}
         model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
@@ -92,10 +96,11 @@ const render = () => (
         }
         readonly={state.readonly}
         value={state.value}
+        onFilterChange={handleFilterChange}
       ></ch-combo-box>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">
         Component inside label
       </legend>
@@ -109,6 +114,10 @@ const render = () => (
           class="combo-box"
           disabled={state.disabled}
           destroyItemsOnClose={state.destroyItemsOnClose}
+          filter={state.filter}
+          filterDebounce={state.filterDebounce}
+          filterOptions={state.filterOptions}
+          filterType={state.filterType}
           model={
             state.filterOptions.alreadyProcessed === true &&
             state.filterType !== "none"
@@ -117,6 +126,7 @@ const render = () => (
           }
           readonly={state.readonly}
           value={state.value}
+          onFilterChange={handleFilterChange}
         ></ch-combo-box>
       </label>
     </fieldset>

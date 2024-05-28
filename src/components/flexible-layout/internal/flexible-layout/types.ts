@@ -5,12 +5,16 @@ import {
   LayoutSplitterLeafModel,
   LayoutSplitterItemRemoveResult
 } from "../../../layout-splitter/types";
-import { ListType } from "../../../list/types";
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Input model
 // - - - - - - - - - - - - - - - - - - - -
-export type ViewType = ListType | "blockStart";
+export type ViewType =
+  | "inlineStart"
+  | "main"
+  | "inlineEnd"
+  | "blockEnd"
+  | "blockStart";
 export type ViewAccessibleRole = Exclude<AccessibleRole, "article" | "list">;
 
 /*
@@ -111,12 +115,12 @@ export type FlexibleLayoutWidget = {
   id: string;
   name: string;
 
-  startImageSrc?: string;
+  startImgSrc?: string;
 
   /**
-   * Specifies how the image will be rendered. Defaults to `"pseudo-element"`.
+   * Specifies how the image will be rendered. Defaults to `"background"`.
    */
-  startImageType?: ImageRender;
+  startImgType?: ImageRender;
   wasRendered?: boolean;
 } & FlexibleLayoutWidgetRender;
 

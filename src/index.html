@@ -60,6 +60,9 @@
 
         <div class="header-end">
           <ch-segmented-control-render
+            id="segmented-control-ds"
+          ></ch-segmented-control-render>
+          <ch-segmented-control-render
             id="segmented-control-rtl"
           ></ch-segmented-control-render>
           <ch-segmented-control-render
@@ -86,7 +89,7 @@
 
         <ch-tree-view-render
           class="tree-view-primary"
-          filter-type="caption"
+          filter-type="metadata"
         ></ch-tree-view-render>
       </aside>
 
@@ -102,14 +105,22 @@
             <li class="card icon-mask card__framework">
               Works with all frameworks
             </li>
-            <li class="card icon-mask">🎨 Fully customizable with CSS</li>
-            <li class="card icon-mask">🏷️ White-label components</li>
+            <li class="card icon-mask card__fully-customizable">
+              Fully customizable with CSS
+            </li>
+            <li class="card icon-mask card__white-label">
+              White-label components
+            </li>
             <li class="card icon-mask card__accessibility">
               Built with accessibility in mind
             </li>
-            <li class="card icon-mask">🚀 Blazing fast performance</li>
-            <li class="card icon-mask card__rtl">Full RTL support</li>
-            <li class="card icon-mask">😃 Open source</li>
+            <li class="card icon-mask card__performance">
+              Blazing fast performance
+            </li>
+            <li class="card icon-mask card__rtl">
+              Full RTL and internationalization support
+            </li>
+            <li class="card icon-mask card__open-source">Open source</li>
           </ul>
 
           <div class="sections">
@@ -165,6 +176,62 @@
             </section>
 
             <section>
+              <h2 id="development-status" class="heading-2">
+                Meaning of development status in each control
+
+                <a
+                  href="#development-status"
+                  aria-label='Direct link to "Meaning of development status in each control"'
+                  >#</a
+                >
+              </h2>
+
+              <ul>
+                <li>
+                  <p>
+                    <strong>Experimental</strong>: The control is in its early
+                    stages of the development. This phase is often useful for
+                    testing the control early, but it is very likely that the
+                    interface will change from the final version.
+                  </p>
+
+                  <p>
+                    Breaking changes for the control can be applied in "patch"
+                    tags.
+                  </p>
+                  <br />
+                </li>
+
+                <li>
+                  <p>
+                    <strong>Developer Preview</strong>: The control is in its
+                    final stages of the development. The interface and behaviors
+                    to implement the control are almost complete. The interface
+                    of the control should not change so much from the final
+                    version.
+                  </p>
+                  <p>
+                    Breaking changes for the control can be applied in "major"
+                    tags.
+                  </p>
+                  <br />
+                </li>
+
+                <li>
+                  <p>
+                    <strong>Stable</strong>: The control's development is stable
+                    and can be safety used in production environments.
+                  </p>
+                  <p>
+                    Breaking changes for the control can be applied in "major"
+                    tags. In some cases, two "major" tags would be used to
+                    deprecate a behavior in the control.
+                  </p>
+                </li>
+              </ul>
+            </section>
+
+            <section>
               <h2 id="license" class="heading-2">
                 License
 
@@ -180,6 +247,11 @@
 
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
+      import {
+        getDesignSystem,
+        setDesignSystemInBrowser,
+        storeDesignSystem
+      } from "./showcase/models/ds-manager.js";
       import {
         getTheme,
         setThemeInBrowser,
@@ -201,18 +273,31 @@
         const toggleThemeRef = document.getElementById(
           "segmented-control-theme"
         );
+        const toggleDSRef = document.getElementById("segmented-control-ds");
         const toggleRtlRef = document.getElementById("segmented-control-rtl");
         const chameleonHome = document.getElementById("chameleon-home");
+
+        // Initialize Design Systems
+        toggleDSRef.model = [
+          {
+            id: "unanimo",
+            caption: "Unanimo"
+          },
+          {
+            id: "mercury",
+            caption: "Mercury"
+          }
+        ];
 
         // Initialize themes
         toggleThemeRef.model = [
           {
-            id: "dark",
-            caption: "Dark"
-          },
-          {
             id: "light",
             caption: "Light"
+          },
+          {
+            id: "dark",
+            caption: "Dark"
           }
         ];
 
@@ -228,6 +313,7 @@
           }
         ];
 
+        toggleDSRef.selectedId = getDesignSystem();
         toggleThemeRef.selectedId = getTheme();
         toggleRtlRef.selectedId = getLanguageDirection();
 
@@ -250,7 +336,9 @@
               showcase.componentName = componentName;
               showcase.pageSrc = `showcase/pages/${componentName}.html`;
               showcase.pageName = treeItemInformation.caption;
-              showcase.status = treeItemInformation.metadata;
+              showcase.status = `(${
+                treeItemInformation.metadata.split("---")[1]
+              })`;
 
               mainPage.hidden = true;
               showcase.hidden = false;
@@ -278,13 +366,22 @@
           showcase.pageSrc = undefined;
         });
 
-        // Add event lister for the theme changes
-        toggleThemeRef.addEventListener("selectedItemChange", () => {
-          const newTheme = getTheme() === "light" ? "dark" : "light";
+        // Add event lister for the design system changes
+        toggleDSRef.addEventListener("selectedItemChange", () => {
+          const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
 
-          storeTheme(newTheme);
-          setThemeInBrowser(newTheme);
-          showcase.theme = newTheme;
+          storeDesignSystem(newDS);
+          setDesignSystemInBrowser(newDS);
+          showcase.designSystem = newDS;
+        });
+
+        // Add event lister for the color scheme changes
+        toggleThemeRef.addEventListener("selectedItemChange", () => {
+          const colorScheme = getTheme() === "light" ? "dark" : "light";
+
+          storeTheme(colorScheme);
+          setThemeInBrowser(colorScheme);
+          showcase.colorScheme = colorScheme;
         });
 
         // Add event lister for the language direction changes
@@ -308,8 +405,8 @@
               items: [
                 {
                   id: "aside",
-                  size: "220px",
-                  minSize: "200px",
+                  size: "250px",
+                  minSize: "235px",
                   dragBar: {
                     hidden: false,
                     size: 1

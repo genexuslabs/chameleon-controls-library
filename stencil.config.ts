@@ -54,7 +54,7 @@ export const config: Config = {
       components: ["ch-layout-splitter"] // Make sure the ch-layout-splitter control is not bundled with other components
     },
     {
-      components: ["ch-list"] // Make sure the ch-list control is not bundled with other components
+      components: ["ch-tab-render"] // Make sure the ch-tab-render control is not bundled with other components
     },
     {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
@@ -64,6 +64,9 @@ export const config: Config = {
     },
     {
       components: ["ch-popover"] // Make sure the ch-popover control is not bundled with other components
+    },
+    {
+      components: ["ch-qr"] // Make sure the ch-qr control is not bundled with other components
     },
     {
       components: ["ch-showcase"] // Make sure the ch-showcase control is not bundled with other components

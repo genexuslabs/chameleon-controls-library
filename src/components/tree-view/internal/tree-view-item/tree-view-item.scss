@@ -69,8 +69,8 @@
   inset-block-start: 0;
   height: 100%;
   border-inline-start-width: 1px;
-  border-style: solid;
-  border-block-end: unset;
+  border-inline-start-style: solid; // Don't use "border-style: solid". Theia uses Chrome 110 where this property is buggy
+  border-block-end: unset; // Remove block-end border
 }
 
 // - - - - - - - - - - - - - - - -

@@ -11,11 +11,16 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="../base.css" rel="stylesheet" />
     <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
       import { setThemeInBrowser } from "../models/theme-manager.js";
 
       window.addEventListener("message", event => {
         if (event.data === "light" || event.data === "dark") {
           setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
         }
       });
     </script>
@@ -29,12 +34,12 @@
       body {
         display: grid;
         grid-template-columns: 1fr 260px;
-        gap: var(--spacing-un-spacing--l);
+        gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
       }
 
       .segmented-control-item::part(action) {
-        padding-block: var(--spacing-un-spacing--m);
-        padding-inline: var(--spacing-un-spacing--l);
+        padding-block: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+        padding-inline: var(--spacing-un-spacing--l, var(--mer-spacing--md));
       }
     </style>
   </head>

@@ -1,6 +1,6 @@
 {
   "name": "@genexus/chameleon-controls-library",
-  "version": "6.0.0-next.5",
+  "version": "6.0.0-next.8",
   "description": "chameleon - A library of white-label, highly-customizable and reusable web components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
@@ -17,13 +17,13 @@
     "loader/"
   ],
   "scripts": {
-    "build": "npm run build.monaco && stencil build --docs",
+    "build": "npm run build.monaco && npm run build.light",
     "build.light": "stencil build --docs",
     "build.monaco": "vite build",
     "generate": "stencil generate",
     "prettier": "prettier src/**/*.{tsx,ts,jsx,js,css,json,md} --write",
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
-    "start": "npm run build.monaco && stencil build --dev --watch --serve",
+    "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
     "test.coverage": "stencil test --spec --e2e --coverage --no-cache",

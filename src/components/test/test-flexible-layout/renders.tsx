@@ -66,17 +66,17 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImageSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: "assets/icons/toolbar/preferences.svg"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -104,7 +104,7 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImageSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: "assets/icons/toolbar/properties.svg"
             }
           ]
         }
@@ -120,7 +120,7 @@ export const defaultLayout: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImageSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: "assets/icons/toolbar/output.svg"
         }
       ]
     }
@@ -158,17 +158,17 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImageSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: "assets/icons/toolbar/preferences.svg"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -209,7 +209,7 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImageSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: "assets/icons/toolbar/properties.svg"
             }
           ]
         }
@@ -225,7 +225,7 @@ export const layout2: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImageSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: "assets/icons/toolbar/output.svg"
         }
       ]
     }
@@ -267,17 +267,17 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImageSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: "assets/icons/toolbar/preferences.svg"
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImageSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
             }
           ]
         },
@@ -347,7 +347,7 @@ export const layout3: FlexibleLayoutModel = {
                 {
                   id: OUTPUT,
                   name: "Output",
-                  startImageSrc: "assets/icons/toolbar/output.svg"
+                  startImgSrc: "assets/icons/toolbar/output.svg"
                 }
               ]
             }
@@ -366,7 +366,7 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImageSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: "assets/icons/toolbar/properties.svg"
             }
           ]
         }

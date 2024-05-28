@@ -45,19 +45,23 @@ $option-checked-color: currentColor;
   grid-template-columns: max-content 1fr;
   align-items: center;
 
-  // Remove outline of the focus state. This selector must not have higher
-  // specificity, since it should be overridden by the class applied to the control
-  outline: unset;
-
   // Avoid zooming on double tap
   touch-action: manipulation;
 
   // Remove text selection on double click
   user-select: none;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: none;
 }
 
 :host(.ch-checkbox--actionable) :is(.input, .label) {
   cursor: pointer;
+
+  // Necessary to implement to focus delegation to the input when clicking on
+  // external labels
+  pointer-events: all;
 }
 
 .container {
@@ -81,7 +85,6 @@ $option-checked-color: currentColor;
   outline: unset;
 
   border: 1px solid $option-checked-border-color;
-  border-radius: 18.75%;
 }
 
 .option {
@@ -105,4 +108,9 @@ $option-checked-color: currentColor;
     opacity: 0;
     visibility: hidden;
   }
+}
+
+.label {
+  display: inline-grid;
+  max-inline-size: max-content;
 }

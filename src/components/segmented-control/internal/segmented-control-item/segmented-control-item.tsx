@@ -142,7 +142,7 @@ export class ChSegmentedControlItem implements AccessibleNameComponent {
               : undefined
           }
           type="button"
-          onClick={this.#handleSelectedChange}
+          onClick={!this.selected ? this.#handleSelectedChange : null}
         >
           {this.caption}
         </button>

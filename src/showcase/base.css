@@ -50,6 +50,11 @@ legend {
     );
   padding: 8px;
   margin-block-end: 16px;
+
+  form {
+    display: flex;
+    gap: 8px;
+  }
 }
 
 .field-legend-test {

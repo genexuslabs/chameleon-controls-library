@@ -25,6 +25,7 @@
 - [ch-checkbox](../../../components/checkbox)
 - [ch-combo-box](../../../components/combobox)
 - [ch-radio-group-render](../../../components/radio-group)
+- [ch-action-group-render](../../../components/action-group)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-layout-splitter](../../../components/layout-splitter)
 - [ch-qr](../../../components/qr)
@@ -40,6 +41,7 @@ graph TD;
   ch-showcase --> ch-checkbox
   ch-showcase --> ch-combo-box
   ch-showcase --> ch-radio-group-render
+  ch-showcase --> ch-action-group-render
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-layout-splitter
   ch-showcase --> ch-qr
@@ -51,8 +53,12 @@ graph TD;
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
   ch-combo-box --> ch-popover
-  ch-dropdown-render --> ch-dropdown
+  ch-action-group-render --> ch-dropdown
+  ch-action-group-render --> ch-action-group
+  ch-action-group-render --> ch-action-group-item
   ch-dropdown --> ch-popover
+  ch-action-group --> ch-dropdown
+  ch-dropdown-render --> ch-dropdown
   ch-tree-view-render --> ch-tree-view
   ch-tree-view-render --> ch-tree-view-drop
   ch-tree-view-render --> ch-tree-view-item

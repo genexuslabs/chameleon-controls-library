@@ -38,6 +38,8 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
 };
 
 /**
+ * @status developer-preview
+ *
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
  * @part input - The input element that implements the interactions for the component.
  * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.

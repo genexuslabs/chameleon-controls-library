@@ -254,28 +254,22 @@ export class ChShowcase {
 
       this.#showcaseStoryInput ??= new Map();
 
-      if (property.render === "textarea") {
-        // TODO
-      }
-      // Input by default
-      else {
-        this.#showcaseStoryInput.set(propertyGroupId, (event: InputEvent) => {
-          const inputCurrentValue = (event.target as HTMLInputElement).value;
+      this.#showcaseStoryInput.set(propertyGroupId, (event: InputEvent) => {
+        const inputCurrentValue = (event.target as HTMLInputElement).value;
 
-          showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
+        showcaseStoryState[propertyGroupId as any] = inputCurrentValue;
 
-          // Verify if the input-number is inside of an object
-          if (parentObject) {
-            const oldGroupInfo = showcaseStoryState[parentObject.id as any];
+        // Verify if the input-number is inside of an object
+        if (parentObject) {
+          const oldGroupInfo = showcaseStoryState[parentObject.id as any];
 
-            showcaseStoryState[parentObject.id as any] = {
-              ...oldGroupInfo,
-              [property.id]: inputCurrentValue
-            };
-          }
-          forceUpdate(this);
-        });
-      }
+          showcaseStoryState[parentObject.id as any] = {
+            ...oldGroupInfo,
+            [property.id]: inputCurrentValue
+          };
+        }
+        forceUpdate(this);
+      });
     }
   } as const satisfies {
     [key in ShowcaseRenderPropertyTypes]: (
@@ -313,12 +307,46 @@ export class ChShowcase {
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
 
   /**
+   * Specifies the theme used in the iframe of the control
+   */
+  @Prop() readonly colorScheme: "light" | "dark";
+  @Watch("colorScheme")
+  colorSchemeChange(newColorSchemeValue: "light" | "dark") {
+    // The showcase does not render a iframe
+    if (this.#showcaseStory) {
+      return;
+    }
+
+    this.#iframeRef.contentWindow.postMessage(
+      newColorSchemeValue,
+      `${window.location.origin}/${this.pageSrc}`
+    );
+  }
+
+  /**
    * Specifies the name of the control.
    */
   @Prop() readonly componentName: string;
   @Watch("componentName")
   componentNameChange(newComponentName: string) {
     this.#checkShowcaseStoryMapping(newComponentName);
+  }
+
+  /**
+   * Specifies the design system used in the iframe of the control
+   */
+  @Prop() readonly designSystem: "mercury" | "unanimo";
+  @Watch("designSystem")
+  designSystemChange(newDSValue: "mercury" | "unanimo") {
+    // The showcase does not render a iframe
+    if (this.#showcaseStory) {
+      return;
+    }
+
+    this.#iframeRef.contentWindow.postMessage(
+      newDSValue,
+      `${window.location.origin}/${this.pageSrc}`
+    );
   }
 
   /**
@@ -354,23 +382,6 @@ export class ChShowcase {
    *     the control.
    */
   @Prop() readonly status: "developer-preview" | "experimental" | "stable";
-
-  /**
-   * Specifies the theme used in the iframe of the control
-   */
-  @Prop() readonly theme: "light" | "dark";
-  @Watch("theme")
-  themeChange(newThemeValue: "light" | "dark") {
-    // The showcase does not render a iframe
-    if (this.#showcaseStory) {
-      return;
-    }
-
-    this.#iframeRef.contentWindow.postMessage(
-      newThemeValue,
-      `${window.location.origin}/${this.pageSrc}`
-    );
-  }
 
   #checkShowcaseStoryMapping = (componentName: string) => {
     this.#showcaseStoryCheckboxes = undefined; // Free the memory
@@ -555,7 +566,7 @@ export class ChShowcase {
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="text"
-          value={property.value.toString()}
+          value={property.value?.toString()}
           onInput={this.#showcaseStoryInput.get(propertyGroupId)}
         />
       ]);
@@ -584,7 +595,7 @@ export class ChShowcase {
           aria-label={property.accessibleName ?? null}
           class="form-input"
           type="number"
-          value={property.value.toString()}
+          value={property.value?.toString()}
           onInput={this.#showcaseStoryInputNumber.get(propertyGroupId)}
         />
       ]);
@@ -623,6 +634,34 @@ export class ChShowcase {
           value={property.value.toString()}
           onChange={this.#showcaseStoryRadioGroups.get(propertyGroupId).handler}
         ></ch-radio-group-render>
+      ]);
+    },
+
+    textarea: (
+      property: ShowcaseRenderPropertyString<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >,
+      parentObject?: ShowcaseRenderPropertyObject<
+        ShowcaseAvailableStories,
+        keyof ShowcaseAvailableStories
+      >
+    ) => {
+      const propertyGroupId = this.#getPropertyId(property, parentObject);
+
+      return this.#propertyRenderWithLabel(property, [
+        property.caption && (
+          <label class="form-input__label" htmlFor={propertyGroupId}>
+            {property.caption}
+          </label>
+        ),
+        <textarea
+          id={propertyGroupId}
+          aria-label={property.accessibleName ?? null}
+          class="form-input"
+          value={property.value.toString()}
+          onInput={this.#showcaseStoryInput.get(propertyGroupId)}
+        ></textarea>
       ]);
     }
   } as const;

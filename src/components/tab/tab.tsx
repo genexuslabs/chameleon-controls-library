@@ -13,8 +13,7 @@ import {
 } from "@stencil/core";
 import {
   DraggableView,
-  DraggableViewInfo,
-  FlexibleLayoutWidget
+  DraggableViewInfo
 } from "../flexible-layout/internal/flexible-layout/types";
 import {
   inBetween,
@@ -23,10 +22,12 @@ import {
   tokenMap
 } from "../../common/utils";
 import {
-  ListDirection,
-  ListElementSize,
-  ListItemCloseInfo,
-  ListSelectedItemInfo
+  TabDirection,
+  TabElementSize,
+  TabItemCloseInfo,
+  TabItemModel,
+  TabModel,
+  TabSelectedItemInfo
 } from "./types";
 import {
   CAPTION_ID,
@@ -46,23 +47,23 @@ import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
 
 // Custom vars
-const TRANSITION_DURATION = "--ch-list-transition-duration";
+const TRANSITION_DURATION = "--ch-tab-transition-duration";
 
-const BUTTON_POSITION_X = "--ch-list-button-position-x";
-const BUTTON_POSITION_Y = "--ch-list-button-position-y";
+const BUTTON_POSITION_X = "--ch-tab-button-position-x";
+const BUTTON_POSITION_Y = "--ch-tab-button-position-y";
 
-const BUTTON_SIZE = "--ch-list-button-size";
+const BUTTON_SIZE = "--ch-tab-button-size";
 
-const MOUSE_OFFSET_X = "--ch-list-mouse-offset-x";
-const MOUSE_OFFSET_Y = "--ch-list-mouse-offset-y";
+const MOUSE_OFFSET_X = "--ch-tab-mouse-offset-x";
+const MOUSE_OFFSET_Y = "--ch-tab-mouse-offset-y";
 
-const MOUSE_POSITION_X = "--ch-list-mouse-position-x";
-const MOUSE_POSITION_Y = "--ch-list-mouse-position-y";
+const MOUSE_POSITION_X = "--ch-tab-mouse-position-x";
+const MOUSE_POSITION_Y = "--ch-tab-mouse-position-y";
 
-const TAB_LIST_EDGE_START_POSITION = "--ch-list-tab-list-start";
-const TAB_LIST_EDGE_END_POSITION = "--ch-list-tab-list-end";
+const TAB_LIST_EDGE_START_POSITION = "--ch-tab-list-start";
+const TAB_LIST_EDGE_END_POSITION = "--ch-tab-list-end";
 
-const DECORATIVE_IMAGE = "--ch-list-decorative-image";
+const DECORATIVE_IMAGE = "--ch-tab-decorative-image";
 
 // Key codes
 const ARROW_UP = "ArrowUp";
@@ -89,7 +90,7 @@ const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
 
 // Utility functions
 
-const isBlockDirection = (direction: ListDirection) => direction === "block";
+const isBlockDirection = (direction: TabDirection) => direction === "block";
 
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
@@ -127,15 +128,15 @@ const setTabListStartEndPosition = (
 };
 
 const getTabListSizesAndSetPosition = (
-  hostRef: HTMLChListElement,
+  hostRef: HTMLChTabRenderElement,
   tabListRef: HTMLElement,
-  direction: ListDirection,
+  direction: TabDirection,
   buttonRect: DOMRect
-): ListElementSize => {
+): TabElementSize => {
   const tabListRect = tabListRef.getBoundingClientRect();
 
   // Tab List information
-  const tabListSizes: ListElementSize = {
+  const tabListSizes: TabElementSize = {
     xStart: tabListRect.x,
     xEnd: tabListRect.x + tabListRect.width,
     yStart: tabListRect.y,
@@ -199,10 +200,10 @@ const focusNextOrPreviousCaption = (
 
 @Component({
   shadow: true,
-  styleUrl: "list.scss",
-  tag: "ch-list"
+  styleUrl: "tab.scss",
+  tag: "ch-tab-render"
 })
-export class ChList implements DraggableView {
+export class ChTabRender implements DraggableView {
   #cancelId: number;
 
   // Styling
@@ -239,7 +240,7 @@ export class ChList implements DraggableView {
    * tab list.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #mouseBoundingLimits: ListElementSize;
+  #mouseBoundingLimits: TabElementSize;
 
   #renderedPages: Set<string> = new Set();
 
@@ -251,7 +252,7 @@ export class ChList implements DraggableView {
   // Keyboard interactions
   #keyEvents: {
     [key in KeyEvents]: (
-      direction: ListDirection,
+      direction: TabDirection,
       event: KeyboardEvent,
       focusedCaption: HTMLButtonElement
     ) => void;
@@ -305,7 +306,7 @@ export class ChList implements DraggableView {
     }
   };
 
-  @Element() el: HTMLChListElement;
+  @Element() el: HTMLChTabRenderElement;
 
   @State() draggedElementIndex = -1;
   @State() draggedElementNewIndex = -1;
@@ -337,9 +338,9 @@ export class ChList implements DraggableView {
   /**
    * Specifies the flexible layout type.
    */
-  @Prop({ reflect: true }) readonly direction: ListDirection;
+  @Prop({ reflect: true }) readonly direction: TabDirection;
   @Watch("direction")
-  directionChange(newDirection: ListDirection) {
+  directionChange(newDirection: TabDirection) {
     this.#initializeState(newDirection);
   }
 
@@ -359,9 +360,9 @@ export class ChList implements DraggableView {
   /**
    * Specifies the items of the tab control.
    */
-  @Prop() readonly model: FlexibleLayoutWidget[];
+  @Prop() readonly model: TabModel;
   @Watch("model")
-  modelChanged(newModel: FlexibleLayoutWidget[]) {
+  modelChanged(newModel: TabModel) {
     this.#updateRenderedPages(newModel);
   }
 
@@ -393,13 +394,13 @@ export class ChList implements DraggableView {
   /**
    * Fired the close button of an item is clicked.
    */
-  @Event() itemClose: EventEmitter<ListItemCloseInfo>;
+  @Event() itemClose: EventEmitter<TabItemCloseInfo>;
 
   /**
    * Fired when the selected item change.
    * This event can be default prevented to prevent the item selection.
    */
-  @Event() selectedItemChange: EventEmitter<ListSelectedItemInfo>;
+  @Event() selectedItemChange: EventEmitter<TabSelectedItemInfo>;
 
   /**
    * Fired the first time a caption button is dragged outside of its tab list.
@@ -479,7 +480,7 @@ export class ChList implements DraggableView {
    * performance by not re-ordering pages when the caption's order changes.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #updateRenderedPages = (items: FlexibleLayoutWidget[]) => {
+  #updateRenderedPages = (items: TabModel) => {
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
         this.#renderedPages.add(item.id);
@@ -530,7 +531,7 @@ export class ChList implements DraggableView {
     );
 
     // Button information
-    const buttonSizes: ListElementSize = {
+    const buttonSizes: TabElementSize = {
       xStart: buttonRect.x,
       xEnd: buttonRect.x + buttonRect.width,
       yStart: buttonRect.y,
@@ -774,15 +775,15 @@ export class ChList implements DraggableView {
     keyEventHandler(this.direction, event, currentFocusedCaption);
   };
 
-  #imgRender = (item: FlexibleLayoutWidget) =>
-    item.startImageType === "img" &&
-    item.startImageSrc && (
+  #imgRender = (item: TabItemModel) =>
+    item.startImgType === "img" &&
+    item.startImgSrc && (
       <img
         aria-hidden="true"
         class={"caption-image " + this.#classes.IMAGE}
         part={this.#parts.IMAGE}
         alt=""
-        src={item.startImageSrc}
+        src={item.startImgSrc}
         loading="lazy"
       />
     );
@@ -807,8 +808,8 @@ export class ChList implements DraggableView {
           class={{
             [this.#classes.BUTTON]: true,
             "decorative-image": isPseudoElementImg(
-              item.startImageSrc,
-              item.startImageType
+              item.startImgSrc,
+              item.startImgType
             ),
 
             "dragged-element": this.draggedElementIndex === index,
@@ -836,8 +837,8 @@ export class ChList implements DraggableView {
             [SELECTED_PART]: item.id === this.selectedId
           })}
           style={
-            isPseudoElementImg(item.startImageSrc, item.startImageType)
-              ? { [DECORATIVE_IMAGE]: `url("${item.startImageSrc}")` }
+            isPseudoElementImg(item.startImgSrc, item.startImgType)
+              ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
               : null
           }
           onAuxClick={this.#handleClose(index, item.id)}
@@ -899,7 +900,7 @@ export class ChList implements DraggableView {
     </div>
   );
 
-  #renderDragPreview = (draggedElement: FlexibleLayoutWidget) => {
+  #renderDragPreview = (draggedElement: TabItemModel) => {
     const classes = {
       [DRAG_PREVIEW]: true,
       [DRAG_PREVIEW_OUTSIDE]: this.hasCrossedBoundaries,
@@ -912,8 +913,8 @@ export class ChList implements DraggableView {
     };
 
     const decorativeImage = isPseudoElementImg(
-      draggedElement.startImageSrc,
-      draggedElement.startImageType
+      draggedElement.startImgSrc,
+      draggedElement.startImgType
     );
 
     return (
@@ -937,7 +938,7 @@ export class ChList implements DraggableView {
           })}
           style={
             decorativeImage
-              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImageSrc}")` }
+              ? { [DECORATIVE_IMAGE]: `url("${draggedElement.startImgSrc}")` }
               : null
           }
         >
@@ -949,14 +950,14 @@ export class ChList implements DraggableView {
     );
   };
 
-  #initializeState = (direction: ListDirection) => {
+  #initializeState = (direction: TabDirection) => {
     this.#updateRenderedPages(this.model);
 
     // Initialize classes and parts
     this.#setClassesAndParts(direction);
   };
 
-  #setClassesAndParts = (direction: ListDirection) => {
+  #setClassesAndParts = (direction: TabDirection) => {
     this.#classes = LIST_CLASSES;
     this.#parts = direction === "block" ? LIST_PART_BLOCK : LIST_PART_INLINE;
   };
@@ -978,7 +979,7 @@ export class ChList implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host class={`ch-list-direction--${this.direction}`}>
+      <Host class={`ch-tab-direction--${this.direction}`}>
         {this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

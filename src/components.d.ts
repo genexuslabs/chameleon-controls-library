@@ -8,6 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
+import { MarkdownCodeRender } from "./components/code/internal/types";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
@@ -18,8 +19,7 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-import { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
-import { MarkdownCodeRender } from "./components/markdown/parsers/types";
+import { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -33,6 +33,7 @@ import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -48,6 +49,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
+export { MarkdownCodeRender } from "./components/code/internal/types";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
@@ -58,8 +60,7 @@ export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-export { ListDirection, ListItemCloseInfo, ListSelectedItemInfo } from "./components/list/types";
-export { MarkdownCodeRender } from "./components/markdown/parsers/types";
+export { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -73,6 +74,7 @@ export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -262,15 +264,18 @@ export namespace Components {
          */
         "scanning": boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
-        "accessibleName": string;
+        "accessibleName"?: string;
         /**
           * Specifies the label of the checkbox.
          */
-        "caption": string;
+        "caption"?: string;
         /**
           * The value when the checkbox is 'on'
          */
@@ -288,15 +293,41 @@ export namespace Components {
          */
         "indeterminate": boolean;
         /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
           * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
          */
         "readonly": boolean;
         /**
-          * The value when the checkbox is 'off'
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
-        "unCheckedValue": string;
+        "unCheckedValue"?: string | undefined;
         /**
           * The value of the control.
+         */
+        "value"?: string;
+    }
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChCode {
+        "addLastNestedChildClass": boolean;
+        /**
+          * Specifies the code language to highlight.
+         */
+        "language": string;
+        "lastNestedChildClass": string;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode": MarkdownCodeRender;
+        /**
+          * Specifies the code string to highlight.
          */
         "value": string;
     }
@@ -1147,64 +1178,6 @@ export namespace Components {
          */
         "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
-    interface ChList {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName": string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName": string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden": boolean;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "direction": ListDirection;
-        /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
-         */
-        "dragOutsideDisabled": boolean;
-        /**
-          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
-         */
-        "endDragPreview": () => Promise<void>;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded": boolean;
-        /**
-          * Returns the info associated to the draggable view.
-         */
-        "getDraggableViews": () => Promise<DraggableViewInfo>;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "model": FlexibleLayoutWidget[];
-        /**
-          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
-         */
-        "promoteDragPreviewToTopLayer": () => Promise<void>;
-        /**
-          * Given an id, remove the page from the render
-         */
-        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId": string;
-        /**
-          * `true` to show the captions of the items.
-         */
-        "showCaptions": boolean;
-        /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
-         */
-        "sortable": boolean;
-    }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
@@ -1223,7 +1196,7 @@ export namespace Components {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode": MarkdownCodeRender;
+        "renderCode": MarkdownCodeRender1;
         /**
           * Specifies the markdown string to parse.
          */
@@ -1728,9 +1701,17 @@ export namespace Components {
     }
     interface ChShowcase {
         /**
+          * Specifies the theme used in the iframe of the control
+         */
+        "colorScheme": "light" | "dark";
+        /**
           * Specifies the name of the control.
          */
         "componentName": string;
+        /**
+          * Specifies the design system used in the iframe of the control
+         */
+        "designSystem": "mercury" | "unanimo";
         /**
           * Specifies the title for the current showcase.
          */
@@ -1743,10 +1724,6 @@ export namespace Components {
           * Specifies the development status of the control.   - "experimental": The control is in its early stages of the development.     This phase is often useful for testing the control early, but it is     very likely that the interface will change from the final version.      Breaking changes for the control can be applied in "patch" tags.    - "developer-preview": The control is in its final stages of the     development. The interface and behaviors to implement the control are     almost complete. The interface of the control should not change so much     from the final version.      Breaking changes for the control can be applied in "major" tags.    - "stable": The control's development is stable and can be safety used     in production environments.      Breaking changes for the control can be applied in "major" tags. In     some cases, two "major" tags would be used to deprecate a behavior in     the control.
          */
         "status": "developer-preview" | "experimental" | "stable";
-        /**
-          * Specifies the theme used in the iframe of the control
-         */
-        "theme": "light" | "dark";
     }
     interface ChSidebar {
         "expandButtonAccessibleName": string;
@@ -1911,6 +1888,102 @@ export namespace Components {
           * The item value
          */
         "value": any;
+    }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface ChSwitch {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Caption displayed when the switch is 'on'
+         */
+        "checkedCaption": string;
+        /**
+          * The value when the switch is 'on'
+         */
+        "checkedValue": string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * Caption displayed when the switch is 'off'
+         */
+        "unCheckedCaption": string;
+        /**
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
+         */
+        "unCheckedValue": string;
+        /**
+          * The value of the control.
+         */
+        "value": string;
+    }
+    interface ChTabRender {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName": string;
+        /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden": boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction": TabDirection;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+         */
+        "dragOutsideDisabled": boolean;
+        /**
+          * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
+         */
+        "endDragPreview": () => Promise<void>;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded": boolean;
+        /**
+          * Returns the info associated to the draggable view.
+         */
+        "getDraggableViews": () => Promise<DraggableViewInfo>;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "model": TabModel;
+        /**
+          * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
+         */
+        "promoteDragPreviewToTopLayer": () => Promise<void>;
+        /**
+          * Given an id, remove the page from the render
+         */
+        "removePage": (pageId: string, forceRerender?: boolean) => Promise<void>;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId": string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions": boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     interface ChTestFlexibleLayout {
         /**
@@ -2653,10 +2726,6 @@ export interface ChIntersectionObserverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChIntersectionObserverElement;
 }
-export interface ChListCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChListElement;
-}
 export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChNextDataModelingItemElement;
@@ -2732,6 +2801,14 @@ export interface ChSuggestCustomEvent<T> extends CustomEvent<T> {
 export interface ChSuggestListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSuggestListItemElement;
+}
+export interface ChSwitchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSwitchElement;
+}
+export interface ChTabRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabRenderElement;
 }
 export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2856,6 +2933,9 @@ declare global {
         "click": any;
         "input": any;
     }
+    /**
+     * @status developer-preview
+     */
     interface HTMLChCheckboxElement extends Components.ChCheckbox, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChCheckboxElementEventMap>(type: K, listener: (this: HTMLChCheckboxElement, ev: ChCheckboxCustomEvent<HTMLChCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2869,6 +2949,18 @@ declare global {
     var HTMLChCheckboxElement: {
         prototype: HTMLChCheckboxElement;
         new (): HTMLChCheckboxElement;
+    };
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface HTMLChCodeElement extends Components.ChCode, HTMLStencilElement {
+    }
+    var HTMLChCodeElement: {
+        prototype: HTMLChCodeElement;
+        new (): HTMLChCodeElement;
     };
     interface HTMLChCodeEditorElement extends Components.ChCodeEditor, HTMLStencilElement {
     }
@@ -3283,26 +3375,6 @@ declare global {
     var HTMLChLayoutSplitterElement: {
         prototype: HTMLChLayoutSplitterElement;
         new (): HTMLChLayoutSplitterElement;
-    };
-    interface HTMLChListElementEventMap {
-        "expandMainGroup": string;
-        "itemClose": ListItemCloseInfo;
-        "selectedItemChange": ListSelectedItemInfo;
-        "itemDragStart": number;
-    }
-    interface HTMLChListElement extends Components.ChList, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChListElementEventMap>(type: K, listener: (this: HTMLChListElement, ev: ChListCustomEvent<HTMLChListElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChListElement: {
-        prototype: HTMLChListElement;
-        new (): HTMLChListElement;
     };
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -3753,6 +3825,47 @@ declare global {
         prototype: HTMLChSuggestListItemElement;
         new (): HTMLChSuggestListItemElement;
     };
+    interface HTMLChSwitchElementEventMap {
+        "input": any;
+    }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface HTMLChSwitchElement extends Components.ChSwitch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSwitchElementEventMap>(type: K, listener: (this: HTMLChSwitchElement, ev: ChSwitchCustomEvent<HTMLChSwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSwitchElementEventMap>(type: K, listener: (this: HTMLChSwitchElement, ev: ChSwitchCustomEvent<HTMLChSwitchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSwitchElement: {
+        prototype: HTMLChSwitchElement;
+        new (): HTMLChSwitchElement;
+    };
+    interface HTMLChTabRenderElementEventMap {
+        "expandMainGroup": string;
+        "itemClose": TabItemCloseInfo;
+        "selectedItemChange": TabSelectedItemInfo;
+        "itemDragStart": number;
+    }
+    interface HTMLChTabRenderElement extends Components.ChTabRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabRenderElementEventMap>(type: K, listener: (this: HTMLChTabRenderElement, ev: ChTabRenderCustomEvent<HTMLChTabRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabRenderElementEventMap>(type: K, listener: (this: HTMLChTabRenderElement, ev: ChTabRenderCustomEvent<HTMLChTabRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabRenderElement: {
+        prototype: HTMLChTabRenderElement;
+        new (): HTMLChTabRenderElement;
+    };
     interface HTMLChTestFlexibleLayoutElement extends Components.ChTestFlexibleLayout, HTMLStencilElement {
     }
     var HTMLChTestFlexibleLayoutElement: {
@@ -3978,6 +4091,7 @@ declare global {
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
+        "ch-code": HTMLChCodeElement;
         "ch-code-editor": HTMLChCodeEditorElement;
         "ch-combo-box": HTMLChComboBoxElement;
         "ch-dialog": HTMLChDialogElement;
@@ -4005,7 +4119,6 @@ declare global {
         "ch-icon": HTMLChIconElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
-        "ch-list": HTMLChListElement;
         "ch-markdown": HTMLChMarkdownElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
@@ -4036,6 +4149,8 @@ declare global {
         "ch-suggest": HTMLChSuggestElement;
         "ch-suggest-list": HTMLChSuggestListElement;
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
+        "ch-switch": HTMLChSwitchElement;
+        "ch-tab-render": HTMLChTabRenderElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
@@ -4251,6 +4366,9 @@ declare namespace LocalJSX {
          */
         "scanning"?: boolean;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChCheckbox {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
@@ -4277,6 +4395,10 @@ declare namespace LocalJSX {
          */
         "indeterminate"?: boolean;
         /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
           * Emitted when the element is clicked or the space key is pressed and released.
          */
         "onClick"?: (event: ChCheckboxCustomEvent<any>) => void;
@@ -4289,13 +4411,35 @@ declare namespace LocalJSX {
          */
         "readonly"?: boolean;
         /**
-          * The value when the checkbox is 'off'
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
          */
-        "unCheckedValue": string;
+        "unCheckedValue"?: string | undefined;
         /**
           * The value of the control.
          */
-        "value": string;
+        "value"?: string;
+    }
+    /**
+     * A control to highlight code blocks.
+     * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChCode {
+        "addLastNestedChildClass"?: boolean;
+        /**
+          * Specifies the code language to highlight.
+         */
+        "language"?: string;
+        "lastNestedChildClass"?: string;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode"?: MarkdownCodeRender;
+        /**
+          * Specifies the code string to highlight.
+         */
+        "value"?: string;
     }
     interface ChCodeEditor {
         /**
@@ -5122,64 +5266,6 @@ declare namespace LocalJSX {
          */
         "model"?: LayoutSplitterModel;
     }
-    interface ChList {
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
-         */
-        "accessibleName"?: string;
-        /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
-         */
-        "closeButtonAccessibleName"?: string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden"?: boolean;
-        /**
-          * Specifies the flexible layout type.
-         */
-        "direction"?: ListDirection;
-        /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
-         */
-        "dragOutsideDisabled"?: boolean;
-        /**
-          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
-         */
-        "expanded"?: boolean;
-        /**
-          * Specifies the items of the tab control.
-         */
-        "model"?: FlexibleLayoutWidget[];
-        /**
-          * Fired when an item of the main group is double clicked.
-         */
-        "onExpandMainGroup"?: (event: ChListCustomEvent<string>) => void;
-        /**
-          * Fired the close button of an item is clicked.
-         */
-        "onItemClose"?: (event: ChListCustomEvent<ListItemCloseInfo>) => void;
-        /**
-          * Fired the first time a caption button is dragged outside of its tab list.
-         */
-        "onItemDragStart"?: (event: ChListCustomEvent<number>) => void;
-        /**
-          * Fired when the selected item change. This event can be default prevented to prevent the item selection.
-         */
-        "onSelectedItemChange"?: (event: ChListCustomEvent<ListSelectedItemInfo>) => void;
-        /**
-          * Specifies the selected item of the widgets array.
-         */
-        "selectedId"?: string;
-        /**
-          * `true` to show the captions of the items.
-         */
-        "showCaptions"?: boolean;
-        /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
-         */
-        "sortable"?: boolean;
-    }
     /**
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
@@ -5198,7 +5284,7 @@ declare namespace LocalJSX {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode"?: MarkdownCodeRender;
+        "renderCode"?: MarkdownCodeRender1;
         /**
           * Specifies the markdown string to parse.
          */
@@ -5765,9 +5851,17 @@ declare namespace LocalJSX {
     }
     interface ChShowcase {
         /**
+          * Specifies the theme used in the iframe of the control
+         */
+        "colorScheme"?: "light" | "dark";
+        /**
           * Specifies the name of the control.
          */
         "componentName"?: string;
+        /**
+          * Specifies the design system used in the iframe of the control
+         */
+        "designSystem"?: "mercury" | "unanimo";
         /**
           * Specifies the title for the current showcase.
          */
@@ -5780,10 +5874,6 @@ declare namespace LocalJSX {
           * Specifies the development status of the control.   - "experimental": The control is in its early stages of the development.     This phase is often useful for testing the control early, but it is     very likely that the interface will change from the final version.      Breaking changes for the control can be applied in "patch" tags.    - "developer-preview": The control is in its final stages of the     development. The interface and behaviors to implement the control are     almost complete. The interface of the control should not change so much     from the final version.      Breaking changes for the control can be applied in "major" tags.    - "stable": The control's development is stable and can be safety used     in production environments.      Breaking changes for the control can be applied in "major" tags. In     some cases, two "major" tags would be used to deprecate a behavior in     the control.
          */
         "status"?: "developer-preview" | "experimental" | "stable";
-        /**
-          * Specifies the theme used in the iframe of the control
-         */
-        "theme"?: "light" | "dark";
     }
     interface ChSidebar {
         "expandButtonAccessibleName"?: string;
@@ -5982,6 +6072,106 @@ declare namespace LocalJSX {
           * The item value
          */
         "value"?: any;
+    }
+    /**
+     * @status experimental
+     * A switch/toggle control that enables you to select between options.
+     */
+    interface ChSwitch {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Caption displayed when the switch is 'on'
+         */
+        "checkedCaption"?: string;
+        /**
+          * The value when the switch is 'on'
+         */
+        "checkedValue": string;
+        /**
+          * This attribute allows you specify if the element is disabled. If disabled, it will not trigger any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * The 'input' event is emitted when a change to the element's value is committed by the user.
+         */
+        "onInput"?: (event: ChSwitchCustomEvent<any>) => void;
+        /**
+          * Caption displayed when the switch is 'off'
+         */
+        "unCheckedCaption"?: string;
+        /**
+          * The value when the switch is 'off'. If you want to not add the value when the control is used in a form and it's unchecked, just let this property with the default `undefined` value.
+         */
+        "unCheckedValue"?: string;
+        /**
+          * The value of the control.
+         */
+        "value"?: string;
+    }
+    interface ChTabRender {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
+         */
+        "closeButtonAccessibleName"?: string;
+        /**
+          * `true` to hide the close button in the items.
+         */
+        "closeButtonHidden"?: boolean;
+        /**
+          * Specifies the flexible layout type.
+         */
+        "direction"?: TabDirection;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+         */
+        "dragOutsideDisabled"?: boolean;
+        /**
+          * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * Specifies the items of the tab control.
+         */
+        "model"?: TabModel;
+        /**
+          * Fired when an item of the main group is double clicked.
+         */
+        "onExpandMainGroup"?: (event: ChTabRenderCustomEvent<string>) => void;
+        /**
+          * Fired the close button of an item is clicked.
+         */
+        "onItemClose"?: (event: ChTabRenderCustomEvent<TabItemCloseInfo>) => void;
+        /**
+          * Fired the first time a caption button is dragged outside of its tab list.
+         */
+        "onItemDragStart"?: (event: ChTabRenderCustomEvent<number>) => void;
+        /**
+          * Fired when the selected item change. This event can be default prevented to prevent the item selection.
+         */
+        "onSelectedItemChange"?: (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => void;
+        /**
+          * Specifies the selected item of the widgets array.
+         */
+        "selectedId"?: string;
+        /**
+          * `true` to show the captions of the items.
+         */
+        "showCaptions"?: boolean;
+        /**
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     interface ChTestFlexibleLayout {
         /**
@@ -6652,6 +6842,7 @@ declare namespace LocalJSX {
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
+        "ch-code": ChCode;
         "ch-code-editor": ChCodeEditor;
         "ch-combo-box": ChComboBox;
         "ch-dialog": ChDialog;
@@ -6679,7 +6870,6 @@ declare namespace LocalJSX {
         "ch-icon": ChIcon;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
-        "ch-list": ChList;
         "ch-markdown": ChMarkdown;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
@@ -6710,6 +6900,8 @@ declare namespace LocalJSX {
         "ch-suggest": ChSuggest;
         "ch-suggest-list": ChSuggestList;
         "ch-suggest-list-item": ChSuggestListItem;
+        "ch-switch": ChSwitch;
+        "ch-tab-render": ChTabRender;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
@@ -6742,7 +6934,17 @@ declare module "@stencil/core" {
              * codes.
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
+            /**
+             * @status developer-preview
+             */
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
+            /**
+             * A control to highlight code blocks.
+             * - It supports code highlight by parsing the incoming code string to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+             * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+             * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+             */
+            "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
             "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             /**
@@ -6826,7 +7028,6 @@ declare module "@stencil/core" {
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
-            "ch-list": LocalJSX.ChList & JSXBase.HTMLAttributes<HTMLChListElement>;
             /**
              * A control to render markdown syntax. It supports GitHub Flavored Markdown
              * (GFM) and code highlighting.
@@ -6903,6 +7104,12 @@ declare module "@stencil/core" {
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
+            /**
+             * @status experimental
+             * A switch/toggle control that enables you to select between options.
+             */
+            "ch-switch": LocalJSX.ChSwitch & JSXBase.HTMLAttributes<HTMLChSwitchElement>;
+            "ch-tab-render": LocalJSX.ChTabRender & JSXBase.HTMLAttributes<HTMLChTabRenderElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;

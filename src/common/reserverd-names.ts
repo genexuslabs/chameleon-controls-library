@@ -140,6 +140,22 @@ export const SEGMENTED_CONTROL_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//              Switch Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const SWITCH_PARTS_DICTIONARY = {
+  TRACK: "track",
+  THUMB: "thumb",
+  CAPTION: "caption",
+
+  // - - - - - - - - States - - - - - - - -
+  CHECKED: "checked",
+  DISABLED: "disabled",
+  UNCHECKED: "unchecked"
+} as const;
+
+export const SWITCH_EXPORT_PARTS = joinParts(SWITCH_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //             Tree view Parts
 // - - - - - - - - - - - - - - - - - - - -
 const TREE_VIEW_ITEM_CHECKBOX_TRANSFORMED_PARTS_DICTIONARY = {

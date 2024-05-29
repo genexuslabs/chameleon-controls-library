@@ -3,43 +3,26 @@
 // - - - - - - - - - - - - - - - -
 //         Caption button
 // - - - - - - - - - - - - - - - -
-:where(button) {
-  all: unset;
-  display: flex;
-  align-items: center;
-
-  // Disallow selecting the text
-  user-select: none;
-
-  // Avoid zooming on double tap on iOS devices
-  touch-action: manipulation;
-
-  cursor: pointer;
-}
+@include button-reset();
 
 @include box-sizing();
 
 $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 :host {
-  --ch-list-transition-duration: 150ms;
-  --ch-list-mask-image-size: 100%;
-  --ch-list-image-size: 18px;
+  --ch-tab-transition-duration: 150ms;
+  --ch-tab-mask-image-size: 100%;
+  --ch-tab-image-size: 18px;
 
   display: grid;
   block-size: 100%;
 }
 
-// :host([type="blockStart"]) {
-//   grid-auto-flow: row;
-//   grid-auto-rows: max-content;
-// }
-
-:host(.ch-list-direction--block) {
+:host(.ch-tab-direction--block) {
   grid-template-rows: max-content 1fr;
 }
 
-:host(.ch-list-direction--inline) {
+:host(.ch-tab-direction--inline) {
   grid-template-columns: max-content 1fr;
 }
 
@@ -51,14 +34,14 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 .caption-image,
 .decorative-image::before {
   display: block;
-  block-size: var(--ch-list-image-size);
-  inline-size: var(--ch-list-image-size);
+  block-size: var(--ch-tab-image-size);
+  inline-size: var(--ch-tab-image-size);
 }
 
 .decorative-image::before {
   content: "";
-  -webkit-mask: var(--ch-list-decorative-image) 50% 50% /
-    var(--ch-list-mask-image-size) var(--ch-list-mask-image-size) no-repeat;
+  -webkit-mask: var(--ch-tab-decorative-image) 50% 50% /
+    var(--ch-tab-mask-image-size) var(--ch-tab-mask-image-size) no-repeat;
   background-color: currentColor;
 }
 
@@ -101,10 +84,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .drag-preview {
   // "clamp" implements snap to the edges
-  --ch-list-snap-drag-preview: clamp(
-    var(--ch-list-tab-list-start),
-    var(--ch-list-mouse-position),
-    var(--ch-list-tab-list-end)
+  --ch-tab-snap-drag-preview: clamp(
+    var(--ch-tab-list-start),
+    var(--ch-tab-mouse-position),
+    var(--ch-tab-list-end)
   );
 
   position: fixed;
@@ -137,57 +120,57 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   // Drag outside
   &--outside-tab-list {
     transform: translate(
-      calc(var(--ch-list-mouse-position-x) - var(--ch-list-mouse-offset-x)),
-      calc(var(--ch-list-mouse-position-y) - var(--ch-list-mouse-offset-y))
+      calc(var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)),
+      calc(var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y))
     );
   }
 
   // Drag inside (block)
   &--inside-tab-list__block {
-    --ch-list-mouse-position: calc(
-      var(--ch-list-mouse-position-x) - var(--ch-list-mouse-offset-x)
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-x) - var(--ch-tab-mouse-offset-x)
     );
 
     transform: translate(
-      var(--ch-list-snap-drag-preview),
-      var(--ch-list-button-position-y)
+      var(--ch-tab-snap-drag-preview),
+      var(--ch-tab-button-position-y)
     );
   }
 
   // Drag inside (inline)
   &--inside-tab-list__inline {
-    --ch-list-mouse-position: calc(
-      var(--ch-list-mouse-position-y) - var(--ch-list-mouse-offset-y)
+    --ch-tab-mouse-position: calc(
+      var(--ch-tab-mouse-position-y) - var(--ch-tab-mouse-offset-y)
     );
 
     transform: translate(
-      var(--ch-list-button-position-x),
-      var(--ch-list-snap-drag-preview)
+      var(--ch-tab-button-position-x),
+      var(--ch-tab-snap-drag-preview)
     );
   }
 }
 
 .shifted-element {
-  transition: transform var(--ch-list-transition-duration);
+  transition: transform var(--ch-tab-transition-duration);
 }
 
-:host(.ch-list-direction--block) {
+:host(.ch-tab-direction--block) {
   .shifted-element--start {
-    transform: translate(calc(var(--ch-list-button-size) * -1), 0);
+    transform: translate(calc(var(--ch-tab-button-size) * -1), 0);
   }
 
   .shifted-element--end {
-    transform: translate(var(--ch-list-button-size), 0);
+    transform: translate(var(--ch-tab-button-size), 0);
   }
 }
 
-:host(.ch-list-direction--inline) {
+:host(.ch-tab-direction--inline) {
   .shifted-element--start {
-    transform: translateY(calc(var(--ch-list-button-size) * -1));
+    transform: translateY(calc(var(--ch-tab-button-size) * -1));
   }
 
   .shifted-element--end {
-    transform: translateY(var(--ch-list-button-size));
+    transform: translateY(var(--ch-tab-button-size));
   }
 }
 

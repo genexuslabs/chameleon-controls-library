@@ -1,10 +1,10 @@
 import {
+  AttachInternals,
   Component,
   Event,
   EventEmitter,
   Host,
   Prop,
-  State,
   Watch,
   h
 } from "@stencil/core";
@@ -15,7 +15,8 @@ import {
 
 import {
   AccessibleNameComponent,
-  DisableableComponent
+  DisableableComponent,
+  FormComponent
 } from "../../common/interfaces";
 
 const CHECKBOX_ID = "checkbox";
@@ -37,6 +38,8 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
 };
 
 /**
+ * @status developer-preview
+ *
  * @part container - The container that serves as a wrapper for the `input` and the `option` parts.
  * @part input - The input element that implements the interactions for the component.
  * @part option - The actual "input" that is rendered above the `input` part. This part has `position: absolute` and `pointer-events: none`.
@@ -48,28 +51,30 @@ const PARTS = (checked: boolean, indeterminate: boolean, disabled: boolean) => {
  * @part unchecked - Present in the `input`, `option`, `label` and `container` parts when the control is unchecked and not indeterminate (`value` === `unCheckedValue` and `indeterminate !== true`).
  */
 @Component({
-  shadow: true,
+  formAssociated: true,
+  shadow: { delegatesFocus: true },
   styleUrl: "checkbox.scss",
   tag: "ch-checkbox"
 })
-export class CheckBox implements AccessibleNameComponent, DisableableComponent {
-  /**
-   * This State is computed from the `value`, `checkedValue` and
-   * `unCheckedValue` properties.
-   */
-  @State() checked: boolean;
+export class ChCheckBox
+  implements AccessibleNameComponent, DisableableComponent, FormComponent
+{
+  #accessibleNameFromExternalLabel: string | undefined;
+  #inputRef: HTMLInputElement;
+
+  @AttachInternals() internals: ElementInternals;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element.
    */
-  @Prop() readonly accessibleName: string;
+  @Prop() readonly accessibleName?: string;
 
   /**
    * Specifies the label of the checkbox.
    */
-  @Prop() readonly caption: string;
+  @Prop() readonly caption?: string;
 
   /**
    * The value when the checkbox is 'on'
@@ -94,6 +99,11 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   @Prop({ mutable: true }) indeterminate: boolean = false;
 
   /**
+   * This property specifies the `name` of the control when used in a form.
+   */
+  @Prop({ reflect: true }) readonly name?: string;
+
+  /**
    * This attribute indicates that the user cannot modify the value of the control.
    * Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly)
    * attribute for `input` elements.
@@ -101,14 +111,21 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly readonly: boolean = false;
 
   /**
-   * The value when the checkbox is 'off'
+   * The value when the switch is 'off'. If you want to not add the value when
+   * the control is used in a form and it's unchecked, just let this property
+   * with the default `undefined` value.
    */
-  @Prop() readonly unCheckedValue!: string;
+  @Prop() readonly unCheckedValue?: string | undefined;
 
   /**
    * The value of the control.
    */
-  @Prop({ mutable: true }) value!: string;
+  @Prop({ mutable: true }) value?: string;
+  @Watch("value")
+  valueChanged(newValue: string) {
+    // Update form value
+    this.internals.setFormValue(newValue?.toString());
+  }
 
   /**
    * Emitted when the element is clicked or the space key is pressed and
@@ -122,27 +139,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
    */
   @Event() input: EventEmitter;
 
-  @Watch("value")
-  protected valueChanged() {
-    this.checked = this.value === this.checkedValue;
-  }
-
-  componentWillLoad() {
-    this.checked = this.value === this.checkedValue;
-  }
-
-  #getValue = (checked: boolean) =>
-    checked ? this.checkedValue : this.unCheckedValue;
-
-  /**
-   * Checks if it is necessary to prevent the click from bubbling
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #handleClick = (event: UIEvent) => {
-    if (this.readonly || this.disabled) {
-      return;
-    }
-
+  #stopClickPropagation = (event: UIEvent) => {
     event.stopPropagation();
   };
 
@@ -151,9 +148,8 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
 
     const inputRef = event.target as HTMLInputElement;
     const checked = inputRef.checked;
-    const value = this.#getValue(checked);
+    const value = checked ? this.checkedValue : this.unCheckedValue;
 
-    this.checked = checked;
     this.value = value;
     inputRef.value = value; // Update input's value before emitting the event
 
@@ -168,12 +164,34 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
     }
   };
 
+  #handleHostClick = () => {
+    this.#inputRef.click();
+  };
+
+  connectedCallback() {
+    // Set initial value to unchecked if empty
+    this.value ||= this.unCheckedValue;
+
+    // Set form value
+    this.internals.setFormValue(this.value?.toString());
+
+    const labels = this.internals.labels;
+
+    // Get external aria-label
+    if (!this.accessibleName && labels?.length > 0) {
+      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
+    }
+  }
+
   render() {
-    const additionalParts = PARTS(
-      this.checked,
-      this.indeterminate,
-      this.disabled
-    );
+    const checked = this.value === this.checkedValue;
+
+    const additionalParts = PARTS(checked, this.indeterminate, this.disabled);
+
+    const accessibleName =
+      this.accessibleName ?? this.#accessibleNameFromExternalLabel;
+
+    const canAddListeners = !this.disabled && !this.readonly;
 
     return (
       <Host
@@ -183,37 +201,35 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             (!this.readonly && !this.disabled) ||
             (this.readonly && this.highlightable)
         }}
+        onClick={canAddListeners ? this.#handleHostClick : null}
       >
         <div
-          class={{
-            container: true,
-            "container--checked": this.checked
-          }}
+          class="container"
           part={`${CHECKBOX_PARTS_DICTIONARY.CONTAINER} ${additionalParts}`}
         >
           <input
+            id={this.caption ? CHECKBOX_ID : null}
             aria-label={
-              this.accessibleName?.trim() !== "" &&
-              this.accessibleName !== this.caption
-                ? this.accessibleName
+              accessibleName?.trim() !== "" && accessibleName !== this.caption
+                ? accessibleName
                 : null
             }
-            id={this.caption ? CHECKBOX_ID : null}
             class="input"
             part={`${CHECKBOX_PARTS_DICTIONARY.INPUT} ${additionalParts}`}
             type="checkbox"
-            checked={this.checked}
+            checked={checked}
             disabled={this.disabled || this.readonly}
             indeterminate={this.indeterminate}
             value={this.value}
-            onClick={this.#handleClick}
-            onInput={this.#handleChange}
+            onClick={canAddListeners ? this.#stopClickPropagation : null}
+            onInput={canAddListeners ? this.#handleChange : null}
+            ref={el => (this.#inputRef = el)}
           />
           <div
             class={{
               option: true,
-              "option--not-displayed": !this.checked && !this.indeterminate,
-              "option--checked": this.checked && !this.indeterminate,
+              "option--not-displayed": !checked && !this.indeterminate,
+              "option--checked": checked && !this.indeterminate,
               "option--indeterminate": this.indeterminate
             }}
             part={`${CHECKBOX_PARTS_DICTIONARY.OPTION} ${additionalParts}`}
@@ -226,7 +242,7 @@ export class CheckBox implements AccessibleNameComponent, DisableableComponent {
             class="label"
             part={`${CHECKBOX_PARTS_DICTIONARY.LABEL} ${additionalParts}`}
             htmlFor={CHECKBOX_ID}
-            onClick={this.#handleClick}
+            onClick={canAddListeners ? this.#stopClickPropagation : null}
           >
             {this.caption}
           </label>

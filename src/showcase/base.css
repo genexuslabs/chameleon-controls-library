@@ -1,34 +1,19 @@
-@import url("https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css");
-
-@font-face {
-  font-family: SourceSansPro_Regular;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
-}
-
-@font-face {
-  font-family: SourceSansPro_SemiBold;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
-}
-
-@font-face {
-  font-family: SourceSansPro_Bold;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
-}
-
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
-  padding: var(--spacing-un-spacing--l);
+  padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
-hr {
-  margin-inline: calc(var(--spacing-un-spacing--l) * -1);
+ch-showcase hr {
+  margin-inline: calc(
+    var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1
+  );
 }
 
 .card-properties {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 label {
@@ -39,12 +24,12 @@ label {
 fieldset {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spacing-un-spacing--m);
+  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
   border: unset;
 }
 
 legend {
-  margin-block-end: var(--spacing-un-spacing--m);
+  margin-block-end: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
 }
 
 .form-field {
@@ -52,9 +37,28 @@ legend {
   grid-auto-rows: max-content;
 }
 
+.fieldset-test {
+  border: 1px solid
+    color-mix(
+      in srgb,
+      var(
+          --colors-foundation-un-color__purple--300,
+          var(--mer-color__primary-blue--600)
+        )
+        40%,
+      transparent
+    );
+  padding: 8px;
+  margin-block-end: 16px;
+
+  form {
+    display: flex;
+    gap: 8px;
+  }
+}
+
 .field-legend-test {
-  padding-inline-end: 16px;
-  border-block-end: 1px solid;
+  padding-inline: 16px;
 }
 
 ::part(item__action item--folder)::before,
@@ -86,12 +90,24 @@ legend {
   grid-auto-rows: 128px;
 }
 
+.code-test-main-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--spacing-un-spacing--l);
+}
+
+.radio-group-test-main-wrapper {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
 .tab-test-main-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 
-  ch-list {
+  ch-tab-render {
     gap: 8px;
 
     &::part(page-container) {
@@ -100,12 +116,26 @@ legend {
   }
 }
 
+.action-group-test-main-wrapper {
+  display: grid;
+  grid-template-rows: 100px 100px;
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+
+  .fieldset-test {
+    display: grid;
+    grid-auto-flow: row;
+    gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+    resize: inline;
+    overflow: auto;
+  }
+}
+
 .dropdown-test-main-wrapper {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: 128px;
   grid-template-rows: 80px;
-  gap: var(--spacing-un-spacing--l);
+  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
 ch-action-list-render {
@@ -131,3 +161,20 @@ ch-action-list-render {
     text-decoration: underline;
   }
 }
+
+ch-code > pre > code {
+  contain: size;
+  overflow: auto;
+}
+
+ch-showcase textarea.form-input {
+  min-block-size: 32px;
+  block-size: 200px;
+  max-block-size: unset;
+  resize: vertical;
+}
+
+/* 
+.combo-box::part(item):hover {
+  background-color: var(--accents-un-accent__primary-dim--hover);
+} */

@@ -16,6 +16,18 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
 
+    <script>
+      // Get the latest version
+      fetch(
+        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
+      )
+        .then(response => response.json())
+        .then(data => {
+          const chameleonVersion = document.getElementById("chameleon-version");
+          chameleonVersion.textContent = data.version;
+        });
+    </script>
+
     <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
     <link href="showcase/index.css" rel="stylesheet" />
     <!-- <link
@@ -48,6 +60,9 @@
 
         <div class="header-end">
           <ch-segmented-control-render
+            id="segmented-control-ds"
+          ></ch-segmented-control-render>
+          <ch-segmented-control-render
             id="segmented-control-rtl"
           ></ch-segmented-control-render>
           <ch-segmented-control-render
@@ -74,7 +89,7 @@
 
         <ch-tree-view-render
           class="tree-view-primary"
-          filter-type="caption"
+          filter-type="metadata"
         ></ch-tree-view-render>
       </aside>
 
@@ -90,14 +105,22 @@
             <li class="card icon-mask card__framework">
               Works with all frameworks
             </li>
-            <li class="card icon-mask">🎨 Fully customizable with CSS</li>
-            <li class="card icon-mask">🏷️ White-label components</li>
+            <li class="card icon-mask card__fully-customizable">
+              Fully customizable with CSS
+            </li>
+            <li class="card icon-mask card__white-label">
+              White-label components
+            </li>
             <li class="card icon-mask card__accessibility">
               Built with accessibility in mind
             </li>
-            <li class="card icon-mask">🚀 Blazing fast performance</li>
-            <li class="card icon-mask card__rtl">Full RTL support</li>
-            <li class="card icon-mask">😃 Open source</li>
+            <li class="card icon-mask card__performance">
+              Blazing fast performance
+            </li>
+            <li class="card icon-mask card__rtl">
+              Full RTL and internationalization support
+            </li>
+            <li class="card icon-mask card__open-source">Open source</li>
           </ul>
 
           <div class="sections">
@@ -225,6 +248,11 @@
     <script type="module">
       import { treeViewComponents } from "./showcase/models/components.js";
       import {
+        getDesignSystem,
+        setDesignSystemInBrowser,
+        storeDesignSystem
+      } from "./showcase/models/ds-manager.js";
+      import {
         getTheme,
         setThemeInBrowser,
         storeTheme
@@ -234,16 +262,6 @@
         storeLanguageDirection,
         setLanguageDirectionInBrowser
       } from "./showcase/models/language-manager.js";
-
-      // Get the latest version
-      fetch(
-        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
-      )
-        .then(response => response.json())
-        .then(data => {
-          const chameleonVersion = document.getElementById("chameleon-version");
-          chameleonVersion.textContent = data.version;
-        });
 
       window.addEventListener("appload", () => {
         const layoutSplitterRef = document.querySelector("ch-layout-splitter");
@@ -255,18 +273,31 @@
         const toggleThemeRef = document.getElementById(
           "segmented-control-theme"
         );
+        const toggleDSRef = document.getElementById("segmented-control-ds");
         const toggleRtlRef = document.getElementById("segmented-control-rtl");
         const chameleonHome = document.getElementById("chameleon-home");
+
+        // Initialize Design Systems
+        toggleDSRef.model = [
+          {
+            id: "unanimo",
+            caption: "Unanimo"
+          },
+          {
+            id: "mercury",
+            caption: "Mercury"
+          }
+        ];
 
         // Initialize themes
         toggleThemeRef.model = [
           {
-            id: "dark",
-            caption: "Dark"
-          },
-          {
             id: "light",
             caption: "Light"
+          },
+          {
+            id: "dark",
+            caption: "Dark"
           }
         ];
 
@@ -282,6 +313,7 @@
           }
         ];
 
+        toggleDSRef.selectedId = getDesignSystem();
         toggleThemeRef.selectedId = getTheme();
         toggleRtlRef.selectedId = getLanguageDirection();
 
@@ -304,7 +336,9 @@
               showcase.componentName = componentName;
               showcase.pageSrc = `showcase/pages/${componentName}.html`;
               showcase.pageName = treeItemInformation.caption;
-              showcase.status = treeItemInformation.metadata;
+              showcase.status = `(${
+                treeItemInformation.metadata.split("---")[1]
+              })`;
 
               mainPage.hidden = true;
               showcase.hidden = false;
@@ -332,13 +366,22 @@
           showcase.pageSrc = undefined;
         });
 
-        // Add event lister for the theme changes
-        toggleThemeRef.addEventListener("selectedItemChange", () => {
-          const newTheme = getTheme() === "light" ? "dark" : "light";
+        // Add event lister for the design system changes
+        toggleDSRef.addEventListener("selectedItemChange", () => {
+          const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
 
-          storeTheme(newTheme);
-          setThemeInBrowser(newTheme);
-          showcase.theme = newTheme;
+          storeDesignSystem(newDS);
+          setDesignSystemInBrowser(newDS);
+          showcase.designSystem = newDS;
+        });
+
+        // Add event lister for the color scheme changes
+        toggleThemeRef.addEventListener("selectedItemChange", () => {
+          const colorScheme = getTheme() === "light" ? "dark" : "light";
+
+          storeTheme(colorScheme);
+          setThemeInBrowser(colorScheme);
+          showcase.colorScheme = colorScheme;
         });
 
         // Add event lister for the language direction changes
@@ -362,8 +405,8 @@
               items: [
                 {
                   id: "aside",
-                  size: "220px",
-                  minSize: "200px",
+                  size: "250px",
+                  minSize: "235px",
                   dragBar: {
                     hidden: false,
                     size: 1

@@ -11,11 +11,16 @@
     <script nomodule src="/build/chameleon.js"></script>
     <link href="../base.css" rel="stylesheet" />
     <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
       import { setThemeInBrowser } from "../models/theme-manager.js";
 
       window.addEventListener("message", event => {
         if (event.data === "light" || event.data === "dark") {
           setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
         }
       });
     </script>
@@ -33,7 +38,7 @@
       .card-markdown {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-un-spacing--m);
+        gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
 
         & > textarea.form-input {
           block-size: 100%;

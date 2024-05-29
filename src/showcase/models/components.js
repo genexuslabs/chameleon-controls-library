@@ -1,14 +1,6 @@
-/**
- * @typedef TreeViewItemModel
- * @type {object}
- * @property {string} id
- * @property {string} caption
- * @property {number=} order
- */
-
-const DEVELOPER_PREVIEW = "developer-preview";
-const EXPERIMENTAL = "experimental";
-const STABLE = "stable";
+const DEVELOPER_PREVIEW = "Developer Preview";
+const EXPERIMENTAL = "Experimental";
+const STABLE = "Stable";
 
 const components = [
   ["action-list", "Action List", EXPERIMENTAL],
@@ -16,7 +8,8 @@ const components = [
   ["action-group", "Action Group", EXPERIMENTAL],
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
-  ["checkbox", "Checkbox", EXPERIMENTAL],
+  ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
+  ["code", "Code", EXPERIMENTAL],
   ["code-editor", "Code Editor", EXPERIMENTAL],
   ["combo-box", "Combo Box", EXPERIMENTAL],
   ["dropdown", "Dropdown", EXPERIMENTAL],
@@ -34,6 +27,7 @@ const components = [
   ["shortcuts", "Shortcuts", EXPERIMENTAL],
   ["sidebar", "Sidebar", EXPERIMENTAL],
   ["slider", "Slider", DEVELOPER_PREVIEW],
+  ["switch", "Switch", EXPERIMENTAL],
   ["suggest", "Suggest", EXPERIMENTAL],
   ["tab", "Tab", EXPERIMENTAL],
   ["textblock", "Textblock", EXPERIMENTAL],
@@ -58,19 +52,13 @@ const iconMapping = {
  * @property {number=} order
  */
 
-const removeDashesAndApplyUppercase = wordToFormat =>
-  wordToFormat
-    .split("-")
-    .map(word => word.replace(word[0], word[0].toUpperCase()))
-    .join(" ");
-
 /**
  * @param {TreeXItemModel[]} subModel
  */
 export const treeViewComponents = components.map(el => ({
   id: el[0],
   caption: el[1],
-  metadata: `(${removeDashesAndApplyUppercase(el[2])})`,
+  metadata: `${el[1]}---${el[2]}`,
   leaf: true,
   endImgSrc: iconMapping[el[2]],
   endImgType: "mask"

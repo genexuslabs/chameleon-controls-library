@@ -1468,7 +1468,7 @@ export namespace Components {
          */
         "blockSizeMatch": ChPopoverSizeMatch;
         /**
-          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
+          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode. With this, the popover will close if the click is triggered on any other element than the popover and the `actionElement`. It will also close if the "Escape" key is pressed.
          */
         "closeOnClickOutside": boolean;
         /**
@@ -1546,10 +1546,6 @@ export namespace Components {
           * This property lets you define the items of the ch-radio-group-render control.
          */
         "model"?: RadioGroupModel;
-        /**
-          * This property specifies the `name` of the control when used in a form.
-         */
-        "name"?: string;
         /**
           * The value of the control.
          */
@@ -5555,7 +5551,7 @@ declare namespace LocalJSX {
          */
         "blockSizeMatch"?: ChPopoverSizeMatch;
         /**
-          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode.
+          * This property only applies for `"manual"` mode. In native popovers, when using `"manual"` mode the popover doesn't close when clicking outside the control. This property allows to close the popover when clicking outside in `"manual"` mode. With this, the popover will close if the click is triggered on any other element than the popover and the `actionElement`. It will also close if the "Escape" key is pressed.
          */
         "closeOnClickOutside"?: boolean;
         /**
@@ -5641,10 +5637,6 @@ declare namespace LocalJSX {
           * This property lets you define the items of the ch-radio-group-render control.
          */
         "model"?: RadioGroupModel;
-        /**
-          * This property specifies the `name` of the control when used in a form.
-         */
-        "name"?: string;
         /**
           * Fired when the selected item change. It contains the information about the new selected value.
          */

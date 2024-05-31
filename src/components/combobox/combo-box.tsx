@@ -22,7 +22,9 @@ import {
   ComboBoxItemGroup,
   ComboBoxItemLeaf,
   ComboBoxFilterInfo,
-  ComboBoxModel
+  ComboBoxModel,
+  ComboBoxSelectedIndex,
+  ComboBoxItemModelExtended
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
@@ -64,21 +66,7 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.ENTER
   | typeof KEY_CODES.TAB;
 
-type SelectedIndex =
-  | {
-      type: "not-exists";
-    }
-  | {
-      type: "nested";
-      firstLevelIndex: number;
-      secondLevelIndex: number;
-    }
-  | {
-      type: "first-level";
-      firstLevelIndex: number;
-    };
-
-const SELECTED_VALUE_DOES_NOT_EXISTS: SelectedIndex = {
+const SELECTED_VALUE_DOES_NOT_EXISTS: ComboBoxSelectedIndex = {
   type: "not-exists"
 } as const;
 
@@ -86,9 +74,9 @@ const isValidIndex = (array: any, index: number) =>
   0 <= index && index < array.length;
 
 const findSelectedIndex = (
-  valueToItemInfo: Map<string, { caption: string; index: SelectedIndex }>,
+  valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
   selectedValue: string | undefined
-): SelectedIndex => {
+): ComboBoxSelectedIndex => {
   if (!selectedValue) {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
@@ -100,11 +88,11 @@ const findSelectedIndex = (
 
 const findNextSelectedIndex = (
   model: ComboBoxModel,
-  currentIndex: SelectedIndex,
+  currentIndex: ComboBoxSelectedIndex,
   increment: 1 | -1,
   hasFilters: boolean,
   displayedValues: Set<string>
-): SelectedIndex => {
+): ComboBoxSelectedIndex => {
   if (currentIndex.type === "not-exists") {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
@@ -217,10 +205,7 @@ export class ChComboBox
   #lastMaskBlockStart = undefined;
   #lastMaskBlockEnd = undefined;
 
-  #valueToItemInfo: Map<
-    string,
-    { caption: string; index: SelectedIndex; firstExpanded?: boolean }
-  > = new Map();
+  #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
 
   #itemCaptionToItemValue: Map<string, string> = new Map();
 
@@ -245,7 +230,7 @@ export class ChComboBox
 
   #selectNextIndex = (
     event: KeyboardEvent,
-    currentSelectedIndex: SelectedIndex,
+    currentSelectedIndex: ComboBoxSelectedIndex,
     increment: 1 | -1,
     hasFilters: boolean,
     displayedValues: Set<string>
@@ -688,7 +673,7 @@ export class ChComboBox
       if (subItems != null) {
         // First level item
         this.#valueToItemInfo.set(itemGroup.value, {
-          caption: itemGroup.caption,
+          item: itemGroup,
           index: {
             type: "first-level",
             firstLevelIndex: firstLevelIndex
@@ -701,7 +686,7 @@ export class ChComboBox
         // Second level items
         subItems.forEach((subItem, secondLevelIndex) => {
           this.#valueToItemInfo.set(subItem.value, {
-            caption: subItem.caption,
+            item: subItem,
             index: {
               type: "nested",
               firstLevelIndex: firstLevelIndex,
@@ -715,7 +700,7 @@ export class ChComboBox
       // First level item
       else {
         this.#valueToItemInfo.set(item.value, {
-          caption: item.caption,
+          item: item,
           index: {
             type: "first-level",
             firstLevelIndex: firstLevelIndex
@@ -735,7 +720,7 @@ export class ChComboBox
   };
 
   #getCaptionUsingValue = (itemValue: string) =>
-    this.#valueToItemInfo.get(itemValue)?.caption;
+    this.#valueToItemInfo.get(itemValue)?.item.caption;
 
   #getValueUsingCaption = (itemCaption: string) =>
     this.#itemCaptionToItemValue.get(itemCaption);
@@ -1163,7 +1148,7 @@ export class ChComboBox
       class="value"
     >
       {this.currentSelectedValue
-        ? this.#valueToItemInfo.get(this.currentSelectedValue)?.caption ??
+        ? this.#getCaptionUsingValue(this.currentSelectedValue) ??
           this.placeholder
         : this.placeholder}
     </span>,
@@ -1273,6 +1258,22 @@ export class ChComboBox
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
     const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
+    const currentItemInInput: ComboBoxItemModel | undefined =
+      this.#valueToItemInfo.get(
+        filtersAreApplied
+          ? this.#getValueUsingCaption(this.filter)
+          : this.currentSelectedValue
+      )?.item;
+
+    const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
+
+    const customVars = this.#getItemImageCustomVars(
+      currentItemInInput,
+      hasStartImg,
+      hasStartImg,
+      false
+    );
+
     return (
       <Host
         // Make the host focusable since the input is disabled when there are no
@@ -1307,8 +1308,13 @@ export class ChComboBox
                 aria-hidden="true"
                 class={{
                   mask: true,
-                  "mask--no-filters": this.filterType === "none"
+                  "mask--no-filters": this.filterType === "none",
+
+                  [`start-img-type--${
+                    currentItemInInput?.startImgType ?? "background"
+                  } img--start`]: hasStartImg
                 }}
+                style={customVars}
                 onClickCapture={
                   !filtersAreApplied && comboBoxIsInteractive
                     ? this.#handleExpandedChange
@@ -1336,8 +1342,8 @@ export class ChComboBox
                   autocomplete="off"
                   class={{
                     value: true,
-                    "value--filters": filtersAreApplied,
-                    "value--readonly": !filtersAreApplied
+                    "value--readonly": !filtersAreApplied,
+                    "value--start-img": hasStartImg
                   }}
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
@@ -1345,8 +1351,7 @@ export class ChComboBox
                   value={
                     filtersAreApplied
                       ? this.filter
-                      : this.#valueToItemInfo.get(this.currentSelectedValue)
-                          ?.caption
+                      : this.#getCaptionUsingValue(this.currentSelectedValue)
                   }
                   onClickCapture={
                     filtersAreApplied && !this.expanded && comboBoxIsInteractive

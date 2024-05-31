@@ -4,6 +4,26 @@ export type ComboBoxModel = ComboBoxItemModel[];
 
 export type ComboBoxItemModel = ComboBoxItemGroup | ComboBoxItemLeaf;
 
+export type ComboBoxItemModelExtended = {
+  item: ComboBoxItemModel;
+  index: ComboBoxSelectedIndex;
+  firstExpanded?: boolean;
+};
+
+export type ComboBoxSelectedIndex =
+  | {
+      type: "not-exists";
+    }
+  | {
+      type: "nested";
+      firstLevelIndex: number;
+      secondLevelIndex: number;
+    }
+  | {
+      type: "first-level";
+      firstLevelIndex: number;
+    };
+
 export type ComboBoxItemLeaf = {
   caption: string;
   disabled?: boolean;

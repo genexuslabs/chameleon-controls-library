@@ -3,6 +3,7 @@ const EXPERIMENTAL = "Experimental";
 const STABLE = "Stable";
 
 const components = [
+  ["action-list", "Action List", EXPERIMENTAL],
   ["accordion", "Accordion", EXPERIMENTAL],
   ["action-group", "Action Group", EXPERIMENTAL],
   ["alert", "Alert", EXPERIMENTAL],

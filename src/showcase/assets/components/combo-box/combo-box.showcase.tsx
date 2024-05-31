@@ -32,8 +32,6 @@ const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
     filterOptions: state.filterOptions
   });
 
-  console.log(state.model);
-
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items

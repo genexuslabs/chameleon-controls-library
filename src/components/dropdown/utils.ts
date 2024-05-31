@@ -1,4 +1,4 @@
-import { KEY_CODES } from "../../common/reserverd-names";
+import { KEY_CODES } from "../../common/reserved-names";
 
 // Keys
 type DropDownKeyDownEvents =

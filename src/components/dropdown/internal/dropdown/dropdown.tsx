@@ -18,7 +18,7 @@ import { focusComposedPath } from "../../../common/helpers";
 import { ChDropdownCustomEvent } from "../../../../components";
 import { isPseudoElementImg } from "../../../../common/utils";
 import { ImageRender } from "../../../../common/types";
-import { DROPDOWN_PARTS_DICTIONARY } from "../../../../common/reserverd-names";
+import { DROPDOWN_PARTS_DICTIONARY } from "../../../../common/reserved-names";
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChPopoverAlign;

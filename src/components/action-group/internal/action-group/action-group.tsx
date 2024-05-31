@@ -15,7 +15,7 @@ import { ChDropdownCustomEvent } from "../../../../components";
 import {
   ACTION_GROUP_PARTS_DICTIONARY,
   DROPDOWN_PARTS_DICTIONARY
-} from "../../../../common/reserverd-names";
+} from "../../../../common/reserved-names";
 
 const FLOATING_POINT_ERROR = 1;
 

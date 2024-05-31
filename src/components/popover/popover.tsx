@@ -18,6 +18,7 @@ import {
 import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
+import { KEY_CODES } from "../../common/reserved-names";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
@@ -348,6 +349,9 @@ export class ChPopover {
    * using `"manual"` mode the popover doesn't close when clicking outside the
    * control. This property allows to close the popover when clicking outside
    * in `"manual"` mode.
+   * With this, the popover will close if the click is triggered on any other
+   * element than the popover and the `actionElement`. It will also close if
+   * the "Escape" key is pressed.
    */
   @Prop() readonly closeOnClickOutside: boolean = false;
 
@@ -463,7 +467,23 @@ export class ChPopover {
   };
 
   #handlePopoverCloseOnClickOutside = (event: MouseEvent) => {
-    if (!event.composedPath().includes(this.el)) {
+    const composedPath = event.composedPath();
+
+    if (
+      !composedPath.includes(this.el) &&
+      // If the click is triggered on the actionElement, the actionElement must
+      // determine if the popover should be closed
+      !composedPath.includes(this.actionElement)
+    ) {
+      this.#removeClickOutsideWatcher();
+
+      this.hidden = true;
+      this.popoverClosed.emit();
+    }
+  };
+
+  #handlePopoverCloseOnEscapeKey = (event: KeyboardEvent) => {
+    if (event.code === KEY_CODES.ESCAPE) {
       this.#removeClickOutsideWatcher();
 
       this.hidden = true;
@@ -476,9 +496,16 @@ export class ChPopover {
       document.addEventListener(
         "click",
         this.#handlePopoverCloseOnClickOutside,
-        // We should not add "capture: true" to let other elements interrupt
-        // this event in the capture phase
-        { passive: true }
+        // "capture: true" must be added for the ch-combo-box use case. When
+        // the click is triggered on the combo-box, the control prevents the
+        // propagation of the event click
+        { capture: true, passive: true }
+      );
+
+      document.addEventListener(
+        "keydown",
+        this.#handlePopoverCloseOnEscapeKey,
+        { capture: true, passive: true }
       );
     }
   };
@@ -486,7 +513,14 @@ export class ChPopover {
   #removeClickOutsideWatcher = () => {
     document.removeEventListener(
       "click",
-      this.#handlePopoverCloseOnClickOutside
+      this.#handlePopoverCloseOnClickOutside,
+      { capture: true }
+    );
+
+    document.removeEventListener(
+      "keydown",
+      this.#handlePopoverCloseOnEscapeKey,
+      { capture: true }
     );
   };
 

@@ -26,6 +26,7 @@
 
 ### Used by
 
+ - [ch-showcase](../../showcase/assets/components)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -42,6 +43,7 @@ graph TD;
   ch-action-group-render --> ch-action-group-item
   ch-dropdown --> ch-popover
   ch-action-group --> ch-dropdown
+  ch-showcase --> ch-action-group-render
   ch-test-flexible-layout --> ch-action-group-render
   style ch-action-group-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

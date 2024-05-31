@@ -5,7 +5,7 @@ import {
   TreeViewItemModelExtended,
   TreeViewRemoveItemsResult
 } from "./types";
-import { TREE_VIEW_ITEM_PARTS_DICTIONARY } from "../../common/reserverd-names";
+import { TREE_VIEW_ITEM_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 export const INITIAL_LEVEL = 0;
 

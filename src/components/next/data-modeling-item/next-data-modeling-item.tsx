@@ -12,7 +12,7 @@ import {
 } from "@stencil/core";
 import { Component as ChComponent } from "../../../common/interfaces";
 import { EntityItemType, EntityNameToATTs } from "../data-modeling/data-model";
-import { KEY_CODES } from "../../../common/reserverd-names";
+import { KEY_CODES } from "../../../common/reserved-names";
 
 export type ErrorText =
   | "Empty"

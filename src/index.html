@@ -16,6 +16,18 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
 
+    <script>
+      // Get the latest version
+      fetch(
+        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
+      )
+        .then(response => response.json())
+        .then(data => {
+          const chameleonVersion = document.getElementById("chameleon-version");
+          chameleonVersion.textContent = data.version;
+        });
+    </script>
+
     <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
     <link href="showcase/index.css" rel="stylesheet" />
     <!-- <link
@@ -250,16 +262,6 @@
         storeLanguageDirection,
         setLanguageDirectionInBrowser
       } from "./showcase/models/language-manager.js";
-
-      // Get the latest version
-      fetch(
-        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
-      )
-        .then(response => response.json())
-        .then(data => {
-          const chameleonVersion = document.getElementById("chameleon-version");
-          chameleonVersion.textContent = data.version;
-        });
 
       window.addEventListener("appload", () => {
         const layoutSplitterRef = document.querySelector("ch-layout-splitter");

@@ -8,6 +8,7 @@ const components = [
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
   ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
+  ["code", "Code", EXPERIMENTAL],
   ["code-editor", "Code Editor", EXPERIMENTAL],
   ["combo-box", "Combo Box", EXPERIMENTAL],
   ["dropdown", "Dropdown", EXPERIMENTAL],

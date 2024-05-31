@@ -32,9 +32,15 @@ export const config: Config = {
         "ch-action-group-render"
       ]
     },
-
-    { components: ["ch-markdown"] }, // Make sure the ch-markdown control is not bundled with other components
-
+    {
+      components: ["ch-code"] // Make sure the ch-code control is not bundled with other components
+    },
+    {
+      components: ["ch-combo-box"] // Make sure the ch-combo-box control is not bundled with other components
+    },
+    {
+      components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components
+    },
     {
       components: [
         "ch-dropdown"
@@ -61,6 +67,9 @@ export const config: Config = {
     },
     {
       components: ["ch-qr"] // Make sure the ch-qr control is not bundled with other components
+    },
+    {
+      components: ["ch-showcase"] // Make sure the ch-showcase control is not bundled with other components
     },
     {
       components: [

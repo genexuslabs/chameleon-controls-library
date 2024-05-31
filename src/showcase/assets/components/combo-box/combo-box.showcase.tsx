@@ -64,6 +64,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.resizable}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box>
@@ -93,6 +94,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.resizable}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box>
@@ -123,6 +125,7 @@ const render = () => (
               : state.model
           }
           readonly={state.readonly}
+          resizable={state.resizable}
           value={state.value}
           onFilterChange={handleFilterChange}
         ></ch-combo-box>
@@ -181,6 +184,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
           caption: "Readonly",
           value: false,
           type: "boolean"
+        },
+        {
+          id: "resizable",
+          caption: "Resizable",
+          value: false,
+          type: "boolean"
         }
       ]
     },
@@ -196,8 +205,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
           values: [
             { caption: "None", value: "none" },
             { caption: "Caption", value: "caption" },
-            { caption: "Value", value: "value" },
-            { caption: "List", value: "list" }
+            { caption: "Value", value: "value" }
           ]
         },
         {

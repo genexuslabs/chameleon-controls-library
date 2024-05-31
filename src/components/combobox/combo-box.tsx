@@ -574,6 +574,19 @@ export class ChComboBox
     });
   };
 
+  #findNextValueInAlphabet = (event: KeyboardEvent) => {
+    // The key is not a single character or there are no items in the control
+    if (event.key.length > 1 || this.#valueToItemInfo.size === 0) {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+
+    const flattenedItems = this.#valueToItemInfo.entries();
+
+    console.log(flattenedItems);
+  };
+
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //                                 Filters
   // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -899,6 +912,7 @@ export class ChComboBox
       const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
 
       if (!keyboardHandler) {
+        this.#findNextValueInAlphabet(event);
         return;
       }
       keyboardHandler(event);

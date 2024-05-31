@@ -499,14 +499,6 @@ export class ChComboBox
   }
 
   /**
-   * This attribute indicates that multiple options can be selected in the list.
-   * If it is not specified, then only one option can be selected at a time.
-   * When multiple is specified, the control will show a scrolling list box
-   * instead of a single line dropdown.
-   */
-  @Prop() readonly multiple: boolean = false;
-
-  /**
    * A hint to the user of what can be entered in the control. Same as
    * [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder)
    * attribute for `input` elements.

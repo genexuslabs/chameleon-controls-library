@@ -150,6 +150,11 @@ ch-showcase textarea.form-input {
   resize: vertical;
 }
 
+/* This is a WA to improve the UX */
+.navigation-list.tree-view-primary::part(item__action) {
+  padding-block: var(--spacing-un-spacing--s);
+}
+
 /* 
 .combo-box::part(item):hover {
   background-color: var(--accents-un-accent__primary-dim--hover);

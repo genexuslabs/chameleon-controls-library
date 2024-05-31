@@ -19,7 +19,7 @@ import { renderImg } from "../../../../common/renders";
 import {
   imageTypeDictionary,
   startPseudoImageTypeDictionary
-} from "../../../../common/reserverd-names";
+} from "../../../../common/reserved-names";
 import { ActionListFixedChangeEventDetail } from "./types";
 import { tokenMap } from "../../../../common/utils";
 

@@ -18,6 +18,7 @@ import {
 import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
+import { KEY_CODES } from "../../common/reserverd-names";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
@@ -349,7 +350,8 @@ export class ChPopover {
    * control. This property allows to close the popover when clicking outside
    * in `"manual"` mode.
    * With this, the popover will close if the click is triggered on any other
-   * element than the popover and the `actionElement`.
+   * element than the popover and the `actionElement`. It will also close if
+   * the "Escape" key is pressed.
    */
   @Prop() readonly closeOnClickOutside: boolean = false;
 
@@ -480,6 +482,15 @@ export class ChPopover {
     }
   };
 
+  #handlePopoverCloseOnEscapeKey = (event: KeyboardEvent) => {
+    if (event.code === KEY_CODES.ESCAPE) {
+      this.#removeClickOutsideWatcher();
+
+      this.hidden = true;
+      this.popoverClosed.emit();
+    }
+  };
+
   #addClickOutsideWatcherIfNecessary = () => {
     if (this.mode === "manual" && this.closeOnClickOutside) {
       document.addEventListener(
@@ -490,6 +501,12 @@ export class ChPopover {
         // propagation of the event click
         { capture: true, passive: true }
       );
+
+      document.addEventListener(
+        "keydown",
+        this.#handlePopoverCloseOnEscapeKey,
+        { capture: true, passive: true }
+      );
     }
   };
 
@@ -497,6 +514,12 @@ export class ChPopover {
     document.removeEventListener(
       "click",
       this.#handlePopoverCloseOnClickOutside,
+      { capture: true }
+    );
+
+    document.removeEventListener(
+      "keydown",
+      this.#handlePopoverCloseOnEscapeKey,
       { capture: true }
     );
   };

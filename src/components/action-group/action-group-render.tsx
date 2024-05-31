@@ -7,7 +7,7 @@ import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import {
   ACTION_GROUP_EXPORT_PARTS,
   DROPDOWN_EXPORT_PARTS
-} from "../../common/reserverd-names";
+} from "../../common/reserved-names";
 
 const DEFAULT_ACTION_CLASS = "action-group-item";
 const DEFAULT_SUB_ACTION_CLASS = "dropdown-item";

@@ -13,7 +13,7 @@ import { AccessibleNameComponent } from "../../common/interfaces";
 import {
   DISABLED_CLASS,
   SWITCH_PARTS_DICTIONARY
-} from "../../common/reserverd-names";
+} from "../../common/reserved-names";
 import { tokenMap } from "../../common/utils";
 
 /**

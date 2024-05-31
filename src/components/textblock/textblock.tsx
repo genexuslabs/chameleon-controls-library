@@ -9,7 +9,7 @@ import {
   HEIGHT_MEASURING,
   LINE_CLAMP,
   LINE_MEASURING
-} from "../../common/reserverd-names";
+} from "../../common/reserved-names";
 
 /**
  * @part content - The main content displayed in the control. This part only applies when `format="Text"` and lineClamp="true".

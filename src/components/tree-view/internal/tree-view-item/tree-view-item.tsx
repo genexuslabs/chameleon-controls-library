@@ -39,7 +39,7 @@ import {
   TREE_VIEW_ITEM_EXPORT_PARTS,
   TREE_VIEW_ITEM_PARTS_DICTIONARY,
   TREE_VIEW_PARTS_DICTIONARY
-} from "../../../../common/reserverd-names";
+} from "../../../../common/reserved-names";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";

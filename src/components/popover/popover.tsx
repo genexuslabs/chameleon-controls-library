@@ -18,7 +18,7 @@ import {
 import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
-import { KEY_CODES } from "../../common/reserverd-names";
+import { KEY_CODES } from "../../common/reserved-names";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";

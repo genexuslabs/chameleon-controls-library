@@ -27,7 +27,7 @@ import {
   ComboBoxItemModelExtended
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
-import { KEY_CODES } from "../../common/reserverd-names";
+import { KEY_CODES } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
 import { focusComposedPath } from "../common/helpers";

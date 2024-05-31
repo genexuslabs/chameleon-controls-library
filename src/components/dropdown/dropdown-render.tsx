@@ -3,7 +3,7 @@ import { DropdownItemModel, DropdownModel } from "./types";
 import { DropdownPosition } from "./internal/dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
-import { DROPDOWN_EXPORT_PARTS } from "../../common/reserverd-names";
+import { DROPDOWN_EXPORT_PARTS } from "../../common/reserved-names";
 
 @Component({
   tag: "ch-dropdown-render",

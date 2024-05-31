@@ -22,7 +22,9 @@ import {
   ComboBoxItemGroup,
   ComboBoxItemLeaf,
   ComboBoxFilterInfo,
-  ComboBoxModel
+  ComboBoxModel,
+  ComboBoxSelectedIndex,
+  ComboBoxItemModelExtended
 } from "./types";
 import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserverd-names";
@@ -64,21 +66,7 @@ type KeyDownWithFiltersEvents =
   | typeof KEY_CODES.ENTER
   | typeof KEY_CODES.TAB;
 
-type SelectedIndex =
-  | {
-      type: "not-exists";
-    }
-  | {
-      type: "nested";
-      firstLevelIndex: number;
-      secondLevelIndex: number;
-    }
-  | {
-      type: "first-level";
-      firstLevelIndex: number;
-    };
-
-const SELECTED_VALUE_DOES_NOT_EXISTS: SelectedIndex = {
+const SELECTED_VALUE_DOES_NOT_EXISTS: ComboBoxSelectedIndex = {
   type: "not-exists"
 } as const;
 
@@ -86,9 +74,9 @@ const isValidIndex = (array: any, index: number) =>
   0 <= index && index < array.length;
 
 const findSelectedIndex = (
-  valueToItemInfo: Map<string, { caption: string; index: SelectedIndex }>,
+  valueToItemInfo: Map<string, ComboBoxItemModelExtended>,
   selectedValue: string | undefined
-): SelectedIndex => {
+): ComboBoxSelectedIndex => {
   if (!selectedValue) {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
@@ -100,11 +88,11 @@ const findSelectedIndex = (
 
 const findNextSelectedIndex = (
   model: ComboBoxModel,
-  currentIndex: SelectedIndex,
+  currentIndex: ComboBoxSelectedIndex,
   increment: 1 | -1,
   hasFilters: boolean,
   displayedValues: Set<string>
-): SelectedIndex => {
+): ComboBoxSelectedIndex => {
   if (currentIndex.type === "not-exists") {
     return SELECTED_VALUE_DOES_NOT_EXISTS;
   }
@@ -203,6 +191,12 @@ export class ChComboBox
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #largestValue: string;
 
+  /**
+   * Caption of the item identified by the value property
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #currentValueCaption: string;
+
   #borderSizeRAF: SyncWithRAF | undefined;
   #resizeObserver: ResizeObserver | undefined;
 
@@ -211,10 +205,9 @@ export class ChComboBox
   #lastMaskBlockStart = undefined;
   #lastMaskBlockEnd = undefined;
 
-  #valueToItemInfo: Map<
-    string,
-    { caption: string; index: SelectedIndex; firstExpanded?: boolean }
-  > = new Map();
+  #valueToItemInfo: Map<string, ComboBoxItemModelExtended> = new Map();
+
+  #itemCaptionToItemValue: Map<string, string> = new Map();
 
   // Filters info
   #applyFilters = false;
@@ -237,7 +230,7 @@ export class ChComboBox
 
   #selectNextIndex = (
     event: KeyboardEvent,
-    currentSelectedIndex: SelectedIndex,
+    currentSelectedIndex: ComboBoxSelectedIndex,
     increment: 1 | -1,
     hasFilters: boolean,
     displayedValues: Set<string>
@@ -375,15 +368,11 @@ export class ChComboBox
       }
     },
 
-    Enter: () => {
-      // The focus must return to the Host when closing the popover
-      if (this.expanded) {
-        this.el.focus();
-        this.expanded = false;
-      }
-    },
+    Enter: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event),
 
-    Tab: this.#keyEventsNoFiltersDictionary.Tab
+    Tab: (event: KeyboardEvent) =>
+      this.#checkAndEmitValueChangeWithFilters(event)
   };
 
   // Refs
@@ -411,6 +400,7 @@ export class ChComboBox
       // When the control is expanded and has filters applied, we should
       // refresh the rendered items without any debounce
       if (this.filterType !== "none") {
+        this.currentSelectedValue = undefined; // Clear selected value when expanding with filters
         this.#scheduleFilterProcessing("immediate");
       }
     }
@@ -505,6 +495,7 @@ export class ChComboBox
   modelChanged(newModel: ComboBoxModel) {
     this.#findLargestValue(this.model);
     this.#mapValuesToItemInfo(newModel);
+    this.#checkIfCurrentSelectedValueIsNoLongerValid();
   }
 
   /**
@@ -542,7 +533,12 @@ export class ChComboBox
   @Watch("value")
   valueChange(newValue: string) {
     this.currentSelectedValue = newValue;
-    this.filter = this.#valueToItemInfo.get(newValue)?.caption;
+    this.#currentValueCaption = this.#getCaptionUsingValue(newValue);
+
+    // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
+    if (this.filterType === "none") {
+      this.filter = this.#currentValueCaption;
+    }
 
     // Update form value
     this.internals.setFormValue(newValue);
@@ -664,6 +660,7 @@ export class ChComboBox
 
   #mapValuesToItemInfo = (model: ComboBoxModel) => {
     this.#valueToItemInfo.clear();
+    this.#itemCaptionToItemValue.clear();
 
     if (model == null) {
       return;
@@ -676,7 +673,7 @@ export class ChComboBox
       if (subItems != null) {
         // First level item
         this.#valueToItemInfo.set(itemGroup.value, {
-          caption: itemGroup.caption,
+          item: itemGroup,
           index: {
             type: "first-level",
             firstLevelIndex: firstLevelIndex
@@ -684,37 +681,101 @@ export class ChComboBox
           firstExpanded: itemGroup.expandable && !!itemGroup.expanded
         });
 
+        this.#itemCaptionToItemValue.set(itemGroup.caption, itemGroup.value);
+
         // Second level items
         subItems.forEach((subItem, secondLevelIndex) => {
           this.#valueToItemInfo.set(subItem.value, {
-            caption: subItem.caption,
+            item: subItem,
             index: {
               type: "nested",
               firstLevelIndex: firstLevelIndex,
               secondLevelIndex: secondLevelIndex
             }
           });
+
+          this.#itemCaptionToItemValue.set(subItem.caption, subItem.value);
         });
       }
       // First level item
       else {
         this.#valueToItemInfo.set(item.value, {
-          caption: item.caption,
+          item: item,
           index: {
             type: "first-level",
             firstLevelIndex: firstLevelIndex
           }
         });
+        this.#itemCaptionToItemValue.set(item.caption, item.value);
       }
     });
   };
 
-  #checkAndEmitValueChange = () => {
-    if (!this.expanded && this.currentSelectedValue !== this.value) {
+  #checkIfCurrentSelectedValueIsNoLongerValid = () => {
+    // If the current selected does not exists in the new model, remove the
+    // current selected value. This is necessary to process filters
+    if (!this.#valueToItemInfo.get(this.currentSelectedValue)) {
+      this.currentSelectedValue = undefined;
+    }
+  };
+
+  #getCaptionUsingValue = (itemValue: string) =>
+    this.#valueToItemInfo.get(itemValue)?.item.caption;
+
+  #getValueUsingCaption = (itemCaption: string) =>
+    this.#itemCaptionToItemValue.get(itemCaption);
+
+  #checkAndEmitValueChangeWithNoFilter = () => {
+    if (this.currentSelectedValue !== this.value) {
       this.value = this.currentSelectedValue;
 
       // Emit event
       this.input.emit(this.value);
+    }
+  };
+
+  #checkAndEmitValueChangeWithFilters = (event: KeyboardEvent) => {
+    if (!this.expanded) {
+      return;
+    }
+    this.expanded = false;
+
+    // The focus must return to the Host when tabbing with the popover
+    // expanded
+    this.el.focus();
+    event.preventDefault();
+
+    // "Traditional selection". A value was selected pressing the enter key
+    if (this.currentSelectedValue) {
+      this.filter = this.#getCaptionUsingValue(this.currentSelectedValue);
+      this.#checkAndEmitValueChangeWithNoFilter();
+      return;
+    }
+
+    // No item was selected and the filters are not strict
+    if (!this.filterOptions?.strict) {
+      this.value = this.filter;
+
+      // Emit input event
+      this.input.emit(this.value);
+      return;
+    }
+
+    // Strict selection
+    const valueMatchingTheCaption = this.#getValueUsingCaption(this.filter);
+
+    if (valueMatchingTheCaption) {
+      this.value = valueMatchingTheCaption;
+
+      // Emit input event
+      this.input.emit(this.value);
+    }
+    // Revert change because the filter does not match any item value
+    else {
+      this.filter = this.#currentValueCaption;
+
+      // Emit filter change event to recover the previous state
+      this.filterChange.emit(this.filter);
     }
   };
 
@@ -814,31 +875,23 @@ export class ChComboBox
     if (this.filterType === "none") {
       const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
 
-      if (keyboardHandler) {
-        keyboardHandler(event);
+      if (!keyboardHandler) {
+        return;
+      }
+      keyboardHandler(event);
+
+      if (!this.expanded) {
+        this.#checkAndEmitValueChangeWithNoFilter();
       }
     }
     // Keyboard implementation for filters
     else {
-      if (
-        event.code === KEY_CODES.ESCAPE ||
-        event.code === KEY_CODES.HOME ||
-        event.code === KEY_CODES.END ||
-        event.code === KEY_CODES.ARROW_LEFT ||
-        event.code === KEY_CODES.ARROW_RIGHT
-      ) {
-        return;
-      }
       const keyboardHandler = this.#keyEventsWithFiltersDictionary[event.code];
 
       if (keyboardHandler) {
         keyboardHandler(event);
-        return;
       }
-      this.expanded ||= true;
     }
-
-    this.#checkAndEmitValueChange();
   };
 
   #handlePopoverClose = (event: ChPopoverCustomEvent<any>) => {
@@ -859,11 +912,12 @@ export class ChComboBox
       this.el.focus();
     }
 
-    this.#checkAndEmitValueChange();
+    // this.#checkAndEmitValueChange();
   };
 
   #handleInputFilterChange = (event: InputEvent) => {
     event.stopPropagation();
+    this.expanded = true;
     this.filter = this.#inputRef.value;
   };
 
@@ -882,12 +936,17 @@ export class ChComboBox
     this.currentSelectedValue = itemValue;
   };
 
-  #selectedValue = (itemValue: string) => (event: MouseEvent) => {
+  #selectValueAndClosePopover = (itemValue: string) => (event: MouseEvent) => {
     event.stopPropagation();
 
     this.expanded = false;
     this.currentSelectedValue = itemValue;
-    this.#checkAndEmitValueChange();
+
+    // Update current filter, even if no filters are applied. With this, if the
+    // filterType property is updated at runtime, the current selected caption
+    // won't change
+    this.filter = this.#getCaptionUsingValue(itemValue);
+    this.#checkAndEmitValueChangeWithNoFilter();
   };
 
   #toggleExpandInGroup = (itemGroup: ComboBoxItemGroup) => () => {
@@ -1051,7 +1110,11 @@ export class ChComboBox
           style={customVars}
           disabled={isDisabled}
           type="button"
-          onClick={canAddListeners ? this.#selectedValue(item.value) : null}
+          onClick={
+            canAddListeners
+              ? this.#selectValueAndClosePopover(item.value)
+              : null
+          }
           onMouseEnter={
             canAddListeners
               ? this.#updateCurrentSelectedValue(item.value)
@@ -1085,7 +1148,7 @@ export class ChComboBox
       class="value"
     >
       {this.currentSelectedValue
-        ? this.#valueToItemInfo.get(this.currentSelectedValue)?.caption ??
+        ? this.#getCaptionUsingValue(this.currentSelectedValue) ??
           this.placeholder
         : this.placeholder}
     </span>,
@@ -1108,7 +1171,8 @@ export class ChComboBox
     this.internals.setFormValue(this.value);
     this.currentSelectedValue = this.value;
 
-    this.filter = this.#valueToItemInfo.get(this.value)?.caption;
+    this.#currentValueCaption = this.#getCaptionUsingValue(this.value);
+    this.filter = this.#currentValueCaption;
 
     const labels = this.internals.labels;
 
@@ -1194,6 +1258,22 @@ export class ChComboBox
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
     const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
+    const currentItemInInput: ComboBoxItemModel | undefined =
+      this.#valueToItemInfo.get(
+        filtersAreApplied
+          ? this.#getValueUsingCaption(this.filter)
+          : this.currentSelectedValue
+      )?.item;
+
+    const hasStartImg = currentItemInInput && !!currentItemInInput.startImgSrc;
+
+    const customVars = this.#getItemImageCustomVars(
+      currentItemInInput,
+      hasStartImg,
+      hasStartImg,
+      false
+    );
+
     return (
       <Host
         // Make the host focusable since the input is disabled when there are no
@@ -1228,8 +1308,13 @@ export class ChComboBox
                 aria-hidden="true"
                 class={{
                   mask: true,
-                  "mask--no-filters": this.filterType === "none"
+                  "mask--no-filters": this.filterType === "none",
+
+                  [`start-img-type--${
+                    currentItemInInput?.startImgType ?? "background"
+                  } img--start`]: hasStartImg
                 }}
+                style={customVars}
                 onClickCapture={
                   !filtersAreApplied && comboBoxIsInteractive
                     ? this.#handleExpandedChange
@@ -1257,8 +1342,8 @@ export class ChComboBox
                   autocomplete="off"
                   class={{
                     value: true,
-                    "value--filters": filtersAreApplied,
-                    "value--readonly": !filtersAreApplied
+                    "value--readonly": !filtersAreApplied,
+                    "value--start-img": hasStartImg
                   }}
                   disabled={this.disabled || !filtersAreApplied}
                   placeholder={this.placeholder}
@@ -1266,8 +1351,7 @@ export class ChComboBox
                   value={
                     filtersAreApplied
                       ? this.filter
-                      : this.#valueToItemInfo.get(this.currentSelectedValue)
-                          ?.caption
+                      : this.#getCaptionUsingValue(this.currentSelectedValue)
                   }
                   onClickCapture={
                     filtersAreApplied && !this.expanded && comboBoxIsInteractive

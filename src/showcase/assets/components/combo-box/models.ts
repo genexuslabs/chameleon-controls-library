@@ -7,11 +7,13 @@ import {
   ComboBoxModel
 } from "../../../../components/combobox/types";
 
+const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+
 export const simpleModel1: ComboBoxModel = [
   { value: "Value 1", caption: "Label for the value 1" },
   {
     value: "Value 2",
-    caption: "Label for the value 222",
+    caption: "Label for the value 222 (not expandable)",
     items: [
       { value: "Value 2.1", caption: "Label for the value 2.1" },
       { value: "Value 2.2", caption: "Label for the value 2.2" }
@@ -209,37 +211,37 @@ export const dataTypeInGeneXus: ComboBoxModel = [
     value: "External Objects",
     caption: "External Objects",
     expandable: true,
-    startImgSrc: "./assets/icons/external-object.svg",
+    startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
     items: [
       {
         value: "GeneXus.SD.Actions",
         caption: "Actions, GeneXus.SD",
-        startImgSrc: "./assets/icons/external-object.svg",
-        endImgSrc: "./assets/icons/external-object.svg"
+        startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
+        endImgSrc: `${ASSETS_PREFIX}external-object.svg`
       },
       {
         value: "GeneXus.SD.Ads",
         caption: "Ads, GeneXus.SD",
-        startImgSrc: "./assets/icons/external-object.svg",
-        endImgSrc: "./assets/icons/external-object.svg"
+        startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
+        endImgSrc: `${ASSETS_PREFIX}external-object.svg`
       },
       {
         value: "GeneXus.Common.Analytics",
         caption: "Analytics, GeneXus.Common",
-        startImgSrc: "./assets/icons/external-object.svg",
-        endImgSrc: "./assets/icons/external-object.svg"
+        startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
+        endImgSrc: `${ASSETS_PREFIX}external-object.svg`
       },
       {
         value: "GeneXus.Common.AnyObject",
         caption: "AnyObject, GeneXus.Common",
-        startImgSrc: "./assets/icons/external-object.svg",
-        endImgSrc: "./assets/icons/external-object.svg"
+        startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
+        endImgSrc: `${ASSETS_PREFIX}external-object.svg`
       },
       {
         value: "GeneXus.Common.UI.Appearance",
         caption: "Appearance, GeneXus.Common.UI",
-        startImgSrc: "./assets/icons/external-object.svg",
-        endImgSrc: "./assets/icons/external-object.svg"
+        startImgSrc: `${ASSETS_PREFIX}external-object.svg`,
+        endImgSrc: `${ASSETS_PREFIX}external-object.svg`
       }
     ]
   }

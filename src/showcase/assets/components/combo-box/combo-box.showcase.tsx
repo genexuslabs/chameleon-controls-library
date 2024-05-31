@@ -32,8 +32,6 @@ const handleFilterChange = (event: ChComboBoxCustomEvent<string>) => {
     filterOptions: state.filterOptions
   });
 
-  console.log(state.model);
-
   // TODO: Until we support external slots in the ch-flexible-layout-render,
   // this is a hack to update the render of the widget and thus re-render the
   // combo-box updating the displayed items
@@ -238,6 +236,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
               id: "hideMatchesAndShowNonMatches",
               columnSpan: 2,
               caption: "Hide matches and show non-matches",
+              value: false,
+              type: "boolean"
+            },
+            {
+              id: "strict",
+              columnSpan: 2,
+              caption: "Strict filter",
               value: false,
               type: "boolean"
             }

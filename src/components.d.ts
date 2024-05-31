@@ -8,6 +8,8 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
+import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 import { MarkdownCodeRender } from "./components/code/internal/types";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
@@ -49,6 +51,8 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
+export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 export { MarkdownCodeRender } from "./components/code/internal/types";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
@@ -191,6 +195,147 @@ export namespace Components {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender": boolean;
+    }
+    interface ChActionListGroup {
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading": boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable": boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expandable"?: boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate": boolean;
+        /**
+          * Determine if the items are lazy loaded when opening the first time the control.
+         */
+        "lazyLoad": boolean;
+        /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata": string;
+        /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner": boolean;
+    }
+    interface ChActionListItem {
+        "additionalInfo"?: ActionListItemAdditionalInformation;
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption": string;
+        /**
+          * Set this attribute if you want display a checkbox in the control.
+         */
+        "checkbox": boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
+         */
+        "checked": boolean;
+        /**
+          * Set this attribute if you want to set a custom render for the control, by passing a slot.
+         */
+        "customRender": boolean;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading": boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable": boolean;
+        /**
+          * Set this attribute when the item is in edit mode
+         */
+        "editing": boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded": boolean;
+        "fixed"?: boolean;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate": boolean;
+        /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata": string;
+        /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected": boolean;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner": boolean;
+    }
+    interface ChActionListRender {
+        /**
+          * Set this attribute if you want display a checkbox in all items by default.
+         */
+        "checkbox": boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
+         */
+        "checked": boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
+         */
+        "editableItems": boolean;
+        /**
+          * This property lets you define the model of the control.
+         */
+        "model": ActionListModel;
+        /**
+          * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
+         */
+        "removeItemCallback"?: (
+    itemInfo: ActionListItemActionable
+  ) => Promise<boolean>;
+        /**
+          * This property allows us to implement custom rendering of tree items.
+         */
+        "renderItem": (
+    itemModel: ActionListItemModel,
+    actionListRenderState: ChActionListRender
+  ) => any;
+        /**
+          * Callback that is executed when the treeModel is changed to order its items.
+         */
+        "sortItemsCallback": (subModel: ActionListModel) => void;
     }
     interface ChAlert {
         /**
@@ -2650,6 +2795,14 @@ export interface ChActionGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionGroupElement;
 }
+export interface ChActionListGroupCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListGroupElement;
+}
+export interface ChActionListItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListItemElement;
+}
 export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAlertElement;
@@ -2889,6 +3042,48 @@ declare global {
     var HTMLChActionGroupRenderElement: {
         prototype: HTMLChActionGroupRenderElement;
         new (): HTMLChActionGroupRenderElement;
+    };
+    interface HTMLChActionListGroupElementEventMap {
+        "loadLazyContent": string;
+    }
+    interface HTMLChActionListGroupElement extends Components.ChActionListGroup, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChActionListGroupElementEventMap>(type: K, listener: (this: HTMLChActionListGroupElement, ev: ChActionListGroupCustomEvent<HTMLChActionListGroupElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChActionListGroupElementEventMap>(type: K, listener: (this: HTMLChActionListGroupElement, ev: ChActionListGroupCustomEvent<HTMLChActionListGroupElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChActionListGroupElement: {
+        prototype: HTMLChActionListGroupElement;
+        new (): HTMLChActionListGroupElement;
+    };
+    interface HTMLChActionListItemElementEventMap {
+        "fixedChange": ActionListFixedChangeEventDetail;
+        "remove": string;
+        "itemDragEnd": any;
+    }
+    interface HTMLChActionListItemElement extends Components.ChActionListItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChActionListItemElementEventMap>(type: K, listener: (this: HTMLChActionListItemElement, ev: ChActionListItemCustomEvent<HTMLChActionListItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChActionListItemElementEventMap>(type: K, listener: (this: HTMLChActionListItemElement, ev: ChActionListItemCustomEvent<HTMLChActionListItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChActionListItemElement: {
+        prototype: HTMLChActionListItemElement;
+        new (): HTMLChActionListItemElement;
+    };
+    interface HTMLChActionListRenderElement extends Components.ChActionListRender, HTMLStencilElement {
+    }
+    var HTMLChActionListRenderElement: {
+        prototype: HTMLChActionListRenderElement;
+        new (): HTMLChActionListRenderElement;
     };
     interface HTMLChAlertElementEventMap {
         "close": any;
@@ -4088,6 +4283,9 @@ declare global {
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
         "ch-action-group-render": HTMLChActionGroupRenderElement;
+        "ch-action-list-group": HTMLChActionListGroupElement;
+        "ch-action-list-item": HTMLChActionListItemElement;
+        "ch-action-list-render": HTMLChActionListRenderElement;
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
@@ -4285,6 +4483,163 @@ declare namespace LocalJSX {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender"?: boolean;
+    }
+    interface ChActionListGroup {
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption"?: string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading"?: boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable"?: boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expandable"?: boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded"?: boolean;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate"?: boolean;
+        /**
+          * Determine if the items are lazy loaded when opening the first time the control.
+         */
+        "lazyLoad"?: boolean;
+        /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata"?: string;
+        /**
+          * Fired when the lazy control is expanded an its content must be loaded.
+         */
+        "onLoadLazyContent"?: (event: ChActionListGroupCustomEvent<string>) => void;
+        /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner"?: boolean;
+    }
+    interface ChActionListItem {
+        "additionalInfo"?: ActionListItemAdditionalInformation;
+        /**
+          * This attributes specifies the caption of the control
+         */
+        "caption"?: string;
+        /**
+          * Set this attribute if you want display a checkbox in the control.
+         */
+        "checkbox"?: boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked by default. Only works if `checkbox = true`
+         */
+        "checked"?: boolean;
+        /**
+          * Set this attribute if you want to set a custom render for the control, by passing a slot.
+         */
+        "customRender"?: boolean;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This attribute lets you specify when items are being lazy loaded in the control.
+         */
+        "downloading"?: boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+         */
+        "editable"?: boolean;
+        /**
+          * Set this attribute when the item is in edit mode
+         */
+        "editing"?: boolean;
+        /**
+          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
+         */
+        "expanded"?: boolean;
+        "fixed"?: boolean;
+        /**
+          * `true` if the checkbox's value is indeterminate.
+         */
+        "indeterminate"?: boolean;
+        /**
+          * This attribute represents additional info for the control that is included when dragging the item.
+         */
+        "metadata"?: string;
+        /**
+          * Fired when the fixed value of the control is changed.
+         */
+        "onFixedChange"?: (event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>) => void;
+        /**
+          * Fired when the item is no longer being dragged.
+         */
+        "onItemDragEnd"?: (event: ChActionListItemCustomEvent<any>) => void;
+        /**
+          * Fired when the remove button was clicked in the control.
+         */
+        "onRemove"?: (event: ChActionListItemCustomEvent<string>) => void;
+        /**
+          * Specifies a set of parts to use in every DOM element of the control.
+         */
+        "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected"?: boolean;
+        /**
+          * `true` to show the downloading spinner when lazy loading the sub items of the control.
+         */
+        "showDownloadingSpinner"?: boolean;
+    }
+    interface ChActionListRender {
+        /**
+          * Set this attribute if you want display a checkbox in all items by default.
+         */
+        "checkbox"?: boolean;
+        /**
+          * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
+         */
+        "checked"?: boolean;
+        /**
+          * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
+         */
+        "editableItems"?: boolean;
+        /**
+          * This property lets you define the model of the control.
+         */
+        "model"?: ActionListModel;
+        /**
+          * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
+         */
+        "removeItemCallback"?: (
+    itemInfo: ActionListItemActionable
+  ) => Promise<boolean>;
+        /**
+          * This property allows us to implement custom rendering of tree items.
+         */
+        "renderItem"?: (
+    itemModel: ActionListItemModel,
+    actionListRenderState: ChActionListRender
+  ) => any;
+        /**
+          * Callback that is executed when the treeModel is changed to order its items.
+         */
+        "sortItemsCallback"?: (subModel: ActionListModel) => void;
     }
     interface ChAlert {
         /**
@@ -6839,6 +7194,9 @@ declare namespace LocalJSX {
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
         "ch-action-group-render": ChActionGroupRender;
+        "ch-action-list-group": ChActionListGroup;
+        "ch-action-list-item": ChActionListItem;
+        "ch-action-list-render": ChActionListRender;
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
@@ -6928,6 +7286,9 @@ declare module "@stencil/core" {
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
             "ch-action-group-render": LocalJSX.ChActionGroupRender & JSXBase.HTMLAttributes<HTMLChActionGroupRenderElement>;
+            "ch-action-list-group": LocalJSX.ChActionListGroup & JSXBase.HTMLAttributes<HTMLChActionListGroupElement>;
+            "ch-action-list-item": LocalJSX.ChActionListItem & JSXBase.HTMLAttributes<HTMLChActionListItemElement>;
+            "ch-action-list-render": LocalJSX.ChActionListRender & JSXBase.HTMLAttributes<HTMLChActionListRenderElement>;
             "ch-alert": LocalJSX.ChAlert & JSXBase.HTMLAttributes<HTMLChAlertElement>;
             /**
              * This component allows you to scan a wide variety of types of barcode and QR

@@ -1,5 +1,5 @@
 import { ImageRender } from "../../common/types";
-import { ChActionListRender } from "./action-list-render";
+// import { ChActionListRender } from "./action-list-render";
 
 export type ActionListModel = ActionListItemModel[];
 
@@ -160,7 +160,7 @@ export type ActionListItemSeparator = {
   type: ActionListItemTypeSeparator;
 };
 
-export type ActionListImagePathCallback = (
-  imgSrc: string,
-  treeState: ChActionListRender
-) => string;
+// export type ActionListImagePathCallback = (
+//   imgSrc: string,
+//   treeState: ChActionListRender
+// ) => string;

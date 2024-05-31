@@ -152,6 +152,7 @@ ch-showcase textarea.form-input {
 
 /* This is a WA to improve the UX */
 .navigation-list.tree-view-primary::part(item__action) {
+  --ch-tree-view-item__image-size: 20px;
   padding-block: var(--spacing-un-spacing--s);
 }
 

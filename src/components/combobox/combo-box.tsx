@@ -574,6 +574,9 @@ export class ChComboBox
     });
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                                 Filters
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #scheduleFilterProcessing = (newImmediateFilter?: ImmediateFilter) => {
     this.#applyFilters = true;
 
@@ -650,6 +653,8 @@ export class ChComboBox
     }
   };
 
+  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
+
   #mapValuesToItemInfo = (model: ComboBoxModel) => {
     this.#valueToItemInfo.clear();
     this.#itemCaptionToItemValue.clear();
@@ -717,60 +722,6 @@ export class ChComboBox
   #getValueUsingCaption = (itemCaption: string) =>
     this.#itemCaptionToItemValue.get(itemCaption);
 
-  #checkAndEmitValueChangeWithNoFilter = () => {
-    if (this.currentSelectedValue !== this.value) {
-      this.value = this.currentSelectedValue;
-
-      // Emit event
-      this.input.emit(this.value);
-    }
-  };
-
-  #checkAndEmitValueChangeWithFilters = (event: KeyboardEvent) => {
-    if (!this.expanded) {
-      return;
-    }
-    this.expanded = false;
-
-    // The focus must return to the Host when tabbing with the popover
-    // expanded
-    this.el.focus();
-    event.preventDefault();
-
-    // "Traditional selection". A value was selected pressing the enter key
-    if (this.currentSelectedValue) {
-      this.filter = this.#getCaptionUsingValue(this.currentSelectedValue);
-      this.#checkAndEmitValueChangeWithNoFilter();
-      return;
-    }
-
-    // No item was selected and the filters are not strict
-    if (!this.filterOptions?.strict) {
-      this.value = this.filter;
-
-      // Emit input event
-      this.input.emit(this.value);
-      return;
-    }
-
-    // Strict selection
-    const valueMatchingTheCaption = this.#getValueUsingCaption(this.filter);
-
-    if (valueMatchingTheCaption) {
-      this.value = valueMatchingTheCaption;
-
-      // Emit input event
-      this.input.emit(this.value);
-    }
-    // Revert change because the filter does not match any item value
-    else {
-      this.filter = this.#currentValueCaption;
-
-      // Emit filter change event to recover the previous state
-      this.filterChange.emit(this.filter);
-    }
-  };
-
   #itemLeafParts = (
     item: ComboBoxItemLeaf,
     insideAGroup: boolean,
@@ -780,6 +731,26 @@ export class ChComboBox
       isDisabled ? ` ${DISABLED_PART}` : ""
     }${item.value === this.currentSelectedValue ? ` ${SELECTED_PART}` : ""}`;
 
+  #getItemImageCustomVars = (
+    item: ComboBoxItemModel,
+    hasImages: boolean,
+    hasStartImg: boolean,
+    hasEndImg: boolean
+  ) =>
+    hasImages
+      ? {
+          "--ch-combo-box-item-start-img": hasStartImg
+            ? `url("${item.startImgSrc}")`
+            : null,
+          "--ch-combo-box-item-end-img": hasEndImg
+            ? `url("${item.endImgSrc}")`
+            : null
+        }
+      : undefined;
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                       Mask and input positioning
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #setResizeObserver = () => {
     this.#borderSizeRAF = new SyncWithRAF();
     this.#resizeObserver = new ResizeObserver(this.#updateBorderSizeRAF);
@@ -848,6 +819,66 @@ export class ChComboBox
     this.#lastMaskBlockEnd = negatedBorderBlockEndWidth;
   };
 
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                         Handlers to emit events
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  #checkAndEmitValueChangeWithNoFilter = () => {
+    if (this.currentSelectedValue !== this.value) {
+      this.value = this.currentSelectedValue;
+
+      // Emit event
+      this.input.emit(this.value);
+    }
+  };
+
+  #checkAndEmitValueChangeWithFilters = (event: KeyboardEvent) => {
+    if (!this.expanded) {
+      return;
+    }
+    this.expanded = false;
+
+    // The focus must return to the Host when tabbing with the popover
+    // expanded
+    this.el.focus();
+    event.preventDefault();
+
+    // "Traditional selection". A value was selected pressing the enter key
+    if (this.currentSelectedValue) {
+      this.filter = this.#getCaptionUsingValue(this.currentSelectedValue);
+      this.#checkAndEmitValueChangeWithNoFilter();
+      return;
+    }
+
+    // No item was selected and the filters are not strict
+    if (!this.filterOptions?.strict) {
+      this.value = this.filter;
+
+      // Emit input event
+      this.input.emit(this.value);
+      return;
+    }
+
+    // Strict selection
+    const valueMatchingTheCaption = this.#getValueUsingCaption(this.filter);
+
+    if (valueMatchingTheCaption) {
+      this.value = valueMatchingTheCaption;
+
+      // Emit input event
+      this.input.emit(this.value);
+    }
+    // Revert change because the filter does not match any item value
+    else {
+      this.filter = this.#currentValueCaption;
+
+      // Emit filter change event to recover the previous state
+      this.filterChange.emit(this.filter);
+    }
+  };
+
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  //                             Event listeners
+  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   #handleSelectChange = (event: Event) => {
     event.preventDefault();
 
@@ -947,25 +978,6 @@ export class ChComboBox
 
     forceUpdate(this);
   };
-
-  #getItemImageCustomVars = (
-    item: ComboBoxItemModel,
-    hasImages: boolean,
-    hasStartImg: boolean,
-    hasEndImg: boolean
-  ) =>
-    hasImages
-      ? {
-          "--ch-combo-box-item-start-img": hasStartImg
-            ? `url("${item.startImgSrc}")`
-            : null,
-          "--ch-combo-box-item-end-img": hasEndImg
-            ? `url("${item.endImgSrc}")`
-            : null
-        }
-      : undefined;
-
-  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
 
   #customItemRender =
     (

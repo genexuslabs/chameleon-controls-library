@@ -1871,7 +1871,14 @@ export namespace Components {
         "status": "developer-preview" | "experimental" | "stable";
     }
     interface ChSidebar {
-        "expandButtonAccessibleName": string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button.
+         */
+        "expandButtonAccessibleName"?: string;
+        /**
+          * Specifies the caption of the expand button.
+         */
+        "expandButtonCaption"?: string;
         /**
           * Specifies whether the control is expanded or collapsed.
          */
@@ -6231,7 +6238,14 @@ declare namespace LocalJSX {
         "status"?: "developer-preview" | "experimental" | "stable";
     }
     interface ChSidebar {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button.
+         */
         "expandButtonAccessibleName"?: string;
+        /**
+          * Specifies the caption of the expand button.
+         */
+        "expandButtonCaption"?: string;
         /**
           * Specifies whether the control is expanded or collapsed.
          */

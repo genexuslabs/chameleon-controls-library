@@ -350,6 +350,30 @@ export class ChFlexibleLayoutRender {
     forceUpdate(this.#flexibleLayoutRef);
   }
 
+  /**
+   * Update the widget info.
+   */
+  @Method()
+  async updateWidgetInfo(
+    widgetId: string,
+    properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>
+  ) {
+    const widgetUIModel = this.#widgetsInfo.get(widgetId);
+
+    if (!widgetUIModel) {
+      return;
+    }
+    const widgetInfo = widgetUIModel.info;
+
+    Object.entries(properties).forEach(([key, value]) => {
+      widgetInfo[key] = value;
+    });
+
+    // Queue re-renders
+    forceUpdate(this);
+    this.#flexibleLayoutRef.refreshLeaf(widgetUIModel.parentLeafId);
+  }
+
   #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
     // Empty layout
     if (layout == null) {

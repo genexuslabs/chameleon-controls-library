@@ -805,6 +805,14 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "renders": FlexibleLayoutRenders;
+        /**
+          * Update the selected widget from a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type.
+         */
+        "updateSelectedWidget": (parentLeafId: string, newSelectedWidgetId: string) => Promise<void>;
+        /**
+          * Update the widget info.
+         */
+        "updateWidgetInfo": (widgetId: string, properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>) => Promise<void>;
     }
     interface ChFormCheckbox {
         /**

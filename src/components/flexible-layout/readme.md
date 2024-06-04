@@ -98,6 +98,41 @@ Type: `Promise<void>`
 
 
 
+### `updateSelectedWidget(parentLeafId: string, newSelectedWidgetId: string) => Promise<void>`
+
+Update the selected widget from a `"tabbed"` type leaf.
+Only works if the parent leaf is `"tabbed"` type.
+
+#### Parameters
+
+| Name                  | Type     | Description |
+| --------------------- | -------- | ----------- |
+| `parentLeafId`        | `string` |             |
+| `newSelectedWidgetId` | `string` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `updateWidgetInfo(widgetId: string, properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>) => Promise<void>`
+
+Update the widget info.
+
+#### Parameters
+
+| Name         | Type                                                                                                                                           | Description |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `widgetId`   | `string`                                                                                                                                       |             |
+| `properties` | `{ startImgSrc?: string; startImgType?: ImageRender; name?: string; renderId?: string; addWrapper?: boolean; conserveRenderState?: boolean; }` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 
 ## Dependencies
 

@@ -4,7 +4,7 @@ const STABLE = "Stable";
 
 const components = [
   ["action-list", "Action List", EXPERIMENTAL],
-  ["accordion", "Accordion", EXPERIMENTAL],
+  // ["accordion", "Accordion", EXPERIMENTAL], // Temporally disabled
   ["action-group", "Action Group", EXPERIMENTAL],
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
@@ -18,20 +18,20 @@ const components = [
   ["grid", "Tabular Grid", STABLE],
   ["layout-splitter", "Layout Splitter", EXPERIMENTAL],
   ["markdown", "Markdown", EXPERIMENTAL],
-  ["notifications", "Notifications", EXPERIMENTAL],
+  // ["notifications", "Notifications", EXPERIMENTAL], // Temporally disabled
   ["paginator", "Paginator", STABLE],
   ["popover", "Popover", EXPERIMENTAL],
   ["qr", "QR", DEVELOPER_PREVIEW],
   ["radio-group", "Radio Group", EXPERIMENTAL],
   ["segmented-control", "Segmented Control", EXPERIMENTAL],
   ["shortcuts", "Shortcuts", EXPERIMENTAL],
-  ["sidebar", "Sidebar", EXPERIMENTAL],
+  // ["sidebar", "Sidebar", EXPERIMENTAL], // Temporally disabled
   ["slider", "Slider", DEVELOPER_PREVIEW],
   ["switch", "Switch", EXPERIMENTAL],
-  ["suggest", "Suggest", EXPERIMENTAL],
+  // ["suggest", "Suggest", EXPERIMENTAL], // Temporally disabled
   ["tab", "Tab", EXPERIMENTAL],
-  ["textblock", "Textblock", EXPERIMENTAL],
-  ["tooltip", "Tooltip", EXPERIMENTAL],
+  // ["textblock", "Textblock", EXPERIMENTAL], // Temporally disabled
+  // ["tooltip", "Tooltip", EXPERIMENTAL], // Temporally disabled
   ["tree-view", "Tree View", DEVELOPER_PREVIEW]
 ];
 

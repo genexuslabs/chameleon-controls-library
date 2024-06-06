@@ -254,12 +254,17 @@ export class ChFlexibleLayout {
       event.stopPropagation();
 
       // Add the view id to properly update the render
-      const eventInfo: ViewItemCloseInfo = {
+      const eventDetail: ViewItemCloseInfo = {
         ...event.detail,
         viewId: viewId
       };
 
-      this.viewItemClose.emit(eventInfo);
+      const eventInfo = this.viewItemClose.emit(eventDetail);
+
+      // Prevent the tab closing
+      if (eventInfo.defaultPrevented) {
+        event.preventDefault();
+      }
     };
 
   private handleDragStart =

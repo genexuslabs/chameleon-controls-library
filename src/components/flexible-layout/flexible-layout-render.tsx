@@ -1,4 +1,13 @@
-import { Component, Method, Prop, Watch, forceUpdate, h } from "@stencil/core";
+import {
+  Component,
+  Event,
+  EventEmitter,
+  Method,
+  Prop,
+  Watch,
+  forceUpdate,
+  h
+} from "@stencil/core";
 import {
   FlexibleLayoutModel,
   FlexibleLayoutItemModel,
@@ -14,7 +23,8 @@ import {
   DroppableArea,
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
-  FlexibleLayoutWidgetExtended
+  FlexibleLayoutWidgetExtended,
+  FlexibleLayoutWidgetCloseInfo
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
@@ -88,6 +98,11 @@ export class ChFlexibleLayoutRender {
    * Specifies the distribution of the items in the flexible layout.
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
+
+  /**
+   * Emitted when the user pressed the close button in a widget.
+   */
+  @Event() widgetClose: EventEmitter<FlexibleLayoutWidgetCloseInfo>;
 
   /**
    * Add a view with widgets to render. The view will take the half space of
@@ -423,8 +438,18 @@ export class ChFlexibleLayoutRender {
     event: ChFlexibleLayoutCustomEvent<ViewItemCloseInfo>
   ) => {
     event.stopPropagation();
-
     const itemCloseInfo = event.detail;
+
+    const eventInfo = this.widgetClose.emit({
+      widgetId: itemCloseInfo.itemId,
+      viewId: itemCloseInfo.viewId
+    });
+
+    if (eventInfo.defaultPrevented) {
+      event.preventDefault();
+      return;
+    }
+
     const viewInfo = this.#getLeafInfo(
       itemCloseInfo.viewId
     ) as FlexibleLayoutLeafInfo<"tabbed">;

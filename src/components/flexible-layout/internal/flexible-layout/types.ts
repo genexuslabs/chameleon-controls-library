@@ -230,6 +230,11 @@ export type WidgetDropInfo = {
 
 export type WidgetReorderInfo = WidgetDragInfo & WidgetDropInfo;
 
+export type FlexibleLayoutWidgetCloseInfo = {
+  widgetId: string;
+  viewId: string;
+};
+
 export type DroppableArea =
   | "block-start"
   | "block-end"

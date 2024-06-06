@@ -1,0 +1,8 @@
+@layer ch-tabular-grid {
+  ch-tabular-grid-rowset {
+    display: contents;
+  }
+  ch-tabular-grid-rowset[collapsed] > :not(ch-tabular-grid-rowset-legend) {
+    display: none;
+  }
+}

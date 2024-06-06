@@ -1,0 +1,103 @@
+@import "../../common/reset.scss";
+@import "../helpers/styles.scss";
+
+:host {
+  display: flex;
+  position: sticky;
+  top: 0;
+  grid-row: 1;
+}
+
+// column-set box simulation
+:host {
+  @include box-simulation;
+  @include column-drag-transition;
+}
+
+// z-index levels
+:host {
+  --ch-tabular-grid-column-z-index-head: var(
+    --ch-tabular-grid-column-header-layer
+  );
+}
+:host([show-settings]),
+:host([resizing]) {
+  --ch-tabular-grid-column-z-index-active: var(
+    --ch-tabular-grid-column-active-layer
+  );
+}
+
+:host([sort-direction="asc"]) .bar .sort .sort-asc {
+  visibility: visible;
+}
+:host([sort-direction="desc"]) .bar .sort .sort-desc {
+  visibility: visible;
+}
+
+.bar {
+  @include reset-list;
+  display: flex;
+  align-items: center;
+
+  & .selector {
+    overflow: hidden;
+    order: 0;
+    &:not([hidden]) {
+      display: flex;
+    }
+  }
+
+  & .name {
+    display: flex;
+    overflow: hidden;
+    order: 1;
+
+    & .name-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  & .sort {
+    position: relative;
+    align-items: center;
+    order: 2;
+    &:not([hidden]) {
+      display: flex;
+    }
+
+    & .sort-asc {
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+    & .sort-desc {
+      position: absolute;
+      visibility: hidden;
+      animation-fill-mode: forwards;
+    }
+  }
+  & .settings {
+    order: 3;
+  }
+  & .resize {
+    align-self: stretch;
+    margin-inline-start: auto;
+    order: 4;
+  }
+}
+
+@keyframes column-sort {
+  0% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

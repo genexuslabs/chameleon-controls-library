@@ -1,0 +1,30 @@
+:host {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  inline-size: 100%;
+
+  --ch-tabular-grid-cell-active-layer: calc(
+    var(--ch-tabular-grid-base-layer) * 1
+  );
+  --ch-tabular-grid-column-header-layer: calc(
+    var(--ch-tabular-grid-base-layer) * 2
+  );
+  --ch-tabular-grid-column-freeze-layer: calc(
+    var(--ch-tabular-grid-base-layer) * 4
+  );
+  --ch-tabular-grid-column-active-layer: calc(
+    var(--ch-tabular-grid-base-layer) * 8
+  );
+  --ch-tabular-grid-settings-layer: calc(
+    var(--ch-tabular-grid-base-layer) * 16
+  );
+}
+.main {
+  display: none;
+  grid-auto-flow: dense; /* necesario para poder reordenar las columnas */
+  grid-auto-rows: max-content;
+  overflow-x: auto;
+  user-select: none;
+  block-size: 100%;
+}

@@ -19,9 +19,9 @@
 - [ch-flexible-layout-render](../../flexible-layout)
 - [ch-action-group-render](../../action-group)
 - [ch-tree-view-render](../../tree-view)
-- [ch-grid](../../grid)
-- [ch-grid-columnset](../../grid/grid-columnset)
-- [ch-grid-column](../../grid/grid-column)
+- [ch-grid](../../../deprecated-components/grid)
+- [ch-grid-columnset](../../../deprecated-components/grid/grid-columnset)
+- [ch-grid-column](../../../deprecated-components/grid/grid-column)
 
 ### Graph
 ```mermaid

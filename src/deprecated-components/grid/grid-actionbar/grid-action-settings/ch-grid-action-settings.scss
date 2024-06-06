@@ -1,0 +1,5 @@
+@layer ch-grid {
+    ch-grid-action-settings[disabled] {
+        pointer-events: none;
+    }
+}

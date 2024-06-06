@@ -1,0 +1,31 @@
+@import "../helpers/styles.scss";
+
+@layer ch-grid {
+  ch-grid-cell {
+    position: sticky;
+    grid-column: var(--grid-column);
+    @include column-drag-transition;
+  }
+
+  ch-grid-cell[selected] {
+    --ch-grid-cell-z-index-active: var(--ch-grid-cell-active-layer);
+  }
+
+  ch-grid-cell,
+  ch-grid-row[selected] > ch-grid-cell,
+  ch-grid-row[highlighted] > ch-grid-cell {
+    @include box-simulation;
+  }
+
+  ch-grid-cell:before {
+    margin-inline-start: calc(var(--indent) * var(--level));
+  }
+
+  ch-grid-cell::part(indent) {
+    width: calc(var(--indent) * var(--level));
+  }
+
+  ch-grid-cell::part(caret) {
+    visibility: hidden;
+  }
+}

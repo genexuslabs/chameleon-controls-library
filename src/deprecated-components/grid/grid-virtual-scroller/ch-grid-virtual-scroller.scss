@@ -1,0 +1,18 @@
+@layer ch-grid {
+  ch-grid:has(ch-grid-virtual-scroller)::part(main) {
+    grid-template-rows: max-content var(--ch-grid-virtual-scroller-height);
+  }
+
+  ch-grid-virtual-scroller {
+    display: grid;
+    height: max-content;
+
+    position: sticky;
+    top: 0px;
+
+    grid-auto-rows: max-content;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: subgrid;
+  }
+}

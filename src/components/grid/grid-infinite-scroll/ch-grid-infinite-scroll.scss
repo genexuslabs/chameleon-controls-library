@@ -1,8 +1,0 @@
-:host {
-  display: flex;
-  grid-column-start: 1;
-  grid-column-end: -1;
-}
-.loading:not([hidden]) {
-  display: contents;
-}

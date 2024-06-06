@@ -14,7 +14,7 @@ import { MarkdownCodeRender } from "./components/code/internal/types";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
-import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./deprecated-components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
@@ -61,7 +61,7 @@ export { MarkdownCodeRender } from "./components/code/internal/types";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
-export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./deprecated-components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
@@ -3282,6 +3282,10 @@ export interface ChFlexibleLayoutCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChFlexibleLayoutElement;
 }
+export interface ChFlexibleLayoutRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChFlexibleLayoutRenderElement;
+}
 export interface ChFormCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChFormCheckboxElement;
@@ -3735,7 +3739,18 @@ declare global {
         prototype: HTMLChFlexibleLayoutElement;
         new (): HTMLChFlexibleLayoutElement;
     };
+    interface HTMLChFlexibleLayoutRenderElementEventMap {
+        "widgetClose": FlexibleLayoutWidgetCloseInfo;
+    }
     interface HTMLChFlexibleLayoutRenderElement extends Components.ChFlexibleLayoutRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChFlexibleLayoutRenderElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutRenderElement, ev: ChFlexibleLayoutRenderCustomEvent<HTMLChFlexibleLayoutRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChFlexibleLayoutRenderElementEventMap>(type: K, listener: (this: HTMLChFlexibleLayoutRenderElement, ev: ChFlexibleLayoutRenderCustomEvent<HTMLChFlexibleLayoutRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChFlexibleLayoutRenderElement: {
         prototype: HTMLChFlexibleLayoutRenderElement;
@@ -5906,6 +5921,10 @@ declare namespace LocalJSX {
           * Specifies the distribution of the items in the flexible layout.
          */
         "model"?: FlexibleLayoutModel;
+        /**
+          * Emitted when the user pressed the close button in a widget.
+         */
+        "onWidgetClose"?: (event: ChFlexibleLayoutRenderCustomEvent<FlexibleLayoutWidgetCloseInfo>) => void;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */

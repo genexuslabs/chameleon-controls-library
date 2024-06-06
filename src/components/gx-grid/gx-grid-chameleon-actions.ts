@@ -1,4 +1,4 @@
-import { ChGridColumnSortDirection } from "../grid/grid-column/ch-grid-column-types";
+import { ChGridColumnSortDirection } from "../../deprecated-components/grid/grid-column/ch-grid-column-types";
 import { GxGrid } from "./genexus";
 
 export function gridRefresh(grid: GxGrid) {

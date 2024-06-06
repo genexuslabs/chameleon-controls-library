@@ -16,16 +16,16 @@
 
 ### Depends on
 
-- [ch-grid-actionbar](../grid/grid-actionbar)
-- [ch-grid-action-refresh](../grid/grid-actionbar/grid-action-refresh)
-- [ch-grid-action-settings](../grid/grid-actionbar/grid-action-settings)
-- [ch-grid-columnset](../grid/grid-columnset)
-- [ch-grid-column](../grid/grid-column)
+- [ch-grid-actionbar](../../deprecated-components/grid/grid-actionbar)
+- [ch-grid-action-refresh](../../deprecated-components/grid/grid-actionbar/grid-action-refresh)
+- [ch-grid-action-settings](../../deprecated-components/grid/grid-actionbar/grid-action-settings)
+- [ch-grid-columnset](../../deprecated-components/grid/grid-columnset)
+- [ch-grid-column](../../deprecated-components/grid/grid-column)
 - [gx-grid-chameleon-column-filter](gx-grid-column-filter)
 - [ch-paginator](../paginator)
 - [ch-paginator-pages](../paginator/paginator-pages)
 - [ch-paginator-navigate](../paginator/paginator-navigate)
-- [ch-grid](../grid)
+- [ch-grid](../../deprecated-components/grid)
 
 ### Graph
 ```mermaid

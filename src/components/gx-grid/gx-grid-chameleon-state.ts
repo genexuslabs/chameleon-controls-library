@@ -1,7 +1,7 @@
 import {
   ChGridColumnFreeze,
   ChGridColumnSortDirection
-} from "../grid/grid-column/ch-grid-column-types";
+} from "../../deprecated-components/grid/grid-column/ch-grid-column-types";
 import { GxGrid } from "./genexus";
 
 export class GridChameleonManagerState {

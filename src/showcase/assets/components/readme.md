@@ -26,6 +26,7 @@
 - [ch-combo-box](../../../components/combobox)
 - [ch-radio-group-render](../../../components/radio-group)
 - [ch-action-group-render](../../../components/action-group)
+- [ch-code](../../../components/code)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-layout-splitter](../../../components/layout-splitter)
 - [ch-qr](../../../components/qr)
@@ -42,6 +43,7 @@ graph TD;
   ch-showcase --> ch-combo-box
   ch-showcase --> ch-radio-group-render
   ch-showcase --> ch-action-group-render
+  ch-showcase --> ch-code
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-layout-splitter
   ch-showcase --> ch-qr

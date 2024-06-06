@@ -14,7 +14,7 @@ const components = [
   ["dropdown", "Dropdown", EXPERIMENTAL],
   ["dialog", "Dialog", EXPERIMENTAL],
   ["flexible-layout", "Flexible Layout", EXPERIMENTAL],
-  ["grid", "Tabular Grid", STABLE],
+  ["tabular-grid", "Tabular Grid", STABLE],
   ["layout-splitter", "Layout Splitter", EXPERIMENTAL],
   ["markdown", "Markdown", EXPERIMENTAL],
   ["notifications", "Notifications", EXPERIMENTAL],

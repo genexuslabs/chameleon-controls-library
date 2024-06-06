@@ -10,7 +10,7 @@ import {
 
 import { AccessibleNameComponent } from "../../../../common/interfaces";
 import { ImageRender } from "../../../../common/types";
-import { SEGMENTED_CONTROL_PARTS_DICTIONARY } from "../../../../common/reserverd-names";
+import { SEGMENTED_CONTROL_PARTS_DICTIONARY } from "../../../../common/reserved-names";
 
 /**
  * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.

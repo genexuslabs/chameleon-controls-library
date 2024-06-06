@@ -31,7 +31,7 @@ import {
 import { scrollToEdge } from "../../../../common/scroll-to-edge";
 import { GxDataTransferInfo } from "../../../../common/types";
 import { ChTreeViewItemCustomEvent } from "../../../../components";
-import { TREE_VIEW_PARTS_DICTIONARY } from "../../../../common/reserverd-names";
+import { TREE_VIEW_PARTS_DICTIONARY } from "../../../../common/reserved-names";
 import {
   isRTL,
   subscribeToRTLChanges,

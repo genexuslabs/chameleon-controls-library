@@ -9,7 +9,7 @@ import {
 } from "@stencil/core";
 import { SegmentedControlItemModel, SegmentedControlModel } from "./types";
 import { ChSegmentedControlItemCustomEvent } from "../../components";
-import { SEGMENTED_CONTROL_EXPORT_PARTS } from "../../common/reserverd-names";
+import { SEGMENTED_CONTROL_EXPORT_PARTS } from "../../common/reserved-names";
 
 /**
  * Segmented control is used to pick one choice from a linear set of closely related choices, and immediately apply that selection.

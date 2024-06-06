@@ -319,6 +319,61 @@ export class ChFlexibleLayoutRender {
     );
   }
 
+  /**
+   * Update the selected widget from a `"tabbed"` type leaf.
+   * Only works if the parent leaf is `"tabbed"` type.
+   */
+  @Method()
+  async updateSelectedWidget(
+    parentLeafId: string,
+    newSelectedWidgetId: string
+  ) {
+    const widgetUIModel = this.#widgetsInfo.get(newSelectedWidgetId);
+
+    if (!widgetUIModel || widgetUIModel.parentLeafId !== parentLeafId) {
+      return;
+    }
+    const parentLeafInfo = this.#getLeafInfo(widgetUIModel.parentLeafId);
+
+    if (
+      parentLeafInfo.type === "single-content" ||
+      parentLeafInfo.selectedWidgetId === newSelectedWidgetId
+    ) {
+      return;
+    }
+
+    // Select the new item
+    this.#updateSelectedWidget(parentLeafInfo, widgetUIModel.info);
+
+    // Queue re-renders
+    forceUpdate(this);
+    forceUpdate(this.#flexibleLayoutRef);
+  }
+
+  /**
+   * Update the widget info.
+   */
+  @Method()
+  async updateWidgetInfo(
+    widgetId: string,
+    properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>
+  ) {
+    const widgetUIModel = this.#widgetsInfo.get(widgetId);
+
+    if (!widgetUIModel) {
+      return;
+    }
+    const widgetInfo = widgetUIModel.info;
+
+    Object.entries(properties).forEach(([key, value]) => {
+      widgetInfo[key] = value;
+    });
+
+    // Queue re-renders
+    forceUpdate(this);
+    this.#flexibleLayoutRef.refreshLeaf(widgetUIModel.parentLeafId);
+  }
+
   #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
     // Empty layout
     if (layout == null) {

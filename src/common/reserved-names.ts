@@ -1,3 +1,5 @@
+import { ImageRender } from "./types";
+
 const joinParts = (parts: { [key in string]: string }) =>
   [...Object.values(parts)].join(",");
 
@@ -18,6 +20,35 @@ export const KEY_CODES = {
 } as const;
 
 export const DISABLED_CLASS = "ch-disabled";
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+const START_IMAGE = "pseudo-img--start";
+const END_IMAGE = "pseudo-img--end";
+const BACKGROUND_IMAGE_TYPE: ImageRender = "background";
+const MASK_IMAGE_TYPE: ImageRender = "mask";
+
+const START_IMAGE_TYPE_PREFIX = "start-img-type--";
+const END_IMAGE_TYPE_PREFIX = "end-img-type--";
+
+// For classes
+export const startPseudoImageTypeDictionary = {
+  background: `${START_IMAGE_TYPE_PREFIX}${BACKGROUND_IMAGE_TYPE} ${START_IMAGE}`,
+  mask: `${START_IMAGE_TYPE_PREFIX}${MASK_IMAGE_TYPE} ${START_IMAGE}`
+} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
+
+// For classes
+export const endPseudoImageTypeDictionary = {
+  background: `${END_IMAGE_TYPE_PREFIX}${BACKGROUND_IMAGE_TYPE} ${END_IMAGE}`,
+  mask: `${END_IMAGE_TYPE_PREFIX}${MASK_IMAGE_TYPE} ${END_IMAGE}`
+} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
+
+// For classes
+export const imageTypeDictionary = {
+  background: `img img-type--${BACKGROUND_IMAGE_TYPE}`,
+  mask: `img img-type--${MASK_IMAGE_TYPE}`
+} as const satisfies { [key in Exclude<ImageRender, "img">]: string };
 
 // - - - - - - - - - - - - - - - - - - - -
 //               Line clamp

@@ -1,0 +1,32 @@
+@import "../../../../common/base";
+@import "../../../../common/icons";
+
+@include button-reset();
+@include box-sizing();
+
+:host,
+.group {
+  display: grid;
+  grid-template-rows: min-content;
+}
+
+// - - - - - - - - - - - - - - - -
+//       Expandable content
+// - - - - - - - - - - - - - - - -
+.expandable {
+  display: grid;
+  grid-auto-rows: min-content;
+  position: relative;
+  padding: 0;
+  margin: 0;
+
+  &--lazy-loaded {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 100px;
+  }
+}
+
+.expandable--collapsed {
+  display: none;
+  overflow: hidden;
+}

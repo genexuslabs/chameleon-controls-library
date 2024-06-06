@@ -178,6 +178,12 @@ select {
     pointer-events: none;
     text-overflow: ellipsis;
   }
+
+  &--start-img {
+    margin-inline-start: calc(
+      var(--ch-combo-box-item__image-size) + var(--ch-combo-box-item-gap)
+    );
+  }
 }
 
 // - - - - - - - - - - - - - - - -
@@ -205,7 +211,8 @@ ch-popover {
 // - - - - - - - - - - - - - - - -
 .leaf,
 .group__header,
-.group__header-caption {
+.group__header-caption,
+.mask {
   display: flex;
   gap: var(--ch-combo-box-item-gap);
   align-items: center;

@@ -11,7 +11,7 @@ import {
 import {
   CHECKBOX_PARTS_DICTIONARY,
   DISABLED_CLASS
-} from "../../common/reserverd-names";
+} from "../../common/reserved-names";
 
 import {
   AccessibleNameComponent,

@@ -138,6 +138,30 @@ legend {
   gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
+ch-action-list-render {
+  gap: 4px;
+
+  &::part(item__caption) {
+    font-family: SourceSansPro_SemiBold;
+  }
+
+  &::part(item__action) {
+    padding-inline: 8px;
+    padding-block: 4px;
+    border: 1px solid;
+  }
+
+  &::part(time) {
+    display: block;
+    font-style: italic;
+    color: gray;
+  }
+
+  &::part(hyperlink-notification) {
+    text-decoration: underline;
+  }
+}
+
 ch-code > pre > code {
   contain: size;
   overflow: auto;
@@ -148,6 +172,12 @@ ch-showcase textarea.form-input {
   block-size: 200px;
   max-block-size: unset;
   resize: vertical;
+}
+
+/* This is a WA to improve the UX */
+.navigation-list.tree-view-primary::part(item__action) {
+  --ch-tree-view-item__image-size: 20px;
+  padding-block: var(--spacing-un-spacing--s);
 }
 
 /* 

@@ -33,9 +33,16 @@ export class ChSidebar {
   @Element() el: HTMLChSidebarElement;
 
   /**
-   *
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for expand button.
    */
-  @Prop() readonly expandButtonAccessibleName: string;
+  @Prop() readonly expandButtonAccessibleName?: string;
+
+  /**
+   * Specifies the caption of the expand button.
+   */
+  @Prop() readonly expandButtonCaption?: string;
 
   /**
    * Specifies whether the control is expanded or collapsed.
@@ -97,7 +104,7 @@ export class ChSidebar {
             type="button"
             onClick={this.#handleExpandedChange}
           >
-            Expand
+            {this.expandButtonCaption}
           </button>
         )}
       </Host>

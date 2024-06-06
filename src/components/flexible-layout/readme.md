@@ -14,6 +14,13 @@ The `ch-flexible-layout-render` control is a shell composed of lightweight modul
 | `renders`  | --          | Specifies the distribution of the items in the flexible layout. | `{ [key: string]: (widgetInfo: FlexibleLayoutWidget) => any; }`              | `undefined`         |
 
 
+## Events
+
+| Event         | Description                                                 | Type                                                 |
+| ------------- | ----------------------------------------------------------- | ---------------------------------------------------- |
+| `widgetClose` | Emitted when the user pressed the close button in a widget. | `CustomEvent<{ widgetId: string; viewId: string; }>` |
+
+
 ## Methods
 
 ### `addSiblingView(parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>`
@@ -125,7 +132,7 @@ Update the widget info.
 | Name         | Type                                                                                                                                           | Description |
 | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
 | `widgetId`   | `string`                                                                                                                                       |             |
-| `properties` | `{ startImgSrc?: string; startImgType?: ImageRender; name?: string; renderId?: string; addWrapper?: boolean; conserveRenderState?: boolean; }` |             |
+| `properties` | `{ name?: string; startImgSrc?: string; startImgType?: ImageRender; addWrapper?: boolean; conserveRenderState?: boolean; renderId?: string; }` |             |
 
 #### Returns
 

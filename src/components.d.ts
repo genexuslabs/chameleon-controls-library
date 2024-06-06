@@ -13,10 +13,10 @@ import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./comp
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
 import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
-import { GridLocalization } from "./components/grid/ch-grid";
-import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
-import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
-import { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
+import { GridLocalization } from "./deprecated-components/grid/ch-grid";
+import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
+import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
+import { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 import { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
@@ -34,6 +34,10 @@ import { SegmentedControlModel } from "./components/segmented-control/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
+import { GridLocalization as GridLocalization1 } from "./components/tabular-grid/tabular-grid";
+import { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
+import { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
+import { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -54,10 +58,10 @@ export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./comp
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
 export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
-export { GridLocalization } from "./components/grid/ch-grid";
-export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./components/grid/ch-grid-types";
-export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./components/grid/grid-column/ch-grid-column-types";
-export { ChGridInfiniteScrollState } from "./components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
+export { GridLocalization } from "./deprecated-components/grid/ch-grid";
+export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
+export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
+export { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 export { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
@@ -75,6 +79,10 @@ export { SegmentedControlModel } from "./components/segmented-control/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
+export { GridLocalization as GridLocalization1 } from "./components/tabular-grid/tabular-grid";
+export { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
+export { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
+export { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
@@ -693,6 +701,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     * @deprecated Use `ch-tabular-grid` component instead.
      */
     interface ChGrid {
         /**
@@ -832,6 +841,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-refresh` instead.
      */
     interface ChGridActionRefresh {
         /**
@@ -841,6 +851,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-settings` instead.
      */
     interface ChGridActionSettings {
         /**
@@ -850,11 +861,13 @@ export namespace Components {
     }
     /**
      * The `ch-grid-actionbar` component represents a container for a grid actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-actionbar` instead.
      */
     interface ChGridActionbar {
     }
     /**
      * The `ch-grid-column` component represents a grid column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column` instead.
      */
     interface ChGridColumn {
         /**
@@ -972,6 +985,7 @@ export namespace Components {
      * The `ch-grid-column-display` component is responsible for determining the
      * visibility of a grid column and updating its hidden property based on
      * whether the monitored class is visible or not.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-display` instead.
      */
     interface ChGridColumnDisplay {
         /**
@@ -981,6 +995,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-resize` instead.
      */
     interface ChGridColumnResize {
         /**
@@ -990,6 +1005,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-column-settings` component represents a settings window for a column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-settings` instead.
      */
     interface ChGridColumnSettings {
         /**
@@ -1003,11 +1019,13 @@ export namespace Components {
     }
     /**
      * The `ch-grid-columnset` component represents a group of columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-columnset` instead.
      */
     interface ChGridColumnset {
     }
     /**
      * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-infinite-scroll` instead.
      */
     interface ChGridInfiniteScroll {
         /**
@@ -1021,6 +1039,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-row-actions` component represents a group row actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-row-actions` instead.
      */
     interface ChGridRowActions {
         /**
@@ -1054,16 +1073,19 @@ export namespace Components {
     }
     /**
      * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-empty` instead.
      */
     interface ChGridRowsetEmpty {
     }
     /**
      * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-legend` instead.
      */
     interface ChGridRowsetLegend {
     }
     /**
      * The `ch-grid-settings` component represents a settings window for a grid component.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings` instead.
      */
     interface ChGridSettings {
         /**
@@ -1077,6 +1099,7 @@ export namespace Components {
     }
     /**
      * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings-columns` instead.
      */
     interface ChGridSettingsColumns {
         /**
@@ -1088,6 +1111,7 @@ export namespace Components {
      * The `ch-grid-virtual-scroller` component that displays a subset of items.
      * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
      * based on the viewport size and scroll position.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-virtual-scroller` instead.
      */
     interface ChGridVirtualScroller {
         /**
@@ -1985,6 +2009,418 @@ export namespace Components {
          */
         "sortable": boolean;
     }
+    /**
+     * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
+    interface ChTabularGrid {
+        /**
+          * A boolean indicating whether the user can drag column headers to reorder columns.
+         */
+        "allowColumnReorder": boolean;
+        /**
+          * Ensures that the cell is visible within the control, scrolling the contents of the control if necessary.
+          * @param cellId - The cellId of the cell to ensure visibility.
+         */
+        "cellEnsureVisible": (cellId: string) => Promise<void>;
+        /**
+          * Collapses a row, hiding its children.
+          * @param rowId - The rowId of the row to collapse.
+         */
+        "collapseRow": (rowId: string) => Promise<void>;
+        /**
+          * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
+         */
+        "columnResizeMode": "single" | "splitter";
+        /**
+          * Expands a row, showing its children.
+          * @param rowId - The rowId of the row to expand.
+         */
+        "expandRow": (rowId: string) => Promise<void>;
+        /**
+          * Retrieves information about the currently focused cell.
+         */
+        "getFocusedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the rowId of the currently focused row.
+         */
+        "getFocusedRow": () => Promise<string>;
+        /**
+          * Retrieves the rowId of the currently hovered row.
+         */
+        "getHoveredRow": () => Promise<string>;
+        /**
+          * Retrieves the list of rowId of the marked rows.
+         */
+        "getMarkedRows": () => Promise<string[]>;
+        /**
+          * Retrieves information about the next cell relative to the currently selected cell.
+         */
+        "getNextCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the rowId of the next row relative to the currently selected cell.
+         */
+        "getNextRow": () => Promise<string | void>;
+        /**
+          * Retrieves information about the previous cell relative to the currently selected cell.
+         */
+        "getPreviousCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the rowId of the previous row relative to the currently selected cell.
+         */
+        "getPreviousRow": () => Promise<string | void>;
+        /**
+          * Retrieves information about the currently selected cell.
+         */
+        "getSelectedCell": () => Promise<{ cellId: string; rowId: string; columnId: string; }>;
+        /**
+          * Retrieves the list of rowId of the selected rows.
+         */
+        "getSelectedRows": () => Promise<string[]>;
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode": "none" | "select" | "focus";
+        /**
+          * An object that contains localized strings for the grid.
+         */
+        "localization": GridLocalization1;
+        /**
+          * Mark or unmark all rows.
+          * @param marked - A boolean indicating whether to mark or unmark all rows.
+         */
+        "markAllRows": (marked?: boolean) => Promise<void>;
+        /**
+          * Mark or unmark a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param marked - A boolean indicating whether to mark or unmark the row.
+         */
+        "markRow": (rowId: string, marked?: boolean) => Promise<void>;
+        /**
+          * Ensures that the row is visible within the control, scrolling the contents of the control if necessary.
+          * @param rowId - The rowId of the row to ensure visibility.
+         */
+        "rowEnsureVisible": (rowId: string) => Promise<void>;
+        /**
+          * A CSS class name applied to a row when it is focused.
+         */
+        "rowFocusedClass": string;
+        /**
+          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+         */
+        "rowHighlightEnabled": boolean | "auto";
+        /**
+          * A CSS class name applied to a row when it is hovered.
+         */
+        "rowHighlightedClass": string;
+        /**
+          * A CSS class name applied to a row when it is marked.
+         */
+        "rowMarkedClass": string;
+        /**
+          * A CSS class name applied to a row when it is selected.
+         */
+        "rowSelectedClass": string;
+        /**
+          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+         */
+        "rowSelectionMode": "none" | "single" | "multiple";
+        /**
+          * Selects or deselects all rows.
+          * @param selected - A boolean indicating whether to select or deselect all rows.
+         */
+        "selectAllRows": (selected?: boolean) => Promise<void>;
+        /**
+          * Select or deselect a cell. The cell can be identified by the cellId parameter or by using the rowId and columnId pair.
+          * @param cellId - The cellId of the cell to select or deselect.
+          * @param rowId - The rowId of the row containing the cell.
+          * @param columnId - The columnId of the column containing the cell.
+          * @param selected - A boolean indicating whether to select or deselect the cell.
+         */
+        "selectCell": (cellId?: string, rowId?: string, columnId?: string, selected?: boolean) => Promise<void>;
+        /**
+          * Selects or deselects a row.
+          * @param rowId - The rowId of the row to select or deselect.
+          * @param selected - A boolean indicating whether to select or deselect the row.
+         */
+        "selectRow": (rowId: string, selected?: boolean) => Promise<void>;
+        /**
+          * Synchronizes the state of a row in the grid.
+         */
+        "syncRowState": (el: HTMLElement) => Promise<void>;
+    }
+    /**
+     * The `ch-tabular-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
+    interface ChTabularGridActionRefresh {
+        /**
+          * Indicates whether the refresh button is disabled or not.
+         */
+        "disabled": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-action-settings` component represents a settings button for a grid action bar.
+     */
+    interface ChTabularGridActionSettings {
+        /**
+          * Indicates whether the settings button is disabled or not.
+         */
+        "disabled": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-actionbar` component represents a container for a grid actions.
+     */
+    interface ChTabularGridActionbar {
+    }
+    /**
+     * The `ch-tabular-grid-column` component represents a grid column.
+     */
+    interface ChTabularGridColumn {
+        /**
+          * @deprecated Use "columnImage" or "columnImageSet" instead. A URL to an icon to display in the column header.
+         */
+        "columnIconUrl": string;
+        /**
+          * A unique identifier for the column.
+         */
+        "columnId": string;
+        /**
+          * A URL to an icon to display in the column header.
+         */
+        "columnImage": string;
+        /**
+          * A URL to an icon to display in the column header.
+         */
+        "columnImageSet": string;
+        /**
+          * The text to display in the column header and settings.
+         */
+        "columnName": string;
+        /**
+          * Indicates whether the text in the column header is visible or not
+         */
+        "columnNameHidden": boolean;
+        /**
+          * @deprecated Use "columnTooltip" and "columnNameHidden" instead. One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column image.
+         */
+        "columnNamePosition": "text" | "title";
+        /**
+          * The text to display when the cursor is placed over the column header.
+         */
+        "columnTooltip": string;
+        /**
+          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+         */
+        "columnType": "plain" | "rich" | "tree";
+        /**
+          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+         */
+        "displayObserverClass": string;
+        /**
+          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+         */
+        "freeze"?: TabularGridColumnFreeze;
+        /**
+          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+         */
+        "hidden": boolean;
+        /**
+          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+         */
+        "hideable": boolean;
+        /**
+          * A number indicating the order in which the column should appear.
+         */
+        "order": number;
+        /**
+          * A number indicating the physical order of the column (i.e. its position in the DOM).
+         */
+        "physicalOrder": number;
+        /**
+          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+         */
+        "resizable": boolean;
+        /**
+          * A boolean indicating whether the column is currently being resized.
+         */
+        "resizing": boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+         */
+        "richRowActions": boolean;
+        /**
+          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+         */
+        "richRowDrag": boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+         */
+        "richRowSelector": boolean;
+        /**
+          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+         */
+        "richRowSelectorMode": "select" | "mark";
+        /**
+          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+         */
+        "richRowSelectorState": | ""
+    | "checked"
+    | "indeterminate";
+        /**
+          * A boolean indicating whether the user should be able to open a settings panel for the column.
+         */
+        "settingable": boolean;
+        /**
+          * A boolean indicating whether the settings panel for the column should be visible.
+         */
+        "showSettings": boolean;
+        /**
+          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+         */
+        "size": string;
+        /**
+          * One of "asc" or "desc", indicating the current sort direction.
+         */
+        "sortDirection"?: TabularGridColumnSortDirection;
+        /**
+          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+         */
+        "sortable": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
+    interface ChTabularGridColumnDisplay {
+        /**
+          * The column element that is being monitored.
+         */
+        "column": HTMLChTabularGridColumnElement;
+    }
+    /**
+     * The `ch-tabular-grid-column-resize` component responsible for resizing a column in a grid.
+     */
+    interface ChTabularGridColumnResize {
+        /**
+          * The column element that is being resized.
+         */
+        "column": HTMLChTabularGridColumnElement;
+    }
+    /**
+     * The `ch-tabular-grid-column-settings` component represents a settings window for a column.
+     */
+    interface ChTabularGridColumnSettings {
+        /**
+          * The `HTMLChTabularGridColumnElement` that the settings window is associated with.
+         */
+        "column": HTMLChTabularGridColumnElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
+        "show": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-columnset` component represents a group of columns.
+     */
+    interface ChTabularGridColumnset {
+    }
+    /**
+     * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
+     */
+    interface ChTabularGridInfiniteScroll {
+        /**
+          * Indicates that the grid is already loaded.
+         */
+        "complete": () => Promise<void>;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status": TabularGridInfiniteScrollState;
+    }
+    /**
+     * The `ch-tabular-grid-row-actions` component represents a group row actions.
+     */
+    interface ChTabularGridRowActions {
+        /**
+          * Closes the row actions window.
+         */
+        "close": () => Promise<void>;
+        /**
+          * Opens the row actions on the row-actions-button cell.
+         */
+        "openRowActions": (cell: HTMLElement) => Promise<void>;
+        /**
+          * Opens the row actions on the row-actions-button cell.
+         */
+        "openRowContext": (clientX: number, clientY: number) => Promise<void>;
+        /**
+          * Opens the row actions on row hover.
+         */
+        "openRowHover": (row: HTMLElement) => Promise<void>;
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions": boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext": boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-rowset-empty` component represents a container to "empty message" when ch-tabular-grid-rowset is empty.
+     */
+    interface ChTabularGridRowsetEmpty {
+    }
+    /**
+     * The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-tabular-grid-rowset` element.
+     */
+    interface ChTabularGridRowsetLegend {
+    }
+    /**
+     * The `ch-tabular-grid-settings` component represents a settings window for a grid component.
+     */
+    interface ChTabularGridSettings {
+        /**
+          * The `HTMLChTabularGridElement` that the settings window is associated with.
+         */
+        "grid": HTMLChTabularGridElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
+        "show": boolean;
+    }
+    /**
+     * The `ch-tabular-grid-settings-columns` component represents the settings for a grid's columns.
+     */
+    interface ChTabularGridSettingsColumns {
+        /**
+          * An array of column elements to render.
+         */
+        "columns": HTMLChTabularGridColumnElement[];
+    }
+    /**
+     * The `ch-tabular-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
+    interface ChTabularGridVirtualScroller {
+        /**
+          * The list of items to be rendered in the grid.
+         */
+        "items": any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount": number;
+        /**
+          * The list of items to display within the current viewport.
+         */
+        "viewPortItems": any[];
+    }
     interface ChTestFlexibleLayout {
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -2810,6 +3246,46 @@ export interface ChTabRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTabRenderElement;
 }
+export interface ChTabularGridCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridElement;
+}
+export interface ChTabularGridActionRefreshCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridActionRefreshElement;
+}
+export interface ChTabularGridActionSettingsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridActionSettingsElement;
+}
+export interface ChTabularGridColumnCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridColumnElement;
+}
+export interface ChTabularGridColumnResizeCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridColumnResizeElement;
+}
+export interface ChTabularGridInfiniteScrollCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridInfiniteScrollElement;
+}
+export interface ChTabularGridRowActionsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridRowActionsElement;
+}
+export interface ChTabularGridRowsetLegendCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridRowsetLegendElement;
+}
+export interface ChTabularGridSettingsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridSettingsElement;
+}
+export interface ChTabularGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTabularGridVirtualScrollerElement;
+}
 export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChThemeElement;
@@ -3083,6 +3559,7 @@ declare global {
     }
     /**
      * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     * @deprecated Use `ch-tabular-grid` component instead.
      */
     interface HTMLChGridElement extends Components.ChGrid, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridElementEventMap>(type: K, listener: (this: HTMLChGridElement, ev: ChGridCustomEvent<HTMLChGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3103,6 +3580,7 @@ declare global {
     }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-refresh` instead.
      */
     interface HTMLChGridActionRefreshElement extends Components.ChGridActionRefresh, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridActionRefreshElementEventMap>(type: K, listener: (this: HTMLChGridActionRefreshElement, ev: ChGridActionRefreshCustomEvent<HTMLChGridActionRefreshElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3123,6 +3601,7 @@ declare global {
     }
     /**
      * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-settings` instead.
      */
     interface HTMLChGridActionSettingsElement extends Components.ChGridActionSettings, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridActionSettingsElementEventMap>(type: K, listener: (this: HTMLChGridActionSettingsElement, ev: ChGridActionSettingsCustomEvent<HTMLChGridActionSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3140,6 +3619,7 @@ declare global {
     };
     /**
      * The `ch-grid-actionbar` component represents a container for a grid actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-actionbar` instead.
      */
     interface HTMLChGridActionbarElement extends Components.ChGridActionbar, HTMLStencilElement {
     }
@@ -3161,6 +3641,7 @@ declare global {
     }
     /**
      * The `ch-grid-column` component represents a grid column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column` instead.
      */
     interface HTMLChGridColumnElement extends Components.ChGridColumn, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridColumnElementEventMap>(type: K, listener: (this: HTMLChGridColumnElement, ev: ChGridColumnCustomEvent<HTMLChGridColumnElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3180,6 +3661,7 @@ declare global {
      * The `ch-grid-column-display` component is responsible for determining the
      * visibility of a grid column and updating its hidden property based on
      * whether the monitored class is visible or not.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-display` instead.
      */
     interface HTMLChGridColumnDisplayElement extends Components.ChGridColumnDisplay, HTMLStencilElement {
     }
@@ -3194,6 +3676,7 @@ declare global {
     }
     /**
      * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-resize` instead.
      */
     interface HTMLChGridColumnResizeElement extends Components.ChGridColumnResize, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridColumnResizeElementEventMap>(type: K, listener: (this: HTMLChGridColumnResizeElement, ev: ChGridColumnResizeCustomEvent<HTMLChGridColumnResizeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3211,6 +3694,7 @@ declare global {
     };
     /**
      * The `ch-grid-column-settings` component represents a settings window for a column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-settings` instead.
      */
     interface HTMLChGridColumnSettingsElement extends Components.ChGridColumnSettings, HTMLStencilElement {
     }
@@ -3220,6 +3704,7 @@ declare global {
     };
     /**
      * The `ch-grid-columnset` component represents a group of columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-columnset` instead.
      */
     interface HTMLChGridColumnsetElement extends Components.ChGridColumnset, HTMLStencilElement {
     }
@@ -3232,6 +3717,7 @@ declare global {
     }
     /**
      * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-infinite-scroll` instead.
      */
     interface HTMLChGridInfiniteScrollElement extends Components.ChGridInfiniteScroll, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridInfiniteScrollElementEventMap>(type: K, listener: (this: HTMLChGridInfiniteScrollElement, ev: ChGridInfiniteScrollCustomEvent<HTMLChGridInfiniteScrollElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3252,6 +3738,7 @@ declare global {
     }
     /**
      * The `ch-grid-row-actions` component represents a group row actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-row-actions` instead.
      */
     interface HTMLChGridRowActionsElement extends Components.ChGridRowActions, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridRowActionsElementEventMap>(type: K, listener: (this: HTMLChGridRowActionsElement, ev: ChGridRowActionsCustomEvent<HTMLChGridRowActionsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3269,6 +3756,7 @@ declare global {
     };
     /**
      * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-empty` instead.
      */
     interface HTMLChGridRowsetEmptyElement extends Components.ChGridRowsetEmpty, HTMLStencilElement {
     }
@@ -3281,6 +3769,7 @@ declare global {
     }
     /**
      * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-legend` instead.
      */
     interface HTMLChGridRowsetLegendElement extends Components.ChGridRowsetLegend, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridRowsetLegendElementEventMap>(type: K, listener: (this: HTMLChGridRowsetLegendElement, ev: ChGridRowsetLegendCustomEvent<HTMLChGridRowsetLegendElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3301,6 +3790,7 @@ declare global {
     }
     /**
      * The `ch-grid-settings` component represents a settings window for a grid component.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings` instead.
      */
     interface HTMLChGridSettingsElement extends Components.ChGridSettings, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridSettingsElementEventMap>(type: K, listener: (this: HTMLChGridSettingsElement, ev: ChGridSettingsCustomEvent<HTMLChGridSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3318,6 +3808,7 @@ declare global {
     };
     /**
      * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings-columns` instead.
      */
     interface HTMLChGridSettingsColumnsElement extends Components.ChGridSettingsColumns, HTMLStencilElement {
     }
@@ -3332,6 +3823,7 @@ declare global {
      * The `ch-grid-virtual-scroller` component that displays a subset of items.
      * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
      * based on the viewport size and scroll position.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-virtual-scroller` instead.
      */
     interface HTMLChGridVirtualScrollerElement extends Components.ChGridVirtualScroller, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChGridVirtualScrollerElement, ev: ChGridVirtualScrollerCustomEvent<HTMLChGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3866,6 +4358,281 @@ declare global {
         prototype: HTMLChTabRenderElement;
         new (): HTMLChTabRenderElement;
     };
+    interface HTMLChTabularGridElementEventMap {
+        "selectionChanged": TabularGridSelectionChangedEvent;
+        "rowMarkingChanged": TabularGridMarkingChangedEvent;
+        "cellSelectionChanged": TabularGridCellSelectionChangedEvent;
+        "rowClicked": TabularGridRowClickedEvent;
+        "rowDoubleClicked": TabularGridRowClickedEvent;
+        "rowEnterPressed": TabularGridRowPressedEvent;
+        "rowContextMenu": TabularGridRowContextMenuEvent;
+    }
+    /**
+     * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
+    interface HTMLChTabularGridElement extends Components.ChTabularGrid, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridElementEventMap>(type: K, listener: (this: HTMLChTabularGridElement, ev: ChTabularGridCustomEvent<HTMLChTabularGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridElementEventMap>(type: K, listener: (this: HTMLChTabularGridElement, ev: ChTabularGridCustomEvent<HTMLChTabularGridElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridElement: {
+        prototype: HTMLChTabularGridElement;
+        new (): HTMLChTabularGridElement;
+    };
+    interface HTMLChTabularGridActionRefreshElementEventMap {
+        "refreshClicked": any;
+    }
+    /**
+     * The `ch-tabular-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
+    interface HTMLChTabularGridActionRefreshElement extends Components.ChTabularGridActionRefresh, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridActionRefreshElementEventMap>(type: K, listener: (this: HTMLChTabularGridActionRefreshElement, ev: ChTabularGridActionRefreshCustomEvent<HTMLChTabularGridActionRefreshElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridActionRefreshElementEventMap>(type: K, listener: (this: HTMLChTabularGridActionRefreshElement, ev: ChTabularGridActionRefreshCustomEvent<HTMLChTabularGridActionRefreshElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridActionRefreshElement: {
+        prototype: HTMLChTabularGridActionRefreshElement;
+        new (): HTMLChTabularGridActionRefreshElement;
+    };
+    interface HTMLChTabularGridActionSettingsElementEventMap {
+        "settingsShowClicked": any;
+    }
+    /**
+     * The `ch-tabular-grid-action-settings` component represents a settings button for a grid action bar.
+     */
+    interface HTMLChTabularGridActionSettingsElement extends Components.ChTabularGridActionSettings, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridActionSettingsElementEventMap>(type: K, listener: (this: HTMLChTabularGridActionSettingsElement, ev: ChTabularGridActionSettingsCustomEvent<HTMLChTabularGridActionSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridActionSettingsElementEventMap>(type: K, listener: (this: HTMLChTabularGridActionSettingsElement, ev: ChTabularGridActionSettingsCustomEvent<HTMLChTabularGridActionSettingsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridActionSettingsElement: {
+        prototype: HTMLChTabularGridActionSettingsElement;
+        new (): HTMLChTabularGridActionSettingsElement;
+    };
+    /**
+     * The `ch-tabular-grid-actionbar` component represents a container for a grid actions.
+     */
+    interface HTMLChTabularGridActionbarElement extends Components.ChTabularGridActionbar, HTMLStencilElement {
+    }
+    var HTMLChTabularGridActionbarElement: {
+        prototype: HTMLChTabularGridActionbarElement;
+        new (): HTMLChTabularGridActionbarElement;
+    };
+    interface HTMLChTabularGridColumnElementEventMap {
+        "columnHiddenChanged": TabularGridColumnHiddenChangedEvent;
+        "columnSizeChanging": TabularGridColumnSizeChangedEvent;
+        "columnSizeChanged": TabularGridColumnSizeChangedEvent;
+        "columnOrderChanged": TabularGridColumnOrderChangedEvent;
+        "columnSortChanged": TabularGridColumnSortChangedEvent;
+        "columnFreezeChanged": TabularGridColumnFreezeChangedEvent;
+        "columnDragStarted": TabularGridColumnDragEvent;
+        "columnDragging": TabularGridColumnDragEvent;
+        "columnDragEnded": TabularGridColumnDragEvent;
+        "columnSelectorClicked": TabularGridColumnSelectorClickedEvent;
+    }
+    /**
+     * The `ch-tabular-grid-column` component represents a grid column.
+     */
+    interface HTMLChTabularGridColumnElement extends Components.ChTabularGridColumn, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridColumnElementEventMap>(type: K, listener: (this: HTMLChTabularGridColumnElement, ev: ChTabularGridColumnCustomEvent<HTMLChTabularGridColumnElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridColumnElementEventMap>(type: K, listener: (this: HTMLChTabularGridColumnElement, ev: ChTabularGridColumnCustomEvent<HTMLChTabularGridColumnElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridColumnElement: {
+        prototype: HTMLChTabularGridColumnElement;
+        new (): HTMLChTabularGridColumnElement;
+    };
+    /**
+     * The `ch-tabular-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
+    interface HTMLChTabularGridColumnDisplayElement extends Components.ChTabularGridColumnDisplay, HTMLStencilElement {
+    }
+    var HTMLChTabularGridColumnDisplayElement: {
+        prototype: HTMLChTabularGridColumnDisplayElement;
+        new (): HTMLChTabularGridColumnDisplayElement;
+    };
+    interface HTMLChTabularGridColumnResizeElementEventMap {
+        "columnResizeStarted": TabularGridColumnResizeEvent;
+        "columnResizing": TabularGridColumnResizeEvent;
+        "columnResizeFinished": TabularGridColumnResizeEvent;
+    }
+    /**
+     * The `ch-tabular-grid-column-resize` component responsible for resizing a column in a grid.
+     */
+    interface HTMLChTabularGridColumnResizeElement extends Components.ChTabularGridColumnResize, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridColumnResizeElementEventMap>(type: K, listener: (this: HTMLChTabularGridColumnResizeElement, ev: ChTabularGridColumnResizeCustomEvent<HTMLChTabularGridColumnResizeElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridColumnResizeElementEventMap>(type: K, listener: (this: HTMLChTabularGridColumnResizeElement, ev: ChTabularGridColumnResizeCustomEvent<HTMLChTabularGridColumnResizeElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridColumnResizeElement: {
+        prototype: HTMLChTabularGridColumnResizeElement;
+        new (): HTMLChTabularGridColumnResizeElement;
+    };
+    /**
+     * The `ch-tabular-grid-column-settings` component represents a settings window for a column.
+     */
+    interface HTMLChTabularGridColumnSettingsElement extends Components.ChTabularGridColumnSettings, HTMLStencilElement {
+    }
+    var HTMLChTabularGridColumnSettingsElement: {
+        prototype: HTMLChTabularGridColumnSettingsElement;
+        new (): HTMLChTabularGridColumnSettingsElement;
+    };
+    /**
+     * The `ch-tabular-grid-columnset` component represents a group of columns.
+     */
+    interface HTMLChTabularGridColumnsetElement extends Components.ChTabularGridColumnset, HTMLStencilElement {
+    }
+    var HTMLChTabularGridColumnsetElement: {
+        prototype: HTMLChTabularGridColumnsetElement;
+        new (): HTMLChTabularGridColumnsetElement;
+    };
+    interface HTMLChTabularGridInfiniteScrollElementEventMap {
+        "infinite": any;
+    }
+    /**
+     * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
+     */
+    interface HTMLChTabularGridInfiniteScrollElement extends Components.ChTabularGridInfiniteScroll, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridInfiniteScrollElementEventMap>(type: K, listener: (this: HTMLChTabularGridInfiniteScrollElement, ev: ChTabularGridInfiniteScrollCustomEvent<HTMLChTabularGridInfiniteScrollElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridInfiniteScrollElementEventMap>(type: K, listener: (this: HTMLChTabularGridInfiniteScrollElement, ev: ChTabularGridInfiniteScrollCustomEvent<HTMLChTabularGridInfiniteScrollElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridInfiniteScrollElement: {
+        prototype: HTMLChTabularGridInfiniteScrollElement;
+        new (): HTMLChTabularGridInfiniteScrollElement;
+    };
+    interface HTMLChTabularGridRowActionsElementEventMap {
+        "rowActionOpened": any;
+    }
+    /**
+     * The `ch-tabular-grid-row-actions` component represents a group row actions.
+     */
+    interface HTMLChTabularGridRowActionsElement extends Components.ChTabularGridRowActions, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridRowActionsElementEventMap>(type: K, listener: (this: HTMLChTabularGridRowActionsElement, ev: ChTabularGridRowActionsCustomEvent<HTMLChTabularGridRowActionsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridRowActionsElementEventMap>(type: K, listener: (this: HTMLChTabularGridRowActionsElement, ev: ChTabularGridRowActionsCustomEvent<HTMLChTabularGridRowActionsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridRowActionsElement: {
+        prototype: HTMLChTabularGridRowActionsElement;
+        new (): HTMLChTabularGridRowActionsElement;
+    };
+    /**
+     * The `ch-tabular-grid-rowset-empty` component represents a container to "empty message" when ch-tabular-grid-rowset is empty.
+     */
+    interface HTMLChTabularGridRowsetEmptyElement extends Components.ChTabularGridRowsetEmpty, HTMLStencilElement {
+    }
+    var HTMLChTabularGridRowsetEmptyElement: {
+        prototype: HTMLChTabularGridRowsetEmptyElement;
+        new (): HTMLChTabularGridRowsetEmptyElement;
+    };
+    interface HTMLChTabularGridRowsetLegendElementEventMap {
+        "rowsetLegendClicked": CustomEvent;
+    }
+    /**
+     * The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-tabular-grid-rowset` element.
+     */
+    interface HTMLChTabularGridRowsetLegendElement extends Components.ChTabularGridRowsetLegend, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridRowsetLegendElementEventMap>(type: K, listener: (this: HTMLChTabularGridRowsetLegendElement, ev: ChTabularGridRowsetLegendCustomEvent<HTMLChTabularGridRowsetLegendElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridRowsetLegendElementEventMap>(type: K, listener: (this: HTMLChTabularGridRowsetLegendElement, ev: ChTabularGridRowsetLegendCustomEvent<HTMLChTabularGridRowsetLegendElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridRowsetLegendElement: {
+        prototype: HTMLChTabularGridRowsetLegendElement;
+        new (): HTMLChTabularGridRowsetLegendElement;
+    };
+    interface HTMLChTabularGridSettingsElementEventMap {
+        "settingsCloseClicked": any;
+    }
+    /**
+     * The `ch-tabular-grid-settings` component represents a settings window for a grid component.
+     */
+    interface HTMLChTabularGridSettingsElement extends Components.ChTabularGridSettings, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridSettingsElementEventMap>(type: K, listener: (this: HTMLChTabularGridSettingsElement, ev: ChTabularGridSettingsCustomEvent<HTMLChTabularGridSettingsElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridSettingsElementEventMap>(type: K, listener: (this: HTMLChTabularGridSettingsElement, ev: ChTabularGridSettingsCustomEvent<HTMLChTabularGridSettingsElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridSettingsElement: {
+        prototype: HTMLChTabularGridSettingsElement;
+        new (): HTMLChTabularGridSettingsElement;
+    };
+    /**
+     * The `ch-tabular-grid-settings-columns` component represents the settings for a grid's columns.
+     */
+    interface HTMLChTabularGridSettingsColumnsElement extends Components.ChTabularGridSettingsColumns, HTMLStencilElement {
+    }
+    var HTMLChTabularGridSettingsColumnsElement: {
+        prototype: HTMLChTabularGridSettingsColumnsElement;
+        new (): HTMLChTabularGridSettingsColumnsElement;
+    };
+    interface HTMLChTabularGridVirtualScrollerElementEventMap {
+        "viewPortItemsChanged": any;
+    }
+    /**
+     * The `ch-tabular-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
+    interface HTMLChTabularGridVirtualScrollerElement extends Components.ChTabularGridVirtualScroller, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTabularGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChTabularGridVirtualScrollerElement, ev: ChTabularGridVirtualScrollerCustomEvent<HTMLChTabularGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTabularGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChTabularGridVirtualScrollerElement, ev: ChTabularGridVirtualScrollerCustomEvent<HTMLChTabularGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChTabularGridVirtualScrollerElement: {
+        prototype: HTMLChTabularGridVirtualScrollerElement;
+        new (): HTMLChTabularGridVirtualScrollerElement;
+    };
     interface HTMLChTestFlexibleLayoutElement extends Components.ChTestFlexibleLayout, HTMLStencilElement {
     }
     var HTMLChTestFlexibleLayoutElement: {
@@ -4151,6 +4918,22 @@ declare global {
         "ch-suggest-list-item": HTMLChSuggestListItemElement;
         "ch-switch": HTMLChSwitchElement;
         "ch-tab-render": HTMLChTabRenderElement;
+        "ch-tabular-grid": HTMLChTabularGridElement;
+        "ch-tabular-grid-action-refresh": HTMLChTabularGridActionRefreshElement;
+        "ch-tabular-grid-action-settings": HTMLChTabularGridActionSettingsElement;
+        "ch-tabular-grid-actionbar": HTMLChTabularGridActionbarElement;
+        "ch-tabular-grid-column": HTMLChTabularGridColumnElement;
+        "ch-tabular-grid-column-display": HTMLChTabularGridColumnDisplayElement;
+        "ch-tabular-grid-column-resize": HTMLChTabularGridColumnResizeElement;
+        "ch-tabular-grid-column-settings": HTMLChTabularGridColumnSettingsElement;
+        "ch-tabular-grid-columnset": HTMLChTabularGridColumnsetElement;
+        "ch-tabular-grid-infinite-scroll": HTMLChTabularGridInfiniteScrollElement;
+        "ch-tabular-grid-row-actions": HTMLChTabularGridRowActionsElement;
+        "ch-tabular-grid-rowset-empty": HTMLChTabularGridRowsetEmptyElement;
+        "ch-tabular-grid-rowset-legend": HTMLChTabularGridRowsetLegendElement;
+        "ch-tabular-grid-settings": HTMLChTabularGridSettingsElement;
+        "ch-tabular-grid-settings-columns": HTMLChTabularGridSettingsColumnsElement;
+        "ch-tabular-grid-virtual-scroller": HTMLChTabularGridVirtualScrollerElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
         "ch-textblock": HTMLChTextblockElement;
@@ -4791,6 +5574,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     * @deprecated Use `ch-tabular-grid` component instead.
      */
     interface ChGrid {
         /**
@@ -4864,6 +5648,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-refresh` instead.
      */
     interface ChGridActionRefresh {
         /**
@@ -4877,6 +5662,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-settings` instead.
      */
     interface ChGridActionSettings {
         /**
@@ -4890,11 +5676,13 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-actionbar` component represents a container for a grid actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-actionbar` instead.
      */
     interface ChGridActionbar {
     }
     /**
      * The `ch-grid-column` component represents a grid column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column` instead.
      */
     interface ChGridColumn {
         /**
@@ -5052,6 +5840,7 @@ declare namespace LocalJSX {
      * The `ch-grid-column-display` component is responsible for determining the
      * visibility of a grid column and updating its hidden property based on
      * whether the monitored class is visible or not.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-display` instead.
      */
     interface ChGridColumnDisplay {
         /**
@@ -5061,6 +5850,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-resize` instead.
      */
     interface ChGridColumnResize {
         /**
@@ -5082,6 +5872,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-column-settings` component represents a settings window for a column.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-settings` instead.
      */
     interface ChGridColumnSettings {
         /**
@@ -5095,11 +5886,13 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-columnset` component represents a group of columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-columnset` instead.
      */
     interface ChGridColumnset {
     }
     /**
      * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-infinite-scroll` instead.
      */
     interface ChGridInfiniteScroll {
         /**
@@ -5113,6 +5906,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-row-actions` component represents a group row actions.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-row-actions` instead.
      */
     interface ChGridRowActions {
         /**
@@ -5134,11 +5928,13 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-empty` instead.
      */
     interface ChGridRowsetEmpty {
     }
     /**
      * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-legend` instead.
      */
     interface ChGridRowsetLegend {
         /**
@@ -5148,6 +5944,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-settings` component represents a settings window for a grid component.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings` instead.
      */
     interface ChGridSettings {
         /**
@@ -5165,6 +5962,7 @@ declare namespace LocalJSX {
     }
     /**
      * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings-columns` instead.
      */
     interface ChGridSettingsColumns {
         /**
@@ -5176,6 +5974,7 @@ declare namespace LocalJSX {
      * The `ch-grid-virtual-scroller` component that displays a subset of items.
      * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
      * based on the viewport size and scroll position.
+     * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-virtual-scroller` instead.
      */
     interface ChGridVirtualScroller {
         /**
@@ -6173,6 +6972,412 @@ declare namespace LocalJSX {
          */
         "sortable"?: boolean;
     }
+    /**
+     * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+     */
+    interface ChTabularGrid {
+        /**
+          * A boolean indicating whether the user can drag column headers to reorder columns.
+         */
+        "allowColumnReorder"?: boolean;
+        /**
+          * One of "single" or "splitter", indicating the behavior of column resizing. "single", resize a single column at a time. "splitter", when adjusts the width of one column, the neighboring columns    are also resized proportionally, maintaining the overall width.
+         */
+        "columnResizeMode"?: "single" | "splitter";
+        /**
+          * Specifies the keyboard navigation mode for the component. - "none": Disables keyboard navigation for the grid rows. - "select": Allows keyboard navigation by changing the selection of grid rows. - "focus": Allows keyboard navigation by focusing on grid rows, but does not change the selection.
+         */
+        "keyboardNavigationMode"?: "none" | "select" | "focus";
+        /**
+          * An object that contains localized strings for the grid.
+         */
+        "localization"?: GridLocalization1;
+        /**
+          * Event emitted when the cell selection is changed.
+         */
+        "onCellSelectionChanged"?: (event: ChTabularGridCustomEvent<TabularGridCellSelectionChangedEvent>) => void;
+        /**
+          * Event emitted when a row is clicked.
+         */
+        "onRowClicked"?: (event: ChTabularGridCustomEvent<TabularGridRowClickedEvent>) => void;
+        /**
+          * Event emitted when attempts to open a context menu on a row.
+         */
+        "onRowContextMenu"?: (event: ChTabularGridCustomEvent<TabularGridRowContextMenuEvent>) => void;
+        /**
+          * Event emitted when a row is double clicked.
+         */
+        "onRowDoubleClicked"?: (event: ChTabularGridCustomEvent<TabularGridRowClickedEvent>) => void;
+        /**
+          * Event emitted when Enter is pressed on a row.
+         */
+        "onRowEnterPressed"?: (event: ChTabularGridCustomEvent<TabularGridRowPressedEvent>) => void;
+        /**
+          * Event emitted when the row marking is changed.
+         */
+        "onRowMarkingChanged"?: (event: ChTabularGridCustomEvent<TabularGridMarkingChangedEvent>) => void;
+        /**
+          * Event emitted when the row selection is changed.
+         */
+        "onSelectionChanged"?: (event: ChTabularGridCustomEvent<TabularGridSelectionChangedEvent>) => void;
+        /**
+          * A CSS class name applied to a row when it is focused.
+         */
+        "rowFocusedClass"?: string;
+        /**
+          * One of "false", "true" or "auto", indicating whether or not rows can be highlighted. "auto", row highlighting will be enabled if the row selection mode is set to "single" or "multiple".
+         */
+        "rowHighlightEnabled"?: boolean | "auto";
+        /**
+          * A CSS class name applied to a row when it is hovered.
+         */
+        "rowHighlightedClass"?: string;
+        /**
+          * A CSS class name applied to a row when it is marked.
+         */
+        "rowMarkedClass"?: string;
+        /**
+          * A CSS class name applied to a row when it is selected.
+         */
+        "rowSelectedClass"?: string;
+        /**
+          * One of "none", "single" or "multiple", indicating how rows can be selected. It can be set to "none" if no rows should be selectable, "single" if only one row can be selected at a time, or "multiple" if multiple rows can be selected at once.
+         */
+        "rowSelectionMode"?: "none" | "single" | "multiple";
+    }
+    /**
+     * The `ch-tabular-grid-action-refresh` component represents a refresh button for a grid action bar.
+     */
+    interface ChTabularGridActionRefresh {
+        /**
+          * Indicates whether the refresh button is disabled or not.
+         */
+        "disabled"?: boolean;
+        /**
+          * Event emitted when the refresh button is clicked.
+         */
+        "onRefreshClicked"?: (event: ChTabularGridActionRefreshCustomEvent<any>) => void;
+    }
+    /**
+     * The `ch-tabular-grid-action-settings` component represents a settings button for a grid action bar.
+     */
+    interface ChTabularGridActionSettings {
+        /**
+          * Indicates whether the settings button is disabled or not.
+         */
+        "disabled"?: boolean;
+        /**
+          * Event emitted when the settings button is clicked.
+         */
+        "onSettingsShowClicked"?: (event: ChTabularGridActionSettingsCustomEvent<any>) => void;
+    }
+    /**
+     * The `ch-tabular-grid-actionbar` component represents a container for a grid actions.
+     */
+    interface ChTabularGridActionbar {
+    }
+    /**
+     * The `ch-tabular-grid-column` component represents a grid column.
+     */
+    interface ChTabularGridColumn {
+        /**
+          * @deprecated Use "columnImage" or "columnImageSet" instead. A URL to an icon to display in the column header.
+         */
+        "columnIconUrl"?: string;
+        /**
+          * A unique identifier for the column.
+         */
+        "columnId"?: string;
+        /**
+          * A URL to an icon to display in the column header.
+         */
+        "columnImage"?: string;
+        /**
+          * A URL to an icon to display in the column header.
+         */
+        "columnImageSet"?: string;
+        /**
+          * The text to display in the column header and settings.
+         */
+        "columnName"?: string;
+        /**
+          * Indicates whether the text in the column header is visible or not
+         */
+        "columnNameHidden"?: boolean;
+        /**
+          * @deprecated Use "columnTooltip" and "columnNameHidden" instead. One of "text" or "title", indicating whether the `columnName` should be displayed as the column text or as tooltip of the column image.
+         */
+        "columnNamePosition"?: "text" | "title";
+        /**
+          * The text to display when the cursor is placed over the column header.
+         */
+        "columnTooltip"?: string;
+        /**
+          * One of "plain", "rich", or "tree", indicating the type of cell displayed in the column.
+         */
+        "columnType"?: "plain" | "rich" | "tree";
+        /**
+          * A CSS class name to apply to the display observer element used to detect changes in the column visibility.
+         */
+        "displayObserverClass"?: string;
+        /**
+          * One of "left" or "right", indicating whether the column should be "frozen" (i.e. remain visible when the user scrolls horizontally).
+         */
+        "freeze"?: TabularGridColumnFreeze;
+        /**
+          * A boolean indicating whether the column should be hidden. The user can display it from the grid settings.
+         */
+        "hidden"?: boolean;
+        /**
+          * A boolean indicating whether the column should be hideable (i.e. whether the user should be able to show/hide the column).
+         */
+        "hideable"?: boolean;
+        /**
+          * Event emitted when the user stops dragging the column header to move it.
+         */
+        "onColumnDragEnded"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the user is dragging the column header to move it.
+         */
+        "onColumnDragStarted"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the user is dragging the column header to move it.
+         */
+        "onColumnDragging"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnDragEvent>) => void;
+        /**
+          * Event emitted when the `freeze` property is changed.
+         */
+        "onColumnFreezeChanged"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnFreezeChangedEvent>) => void;
+        /**
+          * Event emitted when the `hidden` property is changed.
+         */
+        "onColumnHiddenChanged"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnHiddenChangedEvent>) => void;
+        /**
+          * Event emitted when the `order` property is changed.
+         */
+        "onColumnOrderChanged"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnOrderChangedEvent>) => void;
+        /**
+          * Event emitted when the user clicks the row selector checkbox (only applicable for `richRowSelector="true"`.
+         */
+        "onColumnSelectorClicked"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnSelectorClickedEvent>) => void;
+        /**
+          * Event emitted when the `size` property has been changed (i.e. when the user finishes dragging to resize the column).
+         */
+        "onColumnSizeChanged"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnSizeChangedEvent>) => void;
+        /**
+          * Event emitted when the `size` property is currently being changed (i.e. when the user is dragging to resize the column).
+         */
+        "onColumnSizeChanging"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnSizeChangedEvent>) => void;
+        /**
+          * Event emitted when the `sortDirection` property is changed.
+         */
+        "onColumnSortChanged"?: (event: ChTabularGridColumnCustomEvent<TabularGridColumnSortChangedEvent>) => void;
+        /**
+          * A number indicating the order in which the column should appear.
+         */
+        "order"?: number;
+        /**
+          * A number indicating the physical order of the column (i.e. its position in the DOM).
+         */
+        "physicalOrder"?: number;
+        /**
+          * A boolean indicating whether the column should be resizable (i.e. whether the user should be able to drag its width).
+         */
+        "resizable"?: boolean;
+        /**
+          * A boolean indicating whether the column is currently being resized.
+         */
+        "resizing"?: boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a set of action buttons (only applicable for columnType="rich").
+         */
+        "richRowActions"?: boolean;
+        /**
+          * A boolean value indicating whether the column cells are draggable to reorder the grid rows (only applicable for columnType="rich").
+         */
+        "richRowDrag"?: boolean;
+        /**
+          * A boolean indicating whether the column cells in the grid should have a checkbox selector (only applicable for columnType="rich").
+         */
+        "richRowSelector"?: boolean;
+        /**
+          * One of "select" or "mark", indicating the mode of rich row selector. "select" indicates that the row selector is bound to the row selection. "mark" allows to mark a row independently of the selection.
+         */
+        "richRowSelectorMode"?: "select" | "mark";
+        /**
+          * Indicate the state of the rich row selector. "" indicates that all rows are unchecked. "checked" indicates that all rows are checked. "indeterminate" indicates that some rows are marked.
+         */
+        "richRowSelectorState"?: | ""
+    | "checked"
+    | "indeterminate";
+        /**
+          * A boolean indicating whether the user should be able to open a settings panel for the column.
+         */
+        "settingable"?: boolean;
+        /**
+          * A boolean indicating whether the settings panel for the column should be visible.
+         */
+        "showSettings"?: boolean;
+        /**
+          * A string indicating the width of the column. Any value supported by the "grid-template-columns" CSS property is valid.
+         */
+        "size"?: string;
+        /**
+          * One of "asc" or "desc", indicating the current sort direction.
+         */
+        "sortDirection"?: TabularGridColumnSortDirection;
+        /**
+          * A boolean indicating whether the column should be sortable (i.e. whether the user should be able to click the column header to sort the data).
+         */
+        "sortable"?: boolean;
+    }
+    /**
+     * The `ch-tabular-grid-column-display` component is responsible for determining the
+     * visibility of a grid column and updating its hidden property based on
+     * whether the monitored class is visible or not.
+     */
+    interface ChTabularGridColumnDisplay {
+        /**
+          * The column element that is being monitored.
+         */
+        "column": HTMLChTabularGridColumnElement;
+    }
+    /**
+     * The `ch-tabular-grid-column-resize` component responsible for resizing a column in a grid.
+     */
+    interface ChTabularGridColumnResize {
+        /**
+          * The column element that is being resized.
+         */
+        "column": HTMLChTabularGridColumnElement;
+        /**
+          * Event emitted when the user finishes resizing the column.
+         */
+        "onColumnResizeFinished"?: (event: ChTabularGridColumnResizeCustomEvent<TabularGridColumnResizeEvent>) => void;
+        /**
+          * Event emitted when the user starts resizing the column.
+         */
+        "onColumnResizeStarted"?: (event: ChTabularGridColumnResizeCustomEvent<TabularGridColumnResizeEvent>) => void;
+        /**
+          * Event emitted when the user is resizing the column.
+         */
+        "onColumnResizing"?: (event: ChTabularGridColumnResizeCustomEvent<TabularGridColumnResizeEvent>) => void;
+    }
+    /**
+     * The `ch-tabular-grid-column-settings` component represents a settings window for a column.
+     */
+    interface ChTabularGridColumnSettings {
+        /**
+          * The `HTMLChTabularGridColumnElement` that the settings window is associated with.
+         */
+        "column": HTMLChTabularGridColumnElement;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
+        "show"?: boolean;
+    }
+    /**
+     * The `ch-tabular-grid-columnset` component represents a group of columns.
+     */
+    interface ChTabularGridColumnset {
+    }
+    /**
+     * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
+     */
+    interface ChTabularGridInfiniteScroll {
+        /**
+          * Event emitted when end is reached.
+         */
+        "onInfinite"?: (event: ChTabularGridInfiniteScrollCustomEvent<any>) => void;
+        /**
+          * Indicates whether the grid is loading or already loaded.
+         */
+        "status"?: TabularGridInfiniteScrollState;
+    }
+    /**
+     * The `ch-tabular-grid-row-actions` component represents a group row actions.
+     */
+    interface ChTabularGridRowActions {
+        /**
+          * Event emitted when row actions is opened.
+         */
+        "onRowActionOpened"?: (event: ChTabularGridRowActionsCustomEvent<any>) => void;
+        /**
+          * Indicates that the row actions are displayed when the row-actions-button is pressed.
+         */
+        "showOnRowActions"?: boolean;
+        /**
+          * Indicates that the row actions are displayed when right-clicks on the row.
+         */
+        "showOnRowContext"?: boolean;
+        /**
+          * Indicates to show row actions when hovering over row.
+         */
+        "showOnRowHover"?: boolean;
+    }
+    /**
+     * The `ch-tabular-grid-rowset-empty` component represents a container to "empty message" when ch-tabular-grid-rowset is empty.
+     */
+    interface ChTabularGridRowsetEmpty {
+    }
+    /**
+     * The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-tabular-grid-rowset` element.
+     */
+    interface ChTabularGridRowsetLegend {
+        /**
+          * Event emitted when the legend is clicked.
+         */
+        "onRowsetLegendClicked"?: (event: ChTabularGridRowsetLegendCustomEvent<CustomEvent>) => void;
+    }
+    /**
+     * The `ch-tabular-grid-settings` component represents a settings window for a grid component.
+     */
+    interface ChTabularGridSettings {
+        /**
+          * The `HTMLChTabularGridElement` that the settings window is associated with.
+         */
+        "grid": HTMLChTabularGridElement;
+        /**
+          * Event emitted when the close button of the settings window is clicked.
+         */
+        "onSettingsCloseClicked"?: (event: ChTabularGridSettingsCustomEvent<any>) => void;
+        /**
+          * Indicates whether the settings window is currently shown or not.
+         */
+        "show"?: boolean;
+    }
+    /**
+     * The `ch-tabular-grid-settings-columns` component represents the settings for a grid's columns.
+     */
+    interface ChTabularGridSettingsColumns {
+        /**
+          * An array of column elements to render.
+         */
+        "columns": HTMLChTabularGridColumnElement[];
+    }
+    /**
+     * The `ch-tabular-grid-virtual-scroller` component that displays a subset of items.
+     * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+     * based on the viewport size and scroll position.
+     */
+    interface ChTabularGridVirtualScroller {
+        /**
+          * The list of items to be rendered in the grid.
+         */
+        "items"?: any[];
+        /**
+          * The number of elements in the items list. Use if the list changes, without recreating the array.
+         */
+        "itemsCount"?: number;
+        /**
+          * Event emitted when the list of visible items in the grid changes.
+         */
+        "onViewPortItemsChanged"?: (event: ChTabularGridVirtualScrollerCustomEvent<any>) => void;
+        /**
+          * The list of items to display within the current viewport.
+         */
+        "viewPortItems"?: any[];
+    }
     interface ChTestFlexibleLayout {
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -6902,6 +8107,22 @@ declare namespace LocalJSX {
         "ch-suggest-list-item": ChSuggestListItem;
         "ch-switch": ChSwitch;
         "ch-tab-render": ChTabRender;
+        "ch-tabular-grid": ChTabularGrid;
+        "ch-tabular-grid-action-refresh": ChTabularGridActionRefresh;
+        "ch-tabular-grid-action-settings": ChTabularGridActionSettings;
+        "ch-tabular-grid-actionbar": ChTabularGridActionbar;
+        "ch-tabular-grid-column": ChTabularGridColumn;
+        "ch-tabular-grid-column-display": ChTabularGridColumnDisplay;
+        "ch-tabular-grid-column-resize": ChTabularGridColumnResize;
+        "ch-tabular-grid-column-settings": ChTabularGridColumnSettings;
+        "ch-tabular-grid-columnset": ChTabularGridColumnset;
+        "ch-tabular-grid-infinite-scroll": ChTabularGridInfiniteScroll;
+        "ch-tabular-grid-row-actions": ChTabularGridRowActions;
+        "ch-tabular-grid-rowset-empty": ChTabularGridRowsetEmpty;
+        "ch-tabular-grid-rowset-legend": ChTabularGridRowsetLegend;
+        "ch-tabular-grid-settings": ChTabularGridSettings;
+        "ch-tabular-grid-settings-columns": ChTabularGridSettingsColumns;
+        "ch-tabular-grid-virtual-scroller": ChTabularGridVirtualScroller;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
         "ch-textblock": ChTextblock;
@@ -6959,70 +8180,86 @@ declare module "@stencil/core" {
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
             /**
              * The `ch-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+             * @deprecated Use `ch-tabular-grid` component instead.
              */
             "ch-grid": LocalJSX.ChGrid & JSXBase.HTMLAttributes<HTMLChGridElement>;
             /**
              * The `ch-grid-action-refresh` component represents a refresh button for a grid action bar.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-refresh` instead.
              */
             "ch-grid-action-refresh": LocalJSX.ChGridActionRefresh & JSXBase.HTMLAttributes<HTMLChGridActionRefreshElement>;
             /**
              * The `ch-grid-action-settings` component represents a settings button for a grid action bar.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-action-settings` instead.
              */
             "ch-grid-action-settings": LocalJSX.ChGridActionSettings & JSXBase.HTMLAttributes<HTMLChGridActionSettingsElement>;
             /**
              * The `ch-grid-actionbar` component represents a container for a grid actions.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-actionbar` instead.
              */
             "ch-grid-actionbar": LocalJSX.ChGridActionbar & JSXBase.HTMLAttributes<HTMLChGridActionbarElement>;
             /**
              * The `ch-grid-column` component represents a grid column.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column` instead.
              */
             "ch-grid-column": LocalJSX.ChGridColumn & JSXBase.HTMLAttributes<HTMLChGridColumnElement>;
             /**
              * The `ch-grid-column-display` component is responsible for determining the
              * visibility of a grid column and updating its hidden property based on
              * whether the monitored class is visible or not.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-display` instead.
              */
             "ch-grid-column-display": LocalJSX.ChGridColumnDisplay & JSXBase.HTMLAttributes<HTMLChGridColumnDisplayElement>;
             /**
              * The `ch-grid-column-resize` component responsible for resizing a column in a grid.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-resize` instead.
              */
             "ch-grid-column-resize": LocalJSX.ChGridColumnResize & JSXBase.HTMLAttributes<HTMLChGridColumnResizeElement>;
             /**
              * The `ch-grid-column-settings` component represents a settings window for a column.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-column-settings` instead.
              */
             "ch-grid-column-settings": LocalJSX.ChGridColumnSettings & JSXBase.HTMLAttributes<HTMLChGridColumnSettingsElement>;
             /**
              * The `ch-grid-columnset` component represents a group of columns.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-columnset` instead.
              */
             "ch-grid-columnset": LocalJSX.ChGridColumnset & JSXBase.HTMLAttributes<HTMLChGridColumnsetElement>;
             /**
              * The 'ch-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-grid' component
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-infinite-scroll` instead.
              */
             "ch-grid-infinite-scroll": LocalJSX.ChGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChGridInfiniteScrollElement>;
             /**
              * The `ch-grid-row-actions` component represents a group row actions.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-row-actions` instead.
              */
             "ch-grid-row-actions": LocalJSX.ChGridRowActions & JSXBase.HTMLAttributes<HTMLChGridRowActionsElement>;
             /**
              * The `ch-grid-rowset-empty` component represents a container to "empty message" when ch-grid-rowset is empty.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-empty` instead.
              */
             "ch-grid-rowset-empty": LocalJSX.ChGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChGridRowsetEmptyElement>;
             /**
              * The `ch-grid-rowset-legend` component represents a caption for the `ch-grid-rowset` element.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-rowset-legend` instead.
              */
             "ch-grid-rowset-legend": LocalJSX.ChGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChGridRowsetLegendElement>;
             /**
              * The `ch-grid-settings` component represents a settings window for a grid component.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings` instead.
              */
             "ch-grid-settings": LocalJSX.ChGridSettings & JSXBase.HTMLAttributes<HTMLChGridSettingsElement>;
             /**
              * The `ch-grid-settings-columns` component represents the settings for a grid's columns.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-settings-columns` instead.
              */
             "ch-grid-settings-columns": LocalJSX.ChGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChGridSettingsColumnsElement>;
             /**
              * The `ch-grid-virtual-scroller` component that displays a subset of items.
              * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
              * based on the viewport size and scroll position.
+             * @deprecated Use `ch-tabular-grid` component instead. Use `ch-tabular-grid-virtual-scroller` instead.
              */
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
@@ -7110,6 +8347,74 @@ declare module "@stencil/core" {
              */
             "ch-switch": LocalJSX.ChSwitch & JSXBase.HTMLAttributes<HTMLChSwitchElement>;
             "ch-tab-render": LocalJSX.ChTabRender & JSXBase.HTMLAttributes<HTMLChTabRenderElement>;
+            /**
+             * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
+             */
+            "ch-tabular-grid": LocalJSX.ChTabularGrid & JSXBase.HTMLAttributes<HTMLChTabularGridElement>;
+            /**
+             * The `ch-tabular-grid-action-refresh` component represents a refresh button for a grid action bar.
+             */
+            "ch-tabular-grid-action-refresh": LocalJSX.ChTabularGridActionRefresh & JSXBase.HTMLAttributes<HTMLChTabularGridActionRefreshElement>;
+            /**
+             * The `ch-tabular-grid-action-settings` component represents a settings button for a grid action bar.
+             */
+            "ch-tabular-grid-action-settings": LocalJSX.ChTabularGridActionSettings & JSXBase.HTMLAttributes<HTMLChTabularGridActionSettingsElement>;
+            /**
+             * The `ch-tabular-grid-actionbar` component represents a container for a grid actions.
+             */
+            "ch-tabular-grid-actionbar": LocalJSX.ChTabularGridActionbar & JSXBase.HTMLAttributes<HTMLChTabularGridActionbarElement>;
+            /**
+             * The `ch-tabular-grid-column` component represents a grid column.
+             */
+            "ch-tabular-grid-column": LocalJSX.ChTabularGridColumn & JSXBase.HTMLAttributes<HTMLChTabularGridColumnElement>;
+            /**
+             * The `ch-tabular-grid-column-display` component is responsible for determining the
+             * visibility of a grid column and updating its hidden property based on
+             * whether the monitored class is visible or not.
+             */
+            "ch-tabular-grid-column-display": LocalJSX.ChTabularGridColumnDisplay & JSXBase.HTMLAttributes<HTMLChTabularGridColumnDisplayElement>;
+            /**
+             * The `ch-tabular-grid-column-resize` component responsible for resizing a column in a grid.
+             */
+            "ch-tabular-grid-column-resize": LocalJSX.ChTabularGridColumnResize & JSXBase.HTMLAttributes<HTMLChTabularGridColumnResizeElement>;
+            /**
+             * The `ch-tabular-grid-column-settings` component represents a settings window for a column.
+             */
+            "ch-tabular-grid-column-settings": LocalJSX.ChTabularGridColumnSettings & JSXBase.HTMLAttributes<HTMLChTabularGridColumnSettingsElement>;
+            /**
+             * The `ch-tabular-grid-columnset` component represents a group of columns.
+             */
+            "ch-tabular-grid-columnset": LocalJSX.ChTabularGridColumnset & JSXBase.HTMLAttributes<HTMLChTabularGridColumnsetElement>;
+            /**
+             * The 'ch-tabular-grid-infinite-scroll' provides infinite scroll functionality for a 'ch-tabular-grid' component
+             */
+            "ch-tabular-grid-infinite-scroll": LocalJSX.ChTabularGridInfiniteScroll & JSXBase.HTMLAttributes<HTMLChTabularGridInfiniteScrollElement>;
+            /**
+             * The `ch-tabular-grid-row-actions` component represents a group row actions.
+             */
+            "ch-tabular-grid-row-actions": LocalJSX.ChTabularGridRowActions & JSXBase.HTMLAttributes<HTMLChTabularGridRowActionsElement>;
+            /**
+             * The `ch-tabular-grid-rowset-empty` component represents a container to "empty message" when ch-tabular-grid-rowset is empty.
+             */
+            "ch-tabular-grid-rowset-empty": LocalJSX.ChTabularGridRowsetEmpty & JSXBase.HTMLAttributes<HTMLChTabularGridRowsetEmptyElement>;
+            /**
+             * The `ch-tabular-grid-rowset-legend` component represents a caption for the `ch-tabular-grid-rowset` element.
+             */
+            "ch-tabular-grid-rowset-legend": LocalJSX.ChTabularGridRowsetLegend & JSXBase.HTMLAttributes<HTMLChTabularGridRowsetLegendElement>;
+            /**
+             * The `ch-tabular-grid-settings` component represents a settings window for a grid component.
+             */
+            "ch-tabular-grid-settings": LocalJSX.ChTabularGridSettings & JSXBase.HTMLAttributes<HTMLChTabularGridSettingsElement>;
+            /**
+             * The `ch-tabular-grid-settings-columns` component represents the settings for a grid's columns.
+             */
+            "ch-tabular-grid-settings-columns": LocalJSX.ChTabularGridSettingsColumns & JSXBase.HTMLAttributes<HTMLChTabularGridSettingsColumnsElement>;
+            /**
+             * The `ch-tabular-grid-virtual-scroller` component that displays a subset of items.
+             * It optimizes the rendering of large data sets by only rendering the items that are currently visible on the screen
+             * based on the viewport size and scroll position.
+             */
+            "ch-tabular-grid-virtual-scroller": LocalJSX.ChTabularGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChTabularGridVirtualScrollerElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;

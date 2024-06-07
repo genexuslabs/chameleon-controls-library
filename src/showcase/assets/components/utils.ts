@@ -7,13 +7,13 @@ const insertSpacesAtTheBeginningExceptForTheFirstLine = (
     .map((line, index) => (index === 0 ? line : " ".repeat(spaces) + line))
     .join("\n");
 
-const identUIModel = (uiModel: any[]) =>
+const identUIModel = (uiModel: any[] | { [key: string]: any }) =>
   insertSpacesAtTheBeginningExceptForTheFirstLine(
     JSON.stringify(uiModel, undefined, 2)
   ) + ";";
 
 export const defineControlMarkupWithUIModel = (
-  uiModel: any[],
+  uiModel: any[] | { [key: string]: any },
   uiModelType: string,
   renderMarkup: string
 ) =>

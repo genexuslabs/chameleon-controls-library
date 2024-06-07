@@ -143,6 +143,16 @@ export const radioGroupShowcaseStory: ShowcaseStory<
   Mutable<ChRadioGroupRender>
 > = {
   properties: showcaseRenderProperties,
+  markupWithUIModel: {
+    uiModel: simpleModel2,
+    uiModelType: "RadioGroupModel",
+    render: `<ch-radio-group-render
+          class="radio-group"
+          model={this.#controlUIModel}
+          value={<initial value (optional)>}
+          onInput={this.#handleValueChange}
+        ></ch-radio-group-render>`
+  },
   render: render,
   state: state
 };

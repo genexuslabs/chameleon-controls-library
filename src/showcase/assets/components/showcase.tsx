@@ -20,8 +20,13 @@ import {
   FlexibleLayoutRenders,
   RadioGroupModel
 } from "../../../components";
+import {
+  defineControlMarkupWithUIModel,
+  defineControlMarkupWithoutUIModel
+} from "./utils";
 
 const MAIN_WIDGET = "main";
+const USAGE_STENCIL_JS = "usage (StencilJS)";
 const CONFIGURATION_WIDGET = "configuration";
 
 const flexibleLayoutConfiguration: FlexibleLayoutModel = {
@@ -30,10 +35,16 @@ const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   items: [
     {
       id: MAIN_WIDGET,
+      closeButtonHidden: true,
       size: "1fr",
       minSize: "220px",
-      type: "single-content",
-      widget: { id: MAIN_WIDGET, name: null }
+      selectedWidgetId: MAIN_WIDGET,
+      tabDirection: "block",
+      type: "tabbed",
+      widgets: [
+        { id: MAIN_WIDGET, name: "Playground" },
+        { id: USAGE_STENCIL_JS, name: "Usage (StencilJS)" }
+      ]
     },
     {
       id: CONFIGURATION_WIDGET,
@@ -291,6 +302,38 @@ export class ChShowcase {
         {this.#showcaseStory.render()}
       </div>
     ),
+    [USAGE_STENCIL_JS]: () => (
+      <div
+        key={USAGE_STENCIL_JS}
+        slot={USAGE_STENCIL_JS}
+        class="card card-markup"
+      >
+        <button
+          class="button-tertiary button-icon-only copy-button icon-mask"
+          title="Copy markup"
+          type="button"
+          onClick={this.#handleCopyMarkup}
+          ref={el => (this.#copyButtonRef = el)}
+        ></button>
+        <ch-code
+          key={USAGE_STENCIL_JS}
+          slot={USAGE_STENCIL_JS}
+          class="code"
+          language="typescript"
+          value={
+            this.#showcaseStory.markupWithUIModel
+              ? defineControlMarkupWithUIModel(
+                  this.#showcaseStory.markupWithUIModel.uiModel ?? [],
+                  this.#showcaseStory.markupWithUIModel.uiModelType ?? "",
+                  this.#showcaseStory.markupWithUIModel.render ?? ""
+                )
+              : defineControlMarkupWithoutUIModel(
+                  this.#showcaseStory.markupWithoutUIModel
+                )
+          }
+        ></ch-code>
+      </div>
+    ),
     [CONFIGURATION_WIDGET]: () => (
       <div
         key={CONFIGURATION_WIDGET}
@@ -303,8 +346,9 @@ export class ChShowcase {
   };
 
   // Refs
-  #iframeRef: HTMLIFrameElement;
+  #copyButtonRef: HTMLButtonElement;
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
+  #iframeRef: HTMLIFrameElement;
 
   /**
    * Specifies the theme used in the iframe of the control
@@ -665,6 +709,13 @@ export class ChShowcase {
       ]);
     }
   } as const;
+
+  #handleCopyMarkup = (event: MouseEvent) => {
+    event.stopPropagation();
+    navigator.clipboard.writeText(
+      (this.#copyButtonRef.nextElementSibling as HTMLChCodeElement).value
+    );
+  };
 
   #iframeRender = () => (
     <iframe

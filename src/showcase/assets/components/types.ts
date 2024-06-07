@@ -15,6 +15,12 @@ import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   render: () => any;
+  markupWithUIModel?: {
+    uiModel: any[] | { [key: string]: any };
+    uiModelType: string;
+    render: string;
+  };
+  markupWithoutUIModel?: string;
   properties: ShowcaseRenderProperties<T>;
   state: Partial<T>;
 };

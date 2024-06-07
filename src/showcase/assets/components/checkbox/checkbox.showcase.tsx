@@ -165,6 +165,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
 
 export const checkboxShowcaseStory: ShowcaseStory<Mutable<ChCheckBox>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: `<ch-checkbox
+          class="checkbox"
+          checkedValue={<checked value>}
+          value={<initial value (optional)>}
+          onInput={this.#handleValueChange}
+        ></ch-checkbox>`,
   render: render,
   state: state
 };

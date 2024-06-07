@@ -3,6 +3,21 @@
   padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
+.card-markup {
+  position: relative;
+
+  pre {
+    margin: 0; /* WA until this is fixed by Unanimo/Mercury */
+  }
+}
+
+.copy-button {
+  --icon-path: url("https://unpkg.com/@genexus/unanimo@0.12.0/dist/assets/icons/copy.svg");
+  position: absolute;
+  inset-block-start: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  inset-inline-end: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+}
+
 ch-showcase hr {
   margin-inline: calc(
     var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1

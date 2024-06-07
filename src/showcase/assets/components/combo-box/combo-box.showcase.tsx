@@ -254,6 +254,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
 
 export const comboBoxShowcaseStory: ShowcaseStory<Mutable<ChComboBox>> = {
   properties: showcaseRenderProperties,
+  markupWithUIModel: {
+    uiModel: simpleModel1,
+    uiModelType: "ComboBoxModel",
+    render: `<ch-combo-box
+          class="combo-box"
+          model={this.#controlUIModel}
+          value={<initial value (optional)>}
+          onInput={this.#handleValueChange}
+          onFilterChange={this.#handleFilterChange}
+        ></ch-combo-box>`
+  },
   render: render,
   state: state
 };

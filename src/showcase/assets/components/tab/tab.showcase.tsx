@@ -206,6 +206,39 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
 
 export const tabShowcaseStory: ShowcaseStory<Mutable<ChTabRender>> = {
   properties: showcaseRenderProperties,
+  markupWithUIModel: {
+    uiModel: simpleModel2,
+    uiModelType: "TabModel",
+    render: `<ch-tab-render
+          accessibleName={<accessibleName>}
+          class="tab"
+          model={this.#controlUIModel}
+          selectedId={<initial selected id (optional)>}
+          onSelectedItemChange={this.#handleSelectedItemChange}
+        >
+          {renderedItems.has("item1") && (
+            <div slot="item1">
+              Content of the item 1
+              <label>
+                Any text
+                <input type="text" />
+              </label>
+            </div>
+          )}
+
+          {renderedItems.has("item2") && (
+            <div slot="item2">Content of the item 2</div>
+          )}
+
+          {renderedItems.has("item3") && (
+            <div slot="item3">Content of the item 3</div>
+          )}
+
+          {renderedItems.has("item4") && (
+            <div slot="item4">Content of the item 4</div>
+          )}   
+        </ch-tab-render>`
+  },
   render: render,
   state: state
 };

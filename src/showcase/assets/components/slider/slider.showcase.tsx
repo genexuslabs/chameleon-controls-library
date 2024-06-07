@@ -121,6 +121,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSlider>> = [
 
 export const sliderShowcaseStory: ShowcaseStory<Mutable<ChSlider>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: `<ch-slider
+          class="slider-primary"
+          maxValue={<max value>}
+          minValue={<min value>}
+          value={<initial value>}
+          step={<step>}
+          onInput={this.#handleValueChange}
+        ></ch-slider>`,
   render: render,
   state: state
 };

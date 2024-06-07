@@ -154,6 +154,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSwitch>> = [
 
 export const switchShowcaseStory: ShowcaseStory<Mutable<ChSwitch>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: `<ch-switch
+          class="switch"
+          checkedValue={<checked value>}
+          value={<initial value (optional)>}
+          onInput={this.#handleValueChange}
+        ></ch-switch>`,
   render: render,
   state: state
 };

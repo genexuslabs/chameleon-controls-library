@@ -102,6 +102,36 @@ export const layoutSplitterShowcaseStory: ShowcaseStory<
   Mutable<ChLayoutSplitter>
 > = {
   properties: showcaseRenderProperties,
+  markupWithUIModel: {
+    uiModel: layout7,
+    uiModelType: "LayoutSplitterModel",
+    render: `<ch-layout-splitter model={this.#controlUIModel}>
+          <div slot="start-component">
+            Start
+            <input class="form-input" type="text" />
+          </div>
+
+          <div slot="end-component">
+            End
+            <input class="form-input" type="text" />
+          </div>
+
+          <div slot="end-end-component">
+            End End
+            <input class="form-input" type="text" />
+          </div>
+
+          <div slot="center-2-component">
+            Center 2
+            <input class="form-input" type="text" />
+          </div>
+
+          <div slot="center-component">
+            Center
+            <input class="form-input" type="text" />
+          </div>
+        </ch-layout-splitter>`
+  },
   render: render,
   state: state
 };

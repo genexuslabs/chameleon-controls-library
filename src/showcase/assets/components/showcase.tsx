@@ -26,7 +26,7 @@ import {
 } from "./utils";
 
 const MAIN_WIDGET = "main";
-const USAGE = "usage";
+const USAGE_STENCIL_JS = "usage (StencilJS)";
 const CONFIGURATION_WIDGET = "configuration";
 
 const flexibleLayoutConfiguration: FlexibleLayoutModel = {
@@ -43,7 +43,7 @@ const flexibleLayoutConfiguration: FlexibleLayoutModel = {
       type: "tabbed",
       widgets: [
         { id: MAIN_WIDGET, name: "Playground" },
-        { id: USAGE, name: "Usage" }
+        { id: USAGE_STENCIL_JS, name: "Usage (StencilJS)" }
       ]
     },
     {
@@ -302,8 +302,12 @@ export class ChShowcase {
         {this.#showcaseStory.render()}
       </div>
     ),
-    [USAGE]: () => (
-      <div key={USAGE} slot={USAGE} class="card card-markup">
+    [USAGE_STENCIL_JS]: () => (
+      <div
+        key={USAGE_STENCIL_JS}
+        slot={USAGE_STENCIL_JS}
+        class="card card-markup"
+      >
         <button
           class="button-tertiary button-icon-only copy-button icon-mask"
           title="Copy markup"
@@ -312,8 +316,8 @@ export class ChShowcase {
           ref={el => (this.#copyButtonRef = el)}
         ></button>
         <ch-code
-          key={USAGE}
-          slot={USAGE}
+          key={USAGE_STENCIL_JS}
+          slot={USAGE_STENCIL_JS}
           class="code"
           language="typescript"
           value={

@@ -30,6 +30,7 @@ import { isMobileDevice } from "../../common/utils";
 import { KEY_CODES } from "../../common/reserved-names";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { ChPopoverCustomEvent } from "../../components";
+import { ChPopoverAlign } from "../popover/types";
 import { focusComposedPath } from "../common/helpers";
 import { filterSubModel } from "./helpers";
 
@@ -512,6 +513,11 @@ export class ChComboBox
    * attribute for `input` elements.
    */
   @Prop() readonly placeholder: string;
+
+  /**
+   * Specifies the inline alignment of the popover.
+   */
+  @Prop() readonly popoverInlineAlign: ChPopoverAlign = "inside-start";
 
   /**
    * This attribute indicates that the user cannot modify the value of the control.
@@ -1377,7 +1383,7 @@ export class ChComboBox
                   actionById
                   actionElement={this.el as unknown as HTMLButtonElement} // This is a WA. We should remove it
                   blockAlign="outside-end"
-                  inlineAlign="inside-start"
+                  inlineAlign={this.popoverInlineAlign}
                   closeOnClickOutside
                   hidden={!this.expanded}
                   popover="manual"

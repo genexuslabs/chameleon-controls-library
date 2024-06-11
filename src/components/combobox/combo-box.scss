@@ -95,10 +95,10 @@
    */
   --ch-combo-box-separation-y: var(--ch-combo-box-separation);
 
-  --ch-combo-box-mask-inline-start-width: 0px;
-  --ch-combo-box-mask-inline-end-width: 0px;
-  --ch-combo-box-mask-block-start-width: 0px;
-  --ch-combo-box-mask-block-end-width: 0px;
+  --ch-combo-box-mask-inline-start: 0px;
+  --ch-combo-box-mask-inline-end: 0px;
+  --ch-combo-box-mask-block-start: 0px;
+  --ch-combo-box-mask-block-end: 0px;
 
   display: inline-grid;
   grid-template-columns: 1fr max-content;

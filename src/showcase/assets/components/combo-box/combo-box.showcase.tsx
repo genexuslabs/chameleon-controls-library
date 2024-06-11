@@ -57,6 +57,7 @@ const render = () => (
         filterDebounce={state.filterDebounce}
         filterOptions={state.filterOptions}
         filterType={state.filterType}
+        popoverInlineAlign={state.popoverInlineAlign}
         model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
@@ -86,6 +87,7 @@ const render = () => (
         filterDebounce={state.filterDebounce}
         filterOptions={state.filterOptions}
         filterType={state.filterType}
+        popoverInlineAlign={state.popoverInlineAlign}
         model={
           state.filterOptions.alreadyProcessed === true &&
           state.filterType !== "none"
@@ -116,6 +118,7 @@ const render = () => (
           filterDebounce={state.filterDebounce}
           filterOptions={state.filterOptions}
           filterType={state.filterType}
+          popoverInlineAlign={state.popoverInlineAlign}
           model={
             state.filterOptions.alreadyProcessed === true &&
             state.filterType !== "none"
@@ -163,6 +166,31 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
           caption: "Placeholder",
           value: "Option",
           type: "string"
+        },
+        {
+          id: "popoverInlineAlign",
+          caption: "Popover Inline Align",
+          value: "inside-start",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
+            },
+            {
+              value: "inside-start",
+              caption: "inside-start"
+            },
+            { value: "center", caption: "center" },
+            {
+              value: "inside-end",
+              caption: "inside-end"
+            },
+            {
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
         },
         {
           id: "destroyItemsOnClose",

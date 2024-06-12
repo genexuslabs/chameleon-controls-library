@@ -573,7 +573,23 @@ export class ChPopover {
     }
 
     this.#positionAdjustRAF ??= new SyncWithRAF();
-    this.#resizeObserver ??= new ResizeObserver(this.#updatePositionRAF);
+    this.#resizeObserver ??= new ResizeObserver(
+      (entries: ResizeObserverEntry[]) => {
+        const popoverWasResized = entries.find(
+          entry => entry.target === this.el
+        );
+
+        // If the popover size is changed, update the alignment in the same
+        // frame to avoid any flickering. This optimization avoids an extra
+        // setResponsiveAlignment fire and improve the UX when using the
+        // combo-box and expanding/collapsing the groups
+        if (popoverWasResized) {
+          this.#updatePosition();
+        } else {
+          this.#updatePositionRAF();
+        }
+      }
+    );
 
     this.#resizeObserver.observe(this.actionElement);
     this.#resizeObserver.observe(document.body);
@@ -645,6 +661,8 @@ export class ChPopover {
     popoverScrollSizes: { width: number; height: number },
     computedStyle: CSSStyleDeclaration
   ) => {
+    console.log("Set responsive alignment...");
+
     const popoverWidth = this.#getPopoverInlineSizeAndFixItIfNecessary(
       actionRect,
       popoverScrollSizes

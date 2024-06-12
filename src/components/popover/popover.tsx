@@ -661,8 +661,6 @@ export class ChPopover {
     popoverScrollSizes: { width: number; height: number },
     computedStyle: CSSStyleDeclaration
   ) => {
-    console.log("Set responsive alignment...");
-
     const popoverWidth = this.#getPopoverInlineSizeAndFixItIfNecessary(
       actionRect,
       popoverScrollSizes

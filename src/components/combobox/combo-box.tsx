@@ -1389,6 +1389,7 @@ export class ChComboBox
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  overflowBehavior="add-scroll"
                   positionTry="flip-block"
                   onPopoverClosed={
                     this.expanded && comboBoxIsInteractive

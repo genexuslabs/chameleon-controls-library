@@ -42,6 +42,9 @@ const POPOVER_INLINE_SIZE = "--ch-popover-inline-size";
 const POPOVER_MIN_BLOCK_SIZE = "--ch-popover-min-block-size";
 const POPOVER_MIN_INLINE_SIZE = "--ch-popover-min-inline-size";
 
+const POPOVER_FORCED_MAX_BLOCK_SIZE = "--ch-popover-forced-max-block-size";
+const POPOVER_FORCED_MAX_INLINE_SIZE = "--ch-popover-forced-max-inline-size";
+
 const POPOVER_BORDER_BLOCK_START_SIZE = "--ch-popover-border-block-start-width";
 const POPOVER_BORDER_BLOCK_END_SIZE = "--ch-popover-border-block-end-width";
 const POPOVER_BORDER_INLINE_START_SIZE =
@@ -51,6 +54,8 @@ const POPOVER_BORDER_INLINE_END_SIZE = "--ch-popover-border-inline-end-width";
 const POPOVER_RTL_CLASS = "ch-popover-rtl";
 const POPOVER_RTL = "--ch-popover-rtl";
 const POPOVER_RTL_VALUE = "-1";
+
+const PRECISION_TO_AVOID_FLOATING_POINT_ERRORS = 1.5;
 
 const addCursorInDocument = (cursor: string) =>
   (document.body.style.cursor = cursor);
@@ -80,9 +85,11 @@ const resizingCursorDictionary: {
 };
 
 // Utils
-
 const setProperty = (element: HTMLElement, property: string, value: number) =>
   element.style.setProperty(property, `${value}px`);
+
+const getProperty = (element: HTMLElement, property: string): number =>
+  Number((element.style.getPropertyValue(property) || "0px").replace("px", ""));
 
 const addPopoverTargetElement = (
   actionElement: PopoverActionElement,
@@ -261,7 +268,6 @@ export class ChPopover {
 
   // Refs
   #resizeLayer: HTMLDivElement;
-  #windowRef: Window;
 
   @Element() el: HTMLChPopoverElement;
 
@@ -426,6 +432,16 @@ export class ChPopover {
   }
 
   /**
+   * Specifies how the popover behaves when the content overflows the window
+   * size.
+   *   - "overflow": The control won't implement any behavior if the content overflows.
+   *   - "add-scroll": The control will place a scroll if the content overflows.
+   */
+  @Prop({ reflect: true }) readonly overflowBehavior:
+    | "overflow"
+    | "add-scroll" = "overflow";
+
+  /**
    * Popovers that have the `"auto"` state can be "light dismissed" by
    * selecting outside the popover area, and generally only allow one popover
    * to be displayed on-screen at a time. By contrast, `"manual"` popovers must
@@ -560,6 +576,7 @@ export class ChPopover {
     this.#resizeObserver ??= new ResizeObserver(this.#updatePositionRAF);
 
     this.#resizeObserver.observe(this.actionElement);
+    this.#resizeObserver.observe(document.body);
     this.#resizeObserver.observe(this.el);
 
     // Faster first render. Don't wait until the next animation frame
@@ -573,9 +590,6 @@ export class ChPopover {
     }
 
     // Listeners
-    this.#windowRef.addEventListener("resize", this.#updatePositionRAF, {
-      passive: true
-    });
     document.addEventListener("scroll", this.#updatePositionRAF, {
       capture: true,
       passive: true
@@ -590,7 +604,10 @@ export class ChPopover {
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
     const documentRect = document.documentElement.getBoundingClientRect();
     const actionRect = this.actionElement.getBoundingClientRect();
-    const popoverRect = this.el.getBoundingClientRect();
+    const popoverScrollSizes = {
+      width: this.el.scrollWidth,
+      height: this.el.scrollHeight
+    };
     const computedStyle = getComputedStyle(this.el);
 
     const actionInlineStart = this.#getActionInlineStartPosition(
@@ -602,7 +619,7 @@ export class ChPopover {
       documentRect,
       actionRect,
       actionInlineStart,
-      popoverRect,
+      popoverScrollSizes,
       computedStyle
     );
 
@@ -625,16 +642,16 @@ export class ChPopover {
     documentRect: DOMRect,
     actionRect: DOMRect,
     actionInlineStart: number,
-    popoverRect: DOMRect,
+    popoverScrollSizes: { width: number; height: number },
     computedStyle: CSSStyleDeclaration
   ) => {
     const popoverWidth = this.#getPopoverInlineSizeAndFixItIfNecessary(
       actionRect,
-      popoverRect
+      popoverScrollSizes
     );
     const popoverHeight = this.#getPopoverBlockSizeAndFixItIfNecessary(
       actionRect,
-      popoverRect
+      popoverScrollSizes
     );
 
     const alignment = setResponsiveAlignment(
@@ -649,14 +666,76 @@ export class ChPopover {
       this.positionTry
     );
 
+    const inlineOverflow = alignment[0].alignmentOverflow;
+    const blockOverflow = alignment[1].alignmentOverflow;
+
+    this.#setOverflowBehavior(
+      popoverWidth,
+      popoverHeight,
+      inlineOverflow,
+      blockOverflow
+    );
+
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    setProperty(this.el, POPOVER_ALIGN_INLINE, alignment[0]);
-    setProperty(this.el, POPOVER_ALIGN_BLOCK, alignment[1]);
+    setProperty(this.el, POPOVER_ALIGN_INLINE, alignment[0].alignmentPosition);
+    setProperty(this.el, POPOVER_ALIGN_BLOCK, alignment[1].alignmentPosition);
+  };
+
+  #setOverflowBehavior = (
+    popoverWidth: number,
+    popoverHeight: number,
+    inlineOverflow: number,
+    blockOverflow: number
+  ) => {
+    if (this.overflowBehavior !== "add-scroll") {
+      return;
+    }
+
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const currentMaxInlineSize = getProperty(
+      this.el,
+      POPOVER_FORCED_MAX_INLINE_SIZE
+    );
+
+    const currentMaxBlockSize = getProperty(
+      this.el,
+      POPOVER_FORCED_MAX_BLOCK_SIZE
+    );
+
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+
+    // Inline size
+    if (inlineOverflow < 0) {
+      const newMaxInlineSize = popoverWidth + inlineOverflow;
+      setProperty(this.el, POPOVER_FORCED_MAX_INLINE_SIZE, newMaxInlineSize);
+    }
+    // Check if the forced inline size is no longer needed
+    else if (
+      currentMaxInlineSize &&
+      popoverWidth + PRECISION_TO_AVOID_FLOATING_POINT_ERRORS <
+        currentMaxInlineSize + inlineOverflow
+    ) {
+      this.el.style.removeProperty(POPOVER_FORCED_MAX_INLINE_SIZE);
+    }
+
+    // Block size
+    if (blockOverflow < 0) {
+      const newMaxBlockSize = popoverHeight + blockOverflow;
+      setProperty(this.el, POPOVER_FORCED_MAX_BLOCK_SIZE, newMaxBlockSize);
+    }
+    // Check if the forced block size is no longer needed
+    else if (
+      currentMaxBlockSize &&
+      popoverHeight + PRECISION_TO_AVOID_FLOATING_POINT_ERRORS <
+        currentMaxBlockSize + blockOverflow
+    ) {
+      this.el.style.removeProperty(POPOVER_FORCED_MAX_BLOCK_SIZE);
+    }
   };
 
   #getPopoverInlineSizeAndFixItIfNecessary = (
     actionRect: DOMRect,
-    popoverRect: DOMRect
+    popoverRect: { width: number; height: number }
   ) => {
     if (this.inlineSizeMatch === "action-element-as-minimum") {
       setProperty(this.el, POPOVER_MIN_INLINE_SIZE, actionRect.width);
@@ -675,7 +754,7 @@ export class ChPopover {
 
   #getPopoverBlockSizeAndFixItIfNecessary = (
     actionRect: DOMRect,
-    popoverRect: DOMRect
+    popoverRect: { width: number; height: number }
   ) => {
     if (this.blockSizeMatch === "action-element-as-minimum") {
       setProperty(this.el, POPOVER_MIN_BLOCK_SIZE, actionRect.height);
@@ -699,7 +778,6 @@ export class ChPopover {
     }
 
     // Remove listeners
-    this.#windowRef.removeEventListener("resize", this.#updatePositionRAF);
     document.removeEventListener("scroll", this.#updatePositionRAF, {
       capture: true
     });
@@ -975,8 +1053,6 @@ export class ChPopover {
   };
 
   connectedCallback() {
-    this.#windowRef = window;
-
     // Set RTL watcher
     this.#rtlWatcher = new MutationObserver(() => {
       this.#isRTLDirection = isRTL();
@@ -1020,7 +1096,10 @@ export class ChPopover {
     if (this.#adjustAlignment) {
       const documentRect = document.documentElement.getBoundingClientRect();
       const actionRect = this.actionElement.getBoundingClientRect();
-      const popoverRect = this.el.getBoundingClientRect();
+      const popoverScrollSizes = {
+        width: this.el.scrollWidth,
+        height: this.el.scrollHeight
+      };
       const computedStyle = getComputedStyle(this.el);
 
       const actionInlineStart = this.#getActionInlineStartPosition(
@@ -1032,7 +1111,7 @@ export class ChPopover {
         documentRect,
         actionRect,
         actionInlineStart,
-        popoverRect,
+        popoverScrollSizes,
         computedStyle
       );
     }

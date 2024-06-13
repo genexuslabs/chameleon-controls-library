@@ -26,7 +26,7 @@ export class ChQr {
    * The background color of the render QR. If not specified, "transparent"
    * will be used.
    */
-  @Prop() readonly background: string | null = null;
+  @Prop() readonly background: string = "white";
 
   /**
    * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR
@@ -34,7 +34,7 @@ export class ChQr {
    * bigger but chances are also higher that it will be read without errors
    * later on. This value is by default High (H).
    */
-  @Prop() readonly errorCorrectionLevel: ErrorCorrectionLevel = "H";
+  @Prop() readonly errorCorrectionLevel: ErrorCorrectionLevel = "High";
 
   /**
    * What color you want your QR code to be.
@@ -71,7 +71,8 @@ export class ChQr {
       {
         text: this.value,
         radius: this.radius, // 0.0 to 0.5
-        ecLevel: this.errorCorrectionLevel, // L, M, Q, H
+        ecLevel: (this.errorCorrectionLevel ||
+          "High")[0] as QrCreator.ErrorCorrectionLevel, // L, M, Q, H
         fill: this.#getColorValue(this.fill), // foreground color
         background: this.#getColorValue(this.background), // color or null for transparent
         size: this.size // in pixels

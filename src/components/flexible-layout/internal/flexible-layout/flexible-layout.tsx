@@ -238,6 +238,13 @@ export class ChFlexibleLayout {
   private handleItemChange =
     (viewId: string) =>
     (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => {
+      // Check if the selected item change event comes from a tab of the
+      // shadowroot, instead of a tab of the light DOM (case where a view has a
+      // "nested" ch-tab-render control)
+      if ((event.target as HTMLElement).getRootNode() !== this.el.shadowRoot) {
+        return;
+      }
+
       event.stopPropagation();
 
       // Add the view id to properly update the render

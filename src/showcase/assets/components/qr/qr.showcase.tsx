@@ -37,12 +37,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
       {
         id: "errorCorrectionLevel",
         caption: "Error Correction Level",
-        value: "H",
+        value: "High",
         values: [
-          { caption: "L", value: "L" },
-          { caption: "M", value: "M" },
-          { caption: "H", value: "H" },
-          { caption: "Q", value: "Q" }
+          { caption: "Low (7%)", value: "Low" },
+          { caption: "Medium (15%)", value: "Medium" },
+          { caption: "Quartile (25%)", value: "Quartile" },
+          { caption: "High (30%)", value: "High" }
         ],
         type: "enum"
       }
@@ -54,7 +54,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
       {
         id: "background",
         caption: "Background",
-        value: "transparent",
+        value: "white",
         type: "string"
       },
       {
@@ -81,6 +81,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
 
 export const qrShowcaseStory: ShowcaseStory<Mutable<ChQr>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: `<ch-qr
+          accessibleName={<accessible name>}
+          errorCorrectionLevel={<Error Correction Level>}
+          background={<background>}
+          fill={<fill>}
+          size={<size>}
+          value={<initial value>}
+        ></ch-qr>`,
   render: render,
   state: state
 };

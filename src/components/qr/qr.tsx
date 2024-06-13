@@ -26,7 +26,7 @@ export class ChQr {
    * The background color of the render QR. If not specified, "transparent"
    * will be used.
    */
-  @Prop() readonly background: string | null = null;
+  @Prop() readonly background: string = "white";
 
   /**
    * The four values L, M, Q, and H will use %7, 15%, 25%, and 30% of the QR

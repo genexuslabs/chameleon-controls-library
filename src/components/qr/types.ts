@@ -1,1 +1,1 @@
-export type ErrorCorrectionLevel = "L" | "M" | "H" | "Q";
+export type ErrorCorrectionLevel = "Low" | "Medium" | "Quartile" | "High";

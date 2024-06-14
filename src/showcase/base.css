@@ -157,13 +157,17 @@ ch-action-list-render {
   gap: 4px;
 
   &::part(item__caption) {
-    font-family: SourceSansPro_SemiBold;
+    font-weight: 600;
   }
 
   &::part(item__action) {
     padding-inline: 8px;
     padding-block: 4px;
     border: 1px solid;
+  }
+
+  &::part(item__action selected) {
+    background-color: color-mix(in srgb, currentColor 10%, transparent);
   }
 
   &::part(time) {

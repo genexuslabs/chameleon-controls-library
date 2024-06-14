@@ -19,6 +19,7 @@ const render = () => (
     class="action-list-secondary"
     checkbox={state.checkbox}
     checked={state.checked}
+    selection={state.selection}
     editableItems={state.editableItems}
     model={state.model}
   ></ch-action-list-render>
@@ -53,12 +54,30 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     properties: [
       { id: "checkbox", caption: "Checkbox", value: false, type: "boolean" },
       { id: "checked", caption: "Checked", value: false, type: "boolean" },
-
       {
         id: "editableItems",
         caption: "Editable Items",
         value: true,
         type: "boolean"
+      },
+      {
+        id: "selection",
+        caption: "Selection",
+        value: "disabled",
+        columnSpan: 2,
+        type: "enum",
+        render: "radio-group",
+        values: [
+          {
+            value: "disabled",
+            caption: "Disabled"
+          },
+          {
+            value: "multiple",
+            caption: "multiple"
+          },
+          { value: "single", caption: "Single" }
+        ]
       }
     ]
   }

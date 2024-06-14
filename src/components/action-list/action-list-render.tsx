@@ -9,7 +9,8 @@ import {
   Watch,
   forceUpdate,
   Event,
-  EventEmitter
+  EventEmitter,
+  Method
   // EventEmitter
 } from "@stencil/core";
 import {
@@ -26,9 +27,8 @@ import {
 import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
-
-// Selectors
-const ACTION_LIST_ITEM_SELECTOR = "ch-action-list-item";
+import { mouseEventModifierKey } from "../common/helpers";
+import { getActionListItemFromClickEvent } from "./utilts";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -138,6 +138,7 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 export class ChActionListRender {
   #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
   // #additionalItemsParts: Set<string> | undefined;
+  #selectedItems: Set<string> | undefined;
 
   @Element() el: HTMLChActionListRenderElement;
 
@@ -298,6 +299,21 @@ export class ChActionListRender {
    * Specifies the type of selection implemented by the control.
    */
   @Prop() readonly selection: "single" | "multiple" | "disabled" = "disabled";
+  @Watch("selection")
+  selectionChanged(newValue: "single" | "multiple" | "disabled") {
+    if (newValue === "disabled") {
+      this.#removeAllSelectedItems();
+      this.#selectedItems = undefined;
+    }
+    // Create the set to allocate the selected items, if necessary
+    else {
+      this.#selectedItems ??= new Set();
+
+      if (newValue === "single") {
+        this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
+      }
+    }
+  }
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -314,48 +330,42 @@ export class ChActionListRender {
   // >;
 
   /**
-   * Fired when the selected items change.
-   * This event can be fired by the following conditions:
-   *   1. A user changes the selected items interacting with the Tree View.
-   *
-   *   2. The `multiSelection` value is changed from `true` to `false`.
-   *
-   *   3. A selected item is no longer rendered because it does not satisfies a
-   *      filter condition.
-   *
-   *   4. TODO: The `treeModel` property is updated and contains different selected
-   *      items. Even if it does not contains different selected items, this
-   *      event is fired because the selected items can have a different path
-   *      than before the `treeModel` update.
-   *
-   *   5. The `updateItemsProperties` method is executed, changing the item
-   *      selection.
-   *
-   *   6. A selected item is removed.
-   *
-   *   7. TODO: A selected item is moved into a new parent with drag and drop.
-   *      In this case, since the detail of the event contains the information
-   *      of the parent, this event must be fired to update the information.
-   *
-   *   8. Executing `scrollIntoVisible` method and updating the selected value
-   *      of the scrolled item.
-   *
-   *   9. TODO: An external item is dropped into the Tree View and the item is
-   *      selected.
-   *
-   *  10. TODO: Lazy loading content that has selected items?
-   *
-   * Thing that does not fire this event:
-   *   - TODO: Renaming a selected item.
-   *
-   *   - TODO: Applying a filter that keeps all selected items rendered.
+   * Fired when the selected items change and `selection !== "disabled"`
    */
-  // @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
+  @Event() selectedItemsChange: EventEmitter<ActionListItemModelExtended[]>;
 
   /**
    * Fired when an item is clicked and `selection === "disabled"`.
    */
   @Event() itemClick: EventEmitter<string>;
+
+  /**
+   * Given a list of ids, it returns an array of the items that exists in the
+   * given list.
+   */
+  @Method()
+  async getItemsInfo(
+    itemsId: string[]
+  ): Promise<ActionListItemModelExtended[]> {
+    return this.#getItemsInfo(itemsId);
+  }
+
+  #getItemsInfo = (itemsId: string[]): ActionListItemModelExtended[] => {
+    const treeViewItemsInfo: ActionListItemModelExtended[] = [];
+
+    itemsId.forEach(itemId => {
+      const itemUIModel = this.#flattenedModel.get(itemId);
+
+      if (itemUIModel) {
+        treeViewItemsInfo.push(itemUIModel);
+      }
+    });
+
+    return treeViewItemsInfo;
+  };
+
+  #getActionableItemInfo = (itemId: string) =>
+    this.#flattenedModel.get(itemId).item as ActionListItemActionable;
 
   @Listen("fixedChange")
   onFixedChange(
@@ -396,22 +406,123 @@ export class ChActionListRender {
     );
   }
 
-  #handleItemClick = (event: PointerEvent) => {
-    event.stopPropagation();
+  #removeAllSelectedItemsExceptForTheLast = (
+    currentSelectedItems: Set<string>
+  ) => {
+    if (currentSelectedItems.size > 1) {
+      const selectedItemsArray = [...currentSelectedItems.values()];
+      const lastItemIndex = currentSelectedItems.size - 1;
 
-    const actionListItem = event
-      .composedPath()
-      .find(
-        el =>
-          (el as HTMLElement).tagName?.toLowerCase() ===
-          ACTION_LIST_ITEM_SELECTOR
-      ) as HTMLChActionListItemElement;
+      // Deselect all items except the last
+      for (let index = 0; index < lastItemIndex; index++) {
+        const itemId = selectedItemsArray[index];
+
+        this.#getActionableItemInfo(itemId).selected = false;
+      }
+
+      // Create a new Set with only the last item
+      currentSelectedItems.clear();
+      currentSelectedItems.add(selectedItemsArray[lastItemIndex]);
+
+      forceUpdate(this);
+      this.#emitSelectedItemsChange();
+      // this.#scheduleSelectedItemsChange();
+    }
+  };
+
+  #removeAllSelectedItems = () => {
+    this.#selectedItems.forEach(selectedItemId => {
+      const selectedItemInfo = this.#getActionableItemInfo(selectedItemId);
+      selectedItemInfo.selected = false;
+    });
+
+    this.#selectedItems.clear();
+  };
+
+  #handleItemClick = (event: PointerEvent) => {
+    const actionListItem = getActionListItemFromClickEvent(event);
 
     if (!actionListItem) {
       return;
     }
 
     this.itemClick.emit(actionListItem.id);
+  };
+
+  #handleItemSelection = (event: PointerEvent) => {
+    const actionListItem = getActionListItemFromClickEvent(event);
+
+    if (!actionListItem) {
+      return;
+    }
+    const itemId = actionListItem.id;
+    const itemInfo = this.#getActionableItemInfo(itemId);
+
+    const ctrlKeyIsPressed = mouseEventModifierKey(event);
+    const itemWasSelected = this.#selectedItems.has(itemId);
+    const singleSelectionMode = this.selection === "single";
+
+    // - - - - - - - - - - Single selection - - - - - - - - - -
+    if (singleSelectionMode) {
+      // Nothing to update in the UI
+      if (itemWasSelected && !ctrlKeyIsPressed) {
+        return;
+      }
+      const previousSelectedItemId: string | undefined = [
+        ...this.#selectedItems.keys()
+      ][0];
+
+      // Remove the previous selected item
+      if (previousSelectedItemId) {
+        this.#selectedItems.clear();
+
+        const previousSelectedItemInfo = this.#getActionableItemInfo(
+          previousSelectedItemId
+        );
+        previousSelectedItemInfo.selected = false;
+      }
+
+      // If the item was not selected, add it to the Set. If the item was
+      // selected, the previous if removes the item
+      if (!itemWasSelected) {
+        this.#selectedItems.add(itemId);
+      }
+
+      itemInfo.selected = !itemWasSelected;
+      this.#emitSelectedItemsChange();
+      forceUpdate(this);
+      return;
+    }
+
+    // - - - - - - - - - - Multiple selection - - - - - - - - - -
+    if (ctrlKeyIsPressed) {
+      // The item was selected, deselect the item
+      if (itemWasSelected) {
+        this.#selectedItems.delete(itemId);
+      }
+      // Otherwise, select the item
+      else {
+        this.#selectedItems.add(itemId);
+      }
+
+      itemInfo.selected = !itemWasSelected;
+    } else {
+      // Remove the selection from all items
+      this.#removeAllSelectedItems();
+
+      this.#selectedItems.add(itemId);
+      itemInfo.selected = true;
+    }
+
+    this.#emitSelectedItemsChange();
+    forceUpdate(this);
+  };
+
+  #emitSelectedItemsChange = () => {
+    const selectedItemsInfo = this.#getItemsInfo([
+      ...this.#selectedItems.keys()
+    ]);
+    this.selectedItemsChange.emit(selectedItemsInfo);
   };
 
   #removeItem = (itemUIModel: ActionListItemModelExtended) => {
@@ -496,7 +607,12 @@ export class ChActionListRender {
   render() {
     return (
       <Host
-        onClick={this.selection === "disabled" ? this.#handleItemClick : null}
+        aria-multiselectable={this.selection === "multiple" ? "true" : null}
+        onClick={
+          this.selection === "disabled"
+            ? this.#handleItemClick
+            : this.#handleItemSelection
+        }
       >
         {this.model?.map(item => this.renderItem(item, this))}
       </Host>

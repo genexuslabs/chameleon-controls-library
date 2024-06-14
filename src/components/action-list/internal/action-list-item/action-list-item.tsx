@@ -339,7 +339,7 @@ export class ChActionListItem {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute(
       "exportparts",
-      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption"
+      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption,selected,not-selected"
     );
   }
 
@@ -354,8 +354,17 @@ export class ChActionListItem {
     const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
 
     return (
-      <Host>
-        <button class="action" part="item__action" type="button">
+      <Host aria-selected={this.selected ? "true" : null}>
+        <button
+          class="action"
+          part={tokenMap({
+            // eslint-disable-next-line camelcase
+            item__action: true,
+            selected: this.selected,
+            "not-selected": !this.selected
+          })}
+          type="button"
+        >
           {stretchStart && (
             <div
               key="item__stretch-start"

@@ -7,7 +7,9 @@ import {
   State,
   Listen,
   Watch,
-  forceUpdate
+  forceUpdate,
+  Event,
+  EventEmitter
   // EventEmitter
 } from "@stencil/core";
 import {
@@ -24,6 +26,9 @@ import {
 import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
+
+// Selectors
+const ACTION_LIST_ITEM_SELECTOR = "ch-action-list-item";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -290,6 +295,11 @@ export class ChActionListRender {
   ) => Promise<boolean>;
 
   /**
+   * Specifies the type of selection implemented by the control.
+   */
+  @Prop() readonly selection: "single" | "multiple" | "disabled" = "disabled";
+
+  /**
    * Callback that is executed when the treeModel is changed to order its items.
    */
   @Prop() readonly sortItemsCallback: (subModel: ActionListModel) => void =
@@ -342,6 +352,11 @@ export class ChActionListRender {
    */
   // @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
 
+  /**
+   * Fired when an item is clicked and `selection === "disabled"`.
+   */
+  @Event() itemClick: EventEmitter<string>;
+
   @Listen("fixedChange")
   onFixedChange(
     event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>
@@ -380,6 +395,24 @@ export class ChActionListRender {
       }
     );
   }
+
+  #handleItemClick = (event: PointerEvent) => {
+    event.stopPropagation();
+
+    const actionListItem = event
+      .composedPath()
+      .find(
+        el =>
+          (el as HTMLElement).tagName?.toLowerCase() ===
+          ACTION_LIST_ITEM_SELECTOR
+      ) as HTMLChActionListItemElement;
+
+    if (!actionListItem) {
+      return;
+    }
+
+    this.itemClick.emit(actionListItem.id);
+  };
 
   #removeItem = (itemUIModel: ActionListItemModelExtended) => {
     const parentArray =
@@ -461,6 +494,12 @@ export class ChActionListRender {
   }
 
   render() {
-    return <Host>{this.model?.map(item => this.renderItem(item, this))}</Host>;
+    return (
+      <Host
+        onClick={this.selection === "disabled" ? this.#handleItemClick : null}
+      >
+        {this.model?.map(item => this.renderItem(item, this))}
+      </Host>
+    );
   }
 }

@@ -1,5 +1,5 @@
 // This is a WA to import required styles for the editor in production build
-@import "monaco-styles-after-build.scss";
+@import "../../common/monaco/monaco-styles-after-build.scss";
 
 ch-code-editor {
   display: grid;

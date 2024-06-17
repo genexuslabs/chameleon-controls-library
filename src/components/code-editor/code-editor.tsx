@@ -1,4 +1,7 @@
 import { Component, Host, Prop, Watch, h } from "@stencil/core";
+import monaco, {
+  configureMonacoYaml
+} from "../../common/monaco/output/monaco.js";
 import monaco, { configureMonacoYaml } from "./monaco/output/monaco.js";
 
 let autoId = 0;

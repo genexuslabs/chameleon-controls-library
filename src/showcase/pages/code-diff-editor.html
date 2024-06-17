@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>CodeDiffEditor</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link href="../base.css" rel="stylesheet" />
+    <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
+      import { setThemeInBrowser } from "../models/theme-manager.js";
+
+      window.addEventListener("message", event => {
+        if (event.data === "light" || event.data === "dark") {
+          setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
+        }
+      });
+    </script>
+
+    <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+
+      body {
+        display: grid;
+        gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+        grid-template-columns: 1fr 400px;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .card {
+        display: grid;
+        grid-auto-flow: row;
+        grid-auto-rows: max-content;
+        gap: 16px;
+      }
+
+      .card-editor {
+        grid-template-rows: 1fr 1fr;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+    </style>
+  </head>
+  <body class="white-label">
+    <div class="card card-editor">
+      <ch-code-diff-editor
+        value="
+singleQuote: true
+proseWrap: always
+semi: yes111123
+"
+        modified-value="
+singleQuote: true
+proseWrap: always
+semi: yes1111
+"
+        language="yaml"
+        yaml-schema-uri="https://json.schemastore.org/prettierrc.json"
+      ></ch-code-diff-editor>
+    </div>
+
+    <div class="card">
+      <div class="field">
+        <label>
+          Value
+          <textarea
+            style="width: 100%; min-height: 200px; resize: unset"
+            id="value"
+            class="form-input"
+            type="text"
+          >
+console.log("Hello world!");
+          </textarea>
+        </label>
+
+        <button id="update-value" class="button-primary" type="button">
+          Set Value
+        </button>
+
+        <button id="get-value" class="button-primary" type="button">
+          Get value from editor
+        </button>
+
+        <label>
+          Modified
+          <textarea
+            style="width: 100%; min-height: 200px; resize: unset"
+            id="modified-value"
+            class="form-input"
+            type="text"
+          >
+console.log("Hello world! 2222");
+          </textarea>
+        </label>
+
+        <button id="update-modified-value" class="button-primary" type="button">
+          Set Modified Value
+        </button>
+
+        <button id="get-modified-value" class="button-primary" type="button">
+          Get modified value from editor
+        </button>
+      </div>
+
+      <div class="field">
+        <label>
+          Language
+          <input
+            id="language"
+            class="form-input"
+            value="typescript"
+            type="text"
+          />
+        </label>
+
+        <button id="update-language" class="button-primary" type="button">
+          Update
+        </button>
+      </div>
+
+      <div class="field">
+        <label>
+          Theme
+          <input id="theme" class="form-input" value="vs" type="text" />
+        </label>
+
+        <button id="update-theme" class="button-primary" type="button">
+          Update
+        </button>
+      </div>
+
+      <div class="field">
+        <label>
+          YAML Schema URI
+          <input
+            id="yaml-schema-uri"
+            class="form-input"
+            value="https://json.schemastore.org/prettierrc.json"
+            type="text"
+          />
+        </label>
+
+        <button
+          id="update-yaml-schema-uri"
+          class="button-primary"
+          type="button"
+        >
+          Update
+        </button>
+      </div>
+    </div>
+    <script>
+      const editorRef = document.querySelector("ch-code-diff-editor");
+      const inputValueRef = document.querySelector("#value");
+      const inputModifiedValueRef = document.querySelector("#modified-value");
+      const inputLanguageRef = document.querySelector("#language");
+      const inputThemeRef = document.querySelector("#theme");
+      const inputYamlSchemaUriRef = document.querySelector("#yaml-schema-uri");
+
+      const buttonUpdateValueRef = document.querySelector("#update-value");
+      const buttonModifiedUpdateValueRef = document.querySelector(
+        "#update-modified-value"
+      );
+      const buttonGetValueRef = document.querySelector("#get-value");
+      const buttonGetModifiedValueRef = document.querySelector(
+        "#get-modified-value"
+      );
+      const buttonUpdateLanguageRef =
+        document.querySelector("#update-language");
+      const buttonUpdateThemeRef = document.querySelector("#update-theme");
+      const buttonUpdateYamlSchemaUriRef = document.querySelector(
+        "#update-yaml-schema-uri"
+      );
+
+      buttonUpdateValueRef.addEventListener("click", () => {
+        editorRef.value = inputValueRef.value;
+      });
+
+      buttonModifiedUpdateValueRef.addEventListener("click", () => {
+        editorRef.modifiedValue = inputModifiedValueRef.value;
+      });
+
+      buttonGetValueRef.addEventListener("click", () => {
+        inputValueRef.value = editorRef.value;
+      });
+
+      buttonGetModifiedValueRef.addEventListener("click", () => {
+        inputModifiedValueRef.value = editorRef.modifiedValue;
+      });
+
+      buttonUpdateLanguageRef.addEventListener("click", () => {
+        editorRef.language = inputLanguageRef.value;
+      });
+
+      buttonUpdateThemeRef.addEventListener("click", () => {
+        editorRef.theme = inputThemeRef.value;
+      });
+
+      buttonUpdateYamlSchemaUriRef.addEventListener("click", () => {
+        editorRef.yamlSchemaUri = inputYamlSchemaUriRef.value;
+      });
+    </script>
+  </body>
+</html>

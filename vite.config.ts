@@ -21,14 +21,14 @@ export default defineConfig({
 
     lib: {
       entry: {
-        monaco: "src/components/code-editor/monaco/monaco.ts"
+        monaco: "src/common/monaco/monaco.ts"
       },
       formats: ["es"]
     },
 
     rollupOptions: {
       output: {
-        dir: "src/components/code-editor/monaco/output"
+        dir: "src/common/monaco/output"
       }
     }
   }

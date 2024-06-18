@@ -27,7 +27,7 @@ export class ChCodeDiffEditor {
   @Prop() readonly language!: string;
   @Watch("language")
   languageChanged(newLanguage: string) {
-    this.#monacoDiffEditorInstance.setModel({
+    this.#monacoDiffEditorInstance?.setModel({
       original: monaco.editor.createModel(this.value, newLanguage),
       modified: monaco.editor.createModel(this.modifiedValue, newLanguage)
     });
@@ -39,7 +39,7 @@ export class ChCodeDiffEditor {
   @Prop() readonly theme: string = "vs";
   @Watch("theme")
   themeChanged(newTheme: string) {
-    this.#monacoDiffEditorInstance.updateOptions({
+    this.#monacoDiffEditorInstance?.updateOptions({
       theme: newTheme
     });
   }
@@ -61,12 +61,10 @@ export class ChCodeDiffEditor {
   @Prop({ attribute: "readonly" }) readonly readonly: boolean = true;
   @Watch("readonly")
   readonlyChanged(newReadonly: boolean) {
-    if (this.#monacoDiffEditorInstance) {
-      this.#monacoDiffEditorInstance.updateOptions({
-        originalEditable: !newReadonly ?? true,
-        readOnly: newReadonly ?? false
-      });
-    }
+    this.#monacoDiffEditorInstance?.updateOptions({
+      originalEditable: this.options.originalEditable ?? !newReadonly,
+      readOnly: this.options.readOnly ?? newReadonly
+    });
   }
 
   /**
@@ -75,9 +73,7 @@ export class ChCodeDiffEditor {
   @Prop() readonly value: string;
   @Watch("value")
   valueChange(newValue: string) {
-    if (this.#monacoDiffEditorInstance) {
-      this.#monacoDiffEditorInstance.getModel()!.original.setValue(newValue);
-    }
+    this.#monacoDiffEditorInstance?.getModel()!.original.setValue(newValue);
   }
 
   /**
@@ -86,11 +82,9 @@ export class ChCodeDiffEditor {
   @Prop({ attribute: "modified-value" }) readonly modifiedValue: string;
   @Watch("modifiedValue")
   modifiedValueChange(newModifiedValue: string) {
-    if (this.#monacoDiffEditorInstance) {
-      this.#monacoDiffEditorInstance
-        .getModel()!
-        .modified.setValue(newModifiedValue);
-    }
+    this.#monacoDiffEditorInstance
+      ?.getModel()!
+      .modified.setValue(newModifiedValue);
   }
 
   /**

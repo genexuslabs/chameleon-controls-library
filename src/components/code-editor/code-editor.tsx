@@ -58,10 +58,7 @@ export class ChCodeEditor {
   @Prop() readonly value: string;
   @Watch("value")
   valueChange(newValue: string) {
-    // Editor
-    if (this.#monacoEditorInstance) {
-      this.#monacoEditorInstance.setValue(newValue);
-    }
+    this.#monacoEditorInstance?.setValue(newValue);
   }
 
   /**
@@ -70,11 +67,9 @@ export class ChCodeEditor {
   @Prop({ attribute: "readonly" }) readonly readonly: boolean = false;
   @Watch("readonly")
   readonlyChanged(newReadonly: boolean) {
-    if (this.#monacoEditorInstance) {
-      this.#monacoEditorInstance.updateOptions({
-        readOnly: newReadonly ?? false
-      });
-    }
+    this.#monacoEditorInstance?.updateOptions({
+      readOnly: newReadonly ?? false
+    });
   }
 
   /**

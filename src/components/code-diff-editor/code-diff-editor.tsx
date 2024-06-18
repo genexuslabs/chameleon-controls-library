@@ -134,6 +134,31 @@ export class ChCodeDiffEditor {
     });
   }
 
+  connectedCallback(): void {
+    this.#editorId = `ch-diff-editor-${autoId++}`;
+  }
+
+  componentDidLoad() {
+    this.#configureYaml();
+    this.#setupDiffEditor();
+
+    this.#resizeObserver = new ResizeObserver(entries => {
+      const absoluteContentEntry = entries[0].contentRect;
+
+      this.#monacoDiffEditorInstance.layout({
+        width: absoluteContentEntry.width,
+        height: absoluteContentEntry.height
+      });
+    });
+
+    this.#resizeObserver.observe(this.#absoluteContentRef);
+  }
+
+  disconnectedCallback() {
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = null;
+  }
+
   #getYamlSchemas = () => [
     {
       // If YAML file is opened matching this glob
@@ -182,31 +207,6 @@ export class ChCodeDiffEditor {
         schemas: this.#getYamlSchemas()
       });
     }
-  }
-
-  connectedCallback(): void {
-    this.#editorId = `ch-diff-editor-${autoId++}`;
-  }
-
-  componentDidLoad() {
-    this.#configureYaml();
-    this.#setupDiffEditor();
-
-    this.#resizeObserver = new ResizeObserver(entries => {
-      const absoluteContentEntry = entries[0].contentRect;
-
-      this.#monacoDiffEditorInstance.layout({
-        width: absoluteContentEntry.width,
-        height: absoluteContentEntry.height
-      });
-    });
-
-    this.#resizeObserver.observe(this.#absoluteContentRef);
-  }
-
-  disconnectedCallback() {
-    this.#resizeObserver?.disconnect();
-    this.#resizeObserver = null;
   }
 
   render() {

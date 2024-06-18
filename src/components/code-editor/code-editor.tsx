@@ -114,6 +114,31 @@ export class ChCodeEditor {
     );
   }
 
+  connectedCallback(): void {
+    this.#editorId = `ch-editor-${autoId++}`;
+  }
+
+  componentDidLoad() {
+    this.#configureYaml();
+    this.#setupNormalEditor();
+
+    this.#resizeObserver = new ResizeObserver(entries => {
+      const absoluteContentEntry = entries[0].contentRect;
+
+      this.#monacoEditorInstance.layout({
+        width: absoluteContentEntry.width,
+        height: absoluteContentEntry.height
+      });
+    });
+
+    this.#resizeObserver.observe(this.#absoluteContentRef);
+  }
+
+  disconnectedCallback() {
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = null;
+  }
+
   #getYamlSchemas = () => [
     {
       // If YAML file is opened matching this glob
@@ -146,31 +171,6 @@ export class ChCodeEditor {
         schemas: this.#getYamlSchemas()
       });
     }
-  }
-
-  connectedCallback(): void {
-    this.#editorId = `ch-editor-${autoId++}`;
-  }
-
-  componentDidLoad() {
-    this.#configureYaml();
-    this.#setupNormalEditor();
-
-    this.#resizeObserver = new ResizeObserver(entries => {
-      const absoluteContentEntry = entries[0].contentRect;
-
-      this.#monacoEditorInstance.layout({
-        width: absoluteContentEntry.width,
-        height: absoluteContentEntry.height
-      });
-    });
-
-    this.#resizeObserver.observe(this.#absoluteContentRef);
-  }
-
-  disconnectedCallback() {
-    this.#resizeObserver?.disconnect();
-    this.#resizeObserver = null;
   }
 
   render() {

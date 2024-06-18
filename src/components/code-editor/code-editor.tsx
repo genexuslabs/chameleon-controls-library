@@ -132,9 +132,7 @@ export class ChCodeEditor {
     this.#monacoEditorInstance = monaco.editor.create(this.#monacoRef, {
       ...this.options,
       theme: this.options.theme ?? this.theme,
-      ...(!("readOnly" in this.options) && {
-        readOnly: this.readonly
-      }),
+      readOnly: this.options.readOnly ?? this.readonly,
       model: editorModel
     });
   }

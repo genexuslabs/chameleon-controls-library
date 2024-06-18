@@ -155,12 +155,8 @@ export class ChCodeDiffEditor {
       {
         ...this.options,
         theme: this.options.theme ?? this.theme,
-        ...(!(
-          "originalEditable" in this.options || "readOnly" in this.options
-        ) && {
-          originalEditable: !this.readonly,
-          readOnly: this.readonly
-        })
+        originalEditable: this.options.originalEditable ?? !this.readonly,
+        readOnly: this.options.readOnly ?? this.readonly
       }
     );
 

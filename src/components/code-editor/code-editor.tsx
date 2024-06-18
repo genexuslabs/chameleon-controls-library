@@ -51,6 +51,12 @@ export class ChCodeEditor {
     mouseWheelZoom: true,
     tabSize: 2
   };
+  @Watch("options")
+  optionsChanged(options: CodeEditorOptions) {
+    this.#monacoEditorInstance?.updateOptions({
+      options
+    });
+  }
 
   /**
    * Specifies the value of the editor.

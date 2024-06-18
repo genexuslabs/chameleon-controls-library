@@ -54,6 +54,12 @@ export class ChCodeDiffEditor {
     enableSplitViewResizing: true,
     renderSideBySide: true
   };
+  @Watch("options")
+  optionsChanged(options: CodeDiffEditorOptions) {
+    this.#monacoDiffEditorInstance?.updateOptions({
+      options
+    });
+  }
 
   /**
    * Specifies if the editor should be readonly.

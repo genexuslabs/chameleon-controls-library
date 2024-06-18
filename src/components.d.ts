@@ -502,13 +502,18 @@ export namespace Components {
          */
         "options": CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly.
+          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
          */
         "readonly": boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme": string;
+        /**
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeDiffEditorOptions) => Promise<void>;
         /**
           * Specifies the original value of the diff editor.
          */
@@ -528,13 +533,18 @@ export namespace Components {
          */
         "options": CodeEditorOptions;
         /**
-          * Specifies if the editor should be readonly.
+          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
          */
         "readonly": boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme": string;
+        /**
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeEditorOptions) => Promise<void>;
         /**
           * Specifies the value of the editor.
          */
@@ -5652,7 +5662,7 @@ declare namespace LocalJSX {
          */
         "options"?: CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly.
+          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
          */
         "readonly"?: boolean;
         /**
@@ -5678,7 +5688,7 @@ declare namespace LocalJSX {
          */
         "options"?: CodeEditorOptions;
         /**
-          * Specifies if the editor should be readonly.
+          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
          */
         "readonly"?: boolean;
         /**

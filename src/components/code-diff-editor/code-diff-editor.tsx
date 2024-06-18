@@ -167,7 +167,7 @@ export class ChCodeDiffEditor {
    */
   @Method()
   async updateOptions(options: CodeDiffEditorOptions) {
-    this.#monacoDiffEditorInstance?.updateOptions({ options });
+    this.#monacoDiffEditorInstance?.updateOptions(options);
   }
 
   #getYamlSchemas = () => [

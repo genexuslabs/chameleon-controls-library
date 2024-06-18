@@ -147,7 +147,7 @@ export class ChCodeEditor {
    */
   @Method()
   async updateOptions(options: CodeEditorOptions) {
-    this.#monacoEditorInstance?.updateOptions({ options });
+    this.#monacoEditorInstance?.updateOptions(options);
   }
 
   #getYamlSchemas = () => [

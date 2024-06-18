@@ -208,6 +208,11 @@ export class ChCodeDiffEditor {
     this.#resizeObserver.observe(this.#absoluteContentRef);
   }
 
+  disconnectedCallback() {
+    this.#resizeObserver?.disconnect();
+    this.#resizeObserver = null;
+  }
+
   render() {
     return (
       <Host>

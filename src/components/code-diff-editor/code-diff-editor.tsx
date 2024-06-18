@@ -1,4 +1,4 @@
-import { Component, Host, Prop, Watch, h } from "@stencil/core";
+import { Component, Host, Method, Prop, Watch, h } from "@stencil/core";
 import monaco, {
   configureMonacoYaml
 } from "../../common/monaco/output/monaco.js";
@@ -157,6 +157,15 @@ export class ChCodeDiffEditor {
   disconnectedCallback() {
     this.#resizeObserver?.disconnect();
     this.#resizeObserver = null;
+  }
+
+  /**
+   * Update the editor's options after the editor has been created.
+   * @param options Set of options to be updated
+   */
+  @Method()
+  async updateOptions(options: CodeDiffEditorOptions) {
+    this.#monacoDiffEditorInstance?.updateOptions({ options });
   }
 
   #getYamlSchemas = () => [

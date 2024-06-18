@@ -48,7 +48,6 @@ export class ChCodeDiffEditor {
    * Specifies the editor options.
    */
   @Prop() readonly options: CodeDiffEditorOptions = {
-    theme: this.theme,
     automaticLayout: true,
     mouseWheelScrollSensitivity: 4,
     mouseWheelZoom: true,
@@ -155,6 +154,7 @@ export class ChCodeDiffEditor {
       this.#monacoRef,
       {
         ...this.options,
+        theme: this.options.theme ?? this.theme,
         ...(!(
           "originalEditable" in this.options || "readOnly" in this.options
         ) && {

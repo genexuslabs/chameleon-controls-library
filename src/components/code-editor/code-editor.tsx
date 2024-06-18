@@ -46,7 +46,6 @@ export class ChCodeEditor {
    * Specifies the editor options.
    */
   @Prop() readonly options: CodeEditorOptions = {
-    theme: this.theme,
     automaticLayout: true,
     mouseWheelScrollSensitivity: 4,
     mouseWheelZoom: true,
@@ -132,6 +131,7 @@ export class ChCodeEditor {
 
     this.#monacoEditorInstance = monaco.editor.create(this.#monacoRef, {
       ...this.options,
+      theme: this.options.theme ?? this.theme,
       ...(!("readOnly" in this.options) && {
         readOnly: this.readonly
       }),

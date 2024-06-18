@@ -34,14 +34,14 @@ export class ChCodeDiffEditor {
   }
 
   /**
-   * Specifies the theme to be used for rendering.
+   * Specifies the modified value of the diff editor.
    */
-  @Prop() readonly theme: string = "vs";
-  @Watch("theme")
-  themeChanged(newTheme: string) {
-    this.#monacoDiffEditorInstance?.updateOptions({
-      theme: newTheme
-    });
+  @Prop({ attribute: "modified-value" }) readonly modifiedValue: string;
+  @Watch("modifiedValue")
+  modifiedValueChange(newModifiedValue: string) {
+    this.#monacoDiffEditorInstance
+      ?.getModel()!
+      .modified.setValue(newModifiedValue);
   }
 
   /**
@@ -76,23 +76,23 @@ export class ChCodeDiffEditor {
   }
 
   /**
+   * Specifies the theme to be used for rendering.
+   */
+  @Prop() readonly theme: string = "vs";
+  @Watch("theme")
+  themeChanged(newTheme: string) {
+    this.#monacoDiffEditorInstance?.updateOptions({
+      theme: newTheme
+    });
+  }
+
+  /**
    * Specifies the original value of the diff editor.
    */
   @Prop() readonly value: string;
   @Watch("value")
   valueChange(newValue: string) {
     this.#monacoDiffEditorInstance?.getModel()!.original.setValue(newValue);
-  }
-
-  /**
-   * Specifies the modified value of the diff editor.
-   */
-  @Prop({ attribute: "modified-value" }) readonly modifiedValue: string;
-  @Watch("modifiedValue")
-  modifiedValueChange(newModifiedValue: string) {
-    this.#monacoDiffEditorInstance
-      ?.getModel()!
-      .modified.setValue(newModifiedValue);
   }
 
   /**

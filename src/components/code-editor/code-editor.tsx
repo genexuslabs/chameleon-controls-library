@@ -34,15 +34,6 @@ export class ChCodeEditor {
   }
 
   /**
-   * Specifies the theme to be used for rendering.
-   */
-  @Prop() readonly theme: string = "vs";
-  @Watch("theme")
-  themeChanged(newTheme: string) {
-    this.#monacoEditorInstance.updateOptions({ theme: newTheme });
-  }
-
-  /**
    * Specifies the editor options.
    */
   @Prop() readonly options: CodeEditorOptions = {
@@ -59,15 +50,6 @@ export class ChCodeEditor {
   }
 
   /**
-   * Specifies the value of the editor.
-   */
-  @Prop() readonly value: string;
-  @Watch("value")
-  valueChange(newValue: string) {
-    this.#monacoEditorInstance?.setValue(newValue);
-  }
-
-  /**
    * Specifies if the editor should be readonly.
    * If the ´readOnly´ property is specified in the ´options´ property,
    * this property has no effect.
@@ -78,6 +60,24 @@ export class ChCodeEditor {
     this.#monacoEditorInstance?.updateOptions({
       readOnly: this.options.readOnly ?? newReadonly
     });
+  }
+
+  /**
+   * Specifies the theme to be used for rendering.
+   */
+  @Prop() readonly theme: string = "vs";
+  @Watch("theme")
+  themeChanged(newTheme: string) {
+    this.#monacoEditorInstance.updateOptions({ theme: newTheme });
+  }
+
+  /**
+   * Specifies the value of the editor.
+   */
+  @Prop() readonly value: string;
+  @Watch("value")
+  valueChange(newValue: string) {
+    this.#monacoEditorInstance?.setValue(newValue);
   }
 
   /**

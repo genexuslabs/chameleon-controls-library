@@ -69,12 +69,14 @@ export class ChCodeEditor {
 
   /**
    * Specifies if the editor should be readonly.
+   * If the ´readOnly´ property is specified in the ´options´ property,
+   * this property has no effect.
    */
   @Prop({ attribute: "readonly" }) readonly readonly: boolean = false;
   @Watch("readonly")
   readonlyChanged(newReadonly: boolean) {
     this.#monacoEditorInstance?.updateOptions({
-      readOnly: newReadonly ?? false
+      readOnly: this.options.readOnly ?? newReadonly
     });
   }
 

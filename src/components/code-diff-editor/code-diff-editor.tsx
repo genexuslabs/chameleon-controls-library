@@ -63,7 +63,7 @@ export class ChCodeDiffEditor {
 
   /**
    * Specifies if the editor should be readonly.
-   * If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property,
+   * If the `readOnly` or `originalEditable` property is specified in the `options` property,
    * this property has no effect.
    */
   @Prop({ attribute: "readonly" }) readonly readonly: boolean = true;

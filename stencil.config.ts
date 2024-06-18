@@ -7,9 +7,7 @@ export const config: Config = {
     {
       type: "dist",
       esmLoaderPath: "../loader",
-      copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" }
-      ]
+      copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
     },
     {
       type: "docs-readme"
@@ -18,7 +16,7 @@ export const config: Config = {
       type: "www",
       serviceWorker: null,
       copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" },
+        { src: "common/monaco/output/assets", dest: "assets" },
         { src: "showcase" }
       ]
     }

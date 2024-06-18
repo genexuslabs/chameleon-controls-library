@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
-    <title>Checkbox</title>
+    <title>CodeDiffEditor</title>
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
     <link href="../base.css" rel="stylesheet" />
@@ -58,14 +58,20 @@
   </head>
   <body class="white-label">
     <div class="card card-editor">
-      <ch-code-editor
-        value="name: John Doe
-age: 42
-occupation: Pirate
+      <ch-code-diff-editor
+        value="
+singleQuote: true
+proseWrap: always
+semi: yes111123
+"
+        modified-value="
+singleQuote: true
+proseWrap: always
+semi: yes1111
 "
         language="yaml"
         yaml-schema-uri="https://json.schemastore.org/prettierrc.json"
-      ></ch-code-editor>
+      ></ch-code-diff-editor>
     </div>
 
     <div class="card">
@@ -88,6 +94,26 @@ console.log("Hello world!");
 
         <button id="get-value" class="button-primary" type="button">
           Get value from editor
+        </button>
+
+        <label>
+          Modified
+          <textarea
+            style="width: 100%; min-height: 200px; resize: unset"
+            id="modified-value"
+            class="form-input"
+            type="text"
+          >
+console.log("Hello world! 2222");
+          </textarea>
+        </label>
+
+        <button id="update-modified-value" class="button-primary" type="button">
+          Set Modified Value
+        </button>
+
+        <button id="get-modified-value" class="button-primary" type="button">
+          Get modified value from editor
         </button>
       </div>
 
@@ -139,15 +165,21 @@ console.log("Hello world!");
       </div>
     </div>
     <script>
-      const editorRef = document.querySelector("ch-code-editor");
-
+      const editorRef = document.querySelector("ch-code-diff-editor");
       const inputValueRef = document.querySelector("#value");
+      const inputModifiedValueRef = document.querySelector("#modified-value");
       const inputLanguageRef = document.querySelector("#language");
       const inputThemeRef = document.querySelector("#theme");
       const inputYamlSchemaUriRef = document.querySelector("#yaml-schema-uri");
 
       const buttonUpdateValueRef = document.querySelector("#update-value");
+      const buttonModifiedUpdateValueRef = document.querySelector(
+        "#update-modified-value"
+      );
       const buttonGetValueRef = document.querySelector("#get-value");
+      const buttonGetModifiedValueRef = document.querySelector(
+        "#get-modified-value"
+      );
       const buttonUpdateLanguageRef =
         document.querySelector("#update-language");
       const buttonUpdateThemeRef = document.querySelector("#update-theme");
@@ -159,8 +191,16 @@ console.log("Hello world!");
         editorRef.value = inputValueRef.value;
       });
 
+      buttonModifiedUpdateValueRef.addEventListener("click", () => {
+        editorRef.modifiedValue = inputModifiedValueRef.value;
+      });
+
       buttonGetValueRef.addEventListener("click", () => {
         inputValueRef.value = editorRef.value;
+      });
+
+      buttonGetModifiedValueRef.addEventListener("click", () => {
+        inputModifiedValueRef.value = editorRef.modifiedValue;
       });
 
       buttonUpdateLanguageRef.addEventListener("click", () => {

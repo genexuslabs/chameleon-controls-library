@@ -11,6 +11,7 @@ const components = [
   ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
   ["code", "Code", EXPERIMENTAL],
   ["code-editor", "Code Editor", EXPERIMENTAL],
+  ["code-diff-editor", "Code Diff Editor", EXPERIMENTAL],
   ["combo-box", "Combo Box", EXPERIMENTAL],
   ["dropdown", "Dropdown", EXPERIMENTAL],
   ["dialog", "Dialog", EXPERIMENTAL],

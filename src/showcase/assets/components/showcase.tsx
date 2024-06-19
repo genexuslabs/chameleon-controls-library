@@ -1,6 +1,7 @@
 import { Component, Prop, Host, Watch, h, forceUpdate } from "@stencil/core";
 import {
   ShowcaseAvailableStories,
+  ShowcaseCustomStory,
   ShowcaseRenderProperty,
   ShowcaseRenderPropertyBoolean,
   ShowcaseRenderPropertyEnum,
@@ -11,7 +12,7 @@ import {
   ShowcaseRenderPropertyTypes,
   ShowcaseStory
 } from "./types";
-import { showcaseStories } from "./showcase-stories";
+import { showcaseStories, showcaseCustomStories } from "./showcase-stories";
 import {
   ChComboBoxCustomEvent,
   ChRadioGroupRenderCustomEvent,
@@ -71,6 +72,7 @@ const defaultRenderForEachPropertyType = {
 })
 export class ChShowcase {
   #showcaseStory: ShowcaseStory<ShowcaseAvailableStories> | undefined;
+  #showcaseCustomStory: ShowcaseCustomStory | undefined;
   #showcaseStoryCheckboxes: Map<string, () => void> | undefined;
   #showcaseStoryComboBoxes:
     | Map<
@@ -434,9 +436,8 @@ export class ChShowcase {
     this.#showcaseStoryInputNumber = undefined; // Free the memory
     this.#showcaseStoryRadioGroups = undefined; // Free the memory
 
-    this.#showcaseStory = componentName
-      ? showcaseStories[componentName]
-      : undefined;
+    this.#showcaseStory = showcaseStories[componentName];
+    this.#showcaseCustomStory = showcaseCustomStories[componentName];
 
     if (this.#showcaseStory) {
       const properties = this.#showcaseStory.properties;
@@ -474,13 +475,16 @@ export class ChShowcase {
     }
   };
 
-  #customShowcaseRender = () => (
-    <ch-flexible-layout-render
-      model={flexibleLayoutConfiguration}
-      renders={this.#flexibleLayoutRender}
-      ref={el => (this.#flexibleLayoutRef = el)}
-    ></ch-flexible-layout-render>
-  );
+  #customShowcaseRender = () =>
+    this.#showcaseStory ? (
+      <ch-flexible-layout-render
+        model={flexibleLayoutConfiguration}
+        renders={this.#flexibleLayoutRender}
+        ref={el => (this.#flexibleLayoutRef = el)}
+      ></ch-flexible-layout-render>
+    ) : (
+      this.#showcaseCustomStory.render()
+    );
 
   #propertyGroupRender = (
     group: ShowcaseRenderPropertyGroup<ShowcaseAvailableStories>,
@@ -746,7 +750,7 @@ export class ChShowcase {
           {this.pageName} {this.status}
         </h1>
 
-        {this.#showcaseStory
+        {this.#showcaseStory || this.#showcaseCustomStory
           ? this.#customShowcaseRender()
           : this.#iframeRender()}
       </Host>

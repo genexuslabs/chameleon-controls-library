@@ -3,7 +3,9 @@ import { actionListShowcaseStory } from "./action-list/action-list.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
+import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
+import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
@@ -18,6 +20,7 @@ export const showcaseStories = {
   checkbox: checkboxShowcaseStory,
   code: codeShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
+  dialog: dialogShowcaseStory,
   dropdown: dropdownShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
   qr: qrShowcaseStory,
@@ -27,3 +30,7 @@ export const showcaseStories = {
   tab: tabShowcaseStory,
   "tree-view-in-development": treeViewShowcaseStory
 } as const;
+
+export const showcaseCustomStories = {
+  "flexible-layout": flexibleLayoutShowcaseStory
+};

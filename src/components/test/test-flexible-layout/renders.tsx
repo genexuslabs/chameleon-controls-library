@@ -36,6 +36,8 @@ const PANEL2 = "panel-2";
 // Common renders
 const PANEL = "Panel";
 
+const ASSETS_PREFIX = "showcase/pages/assets/icons/";
+
 export const defaultLayout: FlexibleLayoutModel = {
   id: "root",
   direction: "rows",
@@ -66,17 +68,17 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -104,7 +106,7 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
             }
           ]
         }
@@ -120,7 +122,7 @@ export const defaultLayout: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
         }
       ]
     }
@@ -158,17 +160,17 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -209,7 +211,7 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
             }
           ]
         }
@@ -225,7 +227,7 @@ export const layout2: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
         }
       ]
     }
@@ -258,6 +260,7 @@ export const layout3: FlexibleLayoutModel = {
           closeButtonHidden: true,
           // dragOutsideDisabled: true,
           // sortable: false,
+          dragBar: { part: "visible", size: 1 },
           size: "300px",
           type: "tabbed",
           tabDirection: "inline",
@@ -267,17 +270,17 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -285,6 +288,7 @@ export const layout3: FlexibleLayoutModel = {
           id: "sub-group-2-2",
           direction: "rows",
           size: "1fr",
+          dragBar: { part: "visible", size: 1 },
           items: [
             {
               id: "sub-group-2-2-1",
@@ -347,7 +351,7 @@ export const layout3: FlexibleLayoutModel = {
                 {
                   id: OUTPUT,
                   name: "Output",
-                  startImgSrc: "assets/icons/toolbar/output.svg"
+                  startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
                 }
               ]
             }
@@ -366,7 +370,7 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
             }
           ]
         }

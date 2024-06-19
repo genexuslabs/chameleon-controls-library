@@ -37,6 +37,9 @@ export const config: Config = {
       components: ["ch-combo-box"] // Make sure the ch-combo-box control is not bundled with other components
     },
     {
+      components: ["ch-dialog"] // Make sure the ch-dialog control is not bundled with other components
+    },
+    {
       components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components
     },
     {

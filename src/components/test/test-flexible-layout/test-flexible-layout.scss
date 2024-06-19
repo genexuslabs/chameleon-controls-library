@@ -13,8 +13,119 @@ ch-test-flexible-layout {
     background-color: var(--colors-foundation-un-color__gray--400);
   }
 
-  &::part(page-container inline) {
-    background-color: var(--colors-foundation-un-color__gray--200);
+  // &::part(page-container inline) {
+  //   background-color: var(--colors-foundation-un-color__gray--200);
+  // }
+
+  // &::part(button inline) {
+  //   position: relative;
+  //   block-size: 32px;
+  //   inline-size: 48px;
+
+  //   &::before {
+  //     display: flex;
+  //     block-size: 100%;
+  //     inline-size: 100%;
+  //     -webkit-mask-size: 16px;
+  //   }
+  // }
+
+  // &::part(button selected inline) {
+  //   &::after {
+  //     content: "";
+  //     display: flex;
+  //     position: absolute;
+  //     inset-block-start: 4px;
+  //     inset-inline-start: 1px;
+  //     block-size: calc(100% - 8px);
+  //     inline-size: 2px;
+  //     background-color: currentColor;
+  //   }
+  // }
+
+  // &::part(button inlineEnd selected)::after {
+  //   inset-inline-start: unset;
+  //   inset-inline-end: 1px;
+  // }
+
+  // // &::part(page-name inline) {
+  // //   display: block;
+  // //   padding-block: 8px;
+  // //   padding-inline: 16px;
+  // // }
+
+  // &::part(close-button) {
+  //   padding: 1px;
+
+  //   &:hover {
+  //     background-color: color-mix(in srgb, currentColor 10%, transparent);
+  //     border-radius: 4px;
+  //   }
+
+  //   &:focus-visible {
+  //     outline: 1px solid currentColor;
+  //   }
+  // }
+
+  // &::part(button inline):focus-visible {
+  //   outline: 1px solid currentColor;
+  //   outline-offset: -1px;
+  // }
+
+  // // Main, BlockEnd
+  // &::part(button block) {
+  //   padding-block: 6px;
+  //   padding-inline: 16px 8px;
+  //   gap: 8px;
+  //   background-color: var(--colors-foundation-un-color__gray--200);
+
+  //   &:focus-visible {
+  //     outline: 1px solid currentColor;
+  //     outline-offset: -1px;
+  //   }
+  // }
+
+  // &::part(button block selected) {
+  //   background-color: var(--elevation-un-elevation--2);
+  // }
+
+  // &::part(button block selected blockEnd) {
+  //   position: relative;
+
+  //   &::after {
+  //     content: "";
+  //     position: absolute;
+  //     inset-block-start: 0;
+  //     inset-inline: 0;
+  //     block-size: 1px;
+  //     background-color: currentColor;
+  //     z-index: 1;
+  //   }
+  // }
+
+  &::part(tab-list block) {
+    background-color: color-mix(
+      in srgb,
+      var(--colors-foundation-un-color__gray--300) 15%,
+      transparent
+    );
+    overflow: auto;
+  }
+
+  &::part(button) {
+    background-color: color-mix(
+      in srgb,
+      var(--colors-foundation-un-color__gray--300) 20%,
+      transparent
+    );
+  }
+
+  &::part(button selected) {
+    background-color: color-mix(
+      in srgb,
+      var(--colors-foundation-un-color__gray--300) 50%,
+      transparent
+    );
   }
 
   &::part(tab-list inline) {
@@ -23,99 +134,16 @@ ch-test-flexible-layout {
     gap: 4px;
   }
 
-  &::part(button inline) {
-    position: relative;
-    block-size: 32px;
-    inline-size: 48px;
-
-    &::before {
-      display: flex;
-      block-size: 100%;
-      inline-size: 100%;
-      -webkit-mask-size: 16px;
-    }
-  }
-
-  &::part(button selected inline) {
-    &::after {
-      content: "";
-      display: flex;
-      position: absolute;
-      inset-block-start: 4px;
-      inset-inline-start: 1px;
-      block-size: calc(100% - 8px);
-      inline-size: 2px;
-      background-color: currentColor;
-    }
-  }
-
-  &::part(button inlineEnd selected)::after {
-    inset-inline-start: unset;
-    inset-inline-end: 1px;
-  }
-
-  // &::part(page-name inline) {
-  //   display: block;
-  //   padding-block: 8px;
-  //   padding-inline: 16px;
-  // }
-
-  &::part(close-button) {
-    padding: 1px;
-
-    &:hover {
-      background-color: color-mix(in srgb, currentColor 10%, transparent);
-      border-radius: 4px;
-    }
-
-    &:focus-visible {
-      outline: 1px solid currentColor;
-    }
-  }
-
-  &::part(button inline):focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: -1px;
-  }
-
-  // Main, BlockEnd
-  &::part(button block) {
-    padding-block: 6px;
-    padding-inline: 16px 8px;
-    gap: 8px;
-    background-color: var(--colors-foundation-un-color__gray--200);
-
-    &:focus-visible {
-      outline: 1px solid currentColor;
-      outline-offset: -1px;
-    }
-  }
-
-  &::part(button block selected) {
-    background-color: var(--elevation-un-elevation--2);
-  }
-
-  &::part(button block selected blockEnd) {
-    position: relative;
-
-    &::after {
-      content: "";
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline: 0;
-      block-size: 1px;
-      background-color: currentColor;
-      z-index: 1;
-    }
-  }
-
-  &::part(tab-list block) {
-    background-color: var(--colors-foundation-un-color__gray--200);
-    overflow: auto;
-  }
-
   &::part(page-container) {
     overflow: auto;
+  }
+
+  &::part(droppable-area) {
+    background-color: color-mix(
+      in srgb,
+      var(--accents-un-accent__secondary--hover) 25%,
+      transparent
+    );
   }
 
   // - - - - - - - - - - - - - - - -

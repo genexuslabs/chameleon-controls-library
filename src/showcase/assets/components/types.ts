@@ -5,6 +5,7 @@ import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
 import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
+import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
@@ -23,6 +24,10 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   markupWithoutUIModel?: string;
   properties: ShowcaseRenderProperties<T>;
   state: Partial<T>;
+};
+
+export type ShowcaseCustomStory = {
+  render: () => any;
 };
 
 export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
@@ -114,3 +119,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>
   | Mutable<ChTreeViewRender>;
+
+export type ShowcaseAvailableCustomStories = Mutable<ChFlexibleLayoutRender>;

@@ -14,6 +14,10 @@
 
 ## Dependencies
 
+### Used by
+
+ - [ch-showcase](../../../showcase/assets/components)
+
 ### Depends on
 
 - [ch-flexible-layout-render](../../flexible-layout)
@@ -22,6 +26,8 @@
 - [ch-grid](../../../deprecated-components/grid)
 - [ch-grid-columnset](../../../deprecated-components/grid/grid-columnset)
 - [ch-grid-column](../../../deprecated-components/grid/grid-column)
+- [ch-action-list-render](../../action-list)
+- [ch-checkbox](../../checkbox)
 
 ### Graph
 ```mermaid
@@ -32,6 +38,8 @@ graph TD;
   ch-test-flexible-layout --> ch-grid
   ch-test-flexible-layout --> ch-grid-columnset
   ch-test-flexible-layout --> ch-grid-column
+  ch-test-flexible-layout --> ch-action-list-render
+  ch-test-flexible-layout --> ch-checkbox
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
@@ -51,6 +59,9 @@ graph TD;
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window
+  ch-action-list-render --> ch-action-list-item
+  ch-action-list-render --> ch-action-list-group
+  ch-showcase --> ch-test-flexible-layout
   style ch-test-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

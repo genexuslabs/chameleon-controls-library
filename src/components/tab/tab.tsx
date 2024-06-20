@@ -807,6 +807,8 @@ export class ChTabRender implements DraggableView {
           aria-selected={(item.id === this.selectedId).toString()}
           class={{
             [this.#classes.BUTTON]: true,
+            "no-captions": !this.showCaptions,
+
             "decorative-image": isPseudoElementImg(
               item.startImgSrc,
               item.startImgType

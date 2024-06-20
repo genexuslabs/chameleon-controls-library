@@ -1,4 +1,5 @@
-@import "../../common/_base";
+@import "../../common/base";
+@import "../../common/icons";
 
 // - - - - - - - - - - - - - - - -
 //         Caption button
@@ -13,6 +14,20 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   --ch-tab-transition-duration: 150ms;
   --ch-tab-mask-image-size: 100%;
   --ch-tab-image-size: 18px;
+
+  /**
+   * @prop --ch-tab-close-button__image-size:
+   * Specifies the box size that contains an image for the close button.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-tab-close-button__image-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-tab-close-button__background-image-size:
+    * Specifies the image size of the close button.
+    * @default 100%
+    */
+  --ch-tab-close-button__background-image-size: 100%;
 
   display: grid;
   block-size: 100%;
@@ -49,10 +64,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   &::after {
     content: "";
     display: flex;
-    block-size: 1em;
-    inline-size: 1em;
-    -webkit-mask: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path d="M2 2L15.5 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 2L2 15.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
-      50% 50% / 0.75em 0.75em no-repeat;
+    block-size: var(--ch-tab-close-button__image-size);
+    inline-size: var(--ch-tab-close-button__image-size);
+    -webkit-mask: no-repeat center /
+      var(--ch-tab-close-button__background-image-size) #{$close-icon};
     background-color: currentColor;
     opacity: 0;
   }
@@ -68,6 +83,10 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
   &[aria-selected="true"] > .close-button::after {
     opacity: 1;
   }
+}
+
+.no-captions {
+  justify-content: center;
 }
 
 // - - - - - - - - - - - - - - - -

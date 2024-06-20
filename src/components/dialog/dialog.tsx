@@ -256,7 +256,7 @@ export class ChDialog {
   @Prop() readonly allowDrag: "box" | "header" | "no" = "no";
 
   /**
-   * Refers to the dialog title. I will ve visible if 'showHeader´is true.
+   * Refers to the dialog title. I will ve visible if `showHeader` is true.
    */
   @Prop() readonly caption: string;
 

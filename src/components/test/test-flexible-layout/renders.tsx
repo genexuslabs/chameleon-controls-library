@@ -17,6 +17,7 @@ import {
   ChTreeViewRenderCustomEvent,
   TreeViewItemOpenReferenceInfo
 } from "../../../components";
+import { panelToolbox } from "../../../showcase/assets/components/action-list/models";
 
 // IDs
 const MENU_BAR = "menu-bar";
@@ -24,10 +25,10 @@ const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
 const HEAVY_TREE = "heavy-tree";
 const START_PAGE = "start-page";
-const GRID = "Grid";
 const STRUCT_EDITOR = "StructEditor";
 const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
+const TOOLBOX = "toolbox";
 const OUTPUT = "output";
 const IMPORT_OBJECTS = "import-objects";
 const PANEL1 = "panel-1";
@@ -91,7 +92,6 @@ export const defaultLayout: FlexibleLayoutModel = {
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
-            { id: GRID, name: "Grid" },
             { id: STRUCT_EDITOR, name: "Struct Editor" }
           ]
         },
@@ -193,10 +193,7 @@ export const layout2: FlexibleLayoutModel = {
               size: "1fr",
               type: "tabbed",
               tabDirection: "block",
-              widgets: [
-                { id: GRID, name: "Grid" },
-                { id: STRUCT_EDITOR, name: "Struct Editor" }
-              ]
+              widgets: [{ id: STRUCT_EDITOR, name: "Struct Editor" }]
             }
           ]
         },
@@ -304,7 +301,13 @@ export const layout3: FlexibleLayoutModel = {
                   type: "tabbed",
                   tabDirection: "block",
                   selectedWidgetId: START_PAGE,
-                  widgets: [{ id: START_PAGE, name: "Start Page" }]
+                  widgets: [
+                    {
+                      id: START_PAGE,
+                      name: "Start Page",
+                      startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`
+                    }
+                  ]
                 },
                 {
                   id: "sub-group-2-2-1-2",
@@ -318,11 +321,16 @@ export const layout3: FlexibleLayoutModel = {
                       type: "tabbed",
                       tabDirection: "block",
                       widgets: [
-                        { id: GRID, name: "Grid" },
-                        { id: STRUCT_EDITOR, name: "Struct Editor" },
+                        {
+                          id: STRUCT_EDITOR,
+                          name: "Struct Editor",
+                          startImgSrc: `${ASSETS_PREFIX}transaction.svg`
+                        },
                         {
                           id: ATTRS_CONTAINERS_AND_OTHERS,
-                          name: "AttrsContainersAndOthers"
+                          name: "AttrsContainersAndOthers",
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
                         }
                       ]
                     },
@@ -332,9 +340,26 @@ export const layout3: FlexibleLayoutModel = {
                       type: "tabbed",
                       tabDirection: "block",
                       widgets: [
-                        { id: PANEL1, name: "Panel 1", renderId: PANEL },
-                        { id: PANEL2, name: "Panel 2", renderId: PANEL },
-                        { id: IMPORT_OBJECTS, name: "Import Objects" }
+                        {
+                          id: PANEL1,
+                          name: "Panel 1",
+                          renderId: PANEL,
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
+                        },
+                        {
+                          id: PANEL2,
+                          name: "Panel 2",
+                          renderId: PANEL,
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
+                        },
+                        {
+                          id: IMPORT_OBJECTS,
+                          name: "Import Objects",
+                          startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                          startImgType: "background"
+                        }
                       ]
                     }
                   ]
@@ -371,6 +396,11 @@ export const layout3: FlexibleLayoutModel = {
               id: PROPERTIES,
               name: "Properties",
               startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
+            },
+            {
+              id: TOOLBOX,
+              name: "Toolbox",
+              startImgSrc: `${ASSETS_PREFIX}toolbar/toolbox.svg`
             }
           ]
         }
@@ -458,8 +488,8 @@ export const layoutRenders: FlexibleLayoutRenders = {
       </h1>
     </div>
   ),
-  [GRID]: () => (
-    <div slot={GRID} key={GRID}>
+  [STRUCT_EDITOR]: () => (
+    <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
       Grid render... <input type="text" />
       <ch-grid>
         <ch-grid-columnset>
@@ -585,11 +615,6 @@ export const layoutRenders: FlexibleLayoutRenders = {
       </ch-grid>
     </div>
   ),
-  [STRUCT_EDITOR]: () => (
-    <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
-      Struct Editor... <input type="text" />
-    </div>
-  ),
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
     <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
       Panel AttrsContainersAndOthers <input type="text" />
@@ -639,5 +664,12 @@ export const layoutRenders: FlexibleLayoutRenders = {
     <div slot={widget.id} key={widget.id}>
       This is the render for the <strong>{widget.id}</strong> widget
     </div>
+  ),
+  [TOOLBOX]: () => (
+    <ch-action-list-render
+      slot={TOOLBOX}
+      key={TOOLBOX}
+      model={panelToolbox}
+    ></ch-action-list-render>
   )
 };

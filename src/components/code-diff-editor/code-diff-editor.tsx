@@ -2,17 +2,17 @@ import { Component, Host, Method, Prop, Watch, h } from "@stencil/core";
 import monaco, {
   configureMonacoYaml
 } from "../../common/monaco/output/monaco.js";
-import { CodeEditorOptions } from "./code-editor-types.js";
+import { CodeDiffEditorOptions } from "./code-diff-editor-types.js";
 
 let autoId = 0;
 
 @Component({
   shadow: false,
-  styleUrl: "code-editor.scss",
-  tag: "ch-code-editor"
+  styleUrl: "code-diff-editor.scss",
+  tag: "ch-code-diff-editor"
 })
-export class ChCodeEditor {
-  #monacoEditorInstance!: monaco.editor.IStandaloneCodeEditor;
+export class ChCodeDiffEditor {
+  #monacoDiffEditorInstance!: monaco.editor.IStandaloneDiffEditor;
   #resizeObserver: ResizeObserver | undefined;
 
   #editorId: string = "";
@@ -27,37 +27,50 @@ export class ChCodeEditor {
   @Prop() readonly language!: string;
   @Watch("language")
   languageChanged(newLanguage: string) {
-    monaco.editor.setModelLanguage(
-      this.#monacoEditorInstance.getModel()!,
-      newLanguage
-    );
+    this.#monacoDiffEditorInstance?.setModel({
+      original: monaco.editor.createModel(this.value, newLanguage),
+      modified: monaco.editor.createModel(this.modifiedValue, newLanguage)
+    });
+  }
+
+  /**
+   * Specifies the modified value of the diff editor.
+   */
+  @Prop({ attribute: "modified-value" }) readonly modifiedValue: string;
+  @Watch("modifiedValue")
+  modifiedValueChange(newModifiedValue: string) {
+    this.#monacoDiffEditorInstance
+      ?.getModel()!
+      .modified.setValue(newModifiedValue);
   }
 
   /**
    * Specifies the editor options.
    */
-  @Prop() readonly options: CodeEditorOptions = {
+  @Prop() readonly options: CodeDiffEditorOptions = {
     automaticLayout: true,
     mouseWheelScrollSensitivity: 4,
     mouseWheelZoom: true,
-    tabSize: 2
+    enableSplitViewResizing: true,
+    renderSideBySide: true
   };
   @Watch("options")
-  optionsChanged(options: CodeEditorOptions) {
-    this.#monacoEditorInstance?.updateOptions({
+  optionsChanged(options: CodeDiffEditorOptions) {
+    this.#monacoDiffEditorInstance?.updateOptions({
       options
     });
   }
 
   /**
    * Specifies if the editor should be readonly.
-   * If the `readOnly` property is specified in the `options` property,
+   * If the `readOnly` or `originalEditable` property is specified in the `options` property,
    * this property has no effect.
    */
-  @Prop({ attribute: "readonly" }) readonly readonly: boolean = false;
+  @Prop({ attribute: "readonly" }) readonly readonly: boolean = true;
   @Watch("readonly")
   readonlyChanged(newReadonly: boolean) {
-    this.#monacoEditorInstance?.updateOptions({
+    this.#monacoDiffEditorInstance?.updateOptions({
+      originalEditable: this.options.originalEditable ?? !newReadonly,
       readOnly: this.options.readOnly ?? newReadonly
     });
   }
@@ -68,16 +81,18 @@ export class ChCodeEditor {
   @Prop() readonly theme: string = "vs";
   @Watch("theme")
   themeChanged(newTheme: string) {
-    this.#monacoEditorInstance.updateOptions({ theme: newTheme });
+    this.#monacoDiffEditorInstance?.updateOptions({
+      theme: newTheme
+    });
   }
 
   /**
-   * Specifies the value of the editor.
+   * Specifies the original value of the diff editor.
    */
   @Prop() readonly value: string;
   @Watch("value")
   valueChange(newValue: string) {
-    this.#monacoEditorInstance?.setValue(newValue);
+    this.#monacoDiffEditorInstance?.getModel()!.original.setValue(newValue);
   }
 
   /**
@@ -91,7 +106,7 @@ export class ChCodeEditor {
     }
 
     // Necessary to not combine the current scheme with the new scheme
-    this.#editorId = `ch-editor-${autoId++}`;
+    this.#editorId = `ch-diff-editor-${autoId++}`;
 
     if (newUri) {
       configureMonacoYaml(monaco, {
@@ -107,27 +122,32 @@ export class ChCodeEditor {
       });
     }
 
-    this.#monacoEditorInstance.setModel(
-      monaco.editor.createModel(
+    this.#monacoDiffEditorInstance.setModel({
+      original: monaco.editor.createModel(
         this.value,
         this.language,
         monaco.Uri.parse(`file:///${this.#editorId}.txt`)
+      ),
+      modified: monaco.editor.createModel(
+        this.modifiedValue,
+        this.language,
+        monaco.Uri.parse(`file:///${this.#editorId}-modified.txt`)
       )
-    );
+    });
   }
 
   connectedCallback(): void {
-    this.#editorId = `ch-editor-${autoId++}`;
+    this.#editorId = `ch-diff-editor-${autoId++}`;
   }
 
   componentDidLoad() {
     this.#configureYaml();
-    this.#setupNormalEditor();
+    this.#setupDiffEditor();
 
     this.#resizeObserver = new ResizeObserver(entries => {
       const absoluteContentEntry = entries[0].contentRect;
 
-      this.#monacoEditorInstance.layout({
+      this.#monacoDiffEditorInstance.layout({
         width: absoluteContentEntry.width,
         height: absoluteContentEntry.height
       });
@@ -146,8 +166,8 @@ export class ChCodeEditor {
    * @param options Set of options to be updated
    */
   @Method()
-  async updateOptions(options: CodeEditorOptions) {
-    this.#monacoEditorInstance?.updateOptions(options);
+  async updateOptions(options: CodeDiffEditorOptions) {
+    this.#monacoDiffEditorInstance?.updateOptions(options);
   }
 
   #getYamlSchemas = () => [
@@ -156,21 +176,37 @@ export class ChCodeEditor {
       fileMatch: [`**/${this.#editorId}.*`],
       // Then this schema will be downloaded from the internet and used.
       uri: this.yamlSchemaUri
+    },
+    {
+      // If YAML file is opened matching this glob
+      fileMatch: [`**/${this.#editorId}-modified.*`],
+      // Then this schema will be downloaded from the internet and used.
+      uri: this.yamlSchemaUri
     }
   ];
 
-  #setupNormalEditor() {
-    const editorModel = monaco.editor.createModel(
-      this.value,
-      this.language,
-      monaco.Uri.parse(`file:///${this.#editorId}.txt`)
+  #setupDiffEditor() {
+    this.#monacoDiffEditorInstance = monaco.editor.createDiffEditor(
+      this.#monacoRef,
+      {
+        ...this.options,
+        theme: this.options.theme ?? this.theme,
+        originalEditable: this.options.originalEditable ?? !this.readonly,
+        readOnly: this.options.readOnly ?? this.readonly
+      }
     );
 
-    this.#monacoEditorInstance = monaco.editor.create(this.#monacoRef, {
-      ...this.options,
-      theme: this.options.theme ?? this.theme,
-      readOnly: this.options.readOnly ?? this.readonly,
-      model: editorModel
+    this.#monacoDiffEditorInstance.setModel({
+      original: monaco.editor.createModel(
+        this.value,
+        this.language,
+        monaco.Uri.parse(`file:///${this.#editorId}.txt`)
+      ),
+      modified: monaco.editor.createModel(
+        this.modifiedValue,
+        this.language,
+        monaco.Uri.parse(`file:///${this.#editorId}-modified.txt`)
+      )
     });
   }
 
@@ -188,7 +224,7 @@ export class ChCodeEditor {
     return (
       <Host>
         <div
-          class="ch-code-editor-absolute-content"
+          class="ch-code-diff-editor-absolute-content"
           ref={el => (this.#absoluteContentRef = el)}
         >
           <div ref={el => (this.#monacoRef = el)}></div>

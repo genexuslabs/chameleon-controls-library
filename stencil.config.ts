@@ -7,9 +7,7 @@ export const config: Config = {
     {
       type: "dist",
       esmLoaderPath: "../loader",
-      copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" }
-      ]
+      copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
     },
     {
       type: "docs-readme"
@@ -18,7 +16,7 @@ export const config: Config = {
       type: "www",
       serviceWorker: null,
       copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" },
+        { src: "common/monaco/output/assets", dest: "assets" },
         { src: "showcase" }
       ]
     }
@@ -37,6 +35,9 @@ export const config: Config = {
     },
     {
       components: ["ch-combo-box"] // Make sure the ch-combo-box control is not bundled with other components
+    },
+    {
+      components: ["ch-dialog"] // Make sure the ch-dialog control is not bundled with other components
     },
     {
       components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components

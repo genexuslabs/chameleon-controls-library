@@ -31,7 +31,7 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-src/components/code-editor/monaco/output
+src/common/monaco/output
 
 # TypeScript v1 declaration files
 typings/

@@ -3,6 +3,16 @@
   padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
+.mercury .card {
+  display: grid;
+  box-shadow: 0px 0px 6px 0px #00000030;
+  border-radius: 8px;
+}
+
+.dark .mercury .card {
+  background-color: var(--mer-color__elevation--01);
+}
+
 .card-markup {
   position: relative;
 
@@ -121,7 +131,9 @@ legend {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
 
+.unanimo .tab-test-main-wrapper {
   ch-tab-render {
     gap: 8px;
 

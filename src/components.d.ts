@@ -11,6 +11,8 @@ import { ActionGroupModel } from "./components/action-group/types";
 import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 import { MarkdownCodeRender } from "./components/code/internal/types";
+import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
+import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
@@ -58,6 +60,8 @@ export { ActionGroupModel } from "./components/action-group/types";
 export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 export { MarkdownCodeRender } from "./components/code/internal/types";
+export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
+export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
@@ -492,41 +496,65 @@ export namespace Components {
          */
         "value": string;
     }
-    interface ChCodeEditor {
-        /**
-          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
-         */
-        "enableSplitViewResizing": boolean;
+    interface ChCodeDiffEditor {
         /**
           * Specifies the language of the auto created model in the editor.
          */
         "language": string;
         /**
-          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
-         */
-        "mode": "editor" | "diff-editor";
-        /**
-          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the modified value of the diff editor.
          */
         "modifiedValue": string;
         /**
-          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the editor options.
          */
-        "modifiedValueReadonly": boolean;
+        "options": CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
          */
-        "readonly"?: boolean;
-        /**
-          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
-         */
-        "renderSideBySide": boolean;
+        "readonly": boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme": string;
         /**
-          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeDiffEditorOptions) => Promise<void>;
+        /**
+          * Specifies the original value of the diff editor.
+         */
+        "value": string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri": string;
+    }
+    interface ChCodeEditor {
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the editor options.
+         */
+        "options": CodeEditorOptions;
+        /**
+          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
+         */
+        "readonly": boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme": string;
+        /**
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeEditorOptions) => Promise<void>;
+        /**
+          * Specifies the value of the editor.
          */
         "value": string;
         /**
@@ -3680,6 +3708,12 @@ declare global {
         prototype: HTMLChCodeElement;
         new (): HTMLChCodeElement;
     };
+    interface HTMLChCodeDiffEditorElement extends Components.ChCodeDiffEditor, HTMLStencilElement {
+    }
+    var HTMLChCodeDiffEditorElement: {
+        prototype: HTMLChCodeDiffEditorElement;
+        new (): HTMLChCodeDiffEditorElement;
+    };
     interface HTMLChCodeEditorElement extends Components.ChCodeEditor, HTMLStencilElement {
     }
     var HTMLChCodeEditorElement: {
@@ -5115,6 +5149,7 @@ declare global {
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-code": HTMLChCodeElement;
+        "ch-code-diff-editor": HTMLChCodeDiffEditorElement;
         "ch-code-editor": HTMLChCodeEditorElement;
         "ch-combo-box": HTMLChComboBoxElement;
         "ch-dialog": HTMLChDialogElement;
@@ -5649,41 +5684,55 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
-    interface ChCodeEditor {
-        /**
-          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
-         */
-        "enableSplitViewResizing"?: boolean;
+    interface ChCodeDiffEditor {
         /**
           * Specifies the language of the auto created model in the editor.
          */
         "language": string;
         /**
-          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
-         */
-        "mode"?: "editor" | "diff-editor";
-        /**
-          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the modified value of the diff editor.
          */
         "modifiedValue"?: string;
         /**
-          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the editor options.
          */
-        "modifiedValueReadonly"?: boolean;
+        "options"?: CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
          */
         "readonly"?: boolean;
-        /**
-          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
-         */
-        "renderSideBySide"?: boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme"?: string;
         /**
-          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+          * Specifies the original value of the diff editor.
+         */
+        "value"?: string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri"?: string;
+    }
+    interface ChCodeEditor {
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the editor options.
+         */
+        "options"?: CodeEditorOptions;
+        /**
+          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
+         */
+        "readonly"?: boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme"?: string;
+        /**
+          * Specifies the value of the editor.
          */
         "value"?: string;
         /**
@@ -8491,6 +8540,7 @@ declare namespace LocalJSX {
         "ch-barcode-scanner": ChBarcodeScanner;
         "ch-checkbox": ChCheckbox;
         "ch-code": ChCode;
+        "ch-code-diff-editor": ChCodeDiffEditor;
         "ch-code-editor": ChCodeEditor;
         "ch-combo-box": ChComboBox;
         "ch-dialog": ChDialog;
@@ -8612,6 +8662,7 @@ declare module "@stencil/core" {
              * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
              */
             "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
+            "ch-code-diff-editor": LocalJSX.ChCodeDiffEditor & JSXBase.HTMLAttributes<HTMLChCodeDiffEditorElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
             "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
             /**

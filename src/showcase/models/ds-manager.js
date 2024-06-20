@@ -48,6 +48,8 @@ export function setDesignSystemInBrowser(designSystem) {
 
     document.head.appendChild(styleSheetLink);
   }
+
+  document.body.classList = designSystem;
 }
 
 // Initialize the design system

@@ -41,18 +41,33 @@ export const config: Config = {
 
 ## Properties
 
-| Property                  | Attribute                    | Description                                                                                                                                                                                                                  | Type                        | Default     |
-| ------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ----------- |
-| `enableSplitViewResizing` | `enable-split-view-resizing` | Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.                                                                                                                 | `boolean`                   | `true`      |
-| `language` _(required)_   | `language`                   | Specifies the language of the auto created model in the editor.                                                                                                                                                              | `string`                    | `undefined` |
-| `mode`                    | `mode`                       | Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.                                                                                                                                 | `"diff-editor" \| "editor"` | `"editor"`  |
-| `modifiedValue`           | `modified-value`             | Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.                                                                                                                     | `string`                    | `undefined` |
-| `modifiedValueReadonly`   | `modified-value-readonly`    | Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.                                                                                               | `boolean`                   | `true`      |
-| `readonly`                | `readonly`                   | Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`. | `boolean`                   | `undefined` |
-| `renderSideBySide`        | `render-side-by-side`        | Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.                                                                                                                                | `boolean`                   | `true`      |
-| `theme`                   | `theme`                      | Specifies the theme to be used for rendering.                                                                                                                                                                                | `string`                    | `"vs"`      |
-| `value`                   | `value`                      | Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.                                                                                                          | `string`                    | `undefined` |
-| `yamlSchemaUri`           | `yaml-schema-uri`            | Specifies the schema URI for the YAML language.                                                                                                                                                                              | `string`                    | `""`        |
+| Property                | Attribute         | Description                                                                                                                                 | Type                | Default                                                                                                         |
+| ----------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `language` _(required)_ | `language`        | Specifies the language of the auto created model in the editor.                                                                             | `string`            | `undefined`                                                                                                     |
+| `options`               | --                | Specifies the editor options.                                                                                                               | `CodeEditorOptions` | `{     automaticLayout: true,     mouseWheelScrollSensitivity: 4,     mouseWheelZoom: true,     tabSize: 2   }` |
+| `readonly`              | `readonly`        | Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect. | `boolean`           | `false`                                                                                                         |
+| `theme`                 | `theme`           | Specifies the theme to be used for rendering.                                                                                               | `string`            | `"vs"`                                                                                                          |
+| `value`                 | `value`           | Specifies the value of the editor.                                                                                                          | `string`            | `undefined`                                                                                                     |
+| `yamlSchemaUri`         | `yaml-schema-uri` | Specifies the schema URI for the YAML language.                                                                                             | `string`            | `""`                                                                                                            |
+
+
+## Methods
+
+### `updateOptions(options: CodeEditorOptions) => Promise<void>`
+
+Update the editor's options after the editor has been created.
+
+#### Parameters
+
+| Name      | Type                | Description                  |
+| --------- | ------------------- | ---------------------------- |
+| `options` | `CodeEditorOptions` | Set of options to be updated |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
 
 
 ----------------------------------------------

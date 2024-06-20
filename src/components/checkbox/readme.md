@@ -59,12 +59,14 @@
 ### Used by
 
  - [ch-showcase](../../showcase/assets/components)
+ - [ch-test-flexible-layout](../test/test-flexible-layout)
  - [ch-tree-view-item](../tree-view/internal/tree-view-item)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-showcase --> ch-checkbox
+  ch-test-flexible-layout --> ch-checkbox
   ch-tree-view-item --> ch-checkbox
   style ch-checkbox fill:#f9f,stroke:#333,stroke-width:4px
 ```

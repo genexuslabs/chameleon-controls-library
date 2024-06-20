@@ -2,6 +2,10 @@
   display: contents;
 }
 
+::part(page) {
+  contain: size;
+}
+
 .droppable-area {
   // Reset popover's browser defaults
   width: auto;

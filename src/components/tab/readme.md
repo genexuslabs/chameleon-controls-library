@@ -80,6 +80,14 @@ Type: `Promise<void>`
 
 
 
+## CSS Custom Properties
+
+| Name                                           | Description                                                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `--ch-tab-close-button__background-image-size` | Specifies the image size of the close button. @default 100%                          |
+| `--ch-tab-close-button__image-size`            | Specifies the box size that contains an image for the close button. @default 0.875em |
+
+
 ## Dependencies
 
 ### Used by

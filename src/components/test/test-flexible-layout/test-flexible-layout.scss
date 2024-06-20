@@ -104,46 +104,11 @@ ch-test-flexible-layout {
   // }
 
   &::part(tab-list block) {
-    background-color: color-mix(
-      in srgb,
-      var(--colors-foundation-un-color__gray--300) 15%,
-      transparent
-    );
     overflow: auto;
-  }
-
-  &::part(button) {
-    background-color: color-mix(
-      in srgb,
-      var(--colors-foundation-un-color__gray--300) 20%,
-      transparent
-    );
-  }
-
-  &::part(button selected) {
-    background-color: color-mix(
-      in srgb,
-      var(--colors-foundation-un-color__gray--300) 50%,
-      transparent
-    );
-  }
-
-  &::part(tab-list inline) {
-    background-color: var(--colors-foundation-un-color__gray--300);
-    inline-size: 48px;
-    gap: 4px;
   }
 
   &::part(page-container) {
     overflow: auto;
-  }
-
-  &::part(droppable-area) {
-    background-color: color-mix(
-      in srgb,
-      var(--accents-un-accent__secondary--hover) 25%,
-      transparent
-    );
   }
 
   // - - - - - - - - - - - - - - - -

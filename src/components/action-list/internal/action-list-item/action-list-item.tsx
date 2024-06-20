@@ -28,7 +28,7 @@ const ITEM_ADDITIONAL_IMAGE_PART = "item__additional-item-image";
 @Component({
   tag: "ch-action-list-item",
   styleUrl: "action-list-item.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChActionListItem {
   #additionalItemListenerDictionary = {
@@ -242,6 +242,7 @@ export class ChActionListItem {
         <button
           key={additionalAction.id}
           aria-label={additionalAction.accessibleName}
+          disabled={this.disabled}
           class={{
             [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
             "show-on-mouse-hover":
@@ -339,7 +340,7 @@ export class ChActionListItem {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute(
       "exportparts",
-      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption,selected,not-selected"
+      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption,selected,not-selected,disabled"
     );
   }
 
@@ -357,11 +358,13 @@ export class ChActionListItem {
       <Host aria-selected={this.selected ? "true" : null}>
         <button
           class="action"
+          disabled={this.disabled}
           part={tokenMap({
             // eslint-disable-next-line camelcase
             item__action: true,
             selected: this.selected,
-            "not-selected": !this.selected
+            "not-selected": !this.selected,
+            disabled: this.disabled
           })}
           type="button"
         >

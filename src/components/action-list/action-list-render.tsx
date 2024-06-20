@@ -28,6 +28,7 @@ import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
+import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import { getActionListOrGroupItemFromEvent } from "./utils";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
@@ -65,6 +66,7 @@ const renderMapping: {
       disabled={itemModel.disabled}
       expandable={itemModel.expandable}
       expanded={itemModel.expanded}
+      selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
         actionRenderState.renderItem(item, actionRenderState)
@@ -464,7 +466,11 @@ export class ChActionListRender {
     itemInfo: ActionListItemActionable | ActionListItemGroup
   ) => {
     // Toggle the expanded/collapsed in the group on click
-    if (itemInfo.type === "group" && itemInfo.expandable) {
+    if (
+      itemInfo.type === "group" &&
+      itemInfo.expandable &&
+      !itemInfo.disabled
+    ) {
       itemInfo.expanded = !itemInfo.expanded;
       forceUpdate(this);
     }
@@ -640,6 +646,7 @@ export class ChActionListRender {
             ? this.#handleItemClick
             : this.#handleItemSelection
         }
+        onKeyDown={actionListKeyboardNavigation(this.el, this.#flattenedModel)}
       >
         {this.model?.map(item => this.renderItem(item, this))}
       </Host>

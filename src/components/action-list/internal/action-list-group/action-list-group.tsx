@@ -4,9 +4,11 @@ import {
   Event,
   EventEmitter,
   Host,
+  Method,
   Prop,
   h
 } from "@stencil/core";
+import { tokenMap } from "../../../../common/utils";
 
 const EXPANDABLE_ID = "expandable";
 
@@ -16,6 +18,8 @@ const EXPANDABLE_ID = "expandable";
   shadow: { delegatesFocus: true }
 })
 export class ChActionListGroup {
+  #buttonRef: HTMLButtonElement;
+
   @Element() el: HTMLChActionListGroupElement;
 
   /**
@@ -100,6 +104,11 @@ export class ChActionListGroup {
   // }
 
   /**
+   * This attribute lets you specify if the item is selected
+   */
+  @Prop({ mutable: true, reflect: true }) selected = false;
+
+  /**
    * `true` to show the downloading spinner when lazy loading the sub items of
    * the control.
    */
@@ -126,23 +135,25 @@ export class ChActionListGroup {
    */
   @Event() loadLazyContent: EventEmitter<string>;
 
-  // /**
-  //  * Fired when the item is asking to modify its caption.
-  //  */
-  // @Event() modifyCaption: EventEmitter<TreeViewItemNewCaption>;
-
-  // /**
-  //  * Fired when the selected state is updated by user interaction on the
-  //  * control.
-  //  */
-  // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
+  /**
+   * Set the focus in the control if `expandable === true`.
+   */
+  @Method()
+  async setFocus() {
+    if (this.expandable && this.#buttonRef) {
+      this.#buttonRef.focus();
+    }
+  }
 
   #getExpandedValue = (): boolean =>
-    this.expandable ? this.expanded ?? true : true;
+    this.expandable ? this.expanded ?? false : true;
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
-    this.el.setAttribute("exportparts", "item__action");
+    this.el.setAttribute(
+      "exportparts",
+      "item__action,selected,not-selected,disabled,group,expandable"
+    );
   }
 
   render() {
@@ -157,8 +168,15 @@ export class ChActionListGroup {
             aria-expanded={hasContent ? expanded.toString() : null}
             class={{ action: true, "action--collapsed": !expanded }}
             disabled={this.disabled}
-            part="item__action"
+            part={tokenMap({
+              // eslint-disable-next-line camelcase
+              "item__action group": true,
+              selected: this.selected,
+              "not-selected": !this.selected,
+              disabled: this.disabled
+            })}
             type="button"
+            ref={el => (this.#buttonRef = el)}
           >
             {this.caption}
           </button>
@@ -167,7 +185,7 @@ export class ChActionListGroup {
             aria-controls={hasContent ? EXPANDABLE_ID : null}
             aria-expanded={hasContent ? expanded.toString() : null}
             class="action"
-            part="item__action"
+            part="group"
           >
             {this.caption}
           </span>
@@ -182,6 +200,7 @@ export class ChActionListGroup {
               "expandable--collapsed": !expanded,
               "expandable--lazy-loaded": !this.downloading
             }}
+            part="expandable"
             id={EXPANDABLE_ID}
           >
             <slot />

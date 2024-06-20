@@ -13,7 +13,7 @@ const EXPANDABLE_ID = "expandable";
 @Component({
   tag: "ch-action-list-group",
   styleUrl: "action-list-group.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChActionListGroup {
   @Element() el: HTMLChActionListGroupElement;
@@ -137,8 +137,8 @@ export class ChActionListGroup {
   //  */
   // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
 
-  #getExpandedValue = () =>
-    this.expandable ? (this.expanded ?? true).toString() : "true";
+  #getExpandedValue = (): boolean =>
+    this.expandable ? this.expanded ?? true : true;
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
@@ -150,12 +150,13 @@ export class ChActionListGroup {
     const expanded = hasContent && this.#getExpandedValue();
 
     return (
-      <Host role="listitem">
+      <Host>
         {this.expandable ? (
           <button
             aria-controls={hasContent ? EXPANDABLE_ID : null}
-            aria-expanded={hasContent ? expanded : null}
-            class="action"
+            aria-expanded={hasContent ? expanded.toString() : null}
+            class={{ action: true, "action--collapsed": !expanded }}
+            disabled={this.disabled}
             part="item__action"
             type="button"
           >
@@ -164,7 +165,7 @@ export class ChActionListGroup {
         ) : (
           <span
             aria-controls={hasContent ? EXPANDABLE_ID : null}
-            aria-expanded={hasContent ? expanded : null}
+            aria-expanded={hasContent ? expanded.toString() : null}
             class="action"
             part="item__action"
           >

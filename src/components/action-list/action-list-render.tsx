@@ -28,7 +28,7 @@ import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
-import { getActionListItemFromClickEvent } from "./utilts";
+import { getActionListOrGroupItemFromEvent } from "./utils";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -58,7 +58,14 @@ const renderMapping: {
     ></ch-action-list-item>
   ),
   group: (itemModel, actionRenderState) => (
-    <ch-action-list-group key={itemModel.id} caption={itemModel.caption}>
+    <ch-action-list-group
+      key={itemModel.id}
+      id={itemModel.id}
+      caption={itemModel.caption}
+      disabled={itemModel.disabled}
+      expandable={itemModel.expandable}
+      expanded={itemModel.expanded}
+    >
       {itemModel.items?.map(item =>
         actionRenderState.renderItem(item, actionRenderState)
       )}
@@ -364,8 +371,10 @@ export class ChActionListRender {
     return treeViewItemsInfo;
   };
 
-  #getActionableItemInfo = (itemId: string) =>
-    this.#flattenedModel.get(itemId).item as ActionListItemActionable;
+  #getItemOrGroupInfo = (itemId: string) =>
+    this.#flattenedModel.get(itemId).item as
+      | ActionListItemActionable
+      | ActionListItemGroup;
 
   @Listen("fixedChange")
   onFixedChange(
@@ -417,7 +426,7 @@ export class ChActionListRender {
       for (let index = 0; index < lastItemIndex; index++) {
         const itemId = selectedItemsArray[index];
 
-        this.#getActionableItemInfo(itemId).selected = false;
+        this.#getItemOrGroupInfo(itemId).selected = false;
       }
 
       // Create a new Set with only the last item
@@ -432,7 +441,7 @@ export class ChActionListRender {
 
   #removeAllSelectedItems = () => {
     this.#selectedItems.forEach(selectedItemId => {
-      const selectedItemInfo = this.#getActionableItemInfo(selectedItemId);
+      const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
       selectedItemInfo.selected = false;
     });
 
@@ -440,23 +449,35 @@ export class ChActionListRender {
   };
 
   #handleItemClick = (event: PointerEvent) => {
-    const actionListItem = getActionListItemFromClickEvent(event);
+    const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItem) {
+    if (!actionListItemOrGroup) {
       return;
     }
+    const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
+    this.#checkIfMustExpandCollapseGroup(itemInfo);
 
-    this.itemClick.emit(actionListItem.id);
+    this.itemClick.emit(actionListItemOrGroup.id);
+  };
+
+  #checkIfMustExpandCollapseGroup = (
+    itemInfo: ActionListItemActionable | ActionListItemGroup
+  ) => {
+    // Toggle the expanded/collapsed in the group on click
+    if (itemInfo.type === "group" && itemInfo.expandable) {
+      itemInfo.expanded = !itemInfo.expanded;
+      forceUpdate(this);
+    }
   };
 
   #handleItemSelection = (event: PointerEvent) => {
-    const actionListItem = getActionListItemFromClickEvent(event);
+    const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
 
-    if (!actionListItem) {
+    if (!actionListItemOrGroup) {
       return;
     }
-    const itemId = actionListItem.id;
-    const itemInfo = this.#getActionableItemInfo(itemId);
+    const itemId = actionListItemOrGroup.id;
+    const itemInfo = this.#getItemOrGroupInfo(itemId);
 
     const ctrlKeyIsPressed = mouseEventModifierKey(event);
     const itemWasSelected = this.#selectedItems.has(itemId);
@@ -464,6 +485,10 @@ export class ChActionListRender {
 
     // - - - - - - - - - - Single selection - - - - - - - - - -
     if (singleSelectionMode) {
+      if (!ctrlKeyIsPressed) {
+        this.#checkIfMustExpandCollapseGroup(itemInfo);
+      }
+
       // Nothing to update in the UI
       if (itemWasSelected && !ctrlKeyIsPressed) {
         return;
@@ -476,7 +501,7 @@ export class ChActionListRender {
       if (previousSelectedItemId) {
         this.#selectedItems.clear();
 
-        const previousSelectedItemInfo = this.#getActionableItemInfo(
+        const previousSelectedItemInfo = this.#getItemOrGroupInfo(
           previousSelectedItemId
         );
         previousSelectedItemInfo.selected = false;
@@ -507,6 +532,8 @@ export class ChActionListRender {
 
       itemInfo.selected = !itemWasSelected;
     } else {
+      this.#checkIfMustExpandCollapseGroup(itemInfo);
+
       // Remove the selection from all items
       this.#removeAllSelectedItems();
 

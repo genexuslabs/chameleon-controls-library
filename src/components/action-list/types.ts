@@ -133,6 +133,7 @@ export type ActionListItemAdditionalItemActionType =
 export type ActionListItemGroup = {
   id: string;
   caption: string;
+  disabled?: boolean;
   expandable?: boolean;
   expanded?: boolean;
 
@@ -144,6 +145,7 @@ export type ActionListItemGroup = {
    */
   order?: number;
   part?: string;
+  selected?: boolean;
   type: ActionListItemTypeGroup;
 };
 

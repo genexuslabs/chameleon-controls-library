@@ -28,7 +28,7 @@ export const showcaseStories = {
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
-  "tree-view-in-development": treeViewShowcaseStory
+  "tree-view": treeViewShowcaseStory
 } as const;
 
 export const showcaseCustomStories = {

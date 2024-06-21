@@ -165,7 +165,7 @@ legend {
   gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
-ch-action-list-render {
+/* ch-action-list-render {
   gap: 4px;
 
   &::part(item__caption) {
@@ -175,7 +175,23 @@ ch-action-list-render {
   &::part(item__action) {
     padding-inline: 8px;
     padding-block: 4px;
+  }
+
+  &::part(item__action group) {
     border: 1px solid;
+  }
+
+  &::part(expandable) {
+    padding-inline-start: 15px;
+  }
+
+  &::part(item__action):focus-visible {
+    outline: 2px solid #be6c6c;
+    outline-offset: -2px;
+  }
+
+  &::part(item__action disabled) {
+    color: gray;
   }
 
   &::part(item__action selected) {
@@ -191,7 +207,7 @@ ch-action-list-render {
   &::part(hyperlink-notification) {
     text-decoration: underline;
   }
-}
+} */
 
 ch-code > pre > code {
   contain: size;
@@ -215,3 +231,60 @@ ch-showcase textarea.form-input {
 .combo-box::part(item):hover {
   background-color: var(--accents-un-accent__primary-dim--hover);
 } */
+
+.list-box-secondary {
+  --ch-action-list-group__expandable-button-size: var(--spacing-un-spacing--l);
+  padding: var(--spacing-un-spacing--xs);
+
+  font-size: 14px;
+  line-height: 18px;
+  letter-spacing: 0.2px;
+
+  &::part(item__action),
+  &::part(group__action),
+  &::part(group__caption) {
+    border-radius: 4px;
+    padding-block: var(--spacing-un-spacing--s);
+    padding-inline: var(--spacing-un-spacing--m);
+  }
+
+  &::part(item__action):focus-visible,
+  &::part(group__action):focus-visible {
+    outline: 1px solid var(--accents-un-accent__secondary--active);
+    outline-offset: -1px;
+  }
+
+  &::part(item__action nested-expandable) {
+    padding-inline-start: calc(
+      var(--spacing-un-spacing--l) + var(--spacing-un-spacing--s) +
+        var(--spacing-un-spacing--m)
+    );
+  }
+
+  &::part(group__action),
+  &::part(group__caption) {
+    font-weight: 600;
+    gap: var(--spacing-un-spacing--s);
+  }
+
+  &::part(item__action not-selected):hover,
+  &::part(group__action not-selected):hover {
+    color: var(--text-un-text__primary--hover);
+  }
+
+  &::part(item__action selected),
+  &::part(group__action selected) {
+    background-color: var(--accents-un-accent__primary-dim--hover);
+  }
+
+  &::part(item__action disabled),
+  &::part(group__action disabled),
+  &::part(group__caption disabled) {
+    color: var(--text-un-text__disabled);
+  }
+
+  &::part(separator) {
+    margin-block: var(--spacing-un-spacing--s);
+    background-color: var(--accents-un-accent__secondary--hover);
+  }
+}

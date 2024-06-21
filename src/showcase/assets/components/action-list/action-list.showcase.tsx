@@ -8,6 +8,7 @@ import {
   GxEAINotifications,
   GxEAIRecentChats,
   agentTickets,
+  keyboardNavigation,
   panelToolbox,
   recentKBs
 } from "./models";
@@ -16,7 +17,7 @@ const state: Partial<Mutable<ChActionListRender>> = {};
 
 const render = () => (
   <ch-action-list-render
-    class="action-list-secondary"
+    class="list-box-secondary list-box"
     checkbox={state.checkbox}
     checked={state.checked}
     selection={state.selection}
@@ -42,9 +43,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Recent KBs", value: recentKBs },
           { caption: "Panel Toolbox", value: panelToolbox },
           { caption: "GX EAI recent chats", value: GxEAIRecentChats },
-          { caption: "GX EAI notifications", value: GxEAINotifications }
+          { caption: "GX EAI notifications", value: GxEAINotifications },
+          { caption: "Keyboard Navigation", value: keyboardNavigation }
         ],
-        value: GxEAIRecentChats
+        value: keyboardNavigation
       }
     ]
   },

@@ -17,13 +17,20 @@ import {
 } from "../../types";
 import { renderImg } from "../../../../common/renders";
 import {
+  ACTION_LIST_ITEM_EXPORT_PARTS,
+  ACTION_LIST_ITEM_PARTS_DICTIONARY,
   imageTypeDictionary,
   startPseudoImageTypeDictionary
 } from "../../../../common/reserved-names";
 import { ActionListFixedChangeEventDetail } from "./types";
 import { tokenMap } from "../../../../common/utils";
 
-const ITEM_ADDITIONAL_IMAGE_PART = "item__additional-item-image";
+const ACTION_TYPE_PARTS = {
+  fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
+  modify: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_MODIFY,
+  remove: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_REMOVE,
+  custom: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_CUSTOM
+} as const;
 
 @Component({
   tag: "ch-action-list-item",
@@ -119,20 +126,6 @@ export class ChActionListItem {
   @Prop() readonly fixed?: boolean = false;
 
   /**
-   * If the item has a sub-tree, this attribute determines if the subtree is
-   * displayed.
-   */
-  @Prop({ mutable: true }) expanded = false;
-  // @Watch("expanded")
-  // expandedChanged(isExpanded: boolean) {
-  //   // Wait until all properties are updated before lazy loading. Otherwise, the
-  //   // lazyLoad property could be updated just after the executing of the function
-  //   setTimeout(() => {
-  //     this.#lazyLoadItems(isExpanded);
-  //   });
-  // }
-
-  /**
    * `true` if the checkbox's value is indeterminate.
    */
   @Prop({ mutable: true }) indeterminate = false;
@@ -142,6 +135,17 @@ export class ChActionListItem {
    * when dragging the item.
    */
   @Prop() readonly metadata: string;
+
+  /**
+   * Specifies if the item is inside of a ch-action-list-group control.
+   */
+  @Prop() readonly nested: boolean = false;
+
+  /**
+   * Specifies if the item is inside of a ch-action-list-group control that
+   * is expandable.
+   */
+  @Prop() readonly nestedExpandable: boolean = false;
 
   /**
    * Specifies a set of parts to use in every DOM element of the control.
@@ -225,8 +229,8 @@ export class ChActionListItem {
       renderImg(
         "img",
         item.part
-          ? `${ITEM_ADDITIONAL_IMAGE_PART} ${item.part}`
-          : ITEM_ADDITIONAL_IMAGE_PART,
+          ? `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE} ${item.part}`
+          : `${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM} ${ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE}`,
         item.imageSrc,
         item.imageType
       );
@@ -253,10 +257,14 @@ export class ChActionListItem {
             "not-fixed": actionTypeIsFix && !this.fixed
           }}
           part={tokenMap({
-            "item__additional-item-action": true,
-            [action.type]: true,
-            fixed: actionTypeIsFix && this.fixed,
-            "not-fixed": actionTypeIsFix && !this.fixed,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ACTION]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [ACTION_TYPE_PARTS[action.type] satisfies string]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.FIXED]:
+              actionTypeIsFix && this.fixed,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_FIXED]:
+              actionTypeIsFix && !this.fixed,
             [item.part]: !!item.part
           })}
           style={
@@ -283,7 +291,8 @@ export class ChActionListItem {
           key={additionalAction.id ?? null}
           class={pseudoImageStartClass ?? null}
           part={tokenMap({
-            "item__additional-item-text": true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_TEXT]: true,
             [item.part]: !!item.part
           })}
           style={
@@ -305,7 +314,8 @@ export class ChActionListItem {
           aria-hidden="true"
           class={imageTypeDictionary[item.imageType ?? "background"]}
           part={tokenMap({
-            [ITEM_ADDITIONAL_IMAGE_PART]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE]: true,
             [item.part]: !!item.part
           })}
           style={{ "--ch-img": `url(${item.imageSrc})` }}
@@ -338,10 +348,7 @@ export class ChActionListItem {
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
-    this.el.setAttribute(
-      "exportparts",
-      "item__action,item__additional-item-action,fix,modify,remove,custom,fixed,not-fixed,item__caption,selected,not-selected,disabled"
-    );
+    this.el.setAttribute("exportparts", ACTION_LIST_ITEM_EXPORT_PARTS);
   }
 
   render() {
@@ -360,11 +367,13 @@ export class ChActionListItem {
           class="action"
           disabled={this.disabled}
           part={tokenMap({
-            // eslint-disable-next-line camelcase
-            item__action: true,
-            selected: this.selected,
-            "not-selected": !this.selected,
-            disabled: this.disabled
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED]: this.nested,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]:
+              this.nestedExpandable,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
           })}
           type="button"
         >
@@ -436,7 +445,11 @@ export class ChActionListItem {
             class="align-container inline-caption"
             part="item__inline-caption"
           >
-            {this.caption && <span part="item__caption">{this.caption}</span>}
+            {this.caption && (
+              <span part={ACTION_LIST_ITEM_PARTS_DICTIONARY.CAPTION}>
+                {this.caption}
+              </span>
+            )}
 
             {inlineCaption && [
               inlineCaption.start && (

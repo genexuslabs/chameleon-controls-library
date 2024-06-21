@@ -40,10 +40,19 @@ const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const renderMapping: {
   [key in ActionListItemType]: (
     itemModel: ActionListItemModelMap[key],
-    actionRenderState: ChActionListRender
+    actionRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
 } = {
-  actionable: (itemModel, actionListRenderState) => (
+  actionable: (
+    itemModel,
+    actionListRenderState,
+    disabled: boolean,
+    nested = false,
+    nestedExpandable = false
+  ) => (
     <ch-action-list-item
       key={itemModel.id}
       id={itemModel.id}
@@ -51,10 +60,12 @@ const renderMapping: {
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
       checked={itemModel.checked ?? actionListRenderState.checked}
-      disabled={itemModel.disabled}
+      disabled={disabled === true ? true : itemModel.disabled}
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
       metadata={itemModel.metadata}
+      nested={nested}
+      nestedExpandable={nestedExpandable}
       selected={itemModel.selected}
     ></ch-action-list-item>
   ),
@@ -69,7 +80,13 @@ const renderMapping: {
       selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
-        actionRenderState.renderItem(item, actionRenderState)
+        actionRenderState.renderItem(
+          item,
+          actionRenderState,
+          itemModel.disabled,
+          true,
+          itemModel.expandable
+        )
       )}
     </ch-action-list-group>
   ),
@@ -85,12 +102,23 @@ const renderMapping: {
 
 const defaultRenderItem = (
   itemModel: ActionListItemModel,
-  actionListRenderState: ChActionListRender
+  actionListRenderState: ChActionListRender,
+  disabled?: boolean,
+  nested?: boolean,
+  nestedExpandable?: boolean
 ) =>
-  renderMapping[itemModel.type](
-    itemModel as any, // THIS IS A WA
-    actionListRenderState
-  );
+  itemModel.type === "actionable"
+    ? renderMapping.actionable(
+        itemModel as any, // THIS IS A WA
+        actionListRenderState,
+        disabled,
+        nested,
+        nestedExpandable
+      )
+    : renderMapping[itemModel.type](
+        itemModel as any, // THIS IS A WA
+        actionListRenderState
+      );
 
 const FIRST_ITEM_GREATER_THAN_SECOND = -1;
 const SECOND_ITEM_GREATER_THAN_FIRST = 0;
@@ -292,7 +320,10 @@ export class ChActionListRender {
    */
   @Prop() readonly renderItem: (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any = defaultRenderItem;
 
   /**
@@ -373,11 +404,6 @@ export class ChActionListRender {
     return treeViewItemsInfo;
   };
 
-  #getItemOrGroupInfo = (itemId: string) =>
-    this.#flattenedModel.get(itemId).item as
-      | ActionListItemActionable
-      | ActionListItemGroup;
-
   @Listen("fixedChange")
   onFixedChange(
     event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>
@@ -416,6 +442,11 @@ export class ChActionListRender {
       }
     );
   }
+
+  #getItemOrGroupInfo = (itemId: string) =>
+    this.#flattenedModel.get(itemId).item as
+      | ActionListItemActionable
+      | ActionListItemGroup;
 
   #removeAllSelectedItemsExceptForTheLast = (
     currentSelectedItems: Set<string>
@@ -648,7 +679,9 @@ export class ChActionListRender {
         }
         onKeyDown={actionListKeyboardNavigation(this.el, this.#flattenedModel)}
       >
-        {this.model?.map(item => this.renderItem(item, this))}
+        {this.model?.map(item =>
+          this.renderItem(item, this, false, false, false)
+        )}
       </Host>
     );
   }

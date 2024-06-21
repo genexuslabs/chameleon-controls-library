@@ -9,6 +9,10 @@ import {
   h
 } from "@stencil/core";
 import { tokenMap } from "../../../../common/utils";
+import {
+  ACTION_LIST_GROUP_EXPORT_PARTS,
+  ACTION_LIST_GROUP_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 
 const EXPANDABLE_ID = "expandable";
 
@@ -41,23 +45,6 @@ export class ChActionListGroup {
   @Prop({ mutable: true }) downloading = false;
 
   /**
-   * This attribute lets you specify if the edit operation is enabled in the
-   * control. If `true`, the control can edit its caption in place.
-   */
-  @Prop() readonly editable: boolean;
-
-  // /**
-  //  * Specifies what kind of expandable button is displayed.
-  //  * Only works if `leaf === false`.
-  //  *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-  //  *     the items of the control.
-  //  *  - `"decorative"`: Only a decorative icon is rendered to display the state
-  //  *     of the item.
-  //  */
-  // @Prop() readonly expandableButton: "action" | "decorative" | "no" =
-  //   "decorative";
-
-  /**
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
@@ -67,7 +54,7 @@ export class ChActionListGroup {
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
-  @Prop({ mutable: true }) expanded?: boolean;
+  @Prop() readonly expanded?: boolean;
   // @Watch("expanded")
   // expandedChanged(isExpanded: boolean) {
   //   // Wait until all properties are updated before lazy loading. Otherwise, the
@@ -82,11 +69,6 @@ export class ChActionListGroup {
    * control.
    */
   @Prop({ mutable: true }) lazyLoad = false;
-
-  /**
-   * `true` if the checkbox's value is indeterminate.
-   */
-  @Prop({ mutable: true }) indeterminate = false;
 
   /**
    * This attribute represents additional info for the control that is included
@@ -106,24 +88,13 @@ export class ChActionListGroup {
   /**
    * This attribute lets you specify if the item is selected
    */
-  @Prop({ mutable: true, reflect: true }) selected = false;
+  @Prop() readonly selected: boolean = false;
 
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
    * the control.
    */
   @Prop() readonly showDownloadingSpinner: boolean = true;
-
-  // /**
-  //  * Fired when the checkbox value of the control is changed.
-  //  */
-  // @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
-
-  // /**
-  //  * Fired when the checkbox value of the control is changed. This event only
-  //  * applies when the control has `toggleCheckboxes = true`
-  //  */
-  // @Event() checkboxToggleChange: EventEmitter<TreeViewItemCheckedInfo>;
 
   // /**
   //  * Fired when the item is being dragged.
@@ -150,10 +121,7 @@ export class ChActionListGroup {
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
-    this.el.setAttribute(
-      "exportparts",
-      "item__action,selected,not-selected,disabled,group,expandable"
-    );
+    this.el.setAttribute("exportparts", ACTION_LIST_GROUP_EXPORT_PARTS);
   }
 
   render() {
@@ -169,11 +137,10 @@ export class ChActionListGroup {
             class={{ action: true, "action--collapsed": !expanded }}
             disabled={this.disabled}
             part={tokenMap({
-              // eslint-disable-next-line camelcase
-              "item__action group": true,
-              selected: this.selected,
-              "not-selected": !this.selected,
-              disabled: this.disabled
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.ACTION]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.SELECTED]: this.selected,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
             })}
             type="button"
             ref={el => (this.#buttonRef = el)}
@@ -185,7 +152,10 @@ export class ChActionListGroup {
             aria-controls={hasContent ? EXPANDABLE_ID : null}
             aria-expanded={hasContent ? expanded.toString() : null}
             class="action"
-            part="group"
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.CAPTION]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
           >
             {this.caption}
           </span>
@@ -200,7 +170,13 @@ export class ChActionListGroup {
               "expandable--collapsed": !expanded,
               "expandable--lazy-loaded": !this.downloading
             }}
-            part="expandable"
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDABLE]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDED]: expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.COLLAPSED]: !expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.LAZY_LOADED]:
+                !this.downloading
+            })}
             id={EXPANDABLE_ID}
           >
             <slot />

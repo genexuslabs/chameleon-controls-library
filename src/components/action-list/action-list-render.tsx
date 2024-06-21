@@ -66,6 +66,7 @@ const renderMapping: {
       metadata={itemModel.metadata}
       nested={nested}
       nestedExpandable={nestedExpandable}
+      selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
     ></ch-action-list-item>
   ),
@@ -338,10 +339,10 @@ export class ChActionListRender {
   /**
    * Specifies the type of selection implemented by the control.
    */
-  @Prop() readonly selection: "single" | "multiple" | "disabled" = "disabled";
+  @Prop() readonly selection: "single" | "multiple" | "none" = "none";
   @Watch("selection")
-  selectionChanged(newValue: "single" | "multiple" | "disabled") {
-    if (newValue === "disabled") {
+  selectionChanged(newValue: "single" | "multiple" | "none") {
+    if (newValue === "none") {
       this.#removeAllSelectedItems();
       this.#selectedItems = undefined;
     }
@@ -370,12 +371,12 @@ export class ChActionListRender {
   // >;
 
   /**
-   * Fired when the selected items change and `selection !== "disabled"`
+   * Fired when the selected items change and `selection !== "none"`
    */
   @Event() selectedItemsChange: EventEmitter<ActionListItemModelExtended[]>;
 
   /**
-   * Fired when an item is clicked and `selection === "disabled"`.
+   * Fired when an item is clicked and `selection === "none"`.
    */
   @Event() itemClick: EventEmitter<string>;
 
@@ -673,7 +674,7 @@ export class ChActionListRender {
       <Host
         aria-multiselectable={this.selection === "multiple" ? "true" : null}
         onClick={
-          this.selection === "disabled"
+          this.selection === "none"
             ? this.#handleItemClick
             : this.#handleItemSelection
         }

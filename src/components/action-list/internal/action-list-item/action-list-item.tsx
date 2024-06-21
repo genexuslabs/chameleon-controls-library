@@ -157,9 +157,14 @@ export class ChActionListItem {
   // }
 
   /**
+   * Specifies if the item can be selected.
+   */
+  @Prop() readonly selectable: boolean = false;
+
+  /**
    * This attribute lets you specify if the item is selected
    */
-  @Prop({ mutable: true, reflect: true }) selected = false;
+  @Prop() readonly selected: boolean = false;
 
   /**
    * `true` to show the downloading spinner when lazy loading the sub items of
@@ -362,7 +367,7 @@ export class ChActionListItem {
     const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
 
     return (
-      <Host aria-selected={this.selected ? "true" : null}>
+      <Host aria-selected={this.selectable && this.selected ? "true" : null}>
         <button
           class="action"
           disabled={this.disabled}
@@ -371,8 +376,13 @@ export class ChActionListItem {
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED]: this.nested,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.NESTED_EXPANDABLE]:
               this.nestedExpandable,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
-            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTABLE]: this.selectable,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTABLE]:
+              !this.selectable,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+              this.selectable && this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+              this.selectable && !this.selected,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
           })}
           type="button"

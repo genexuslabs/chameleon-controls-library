@@ -222,10 +222,6 @@ export namespace Components {
          */
         "downloading": boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
-         */
-        "editable": boolean;
-        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expandable"?: boolean;
@@ -233,10 +229,6 @@ export namespace Components {
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded"?: boolean;
-        /**
-          * `true` if the checkbox's value is indeterminate.
-         */
-        "indeterminate": boolean;
         /**
           * Determine if the items are lazy loaded when opening the first time the control.
          */
@@ -249,6 +241,14 @@ export namespace Components {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected": boolean;
+        /**
+          * Set the focus in the control if `expandable === true`.
+         */
+        "setFocus": () => Promise<void>;
         /**
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
@@ -288,10 +288,6 @@ export namespace Components {
           * Set this attribute when the item is in edit mode
          */
         "editing": boolean;
-        /**
-          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
-         */
-        "expanded": boolean;
         "fixed"?: boolean;
         /**
           * `true` if the checkbox's value is indeterminate.
@@ -302,9 +298,21 @@ export namespace Components {
          */
         "metadata": string;
         /**
+          * Specifies if the item is inside of a ch-action-list-group control.
+         */
+        "nested": boolean;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control that is expandable.
+         */
+        "nestedExpandable": boolean;
+        /**
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * Specifies if the item can be selected.
+         */
+        "selectable": boolean;
         /**
           * This attribute lets you specify if the item is selected
          */
@@ -346,12 +354,15 @@ export namespace Components {
          */
         "renderItem": (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
         /**
           * Specifies the type of selection implemented by the control.
          */
-        "selection": "single" | "multiple" | "disabled";
+        "selection": "single" | "multiple" | "none";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
@@ -510,7 +521,7 @@ export namespace Components {
          */
         "options": CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
+          * Specifies if the editor should be readonly. If the `readOnly` or `originalEditable` property is specified in the `options` property, this property has no effect.
          */
         "readonly": boolean;
         /**
@@ -541,7 +552,7 @@ export namespace Components {
          */
         "options": CodeEditorOptions;
         /**
-          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
+          * Specifies if the editor should be readonly. If the `readOnly` property is specified in the `options` property, this property has no effect.
          */
         "readonly": boolean;
         /**
@@ -5374,10 +5385,6 @@ declare namespace LocalJSX {
          */
         "downloading"?: boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
-         */
-        "editable"?: boolean;
-        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expandable"?: boolean;
@@ -5385,10 +5392,6 @@ declare namespace LocalJSX {
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded"?: boolean;
-        /**
-          * `true` if the checkbox's value is indeterminate.
-         */
-        "indeterminate"?: boolean;
         /**
           * Determine if the items are lazy loaded when opening the first time the control.
          */
@@ -5405,6 +5408,10 @@ declare namespace LocalJSX {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected"?: boolean;
         /**
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
@@ -5444,10 +5451,6 @@ declare namespace LocalJSX {
           * Set this attribute when the item is in edit mode
          */
         "editing"?: boolean;
-        /**
-          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
-         */
-        "expanded"?: boolean;
         "fixed"?: boolean;
         /**
           * `true` if the checkbox's value is indeterminate.
@@ -5457,6 +5460,14 @@ declare namespace LocalJSX {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata"?: string;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control.
+         */
+        "nested"?: boolean;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control that is expandable.
+         */
+        "nestedExpandable"?: boolean;
         /**
           * Fired when the fixed value of the control is changed.
          */
@@ -5473,6 +5484,10 @@ declare namespace LocalJSX {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * Specifies if the item can be selected.
+         */
+        "selectable"?: boolean;
         /**
           * This attribute lets you specify if the item is selected
          */
@@ -5500,11 +5515,11 @@ declare namespace LocalJSX {
          */
         "model"?: ActionListModel;
         /**
-          * Fired when an item is clicked and `selection === "disabled"`.
+          * Fired when an item is clicked and `selection === "none"`.
          */
         "onItemClick"?: (event: ChActionListRenderCustomEvent<string>) => void;
         /**
-          * Fired when the selected items change and `selection !== "disabled"`
+          * Fired when the selected items change and `selection !== "none"`
          */
         "onSelectedItemsChange"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended[]>) => void;
         /**
@@ -5518,12 +5533,15 @@ declare namespace LocalJSX {
          */
         "renderItem"?: (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
         /**
           * Specifies the type of selection implemented by the control.
          */
-        "selection"?: "single" | "multiple" | "disabled";
+        "selection"?: "single" | "multiple" | "none";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
@@ -5698,7 +5716,7 @@ declare namespace LocalJSX {
          */
         "options"?: CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. If the ´readOnly´ or ´originalEditable´ property is specified in the ´options´ property, this property has no effect.
+          * Specifies if the editor should be readonly. If the `readOnly` or `originalEditable` property is specified in the `options` property, this property has no effect.
          */
         "readonly"?: boolean;
         /**
@@ -5724,7 +5742,7 @@ declare namespace LocalJSX {
          */
         "options"?: CodeEditorOptions;
         /**
-          * Specifies if the editor should be readonly. If the ´readOnly´ property is specified in the ´options´ property, this property has no effect.
+          * Specifies if the editor should be readonly. If the `readOnly` property is specified in the `options` property, this property has no effect.
          */
         "readonly"?: boolean;
         /**

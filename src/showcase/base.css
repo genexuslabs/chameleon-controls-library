@@ -234,6 +234,7 @@ ch-showcase textarea.form-input {
 
 .list-box-secondary {
   --ch-action-list-group__expandable-button-size: var(--spacing-un-spacing--l);
+  --ch-action-list-group__expandable-button-image-size: calc(100% - 4px);
   padding: var(--spacing-un-spacing--xs);
 
   font-size: 14px;
@@ -267,11 +268,13 @@ ch-showcase textarea.form-input {
     gap: var(--spacing-un-spacing--s);
   }
 
-  &::part(item__action not-selected):hover,
-  &::part(group__action not-selected):hover {
+  &::part(item__action not-selectable):hover,
+  &::part(group__action not-selectable):hover {
     color: var(--text-un-text__primary--hover);
   }
 
+  &::part(item__action selectable):hover,
+  &::part(group__action selectable):hover,
   &::part(item__action selected),
   &::part(group__action selected) {
     background-color: var(--accents-un-accent__primary-dim--hover);

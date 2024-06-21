@@ -65,18 +65,18 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       {
         id: "selection",
         caption: "Selection",
-        value: "disabled",
+        value: "none",
         columnSpan: 2,
         type: "enum",
         render: "radio-group",
         values: [
           {
-            value: "disabled",
-            caption: "Disabled"
+            value: "none",
+            caption: "None"
           },
           {
             value: "multiple",
-            caption: "multiple"
+            caption: "Multiple"
           },
           { value: "single", caption: "Single" }
         ]

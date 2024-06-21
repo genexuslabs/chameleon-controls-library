@@ -187,19 +187,23 @@
 
 // Background
 .start-img-type--background::before {
-  background: no-repeat center / 100% var(--ch-start-img);
+  background: no-repeat center / var(--ch-tree-view-item__background-image-size)
+    var(--ch-start-img);
 }
 .end-img-type--background::after {
-  background: no-repeat center / 100% var(--ch-end-img);
+  background: no-repeat center / var(--ch-tree-view-item__background-image-size)
+    var(--ch-end-img);
 }
 
 // Mask
 .start-img-type--mask::before {
-  -webkit-mask: var(--ch-start-img) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: no-repeat center /
+    var(--ch-tree-view-item__background-image-size) var(--ch-start-img);
   background-color: currentColor;
 }
 .end-img-type--mask::after {
-  -webkit-mask: var(--ch-end-img) 50% 50% / 100% 100% no-repeat;
+  -webkit-mask: no-repeat center /
+    var(--ch-tree-view-item__background-image-size) var(--ch-end-img);
   background-color: currentColor;
 }
 

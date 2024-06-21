@@ -10,6 +10,21 @@
   grid-template-rows: min-content;
 }
 
+.action {
+  &::before {
+    content: "";
+    inline-size: var(--ch-action-list-group__expandable-button-size);
+    block-size: var(--ch-action-list-group__expandable-button-size);
+    background-color: currentColor;
+    -webkit-mask: no-repeat center /
+      var(--ch-action-list-group__expandable-button-image-size) $expandable-icon;
+  }
+
+  &--collapsed::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
 // - - - - - - - - - - - - - - - -
 //       Expandable content
 // - - - - - - - - - - - - - - - -

@@ -133,6 +133,7 @@ export type ActionListItemAdditionalItemActionType =
 export type ActionListItemGroup = {
   id: string;
   caption: string;
+  disabled?: boolean;
   expandable?: boolean;
   expanded?: boolean;
 
@@ -144,6 +145,7 @@ export type ActionListItemGroup = {
    */
   order?: number;
   part?: string;
+  selected?: boolean; // TODO: This property does not make much sense if expandable: false
   type: ActionListItemTypeGroup;
 };
 
@@ -151,6 +153,8 @@ export type ActionListItemGroup = {
 //           List Item Separator
 // - - - - - - - - - - - - - - - - - - - -
 export type ActionListItemSeparator = {
+  id?: string;
+
   /**
    * Establish the order at which the item will be placed in its parent.
    * Multiple items can have the same `order` value.

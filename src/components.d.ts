@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
-import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 import { MarkdownCodeRender } from "./components/code/internal/types";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -57,7 +57,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
-export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 export { MarkdownCodeRender } from "./components/code/internal/types";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -328,6 +328,10 @@ export namespace Components {
          */
         "editableItems": boolean;
         /**
+          * Given a list of ids, it returns an array of the items that exists in the given list.
+         */
+        "getItemsInfo": (itemsId: string[]) => Promise<ActionListItemModelExtended[]>;
+        /**
           * This property lets you define the model of the control.
          */
         "model": ActionListModel;
@@ -344,6 +348,10 @@ export namespace Components {
     itemModel: ActionListItemModel,
     actionListRenderState: ChActionListRender
   ) => any;
+        /**
+          * Specifies the type of selection implemented by the control.
+         */
+        "selection": "single" | "multiple" | "disabled";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
@@ -3286,6 +3294,10 @@ export interface ChActionListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionListItemElement;
 }
+export interface ChActionListRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListRenderElement;
+}
 export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAlertElement;
@@ -3606,7 +3618,19 @@ declare global {
         prototype: HTMLChActionListItemElement;
         new (): HTMLChActionListItemElement;
     };
+    interface HTMLChActionListRenderElementEventMap {
+        "selectedItemsChange": ActionListItemModelExtended[];
+        "itemClick": string;
+    }
     interface HTMLChActionListRenderElement extends Components.ChActionListRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChActionListRenderElementEventMap>(type: K, listener: (this: HTMLChActionListRenderElement, ev: ChActionListRenderCustomEvent<HTMLChActionListRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChActionListRenderElementEventMap>(type: K, listener: (this: HTMLChActionListRenderElement, ev: ChActionListRenderCustomEvent<HTMLChActionListRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChActionListRenderElement: {
         prototype: HTMLChActionListRenderElement;
@@ -5476,6 +5500,14 @@ declare namespace LocalJSX {
          */
         "model"?: ActionListModel;
         /**
+          * Fired when an item is clicked and `selection === "disabled"`.
+         */
+        "onItemClick"?: (event: ChActionListRenderCustomEvent<string>) => void;
+        /**
+          * Fired when the selected items change and `selection !== "disabled"`
+         */
+        "onSelectedItemsChange"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended[]>) => void;
+        /**
           * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
          */
         "removeItemCallback"?: (
@@ -5488,6 +5520,10 @@ declare namespace LocalJSX {
     itemModel: ActionListItemModel,
     actionListRenderState: ChActionListRender
   ) => any;
+        /**
+          * Specifies the type of selection implemented by the control.
+         */
+        "selection"?: "single" | "multiple" | "disabled";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */

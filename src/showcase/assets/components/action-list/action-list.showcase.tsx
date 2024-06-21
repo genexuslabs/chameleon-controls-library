@@ -8,6 +8,7 @@ import {
   GxEAINotifications,
   GxEAIRecentChats,
   agentTickets,
+  keyboardNavigation,
   panelToolbox,
   recentKBs
 } from "./models";
@@ -16,9 +17,10 @@ const state: Partial<Mutable<ChActionListRender>> = {};
 
 const render = () => (
   <ch-action-list-render
-    class="action-list-secondary"
+    class="list-box-secondary list-box"
     checkbox={state.checkbox}
     checked={state.checked}
+    selection={state.selection}
     editableItems={state.editableItems}
     model={state.model}
   ></ch-action-list-render>
@@ -41,9 +43,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Recent KBs", value: recentKBs },
           { caption: "Panel Toolbox", value: panelToolbox },
           { caption: "GX EAI recent chats", value: GxEAIRecentChats },
-          { caption: "GX EAI notifications", value: GxEAINotifications }
+          { caption: "GX EAI notifications", value: GxEAINotifications },
+          { caption: "Keyboard Navigation", value: keyboardNavigation }
         ],
-        value: GxEAIRecentChats
+        value: keyboardNavigation
       }
     ]
   },
@@ -53,12 +56,30 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     properties: [
       { id: "checkbox", caption: "Checkbox", value: false, type: "boolean" },
       { id: "checked", caption: "Checked", value: false, type: "boolean" },
-
       {
         id: "editableItems",
         caption: "Editable Items",
         value: true,
         type: "boolean"
+      },
+      {
+        id: "selection",
+        caption: "Selection",
+        value: "none",
+        columnSpan: 2,
+        type: "enum",
+        render: "radio-group",
+        values: [
+          {
+            value: "none",
+            caption: "None"
+          },
+          {
+            value: "multiple",
+            caption: "Multiple"
+          },
+          { value: "single", caption: "Single" }
+        ]
       }
     ]
   }

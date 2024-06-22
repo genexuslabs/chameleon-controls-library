@@ -7,6 +7,7 @@ import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
+import { markdownShowcaseStory } from "./markdown/markdown.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { sliderShowcaseStory } from "./slider/slider.showcase";
@@ -32,5 +33,6 @@ export const showcaseStories = {
 } as const;
 
 export const showcaseCustomStories = {
-  "flexible-layout": flexibleLayoutShowcaseStory
+  "flexible-layout": flexibleLayoutShowcaseStory,
+  markdown: markdownShowcaseStory
 };

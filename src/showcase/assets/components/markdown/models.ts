@@ -1,167 +1,4 @@
-<!DOCTYPE html>
-<html dir="ltr" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
-    />
-    <title>Markdown</title>
-    <script type="module" src="/build/chameleon.esm.js"></script>
-    <script nomodule src="/build/chameleon.js"></script>
-    <link href="../base.css" rel="stylesheet" />
-    <script type="module">
-      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
-      import { setThemeInBrowser } from "../models/theme-manager.js";
-
-      window.addEventListener("message", event => {
-        if (event.data === "light" || event.data === "dark") {
-          setThemeInBrowser(event.data);
-        }
-
-        if (event.data === "unanimo" || event.data === "mercury") {
-          setDesignSystemInBrowser(event.data);
-        }
-      });
-    </script>
-
-    <style>
-      /* Avoid FOUC (Flash Of Unstyled Content) */
-      html:not(.hydrated) {
-        visibility: hidden;
-      }
-
-      body {
-        grid-template-rows: 1fr;
-      }
-
-      .card-markdown {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
-
-        & > textarea.form-input {
-          block-size: 100%;
-          max-block-size: unset;
-        }
-      }
-
-      .hljs-doctag,
-      .hljs-keyword,
-      .hljs-meta .hljs-keyword,
-      .hljs-template-tag,
-      .hljs-template-variable,
-      .hljs-type,
-      .hljs-variable.language_ {
-        /* prettylights-syntax-keyword */
-        color: var(
-          --colors-foundation-un-color__purple--400
-        ); /* Light var(--colors-foundation-un-color__purple--100); */
-      }
-
-      .hljs-title,
-      .hljs-title.class_,
-      .hljs-title.class_.inherited__,
-      .hljs-title.function_ {
-        color: var(--text-un-text__on-surface--alternative);
-      }
-
-      .hljs-attr,
-      .hljs-attribute,
-      .hljs-literal,
-      .hljs-meta,
-      .hljs-number,
-      .hljs-operator,
-      .hljs-variable,
-      .hljs-selector-attr,
-      .hljs-selector-class,
-      .hljs-selector-id {
-        color: var(
-          --colors-foundation-un-color__purple--200
-        ); /* Previously: --text-un-text__primary */
-      }
-
-      .hljs-regexp,
-      .hljs-string,
-      .hljs-meta .hljs-string {
-        color: var(
-          --colors-foundation-un-color__orange--200
-        ); /* DARK: color-mix(in srgb, var(--colors-foundation-un-color__red--300) 60%, #000) */
-      }
-
-      .hljs-built_in,
-      .hljs-symbol {
-        /* prettylights-syntax-variable */
-        color: #e36209;
-      }
-
-      .hljs-comment,
-      .hljs-code,
-      .hljs-formula {
-        color: var(--colors-foundation-un-color__green--200);
-      }
-
-      .hljs-name,
-      .hljs-quote,
-      .hljs-selector-tag,
-      .hljs-selector-pseudo {
-        color: var(--colors-foundation-un-color__green--200);
-      }
-
-      .hljs-subst {
-        /* prettylights-syntax-storage-modifier-import */
-        color: #24292e;
-      }
-
-      .hljs-section {
-        /* prettylights-syntax-markup-heading */
-        color: #005cc5;
-        font-weight: bold;
-      }
-
-      .hljs-bullet {
-        /* prettylights-syntax-markup-list */
-        color: #735c0f;
-      }
-
-      .hljs-emphasis {
-        /* prettylights-syntax-markup-italic */
-        color: #24292e;
-        font-style: italic;
-      }
-
-      .hljs-strong {
-        /* prettylights-syntax-markup-bold */
-        color: #24292e;
-        font-weight: bold;
-      }
-
-      .hljs-addition {
-        /* prettylights-syntax-markup-inserted */
-        color: #22863a;
-        background-color: #f0fff4;
-      }
-
-      .hljs-deletion {
-        /* prettylights-syntax-markup-deleted */
-        color: #b31d28;
-        background-color: #ffeef0;
-      }
-
-      .hljs-char.escape_,
-      .hljs-link,
-      .hljs-params,
-      .hljs-property,
-      .hljs-punctuation,
-      .hljs-tag {
-        /* purposely ignored */
-      }
-    </style>
-  </head>
-  <body class="white-label unanimo">
-    <div class="card card-markdown">
-      <textarea class="form-input">
-Chameleon Markdown Parser
+export const markdownReadmeModel = `Chameleon Markdown Parser
 ========================
 
 The [ch-markdown] control lets you convert [Markdown] into HTML. Markdown is a simple text format whose goal is to be very easy to read and write, even when not converted to HTML.  This demo page will let you type anything you like and see how it gets converted.  Live.  No more waiting around.
@@ -237,7 +74,7 @@ It's easy.  It's not overly bloated, unlike HTML.  Also, as the creator of [mark
 ## Basic syntax {#basic}
 
 ### Headings {#headings}
-To create a heading, add number signs (`#`) in front of a word or phrase. The number of number signs you use should correspond to the heading level. For example, to create a heading level three (`<h3>`), use three number signs (e.g., `### My Header`).
+To create a heading, add number signs (\`#\`) in front of a word or phrase. The number of number signs you use should correspond to the heading level. For example, to create a heading level three (\`<h3>\`), use three number signs (e.g., \`### My Header\`).
 
 # Heading level 1
 ## Heading level 2
@@ -247,7 +84,7 @@ To create a heading, add number signs (`#`) in front of a word or phrase. The nu
 ###### Heading level 6
 
 ### Alternative headings {#alternative-headings}
-Alternatively, on the line below the text, add any number of `==` characters for heading level 1 or `--` characters for heading level 2.
+Alternatively, on the line below the text, add any number of \`==\` characters for heading level 1 or \`--\` characters for heading level 2.
 
 Heading level 1
 ===
@@ -259,7 +96,7 @@ Heading level 2
 To create paragraphs, use a blank line to separate one or more lines of text.
 
 ### Line Breaks {#line-break}
-To create a line break or new line (`<br>`), end a line with two or more spaces, and then type return.
+To create a line break or new line (\`<br>\`), end a line with two or more spaces, and then type return.
 
 Text example 1.\
 Text example 2 in the same paragraph.
@@ -302,19 +139,19 @@ This text is **_really important_**.
 This is really***very***important text.
 
 ### Blockquotes {#blockquotes}
-To create a blockquote, add a `>` in front of a paragraph.
+To create a blockquote, add a \`>\` in front of a paragraph.
 
 > Lorem ipsum dolor sit amet consectetur adipisicing elit.
 
 #### Blockquotes with Multiple Paragraphs {#blockquotes-with-multiple-paragraphs}
-Blockquotes can contain multiple paragraphs. Add a `>` on the blank lines between the paragraphs.
+Blockquotes can contain multiple paragraphs. Add a \`>\` on the blank lines between the paragraphs.
 
 > Lorem ipsum dolor sit amet consectetur adipisicing elit.
 > 
 > Asperiores iusto quasi exercitationem at suscipit, recusandae doloremque accusantium, eveniet delectus omnis harum voluptatum est, possimus nesciunt fugit autem! Sapiente, similique libero.
 
 #### Nested Blockquotes {#nested-blockquotes}
-Blockquotes can be nested. Add a `>>` in front of the paragraph you want to nest.
+Blockquotes can be nested. Add a \`>>\` in front of the paragraph you want to nest.
 
 > Lorem ipsum dolor sit amet consectetur adipisicing elit.
 > 
@@ -374,7 +211,7 @@ To create an ordered list, add line items with numbers followed by periods. The 
 9. Fourth item
 
 #### Unordered Lists {#unordered-lists}
-To create an unordered list, add dashes (`-`), asterisks (`*`), or plus signs (`+`) in front of line items. Indent one or more items to create a nested list.
+To create an unordered list, add dashes (\`-\`), asterisks (\`*\`), or plus signs (\`+\`) in front of line items. Indent one or more items to create a nested list.
 
 **Example 1:**
 - First item
@@ -417,7 +254,7 @@ To create an unordered list, add dashes (`-`), asterisks (`*`), or plus signs (`
   - Indented item
 
 #### Starting Ordered List Items with Numbers {#starting-ordered-list-items-with-numbers}
-If you need to start an ordered list item with a number followed by a period, you can use a backslash (`\`) to escape the period.
+If you need to start an ordered list item with a number followed by a period, you can use a backslash (\`\\\`) to escape the period.
 
 1. 1968\. A great year!
 2. I think 1969 was second best.
@@ -446,17 +283,17 @@ To add another element in a list while preserving the continuity of the list, in
 #### Code Blocks {#starting-ordered-list-items-with-numbers-code-blocks}
 1. Open the file.
 2. Find the following code block on line 21:
-   ```javascript
+   \`\`\`javascript
    const hello = "Hello world!";
    console.log(hello);
-   ```
+   \`\`\`
 3. Update the title to match the name of your website.
 
 #### Images {#starting-ordered-list-items-with-numbers-images}
 1. Open the file containing the Angular logo.
 2. Marvel at its beauty.
 
-    ![Angular logo](./assets/icons/angular.svg)
+    ![Angular logo](showcase/pages/assets/icons/angular.svg)
 
 3. Close the file.
 
@@ -471,25 +308,25 @@ You can nest an unordered list in an ordered list, or vice versa.
 4. Fourth item
 
 ### Inline Code {#inline-code}
-To denote a word or phrase as code, enclose it in backticks (` `` `).
+To denote a word or phrase as code, enclose it in backticks (\` \`\` \`).
 
-At the command prompt, type `nano`.
+At the command prompt, type \`nano\`.
 
 #### Escaping Backticks {#escaping-backticks}
-If the word or phrase you want to denote as code includes one or more backticks, you can escape it by enclosing the word or phrase in double backticks (` `` `).
+If the word or phrase you want to denote as code includes one or more backticks, you can escape it by enclosing the word or phrase in double backticks (\` \`\` \`).
 
-``Use `code` in your Markdown file.``
+\`\`Use \`code\` in your Markdown file.\`\`
 
 ### Code block {#code-block}
-To create code blocks, you’ll use three backticks (` ``` `) or three tildes (`~~~`) on the lines before and after the code block.
+To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tildes (\`~~~\`) on the lines before and after the code block.
 
-```
+\`\`\`
 {
   "firstName": "John",
   "lastName": "Smith",
   "age": 25
 }
-```
+\`\`\`
 
 Another way to create code blocks is to indent every line of the block by at least four spaces or one tab.
 
@@ -503,32 +340,32 @@ Another way to create code blocks is to indent every line of the block by at lea
 This feature allows you to add color highlighting for whatever language your code was written in.
 To add syntax highlighting, specify a language next to the backticks before the fenced code block.
 
-```json
+\`\`\`json
 {
   "firstName": "John",
   "lastName": "Smith",
   "age": 25
 }
-```
+\`\`\`
 
-```javascript
+\`\`\`javascript
 import React from 'react'
 import ReactDOM from 'react-dom'
 import Markdown from 'react-markdown'
 import rehypeHighlight from 'rehype-highlight'
 
-const markdown = `
+const markdown = \`
 # Your markdown here
-`
+\`
 
 ReactDOM.render(
   <Markdown rehypePlugins={[rehypeHighlight]}>{markdown}</Markdown>,
   document.querySelector('#content')
 )
-```
+\`\`\`
 
 ### Horizontal Rules {#horizontal-rules}
-To create a horizontal rule, use three or more asterisks (`***`), dashes (`---`), or underscores (`___`) on a line by themselves.
+To create a horizontal rule, use three or more asterisks (\`***\`), dashes (\`---\`), or underscores (\`___\`) on a line by themselves.
 
 Asterisks:
 
@@ -542,7 +379,7 @@ Underscores:
 _________________
 
 ### Links {#links}
-To create a link, enclose the link text in brackets (e.g., `[ch-markdown]`) and then follow it immediately with the URL in parentheses (e.g., `(https://github.com/genexuslabs/chameleon-controls-library)`).
+To create a link, enclose the link text in brackets (e.g., \`[ch-markdown]\`) and then follow it immediately with the URL in parentheses (e.g., \`(https://github.com/genexuslabs/chameleon-controls-library)\`).
 
 My favorite markdown viewer is [ch-markdown](https://github.com/genexuslabs/chameleon-controls-library).
 
@@ -552,7 +389,7 @@ You can optionally add a title for a link. This will appear as a tooltip when th
 My favorite markdown viewer is [ch-markdown](https://github.com/genexuslabs/chameleon-controls-library "The best markdown viewer").
 
 #### URLs and Email Addresses {#links-urls-and-email-addresses}
-To quickly turn a URL or email address into a link, enclose it in angle brackets `<>`.
+To quickly turn a URL or email address into a link, enclose it in angle brackets \`<>\`.
 
 <https://github.com/genexuslabs/chameleon-controls-library>
 
@@ -565,7 +402,7 @@ I love the **[ch-markdown control](https://github.com/genexuslabs/chameleon-cont
 
 This is the *[ch-markdown readme](https://github.com/genexuslabs/chameleon-controls-library)*.
 
-See the section on [`code`](#code).
+See the section on [\`code\`](#code).
 
 #### Reference-style Links {#links-reference-style-links}
 Reference-style links are a special kind of link that make URLs easier to display and read in Markdown. Reference-style links are constructed in two parts: the part you keep inline with your text and the part you store somewhere else in the file to keep the text easy to read.
@@ -577,46 +414,46 @@ Although not required, you can include a space between the first and second set 
 
 This means the following example formats are roughly equivalent for the first part of the link:
 
-  - `[hobbit-hole][1]`
-  - `[hobbit-hole] [1]`
+  - \`[hobbit-hole][1]\`
+  - \`[hobbit-hole] [1]\`
 
 ##### Formatting the Second Part of the Link {#links-formatting-the-second-part-of-the-link}
 The second part of a reference-style link is formatted with the following attributes:
 
- 1. The label, in brackets, followed immediately by a colon and at least one space (e.g., `[label]:` ).
+ 1. The label, in brackets, followed immediately by a colon and at least one space (e.g., \`[label]:\` ).
  2. The URL for the link, which you can optionally enclose in angle brackets.
  3. The optional title for the link, which you can enclose in double quotes, single quotes, or parentheses.
 
 This means the following example formats are all roughly equivalent for the second part of the link:
 
-  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle`
-  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"`
-  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle 'Hobbit lifestyles'`
-  - `[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle (Hobbit lifestyles)`
-  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"`
-  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> 'Hobbit lifestyles'`
-  - `[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> (Hobbit lifestyles)`
+  - \`[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle\`
+  - \`[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"\`
+  - \`[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle 'Hobbit lifestyles'\`
+  - \`[1]: https://en.wikipedia.org/wiki/Hobbit#Lifestyle (Hobbit lifestyles)\`
+  - \`[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"\`
+  - \`[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> 'Hobbit lifestyles'\`
+  - \`[1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> (Hobbit lifestyles)\`
 
 You can place this second part of the link anywhere in your Markdown document. Some people place them immediately after the paragraph in which they appear while other people place them at the end of the document (like endnotes or footnotes).
 
 ##### An Example Putting the Parts Together {#links-an-example-putting-the-parts-together}
 Say you add a URL as a standard URL link to a paragraph and it looks like this in Markdown:
 
-```
+\`\`\`
 In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
 of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
 eat: it was a [hobbit-hole](https://en.wikipedia.org/wiki/Hobbit#Lifestyle "Hobbit lifestyles"), and that means comfort.
-```
+\`\`\`
 
 Though it may point to interesting additional information, the URL as displayed really doesn’t add much to the existing raw text other than making it harder to read. To fix that, you could format the URL like this instead:
 
-```
+\`\`\`
 In a hole in the ground there lived a hobbit. Not a nasty, dirty, wet hole, filled with the ends
 of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to
 eat: it was a [hobbit-hole][1], and that means comfort.
 
 [1]: <https://en.wikipedia.org/wiki/Hobbit#Lifestyle> "Hobbit lifestyles"
-```
+\`\`\`
 
 In both instances above, the rendered output would be identical:
 
@@ -632,17 +469,17 @@ In both instances above, the rendered output would be identical:
 
 
 ### Images {#images}
-To add an image, add an exclamation mark (`!`), followed by alt text in brackets, and the path or URL to the image asset in parentheses. You can optionally add a title in quotation marks after the path or URL.
+To add an image, add an exclamation mark (\`!\`), followed by alt text in brackets, and the path or URL to the image asset in parentheses. You can optionally add a title in quotation marks after the path or URL.
 
-![Old angular logo](./assets/icons/angular.svg "Old angular logo")
+![Old angular logo](showcase/pages/assets/icons/angular.svg "Old angular logo")
 
 #### Linking Images {#linking-images}
 To add a link to an image, enclose the Markdown for the image in brackets, and then add the link in parentheses.
 
-[![Old angular logo](./assets/icons/angular.svg "Old angular logo")](https://blog.angular.io/introducing-angular-v17-4d7033312e4b)
+[![Old angular logo](showcase/pages/assets/icons/angular.svg "Old angular logo")](https://blog.angular.io/introducing-angular-v17-4d7033312e4b)
 
 ### Escaping Characters {#escaping-characters}
-To display a literal character that would otherwise be used to format text in a Markdown document, add a backslash (`\`) in front of the character.
+To display a literal character that would otherwise be used to format text in a Markdown document, add a backslash (\`\\\`) in front of the character.
 
 \* Without the backslash, this would be a bullet in an unordered list.
 
@@ -650,8 +487,8 @@ Characters you can escape:
 
 | Character | Name |
 | --        | :--   |
-| \ | backslash |
-| ` | backtick |
+| \\ | backslash |
+| \` | backtick |
 | * | asterisk |
 | _ | underscore |
 | { } | curly braces |
@@ -663,31 +500,7 @@ Characters you can escape:
 | - | minus sign (hyphen) |
 | . | dot |
 | ! | exclamation mark |
-| \| | pipe |
+| \\| | pipe |
 
 ## GitHub flavored markdown (GFM) {#gfm}
-</textarea
-      >
-
-      <div style="overflow: auto; position: relative">
-        <ch-markdown
-          style="position: absolute; inset: 0"
-          class="markdown"
-        ></ch-markdown>
-      </div>
-    </div>
-
-    <script>
-      window.addEventListener("appload", () => {
-        const textareaRef = document.querySelector("textarea");
-        const markdownRef = document.querySelector("ch-markdown");
-
-        markdownRef.value = textareaRef.value;
-
-        textareaRef.addEventListener("input", () => {
-          markdownRef.value = textareaRef.value;
-        });
-      });
-    </script>
-  </body>
-</html>
+`;

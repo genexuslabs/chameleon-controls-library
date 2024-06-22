@@ -8,6 +8,7 @@ import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
+import { ChMarkdown } from "../../../components/markdown/markdown";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
 import { ChSlider } from "../../../components/slider/slider";
@@ -122,4 +123,6 @@ export type ShowcaseAvailableStories =
   | Mutable<ChTabRender>
   | Mutable<ChTreeViewRender>;
 
-export type ShowcaseAvailableCustomStories = Mutable<ChFlexibleLayoutRender>;
+export type ShowcaseAvailableCustomStories = Mutable<
+  ChMarkdown | ChFlexibleLayoutRender
+>;

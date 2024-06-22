@@ -28,12 +28,6 @@
   inset-inline-end: var(--spacing-un-spacing--l, var(--mer-spacing--md));
 }
 
-ch-showcase hr {
-  margin-inline: calc(
-    var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1
-  );
-}
-
 .card-properties {
   display: grid;
   grid-auto-flow: row;
@@ -120,6 +114,30 @@ legend {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr;
   gap: var(--spacing-un-spacing--l);
+}
+
+.markdown-test-main-wrapper {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+
+  textarea {
+    block-size: 100%;
+    max-block-size: unset;
+    contain: size;
+  }
+
+  ch-markdown {
+    contain: size;
+    overflow: auto;
+  }
+}
+
+.markdown-test-properties {
+  display: flex;
+  justify-content: flex-start;
+  grid-column: 1 / 3;
 }
 
 .radio-group-test-main-wrapper {
@@ -214,11 +232,19 @@ ch-code > pre > code {
   overflow: auto;
 }
 
-ch-showcase textarea.form-input {
-  min-block-size: 32px;
-  block-size: 200px;
-  max-block-size: unset;
-  resize: vertical;
+ch-showcase ch-flexible-layout-render {
+  hr {
+    margin-inline: calc(
+      var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1
+    );
+  }
+
+  textarea.form-input {
+    min-block-size: 32px;
+    block-size: 200px;
+    max-block-size: unset;
+    resize: vertical;
+  }
 }
 
 /* This is a WA to improve the UX */

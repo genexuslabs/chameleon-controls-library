@@ -115,13 +115,6 @@ legend {
   grid-auto-rows: 128px;
 }
 
-.code-test-main-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
-  gap: var(--spacing-un-spacing--l);
-}
-
 .markdown-test-main-wrapper {
   display: grid;
   grid-template-rows: max-content 1fr;

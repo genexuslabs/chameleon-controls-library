@@ -30,6 +30,19 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 | `value`      | `value`    | Specifies the markdown string to parse.                                    | `string`                                      | `undefined`         |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-showcase](../../showcase/assets/components)
+
+### Graph
+```mermaid
+graph TD;
+  ch-showcase --> ch-markdown
+  style ch-markdown fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

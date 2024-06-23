@@ -63,12 +63,14 @@ relative to an element, but placed on the top layer using `position: fixed`.
 
  - [ch-combo-box](../combobox)
  - [ch-dropdown](../dropdown/internal/dropdown)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-combo-box --> ch-popover
   ch-dropdown --> ch-popover
+  ch-showcase --> ch-popover
   style ch-popover fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

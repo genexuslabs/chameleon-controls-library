@@ -26,11 +26,15 @@
 - [ch-radio-group-render](../../../components/radio-group)
 - [ch-action-group-render](../../../components/action-group)
 - [ch-action-list-render](../../../components/action-list)
+- [ch-barcode-scanner](../../../components/barcode-scanner)
 - [ch-dialog](../../../components/dialog)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
 - [ch-layout-splitter](../../../components/layout-splitter)
+- [ch-markdown](../../../components/markdown)
+- [ch-popover](../../../components/popover)
 - [ch-qr](../../../components/qr)
+- [ch-segmented-control-render](../../../components/segmented-control)
 - [ch-slider](../../../components/slider)
 - [ch-switch](../../../components/switch)
 - [ch-tab-render](../../../components/tab)
@@ -46,11 +50,15 @@ graph TD;
   ch-showcase --> ch-radio-group-render
   ch-showcase --> ch-action-group-render
   ch-showcase --> ch-action-list-render
+  ch-showcase --> ch-barcode-scanner
   ch-showcase --> ch-dialog
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-test-flexible-layout
   ch-showcase --> ch-layout-splitter
+  ch-showcase --> ch-markdown
+  ch-showcase --> ch-popover
   ch-showcase --> ch-qr
+  ch-showcase --> ch-segmented-control-render
   ch-showcase --> ch-slider
   ch-showcase --> ch-switch
   ch-showcase --> ch-tab-render
@@ -86,6 +94,7 @@ graph TD;
   ch-grid-column --> ch-grid-column-settings
   ch-grid-column --> ch-grid-column-resize
   ch-grid-column-settings --> ch-window
+  ch-segmented-control-render --> ch-segmented-control-item
   style ch-showcase fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

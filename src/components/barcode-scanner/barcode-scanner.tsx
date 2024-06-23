@@ -21,6 +21,9 @@ const cameraPreferenceDictionary = {
   BackCamera: { facingMode: { exact: "environment" } }
 } as const;
 
+// TODO: Add a intersection observer to disable the scanner if it is out of
+// screen to save resources
+
 /**
  * This component allows you to scan a wide variety of types of barcode and QR
  * codes.

@@ -6,29 +6,12 @@ import { Mutable } from "../../../../common/types";
 const state: Partial<Mutable<ChCode>> = {};
 
 const render = () => (
-  <div class="code-test-main-wrapper">
-    <fieldset>
-      <legend class="heading-4 field-legend-test">Code 1</legend>
-
-      <ch-code
-        class="code"
-        addLastNestedChildClass={state.addLastNestedChildClass}
-        language={state.language}
-        value={state.value}
-      ></ch-code>
-    </fieldset>
-
-    <fieldset>
-      <legend class="heading-4 field-legend-test">Code 2</legend>
-
-      <ch-code
-        class="code"
-        addLastNestedChildClass={state.addLastNestedChildClass}
-        language={state.language}
-        value={state.value}
-      ></ch-code>
-    </fieldset>
-  </div>
+  <ch-code
+    class="code"
+    addLastNestedChildClass={state.addLastNestedChildClass}
+    language={state.language}
+    value={state.value}
+  ></ch-code>
 );
 
 const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCode>> = [

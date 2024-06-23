@@ -28,6 +28,10 @@ Segmented control is used to pick one choice from a linear set of closely relate
 
 ## Dependencies
 
+### Used by
+
+ - [ch-showcase](../../showcase/assets/components)
+
 ### Depends on
 
 - [ch-segmented-control-item](./internal/segmented-control-item)
@@ -36,6 +40,7 @@ Segmented control is used to pick one choice from a linear set of closely relate
 ```mermaid
 graph TD;
   ch-segmented-control-render --> ch-segmented-control-item
+  ch-showcase --> ch-segmented-control-render
   style ch-segmented-control-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

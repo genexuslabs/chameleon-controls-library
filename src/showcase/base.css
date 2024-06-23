@@ -104,6 +104,12 @@ legend {
   background-image: url("pages/assets/icons/module-open.svg");
 }
 
+.barcode-scanner-test-main-wrapper {
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+}
+
 .checkbox-test-main-wrapper {
   display: grid;
   grid-auto-rows: 128px;
@@ -143,6 +149,11 @@ legend {
 .radio-group-test-main-wrapper {
   display: grid;
   grid-auto-rows: max-content;
+}
+
+.segmented-control-test-main-wrapper {
+  display: grid;
+  grid-template-rows: max-content;
 }
 
 .tab-test-main-wrapper {

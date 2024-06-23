@@ -1,6 +1,7 @@
 import { Mutable } from "../../../common/types";
 import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
 import { ChActionListRender } from "../../../components/action-list/action-list-render";
+import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
 import { ChComboBox } from "../../../components/combobox/combo-box";
@@ -11,6 +12,7 @@ import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-spl
 import { ChMarkdown } from "../../../components/markdown/markdown";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
+import { ChSegmentedControl } from "../../../components/segmented-control/segmented-control-render";
 import { ChSlider } from "../../../components/slider/slider";
 import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
@@ -110,6 +112,7 @@ export type ShowcaseRenderPropertyObject<
 export type ShowcaseAvailableStories =
   | Mutable<ChActionGroupRender>
   | Mutable<ChActionListRender>
+  | Mutable<ChBarcodeScanner>
   | Mutable<ChCheckBox>
   | Mutable<ChCode>
   | Mutable<ChComboBox>
@@ -118,6 +121,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChLayoutSplitter>
   | Mutable<ChQr>
   | Mutable<ChRadioGroupRender>
+  | Mutable<ChSegmentedControl>
   | Mutable<ChSlider>
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>

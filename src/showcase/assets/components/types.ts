@@ -10,6 +10,7 @@ import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChMarkdown } from "../../../components/markdown/markdown";
+import { ChPopover } from "../../../components/popover/popover";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
 import { ChSegmentedControl } from "../../../components/segmented-control/segmented-control-render";
@@ -119,6 +120,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChDialog>
   | Mutable<ChDropdownRender>
   | Mutable<ChLayoutSplitter>
+  | Mutable<ChPopover>
   | Mutable<ChQr>
   | Mutable<ChRadioGroupRender>
   | Mutable<ChSegmentedControl>

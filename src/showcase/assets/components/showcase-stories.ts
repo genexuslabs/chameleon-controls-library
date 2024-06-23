@@ -9,6 +9,7 @@ import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
@@ -27,6 +28,7 @@ export const showcaseStories = {
   dialog: dialogShowcaseStory,
   dropdown: dropdownShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
+  popover: popoverShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,

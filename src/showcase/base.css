@@ -139,6 +139,18 @@ legend {
   grid-column: 1 / 3;
 }
 
+.popover-test-main-wrapper {
+  display: grid;
+  contain: size;
+  overflow: auto;
+}
+
+.popover-test-scroll {
+  padding: 200px;
+  inline-size: 200dvw;
+  block-size: 200dvh;
+}
+
 .radio-group-test-main-wrapper {
   display: grid;
   grid-auto-rows: max-content;

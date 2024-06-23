@@ -123,7 +123,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
       {
         id: "allowDrag",
         caption: "Allow Drag",
-        value: "No",
+        value: "no",
         type: "enum",
         render: "radio-group",
         values: [

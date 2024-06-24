@@ -19,7 +19,26 @@ const handleClose = (event: ChDialogCustomEvent<any>) => {
   }
 };
 
-const render = () => (
+const handleDialogOpen = (event: MouseEvent) => {
+  state.hidden = false;
+
+  // TODO: Until we support external slots in the ch-flexible-layout-render,
+  // this is a hack to update the render of the widget and thus re-render the
+  // combo-box updating the displayed items
+  const showcaseRef = (event.target as HTMLButtonElement).closest(
+    "ch-showcase"
+  );
+
+  if (showcaseRef) {
+    forceUpdate(showcaseRef);
+  }
+};
+
+const render = () => [
+  <button class="button-primary" type="button" onClick={handleDialogOpen}>
+    Open dialog
+  </button>,
+
   <ch-dialog
     adjustPositionAfterResize={state.adjustPositionAfterResize}
     allowDrag={state.allowDrag}
@@ -36,9 +55,7 @@ const render = () => (
     <label htmlFor="some-input">Any data</label>
     <input id="some-input" class="form-input" type="text" />
 
-    <button id="my-button" class="button-primary">
-      button
-    </button>
+    <button class="button-primary">button</button>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur
       repellendus dolorem recusandae tenetur animi fuga aliquid! Vel iste amet
@@ -60,7 +77,7 @@ const render = () => (
       Save
     </button>
   </ch-dialog>
-);
+];
 
 const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
   {
@@ -82,13 +99,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
       {
         id: "showFooter",
         caption: "Show Footer",
-        value: false,
+        value: true,
         type: "boolean"
       },
       {
         id: "showHeader",
         caption: "Show Header",
-        value: false,
+        value: true,
         type: "boolean"
       }
     ]
@@ -147,6 +164,42 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
 
 export const dialogShowcaseStory: ShowcaseStory<Mutable<ChDialog>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: `<button
+          class="button-primary"
+          type="button"
+          onClick={this.#handleDialogOpen}
+        >
+          Open dialog
+        </button>
+  
+        <ch-dialog
+          adjustPositionAfterResize={<adjustPositionAfterResize value>}
+          allowDrag={<allowDrag value (optional)>}
+          caption={<caption value>}
+          class="dialog dialog-primary"
+          closeButtonAccessibleName={<closeButtonAccessibleName value>}
+          hidden={this.#dialogHidden}
+          modal={<modal value (optional)>}
+          resizable={<resizable value (optional)>}
+          showFooter={<showFooter value>}
+          showHeader={<showHeader value>}
+          onDialogClosed={this.#handlePopoverClosed}
+        >
+          <label htmlFor="some-input">Any data</label>
+          <input id="some-input" class="form-input" type="text" />
+
+          <button class="button-primary">
+            button
+          </button>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+
+          <button slot="footer" type="button" class="button-secondary">
+            Cancel
+          </button>
+          <button slot="footer" type="button" class="button-primary">
+            Save
+          </button>
+        </ch-dialog>`,
   render: render,
   state: state
 };

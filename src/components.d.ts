@@ -3631,7 +3631,7 @@ declare global {
     };
     interface HTMLChActionListRenderElementEventMap {
         "selectedItemsChange": ActionListItemModelExtended[];
-        "itemClick": string;
+        "itemClick": ActionListItemModelExtended;
     }
     interface HTMLChActionListRenderElement extends Components.ChActionListRender, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChActionListRenderElementEventMap>(type: K, listener: (this: HTMLChActionListRenderElement, ev: ChActionListRenderCustomEvent<HTMLChActionListRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5517,7 +5517,7 @@ declare namespace LocalJSX {
         /**
           * Fired when an item is clicked and `selection === "none"`.
          */
-        "onItemClick"?: (event: ChActionListRenderCustomEvent<string>) => void;
+        "onItemClick"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended>) => void;
         /**
           * Fired when the selected items change and `selection !== "none"`
          */

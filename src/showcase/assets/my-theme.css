@@ -1,0 +1,13 @@
+.box {
+  width: 200px;
+  height: 50px;
+  background-color: rgb(193, 193, 193);
+  border: 3px solid transparent;
+  background-color: gray;
+}
+.box--red {
+  border-color: red;
+}
+.box--green {
+  border-color: green;
+}

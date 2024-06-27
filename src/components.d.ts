@@ -2646,6 +2646,8 @@ export namespace Components {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    interface ChTestTheme {
+    }
     interface ChTextblock {
         /**
           * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
@@ -4943,6 +4945,12 @@ declare global {
         prototype: HTMLChTestSuggestElement;
         new (): HTMLChTestSuggestElement;
     };
+    interface HTMLChTestThemeElement extends Components.ChTestTheme, HTMLStencilElement {
+    }
+    var HTMLChTestThemeElement: {
+        prototype: HTMLChTestThemeElement;
+        new (): HTMLChTestThemeElement;
+    };
     interface HTMLChTextblockElement extends Components.ChTextblock, HTMLStencilElement {
     }
     var HTMLChTextblockElement: {
@@ -5238,6 +5246,7 @@ declare global {
         "ch-tabular-grid-virtual-scroller": HTMLChTabularGridVirtualScrollerElement;
         "ch-test-flexible-layout": HTMLChTestFlexibleLayoutElement;
         "ch-test-suggest": HTMLChTestSuggestElement;
+        "ch-test-theme": HTMLChTestThemeElement;
         "ch-textblock": HTMLChTextblockElement;
         "ch-theme": HTMLChThemeElement;
         "ch-timer": HTMLChTimerElement;
@@ -7899,6 +7908,8 @@ declare namespace LocalJSX {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    interface ChTestTheme {
+    }
     interface ChTextblock {
         /**
           * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
@@ -8636,6 +8647,7 @@ declare namespace LocalJSX {
         "ch-tabular-grid-virtual-scroller": ChTabularGridVirtualScroller;
         "ch-test-flexible-layout": ChTestFlexibleLayout;
         "ch-test-suggest": ChTestSuggest;
+        "ch-test-theme": ChTestTheme;
         "ch-textblock": ChTextblock;
         "ch-theme": ChTheme;
         "ch-timer": ChTimer;
@@ -8932,6 +8944,7 @@ declare module "@stencil/core" {
             "ch-tabular-grid-virtual-scroller": LocalJSX.ChTabularGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChTabularGridVirtualScrollerElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
+            "ch-test-theme": LocalJSX.ChTestTheme & JSXBase.HTMLAttributes<HTMLChTestThemeElement>;
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             /**
              * It allows you to load a style sheet in a similar way to the

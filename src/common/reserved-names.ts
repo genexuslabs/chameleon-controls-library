@@ -182,6 +182,15 @@ export const ACTION_LIST_GROUP_EXPORT_PARTS = joinParts(
   ACTION_LIST_GROUP_PARTS_DICTIONARY
 );
 
+export const ACTION_LIST_PARTS_DICTIONARY = {
+  GROUP: "group",
+  ITEM: "item"
+} as const;
+
+export const ACTION_LIST_EXPORT_PARTS = joinParts(
+  ACTION_LIST_GROUP_PARTS_DICTIONARY
+);
+
 // - - - - - - - - - - - - - - - - - - - -
 //           Action Group Parts
 // - - - - - - - - - - - - - - - - - - - -

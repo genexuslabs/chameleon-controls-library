@@ -21,10 +21,10 @@
 
 ## Events
 
-| Event                 | Description                                                     | Type                                         |
-| --------------------- | --------------------------------------------------------------- | -------------------------------------------- |
-| `itemClick`           | Fired when an item is clicked and `selection === "none"`.       | `CustomEvent<string>`                        |
-| `selectedItemsChange` | Fired when the selected items change and `selection !== "none"` | `CustomEvent<ActionListItemModelExtended[]>` |
+| Event                 | Description                                                     | Type                                                                                                                                    |
+| --------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `itemClick`           | Fired when an item is clicked and `selection === "none"`.       | `CustomEvent<{ parentItem: ActionListItemGroup; item: ActionListItemModel; } \| { root: ActionListModel; item: ActionListItemModel; }>` |
+| `selectedItemsChange` | Fired when the selected items change and `selection !== "none"` | `CustomEvent<ActionListItemModelExtended[]>`                                                                                            |
 
 
 ## Methods

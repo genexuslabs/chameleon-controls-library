@@ -378,7 +378,7 @@ export class ChActionListRender {
   /**
    * Fired when an item is clicked and `selection === "none"`.
    */
-  @Event() itemClick: EventEmitter<string>;
+  @Event() itemClick: EventEmitter<ActionListItemModelExtended>;
 
   /**
    * Given a list of ids, it returns an array of the items that exists in the
@@ -392,17 +392,17 @@ export class ChActionListRender {
   }
 
   #getItemsInfo = (itemsId: string[]): ActionListItemModelExtended[] => {
-    const treeViewItemsInfo: ActionListItemModelExtended[] = [];
+    const actionListItemsInfo: ActionListItemModelExtended[] = [];
 
     itemsId.forEach(itemId => {
       const itemUIModel = this.#flattenedModel.get(itemId);
 
       if (itemUIModel) {
-        treeViewItemsInfo.push(itemUIModel);
+        actionListItemsInfo.push(itemUIModel);
       }
     });
 
-    return treeViewItemsInfo;
+    return actionListItemsInfo;
   };
 
   @Listen("fixedChange")
@@ -491,7 +491,7 @@ export class ChActionListRender {
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
     this.#checkIfMustExpandCollapseGroup(itemInfo);
 
-    this.itemClick.emit(actionListItemOrGroup.id);
+    this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
   };
 
   #checkIfMustExpandCollapseGroup = (

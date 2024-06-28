@@ -11,7 +11,8 @@ import {
 import { tokenMap } from "../../../../common/utils";
 import {
   ACTION_LIST_GROUP_EXPORT_PARTS,
-  ACTION_LIST_GROUP_PARTS_DICTIONARY
+  ACTION_LIST_GROUP_PARTS_DICTIONARY,
+  ACTION_LIST_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
 
 const EXPANDABLE_ID = "expandable";
@@ -121,6 +122,7 @@ export class ChActionListGroup {
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
+    this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.GROUP);
     this.el.setAttribute("exportparts", ACTION_LIST_GROUP_EXPORT_PARTS);
   }
 

@@ -19,6 +19,7 @@ import { renderImg } from "../../../../common/renders";
 import {
   ACTION_LIST_ITEM_EXPORT_PARTS,
   ACTION_LIST_ITEM_PARTS_DICTIONARY,
+  ACTION_LIST_PARTS_DICTIONARY,
   imageTypeDictionary,
   startPseudoImageTypeDictionary
 } from "../../../../common/reserved-names";
@@ -353,6 +354,7 @@ export class ChActionListItem {
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
+    this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
     this.el.setAttribute("exportparts", ACTION_LIST_ITEM_EXPORT_PARTS);
   }
 

@@ -36,6 +36,8 @@
 
 .inline-caption {
   grid-area: inline-caption;
+  align-items: center;
+  min-block-size: var(--ch-action-list-item__image-size);
 }
 
 .block-end {

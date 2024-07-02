@@ -207,6 +207,16 @@ export class ChActionListRender {
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
 
   /**
+   * Callback that is executed when and item requests to be fixed/unfixed.
+   * If the callback is not defined, the item will be fixed/unfixed without
+   * further confirmation.
+   */
+  @Prop() readonly fixItemCallback?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
+
+  /**
    * This property lets you define the model of the control.
    */
   @Prop() readonly model: ActionListModel = [];
@@ -436,7 +446,25 @@ export class ChActionListRender {
 
     const itemUIModel = this.#flattenedModel.get(detail.itemId);
     const itemInfo = itemUIModel.item as ActionListItemActionable;
-    itemInfo.fixed = detail.value;
+
+    if (!this.fixItemCallback) {
+      this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      return;
+    }
+
+    this.fixItemCallback(itemInfo, detail.value).then(acceptChange => {
+      if (acceptChange) {
+        this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      }
+    });
+  }
+
+  #updateItemFix = (
+    itemUIModel: ActionListItemModelExtended,
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => {
+    itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
     this.#sortModel(
@@ -446,7 +474,7 @@ export class ChActionListRender {
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
-  }
+  };
 
   @Listen("remove")
   onRemove(event: ChActionListItemCustomEvent<string>) {

@@ -387,6 +387,8 @@ export class ChActionListRender {
 
   /**
    * Fired when an item is clicked and `selection === "none"`.
+   * Applies for items that have `type === "actionable"` or
+   * (`type === "group"` and `expandable === true`)
    */
   @Event() itemClick: EventEmitter<ActionListItemModelExtended>;
 
@@ -597,6 +599,9 @@ export class ChActionListRender {
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
     this.#checkIfMustExpandCollapseGroup(itemInfo);
 
+    if (itemInfo.type === "group" && !itemInfo.expandable) {
+      return;
+    }
     this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
   };
 

@@ -391,6 +391,61 @@ export class ChActionListRender {
   @Event() itemClick: EventEmitter<ActionListItemModelExtended>;
 
   /**
+   * Adds an item in the control.
+   *
+   * If the item already exists, the operation is canceled.
+   *
+   * If the `groupParentId` property is specified the item is added in the
+   * group determined by `groupParentId`. It only works if the item to add
+   * has `type === "actionable"`
+   */
+  @Method()
+  async addItem(
+    itemInfo: ActionListItemModel,
+    groupParentId?: string
+  ): Promise<void> {
+    // Already exists
+    if (this.#flattenedModel.get(itemInfo.id)) {
+      return;
+    }
+
+    if (groupParentId) {
+      const parentGroup = this.#flattenedModel.get(itemInfo.id);
+
+      // The parent group does not exists or it isn't a group
+      if (
+        !parentGroup ||
+        parentGroup.item.type !== "group" ||
+        itemInfo.type !== "actionable"
+      ) {
+        return;
+      }
+
+      parentGroup.item.items.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        parentItem: parentGroup.item
+      });
+
+      // Sort items in parent model
+      this.#sortModel(parentGroup.item.items);
+    }
+    // Item is placed at the root
+    else {
+      this.model.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        root: this.model
+      });
+
+      // Sort items in parent model
+      this.#sortModel(this.model);
+    }
+
+    forceUpdate(this);
+  }
+
+  /**
    * Given a list of ids, it returns an array of the items that exists in the
    * given list.
    */

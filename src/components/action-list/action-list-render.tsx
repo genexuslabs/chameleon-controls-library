@@ -391,6 +391,29 @@ export class ChActionListRender {
     return this.#getItemsInfo(itemsId);
   }
 
+  /**
+   * Remove the item and all its descendants from the control.
+   */
+  @Method()
+  async removeItem(itemId: string) {
+    const itemUIModel = this.#flattenedModel.get(itemId);
+
+    if (!itemUIModel) {
+      return;
+    }
+
+    // Remove all descendants
+    if (itemUIModel.item.type === "group") {
+      const items = itemUIModel.item.items;
+
+      items.forEach(item => {
+        this.#flattenedModel.delete(item.id);
+      });
+    }
+
+    this.#removeItem(itemUIModel);
+  }
+
   #getItemsInfo = (itemsId: string[]): ActionListItemModelExtended[] => {
     const actionListItemsInfo: ActionListItemModelExtended[] = [];
 
@@ -594,15 +617,17 @@ export class ChActionListRender {
     const parentArray =
       (itemUIModel as ActionListItemModelExtendedRoot).root ??
       (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
-    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const itemToRemoveId = itemUIModel.item.id;
 
     const itemToRemoveIndex = parentArray.findIndex(
-      el => (el as ActionListItemActionable).id === itemInfo.id
+      el => el.id === itemToRemoveId
     );
 
     // Remove the UI model from the previous parent. The equality function
     // must be by index, not by object reference
     removeElement(parentArray, itemToRemoveIndex);
+
+    this.#flattenedModel.delete(itemToRemoveId);
 
     // Queue a re-render
     forceUpdate(this);

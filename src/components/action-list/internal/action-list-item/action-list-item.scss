@@ -86,7 +86,7 @@
 // - - - - - - - - - - - - - - - - - - - -
 //            Additional items
 // - - - - - - - - - - - - - - - - - - - -
-:host(:not(:hover)) .show-on-mouse-hover {
+:host(:not(:hover):not(:focus-within)) .show-on-mouse-hover {
   display: none;
 }
 

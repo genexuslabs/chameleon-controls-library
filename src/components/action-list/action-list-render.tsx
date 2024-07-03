@@ -166,8 +166,6 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   });
 };
 
-// type ImmediateFilter = "immediate" | "debounced" | undefined;
-
 @Component({
   tag: "ch-action-list-render",
   styleUrl: "action-list-render.scss",
@@ -412,7 +410,7 @@ export class ChActionListRender {
     }
 
     if (groupParentId) {
-      const parentGroup = this.#flattenedModel.get(itemInfo.id);
+      const parentGroup = this.#flattenedModel.get(groupParentId);
 
       // The parent group does not exists or it isn't a group
       if (

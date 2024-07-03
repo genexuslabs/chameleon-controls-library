@@ -166,8 +166,6 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   });
 };
 
-// type ImmediateFilter = "immediate" | "debounced" | undefined;
-
 @Component({
   tag: "ch-action-list-render",
   styleUrl: "action-list-render.scss",
@@ -205,6 +203,16 @@ export class ChActionListRender {
    * items by default. If `true`, the items can edit its caption in place.
    */
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+
+  /**
+   * Callback that is executed when and item requests to be fixed/unfixed.
+   * If the callback is not defined, the item will be fixed/unfixed without
+   * further confirmation.
+   */
+  @Prop() readonly fixItemCallback?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
 
   /**
    * This property lets you define the model of the control.
@@ -377,8 +385,65 @@ export class ChActionListRender {
 
   /**
    * Fired when an item is clicked and `selection === "none"`.
+   * Applies for items that have `type === "actionable"` or
+   * (`type === "group"` and `expandable === true`)
    */
   @Event() itemClick: EventEmitter<ActionListItemModelExtended>;
+
+  /**
+   * Adds an item in the control.
+   *
+   * If the item already exists, the operation is canceled.
+   *
+   * If the `groupParentId` property is specified the item is added in the
+   * group determined by `groupParentId`. It only works if the item to add
+   * has `type === "actionable"`
+   */
+  @Method()
+  async addItem(
+    itemInfo: ActionListItemModel,
+    groupParentId?: string
+  ): Promise<void> {
+    // Already exists
+    if (this.#flattenedModel.get(itemInfo.id)) {
+      return;
+    }
+
+    if (groupParentId) {
+      const parentGroup = this.#flattenedModel.get(groupParentId);
+
+      // The parent group does not exists or it isn't a group
+      if (
+        !parentGroup ||
+        parentGroup.item.type !== "group" ||
+        itemInfo.type !== "actionable"
+      ) {
+        return;
+      }
+
+      parentGroup.item.items.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        parentItem: parentGroup.item
+      });
+
+      // Sort items in parent model
+      this.#sortModel(parentGroup.item.items);
+    }
+    // Item is placed at the root
+    else {
+      this.model.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        root: this.model
+      });
+
+      // Sort items in parent model
+      this.#sortModel(this.model);
+    }
+
+    forceUpdate(this);
+  }
 
   /**
    * Given a list of ids, it returns an array of the items that exists in the
@@ -389,6 +454,29 @@ export class ChActionListRender {
     itemsId: string[]
   ): Promise<ActionListItemModelExtended[]> {
     return this.#getItemsInfo(itemsId);
+  }
+
+  /**
+   * Remove the item and all its descendants from the control.
+   */
+  @Method()
+  async removeItem(itemId: string) {
+    const itemUIModel = this.#flattenedModel.get(itemId);
+
+    if (!itemUIModel) {
+      return;
+    }
+
+    // Remove all descendants
+    if (itemUIModel.item.type === "group") {
+      const items = itemUIModel.item.items;
+
+      items.forEach(item => {
+        this.#flattenedModel.delete(item.id);
+      });
+    }
+
+    this.#removeItem(itemUIModel);
   }
 
   #getItemsInfo = (itemsId: string[]): ActionListItemModelExtended[] => {
@@ -413,7 +501,25 @@ export class ChActionListRender {
 
     const itemUIModel = this.#flattenedModel.get(detail.itemId);
     const itemInfo = itemUIModel.item as ActionListItemActionable;
-    itemInfo.fixed = detail.value;
+
+    if (!this.fixItemCallback) {
+      this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      return;
+    }
+
+    this.fixItemCallback(itemInfo, detail.value).then(acceptChange => {
+      if (acceptChange) {
+        this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      }
+    });
+  }
+
+  #updateItemFix = (
+    itemUIModel: ActionListItemModelExtended,
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => {
+    itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
     this.#sortModel(
@@ -423,7 +529,7 @@ export class ChActionListRender {
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
-  }
+  };
 
   @Listen("remove")
   onRemove(event: ChActionListItemCustomEvent<string>) {
@@ -491,6 +597,9 @@ export class ChActionListRender {
     const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
     this.#checkIfMustExpandCollapseGroup(itemInfo);
 
+    if (itemInfo.type === "group" && !itemInfo.expandable) {
+      return;
+    }
     this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
   };
 
@@ -594,15 +703,21 @@ export class ChActionListRender {
     const parentArray =
       (itemUIModel as ActionListItemModelExtendedRoot).root ??
       (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
-    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const itemToRemoveId = itemUIModel.item.id;
 
     const itemToRemoveIndex = parentArray.findIndex(
-      el => (el as ActionListItemActionable).id === itemInfo.id
+      el => el.id === itemToRemoveId
     );
 
-    // Remove the UI model from the previous parent. The equality function
-    // must be by index, not by object reference
-    removeElement(parentArray, itemToRemoveIndex);
+    // In some situations, the user could remove the item before the
+    // "removeItemCallback" promise is resolved
+    if (itemToRemoveIndex > -1) {
+      // Remove the UI model from the previous parent. The equality function
+      // must be by index, not by object reference
+      removeElement(parentArray, itemToRemoveIndex);
+    }
+
+    this.#flattenedModel.delete(itemToRemoveId);
 
     // Queue a re-render
     forceUpdate(this);

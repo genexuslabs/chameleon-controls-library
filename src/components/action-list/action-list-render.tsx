@@ -711,9 +711,13 @@ export class ChActionListRender {
       el => el.id === itemToRemoveId
     );
 
-    // Remove the UI model from the previous parent. The equality function
-    // must be by index, not by object reference
-    removeElement(parentArray, itemToRemoveIndex);
+    // In some situations, the user could remove the item before the
+    // "removeItemCallback" promise is resolved
+    if (itemToRemoveIndex > -1) {
+      // Remove the UI model from the previous parent. The equality function
+      // must be by index, not by object reference
+      removeElement(parentArray, itemToRemoveIndex);
+    }
 
     this.#flattenedModel.delete(itemToRemoveId);
 

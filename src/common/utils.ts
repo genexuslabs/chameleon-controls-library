@@ -1,5 +1,11 @@
 import { Component } from "./interfaces";
-import { CssCursorProperty, ImageRender } from "./types";
+import {
+  CssCursorProperty,
+  GxImageMultiState,
+  GxImageMultiStateEnd,
+  GxImageMultiStateStart,
+  ImageRender
+} from "./types";
 
 export function debounce(
   func: () => void,
@@ -197,4 +203,49 @@ export const unsubscribeToRTLChanges = (subscriberId: string) => {
     RTLWatcher = undefined;
     RTLSubscribers = undefined;
   }
+};
+
+export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
+  image: GxImageMultiState,
+  direction: T
+): GxImageMultiStateStart | GxImageMultiStateEnd => {
+  if (direction === "start") {
+    const startImg: GxImageMultiStateStart = {
+      "--ch-start-img--base": image.base
+    };
+
+    if (image.active) {
+      startImg["--ch-start-img--active"] = image.active;
+    }
+    if (image.focus) {
+      startImg["--ch-start-img--focus"] = image.focus;
+    }
+    if (image.hover) {
+      startImg["--ch-start-img--hover"] = image.hover;
+    }
+    if (image.disabled) {
+      startImg["--ch-start-img--disabled"] = image.disabled;
+    }
+
+    return startImg;
+  }
+
+  const endImg: GxImageMultiStateEnd = {
+    "--ch-end-img--base": image.base
+  };
+
+  if (image.active) {
+    endImg["--ch-end-img--active"] = image.active;
+  }
+  if (image.focus) {
+    endImg["--ch-end-img--focus"] = image.focus;
+  }
+  if (image.hover) {
+    endImg["--ch-end-img--hover"] = image.hover;
+  }
+  if (image.disabled) {
+    endImg["--ch-end-img--disabled"] = image.disabled;
+  }
+
+  return endImg;
 };

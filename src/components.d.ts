@@ -324,6 +324,10 @@ export namespace Components {
     }
     interface ChActionListRender {
         /**
+          * Adds an item in the control.  If the item already exists, the operation is canceled.  If the `groupParentId` property is specified the item is added in the group determined by `groupParentId`. It only works if the item to add has `type === "actionable"`
+         */
+        "addItem": (itemInfo: ActionListItemModel, groupParentId?: string) => Promise<void>;
+        /**
           * Set this attribute if you want display a checkbox in all items by default.
          */
         "checkbox": boolean;
@@ -336,6 +340,13 @@ export namespace Components {
          */
         "editableItems": boolean;
         /**
+          * Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.
+         */
+        "fixItemCallback"?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
+        /**
           * Given a list of ids, it returns an array of the items that exists in the given list.
          */
         "getItemsInfo": (itemsId: string[]) => Promise<ActionListItemModelExtended[]>;
@@ -343,6 +354,10 @@ export namespace Components {
           * This property lets you define the model of the control.
          */
         "model": ActionListModel;
+        /**
+          * Remove the item and all its descendants from the control.
+         */
+        "removeItem": (itemId: string) => Promise<void>;
         /**
           * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
          */
@@ -2937,6 +2952,10 @@ export namespace Components {
          */
         "focusPreviousItem": (ctrlKeyPressed: boolean) => Promise<void>;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate": boolean;
@@ -2960,6 +2979,10 @@ export namespace Components {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata": string;
+        /**
+          * Specifies the model of the item.
+         */
+        "model": TreeViewItemModel;
         /**
           * Specifies a set of parts to use in every DOM element of the control.
          */
@@ -5511,11 +5534,18 @@ declare namespace LocalJSX {
          */
         "editableItems"?: boolean;
         /**
+          * Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.
+         */
+        "fixItemCallback"?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
+        /**
           * This property lets you define the model of the control.
          */
         "model"?: ActionListModel;
         /**
-          * Fired when an item is clicked and `selection === "none"`.
+          * Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`)
          */
         "onItemClick"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended>) => void;
         /**
@@ -8187,6 +8217,10 @@ declare namespace LocalJSX {
          */
         "expanded"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate"?: boolean;
@@ -8210,6 +8244,10 @@ declare namespace LocalJSX {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata"?: string;
+        /**
+          * Specifies the model of the item.
+         */
+        "model"?: TreeViewItemModel;
         /**
           * Fired when the checkbox value of the control is changed.
          */

@@ -18,6 +18,11 @@ import {
   TreeViewItemOpenReferenceInfo,
   TreeViewItemSelected
 } from "../tree-view/types";
+import {
+  TreeViewImagePathCallback,
+  TreeViewItemImageMultiState,
+  TreeViewItemModel
+} from "../../types";
 import { mouseEventModifierKey } from "../../../common/helpers";
 import {
   ChCheckboxCustomEvent,
@@ -26,14 +31,20 @@ import {
 import {
   isPseudoElementImg,
   removeDragImage,
-  tokenMap
+  tokenMap,
+  updateDirectionInImageCustomVar
 } from "../../../../common/utils";
 import {
   INITIAL_LEVEL,
   getTreeItemExpandedPart,
   getTreeItemLevelPart
 } from "../../utils";
-import { ImageRender } from "../../../../common/types";
+import {
+  GxImageMultiState,
+  GxImageMultiStateEnd,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../../../common/types";
 import {
   TREE_VIEW_ITEM_CHECKBOX_EXPORT_PARTS,
   TREE_VIEW_ITEM_EXPORT_PARTS,
@@ -130,6 +141,11 @@ export class ChTreeViewItem {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #ignoreCheckboxChange = false;
+
+  #startImage: GxImageMultiStateStart | undefined;
+  #startImageExpanded: GxImageMultiStateStart | undefined;
+  #endImage: GxImageMultiStateEnd | undefined;
+  #endImageExpanded: GxImageMultiStateEnd | undefined;
 
   // Refs
   #headerRef: HTMLButtonElement;
@@ -239,6 +255,13 @@ export class ChTreeViewItem {
    * Specifies the src of the end image.
    */
   @Prop() readonly endImgSrc: string;
+  @Watch("endImgSrc")
+  endImgSrcChanged(newImage: string) {
+    // Necessary to avoid race condition where the image is updated, the Watch
+    // is dispatched and then the model is updated
+    this.model.endImgSrc = newImage;
+    this.#computeImage("end");
+  }
 
   /**
    * Specifies how the end image will be rendered.
@@ -274,6 +297,17 @@ export class ChTreeViewItem {
     setTimeout(() => {
       this.#lazyLoadItems(isExpanded);
     });
+  }
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * item image needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback!: TreeViewImagePathCallback;
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#computeImage("start");
+    this.#computeImage("end");
   }
 
   /**
@@ -321,6 +355,11 @@ export class ChTreeViewItem {
   @Prop() readonly metadata: string;
 
   /**
+   * Specifies the model of the item.
+   */
+  @Prop() readonly model: TreeViewItemModel;
+
+  /**
    * Specifies a set of parts to use in every DOM element of the control.
    */
   @Prop() readonly parts?: string;
@@ -358,6 +397,13 @@ export class ChTreeViewItem {
    * Specifies the src of the start image.
    */
   @Prop() readonly startImgSrc: string;
+  @Watch("startImgSrc")
+  startImgSrcChanged(newImage: string) {
+    // Necessary to avoid race condition where the image is updated, the Watch
+    // is dispatched and then the model is updated
+    this.model.startImgSrc = newImage;
+    this.#computeImage("start");
+  }
 
   /**
    * Specifies how the start image will be rendered.
@@ -572,6 +618,76 @@ export class ChTreeViewItem {
       indeterminate: newIndeterminate
     });
   }
+
+  #computeImage = (direction: "start" | "end") => {
+    if (
+      (direction === "start" && !this.startImgSrc) ||
+      (direction === "end" && !this.endImgSrc)
+    ) {
+      return;
+    }
+
+    const img = this.getImagePathCallback(this.model, direction);
+    const imageIsString = typeof img === "string";
+    const parsedImg: GxImageMultiState = imageIsString
+      ? { base: img }
+      : img.default;
+
+    if (direction === "start") {
+      // Add url("") wrapper for the image path as it is going to be used in a
+      // background or mask
+      if (imageIsString && this.startImgType !== "img") {
+        parsedImg.base = `url("${parsedImg.base}")`;
+      }
+      // If the image is not a string, then the expanded member could be defined
+      else {
+        this.#startImageExpanded = this.startImgSrc
+          ? (updateDirectionInImageCustomVar(
+              (img as TreeViewItemImageMultiState).expanded,
+              "start"
+            ) as GxImageMultiStateStart)
+          : undefined;
+      }
+
+      this.#startImage = this.startImgSrc
+        ? (updateDirectionInImageCustomVar(
+            parsedImg,
+            "start"
+          ) as GxImageMultiStateStart)
+        : undefined;
+    }
+    // End image
+    else {
+      // Add url("") wrapper for the image path as it is going to be used in a
+      // background or mask
+      if (imageIsString && this.endImgType !== "img") {
+        parsedImg.base = `url("${parsedImg.base}")`;
+      }
+      // If the image is not a string, then the expanded member could be defined
+      else {
+        this.#endImageExpanded = this.endImgSrc
+          ? (updateDirectionInImageCustomVar(
+              (img as TreeViewItemImageMultiState).expanded,
+              "end"
+            ) as GxImageMultiStateEnd)
+          : undefined;
+      }
+
+      this.#endImage = this.endImgSrc
+        ? (updateDirectionInImageCustomVar(
+            parsedImg,
+            "end"
+          ) as GxImageMultiStateEnd)
+        : undefined;
+    }
+  };
+
+  #getImageExpandedOrDefault = <
+    T extends GxImageMultiStateStart | GxImageMultiStateEnd
+  >(
+    base: T,
+    expanded: T
+  ): T => (this.expanded ? expanded ?? base : base);
 
   #getDirectTreeItems = (): HTMLChTreeViewItemElement[] =>
     Array.from(
@@ -839,8 +955,7 @@ export class ChTreeViewItem {
   };
 
   #renderImg = (cssClass: string, src: string, imageType: ImageRender) =>
-    imageType === "img" &&
-    src && (
+    imageType === "img" && (
       <img
         aria-hidden="true"
         class={cssClass}
@@ -896,6 +1011,9 @@ export class ChTreeViewItem {
         this.#handleCheckBoxChangeInItems
       );
     }
+
+    this.#computeImage("start");
+    this.#computeImage("end");
 
     // Static attributes that we including in the Host functional component to
     // eliminate additional overhead
@@ -991,6 +1109,14 @@ export class ChTreeViewItem {
             [levelPart]: canShowLines,
             [this.parts]: hasParts
           })}
+          style={
+            pseudoStartImage
+              ? this.#getImageExpandedOrDefault(
+                  this.#startImage,
+                  this.#startImageExpanded
+                )
+              : undefined
+          }
           type="button"
           disabled={this.disabled}
           onClick={this.#handleActionClick}
@@ -1067,23 +1193,24 @@ export class ChTreeViewItem {
                   [expandedPart]: !this.leaf,
                   [this.parts]: hasParts
                 })}
-                style={{
-                  "--ch-start-img": pseudoStartImage
-                    ? `url("${this.startImgSrc}")`
-                    : null,
-                  "--ch-end-img": pseudoEndImage
-                    ? `url("${this.endImgSrc}")`
-                    : null
-                }}
+                style={
+                  pseudoEndImage
+                    ? this.#getImageExpandedOrDefault(
+                        this.#endImage,
+                        this.#endImageExpanded
+                      )
+                    : undefined
+                }
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
-                {this.#renderImg(
-                  hasParts
-                    ? `${START_IMAGE_PARTS} ${this.parts}`
-                    : START_IMAGE_PARTS,
-                  this.startImgSrc,
-                  this.startImgType
-                )}
+                {this.startImgSrc &&
+                  this.#renderImg(
+                    hasParts
+                      ? `${START_IMAGE_PARTS} ${this.parts}`
+                      : START_IMAGE_PARTS,
+                    this.#startImage["--ch-start-img--base"],
+                    this.startImgType
+                  )}
 
                 {this.editable && this.editing ? (
                   <input
@@ -1105,13 +1232,14 @@ export class ChTreeViewItem {
                   this.caption
                 )}
 
-                {this.#renderImg(
-                  hasParts
-                    ? `${END_IMAGE_PARTS} ${this.parts}`
-                    : END_IMAGE_PARTS,
-                  this.endImgSrc,
-                  this.endImgType
-                )}
+                {this.endImgSrc &&
+                  this.#renderImg(
+                    hasParts
+                      ? `${END_IMAGE_PARTS} ${this.parts}`
+                      : END_IMAGE_PARTS,
+                    this.#endImage["--ch-end-img--base"],
+                    this.endImgType
+                  )}
               </div>,
 
               this.showDownloadingSpinner && !this.leaf && this.downloading && (

@@ -81,19 +81,6 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
 
-const defaultGetImagePath: TreeViewImagePathCallback = (
-  imgSrc: string,
-  treeState: ChTreeViewRender,
-  useGxRender?: boolean
-) =>
-  useGxRender
-    ? fromGxImageToURL(
-        imgSrc,
-        treeState.gxSettings,
-        treeState.gxImageConstructor
-      )
-    : imgSrc;
-
 // GeneXus implementation
 const gxDragDisabled = (
   itemModel: TreeViewGXItemModel,
@@ -162,32 +149,26 @@ const defaultRenderItem = <T extends true | false>(
       }
       dropDisabled={isDropDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
-      endImgSrc={treeState.getImagePathCallback(
-        itemModel.endImgSrc,
-        treeState,
-        useGxRender
-      )}
+      endImgSrc={itemModel.endImgSrc}
       endImgType={itemModel.endImgType ?? "background"}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
+      getImagePathCallback={treeState.getImagePathCallback}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
       leaf={itemModel.leaf}
       level={level}
       metadata={itemModel.metadata}
+      model={itemModel}
       parts={itemModel.parts}
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
       }
-      startImgSrc={treeState.getImagePathCallback(
-        itemModel.startImgSrc,
-        treeState,
-        useGxRender
-      )}
+      startImgSrc={itemModel.startImgSrc}
       startImgType={itemModel.startImgType ?? "background"}
     >
       {treeState.expanded &&
@@ -498,8 +479,16 @@ export class ChTreeViewRender {
    * re-implement item rendering (`renderItem` property) just to change the
    * path used for the images.
    */
-  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
-    defaultGetImagePath;
+  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback = (
+    item: TreeViewItemModel,
+    iconDirection: "start" | "end" = "start"
+  ) => {
+    const img = iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
+
+    return this.useGxRender
+      ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
+      : img;
+  };
 
   /**
    * Callback that is executed when a item request to load its subitems.

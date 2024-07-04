@@ -30,6 +30,32 @@
 
   &--disabled {
     pointer-events: none;
+
+    & > .action {
+      --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
+      --ch-end-img: var(--ch-end-img--disabled, var(--ch-end-img--base));
+    }
+  }
+
+  &:hover > .action {
+    --ch-start-img: var(--ch-start-img--hover, var(--ch-start-img--base));
+    --ch-end-img: var(--ch-end-img--hover, var(--ch-end-img--base));
+  }
+
+  &:active > .action {
+    --ch-start-img: var(--ch-start-img--active, var(--ch-start-img--base));
+    --ch-end-img: var(--ch-end-img--active, var(--ch-end-img--base));
+  }
+
+  &:focus > .action {
+    --ch-start-img: var(
+      --ch-start-img--focus,
+      var(--ch-start-img--active, var(--ch-start-img--base))
+    );
+    --ch-end-img: var(
+      --ch-end-img--focus,
+      var(--ch-end-img--active, var(--ch-end-img--base))
+    );
   }
 }
 
@@ -132,6 +158,8 @@
 //             Action
 // - - - - - - - - - - - - - - - -
 .action {
+  --ch-start-img: var(--ch-start-img--base);
+  --ch-end-img: var(--ch-end-img--base);
   display: grid;
   grid-template: "start-img text" / max-content 1fr;
   gap: var(--ch-tree-view-item-gap);

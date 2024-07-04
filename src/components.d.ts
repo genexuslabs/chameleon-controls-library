@@ -2687,6 +2687,10 @@ export namespace Components {
      */
     interface ChTheme {
         /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded.
+         */
+        "avoidFlashOfUnstyledContent": boolean;
+        /**
           * A string containing the baseURL used to resolve relative URLs in the stylesheet
          */
         "baseUrl": string;
@@ -7954,6 +7958,10 @@ declare namespace LocalJSX {
      * either in the Document or in a Shadow-Root.
      */
     interface ChTheme {
+        /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded.
+         */
+        "avoidFlashOfUnstyledContent"?: boolean;
         /**
           * A string containing the baseURL used to resolve relative URLs in the stylesheet
          */

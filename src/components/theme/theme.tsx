@@ -3,6 +3,7 @@ import {
   Element,
   Event,
   EventEmitter,
+  h,
   Prop,
   Watch
 } from "@stencil/core";
@@ -11,6 +12,8 @@ import {
   instanceTheme,
   removeThemeElement
 } from "./theme-stylesheet";
+
+const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 
 /**
  * It allows you to load a style sheet in a similar way to the
@@ -23,6 +26,12 @@ import {
 })
 export class ChTheme {
   @Element() el: HTMLChThemeElement;
+
+  /**
+   * `true` to visually hide the contents of the root node while the control's
+   * style is not loaded.
+   */
+  @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
 
   /**
    * Specifies the name of the theme to instantiate
@@ -66,5 +75,12 @@ export class ChTheme {
 
   disconnectedCallback() {
     removeThemeElement(this.el);
+  }
+
+  render() {
+    return (
+      this.avoidFlashOfUnstyledContent &&
+      !this.loaded && <style>{STYLE_TO_AVOID_FOUC}</style>
+    );
   }
 }

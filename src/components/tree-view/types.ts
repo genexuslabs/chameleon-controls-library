@@ -1,5 +1,5 @@
+import { GxImageMultiState } from "../../common/types";
 import { ImageRender } from "../../components";
-import { ChTreeViewRender } from "./tree-view-render";
 
 export type TreeViewModel = TreeViewItemModel[];
 
@@ -125,7 +125,11 @@ export type LazyLoadTreeItemsCallback = (
 ) => Promise<TreeViewItemModel[]>;
 
 export type TreeViewImagePathCallback = (
-  imgSrc: string,
-  treeState: ChTreeViewRender,
-  useGxRender?: boolean
-) => string;
+  item: TreeViewItemModel,
+  iconDirection: "start" | "end"
+) => string | TreeViewItemImageMultiState;
+
+export type TreeViewItemImageMultiState = {
+  default: GxImageMultiState;
+  expanded?: GxImageMultiState;
+};

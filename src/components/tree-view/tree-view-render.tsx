@@ -65,9 +65,6 @@ let autoId = 0;
 
 const ROOT_ID = null;
 
-const DEFAULT_DRAG_DISABLED_VALUE = false;
-const DEFAULT_DROP_DISABLED_VALUE = false;
-const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -345,13 +342,13 @@ export class ChTreeViewRender {
    * This attribute lets you specify if the drag operation is disabled in all
    * items by default. If `true`, the items can't be dragged.
    */
-  @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
+  @Prop() readonly dragDisabled: boolean = true;
 
   /**
    * This attribute lets you specify if the drop operation is disabled in all
    * items by default. If `true`, the items won't accept any drops.
    */
-  @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
+  @Prop() readonly dropDisabled: boolean = true;
 
   /**
    * Callback that is executed when a list of items request to be dropped into
@@ -371,7 +368,7 @@ export class ChTreeViewRender {
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
    */
-  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+  @Prop() readonly editableItems: boolean = false;
 
   /**
    * Specifies what kind of expandable button is displayed in the items by

@@ -206,9 +206,13 @@ export const unsubscribeToRTLChanges = (subscriberId: string) => {
 };
 
 export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
-  image: GxImageMultiState,
+  image: GxImageMultiState | undefined,
   direction: T
-): GxImageMultiStateStart | GxImageMultiStateEnd => {
+): GxImageMultiStateStart | GxImageMultiStateEnd | undefined => {
+  if (!image) {
+    return undefined;
+  }
+
   if (direction === "start") {
     const startImg: GxImageMultiStateStart = {
       "--ch-start-img--base": image.base

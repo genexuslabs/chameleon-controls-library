@@ -69,8 +69,10 @@ const LAST_SUB_ITEM = `:scope>${TREE_ITEM_TAG_NAME}:last-child`;
 const DENY_DROP_CLASS = `item-deny-drop`;
 
 // Custom parts
-const START_IMAGE_PARTS = `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.START_IMAGE}`;
-const END_IMAGE_PARTS = `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.END_IMAGE}`;
+const START_IMAGE_PARTS =
+  `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.START_IMAGE}` as const;
+const END_IMAGE_PARTS =
+  `${TREE_VIEW_ITEM_PARTS_DICTIONARY.IMAGE} ${TREE_VIEW_ITEM_PARTS_DICTIONARY.END_IMAGE}` as const;
 
 // Keys
 const EXPANDABLE_ID = "expandable";
@@ -970,7 +972,7 @@ export class ChTreeViewItem {
     imageType === "img" && (
       <img
         aria-hidden="true"
-        class={cssClass}
+        class={`img ${cssClass}`}
         part={cssClass}
         alt=""
         src={src}

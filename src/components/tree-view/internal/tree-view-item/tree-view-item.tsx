@@ -631,9 +631,15 @@ export class ChTreeViewItem {
     const imageIsString = typeof img === "string";
     const parsedImg: GxImageMultiState = imageIsString
       ? { base: img }
-      : img.default;
+      : img?.default;
 
     if (direction === "start") {
+      if (!img) {
+        this.#startImage = null;
+        this.#startImageExpanded = null;
+        return;
+      }
+
       // Add url("") wrapper for the image path as it is going to be used in a
       // background or mask
       if (imageIsString && this.startImgType !== "img") {
@@ -658,6 +664,12 @@ export class ChTreeViewItem {
     }
     // End image
     else {
+      if (!img) {
+        this.#endImage = null;
+        this.#endImageExpanded = null;
+        return;
+      }
+
       // Add url("") wrapper for the image path as it is going to be used in a
       // background or mask
       if (imageIsString && this.endImgType !== "img") {
@@ -1110,7 +1122,7 @@ export class ChTreeViewItem {
             [this.parts]: hasParts
           })}
           style={
-            pseudoStartImage
+            pseudoStartImage && (this.#startImage || this.#startImageExpanded)
               ? this.#getImageExpandedOrDefault(
                   this.#startImage,
                   this.#startImageExpanded
@@ -1194,7 +1206,7 @@ export class ChTreeViewItem {
                   [this.parts]: hasParts
                 })}
                 style={
-                  pseudoEndImage
+                  pseudoEndImage && (this.#endImage || this.#endImageExpanded)
                     ? this.#getImageExpandedOrDefault(
                         this.#endImage,
                         this.#endImageExpanded
@@ -1204,6 +1216,7 @@ export class ChTreeViewItem {
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
               >
                 {this.startImgSrc &&
+                  this.#startImage &&
                   this.#renderImg(
                     hasParts
                       ? `${START_IMAGE_PARTS} ${this.parts}`
@@ -1233,6 +1246,7 @@ export class ChTreeViewItem {
                 )}
 
                 {this.endImgSrc &&
+                  this.#endImage &&
                   this.#renderImg(
                     hasParts
                       ? `${END_IMAGE_PARTS} ${this.parts}`

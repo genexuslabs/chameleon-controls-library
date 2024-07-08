@@ -1,0 +1,54 @@
+ch-image {
+  /**
+   * @prop --ch-image-size:
+   * Specifies the box size that contains the image.
+   * @default 0.875em
+   */
+  --ch-image-size: 0.875em;
+
+  /**
+    * @prop --ch-image-background-size:
+    * Specifies the size of the image.
+    * @default 100%
+    */
+  --ch-image-background-size: 100%;
+
+  display: inline-grid;
+  inline-size: var(--ch-image-size);
+  block-size: var(--ch-image-size);
+  pointer-events: none;
+
+  --ch-image-src: var(--ch-start-img--base);
+}
+
+[data-ch-image] {
+  &:hover .ch-image--enabled {
+    --ch-image-src: var(--ch-start-img--hover, var(--ch-start-img--base));
+  }
+
+  &:active .ch-image--enabled {
+    --ch-image-src: var(--ch-start-img--active, var(--ch-start-img--base));
+  }
+
+  &:focus .ch-image--enabled {
+    --ch-image-src: var(
+      --ch-start-img--focus,
+      var(--ch-start-img--active, var(--ch-start-img--base))
+    );
+  }
+}
+
+.ch-image--disabled {
+  --ch-image-src: var(--ch-start-img--disabled, var(--ch-start-img--base));
+}
+
+.ch-image--background {
+  background: no-repeat center / var(--ch-image-background-size)
+    var(--ch-image-src);
+}
+
+.ch-image--mask {
+  -webkit-mask: no-repeat center / var(--ch-image-background-size)
+    var(--ch-image-src);
+  background-color: currentColor;
+}

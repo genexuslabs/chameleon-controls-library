@@ -8,6 +8,7 @@ import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
+import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChMarkdown } from "../../../components/markdown/markdown";
 import { ChPopover } from "../../../components/popover/popover";
@@ -119,6 +120,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChComboBox>
   | Mutable<ChDialog>
   | Mutable<ChDropdownRender>
+  | Mutable<ChImage>
   | Mutable<ChLayoutSplitter>
   | Mutable<ChPopover>
   | Mutable<ChQr>

@@ -91,6 +91,12 @@ legend {
   grid-auto-rows: 128px;
 }
 
+.image-test-main-wrapper {
+  display: grid;
+  grid-template-columns: max-content max-content max-content max-content;
+  grid-template-rows: max-content max-content;
+}
+
 .markdown-test-main-wrapper {
   display: grid;
   grid-template-rows: max-content 1fr;
@@ -259,6 +265,11 @@ ch-showcase ch-flexible-layout-render {
   --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#active");
   --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#hover");
   --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#disabled");
+
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#disabled");
 }
 
 :root.light {
@@ -281,6 +292,11 @@ ch-showcase ch-flexible-layout-render {
   --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#active");
   --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#hover");
   --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#disabled");
+
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#disabled");
 }
 
 /* This is a WA to improve the UX */
@@ -293,63 +309,3 @@ ch-showcase ch-flexible-layout-render {
 .combo-box::part(item):hover {
   background-color: var(--accents-un-accent__primary-dim--hover);
 } */
-
-.list-box-secondary {
-  --ch-action-list-group__expandable-button-size: var(--spacing-un-spacing--l);
-  --ch-action-list-group__expandable-button-image-size: calc(100% - 4px);
-  padding: var(--spacing-un-spacing--xs);
-
-  font-size: 14px;
-  line-height: 18px;
-  letter-spacing: 0.2px;
-
-  &::part(item__action),
-  &::part(group__action),
-  &::part(group__caption) {
-    border-radius: 4px;
-    padding-block: var(--spacing-un-spacing--s);
-    padding-inline: var(--spacing-un-spacing--m);
-  }
-
-  &::part(item__action):focus-visible,
-  &::part(group__action):focus-visible {
-    outline: 1px solid var(--accents-un-accent__secondary--active);
-    outline-offset: -1px;
-  }
-
-  &::part(item__action nested-expandable) {
-    padding-inline-start: calc(
-      var(--spacing-un-spacing--l) + var(--spacing-un-spacing--s) +
-        var(--spacing-un-spacing--m)
-    );
-  }
-
-  &::part(group__action),
-  &::part(group__caption) {
-    font-weight: 600;
-    gap: var(--spacing-un-spacing--s);
-  }
-
-  &::part(item__action not-selectable):hover,
-  &::part(group__action not-selectable):hover {
-    color: var(--text-un-text__primary--hover);
-  }
-
-  &::part(item__action selectable):hover,
-  &::part(group__action selectable):hover,
-  &::part(item__action selected),
-  &::part(group__action selected) {
-    background-color: var(--accents-un-accent__primary-dim--hover);
-  }
-
-  &::part(item__action disabled),
-  &::part(group__action disabled),
-  &::part(group__caption disabled) {
-    color: var(--text-un-text__disabled);
-  }
-
-  &::part(separator) {
-    margin-block: var(--spacing-un-spacing--s);
-    background-color: var(--accents-un-accent__secondary--hover);
-  }
-}

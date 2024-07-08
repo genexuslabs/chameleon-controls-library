@@ -50,7 +50,7 @@ export class ChImage {
    */
   @Prop() readonly getImagePathCallback!: (
     imageSrc: string
-  ) => GxImageMultiState;
+  ) => GxImageMultiState | undefined;
 
   /**
    * Specifies the src for the image.
@@ -58,9 +58,16 @@ export class ChImage {
   @Prop() readonly src: string | undefined;
   @Watch("src")
   srcChanged(newSrc: string | undefined) {
+    const image = this.getImagePathCallback(newSrc);
+
+    if (!image) {
+      this.#image = null;
+      return;
+    }
+
     this.#image = newSrc
       ? (updateDirectionInImageCustomVar(
-          this.getImagePathCallback(newSrc),
+          image,
           "start"
         ) as GxImageMultiStateStart)
       : undefined;
@@ -77,10 +84,7 @@ export class ChImage {
     this.#currentContainerRef?.setAttribute(DATA_IMAGE, "");
 
     if (this.src) {
-      this.#image = updateDirectionInImageCustomVar(
-        this.getImagePathCallback(this.src),
-        "start"
-      ) as GxImageMultiStateStart;
+      this.srcChanged(this.src);
     }
   }
 

@@ -127,7 +127,7 @@ export type LazyLoadTreeItemsCallback = (
 export type TreeViewImagePathCallback = (
   item: TreeViewItemModel,
   iconDirection: "start" | "end"
-) => string | TreeViewItemImageMultiState;
+) => string | TreeViewItemImageMultiState | undefined;
 
 export type TreeViewItemImageMultiState = {
   default: GxImageMultiState;

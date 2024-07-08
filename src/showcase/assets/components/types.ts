@@ -7,6 +7,7 @@ import { ChCode } from "../../../components/code/code";
 import { ChComboBox } from "../../../components/combobox/combo-box";
 import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
+import { ChEdit } from "../../../components/edit/edit";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChMarkdown } from "../../../components/markdown/markdown";
@@ -119,6 +120,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChComboBox>
   | Mutable<ChDialog>
   | Mutable<ChDropdownRender>
+  | Mutable<ChEdit>
   | Mutable<ChLayoutSplitter>
   | Mutable<ChPopover>
   | Mutable<ChQr>

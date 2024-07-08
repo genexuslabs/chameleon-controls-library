@@ -1386,7 +1386,7 @@ export namespace Components {
          */
         "getImagePathCallback": (
     imageSrc: string
-  ) => GxImageMultiState;
+  ) => GxImageMultiState | undefined;
         /**
           * Specifies the src for the image.
          */
@@ -6607,7 +6607,7 @@ declare namespace LocalJSX {
          */
         "getImagePathCallback": (
     imageSrc: string
-  ) => GxImageMultiState;
+  ) => GxImageMultiState | undefined;
         /**
           * Specifies the src for the image.
          */

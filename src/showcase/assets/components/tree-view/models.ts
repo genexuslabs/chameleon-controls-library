@@ -5,7 +5,8 @@ import {
 import {
   LazyLoadTreeItemsCallback,
   TreeViewItemModel,
-  TreeViewImagePathCallback
+  TreeViewImagePathCallback,
+  TreeViewModel
 } from "../../../../components/tree-view/types";
 
 const KB_EXPLORER_ORDER = {
@@ -317,7 +318,7 @@ const kbExplorer_root: TreeViewItemModel[] = [
   }
 ];
 
-export const kbExplorerModel = [
+export const kbExplorerModel: TreeViewModel = [
   {
     id: "root",
     caption: "GeneXusNext Develop",
@@ -325,6 +326,7 @@ export const kbExplorerModel = [
     expanded: true,
     leaf: false,
     startImgSrc: `${ASSETS_PREFIX}version.svg`,
+    startImgType: "img",
     dragDisabled: true,
     dropDisabled: true,
     items: kbExplorer_root
@@ -337,6 +339,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     caption: "Prompt",
     dragDisabled: true,
     dropDisabled: true,
+    startImgType: "img",
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",

@@ -300,9 +300,9 @@ ch-showcase ch-flexible-layout-render {
 }
 
 /* This is a WA to improve the UX */
-.navigation-list.tree-view-primary::part(item__action) {
+ch-tree-view-render.tree-view-primary::part(item__action) {
   --ch-tree-view-item__image-size: 20px;
-  padding-block: var(--spacing-un-spacing--s);
+  padding-block: var(--spacing-un-spacing--s, var(--mer-spacing--2xs));
 }
 
 /* 

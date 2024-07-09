@@ -350,7 +350,7 @@ export class ChShowcase {
   // Refs
   #copyButtonRef: HTMLButtonElement;
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
-  #iframeRef: HTMLIFrameElement;
+  #iframeRef: HTMLIFrameElement | undefined;
 
   /**
    * Specifies the theme used in the iframe of the control
@@ -363,7 +363,7 @@ export class ChShowcase {
       return;
     }
 
-    this.#iframeRef.contentWindow.postMessage(
+    this.#iframeRef?.contentWindow.postMessage(
       newColorSchemeValue,
       `${window.location.origin}/${this.pageSrc}`
     );
@@ -389,7 +389,7 @@ export class ChShowcase {
       return;
     }
 
-    this.#iframeRef.contentWindow.postMessage(
+    this.#iframeRef?.contentWindow.postMessage(
       newDSValue,
       `${window.location.origin}/${this.pageSrc}`
     );

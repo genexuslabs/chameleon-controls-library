@@ -15,7 +15,7 @@ import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
+import { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
 import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./deprecated-components/grid/ch-grid";
@@ -64,7 +64,7 @@ export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
+export { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
 export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./deprecated-components/grid/ch-grid";
@@ -1367,6 +1367,34 @@ export namespace Components {
           * The URL of the icon.
          */
         "src": string;
+    }
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface ChImage {
+        /**
+          * Specifies a reference for the container, in order to update the state of the icon. The reference must be an ancestor of the control. If not specified, the direct parent reference will be used.
+         */
+        "containerRef": HTMLElement | undefined;
+        /**
+          * Specifies if the icon is disabled.
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies a callback that is executed when the path the image needs to be resolved.
+         */
+        "getImagePathCallback": (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the src for the image.
+         */
+        "src": string | undefined;
+        /**
+          * Specifies how the image will be rendered.
+         */
+        "type": Exclude<ImageRender, "img">;
     }
     interface ChIntersectionObserver {
         /**
@@ -4170,6 +4198,16 @@ declare global {
         prototype: HTMLChIconElement;
         new (): HTMLChIconElement;
     };
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface HTMLChImageElement extends Components.ChImage, HTMLStencilElement {
+    }
+    var HTMLChImageElement: {
+        prototype: HTMLChImageElement;
+        new (): HTMLChImageElement;
+    };
     interface HTMLChIntersectionObserverElementEventMap {
         "intersectionUpdate": IntersectionObserverEntry;
     }
@@ -5213,6 +5251,7 @@ declare global {
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
+        "ch-image": HTMLChImageElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-markdown": HTMLChMarkdownElement;
@@ -6549,6 +6588,34 @@ declare namespace LocalJSX {
           * The URL of the icon.
          */
         "src"?: string;
+    }
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface ChImage {
+        /**
+          * Specifies a reference for the container, in order to update the state of the icon. The reference must be an ancestor of the control. If not specified, the direct parent reference will be used.
+         */
+        "containerRef"?: HTMLElement | undefined;
+        /**
+          * Specifies if the icon is disabled.
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path the image needs to be resolved.
+         */
+        "getImagePathCallback": (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the src for the image.
+         */
+        "src"?: string | undefined;
+        /**
+          * Specifies how the image will be rendered.
+         */
+        "type"?: Exclude<ImageRender, "img">;
     }
     interface ChIntersectionObserver {
         /**
@@ -8630,6 +8697,7 @@ declare namespace LocalJSX {
         "ch-grid-settings-columns": ChGridSettingsColumns;
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
+        "ch-image": ChImage;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
         "ch-markdown": ChMarkdown;
@@ -8824,6 +8892,11 @@ declare module "@stencil/core" {
              */
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+            /**
+             * A control to display multiple images, depending on the state (focus, hover,
+             * active or disabled) of a parent element.
+             */
+            "ch-image": LocalJSX.ChImage & JSXBase.HTMLAttributes<HTMLChImageElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
             /**

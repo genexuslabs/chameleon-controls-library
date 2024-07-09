@@ -31,6 +31,7 @@
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-edit](../../../components/edit)
 - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
+- [ch-image](../../../components/image)
 - [ch-layout-splitter](../../../components/layout-splitter)
 - [ch-markdown](../../../components/markdown)
 - [ch-popover](../../../components/popover)
@@ -56,6 +57,7 @@ graph TD;
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-edit
   ch-showcase --> ch-test-flexible-layout
+  ch-showcase --> ch-image
   ch-showcase --> ch-layout-splitter
   ch-showcase --> ch-markdown
   ch-showcase --> ch-popover

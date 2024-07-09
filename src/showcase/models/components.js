@@ -17,6 +17,7 @@ const components = [
   ["dialog", "Dialog", EXPERIMENTAL],
   ["edit", "Edit", EXPERIMENTAL],
   ["flexible-layout", "Flexible Layout", EXPERIMENTAL],
+  ["image", "Image", EXPERIMENTAL],
   ["tabular-grid", "Tabular Grid", STABLE],
   ["layout-splitter", "Layout Splitter", EXPERIMENTAL],
   ["markdown", "Markdown", EXPERIMENTAL],

@@ -81,8 +81,7 @@
 
 // Auto grow = True and multiline = true
 :host(.ch-edit--multiline) {
-  resize: vertical;
-  overflow: auto;
+  overflow: hidden;
 }
 
 // Implements auto-grow when the ch-edit is multiline

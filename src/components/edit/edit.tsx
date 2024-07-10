@@ -49,6 +49,7 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
  *  - Useful style resets
  *  - Support to auto grow the control when used with multiline (useful to
  *    model chat inputs).
+ *  - An image which can have multiple states.
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
  * @part hidden-multiline - The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.

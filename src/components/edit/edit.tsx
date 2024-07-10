@@ -427,7 +427,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 maxLength={this.maxLength}
                 max={MAX_DATE_VALUE[this.type]} // Limit the year to 4 digits
                 min={MIN_DATE_VALUE[this.type]} // Extend the minimum value of the date
-                pattern={this.pattern}
+                pattern={this.pattern || undefined}
                 placeholder={this.placeholder}
                 readOnly={this.readonly}
                 spellcheck={this.spellcheck}

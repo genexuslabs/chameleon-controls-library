@@ -2,6 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChEdit } from "../../../../components/edit/edit";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { getImagePathCallback } from "./models";
 
 const state: Partial<Mutable<ChEdit>> = {};
 const formRefs: {
@@ -50,6 +51,7 @@ const render = () => (
           autoGrow={state.autoGrow}
           class="form-input"
           disabled={state.disabled}
+          getImagePathCallback={getImagePathCallback}
           maxLength={state.maxLength}
           mode={state.mode}
           multiline={state.multiline}
@@ -59,6 +61,8 @@ const render = () => (
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           type={state.type}
           triggerButtonAccessibleName={state.triggerButtonAccessibleName}
           readonly={state.readonly}
@@ -84,6 +88,7 @@ const render = () => (
           autoGrow={state.autoGrow}
           class="form-input"
           disabled={state.disabled}
+          getImagePathCallback={getImagePathCallback}
           maxLength={state.maxLength}
           mode={state.mode}
           multiline={state.multiline}
@@ -93,6 +98,8 @@ const render = () => (
           value={state.value}
           showTrigger={state.showTrigger}
           spellcheck={state.spellcheck}
+          startImgSrc={state.startImgSrc}
+          startImgType={state.startImgType}
           type={state.type}
           triggerButtonAccessibleName={state.triggerButtonAccessibleName}
           readonly={state.readonly}
@@ -118,6 +125,7 @@ const render = () => (
             autoGrow={state.autoGrow}
             class="form-input"
             disabled={state.disabled}
+            getImagePathCallback={getImagePathCallback}
             maxLength={state.maxLength}
             mode={state.mode}
             multiline={state.multiline}
@@ -127,6 +135,8 @@ const render = () => (
             value={state.value}
             showTrigger={state.showTrigger}
             spellcheck={state.spellcheck}
+            startImgSrc={state.startImgSrc}
+            startImgType={state.startImgType}
             type={state.type}
             triggerButtonAccessibleName={state.triggerButtonAccessibleName}
             readonly={state.readonly}
@@ -148,7 +158,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         id: "value",
         columnSpan: 2,
         caption: "Value",
-        value: "Option",
+        value: "",
         type: "string"
       },
       {
@@ -197,7 +207,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         id: "pattern",
         columnSpan: 2,
         caption: "Pattern",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -238,6 +248,22 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
         columnSpan: 2,
         value: "Add a value...",
         type: "string"
+      },
+      {
+        id: "startImgSrc",
+        caption: "Start Image Src",
+        value: "folder",
+        type: "string"
+      },
+      {
+        id: "startImgType",
+        caption: "Start Image Type",
+        type: "enum",
+        values: [
+          { caption: "Background", value: "background" },
+          { caption: "Mask", value: "mask" }
+        ],
+        value: "background"
       },
       {
         id: "autocapitalize",

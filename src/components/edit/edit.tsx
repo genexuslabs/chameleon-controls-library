@@ -1,4 +1,5 @@
 import {
+  AttachInternals,
   Component,
   Element,
   Event,
@@ -62,6 +63,7 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   tag: "ch-edit"
 })
 export class ChEdit implements AccessibleNameComponent, DisableableComponent {
+  #accessibleNameFromExternalLabel: string | undefined;
   #startImage: GxImageMultiStateStart | undefined;
 
   // Refs
@@ -70,6 +72,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @State() isFocusOnControl = false;
 
   @State() pictureValue: string;
+
+  @AttachInternals() internals: ElementInternals;
 
   @Element() el!: HTMLChEditElement;
 
@@ -247,6 +251,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     if (this.#inputRef.value !== this.value) {
       this.#inputRef.value = this.value;
     }
+
+    // Update form value
+    this.internals.setFormValue(newValue);
   }
 
   /**
@@ -358,6 +365,15 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   connectedCallback() {
     this.#computeImage();
     this.#computePictureValue(this.value);
+
+    this.internals.setFormValue(this.value);
+
+    const labels = this.internals.labels;
+
+    // Get external aria-label
+    if (!this.accessibleName && labels?.length > 0) {
+      this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
+    }
   }
 
   render() {
@@ -388,7 +404,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           ? [
               <textarea
                 autoFocus={this.autoFocus}
-                aria-label={this.accessibleName || undefined}
+                aria-label={
+                  this.accessibleName ||
+                  this.#accessibleNameFromExternalLabel ||
+                  null
+                }
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
                 class="content autofill multiline"
@@ -415,7 +435,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           : [
               <input
                 autoFocus={this.autoFocus}
-                aria-label={this.accessibleName || undefined}
+                aria-label={
+                  this.accessibleName ||
+                  this.#accessibleNameFromExternalLabel ||
+                  null
+                }
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
                 class={{

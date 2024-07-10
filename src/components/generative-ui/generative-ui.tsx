@@ -110,6 +110,7 @@ export class ChGenerativeUI {
 
   #updateUIGeneration = (html: string, sample?: GenerativeUISample) => {
     this.generatingUI = false;
+    this.#htmlCode = html;
     this.#tabModel = TAB_MODEL_PLAYGROUND_AND_CODE;
     this.selectedTabId = PLAYGROUND_ID;
 

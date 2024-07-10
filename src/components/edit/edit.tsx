@@ -46,7 +46,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
  * A wrapper for the input and textarea elements. It additionally provides:
  *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
  *  - An action button.
- *  - Useful style resets
+ *  - Useful style resets.
+ *  - Support for picture formatting.
  *  - Support to auto grow the control when used with multiline (useful to
  *    model chat inputs).
  *  - An image which can have multiple states.

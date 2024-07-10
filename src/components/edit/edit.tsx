@@ -95,6 +95,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Prop() readonly autocomplete: "on" | "off" = "off";
 
   /**
+   * Specifies if the control automatically get focus when the page loads.
+   */
+  // eslint-disable-next-line @stencil-community/reserved-member-names
+  @Prop() readonly autoFocus: boolean = false;
+
+  /**
    * This property defines if the control size will grow automatically, to
    * adjust to its content size.
    */
@@ -328,6 +334,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
         {this.multiline
           ? [
               <textarea
+                autoFocus={this.autoFocus}
                 aria-label={this.accessibleName || undefined}
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}
@@ -354,6 +361,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
             ]
           : [
               <input
+                autoFocus={this.autoFocus}
                 aria-label={this.accessibleName || undefined}
                 autoCapitalize={this.autocapitalize}
                 autoComplete={this.autocomplete}

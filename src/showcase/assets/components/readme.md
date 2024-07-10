@@ -29,6 +29,7 @@
 - [ch-barcode-scanner](../../../components/barcode-scanner)
 - [ch-dialog](../../../components/dialog)
 - [ch-dropdown-render](../../../components/dropdown)
+- [ch-edit](../../../components/edit)
 - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
 - [ch-image](../../../components/image)
 - [ch-layout-splitter](../../../components/layout-splitter)
@@ -54,6 +55,7 @@ graph TD;
   ch-showcase --> ch-barcode-scanner
   ch-showcase --> ch-dialog
   ch-showcase --> ch-dropdown-render
+  ch-showcase --> ch-edit
   ch-showcase --> ch-test-flexible-layout
   ch-showcase --> ch-image
   ch-showcase --> ch-layout-splitter

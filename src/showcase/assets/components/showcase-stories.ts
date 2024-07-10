@@ -6,6 +6,7 @@ import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
 import { dropdownShowcaseStory } from "./dropdown/dropdown.showcase";
+import { editShowcaseStory } from "./edit/edit.showcase";
 import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.showcase";
 import { imageShowcaseStory } from "./image/image.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
@@ -28,6 +29,7 @@ export const showcaseStories = {
   "combo-box": comboBoxShowcaseStory,
   dialog: dialogShowcaseStory,
   dropdown: dropdownShowcaseStory,
+  edit: editShowcaseStory,
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
   popover: popoverShowcaseStory,

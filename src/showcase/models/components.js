@@ -15,6 +15,7 @@ const components = [
   ["combo-box", "Combo Box", EXPERIMENTAL],
   ["dropdown", "Dropdown", EXPERIMENTAL],
   ["dialog", "Dialog", EXPERIMENTAL],
+  ["edit", "Edit", EXPERIMENTAL],
   ["flexible-layout", "Flexible Layout", EXPERIMENTAL],
   ["image", "Image", EXPERIMENTAL],
   ["tabular-grid", "Tabular Grid", STABLE],

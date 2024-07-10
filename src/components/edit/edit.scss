@@ -1,0 +1,259 @@
+@import "../../common/base";
+
+// Used to change the placeholder color in the input controls
+// Opacity property is necessary, because some browsers (e.g., mozilla) change this value
+@mixin placeholder-color {
+  color: var(--ch-placeholder-color);
+  opacity: 1;
+}
+
+@include button-reset();
+@include input-reset();
+@include box-sizing();
+
+:host {
+  /**
+   * @prop --ch-edit-auto-fill-background-color:
+   * Define the background color when the edit is auto filled.
+   * (#e8f0fe by default)
+   */
+  --ch-edit-auto-fill-background-color: #e8f0fe;
+
+  /**
+   * @prop --ch-edit__image-size:
+   * Specifies the box size that contains the start of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-edit__image-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-edit__image-size:
+    * Specifies the size of the start image of the control.
+    * @default 100%
+    */
+  --ch-edit__background-image-size: 100%;
+
+  /**
+   * @prop --ch-edit-gap:
+   * Specifies the gap between the start image and the value of the control.
+   * @default 0px
+   */
+  --ch-edit-gap: 0px;
+
+  /**
+   * @prop --ch-placeholder-color:
+   * Define the placeholder color when the edit does not have a value set.
+   * (currentColor by default)
+   */
+  --ch-placeholder-color: currentColor;
+
+  // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
+
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+  position: relative;
+
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
+}
+
+:host(.ch-edit--cursor-text) {
+  cursor: text;
+}
+
+// Auto fill color
+:host:is(
+    .gx-edit--auto-fill,
+    .gx-edit--auto-fill:focus-within,
+    .gx-edit--auto-fill:hover
+  ) {
+  background-color: var(--ch-edit-auto-fill-background-color) !important;
+}
+
+.content {
+  inline-size: 100%;
+  cursor: inherit;
+
+  &::placeholder {
+    @include placeholder-color();
+  }
+
+  // Hide native eye icon from password input in MS Edge
+  &::-ms-reveal {
+    display: none;
+  }
+
+  // @include scrollbar-customization-for-one-element();
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+:host(:hover) {
+  --ch-start-img: var(--ch-start-img--hover, var(--ch-start-img--base));
+}
+
+:host(:active) {
+  --ch-start-img: var(--ch-start-img--active, var(--ch-start-img--base));
+}
+
+:host(:focus) {
+  --ch-start-img: var(
+    --ch-start-img--focus,
+    var(--ch-start-img--active, var(--ch-start-img--base))
+  );
+}
+
+:host(.ch-disabled) {
+  pointer-events: none;
+  --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
+}
+
+:host(.ch-edit-pseudo-img--start)::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-edit__image-size);
+  block-size: var(--ch-edit__image-size);
+  margin-inline-end: var(--ch-edit-gap);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-edit__image-size);
+}
+
+// Background
+:host(.ch-edit-start-img-type--background)::before {
+  background: no-repeat center / var(--ch-edit__background-image-size)
+    var(--ch-start-img);
+}
+
+// Mask
+:host(.ch-edit-start-img-type--mask)::before {
+  -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
+    var(--ch-start-img);
+  background-color: currentColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//           Multiline Auto Grow
+// - - - - - - - - - - - - - - - - - - - -
+// Hide textarea resize button
+.multiline {
+  position: absolute;
+  inset: 0;
+  block-size: 100%; // Necessary for Mozilla Firefox
+  padding: inherit;
+  resize: unset;
+}
+
+// Auto grow = True and multiline = true
+:host(.ch-edit--multiline) {
+  overflow: hidden;
+}
+
+// Implements auto-grow when the ch-edit is multiline
+.hidden-multiline {
+  inline-size: 100%;
+  block-size: 100%;
+
+  // Implement line breaks
+  white-space: pre-wrap;
+
+  // Break words that do not enter in a single line
+  word-break: break-word;
+
+  // Hide from the accessibility tree but take space in the layout
+  visibility: hidden;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                Date type
+// - - - - - - - - - - - - - - - - - - - -
+.readonly-date {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host(.ch-edit--editable-date) {
+  cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//    Custom placeholder for date types
+// - - - - - - - - - - - - - - - - - - - -
+// Used when the ch-edit has type="datetime-local" | "date" | "time"
+// and its value is not set
+.null-date {
+  opacity: 0; // Hide the input by default
+
+  // When the ch-edit is focused, we hide the placeholder
+  &:focus {
+    opacity: 1; // Hide the input when focused
+
+    & ~ .date-placeholder {
+      opacity: 0;
+    }
+  }
+}
+
+// Implements a non-native placeholder for date types
+.date-placeholder {
+  display: grid;
+  align-items: center;
+  inset: 0;
+  inset-inline-start: calc(var(--ch-edit__image-size) + var(--ch-edit-gap));
+  position: absolute;
+  padding: inherit;
+  pointer-events: none;
+
+  @include placeholder-color();
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//             Trigger button
+// - - - - - - - - - - - - - - - - - - - -
+:host(.ch-edit__trigger-button-space)::after {
+  content: "";
+  block-size: 100%;
+  margin-inline-start: var(--ch-edit-trigger-button-inline-size);
+  padding-inline-start: inherit;
+}
+
+.trigger-button {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  padding-inline: inherit;
+  cursor: pointer;
+}
+
+// - - - - - - - - - - - - - - - -
+//            Auto Fill
+// - - - - - - - - - - - - - - - -
+.autofill {
+  // Dummy animation to trigger the onAnimationStart event
+  &:-webkit-autofill {
+    animation: AutoFillStart 0.000001s;
+    transition: background-color 99999999s 0s;
+  }
+
+  // Dummy animation to trigger the onAnimationStart event
+  &:not(:-webkit-autofill) {
+    animation: AutoFillCancel 0.000001s;
+  }
+}
+
+@keyframes AutoFillStart {
+  0% {
+    visibility: inherit;
+  }
+}
+@keyframes AutoFillCancel {
+  0% {
+    visibility: inherit;
+  }
+}

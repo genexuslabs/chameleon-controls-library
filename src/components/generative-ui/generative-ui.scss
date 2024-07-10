@@ -1,0 +1,82 @@
+ch-generative-ui {
+  display: contents;
+
+  .card {
+    overflow: hidden;
+  }
+
+  ::part(page-container) {
+    position: relative;
+  }
+}
+
+.generative-ui {
+  &__aside {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+  }
+
+  &__main {
+    display: grid;
+    grid-template-rows: 1fr max-content;
+  }
+
+  &__samples {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    justify-content: center;
+    margin-block-start: var(--spacing-un-spacing--xxl, var(--mer-spacing--xl));
+    gap: var(--spacing-un-spacing--xxl, var(--mer-spacing--xl));
+    text-align: center;
+
+    &-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
+
+  &__loading {
+    display: grid;
+    place-content: center;
+    position: absolute;
+    inset: 0;
+    margin: 4px;
+    background-color: rgba(32, 36, 40, 0.1);
+    backdrop-filter: blur(1.5px);
+    border-radius: 8px;
+  }
+
+  &__sample {
+    display: grid;
+    grid-auto-rows: max-content;
+    gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+    place-items: center;
+
+    &.icon-background::before {
+      inline-size: 64px;
+      block-size: 64px;
+    }
+  }
+
+  &__input-container {
+    display: grid;
+    grid-template-columns: 1fr max-content;
+    align-items: flex-end;
+    gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  }
+
+  &__send-button {
+    --icon-path: url("https://unpkg.com/@genexus/unanimo@0.15.1/dist/assets/icons/send.svg");
+  }
+
+  &__spinner-loading {
+    z-index: 1000;
+    animation: generative-ui-infinite-rotate 0.875s linear 0s infinite;
+  }
+}
+
+@keyframes generative-ui-infinite-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}

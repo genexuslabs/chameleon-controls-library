@@ -9,6 +9,7 @@ import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChEdit } from "../../../components/edit/edit";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
+import { ChGenerativeUI } from "../../../components/generative-ui/generative-ui";
 import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChMarkdown } from "../../../components/markdown/markdown";
@@ -134,5 +135,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<
-  ChMarkdown | ChFlexibleLayoutRender
+  ChMarkdown | ChFlexibleLayoutRender | ChGenerativeUI
 >;

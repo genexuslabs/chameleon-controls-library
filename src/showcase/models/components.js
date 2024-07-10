@@ -17,6 +17,7 @@ const components = [
   ["dialog", "Dialog", EXPERIMENTAL],
   ["edit", "Edit", EXPERIMENTAL],
   ["flexible-layout", "Flexible Layout", EXPERIMENTAL],
+  ["generative-ui", "Generative UI", EXPERIMENTAL],
   ["image", "Image", EXPERIMENTAL],
   ["tabular-grid", "Tabular Grid", STABLE],
   ["layout-splitter", "Layout Splitter", EXPERIMENTAL],

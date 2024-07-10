@@ -1,4 +1,4 @@
-aside {
+.aside {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -10,15 +10,15 @@ aside {
 }
 
 .light .mercury {
-  aside,
-  header {
+  .aside,
+  .header {
     background-color: var(--mer-color__elevation--04);
   }
 }
 
 .dark .mercury {
-  aside,
-  header {
+  .aside,
+  .header {
     background-color: var(--mer-color__elevation--01);
   }
 }
@@ -30,7 +30,7 @@ aside {
 }
 
 .unanimo {
-  aside,
+  .aside,
   .header {
     --sidebar-un-sidebar__background-color: var(--elevation-un-elevation--1);
     --header-un-header-primary__background-color: var(
@@ -175,7 +175,7 @@ main {
   }
 }
 
-header {
+.header {
   display: grid;
   grid-template-columns: 1fr max-content;
   align-items: center;

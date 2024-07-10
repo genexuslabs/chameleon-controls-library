@@ -132,9 +132,11 @@
 
 // Implements a non-native placeholder for date types
 .date-placeholder {
-  display: flex;
+  display: grid;
+  align-items: center;
+  inset: 0;
   position: absolute;
-  flex: 1;
+  padding: inherit;
   pointer-events: none;
 
   @include placeholder-color();

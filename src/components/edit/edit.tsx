@@ -56,9 +56,6 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   tag: "ch-edit"
 })
 export class ChEdit implements AccessibleNameComponent, DisableableComponent {
-  // Variables calculated in componentWillLoad
-  #shouldAddCursorText = false;
-
   // Refs
   #inputRef: HTMLInputElement | HTMLTextAreaElement = null;
 
@@ -233,14 +230,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   @Event() change: EventEmitter;
 
   /**
-   * The `input` event is fired synchronously when the value is changed.
+   * Fired synchronously when the value is changed.
    */
   @Event() input: EventEmitter;
 
   /**
-   * The `gxTriggerClick` event is fired when the trigger button is clicked.
+   * Fired when the trigger button is clicked.
    */
-  @Event() gxTriggerClick: EventEmitter;
+  @Event() triggerClick: EventEmitter;
 
   #getValueFromEvent = (event: InputEvent): string =>
     (event.target as HTMLInputElement).value;
@@ -271,7 +268,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     if (!this.disabled) {
       event.stopPropagation();
     }
-    this.gxTriggerClick.emit(event);
+    this.triggerClick.emit(event);
   };
 
   // - - - - - - - - - - - - - - - - - - - - - -
@@ -311,8 +308,6 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
-    this.#shouldAddCursorText = !isDateType;
-
     const shouldDisplayPicture = this.#hasPictureApplied();
     const canAddListeners = !this.disabled && !this.readonly;
 
@@ -320,7 +315,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       <Host
         class={{
           "ch-edit--auto-fill": this.autoFilled,
-          "ch-edit--cursor-text": this.#shouldAddCursorText && !this.disabled,
+          "ch-edit--cursor-text": !isDateType && !this.disabled,
           "ch-edit--editable-date": isDateType && !this.readonly,
           "ch-edit--multiline": this.multiline && this.autoGrow,
           "ch-edit__trigger-button-space": this.showTrigger,

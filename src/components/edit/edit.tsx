@@ -20,6 +20,12 @@ import {
 
 import { DISABLED_CLASS } from "../../common/reserved-names";
 import { EditInputMode, EditType } from "./types";
+import {
+  GxImageMultiState,
+  GxImageMultiStateStart,
+  ImageRender
+} from "../../common/types";
+import { updateDirectionInImageCustomVar } from "../../common/utils";
 
 const AUTOFILL_START_ANIMATION_NAME = "AutoFillStart";
 
@@ -56,6 +62,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
   tag: "ch-edit"
 })
 export class ChEdit implements AccessibleNameComponent, DisableableComponent {
+  #startImage: GxImageMultiStateStart | undefined;
+
   // Refs
   #inputRef: HTMLInputElement | HTMLTextAreaElement = null;
 
@@ -109,6 +117,18 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * (for example, click event).
    */
   @Prop() readonly disabled: boolean = false;
+
+  /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#computeImage();
+  }
 
   /**
    * This property defines the maximum string length that the user can enter
@@ -165,6 +185,20 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    */
   // eslint-disable-next-line @stencil-community/reserved-member-names
   @Prop() readonly spellcheck: boolean;
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgSrc: string;
+  @Watch("startImgSrc")
+  startImgSrcChanged() {
+    this.#computeImage();
+  }
+
+  /**
+   * Specifies the source of the start image.
+   */
+  @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
   /**
    * This attribute lets you specify the label for the trigger button.
@@ -239,6 +273,25 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    */
   @Event() triggerClick: EventEmitter;
 
+  #computeImage = () => {
+    if (!this.startImgSrc) {
+      this.#startImage = null;
+      return;
+    }
+
+    const img = this.getImagePathCallback(this.startImgSrc);
+
+    if (!img) {
+      this.#startImage = null;
+      return;
+    }
+
+    this.#startImage = updateDirectionInImageCustomVar(
+      img,
+      "start"
+    ) as GxImageMultiStateStart;
+  };
+
   #getValueFromEvent = (event: InputEvent): string =>
     (event.target as HTMLInputElement).value;
 
@@ -303,6 +356,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   };
 
   connectedCallback() {
+    this.#computeImage();
     this.#computePictureValue(this.value);
   }
 
@@ -320,8 +374,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
           "ch-edit--multiline": this.multiline && this.autoGrow,
           "ch-edit__trigger-button-space": this.showTrigger,
 
+          [`ch-edit-start-img-type--${this.startImgType} ch-edit-pseudo-img--start`]:
+            !!this.#startImage,
+
           [DISABLED_CLASS]: this.disabled
         }}
+        style={this.#startImage ?? undefined}
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}

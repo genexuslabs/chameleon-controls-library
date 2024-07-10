@@ -20,6 +20,27 @@
   --ch-edit-auto-fill-background-color: #e8f0fe;
 
   /**
+   * @prop --ch-edit__image-size:
+   * Specifies the box size that contains the start of the control.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-edit__image-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-edit__image-size:
+    * Specifies the size of the start image of the control.
+    * @default 100%
+    */
+  --ch-edit__background-image-size: 100%;
+
+  /**
+   * @prop --ch-edit-gap:
+   * Specifies the gap between the start image and the value of the control.
+   * @default 0px
+   */
+  --ch-edit-gap: 0px;
+
+  /**
    * @prop --ch-placeholder-color:
    * Define the placeholder color when the edit does not have a value set.
    * (currentColor by default)
@@ -29,13 +50,13 @@
   // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
 
   display: inline-grid;
-  align-items: stretch;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
   position: relative;
-}
 
-// Disable styling for the ch-edit when Format = Text
-:host(.ch-disabled) {
-  pointer-events: none;
+  // Base image
+  --ch-start-img: var(--ch-start-img--base);
 }
 
 :host(.ch-edit--cursor-text) {
@@ -65,6 +86,52 @@
   }
 
   // @include scrollbar-customization-for-one-element();
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+:host(:hover) {
+  --ch-start-img: var(--ch-start-img--hover, var(--ch-start-img--base));
+}
+
+:host(:active) {
+  --ch-start-img: var(--ch-start-img--active, var(--ch-start-img--base));
+}
+
+:host(:focus) {
+  --ch-start-img: var(
+    --ch-start-img--focus,
+    var(--ch-start-img--active, var(--ch-start-img--base))
+  );
+}
+
+:host(.ch-disabled) {
+  pointer-events: none;
+  --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
+}
+
+:host(.ch-edit-pseudo-img--start)::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-edit__image-size);
+  block-size: var(--ch-edit__image-size);
+  margin-inline-end: var(--ch-edit-gap);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-edit__image-size);
+}
+
+// Background
+:host(.ch-edit-start-img-type--background)::before {
+  background: no-repeat center / var(--ch-edit__background-image-size)
+    var(--ch-start-img);
+}
+
+// Mask
+:host(.ch-edit-start-img-type--mask)::before {
+  -webkit-mask: no-repeat center / var(--ch-edit__background-image-size)
+    var(--ch-start-img);
+  background-color: currentColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
@@ -135,6 +202,7 @@
   display: grid;
   align-items: center;
   inset: 0;
+  inset-inline-start: calc(var(--ch-edit__image-size) + var(--ch-edit-gap));
   position: absolute;
   padding: inherit;
   pointer-events: none;

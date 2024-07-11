@@ -2,16 +2,17 @@
 
 <!-- Auto Generated Below -->
 
+
 ## Overview
 
 A wrapper for the input and textarea elements. It additionally provides:
-
-- A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
-- An action button.
-- Useful style resets
-- Support to auto grow the control when used with multiline (useful to
-  model chat inputs).
-- An image which can have multiple states.
+ - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+ - An action button.
+ - Useful style resets.
+ - Support for picture formatting.
+ - Support to auto grow the control when used with multiline (useful to
+   model chat inputs).
+ - An image which can have multiple states.
 
 ## Properties
 
@@ -37,8 +38,9 @@ A wrapper for the input and textarea elements. It additionally provides:
 | `startImgSrc`                 | `start-img-src`                  | Specifies the source of the start image.                                                                                                                                                                                                                                                                              | `string`                                                                                                                      | `undefined`                        |
 | `startImgType`                | `start-img-type`                 | Specifies the source of the start image.                                                                                                                                                                                                                                                                              | `"background" \| "mask"`                                                                                                      | `"background"`                     |
 | `triggerButtonAccessibleName` | `trigger-button-accessible-name` | This attribute lets you specify the label for the trigger button. Important for accessibility.                                                                                                                                                                                                                        | `string`                                                                                                                      | `undefined`                        |
-| `type`                        | `type`                           | The type of control to render. A subset of the types supported by the `input` element is supported: _ `"date"` _ `"datetime-local"` _ `"email"` _ `"file"` _ `"number"` _ `"password"` _ `"search"` _ `"tel"` _ `"text"` _ `"url"`                                                                                    | `"date" \| "datetime-local" \| "email" \| "file" \| "number" \| "password" \| "search" \| "tel" \| "text" \| "time" \| "url"` | `"text"`                           |
+| `type`                        | `type`                           | The type of control to render. A subset of the types supported by the `input` element is supported:  * `"date"` * `"datetime-local"` * `"email"` * `"file"` * `"number"` * `"password"` * `"search"` * `"tel"` * `"text"` * `"url"`                                                                                   | `"date" \| "datetime-local" \| "email" \| "file" \| "number" \| "password" \| "search" \| "tel" \| "text" \| "time" \| "url"` | `"text"`                           |
 | `value`                       | `value`                          | The initial value of the control.                                                                                                                                                                                                                                                                                     | `string`                                                                                                                      | `undefined`                        |
+
 
 ## Events
 
@@ -48,11 +50,13 @@ A wrapper for the input and textarea elements. It additionally provides:
 | `input`        | Fired synchronously when the value is changed.                                                                                                                                                                                             | `CustomEvent<any>` |
 | `triggerClick` | Fired when the trigger button is clicked.                                                                                                                                                                                                  | `CustomEvent<any>` |
 
+
 ## Slots
 
 | Slot                | Description                                          |
 | ------------------- | ---------------------------------------------------- |
 | `"trigger-content"` | The slot used for the content of the trigger button. |
+
 
 ## Shadow Parts
 
@@ -61,6 +65,7 @@ A wrapper for the input and textarea elements. It additionally provides:
 | `"date-placeholder"` | A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" \| "date" \| "time"`. |
 | `"hidden-multiline"` | The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.                            |
 | `"trigger-button"`   | The trigger button displayed on the right side of the control when `show-trigger="true"`.                                                            |
+
 
 ## CSS Custom Properties
 
@@ -71,21 +76,20 @@ A wrapper for the input and textarea elements. It additionally provides:
 | `--ch-edit__image-size`                | Specifies the box size that contains the start of the control. @default 0.875em                 |
 | `--ch-placeholder-color`               | Define the placeholder color when the edit does not have a value set. (currentColor by default) |
 
+
 ## Dependencies
 
 ### Used by
 
-- [ch-showcase](../../showcase/assets/components)
+ - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
-
 ```mermaid
 graph TD;
   ch-showcase --> ch-edit
   style ch-edit fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
----
+----------------------------------------------
 
-_Built with [StencilJS](https://stenciljs.com/)_
-
+*Built with [StencilJS](https://stenciljs.com/)*

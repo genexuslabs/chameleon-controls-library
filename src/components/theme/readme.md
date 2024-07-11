@@ -14,13 +14,11 @@ either in the Document or in a Shadow-Root.
 
 ## Properties
 
-| Property                      | Attribute                         | Description                                                                                    | Type      | Default     |
-| ----------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `avoidFlashOfUnstyledContent` | `avoid-flash-of-unstyled-content` | `true` to visually hide the contents of the root node while the control's style is not loaded. | `boolean` | `true`      |
-| `baseUrl`                     | `base-url`                        | A string containing the baseURL used to resolve relative URLs in the stylesheet                | `string`  | `undefined` |
-| `href`                        | `href`                            | Specifies the location of the stylesheet theme                                                 | `string`  | `undefined` |
-| `loaded`                      | `loaded`                          | Indicates whether the theme has successfully loaded                                            | `boolean` | `false`     |
-| `name`                        | `name`                            | Specifies the name of the theme to instantiate                                                 | `string`  | `undefined` |
+| Property                      | Attribute                         | Description                                                                                    | Type                                                                                               | Default     |
+| ----------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------- |
+| `avoidFlashOfUnstyledContent` | `avoid-flash-of-unstyled-content` | `true` to visually hide the contents of the root node while the control's style is not loaded. | `boolean`                                                                                          | `true`      |
+| `model`                       | `model`                           | Specify themes to load                                                                         | `ThemeItemModel[] \| string \| string[] \| { name: string; url?: string; themeBaseUrl?: string; }` | `undefined` |
+| `timeout`                     | `timeout`                         | Specifies the time to wait for the requested theme to load.                                    | `10000`                                                                                            | `10000`     |
 
 
 ## Events

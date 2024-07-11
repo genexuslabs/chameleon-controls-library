@@ -390,21 +390,35 @@ export class ChFlexibleLayoutRender {
   }
 
   #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
+    // Partially delete the previous state
+    this.#itemsInfo.clear();
+    this.#widgetsInfo.clear();
+
     // Empty layout
     if (layout == null) {
+      this.#renderedWidgets.clear();
       return;
     }
 
     const layoutSplitterPartsSet: Set<string> = new Set();
+    const newRenderedWidgets: Set<string> = new Set(); // Temporal set to store the new rendered widgets
 
     updateFlexibleModels(
       layout,
       this.#itemsInfo,
       layoutSplitterPartsSet,
-      this.#renderedWidgets,
+      newRenderedWidgets,
       this.#widgetsInfo
     );
 
+    // Add the previous rendered widgets if they are still in the new layout
+    this.#widgetsInfo.forEach(widget => {
+      if (this.#renderedWidgets.has(widget.info.id)) {
+        newRenderedWidgets.add(widget.info.id);
+      }
+    });
+
+    this.#renderedWidgets = newRenderedWidgets;
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 

@@ -5,7 +5,8 @@ import {
   Event,
   EventEmitter,
   h,
-  State
+  State,
+  Build
 } from "@stencil/core";
 import {
   ChThemeLoadedEvent,
@@ -29,6 +30,8 @@ const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 export class ChTheme {
   @Element() el: HTMLChThemeElement;
 
+  @State() loaded: boolean = false;
+
   /**
    * `true` to visually hide the contents of the root node while the control's
    * style is not loaded.
@@ -45,8 +48,6 @@ export class ChTheme {
    */
   @Prop() readonly timeout = 10000;
 
-  @State() loaded: boolean = false;
-
   /**
    * Event emitted when the theme has successfully loaded
    */
@@ -57,12 +58,12 @@ export class ChTheme {
     this.el.hidden = true;
   }
 
-  componentDidLoad() {
-    this.loadModel();
+  componentWillLoad() {
+    this.#loadModel();
   }
 
-  private async loadModel() {
-    const themePromises = this.normalizeModel().map(item =>
+  #loadModel = async () => {
+    const themePromises = this.#normalizeModel().map(item =>
       getTheme(item, this.timeout)
     );
 
@@ -71,17 +72,23 @@ export class ChTheme {
         .filter(result => result.status === "fulfilled")
         .map(result => result.status === "fulfilled" && result.value);
 
-      this.attachThemes(successThemes);
+      this.#attachThemes(successThemes);
       this.themeLoaded.emit({
         success: successThemes.map(successTheme => successTheme.name)
       });
       this.loaded = true;
 
-      this.logRejected(results.filter(result => result.status === "rejected"));
+      if (Build.isDev) {
+        const rejected = results.filter(result => result.status === "rejected");
+        if (rejected.length > 0) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to load themes:", rejected);
+        }
+      }
     });
-  }
+  };
 
-  private normalizeModel(): ThemeItemModel[] {
+  #normalizeModel = (): ThemeItemModel[] => {
     const list = Array.isArray(this.model) ? this.model : [this.model];
 
     return list.map(item => {
@@ -91,9 +98,9 @@ export class ChTheme {
 
       return item;
     });
-  }
+  };
 
-  private attachThemes(themes: Theme[]) {
+  #attachThemes = (themes: Theme[]) => {
     const root = this.el.getRootNode();
 
     if (root instanceof Document || root instanceof ShadowRoot) {
@@ -103,14 +110,7 @@ export class ChTheme {
         }
       });
     }
-  }
-
-  private async logRejected(rejected: PromiseSettledResult<Theme>[]) {
-    if (rejected.length > 0) {
-      // eslint-disable-next-line no-console
-      console.error("Failed to load themes:", rejected);
-    }
-  }
+  };
 
   render() {
     return (

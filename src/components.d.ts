@@ -43,7 +43,7 @@ import { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, T
 import { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 import { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
+import { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 import { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
@@ -92,7 +92,7 @@ export { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, T
 export { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 export { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
+export { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 export { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
@@ -2719,21 +2719,13 @@ export namespace Components {
          */
         "avoidFlashOfUnstyledContent": boolean;
         /**
-          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+          * Specify themes to load
          */
-        "baseUrl": string;
+        "model": ThemeModel;
         /**
-          * Specifies the location of the stylesheet theme
+          * Specifies the time to wait for the requested theme to load.
          */
-        "href": string;
-        /**
-          * Indicates whether the theme has successfully loaded
-         */
-        "loaded": boolean;
-        /**
-          * Specifies the name of the theme to instantiate
-         */
-        "name": string;
+        "timeout": 10000;
     }
     interface ChTimer {
         /**
@@ -8030,25 +8022,17 @@ declare namespace LocalJSX {
          */
         "avoidFlashOfUnstyledContent"?: boolean;
         /**
-          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+          * Specify themes to load
          */
-        "baseUrl"?: string;
-        /**
-          * Specifies the location of the stylesheet theme
-         */
-        "href"?: string;
-        /**
-          * Indicates whether the theme has successfully loaded
-         */
-        "loaded"?: boolean;
-        /**
-          * Specifies the name of the theme to instantiate
-         */
-        "name"?: string;
+        "model"?: ThemeModel;
         /**
           * Event emitted when the theme has successfully loaded
          */
         "onThemeLoaded"?: (event: ChThemeCustomEvent<ChThemeLoadedEvent>) => void;
+        /**
+          * Specifies the time to wait for the requested theme to load.
+         */
+        "timeout"?: 10000;
     }
     interface ChTimer {
         /**

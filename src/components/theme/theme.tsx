@@ -1,17 +1,19 @@
 import {
   Component,
   Element,
+  Prop,
   Event,
   EventEmitter,
   h,
-  Prop,
-  Watch
+  State
 } from "@stencil/core";
 import {
   ChThemeLoadedEvent,
-  instanceTheme,
-  removeThemeElement
-} from "./theme-stylesheet";
+  Theme,
+  ThemeItemModel,
+  ThemeModel
+} from "./theme-types";
+import { getTheme } from "./theme-stylesheet";
 
 const STYLE_TO_AVOID_FOUC = ":host,html{visibility:hidden !important}";
 
@@ -34,30 +36,16 @@ export class ChTheme {
   @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
 
   /**
-   * Specifies the name of the theme to instantiate
+   * Specify themes to load
    */
-  @Prop({ reflect: true }) readonly name: string;
+  @Prop() readonly model: ThemeModel;
 
   /**
-   * Specifies the location of the stylesheet theme
+   * Specifies the time to wait for the requested theme to load.
    */
-  @Prop({ reflect: true }) readonly href: string;
+  @Prop() readonly timeout = 10000;
 
-  /**
-   * A string containing the baseURL used to resolve relative URLs in the stylesheet
-   */
-  @Prop({ reflect: true }) readonly baseUrl: string;
-
-  /**
-   * Indicates whether the theme has successfully loaded
-   */
-  @Prop() readonly loaded: boolean = false;
-  @Watch("loaded")
-  loadedHandler() {
-    if (this.loaded) {
-      this.themeLoaded.emit({ name: this.name ?? "" });
-    }
-  }
+  @State() loaded: boolean = false;
 
   /**
    * Event emitted when the theme has successfully loaded
@@ -69,12 +57,59 @@ export class ChTheme {
     this.el.hidden = true;
   }
 
-  componentWillLoad() {
-    instanceTheme(this.el);
+  componentDidLoad() {
+    this.loadModel();
   }
 
-  disconnectedCallback() {
-    removeThemeElement(this.el);
+  private async loadModel() {
+    const themePromises = this.normalizeModel().map(item =>
+      getTheme(item, this.timeout)
+    );
+
+    Promise.allSettled(themePromises).then(results => {
+      const successThemes = results
+        .filter(result => result.status === "fulfilled")
+        .map(result => result.status === "fulfilled" && result.value);
+
+      this.attachThemes(successThemes);
+      this.themeLoaded.emit({
+        success: successThemes.map(successTheme => successTheme.name)
+      });
+      this.loaded = true;
+
+      this.logRejected(results.filter(result => result.status === "rejected"));
+    });
+  }
+
+  private normalizeModel(): ThemeItemModel[] {
+    const list = Array.isArray(this.model) ? this.model : [this.model];
+
+    return list.map(item => {
+      if (typeof item === "string") {
+        return { name: item };
+      }
+
+      return item;
+    });
+  }
+
+  private attachThemes(themes: Theme[]) {
+    const root = this.el.getRootNode();
+
+    if (root instanceof Document || root instanceof ShadowRoot) {
+      themes.forEach(theme => {
+        if (!root.adoptedStyleSheets.includes(theme.styleSheet)) {
+          root.adoptedStyleSheets.push(theme.styleSheet);
+        }
+      });
+    }
+  }
+
+  private async logRejected(rejected: PromiseSettledResult<Theme>[]) {
+    if (rejected.length > 0) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to load themes:", rejected);
+    }
   }
 
   render() {

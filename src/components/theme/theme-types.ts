@@ -2,8 +2,8 @@ export type ThemeModel = string | string[] | ThemeItemModel | ThemeItemModel[];
 
 export type ThemeItemModel = {
   name: string;
-  href?: string;
-  baseUrl?: string;
+  url?: string;
+  themeBaseUrl?: string;
 };
 
 export type Theme = {
@@ -15,5 +15,5 @@ export type Theme = {
  * Event interface for when a theme is loaded.
  */
 export interface ChThemeLoadedEvent {
-  name: string;
+  success: string[];
 }

@@ -401,7 +401,7 @@ export class ChFlexibleLayoutRender {
     }
 
     const layoutSplitterPartsSet: Set<string> = new Set();
-    const newRenderedWidgets: Set<string> = new Set(); // Temporal set to store the new rendered widgets
+    const newRenderedWidgets: Set<string> = new Set(); // Temporal Set to store the new rendered widgets
 
     updateFlexibleModels(
       layout,

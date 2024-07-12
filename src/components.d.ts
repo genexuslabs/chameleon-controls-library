@@ -17,6 +17,7 @@ import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./comp
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
+import { EditInputMode, EditType } from "./components/edit/types";
 import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./deprecated-components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
@@ -66,6 +67,7 @@ export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./comp
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
+export { EditInputMode, EditType } from "./components/edit/types";
 export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./deprecated-components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
@@ -819,6 +821,108 @@ export namespace Components {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender": boolean;
+    }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface ChEdit {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies if the control automatically get focus when the page loads.
+         */
+        "autoFocus": boolean;
+        /**
+          * This property defines if the control size will grow automatically, to adjust to its content size.
+         */
+        "autoGrow": boolean;
+        /**
+          * Specifies the auto-capitalization behavior. Same as [autocapitalize](https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/Attributes.html#//apple_ref/doc/uid/TP40008058-autocapitalize) attribute for `input` elements. Only supported by Safari and Chrome.
+         */
+        "autocapitalize": string;
+        /**
+          * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
+         */
+        "autocomplete": "on" | "off";
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback": (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property defines the maximum string length that the user can enter into the control.
+         */
+        "maxLength": number;
+        /**
+          * This attribute hints at the type of data that might be entered by the user while editing the element or its contents. This allows a browser to display an appropriate virtual keyboard. Only works when `multiline === false`.
+         */
+        "mode": EditInputMode | undefined;
+        /**
+          * Controls if the element accepts multiline text.
+         */
+        "multiline": boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * This attribute specifies a regular expression the form control's value should match. Only works when `multiline === false`.
+         */
+        "pattern": string;
+        /**
+          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+         */
+        "picture"?: string;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder": string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * If true, a trigger button is shown next to the edit field. The button can be customized adding a child element with `slot="trigger-content"` attribute to specify the content inside the trigger button.
+         */
+        "showTrigger": boolean;
+        /**
+          * Specifies whether the element may be checked for spelling errors
+         */
+        "spellcheck": boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc": string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
+        /**
+          * This attribute lets you specify the label for the trigger button. Important for accessibility.
+         */
+        "triggerButtonAccessibleName": string;
+        /**
+          * The type of control to render. A subset of the types supported by the `input` element is supported:  * `"date"` * `"datetime-local"` * `"email"` * `"file"` * `"number"` * `"password"` * `"search"` * `"tel"` * `"text"` * `"url"`
+         */
+        "type": EditType;
+        /**
+          * The initial value of the control.
+         */
+        "value": string;
     }
     interface ChFlexibleLayout {
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
@@ -3380,6 +3484,10 @@ export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
 }
+export interface ChEditCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChEditElement;
+}
 export interface ChFlexibleLayoutCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChFlexibleLayoutElement;
@@ -3839,6 +3947,35 @@ declare global {
     var HTMLChDropdownRenderElement: {
         prototype: HTMLChDropdownRenderElement;
         new (): HTMLChDropdownRenderElement;
+    };
+    interface HTMLChEditElementEventMap {
+        "change": any;
+        "input": any;
+        "triggerClick": any;
+    }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface HTMLChEditElement extends Components.ChEdit, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChEditElementEventMap>(type: K, listener: (this: HTMLChEditElement, ev: ChEditCustomEvent<HTMLChEditElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChEditElementEventMap>(type: K, listener: (this: HTMLChEditElement, ev: ChEditCustomEvent<HTMLChEditElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChEditElement: {
+        prototype: HTMLChEditElement;
+        new (): HTMLChEditElement;
     };
     interface HTMLChFlexibleLayoutElementEventMap {
         "viewItemClose": ViewItemCloseInfo;
@@ -5223,6 +5360,7 @@ declare global {
         "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
+        "ch-edit": HTMLChEditElement;
         "ch-flexible-layout": HTMLChFlexibleLayoutElement;
         "ch-flexible-layout-render": HTMLChFlexibleLayoutRenderElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
@@ -6058,6 +6196,120 @@ declare namespace LocalJSX {
           * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
          */
         "useGxRender"?: boolean;
+    }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface ChEdit {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies if the control automatically get focus when the page loads.
+         */
+        "autoFocus"?: boolean;
+        /**
+          * This property defines if the control size will grow automatically, to adjust to its content size.
+         */
+        "autoGrow"?: boolean;
+        /**
+          * Specifies the auto-capitalization behavior. Same as [autocapitalize](https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/Attributes.html#//apple_ref/doc/uid/TP40008058-autocapitalize) attribute for `input` elements. Only supported by Safari and Chrome.
+         */
+        "autocapitalize"?: string;
+        /**
+          * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
+         */
+        "autocomplete"?: "on" | "off";
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property defines the maximum string length that the user can enter into the control.
+         */
+        "maxLength"?: number;
+        /**
+          * This attribute hints at the type of data that might be entered by the user while editing the element or its contents. This allows a browser to display an appropriate virtual keyboard. Only works when `multiline === false`.
+         */
+        "mode"?: EditInputMode | undefined;
+        /**
+          * Controls if the element accepts multiline text.
+         */
+        "multiline"?: boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * The `change` event is emitted when a change to the element's value is committed by the user. Unlike the `input` event, the `change` event is not necessarily fired for each change to an element's value but when the control loses focus.
+         */
+        "onChange"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * Fired synchronously when the value is changed.
+         */
+        "onInput"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * Fired when the trigger button is clicked.
+         */
+        "onTriggerClick"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * This attribute specifies a regular expression the form control's value should match. Only works when `multiline === false`.
+         */
+        "pattern"?: string;
+        /**
+          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+         */
+        "picture"?: string;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder"?: string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * If true, a trigger button is shown next to the edit field. The button can be customized adding a child element with `slot="trigger-content"` attribute to specify the content inside the trigger button.
+         */
+        "showTrigger"?: boolean;
+        /**
+          * Specifies whether the element may be checked for spelling errors
+         */
+        "spellcheck"?: boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc"?: string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
+        /**
+          * This attribute lets you specify the label for the trigger button. Important for accessibility.
+         */
+        "triggerButtonAccessibleName"?: string;
+        /**
+          * The type of control to render. A subset of the types supported by the `input` element is supported:  * `"date"` * `"datetime-local"` * `"email"` * `"file"` * `"number"` * `"password"` * `"search"` * `"tel"` * `"text"` * `"url"`
+         */
+        "type"?: EditType;
+        /**
+          * The initial value of the control.
+         */
+        "value"?: string;
     }
     interface ChFlexibleLayout {
         /**
@@ -8661,6 +8913,7 @@ declare namespace LocalJSX {
         "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-render": ChDropdownRender;
+        "ch-edit": ChEdit;
         "ch-flexible-layout": ChFlexibleLayout;
         "ch-flexible-layout-render": ChFlexibleLayoutRender;
         "ch-form-checkbox": ChFormCheckbox;
@@ -8788,6 +9041,17 @@ declare module "@stencil/core" {
             "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
+            /**
+             * A wrapper for the input and textarea elements. It additionally provides:
+             *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+             *  - An action button.
+             *  - Useful style resets.
+             *  - Support for picture formatting.
+             *  - Support to auto grow the control when used with multiline (useful to
+             *    model chat inputs).
+             *  - An image which can have multiple states.
+             */
+            "ch-edit": LocalJSX.ChEdit & JSXBase.HTMLAttributes<HTMLChEditElement>;
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;
             "ch-flexible-layout-render": LocalJSX.ChFlexibleLayoutRender & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutRenderElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;

@@ -104,3 +104,13 @@ export type CssCursorProperty =
 export type FilterKeys<T, U> = {
   [K in keyof T]: K extends U ? K : never;
 }[keyof T];
+
+// Filter custom elements that start with "ch-"
+export type ChameleonControlsTagName = FilterKeys<
+  HTMLElementTagNameMap,
+  `ch-${string}`
+>;
+
+export type ChameleonControls = {
+  [key in ChameleonControlsTagName]: HTMLElementTagNameMap[key];
+};

@@ -5,8 +5,13 @@ import {
   ImageRender
 } from "../../common/types";
 import { updateDirectionInImageCustomVar } from "../../common/utils";
+import { getControlRegisterProperty } from "../../common/registry-properties";
 
 const DATA_IMAGE = "data-ch-image";
+
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
+  imageSrc: string
+) => GxImageMultiState | undefined;
 
 /**
  * A control to display multiple images, depending on the state (focus, hover,
@@ -48,7 +53,7 @@ export class ChImage {
    * This property specifies a callback that is executed when the path the
    * image needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback!: (
+  @Prop() readonly getImagePathCallback?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
 
@@ -58,7 +63,14 @@ export class ChImage {
   @Prop() readonly src: string | undefined;
   @Watch("src")
   srcChanged(newSrc: string | undefined) {
-    const image = this.getImagePathCallback(newSrc);
+    const getImagePathCallback =
+      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
+
+    if (!getImagePathCallback) {
+      this.#image = null;
+      return;
+    }
+    const image = getImagePathCallback(newSrc);
 
     if (!image) {
       this.#image = null;
@@ -79,8 +91,13 @@ export class ChImage {
   @Prop() readonly type: Exclude<ImageRender, "img"> = "background";
 
   connectedCallback() {
-    this.#currentContainerRef = this.containerRef ?? this.el.parentElement;
+    // Initialize default getImagePathCallback
+    GET_IMAGE_PATH_CALLBACK_REGISTRY ??= getControlRegisterProperty(
+      "getImagePathCallback",
+      "ch-image"
+    );
 
+    this.#currentContainerRef = this.containerRef ?? this.el.parentElement;
     this.#currentContainerRef?.setAttribute(DATA_IMAGE, "");
 
     if (this.src) {

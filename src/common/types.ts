@@ -114,3 +114,12 @@ export type ChameleonControlsTagName = FilterKeys<
 export type ChameleonControls = {
   [key in ChameleonControlsTagName]: HTMLElementTagNameMap[key];
 };
+
+export type ChameleonImagePathCallbackControlsTagName = Extract<
+  ChameleonControlsTagName,
+  "ch-edit" | "ch-image" | "ch-tree-view-render"
+>;
+
+export type ChameleonImagePathCallbackControls = {
+  [key in ChameleonImagePathCallbackControlsTagName]: ChameleonControls[key];
+};

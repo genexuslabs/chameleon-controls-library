@@ -60,7 +60,37 @@ import {
   subscribe,
   syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-obervables";
+import {
+  getControlRegisterProperty,
+  registryControlProperty
+} from "../../common/registry-properties";
 
+// - - - - - - - - - - - - - - - - - - - -
+//                Registry
+// - - - - - - - - - - - - - - - - - - - -
+// This callback will be registered by default. If it is used in GeneXus, all
+// tree views will have the same state, so the parameters used of the treeState
+// are "shared" across all tree view instances
+const registerDefaultGetImagePathCallback = (treeState: ChTreeViewRender) =>
+  registryControlProperty(
+    "getImagePathCallback",
+    "ch-tree-view-render",
+    (item: TreeViewItemModel, iconDirection: "start" | "end" = "start") => {
+      const img = iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
+
+      return treeState.useGxRender
+        ? fromGxImageToURL(
+            img,
+            treeState.gxSettings,
+            treeState.gxImageConstructor
+          )
+        : img;
+    }
+  );
+
+// - - - - - - - - - - - - - - - - - - - -
+//                Defaults
+// - - - - - - - - - - - - - - - - - - - -
 let autoId = 0;
 
 const ROOT_ID = null;
@@ -476,16 +506,7 @@ export class ChTreeViewRender {
    * re-implement item rendering (`renderItem` property) just to change the
    * path used for the images.
    */
-  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback = (
-    item: TreeViewItemModel,
-    iconDirection: "start" | "end" = "start"
-  ) => {
-    const img = iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
-
-    return this.useGxRender
-      ? fromGxImageToURL(img, this.gxSettings, this.gxImageConstructor)
-      : img;
-  };
+  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback;
 
   /**
    * Callback that is executed when a item request to load its subitems.
@@ -1584,6 +1605,13 @@ export class ChTreeViewRender {
 
   connectedCallback() {
     this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
+
+    // If the getImagePathCallback was not previously registered
+    if (
+      !getControlRegisterProperty("getImagePathCallback", "ch-tree-view-render")
+    ) {
+      registerDefaultGetImagePathCallback(this);
+    }
 
     // Subscribe to expand/collapse changes in the ancestor nodes
     subscribe(this.#treeViewId, {

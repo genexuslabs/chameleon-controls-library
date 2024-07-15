@@ -51,9 +51,12 @@ import {
   TREE_VIEW_ITEM_PARTS_DICTIONARY,
   TREE_VIEW_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
+import { getControlRegisterProperty } from "../../../../common/registry-properties";
 
 // Drag and drop
 export type DragState = "enter" | "none" | "start";
+
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: TreeViewImagePathCallback | undefined;
 
 const DISTANCE_TO_CHECKBOX_CUSTOM_VAR =
   "--ch-tree-view-item-distance-to-checkbox";
@@ -629,7 +632,10 @@ export class ChTreeViewItem {
       return;
     }
 
-    const img = this.getImagePathCallback(this.model, direction);
+    const getImagePathCallback =
+      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
+
+    const img = getImagePathCallback(this.model, direction);
     const imageIsString = typeof img === "string";
     const parsedImg: GxImageMultiState = imageIsString
       ? { base: img }
@@ -1019,6 +1025,12 @@ export class ChTreeViewItem {
   };
 
   connectedCallback() {
+    // Initialize default getImagePathCallback
+    GET_IMAGE_PATH_CALLBACK_REGISTRY ??= getControlRegisterProperty(
+      "getImagePathCallback",
+      "ch-tree-view-render"
+    );
+
     if (this.toggleCheckboxes) {
       this.el.addEventListener(
         "checkboxChange",

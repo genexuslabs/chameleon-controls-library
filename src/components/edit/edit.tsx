@@ -27,6 +27,15 @@ import {
   ImageRender
 } from "../../common/types";
 import { updateDirectionInImageCustomVar } from "../../common/utils";
+import { getControlRegisterProperty } from "../../common/registry-properties";
+
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
+  imageSrc: string
+) => GxImageMultiState | undefined;
+
+const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
+  imageSrc: string
+) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
 
 const AUTOFILL_START_ANIMATION_NAME = "AutoFillStart";
 
@@ -128,9 +137,9 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
    */
-  @Prop() readonly getImagePathCallback: (
+  @Prop() readonly getImagePathCallback?: (
     imageSrc: string
-  ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
+  ) => GxImageMultiState | undefined;
   @Watch("getImagePathCallback")
   getImagePathCallbackChanged() {
     this.#computeImage();
@@ -287,8 +296,14 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       this.#startImage = null;
       return;
     }
+    const getImagePathCallback =
+      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
 
-    const img = this.getImagePathCallback(this.startImgSrc);
+    if (!getImagePathCallback) {
+      this.#startImage = null;
+      return;
+    }
+    const img = getImagePathCallback(this.startImgSrc);
 
     if (!img) {
       this.#startImage = null;
@@ -365,6 +380,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   };
 
   connectedCallback() {
+    // Initialize default getImagePathCallback
+    GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
+      getControlRegisterProperty("getImagePathCallback", "ch-edit") ??
+      DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
     this.#computeImage();
     this.#computePictureValue(this.value);
 

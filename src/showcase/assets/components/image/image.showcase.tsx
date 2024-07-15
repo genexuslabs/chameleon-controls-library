@@ -2,7 +2,6 @@ import { h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { ChImage } from "../../../../components/image/image";
-import { getImagePathCallback } from "./models";
 
 const state: Partial<Mutable<ChImage>> = {};
 let button2Ref: HTMLButtonElement;
@@ -16,7 +15,6 @@ const render = () => (
     >
       <ch-image
         disabled={state.disabled}
-        getImagePathCallback={getImagePathCallback}
         src={state.src}
         type={state.type}
       ></ch-image>
@@ -33,7 +31,6 @@ const render = () => (
         <ch-image
           containerRef={button2Ref}
           disabled={state.disabled}
-          getImagePathCallback={getImagePathCallback}
           src={state.src}
           type={state.type}
         ></ch-image>

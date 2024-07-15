@@ -3,7 +3,7 @@ import { GxImageMultiState } from "../../../../common/types";
 const FOLDER_ICON = "folder";
 const MODULE_ICON = "module";
 
-export const getImagePathCallback = (
+export const getImagePathCallbackImage = (
   imgSrc: string
   // iconDirection: "start" | "end"
 ): GxImageMultiState => {

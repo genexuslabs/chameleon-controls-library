@@ -25,6 +25,18 @@ import {
   defineControlMarkupWithUIModel,
   defineControlMarkupWithoutUIModel
 } from "./utils";
+import { registryProperty } from "../../../common/registry-properties";
+import { getImagePathCallbackImage } from "./image/models";
+import { getImagePathCallbackEdit } from "./edit/models";
+import { getImagePathCallbackTreeView } from "./tree-view/models";
+
+registryProperty("getImagePathCallback", {
+  "ch-edit": getImagePathCallbackEdit,
+  "ch-image": getImagePathCallbackImage,
+  "ch-tree-view-render": getImagePathCallbackTreeView
+});
+
+// registryControlProperty("getImagePathCallback", "ch-image", getImagePathCallbackImage)
 
 const MAIN_WIDGET = "main";
 const USAGE_STENCIL_JS = "usage (StencilJS)";

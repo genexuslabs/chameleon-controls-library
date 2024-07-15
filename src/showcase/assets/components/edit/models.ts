@@ -1,7 +1,11 @@
+import { GxImageMultiState } from "../../../../common/types";
+
 const FOLDER_ICON = "folder";
 const MODULE_ICON = "module";
 
-export const getImagePathCallback = (startImgSrc: string) => {
+export const getImagePathCallbackEdit = (
+  startImgSrc: string
+): GxImageMultiState => {
   if (startImgSrc === MODULE_ICON) {
     return {
       base: "var(--icon-module-base)",

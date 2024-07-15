@@ -13,8 +13,7 @@ import {
   simpleModel1,
   simpleModel2,
   checkDroppableZoneCallback,
-  dropItemsCallback,
-  getImagePathCallback
+  dropItemsCallback
 } from "./models";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
@@ -37,7 +36,6 @@ const render = () => (
     filterList={state.filterList}
     filterOptions={state.filterOptions}
     filterType={state.filterType}
-    getImagePathCallback={getImagePathCallback}
     lazyLoadTreeItemsCallback={lazyLoadTreeItemsCallback}
     model={state.model}
     modifyItemCaptionCallback={state.modifyItemCaptionCallback}

@@ -2,7 +2,6 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChEdit } from "../../../../components/edit/edit";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
-import { getImagePathCallback } from "./models";
 
 const state: Partial<Mutable<ChEdit>> = {};
 const formRefs: {
@@ -51,7 +50,6 @@ const render = () => (
           autoGrow={state.autoGrow}
           class="form-input"
           disabled={state.disabled}
-          getImagePathCallback={getImagePathCallback}
           maxLength={state.maxLength}
           mode={state.mode}
           multiline={state.multiline}
@@ -88,7 +86,6 @@ const render = () => (
           autoGrow={state.autoGrow}
           class="form-input"
           disabled={state.disabled}
-          getImagePathCallback={getImagePathCallback}
           maxLength={state.maxLength}
           mode={state.mode}
           multiline={state.multiline}
@@ -125,7 +122,6 @@ const render = () => (
             autoGrow={state.autoGrow}
             class="form-input"
             disabled={state.disabled}
-            getImagePathCallback={getImagePathCallback}
             maxLength={state.maxLength}
             mode={state.mode}
             multiline={state.multiline}

@@ -35,9 +35,9 @@ const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 const FOLDER_ICON = "folder";
 const MODULE_ICON = "module";
 
-export const getImagePathCallback: TreeViewImagePathCallback = (
-  item: TreeViewItemModel
-  // iconDirection: "start" | "end"
+export const getImagePathCallbackTreeView: TreeViewImagePathCallback = (
+  item: TreeViewItemModel,
+  iconDirection: "start" | "end"
 ) => {
   if (item.startImgSrc === MODULE_ICON) {
     return {
@@ -73,7 +73,7 @@ export const getImagePathCallback: TreeViewImagePathCallback = (
     };
   }
 
-  return item.startImgSrc;
+  return iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
 };
 
 const fileSystem_root: TreeViewItemModel[] = [

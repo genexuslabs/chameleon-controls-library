@@ -88,3 +88,38 @@ export type CssCursorProperty =
   | "all-scroll"
   | "zoom-in"
   | "zoom-out";
+
+/**
+ * Useful to filtering the keys of an object by pattern matching the keys. For
+ * example, all Chameleon controls:
+ *
+ * @example
+ * ```ts
+ * type ChameleonControlsTagName = FilterKeys<
+ *   HTMLElementTagNameMap,
+ *   `ch-${string}`
+ * >
+ * ```
+ */
+export type FilterKeys<T, U> = {
+  [K in keyof T]: K extends U ? K : never;
+}[keyof T];
+
+// Filter custom elements that start with "ch-"
+export type ChameleonControlsTagName = FilterKeys<
+  HTMLElementTagNameMap,
+  `ch-${string}`
+>;
+
+export type ChameleonControls = {
+  [key in ChameleonControlsTagName]: HTMLElementTagNameMap[key];
+};
+
+export type ChameleonImagePathCallbackControlsTagName = Extract<
+  ChameleonControlsTagName,
+  "ch-edit" | "ch-image" | "ch-tree-view-render"
+>;
+
+export type ChameleonImagePathCallbackControls = {
+  [key in ChameleonImagePathCallbackControlsTagName]: ChameleonControls[key];
+};

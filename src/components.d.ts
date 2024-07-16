@@ -860,7 +860,7 @@ export namespace Components {
         /**
           * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
          */
-        "getImagePathCallback": (
+        "getImagePathCallback"?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
         /**
@@ -1488,7 +1488,7 @@ export namespace Components {
         /**
           * This property specifies a callback that is executed when the path the image needs to be resolved.
          */
-        "getImagePathCallback": (
+        "getImagePathCallback"?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
         /**
@@ -6849,7 +6849,7 @@ declare namespace LocalJSX {
         /**
           * This property specifies a callback that is executed when the path the image needs to be resolved.
          */
-        "getImagePathCallback": (
+        "getImagePathCallback"?: (
     imageSrc: string
   ) => GxImageMultiState | undefined;
         /**

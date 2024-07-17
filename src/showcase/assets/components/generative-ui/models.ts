@@ -7,8 +7,8 @@ import {
   kbExplorerModel,
   lazyLoadTreeItemsCallback
 } from "../tree-view/models";
-import { generativeUIFileSystemModel } from "./model-file-system";
-import { generativeUIWebFormModel } from "./web-form";
+import { generativeUILoginForm } from "./samplesCode/model-login";
+import { generativeUIeCommerce } from "./samplesCode/model-ecommerce";
 
 const TREE_VIEW_TAG = "ch-tree-view-render";
 const COMBO_BOX_TAG = "ch-combo-box";
@@ -40,7 +40,7 @@ export const updateModels = (renderRef: HTMLElement) => {
 
 export const samples: GenerativeUISample[] = [
   {
-    caption: "File system",
+    caption: "Login form",
     imageSrc:
       "url('https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#enabled')",
     initializeModels: renderRef => {
@@ -53,11 +53,11 @@ export const samples: GenerativeUISample[] = [
         treeViewRef.filter = editRef.value;
       });
     },
-    prompt: "A file system",
-    html: generativeUIFileSystemModel
+    prompt: "Design a login form. Use a check button for a remember me option",
+    html: generativeUILoginForm
   },
   {
-    caption: "Web form",
+    caption: "eCommerce site",
     imageSrc:
       "url('https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/web-panel.svg#enabled')",
     initializeModels: renderRef => {
@@ -71,7 +71,7 @@ export const samples: GenerativeUISample[] = [
       //   treeViewRef.filter = editRef.value;
       // });
     },
-    prompt: "A web form with an input for the email and the password",
-    html: generativeUIWebFormModel
+    prompt: "Design a home page for an e-commerce site. Use a grid to display products on the home page.",
+    html: generativeUIeCommerce
   }
 ];

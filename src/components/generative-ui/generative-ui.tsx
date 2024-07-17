@@ -100,8 +100,8 @@ export class ChGenerativeUI {
     }
 
     this.generatingUI = true;
-
-    performUIGeneration(this.#editRef.value, sample).then(html =>
+    
+    performUIGeneration(this.#editRef.value, this.#htmlCode, sample).then(html =>
       this.#updateUIGeneration(html, sample)
     );
 

@@ -80,3 +80,17 @@ ch-generative-ui {
     transform: rotate(1turn);
   }
 }
+
+.horizontal-flex {
+  display: flex; /* Establishes a flexbox layout context for its children. */
+  justify-content: center; /* Centers child elements along the main axis (horizontally in default row flex direction). */
+  align-items: center; /* Centers child elements along the cross axis (vertically in default row flex direction). */
+}
+
+.vertical-flex {
+  display: flex; /* Establishes a flexbox layout context for its children. */
+  align-items: center; /* Centers child elements vertically within the container. */
+  flex-direction: column; /* Sets the main axis to vertical. */
+  gap: 15px;
+}
+

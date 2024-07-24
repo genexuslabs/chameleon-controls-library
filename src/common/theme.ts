@@ -15,5 +15,4 @@ export function adoptCommonThemes(adoptedStyleSheets: CSSStyleSheet[]) {
       })
       .catch(() => {});
   });
-  console.log("adoptCommonThemes");
 }

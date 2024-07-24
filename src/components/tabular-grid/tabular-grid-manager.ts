@@ -7,7 +7,7 @@ import HTMLChTabularGridCellElement from "./cell/tabular-grid-cell";
 import { TabularGridManagerSelection } from "./tabular-grid-manager-selection";
 import { TabularGridManagerRowDrag } from "./tabular-grid-manager-row-drag";
 import { TabularGridManagerRowActions } from "./tabular-grid-manager-row-actions";
-import { adoptGlobalStyleSheet } from "../../deprecated-components/style/ch-global-stylesheet";
+import { adoptCommonThemes } from "../../common/theme";
 import { TabularGridManagerColumnResize } from "./tabular-grid-manager-column-resize";
 
 enum StyleRule {
@@ -33,7 +33,7 @@ export class TabularGridManager {
     this.styleSheet.insertRule(`:host {}`, StyleRule.BASE_LAYER);
     this.styleSheet.insertRule(".main {}", StyleRule.COLUMNS_WIDTH);
     this.grid.shadowRoot.adoptedStyleSheets.push(this.styleSheet);
-    adoptGlobalStyleSheet(this.grid.shadowRoot.adoptedStyleSheets);
+    adoptCommonThemes(this.grid.shadowRoot.adoptedStyleSheets);
 
     this.columns = new TabularGridManagerColumns(this);
     this.selection = new TabularGridManagerSelection(this);

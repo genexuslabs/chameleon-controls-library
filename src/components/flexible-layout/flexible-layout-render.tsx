@@ -733,6 +733,15 @@ export class ChFlexibleLayoutRender {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
     const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
 
+    if (!widgetRender) {
+      console.error(
+        `Could not find a render for the "${widgetId}" widget. The render "${
+          widgetInfo.renderId ?? widgetId
+        }" does not exists in the "renders" property.`
+      );
+      return;
+    }
+
     return widgetInfo.addWrapper ? (
       <div
         key={widgetId}

@@ -24,7 +24,8 @@ import {
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended,
-  FlexibleLayoutWidgetCloseInfo
+  FlexibleLayoutWidgetCloseInfo,
+  FlexibleLayoutLeafConfigurationTabbed
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
@@ -363,6 +364,43 @@ export class ChFlexibleLayoutRender {
     // Queue re-renders
     forceUpdate(this);
     forceUpdate(this.#flexibleLayoutRef);
+  }
+
+  /**
+   * Given the viewId, it updates the info of the view if the view is a leaf.
+   * The `type` of the properties argument must match the `type` of the view to
+   * update.
+   */
+  @Method()
+  async updateViewInfo(
+    viewId: string,
+    properties: Partial<
+      Omit<
+        FlexibleLayoutLeafConfigurationTabbed,
+        "selectedWidgetId" | "widget" | "widgets"
+      >
+    >
+  ) {
+    const viewUIModel = this.#itemsInfo.get(viewId) as LeafExtended;
+
+    if (
+      !viewUIModel ||
+      !viewUIModel.leafInfo ||
+      viewUIModel.item.type !== properties.type
+    ) {
+      return;
+    }
+
+    for (const key in properties) {
+      // TODO: Avoid property duplication. Share the memory between the
+      // `leafInfo` member and the `item` member
+      viewUIModel.item[key] = properties[key];
+      viewUIModel.leafInfo[key] = properties[key];
+    }
+
+    // Queue re-renders
+    forceUpdate(this);
+    this.#flexibleLayoutRef.refreshLeaf(viewUIModel.item.id);
   }
 
   /**

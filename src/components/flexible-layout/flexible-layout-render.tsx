@@ -24,7 +24,8 @@ import {
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended,
-  FlexibleLayoutWidgetCloseInfo
+  FlexibleLayoutWidgetCloseInfo,
+  FlexibleLayoutLeafConfigurationTabbed
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
@@ -366,6 +367,43 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
+   * Given the viewId, it updates the info of the view if the view is a leaf.
+   * The `type` of the properties argument must match the `type` of the view to
+   * update.
+   */
+  @Method()
+  async updateViewInfo(
+    viewId: string,
+    properties: Partial<
+      Omit<
+        FlexibleLayoutLeafConfigurationTabbed,
+        "selectedWidgetId" | "widget" | "widgets"
+      >
+    >
+  ) {
+    const viewUIModel = this.#itemsInfo.get(viewId) as LeafExtended;
+
+    if (
+      !viewUIModel ||
+      !viewUIModel.leafInfo ||
+      viewUIModel.item.type !== properties.type
+    ) {
+      return;
+    }
+
+    for (const key in properties) {
+      // TODO: Avoid property duplication. Share the memory between the
+      // `leafInfo` member and the `item` member
+      viewUIModel.item[key] = properties[key];
+      viewUIModel.leafInfo[key] = properties[key];
+    }
+
+    // Queue re-renders
+    forceUpdate(this);
+    this.#flexibleLayoutRef.refreshLeaf(viewUIModel.item.id);
+  }
+
+  /**
    * Update the widget info.
    */
   @Method()
@@ -546,6 +584,13 @@ export class ChFlexibleLayoutRender {
     // Mark the item as rendered
     widget.wasRendered = true;
 
+    const leafUIModel = this.#itemsInfo.get(leafInfo.id)
+      .item as FlexibleLayoutLeafConfigurationTabbed;
+
+    // TODO: This is a WA to fix the selectedWidgetId update. The leafInfo
+    // member should share memory with the leaf to avoid these issues
+    leafUIModel.selectedWidgetId = widget.id;
+
     leafInfo.selectedWidgetId = widget.id;
   };
 
@@ -694,6 +739,15 @@ export class ChFlexibleLayoutRender {
   #renderWidget = (widgetId: string) => {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
     const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
+
+    if (!widgetRender) {
+      console.error(
+        `Could not find a render for the "${widgetId}" widget. The render "${
+          widgetInfo.renderId ?? widgetId
+        }" does not exists in the "renders" property.`
+      );
+      return;
+    }
 
     return widgetInfo.addWrapper ? (
       <div

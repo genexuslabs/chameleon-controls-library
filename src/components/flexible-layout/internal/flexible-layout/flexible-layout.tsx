@@ -172,7 +172,7 @@ export class ChFlexibleLayout {
     }
 
     const viewRef = this.el.shadowRoot.querySelector(
-      `ch-tab[id='${viewInfo.id}']`
+      LEAF_SELECTOR(viewInfo.id)
     ) as HTMLChTabRenderElement;
     await viewRef.removePage(itemId, forceRerender);
   }

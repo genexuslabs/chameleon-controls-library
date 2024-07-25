@@ -123,6 +123,25 @@ Type: `Promise<void>`
 
 
 
+### `updateViewInfo(viewId: string, properties: Partial<Omit<FlexibleLayoutLeafConfigurationTabbed, "selectedWidgetId" | "widget" | "widgets">>) => Promise<void>`
+
+Given the viewId, it updates the info of the view if the view is a leaf.
+The `type` of the properties argument must match the `type` of the view to
+update.
+
+#### Parameters
+
+| Name         | Type                                                                                                                                                                                                                       | Description |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `viewId`     | `string`                                                                                                                                                                                                                   |             |
+| `properties` | `{ type?: "tabbed"; closeButtonHidden?: boolean; dragOutsideDisabled?: boolean; showCaptions?: boolean; sortable?: boolean; tabDirection?: FlexibleLayoutLeafTabDirection; tabPosition?: FlexibleLayoutLeafTabPosition; }` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 ### `updateWidgetInfo(widgetId: string, properties: Partial<Omit<FlexibleLayoutWidget, "id" | "wasRendered">>) => Promise<void>`
 
 Update the widget info.

@@ -584,6 +584,13 @@ export class ChFlexibleLayoutRender {
     // Mark the item as rendered
     widget.wasRendered = true;
 
+    const leafUIModel = this.#itemsInfo.get(leafInfo.id)
+      .item as FlexibleLayoutLeafConfigurationTabbed;
+
+    // TODO: This is a WA to fix the selectedWidgetId update. The leafInfo
+    // member should share memory with the leaf to avoid these issues
+    leafUIModel.selectedWidgetId = widget.id;
+
     leafInfo.selectedWidgetId = widget.id;
   };
 

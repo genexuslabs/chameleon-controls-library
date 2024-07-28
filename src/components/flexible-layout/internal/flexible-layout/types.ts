@@ -65,6 +65,9 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
    */
   sortable?: boolean;
 
+  /** `true` to not render the tab captions of the view. */
+  tabCaptionHidden?: boolean;
+
   tabDirection: FlexibleLayoutLeafTabDirection;
 
   /**

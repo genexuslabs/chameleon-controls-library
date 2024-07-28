@@ -386,6 +386,7 @@ export class ChFlexibleLayoutRender {
   @Method()
   async updateViewInfo(
     viewId: string,
+    // TODO: Add support to update sticky at runtime
     properties: Partial<
       Omit<
         FlexibleLayoutLeafConfigurationTabbed,

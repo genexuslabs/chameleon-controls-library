@@ -1,4 +1,8 @@
-import { AccessibleRole, ImageRender } from "../../../../common/types";
+import {
+  AccessibleRole,
+  CssContainProperty,
+  ImageRender
+} from "../../../../common/types";
 import {
   LayoutSplitterModel,
   LayoutSplitterGroupModel,
@@ -128,6 +132,19 @@ export type FlexibleLayoutWidget = {
 } & FlexibleLayoutWidgetRender;
 
 type FlexibleLayoutWidgetRender = {
+  /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of
+   * the document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  contain?: CssContainProperty;
+
   /**
    * Specifies the render of the widget. If not specified, the id of the widget
    * will be used as the `renderId`.

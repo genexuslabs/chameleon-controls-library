@@ -45,6 +45,7 @@ import {
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
+import { CssContainProperty } from "../../common/types";
 
 // Custom vars
 const TRANSITION_DURATION = "--ch-tab-transition-duration";
@@ -242,7 +243,7 @@ export class ChTabRender implements DraggableView {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: TabElementSize;
 
-  #renderedPages: Set<string> = new Set();
+  #renderedPages: Map<string, TabItemModel> = new Map();
 
   // Refs
   #dragPreviewRef: HTMLDivElement;
@@ -336,6 +337,17 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly closeButtonHidden: boolean = false;
 
   /**
+   * Same as the contain CSS property. This property indicates that an item
+   * and its contents are, as much as possible, independent from the rest of
+   * the document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   */
+  @Prop() readonly contain?: CssContainProperty = "none";
+
+  /**
    * Specifies the flexible layout type.
    */
   @Prop({ reflect: true }) readonly direction: TabDirection;
@@ -371,8 +383,14 @@ export class ChTabRender implements DraggableView {
    */
   @Prop({ mutable: true }) selectedId: string;
   @Watch("selectedId")
-  handleSelectedIdChange(newSelectedId: string) {
-    this.#renderedPages.add(newSelectedId);
+  selectedIdChanged(newSelectedId: string) {
+    const newSelectedTabItem = this.model.find(
+      item => item.id === newSelectedId
+    );
+
+    if (newSelectedTabItem) {
+      this.#renderedPages.set(newSelectedId, newSelectedTabItem);
+    }
   }
 
   /**
@@ -486,16 +504,24 @@ export class ChTabRender implements DraggableView {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #updateRenderedPages = (items: TabModel) => {
+    this.#renderedPages.clear();
+
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
-        this.#renderedPages.add(item.id);
+        this.#renderedPages.set(item.id, item);
       }
     });
 
     // The selected id must be added to the rendered pages, even if it was not
     // marked as "wasRendered" in the UI Model
-    if (this.selectedId) {
-      this.#renderedPages.add(this.selectedId);
+    if (this.selectedId && items !== undefined) {
+      const newSelectedTabItem = this.model.find(
+        item => item.id === this.selectedId
+      );
+
+      if (newSelectedTabItem) {
+        this.#renderedPages.set(this.selectedId, newSelectedTabItem);
+      }
     }
   };
 
@@ -888,22 +914,24 @@ export class ChTabRender implements DraggableView {
       part={this.#parts.PAGE_CONTAINER}
       ref={el => (this.#tabPageRef = el)}
     >
-      {[...this.#renderedPages.keys()].map(itemId => (
+      {[...this.#renderedPages.values()].map(item => (
         <div
-          key={PAGE_ID(itemId)}
-          id={PAGE_ID(itemId)}
+          key={PAGE_ID(item.id)}
+          id={PAGE_ID(item.id)}
           role={!this.tabCaptionHidden ? "tabpanel" : undefined}
           aria-labelledby={
-            !this.tabCaptionHidden ? CAPTION_ID(itemId) : undefined
+            !this.tabCaptionHidden ? CAPTION_ID(item.id) : undefined
           }
           class={{
             [this.#classes.PAGE]: true,
-            "page--selected": itemId === this.selectedId,
-            "page--hidden": !(itemId === this.selectedId)
+            "page--selected": item.id === this.selectedId,
+            "page--hidden": !(item.id === this.selectedId),
+            [`page-contain--${item.contain ?? this.contain}`]:
+              (item.contain ?? this.contain) !== "none"
           }}
           part={this.#parts.PAGE}
         >
-          <slot name={itemId} />
+          <slot name={item.id} />
         </div>
       ))}
     </div>

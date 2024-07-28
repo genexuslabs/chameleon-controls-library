@@ -89,6 +89,16 @@ export type CssCursorProperty =
   | "zoom-in"
   | "zoom-out";
 
+export type CssContainProperty =
+  | "none"
+  | "size"
+  | "inline-size"
+  | "layout"
+  | "paint"
+  | "style"
+  | "content"
+  | "strict";
+
 /**
  * Useful to filtering the keys of an object by pattern matching the keys. For
  * example, all Chameleon controls:

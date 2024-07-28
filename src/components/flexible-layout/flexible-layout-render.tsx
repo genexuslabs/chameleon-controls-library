@@ -30,6 +30,7 @@ import {
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
+import { CssContainProperty } from "../../common/types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -80,6 +81,17 @@ export class ChFlexibleLayoutRender {
 
   // Refs
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
+
+  /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of the
+   * document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   */
+  @Prop() readonly contain: CssContainProperty = "none";
 
   /**
    * A CSS class to set as the `ch-flexible-layout` element class.
@@ -774,6 +786,7 @@ export class ChFlexibleLayoutRender {
 
     return (
       <ch-flexible-layout
+        contain={this.contain}
         class={this.cssClass || null}
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}

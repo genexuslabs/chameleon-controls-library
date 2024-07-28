@@ -37,6 +37,7 @@ import {
 } from "./utils";
 import { getLeafInfo } from "../../utils";
 import { isRTL } from "../../../../common/utils";
+import { CssContainProperty } from "../../../../common/types";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
@@ -63,6 +64,17 @@ export class ChFlexibleLayout {
   @Element() el: HTMLChFlexibleLayoutElement;
 
   @State() dragBarDisabled = false;
+
+  /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of the
+   * document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   */
+  @Prop() readonly contain: CssContainProperty = "none";
 
   /**
    * Specifies the information of each view displayed.
@@ -410,6 +422,7 @@ export class ChFlexibleLayout {
       id={viewInfo.id}
       key={viewInfo.id}
       slot={viewInfo.id}
+      contain={this.contain}
       class={{
         [`ch-tab-${viewInfo.tabDirection}--end`]: viewInfo.tabPosition === "end"
       }}

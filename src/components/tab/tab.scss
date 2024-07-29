@@ -210,7 +210,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .page {
   display: grid;
-  // Do not add "contain: grid", because the ch-dialog inside the pages won't be displayed correctly
 }
 
 .page-container {

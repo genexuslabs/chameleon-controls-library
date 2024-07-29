@@ -50,6 +50,14 @@
   }
 }
 
+.sticky {
+  position: sticky;
+
+  // TODO: Check if there is a better way to define the z-index
+  // This is necessary to properly position the sticky layer with its siblings.
+  z-index: 1;
+}
+
 // - - - - - - - - - - - - - - - -
 //           Containers
 // - - - - - - - - - - - - - - - -

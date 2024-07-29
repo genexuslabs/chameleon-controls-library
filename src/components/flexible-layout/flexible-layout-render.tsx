@@ -30,6 +30,7 @@ import {
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -82,6 +83,17 @@ export class ChFlexibleLayoutRender {
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
 
   /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of the
+   * document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   */
+  @Prop() readonly contain: CssContainProperty = "none";
+
+  /**
    * A CSS class to set as the `ch-flexible-layout` element class.
    */
   @Prop() readonly cssClass: string = "flexible-layout";
@@ -94,6 +106,15 @@ export class ChFlexibleLayoutRender {
   modelChanged(newModel: FlexibleLayoutModel) {
     this.#updateFlexibleModels(newModel);
   }
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflow:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -374,6 +395,7 @@ export class ChFlexibleLayoutRender {
   @Method()
   async updateViewInfo(
     viewId: string,
+    // TODO: Add support to update sticky at runtime
     properties: Partial<
       Omit<
         FlexibleLayoutLeafConfigurationTabbed,
@@ -774,10 +796,12 @@ export class ChFlexibleLayoutRender {
 
     return (
       <ch-flexible-layout
+        contain={this.contain}
         class={this.cssClass || null}
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
+        overflow={this.overflow}
         onViewItemClose={this.#handleLeafWidgetClose}
         onViewItemReorder={this.#handleLeafWidgetReorder}
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}

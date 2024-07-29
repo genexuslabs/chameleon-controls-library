@@ -153,7 +153,7 @@ type FlexibleLayoutWidgetRender = {
    *
    * By default, this property takes to value of the ch-flexible-layout-render.
    */
-  overflowBehavior?:
+  overflow?:
     | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
 

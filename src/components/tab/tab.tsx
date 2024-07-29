@@ -383,7 +383,7 @@ export class ChTabRender implements DraggableView {
    * when content does not fit in the item's padding box (overflows) in the
    * horizontal and/or vertical direction.
    */
-  @Prop() readonly overflowBehavior:
+  @Prop() readonly overflow:
     | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
@@ -929,11 +929,11 @@ export class ChTabRender implements DraggableView {
 
   #renderTabPage = (item: TabItemModel) => {
     const contain = item.contain ?? this.contain;
-    const overflowBehavior = item.overflowBehavior ?? this.overflowBehavior;
+    const overflow = item.overflow ?? this.overflow;
 
     const hasContain = contain !== "none";
-    const hasOverflowBehavior =
-      overflowBehavior !== "visible" && overflowBehavior !== "visible visible";
+    const hasOverflow =
+      overflow !== "visible" && overflow !== "visible visible";
 
     return (
       <div
@@ -949,10 +949,10 @@ export class ChTabRender implements DraggableView {
           "page--hidden": !(item.id === this.selectedId)
         }}
         style={
-          hasContain || hasOverflowBehavior
+          hasContain || hasOverflow
             ? {
                 contain: hasContain ? contain : undefined,
-                overflow: hasOverflowBehavior ? overflowBehavior : undefined
+                overflow: hasOverflow ? overflow : undefined
               }
             : undefined
         }

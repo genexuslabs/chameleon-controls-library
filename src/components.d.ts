@@ -948,7 +948,7 @@ export namespace Components {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior": | CssOverflowProperty
+        "overflow": | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Schedules a new render for a leaf even if no state changed.
@@ -987,7 +987,7 @@ export namespace Components {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior": | CssOverflowProperty
+        "overflow": | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
@@ -2375,7 +2375,7 @@ export namespace Components {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior": | CssOverflowProperty
+        "overflow": | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
@@ -2398,9 +2398,9 @@ export namespace Components {
          */
         "sortable": boolean;
         /**
-          * `true` to not render the tab captions of the control.
+          * `true` to not render the tab buttons of the control.
          */
-        "tabCaptionHidden": boolean;
+        "tabButtonHidden": boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
@@ -6381,7 +6381,7 @@ declare namespace LocalJSX {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior"?: | CssOverflowProperty
+        "overflow"?: | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
     }
     interface ChFlexibleLayoutRender {
@@ -6404,7 +6404,7 @@ declare namespace LocalJSX {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior"?: | CssOverflowProperty
+        "overflow"?: | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Specifies the distribution of the items in the flexible layout.
@@ -7871,7 +7871,7 @@ declare namespace LocalJSX {
         /**
           * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
          */
-        "overflowBehavior"?: | CssOverflowProperty
+        "overflow"?: | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Specifies the selected item of the widgets array.
@@ -7886,9 +7886,9 @@ declare namespace LocalJSX {
          */
         "sortable"?: boolean;
         /**
-          * `true` to not render the tab captions of the control.
+          * `true` to not render the tab buttons of the control.
          */
-        "tabCaptionHidden"?: boolean;
+        "tabButtonHidden"?: boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.

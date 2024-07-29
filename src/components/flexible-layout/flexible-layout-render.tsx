@@ -112,7 +112,7 @@ export class ChFlexibleLayoutRender {
    * when content does not fit in the widget's padding box (overflows) in the
    * horizontal and/or vertical direction.
    */
-  @Prop() readonly overflowBehavior:
+  @Prop() readonly overflow:
     | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
@@ -801,7 +801,7 @@ export class ChFlexibleLayoutRender {
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
-        overflowBehavior={this.overflowBehavior}
+        overflow={this.overflow}
         onViewItemClose={this.#handleLeafWidgetClose}
         onViewItemReorder={this.#handleLeafWidgetReorder}
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}

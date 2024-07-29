@@ -98,7 +98,7 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: STRUCT_EDITOR,
               name: "Struct Editor",
-              overflowBehavior: "auto"
+              overflow: "auto"
             }
           ]
         },
@@ -207,7 +207,7 @@ export const layout2: FlexibleLayoutModel = {
                 {
                   id: STRUCT_EDITOR,
                   name: "Struct Editor",
-                  overflowBehavior: "auto"
+                  overflow: "auto"
                 }
               ]
             }
@@ -344,7 +344,7 @@ export const layout3: FlexibleLayoutModel = {
                           id: STRUCT_EDITOR,
                           name: "Struct Editor",
                           startImgSrc: `${ASSETS_PREFIX}transaction.svg`,
-                          overflowBehavior: "auto"
+                          overflow: "auto"
                         },
                         {
                           id: ATTRS_CONTAINERS_AND_OTHERS,

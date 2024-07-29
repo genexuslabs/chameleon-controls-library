@@ -102,7 +102,7 @@ export class ChFlexibleLayout {
    * when content does not fit in the widget's padding box (overflows) in the
    * horizontal and/or vertical direction.
    */
-  @Prop() readonly overflowBehavior:
+  @Prop() readonly overflow:
     | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
@@ -446,7 +446,7 @@ export class ChFlexibleLayout {
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
       model={viewInfo.widgets}
-      overflowBehavior={this.overflowBehavior}
+      overflow={this.overflow}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
       sortable={viewInfo.sortable}

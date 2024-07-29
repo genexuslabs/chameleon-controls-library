@@ -32,7 +32,7 @@ export type TabItemModel = {
    *
    * By default, this property takes to value of the ch-tab-render.
    */
-  overflowBehavior?:
+  overflow?:
     | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
 

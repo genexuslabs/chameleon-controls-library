@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { showcaseStories, showcaseCustomStories } from "./showcase-stories";
 import {
-  ChComboBoxCustomEvent,
+  ChComboBoxRenderCustomEvent,
   ChRadioGroupRenderCustomEvent,
   ComboBoxModel,
   FlexibleLayoutModel,
@@ -91,7 +91,9 @@ export class ChShowcase {
         string,
         {
           model: ComboBoxModel;
-          handler: (event: ChComboBoxCustomEvent<string> | InputEvent) => void;
+          handler: (
+            event: ChComboBoxRenderCustomEvent<string> | InputEvent
+          ) => void;
         }
       >
     | undefined;
@@ -176,7 +178,7 @@ export class ChShowcase {
       const eventHandler = (
         event:
           | ChRadioGroupRenderCustomEvent<string>
-          | ChComboBoxCustomEvent<string>
+          | ChComboBoxRenderCustomEvent<string>
           | InputEvent
       ) => {
         showcaseStoryState[propertyGroupId as any] = event.detail;
@@ -592,14 +594,14 @@ export class ChShowcase {
             {property.caption}
           </label>
         ),
-        <ch-combo-box
+        <ch-combo-box-render
           id={propertyGroupId}
           accessibleName={property.accessibleName}
           class="combo-box"
           model={this.#showcaseStoryComboBoxes.get(propertyGroupId).model}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(propertyGroupId).handler}
-        ></ch-combo-box>
+        ></ch-combo-box-render>
       ]);
     },
 

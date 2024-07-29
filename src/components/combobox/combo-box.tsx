@@ -1165,6 +1165,11 @@ export class ChComboBox
       onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
     >
+      {!this.currentSelectedValue && (
+        <option disabled selected value="">
+          {this.placeholder}
+        </option>
+      )}
       {this.model.map(this.#nativeItemRender)}
     </select>
   ];

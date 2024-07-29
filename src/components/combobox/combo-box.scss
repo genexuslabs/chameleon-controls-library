@@ -166,6 +166,8 @@ select {
 }
 
 .value {
+  display: inline-grid;
+  align-items: center;
   position: absolute;
   inset-inline: var(--ch-combo-box-mask-inline-start)
     var(--ch-combo-box-mask-inline-end);

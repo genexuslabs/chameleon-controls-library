@@ -164,7 +164,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChComboBox>> =
         {
           id: "placeholder",
           caption: "Placeholder",
-          value: "Option",
+          value: "Select an option...",
           type: "string"
         },
         {

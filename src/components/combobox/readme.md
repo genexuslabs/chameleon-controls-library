@@ -1,4 +1,4 @@
-# ch-combo-box
+# ch-combo-box-render
 
 <!-- Auto Generated Below -->
 
@@ -73,9 +73,9 @@
 ### Graph
 ```mermaid
 graph TD;
-  ch-combo-box --> ch-popover
-  ch-showcase --> ch-combo-box
-  style ch-combo-box fill:#f9f,stroke:#333,stroke-width:4px
+  ch-combo-box-render --> ch-popover
+  ch-showcase --> ch-combo-box-render
+  style ch-combo-box-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

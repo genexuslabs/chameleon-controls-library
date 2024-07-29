@@ -590,7 +590,7 @@ export namespace Components {
          */
         "yamlSchemaUri": string;
     }
-    interface ChComboBox {
+    interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
@@ -3507,9 +3507,9 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
-export interface ChComboBoxCustomEvent<T> extends CustomEvent<T> {
+export interface ChComboBoxRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
-    target: HTMLChComboBoxElement;
+    target: HTMLChComboBoxRenderElement;
 }
 export interface ChDialogCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3921,23 +3921,23 @@ declare global {
         prototype: HTMLChCodeEditorElement;
         new (): HTMLChCodeEditorElement;
     };
-    interface HTMLChComboBoxElementEventMap {
+    interface HTMLChComboBoxRenderElementEventMap {
         "filterChange": string;
         "input": string;
     }
-    interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+    interface HTMLChComboBoxRenderElement extends Components.ChComboBoxRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
-    var HTMLChComboBoxElement: {
-        prototype: HTMLChComboBoxElement;
-        new (): HTMLChComboBoxElement;
+    var HTMLChComboBoxRenderElement: {
+        prototype: HTMLChComboBoxRenderElement;
+        new (): HTMLChComboBoxRenderElement;
     };
     interface HTMLChDialogElementEventMap {
         "dialogClosed": any;
@@ -5391,7 +5391,7 @@ declare global {
         "ch-code": HTMLChCodeElement;
         "ch-code-diff-editor": HTMLChCodeDiffEditorElement;
         "ch-code-editor": HTMLChCodeEditorElement;
-        "ch-combo-box": HTMLChComboBoxElement;
+        "ch-combo-box-render": HTMLChComboBoxRenderElement;
         "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
@@ -5996,7 +5996,7 @@ declare namespace LocalJSX {
          */
         "yamlSchemaUri"?: string;
     }
-    interface ChComboBox {
+    interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
@@ -6036,11 +6036,11 @@ declare namespace LocalJSX {
         /**
           * Emitted when a change to the element's filter is committed by the user. Only applies if `filterType !== "none"`. It contains the information about the new filter value.  This event is debounced by the `filterDebounce` value.
          */
-        "onFilterChange"?: (event: ChComboBoxCustomEvent<string>) => void;
+        "onFilterChange"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
           * The `input` event is emitted when a change to the element's value is committed by the user.
          */
-        "onInput"?: (event: ChComboBoxCustomEvent<string>) => void;
+        "onInput"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
           * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
          */
@@ -8975,7 +8975,7 @@ declare namespace LocalJSX {
         "ch-code": ChCode;
         "ch-code-diff-editor": ChCodeDiffEditor;
         "ch-code-editor": ChCodeEditor;
-        "ch-combo-box": ChComboBox;
+        "ch-combo-box-render": ChComboBoxRender;
         "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-render": ChDropdownRender;
@@ -9099,7 +9099,7 @@ declare module "@stencil/core" {
             "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
             "ch-code-diff-editor": LocalJSX.ChCodeDiffEditor & JSXBase.HTMLAttributes<HTMLChCodeDiffEditorElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
-            "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
+            "ch-combo-box-render": LocalJSX.ChComboBoxRender & JSXBase.HTMLAttributes<HTMLChComboBoxRenderElement>;
             /**
              * The `ch-dialog` component represents a modal or non-modal dialog box or other
              * interactive component.

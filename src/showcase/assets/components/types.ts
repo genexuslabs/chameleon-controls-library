@@ -4,7 +4,7 @@ import { ChActionListRender } from "../../../components/action-list/action-list-
 import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
-import { ChComboBox } from "../../../components/combobox/combo-box";
+import { ChComboBoxRender } from "../../../components/combobox/combo-box";
 import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChEdit } from "../../../components/edit/edit";
@@ -118,7 +118,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChBarcodeScanner>
   | Mutable<ChCheckBox>
   | Mutable<ChCode>
-  | Mutable<ChComboBox>
+  | Mutable<ChComboBoxRender>
   | Mutable<ChDialog>
   | Mutable<ChDropdownRender>
   | Mutable<ChEdit>

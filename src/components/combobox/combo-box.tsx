@@ -176,9 +176,9 @@ type ImmediateFilter = "immediate" | "debounced" | undefined;
   formAssociated: true,
   shadow: true,
   styleUrl: "combo-box.scss",
-  tag: "ch-combo-box"
+  tag: "ch-combo-box-render"
 })
-export class ChComboBox
+export class ChComboBoxRender
   implements AccessibleNameComponent, DisableableComponent
 {
   #accessibleNameFromExternalLabel: string | undefined;
@@ -409,7 +409,7 @@ export class ChComboBox
 
   @AttachInternals() internals: ElementInternals;
 
-  @Element() el: HTMLChComboBoxElement;
+  @Element() el: HTMLChComboBoxRenderElement;
 
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate

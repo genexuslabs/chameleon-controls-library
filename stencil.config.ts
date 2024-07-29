@@ -34,7 +34,7 @@ export const config: Config = {
       components: ["ch-code"] // Make sure the ch-code control is not bundled with other components
     },
     {
-      components: ["ch-combo-box"] // Make sure the ch-combo-box control is not bundled with other components
+      components: ["ch-combo-box-render"] // Make sure the ch-combo-box-render control is not bundled with other components
     },
     {
       components: ["ch-dialog"] // Make sure the ch-dialog control is not bundled with other components

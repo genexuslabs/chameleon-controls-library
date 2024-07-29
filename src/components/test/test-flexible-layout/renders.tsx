@@ -69,16 +69,19 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
@@ -92,7 +95,11 @@ export const defaultLayout: FlexibleLayoutModel = {
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
-            { id: STRUCT_EDITOR, name: "Struct Editor" }
+            {
+              id: STRUCT_EDITOR,
+              name: "Struct Editor",
+              overflowBehavior: "auto"
+            }
           ]
         },
         {
@@ -160,16 +167,19 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
@@ -193,7 +203,13 @@ export const layout2: FlexibleLayoutModel = {
               size: "1fr",
               type: "tabbed",
               tabDirection: "block",
-              widgets: [{ id: STRUCT_EDITOR, name: "Struct Editor" }]
+              widgets: [
+                {
+                  id: STRUCT_EDITOR,
+                  name: "Struct Editor",
+                  overflowBehavior: "auto"
+                }
+              ]
             }
           ]
         },
@@ -267,16 +283,19 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
+              contain: "none", // Necessary to avoid performance issues
               startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
@@ -324,7 +343,8 @@ export const layout3: FlexibleLayoutModel = {
                         {
                           id: STRUCT_EDITOR,
                           name: "Struct Editor",
-                          startImgSrc: `${ASSETS_PREFIX}transaction.svg`
+                          startImgSrc: `${ASSETS_PREFIX}transaction.svg`,
+                          overflowBehavior: "auto"
                         },
                         {
                           id: ATTRS_CONTAINERS_AND_OTHERS,

@@ -17,6 +17,7 @@ export class ChTestFlexibleLayout {
   render() {
     return (
       <ch-flexible-layout-render
+        contain="size"
         model={this.model}
         renders={layoutRenders}
       ></ch-flexible-layout-render>

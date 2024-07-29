@@ -45,7 +45,7 @@ import {
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import { focusComposedPath } from "../common/helpers";
-import { CssContainProperty } from "../../common/types";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
 // Custom vars
 const TRANSITION_DURATION = "--ch-tab-transition-duration";
@@ -377,6 +377,15 @@ export class ChTabRender implements DraggableView {
   modelChanged(newModel: TabModel) {
     this.#updateRenderedPages(newModel);
   }
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the item's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflowBehavior:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
    * Specifies the selected item of the widgets array.
@@ -914,28 +923,45 @@ export class ChTabRender implements DraggableView {
       part={this.#parts.PAGE_CONTAINER}
       ref={el => (this.#tabPageRef = el)}
     >
-      {[...this.#renderedPages.values()].map(item => (
-        <div
-          key={PAGE_ID(item.id)}
-          id={PAGE_ID(item.id)}
-          role={!this.tabCaptionHidden ? "tabpanel" : undefined}
-          aria-labelledby={
-            !this.tabCaptionHidden ? CAPTION_ID(item.id) : undefined
-          }
-          class={{
-            [this.#classes.PAGE]: true,
-            "page--selected": item.id === this.selectedId,
-            "page--hidden": !(item.id === this.selectedId),
-            [`page-contain--${item.contain ?? this.contain}`]:
-              (item.contain ?? this.contain) !== "none"
-          }}
-          part={this.#parts.PAGE}
-        >
-          <slot name={item.id} />
-        </div>
-      ))}
+      {[...this.#renderedPages.values()].map(this.#renderTabPage)}
     </div>
   );
+
+  #renderTabPage = (item: TabItemModel) => {
+    const contain = item.contain ?? this.contain;
+    const overflowBehavior = item.overflowBehavior ?? this.overflowBehavior;
+
+    const hasContain = contain !== "none";
+    const hasOverflowBehavior =
+      overflowBehavior !== "visible" && overflowBehavior !== "visible visible";
+
+    return (
+      <div
+        key={PAGE_ID(item.id)}
+        id={PAGE_ID(item.id)}
+        role={!this.tabCaptionHidden ? "tabpanel" : undefined}
+        aria-labelledby={
+          !this.tabCaptionHidden ? CAPTION_ID(item.id) : undefined
+        }
+        class={{
+          [this.#classes.PAGE]: true,
+          "page--selected": item.id === this.selectedId,
+          "page--hidden": !(item.id === this.selectedId)
+        }}
+        style={
+          hasContain || hasOverflowBehavior
+            ? {
+                contain: hasContain ? contain : undefined,
+                overflow: hasOverflowBehavior ? overflowBehavior : undefined
+              }
+            : undefined
+        }
+        part={this.#parts.PAGE}
+      >
+        <slot name={item.id} />
+      </div>
+    );
+  };
 
   #renderDragPreview = (draggedElement: TabItemModel) => {
     const classes = {

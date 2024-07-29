@@ -1,4 +1,8 @@
-import { CssContainProperty, ImageRender } from "../../common/types";
+import {
+  CssContainProperty,
+  CssOverflowProperty,
+  ImageRender
+} from "../../common/types";
 
 export type TabDirection = "block" | "inline";
 
@@ -20,6 +24,17 @@ export type TabItemModel = {
    * By default, this property takes to value of the ch-tab-render.
    */
   contain?: CssContainProperty;
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   *
+   * By default, this property takes to value of the ch-tab-render.
+   */
+  overflowBehavior?:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
 
   startImgSrc?: string;
 

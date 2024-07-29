@@ -30,7 +30,7 @@ import {
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
-import { CssContainProperty } from "../../common/types";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -106,6 +106,15 @@ export class ChFlexibleLayoutRender {
   modelChanged(newModel: FlexibleLayoutModel) {
     this.#updateFlexibleModels(newModel);
   }
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflowBehavior:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -792,6 +801,7 @@ export class ChFlexibleLayoutRender {
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
+        overflowBehavior={this.overflowBehavior}
         onViewItemClose={this.#handleLeafWidgetClose}
         onViewItemReorder={this.#handleLeafWidgetReorder}
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}

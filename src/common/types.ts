@@ -99,6 +99,13 @@ export type CssContainProperty =
   | "content"
   | "strict";
 
+export type CssOverflowProperty =
+  | "visible"
+  | "hidden"
+  | "clip"
+  | "scroll"
+  | "auto";
+
 /**
  * Useful to filtering the keys of an object by pattern matching the keys. For
  * example, all Chameleon controls:

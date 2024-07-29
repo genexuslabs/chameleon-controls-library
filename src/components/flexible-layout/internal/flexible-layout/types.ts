@@ -1,6 +1,7 @@
 import {
   AccessibleRole,
   CssContainProperty,
+  CssOverflowProperty,
   ImageRender
 } from "../../../../common/types";
 import {
@@ -144,6 +145,17 @@ type FlexibleLayoutWidgetRender = {
    * By default, this property takes to value of the ch-flexible-layout-render.
    */
   contain?: CssContainProperty;
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  overflowBehavior?:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
 
   /**
    * Specifies the render of the widget. If not specified, the id of the widget

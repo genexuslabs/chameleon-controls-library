@@ -37,7 +37,10 @@ import {
 } from "./utils";
 import { getLeafInfo } from "../../utils";
 import { isRTL } from "../../../../common/utils";
-import { CssContainProperty } from "../../../../common/types";
+import {
+  CssContainProperty,
+  CssOverflowProperty
+} from "../../../../common/types";
 
 const LEAF_SELECTOR = (id: string) => `[id="${id}"]`;
 
@@ -93,6 +96,15 @@ export class ChFlexibleLayout {
    * Specifies the distribution of the items in the flexible layout.
    */
   @Prop() readonly model: FlexibleLayoutModel;
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflowBehavior:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
    * Fired when a item of a view request to be closed.
@@ -434,6 +446,7 @@ export class ChFlexibleLayout {
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
       model={viewInfo.widgets}
+      overflowBehavior={this.overflowBehavior}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
       sortable={viewInfo.sortable}

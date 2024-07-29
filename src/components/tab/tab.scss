@@ -210,36 +210,6 @@ $z-index-gx-navbar-item: 107; // Same as $z-index-gx-navbar-item from w-c-l
 
 .page {
   display: grid;
-
-  &-contain {
-    &--size {
-      contain: size;
-    }
-
-    &--inline-size {
-      contain: inline-size;
-    }
-
-    &--layout {
-      contain: layout;
-    }
-
-    &--paint {
-      contain: paint;
-    }
-
-    &--style {
-      contain: style;
-    }
-
-    &--content {
-      contain: content;
-    }
-
-    &--strict {
-      contain: strict;
-    }
-  }
 }
 
 .page-container {

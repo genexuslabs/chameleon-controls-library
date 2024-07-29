@@ -15,7 +15,7 @@ import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-import { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
 import { EditInputMode, EditType } from "./components/edit/types";
 import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -65,7 +65,7 @@ export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-export { GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
 export { EditInputMode, EditType } from "./components/edit/types";
 export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -927,6 +927,10 @@ export namespace Components {
     interface ChFlexibleLayout {
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain": CssContainProperty;
+        /**
           * Specifies the information of each view displayed.
          */
         "itemsInfo": Map<
@@ -941,6 +945,11 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "model": FlexibleLayoutModel;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Schedules a new render for a leaf even if no state changed.
          */
@@ -964,6 +973,10 @@ export namespace Components {
          */
         "addWidget": (leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>;
         /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain": CssContainProperty;
+        /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass": string;
@@ -971,6 +984,11 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "model": FlexibleLayoutModel;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
@@ -2327,6 +2345,10 @@ export namespace Components {
          */
         "closeButtonHidden": boolean;
         /**
+          * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
+        /**
           * Specifies the flexible layout type.
          */
         "direction": TabDirection;
@@ -2351,6 +2373,11 @@ export namespace Components {
          */
         "model": TabModel;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
          */
         "promoteDragPreviewToTopLayer": () => Promise<void>;
@@ -2370,6 +2397,10 @@ export namespace Components {
           * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
          */
         "sortable": boolean;
+        /**
+          * `true` to not render the tab captions of the control.
+         */
+        "tabCaptionHidden": boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
@@ -6317,6 +6348,10 @@ declare namespace LocalJSX {
     }
     interface ChFlexibleLayout {
         /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
+        /**
           * Specifies the information of each view displayed.
          */
         "itemsInfo"?: Map<
@@ -6343,8 +6378,17 @@ declare namespace LocalJSX {
           * Fired when a widget is dragged and dropped into a view.
          */
         "onViewItemReorder"?: (event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>) => void;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
     }
     interface ChFlexibleLayoutRender {
+        /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
         /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
@@ -6357,6 +6401,11 @@ declare namespace LocalJSX {
           * Emitted when the user pressed the close button in a widget.
          */
         "onWidgetClose"?: (event: ChFlexibleLayoutRenderCustomEvent<FlexibleLayoutWidgetCloseInfo>) => void;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -7784,6 +7833,10 @@ declare namespace LocalJSX {
          */
         "closeButtonHidden"?: boolean;
         /**
+          * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
+        /**
           * Specifies the flexible layout type.
          */
         "direction"?: TabDirection;
@@ -7816,6 +7869,11 @@ declare namespace LocalJSX {
          */
         "onSelectedItemChange"?: (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => void;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflowBehavior"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Specifies the selected item of the widgets array.
          */
         "selectedId"?: string;
@@ -7827,6 +7885,10 @@ declare namespace LocalJSX {
           * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
          */
         "sortable"?: boolean;
+        /**
+          * `true` to not render the tab captions of the control.
+         */
+        "tabCaptionHidden"?: boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.

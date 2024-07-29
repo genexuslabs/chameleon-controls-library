@@ -104,7 +104,7 @@ export const createAndSetLeafInfo = (
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
     sortable: flexibleLayoutLeaf.sortable ?? true,
     tabDirection: tabOrientation,
-    tabCaptionHidden: flexibleLayoutLeaf.tabCaptionHidden ?? false,
+    tabButtonHidden: flexibleLayoutLeaf.tabButtonHidden ?? false,
     tabPosition: flexibleLayoutLeaf.tabPosition,
     type: leafType,
     widgets: widgets

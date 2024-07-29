@@ -414,9 +414,9 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly sortable: boolean = false;
 
   /**
-   * `true` to not render the tab captions of the control.
+   * `true` to not render the tab buttons of the control.
    */
-  @Prop() readonly tabCaptionHidden: boolean = false;
+  @Prop() readonly tabButtonHidden: boolean = false;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -939,9 +939,9 @@ export class ChTabRender implements DraggableView {
       <div
         key={PAGE_ID(item.id)}
         id={PAGE_ID(item.id)}
-        role={!this.tabCaptionHidden ? "tabpanel" : undefined}
+        role={!this.tabButtonHidden ? "tabpanel" : undefined}
         aria-labelledby={
-          !this.tabCaptionHidden ? CAPTION_ID(item.id) : undefined
+          !this.tabButtonHidden ? CAPTION_ID(item.id) : undefined
         }
         class={{
           [this.#classes.PAGE]: true,
@@ -1044,12 +1044,12 @@ export class ChTabRender implements DraggableView {
     return (
       <Host
         class={
-          !this.tabCaptionHidden
+          !this.tabButtonHidden
             ? `ch-tab-direction--${this.direction}`
             : undefined
         }
       >
-        {!this.tabCaptionHidden &&
+        {!this.tabButtonHidden &&
           this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 

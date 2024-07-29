@@ -450,7 +450,7 @@ export class ChFlexibleLayout {
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
       sortable={viewInfo.sortable}
-      tabCaptionHidden={viewInfo.tabCaptionHidden}
+      tabButtonHidden={viewInfo.tabButtonHidden}
       // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}
       onItemDragStart={this.handleDragStart(viewInfo.id)}

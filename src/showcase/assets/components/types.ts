@@ -2,6 +2,7 @@ import { Mutable } from "../../../common/types";
 import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
 import { ChActionListRender } from "../../../components/action-list/action-list-render";
 import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
+import { ChChat } from "../../../components/chat/chat";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
 import { ChComboBoxRender } from "../../../components/combobox/combo-box";
@@ -134,5 +135,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<
-  ChMarkdown | ChFlexibleLayoutRender
+  ChChat | ChMarkdown | ChFlexibleLayoutRender
 >;

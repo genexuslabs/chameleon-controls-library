@@ -1,6 +1,7 @@
 import { actionGroupShowcaseStory } from "./action-group/action-group.showcase";
 import { actionListShowcaseStory } from "./action-list/action-list.showcase";
 import { barcodeScannerShowcaseStory } from "./barcode-scanner/barcode-scanner.showcase";
+import { chatShowcaseStory } from "./chat/chat.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
@@ -43,6 +44,7 @@ export const showcaseStories = {
 } as const;
 
 export const showcaseCustomStories = {
+  chat: chatShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
   markdown: markdownShowcaseStory
 };

@@ -1,6 +1,6 @@
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
-  padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  padding: var(--spacing--l, var(--mer-spacing--md));
 }
 
 .mercury .card {
@@ -24,15 +24,15 @@
 .copy-button {
   --icon-path: url("https://unpkg.com/@genexus/unanimo@0.12.0/dist/assets/icons/copy.svg");
   position: absolute;
-  inset-block-start: var(--spacing-un-spacing--l, var(--mer-spacing--md));
-  inset-inline-end: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  inset-block-start: var(--spacing--l, var(--mer-spacing--md));
+  inset-inline-end: var(--spacing--l, var(--mer-spacing--md));
 }
 
 .card-properties {
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing--l, var(--mer-spacing--md));
 }
 
 label {
@@ -43,12 +43,12 @@ label {
 fieldset {
   display: grid;
   grid-auto-flow: row;
-  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  gap: var(--spacing--m, var(--mer-spacing--xs));
   border: unset;
 }
 
 legend {
-  margin-block-end: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  margin-block-end: var(--spacing--m, var(--mer-spacing--xs));
 }
 
 .form-field {
@@ -60,10 +60,7 @@ legend {
   border: 1px solid
     color-mix(
       in srgb,
-      var(
-          --colors-foundation-un-color__purple--300,
-          var(--mer-color__primary-blue--600)
-        )
+      var(--colors-foundation__purple--300, var(--mer-color__primary-blue--600))
         40%,
       transparent
     );
@@ -83,7 +80,7 @@ legend {
 .barcode-scanner-test-main-wrapper {
   display: grid;
   grid-template-rows: 1fr max-content;
-  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  gap: var(--spacing--m, var(--mer-spacing--xs));
 }
 
 .checkbox-test-main-wrapper {
@@ -101,7 +98,7 @@ legend {
   display: grid;
   grid-template-rows: max-content 1fr;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  gap: var(--spacing--m, var(--mer-spacing--xs));
 
   textarea {
     block-size: 100%;
@@ -162,12 +159,12 @@ legend {
 .action-group-test-main-wrapper {
   display: grid;
   grid-template-rows: 100px 100px;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing--l, var(--mer-spacing--md));
 
   .fieldset-test {
     display: grid;
     grid-auto-flow: row;
-    gap: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+    gap: var(--spacing--m, var(--mer-spacing--xs));
     resize: inline;
     overflow: auto;
   }
@@ -178,7 +175,7 @@ legend {
   grid-auto-flow: column;
   grid-auto-columns: 128px;
   grid-template-rows: 80px;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing--l, var(--mer-spacing--md));
 }
 
 /* ch-action-list-render {
@@ -232,9 +229,7 @@ ch-code > pre > code {
 
 ch-showcase ch-flexible-layout-render {
   hr {
-    margin-inline: calc(
-      var(--spacing-un-spacing--l, var(--mer-spacing--md)) * -1
-    );
+    margin-inline: calc(var(--spacing--l, var(--mer-spacing--md)) * -1);
   }
 
   textarea.form-input {
@@ -302,10 +297,10 @@ ch-showcase ch-flexible-layout-render {
 /* This is a WA to improve the UX */
 ch-tree-view-render.tree-view-primary::part(item__action) {
   --ch-tree-view-item__image-size: 20px;
-  padding-block: var(--spacing-un-spacing--s, var(--mer-spacing--2xs));
+  padding-block: var(--spacing--s, var(--mer-spacing--2xs));
 }
 
 /* 
 .combo-box::part(item):hover {
-  background-color: var(--accents-un-accent__primary-dim--hover);
+  background-color: var(--accents__primary-dim--hover);
 } */

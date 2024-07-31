@@ -5,8 +5,8 @@ aside {
   position: sticky;
   inset-block-start: 0px;
   max-block-size: 100dvh;
-  background-color: var(--sidebar-un-sidebar__background-color);
-  color: var(--text-un-text__on-secondary);
+  background-color: var(--sidebar__background-color);
+  color: var(--text__on-secondary);
 }
 
 .light .mercury {
@@ -32,86 +32,54 @@ aside {
 .unanimo {
   aside,
   .header {
-    --sidebar-un-sidebar__background-color: var(--elevation-un-elevation--1);
-    --header-un-header-primary__background-color: var(
-      --elevation-un-elevation--1
-    );
-    --elevation-un-elevation--1: var(--colors-foundation-un-color__gray--1000);
-    --elevation-un-elevation--3: var(--colors-foundation-un-color__gray--800);
+    --sidebar__background-color: var(--elevation--1);
+    --header-primary__background-color: var(--elevation--1);
+    --elevation--1: var(--colors-foundation__gray--1000);
+    --elevation--3: var(--colors-foundation__gray--800);
 
-    --body-texts-un-body-m__font-color--positive: var(
-      --text-un-text__on-surface--positive
-    );
+    --body-m__font-color--positive: var(--text__on-surface--positive);
 
-    --borders-un-border-color__strong: var(
-      --colors-foundation-un-color__gray--600
-    );
+    --border-color__strong: var(--colors-foundation__gray--600);
 
-    --text-un-text__on-surface--positive: var(
-      --colors-foundation-un-color__negative
-    );
+    --text__on-surface--positive: var(--colors-foundation__negative);
 
-    --text-un-text__primary--active: var(
-      --colors-foundation-un-color__purple--300
-    );
+    --text__primary--active: var(--colors-foundation__purple--300);
 
-    --accents-un-accent__primary: var(
-      --colors-foundation-un-color__purple--100
-    );
-    --borders-un-border-color__primary--hover: var(
-      --accents-un-accent__primary--hover
-    );
-    --text-un-text__primary: var(--accents-un-accent__primary);
+    --accents__primary: var(--colors-foundation__purple--100);
+    --border-color__primary--hover: var(--accents__primary--hover);
+    --text__primary: var(--accents__primary);
 
-    --accents-un-accent__primary-dim--hover: var(
-      --colors-foundation-un-color__purple--10
-    );
-    --borders-un-border-color__primary: var(--accents-un-accent__primary);
-    --text-un-text__primary--hover: var(--accents-un-accent__primary--hover);
+    --accents__primary-dim--hover: var(--colors-foundation__purple--10);
+    --border-color__primary: var(--accents__primary);
+    --text__primary--hover: var(--accents__primary--hover);
 
-    --accents-un-accent__primary--hover: var(
-      --colors-foundation-un-color__purple--200
-    );
+    --accents__primary--hover: var(--colors-foundation__purple--200);
 
-    --borders-un-border-color__primary--active: var(
-      --accents-un-accent__primary--active
-    );
+    --border-color__primary--active: var(--accents__primary--active);
 
-    --sidebar-un-sidebar__background-color--active: var(
-      --accents-un-accent__secondary--active
-    );
+    --sidebar__background-color--active: var(--accents__secondary--active);
 
-    --accents-un-accent__secondary--active: var(
-      --colors-foundation-un-color__purple--400
-    );
+    --accents__secondary--active: var(--colors-foundation__purple--400);
 
-    --accents-un-accent__primary--active: var(
-      --colors-foundation-un-color__purple--300
-    );
+    --accents__primary--active: var(--colors-foundation__purple--300);
 
-    --text-un-text__on-primary: var(--colors-foundation-un-color__positive);
-    --colors-foundation-un-color__positive: var(
-      --colors-foundation-un-color__black
-    );
-    --colors-foundation-un-color__black: #121212;
+    --text__on-primary: var(--colors-foundation__positive);
+    --colors-foundation__positive: var(--colors-foundation__black);
+    --colors-foundation__black: #121212;
 
-    --header-un-header-primary__border-color: var(
-      --colors-foundation-un-color__gray--300
-    );
+    --header-primary__border-color: var(--colors-foundation__gray--300);
 
-    --colors-foundation-un-color__negative: var(
-      --colors-foundation-un-color__white
-    );
-    --colors-foundation-un-color__white: #ffffff;
-    --colors-foundation-un-color__purple--10: #a9acf81a;
-    --colors-foundation-un-color__purple--100: #a9acf8;
-    --colors-foundation-un-color__purple--200: #ccccfb;
-    --colors-foundation-un-color__purple--300: #858af6;
-    --colors-foundation-un-color__purple--400: #666483;
-    --colors-foundation-un-color__gray--300: #575965;
-    --colors-foundation-un-color__gray--600: #e0e0e0;
-    --colors-foundation-un-color__gray--800: #353537;
-    --colors-foundation-un-color__gray--1000: #242426;
+    --colors-foundation__negative: var(--colors-foundation__white);
+    --colors-foundation__white: #ffffff;
+    --colors-foundation__purple--10: #a9acf81a;
+    --colors-foundation__purple--100: #a9acf8;
+    --colors-foundation__purple--200: #ccccfb;
+    --colors-foundation__purple--300: #858af6;
+    --colors-foundation__purple--400: #666483;
+    --colors-foundation__gray--300: #575965;
+    --colors-foundation__gray--600: #e0e0e0;
+    --colors-foundation__gray--800: #353537;
+    --colors-foundation__gray--1000: #242426;
   }
 }
 
@@ -123,8 +91,8 @@ main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
-  margin: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing--l, var(--mer-spacing--md));
+  margin: var(--spacing--l, var(--mer-spacing--md));
   padding: 0;
 
   & > .card {
@@ -133,7 +101,7 @@ main {
     inline-size: 180px;
     min-block-size: 180px;
     text-align: center;
-    padding: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+    padding: var(--spacing--l, var(--mer-spacing--md));
 
     &::before {
       inline-size: 100px;
@@ -188,34 +156,34 @@ header {
   display: grid;
   grid-template-columns: max-content max-content;
   align-items: baseline;
-  gap: var(--spacing-un-spacing--s, var(--mer-spacing--2xs));
+  gap: var(--spacing--s, var(--mer-spacing--2xs));
 }
 
 .main-page {
-  margin: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  margin: var(--spacing--l, var(--mer-spacing--md));
 }
 
 .heading-1 {
-  margin-block-end: var(--spacing-un-spacing--m, var(--mer-spacing--xs));
+  margin-block-end: var(--spacing--m, var(--mer-spacing--xs));
 }
 
 .heading-2 {
   display: grid;
   grid-template-columns: max-content max-content;
-  gap: var(--spacing-un-spacing--s, var(--mer-spacing--2xs));
+  gap: var(--spacing--s, var(--mer-spacing--2xs));
 }
 
 .sections {
   display: grid;
   grid-template-rows: max-content;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
-  margin-block-start: var(--spacing-un-spacing--xl);
+  gap: var(--spacing--l, var(--mer-spacing--md));
+  margin-block-start: var(--spacing--xl);
 }
 
 .header-end {
   display: flex;
   align-items: center;
-  gap: var(--spacing-un-spacing--l, var(--mer-spacing--md));
+  gap: var(--spacing--l, var(--mer-spacing--md));
 }
 
 .github-logo {

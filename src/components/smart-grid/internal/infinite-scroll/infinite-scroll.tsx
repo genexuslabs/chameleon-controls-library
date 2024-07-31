@@ -42,8 +42,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   // Refs
   #scrollableParent: Element | HTMLElement;
 
-  #typeOfParentElementAttached: "virtual-scroller" | "window" | "other" =
-    "other";
+  #typeOfParentElementAttached: "ch-smart-grid" | "window" | "other" = "other";
 
   @Element() el!: HTMLChInfiniteScrollElement;
 
@@ -224,6 +223,50 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#ioWatcher = null;
   };
 
+  /**
+   * @todo TODO: Test this function when the element has an iframe as its parent element.
+   *
+   * Recursively look for a parent element in the `node`'s tree to calculate the
+   * infinite scroll visibility and attach the scroll event listener.
+   *
+   * Considerations:
+   *  - This algorithm starts with `node` === `this.el`.
+   *  - If the parent grid has auto-grow = False, the return value should be
+   *    the virtual scroller that is used in the parent grid.
+   * @param node An element that will serve to recursively look up the parent element of `this.el` to attach the scroll event listener.
+   * @returns A parent element of `node` in which the scroll event listener must be attached.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #getScrollableParentToAttachInfiniteScroll = (
+    node: Element | HTMLElement
+  ): Element | HTMLElement => {
+    // TODO: Add support for using getRootNode() to ensure node === null does
+    // not mean we hit a shadow boundary
+    if (node === null || node === window.document.documentElement) {
+      this.#typeOfParentElementAttached = "window";
+
+      return window.document.documentElement;
+    }
+
+    // We try to search for first scrollable parent element.
+    const overflowY = window.getComputedStyle(node).overflowY;
+
+    // The last condition must be used, as the parent container could clip
+    // (overflow: hidden) its overflow. In that scenario, the scroll is "hidden"
+    // or "locked" but set
+    if (overflowY === "auto" || overflowY === "scroll") {
+      this.#typeOfParentElementAttached =
+        node.tagName === "ch-smart-grid" ? "ch-smart-grid" : "other";
+
+      return node;
+    }
+
+    // Try with the next parent element
+    return this.#getScrollableParentToAttachInfiniteScroll(
+      node.parentElement as Element // WA
+    );
+  };
+
   #trackLastScrollTop = () => {
     this.#lastScrollTop = this.#scrollableParent.scrollTop;
 
@@ -242,7 +285,7 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#lastScrollHeight = this.#scrollableParent.scrollHeight;
   };
 
-  #setInverseLoading = () => {
+  #setInverseLoading = (overflowingContent: HTMLElement) => {
     // Inverse loading is not supported when the scroll is attached to the window.
     // The current implementation "supports" this scenario, but since this use
     // case changes the position of the scroll every time the grid retrieves
@@ -299,42 +342,6 @@ export class ChInfiniteScroll implements ComponentInterface {
       this.#lastScrollHeight = currentScrollHeight;
     });
 
-    /**
-     * In the virtual scroller this element represents the container
-     * (`.scrollable-content`) of the cells:
-     * ```
-     *   <gx-grid-smart-css>
-     *     <virtual-scroller slot="grid-content">
-     *       <div class="total-padding"></div>
-     *       <div class="scrollable-content">
-     *         <gx-grid-smart-cell>...</gx-grid-smart-cell>
-     *         <gx-grid-smart-cell>...</gx-grid-smart-cell>
-     *         ...
-     *       </div>
-     *     </virtual-scroller>
-     *     ...
-     *   </gx-grid-smart-css>
-     * ```
-     *
-     * When there is no virtual scroller, this element represents the cell
-     * container (`[slot="grid-content"]`)
-     * ```
-     *   <gx-grid-smart-css>
-     *     <div slot="grid-content">
-     *       <gx-grid-smart-cell>...</gx-grid-smart-cell>
-     *       <gx-grid-smart-cell>...</gx-grid-smart-cell>
-     *       ...
-     *       <gx-grid-infinite-scroll></gx-grid-infinite-scroll>
-     *     </div>
-     *     ...
-     *   </gx-grid-smart-css>
-     * ```
-     */
-    const overflowingContent: Element =
-      this.#typeOfParentElementAttached === "virtual-scroller"
-        ? this.#scrollableParent.lastElementChild
-        : this.el.parentElement;
-
     this.#resizeWatcher.observe(overflowingContent);
     this.#resizeWatcher.observe(this.#scrollableParent);
 
@@ -359,11 +366,32 @@ export class ChInfiniteScroll implements ComponentInterface {
     // Set infinite scroll position if position === "top"
     this.handleItemCountChanged(this.recordCount);
 
-    this.#scrollableParent = this.el.parentElement as HTMLChSmartGridElement;
+    const smartGridParent = (this.el.getRootNode() as ShadowRoot)
+      .host as HTMLChSmartGridElement;
+
+    this.#scrollableParent =
+      this.#getScrollableParentToAttachInfiniteScroll(smartGridParent);
 
     // Inverse Loading
     if (this.position === "top") {
-      this.#setInverseLoading();
+      /**
+       * This element represents the cell container (`[slot="grid-content"]`).
+       * ```
+       *   <ch-smart-grid>
+       *     <div slot="grid-content">
+       *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+       *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+       *       ...
+       *     </div>
+       *     <ch-infinite-scroll></ch-infinite-scroll>
+       *   </ch-smart-grid>
+       * ```
+       */
+      const overflowingContent = smartGridParent.querySelector(
+        "[slot='grid-content']"
+      ) as HTMLElement;
+
+      this.#setInverseLoading(overflowingContent);
     }
 
     // Infinite Scroll

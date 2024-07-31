@@ -21,7 +21,7 @@ const render = () => (
       slot="start-component"
       class="components"
       style={{
-        "background-color": "var(--colors-foundation-un-color__purple--10)"
+        "background-color": "var(--colors-foundation__purple--10)"
       }}
     >
       Start
@@ -31,7 +31,7 @@ const render = () => (
       slot="end-component"
       class="components"
       style={{
-        "background-color": "var(--colors-foundation-un-color__orange--200)"
+        "background-color": "var(--colors-foundation__orange--200)"
       }}
     >
       End
@@ -43,7 +43,7 @@ const render = () => (
       class="components"
       style={{
         "background-color":
-          "color-mix(in srgb, var(--icons-un-icon__error),transparent 60%)"
+          "color-mix(in srgb, var(--icon__error),transparent 60%)"
       }}
     >
       End End
@@ -53,7 +53,7 @@ const render = () => (
     <div
       slot="center-2-component"
       class="components"
-      style={{ "background-color": "var(--accents-un-accent__disabled)" }}
+      style={{ "background-color": "var(--accents__disabled)" }}
     >
       Center 2
       <input class="form-input" type="text" />
@@ -63,7 +63,7 @@ const render = () => (
       slot="center-component"
       class="components"
       style={{
-        "background-color": "var(--un-alert-warning__background-color)"
+        "background-color": "var(--alert-warning__background-color)"
       }}
     >
       Center

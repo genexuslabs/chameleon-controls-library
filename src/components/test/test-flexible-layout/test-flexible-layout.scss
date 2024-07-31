@@ -10,11 +10,11 @@ ch-test-flexible-layout {
 
 .flexible-layout {
   &::part(bar visible) {
-    background-color: var(--colors-foundation-un-color__gray--400);
+    background-color: var(--colors-foundation__gray--400);
   }
 
   // &::part(page-container inline) {
-  //   background-color: var(--colors-foundation-un-color__gray--200);
+  //   background-color: var(--colors-foundation__gray--200);
   // }
 
   // &::part(button inline) {
@@ -77,7 +77,7 @@ ch-test-flexible-layout {
   //   padding-block: 6px;
   //   padding-inline: 16px 8px;
   //   gap: 8px;
-  //   background-color: var(--colors-foundation-un-color__gray--200);
+  //   background-color: var(--colors-foundation__gray--200);
 
   //   &:focus-visible {
   //     outline: 1px solid currentColor;
@@ -86,7 +86,7 @@ ch-test-flexible-layout {
   // }
 
   // &::part(button block selected) {
-  //   background-color: var(--elevation-un-elevation--2);
+  //   background-color: var(--elevation--2);
   // }
 
   // &::part(button block selected blockEnd) {

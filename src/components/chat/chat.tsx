@@ -1,0 +1,424 @@
+import {
+  Component,
+  Element,
+  Host,
+  Method,
+  Prop,
+  State,
+  forceUpdate,
+  h
+} from "@stencil/core";
+import {
+  ChatContentImages,
+  ChatInternalCallbacks,
+  ChatMessage,
+  ChatMessageByRole
+} from "./types";
+import { removeElement } from "../../common/array";
+import { ChatTranslations } from "./translations";
+import { defaultChatRender } from "./default-chat-render";
+
+const ENTER_KEY = "Enter";
+
+/**
+ * TODO: Add description
+ */
+@Component({
+  tag: "ch-chat",
+  styleUrl: "chat.scss",
+  shadow: true
+})
+export class ChChat {
+  #editRef!: HTMLChEditElement;
+  #scrollRef: HTMLChSmartGridElement;
+
+  @Element() el!: HTMLChChatElement;
+
+  @State() imagesToUpload: { src: string; file: File }[] = [];
+  @State() uploadingImagesToTheServer = 0;
+
+  /**
+   * Specifies the callbacks required in the control.
+   */
+  @Prop() readonly callbacks!: ChatInternalCallbacks;
+
+  /**
+   * Specifies if all interactions are disabled
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
+   * `true` if a response for the assistant is being generated.
+   */
+  @Prop() readonly generatingResponse!: boolean;
+
+  /**
+   * Specifies an object containing an HTMLAnchorElement reference. Use this
+   * property to render a button to download the code when displaying a code
+   * block.
+   */
+  @Prop() readonly hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement };
+
+  /**
+   * Specifies if the control can render a button to load images from the file
+   * system.
+   */
+  @Prop() readonly imageUpload: boolean = false;
+
+  /**
+   * Specifies if the chat is waiting for the data to be loaded.
+   */
+  @Prop() readonly initialLoad!: boolean;
+
+  /**
+   * Specifies if the chat is used in a mobile device.
+   */
+  @Prop() readonly isMobile!: boolean;
+
+  /**
+   * Specifies the record that the chat will display.
+   */
+  @Prop({ mutable: true }) record: ChatMessage[] = [];
+
+  /**
+   * Specifies the literals required in the control.
+   */
+  @Prop() readonly translations!: ChatTranslations;
+
+  /**
+   * This property allows us to implement custom rendering of chat items.
+   */
+  @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
+    defaultChatRender(
+      this.translations,
+      this.isMobile,
+      this.hyperlinkToDownloadFile
+    );
+
+  /**
+   * Add a new message at the end of the record, performing a re-render.
+   */
+  @Method()
+  async addNewMessage(message: ChatMessage) {
+    this.record.push(message);
+    forceUpdate(this);
+  }
+
+  /**
+   * Focus the chat input
+   */
+  @Method()
+  async focusChatInput() {
+    if (this.#editRef) {
+      this.#editRef.click();
+    }
+  }
+
+  /**
+   * Set the text for the chat input
+   */
+  @Method()
+  async setChatInputMessage(text: string) {
+    if (this.#editRef) {
+      this.#editRef.value = text;
+    }
+  }
+
+  /**
+   * Given the id of the message, it updates the content of the indexed message.
+   */
+  @Method()
+  async updateChatMessage(
+    messageIndex: number,
+    message: ChatMessageByRole<"system" | "assistant">,
+    mode: "concat" | "replace"
+  ) {
+    if (this.record.length === 0 || !this.record[messageIndex]) {
+      return;
+    }
+    this.#updateMessage(messageIndex, message, mode);
+
+    forceUpdate(this);
+  }
+
+  /**
+   * Update the content of the last message, performing a re-render.
+   */
+  @Method()
+  async updateLastMessage(
+    message: ChatMessageByRole<"system" | "assistant">,
+    mode: "concat" | "replace"
+  ) {
+    if (this.record.length === 0) {
+      return;
+    }
+    this.#updateMessage(this.record.length - 1, message, mode);
+
+    forceUpdate(this);
+  }
+
+  #getMessageContent = (message: ChatMessageByRole<"system" | "assistant">) =>
+    typeof message.content === "string"
+      ? message.content
+      : message.content.message;
+
+  #updateMessage = (
+    messageIndex: number,
+    message: ChatMessageByRole<"system" | "assistant">,
+    mode: "concat" | "replace"
+  ) => {
+    if (mode === "concat") {
+      // Temporal store for the new message
+      const newMessageContent =
+        this.#getMessageContent(
+          this.record[messageIndex] as ChatMessageByRole<"system" | "assistant">
+        ) + this.#getMessageContent(message);
+
+      // Reuse the message ref to correctly update the message content
+      if (typeof message.content === "string") {
+        message.content = newMessageContent;
+      } else {
+        message.content.message = newMessageContent;
+      }
+    }
+
+    // Replace the message
+    this.record[messageIndex] = message;
+  };
+
+  #sendMessageKeyboard = (event: KeyboardEvent) => {
+    if (event.key !== ENTER_KEY || event.shiftKey) {
+      return;
+    }
+    event.preventDefault();
+
+    this.#sendMessage();
+  };
+
+  #addUserMessageToRecordAndFocusInput = (
+    userMessage: ChatMessageByRole<"user">
+  ) => {
+    this.record.push(userMessage);
+    this.#editRef.value = "";
+    this.#editRef.click();
+
+    // Scroll to bottom
+    this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
+  };
+
+  #sendMessage = async () => {
+    if (
+      !this.#editRef.value ||
+      this.disabled ||
+      this.initialLoad ||
+      this.generatingResponse ||
+      this.uploadingImagesToTheServer > 0
+    ) {
+      return;
+    }
+
+    // Message without resources
+    if (!this.imageUpload || this.imagesToUpload.length === 0) {
+      const userMessageToAdd: ChatMessageByRole<"user"> = {
+        role: "user",
+        content: this.#editRef.value
+      };
+
+      this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+      this.callbacks.sendChatToLLM(this.record);
+
+      // Queue a new re-render
+      forceUpdate(this);
+      return;
+    }
+
+    this.uploadingImagesToTheServer = this.imagesToUpload.length;
+
+    const userContent: ChatContentImages = [
+      { type: "text", text: this.#editRef.value }
+    ] as ChatContentImages;
+
+    this.imagesToUpload.forEach((imageToUpload, index) => {
+      // Add the image with empty src, since it's not in the server yet
+      userContent.push({
+        type: "image_url",
+        image_url: { url: "" }
+      });
+
+      // Upload the image to the server asynchronously
+      this.callbacks
+        .uploadImage(imageToUpload.file)
+        .then(imageSrc => {
+          userContent[index + 1] = {
+            type: "image_url",
+            image_url: { url: imageSrc }
+          };
+
+          // Queue a new re-render
+          this.uploadingImagesToTheServer--;
+
+          if (this.uploadingImagesToTheServer === 0) {
+            this.callbacks.sendChatToLLM(this.record);
+          }
+        })
+        .catch(() => {
+          // console.log("Reject...", reason);
+          // TODO: Error uploading the image
+
+          this.uploadingImagesToTheServer--;
+
+          if (this.uploadingImagesToTheServer === 0) {
+            this.callbacks.sendChatToLLM(this.record);
+          }
+        });
+    });
+
+    const userMessageToAdd: ChatMessageByRole<"user"> = {
+      role: "user",
+      content: userContent
+    };
+    this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+
+    // Free the memory
+    this.imagesToUpload = [];
+  };
+
+  #handleStopGenerating = (event: MouseEvent) => {
+    event.stopPropagation();
+
+    this.callbacks.stopGeneratingAnswer!();
+  };
+
+  // #handleFilesChanged = (
+  //   event: GxEaiImagePickerCustomEvent<FileList | null>
+  // ) => {
+  //   this.imagesToUpload =
+  //     event.detail === null
+  //       ? []
+  //       : [...event.detail].map(imageFile => ({
+  //           file: imageFile,
+  //           src: URL.createObjectURL(imageFile)
+  //         }));
+  // };
+
+  #removeUploadedImage = (index: number) => (event: MouseEvent) => {
+    const buttonToRemove = event.target as HTMLButtonElement;
+    const nextFocusedButton = (buttonToRemove.nextElementSibling ??
+      buttonToRemove.previousElementSibling) as HTMLButtonElement;
+
+    // Focus the next item to improve accessibility
+    if (nextFocusedButton) {
+      nextFocusedButton.focus();
+    }
+
+    // TODO: Remove the file from the image-picker reference
+    removeElement(this.imagesToUpload, index);
+    forceUpdate(this);
+  };
+
+  #removeImageResource = (imageFile: string) => () => {
+    URL.revokeObjectURL(imageFile); // Free the memory
+  };
+
+  render() {
+    const accessibleName = this.translations.accessibleName;
+    const atLeastOneElement = this.record?.length > 0;
+
+    return (
+      <Host>
+        {!this.initialLoad && (
+          <ch-smart-grid
+            class={atLeastOneElement ? "not-empty-content" : undefined}
+            loadingState="all-records-loaded"
+            inverseLoading
+            recordCount={this.record.length}
+            ref={el => (this.#scrollRef = el)}
+          >
+            {this.record.length > 0 ? (
+              <div class="grid-content" slot="grid-content" part="content">
+                {this.record.map(this.renderItem)}
+              </div>
+            ) : (
+              <slot name="empty-chat" />
+            )}
+          </ch-smart-grid>
+        )}
+
+        <div
+          class={{
+            "send-container": true,
+            "send-container--file-uploading": this.imageUpload
+          }}
+          part="send-container"
+        >
+          {this.generatingResponse && this.callbacks.stopGeneratingAnswer && (
+            <button
+              class="stop-generating-answer-button"
+              part="stop-generating-answer-button"
+              type="button"
+              onClick={this.#handleStopGenerating}
+            >
+              {accessibleName.stopGeneratingAnswerButton}
+            </button>
+          )}
+
+          {/* {this.imageUpload && (
+            <gx-eai-image-picker
+              part="image-picker"
+              translations={this.translations}
+              onFilesChanged={this.#handleFilesChanged}
+            ></gx-eai-image-picker>
+          )} */}
+
+          <div class="send-input-wrapper" part="send-input-wrapper">
+            {this.imagesToUpload.length > 0 && (
+              <div class="images-to-upload" part="images-to-upload">
+                {this.imagesToUpload.map((imageFile, index) => (
+                  <button
+                    key={imageFile.src}
+                    aria-label={accessibleName.removeUploadedImage}
+                    title={accessibleName.removeUploadedImage}
+                    part="remove-image-to-upload-button"
+                    type="button"
+                    onClick={this.#removeUploadedImage(index)}
+                  >
+                    <img
+                      part="image-to-upload"
+                      aria-hidden="true"
+                      src={imageFile.src}
+                      alt=""
+                      loading="lazy"
+                      onLoad={this.#removeImageResource(imageFile.src)}
+                    ></img>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <ch-edit
+              part="send-input"
+              autoGrow
+              accessibleName={accessibleName.sendInput}
+              placeholder={this.translations.placeholder.sendInput}
+              onKeyDown={
+                !this.initialLoad ? this.#sendMessageKeyboard : undefined
+              }
+              multiline
+              ref={el => (this.#editRef = el as HTMLChEditElement)}
+            ></ch-edit>
+          </div>
+
+          <button
+            aria-label={accessibleName.sendButton}
+            title={accessibleName.sendButton}
+            class="send-or-audio-button"
+            part="send-button"
+            disabled={this.disabled}
+            type="button"
+            onClick={!this.initialLoad ? this.#sendMessage : undefined}
+          ></button>
+        </div>
+      </Host>
+    );
+  }
+}

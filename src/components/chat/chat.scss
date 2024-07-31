@@ -1,0 +1,185 @@
+// @import "../../../../node_modules/@genexus/unanimo/dist/unanimo.scss";
+@import "../../common/base";
+
+// @include markdown();
+
+@include button-reset();
+@include box-sizing();
+@include typography-reset();
+
+:host {
+  display: grid;
+  grid-template-rows: 1fr min-content;
+}
+
+.markdown pre > code > .code-block__header {
+  padding-block: 0;
+  padding-inline-end: 0;
+}
+
+// // TODO: This is a WA to reduce the padding in code blocks for mobile devices
+// @media (max-width: $mobile-web) {
+//   .markdown pre > code {
+//     & > .code-block__header {
+//       padding-inline-start: calc(var(--spacing--l) - var(--spacing--s));
+//     }
+
+//     & > .code-block__content {
+//       padding: calc(var(--spacing--l) - var(--spacing--s));
+//     }
+//   }
+// }
+
+// This is a WA to avoid overflowing the content of the window on mobile devices
+pre {
+  text-wrap: initial;
+}
+
+.code-block__header-actions {
+  display: flex;
+}
+
+ch-grid-smart {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--accents__secondary) transparent;
+
+  // WA to customize the scrollbar. This styles should be in the globals file
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--accents__secondary);
+  }
+}
+
+.assistant-content,
+.user-content {
+  // Improve rendering performance by not rendering off-screen messages
+  contain: paint;
+}
+
+.message-with-images {
+  display: grid;
+}
+
+img {
+  display: block;
+  // Necessary to avoid overflowing the cell width when the window does not
+  // have enough width
+  max-inline-size: 100%;
+}
+
+.assistant-loading {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+}
+
+.assistant-files {
+  grid-area: 2 / 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.file-skeleton {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    display: inline-flex;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//          Query viewer
+// - - - - - - - - - - - - - - - -
+.query-viewer-content {
+  // There are many cases where the chart overflow the window width on mobile
+  // devices
+  overflow: auto;
+}
+
+// - - - - - - - - - - - - - - - -
+//         Send container
+// - - - - - - - - - - - - - - - -
+.stop-generating-answer-button {
+  grid-area: input-wrapper;
+  position: absolute;
+  inset-block-start: 0;
+  justify-self: center;
+  transform: translateY(-100%);
+}
+
+.images-to-upload {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.send-container {
+  display: grid;
+  grid-template: "input-wrapper send-or-audio" 1fr / 1fr max-content;
+  position: relative;
+  align-items: end;
+
+  &--file-uploading {
+    grid-template: "upload-image input-wrapper send-or-audio" 1fr / max-content 1fr max-content;
+  }
+}
+
+.send-input-wrapper {
+  grid-area: input-wrapper;
+}
+
+.send-or-audio-button {
+  grid-area: send-or-audio;
+}
+
+ch-markdown.streaming .last-nested-child::after,
+.not-empty-content ch-markdown.streaming:empty::after {
+  content: "";
+  display: inline-flex;
+  width: 1.125ch;
+  height: 1em;
+  background-color: var(--colors-foundation__purple--100);
+  transform: translateY(0.125em);
+  // The animation is in the chat.scss file. I suppose is due the Shadow DOM
+  animation: twinkle 0.75s linear infinite;
+}
+
+@keyframes twinkle {
+  60% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
+  }
+}
+
+// This is a WA to improve default content alignment
+gx-query-viewer {
+  justify-content: center;
+}
+
+.spinner-loading {
+  animation: infinite-rotate 0.875s linear 0s infinite;
+}
+
+// This is a WA due to shadow DOM limitations/scoping with keyframes
+@keyframes infinite-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes gx-skeleton-load {
+  to {
+    transform: translateX(192%);
+  }
+}

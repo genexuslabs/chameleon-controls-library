@@ -67,6 +67,9 @@ export function overrideMethod(
   };
 }
 
+export const copyToTheClipboard = (text: string) =>
+  navigator.clipboard.writeText(text);
+
 /**
  * Converts an object mapping token keys to booleans into a space-separated
  * string containing the token keys that map to truthy values.

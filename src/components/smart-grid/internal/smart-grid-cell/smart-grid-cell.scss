@@ -1,0 +1,7 @@
+smart-grid-cell {
+  display: flex;
+}
+
+.ch-smart-grid--inverse-loading > smart-grid-cell {
+  grid-row-start: var(--ch-smart-cell-index);
+}

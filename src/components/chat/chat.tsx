@@ -335,7 +335,12 @@ export class ChChat {
             ref={el => (this.#scrollRef = el)}
           >
             {this.record.length > 0 ? (
-              <div class="grid-content" slot="grid-content" part="content">
+              <div
+                slot="grid-content"
+                role="row"
+                class="grid-content"
+                part="content"
+              >
                 {this.record.map(this.renderItem)}
               </div>
             ) : (

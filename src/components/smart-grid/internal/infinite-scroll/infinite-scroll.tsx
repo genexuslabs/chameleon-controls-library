@@ -13,7 +13,12 @@ import {
   writeTask
 } from "@stencil/core";
 import { SmartGridDataState } from "./types";
+import { getScrollableParentToAttachInfiniteScroll } from "./utils";
 
+/**
+ * Due to floating point precision errors, we have to ensure a safe threshold
+ * to update the scroll position to the bottom.
+ */
 const PRECISION_OFFSET = 2;
 
 @Component({
@@ -90,16 +95,9 @@ export class ChInfiniteScroll implements ComponentInterface {
    */
   @Prop() readonly recordCount: number = 0;
   @Watch("recordCount")
-  handleItemCountChanged(newValue: number) {
+  recordCountChanged() {
     if (!this.#didLoad) {
       return;
-    }
-
-    // The infinite scroll must stay at the top position of the grid content.
-    // To make that possible, the infinite scroll is placed as the "first" item
-    // of the grid using the current recordCount.
-    if (this.position === "top") {
-      this.el.style.gridRowStart = `-${newValue + 2}`;
     }
 
     this.#newRecords = true;
@@ -122,7 +120,7 @@ export class ChInfiniteScroll implements ComponentInterface {
    */
   @Prop() readonly threshold: string = "15%";
   @Watch("threshold")
-  protected thresholdChanged() {
+  thresholdChanged() {
     if (this.loadingState === "all-records-loaded") {
       return;
     }
@@ -223,50 +221,6 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#ioWatcher = null;
   };
 
-  /**
-   * @todo TODO: Test this function when the element has an iframe as its parent element.
-   *
-   * Recursively look for a parent element in the `node`'s tree to calculate the
-   * infinite scroll visibility and attach the scroll event listener.
-   *
-   * Considerations:
-   *  - This algorithm starts with `node` === `this.el`.
-   *  - If the parent grid has auto-grow = False, the return value should be
-   *    the virtual scroller that is used in the parent grid.
-   * @param node An element that will serve to recursively look up the parent element of `this.el` to attach the scroll event listener.
-   * @returns A parent element of `node` in which the scroll event listener must be attached.
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #getScrollableParentToAttachInfiniteScroll = (
-    node: Element | HTMLElement
-  ): Element | HTMLElement => {
-    // TODO: Add support for using getRootNode() to ensure node === null does
-    // not mean we hit a shadow boundary
-    if (node === null || node === window.document.documentElement) {
-      this.#typeOfParentElementAttached = "window";
-
-      return window.document.documentElement;
-    }
-
-    // We try to search for first scrollable parent element.
-    const overflowY = window.getComputedStyle(node).overflowY;
-
-    // The last condition must be used, as the parent container could clip
-    // (overflow: hidden) its overflow. In that scenario, the scroll is "hidden"
-    // or "locked" but set
-    if (overflowY === "auto" || overflowY === "scroll") {
-      this.#typeOfParentElementAttached =
-        node.tagName === "ch-smart-grid" ? "ch-smart-grid" : "other";
-
-      return node;
-    }
-
-    // Try with the next parent element
-    return this.#getScrollableParentToAttachInfiniteScroll(
-      node.parentElement as Element // WA
-    );
-  };
-
   #trackLastScrollTop = () => {
     this.#lastScrollTop = this.#scrollableParent.scrollTop;
 
@@ -310,7 +264,7 @@ export class ChInfiniteScroll implements ComponentInterface {
 
         this.#lastClientHeight = currentClientHeight;
         this.#lastScrollHeight = currentScrollHeight;
-        this.#scrollableParent.scrollTop = newScrollTop;
+        this.#scrollableParent.scrollTop = newScrollTop + PRECISION_OFFSET; // Scroll to bottom
         return;
       }
 
@@ -333,7 +287,7 @@ export class ChInfiniteScroll implements ComponentInterface {
           this.#lastScrollTop +
           scrollOffset +
           clientHeightOffset +
-          (scrollWasAtTheBottom ? PRECISION_OFFSET : 0);
+          (scrollWasAtTheBottom ? PRECISION_OFFSET : 0); // Scroll to bottom
 
         this.#scrollableParent.scrollTop = newScrollTop;
       }
@@ -364,13 +318,14 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#didLoad = true;
 
     // Set infinite scroll position if position === "top"
-    this.handleItemCountChanged(this.recordCount);
+    this.recordCountChanged();
 
     const smartGridParent = (this.el.getRootNode() as ShadowRoot)
       .host as HTMLChSmartGridElement;
 
-    this.#scrollableParent =
-      this.#getScrollableParentToAttachInfiniteScroll(smartGridParent);
+    const result = getScrollableParentToAttachInfiniteScroll(smartGridParent);
+    this.#typeOfParentElementAttached = result[0];
+    this.#scrollableParent = result[1];
 
     // Inverse Loading
     if (this.position === "top") {
@@ -409,7 +364,7 @@ export class ChInfiniteScroll implements ComponentInterface {
     return (
       <Host
         class={this.waitingForData ? "gx-loading" : undefined}
-        aria-hidden={!this.waitingForData ? "true" : undefined}
+        aria-hidden="true"
       >
         {this.dataProvider && <slot />}
       </Host>

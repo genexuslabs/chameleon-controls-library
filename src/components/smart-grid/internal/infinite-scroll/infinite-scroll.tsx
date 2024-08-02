@@ -331,14 +331,16 @@ export class ChInfiniteScroll implements ComponentInterface {
     if (this.position === "top") {
       /**
        * This element represents the cell container (`[slot="grid-content"]`).
-       * ```
+       * ```tsx
        *   <ch-smart-grid>
+       *     #shadow-root (open)
+       *     | <ch-infinite-scroll></ch-infinite-scroll>
+       *     | <slot name="grid-content"></slot>
        *     <div slot="grid-content">
        *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
        *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
        *       ...
        *     </div>
-       *     <ch-infinite-scroll></ch-infinite-scroll>
        *   </ch-smart-grid>
        * ```
        */

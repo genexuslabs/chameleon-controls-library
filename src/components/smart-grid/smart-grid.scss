@@ -4,6 +4,10 @@
   grid-template-columns: 1fr;
 }
 
+:host(.ch-smart-grid--loaded-render-delay) {
+  opacity: 0;
+}
+
 :host(.ch-smart-grid--inverse-loading) {
   grid-template-rows: max-content 1fr;
 }

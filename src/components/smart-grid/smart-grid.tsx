@@ -1,14 +1,18 @@
 import {
   Component,
   ComponentInterface,
+  Element,
   Event,
   EventEmitter,
   Host,
   Prop,
+  Watch,
   h
 } from "@stencil/core";
 import { AccessibleNameComponent } from "../../common/interfaces";
 import { SmartGridDataState } from "./internal/infinite-scroll/types";
+
+const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
 
 @Component({
   shadow: true,
@@ -18,6 +22,15 @@ import { SmartGridDataState } from "./internal/infinite-scroll/types";
 export class ChSmartGrid
   implements AccessibleNameComponent, ComponentInterface
 {
+  /**
+   * This variable is used to avoid layout shifts (CLS) at the initial load,
+   * due to the async render of the content.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #contentIsHidden = false;
+
+  @Element() el: HTMLChSmartGridElement;
+
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
@@ -49,7 +62,13 @@ export class ChSmartGrid
   /**
    * Specifies the loading state of the grid.
    */
-  @Prop() readonly loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Watch("loadingState")
+  loadingStateChange(_, oldLoadingState: SmartGridDataState) {
+    if (oldLoadingState === "initial") {
+      this.#avoidCLSOnInitialLoad();
+    }
+  }
 
   /**
    * Grid current row count. This property is used in order to be able to
@@ -73,7 +92,28 @@ export class ChSmartGrid
    * This Handler will be called every time grid threshold is reached. Needed
    * for infinite scrolling grids.
    */
-  @Event({ bubbles: false }) gxInfiniteThresholdReached: EventEmitter<void>;
+  @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
+
+  #avoidCLSOnInitialLoad = () => {
+    this.#contentIsHidden = true;
+    this.el.classList.add(HIDE_CONTENT_AFTER_LOADING_CLASS);
+  };
+
+  connectedCallback(): void {
+    if (this.loadingState !== "initial") {
+      this.#avoidCLSOnInitialLoad();
+    }
+  }
+
+  componentDidRender(): void {
+    if (this.#contentIsHidden) {
+      this.#contentIsHidden = false;
+
+      requestAnimationFrame(() => {
+        this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
+      });
+    }
+  }
 
   render() {
     const initialLoad = this.loadingState === "initial";

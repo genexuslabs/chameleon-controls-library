@@ -198,7 +198,18 @@ export class ChInfiniteScroll implements ComponentInterface {
     this.#lastScrollHeight = this.#scrollableParent.scrollHeight;
   };
 
-  #setInverseLoading = (overflowingContent: HTMLElement) => {
+  #setInverseLoading = () => {
+    if (this.position !== "top") {
+      return;
+    }
+
+    const smartGridParent = (this.el.getRootNode() as ShadowRoot)
+      .host as HTMLChSmartGridElement;
+
+    const result = getScrollableParentToAttachInfiniteScroll(smartGridParent);
+    this.#typeOfParentElementAttached = result[0];
+    this.#scrollableParent = result[1];
+
     // Inverse loading is not supported when the scroll is attached to the window.
     // The current implementation "supports" this scenario, but since this use
     // case changes the position of the scroll every time the grid retrieves
@@ -207,6 +218,25 @@ export class ChInfiniteScroll implements ComponentInterface {
     if (this.#typeOfParentElementAttached === "window") {
       return;
     }
+
+    /**
+     * This element represents the cell container (`[slot="grid-content"]`).
+     * ```tsx
+     *   <ch-smart-grid>
+     *     #shadow-root (open)
+     *     | <ch-infinite-scroll></ch-infinite-scroll>
+     *     | <slot name="grid-content"></slot>
+     *     <div slot="grid-content">
+     *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+     *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
+     *       ...
+     *     </div>
+     *   </ch-smart-grid>
+     * ```
+     */
+    const overflowingContent = smartGridParent.querySelector(
+      "[slot='grid-content']"
+    ) as HTMLElement;
 
     overflowingContent.scrollTop =
       overflowingContent.scrollHeight + PRECISION_OFFSET;
@@ -273,36 +303,8 @@ export class ChInfiniteScroll implements ComponentInterface {
   };
 
   componentDidLoad() {
-    const smartGridParent = (this.el.getRootNode() as ShadowRoot)
-      .host as HTMLChSmartGridElement;
-
-    const result = getScrollableParentToAttachInfiniteScroll(smartGridParent);
-    this.#typeOfParentElementAttached = result[0];
-    this.#scrollableParent = result[1];
-
     // Inverse Loading
-    if (this.position === "top") {
-      /**
-       * This element represents the cell container (`[slot="grid-content"]`).
-       * ```tsx
-       *   <ch-smart-grid>
-       *     #shadow-root (open)
-       *     | <ch-infinite-scroll></ch-infinite-scroll>
-       *     | <slot name="grid-content"></slot>
-       *     <div slot="grid-content">
-       *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
-       *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
-       *       ...
-       *     </div>
-       *   </ch-smart-grid>
-       * ```
-       */
-      const overflowingContent = smartGridParent.querySelector(
-        "[slot='grid-content']"
-      ) as HTMLElement;
-
-      this.#setInverseLoading(overflowingContent);
-    }
+    this.#setInverseLoading();
 
     // Infinite Scroll
     this.#setInfiniteScroll();

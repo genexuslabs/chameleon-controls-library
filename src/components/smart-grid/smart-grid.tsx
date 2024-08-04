@@ -127,6 +127,13 @@ export class ChSmartGrid
     return (
       <Host
         aria-label={this.accessibleName || undefined}
+        // Improve accessibility by announcing live changes
+        aria-live="polite"
+        // Wait until all changes are made to prevents assistive
+        // technologies from announcing changes before updates are done
+        aria-busy={
+          initialLoad || this.loadingState === "loading" ? "true" : "false"
+        }
         class={{
           "ch-smart-grid--inverse-loading": hasRecords && this.inverseLoading,
           "ch-smart-grid--data-provider":

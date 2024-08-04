@@ -176,23 +176,6 @@ export class ChInfiniteScroll implements ComponentInterface {
     });
   };
 
-  #disconnectInfiniteScroll = () => {
-    this.#ioWatcher?.disconnect();
-    this.#ioWatcher = undefined;
-
-    // Remove scroll position tracker, if necessary
-    if (
-      this.loadingState === "initial" ||
-      this.loadingState === "all-records-loaded"
-    ) {
-      this.#scrollIsAttached = false;
-      this.#scrollableParent.removeEventListener(
-        "scroll",
-        this.#trackLastScrollTop
-      );
-    }
-  };
-
   #trackLastScrollTop = () => {
     this.#lastScrollTop = this.#scrollableParent.scrollTop;
     this.#lastScrollHeight = this.#scrollableParent.scrollHeight;
@@ -304,6 +287,23 @@ export class ChInfiniteScroll implements ComponentInterface {
   #disconnectInverseLoading = () => {
     this.#resizeWatcher?.disconnect();
     this.#resizeWatcher = undefined;
+  };
+
+  #disconnectInfiniteScroll = () => {
+    this.#ioWatcher?.disconnect();
+    this.#ioWatcher = undefined;
+
+    // Remove scroll position tracker, if necessary
+    if (
+      this.loadingState === "initial" ||
+      this.loadingState === "all-records-loaded"
+    ) {
+      this.#scrollIsAttached = false;
+      this.#scrollableParent.removeEventListener(
+        "scroll",
+        this.#trackLastScrollTop
+      );
+    }
   };
 
   componentDidLoad() {

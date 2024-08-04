@@ -27,6 +27,7 @@
 - [ch-action-group-render](../../../components/action-group)
 - [ch-action-list-render](../../../components/action-list)
 - [ch-barcode-scanner](../../../components/barcode-scanner)
+- [ch-chat](../../../components/chat)
 - [ch-dialog](../../../components/dialog)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-edit](../../../components/edit)
@@ -53,6 +54,7 @@ graph TD;
   ch-showcase --> ch-action-group-render
   ch-showcase --> ch-action-list-render
   ch-showcase --> ch-barcode-scanner
+  ch-showcase --> ch-chat
   ch-showcase --> ch-dialog
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-edit
@@ -78,6 +80,11 @@ graph TD;
   ch-action-group --> ch-dropdown
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
+  ch-chat --> ch-smart-grid
+  ch-chat --> ch-edit
+  ch-chat --> ch-markdown
+  ch-chat --> ch-smart-grid-cell
+  ch-smart-grid --> ch-infinite-scroll
   ch-dropdown-render --> ch-dropdown
   ch-test-flexible-layout --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-action-group-render

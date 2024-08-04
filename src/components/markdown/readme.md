@@ -34,11 +34,13 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 
 ### Used by
 
+ - [ch-chat](../chat)
  - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-chat --> ch-markdown
   ch-showcase --> ch-markdown
   style ch-markdown fill:#f9f,stroke:#333,stroke-width:4px
 ```

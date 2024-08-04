@@ -124,7 +124,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   #checkIfCanFetchMoreData = () => {
     this.#disconnectInfiniteScroll();
 
-    // Try to re-observe the element when the DOM is updated
+    // Wait until the main thread has rendered the UI
     requestAnimationFrame(this.#setInfiniteScroll);
   };
 
@@ -142,6 +142,7 @@ export class ChInfiniteScroll implements ComponentInterface {
       return;
     }
 
+    // Track scroll changes when the DOM is updated
     requestAnimationFrame(() => {
       if (!this.#canFetch()) {
         return;
@@ -164,14 +165,11 @@ export class ChInfiniteScroll implements ComponentInterface {
       if (!this.#scrollIsAttached) {
         this.#scrollIsAttached = true;
 
-        // Track scroll changes when the DOM is updated
-        requestAnimationFrame(() => {
-          this.#scrollableParent.addEventListener(
-            "scroll",
-            this.#trackLastScrollTop,
-            { passive: true }
-          );
-        });
+        this.#scrollableParent.addEventListener(
+          "scroll",
+          this.#trackLastScrollTop,
+          { passive: true }
+        );
       }
     });
   };
@@ -308,7 +306,9 @@ export class ChInfiniteScroll implements ComponentInterface {
 
   componentDidLoad() {
     this.#setInverseLoading();
-    this.#setInfiniteScroll();
+
+    // Wait until the main thread has rendered the UI
+    requestAnimationFrame(this.#setInfiniteScroll);
   }
 
   disconnectedCallback() {

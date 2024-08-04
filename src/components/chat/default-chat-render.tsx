@@ -203,7 +203,10 @@ export const defaultChatRender =
   ) =>
   (messageModel: ChatMessage) =>
     (messageModel.role === "assistant" || messageModel.role === "user") && (
-      <ch-smart-grid-cell part={`message ${messageModel.role}`}>
+      <ch-smart-grid-cell
+        key={messageModel.id}
+        part={`message ${messageModel.role}`}
+      >
         {messageModel.role === "assistant"
           ? renderDefaultAssistantMessage(
               translations,

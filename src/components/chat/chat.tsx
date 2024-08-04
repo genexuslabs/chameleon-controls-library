@@ -12,8 +12,10 @@ import {
   ChatContentImages,
   ChatInternalCallbacks,
   ChatMessage,
-  ChatMessageByRole
+  ChatMessageByRole,
+  ChatMessageByRoleNoId
 } from "./types";
+import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types";
 import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
@@ -30,7 +32,7 @@ const ENTER_KEY = "Enter";
 })
 export class ChChat {
   #editRef!: HTMLChEditElement;
-  #scrollRef: HTMLChSmartGridElement;
+  #scrollRef: HTMLChSmartGridElement | undefined;
 
   @Element() el!: HTMLChChatElement;
 
@@ -66,14 +68,14 @@ export class ChChat {
   @Prop() readonly imageUpload: boolean = false;
 
   /**
-   * Specifies if the chat is waiting for the data to be loaded.
-   */
-  @Prop() readonly initialLoad!: boolean;
-
-  /**
    * Specifies if the chat is used in a mobile device.
    */
   @Prop() readonly isMobile!: boolean;
+
+  /**
+   * Specifies if the chat is waiting for the data to be loaded.
+   */
+  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
 
   /**
    * Specifies the record that the chat will display.
@@ -130,7 +132,7 @@ export class ChChat {
   @Method()
   async updateChatMessage(
     messageIndex: number,
-    message: ChatMessageByRole<"system" | "assistant">,
+    message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
     if (this.record.length === 0 || !this.record[messageIndex]) {
@@ -146,7 +148,7 @@ export class ChChat {
    */
   @Method()
   async updateLastMessage(
-    message: ChatMessageByRole<"system" | "assistant">,
+    message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
     if (this.record.length === 0) {
@@ -157,14 +159,16 @@ export class ChChat {
     forceUpdate(this);
   }
 
-  #getMessageContent = (message: ChatMessageByRole<"system" | "assistant">) =>
+  #getMessageContent = (
+    message: ChatMessageByRoleNoId<"system" | "assistant">
+  ) =>
     typeof message.content === "string"
       ? message.content
       : message.content.message;
 
   #updateMessage = (
     messageIndex: number,
-    message: ChatMessageByRole<"system" | "assistant">,
+    message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) => {
     if (mode === "concat") {
@@ -183,7 +187,8 @@ export class ChChat {
     }
 
     // Replace the message
-    this.record[messageIndex] = message;
+    const messageId = this.record[messageIndex].id;
+    this.record[messageIndex] = Object.assign({ id: messageId }, message);
   };
 
   #sendMessageKeyboard = (event: KeyboardEvent) => {
@@ -203,14 +208,16 @@ export class ChChat {
     this.#editRef.click();
 
     // Scroll to bottom
-    this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
+    if (this.#scrollRef) {
+      this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
+    }
   };
 
   #sendMessage = async () => {
     if (
       !this.#editRef.value ||
       this.disabled ||
-      this.initialLoad ||
+      this.loadingState === "initial" ||
       this.generatingResponse ||
       this.uploadingImagesToTheServer > 0
     ) {
@@ -220,6 +227,7 @@ export class ChChat {
     // Message without resources
     if (!this.imageUpload || this.imagesToUpload.length === 0) {
       const userMessageToAdd: ChatMessageByRole<"user"> = {
+        id: `${new Date().getTime()}`,
         role: "user",
         content: this.#editRef.value
       };
@@ -274,6 +282,7 @@ export class ChChat {
     });
 
     const userMessageToAdd: ChatMessageByRole<"user"> = {
+      id: `${new Date().getTime()}`,
       role: "user",
       content: userContent
     };
@@ -289,9 +298,7 @@ export class ChChat {
     this.callbacks.stopGeneratingAnswer!();
   };
 
-  // #handleFilesChanged = (
-  //   event: GxEaiImagePickerCustomEvent<FileList | null>
-  // ) => {
+  // #handleFilesChanged = (event: ImagePickerCustomEvent<FileList | null>) => {
   //   this.imagesToUpload =
   //     event.detail === null
   //       ? []
@@ -320,33 +327,32 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
+  #renderChatOrEmpty = () =>
+    this.loadingState === "all-records-loaded" && this.record.length === 0 ? (
+      <slot name="empty-chat"></slot>
+    ) : (
+      <ch-smart-grid
+        dataProvider
+        loadingState={this.loadingState}
+        inverseLoading
+        recordCount={this.record.length}
+        ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
+      >
+        <div role="row" class="grid-content" slot="grid-content" part="content">
+          {this.record.map(this.renderItem)}
+        </div>
+      </ch-smart-grid>
+    );
+
   render() {
     const accessibleName = this.translations.accessibleName;
-    const atLeastOneElement = this.record?.length > 0;
 
     return (
       <Host>
-        {!this.initialLoad && (
-          <ch-smart-grid
-            class={atLeastOneElement ? "not-empty-content" : undefined}
-            loadingState="all-records-loaded"
-            inverseLoading
-            recordCount={this.record.length}
-            ref={el => (this.#scrollRef = el)}
-          >
-            {this.record.length > 0 ? (
-              <div
-                slot="grid-content"
-                role="row"
-                class="grid-content"
-                part="content"
-              >
-                {this.record.map(this.renderItem)}
-              </div>
-            ) : (
-              <slot name="empty-chat" />
-            )}
-          </ch-smart-grid>
+        {this.loadingState === "initial" ? (
+          <div class="loading-chat" slot="empty-chat"></div>
+        ) : (
+          this.#renderChatOrEmpty()
         )}
 
         <div
@@ -366,8 +372,8 @@ export class ChChat {
               {accessibleName.stopGeneratingAnswerButton}
             </button>
           )}
-
-          {/* {this.imageUpload && (
+          {/* 
+          {this.imageUpload && (
             <gx-eai-image-picker
               part="image-picker"
               translations={this.translations}
@@ -402,13 +408,11 @@ export class ChChat {
 
             <ch-edit
               part="send-input"
-              autoGrow
               accessibleName={accessibleName.sendInput}
-              placeholder={this.translations.placeholder.sendInput}
-              onKeyDown={
-                !this.initialLoad ? this.#sendMessageKeyboard : undefined
-              }
+              autoGrow
               multiline
+              placeholder={this.translations.placeholder.sendInput}
+              onKeyDown={this.#sendMessageKeyboard}
               ref={el => (this.#editRef = el as HTMLChEditElement)}
             ></ch-edit>
           </div>
@@ -420,7 +424,9 @@ export class ChChat {
             part="send-button"
             disabled={this.disabled}
             type="button"
-            onClick={!this.initialLoad ? this.#sendMessage : undefined}
+            onClick={
+              this.loadingState !== "initial" ? this.#sendMessage : undefined
+            }
           ></button>
         </div>
       </Host>

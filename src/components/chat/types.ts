@@ -27,29 +27,56 @@
  *   };
  */
 export type ChatMessage = ChatMessageByRole<ChatMessageRole>;
+export type ChatMessageNoId = ChatMessageByRoleNoId<ChatMessageRole>;
 
 export type ChatMessageByRole<T extends ChatMessageRole> = T extends "system"
-  ? {
-      role: "system";
-      content: string;
-    }
+  ? ChatMessageSystem
   : T extends "user"
-  ? {
-      role: "user";
-      content: ChatUserContent;
-    }
-  : {
-      role: "assistant";
-      content: ChatAssistantContent;
+  ? ChatMessageUser
+  : T extends "assistant"
+  ? ChatMessageAssistant
+  : ChatMessageError;
 
-      /**
-       * Specifies the status of the message. If not defined, it will default
-       * to "complete"
-       */
-      status?: "complete" | "waiting" | "streaming";
-    };
+export type ChatMessageByRoleNoId<T extends ChatMessageRole> =
+  T extends "system"
+    ? Omit<ChatMessageSystem, "id">
+    : T extends "user"
+    ? Omit<ChatMessageUser, "id">
+    : T extends "assistant"
+    ? Omit<ChatMessageAssistant, "id">
+    : Omit<ChatMessageError, "id">;
 
-export type ChatMessageRole = "system" | "user" | "assistant";
+export type ChatMessageSystem = {
+  id: string;
+  role: "system";
+  content: string;
+};
+
+export type ChatMessageUser = {
+  id: string;
+  role: "user";
+  content: ChatUserContent;
+};
+
+export type ChatMessageAssistant = {
+  id: string;
+  role: "assistant";
+  content: ChatAssistantContent;
+
+  /**
+   * Specifies the status of the message. If not defined, it will default
+   * to "complete"
+   */
+  status?: "complete" | "waiting" | "streaming";
+};
+
+export type ChatMessageError = {
+  id: string;
+  role: "error";
+  content: string;
+};
+
+export type ChatMessageRole = "system" | "user" | "assistant" | "error";
 
 export type ChatAssistantContent = string | ChatAssistantContentFiles;
 

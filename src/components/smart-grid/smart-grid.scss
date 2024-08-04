@@ -19,6 +19,7 @@
 :host(.ch-smart-grid--scroll) {
   contain: strict;
   overflow: auto;
+  overflow-anchor: none;
 }
 
 ::slotted([slot="grid-content"]) {

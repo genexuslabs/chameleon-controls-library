@@ -2,15 +2,11 @@ import {
   Component,
   ComponentInterface,
   Element,
-  Event,
-  EventEmitter,
   Host,
   Method,
   Prop,
-  State,
   Watch,
-  h,
-  writeTask
+  h
 } from "@stencil/core";
 import { SmartGridDataState } from "./types";
 import { getScrollableParentToAttachInfiniteScroll } from "./utils";
@@ -27,31 +23,22 @@ const PRECISION_OFFSET = 2;
   tag: "ch-infinite-scroll"
 })
 export class ChInfiniteScroll implements ComponentInterface {
-  /**
-   * `true` if the `componentDidLoad()` method was called
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #didLoad = false;
-
   // Stored values
   #lastClientHeight = 0;
   #lastScrollHeight = 0;
   #lastScrollTop = 0;
 
-  #newRecords = false;
-
   // Observers
-  #ioWatcher: IntersectionObserver;
-  #resizeWatcher: ResizeObserver;
+  #ioWatcher: IntersectionObserver | undefined;
+  #resizeWatcher: ResizeObserver | undefined;
+  #scrollIsAttached: boolean = false;
 
   // Refs
-  #scrollableParent: Element | HTMLElement;
+  #scrollableParent!: Element | HTMLElement;
 
   #typeOfParentElementAttached: "ch-smart-grid" | "window" | "other" = "other";
 
   @Element() el!: HTMLChInfiniteScrollElement;
-
-  @State() waitingForData = false;
 
   /**
    * If `true`, the infinite scroll will be hidden and scroll event listeners
@@ -62,21 +49,16 @@ export class ChInfiniteScroll implements ComponentInterface {
    * known that there is no more data that can be added, and the infinite
    * scroll is no longer needed.
    */
-  @Prop() readonly loadingState!: SmartGridDataState;
+  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
 
   @Watch("loadingState")
-  loadingStateChanged(newDataState: SmartGridDataState) {
-    if (!this.#didLoad) {
-      return;
-    }
+  loadingStateChanged(newValue: SmartGridDataState) {
+    this.#checkIfCanFetchMoreData();
 
-    // All data was fully loaded
-    if (newDataState === "all-records-loaded") {
-      this.#disconnectInfiniteScroll();
-    }
-    // The grid has data provider and there is data that can be loaded
-    else if (this.#canFetch()) {
-      this.#setInfiniteScroll();
+    if (newValue === "initial") {
+      this.#lastClientHeight = 0;
+      this.#lastScrollHeight = 0;
+      this.#lastScrollTop = 0;
     }
   }
 
@@ -89,19 +71,10 @@ export class ChInfiniteScroll implements ComponentInterface {
   @Prop() readonly dataProvider: boolean = false;
 
   /**
-   * This property must be bounded to grid item count property.
-   * It's unique purpose is to update the position of the control in the
-   * inverse loading scenario (`position === "top"`).
+   * This Handler will be called every time grid threshold is reached. Needed
+   * for infinite scrolling grids.
    */
-  @Prop() readonly recordCount: number = 0;
-  @Watch("recordCount")
-  recordCountChanged() {
-    if (!this.#didLoad) {
-      return;
-    }
-
-    this.#newRecords = true;
-  }
+  @Prop() readonly infiniteThresholdReachedCallback!: () => void;
 
   /**
    * The position of the infinite scroll element.
@@ -121,20 +94,8 @@ export class ChInfiniteScroll implements ComponentInterface {
   @Prop() readonly threshold: string = "15%";
   @Watch("threshold")
   thresholdChanged() {
-    if (this.loadingState === "all-records-loaded") {
-      return;
-    }
-    // @todo TODO: Check if this works when a new threshold comes
-    this.#disconnectInfiniteScroll();
-    this.#setInfiniteScroll();
+    this.#checkIfCanFetchMoreData();
   }
-
-  /**
-   * Emitted when the scroll reaches the threshold distance. From within your
-   * infinite handler, you must call the infinite scroll's `complete()` method
-   * when your async operation has completed.
-   */
-  @Event({ bubbles: false }) gxInfinite!: EventEmitter<void>;
 
   /**
    * Call `complete()` within the `gxInfinite` output event handler when
@@ -148,47 +109,32 @@ export class ChInfiniteScroll implements ComponentInterface {
    */
   @Method()
   async complete() {
-    this.waitingForData = false;
-    this.#checkIfCanFetchMoreData();
+    // this.waitingForData = false;
   }
 
   #canFetch = () =>
     this.dataProvider && this.loadingState === "more-data-to-fetch";
 
   /**
-   * This functions unobserves and re-observes the infinite scroll element when
+   * This function unobserves and re-observes the infinite scroll element when
    * new items are added in the grid. Without this configuration, if the grid
    * has no scroll even after new items are added, the intersection observer
    * won't fire a new interruption because it is still visible in the viewport.
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #checkIfCanFetchMoreData = () => {
-    // The infinite scroll was disconnected
-    if (!this.#canFetch() || !this.#ioWatcher) {
-      return;
-    }
-    this.#ioWatcher.unobserve(this.el);
+    this.#disconnectInfiniteScroll();
 
     // Try to re-observe the element when the DOM is updated
-    requestAnimationFrame(() => {
-      writeTask(() => {
-        // The infinite scroll was disconnected
-        if (!this.#canFetch() || !this.#ioWatcher) {
-          return;
-        }
-
-        this.#ioWatcher.observe(this.el);
-      });
-    });
+    requestAnimationFrame(this.#setInfiniteScroll);
   };
 
   #emitInfiniteEvent = () => {
-    if (this.waitingForData) {
-      return;
+    if (this.loadingState !== "loading") {
+      // Ensure the infinite scroll is not triggered twice
+      this.loadingState = "loading";
+      this.infiniteThresholdReachedCallback();
     }
-
-    this.waitingForData = true;
-    this.gxInfinite.emit();
   };
 
   #setInfiniteScroll = () => {
@@ -198,44 +144,58 @@ export class ChInfiniteScroll implements ComponentInterface {
     }
 
     requestAnimationFrame(() => {
-      writeTask(() => {
-        const options: IntersectionObserverInit = {
-          root: this.#scrollableParent,
-          rootMargin: this.threshold
-        };
+      if (!this.#canFetch()) {
+        return;
+      }
 
-        this.#ioWatcher = new IntersectionObserver(entries => {
-          if (!entries[0].isIntersecting) {
-            return;
-          }
+      const options: IntersectionObserverInit = {
+        root: this.#scrollableParent,
+        rootMargin: this.threshold
+      };
+
+      this.#ioWatcher = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
           this.#emitInfiniteEvent();
-        }, options);
+        }
+      }, options);
 
-        this.#ioWatcher.observe(this.el);
-      });
+      this.#ioWatcher.observe(this.el);
+
+      // Attach scroll is not previously attached
+      if (!this.#scrollIsAttached) {
+        this.#scrollIsAttached = true;
+
+        // Track scroll changes when the DOM is updated
+        requestAnimationFrame(() => {
+          this.#scrollableParent.addEventListener(
+            "scroll",
+            this.#trackLastScrollTop,
+            { passive: true }
+          );
+        });
+      }
     });
   };
 
   #disconnectInfiniteScroll = () => {
     this.#ioWatcher?.disconnect();
-    this.#ioWatcher = null;
+    this.#ioWatcher = undefined;
+
+    // Remove scroll position tracker, if necessary
+    if (
+      this.loadingState === "initial" ||
+      this.loadingState === "all-records-loaded"
+    ) {
+      this.#scrollIsAttached = false;
+      this.#scrollableParent.removeEventListener(
+        "scroll",
+        this.#trackLastScrollTop
+      );
+    }
   };
 
   #trackLastScrollTop = () => {
     this.#lastScrollTop = this.#scrollableParent.scrollTop;
-
-    // If the grid added new records, don't track the scrollHeight changes
-    if (this.#newRecords) {
-      // Wait until the resize observer has executed its adjustment to keep
-      // tracking the scrollHeight
-      requestAnimationFrame(() => {
-        writeTask(() => {
-          this.#newRecords = false;
-        });
-      });
-      return;
-    }
-
     this.#lastScrollHeight = this.#scrollableParent.scrollHeight;
   };
 
@@ -249,6 +209,9 @@ export class ChInfiniteScroll implements ComponentInterface {
       return;
     }
 
+    overflowingContent.scrollTop =
+      overflowingContent.scrollHeight + PRECISION_OFFSET;
+
     this.#resizeWatcher = new ResizeObserver(() => {
       // Current values
       const currentClientHeight = this.#scrollableParent.clientHeight;
@@ -260,11 +223,15 @@ export class ChInfiniteScroll implements ComponentInterface {
 
       // Must set the scroll at the bottom position
       if (firstTimeThatContentOverflows) {
-        const newScrollTop = currentScrollHeight - currentClientHeight;
+        const newScrollTop =
+          currentScrollHeight - currentClientHeight + PRECISION_OFFSET;
 
         this.#lastClientHeight = currentClientHeight;
         this.#lastScrollHeight = currentScrollHeight;
-        this.#scrollableParent.scrollTop = newScrollTop + PRECISION_OFFSET; // Scroll to bottom
+
+        // Scroll to bottom
+        this.#scrollableParent.scrollTop = newScrollTop;
+        this.#lastScrollTop = newScrollTop;
         return;
       }
 
@@ -290,6 +257,7 @@ export class ChInfiniteScroll implements ComponentInterface {
           (scrollWasAtTheBottom ? PRECISION_OFFSET : 0); // Scroll to bottom
 
         this.#scrollableParent.scrollTop = newScrollTop;
+        this.#lastScrollTop = newScrollTop;
       }
 
       this.#lastClientHeight = currentClientHeight;
@@ -298,28 +266,14 @@ export class ChInfiniteScroll implements ComponentInterface {
 
     this.#resizeWatcher.observe(overflowingContent);
     this.#resizeWatcher.observe(this.#scrollableParent);
-
-    this.#scrollableParent.addEventListener("scroll", this.#trackLastScrollTop);
   };
 
   #disconnectInverseLoading = () => {
-    if (this.#resizeWatcher) {
-      this.#resizeWatcher.disconnect();
-      this.#resizeWatcher = null;
-
-      this.#scrollableParent.removeEventListener(
-        "scroll",
-        this.#trackLastScrollTop
-      );
-    }
+    this.#resizeWatcher?.disconnect();
+    this.#resizeWatcher = undefined;
   };
 
   componentDidLoad() {
-    this.#didLoad = true;
-
-    // Set infinite scroll position if position === "top"
-    this.recordCountChanged();
-
     const smartGridParent = (this.el.getRootNode() as ShadowRoot)
       .host as HTMLChSmartGridElement;
 
@@ -352,9 +306,7 @@ export class ChInfiniteScroll implements ComponentInterface {
     }
 
     // Infinite Scroll
-    if (this.#canFetch()) {
-      this.#setInfiniteScroll();
-    }
+    this.#setInfiniteScroll();
   }
 
   disconnectedCallback() {
@@ -365,7 +317,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   render() {
     return (
       <Host
-        class={this.waitingForData ? "gx-loading" : undefined}
+        class={this.loadingState === "loading" ? "loading" : undefined}
         aria-hidden="true"
       >
         {this.dataProvider && <slot />}

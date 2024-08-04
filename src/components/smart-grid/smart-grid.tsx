@@ -94,6 +94,11 @@ export class ChSmartGrid
    */
   @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
 
+  #infiniteThresholdReachedCallback = () => {
+    this.loadingState = "loading";
+    this.infiniteThresholdReached.emit();
+  };
+
   #avoidCLSOnInitialLoad = () => {
     this.#contentIsHidden = true;
     this.el.classList.add(HIDE_CONTENT_AFTER_LOADING_CLASS);
@@ -136,6 +141,9 @@ export class ChSmartGrid
             hasRecords && this.inverseLoading && (
               <ch-infinite-scroll
                 dataProvider={this.dataProvider}
+                infiniteThresholdReachedCallback={
+                  this.#infiniteThresholdReachedCallback
+                }
                 loadingState={this.loadingState}
                 position="top"
                 threshold={this.threshold}
@@ -147,6 +155,9 @@ export class ChSmartGrid
             hasRecords && this.dataProvider && !this.inverseLoading && (
               <ch-infinite-scroll
                 dataProvider
+                infiniteThresholdReachedCallback={
+                  this.#infiniteThresholdReachedCallback
+                }
                 loadingState={this.loadingState}
                 threshold={this.threshold}
               ></ch-infinite-scroll>

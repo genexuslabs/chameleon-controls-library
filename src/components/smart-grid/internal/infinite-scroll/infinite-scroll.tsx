@@ -241,60 +241,64 @@ export class ChInfiniteScroll implements ComponentInterface {
     overflowingContent.scrollTop =
       overflowingContent.scrollHeight + PRECISION_OFFSET;
 
-    this.#resizeWatcher = new ResizeObserver(() => {
-      // Current values
-      const currentClientHeight = this.#scrollableParent.clientHeight;
-      const currentScrollHeight = this.#scrollableParent.scrollHeight;
-
-      const firstTimeThatContentOverflows =
-        this.#lastClientHeight === this.#lastScrollHeight &&
-        currentClientHeight < currentScrollHeight;
-
-      // Must set the scroll at the bottom position
-      if (firstTimeThatContentOverflows) {
-        const newScrollTop =
-          currentScrollHeight - currentClientHeight + PRECISION_OFFSET;
-
-        this.#lastClientHeight = currentClientHeight;
-        this.#lastScrollHeight = currentScrollHeight;
-
-        // Scroll to bottom
-        this.#scrollableParent.scrollTop = newScrollTop;
-        this.#lastScrollTop = newScrollTop;
-        return;
-      }
-
-      const scrollWasAtTheBottom =
-        this.#lastScrollHeight <=
-        this.#lastClientHeight + this.#lastScrollTop + PRECISION_OFFSET;
-
-      // The scroll is only adjusted if the grid has a data provider or the
-      // scroll was at the bottom position. When the grid has a data provider
-      // items can be loaded via infinite scroll, so the scroll position needs
-      // adjusted when new items are added
-      if (this.dataProvider || scrollWasAtTheBottom) {
-        const scrollOffset = currentScrollHeight - this.#lastScrollHeight;
-        const clientHeightOffset =
-          currentClientHeight < this.#lastClientHeight
-            ? this.#lastClientHeight - currentClientHeight
-            : 0;
-
-        const newScrollTop =
-          this.#lastScrollTop +
-          scrollOffset +
-          clientHeightOffset +
-          (scrollWasAtTheBottom ? PRECISION_OFFSET : 0); // Scroll to bottom
-
-        this.#scrollableParent.scrollTop = newScrollTop;
-        this.#lastScrollTop = newScrollTop;
-      }
-
-      this.#lastClientHeight = currentClientHeight;
-      this.#lastScrollHeight = currentScrollHeight;
-    });
+    this.#resizeWatcher = new ResizeObserver(
+      this.#adjustInverseScrollPositionWhenContentSizeChanges
+    );
 
     this.#resizeWatcher.observe(overflowingContent);
     this.#resizeWatcher.observe(this.#scrollableParent);
+  };
+
+  #adjustInverseScrollPositionWhenContentSizeChanges = () => {
+    // Current values
+    const currentClientHeight = this.#scrollableParent.clientHeight;
+    const currentScrollHeight = this.#scrollableParent.scrollHeight;
+
+    const firstTimeThatContentOverflows =
+      this.#lastClientHeight === this.#lastScrollHeight &&
+      currentClientHeight < currentScrollHeight;
+
+    // Must set the scroll at the bottom position
+    if (firstTimeThatContentOverflows) {
+      const newScrollTop =
+        currentScrollHeight - currentClientHeight + PRECISION_OFFSET;
+
+      this.#lastClientHeight = currentClientHeight;
+      this.#lastScrollHeight = currentScrollHeight;
+
+      // Scroll to bottom
+      this.#scrollableParent.scrollTop = newScrollTop;
+      this.#lastScrollTop = newScrollTop;
+      return;
+    }
+
+    const scrollWasAtTheBottom =
+      this.#lastScrollHeight <=
+      this.#lastClientHeight + this.#lastScrollTop + PRECISION_OFFSET;
+
+    // The scroll is only adjusted if the grid has a data provider or the
+    // scroll was at the bottom position. When the grid has a data provider
+    // items can be loaded via infinite scroll, so the scroll position needs
+    // adjusted when new items are added
+    if (this.dataProvider || scrollWasAtTheBottom) {
+      const scrollOffset = currentScrollHeight - this.#lastScrollHeight;
+      const clientHeightOffset =
+        currentClientHeight < this.#lastClientHeight
+          ? this.#lastClientHeight - currentClientHeight
+          : 0;
+
+      const newScrollTop =
+        this.#lastScrollTop +
+        scrollOffset +
+        clientHeightOffset +
+        (scrollWasAtTheBottom ? PRECISION_OFFSET : 0); // Scroll to bottom
+
+      this.#scrollableParent.scrollTop = newScrollTop;
+      this.#lastScrollTop = newScrollTop;
+    }
+
+    this.#lastClientHeight = currentClientHeight;
+    this.#lastScrollHeight = currentScrollHeight;
   };
 
   #disconnectInverseLoading = () => {
@@ -303,10 +307,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   };
 
   componentDidLoad() {
-    // Inverse Loading
     this.#setInverseLoading();
-
-    // Infinite Scroll
     this.#setInfiniteScroll();
   }
 

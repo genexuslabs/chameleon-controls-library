@@ -1,4 +1,7 @@
-import { ChatInternalCallbacks } from "../../../../components/chat/types";
+import {
+  ChatInternalCallbacks,
+  ChatMessage
+} from "../../../../components/chat/types";
 import { ChatTranslations } from "../../../../components/chat/translations";
 
 const PROCESSING_PLACEHOLDER = "{{ASSISTANT_NAME}}";
@@ -62,6 +65,7 @@ const sendChatToLLM = () => {
   const chatRef = document.querySelector("ch-chat") as HTMLChChatElement;
 
   chatRef.addNewMessage({
+    id: `${new Date().getTime()}`,
     role: "assistant",
     content: "Analyzing",
     status: "waiting"
@@ -79,8 +83,8 @@ const sendChatToLLM = () => {
 
     timeOut = setTimeout(() => {
       dummyStreaming(chatRef, 20, ASSISTANT_RESPONSE_MARKDOWN, "replace");
-    }, 1000);
-  }, 1000);
+    }, 200);
+  }, 200);
 };
 
 function dummyStreaming(
@@ -120,7 +124,7 @@ function dummyStreaming(
         dummyStreaming(chatRef, counter + 20, stringToDisplay, "concat");
       }
     },
-    counter % 200 === 0 ? 1000 : 80
+    counter % 200 === 0 ? 50 : 40
   );
 }
 
@@ -168,3 +172,8 @@ export const chatTranslations: ChatTranslations = {
     sourceFiles: "Source files:"
   }
 };
+
+export const chatRecord: ChatMessage[] = [
+  { id: "1", role: "user", content: "Hello world" },
+  { id: "2", role: "assistant", content: ASSISTANT_RESPONSE_MARKDOWN }
+];

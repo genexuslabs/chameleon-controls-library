@@ -112,8 +112,7 @@ export class ChInfiniteScroll implements ComponentInterface {
     // this.waitingForData = false;
   }
 
-  #canFetch = () =>
-    this.dataProvider && this.loadingState === "more-data-to-fetch";
+  #canFetch = () => this.loadingState === "more-data-to-fetch";
 
   /**
    * This function unobserves and re-observes the infinite scroll element when
@@ -320,7 +319,7 @@ export class ChInfiniteScroll implements ComponentInterface {
         class={this.loadingState === "loading" ? "loading" : undefined}
         aria-hidden="true"
       >
-        {this.dataProvider && <slot />}
+        {this.loadingState === "loading" && <slot />}
       </Host>
     );
   }

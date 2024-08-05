@@ -445,6 +445,7 @@ export class ChFlexibleLayout {
       closeButtonHidden={viewInfo.closeButtonHidden}
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
+      disabled={viewInfo.disabled}
       model={viewInfo.widgets}
       overflow={this.overflow}
       selectedId={viewInfo.selectedWidgetId}

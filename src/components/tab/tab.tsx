@@ -837,81 +837,91 @@ export class ChTabRender implements DraggableView {
       ref={el => (this.#tabListRef = el)}
       onKeyDown={this.#handleTabFocus}
     >
-      {this.model.map((item, index) => (
-        <button
-          key={CAPTION_ID(item.id)}
-          id={CAPTION_ID(item.id)}
-          role="tab"
-          aria-controls={PAGE_ID(item.id)}
-          aria-label={!this.showCaptions ? item.name : null}
-          aria-selected={(item.id === this.selectedId).toString()}
-          class={{
-            [this.#classes.BUTTON]: true,
-            "no-captions": !this.showCaptions,
-
-            "decorative-image": isPseudoElementImg(
-              item.startImgSrc,
-              item.startImgType
-            ),
-
-            "dragged-element": this.draggedElementIndex === index,
-            "dragged-element--outside":
-              this.draggedElementIndex === index &&
-              this.hasCrossedBoundaries &&
-              this.model.length > 1,
-            "shifted-element": this.draggedElementIndex !== -1,
-
-            "shifted-element--start":
-              thereAreShiftedElements &&
-              this.draggedElementIndex < index &&
-              index <= this.draggedElementNewIndex,
-
-            "shifted-element--end":
-              thereAreShiftedElements &&
-              this.draggedElementNewIndex <= index &&
-              index < this.draggedElementIndex,
-
-            sortable: this.sortable
-          }}
-          part={tokenMap({
-            [this.#parts.BUTTON]: true,
-            [CAPTION_ID(item.id)]: true,
-            [SELECTED_PART]: item.id === this.selectedId
-          })}
-          style={
-            isPseudoElementImg(item.startImgSrc, item.startImgType)
-              ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
-              : null
-          }
-          onAuxClick={this.#handleClose(index, item.id)}
-          onClick={
-            !(item.id === this.selectedId)
-              ? this.#handleSelectedItemChange(index, item.id)
-              : null
-          }
-          // onDblClick={
-          //   this.direction === "main" ? this.#handleItemDblClick : null
-          // }
-          // Drag and drop
-          onDragStart={this.sortable ? this.#handleDragStart(index) : null}
-        >
-          {this.#imgRender(item)}
-
-          {this.showCaptions && item.name}
-
-          {!this.closeButtonHidden && (
-            <button
-              aria-label={this.closeButtonAccessibleName}
-              class="close-button"
-              part={CLOSE_BUTTON_PART}
-              type="button"
-              onClick={this.#handleClose(index, item.id)}
-            ></button>
-          )}
-        </button>
-      ))}
+      {this.model.map((item, index) =>
+        this.#renderTabButton(item, index, thereAreShiftedElements)
+      )}
     </div>
   );
+
+  #renderTabButton = (
+    item: TabItemModel,
+    index: number,
+    thereAreShiftedElements: boolean
+  ) => {
+    return (
+      <button
+        key={CAPTION_ID(item.id)}
+        id={CAPTION_ID(item.id)}
+        role="tab"
+        aria-controls={PAGE_ID(item.id)}
+        aria-label={!this.showCaptions ? item.name : null}
+        aria-selected={(item.id === this.selectedId).toString()}
+        class={{
+          [this.#classes.BUTTON]: true,
+          "no-captions": !this.showCaptions,
+
+          "decorative-image": isPseudoElementImg(
+            item.startImgSrc,
+            item.startImgType
+          ),
+
+          "dragged-element": this.draggedElementIndex === index,
+          "dragged-element--outside":
+            this.draggedElementIndex === index &&
+            this.hasCrossedBoundaries &&
+            this.model.length > 1,
+          "shifted-element": this.draggedElementIndex !== -1,
+
+          "shifted-element--start":
+            thereAreShiftedElements &&
+            this.draggedElementIndex < index &&
+            index <= this.draggedElementNewIndex,
+
+          "shifted-element--end":
+            thereAreShiftedElements &&
+            this.draggedElementNewIndex <= index &&
+            index < this.draggedElementIndex,
+
+          sortable: this.sortable
+        }}
+        part={tokenMap({
+          [this.#parts.BUTTON]: true,
+          [CAPTION_ID(item.id)]: true,
+          [SELECTED_PART]: item.id === this.selectedId
+        })}
+        style={
+          isPseudoElementImg(item.startImgSrc, item.startImgType)
+            ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
+            : null
+        }
+        onAuxClick={this.#handleClose(index, item.id)}
+        onClick={
+          !(item.id === this.selectedId)
+            ? this.#handleSelectedItemChange(index, item.id)
+            : undefined
+        }
+        // onDblClick={
+        //   this.direction === "main" ? this.#handleItemDblClick : null
+        // }
+        // Drag and drop
+        onDragStart={this.sortable ? this.#handleDragStart(index) : undefined}
+      >
+        {this.#imgRender(item)}
+
+        {this.showCaptions && item.name}
+
+        {!this.closeButtonHidden && (
+          <button
+            aria-label={this.closeButtonAccessibleName}
+            class="close-button"
+            part={CLOSE_BUTTON_PART}
+            type="button"
+            onClick={this.#handleClose(index, item.id)}
+          ></button>
+        )}
+      </button>
+    );
+  };
 
   #renderTabPages = () => (
     <div

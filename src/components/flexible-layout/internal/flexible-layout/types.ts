@@ -54,6 +54,13 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   closeButtonHidden?: boolean;
 
   /**
+   * Specify if all tab buttons are disabled.
+   * If disabled, tab buttons will not fire any user interaction related event
+   * (for example, click event).
+   */
+  disabled?: boolean;
+
+  /**
    * When the control is sortable, the items can be dragged outside of the
    * tab-list. This property lets you specify if this behavior is disabled.
    * If not specified, defaults to `false`
@@ -121,6 +128,14 @@ export type FlexibleLayoutWidget = {
    */
   conserveRenderState?: boolean;
   id: string;
+
+  /**
+   * Specify if the tab button is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
+   */
+  disabled?: boolean;
+
   name: string;
 
   startImgSrc?: string;

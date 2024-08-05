@@ -99,6 +99,7 @@ export const createAndSetLeafInfo = (
     id: leafId,
     exportParts,
     closeButtonHidden: flexibleLayoutLeaf.closeButtonHidden ?? false,
+    disabled: flexibleLayoutLeaf.disabled,
     dragOutsideDisabled: flexibleLayoutLeaf.dragOutsideDisabled ?? false,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,

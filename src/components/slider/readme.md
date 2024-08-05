@@ -1,4 +1,4 @@
-# ch-segmented-control-item
+# ch-slider
 
 
 

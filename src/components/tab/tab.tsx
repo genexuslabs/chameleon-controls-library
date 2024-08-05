@@ -947,6 +947,9 @@ export class ChTabRender implements DraggableView {
         //   this.direction === "main" ? this.#handleItemDblClick : null
         // }
         // Drag and drop
+
+        // TODO: Add support to drag the item when it is disabled.
+        // TODO: Add support to position the item in different areas
         onDragStart={
           this.sortable && !isDisabled
             ? this.#handleDragStart(index)

@@ -369,7 +369,8 @@ export const layout3: FlexibleLayoutModel = {
                         },
                         {
                           id: PANEL2,
-                          name: "Panel 2",
+                          name: "Panel 2 (disabled)",
+                          disabled: true,
                           renderId: PANEL,
                           startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
                           startImgType: "background"

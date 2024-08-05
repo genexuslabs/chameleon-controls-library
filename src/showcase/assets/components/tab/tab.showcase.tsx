@@ -2,7 +2,14 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChTabRender } from "../../../../components/tab/tab";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
-import { simpleModel1, simpleModel2 } from "./models";
+import {
+  disabledModel1,
+  disabledModel4,
+  disabledModel2,
+  disabledModel3,
+  simpleModel1,
+  simpleModel2
+} from "./models";
 import { ChTabRenderCustomEvent } from "../../../../components";
 import { TabSelectedItemInfo } from "../../../../components/tab/types";
 import {
@@ -41,6 +48,7 @@ const render = () => (
         closeButtonAccessibleName={state.closeButtonAccessibleName}
         closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
+        disabled={state.disabled}
         dragOutsideDisabled={state.dragOutsideDisabled}
         expanded={state.expanded}
         model={state.model}
@@ -82,6 +90,7 @@ const render = () => (
         closeButtonAccessibleName={state.closeButtonAccessibleName}
         closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
+        disabled={state.disabled}
         dragOutsideDisabled={state.dragOutsideDisabled}
         expanded={state.expanded}
         model={state.model}
@@ -133,7 +142,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "enum",
           values: [
             { caption: "Simple Model 1", value: simpleModel1 },
-            { caption: "Simple Model 2", value: simpleModel2 }
+            { caption: "Simple Model 2", value: simpleModel2 },
+            { caption: "Disabled Model 1", value: disabledModel1 },
+            { caption: "Disabled Model 2", value: disabledModel2 },
+            { caption: "Disabled Model 3", value: disabledModel3 },
+            { caption: "Disabled Model 4", value: disabledModel4 }
           ],
           value: simpleModel1
         },
@@ -175,6 +188,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           id: "closeButtonHidden",
           caption: "Close Button Hidden",
           value: true,
+          type: "boolean"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
           type: "boolean"
         },
         {

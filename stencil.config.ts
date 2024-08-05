@@ -73,6 +73,9 @@ export const config: Config = {
       components: ["ch-showcase"] // Make sure the ch-showcase control is not bundled with other components
     },
     {
+      components: ["ch-smart-grid", "ch-smart-grid-cell", "ch-infinite-scroll"]
+    },
+    {
       components: [
         "ch-tree-view",
         "ch-tree-view-drop",

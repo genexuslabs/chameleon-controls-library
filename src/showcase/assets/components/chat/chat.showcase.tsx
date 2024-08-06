@@ -1,6 +1,6 @@
 import { h } from "@stencil/core";
 import { ShowcaseCustomStory } from "../types";
-import { chatCallbacks, chatRecord, chatTranslations } from "./callbacks";
+import { chatCallbacks, longChatRecord, chatTranslations } from "./callbacks";
 
 const render = () => (
   <ch-chat
@@ -9,7 +9,7 @@ const render = () => (
     generatingResponse={false}
     loadingState="more-data-to-fetch"
     isMobile={false}
-    record={chatRecord}
+    items={longChatRecord}
     translations={chatTranslations}
   ></ch-chat>
 );

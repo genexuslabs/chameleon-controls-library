@@ -60,6 +60,19 @@ ReactDOM.render(
 To create a horizontal rule, use three or more asterisks (\`***\`), dashes (\`---\`), or underscores (\`___\`) on a line by themselves.
 `;
 
+const ASSISTANT_RESPONSE_SHORT_MARKDOWN = `
+### Code block {#code-block}
+To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tildes (\`~~~\`) on the lines before and after the code block.
+
+\`\`\`
+{
+  "firstName": "John",
+  "lastName": "Smith",
+  "age": 25
+}
+\`\`\`
+`;
+
 const sendChatToLLM = () => {
   // This is a WA to get the chat reference
   const chatRef = document.querySelector("ch-chat") as HTMLChChatElement;
@@ -175,5 +188,25 @@ export const chatTranslations: ChatTranslations = {
 
 export const chatRecord: ChatMessage[] = [
   { id: "1", role: "user", content: "Hello world" },
-  { id: "2", role: "assistant", content: ASSISTANT_RESPONSE_MARKDOWN }
+  { id: "2", role: "assistant", content: ASSISTANT_RESPONSE_MARKDOWN },
+  { id: "3", role: "user", content: "Hello world 1" },
+  { id: "4", role: "assistant", content: ASSISTANT_RESPONSE_SHORT_MARKDOWN },
+  { id: "5", role: "user", content: "Hello world 2" },
+  { id: "6", role: "assistant", content: ASSISTANT_RESPONSE_SHORT_MARKDOWN },
+  { id: "7", role: "user", content: "Hello world 3" },
+  { id: "8", role: "assistant", content: ASSISTANT_RESPONSE_SHORT_MARKDOWN },
+  { id: "9", role: "user", content: "Hello world 4" },
+  { id: "10", role: "assistant", content: ASSISTANT_RESPONSE_SHORT_MARKDOWN }
 ];
+
+export const longChatRecord: ChatMessage[] = Array.from(
+  { length: 250 },
+  (_, index) =>
+    index % 2 === 0
+      ? { id: `${index}`, role: "user", content: ` "Hello world" ${index}` }
+      : {
+          id: `${index}`,
+          role: "assistant",
+          content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
+        }
+);

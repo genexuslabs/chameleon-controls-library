@@ -304,3 +304,15 @@ ch-tree-view-render.tree-view-primary::part(item__action) {
 .combo-box::part(item):hover {
   background-color: var(--accents__primary-dim--hover);
 } */
+
+.chat {
+  &::part(content) {
+    gap: 4px;
+  }
+
+  &::part(message) {
+    border: 1px solid;
+    border-radius: 8px;
+    padding: 8px;
+  }
+}

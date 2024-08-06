@@ -69,6 +69,15 @@ export class ChInfiniteScroll implements ComponentInterface {
    * the inverse loading utility.
    */
   @Prop() readonly dataProvider: boolean = false;
+  @Watch("dataProvider")
+  dataProviderChanged(hasDataProvider: boolean) {
+    if (hasDataProvider) {
+      // Wait until the main thread has rendered the UI
+      requestAnimationFrame(this.#setInfiniteScroll);
+    } else {
+      this.#disconnectInfiniteScroll();
+    }
+  }
 
   /**
    * This Handler will be called every time grid threshold is reached. Needed
@@ -138,7 +147,7 @@ export class ChInfiniteScroll implements ComponentInterface {
 
   #setInfiniteScroll = () => {
     // The observer was already set
-    if (this.#ioWatcher) {
+    if (!this.dataProvider || this.#ioWatcher) {
       return;
     }
 
@@ -205,8 +214,8 @@ export class ChInfiniteScroll implements ComponentInterface {
      * ```tsx
      *   <ch-smart-grid>
      *     #shadow-root (open)
-     *     | <ch-infinite-scroll></ch-infinite-scroll>
-     *     | <slot name="grid-content"></slot>
+     *     |  <ch-infinite-scroll></ch-infinite-scroll>
+     *     |  <slot name="grid-content"></slot>
      *     <div slot="grid-content">
      *       <ch-smart-grid-cell>...</ch-smart-grid-cell>
      *       <ch-smart-grid-cell>...</ch-smart-grid-cell>

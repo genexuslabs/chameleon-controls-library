@@ -60,6 +60,14 @@ export class ChSmartGrid
   @Prop() readonly inverseLoading: boolean = false;
 
   /**
+   * Grid current row count. This property is used in order to be able to
+   * re-render the Grid every time the Grid data changes.
+   * If not specified, then grid empty and loading placeholders may not work
+   * correctly.
+   */
+  @Prop() readonly itemsCount!: number;
+
+  /**
    * Specifies the loading state of the grid.
    */
   @Prop({ mutable: true }) loadingState!: SmartGridDataState;
@@ -69,14 +77,6 @@ export class ChSmartGrid
       this.#avoidCLSOnInitialLoad();
     }
   }
-
-  /**
-   * Grid current row count. This property is used in order to be able to
-   * re-render the Grid every time the Grid data changes.
-   * If not specified, then grid empty and loading placeholders may not work
-   * correctly.
-   */
-  @Prop() readonly recordCount!: number;
 
   /**
    * The threshold distance from the bottom of the content to call the
@@ -104,6 +104,9 @@ export class ChSmartGrid
     this.el.classList.add(HIDE_CONTENT_AFTER_LOADING_CLASS);
   };
 
+  #removeAvoidCLS = () =>
+    this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
+
   connectedCallback(): void {
     if (this.loadingState !== "initial") {
       this.#avoidCLSOnInitialLoad();
@@ -114,15 +117,13 @@ export class ChSmartGrid
     if (this.#contentIsHidden) {
       this.#contentIsHidden = false;
 
-      requestAnimationFrame(() => {
-        this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
-      });
+      requestAnimationFrame(this.#removeAvoidCLS);
     }
   }
 
   render() {
     const initialLoad = this.loadingState === "initial";
-    const hasRecords = this.recordCount > 0;
+    const hasRecords = this.itemsCount > 0;
 
     return (
       <Host

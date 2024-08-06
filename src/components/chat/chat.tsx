@@ -19,6 +19,7 @@ import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types
 import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
+import { ChSmartGridVirtualScrollerCustomEvent } from "../../components";
 
 const ENTER_KEY = "Enter";
 
@@ -38,6 +39,7 @@ export class ChChat {
 
   @State() imagesToUpload: { src: string; file: File }[] = [];
   @State() uploadingImagesToTheServer = 0;
+  @State() virtualItems: ChatMessage[] = [];
 
   /**
    * Specifies the callbacks required in the control.
@@ -73,14 +75,14 @@ export class ChChat {
   @Prop() readonly isMobile!: boolean;
 
   /**
+   * Specifies the items that the chat will display.
+   */
+  @Prop({ mutable: true }) items: ChatMessage[] = [];
+
+  /**
    * Specifies if the chat is waiting for the data to be loaded.
    */
   @Prop({ mutable: true }) loadingState!: SmartGridDataState;
-
-  /**
-   * Specifies the record that the chat will display.
-   */
-  @Prop({ mutable: true }) record: ChatMessage[] = [];
 
   /**
    * Specifies the literals required in the control.
@@ -102,7 +104,7 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
-    this.record.push(message);
+    this.items.push(message);
     forceUpdate(this);
   }
 
@@ -135,7 +137,7 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
-    if (this.record.length === 0 || !this.record[messageIndex]) {
+    if (this.items.length === 0 || !this.items[messageIndex]) {
       return;
     }
     this.#updateMessage(messageIndex, message, mode);
@@ -151,10 +153,10 @@ export class ChChat {
     message: ChatMessageByRoleNoId<"system" | "assistant">,
     mode: "concat" | "replace"
   ) {
-    if (this.record.length === 0) {
+    if (this.items.length === 0) {
       return;
     }
-    this.#updateMessage(this.record.length - 1, message, mode);
+    this.#updateMessage(this.items.length - 1, message, mode);
 
     forceUpdate(this);
   }
@@ -175,7 +177,7 @@ export class ChChat {
       // Temporal store for the new message
       const newMessageContent =
         this.#getMessageContent(
-          this.record[messageIndex] as ChatMessageByRole<"system" | "assistant">
+          this.items[messageIndex] as ChatMessageByRole<"system" | "assistant">
         ) + this.#getMessageContent(message);
 
       // Reuse the message ref to correctly update the message content
@@ -187,8 +189,8 @@ export class ChChat {
     }
 
     // Replace the message
-    const messageId = this.record[messageIndex].id;
-    this.record[messageIndex] = Object.assign({ id: messageId }, message);
+    const messageId = this.items[messageIndex].id;
+    this.items[messageIndex] = Object.assign({ id: messageId }, message);
   };
 
   #sendMessageKeyboard = (event: KeyboardEvent) => {
@@ -203,7 +205,7 @@ export class ChChat {
   #addUserMessageToRecordAndFocusInput = (
     userMessage: ChatMessageByRole<"user">
   ) => {
-    this.record.push(userMessage);
+    this.items.push(userMessage);
     this.#editRef.value = "";
     this.#editRef.click();
 
@@ -233,7 +235,7 @@ export class ChChat {
       };
 
       this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
-      this.callbacks.sendChatToLLM(this.record);
+      this.callbacks.sendChatToLLM(this.items);
 
       // Queue a new re-render
       forceUpdate(this);
@@ -266,7 +268,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.record);
+            this.callbacks.sendChatToLLM(this.items);
           }
         })
         .catch(() => {
@@ -276,7 +278,7 @@ export class ChChat {
           this.uploadingImagesToTheServer--;
 
           if (this.uploadingImagesToTheServer === 0) {
-            this.callbacks.sendChatToLLM(this.record);
+            this.callbacks.sendChatToLLM(this.items);
           }
         });
     });
@@ -328,21 +330,37 @@ export class ChChat {
   };
 
   #renderChatOrEmpty = () =>
-    this.loadingState === "all-records-loaded" && this.record.length === 0 ? (
+    this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        dataProvider
-        loadingState={this.loadingState}
+        // dataProvider
+        loadingState={
+          this.virtualItems.length === 0 ? "initial" : this.loadingState
+        }
         inverseLoading
-        recordCount={this.record.length}
+        itemsCount={this.virtualItems.length}
         ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
       >
-        <div role="row" class="grid-content" slot="grid-content" part="content">
-          {this.record.map(this.renderItem)}
-        </div>
+        <ch-smart-grid-virtual-scroller
+          role="row"
+          slot="grid-content"
+          class="grid-content"
+          part="content"
+          items={this.items}
+          itemsCount={this.items.length}
+          onVirtualItemsChanged={this.#virtualItemsChanged}
+        >
+          {this.virtualItems.map(this.renderItem)}
+        </ch-smart-grid-virtual-scroller>
       </ch-smart-grid>
     );
+
+  #virtualItemsChanged = (
+    event: ChSmartGridVirtualScrollerCustomEvent<ChatMessage[]>
+  ) => {
+    this.virtualItems = event.detail;
+  };
 
   render() {
     const accessibleName = this.translations.accessibleName;

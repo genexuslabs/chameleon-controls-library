@@ -6,7 +6,7 @@ import {
   EventEmitter,
   Host,
   Prop,
-  Watch,
+  // Watch,
   h
 } from "@stencil/core";
 import { AccessibleNameComponent } from "../../common/interfaces";
@@ -71,12 +71,12 @@ export class ChSmartGrid
    * Specifies the loading state of the grid.
    */
   @Prop({ mutable: true }) loadingState!: SmartGridDataState;
-  @Watch("loadingState")
-  loadingStateChange(_, oldLoadingState: SmartGridDataState) {
-    if (oldLoadingState === "initial") {
-      this.#avoidCLSOnInitialLoad();
-    }
-  }
+  // @Watch("loadingState")
+  // loadingStateChange(_, oldLoadingState: SmartGridDataState) {
+  //   if (oldLoadingState === "initial") {
+  //     this.#avoidCLSOnInitialLoad();
+  //   }
+  // }
 
   /**
    * The threshold distance from the bottom of the content to call the
@@ -86,7 +86,7 @@ export class ChSmartGrid
    * the bottom of the page. Use the value `100px` when the scroll is within
    * 100 pixels from the bottom of the page.
    */
-  @Prop() readonly threshold: string = "150px";
+  @Prop() readonly threshold: string = "10px";
 
   /**
    * This Handler will be called every time grid threshold is reached. Needed
@@ -100,24 +100,39 @@ export class ChSmartGrid
   };
 
   #avoidCLSOnInitialLoad = () => {
-    this.#contentIsHidden = true;
-    this.el.classList.add(HIDE_CONTENT_AFTER_LOADING_CLASS);
+    if (this.inverseLoading) {
+      this.#contentIsHidden = true;
+      this.el.classList.add(HIDE_CONTENT_AFTER_LOADING_CLASS);
+    }
   };
 
-  #removeAvoidCLS = () =>
-    this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
+  #removeAvoidCLS = () => {
+    console.log("virtualScrollerDidLoad....");
+    this.#contentIsHidden = false;
+    this.el.removeEventListener("virtualScrollerDidLoad", this.#removeAvoidCLS);
+
+    requestAnimationFrame(() => {
+      this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
+
+      console.log("REMOVE removeAvoidCLS...");
+    });
+  };
 
   connectedCallback(): void {
-    if (this.loadingState !== "initial") {
-      this.#avoidCLSOnInitialLoad();
+    this.#avoidCLSOnInitialLoad();
+
+    if (this.inverseLoading && !this.autoGrow) {
+      this.el.addEventListener("virtualScrollerDidLoad", this.#removeAvoidCLS);
     }
   }
 
   componentDidRender(): void {
-    if (this.#contentIsHidden) {
-      this.#contentIsHidden = false;
+    if (!this.#contentIsHidden) {
+      return;
+    }
 
-      requestAnimationFrame(this.#removeAvoidCLS);
+    if (this.inverseLoading && this.autoGrow) {
+      this.#removeAvoidCLS();
     }
   }
 

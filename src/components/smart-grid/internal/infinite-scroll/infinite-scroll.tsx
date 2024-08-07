@@ -34,6 +34,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   #scrollIsAttached: boolean = false;
 
   // Refs
+  #smartGridRef!: HTMLChSmartGridElement;
   #scrollableParent!: Element | HTMLElement;
 
   #typeOfParentElementAttached: "ch-smart-grid" | "window" | "other" = "other";
@@ -100,7 +101,7 @@ export class ChInfiniteScroll implements ComponentInterface {
    * the user has scrolled 10% from the bottom of the page. Use the value
    * `100px` when the scroll is within 100 pixels from the bottom of the page.
    */
-  @Prop() readonly threshold: string = "15%";
+  @Prop() readonly threshold: string = "150px";
   @Watch("threshold")
   thresholdChanged() {
     this.#checkIfCanFetchMoreData();
@@ -177,7 +178,7 @@ export class ChInfiniteScroll implements ComponentInterface {
         this.#scrollableParent.addEventListener(
           "scroll",
           this.#trackLastScrollTop,
-          { passive: true }
+          { capture: true, passive: true }
         );
       }
     });
@@ -189,23 +190,15 @@ export class ChInfiniteScroll implements ComponentInterface {
   };
 
   #setInverseLoading = () => {
-    if (this.position !== "top") {
-      return;
-    }
-
-    const smartGridParent = (this.el.getRootNode() as ShadowRoot)
-      .host as HTMLChSmartGridElement;
-
-    const result = getScrollableParentToAttachInfiniteScroll(smartGridParent);
-    this.#typeOfParentElementAttached = result[0];
-    this.#scrollableParent = result[1];
-
     // Inverse loading is not supported when the scroll is attached to the window.
     // The current implementation "supports" this scenario, but since this use
     // case changes the position of the scroll every time the grid retrieves
     // data, unexpected behaviors will occur.
     // Also, Android does not support Inverse Loading in this scenario either.
-    if (this.#typeOfParentElementAttached === "window") {
+    if (
+      this.#typeOfParentElementAttached === "window" ||
+      this.position !== "top"
+    ) {
       return;
     }
 
@@ -224,7 +217,7 @@ export class ChInfiniteScroll implements ComponentInterface {
      *   </ch-smart-grid>
      * ```
      */
-    const overflowingContent = smartGridParent.querySelector(
+    const overflowingContent = this.#smartGridRef.querySelector(
       "[slot='grid-content']"
     ) as HTMLElement;
 
@@ -240,6 +233,8 @@ export class ChInfiniteScroll implements ComponentInterface {
   };
 
   #adjustInverseScrollPositionWhenContentSizeChanges = () => {
+    // console.log("adjustInverseScrollPositionWhenContentSizeChanges...");
+
     // Current values
     const currentClientHeight = this.#scrollableParent.clientHeight;
     const currentScrollHeight = this.#scrollableParent.scrollHeight;
@@ -308,12 +303,22 @@ export class ChInfiniteScroll implements ComponentInterface {
       this.#scrollIsAttached = false;
       this.#scrollableParent.removeEventListener(
         "scroll",
-        this.#trackLastScrollTop
+        this.#trackLastScrollTop,
+        { capture: true }
       );
     }
   };
 
   componentDidLoad() {
+    this.#smartGridRef = (this.el.getRootNode() as ShadowRoot)
+      .host as HTMLChSmartGridElement;
+
+    const result = getScrollableParentToAttachInfiniteScroll(
+      this.#smartGridRef
+    );
+    this.#typeOfParentElementAttached = result[0];
+    this.#scrollableParent = result[1];
+
     this.#setInverseLoading();
 
     // Wait until the main thread has rendered the UI

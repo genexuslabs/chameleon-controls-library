@@ -205,6 +205,7 @@ export const defaultChatRender =
     (messageModel.role === "assistant" || messageModel.role === "user") && (
       <ch-smart-grid-cell
         key={messageModel.id}
+        cellId={messageModel.id}
         part={`message ${messageModel.role}`}
       >
         {messageModel.role === "assistant"

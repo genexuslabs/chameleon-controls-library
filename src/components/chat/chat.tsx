@@ -220,6 +220,7 @@ export class ChChat {
       !this.#editRef.value ||
       this.disabled ||
       this.loadingState === "initial" ||
+      this.loadingState === "loading" ||
       this.generatingResponse ||
       this.uploadingImagesToTheServer > 0
     ) {
@@ -334,7 +335,7 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        // dataProvider
+        dataProvider
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
         }
@@ -347,6 +348,8 @@ export class ChChat {
           slot="grid-content"
           class="grid-content"
           part="content"
+          inverseLoading
+          mode="lazy-render"
           items={this.items}
           itemsCount={this.items.length}
           onVirtualItemsChanged={this.#virtualItemsChanged}

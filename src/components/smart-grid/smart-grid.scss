@@ -6,6 +6,9 @@
 
 :host(.ch-smart-grid--loaded-render-delay) {
   opacity: 0;
+
+  // Disable scroll actions on intial load
+  pointer-events: none;
 }
 
 :host(.ch-smart-grid--inverse-loading) {

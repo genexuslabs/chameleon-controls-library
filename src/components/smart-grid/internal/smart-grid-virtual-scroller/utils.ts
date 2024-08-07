@@ -1,4 +1,5 @@
 import { inBetween } from "../../../../common/utils";
+import { SmartGridModel } from "../../types";
 
 export const isSmartCellVisible = (
   element: HTMLElement,
@@ -30,7 +31,7 @@ export const isSmartCellVisible = (
   );
 };
 
-export const emptyItems = (items: any[]) =>
+export const emptyItems = (items: SmartGridModel) =>
   items === undefined || items.length === 0;
 
 export const getSmartCells = (
@@ -53,8 +54,6 @@ export const cellsInViewportAreLoadedAndVisible = (
   let startIndex = inverseLoading ? lastIndex : 0;
   const increment = inverseLoading ? -1 : 1;
 
-  console.log("cells", cells);
-
   while (inBetween(0, startIndex, lastIndex)) {
     const currentCell = cells[startIndex];
 
@@ -76,4 +75,80 @@ export const cellsInViewportAreLoadedAndVisible = (
   }
 
   return true;
+};
+
+const CAN_NOT_CHECK_SHIFT_VALUES = {
+  startShift: 0,
+  endShift: 0,
+  break: true
+} as const satisfies ReturnType<typeof getAmountOfCellsToLoad>;
+
+/**
+ * Return to cells to load, depending of the amount of cells in the buffer that
+ * are visible.
+ */
+export const getAmountOfCellsToLoad = (
+  scroller: HTMLChSmartGridVirtualScrollerElement,
+  smartGrid: HTMLChSmartGridElement,
+  virtualItems: SmartGridModel,
+  bufferSize: number
+): { startShift: number; endShift: number; break?: boolean } => {
+  const cells = getSmartCells(scroller);
+
+  if (cells.length !== virtualItems.length) {
+    console.log("SKIP DOM CHECK..............................................");
+    return CAN_NOT_CHECK_SHIFT_VALUES;
+  }
+  const smartGridBoundingBox = smartGrid.getBoundingClientRect();
+
+  const START_INDEX = bufferSize;
+  const LAST_INDEX = cells.length - 1 - bufferSize;
+
+  let startShift = bufferSize;
+  let index = 0;
+
+  // Check how many cells are visible in the buffer
+  while (index <= LAST_INDEX) {
+    const currentCell = cells[index];
+
+    // The cell content must be rendered before trying to update the DOM
+    if (!currentCell.hasAttribute("data-did-load")) {
+      // console.log("+++++DENYYY CHECKK");
+      return CAN_NOT_CHECK_SHIFT_VALUES;
+    }
+
+    if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
+      console.log("BREAK... start");
+      break;
+    }
+
+    startShift--;
+    index++;
+  }
+
+  let endShift = bufferSize;
+  index = cells.length - 1;
+
+  // Check how many cells are visible in the buffer
+  while (START_INDEX <= index) {
+    const currentCell = cells[index];
+
+    // The cell content must be rendered before trying to update the DOM
+    if (!currentCell.hasAttribute("data-did-load")) {
+      console.log("+++++DENYYY CHECKK");
+      return CAN_NOT_CHECK_SHIFT_VALUES;
+    }
+
+    if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
+      console.log("BREAK... end");
+      break;
+    }
+
+    endShift--;
+    index--;
+  }
+
+  console.log({ startShift, endShift });
+
+  return { startShift, endShift };
 };

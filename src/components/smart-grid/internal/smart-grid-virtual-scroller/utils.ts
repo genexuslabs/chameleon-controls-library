@@ -39,7 +39,7 @@ export const getSmartCells = (
 ) =>
   [
     ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
-  ] as HTMLChSmartGridElement[];
+  ] as HTMLChSmartGridCellElement[];
 
 // TODO: Use padding in the ch-smart-grid and see if this works well
 export const cellsInViewportAreLoadedAndVisible = (
@@ -80,7 +80,8 @@ export const cellsInViewportAreLoadedAndVisible = (
 const CAN_NOT_CHECK_SHIFT_VALUES = {
   startShift: 0,
   endShift: 0,
-  break: true
+  break: true,
+  cells: []
 } as const satisfies ReturnType<typeof getAmountOfCellsToLoad>;
 
 /**
@@ -92,7 +93,12 @@ export const getAmountOfCellsToLoad = (
   smartGrid: HTMLChSmartGridElement,
   virtualItems: SmartGridModel,
   bufferSize: number
-): { startShift: number; endShift: number; break?: boolean } => {
+): {
+  startShift: number;
+  endShift: number;
+  break?: boolean;
+  cells: HTMLChSmartGridCellElement[];
+} => {
   const cells = getSmartCells(scroller);
 
   if (cells.length !== virtualItems.length) {
@@ -118,7 +124,7 @@ export const getAmountOfCellsToLoad = (
     }
 
     if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
-      console.log("BREAK... start");
+      // console.log("BREAK... start");
       break;
     }
 
@@ -140,7 +146,7 @@ export const getAmountOfCellsToLoad = (
     }
 
     if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
-      console.log("BREAK... end");
+      // console.log("BREAK... end");
       break;
     }
 
@@ -150,5 +156,5 @@ export const getAmountOfCellsToLoad = (
 
   console.log({ startShift, endShift });
 
-  return { startShift, endShift };
+  return { startShift, endShift, cells };
 };

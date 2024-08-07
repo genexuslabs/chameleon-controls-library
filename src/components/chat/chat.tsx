@@ -335,11 +335,11 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        dataProvider
+        // dataProvider
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
         }
-        inverseLoading
+        // inverseLoading
         itemsCount={this.virtualItems.length}
         ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
       >
@@ -348,8 +348,8 @@ export class ChChat {
           slot="grid-content"
           class="grid-content"
           part="content"
-          inverseLoading
-          mode="lazy-render"
+          // inverseLoading
+          // mode="lazy-render"
           items={this.items}
           itemsCount={this.items.length}
           onVirtualItemsChanged={this.#virtualItemsChanged}

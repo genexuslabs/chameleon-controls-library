@@ -17,6 +17,15 @@ import {
 } from "./utils";
 import { SyncWithRAF } from "../../../../common/sync-with-frames";
 import { SmartGridModel } from "../../types";
+import { SmartGridCellVirtualSize } from "./types";
+import { updateVirtualScroll } from "./update-virtual-scroll";
+import { ChSmartGridCellCustomEvent } from "../../../../components";
+
+const VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR =
+  "--ch-smart-grid-virtual-scroll__scroll-start-size";
+
+const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR =
+  "--ch-smart-grid-virtual-scroll__scroll-end-size";
 
 @Component({
   shadow: true,
@@ -38,6 +47,9 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #virtualItems: SmartGridModel;
+
+  #virtualStartSizes: Map<string, SmartGridCellVirtualSize> | undefined; // Allocated at runtime to save resources
+  #virtualEndSizes: Map<string, SmartGridCellVirtualSize> | undefined; // Allocated at runtime to save resources
 
   #resizeObserver: ResizeObserver | undefined;
 
@@ -137,6 +149,36 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    */
   @Event() virtualScrollerDidLoad: EventEmitter;
 
+  #updateVirtualSize = () => {
+    let virtualStartSize = 0;
+    let virtualEndSize = 0;
+
+    this.#virtualStartSizes.forEach(virtualSize => {
+      virtualStartSize += virtualSize.height;
+    });
+
+    this.#virtualEndSizes.forEach(virtualSize => {
+      virtualEndSize += virtualSize.height;
+    });
+
+    this.el.style.setProperty(
+      VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
+      `${virtualStartSize}px`
+    );
+
+    this.el.style.setProperty(
+      VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
+      `${virtualEndSize}px`
+    );
+
+    console.log(
+      "NEW VIRTUAL START SIZE:::::::::::::::::::::::",
+      virtualStartSize
+    );
+
+    console.log("NEW VIRTUAL END SIZE:::::::::::::::::::::::", virtualEndSize);
+  };
+
   #handleSmartGridContentScroll = () => {
     if (this.#canUpdateRenderedCells) {
       this.#syncWithRAF.perform(this.#updateRenderedCells);
@@ -147,7 +189,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     // this.#canUpdateRenderedCells = false;
 
     // requestAnimationFrame(() => {
-    // this.#canUpdateRenderedCells = true;
+    //   this.#canUpdateRenderedCells = true;
     // });
 
     const cellsToRender = getAmountOfCellsToLoad(
@@ -166,17 +208,32 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       return;
     }
 
-    this.#shiftIndex(cellsToRender.startShift, cellsToRender.endShift);
+    this.#shiftIndex(
+      cellsToRender.startShift,
+      cellsToRender.endShift,
+      cellsToRender.cells
+    );
 
-    if (cellsToRender.endShift > 0) {
-      console.log("ADD", cellsToRender);
-    } else if (cellsToRender.endShift < 0) {
-      console.log("REMOVE", cellsToRender);
-    }
+    // if (cellsToRender.endShift > 0) {
+    //   console.log("ADD", cellsToRender);
+    // } else if (cellsToRender.endShift < 0) {
+    //   console.log("REMOVE", cellsToRender);
+    // }
   };
 
   #emitVirtualItemsChange = () => {
     const virtualItems = this.items.slice(this.#startIndex, this.#endIndex);
+
+    console.log(
+      "this.#virtualStartSizes LENGTH BEFORE REMOVING",
+      this.#virtualStartSizes.size
+    );
+    console.log(
+      "this.#virtualEndSizes LENGTH BEFORE REMOVING",
+      this.#virtualEndSizes.size
+    );
+
+    this.#updateVirtualSize();
 
     this.#virtualItems = virtualItems;
     this.virtualItemsChanged.emit(virtualItems);
@@ -197,16 +254,46 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     }
   };
 
-  #shiftIndex = (startIndexShift: number, endIndexShift: number) => {
+  #shiftIndex = (
+    startIncomingShift: number,
+    endIncomingShift: number,
+    renderedCells?: HTMLChSmartGridCellElement[]
+  ) => {
     const startShift =
       this.mode === "lazy-render"
-        ? Math.max(0, startIndexShift)
-        : startIndexShift;
+        ? Math.max(0, startIncomingShift)
+        : startIncomingShift;
     const endShift =
-      this.mode === "lazy-render" ? Math.max(0, endIndexShift) : endIndexShift;
+      this.mode === "lazy-render"
+        ? Math.max(0, endIncomingShift)
+        : endIncomingShift;
 
-    this.#startIndex = Math.max(0, this.#startIndex - startShift);
-    this.#endIndex = Math.min(this.#endIndex + endShift, this.items.length);
+    // Nothing to update
+    if (startShift === 0 && endShift === 0) {
+      return;
+    }
+
+    const newStartIndex = Math.max(0, this.#startIndex - startShift);
+    const newEndIndex = Math.min(this.#endIndex + endShift, this.items.length);
+
+    // Nothing to update
+    if (this.#startIndex === newStartIndex && this.#endIndex === newEndIndex) {
+      return;
+    }
+
+    updateVirtualScroll(
+      this.mode,
+      startShift,
+      endShift,
+      this.#virtualStartSizes,
+      this.#virtualEndSizes,
+      renderedCells
+    );
+
+    console.log("New Virtual Index", newStartIndex, newEndIndex);
+
+    this.#startIndex = newStartIndex;
+    this.#endIndex = newEndIndex;
 
     this.#emitVirtualItemsChange();
   };
@@ -222,11 +309,11 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#resizeObserver.observe(this.#smartGrid);
   };
 
-  #handleRenderedCell = () => {
+  #handleRenderedCell = (event: ChSmartGridCellCustomEvent<string>) => {
     if (this.waitingForContent) {
       this.#checkInitialRenderVisibility();
     } else {
-      this.#checkCellsRenderedAtRuntime();
+      this.#checkCellsRenderedAtRuntime(event.detail);
     }
   };
 
@@ -248,7 +335,13 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       console.log("checkInitialRenderVisibility...");
     });
 
-  #checkCellsRenderedAtRuntime = () => {
+  #checkCellsRenderedAtRuntime = (cellId: string) => {
+    // Delete virtual size, since the cell is now rendered
+    this.#virtualStartSizes.delete(cellId);
+    this.#virtualEndSizes.delete(cellId);
+
+    this.#updateVirtualSize();
+
     if (this.#waitingForCellsToBeRendered) {
       console.log(
         "PROCESS EDGE CASE * -* -* -* - *- * - *- * - * -* - * -* -* - *- * - *"
@@ -265,6 +358,11 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
   connectedCallback(): void {
     this.#watchInitialLoad();
+
+    if (this.mode === "virtual-scroll") {
+      this.#virtualStartSizes = new Map();
+      this.#virtualEndSizes = new Map();
+    }
 
     if (this.inverseLoading) {
       const lastIndex = this.items.length - 1;
@@ -299,6 +397,10 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
             : undefined
         }
       >
+        {!this.waitingForContent && this.mode === "virtual-scroll" && (
+          <div aria-hidden="true" class="virtual-scroll-start"></div>
+        )}
+
         <slot
           onSlotchange={
             this.waitingForContent
@@ -306,6 +408,10 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
               : undefined
           }
         ></slot>
+
+        {!this.waitingForContent && this.mode === "virtual-scroll" && (
+          <div aria-hidden="true" class="virtual-scroll-end"></div>
+        )}
       </Host>
     );
   }

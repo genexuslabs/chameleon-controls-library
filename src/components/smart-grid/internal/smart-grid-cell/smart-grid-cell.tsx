@@ -22,7 +22,7 @@ export class ChSmartGridCell implements ComponentInterface {
   /**
    * Fired when the component and all its child did render for the first time.
    */
-  @Event() smartCellDidLoad: EventEmitter;
+  @Event() smartCellDidLoad: EventEmitter<string>;
 
   connectedCallback() {
     this.el.setAttribute("role", "gridcell");
@@ -30,6 +30,6 @@ export class ChSmartGridCell implements ComponentInterface {
 
   componentDidLoad() {
     this.el.setAttribute("data-did-load", "true");
-    this.smartCellDidLoad.emit();
+    this.smartCellDidLoad.emit(this.cellId);
   }
 }

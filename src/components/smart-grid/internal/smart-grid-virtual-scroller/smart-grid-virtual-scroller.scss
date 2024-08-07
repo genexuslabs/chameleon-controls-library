@@ -1,5 +1,12 @@
-:host(.ch-smart-virtual-scroller-content-not-loaded) {
+:host(.ch-smart-virtual-scroller--content-not-loaded) {
   opacity: 0;
+}
+
+:host(.ch-smart-virtual-scroller--content-loaded)
+  ::slotted(ch-smart-grid-cell:not([data-did-load])) {
+  position: absolute;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 :host {

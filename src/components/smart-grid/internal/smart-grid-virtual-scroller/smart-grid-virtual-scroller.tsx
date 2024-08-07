@@ -393,8 +393,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       <Host
         class={
           this.waitingForContent
-            ? "ch-smart-virtual-scroller-content-not-loaded"
-            : undefined
+            ? "ch-smart-virtual-scroller--content-not-loaded"
+            : "ch-smart-virtual-scroller--content-loaded"
         }
       >
         {!this.waitingForContent && this.mode === "virtual-scroll" && (

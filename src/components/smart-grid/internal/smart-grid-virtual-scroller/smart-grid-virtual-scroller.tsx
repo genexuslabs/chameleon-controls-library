@@ -48,8 +48,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #virtualItems: SmartGridModel;
 
-  #virtualStartSizes: Map<string, SmartGridCellVirtualSize> | undefined; // Allocated at runtime to save resources
-  #virtualEndSizes: Map<string, SmartGridCellVirtualSize> | undefined; // Allocated at runtime to save resources
+  #virtualSizes: Map<string, SmartGridCellVirtualSize> | undefined; // Allocated at runtime to save resources
 
   #resizeObserver: ResizeObserver | undefined;
 
@@ -149,16 +148,44 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    */
   @Event() virtualScrollerDidLoad: EventEmitter;
 
-  #updateVirtualSize = () => {
+  // TODO: Add support to remove the gap between the virtual scroll and the
+  // items if the virtual scroll does not have size
+  // TODO: Check what happens when the cells has margin
+  #updateVirtualSize = (removedCells?: HTMLChSmartGridCellElement[]) => {
     let virtualStartSize = 0;
     let virtualEndSize = 0;
 
-    this.#virtualStartSizes.forEach(virtualSize => {
-      virtualStartSize += virtualSize.height;
+    // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
+    const smartGridScrollTop = this.#smartGrid.scrollTop;
+    const smartGridScrollHeight = this.#smartGrid.scrollHeight;
+    // const scrollerComputedStyle = getComputedStyle(this.el);
+    // const rowGap = Number(scrollerComputedStyle.rowGap.replace("px", ""));
+
+    // console.log("rowGap", rowGap);
+
+    this.#virtualSizes.forEach((virtualSize, key) => {
+      if (key === "13") {
+        // console.log(key, "smartGridScrollTop " + smartGridScrollTop);
+      }
+
+      if (virtualSize.offsetTop <= smartGridScrollTop) {
+        virtualStartSize = Math.max(
+          virtualStartSize,
+          virtualSize.offsetTop + virtualSize.height
+        );
+      } else {
+        virtualEndSize = Math.max(
+          virtualEndSize,
+          smartGridScrollHeight - virtualSize.offsetTop
+        );
+      }
     });
 
-    this.#virtualEndSizes.forEach(virtualSize => {
-      virtualEndSize += virtualSize.height;
+    // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
+    // Artificially remove the cells, due to the virtual height will be updated
+    // in the next DOM write operation
+    removedCells?.forEach(removedCell => {
+      removedCell.style.display = "none";
     });
 
     this.el.style.setProperty(
@@ -166,17 +193,19 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       `${virtualStartSize}px`
     );
 
+    // console.log("virtualStartSize", virtualStartSize);
+
     this.el.style.setProperty(
       VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
       `${virtualEndSize}px`
     );
 
-    console.log(
-      "NEW VIRTUAL START SIZE:::::::::::::::::::::::",
-      virtualStartSize
-    );
+    // console.log(
+    //   "NEW VIRTUAL START SIZE:::::::::::::::::::::::",
+    //   virtualStartSize
+    // );
 
-    console.log("NEW VIRTUAL END SIZE:::::::::::::::::::::::", virtualEndSize);
+    // console.log("NEW VIRTUAL END SIZE:::::::::::::::::::::::", virtualEndSize);
   };
 
   #handleSmartGridContentScroll = () => {
@@ -221,19 +250,19 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     // }
   };
 
-  #emitVirtualItemsChange = () => {
+  #emitVirtualItemsChange = (removedCells?: HTMLChSmartGridCellElement[]) => {
     const virtualItems = this.items.slice(this.#startIndex, this.#endIndex);
 
-    console.log(
-      "this.#virtualStartSizes LENGTH BEFORE REMOVING",
-      this.#virtualStartSizes.size
-    );
-    console.log(
-      "this.#virtualEndSizes LENGTH BEFORE REMOVING",
-      this.#virtualEndSizes.size
-    );
+    // console.log(
+    //   "this.#virtualStartSizes LENGTH BEFORE REMOVING",
+    //   this.#virtualStartSizes.size
+    // );
+    // console.log(
+    //   "this.#virtualEndSizes LENGTH BEFORE REMOVING",
+    //   this.#virtualEndSizes.size
+    // );
 
-    this.#updateVirtualSize();
+    this.#updateVirtualSize(removedCells);
 
     this.#virtualItems = virtualItems;
     this.virtualItemsChanged.emit(virtualItems);
@@ -273,20 +302,26 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       return;
     }
 
+    const newEndIndex = Math.min(
+      this.#endIndex + endShift,
+      this.items.length - 1
+    );
+
+    // const lastEndIndex = this.items.length - 1 === endShift;
+    // const adjustmentToAvoidFlickering = lastEndIndex ? 1 : 0;
+
     const newStartIndex = Math.max(0, this.#startIndex - startShift);
-    const newEndIndex = Math.min(this.#endIndex + endShift, this.items.length);
 
     // Nothing to update
     if (this.#startIndex === newStartIndex && this.#endIndex === newEndIndex) {
       return;
     }
 
-    updateVirtualScroll(
+    const removedCells = updateVirtualScroll(
       this.mode,
       startShift,
       endShift,
-      this.#virtualStartSizes,
-      this.#virtualEndSizes,
+      this.#virtualSizes,
       renderedCells
     );
 
@@ -295,7 +330,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#startIndex = newStartIndex;
     this.#endIndex = newEndIndex;
 
-    this.#emitVirtualItemsChange();
+    this.#emitVirtualItemsChange(removedCells);
   };
 
   #handleSizeChange = () => {};
@@ -337,8 +372,9 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
   #checkCellsRenderedAtRuntime = (cellId: string) => {
     // Delete virtual size, since the cell is now rendered
-    this.#virtualStartSizes.delete(cellId);
-    this.#virtualEndSizes.delete(cellId);
+    this.#virtualSizes.delete(cellId);
+
+    console.log("Did load", cellId);
 
     this.#updateVirtualSize();
 
@@ -360,8 +396,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#watchInitialLoad();
 
     if (this.mode === "virtual-scroll") {
-      this.#virtualStartSizes = new Map();
-      this.#virtualEndSizes = new Map();
+      this.#virtualSizes = new Map();
     }
 
     if (this.inverseLoading) {
@@ -373,8 +408,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   }
 
   componentDidLoad(): void {
-    this.#updateViewportItemsOnInitialRender(this.items);
     this.#setVirtualScroller();
+    this.#updateViewportItemsOnInitialRender(this.items);
   }
 
   disconnectedCallback(): void {

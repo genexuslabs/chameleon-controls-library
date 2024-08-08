@@ -4,13 +4,15 @@ const storeVirtualSize = (
   startIndex: number,
   increment: number,
   cellsToRemove: number,
+  removedCells: HTMLChSmartGridCellElement[],
   virtualSizes: Map<string, SmartGridCellVirtualSize>,
   renderedCells: HTMLChSmartGridCellElement[]
 ) => {
-  let removedCells = 0;
+  let removedCellsCount = 0;
 
-  while (removedCells < cellsToRemove) {
+  while (removedCellsCount < cellsToRemove) {
     const cellToRemove = renderedCells[startIndex];
+    removedCells.push(cellToRemove);
     const cellBoundingRect = cellToRemove.getBoundingClientRect();
 
     if (increment === -1) {
@@ -22,13 +24,17 @@ const storeVirtualSize = (
 
     virtualSizes.set(cellToRemove.cellId, {
       width: cellBoundingRect.width,
-      height: cellBoundingRect.height
+      height: cellBoundingRect.height,
+      offsetTop: cellToRemove.offsetTop,
+      offsetLeft: cellToRemove.offsetLeft
     });
 
-    cellToRemove.style.display = "none";
+    console.log("cellToRemove " + cellToRemove.cellId, cellToRemove.offsetTop);
+
+    // cellToRemove.style.display = "none";
 
     startIndex += increment;
-    removedCells++;
+    removedCellsCount++;
   }
 
   // for (let index = startIndex; index < cellsToRemove; index += increment) {
@@ -44,25 +50,36 @@ const storeVirtualSize = (
   // }
 };
 
+/**
+ * Update the virtual heights and returns the removed cells.
+ */
 export const updateVirtualScroll = (
   mode: "virtual-scroll" | "lazy-render",
   startShift: number,
   endShift: number,
-  virtualStartSizes: Map<string, SmartGridCellVirtualSize>,
-  virtualEndSizes: Map<string, SmartGridCellVirtualSize>,
+  virtualSizes: Map<string, SmartGridCellVirtualSize>,
   renderedCells?: HTMLChSmartGridCellElement[]
-) => {
+): HTMLChSmartGridCellElement[] => {
   if (
     mode !== "virtual-scroll" ||
     !renderedCells ||
     (startShift >= 0 && endShift >= 0)
   ) {
-    return;
+    return [];
   }
+
+  const removedCells: HTMLChSmartGridCellElement[] = [];
 
   if (startShift < 0) {
     const cellsToRemove = -startShift;
-    storeVirtualSize(0, 1, cellsToRemove, virtualStartSizes, renderedCells);
+    storeVirtualSize(
+      0,
+      1,
+      cellsToRemove,
+      removedCells,
+      virtualSizes,
+      renderedCells
+    );
   }
 
   if (endShift < 0) {
@@ -72,8 +89,11 @@ export const updateVirtualScroll = (
       renderedCells.length - 1,
       -1,
       cellsToRemove,
-      virtualEndSizes,
+      removedCells,
+      virtualSizes,
       renderedCells
     );
   }
+
+  return removedCells;
 };

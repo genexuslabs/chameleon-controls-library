@@ -96,15 +96,21 @@ export const getAmountOfCellsToLoad = (
 ): {
   startShift: number;
   endShift: number;
-  break?: boolean;
   cells: HTMLChSmartGridCellElement[];
+  break?: boolean;
 } => {
   const cells = getSmartCells(scroller);
 
-  if (cells.length !== virtualItems.length) {
-    console.log("SKIP DOM CHECK..............................................");
-    return CAN_NOT_CHECK_SHIFT_VALUES;
+  const scrollIsAtVirtualStartSize = smartGrid.scrollTop < cells[0].offsetTop;
+
+  if (scrollIsAtVirtualStartSize) {
+    console.log("///////////VIRTUAL START SIZE///////////");
   }
+
+  // if (cells.length !== virtualItems.length) {
+  //   console.log("SKIP DOM CHECK..............................................");
+  //   return CAN_NOT_CHECK_SHIFT_VALUES;
+  // }
   const smartGridBoundingBox = smartGrid.getBoundingClientRect();
 
   const START_INDEX = bufferSize;
@@ -154,7 +160,7 @@ export const getAmountOfCellsToLoad = (
     index--;
   }
 
-  console.log({ startShift, endShift });
+  // console.log({ startShift, endShift });
 
   return { startShift, endShift, cells };
 };

@@ -29,8 +29,7 @@ export const performUIGeneration = (
     );
     formData.append("id", '0');
     formData.append("message", goal);
-    console.log('before fetch')
-    const response = fetch("http://127.0.0.1:5000/run-function", { // Ver donde poner la URL como cte de config
+    const response = fetch("https://web-ui-assistant-server-test-dot-desarrollo-262414.rj.r.appspot.com/run-function", { // Ver donde poner la URL como cte de config
       method: "POST",
       body: formData,
       mode: "cors"

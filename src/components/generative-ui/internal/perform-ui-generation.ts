@@ -39,7 +39,6 @@ export const performUIGeneration = (
   }
 
   function processResponseData(data):string {
-    const currentId = data.id; // Este ID se asigna después 
     const html = getResponseBody(data.output.replace(/\n/g, ""));
     return html;
   }

@@ -13,6 +13,11 @@ const CODE_HTML_ID = "code";
 
 const TAB_MODEL_PLAYGROUND: TabModel = [{ id: SAMPLES_ID, name: "Samples" }];
 
+const tooltipElement:string =  `<div id="tooltip" class="tooltip display-none"></div>`;
+const tooltipInnerHTML = (element) => `Element tag: <b>${element.tagName}</b><textarea id="tooltipTA" placeholder="Describe your change to this element"></textarea><button id="tooltipButton" class="text-align-center">Send</button>`
+const originalColors = new Map();
+let hideTooltipTimeout:number|undefined;
+
 const TAB_MODEL_PLAYGROUND_AND_CODE: TabModel = [
   { id: SAMPLES_ID, name: "Samples" },
   { id: PLAYGROUND_ID, name: "Playground" },
@@ -47,6 +52,7 @@ const layout: LayoutSplitterModel = {
 export class ChGenerativeUI {
   #tabModel = TAB_MODEL_PLAYGROUND;
   #htmlCode: string;
+  currentHoveredElement: HTMLElement | null = null;
 
   // Refs
   #editRef!: HTMLChEditElement;
@@ -94,14 +100,14 @@ export class ChGenerativeUI {
     this.#editRef.click();
   };
 
-  #performUIGeneration = (sample?: GenerativeUISample) => {
-    if ((!sample && !this.#editRef.value) || this.generatingUI) {
+  #performUIGeneration = (sample?: GenerativeUISample, tooltipMsg?:string) => {
+    if ((!sample && !this.#editRef.value && !tooltipMsg) || this.generatingUI) {
       return;
     }
 
     this.generatingUI = true;
-    
-    performUIGeneration(this.#editRef.value, this.#htmlCode, sample).then(html =>
+    const prompt = this.#editRef.value ? this.#editRef.value : (tooltipMsg ? tooltipMsg : "");
+    performUIGeneration(prompt, this.#htmlCode, sample).then(html =>
       this.#updateUIGeneration(html, sample)
     );
 
@@ -115,17 +121,25 @@ export class ChGenerativeUI {
     this.selectedTabId = PLAYGROUND_ID;
 
     // TODO: Sanitize HTML
-    this.#renderRef.innerHTML = html;
+    this.#renderRef.innerHTML =`${tooltipElement} ${html}`;
 
     if (sample) {
       sample.initializeModels(this.#renderRef);
+      this.#addListeners();
       return;
     }
 
     if (this.updateModelsCallback) {
       this.updateModelsCallback(this.#renderRef);
-    }
+      this.#addListeners();
+    } 
   };
+
+  #addListeners() {
+    Array.from(document.querySelector(`[slot="${PLAYGROUND_ID}"]`)!.children).forEach(element => {
+      if (element.id !== 'tooltip') this.#addMouseOver(element, this.#onMouseOver, this.#onMouseOut);
+    }); 
+  }
 
   #handleSelectedItemChange = (
     event: ChTabRenderCustomEvent<TabSelectedItemInfo>
@@ -137,6 +151,84 @@ export class ChGenerativeUI {
     this.#performUIGeneration(sample);
     this.#clearAndFocusInput();
   };
+
+  #onMouseOver(event) {
+    const element = event.target;
+    const tooltip = document.getElementById('tooltip')!;
+    this.#showTooltip(event, tooltip);
+    
+    if (!originalColors.has(element)) {
+        originalColors.set(element, element.style.backgroundColor);
+    }
+    event.target.style.backgroundColor = 'yellow';  // You can change 'yellow' to any color you prefer
+  }
+
+  #onMouseOut(event) {
+    const element = event.target;
+    const tooltip = document.getElementById('tooltip')!;
+    event.target.style.backgroundColor = originalColors.get(element);
+    hideTooltipTimeout = window.setTimeout(() => {
+      // Hide the tooltip only if the mouse is not over the tooltip or another relevant element
+      if (!tooltip.matches(':hover') && this.currentHoveredElement === element) {
+          this.#hideTooltip(tooltip);
+      }
+    }, 1000);
+  }
+
+  #addMouseOver(element, onMouseOver, onMouseOut) {
+    element.addEventListener('mouseover', onMouseOver.bind(this));
+    element.addEventListener('mouseout', onMouseOut.bind(this));
+    if (hideTooltipTimeout) {
+      clearTimeout(hideTooltipTimeout);
+    }
+    Array.from(element.children).forEach(element => {
+      this.#addMouseOver(element, onMouseOver, onMouseOut);    
+    });
+  }
+
+  #getTooltipFixMessage(element, text):string {
+    return `Work with this element ${element.outerHTML} and apply this changes: ${text}`
+  }
+
+  #hideTooltip(tooltip) {
+    tooltip.classList.remove(...tooltip.classList);
+    tooltip.classList.add("display-none");
+    this.currentHoveredElement = null;
+  }
+
+  #showTooltip(event, tooltip) {
+    tooltip.classList.remove(...tooltip.classList);
+    tooltip.classList.add("tooltip");
+    console.log('SHOW')
+    const element = event.target as HTMLElement;
+    const elementBounds = element.getBoundingClientRect();
+    this.currentHoveredElement = element;
+    tooltip.innerHTML = tooltipInnerHTML(element);
+    const tooltipButton = document.getElementById('tooltipButton')!;
+    const textarea = document.getElementById('tooltipTA')! as HTMLTextAreaElement;
+    tooltipButton.addEventListener('click',() => {
+      const fixMessage:string = this.#getTooltipFixMessage(element,textarea.value);
+      this.#performUIGeneration(null, fixMessage);
+    })
+    let tooltipX = elementBounds.x + elementBounds.width;
+    let tooltipY = elementBounds.y;
+  
+    const tooltipRect = tooltip.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+  
+    if (tooltipX + tooltipRect.width > viewportWidth) {
+        tooltipX = viewportWidth - tooltipRect.width; 
+    }
+  
+    if (tooltipY + tooltipRect.height > viewportHeight) {
+        tooltipY = viewportHeight - tooltipRect.height;
+    }
+  
+    tooltip.style.left = `${tooltipX}px`;
+    tooltip.style.top = `${tooltipY}px`;
+  }
+
 
   render() {
     return (

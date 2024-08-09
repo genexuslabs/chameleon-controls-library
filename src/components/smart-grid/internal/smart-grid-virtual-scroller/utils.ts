@@ -1,7 +1,15 @@
 import { inBetween } from "../../../../common/utils";
 import { SmartGridModel } from "../../types";
+import { SmartGridCellVirtualSize } from "./types";
 
-export const isSmartCellVisible = (
+const CAN_NOT_CHECK_SHIFT_VALUES = {
+  startShift: 0,
+  endShift: 0,
+  break: true,
+  renderedCells: []
+} as const satisfies ReturnType<typeof getAmountOfCellsToLoad>;
+
+export const isRenderedSmartCellVisible = (
   element: HTMLElement,
   smartGridBoundingBox: DOMRect
 ) => {
@@ -60,7 +68,7 @@ export const cellsInViewportAreLoadedAndVisible = (
     if (currentCell.hasAttribute("data-did-load")) {
       // The previous cells were visible, but we found a cell that is rendered
       // and its not in the viewport
-      if (!isSmartCellVisible(currentCell, smartGridBoundingBox)) {
+      if (!isRenderedSmartCellVisible(currentCell, smartGridBoundingBox)) {
         return true;
       }
     }
@@ -77,12 +85,42 @@ export const cellsInViewportAreLoadedAndVisible = (
   return true;
 };
 
-const CAN_NOT_CHECK_SHIFT_VALUES = {
-  startShift: 0,
-  endShift: 0,
-  break: true,
-  cells: []
-} as const satisfies ReturnType<typeof getAmountOfCellsToLoad>;
+const findFirstVirtualSizeThatIsNotVisible = (
+  renderedCells: HTMLChSmartGridCellElement[],
+  items: SmartGridModel,
+  virtualSizes: Map<string, SmartGridCellVirtualSize>,
+  bufferSize: number,
+  smartGridScrollTop: number
+) => {
+  const virtualKeys = [...virtualSizes.keys()];
+  let closerVirtualSizeKey = "0";
+  let closerVirtualSizeBottomY = 0;
+
+  // Find the key of the closer virtual size to the viewport that isn't visible
+  for (
+    let virtualIndex = 0;
+    virtualIndex < virtualKeys.length;
+    virtualIndex++
+  ) {
+    const virtualSizeKey = virtualKeys[virtualIndex];
+    const virtualSize = virtualSizes.get(virtualSizeKey);
+    const virtualSizeBottomY = virtualSize.offsetTop + virtualSize.height;
+    const virtualSizeIsHidden = virtualSizeBottomY <= smartGridScrollTop;
+
+    if (virtualSizeIsHidden && closerVirtualSizeBottomY <= virtualSizeBottomY) {
+      closerVirtualSizeBottomY = virtualSizeBottomY;
+      closerVirtualSizeKey = virtualSizeKey;
+    }
+  }
+
+  // TODO: Use memory to retrieve the index given the cellId
+
+  console.log(
+    "Closer virtual item to the top of the viewport that is not visible",
+    "key:" + closerVirtualSizeKey,
+    "bottomY:" + closerVirtualSizeBottomY
+  );
+};
 
 /**
  * Return to cells to load, depending of the amount of cells in the buffer that
@@ -91,37 +129,49 @@ const CAN_NOT_CHECK_SHIFT_VALUES = {
 export const getAmountOfCellsToLoad = (
   scroller: HTMLChSmartGridVirtualScrollerElement,
   smartGrid: HTMLChSmartGridElement,
-  virtualItems: SmartGridModel,
+  items: SmartGridModel,
+  virtualSizes: Map<string, SmartGridCellVirtualSize>,
   bufferSize: number
 ): {
   startShift: number;
   endShift: number;
-  cells: HTMLChSmartGridCellElement[];
+  renderedCells: HTMLChSmartGridCellElement[];
   break?: boolean;
 } => {
-  const cells = getSmartCells(scroller);
+  const renderedCells = getSmartCells(scroller);
+  const smartGridBoundingBox = smartGrid.getBoundingClientRect();
+  const smartGridScrollTop = smartGrid.scrollTop;
 
-  const scrollIsAtVirtualStartSize = smartGrid.scrollTop < cells[0].offsetTop;
-
-  if (scrollIsAtVirtualStartSize) {
-    console.log("///////////VIRTUAL START SIZE///////////");
-  }
+  // TODO: Force the buffer to be at least 2
+  const scrollIsAtVirtualStartSize =
+    smartGridScrollTop < renderedCells[1].offsetTop;
 
   // if (cells.length !== virtualItems.length) {
   //   console.log("SKIP DOM CHECK..............................................");
   //   return CAN_NOT_CHECK_SHIFT_VALUES;
   // }
-  const smartGridBoundingBox = smartGrid.getBoundingClientRect();
+
+  if (scrollIsAtVirtualStartSize) {
+    console.log("///////////VIRTUAL START SIZE///////////");
+    findFirstVirtualSizeThatIsNotVisible(
+      renderedCells,
+      items,
+      virtualSizes,
+      bufferSize,
+      smartGridScrollTop
+    );
+    return CAN_NOT_CHECK_SHIFT_VALUES;
+  }
 
   const START_INDEX = bufferSize;
-  const LAST_INDEX = cells.length - 1 - bufferSize;
+  const LAST_INDEX = renderedCells.length - 1 - bufferSize;
 
   let startShift = bufferSize;
   let index = 0;
 
   // Check how many cells are visible in the buffer
   while (index <= LAST_INDEX) {
-    const currentCell = cells[index];
+    const currentCell = renderedCells[index];
 
     // The cell content must be rendered before trying to update the DOM
     if (!currentCell.hasAttribute("data-did-load")) {
@@ -129,7 +179,7 @@ export const getAmountOfCellsToLoad = (
       return CAN_NOT_CHECK_SHIFT_VALUES;
     }
 
-    if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
+    if (isRenderedSmartCellVisible(currentCell, smartGridBoundingBox)) {
       // console.log("BREAK... start");
       break;
     }
@@ -139,11 +189,11 @@ export const getAmountOfCellsToLoad = (
   }
 
   let endShift = bufferSize;
-  index = cells.length - 1;
+  index = renderedCells.length - 1;
 
   // Check how many cells are visible in the buffer
   while (START_INDEX <= index) {
-    const currentCell = cells[index];
+    const currentCell = renderedCells[index];
 
     // The cell content must be rendered before trying to update the DOM
     if (!currentCell.hasAttribute("data-did-load")) {
@@ -151,7 +201,7 @@ export const getAmountOfCellsToLoad = (
       return CAN_NOT_CHECK_SHIFT_VALUES;
     }
 
-    if (isSmartCellVisible(currentCell, smartGridBoundingBox)) {
+    if (isRenderedSmartCellVisible(currentCell, smartGridBoundingBox)) {
       // console.log("BREAK... end");
       break;
     }
@@ -162,5 +212,5 @@ export const getAmountOfCellsToLoad = (
 
   // console.log({ startShift, endShift });
 
-  return { startShift, endShift, cells };
+  return { startShift, endShift, renderedCells };
 };

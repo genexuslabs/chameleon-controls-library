@@ -22,11 +22,13 @@ const storeVirtualSize = (
       );
     }
 
+    const { offsetTop, offsetLeft } = cellToRemove;
+
     virtualSizes.set(cellToRemove.cellId, {
       width: cellBoundingRect.width,
       height: cellBoundingRect.height,
-      offsetTop: cellToRemove.offsetTop,
-      offsetLeft: cellToRemove.offsetLeft
+      offsetTop: offsetTop,
+      offsetLeft: offsetLeft
     });
 
     console.log("cellToRemove " + cellToRemove.cellId, cellToRemove.offsetTop);

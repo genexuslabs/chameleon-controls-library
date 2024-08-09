@@ -157,7 +157,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
     const smartGridScrollTop = this.#smartGrid.scrollTop;
-    const smartGridScrollHeight = this.#smartGrid.scrollHeight;
+    // const smartGridScrollHeight = this.#smartGrid.scrollHeight; // TODO: Check what happens if the grid has padding, margin and borders
     // const scrollerComputedStyle = getComputedStyle(this.el);
     // const rowGap = Number(scrollerComputedStyle.rowGap.replace("px", ""));
 
@@ -174,10 +174,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
           virtualSize.offsetTop + virtualSize.height
         );
       } else {
-        virtualEndSize = Math.max(
-          virtualEndSize,
-          smartGridScrollHeight - virtualSize.offsetTop
-        );
+        virtualEndSize += virtualSize.height;
       }
     });
 
@@ -224,7 +221,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     const cellsToRender = getAmountOfCellsToLoad(
       this.el,
       this.#smartGrid,
-      this.#virtualItems,
+      this.items,
+      this.#virtualSizes,
       this.bufferAmount
     );
 
@@ -240,7 +238,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#shiftIndex(
       cellsToRender.startShift,
       cellsToRender.endShift,
-      cellsToRender.cells
+      cellsToRender.renderedCells
     );
 
     // if (cellsToRender.endShift > 0) {

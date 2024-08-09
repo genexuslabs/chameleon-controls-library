@@ -18,7 +18,10 @@ import {
 import { SyncWithRAF } from "../../../../common/sync-with-frames";
 import { SmartGridModel } from "../../types";
 import { SmartGridCellVirtualSize } from "./types";
-import { updateVirtualScroll } from "./update-virtual-scroll";
+import {
+  updateVirtualScroll,
+  updateVirtualScroll2
+} from "./update-virtual-scroll";
 import { ChSmartGridCellCustomEvent } from "../../../../components";
 
 const VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR =
@@ -35,6 +38,9 @@ const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR =
 export class ChSmartGridVirtualScroller implements ComponentInterface {
   #startIndex = 0;
   #endIndex = 0;
+
+  #virtualStartSize = 0;
+  #virtualEndSize = 0;
 
   #canUpdateRenderedCells = true;
   #waitingForCellsToBeRendered = false;
@@ -88,7 +94,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
         "scroll",
         this.#handleSmartGridContentScroll,
         {
-          passive: true,
+          // passive: true,
           signal: this.#abortController.signal
         }
       );
@@ -152,8 +158,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   // items if the virtual scroll does not have size
   // TODO: Check what happens when the cells has margin
   #updateVirtualSize = (removedCells?: HTMLChSmartGridCellElement[]) => {
-    let virtualStartSize = 0;
-    let virtualEndSize = 0;
+    this.#virtualStartSize = 0;
+    this.#virtualEndSize = 0;
 
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
     const smartGridScrollTop = this.#smartGrid.scrollTop;
@@ -169,17 +175,22 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       }
 
       if (virtualSize.offsetTop <= smartGridScrollTop) {
-        virtualStartSize = Math.max(
-          virtualStartSize,
+        this.#virtualStartSize = Math.max(
+          this.#virtualStartSize,
           virtualSize.offsetTop + virtualSize.height
         );
       } else {
-        virtualEndSize += virtualSize.height;
+        // console.log(
+        //   "ADDING virtualSize to the end virtual " + key,
+        //   virtualSize,
+        //   key
+        // );
+        this.#virtualEndSize += virtualSize.height;
       }
     });
 
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
-    // Artificially remove the cells, due to the virtual height will be updated
+    // Faster removal of the cells, due to the virtual height will be updated
     // in the next DOM write operation
     removedCells?.forEach(removedCell => {
       removedCell.style.display = "none";
@@ -187,14 +198,14 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
     this.el.style.setProperty(
       VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
-      `${virtualStartSize}px`
+      `${this.#virtualStartSize}px`
     );
 
     // console.log("virtualStartSize", virtualStartSize);
 
     this.el.style.setProperty(
       VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
-      `${virtualEndSize}px`
+      `${this.#virtualEndSize}px`
     );
 
     // console.log(
@@ -207,6 +218,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
   #handleSmartGridContentScroll = () => {
     if (this.#canUpdateRenderedCells) {
+      console.log("///Try to update", this.#smartGrid.scrollTop);
       this.#syncWithRAF.perform(this.#updateRenderedCells);
     }
   };
@@ -223,23 +235,57 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       this.#smartGrid,
       this.items,
       this.#virtualSizes,
+      this.#virtualStartSize,
+      this.#virtualEndSize,
       this.bufferAmount
     );
 
-    this.#waitingForCellsToBeRendered = !!cellsToRender.break;
-
-    if (
-      this.#waitingForCellsToBeRendered ||
-      (cellsToRender.startShift === 0 && cellsToRender.endShift === 0)
-    ) {
+    if (cellsToRender.type === "break") {
+      console.log("/////BREAK");
+      this.#waitingForCellsToBeRendered = true;
       return;
     }
 
-    this.#shiftIndex(
-      cellsToRender.startShift,
-      cellsToRender.endShift,
-      cellsToRender.renderedCells
-    );
+    this.#waitingForCellsToBeRendered = false;
+
+    if (cellsToRender.type === "shift") {
+      if (cellsToRender.startShift === 0 && cellsToRender.endShift === 0) {
+        return;
+      }
+
+      this.#shiftIndex(
+        cellsToRender.startShift,
+        cellsToRender.endShift,
+        cellsToRender.renderedCells
+      );
+    }
+    //
+    else {
+      // console.log(cellsToRender);
+
+      const { startIndex, endIndex } = cellsToRender;
+
+      // Nothing to update
+      if (this.#startIndex === startIndex && this.#endIndex === endIndex) {
+        // console.log("Nothing to update (new strategy)");
+        return;
+      }
+
+      const removedCells = updateVirtualScroll2(
+        this.mode,
+        cellsToRender.newRenderedCellStartIndex,
+        cellsToRender.newRenderedCellEndIndex,
+        this.#virtualSizes,
+        cellsToRender.renderedCells
+      );
+
+      // console.log("New Virtual Index (new strategy)", startIndex, endIndex);
+
+      this.#startIndex = startIndex;
+      this.#endIndex = endIndex;
+
+      this.#emitVirtualItemsChange(removedCells);
+    }
 
     // if (cellsToRender.endShift > 0) {
     //   console.log("ADD", cellsToRender);
@@ -323,7 +369,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       renderedCells
     );
 
-    console.log("New Virtual Index", newStartIndex, newEndIndex);
+    // console.log("New Virtual Index", newStartIndex, newEndIndex);
 
     this.#startIndex = newStartIndex;
     this.#endIndex = newEndIndex;
@@ -350,23 +396,26 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     }
   };
 
-  #checkInitialRenderVisibility = () =>
-    this.#syncWithRAF.perform(() => {
-      const waitingForContent = !cellsInViewportAreLoadedAndVisible(
-        this.el,
-        this.#smartGrid,
-        this.inverseLoading
-      );
+  #checkInitialRenderVisibility = () => {
+    if (this.waitingForContent) {
+      this.#syncWithRAF.perform(() => {
+        const waitingForContent = !cellsInViewportAreLoadedAndVisible(
+          this.el,
+          this.#smartGrid,
+          this.inverseLoading
+        );
 
-      if (!waitingForContent) {
-        requestAnimationFrame(() => {
-          this.virtualScrollerDidLoad.emit();
-          this.waitingForContent = waitingForContent;
-        });
-      }
+        if (!waitingForContent) {
+          requestAnimationFrame(() => {
+            this.virtualScrollerDidLoad.emit();
+            this.waitingForContent = waitingForContent;
+          });
+        }
 
-      console.log("checkInitialRenderVisibility...");
-    });
+        // console.log("checkInitialRenderVisibility...");
+      });
+    }
+  };
 
   #checkCellsRenderedAtRuntime = (cellId: string) => {
     // Delete virtual size, since the cell is now rendered
@@ -374,15 +423,14 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
     console.log("Did load", cellId);
 
-    this.#updateVirtualSize();
-
     if (this.#waitingForCellsToBeRendered) {
-      console.log(
-        "PROCESS EDGE CASE * -* -* -* - *- * - *- * - * -* - * -* -* - *- * - *"
-      );
+      // console.log(
+      //   "PROCESS EDGE CASE * -* -* -* - *- * - *- * - * -* - * -* -* - *- * - *"
+      // );
 
-      this.#waitingForCellsToBeRendered = false;
       this.#handleSmartGridContentScroll();
+    } else {
+      this.#updateVirtualSize();
     }
   };
 

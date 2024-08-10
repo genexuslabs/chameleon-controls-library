@@ -46,12 +46,12 @@ export const samples: GenerativeUISample[] = [
     initializeModels: renderRef => {
       updateTreeViewModels(renderRef);
 
-      const editRef = renderRef.querySelector("ch-edit")!;
-      const treeViewRef = renderRef.querySelector("ch-tree-view-render")!;
+      // const editRef = renderRef.querySelector("ch-edit")!;
+      // const treeViewRef = renderRef.querySelector("ch-tree-view-render")!;
 
-      editRef.addEventListener("input", () => {
-        treeViewRef.filter = editRef.value;
-      });
+      // editRef.addEventListener("input", () => {
+      //   treeViewRef.filter = editRef.value;
+      // });
     },
     prompt: "Design a login form. Use a check button for a remember me option",
     html: generativeUILoginForm

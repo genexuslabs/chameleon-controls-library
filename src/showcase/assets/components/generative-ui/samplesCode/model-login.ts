@@ -7,7 +7,7 @@ export const generativeUILoginForm = `
     <label for="password" class="form-input__label">Password</label>
     <input type="password" id="password" name="password" class="form-input" placeholder="Enter" your="" password="">
     <div class="horizontal-flex">
-      <ch-checkbox accessible-name="Remember" me="" caption="Remember" checked-value="yes" un-checked-value="no" value="no" class="ch-checkbox--actionable hydrated"></ch-checkbox>
+      <ch-checkbox accessible-name="Remember" me="" caption="Remember me" checked-value="yes" un-checked-value="no" value="no" class="ch-checkbox--actionable hydrated"></ch-checkbox>
     </div>
     <button type="submit" class="button-primary">Login</button>
   </form>

@@ -408,6 +408,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       this.#virtualSizes = new Map();
     }
 
+    // Render the last items when the scroll is inverted
     if (this.inverseLoading) {
       const lastIndex = this.items.length - 1;
 

@@ -9,6 +9,10 @@
   opacity: 0;
 }
 
+// This is an optimization to avoid flickering when swapping cell.
+// With this CSS, cells being rendered do not take up space until they are
+// fully rendered. When they are fully rendered, we make the cells take up
+// space and in the same DOM write operation we update the virtual scroll size
 :host(.ch-smart-virtual-scroller--content-loaded)
   ::slotted(ch-smart-grid-cell:not([data-did-load])) {
   position: absolute;

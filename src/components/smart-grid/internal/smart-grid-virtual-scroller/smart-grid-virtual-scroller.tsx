@@ -77,20 +77,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   @State() waitingForContent = true;
   @Watch("waitingForContent")
   waitingForContentChanged() {
-    this.#abortController = new AbortController();
-
-    // RAF is used to avoid unnecessary check on the initial load when using
-    // inverseLoading, since on the initial load the scroll will be repositioned
-    requestAnimationFrame(() => {
-      this.#smartGrid.addEventListener(
-        "scroll",
-        this.#handleSmartGridContentScroll,
-        {
-          // passive: true,
-          signal: this.#abortController.signal
-        }
-      );
-    });
+    this.#setVirtualScroller();
   }
 
   /**
@@ -241,7 +228,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       this.#waitingForCellsToBeRendered = true;
       return;
     }
-
     this.#waitingForCellsToBeRendered = false;
 
     if (cellsToRender.type === "shift") {
@@ -356,15 +342,26 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#emitVirtualItemsChange(removedCells);
   };
 
-  #handleSizeChange = () => {};
-
   #setVirtualScroller = () => {
-    this.#smartGrid = this.el.closest("ch-smart-grid");
+    this.#abortController = new AbortController();
 
-    this.#resizeObserver = new ResizeObserver(this.#handleSizeChange);
+    // RAF is used to avoid unnecessary check on the initial load when using
+    // inverseLoading, since on the initial load the scroll will be repositioned
+    requestAnimationFrame(() => {
+      this.#smartGrid.addEventListener(
+        "scroll",
+        this.#handleSmartGridContentScroll,
+        {
+          // passive: true,
+          signal: this.#abortController.signal
+        }
+      );
 
-    this.#resizeObserver.observe(this.el);
-    this.#resizeObserver.observe(this.#smartGrid);
+      this.#resizeObserver = new ResizeObserver(
+        this.#handleSmartGridContentScroll
+      );
+      this.#resizeObserver.observe(this.#smartGrid);
+    });
   };
 
   #handleRenderedCell = (event: ChSmartGridCellCustomEvent<string>) => {
@@ -426,7 +423,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   }
 
   componentDidLoad(): void {
-    this.#setVirtualScroller();
+    this.#smartGrid = this.el.closest("ch-smart-grid");
     this.#updateViewportItemsOnInitialRender(this.items);
   }
 

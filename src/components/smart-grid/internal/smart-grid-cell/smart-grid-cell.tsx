@@ -29,7 +29,9 @@ export class ChSmartGridCell implements ComponentInterface {
   }
 
   componentDidLoad() {
-    this.el.setAttribute("data-did-load", "true");
     this.smartCellDidLoad.emit(this.cellId);
+
+    // DOM write operation
+    this.el.setAttribute("data-did-load", "true");
   }
 }

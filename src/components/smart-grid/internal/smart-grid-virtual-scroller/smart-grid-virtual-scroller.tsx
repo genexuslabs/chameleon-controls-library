@@ -162,63 +162,60 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#virtualEndSize = 0;
 
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const smartGridScrollTop = this.#smartGrid.scrollTop;
-    // const smartGridScrollHeight = this.#smartGrid.scrollHeight; // TODO: Check what happens if the grid has padding, margin and borders
-    // const scrollerComputedStyle = getComputedStyle(this.el);
-    // const rowGap = Number(scrollerComputedStyle.rowGap.replace("px", ""));
+    const indexForVirtualStartSize = Math.max(0, this.#startIndex - 1);
+    const indexForVirtualEndSize = Math.min(
+      this.items.length - 1,
+      this.#endIndex + 1
+    );
+    const cellIdForVirtualStartSize = this.items[indexForVirtualStartSize].id;
+    const cellIdForVirtualEndSize = this.items[indexForVirtualEndSize].id;
+    const virtualStartCell =
+      // While the startIndex cell is not rendered, use its virtual size. If
+      // rendered, use the virtual size of the previous virtual cell
+      this.#virtualSizes.get(this.items[this.#startIndex].id) ??
+      this.#virtualSizes.get(cellIdForVirtualStartSize);
+    const virtualEndCell = this.#virtualSizes.get(cellIdForVirtualEndSize);
 
-    // console.log("rowGap", rowGap);
+    if (virtualStartCell) {
+      this.#virtualStartSize =
+        virtualStartCell.offsetTop + virtualStartCell.height;
+    }
 
-    this.#virtualSizes.forEach((virtualSize, key) => {
-      if (key === "13") {
-        // console.log(key, "smartGridScrollTop " + smartGridScrollTop);
-      }
+    if (virtualEndCell) {
+      let maxSmartGridVirtualHeight = 0;
 
-      if (virtualSize.offsetTop <= smartGridScrollTop) {
-        this.#virtualStartSize = Math.max(
-          this.#virtualStartSize,
+      this.#virtualSizes.forEach(virtualSize => {
+        maxSmartGridVirtualHeight = Math.max(
+          maxSmartGridVirtualHeight,
           virtualSize.offsetTop + virtualSize.height
         );
-      } else {
-        // console.log(
-        //   "ADDING virtualSize to the end virtual " + key,
-        //   virtualSize,
-        //   key
-        // );
-        this.#virtualEndSize += virtualSize.height;
-      }
-    });
+      });
+
+      this.#virtualEndSize =
+        maxSmartGridVirtualHeight - virtualEndCell.offsetTop;
+    }
 
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -
     // Faster removal of the cells, due to the virtual height will be updated
     // in the next DOM write operation
+
     removedCells?.forEach(removedCell => {
       removedCell.style.display = "none";
     });
-
-    this.el.style.setProperty(
-      VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
-      `${this.#virtualStartSize}px`
-    );
-
-    // console.log("virtualStartSize", virtualStartSize);
 
     this.el.style.setProperty(
       VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
       `${this.#virtualEndSize}px`
     );
 
-    // console.log(
-    //   "NEW VIRTUAL START SIZE:::::::::::::::::::::::",
-    //   virtualStartSize
-    // );
-
-    // console.log("NEW VIRTUAL END SIZE:::::::::::::::::::::::", virtualEndSize);
+    this.el.style.setProperty(
+      VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
+      `${this.#virtualStartSize}px`
+    );
   };
 
   #handleSmartGridContentScroll = () => {
     if (this.#canUpdateRenderedCells) {
-      console.log("///Try to update", this.#smartGrid.scrollTop);
       this.#syncWithRAF.perform(this.#updateRenderedCells);
     }
   };
@@ -241,7 +238,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     );
 
     if (cellsToRender.type === "break") {
-      console.log("/////BREAK");
       this.#waitingForCellsToBeRendered = true;
       return;
     }
@@ -261,13 +257,10 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     }
     //
     else {
-      // console.log(cellsToRender);
-
       const { startIndex, endIndex } = cellsToRender;
 
       // Nothing to update
       if (this.#startIndex === startIndex && this.#endIndex === endIndex) {
-        // console.log("Nothing to update (new strategy)");
         return;
       }
 
@@ -279,32 +272,15 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
         cellsToRender.renderedCells
       );
 
-      // console.log("New Virtual Index (new strategy)", startIndex, endIndex);
-
       this.#startIndex = startIndex;
       this.#endIndex = endIndex;
 
       this.#emitVirtualItemsChange(removedCells);
     }
-
-    // if (cellsToRender.endShift > 0) {
-    //   console.log("ADD", cellsToRender);
-    // } else if (cellsToRender.endShift < 0) {
-    //   console.log("REMOVE", cellsToRender);
-    // }
   };
 
   #emitVirtualItemsChange = (removedCells?: HTMLChSmartGridCellElement[]) => {
     const virtualItems = this.items.slice(this.#startIndex, this.#endIndex);
-
-    // console.log(
-    //   "this.#virtualStartSizes LENGTH BEFORE REMOVING",
-    //   this.#virtualStartSizes.size
-    // );
-    // console.log(
-    //   "this.#virtualEndSizes LENGTH BEFORE REMOVING",
-    //   this.#virtualEndSizes.size
-    // );
 
     this.#updateVirtualSize(removedCells);
 
@@ -369,8 +345,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       renderedCells
     );
 
-    // console.log("New Virtual Index", newStartIndex, newEndIndex);
-
     this.#startIndex = newStartIndex;
     this.#endIndex = newEndIndex;
 
@@ -411,8 +385,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
             this.waitingForContent = waitingForContent;
           });
         }
-
-        // console.log("checkInitialRenderVisibility...");
       });
     }
   };
@@ -421,16 +393,10 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     // Delete virtual size, since the cell is now rendered
     this.#virtualSizes.delete(cellId);
 
-    console.log("Did load", cellId);
+    this.#updateVirtualSize();
 
     if (this.#waitingForCellsToBeRendered) {
-      // console.log(
-      //   "PROCESS EDGE CASE * -* -* -* - *- * - *- * - * -* - * -* -* - *- * - *"
-      // );
-
       this.#handleSmartGridContentScroll();
-    } else {
-      this.#updateVirtualSize();
     }
   };
 

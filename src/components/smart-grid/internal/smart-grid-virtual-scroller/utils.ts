@@ -136,12 +136,6 @@ const findFirstVirtualSizeThatIsNotVisible = (
   let renderedCellsCount = 0;
   let cellsThatAreNotVisible = 0;
 
-  console.log(
-    "////Closer virtual item to the top of the viewport that is not visible",
-    "key:" + closerVirtualSizeId,
-    "bottomY:" + closerVirtualSizeBottomY
-  );
-
   // Find the endIndex to render the cells. This index takes into account the
   // cells that must be not visible in the buffer
   while (
@@ -150,12 +144,9 @@ const findFirstVirtualSizeThatIsNotVisible = (
   ) {
     const cellId = items[endIndex].id;
 
-    console.log(cellId);
-
     const virtualSize = virtualSizes.get(cellId);
 
     if (virtualSize) {
-      console.log("IS VIRTUAL SIZE...");
       const isVirtualSizeVisible = isVirtualSizeCellVisible(
         virtualSize,
         smartGridScrollTop,
@@ -164,40 +155,11 @@ const findFirstVirtualSizeThatIsNotVisible = (
 
       if (!isVirtualSizeVisible) {
         cellsThatAreNotVisible++;
-
-        // endIndex = Math.min(lastIndex, endIndex + bufferSize - 1);
-
-        // console.log("////RESULT ", {
-        //   startIndex,
-        //   endIndex,
-        //   renderedCells,
-        //   // TODO: Improve this
-        //   newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-        //   newRenderedCellEndIndex: renderedCellsCount,
-        //   type: "index"
-        // });
-
-        // return {
-        //   startIndex,
-        //   endIndex,
-        //   renderedCells,
-        //   // TODO: Improve this
-        //   newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-        //   newRenderedCellEndIndex: renderedCellsCount,
-        //   type: "index"
-        // };
       }
     }
     // We assume that the rendered cells are sorted
     else {
       const renderedCell = renderedCells[renderedCellsCount];
-      console.log("IS RENDERED CELL...");
-
-      // // The cell content must be rendered before trying to update the DOM
-      // if (!cellIsRendered(renderedCell)) {
-      //   console.log("+++++DENYYY CHECKK IN NEW STRATEGY");
-      //   return CAN_NOT_CHECK_SHIFT_VALUES;
-      // }
 
       const isRenderedCellVisible = isRenderedSmartCellVisible(
         renderedCell,
@@ -206,26 +168,6 @@ const findFirstVirtualSizeThatIsNotVisible = (
 
       if (!isRenderedCellVisible) {
         cellsThatAreNotVisible++;
-        // endIndex = Math.min(lastIndex, endIndex + bufferSize - 1);
-
-        // console.log("////RESULT ", {
-        //   startIndex,
-        //   endIndex,
-        //   renderedCells,
-        //   // TODO: Improve this
-        //   newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-        //   newRenderedCellEndIndex: renderedCellsCount,
-        //   type: "index"
-        // });
-
-        // return {
-        //   startIndex,
-        //   endIndex,
-        //   renderedCells,
-        //   newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-        //   newRenderedCellEndIndex: renderedCellsCount,
-        //   type: "index"
-        // };
       }
 
       renderedCellsCount++;
@@ -235,21 +177,6 @@ const findFirstVirtualSizeThatIsNotVisible = (
   }
 
   endIndex = Math.min(lastIndex, endIndex + bufferSize - 1);
-
-  console.log(
-    "////IS THIS CASE MEET??????????",
-    JSON.stringify([...virtualSizes.entries()])
-  );
-
-  console.log("////RESULT ", {
-    startIndex,
-    endIndex,
-    renderedCells,
-    // TODO: Improve this
-    newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-    newRenderedCellEndIndex: renderedCellsCount,
-    type: "index"
-  });
 
   return {
     startIndex,
@@ -279,16 +206,11 @@ export const getAmountOfCellsToLoad = (
   const allCellsAreRendered = renderedCells.every(cellIsRendered);
 
   if (!allCellsAreRendered) {
-    // console.log("NOT ALL CELLS ARE RENDERED...........................");
     return CAN_NOT_CHECK_SHIFT_VALUES;
   }
 
   const smartGridBoundingRect = smartGrid.getBoundingClientRect();
   const smartGridScrollTop = smartGrid.scrollTop;
-  // console.log(
-  //   "////getAmountOfCellsToLoad, smartGridScrollTop",
-  //   smartGridScrollTop
-  // );
 
   // TODO: Force the buffer to be at least 2
   const secondRenderedCell = renderedCells[1];
@@ -302,14 +224,6 @@ export const getAmountOfCellsToLoad = (
   // }
 
   if (scrollIsAtVirtualStartSize) {
-    console.log(
-      "///////////VIRTUAL START SIZE///////////",
-      "cellId " + secondRenderedCell.cellId,
-
-      "smartGridScrollTop " + smartGridScrollTop,
-      "renderedCells[1].offsetTop " + renderedCells[1].offsetTop
-    );
-
     return findFirstVirtualSizeThatIsNotVisible(
       renderedCells,
       items,
@@ -352,12 +266,10 @@ export const getAmountOfCellsToLoad = (
 
     // The cell content must be rendered before trying to update the DOM
     if (!cellIsRendered(currentCell)) {
-      // console.log("+++++DENYYY CHECKK");
       return CAN_NOT_CHECK_SHIFT_VALUES;
     }
 
     if (isRenderedSmartCellVisible(currentCell, smartGridBoundingRect)) {
-      // console.log("BREAK... start");
       break;
     }
 
@@ -374,20 +286,16 @@ export const getAmountOfCellsToLoad = (
 
     // The cell content must be rendered before trying to update the DOM
     if (!cellIsRendered(currentCell)) {
-      console.log("+++++DENYYY CHECKK");
       return CAN_NOT_CHECK_SHIFT_VALUES;
     }
 
     if (isRenderedSmartCellVisible(currentCell, smartGridBoundingRect)) {
-      // console.log("BREAK... end");
       break;
     }
 
     endShift--;
     index--;
   }
-
-  console.log("///////////NORMAL SHIFT///////////", { startShift, endShift });
 
   return { startShift, endShift, renderedCells, type: "shift" };
 };

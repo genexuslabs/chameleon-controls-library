@@ -24,14 +24,18 @@ const storeVirtualSize = (
       // );
     }
 
-    const { offsetTop, offsetLeft } = cellToRemove;
+    if (cellIsRendered(cellToRemove) && cellToRemove.style.display !== "none") {
+      const { offsetTop } = cellToRemove;
 
-    virtualSizes.set(cellToRemove.cellId, {
-      width: cellBoundingRect.width,
-      height: cellBoundingRect.height,
-      offsetTop: offsetTop,
-      offsetLeft: offsetLeft
-    });
+      if (offsetTop !== 0 || cellBoundingRect.height !== 0) {
+        virtualSizes.set(cellToRemove.cellId, {
+          // width: cellBoundingRect.width,
+          height: cellBoundingRect.height,
+          offsetTop: offsetTop
+          // offsetLeft: offsetLeft
+        });
+      }
+    }
 
     // console.log("cellToRemove " + cellToRemove.cellId, cellToRemove.offsetTop);
 
@@ -148,10 +152,10 @@ export const updateVirtualScroll2 = (
         offsetLeft !== 0
       ) {
         virtualSizes.set(cellToRemove.cellId, {
-          width: cellBoundingRect.width,
+          // width: cellBoundingRect.width,
           height: cellBoundingRect.height,
-          offsetTop: offsetTop,
-          offsetLeft: offsetLeft
+          offsetTop: offsetTop
+          // offsetLeft: offsetLeft
         });
       }
     }

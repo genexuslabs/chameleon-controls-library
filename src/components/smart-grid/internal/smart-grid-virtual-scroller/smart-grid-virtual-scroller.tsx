@@ -372,24 +372,21 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     }
   };
 
-  #checkInitialRenderVisibility = () => {
-    if (this.waitingForContent) {
-      this.#syncWithRAF.perform(() => {
-        const waitingForContent = !cellsInViewportAreLoadedAndVisible(
-          this.el,
-          this.#smartGrid,
-          this.inverseLoading
-        );
+  #checkInitialRenderVisibility = () =>
+    this.#syncWithRAF.perform(() => {
+      const waitingForContent = !cellsInViewportAreLoadedAndVisible(
+        this.el,
+        this.#smartGrid,
+        this.inverseLoading
+      );
 
-        if (!waitingForContent) {
-          requestAnimationFrame(() => {
-            this.virtualScrollerDidLoad.emit();
-            this.waitingForContent = waitingForContent;
-          });
-        }
-      });
-    }
-  };
+      if (!waitingForContent) {
+        requestAnimationFrame(() => {
+          this.virtualScrollerDidLoad.emit();
+          this.waitingForContent = waitingForContent;
+        });
+      }
+    });
 
   #checkCellsRenderedAtRuntime = (cellId: string) => {
     // Delete virtual size, since the cell is now rendered
@@ -402,12 +399,9 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     }
   };
 
-  #watchInitialLoad = () => {
-    this.el.addEventListener("smartCellDidLoad", this.#handleRenderedCell);
-  };
-
   connectedCallback(): void {
-    this.#watchInitialLoad();
+    // Listen for the render of the smart cells
+    this.el.addEventListener("smartCellDidLoad", this.#handleRenderedCell);
 
     if (this.mode === "virtual-scroll") {
       this.#virtualSizes = new Map();

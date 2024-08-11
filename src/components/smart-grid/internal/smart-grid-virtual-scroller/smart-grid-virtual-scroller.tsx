@@ -352,7 +352,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
         "scroll",
         this.#handleSmartGridContentScroll,
         {
-          // passive: true,
+          passive: true,
           signal: this.#abortController.signal
         }
       );

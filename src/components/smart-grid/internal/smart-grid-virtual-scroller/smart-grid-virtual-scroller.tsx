@@ -19,11 +19,14 @@ import { ChSmartGridCellCustomEvent } from "../../../../components";
 import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
 import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
 
-const VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR =
-  "--ch-smart-grid-virtual-scroll__scroll-start-size";
+const VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX =
+  "--ch-smart-grid-virtual-scroll__scroll-";
 
-const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR =
-  "--ch-smart-grid-virtual-scroll__scroll-end-size";
+const VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}start-size`;
+const VIRTUAL_SCROLL_START_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}start-display`;
+
+const VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}end-size`;
+const VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}end-display`;
 
 @Component({
   shadow: true,
@@ -143,8 +146,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    */
   @Event() virtualScrollerDidLoad: EventEmitter;
 
-  // TODO: Add support to remove the gap between the virtual scroll and the
-  // items if the virtual scroll does not have size
   // TODO: Check what happens when the cells has margin
   #updateVirtualScrollSize = (removedCells?: HTMLChSmartGridCellElement[]) => {
     this.#virtualStartSize = 0;
@@ -191,13 +192,25 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     });
 
     this.el.style.setProperty(
-      VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
-      `${this.#virtualEndSize}px`
+      VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
+      `${this.#virtualStartSize}px`
+    );
+    this.el.style.setProperty(
+      VIRTUAL_SCROLL_START_DISPLAY_CUSTOM_VAR,
+      // The virtual size must be "destroyed" to avoid displaying and
+      // unnecessary gap at the start of the scroll
+      this.#virtualStartSize === 0 ? "none" : "block"
     );
 
     this.el.style.setProperty(
-      VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR,
-      `${this.#virtualStartSize}px`
+      VIRTUAL_SCROLL_END_SIZE_CUSTOM_VAR,
+      `${this.#virtualEndSize}px`
+    );
+    this.el.style.setProperty(
+      VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR,
+      // The virtual size must be "destroyed" to avoid displaying and
+      // unnecessary gap at the end of the scroll
+      this.#virtualEndSize === 0 ? "none" : "block"
     );
   };
 

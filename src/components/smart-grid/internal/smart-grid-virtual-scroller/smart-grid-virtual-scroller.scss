@@ -1,6 +1,10 @@
 :host {
   --ch-smart-grid-virtual-scroll__scroll-start-size: 0px;
   --ch-smart-grid-virtual-scroll__scroll-end-size: 0px;
+
+  --ch-smart-grid-virtual-scroll__scroll-start-display: none;
+  --ch-smart-grid-virtual-scroll__scroll-end-display: none;
+
   display: grid;
   grid-auto-rows: max-content;
 }
@@ -23,6 +27,7 @@
 :host(.ch-smart-virtual-scroller--virtual-scroll) {
   &::before {
     content: "";
+    display: var(--ch-smart-grid-virtual-scroll__scroll-start-display);
     block-size: calc(var(--ch-smart-grid-virtual-scroll__scroll-start-size));
     inline-size: 0px;
     pointer-events: none;
@@ -30,6 +35,7 @@
 
   &::after {
     content: "";
+    display: var(--ch-smart-grid-virtual-scroll__scroll-end-display);
     block-size: calc(var(--ch-smart-grid-virtual-scroll__scroll-end-size));
     inline-size: 0px;
     pointer-events: none;

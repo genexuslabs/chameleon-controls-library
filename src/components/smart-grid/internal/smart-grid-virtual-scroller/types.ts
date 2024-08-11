@@ -1,8 +1,8 @@
 export type SmartGridCellVirtualSize = {
-  // width: number;
+  width: number;
   height: number;
   offsetTop: number;
-  // offsetLeft: number;
+  offsetLeft: number;
 };
 
 export type SmartGridCellsToLoad =
@@ -21,5 +21,5 @@ export type SmartGridCellsToLoad =
       type: "index";
     }
   | {
-      type: "break";
+      type: "waiting-for-cells-to-render";
     };

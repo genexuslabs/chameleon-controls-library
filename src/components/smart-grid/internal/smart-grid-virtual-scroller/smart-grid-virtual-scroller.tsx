@@ -438,13 +438,11 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
         class={{
           "ch-smart-virtual-scroller--content-not-loaded":
             this.waitingForContent,
-          "ch-smart-virtual-scroller--content-loaded": !this.waitingForContent
+          "ch-smart-virtual-scroller--content-loaded": !this.waitingForContent,
+          "ch-smart-virtual-scroller--virtual-scroll":
+            !this.waitingForContent && this.mode === "virtual-scroll"
         }}
       >
-        {!this.waitingForContent && this.mode === "virtual-scroll" && (
-          <div aria-hidden="true" class="virtual-scroll-start"></div>
-        )}
-
         <slot
           onSlotchange={
             this.waitingForContent
@@ -452,10 +450,6 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
               : undefined
           }
         ></slot>
-
-        {!this.waitingForContent && this.mode === "virtual-scroll" && (
-          <div aria-hidden="true" class="virtual-scroll-end"></div>
-        )}
       </Host>
     );
   }

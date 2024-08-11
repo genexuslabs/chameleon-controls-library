@@ -163,10 +163,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
     const indexForVirtualStartSize = Math.max(0, this.#startIndex - 1);
-    const indexForVirtualEndSize = Math.min(
-      this.items.length - 1,
-      this.#endIndex + 1
-    );
+    const indexForVirtualEndSize = this.#endIndex;
     const cellIdForVirtualStartSize = this.items[indexForVirtualStartSize].id;
     const cellIdForVirtualEndSize = this.items[indexForVirtualEndSize].id;
     const virtualStartCell =
@@ -438,11 +435,11 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   render() {
     return (
       <Host
-        class={
-          this.waitingForContent
-            ? "ch-smart-virtual-scroller--content-not-loaded"
-            : "ch-smart-virtual-scroller--content-loaded"
-        }
+        class={{
+          "ch-smart-virtual-scroller--content-not-loaded":
+            this.waitingForContent,
+          "ch-smart-virtual-scroller--content-loaded": !this.waitingForContent
+        }}
       >
         {!this.waitingForContent && this.mode === "virtual-scroll" && (
           <div aria-hidden="true" class="virtual-scroll-start"></div>

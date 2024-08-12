@@ -5,21 +5,21 @@ export type SmartGridCellVirtualSize = {
   offsetLeft: number;
 };
 
-export type SmartGridCellsToLoad =
+export type SmartGridVirtualPosition =
   | {
       startShift: number;
       endShift: number;
       renderedCells: HTMLChSmartGridCellElement[];
       type: "shift";
     }
-  | {
-      startIndex: number;
-      endIndex: number;
-      renderedCells: HTMLChSmartGridCellElement[];
-      newRenderedCellStartIndex: number;
-      newRenderedCellEndIndex: number;
-      type: "index";
-    }
+  | SmartGridVirtualPositionIndex
   | {
       type: "waiting-for-cells-to-render";
     };
+
+export type SmartGridVirtualPositionIndex = {
+  startIndex: number;
+  endIndex: number;
+  renderedCells: HTMLChSmartGridCellElement[];
+  type: "index";
+};

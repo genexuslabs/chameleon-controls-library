@@ -1,36 +1,36 @@
-import { inBetween } from "../../../../common/utils";
-import { SmartGridCellVirtualSize } from "./types";
+import { SmartGridModel } from "../../types";
+import {
+  SmartGridCellVirtualSize,
+  SmartGridVirtualPositionIndex
+} from "./types";
 import { cellIsRendered } from "./utils";
 
 /**
  * Update the virtual sizes and returns the removed cells.
  */
 export const updateVirtualScrollSize = (
-  removeAllRenderedCells: boolean,
-  newRenderedCellStartIndex: number,
-  newRenderedCellEndIndex: number,
+  virtualPosition: SmartGridVirtualPositionIndex,
   virtualSizes: Map<string, SmartGridCellVirtualSize>,
-  renderedCells: HTMLChSmartGridCellElement[]
+  items: SmartGridModel
 ): HTMLChSmartGridCellElement[] => {
   const removedCells: HTMLChSmartGridCellElement[] = [];
 
-  // All current rendered cells are still being rendered
-  if (
-    newRenderedCellStartIndex <= 0 &&
-    newRenderedCellEndIndex >= renderedCells.length - 1
+  const renderedItemsKey: Set<string> = new Set();
+
+  // Store the keys of the items that must be rendered
+  for (
+    let index = virtualPosition.startIndex;
+    index <= virtualPosition.endIndex;
+    index++
   ) {
-    return [];
+    const smartGridItem = items[index];
+    renderedItemsKey.add(smartGridItem.id);
   }
 
-  // Remove cells
-  renderedCells.forEach((renderedCell, cellIndex) => {
+  // Remove rendered cells that are will be no longer displayed
+  virtualPosition.renderedCells.forEach(renderedCell => {
     if (
-      (removeAllRenderedCells ||
-        !inBetween(
-          newRenderedCellStartIndex,
-          cellIndex,
-          newRenderedCellEndIndex
-        )) &&
+      !renderedItemsKey.has(renderedCell.cellId) &&
       cellIsRendered(renderedCell) &&
       renderedCell.style.display !== "none"
     ) {

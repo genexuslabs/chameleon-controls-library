@@ -1,6 +1,6 @@
 import { inBetween } from "../../../../common/utils";
 import { SmartGridModel } from "../../types";
-import { SmartGridCellsToLoad, SmartGridCellVirtualSize } from "./types";
+import { SmartGridVirtualPosition, SmartGridCellVirtualSize } from "./types";
 import {
   cellIsRendered,
   getSmartCells,
@@ -10,7 +10,7 @@ import {
 
 const CAN_NOT_CHECK_SHIFT_VALUES = {
   type: "waiting-for-cells-to-render"
-} as const satisfies SmartGridCellsToLoad;
+} as const satisfies SmartGridVirtualPosition;
 
 const findFirstVirtualSizeThatIsNotVisible = (
   renderedCells: HTMLChSmartGridCellElement[],
@@ -19,7 +19,7 @@ const findFirstVirtualSizeThatIsNotVisible = (
   bufferSize: number,
   smartGridScrollTop: number,
   smartGridBoundingRect: DOMRect
-): SmartGridCellsToLoad => {
+): SmartGridVirtualPosition => {
   let closerVirtualSizeId = "";
   let closerVirtualSizeBottomY = 0;
 
@@ -91,8 +91,6 @@ const findFirstVirtualSizeThatIsNotVisible = (
     startIndex,
     endIndex,
     renderedCells,
-    newRenderedCellStartIndex: renderedCellsCount === 0 ? -1 : 0,
-    newRenderedCellEndIndex: renderedCellsCount,
     type: "index"
   };
 };
@@ -145,7 +143,7 @@ export const getNewStartAndEndIndexes = (
   virtualStartSize: number,
   virtualEndSize: number,
   bufferSize: number
-): SmartGridCellsToLoad => {
+): SmartGridVirtualPosition => {
   const renderedCells = getSmartCells(scroller);
   const allCellsAreRendered = renderedCells.every(cellIsRendered);
 

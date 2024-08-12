@@ -39,7 +39,8 @@ const findFirstVirtualSizeThatIsNotVisible = (
     el => el.id === closerVirtualSizeId
   );
 
-  const startIndex = Math.max(0, closerVirtualItemIndex - bufferSize - 1);
+  // Since we found the closer hidden virtual size, the shift is one cell smaller
+  const startIndex = Math.max(0, closerVirtualItemIndex + 1 - bufferSize);
   const lastIndex = items.length - 1;
   let endIndex = closerVirtualItemIndex + 1; // Start in the first visible cell
   let renderedCellsCount = 0;
@@ -52,7 +53,6 @@ const findFirstVirtualSizeThatIsNotVisible = (
     cellsThatAreNotVisible < bufferSize
   ) {
     const cellId = items[endIndex].id;
-
     const virtualSize = virtualSizes.get(cellId);
 
     if (virtualSize) {
@@ -162,7 +162,9 @@ export const getNewStartAndEndIndexes = (
   const secondRenderedCell = renderedCells[1];
 
   const scrollIsAtVirtualStartSize =
-    virtualStartSize > 0 && smartGridScrollTop < secondRenderedCell.offsetTop;
+    virtualStartSize > 0 &&
+    secondRenderedCell.style.display !== "none" &&
+    smartGridScrollTop < secondRenderedCell.offsetTop;
 
   if (scrollIsAtVirtualStartSize) {
     return findFirstVirtualSizeThatIsNotVisible(
@@ -179,19 +181,18 @@ export const getNewStartAndEndIndexes = (
 
   const scrollIsAtVirtualEndSize =
     virtualEndSize > 0 &&
+    secondLastCell.style.display !== "none" &&
     secondLastCell.offsetTop + secondLastCell.getBoundingClientRect().height <
       smartGridScrollTop;
 
   if (scrollIsAtVirtualEndSize) {
-    console.log(
-      "///////////VIRTUAL END SIZE///////////",
-      "cellId " + secondLastCell.cellId,
-
-      "secondLastCell.bottomY " +
-        (secondLastCell.offsetTop +
-          secondLastCell.getBoundingClientRect().height),
-
-      "smartGridScrollTop" + smartGridScrollTop
+    return findFirstVirtualSizeThatIsNotVisible(
+      renderedCells,
+      items,
+      virtualSizes,
+      bufferSize,
+      smartGridScrollTop,
+      smartGridBoundingRect
     );
   }
 

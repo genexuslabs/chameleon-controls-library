@@ -8,7 +8,7 @@ import {
   isVirtualSizeCellVisible
 } from "./utils";
 
-const CAN_NOT_CHECK_SHIFT_VALUES = {
+const WAITING_FOR_CELLS_TO_BE_RENDERED = {
   type: "waiting-for-cells-to-render"
 } as const satisfies SmartGridVirtualPosition;
 
@@ -149,7 +149,7 @@ export const getNewStartAndEndIndexes = (
 
   // All cells must be rendered before trying to update the DOM
   if (!allCellsAreRendered) {
-    return CAN_NOT_CHECK_SHIFT_VALUES;
+    return WAITING_FOR_CELLS_TO_BE_RENDERED;
   }
 
   // DOM read operations

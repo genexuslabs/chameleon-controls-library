@@ -13,7 +13,10 @@ import {
 import { emptyItems } from "./utils";
 import { SyncWithRAF } from "../../../../common/sync-with-frames";
 import { SmartGridModel } from "../../types";
-import { SmartGridCellVirtualSize } from "./types";
+import {
+  SmartGridCellVirtualSize,
+  SmartGridVirtualScrollVirtualItems
+} from "./types";
 import { updateVirtualScrollSize } from "./update-virtual-scroll";
 import { ChSmartGridCellCustomEvent } from "../../../../components";
 import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
@@ -125,7 +128,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   /**
    * Emitted when the array of visible items in the ch-smart-grid changes.
    */
-  @Event() virtualItemsChanged: EventEmitter<SmartGridModel>;
+  @Event()
+  virtualItemsChanged: EventEmitter<SmartGridVirtualScrollVirtualItems>;
 
   /**
    * Fired when the visible content of the virtual scroller did render for the
@@ -297,11 +301,15 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   };
 
   #emitVirtualItemsChange = (removedCells?: HTMLChSmartGridCellElement[]) => {
-    const virtualItems = this.items.slice(this.#startIndex, this.#endIndex + 1);
     this.#updateVirtualScrollSize(removedCells);
+    const virtualItems = this.items.slice(this.#startIndex, this.#endIndex + 1);
 
-    // this.#virtualItems = virtualItems;
-    this.virtualItemsChanged.emit(virtualItems);
+    this.virtualItemsChanged.emit({
+      startIndex: this.#startIndex,
+      endIndex: this.#endIndex,
+      totalItems: this.items.length,
+      virtualItems
+    });
   };
 
   #updateViewportItemsOnInitialRender = (items: SmartGridModel) => {

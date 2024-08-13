@@ -5,12 +5,16 @@ import {
   Event,
   EventEmitter,
   Host,
+  Listen,
   Prop,
+  State,
   // Watch,
   h
 } from "@stencil/core";
 import { AccessibleNameComponent } from "../../common/interfaces";
 import { SmartGridDataState } from "./internal/infinite-scroll/types";
+import { SmartGridVirtualScrollVirtualItems } from "./internal/smart-grid-virtual-scroller/types";
+import { ChSmartGridVirtualScrollerCustomEvent } from "../../components";
 
 const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
 
@@ -22,6 +26,12 @@ const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
 export class ChSmartGrid
   implements AccessibleNameComponent, ComponentInterface
 {
+  /**
+   * Used in virtual scroll scenarios. Enables infinite scrolling if the
+   * virtual items are closer to the real threshold.
+   */
+  @State() infiniteScrollEnabled = true;
+
   /**
    * This variable is used to avoid layout shifts (CLS) at the initial load,
    * due to the async render of the content.
@@ -94,6 +104,17 @@ export class ChSmartGrid
    */
   @Event({ bubbles: false }) infiniteThresholdReached: EventEmitter<void>;
 
+  @Listen("virtualItemsChanged")
+  handleVirtualItemsChanged(
+    event: ChSmartGridVirtualScrollerCustomEvent<SmartGridVirtualScrollVirtualItems>
+  ) {
+    const { startIndex, endIndex, totalItems } = event.detail;
+
+    this.infiniteScrollEnabled =
+      (this.inverseLoading && startIndex <= 2) ||
+      (!this.inverseLoading && totalItems - 3 <= endIndex);
+  }
+
   #infiniteThresholdReachedCallback = () => {
     this.loadingState = "loading";
     this.infiniteThresholdReached.emit();
@@ -107,14 +128,11 @@ export class ChSmartGrid
   };
 
   #removeAvoidCLS = () => {
-    console.log("virtualScrollerDidLoad....");
     this.#contentIsHidden = false;
     this.el.removeEventListener("virtualScrollerDidLoad", this.#removeAvoidCLS);
 
     requestAnimationFrame(() => {
       this.el.classList.remove(HIDE_CONTENT_AFTER_LOADING_CLASS);
-
-      console.log("REMOVE removeAvoidCLS...");
     });
   };
 
@@ -164,6 +182,7 @@ export class ChSmartGrid
             hasRecords && this.inverseLoading && (
               <ch-infinite-scroll
                 dataProvider={this.dataProvider}
+                disabled={!this.infiniteScrollEnabled}
                 infiniteThresholdReachedCallback={
                   this.#infiniteThresholdReachedCallback
                 }
@@ -178,6 +197,7 @@ export class ChSmartGrid
             hasRecords && this.dataProvider && !this.inverseLoading && (
               <ch-infinite-scroll
                 dataProvider
+                disabled={!this.infiniteScrollEnabled}
                 infiniteThresholdReachedCallback={
                   this.#infiniteThresholdReachedCallback
                 }

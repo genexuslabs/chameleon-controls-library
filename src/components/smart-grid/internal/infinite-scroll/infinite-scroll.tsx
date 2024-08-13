@@ -81,6 +81,25 @@ export class ChInfiniteScroll implements ComponentInterface {
   }
 
   /**
+   * Specifies if the infinite scroll is disabled. When disabled, the infinite
+   * scroll won't fire any event when reaching the threshold.
+   * The `dataProvider` property can be `true` and this property can be `false`
+   * at the same time, meaning that the infinite scroll is disabled, but if the
+   * control has `inverseLoading`, the `dataProvider` property will re-position
+   * the scrollbar when new content is added to the grid.
+   */
+  @Prop() readonly disabled: boolean = false;
+  @Watch("disabled")
+  disabledChanged(isDisabled: boolean) {
+    if (isDisabled) {
+      this.#disconnectInfiniteScroll();
+    } else {
+      // Wait until the main thread has rendered the UI
+      requestAnimationFrame(this.#setInfiniteScroll);
+    }
+  }
+
+  /**
    * This Handler will be called every time grid threshold is reached. Needed
    * for infinite scrolling grids.
    */
@@ -148,7 +167,7 @@ export class ChInfiniteScroll implements ComponentInterface {
 
   #setInfiniteScroll = () => {
     // The observer was already set
-    if (!this.dataProvider || this.#ioWatcher) {
+    if (!this.dataProvider || this.#ioWatcher || !this.disabled) {
       return;
     }
 

@@ -1,3 +1,12 @@
+import { SmartGridModel } from "../../types";
+
+export type SmartGridVirtualScrollVirtualItems = {
+  virtualItems: SmartGridModel;
+  startIndex: number;
+  endIndex: number;
+  totalItems: number;
+};
+
 export type SmartGridCellVirtualSize = {
   width: number;
   height: number;

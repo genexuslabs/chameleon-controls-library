@@ -138,48 +138,62 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     this.#virtualStartSize = 0;
     this.#virtualEndSize = 0;
 
+    const items = this.items;
+    const virtualSizes = this.#virtualSizes;
+    const lastIndex = items.length - 1;
+
     // - - - - - - - - - - - - - DOM read operations - - - - - - - - - - - - -
-    const indexForVirtualStartSize = Math.max(0, this.#startIndex - 1);
-    const indexForVirtualEndSize = Math.min(
-      this.items.length - 1,
-      this.#endIndex + 1
+    const lastIndexForVirtualStartSize = Math.max(0, this.#startIndex - 1);
+    const firstIndexForVirtualEndSize = Math.min(lastIndex, this.#endIndex + 1);
+
+    const lastCellForVirtualStartSize = virtualSizes.get(
+      items[lastIndexForVirtualStartSize].id
+    );
+    const firstCellForVirtualEndSize = virtualSizes.get(
+      items[firstIndexForVirtualEndSize].id
     );
 
-    const cellIdForVirtualStartSize = this.items[indexForVirtualStartSize].id;
-    const cellIdForVirtualEndSize = this.items[indexForVirtualEndSize].id;
-
-    // While the startIndex cell is not rendered, use its virtual size. If
-    // rendered, use the virtual size of the previous virtual cell
-    // const startIndexIsRendered =
-
-    // this.#virtualSizes.get(this.items[this.#startIndex].id) ??
-    const virtualStartCell = this.#virtualSizes.get(cellIdForVirtualStartSize);
-    const virtualEndCell = this.#virtualSizes.get(cellIdForVirtualEndSize);
-
-    if (virtualStartCell) {
+    // The virtual start size is at least the last unrendered cell
+    if (lastCellForVirtualStartSize) {
       this.#virtualStartSize =
-        virtualStartCell.offsetTop + virtualStartCell.height;
+        lastCellForVirtualStartSize.offsetTop +
+        lastCellForVirtualStartSize.height;
     }
 
-    const additionalHeights = Math.max(1, this.#startIndex);
+    const additionalHeightsStartIndex = Math.max(1, this.#startIndex);
 
+    // TODO: Add support for gap in this virtual sizes
+    // Between two different animation frames, rendered cells can be destroyed
+    // and replaced by other new ones. When cells are destroyed the scroll size
+    // must be maintained. To do this, the virtual start size is increased by
+    // the size of the cells that have not yet been rendered
     for (
-      let virtualIndex = additionalHeights;
+      let virtualIndex = additionalHeightsStartIndex;
       virtualIndex < this.#endIndex;
       virtualIndex++
     ) {
-      const cellIdToAddVirtualSize = this.items[virtualIndex].id;
-      const virtualSize = this.#virtualSizes.get(cellIdToAddVirtualSize);
+      const cellIdToAddVirtualSize = items[virtualIndex].id;
+      const virtualSize = virtualSizes.get(cellIdToAddVirtualSize);
 
       if (virtualSize) {
         this.#virtualStartSize += virtualSize.height;
       }
     }
 
-    if (this.#endIndex !== this.items.length - 1 && virtualEndCell) {
+    // Additional size for the virtual start scroll
+    if (this.#endIndex === lastIndex) {
+      const cellIdToAddVirtualSize = items[this.#endIndex].id;
+      const virtualSize = virtualSizes.get(cellIdToAddVirtualSize);
+
+      if (virtualSize) {
+        this.#virtualStartSize += virtualSize.height;
+      }
+    }
+    // Virtual end scroll
+    else if (firstCellForVirtualEndSize) {
       let maxSmartGridVirtualHeight = 0;
 
-      this.#virtualSizes.forEach(virtualSize => {
+      virtualSizes.forEach(virtualSize => {
         maxSmartGridVirtualHeight = Math.max(
           maxSmartGridVirtualHeight,
           virtualSize.offsetTop + virtualSize.height
@@ -187,16 +201,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       });
 
       this.#virtualEndSize =
-        maxSmartGridVirtualHeight - virtualEndCell.offsetTop;
-    }
-
-    if (this.#endIndex === this.items.length - 1) {
-      const cellIdToAddVirtualSize = this.items[this.#endIndex].id;
-      const virtualSize = this.#virtualSizes.get(cellIdToAddVirtualSize);
-
-      if (virtualSize) {
-        this.#virtualStartSize += virtualSize.height;
-      }
+        maxSmartGridVirtualHeight - firstCellForVirtualEndSize.offsetTop;
     }
 
     // - - - - - - - - - - - - - DOM write operations - - - - - - - - - - - - -

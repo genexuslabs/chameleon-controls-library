@@ -6,6 +6,7 @@ import {
   EventEmitter,
   h,
   Host,
+  Method,
   Prop,
   State,
   Watch
@@ -136,6 +137,27 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    * first time.
    */
   @Event() virtualScrollerDidLoad: EventEmitter;
+
+  /**
+   * Add items to the beginning or end of the items property. This method is
+   * useful for adding new items to the collection, without impacting in the
+   * internal indexes used to display the virtual items. Without this method,
+   * the virtual scroll would behave unexpectedly when new items are added.
+   */
+  @Method()
+  async addItems(position: "start" | "end", ...items: SmartGridModel) {
+    if (position === "start") {
+      this.items.unshift(...items);
+
+      const newItemsCount = items.length;
+      this.#startIndex += newItemsCount;
+      this.#endIndex += newItemsCount;
+    } else {
+      this.items.push(...items);
+    }
+
+    this.#handleSmartGridContentScroll();
+  }
 
   // TODO: Check what happens when the cells has margin
   #updateVirtualScrollSize = (removedCells?: HTMLChSmartGridCellElement[]) => {

@@ -390,7 +390,9 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
         }
       );
 
-      this.#resizeObserver = new ResizeObserver(() => {});
+      this.#resizeObserver = new ResizeObserver(
+        this.#handleSmartGridContentScroll
+      );
       this.#resizeObserver.observe(this.#smartGrid);
     });
   };

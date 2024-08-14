@@ -1,0 +1,22 @@
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+@include typography-reset();
+
+:host {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+.ch-markdown-table-column-start {
+  text-align: start;
+}
+
+.ch-markdown-table-column-center {
+  text-align: center;
+}
+
+.ch-markdown-table-column-end {
+  text-align: end;
+}

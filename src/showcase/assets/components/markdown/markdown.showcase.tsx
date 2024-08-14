@@ -53,11 +53,11 @@ const render = () => (
       onInput={handleValueChange}
       ref={el => (textareaRef = el)}
     ></textarea>
-    <ch-markdown
+    <ch-markdown-viewer
       class="markdown"
       value={initialMarkdown}
       rawHtml={rawHTMLEnabled === "true"}
-    ></ch-markdown>
+    ></ch-markdown-viewer>
   </div>
 );
 

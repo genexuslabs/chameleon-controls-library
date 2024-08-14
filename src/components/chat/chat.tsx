@@ -19,7 +19,10 @@ import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types
 import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
-import { ChSmartGridVirtualScrollerCustomEvent } from "../../components";
+import {
+  ChSmartGridVirtualScrollerCustomEvent,
+  SmartGridVirtualScrollVirtualItems
+} from "../../components";
 
 const ENTER_KEY = "Enter";
 
@@ -34,6 +37,7 @@ const ENTER_KEY = "Enter";
 export class ChChat {
   #editRef!: HTMLChEditElement;
   #scrollRef: HTMLChSmartGridElement | undefined;
+  #virtualScrollRef: HTMLChSmartGridVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
 
@@ -104,8 +108,7 @@ export class ChChat {
    */
   @Method()
   async addNewMessage(message: ChatMessage) {
-    this.items.push(message);
-    forceUpdate(this);
+    this.#pushMessage(message);
   }
 
   /**
@@ -158,8 +161,20 @@ export class ChChat {
     }
     this.#updateMessage(this.items.length - 1, message, mode);
 
+    // Sync the last virtual item with the real item that is updated
+    this.virtualItems[this.virtualItems.length - 1] = this.items.at(-1);
+
     forceUpdate(this);
   }
+
+  #pushMessage = (message: ChatMessage) => {
+    if (this.items.length === 0) {
+      this.items.push(message);
+      forceUpdate(this);
+    } else {
+      this.#virtualScrollRef.addItems("end", message);
+    }
+  };
 
   #getMessageContent = (
     message: ChatMessageByRoleNoId<"system" | "assistant">
@@ -205,7 +220,6 @@ export class ChChat {
   #addUserMessageToRecordAndFocusInput = (
     userMessage: ChatMessageByRole<"user">
   ) => {
-    this.items.push(userMessage);
     this.#editRef.value = "";
     this.#editRef.click();
 
@@ -213,6 +227,8 @@ export class ChChat {
     if (this.#scrollRef) {
       this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
     }
+
+    this.#pushMessage(userMessage);
   };
 
   #sendMessage = async () => {
@@ -335,12 +351,13 @@ export class ChChat {
       <slot name="empty-chat"></slot>
     ) : (
       <ch-smart-grid
-        // dataProvider
+        dataProvider
         loadingState={
           this.virtualItems.length === 0 ? "initial" : this.loadingState
         }
-        // inverseLoading
+        inverseLoading
         itemsCount={this.virtualItems.length}
+        onInfiniteThresholdReached={this.#loadMoreItems}
         ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
       >
         <ch-smart-grid-virtual-scroller
@@ -348,21 +365,66 @@ export class ChChat {
           slot="grid-content"
           class="grid-content"
           part="content"
-          // inverseLoading
+          inverseLoading
           // mode="lazy-render"
           items={this.items}
           itemsCount={this.items.length}
           onVirtualItemsChanged={this.#virtualItemsChanged}
+          ref={el =>
+            (this.#virtualScrollRef =
+              el as HTMLChSmartGridVirtualScrollerElement)
+          }
         >
           {this.virtualItems.map(this.renderItem)}
         </ch-smart-grid-virtual-scroller>
       </ch-smart-grid>
     );
 
+  #loadMoreItems = () => {
+    this.loadingState = "loading";
+
+    // WA to test
+    setTimeout(() => {
+      const totalItems = this.items.length;
+
+      const newItems: ChatMessage[] = Array.from({ length: 20 }, (_, index) =>
+        index % 2 === 0
+          ? {
+              id: `index: ${index - totalItems}`,
+              role: "user",
+              content:
+                `index: ${index - totalItems}` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n`
+            }
+          : {
+              id: `index: ${index - totalItems}`,
+              role: "assistant",
+              content:
+                `\nindex: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n` +
+                `index: ${index - totalItems}\n`
+            }
+      );
+
+      this.#virtualScrollRef.addItems("start", ...newItems);
+
+      this.loadingState = "more-data-to-fetch";
+    }, 10);
+  };
+
   #virtualItemsChanged = (
-    event: ChSmartGridVirtualScrollerCustomEvent<ChatMessage[]>
+    event: ChSmartGridVirtualScrollerCustomEvent<SmartGridVirtualScrollVirtualItems>
   ) => {
-    this.virtualItems = event.detail;
+    this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
 
   render() {

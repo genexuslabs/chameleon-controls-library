@@ -31,7 +31,7 @@ export class ChInfiniteScroll implements ComponentInterface {
   // Observers
   #ioWatcher: IntersectionObserver | undefined;
   #resizeWatcher: ResizeObserver | undefined;
-  #scrollIsAttached: boolean = false;
+  #abortController: AbortController | undefined; // Allocated at runtime to save resources
 
   // Refs
   #smartGridRef!: HTMLChSmartGridElement;
@@ -40,28 +40,6 @@ export class ChInfiniteScroll implements ComponentInterface {
   #typeOfParentElementAttached: "ch-smart-grid" | "window" | "other" = "other";
 
   @Element() el!: HTMLChInfiniteScrollElement;
-
-  /**
-   * If `true`, the infinite scroll will be hidden and scroll event listeners
-   * will be removed.
-   *
-   * Set this to `false` to disable the infinite scroll from actively trying to
-   * receive new data while reaching the threshold. This is useful when it is
-   * known that there is no more data that can be added, and the infinite
-   * scroll is no longer needed.
-   */
-  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
-
-  @Watch("loadingState")
-  loadingStateChanged(newValue: SmartGridDataState) {
-    this.#checkIfCanFetchMoreData();
-
-    if (newValue === "initial") {
-      this.#lastClientHeight = 0;
-      this.#lastScrollHeight = 0;
-      this.#lastScrollTop = 0;
-    }
-  }
 
   /**
    * `true` if the infinite scroll is used in a grid that has data provider.
@@ -104,6 +82,27 @@ export class ChInfiniteScroll implements ComponentInterface {
    * for infinite scrolling grids.
    */
   @Prop() readonly infiniteThresholdReachedCallback!: () => void;
+
+  /**
+   * If `true`, the infinite scroll will be hidden and scroll event listeners
+   * will be removed.
+   *
+   * Set this to `false` to disable the infinite scroll from actively trying to
+   * receive new data while reaching the threshold. This is useful when it is
+   * known that there is no more data that can be added, and the infinite
+   * scroll is no longer needed.
+   */
+  @Prop({ mutable: true }) loadingState!: SmartGridDataState;
+  @Watch("loadingState")
+  loadingStateChanged(newValue: SmartGridDataState) {
+    this.#checkIfCanFetchMoreData();
+
+    if (newValue === "initial") {
+      this.#lastClientHeight = 0;
+      this.#lastScrollHeight = 0;
+      this.#lastScrollTop = 0;
+    }
+  }
 
   /**
    * The position of the infinite scroll element.
@@ -167,13 +166,15 @@ export class ChInfiniteScroll implements ComponentInterface {
 
   #setInfiniteScroll = () => {
     // The observer was already set
-    if (!this.dataProvider || this.#ioWatcher || !this.disabled) {
+    if (!this.dataProvider || this.disabled) {
       return;
     }
 
-    // Track scroll changes when the DOM is updated
+    // Track the threshold changes after the DOM is updated
     requestAnimationFrame(() => {
-      if (!this.#canFetch()) {
+      // The ioWatcher must be checked inside the RAF, to avoid memory issues,
+      // due to dispatching multiple #setInfiniteScroll, without the watcher defined
+      if (!this.#canFetch() || this.#ioWatcher) {
         return;
       }
 
@@ -189,18 +190,17 @@ export class ChInfiniteScroll implements ComponentInterface {
       }, options);
 
       this.#ioWatcher.observe(this.el);
-
-      // Attach scroll is not previously attached
-      if (!this.#scrollIsAttached) {
-        this.#scrollIsAttached = true;
-
-        this.#scrollableParent.addEventListener(
-          "scroll",
-          this.#trackLastScrollTop,
-          { capture: true, passive: true }
-        );
-      }
     });
+  };
+
+  #attachScroll = () => {
+    this.#abortController ??= new AbortController();
+
+    this.#scrollableParent.addEventListener(
+      "scroll",
+      this.#trackLastScrollTop,
+      { capture: true, passive: true, signal: this.#abortController.signal }
+    );
   };
 
   #trackLastScrollTop = () => {
@@ -220,6 +220,9 @@ export class ChInfiniteScroll implements ComponentInterface {
     ) {
       return;
     }
+
+    // Attach scroll after the DOM is rendered
+    requestAnimationFrame(this.#attachScroll);
 
     /**
      * This element represents the cell container (`[slot="grid-content"]`).
@@ -308,24 +311,14 @@ export class ChInfiniteScroll implements ComponentInterface {
   #disconnectInverseLoading = () => {
     this.#resizeWatcher?.disconnect();
     this.#resizeWatcher = undefined;
+
+    // Remove scroll events in the smart grid
+    this.#abortController.abort();
   };
 
   #disconnectInfiniteScroll = () => {
     this.#ioWatcher?.disconnect();
     this.#ioWatcher = undefined;
-
-    // Remove scroll position tracker, if necessary
-    if (
-      this.loadingState === "initial" ||
-      this.loadingState === "all-records-loaded"
-    ) {
-      this.#scrollIsAttached = false;
-      this.#scrollableParent.removeEventListener(
-        "scroll",
-        this.#trackLastScrollTop,
-        { capture: true }
-      );
-    }
   };
 
   componentDidLoad() {

@@ -111,8 +111,8 @@ export class ChSmartGrid
     const { startIndex, endIndex, totalItems } = event.detail;
 
     this.infiniteScrollEnabled =
-      (this.inverseLoading && startIndex <= 2) ||
-      (!this.inverseLoading && totalItems - 3 <= endIndex);
+      (this.inverseLoading && startIndex === 0) ||
+      (!this.inverseLoading && endIndex === totalItems - 1);
   }
 
   #infiniteThresholdReachedCallback = () => {

@@ -3,7 +3,7 @@ import { SmartGridModel } from "../../types";
 import { SmartGridCellVirtualSize } from "./types";
 
 export const cellIsRendered = (cell: HTMLElement) =>
-  cell.hasAttribute("data-did-load");
+  cell.hasAttribute("data-did-load") && cell.style.display !== "none";
 
 export const isRenderedSmartCellVisible = (
   element: HTMLElement,

@@ -18,7 +18,8 @@ const findFirstVirtualSizeThatIsNotVisible = (
   virtualSizes: Map<string, SmartGridCellVirtualSize>,
   bufferSize: number,
   smartGridScrollTop: number,
-  smartGridBoundingRect: DOMRect
+  smartGridBoundingRect: DOMRect,
+  inverseLoading: boolean
 ): SmartGridVirtualPosition => {
   let closerVirtualSizeId = "";
   let closerVirtualSizeBottomY = 0;
@@ -45,6 +46,18 @@ const findFirstVirtualSizeThatIsNotVisible = (
   let endIndex = closerVirtualItemIndex + 1; // Start in the first visible cell
   let renderedCellsCount = 0;
   let cellsThatAreNotVisible = 0;
+
+  // When the virtual scroll has inverse loading enabled, all items on the end
+  // of the viewport are always rendered, to avoid flickering issues with the
+  // scroll. In other words, the endIndex is always the last index
+  if (inverseLoading) {
+    return {
+      startIndex,
+      endIndex: lastIndex,
+      renderedCells,
+      type: "index"
+    };
+  }
 
   // Find the endIndex to render the cells. This index takes into account the
   // cells that must be not visible in the buffer
@@ -142,7 +155,8 @@ export const getNewStartAndEndIndexes = (
   virtualSizes: Map<string, SmartGridCellVirtualSize>,
   virtualStartSize: number,
   virtualEndSize: number,
-  bufferSize: number
+  bufferSize: number,
+  inverseLoading: boolean
 ): SmartGridVirtualPosition => {
   const renderedCells = getSmartCells(scroller);
   const allCellsAreRendered = renderedCells.every(cellIsRendered);
@@ -171,7 +185,8 @@ export const getNewStartAndEndIndexes = (
       virtualSizes,
       bufferSize,
       smartGridScrollTop,
-      smartGridBoundingRect
+      smartGridBoundingRect,
+      inverseLoading
     );
   }
 
@@ -190,7 +205,8 @@ export const getNewStartAndEndIndexes = (
       virtualSizes,
       bufferSize,
       smartGridScrollTop,
-      smartGridBoundingRect
+      smartGridBoundingRect,
+      inverseLoading
     );
   }
 
@@ -200,12 +216,17 @@ export const getNewStartAndEndIndexes = (
     renderedCells,
     smartGridBoundingRect
   );
-  const endShift = getAmountOfCellsThatAreVisibleInTheBuffer(
-    -1,
-    bufferSize,
-    renderedCells,
-    smartGridBoundingRect
-  );
+  const endShift = inverseLoading
+    ? // We could use zero instead of this value, but this value ensure that
+      // dynamically added items at the end will always be rendered in the next
+      // frame
+      items.length - 1
+    : getAmountOfCellsThatAreVisibleInTheBuffer(
+        -1,
+        bufferSize,
+        renderedCells,
+        smartGridBoundingRect
+      );
 
   return { startShift, endShift, renderedCells, type: "shift" };
 };

@@ -15,7 +15,7 @@ export const updateVirtualScrollSize = (
 ): HTMLChSmartGridCellElement[] => {
   const removedCells: HTMLChSmartGridCellElement[] = [];
 
-  const renderedItemsKey: Set<string> = new Set();
+  const renderedItemKeys: Set<string> = new Set();
 
   // Store the keys of the items that must be rendered
   for (
@@ -24,13 +24,13 @@ export const updateVirtualScrollSize = (
     index++
   ) {
     const smartGridItem = items[index];
-    renderedItemsKey.add(smartGridItem.id);
+    renderedItemKeys.add(smartGridItem.id);
   }
 
   // Remove rendered cells that are will be no longer displayed
   virtualPosition.renderedCells.forEach(renderedCell => {
     if (
-      !renderedItemsKey.has(renderedCell.cellId) &&
+      !renderedItemKeys.has(renderedCell.cellId) &&
       cellIsRendered(renderedCell) &&
       renderedCell.style.display !== "none"
     ) {

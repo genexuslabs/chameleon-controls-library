@@ -99,8 +99,12 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
 
   /**
    * When set to `true`, the grid items will be loaded in inverse order, with
-   * the first element at the bottom and the "Loading" message (infinite-scroll)
-   * at the top.
+   * the scroll positioned at the bottom on the initial load.
+   *
+   * If `mode="virtual-scroll"`, only the items at the start of the viewport
+   * that are not visible will be removed from the DOM. The items at the end of
+   * the viewport that are not visible will remain rendered to avoid flickering
+   * issues.
    */
   @Prop() readonly inverseLoading: boolean = false;
 
@@ -280,7 +284,8 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
       this.#virtualSizes,
       this.#virtualStartSize,
       this.#virtualEndSize,
-      this.bufferAmount
+      this.bufferAmount,
+      this.inverseLoading
     );
 
     if (cellsToRender.type === "waiting-for-cells-to-render") {

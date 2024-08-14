@@ -6,7 +6,7 @@ import {
   parseCodeToHAST,
   registerLanguage
 } from "@genexus/markdown-parser/dist/parse-code.js";
-import { MarkdownCodeRender, MarkdownCodeRenderOptions } from "./types";
+import { CodeToJSX } from "./types";
 
 type LastNestedChild = HRoot | HElement | undefined;
 
@@ -69,7 +69,7 @@ const findLastNestedChild = (elementWithChildren: HRoot | HElement) => {
   return elementWithChildren;
 };
 
-export const parseCodeToJSX = async (
+export const parseCodeToJSX: CodeToJSX = async (
   code: string,
   language: string,
   shouldFindLastNestedChild: boolean,
@@ -96,19 +96,3 @@ export const parseCodeToJSX = async (
     lastNestedChildIsRoot: tree === lastNestedChild
   };
 };
-
-export const defaultCodeRender: MarkdownCodeRender = (
-  options: MarkdownCodeRenderOptions
-): any => (
-  <pre part="pre">
-    <code
-      class={{
-        [`hljs language-${options.language}`]: true,
-        [options.lastNestedChildClass]: options.addLastNestedChildClassInHost
-      }}
-      part={`code language-${options.language}`}
-    >
-      {options.renderedContent}
-    </code>
-  </pre>
-);

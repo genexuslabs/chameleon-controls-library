@@ -1,7 +1,7 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
 import { markdownToJSX } from "./parsers/markdown-to-jsx";
-import { defaultCodeRender } from "../code/internal/code-highlight";
 import { MarkdownCodeRender } from "../code/internal/types";
+import { defaultCodeRender } from "../code/internal/default-render";
 
 /**
  * A control to render markdown syntax. It supports GitHub Flavored Markdown

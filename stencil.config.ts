@@ -31,7 +31,7 @@ export const config: Config = {
       ]
     },
     {
-      components: ["ch-code"] // Make sure the ch-code control is not bundled with other components
+      components: ["ch-code", "ch-markdown-viewer"] // Make sure the ch-code and ch-markdown-viewer control are not bundled with other components
     },
     {
       components: ["ch-combo-box-render"] // Make sure the ch-combo-box-render control is not bundled with other components

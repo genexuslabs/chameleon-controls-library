@@ -1,7 +1,10 @@
 import {
   ActionListItemModel,
   ActionListItemModelExtended,
-  ActionListItemType
+  ActionListItemModelExtendedGroup,
+  ActionListItemModelExtendedRoot,
+  ActionListItemType,
+  ActionListModel
 } from "./types";
 
 export const updateItemProperty = (
@@ -9,15 +12,15 @@ export const updateItemProperty = (
   properties: Partial<ActionListItemModel> & { type: ActionListItemType },
   flattenedTreeModel: Map<string, ActionListItemModelExtended>,
   newSelectedItems: Set<string>
-) => {
+): ActionListModel | undefined => {
   const itemUIModel = flattenedTreeModel.get(itemId);
   if (!itemUIModel) {
-    return;
+    return undefined;
   }
   const itemInfo = itemUIModel.item;
 
   if (properties.type !== itemInfo.type) {
-    return;
+    return undefined;
   }
 
   Object.keys(properties).forEach(propertyName => {
@@ -27,7 +30,7 @@ export const updateItemProperty = (
   });
 
   if (properties.type === "separator") {
-    return;
+    return undefined;
   }
 
   // Accumulate selection/deselection
@@ -36,4 +39,9 @@ export const updateItemProperty = (
   } else if (properties.selected === false) {
     newSelectedItems.delete(itemId);
   }
+
+  return (
+    (itemUIModel as ActionListItemModelExtendedRoot).root ??
+    (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
+  );
 };

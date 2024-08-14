@@ -506,12 +506,16 @@ export class ChActionListRender {
     // Set to check if there are new selected items
     const newSelectedItems = new Set(this.#selectedItems);
 
-    updateItemProperty(
+    const parentArray = updateItemProperty(
       itemId,
       properties,
       this.#flattenedModel,
       newSelectedItems
     );
+
+    if (parentArray !== undefined) {
+      this.#sortModel(parentArray);
+    }
 
     // MultiSelection is disabled. We must select the last updated item
     if (this.selection === "single") {

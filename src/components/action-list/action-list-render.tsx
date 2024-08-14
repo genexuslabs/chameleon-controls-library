@@ -30,6 +30,7 @@ import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
 import { getActionListOrGroupItemFromEvent } from "./utils";
+import { updateItemProperty } from "./update-item-property";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -492,6 +493,33 @@ export class ChActionListRender {
 
     return actionListItemsInfo;
   };
+
+  /**
+   * Given an itemId and the properties to update, it updates the properties
+   * of the items in the list.
+   */
+  @Method()
+  async updateItemProperties(
+    itemId: string,
+    properties: Partial<ActionListItemModel> & { type: ActionListItemType }
+  ) {
+    // Set to check if there are new selected items
+    const newSelectedItems = new Set(this.#selectedItems);
+
+    updateItemProperty(
+      itemId,
+      properties,
+      this.#flattenedModel,
+      newSelectedItems
+    );
+
+    // MultiSelection is disabled. We must select the last updated item
+    if (this.selection === "single") {
+      this.#removeAllSelectedItemsExceptForTheLast(newSelectedItems);
+    }
+
+    forceUpdate(this);
+  }
 
   @Listen("fixedChange")
   onFixedChange(

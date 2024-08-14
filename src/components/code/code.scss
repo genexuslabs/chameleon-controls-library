@@ -1,6 +1,480 @@
-ch-code,
-ch-code > pre {
+:host {
+  /**
+   * @prop --ch-code__addition:
+   * Specifies the color for the addition tokens
+   * @default currentColor
+   */
+  --ch-code__addition: currentColor;
+
+  /**
+   * @prop --ch-code__attr:
+   * Specifies the color for the attr tokens
+   * @default currentColor
+   */
+  --ch-code__attr: currentColor;
+
+  /**
+   * @prop --ch-code__attribute:
+   * Specifies the color for the attribute tokens
+   * @default currentColor
+   */
+  --ch-code__attribute: currentColor;
+
+  /**
+   * @prop --ch-code__built-in:
+   * Specifies the color for the built-in tokens
+   * @default currentColor
+   */
+  --ch-code__built-in: currentColor;
+
+  /**
+   * @prop --ch-code__bullet:
+   * Specifies the color for the bullet tokens
+   * @default currentColor
+   */
+  --ch-code__bullet: currentColor;
+
+  /**
+   * @prop --ch-code__class:
+   * Specifies the color for the class tokens
+   * @default currentColor
+   */
+  --ch-code__class: currentColor;
+
+  /**
+   * @prop --ch-code__code:
+   * Specifies the color for the code tokens
+   * @default currentColor
+   */
+  --ch-code__code: currentColor;
+
+  /**
+   * @prop --ch-code__comment:
+   * Specifies the color for the comment tokens
+   * @default currentColor
+   */
+  --ch-code__comment: currentColor;
+
+  /**
+   * @prop --ch-code__deletion:
+   * Specifies the color for the deletion tokens
+   * @default currentColor
+   */
+  --ch-code__deletion: currentColor;
+
+  /**
+   * @prop --ch-code__doctag:
+   * Specifies the color for the doctag tokens
+   * @default currentColor
+   */
+  --ch-code__doctag: currentColor;
+
+  /**
+   * @prop --ch-code__formula:
+   * Specifies the color for the formula tokens
+   * @default currentColor
+   */
+  --ch-code__formula: currentColor;
+
+  /**
+   * @prop --ch-code__function:
+   * Specifies the color for the function tokens
+   * @default currentColor
+   */
+  --ch-code__function: currentColor;
+
+  /**
+   * @prop --ch-code__function-variable:
+   * Specifies the color for the function variable tokens
+   * @default currentColor
+   */
+  --ch-code__function-variable: currentColor;
+
+  /**
+   * @prop --ch-code__keyword:
+   * Specifies the color for the keyword tokens
+   * @default currentColor
+   */
+  --ch-code__keyword: currentColor;
+
+  /**
+   * @prop --ch-code__link:
+   * Specifies the color for the link tokens
+   * @default currentColor
+   */
+  --ch-code__link: currentColor;
+
+  /**
+   * @prop --ch-code__literal:
+   * Specifies the color for the literal tokens
+   * @default currentColor
+   */
+  --ch-code__literal: currentColor;
+
+  /**
+   * @prop --ch-code__meta:
+   * Specifies the color for the meta tokens
+   * @default currentColor
+   */
+  --ch-code__meta: currentColor;
+
+  /**
+   * @prop --ch-code__meta__keyword:
+   * Specifies the color for the keyword tokens inside the meta token.
+   * @default currentColor
+   */
+  --ch-code__meta__keyword: currentColor;
+
+  /**
+   * @prop --ch-code__meta__string:
+   * Specifies the color for the meta-string tokens
+   * @default currentColor
+   */
+  --ch-code__meta__string: currentColor;
+
+  /**
+   * @prop --ch-code__name:
+   * Specifies the color for the name tokens
+   * @default currentColor
+   */
+  --ch-code__name: currentColor;
+
+  /**
+   * @prop --ch-code__number:
+   * Specifies the color for the number tokens
+   * @default currentColor
+   */
+  --ch-code__number: currentColor;
+
+  /**
+   * @prop --ch-code__operator:
+   * Specifies the color for the operator tokens
+   * @default currentColor
+   */
+  --ch-code__operator: currentColor;
+
+  /**
+   * @prop --ch-code__regexp:
+   * Specifies the color for the regexp tokens
+   * @default currentColor
+   */
+  --ch-code__regexp: currentColor;
+
+  /**
+   * @prop --ch-code__quote:
+   * Specifies the color for the quote tokens
+   * @default currentColor
+   */
+  --ch-code__quote: currentColor;
+
+  /**
+   * @prop --ch-code__selector-attr:
+   * Specifies the color for the selector-attr tokens
+   * @default currentColor
+   */
+  --ch-code__selector-attr: currentColor;
+
+  /**
+   * @prop --ch-code__selector-class:
+   * Specifies the color for the selector-class tokens
+   * @default currentColor
+   */
+  --ch-code__selector-class: currentColor;
+
+  /**
+   * @prop --ch-code__selector-id:
+   * Specifies the color for the selector-id tokens
+   * @default currentColor
+   */
+  --ch-code__selector-id: currentColor;
+
+  /**
+   * @prop --ch-code__selector-pseudo:
+   * Specifies the color for the selector-pseudo tokens
+   * @default currentColor
+   */
+  --ch-code__selector-pseudo: currentColor;
+
+  /**
+   * @prop --ch-code__selector-tag:
+   * Specifies the color for the selector-tag tokens
+   * @default currentColor
+   */
+  --ch-code__selector-tag: currentColor;
+
+  /**
+   * @prop --ch-code__string:
+   * Specifies the color for the string tokens
+   * @default currentColor
+   */
+  --ch-code__string: currentColor;
+
+  /**
+   * @prop --ch-code__subst:
+   * Specifies the color for the substitution tokens
+   * @default currentColor
+   */
+  --ch-code__subst: currentColor;
+
+  /**
+   * @prop --ch-code__symbol:
+   * Specifies the color for the symbol tokens
+   * @default currentColor
+   */
+  --ch-code__symbol: currentColor;
+
+  /**
+   * @prop --ch-code__tag:
+   * Specifies the color for the tag tokens
+   * @default currentColor
+   */
+  --ch-code__tag: currentColor;
+
+  /**
+   * @prop --ch-code__template-tag:
+   * Specifies the color for the template-tag tokens
+   * @default currentColor
+   */
+  --ch-code__template-tag: currentColor;
+
+  /**
+   * @prop --ch-code__template-variable:
+   * Specifies the color for the template-variable tokens
+   * @default currentColor
+   */
+  --ch-code__template-variable: currentColor;
+
+  /**
+   * @prop --ch-code__title:
+   * Specifies the color for the title tokens
+   * @default currentColor
+   */
+  --ch-code__title: currentColor;
+
+  /**
+   * @prop --ch-code__title-class:
+   * Specifies the color for the title-class tokens
+   * @default currentColor
+   */
+  --ch-code__title-class: currentColor;
+
+  /**
+   * @prop --ch-code__title-class-inherited:
+   * Specifies the color for the title-class-inherited tokens
+   * @default currentColor
+   */
+  --ch-code__title-class-inherited: currentColor;
+
+  /**
+   * @prop --ch-code__title-function:
+   * Specifies the color for the title-function tokens
+   * @default currentColor
+   */
+  --ch-code__title-function: currentColor;
+
+  /**
+   * @prop --ch-code__type:
+   * Specifies the color for the type tokens
+   * @default currentColor
+   */
+  --ch-code__type: currentColor;
+
+  /**
+   * @prop --ch-code__variable:
+   * Specifies the color for the variable tokens
+   * @default currentColor
+   */
+  --ch-code__variable: currentColor;
+
+  /**
+   * @prop --ch-code__variable-language:
+   * Specifies the color for the variable-language tokens
+   * @default currentColor
+   */
+  --ch-code__variable-language: currentColor;
+
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
+  font-family: monospace;
+}
+
+pre {
+  display: contents;
+  font: inherit;
+}
+
+code {
+  font: inherit;
+}
+
+.hljs {
+  &-addition {
+    color: var(--ch-code__addition);
+  }
+
+  &-attr {
+    color: var(--ch-code__attr);
+  }
+
+  &-attribute {
+    color: var(--ch-code__attribute);
+  }
+
+  // Must be placed before the "built_in" selector
+  &-subst {
+    color: var(--ch-code__subst);
+  }
+
+  &-built_in {
+    color: var(--ch-code__built-in);
+  }
+
+  &-bullet {
+    color: var(--ch-code__bullet);
+  }
+
+  &-class {
+    color: var(--ch-code__class);
+  }
+
+  &-code {
+    color: var(--ch-code__code);
+  }
+
+  &-comment {
+    color: var(--ch-code__comment);
+  }
+
+  &-deletion {
+    color: var(--ch-code__deletion);
+  }
+
+  &-doctag {
+    color: var(--ch-code__doctag);
+  }
+
+  &-formula {
+    color: var(--ch-code__formula);
+  }
+
+  &-function {
+    color: var(--ch-code__function);
+  }
+
+  &-function.variable_ {
+    color: var(--ch-code__function-variable);
+  }
+
+  &-keyword {
+    color: var(--ch-code__keyword);
+  }
+
+  &-link {
+    color: var(--ch-code__link);
+  }
+
+  &-literal {
+    color: var(--ch-code__literal);
+  }
+
+  &-meta {
+    color: var(--ch-code__meta);
+  }
+
+  &-meta &-keyword {
+    color: var(--ch-code__meta__keyword);
+  }
+
+  &-meta &-string {
+    color: var(--ch-code__meta__string);
+  }
+
+  &-name {
+    color: var(--ch-code__name);
+  }
+
+  &-number {
+    color: var(--ch-code__number);
+  }
+
+  &-operator {
+    color: var(--ch-code__operator);
+  }
+
+  &-regexp {
+    color: var(--ch-code__regexp);
+  }
+
+  &-quote {
+    color: var(--ch-code__quote);
+  }
+
+  &-selector-attr {
+    color: var(--ch-code__selector-attr);
+  }
+
+  &-selector-class {
+    color: var(--ch-code__selector-class);
+  }
+
+  &-selector-id {
+    color: var(--ch-code__selector-id);
+  }
+
+  &-selector-pseudo {
+    color: var(--ch-code__selector-pseudo);
+  }
+
+  &-selector-tag {
+    color: var(--ch-code__selector-tag);
+  }
+
+  &-string {
+    color: var(--ch-code__string);
+  }
+
+  &-symbol {
+    color: var(--ch-code__symbol);
+  }
+
+  &-tag {
+    color: var(--ch-code__tag);
+  }
+
+  &-template-tag {
+    color: var(--ch-code__template-tag);
+  }
+
+  &-template-variable {
+    color: var(--ch-code__template-variable);
+  }
+
+  &-title {
+    color: var(--ch-code__title);
+
+    &.class_ {
+      color: var(--ch-code__title-class);
+
+      &.inherited__ {
+        color: var(--ch-code__title-class-inherited);
+      }
+    }
+
+    &.function_ {
+      color: var(--ch-code__title-function);
+    }
+  }
+
+  &-type {
+    color: var(--ch-code__type);
+  }
+
+  &-variable {
+    color: var(--ch-code__variable);
+  }
+
+  &-variable.language_ {
+    color: var(--ch-code__variable-language);
+  }
 }

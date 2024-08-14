@@ -11,7 +11,7 @@ import { MarkdownCodeRender } from "./internal/types";
  * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
  */
 @Component({
-  shadow: false,
+  shadow: true,
   styleUrl: "code.scss",
   tag: "ch-code"
 })

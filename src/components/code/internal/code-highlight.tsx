@@ -100,14 +100,15 @@ export const parseCodeToJSX = async (
 export const defaultCodeRender: MarkdownCodeRender = (
   options: MarkdownCodeRenderOptions
 ): any => (
-  <pre>
+  <pre part="pre">
     <code
       class={{
         [`hljs language-${options.language}`]: true,
         [options.lastNestedChildClass]: options.addLastNestedChildClassInHost
       }}
+      part={`code language-${options.language}`}
     >
-      <div class="code-block__content">{options.renderedContent}</div>
+      {options.renderedContent}
     </code>
   </pre>
 );

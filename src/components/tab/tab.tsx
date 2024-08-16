@@ -84,10 +84,10 @@ type KeyEvents =
 
 // Selectors
 const FIRST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
-  tabListRef.querySelector(":scope>button");
+  tabListRef.querySelector(":scope>button") as HTMLButtonElement;
 
 const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
-  tabListRef.querySelector(":scope>button:last-child");
+  tabListRef.querySelector(":scope>button:last-child") as HTMLButtonElement;
 
 // Utility functions
 
@@ -174,6 +174,20 @@ const addGrabbingStyle = () =>
   document.body.style.setProperty("cursor", "grabbing");
 const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
 
+const getNextEnabledButtonCaption = (
+  currentBUttonCaption: HTMLButtonElement,
+  tabListRef: HTMLElement
+) =>
+  (currentBUttonCaption.nextElementSibling ??
+    FIRST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+
+const getPreviousEnabledButtonCaption = (
+  currentBUttonCaption: HTMLButtonElement,
+  tabListRef: HTMLElement
+) =>
+  (currentBUttonCaption.previousElementSibling ??
+    LAST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+
 const focusNextOrPreviousCaption = (
   focusNextSibling: boolean,
   tabListRef: HTMLElement,
@@ -185,13 +199,15 @@ const focusNextOrPreviousCaption = (
 
   let nextFocusedCaption: HTMLButtonElement;
 
+  const searchFunction = focusNextSibling
+    ? getNextEnabledButtonCaption
+    : getPreviousEnabledButtonCaption;
+
   // Determine the next selected caption button
-  if (focusNextSibling) {
-    nextFocusedCaption = (focusedCaption.nextElementSibling ??
-      FIRST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
-  } else {
-    nextFocusedCaption = (focusedCaption.previousElementSibling ??
-      LAST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+  nextFocusedCaption = searchFunction(focusedCaption, tabListRef);
+
+  while (nextFocusedCaption.disabled) {
+    nextFocusedCaption = searchFunction(nextFocusedCaption, tabListRef);
   }
 
   // Focus and select the caption
@@ -286,25 +302,21 @@ export class ChTabRender implements DraggableView {
       focusNextOrPreviousCaption(isRTL(), this.#tabListRef, focusedButton, ev);
     },
 
-    [HOME]: () => {
-      const nextFocusedCaption = FIRST_CAPTION_BUTTON(
-        this.#tabListRef
-      ) as HTMLButtonElement;
+    [HOME]: (_, ev) =>
+      focusNextOrPreviousCaption(
+        true,
+        this.#tabListRef,
+        LAST_CAPTION_BUTTON(this.#tabListRef),
+        ev
+      ),
 
-      // Focus and select the caption
-      nextFocusedCaption.focus();
-      nextFocusedCaption.click();
-    },
-
-    [END]: () => {
-      const nextFocusedCaption = LAST_CAPTION_BUTTON(
-        this.#tabListRef
-      ) as HTMLButtonElement;
-
-      // Focus and select the caption
-      nextFocusedCaption.focus();
-      nextFocusedCaption.click();
-    }
+    [END]: (_, ev) =>
+      focusNextOrPreviousCaption(
+        false,
+        this.#tabListRef,
+        FIRST_CAPTION_BUTTON(this.#tabListRef),
+        ev
+      )
   };
 
   @Element() el: HTMLChTabRenderElement;
@@ -355,6 +367,13 @@ export class ChTabRender implements DraggableView {
   directionChange(newDirection: TabDirection) {
     this.#initializeState(newDirection);
   }
+
+  /**
+   * This attribute lets you specify if all tab buttons are disabled.
+   * If disabled, tab buttons will not fire any user interaction related event
+   * (for example, click event).
+   */
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * When the control is sortable, the items can be dragged outside of the
@@ -799,10 +818,6 @@ export class ChTabRender implements DraggableView {
   };
 
   #handleTabFocus = (event: KeyboardEvent) => {
-    if (this.model.length < 2) {
-      return;
-    }
-
     const keyEventHandler = this.#keyEvents[event.code];
     if (!keyEventHandler) {
       return;
@@ -813,6 +828,26 @@ export class ChTabRender implements DraggableView {
     ) as HTMLButtonElement;
 
     keyEventHandler(this.direction, event, currentFocusedCaption);
+  };
+
+  #atLeastTwoItemsAreEnabled = (): boolean => {
+    let itemsEnabled = 0;
+    let itemIndex = 0;
+
+    while (itemsEnabled < 2 && itemIndex < this.model.length) {
+      const itemUIModel = this.model[itemIndex];
+
+      if (
+        itemUIModel.disabled === false ||
+        (!this.disabled && itemUIModel.disabled !== true)
+      ) {
+        itemsEnabled++;
+      }
+
+      itemIndex++;
+    }
+
+    return itemsEnabled >= 2;
   };
 
   #imgRender = (item: TabItemModel) =>
@@ -835,83 +870,111 @@ export class ChTabRender implements DraggableView {
       class={this.#classes.TAB_LIST}
       part={this.#parts.TAB_LIST}
       ref={el => (this.#tabListRef = el)}
-      onKeyDown={this.#handleTabFocus}
+      onKeyDown={
+        this.model.length >= 2 && this.#atLeastTwoItemsAreEnabled()
+          ? this.#handleTabFocus
+          : undefined
+      }
     >
-      {this.model.map((item, index) => (
-        <button
-          key={CAPTION_ID(item.id)}
-          id={CAPTION_ID(item.id)}
-          role="tab"
-          aria-controls={PAGE_ID(item.id)}
-          aria-label={!this.showCaptions ? item.name : null}
-          aria-selected={(item.id === this.selectedId).toString()}
-          class={{
-            [this.#classes.BUTTON]: true,
-            "no-captions": !this.showCaptions,
-
-            "decorative-image": isPseudoElementImg(
-              item.startImgSrc,
-              item.startImgType
-            ),
-
-            "dragged-element": this.draggedElementIndex === index,
-            "dragged-element--outside":
-              this.draggedElementIndex === index &&
-              this.hasCrossedBoundaries &&
-              this.model.length > 1,
-            "shifted-element": this.draggedElementIndex !== -1,
-
-            "shifted-element--start":
-              thereAreShiftedElements &&
-              this.draggedElementIndex < index &&
-              index <= this.draggedElementNewIndex,
-
-            "shifted-element--end":
-              thereAreShiftedElements &&
-              this.draggedElementNewIndex <= index &&
-              index < this.draggedElementIndex,
-
-            sortable: this.sortable
-          }}
-          part={tokenMap({
-            [this.#parts.BUTTON]: true,
-            [CAPTION_ID(item.id)]: true,
-            [SELECTED_PART]: item.id === this.selectedId
-          })}
-          style={
-            isPseudoElementImg(item.startImgSrc, item.startImgType)
-              ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
-              : null
-          }
-          onAuxClick={this.#handleClose(index, item.id)}
-          onClick={
-            !(item.id === this.selectedId)
-              ? this.#handleSelectedItemChange(index, item.id)
-              : null
-          }
-          // onDblClick={
-          //   this.direction === "main" ? this.#handleItemDblClick : null
-          // }
-          // Drag and drop
-          onDragStart={this.sortable ? this.#handleDragStart(index) : null}
-        >
-          {this.#imgRender(item)}
-
-          {this.showCaptions && item.name}
-
-          {!this.closeButtonHidden && (
-            <button
-              aria-label={this.closeButtonAccessibleName}
-              class="close-button"
-              part={CLOSE_BUTTON_PART}
-              type="button"
-              onClick={this.#handleClose(index, item.id)}
-            ></button>
-          )}
-        </button>
-      ))}
+      {this.model.map((item, index) =>
+        this.#renderTabButton(item, index, thereAreShiftedElements)
+      )}
     </div>
   );
+
+  #renderTabButton = (
+    item: TabItemModel,
+    index: number,
+    thereAreShiftedElements: boolean
+  ) => {
+    const isDisabled = item.disabled ?? this.disabled;
+
+    return (
+      <button
+        key={CAPTION_ID(item.id)}
+        id={CAPTION_ID(item.id)}
+        role="tab"
+        aria-controls={PAGE_ID(item.id)}
+        aria-label={!this.showCaptions ? item.name : null}
+        aria-selected={(item.id === this.selectedId).toString()}
+        class={{
+          [this.#classes.BUTTON]: true,
+          "no-captions": !this.showCaptions,
+
+          "decorative-image": isPseudoElementImg(
+            item.startImgSrc,
+            item.startImgType
+          ),
+
+          "dragged-element": this.draggedElementIndex === index,
+          "dragged-element--outside":
+            this.draggedElementIndex === index &&
+            this.hasCrossedBoundaries &&
+            this.model.length > 1,
+          "shifted-element": this.draggedElementIndex !== -1,
+
+          "shifted-element--start":
+            thereAreShiftedElements &&
+            this.draggedElementIndex < index &&
+            index <= this.draggedElementNewIndex,
+
+          "shifted-element--end":
+            thereAreShiftedElements &&
+            this.draggedElementNewIndex <= index &&
+            index < this.draggedElementIndex,
+
+          sortable: this.sortable
+        }}
+        part={tokenMap({
+          [this.#parts.BUTTON]: true,
+          [CAPTION_ID(item.id)]: true,
+          [SELECTED_PART]: item.id === this.selectedId,
+          disabled: isDisabled
+        })}
+        disabled={isDisabled}
+        style={
+          isPseudoElementImg(item.startImgSrc, item.startImgType)
+            ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
+            : null
+        }
+        onAuxClick={!isDisabled ? this.#handleClose(index, item.id) : undefined}
+        onClick={
+          !(item.id === this.selectedId) && !isDisabled
+            ? this.#handleSelectedItemChange(index, item.id)
+            : undefined
+        }
+        // onDblClick={
+        //   this.direction === "main" ? this.#handleItemDblClick : null
+        // }
+        // Drag and drop
+
+        // TODO: Add support to drag the item when it is disabled.
+        // TODO: Add support to position the item in different areas
+        onDragStart={
+          this.sortable && !isDisabled
+            ? this.#handleDragStart(index)
+            : undefined
+        }
+      >
+        {this.#imgRender(item)}
+
+        {this.showCaptions && item.name}
+
+        {!this.closeButtonHidden && (
+          <button
+            aria-label={this.closeButtonAccessibleName}
+            class="close-button"
+            part={CLOSE_BUTTON_PART}
+            disabled={isDisabled}
+            type="button"
+            onClick={
+              !isDisabled ? this.#handleClose(index, item.id) : undefined
+            }
+          ></button>
+        )}
+      </button>
+    );
+  };
 
   #renderTabPages = () => (
     <div

@@ -42,6 +42,7 @@
 - [ch-switch](../../../components/switch)
 - [ch-tab-render](../../../components/tab)
 - [ch-tree-view-render](../../../components/tree-view)
+- [ch-textblock](../../../components/textblock)
 
 ### Graph
 ```mermaid
@@ -69,6 +70,7 @@ graph TD;
   ch-showcase --> ch-switch
   ch-showcase --> ch-tab-render
   ch-showcase --> ch-tree-view-render
+  ch-showcase --> ch-textblock
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter

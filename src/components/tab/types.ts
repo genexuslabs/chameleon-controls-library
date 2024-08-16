@@ -25,6 +25,8 @@ export type TabItemModel = {
    */
   contain?: CssContainProperty;
 
+  disabled?: boolean;
+
   /**
    * Same as the overflow CSS property. This property sets the desired behavior
    * when content does not fit in the widget's padding box (overflows) in the

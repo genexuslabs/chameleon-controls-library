@@ -20,6 +20,7 @@ import { ChSegmentedControl } from "../../../components/segmented-control/segmen
 import { ChSlider } from "../../../components/slider/slider";
 import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
+import { ChTextBlock } from "../../../components/textblock/textblock";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
@@ -132,6 +133,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChSlider>
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>
+  | Mutable<ChTextBlock>
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<

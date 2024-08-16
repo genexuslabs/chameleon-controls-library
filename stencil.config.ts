@@ -79,6 +79,9 @@ export const config: Config = {
       components: ["ch-smart-grid", "ch-smart-grid-cell", "ch-infinite-scroll"]
     },
     {
+      components: ["ch-textblock"] // Make sure the ch-textblock control is not bundled with other components
+    },
+    {
       components: [
         "ch-tree-view",
         "ch-tree-view-drop",

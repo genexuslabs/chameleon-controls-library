@@ -19,6 +19,7 @@ import { segmentedControlShowcaseStory } from "./segmented-control/segmented-con
 import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
+import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 
 export const showcaseStories = {
@@ -40,6 +41,7 @@ export const showcaseStories = {
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
+  textblock: textBlockShowcaseStory,
   "tree-view": treeViewShowcaseStory
 } as const;
 

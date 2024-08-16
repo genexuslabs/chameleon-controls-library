@@ -23,6 +23,7 @@ import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types
 import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
+import { adoptCommonThemes } from "../../common/theme";
 
 const ENTER_KEY = "Enter";
 
@@ -433,6 +434,11 @@ export class ChChat {
   ) => {
     this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
+
+  connectedCallback() {
+    // Scrollbar styles
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
 
   render() {
     const accessibleName = this.translations.accessibleName;

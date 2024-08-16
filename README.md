@@ -82,7 +82,7 @@ There are three strategies we recommend for using these web components.
 
 ## Subscribe to new releases
 
-To subscribe to new releases on `chameleon-controls-library` :
+To subscribe to new Chameleon releases :
 
 1. On this page: Click on the "Watch" button: It's located at the top right of the page, near the "Fork" button.
 2. Select "Custom" from the dropdown: This will open a modal with more options.

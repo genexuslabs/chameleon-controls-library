@@ -1,0 +1,39 @@
+@import "../../common/base";
+
+@include box-sizing();
+@include button-reset();
+
+:host {
+  --ch-accordion-expand-collapse-duration: 250ms;
+  --ch-accordion-expand-collapse-timing-function: linear;
+
+  display: grid;
+  grid-auto-rows: max-content;
+
+  // Avoid unnecessary click events in the Host
+  pointer-events: none;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: max-content 0fr;
+  transition: grid-template-rows var(--ch-accordion-expand-collapse-duration)
+    var(--ch-accordion-expand-collapse-timing-function);
+
+  // Restore click events
+  pointer-events: all;
+
+  &--expanded {
+    grid-template-rows: max-content 1fr;
+  }
+}
+
+section {
+  display: grid;
+  overflow: hidden;
+}
+
+// Necessary to hide the collapsed DOM and remove keyboard interactions
+.section--hidden {
+  visibility: hidden;
+}

@@ -35,7 +35,7 @@ export type ElementsWithoutCustomRender = Omit<
   "tableCell" | "tableRow"
 >;
 
-export type MarkdownToJSXCommonMetadata = {
+export type MarkdownViewerToJSXCommonMetadata = {
   rawHTML: boolean;
   allowDangerousHtml: boolean;
   renderCode: CodeRender;

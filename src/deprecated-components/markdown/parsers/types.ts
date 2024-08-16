@@ -34,14 +34,23 @@ export type ElementsWithoutCustomRender = Omit<
   "tableCell" | "tableRow"
 >;
 
+/**
+ * @deprecated Use the `MarkdownViewerToJSXCommonMetadata` type instead.
+ */
 export type MarkdownToJSXCommonMetadata = {
   rawHTML: boolean;
   allowDangerousHtml: boolean;
   renderCode: MarkdownCodeRender;
 };
 
+/**
+ * @deprecated Use the `CodeRender` type instead.
+ */
 export type MarkdownCodeRender = (options: MarkdownCodeRenderOptions) => any;
 
+/**
+ * @deprecated Use the `CodeRenderOptions` type instead.
+ */
 export type MarkdownCodeRenderOptions = {
   language: string;
   nestedChildIsCodeTag: boolean;

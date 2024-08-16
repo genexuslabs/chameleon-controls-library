@@ -5,7 +5,7 @@ import { markdownToMdAST } from "@genexus/markdown-parser";
 import {
   ElementsWithChildren,
   ElementsWithoutCustomRender,
-  MarkdownToJSXCommonMetadata
+  MarkdownViewerToJSXCommonMetadata
 } from "./types";
 import { rawHTMLToJSX } from "./raw-html-to-jsx";
 import {
@@ -72,7 +72,7 @@ const tableAlignmentDictionary: { [key in AlignType]: string } = {
 
 const tableRender = async (
   table: Table,
-  metadata: MarkdownToJSXCommonMetadata
+  metadata: MarkdownViewerToJSXCommonMetadata
 ) => {
   const tableHeadRow = table.children[0];
   const tableBodyRows = table.children.slice(1);
@@ -148,7 +148,7 @@ const tableRender = async (
 export const renderDictionary: {
   [key in keyof ElementsWithoutCustomRender]: (
     element: ElementsWithoutCustomRender[key],
-    metadata: MarkdownToJSXCommonMetadata
+    metadata: MarkdownViewerToJSXCommonMetadata
   ) => Promise<any> | any;
 } = {
   blockquote: async (element, metadata) => {
@@ -354,7 +354,7 @@ const findLastNestedChild = (
  */
 async function mdASTtoJSX(
   root: ElementsWithChildren | Root,
-  metadata: MarkdownToJSXCommonMetadata
+  metadata: MarkdownViewerToJSXCommonMetadata
 ) {
   const childrenLength = root.children.length;
   const asyncJSX = new Array(childrenLength);
@@ -375,7 +375,7 @@ async function mdASTtoJSX(
 
 export const markdownToJSX = async (
   markdown: string,
-  metadata: MarkdownToJSXCommonMetadata
+  metadata: MarkdownViewerToJSXCommonMetadata
 ) => {
   const mdAST: Root = markdownToMdAST(markdown);
 

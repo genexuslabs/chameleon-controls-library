@@ -4,6 +4,8 @@ import { defaultCodeRender } from "./parsers/code-highlight";
 import { MarkdownCodeRender } from "./parsers/types";
 
 /**
+ * @deprecated Use the `ch-markdown-viewer` component instead.
+ *
  * A control to render markdown syntax. It supports GitHub Flavored Markdown
  * (GFM) and code highlighting.
  *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).

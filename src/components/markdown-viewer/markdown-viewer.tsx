@@ -74,7 +74,7 @@ export class ChMarkdownViewer {
 
     return (
       <Host>
-        <ch-theme model={this.theme}></ch-theme>
+        {this.theme && <ch-theme key="theme" model={this.theme}></ch-theme>}
         {this.#JSXTree}
       </Host>
     );

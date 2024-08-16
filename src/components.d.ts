@@ -8,7 +8,7 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
-import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
+import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 import { MarkdownCodeRender } from "./components/code/internal/types";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -58,7 +58,7 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
-export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListModel } from "./components/action-list/types";
+export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
 export { MarkdownCodeRender } from "./components/code/internal/types";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -384,6 +384,10 @@ export namespace Components {
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback": (subModel: ActionListModel) => void;
+        /**
+          * Given an itemId and the properties to update, it updates the properties of the items in the list.
+         */
+        "updateItemProperties": (itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>;
     }
     interface ChAlert {
         /**

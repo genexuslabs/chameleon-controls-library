@@ -1,6 +1,6 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
 import { markdownToJSX } from "./parsers/markdown-to-jsx";
-import { MarkdownCodeRender } from "../code/internal/types";
+import { CodeRender } from "../code/internal/types";
 import { defaultCodeRender } from "../code/internal/default-render";
 
 /**
@@ -42,7 +42,13 @@ export class ChMarkdown {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
+  @Prop() readonly renderCode: CodeRender = defaultCodeRender;
+
+  /**
+   * Specifies the theme to be used for rendering the control.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme: string | undefined = "ch-markdown-viewer";
 
   /**
    * Specifies the markdown string to parse.
@@ -66,6 +72,11 @@ export class ChMarkdown {
       return "";
     }
 
-    return <Host>{this.#JSXTree}</Host>;
+    return (
+      <Host>
+        <ch-theme model={this.theme}></ch-theme>
+        {this.#JSXTree}
+      </Host>
+    );
   }
 }

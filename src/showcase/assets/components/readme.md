@@ -34,7 +34,7 @@
 - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
 - [ch-image](../../../components/image)
 - [ch-layout-splitter](../../../components/layout-splitter)
-- [ch-markdown](../../../components/markdown)
+- [ch-markdown-viewer](../../../components/markdown-viewer)
 - [ch-popover](../../../components/popover)
 - [ch-qr](../../../components/qr)
 - [ch-segmented-control-render](../../../components/segmented-control)
@@ -61,7 +61,7 @@ graph TD;
   ch-showcase --> ch-test-flexible-layout
   ch-showcase --> ch-image
   ch-showcase --> ch-layout-splitter
-  ch-showcase --> ch-markdown
+  ch-showcase --> ch-markdown-viewer
   ch-showcase --> ch-popover
   ch-showcase --> ch-qr
   ch-showcase --> ch-segmented-control-render
@@ -81,10 +81,13 @@ graph TD;
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
   ch-chat --> ch-smart-grid
+  ch-chat --> ch-smart-grid-virtual-scroller
   ch-chat --> ch-edit
-  ch-chat --> ch-markdown
+  ch-chat --> ch-markdown-viewer
   ch-chat --> ch-smart-grid-cell
   ch-smart-grid --> ch-infinite-scroll
+  ch-markdown-viewer --> ch-theme
+  ch-markdown-viewer --> ch-code
   ch-dropdown-render --> ch-dropdown
   ch-test-flexible-layout --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-action-group-render

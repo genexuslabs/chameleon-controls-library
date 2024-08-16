@@ -28,6 +28,19 @@ either in the Document or in a Shadow-Root.
 | `themeLoaded` | Event emitted when the theme has successfully loaded | `CustomEvent<ChThemeLoadedEvent>` |
 
 
+## Dependencies
+
+### Used by
+
+ - [ch-markdown-viewer](../markdown-viewer)
+
+### Graph
+```mermaid
+graph TD;
+  ch-markdown-viewer --> ch-theme
+  style ch-theme fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

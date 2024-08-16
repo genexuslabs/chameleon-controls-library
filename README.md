@@ -7,6 +7,8 @@ A library of white-label, highly-customizable and reusable web components.
 
 Visit the [Chameleon Showcase](https://gx-chameleon.netlify.app) for general information, demos and documentation.
 
+## Contents
+
 - [Getting Started](#getting-started)
 - [Running the tests](#running-the-tests)
 - [Building for production](#building-for-production)
@@ -77,4 +79,15 @@ There are three strategies we recommend for using these web components.
 | `"experimental"`      | The control is in its early stages of the development. This phase is often useful for testing the control early, but it is very likely that the interface will change from the final version. <br><br> Breaking changes for the control can be applied in "patch" tags.                   |
 | `"developer-preview"` | The control is in its final stages of the development. The interface and behaviors to implement the control are almost complete. The interface of the control should not change so much from the final version. <br><br> Breaking changes for the control can be applied in "patch" tags. |
 | `"stable"`            | The control's development is stable and can be safety used in production environments. <br><br> Breaking changes for the control can be applied in "major" tags. In some cases, two "major" tags would be used to deprecate a behavior in the control.                                    |
+
+## Subscribe to new releases
+
+To subscribe to new `chameleon-controls-library` releases:
+
+1. On this page: Click on the "Watch" button: It's located at the top right of the page, near the "Fork" button.
+2. Select "Custom" from the dropdown: This will open a modal with more options.
+3. Check "Releases": In the modal, make sure the "Releases" option is selected.
+4. Click "Apply": Save your preferences.
+
+You'll now receive notifications for this repository.
 

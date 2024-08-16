@@ -45,6 +45,17 @@
     </style>
   </head>
   <body>
+    <script>
+      const themeRef = document.createElement("ch-theme");
+      themeRef.model = [
+        { name: "chameleon/scrollbar", url: "showcase/scrollbar.css" },
+
+        // TODO: Use the right url
+        { name: "ch-markdown-viewer", url: "showcase/scrollbar.css" }
+      ];
+      document.body.append(themeRef);
+    </script>
+
     <ch-layout-splitter>
       <header slot="header" class="header">
         <div class="header-start">

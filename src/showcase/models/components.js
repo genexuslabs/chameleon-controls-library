@@ -9,6 +9,7 @@ const components = [
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
   ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
+  ["chat", "Chat", EXPERIMENTAL],
   ["code", "Code", EXPERIMENTAL],
   ["code-editor", "Code Editor", EXPERIMENTAL],
   ["code-diff-editor", "Code Diff Editor", EXPERIMENTAL],

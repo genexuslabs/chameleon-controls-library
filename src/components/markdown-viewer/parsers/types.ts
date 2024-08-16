@@ -34,17 +34,20 @@ export type ElementsWithoutCustomRender = Omit<
   "tableCell" | "tableRow"
 >;
 
-export type MarkdownToJSXCommonMetadata = {
-  rawHTML: boolean;
+export type MarkdownViewerToJSXCommonMetadata = {
   allowDangerousHtml: boolean;
-  renderCode: MarkdownCodeRender;
+  codeRender: MarkdownViewerCodeRender;
+  lastNestedChildClass: string;
+  rawHTML: boolean;
 };
 
-export type MarkdownCodeRender = (options: MarkdownCodeRenderOptions) => any;
+export type MarkdownViewerCodeRender = (
+  options: MarkdownViewerCodeRenderOptions
+) => any;
 
-export type MarkdownCodeRenderOptions = {
+export type MarkdownViewerCodeRenderOptions = {
   language: string;
-  nestedChildIsCodeTag: boolean;
+  lastNestedChildClass: string;
   plainText: string;
-  renderedContent: any;
+  showIndicator: boolean;
 };

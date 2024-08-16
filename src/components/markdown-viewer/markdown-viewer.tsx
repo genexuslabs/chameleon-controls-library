@@ -1,7 +1,10 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
-import { markdownToJSX } from "./parsers/markdown-to-jsx";
-import { defaultCodeRender } from "./parsers/code-highlight";
-import { MarkdownCodeRender } from "./parsers/types";
+import {
+  LAST_NESTED_CHILD_CLASS,
+  markdownToJSX
+} from "./parsers/markdown-to-jsx";
+import { MarkdownViewerCodeRender } from "./parsers/types";
+import { defaultCodeRender } from "./parsers/code-render";
 
 /**
  * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -19,14 +22,14 @@ import { MarkdownCodeRender } from "./parsers/types";
  * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
  */
 @Component({
-  shadow: false,
-  styleUrl: "markdown.scss",
-  tag: "ch-markdown"
+  shadow: true,
+  styleUrl: "markdown-viewer.scss",
+  tag: "ch-markdown-viewer"
 })
-export class ChMarkdown {
+export class ChMarkdownViewer {
   #JSXTree: any;
 
-  @Element() el: HTMLChMarkdownElement;
+  @Element() el: HTMLChMarkdownViewerElement;
 
   // /**
   //  * `true` to render potentially dangerous user content when rendering HTML
@@ -42,7 +45,19 @@ export class ChMarkdown {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
+  @Prop() readonly renderCode: MarkdownViewerCodeRender = defaultCodeRender;
+
+  /**
+   * Specifies if an indicator is displayed in the last element rendered.
+   * Useful for streaming scenarios where a loading indicator is needed.
+   */
+  @Prop() readonly showIndicator: boolean;
+
+  /**
+   * Specifies the theme to be used for rendering the control.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly theme: string | undefined = "ch-markdown-viewer";
 
   /**
    * Specifies the markdown string to parse.
@@ -55,9 +70,10 @@ export class ChMarkdown {
     }
 
     this.#JSXTree = await markdownToJSX(this.value, {
-      rawHTML: this.rawHtml,
       allowDangerousHtml: true, // Allow dangerous in this version
-      renderCode: this.renderCode
+      codeRender: this.renderCode,
+      lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
+      rawHTML: this.rawHtml
     });
   }
 
@@ -66,6 +82,15 @@ export class ChMarkdown {
       return "";
     }
 
-    return <Host>{this.#JSXTree}</Host>;
+    return (
+      <Host
+        class={
+          this.showIndicator ? "ch-markdown-viewer-show-indicator" : undefined
+        }
+      >
+        {this.theme && <ch-theme key="theme" model={this.theme}></ch-theme>}
+        {this.#JSXTree}
+      </Host>
+    );
   }
 }

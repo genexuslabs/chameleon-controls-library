@@ -1,0 +1,54 @@
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+@include typography-reset();
+
+:host {
+  --ch-markdown-viewer-indicator-color: currentColor;
+  --ch-markdown-viewer-inline-size: 1.125ch;
+  --ch-markdown-viewer-block-size: 1em;
+
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+// TODO: Simplify this animation
+:host(.ch-markdown-viewer-show-indicator) .last-nested-child::after,
+:host(.ch-markdown-viewer-show-indicator):empty::after {
+  content: "";
+  display: inline-flex;
+  inline-size: var(--ch-markdown-viewer-inline-size);
+  block-size: var(--ch-markdown-viewer-block-size);
+  background-color: var(--ch-markdown-viewer-indicator-color);
+  transform: translateY(0.125em);
+  animation: twinkle 0.75s linear infinite;
+}
+
+.ch-markdown-table-column-start {
+  text-align: start;
+}
+
+.ch-markdown-table-column-center {
+  text-align: center;
+}
+
+.ch-markdown-table-column-end {
+  text-align: end;
+}
+
+ch-code {
+  --ch-code-indicator-color: var(--ch-markdown-viewer-indicator-color);
+  --ch-code-inline-size: var(--ch-markdown-viewer-inline-size);
+  --ch-code-block-size: var(--ch-markdown-viewer-block-size);
+}
+
+@keyframes twinkle {
+  60% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
+  }
+}

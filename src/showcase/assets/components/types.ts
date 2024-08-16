@@ -2,6 +2,7 @@ import { Mutable } from "../../../common/types";
 import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
 import { ChActionListRender } from "../../../components/action-list/action-list-render";
 import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
+import { ChChat } from "../../../components/chat/chat";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
 import { ChComboBoxRender } from "../../../components/combobox/combo-box";
@@ -11,7 +12,7 @@ import { ChEdit } from "../../../components/edit/edit";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
-import { ChMarkdown } from "../../../components/markdown/markdown";
+import { ChMarkdownViewer } from "../../../components/markdown-viewer/markdown-viewer";
 import { ChPopover } from "../../../components/popover/popover";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
@@ -136,5 +137,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<
-  ChMarkdown | ChFlexibleLayoutRender
+  ChChat | ChMarkdownViewer | ChFlexibleLayoutRender
 >;

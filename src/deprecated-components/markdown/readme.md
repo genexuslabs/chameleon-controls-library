@@ -1,15 +1,13 @@
 # ch-markdown
 
-
-
 <!-- Auto Generated Below -->
 
 
-## Overview
+> **[DEPRECATED]** Use the `ch-markdown-viewer` component instead.
 
 A control to render markdown syntax. It supports GitHub Flavored Markdown
 (GFM) and code highlighting.
- - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+- It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
 
 - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
 
@@ -29,19 +27,6 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 | `renderCode` | --         | This property allows us to implement custom rendering for the code blocks. | `(options: MarkdownCodeRenderOptions) => any` | `defaultCodeRender` |
 | `value`      | `value`    | Specifies the markdown string to parse.                                    | `string`                                      | `undefined`         |
 
-
-## Dependencies
-
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
-### Graph
-```mermaid
-graph TD;
-  ch-showcase --> ch-markdown
-  style ch-markdown fill:#f9f,stroke:#333,stroke-width:4px
-```
 
 ----------------------------------------------
 

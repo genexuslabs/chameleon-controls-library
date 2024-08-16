@@ -84,6 +84,9 @@ export const parseCodeToJSX = async (
   });
 };
 
+/**
+ * @deprecated Use the `ch-code` component to render code blocks
+ */
 export const defaultCodeRender: MarkdownCodeRender = (
   options: MarkdownCodeRenderOptions
 ): any => (

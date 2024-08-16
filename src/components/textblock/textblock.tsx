@@ -102,8 +102,8 @@ export class ChTextBlock implements ComponentInterface {
   @Prop() readonly showTooltipOnOverflow: boolean = false;
 
   /**
-   * Fired when the displayed lines overflows the control content.
-   * If `true` the current content overflows the control.
+   * Fired when the displayed lines overflows the control's content.
+   * If `true`, the current content overflows the control.
    */
   @Event() overflowingContentChange: EventEmitter<boolean>;
 

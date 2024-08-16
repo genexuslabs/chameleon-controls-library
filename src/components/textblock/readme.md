@@ -18,9 +18,9 @@
 
 ## Events
 
-| Event                      | Description                                                                                                        | Type                   |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------- |
-| `overflowingContentChange` | Fired when the displayed lines overflows the control content. If `true` the current content overflows the control. | `CustomEvent<boolean>` |
+| Event                      | Description                                                                                                           | Type                   |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | ---------------------- |
+| `overflowingContentChange` | Fired when the displayed lines overflows the control's content. If `true`, the current content overflows the control. | `CustomEvent<boolean>` |
 
 
 ## Slots

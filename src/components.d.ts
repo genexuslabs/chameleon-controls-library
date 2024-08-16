@@ -10,7 +10,9 @@ import { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 import { ActionGroupModel } from "./components/action-group/types";
 import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-import { MarkdownCodeRender } from "./components/code/internal/types";
+import { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
+import { ChatTranslations } from "./components/chat/translations";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
@@ -25,7 +27,8 @@ import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 import { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-import { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
+import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
+import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -36,6 +39,8 @@ import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
+import { SmartGridModel } from "./components/smart-grid/types";
+import { SmartGridVirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -60,7 +65,9 @@ export { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 export { ActionGroupModel } from "./components/action-group/types";
 export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-export { MarkdownCodeRender } from "./components/code/internal/types";
+export { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
+export { ChatTranslations } from "./components/chat/translations";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
@@ -75,7 +82,8 @@ export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEve
 export { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-export { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
+export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
+export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -86,6 +94,8 @@ export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
+export { SmartGridModel } from "./components/smart-grid/types";
+export { SmartGridVirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -462,6 +472,75 @@ export namespace Components {
         "scanning": boolean;
     }
     /**
+     * TODO: Add description
+     */
+    interface ChChat {
+        /**
+          * Add a new message at the end of the record, performing a re-render.
+         */
+        "addNewMessage": (message: ChatMessage) => Promise<void>;
+        /**
+          * Specifies the callbacks required in the control.
+         */
+        "callbacks": ChatInternalCallbacks;
+        /**
+          * Specifies if all interactions are disabled
+         */
+        "disabled": boolean;
+        /**
+          * Focus the chat input
+         */
+        "focusChatInput": () => Promise<void>;
+        /**
+          * `true` if a response for the assistant is being generated.
+         */
+        "generatingResponse": boolean;
+        /**
+          * Specifies an object containing an HTMLAnchorElement reference. Use this property to render a button to download the code when displaying a code block.
+         */
+        "hyperlinkToDownloadFile"?: { anchor: HTMLAnchorElement };
+        /**
+          * Specifies if the control can render a button to load images from the file system.
+         */
+        "imageUpload": boolean;
+        /**
+          * Specifies if the chat is used in a mobile device.
+         */
+        "isMobile": boolean;
+        /**
+          * Specifies the items that the chat will display.
+         */
+        "items": ChatMessage[];
+        /**
+          * Specifies if the chat is waiting for the data to be loaded.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+         */
+        "markdownTheme": string | undefined;
+        /**
+          * This property allows us to implement custom rendering of chat items.
+         */
+        "renderItem": (messageModel: ChatMessage) => any;
+        /**
+          * Set the text for the chat input
+         */
+        "setChatInputMessage": (text: string) => Promise<void>;
+        /**
+          * Specifies the literals required in the control.
+         */
+        "translations": ChatTranslations;
+        /**
+          * Given the id of the message, it updates the content of the indexed message.
+         */
+        "updateChatMessage": (messageIndex: number, message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>;
+        /**
+          * Update the content of the last message, performing a re-render.
+         */
+        "updateLastMessage": (message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>;
+    }
+    /**
      * @status developer-preview
      */
     interface ChCheckbox {
@@ -513,16 +592,15 @@ export namespace Components {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChCode {
-        "addLastNestedChildClass": boolean;
         /**
           * Specifies the code language to highlight.
          */
         "language": string;
         "lastNestedChildClass": string;
         /**
-          * This property allows us to implement custom rendering for the code blocks.
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
          */
-        "renderCode": MarkdownCodeRender;
+        "showIndicator": boolean;
         /**
           * Specifies the code string to highlight.
          */
@@ -1526,6 +1604,36 @@ export namespace Components {
          */
         "type": Exclude<ImageRender, "img">;
     }
+    interface ChInfiniteScroll {
+        /**
+          * Call `complete()` within the `gxInfinite` output event handler when your async operation has completed. For example, the `loading` state is while the app is performing an asynchronous operation, such as receiving more data from an AJAX request to add more items to a data list. Once the data has been received and UI updated, you then call this method to signify that the loading has completed. This method will change the infinite scroll's state from `loading` to `enabled`.
+         */
+        "complete": () => Promise<void>;
+        /**
+          * `true` if the infinite scroll is used in a grid that has data provider. This attribute determine the utility of the infinite scroll, because in certain configurations the infinite scroll can be used only to implement the inverse loading utility.
+         */
+        "dataProvider": boolean;
+        /**
+          * Specifies if the infinite scroll is disabled. When disabled, the infinite scroll won't fire any event when reaching the threshold. The `dataProvider` property can be `true` and this property can be `false` at the same time, meaning that the infinite scroll is disabled, but if the control has `inverseLoading`, the `dataProvider` property will re-position the scrollbar when new content is added to the grid.
+         */
+        "disabled": boolean;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "infiniteThresholdReachedCallback": () => void;
+        /**
+          * If `true`, the infinite scroll will be hidden and scroll event listeners will be removed.  Set this to `false` to disable the infinite scroll from actively trying to receive new data while reaching the threshold. This is useful when it is known that there is no more data that can be added, and the infinite scroll is no longer needed.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The position of the infinite scroll element. The value can be either `top` or `bottom`. When `position === "top"`, the control also implements inverse loading.
+         */
+        "position": "top" | "bottom";
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold": string;
+    }
     interface ChIntersectionObserver {
         /**
           * Bottom margin around the root element
@@ -1580,9 +1688,10 @@ export namespace Components {
         "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -1597,7 +1706,39 @@ export namespace Components {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode": MarkdownCodeRender1;
+        "renderCode": MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value": string;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChMarkdownViewer {
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml": boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode": MarkdownViewerCodeRender;
+        /**
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
+         */
+        "showIndicator": boolean;
+        /**
+          * Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.
+         */
+        "theme": string | undefined;
         /**
           * Specifies the markdown string to parse.
          */
@@ -2222,6 +2363,72 @@ export namespace Components {
           * The value of the control.
          */
         "value": number;
+    }
+    interface ChSmartGrid {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * This attribute defines if the control size will grow automatically, to adjust to its content size. If set to `false`, it won't grow automatically and it will show scrollbars if the content overflows.
+         */
+        "autoGrow": boolean;
+        /**
+          * `true` if the control has a data provider and therefore must implement a infinite scroll to load data.
+         */
+        "dataProvider": boolean;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the first element at the bottom and the "Loading" message (infinite-scroll) at the top.
+         */
+        "inverseLoading": boolean;
+        /**
+          * Grid current row count. This property is used in order to be able to re-render the Grid every time the Grid data changes. If not specified, then grid empty and loading placeholders may not work correctly.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies the loading state of the grid.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold": string;
+    }
+    interface ChSmartGridCell {
+        /**
+          * Specifies the ID of the cell.
+         */
+        "cellId": string;
+    }
+    interface ChSmartGridVirtualScroller {
+        /**
+          * Add items to the beginning or end of the items property. This method is useful for adding new items to the collection, without impacting in the internal indexes used to display the virtual items. Without this method, the virtual scroll would behave unexpectedly when new items are added.
+         */
+        "addItems": (position: "start" | "end", ...items: SmartGridModel) => Promise<void>;
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount": number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems": number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading": boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode": "virtual-scroll" | "lazy-render";
     }
     interface ChStepList {
     }
@@ -3658,6 +3865,18 @@ export interface ChSliderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSliderElement;
 }
+export interface ChSmartGridCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSmartGridElement;
+}
+export interface ChSmartGridCellCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSmartGridCellElement;
+}
+export interface ChSmartGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSmartGridVirtualScrollerElement;
+}
 export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChStepListItemElement;
@@ -3894,6 +4113,15 @@ declare global {
     var HTMLChBarcodeScannerElement: {
         prototype: HTMLChBarcodeScannerElement;
         new (): HTMLChBarcodeScannerElement;
+    };
+    /**
+     * TODO: Add description
+     */
+    interface HTMLChChatElement extends Components.ChChat, HTMLStencilElement {
+    }
+    var HTMLChChatElement: {
+        prototype: HTMLChChatElement;
+        new (): HTMLChChatElement;
     };
     interface HTMLChCheckboxElementEventMap {
         "click": any;
@@ -4391,6 +4619,12 @@ declare global {
         prototype: HTMLChImageElement;
         new (): HTMLChImageElement;
     };
+    interface HTMLChInfiniteScrollElement extends Components.ChInfiniteScroll, HTMLStencilElement {
+    }
+    var HTMLChInfiniteScrollElement: {
+        prototype: HTMLChInfiniteScrollElement;
+        new (): HTMLChInfiniteScrollElement;
+    };
     interface HTMLChIntersectionObserverElementEventMap {
         "intersectionUpdate": IntersectionObserverEntry;
     }
@@ -4415,9 +4649,10 @@ declare global {
         new (): HTMLChLayoutSplitterElement;
     };
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -4429,6 +4664,22 @@ declare global {
     var HTMLChMarkdownElement: {
         prototype: HTMLChMarkdownElement;
         new (): HTMLChMarkdownElement;
+    };
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface HTMLChMarkdownViewerElement extends Components.ChMarkdownViewer, HTMLStencilElement {
+    }
+    var HTMLChMarkdownViewerElement: {
+        prototype: HTMLChMarkdownViewerElement;
+        new (): HTMLChMarkdownViewerElement;
     };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
@@ -4785,6 +5036,58 @@ declare global {
     var HTMLChSliderElement: {
         prototype: HTMLChSliderElement;
         new (): HTMLChSliderElement;
+    };
+    interface HTMLChSmartGridElementEventMap {
+        "infiniteThresholdReached": void;
+    }
+    interface HTMLChSmartGridElement extends Components.ChSmartGrid, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSmartGridElementEventMap>(type: K, listener: (this: HTMLChSmartGridElement, ev: ChSmartGridCustomEvent<HTMLChSmartGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSmartGridElementEventMap>(type: K, listener: (this: HTMLChSmartGridElement, ev: ChSmartGridCustomEvent<HTMLChSmartGridElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSmartGridElement: {
+        prototype: HTMLChSmartGridElement;
+        new (): HTMLChSmartGridElement;
+    };
+    interface HTMLChSmartGridCellElementEventMap {
+        "smartCellDidLoad": string;
+    }
+    interface HTMLChSmartGridCellElement extends Components.ChSmartGridCell, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSmartGridCellElementEventMap>(type: K, listener: (this: HTMLChSmartGridCellElement, ev: ChSmartGridCellCustomEvent<HTMLChSmartGridCellElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSmartGridCellElementEventMap>(type: K, listener: (this: HTMLChSmartGridCellElement, ev: ChSmartGridCellCustomEvent<HTMLChSmartGridCellElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSmartGridCellElement: {
+        prototype: HTMLChSmartGridCellElement;
+        new (): HTMLChSmartGridCellElement;
+    };
+    interface HTMLChSmartGridVirtualScrollerElementEventMap {
+        "virtualItemsChanged": SmartGridVirtualScrollVirtualItems;
+        "virtualScrollerDidLoad": any;
+    }
+    interface HTMLChSmartGridVirtualScrollerElement extends Components.ChSmartGridVirtualScroller, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSmartGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChSmartGridVirtualScrollerElement, ev: ChSmartGridVirtualScrollerCustomEvent<HTMLChSmartGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSmartGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChSmartGridVirtualScrollerElement, ev: ChSmartGridVirtualScrollerCustomEvent<HTMLChSmartGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSmartGridVirtualScrollerElement: {
+        prototype: HTMLChSmartGridVirtualScrollerElement;
+        new (): HTMLChSmartGridVirtualScrollerElement;
     };
     interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
     }
@@ -5420,6 +5723,7 @@ declare global {
         "ch-action-list-render": HTMLChActionListRenderElement;
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
+        "ch-chat": HTMLChChatElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-code": HTMLChCodeElement;
         "ch-code-diff-editor": HTMLChCodeDiffEditorElement;
@@ -5450,9 +5754,11 @@ declare global {
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
         "ch-image": HTMLChImageElement;
+        "ch-infinite-scroll": HTMLChInfiniteScrollElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-markdown": HTMLChMarkdownElement;
+        "ch-markdown-viewer": HTMLChMarkdownViewerElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -5476,6 +5782,9 @@ declare global {
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-slider": HTMLChSliderElement;
+        "ch-smart-grid": HTMLChSmartGridElement;
+        "ch-smart-grid-cell": HTMLChSmartGridCellElement;
+        "ch-smart-grid-virtual-scroller": HTMLChSmartGridVirtualScrollerElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
         "ch-style": HTMLChStyleElement;
@@ -5899,6 +6208,55 @@ declare namespace LocalJSX {
         "scanning"?: boolean;
     }
     /**
+     * TODO: Add description
+     */
+    interface ChChat {
+        /**
+          * Specifies the callbacks required in the control.
+         */
+        "callbacks": ChatInternalCallbacks;
+        /**
+          * Specifies if all interactions are disabled
+         */
+        "disabled"?: boolean;
+        /**
+          * `true` if a response for the assistant is being generated.
+         */
+        "generatingResponse": boolean;
+        /**
+          * Specifies an object containing an HTMLAnchorElement reference. Use this property to render a button to download the code when displaying a code block.
+         */
+        "hyperlinkToDownloadFile"?: { anchor: HTMLAnchorElement };
+        /**
+          * Specifies if the control can render a button to load images from the file system.
+         */
+        "imageUpload"?: boolean;
+        /**
+          * Specifies if the chat is used in a mobile device.
+         */
+        "isMobile": boolean;
+        /**
+          * Specifies the items that the chat will display.
+         */
+        "items"?: ChatMessage[];
+        /**
+          * Specifies if the chat is waiting for the data to be loaded.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+         */
+        "markdownTheme"?: string | undefined;
+        /**
+          * This property allows us to implement custom rendering of chat items.
+         */
+        "renderItem"?: (messageModel: ChatMessage) => any;
+        /**
+          * Specifies the literals required in the control.
+         */
+        "translations": ChatTranslations;
+    }
+    /**
      * @status developer-preview
      */
     interface ChCheckbox {
@@ -5958,16 +6316,15 @@ declare namespace LocalJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChCode {
-        "addLastNestedChildClass"?: boolean;
         /**
           * Specifies the code language to highlight.
          */
         "language"?: string;
         "lastNestedChildClass"?: string;
         /**
-          * This property allows us to implement custom rendering for the code blocks.
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
          */
-        "renderCode"?: MarkdownCodeRender;
+        "showIndicator"?: boolean;
         /**
           * Specifies the code string to highlight.
          */
@@ -6947,6 +7304,32 @@ declare namespace LocalJSX {
          */
         "type"?: Exclude<ImageRender, "img">;
     }
+    interface ChInfiniteScroll {
+        /**
+          * `true` if the infinite scroll is used in a grid that has data provider. This attribute determine the utility of the infinite scroll, because in certain configurations the infinite scroll can be used only to implement the inverse loading utility.
+         */
+        "dataProvider"?: boolean;
+        /**
+          * Specifies if the infinite scroll is disabled. When disabled, the infinite scroll won't fire any event when reaching the threshold. The `dataProvider` property can be `true` and this property can be `false` at the same time, meaning that the infinite scroll is disabled, but if the control has `inverseLoading`, the `dataProvider` property will re-position the scrollbar when new content is added to the grid.
+         */
+        "disabled"?: boolean;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "infiniteThresholdReachedCallback": () => void;
+        /**
+          * If `true`, the infinite scroll will be hidden and scroll event listeners will be removed.  Set this to `false` to disable the infinite scroll from actively trying to receive new data while reaching the threshold. This is useful when it is known that there is no more data that can be added, and the infinite scroll is no longer needed.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The position of the infinite scroll element. The value can be either `top` or `bottom`. When `position === "top"`, the control also implements inverse loading.
+         */
+        "position"?: "top" | "bottom";
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold"?: string;
+    }
     interface ChIntersectionObserver {
         /**
           * Bottom margin around the root element
@@ -6997,9 +7380,10 @@ declare namespace LocalJSX {
         "model"?: LayoutSplitterModel;
     }
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -7014,7 +7398,39 @@ declare namespace LocalJSX {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode"?: MarkdownCodeRender1;
+        "renderCode"?: MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value"?: string;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChMarkdownViewer {
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml"?: boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
+         */
+        "showIndicator"?: boolean;
+        /**
+          * Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.
+         */
+        "theme"?: string | undefined;
         /**
           * Specifies the markdown string to parse.
          */
@@ -7719,6 +8135,84 @@ declare namespace LocalJSX {
           * The value of the control.
          */
         "value"?: number;
+    }
+    interface ChSmartGrid {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute defines if the control size will grow automatically, to adjust to its content size. If set to `false`, it won't grow automatically and it will show scrollbars if the content overflows.
+         */
+        "autoGrow"?: boolean;
+        /**
+          * `true` if the control has a data provider and therefore must implement a infinite scroll to load data.
+         */
+        "dataProvider"?: boolean;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the first element at the bottom and the "Loading" message (infinite-scroll) at the top.
+         */
+        "inverseLoading"?: boolean;
+        /**
+          * Grid current row count. This property is used in order to be able to re-render the Grid every time the Grid data changes. If not specified, then grid empty and loading placeholders may not work correctly.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies the loading state of the grid.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "onInfiniteThresholdReached"?: (event: ChSmartGridCustomEvent<void>) => void;
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold"?: string;
+    }
+    interface ChSmartGridCell {
+        /**
+          * Specifies the ID of the cell.
+         */
+        "cellId": string;
+        /**
+          * Fired when the component and all its child did render for the first time.
+         */
+        "onSmartCellDidLoad"?: (event: ChSmartGridCellCustomEvent<string>) => void;
+    }
+    interface ChSmartGridVirtualScroller {
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount"?: number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems"?: number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading"?: boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount"?: number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode"?: "virtual-scroll" | "lazy-render";
+        /**
+          * Emitted when the array of visible items in the ch-smart-grid changes.
+         */
+        "onVirtualItemsChanged"?: (event: ChSmartGridVirtualScrollerCustomEvent<SmartGridVirtualScrollVirtualItems>) => void;
+        /**
+          * Fired when the visible content of the virtual scroller did render for the first time.
+         */
+        "onVirtualScrollerDidLoad"?: (event: ChSmartGridVirtualScrollerCustomEvent<any>) => void;
     }
     interface ChStepList {
     }
@@ -9019,6 +9513,7 @@ declare namespace LocalJSX {
         "ch-action-list-render": ChActionListRender;
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
+        "ch-chat": ChChat;
         "ch-checkbox": ChCheckbox;
         "ch-code": ChCode;
         "ch-code-diff-editor": ChCodeDiffEditor;
@@ -9049,9 +9544,11 @@ declare namespace LocalJSX {
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
         "ch-image": ChImage;
+        "ch-infinite-scroll": ChInfiniteScroll;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
         "ch-markdown": ChMarkdown;
+        "ch-markdown-viewer": ChMarkdownViewer;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -9075,6 +9572,9 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-slider": ChSlider;
+        "ch-smart-grid": ChSmartGrid;
+        "ch-smart-grid-cell": ChSmartGridCell;
+        "ch-smart-grid-virtual-scroller": ChSmartGridVirtualScroller;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
         "ch-style": ChStyle;
@@ -9134,6 +9634,10 @@ declare module "@stencil/core" {
              * codes.
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
+            /**
+             * TODO: Add description
+             */
+            "ch-chat": LocalJSX.ChChat & JSXBase.HTMLAttributes<HTMLChChatElement>;
             /**
              * @status developer-preview
              */
@@ -9259,8 +9763,21 @@ declare module "@stencil/core" {
              * active or disabled) of a parent element.
              */
             "ch-image": LocalJSX.ChImage & JSXBase.HTMLAttributes<HTMLChImageElement>;
+            "ch-infinite-scroll": LocalJSX.ChInfiniteScroll & JSXBase.HTMLAttributes<HTMLChInfiniteScrollElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
+            /**
+             * @deprecated Use the `ch-markdown-viewer` component instead.
+             * A control to render markdown syntax. It supports GitHub Flavored Markdown
+             * (GFM) and code highlighting.
+             * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+             * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+             * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+             * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+             * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+             * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+             */
+            "ch-markdown": LocalJSX.ChMarkdown & JSXBase.HTMLAttributes<HTMLChMarkdownElement>;
             /**
              * A control to render markdown syntax. It supports GitHub Flavored Markdown
              * (GFM) and code highlighting.
@@ -9271,7 +9788,7 @@ declare module "@stencil/core" {
              * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
              * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
              */
-            "ch-markdown": LocalJSX.ChMarkdown & JSXBase.HTMLAttributes<HTMLChMarkdownElement>;
+            "ch-markdown-viewer": LocalJSX.ChMarkdownViewer & JSXBase.HTMLAttributes<HTMLChMarkdownViewerElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;
@@ -9325,6 +9842,9 @@ declare module "@stencil/core" {
              * The slider control is a input where the user selects a value from within a given range.
              */
             "ch-slider": LocalJSX.ChSlider & JSXBase.HTMLAttributes<HTMLChSliderElement>;
+            "ch-smart-grid": LocalJSX.ChSmartGrid & JSXBase.HTMLAttributes<HTMLChSmartGridElement>;
+            "ch-smart-grid-cell": LocalJSX.ChSmartGridCell & JSXBase.HTMLAttributes<HTMLChSmartGridCellElement>;
+            "ch-smart-grid-virtual-scroller": LocalJSX.ChSmartGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChSmartGridVirtualScrollerElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
             /**

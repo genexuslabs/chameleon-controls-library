@@ -337,16 +337,16 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly accessibleName: string;
 
   /**
+   * `true` to display a close button for the items.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element. This label is used for the close button of the captions.
    */
   @Prop() readonly closeButtonAccessibleName: string = "Close";
-
-  /**
-   * `true` to hide the close button in the items.
-   */
-  @Prop() readonly closeButtonHidden: boolean = false;
 
   /**
    * Same as the contain CSS property. This property indicates that an item
@@ -960,7 +960,7 @@ export class ChTabRender implements DraggableView {
 
         {this.showCaptions && item.name}
 
-        {!this.closeButtonHidden && (
+        {this.closeButton && (
           <button
             aria-label={this.closeButtonAccessibleName}
             class="close-button"

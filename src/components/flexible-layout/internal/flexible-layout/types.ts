@@ -51,7 +51,12 @@ export type FlexibleLayoutLeafConfiguration =
   | FlexibleLayoutLeafConfigurationSingleContent;
 
 export type FlexibleLayoutLeafConfigurationTabbed = {
-  closeButtonHidden?: boolean;
+  /**
+   * `true` to display a close button in the tab buttons.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  closeButton?: boolean;
 
   /**
    * Specify if all tab buttons are disabled.

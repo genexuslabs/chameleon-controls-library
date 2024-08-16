@@ -1,7 +1,4 @@
-// @import "../../../../node_modules/@genexus/unanimo/dist/unanimo.scss";
 @import "../../common/base";
-
-// @include markdown();
 
 @include button-reset();
 @include box-sizing();
@@ -10,33 +7,6 @@
 :host {
   display: grid;
   grid-template-rows: 1fr min-content;
-}
-
-.markdown pre > code > .code-block__header {
-  padding-block: 0;
-  padding-inline-end: 0;
-}
-
-// // TODO: This is a WA to reduce the padding in code blocks for mobile devices
-// @media (max-width: $mobile-web) {
-//   .markdown pre > code {
-//     & > .code-block__header {
-//       padding-inline-start: calc(var(--spacing--l) - var(--spacing--s));
-//     }
-
-//     & > .code-block__content {
-//       padding: calc(var(--spacing--l) - var(--spacing--s));
-//     }
-//   }
-// }
-
-// This is a WA to avoid overflowing the content of the window on mobile devices
-pre {
-  text-wrap: initial;
-}
-
-.code-block__header-actions {
-  display: flex;
 }
 
 .assistant-content,
@@ -80,15 +50,6 @@ img {
 }
 
 // - - - - - - - - - - - - - - - -
-//          Query viewer
-// - - - - - - - - - - - - - - - -
-.query-viewer-content {
-  // There are many cases where the chart overflow the window width on mobile
-  // devices
-  overflow: auto;
-}
-
-// - - - - - - - - - - - - - - - -
 //         Send container
 // - - - - - - - - - - - - - - - -
 .stop-generating-answer-button {
@@ -121,33 +82,6 @@ img {
 
 .send-or-audio-button {
   grid-area: send-or-audio;
-}
-
-ch-markdown.streaming .last-nested-child::after,
-.not-empty-content ch-markdown.streaming:empty::after {
-  content: "";
-  display: inline-flex;
-  width: 1.125ch;
-  height: 1em;
-  background-color: var(--colors-foundation__purple--100);
-  transform: translateY(0.125em);
-  // The animation is in the chat.scss file. I suppose is due the Shadow DOM
-  animation: twinkle 0.75s linear infinite;
-}
-
-@keyframes twinkle {
-  60% {
-    opacity: 1;
-  }
-
-  75% {
-    opacity: 0;
-  }
-}
-
-// This is a WA to improve default content alignment
-gx-query-viewer {
-  justify-content: center;
 }
 
 .spinner-loading {

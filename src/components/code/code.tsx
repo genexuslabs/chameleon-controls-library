@@ -109,17 +109,15 @@ export class ChCode {
     // TODO: Should we hide the ch-code on the initial load?
     return (
       <Host class={this.showIndicator ? "ch-code-show-indicator" : undefined}>
-        <pre part="pre">
-          <code
-            class={{
-              [`hljs language-${language}`]: true,
-              [this.lastNestedChildClass]: addLastNestedChildClassInHost
-            }}
-            part={`code language-${language}`}
-          >
-            {this.JSXCodeBlock ?? this.value}
-          </code>
-        </pre>
+        <code
+          class={{
+            [`hljs language-${language}`]: true,
+            [this.lastNestedChildClass]: addLastNestedChildClassInHost
+          }}
+          part={`code language-${language}`}
+        >
+          {this.JSXCodeBlock ?? this.value}
+        </code>
       </Host>
     );
   }

@@ -4,6 +4,8 @@ import { Component as ChComponent } from "../../common/interfaces";
 const EXPANDABLE = "expandable";
 
 /**
+ * @deprecated Use the `ch-accordion-render` instead
+ *
  * @part accordion__expandable - The container of the accordion content
  *
  * @slot header - The component to be displayed in the header of the control

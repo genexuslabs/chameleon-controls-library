@@ -86,6 +86,24 @@ Type: `Promise<void>`
 
 
 
+### `updateItemProperties(itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>`
+
+Given an itemId and the properties to update, it updates the properties
+of the items in the list.
+
+#### Parameters
+
+| Name         | Type                                                           | Description |
+| ------------ | -------------------------------------------------------------- | ----------- |
+| `itemId`     | `string`                                                       |             |
+| `properties` | `Partial<ActionListItemModel> & { type: ActionListItemType; }` |             |
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
 
 ## CSS Custom Properties
 

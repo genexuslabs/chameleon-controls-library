@@ -106,7 +106,7 @@ legend {
     contain: size;
   }
 
-  ch-markdown {
+  ch-markdown-viewer {
     contain: size;
     overflow: auto;
   }
@@ -307,7 +307,7 @@ ch-tree-view-render.tree-view-primary::part(item__action) {
 
 .chat {
   &::part(content) {
-    gap: 4px;
+    /* gap: 12px; */
   }
 
   &::part(message) {

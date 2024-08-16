@@ -2832,23 +2832,30 @@ export namespace Components {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChTextblock {
         /**
-          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
+          * This property defines if the control size will grow automatically, to adjust to its content size.  If `false` the overflowing content will be displayed with an ellipsis. This ellipsis takes into account multiple lines.
          */
-        "format": "Text" | "HTML";
+        "autoGrow": boolean;
         /**
-          * True to cut text when it overflows, showing an ellipsis.
+          * Specifies the content to be displayed when the control has `format = text`.
          */
-        "lineClamp": boolean;
+        "caption": string;
         /**
-          * Determine the tooltip text that will be displayed when the pointer is over the control
+          * Specifies the character used to measure the line height
          */
-        "tooltip": string;
+        "characterToMeasureLineHeight": string;
         /**
-          * Determine the way that the tooltip text will be displayed
+          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
          */
-        "tooltipShowMode": "always" | "line-clamp";
+        "format": "text" | "HTML";
+        /**
+          * `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.
+         */
+        "showTooltipOnOverflow": boolean;
     }
     /**
      * It allows you to load a style sheet in a similar way to the
@@ -3706,6 +3713,10 @@ export interface ChTabularGridSettingsCustomEvent<T> extends CustomEvent<T> {
 export interface ChTabularGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTabularGridVirtualScrollerElement;
+}
+export interface ChTextblockCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTextblockElement;
 }
 export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -5176,7 +5187,21 @@ declare global {
         prototype: HTMLChTestSuggestElement;
         new (): HTMLChTestSuggestElement;
     };
+    interface HTMLChTextblockElementEventMap {
+        "overflowingContentChange": boolean;
+    }
+    /**
+     * @status developer-preview
+     */
     interface HTMLChTextblockElement extends Components.ChTextblock, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTextblockElementEventMap>(type: K, listener: (this: HTMLChTextblockElement, ev: ChTextblockCustomEvent<HTMLChTextblockElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTextblockElementEventMap>(type: K, listener: (this: HTMLChTextblockElement, ev: ChTextblockCustomEvent<HTMLChTextblockElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTextblockElement: {
         prototype: HTMLChTextblockElement;
@@ -8318,23 +8343,34 @@ declare namespace LocalJSX {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChTextblock {
         /**
-          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
+          * This property defines if the control size will grow automatically, to adjust to its content size.  If `false` the overflowing content will be displayed with an ellipsis. This ellipsis takes into account multiple lines.
          */
-        "format"?: "Text" | "HTML";
+        "autoGrow"?: boolean;
         /**
-          * True to cut text when it overflows, showing an ellipsis.
+          * Specifies the content to be displayed when the control has `format = text`.
          */
-        "lineClamp"?: boolean;
+        "caption"?: string;
         /**
-          * Determine the tooltip text that will be displayed when the pointer is over the control
+          * Specifies the character used to measure the line height
          */
-        "tooltip"?: string;
+        "characterToMeasureLineHeight"?: string;
         /**
-          * Determine the way that the tooltip text will be displayed
+          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
          */
-        "tooltipShowMode"?: "always" | "line-clamp";
+        "format"?: "text" | "HTML";
+        /**
+          * Fired when the displayed lines overflows the control's content. If `true`, the current content overflows the control.
+         */
+        "onOverflowingContentChange"?: (event: ChTextblockCustomEvent<boolean>) => void;
+        /**
+          * `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.
+         */
+        "showTooltipOnOverflow"?: boolean;
     }
     /**
      * It allows you to load a style sheet in a similar way to the
@@ -9373,6 +9409,9 @@ declare module "@stencil/core" {
             "ch-tabular-grid-virtual-scroller": LocalJSX.ChTabularGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChTabularGridVirtualScrollerElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
+            /**
+             * @status developer-preview
+             */
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             /**
              * It allows you to load a style sheet in a similar way to the

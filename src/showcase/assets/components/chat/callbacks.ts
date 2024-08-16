@@ -200,17 +200,32 @@ export const chatRecord: ChatMessage[] = [
 ];
 
 export const longChatRecord: ChatMessage[] = Array.from(
-  { length: 400 },
+  { length: 40 },
   (_, index) =>
     index % 2 === 0
       ? {
           id: `index: ${index}`,
           role: "user",
-          content: ` "Hello world" ${index}`
+          content:
+            `index: ${index}` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n`
         }
       : {
           id: `index: ${index}`,
           role: "assistant",
-          content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
+          content:
+            ASSISTANT_RESPONSE_SHORT_MARKDOWN +
+            `\nindex: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n` +
+            `index: ${index}\n`
         }
 );

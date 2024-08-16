@@ -39,7 +39,6 @@
     "monaco-editor": "^0.48.0",
     "monaco-yaml": "^5.1.1",
     "qr-creator": "^1.0.0",
-    "resize-observer-polyfill": "^1.5.1",
     "stencil-click-outside": "^1.8.0"
   },
   "peerDependencies": {

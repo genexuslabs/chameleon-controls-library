@@ -64,7 +64,7 @@ const ASSISTANT_RESPONSE_SHORT_MARKDOWN = `
 ### Code block {#code-block}
 To create code blocks, you’ll use three backticks (\` \`\`\` \`) or three tildes (\`~~~\`) on the lines before and after the code block.
 
-\`\`\`
+\`\`\`json
 {
   "firstName": "John",
   "lastName": "Smith",

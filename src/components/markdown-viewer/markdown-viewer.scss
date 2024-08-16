@@ -13,6 +13,18 @@
   grid-auto-rows: max-content;
 }
 
+// TODO: Simplify this animation
+:host(.ch-markdown-viewer-show-indicator) .last-nested-child::after,
+:host(.ch-markdown-viewer-show-indicator):empty::after {
+  content: "";
+  display: inline-flex;
+  inline-size: var(--ch-markdown-viewer-inline-size);
+  block-size: var(--ch-markdown-viewer-block-size);
+  background-color: var(--ch-markdown-viewer-indicator-color);
+  transform: translateY(0.125em);
+  animation: twinkle 0.75s linear infinite;
+}
+
 .ch-markdown-table-column-start {
   text-align: start;
 }
@@ -25,16 +37,10 @@
   text-align: end;
 }
 
-// TODO: Simplify this animation
-:host(.ch-markdown-viewer-show-indicator) .last-nested-child::after,
-:host(.ch-markdown-viewer-show-indicator):empty::after {
-  content: "";
-  display: inline-flex;
-  inline-size: var(--ch-markdown-viewer-inline-size);
-  block-size: var(--ch-markdown-viewer-block-size);
-  background-color: var(--ch-markdown-viewer-indicator-color);
-  transform: translateY(0.125em);
-  animation: twinkle 0.75s linear infinite;
+ch-code {
+  --ch-code-indicator-color: var(--ch-markdown-viewer-indicator-color);
+  --ch-code-inline-size: var(--ch-markdown-viewer-inline-size);
+  --ch-code-block-size: var(--ch-markdown-viewer-block-size);
 }
 
 @keyframes twinkle {

@@ -28,8 +28,13 @@ export const LAST_NESTED_CHILD_CLASS = "last-nested-child";
 let HTMLToJSX: typeof rawHTMLToJSX;
 let lastNestedChild: Root | ElementsWithChildren | Code;
 
-const checkAndGetLastNestedChildClass = (element: ElementsWithChildren) =>
-  element === lastNestedChild ? LAST_NESTED_CHILD_CLASS : undefined;
+const isLastNestedChildClass = (element: ElementsWithChildren | Code) =>
+  element === lastNestedChild;
+
+const checkAndGetLastNestedChildClass = (
+  element: ElementsWithChildren
+): typeof LAST_NESTED_CHILD_CLASS | undefined =>
+  isLastNestedChildClass(element) ? LAST_NESTED_CHILD_CLASS : undefined;
 
 const depthToHeading = {
   1: (content: any, classes: string | null, id?: string) => (
@@ -163,13 +168,13 @@ export const renderDictionary: {
 
   break: () => <br />,
 
-  code: (element, metadata) => (
-    <ch-code
-      language={element.lang}
-      renderCode={metadata.renderCode}
-      value={element.value}
-    ></ch-code>
-  ),
+  code: (element, metadata) =>
+    metadata.codeRender({
+      lastNestedChildClass: metadata.lastNestedChildClass,
+      language: element.lang,
+      plainText: element.value,
+      showIndicator: isLastNestedChildClass(element)
+    }),
 
   definition: element => setLinkDefinition(element.identifier, element.url),
 

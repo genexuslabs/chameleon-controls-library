@@ -1,7 +1,10 @@
 import { Component, Element, Host, Prop, h } from "@stencil/core";
-import { markdownToJSX } from "./parsers/markdown-to-jsx";
-import { CodeRender } from "../code/internal/types";
-import { defaultCodeRender } from "../code/internal/default-render";
+import {
+  LAST_NESTED_CHILD_CLASS,
+  markdownToJSX
+} from "./parsers/markdown-to-jsx";
+import { MarkdownViewerCodeRender } from "./parsers/types";
+import { defaultCodeRender } from "./parsers/code-render";
 
 /**
  * A control to render markdown syntax. It supports GitHub Flavored Markdown
@@ -42,7 +45,7 @@ export class ChMarkdownViewer {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: CodeRender = defaultCodeRender;
+  @Prop() readonly renderCode: MarkdownViewerCodeRender = defaultCodeRender;
 
   /**
    * Specifies if an indicator is displayed in the last element rendered.
@@ -67,9 +70,10 @@ export class ChMarkdownViewer {
     }
 
     this.#JSXTree = await markdownToJSX(this.value, {
-      rawHTML: this.rawHtml,
       allowDangerousHtml: true, // Allow dangerous in this version
-      renderCode: this.renderCode
+      codeRender: this.renderCode,
+      lastNestedChildClass: LAST_NESTED_CHILD_CLASS,
+      rawHTML: this.rawHtml
     });
   }
 
@@ -79,7 +83,11 @@ export class ChMarkdownViewer {
     }
 
     return (
-      <Host>
+      <Host
+        class={
+          this.showIndicator ? "ch-markdown-viewer-show-indicator" : undefined
+        }
+      >
         {this.theme && <ch-theme key="theme" model={this.theme}></ch-theme>}
         {this.#JSXTree}
       </Host>

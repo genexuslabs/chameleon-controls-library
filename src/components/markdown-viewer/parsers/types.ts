@@ -13,7 +13,6 @@ import {
   ThematicBreak,
   Yaml
 } from "mdast";
-import { CodeRender } from "../../code/internal/types";
 
 export type ElementsWithChildren = Exclude<
   RootContent,
@@ -36,7 +35,19 @@ export type ElementsWithoutCustomRender = Omit<
 >;
 
 export type MarkdownViewerToJSXCommonMetadata = {
-  rawHTML: boolean;
   allowDangerousHtml: boolean;
-  renderCode: CodeRender;
+  codeRender: MarkdownViewerCodeRender;
+  lastNestedChildClass: string;
+  rawHTML: boolean;
+};
+
+export type MarkdownViewerCodeRender = (
+  options: MarkdownViewerCodeRenderOptions
+) => any;
+
+export type MarkdownViewerCodeRenderOptions = {
+  language: string;
+  lastNestedChildClass: string;
+  plainText: string;
+  showIndicator: boolean;
 };

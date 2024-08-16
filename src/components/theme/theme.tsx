@@ -5,8 +5,7 @@ import {
   Event,
   EventEmitter,
   h,
-  State,
-  Build
+  State
 } from "@stencil/core";
 import {
   ChThemeLoadedEvent,
@@ -78,12 +77,10 @@ export class ChTheme {
       });
       this.loaded = true;
 
-      if (Build.isDev) {
-        const rejected = results.filter(result => result.status === "rejected");
-        if (rejected.length > 0) {
-          // eslint-disable-next-line no-console
-          console.error("Failed to load themes:", rejected);
-        }
+      const rejected = results.filter(result => result.status === "rejected");
+      if (rejected.length > 0) {
+        // eslint-disable-next-line no-console
+        console.error("Failed to load themes:", rejected);
       }
     });
   };

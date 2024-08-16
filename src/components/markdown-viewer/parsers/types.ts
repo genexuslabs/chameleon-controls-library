@@ -13,7 +13,7 @@ import {
   ThematicBreak,
   Yaml
 } from "mdast";
-import { MarkdownCodeRender } from "../../code/internal/types";
+import { CodeRender } from "../../code/internal/types";
 
 export type ElementsWithChildren = Exclude<
   RootContent,
@@ -38,5 +38,5 @@ export type ElementsWithoutCustomRender = Omit<
 export type MarkdownToJSXCommonMetadata = {
   rawHTML: boolean;
   allowDangerousHtml: boolean;
-  renderCode: MarkdownCodeRender;
+  renderCode: CodeRender;
 };

@@ -1,5 +1,5 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
-import { CodeToJSX, MarkdownCodeRender } from "./internal/types";
+import { CodeToJSX, CodeRender } from "./internal/types";
 import { defaultCodeRender } from "./internal/default-render";
 
 let parseCodeToJSX: CodeToJSX;
@@ -50,7 +50,7 @@ export class ChCode {
   /**
    * This property allows us to implement custom rendering for the code blocks.
    */
-  @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
+  @Prop() readonly renderCode: CodeRender = defaultCodeRender;
 
   /**
    * Specifies the code string to highlight.

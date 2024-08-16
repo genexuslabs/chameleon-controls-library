@@ -5,12 +5,9 @@ import {
   ChatMessage,
   ChatMessageByRole
 } from "./types";
-import {
-  MarkdownCodeRender,
-  MarkdownCodeRenderOptions
-} from "../markdown/parsers/types";
 import { ChatTranslations } from "./translations";
 import { copyToTheClipboard } from "../../common/utils";
+import { CodeRender, CodeRenderOptions } from "../code/internal/types";
 
 const copy = (text: string) => () => copyToTheClipboard(text);
 
@@ -24,10 +21,7 @@ const getAssistantParts = (
 ) => (status ? `assistant-content ${status}` : "assistant-content");
 
 const downloadCode =
-  (
-    options: MarkdownCodeRenderOptions,
-    hyperlinkRef: { anchor: HTMLAnchorElement }
-  ) =>
+  (options: CodeRenderOptions, hyperlinkRef: { anchor: HTMLAnchorElement }) =>
   () => {
     // Create the blob variable on the click event
     const blob = new Blob([options.plainText], { type: "text/plain" });
@@ -51,8 +45,8 @@ const defaultCodeRender =
     copyCodeButtonText: string,
     downloadCodeButtonAccessibleName: string,
     hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
-  ): MarkdownCodeRender =>
-  (options: MarkdownCodeRenderOptions): any =>
+  ): CodeRender =>
+  (options: CodeRenderOptions): any =>
     (
       <pre>
         <code class={`hljs language-${options.language}`}>
@@ -88,7 +82,8 @@ const defaultCodeRender =
           <div
             class={{
               "code-block__content": true,
-              "last-nested-child": options.nestedChildIsCodeTag
+              // TODO: Fix lastNestedChildClass support
+              [options.lastNestedChildClass]: true
             }}
           >
             {options.renderedContent}
@@ -129,6 +124,7 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
 const renderDefaultAssistantMessage = (
   translations: ChatTranslations,
   isMobile: boolean,
+  markdownTheme: string | undefined,
   messageModel: ChatMessageByRole<"assistant">,
   hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
 ) => {
@@ -157,7 +153,7 @@ const renderDefaultAssistantMessage = (
         </div>
       ) : (
         [
-          <ch-markdown
+          <ch-markdown-viewer
             class={`markdown ${messageModel.status}`}
             renderCode={defaultCodeRender(
               isMobile,
@@ -165,8 +161,9 @@ const renderDefaultAssistantMessage = (
               translations.accessibleName.downloadCodeButton,
               hyperlinkToDownloadFile
             )}
+            theme={markdownTheme}
             value={messageContent}
-          ></ch-markdown>,
+          ></ch-markdown-viewer>,
 
           files && (
             <div class="assistant-files" part="assistant-files">
@@ -199,6 +196,7 @@ export const defaultChatRender =
   (
     translations: ChatTranslations,
     isMobile: boolean,
+    markdownTheme: string | undefined,
     hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
   ) =>
   (messageModel: ChatMessage) =>
@@ -212,6 +210,7 @@ export const defaultChatRender =
           ? renderDefaultAssistantMessage(
               translations,
               isMobile,
+              markdownTheme,
               messageModel,
               hyperlinkToDownloadFile
             )

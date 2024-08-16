@@ -9,6 +9,10 @@ import {
   h
 } from "@stencil/core";
 import {
+  ChSmartGridVirtualScrollerCustomEvent,
+  SmartGridVirtualScrollVirtualItems
+} from "../../components";
+import {
   ChatContentImages,
   ChatInternalCallbacks,
   ChatMessage,
@@ -19,10 +23,6 @@ import { SmartGridDataState } from "../smart-grid/internal/infinite-scroll/types
 import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
-import {
-  ChSmartGridVirtualScrollerCustomEvent,
-  SmartGridVirtualScrollVirtualItems
-} from "../../components";
 
 const ENTER_KEY = "Enter";
 
@@ -89,6 +89,12 @@ export class ChChat {
   @Prop({ mutable: true }) loadingState!: SmartGridDataState;
 
   /**
+   * Specifies the theme to be used for rendering the markdown.
+   * If `undefined`, no theme will be applied.
+   */
+  @Prop() readonly markdownTheme: string | undefined = "ch-markdown-viewer";
+
+  /**
    * Specifies the literals required in the control.
    */
   @Prop() readonly translations!: ChatTranslations;
@@ -100,6 +106,7 @@ export class ChChat {
     defaultChatRender(
       this.translations,
       this.isMobile,
+      this.markdownTheme,
       this.hyperlinkToDownloadFile
     );
 

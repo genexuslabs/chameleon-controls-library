@@ -1,8 +1,8 @@
 import { h } from "@stencil/core";
-import { MarkdownCodeRender, MarkdownCodeRenderOptions } from "./types";
+import { CodeRender, CodeRenderOptions } from "./types";
 
-export const defaultCodeRender: MarkdownCodeRender = (
-  options: MarkdownCodeRenderOptions
+export const defaultCodeRender: CodeRender = (
+  options: CodeRenderOptions
 ): any => (
   <pre part="pre">
     <code

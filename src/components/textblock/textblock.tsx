@@ -18,6 +18,8 @@ const DISPLAYED_LINES_CUSTOM_VAR = "--ch-textblock-displayed-lines";
 const LINE_HEIGHT_CUSTOM_VAR = "--ch-textblock-line-height";
 
 /**
+ * @status developer-preview
+ *
  * @slot - The slot for the HTML content.
  */
 @Component({

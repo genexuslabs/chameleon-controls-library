@@ -73,6 +73,9 @@ export const config: Config = {
       components: ["ch-showcase"] // Make sure the ch-showcase control is not bundled with other components
     },
     {
+      components: ["ch-textblock"] // Make sure the ch-textblock control is not bundled with other components
+    },
+    {
       components: [
         "ch-tree-view",
         "ch-tree-view-drop",

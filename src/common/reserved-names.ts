@@ -51,13 +51,6 @@ export const imageTypeDictionary = {
 } as const satisfies { [key in Exclude<ImageRender, "img">]: string };
 
 // - - - - - - - - - - - - - - - - - - - -
-//               Line clamp
-// - - - - - - - - - - - - - - - - - - - -
-export const HEIGHT_MEASURING = "height-measuring";
-export const LINE_CLAMP = "line-clamp";
-export const LINE_MEASURING = "line-measuring";
-
-// - - - - - - - - - - - - - - - - - - - -
 //             Checkbox Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const CHECKBOX_PARTS_DICTIONARY = {

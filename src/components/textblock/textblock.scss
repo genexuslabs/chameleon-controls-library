@@ -1,25 +1,46 @@
 @import "../../common/_base";
 
 @include box-sizing();
-@include line-clamp();
+@include typography-reset();
 
 :host {
-  display: flex;
-  align-items: flex-start;
-  justify-items: flex-start;
-  align-self: stretch;
+  --ch-textblock-displayed-lines: 1;
+  --ch-textblock-line-height: 1px;
+
+  display: inline-grid;
+  grid-auto-rows: max-content;
   position: relative;
-  width: 100%;
   text-align: start; // Default alignment which supports RTL
+
+  // Enter support
+  white-space: break-spaces;
+}
+
+:host(.ch-textblock--no-auto-grow) {
+  contain: size;
+}
+
+// Used to measure the line height, in order to make the lines clampable
+.line-measure {
+  position: absolute;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 // - - - - - - - - - - - - - - - - - - - -
-//      Format = "Text" and lineClamp
+//           Auto Grow disabled
 // - - - - - - - - - - - - - - - - - - - -
-.content {
-  @include reset-browser-defaults-properties-1();
+.content,
+.html-content {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--ch-textblock-displayed-lines);
+  overflow: hidden;
+  max-block-size: calc(
+    var(--ch-textblock-displayed-lines) * var(--ch-textblock-line-height)
+  );
+}
 
-  position: absolute;
-  inset-inline: 0;
-  padding-inline: inherit;
+.html-content {
+  max-block-size: var(--ch-textblock-available-size);
 }

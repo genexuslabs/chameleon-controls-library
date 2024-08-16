@@ -1,4 +1,5 @@
 import { Mutable } from "../../../common/types";
+import { ChAccordionRender } from "../../../components/accordion/accordion";
 import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
 import { ChActionListRender } from "../../../components/action-list/action-list-render";
 import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
@@ -115,6 +116,7 @@ export type ShowcaseRenderPropertyObject<
 };
 
 export type ShowcaseAvailableStories =
+  | Mutable<ChAccordionRender>
   | Mutable<ChActionGroupRender>
   | Mutable<ChActionListRender>
   | Mutable<ChBarcodeScanner>

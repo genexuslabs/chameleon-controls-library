@@ -39,23 +39,6 @@ pre {
   display: flex;
 }
 
-ch-grid-smart {
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  scrollbar-color: var(--accents__secondary) transparent;
-
-  // WA to customize the scrollbar. This styles should be in the globals file
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--accents__secondary);
-  }
-}
-
 .assistant-content,
 .user-content {
   // Improve rendering performance by not rendering off-screen messages

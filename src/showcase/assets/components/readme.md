@@ -85,6 +85,7 @@ graph TD;
   ch-chat --> ch-smart-grid
   ch-chat --> ch-smart-grid-virtual-scroller
   ch-chat --> ch-edit
+  ch-chat --> ch-code
   ch-chat --> ch-markdown-viewer
   ch-chat --> ch-smart-grid-cell
   ch-smart-grid --> ch-infinite-scroll

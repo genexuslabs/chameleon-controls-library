@@ -23,12 +23,13 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 
 ## Properties
 
-| Property     | Attribute  | Description                                                                                         | Type                                  | Default                |
-| ------------ | ---------- | --------------------------------------------------------------------------------------------------- | ------------------------------------- | ---------------------- |
-| `rawHtml`    | `raw-html` | `true` to render raw HTML with sanitization.                                                        | `boolean`                             | `false`                |
-| `renderCode` | --         | This property allows us to implement custom rendering for the code blocks.                          | `(options: CodeRenderOptions) => any` | `defaultCodeRender`    |
-| `theme`      | `theme`    | Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied. | `string`                              | `"ch-markdown-viewer"` |
-| `value`      | `value`    | Specifies the markdown string to parse.                                                             | `string`                              | `undefined`            |
+| Property        | Attribute        | Description                                                                                                                              | Type                                                | Default                |
+| --------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ---------------------- |
+| `rawHtml`       | `raw-html`       | `true` to render raw HTML with sanitization.                                                                                             | `boolean`                                           | `false`                |
+| `renderCode`    | --               | This property allows us to implement custom rendering for the code blocks.                                                               | `(options: MarkdownViewerCodeRenderOptions) => any` | `defaultCodeRender`    |
+| `showIndicator` | `show-indicator` | Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed. | `boolean`                                           | `undefined`            |
+| `theme`         | `theme`          | Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.                                      | `string`                                            | `"ch-markdown-viewer"` |
+| `value`         | `value`          | Specifies the markdown string to parse.                                                                                                  | `string`                                            | `undefined`            |
 
 
 ## Dependencies

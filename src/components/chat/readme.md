@@ -132,6 +132,7 @@ Type: `Promise<void>`
 - [ch-smart-grid](../smart-grid)
 - [ch-smart-grid-virtual-scroller](../smart-grid/internal/smart-grid-virtual-scroller)
 - [ch-edit](../edit)
+- [ch-code](../code)
 - [ch-markdown-viewer](../markdown-viewer)
 - [ch-smart-grid-cell](../smart-grid/internal/smart-grid-cell)
 
@@ -141,6 +142,7 @@ graph TD;
   ch-chat --> ch-smart-grid
   ch-chat --> ch-smart-grid-virtual-scroller
   ch-chat --> ch-edit
+  ch-chat --> ch-code
   ch-chat --> ch-markdown-viewer
   ch-chat --> ch-smart-grid-cell
   ch-smart-grid --> ch-infinite-scroll

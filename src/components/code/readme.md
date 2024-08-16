@@ -16,13 +16,19 @@ A control to highlight code blocks.
 
 ## Properties
 
-| Property                  | Attribute                     | Description                                                                | Type                                  | Default               |
-| ------------------------- | ----------------------------- | -------------------------------------------------------------------------- | ------------------------------------- | --------------------- |
-| `addLastNestedChildClass` | `add-last-nested-child-class` |                                                                            | `boolean`                             | `false`               |
-| `language`                | `language`                    | Specifies the code language to highlight.                                  | `string`                              | `undefined`           |
-| `lastNestedChildClass`    | `last-nested-child-class`     |                                                                            | `string`                              | `"last-nested-child"` |
-| `renderCode`              | --                            | This property allows us to implement custom rendering for the code blocks. | `(options: CodeRenderOptions) => any` | `defaultCodeRender`   |
-| `value`                   | `value`                       | Specifies the code string to highlight.                                    | `string`                              | `undefined`           |
+| Property               | Attribute                 | Description                                                                                                                              | Type      | Default               |
+| ---------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------- | --------------------- |
+| `language`             | `language`                | Specifies the code language to highlight.                                                                                                | `string`  | `undefined`           |
+| `lastNestedChildClass` | `last-nested-child-class` |                                                                                                                                          | `string`  | `"last-nested-child"` |
+| `showIndicator`        | `show-indicator`          | Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed. | `boolean` | `false`               |
+| `value`                | `value`                   | Specifies the code string to highlight.                                                                                                  | `string`  | `undefined`           |
+
+
+## Shadow Parts
+
+| Part    | Description |
+| ------- | ----------- |
+| `"pre"` |             |
 
 
 ## CSS Custom Properties
@@ -77,12 +83,14 @@ A control to highlight code blocks.
 
 ### Used by
 
+ - [ch-chat](../chat)
  - [ch-markdown-viewer](../markdown-viewer)
  - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-chat --> ch-code
   ch-markdown-viewer --> ch-code
   ch-showcase --> ch-code
   style ch-code fill:#f9f,stroke:#333,stroke-width:4px

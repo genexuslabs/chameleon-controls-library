@@ -8,8 +8,8 @@ const state: Partial<Mutable<ChCode>> = {};
 const render = () => (
   <ch-code
     class="code"
-    addLastNestedChildClass={state.addLastNestedChildClass}
     language={state.language}
+    showIndicator={state.showIndicator}
     value={state.value}
   ></ch-code>
 );
@@ -38,8 +38,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCode>> = [
         type: "string"
       },
       {
-        id: "addLastNestedChildClass",
-        caption: "Add Last Nested Child Class",
+        id: "showIndicator",
+        caption: "Show Indicator",
         value: false,
         type: "boolean"
       }

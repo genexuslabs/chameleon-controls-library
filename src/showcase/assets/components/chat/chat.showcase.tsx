@@ -8,6 +8,7 @@ const render = () => (
     class="chat"
     generatingResponse={false}
     loadingState="more-data-to-fetch"
+    markdownTheme={undefined}
     isMobile={false}
     items={longChatRecord}
     translations={chatTranslations}

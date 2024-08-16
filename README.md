@@ -80,7 +80,7 @@ There are three strategies we recommend for using these web components.
 | `"developer-preview"` | The control is in its final stages of the development. The interface and behaviors to implement the control are almost complete. The interface of the control should not change so much from the final version. <br><br> Breaking changes for the control can be applied in "patch" tags. |
 | `"stable"`            | The control's development is stable and can be safety used in production environments. <br><br> Breaking changes for the control can be applied in "major" tags. In some cases, two "major" tags would be used to deprecate a behavior in the control.                                    |
 
-## Subscribe to new releases
+## 📢 Subscribe to new releases
 
 To subscribe to new Chameleon releases :
 

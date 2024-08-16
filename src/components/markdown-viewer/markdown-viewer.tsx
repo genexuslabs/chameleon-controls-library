@@ -45,6 +45,12 @@ export class ChMarkdownViewer {
   @Prop() readonly renderCode: CodeRender = defaultCodeRender;
 
   /**
+   * Specifies if an indicator is displayed in the last element rendered.
+   * Useful for streaming scenarios where a loading indicator is needed.
+   */
+  @Prop() readonly showIndicator: boolean;
+
+  /**
    * Specifies the theme to be used for rendering the control.
    * If `undefined`, no theme will be applied.
    */

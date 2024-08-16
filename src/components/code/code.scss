@@ -293,6 +293,10 @@
    */
   --ch-code__variable-language: currentColor;
 
+  --ch-code-indicator-color: currentColor;
+  --ch-code-inline-size: 1.125ch;
+  --ch-code-block-size: 1em;
+
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
@@ -476,5 +480,27 @@ code {
 
   &-variable.language_ {
     color: var(--ch-code__variable-language);
+  }
+}
+
+// TODO: Simplify this animation
+:host(.ch-code-show-indicator) .last-nested-child::after,
+:host(.ch-code-show-indicator):empty::after {
+  content: "";
+  display: inline-flex;
+  inline-size: var(--ch-code-inline-size);
+  block-size: var(--ch-code-block-size);
+  background-color: var(--ch-code-indicator-color);
+  transform: translateY(0.125em);
+  animation: twinkle 0.75s linear infinite;
+}
+
+@keyframes twinkle {
+  60% {
+    opacity: 1;
+  }
+
+  75% {
+    opacity: 0;
   }
 }

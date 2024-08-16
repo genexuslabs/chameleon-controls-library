@@ -1,6 +1,5 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
-import { CodeToJSX, CodeRender } from "./internal/types";
-import { defaultCodeRender } from "./internal/default-render";
+import { CodeToJSX } from "./internal/types";
 
 let parseCodeToJSX: CodeToJSX;
 
@@ -35,11 +34,6 @@ export class ChCode {
   /**
    *
    */
-  @Prop() readonly addLastNestedChildClass: boolean = false;
-
-  /**
-   *
-   */
   @Prop() readonly lastNestedChildClass: string = "last-nested-child";
 
   /**
@@ -48,9 +42,10 @@ export class ChCode {
   @Prop() readonly language: string;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
+   * Specifies if an indicator is displayed in the last element rendered.
+   * Useful for streaming scenarios where a loading indicator is needed.
    */
-  @Prop() readonly renderCode: CodeRender = defaultCodeRender;
+  @Prop() readonly showIndicator: boolean = false;
 
   /**
    * Specifies the code string to highlight.
@@ -63,7 +58,7 @@ export class ChCode {
     parseCodeToJSX(
       this.value,
       this.#getLanguageOrDefault(),
-      this.addLastNestedChildClass,
+      this.showIndicator,
       this.lastNestedChildClass
     );
 
@@ -107,18 +102,24 @@ export class ChCode {
 
   render() {
     const addLastNestedChildClassInHost =
-      this.addLastNestedChildClass && this.#lastNestedChildIsRoot;
+      this.showIndicator && this.#lastNestedChildIsRoot;
+
+    const language = this.#getLanguageOrDefault();
 
     // TODO: Should we hide the ch-code on the initial load?
     return (
-      <Host>
-        {this.renderCode({
-          addLastNestedChildClassInHost: addLastNestedChildClassInHost,
-          language: this.#getLanguageOrDefault(),
-          lastNestedChildClass: this.lastNestedChildClass,
-          plainText: this.value || "",
-          renderedContent: this.JSXCodeBlock ?? this.value
-        })}
+      <Host class={this.showIndicator ? "ch-code-show-indicator" : undefined}>
+        <pre part="pre">
+          <code
+            class={{
+              [`hljs language-${language}`]: true,
+              [this.lastNestedChildClass]: addLastNestedChildClassInHost
+            }}
+            part={`code language-${language}`}
+          >
+            {this.JSXCodeBlock ?? this.value}
+          </code>
+        </pre>
       </Host>
     );
   }

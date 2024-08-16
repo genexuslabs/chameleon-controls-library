@@ -7,7 +7,10 @@ import {
 } from "./types";
 import { ChatTranslations } from "./translations";
 import { copyToTheClipboard } from "../../common/utils";
-import { CodeRender, CodeRenderOptions } from "../code/internal/types";
+import {
+  MarkdownViewerCodeRender,
+  MarkdownViewerCodeRenderOptions
+} from "../markdown-viewer/parsers/types";
 
 const copy = (text: string) => () => copyToTheClipboard(text);
 
@@ -21,7 +24,10 @@ const getAssistantParts = (
 ) => (status ? `assistant-content ${status}` : "assistant-content");
 
 const downloadCode =
-  (options: CodeRenderOptions, hyperlinkRef: { anchor: HTMLAnchorElement }) =>
+  (
+    options: MarkdownViewerCodeRenderOptions,
+    hyperlinkRef: { anchor: HTMLAnchorElement }
+  ) =>
   () => {
     // Create the blob variable on the click event
     const blob = new Blob([options.plainText], { type: "text/plain" });
@@ -45,51 +51,47 @@ const defaultCodeRender =
     copyCodeButtonText: string,
     downloadCodeButtonAccessibleName: string,
     hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
-  ): CodeRender =>
-  (options: CodeRenderOptions): any =>
+  ): MarkdownViewerCodeRender =>
+  (options: MarkdownViewerCodeRenderOptions): any =>
     (
-      <pre>
-        <code class={`hljs language-${options.language}`}>
-          <div class="code-block__header" part="code-block__header">
-            {options.language}
-
-            <div
-              class="code-block__header-actions"
-              part="code-block__header-actions"
-            >
-              <button
-                aria-label={isMobile ? copyCodeButtonText : undefined}
-                class="code-block__copy-code-button"
-                part="code-block__copy-code-button"
-                type="button"
-                onClick={copy(options.plainText)}
-              >
-                {!isMobile && copyCodeButtonText}
-              </button>
-
-              {hyperlinkToDownloadFile && (
-                <button
-                  aria-label={downloadCodeButtonAccessibleName}
-                  title={downloadCodeButtonAccessibleName}
-                  class="code-block__download-code-button"
-                  part="code-block__download-code-button"
-                  onClick={downloadCode(options, hyperlinkToDownloadFile)}
-                ></button>
-              )}
-            </div>
-          </div>
+      <div>
+        <div class="code-block__header" part="code-block__header">
+          {options.language}
 
           <div
-            class={{
-              "code-block__content": true,
-              // TODO: Fix lastNestedChildClass support
-              [options.lastNestedChildClass]: true
-            }}
+            class="code-block__header-actions"
+            part="code-block__header-actions"
           >
-            {options.renderedContent}
+            <button
+              aria-label={isMobile ? copyCodeButtonText : undefined}
+              class="code-block__copy-code-button"
+              part="code-block__copy-code-button"
+              type="button"
+              onClick={copy(options.plainText)}
+            >
+              {!isMobile && copyCodeButtonText}
+            </button>
+
+            {hyperlinkToDownloadFile && (
+              <button
+                aria-label={downloadCodeButtonAccessibleName}
+                title={downloadCodeButtonAccessibleName}
+                class="code-block__download-code-button"
+                part="code-block__download-code-button"
+                onClick={downloadCode(options, hyperlinkToDownloadFile)}
+              ></button>
+            )}
           </div>
-        </code>
-      </pre>
+        </div>
+
+        <ch-code
+          class="code-block__content"
+          language={options.language}
+          lastNestedChildClass={options.lastNestedChildClass}
+          showIndicator={options.showIndicator}
+          value={options.plainText}
+        ></ch-code>
+      </div>
     );
 
 const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
@@ -154,13 +156,13 @@ const renderDefaultAssistantMessage = (
       ) : (
         [
           <ch-markdown-viewer
-            class={`markdown ${messageModel.status}`}
             renderCode={defaultCodeRender(
               isMobile,
               translations.text.copyCodeButton,
               translations.accessibleName.downloadCodeButton,
               hyperlinkToDownloadFile
             )}
+            showIndicator={messageModel.status === "streaming"}
             theme={markdownTheme}
             value={messageContent}
           ></ch-markdown-viewer>,

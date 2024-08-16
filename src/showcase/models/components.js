@@ -9,6 +9,7 @@ const components = [
   ["alert", "Alert", EXPERIMENTAL],
   ["barcode-scanner", "Barcode Scanner", EXPERIMENTAL],
   ["checkbox", "Checkbox", DEVELOPER_PREVIEW],
+  ["chat", "Chat", EXPERIMENTAL],
   ["code", "Code", EXPERIMENTAL],
   ["code-editor", "Code Editor", EXPERIMENTAL],
   ["code-diff-editor", "Code Diff Editor", EXPERIMENTAL],
@@ -33,7 +34,7 @@ const components = [
   ["switch", "Switch", EXPERIMENTAL],
   // ["suggest", "Suggest", EXPERIMENTAL], // Temporally disabled
   ["tab", "Tab", EXPERIMENTAL],
-  // ["textblock", "Textblock", EXPERIMENTAL], // Temporally disabled
+  ["textblock", "TextBlock", DEVELOPER_PREVIEW],
   // ["tooltip", "Tooltip", EXPERIMENTAL], // Temporally disabled
   ["tree-view", "Tree View", DEVELOPER_PREVIEW]
 ];

@@ -1,6 +1,7 @@
 import { actionGroupShowcaseStory } from "./action-group/action-group.showcase";
 import { actionListShowcaseStory } from "./action-list/action-list.showcase";
 import { barcodeScannerShowcaseStory } from "./barcode-scanner/barcode-scanner.showcase";
+import { chatShowcaseStory } from "./chat/chat.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
@@ -18,6 +19,7 @@ import { segmentedControlShowcaseStory } from "./segmented-control/segmented-con
 import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
+import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 
 export const showcaseStories = {
@@ -39,10 +41,12 @@ export const showcaseStories = {
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
+  textblock: textBlockShowcaseStory,
   "tree-view": treeViewShowcaseStory
 } as const;
 
 export const showcaseCustomStories = {
+  chat: chatShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
   markdown: markdownShowcaseStory
 };

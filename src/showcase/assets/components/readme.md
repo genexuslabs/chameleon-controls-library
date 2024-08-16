@@ -27,13 +27,14 @@
 - [ch-action-group-render](../../../components/action-group)
 - [ch-action-list-render](../../../components/action-list)
 - [ch-barcode-scanner](../../../components/barcode-scanner)
+- [ch-chat](../../../components/chat)
 - [ch-dialog](../../../components/dialog)
 - [ch-dropdown-render](../../../components/dropdown)
 - [ch-edit](../../../components/edit)
 - [ch-test-flexible-layout](../../../components/test/test-flexible-layout)
 - [ch-image](../../../components/image)
 - [ch-layout-splitter](../../../components/layout-splitter)
-- [ch-markdown](../../../components/markdown)
+- [ch-markdown-viewer](../../../components/markdown-viewer)
 - [ch-popover](../../../components/popover)
 - [ch-qr](../../../components/qr)
 - [ch-segmented-control-render](../../../components/segmented-control)
@@ -41,6 +42,7 @@
 - [ch-switch](../../../components/switch)
 - [ch-tab-render](../../../components/tab)
 - [ch-tree-view-render](../../../components/tree-view)
+- [ch-textblock](../../../components/textblock)
 
 ### Graph
 ```mermaid
@@ -53,13 +55,14 @@ graph TD;
   ch-showcase --> ch-action-group-render
   ch-showcase --> ch-action-list-render
   ch-showcase --> ch-barcode-scanner
+  ch-showcase --> ch-chat
   ch-showcase --> ch-dialog
   ch-showcase --> ch-dropdown-render
   ch-showcase --> ch-edit
   ch-showcase --> ch-test-flexible-layout
   ch-showcase --> ch-image
   ch-showcase --> ch-layout-splitter
-  ch-showcase --> ch-markdown
+  ch-showcase --> ch-markdown-viewer
   ch-showcase --> ch-popover
   ch-showcase --> ch-qr
   ch-showcase --> ch-segmented-control-render
@@ -67,6 +70,7 @@ graph TD;
   ch-showcase --> ch-switch
   ch-showcase --> ch-tab-render
   ch-showcase --> ch-tree-view-render
+  ch-showcase --> ch-textblock
   ch-flexible-layout-render --> ch-flexible-layout
   ch-flexible-layout --> ch-tab-render
   ch-flexible-layout --> ch-layout-splitter
@@ -78,6 +82,15 @@ graph TD;
   ch-action-group --> ch-dropdown
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
+  ch-chat --> ch-smart-grid
+  ch-chat --> ch-virtual-scroller
+  ch-chat --> ch-edit
+  ch-chat --> ch-code
+  ch-chat --> ch-markdown-viewer
+  ch-chat --> ch-smart-grid-cell
+  ch-smart-grid --> ch-infinite-scroll
+  ch-markdown-viewer --> ch-theme
+  ch-markdown-viewer --> ch-code
   ch-dropdown-render --> ch-dropdown
   ch-test-flexible-layout --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-action-group-render

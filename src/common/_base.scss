@@ -72,26 +72,3 @@ $default-decorative-image-size: 0.875em;
     color: inherit;
   }
 }
-
-@mixin line-clamp() {
-  // Used to measure the box height, in order to make the lines clampable
-  .height-measuring {
-    display: flex;
-    width: 0;
-    height: 100%;
-    visibility: hidden;
-  }
-
-  .line-clamp {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: var(--max-lines);
-    overflow: hidden;
-  }
-
-  // Used to measure the line height, in order to make the lines clampable
-  .line-measuring {
-    visibility: hidden;
-    position: absolute;
-  }
-}

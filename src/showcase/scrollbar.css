@@ -1,0 +1,15 @@
+ch-grid-smart {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: var(--accents__secondary) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--accents__secondary);
+  }
+}

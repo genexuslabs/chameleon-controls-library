@@ -1,0 +1,102 @@
+@import "../../common/base";
+
+@include button-reset();
+@include box-sizing();
+@include typography-reset();
+
+:host {
+  display: grid;
+  grid-template-rows: 1fr min-content;
+}
+
+.assistant-content,
+.user-content {
+  // Improve rendering performance by not rendering off-screen messages
+  contain: paint;
+}
+
+.message-with-images {
+  display: grid;
+}
+
+img {
+  display: block;
+  // Necessary to avoid overflowing the cell width when the window does not
+  // have enough width
+  max-inline-size: 100%;
+}
+
+.assistant-loading {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+}
+
+.assistant-files {
+  grid-area: 2 / 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.file-skeleton {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: "";
+    display: inline-flex;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//         Send container
+// - - - - - - - - - - - - - - - -
+.stop-generating-answer-button {
+  grid-area: input-wrapper;
+  position: absolute;
+  inset-block-start: 0;
+  justify-self: center;
+  transform: translateY(-100%);
+}
+
+.images-to-upload {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.send-container {
+  display: grid;
+  grid-template: "input-wrapper send-or-audio" 1fr / 1fr max-content;
+  position: relative;
+  align-items: end;
+
+  &--file-uploading {
+    grid-template: "upload-image input-wrapper send-or-audio" 1fr / max-content 1fr max-content;
+  }
+}
+
+.send-input-wrapper {
+  grid-area: input-wrapper;
+}
+
+.send-or-audio-button {
+  grid-area: send-or-audio;
+}
+
+.spinner-loading {
+  animation: infinite-rotate 0.875s linear 0s infinite;
+}
+
+// This is a WA due to shadow DOM limitations/scoping with keyframes
+@keyframes infinite-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes gx-skeleton-load {
+  to {
+    transform: translateX(192%);
+  }
+}

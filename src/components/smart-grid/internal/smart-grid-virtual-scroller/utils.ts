@@ -56,9 +56,7 @@ export const isVirtualSizeCellVisible = (
 export const emptyItems = (items: SmartGridModel) =>
   items === undefined || items.length === 0;
 
-export const getSmartCells = (
-  scroller: HTMLChSmartGridVirtualScrollerElement
-) =>
+export const getSmartCells = (scroller: HTMLChVirtualScrollerElement) =>
   [
     ...scroller.querySelectorAll(":scope>ch-smart-grid-cell")
   ] as HTMLChSmartGridCellElement[];

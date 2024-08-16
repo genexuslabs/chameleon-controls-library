@@ -1,6 +1,6 @@
 import { SmartGridModel } from "../../types";
 
-export type SmartGridVirtualScrollVirtualItems = {
+export type VirtualScrollVirtualItems = {
   virtualItems: SmartGridModel;
   startIndex: number;
   endIndex: number;

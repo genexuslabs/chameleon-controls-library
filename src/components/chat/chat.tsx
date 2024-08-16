@@ -9,8 +9,8 @@ import {
   h
 } from "@stencil/core";
 import {
-  ChSmartGridVirtualScrollerCustomEvent,
-  SmartGridVirtualScrollVirtualItems
+  ChVirtualScrollerCustomEvent,
+  VirtualScrollVirtualItems
 } from "../../components";
 import {
   ChatContentImages,
@@ -38,7 +38,7 @@ const ENTER_KEY = "Enter";
 export class ChChat {
   #editRef!: HTMLChEditElement;
   #scrollRef: HTMLChSmartGridElement | undefined;
-  #virtualScrollRef: HTMLChSmartGridVirtualScrollerElement | undefined;
+  #virtualScrollRef: HTMLChVirtualScrollerElement | undefined;
 
   @Element() el!: HTMLChChatElement;
 
@@ -368,7 +368,7 @@ export class ChChat {
         onInfiniteThresholdReached={this.#loadMoreItems}
         ref={el => (this.#scrollRef = el as HTMLChSmartGridElement)}
       >
-        <ch-smart-grid-virtual-scroller
+        <ch-virtual-scroller
           role="row"
           slot="grid-content"
           class="grid-content"
@@ -379,12 +379,11 @@ export class ChChat {
           itemsCount={this.items.length}
           onVirtualItemsChanged={this.#virtualItemsChanged}
           ref={el =>
-            (this.#virtualScrollRef =
-              el as HTMLChSmartGridVirtualScrollerElement)
+            (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
           }
         >
           {this.virtualItems.map(this.renderItem)}
-        </ch-smart-grid-virtual-scroller>
+        </ch-virtual-scroller>
       </ch-smart-grid>
     );
 
@@ -430,7 +429,7 @@ export class ChChat {
   };
 
   #virtualItemsChanged = (
-    event: ChSmartGridVirtualScrollerCustomEvent<SmartGridVirtualScrollVirtualItems>
+    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
   ) => {
     this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };

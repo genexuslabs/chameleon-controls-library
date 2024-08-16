@@ -14,17 +14,13 @@ import {
 import { emptyItems } from "./utils";
 import { SyncWithRAF } from "../../../../common/sync-with-frames";
 import { SmartGridModel } from "../../types";
-import {
-  SmartGridCellVirtualSize,
-  SmartGridVirtualScrollVirtualItems
-} from "./types";
+import { SmartGridCellVirtualSize, VirtualScrollVirtualItems } from "./types";
 import { updateVirtualScrollSize } from "./update-virtual-scroll";
 import { ChSmartGridCellCustomEvent } from "../../../../components";
 import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
 import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
 
-const VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX =
-  "--ch-smart-grid-virtual-scroll__scroll-";
+const VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX = "--ch-virtual-scroll__scroll-";
 
 const VIRTUAL_SCROLL_START_SIZE_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}start-size`;
 const VIRTUAL_SCROLL_START_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFIX}start-display`;
@@ -34,10 +30,10 @@ const VIRTUAL_SCROLL_END_DISPLAY_CUSTOM_VAR = `${VIRTUAL_SCROLL_CUSTOM_VAR_PREFI
 
 @Component({
   shadow: true,
-  styleUrl: "smart-grid-virtual-scroller.scss",
-  tag: "ch-smart-grid-virtual-scroller"
+  styleUrl: "virtual-scroller.scss",
+  tag: "ch-virtual-scroller"
 })
-export class ChSmartGridVirtualScroller implements ComponentInterface {
+export class ChVirtualScroller implements ComponentInterface {
   #startIndex = 0;
   #endIndex = 0;
 
@@ -72,7 +68,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #smartGrid!: HTMLChSmartGridElement | undefined;
 
-  @Element() el!: HTMLChSmartGridVirtualScrollerElement;
+  @Element() el!: HTMLChVirtualScrollerElement;
 
   /**
    * `true` if the virtual scroller is waiting for all the content to be
@@ -134,7 +130,7 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
    * Emitted when the array of visible items in the ch-smart-grid changes.
    */
   @Event()
-  virtualItemsChanged: EventEmitter<SmartGridVirtualScrollVirtualItems>;
+  virtualItemsChanged: EventEmitter<VirtualScrollVirtualItems>;
 
   /**
    * Fired when the visible content of the virtual scroller did render for the
@@ -504,10 +500,9 @@ export class ChSmartGridVirtualScroller implements ComponentInterface {
     return (
       <Host
         class={{
-          "ch-smart-virtual-scroller--content-not-loaded":
-            this.waitingForContent,
-          "ch-smart-virtual-scroller--content-loaded": !this.waitingForContent,
-          "ch-smart-virtual-scroller--virtual-scroll":
+          "ch-virtual-scroller--content-not-loaded": this.waitingForContent,
+          "ch-virtual-scroller--content-loaded": !this.waitingForContent,
+          "ch-virtual-scroller--virtual-scroll":
             !this.waitingForContent && this.mode === "virtual-scroll"
         }}
       >

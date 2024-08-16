@@ -130,7 +130,7 @@ Type: `Promise<void>`
 ### Depends on
 
 - [ch-smart-grid](../smart-grid)
-- [ch-smart-grid-virtual-scroller](../smart-grid/internal/smart-grid-virtual-scroller)
+- [ch-virtual-scroller](../smart-grid/internal/smart-grid-virtual-scroller)
 - [ch-edit](../edit)
 - [ch-code](../code)
 - [ch-markdown-viewer](../markdown-viewer)
@@ -140,7 +140,7 @@ Type: `Promise<void>`
 ```mermaid
 graph TD;
   ch-chat --> ch-smart-grid
-  ch-chat --> ch-smart-grid-virtual-scroller
+  ch-chat --> ch-virtual-scroller
   ch-chat --> ch-edit
   ch-chat --> ch-code
   ch-chat --> ch-markdown-viewer

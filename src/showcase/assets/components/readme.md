@@ -83,7 +83,7 @@ graph TD;
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
   ch-chat --> ch-smart-grid
-  ch-chat --> ch-smart-grid-virtual-scroller
+  ch-chat --> ch-virtual-scroller
   ch-chat --> ch-edit
   ch-chat --> ch-code
   ch-chat --> ch-markdown-viewer

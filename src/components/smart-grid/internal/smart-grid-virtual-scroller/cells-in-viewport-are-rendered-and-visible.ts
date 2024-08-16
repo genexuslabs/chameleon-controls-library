@@ -7,7 +7,7 @@ import {
 
 // TODO: Use padding in the ch-smart-grid and see if this works well
 export const cellsInViewportAreLoadedAndVisible = (
-  scroller: HTMLChSmartGridVirtualScrollerElement,
+  scroller: HTMLChVirtualScrollerElement,
   smartGrid: HTMLChSmartGridElement,
   inverseLoading: boolean
 ): boolean => {

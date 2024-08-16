@@ -24,13 +24,6 @@ A control to highlight code blocks.
 | `value`                | `value`                   | Specifies the code string to highlight.                                                                                                  | `string`  | `undefined`           |
 
 
-## Shadow Parts
-
-| Part    | Description |
-| ------- | ----------- |
-| `"pre"` |             |
-
-
 ## CSS Custom Properties
 
 | Name                               | Description                                                                             |

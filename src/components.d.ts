@@ -39,8 +39,6 @@ import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
-import { SmartGridModel } from "./components/smart-grid/types";
-import { SmartGridVirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -56,6 +54,8 @@ import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, Tree
 import { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
+import { SmartGridModel } from "./components/smart-grid/types";
+import { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -94,8 +94,6 @@ export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
-export { SmartGridModel } from "./components/smart-grid/types";
-export { SmartGridVirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
 export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -111,6 +109,8 @@ export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, Tree
 export { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
+export { SmartGridModel } from "./components/smart-grid/types";
+export { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 export { ChWindowAlign } from "./deprecated-components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -2400,36 +2400,6 @@ export namespace Components {
          */
         "cellId": string;
     }
-    interface ChSmartGridVirtualScroller {
-        /**
-          * Add items to the beginning or end of the items property. This method is useful for adding new items to the collection, without impacting in the internal indexes used to display the virtual items. Without this method, the virtual scroll would behave unexpectedly when new items are added.
-         */
-        "addItems": (position: "start" | "end", ...items: SmartGridModel) => Promise<void>;
-        /**
-          * The number of elements to be rendered above and below the current container's viewport.
-         */
-        "bufferAmount": number;
-        /**
-          * Specifies an estimation for the items that will enter in the viewport of the initial render.
-         */
-        "initialRenderViewportItems": number;
-        /**
-          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
-         */
-        "inverseLoading": boolean;
-        /**
-          * The array of items to be rendered in the ch-smart-grid.
-         */
-        "items": SmartGridModel | undefined;
-        /**
-          * The number of elements in the items array. Use if the array changes, without recreating the array.
-         */
-        "itemsCount": number;
-        /**
-          * Specifies how the control will behave.
-         */
-        "mode": "virtual-scroll" | "lazy-render";
-    }
     interface ChStepList {
     }
     interface ChStepListItem {
@@ -3578,6 +3548,36 @@ export namespace Components {
          */
         "useGxRender": boolean;
     }
+    interface ChVirtualScroller {
+        /**
+          * Add items to the beginning or end of the items property. This method is useful for adding new items to the collection, without impacting in the internal indexes used to display the virtual items. Without this method, the virtual scroll would behave unexpectedly when new items are added.
+         */
+        "addItems": (position: "start" | "end", ...items: SmartGridModel) => Promise<void>;
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount": number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems": number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading": boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode": "virtual-scroll" | "lazy-render";
+    }
     /**
      * The 'ch-window' component represents a popup container that is positioned
      * relative to an element or the screen.
@@ -3873,10 +3873,6 @@ export interface ChSmartGridCellCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSmartGridCellElement;
 }
-export interface ChSmartGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLChSmartGridVirtualScrollerElement;
-}
 export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChStepListItemElement;
@@ -3960,6 +3956,10 @@ export interface ChTreeViewItemCustomEvent<T> extends CustomEvent<T> {
 export interface ChTreeViewRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTreeViewRenderElement;
+}
+export interface ChVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChVirtualScrollerElement;
 }
 export interface ChWindowCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -5071,24 +5071,6 @@ declare global {
         prototype: HTMLChSmartGridCellElement;
         new (): HTMLChSmartGridCellElement;
     };
-    interface HTMLChSmartGridVirtualScrollerElementEventMap {
-        "virtualItemsChanged": SmartGridVirtualScrollVirtualItems;
-        "virtualScrollerDidLoad": any;
-    }
-    interface HTMLChSmartGridVirtualScrollerElement extends Components.ChSmartGridVirtualScroller, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChSmartGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChSmartGridVirtualScrollerElement, ev: ChSmartGridVirtualScrollerCustomEvent<HTMLChSmartGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChSmartGridVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChSmartGridVirtualScrollerElement, ev: ChSmartGridVirtualScrollerCustomEvent<HTMLChSmartGridVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLChSmartGridVirtualScrollerElement: {
-        prototype: HTMLChSmartGridVirtualScrollerElement;
-        new (): HTMLChSmartGridVirtualScrollerElement;
-    };
     interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
     }
     var HTMLChStepListElement: {
@@ -5645,6 +5627,24 @@ declare global {
         prototype: HTMLChTreeViewRenderElement;
         new (): HTMLChTreeViewRenderElement;
     };
+    interface HTMLChVirtualScrollerElementEventMap {
+        "virtualItemsChanged": VirtualScrollVirtualItems;
+        "virtualScrollerDidLoad": any;
+    }
+    interface HTMLChVirtualScrollerElement extends Components.ChVirtualScroller, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: ChVirtualScrollerCustomEvent<HTMLChVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: ChVirtualScrollerCustomEvent<HTMLChVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChVirtualScrollerElement: {
+        prototype: HTMLChVirtualScrollerElement;
+        new (): HTMLChVirtualScrollerElement;
+    };
     interface HTMLChWindowElementEventMap {
         "windowOpened": any;
         "windowClosed": any;
@@ -5784,7 +5784,6 @@ declare global {
         "ch-slider": HTMLChSliderElement;
         "ch-smart-grid": HTMLChSmartGridElement;
         "ch-smart-grid-cell": HTMLChSmartGridCellElement;
-        "ch-smart-grid-virtual-scroller": HTMLChSmartGridVirtualScrollerElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
         "ch-style": HTMLChStyleElement;
@@ -5821,6 +5820,7 @@ declare global {
         "ch-tree-view-drop": HTMLChTreeViewDropElement;
         "ch-tree-view-item": HTMLChTreeViewItemElement;
         "ch-tree-view-render": HTMLChTreeViewRenderElement;
+        "ch-virtual-scroller": HTMLChVirtualScrollerElement;
         "ch-window": HTMLChWindowElement;
         "ch-window-close": HTMLChWindowCloseElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
@@ -8180,40 +8180,6 @@ declare namespace LocalJSX {
          */
         "onSmartCellDidLoad"?: (event: ChSmartGridCellCustomEvent<string>) => void;
     }
-    interface ChSmartGridVirtualScroller {
-        /**
-          * The number of elements to be rendered above and below the current container's viewport.
-         */
-        "bufferAmount"?: number;
-        /**
-          * Specifies an estimation for the items that will enter in the viewport of the initial render.
-         */
-        "initialRenderViewportItems"?: number;
-        /**
-          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
-         */
-        "inverseLoading"?: boolean;
-        /**
-          * The array of items to be rendered in the ch-smart-grid.
-         */
-        "items": SmartGridModel | undefined;
-        /**
-          * The number of elements in the items array. Use if the array changes, without recreating the array.
-         */
-        "itemsCount"?: number;
-        /**
-          * Specifies how the control will behave.
-         */
-        "mode"?: "virtual-scroll" | "lazy-render";
-        /**
-          * Emitted when the array of visible items in the ch-smart-grid changes.
-         */
-        "onVirtualItemsChanged"?: (event: ChSmartGridVirtualScrollerCustomEvent<SmartGridVirtualScrollVirtualItems>) => void;
-        /**
-          * Fired when the visible content of the virtual scroller did render for the first time.
-         */
-        "onVirtualScrollerDidLoad"?: (event: ChSmartGridVirtualScrollerCustomEvent<any>) => void;
-    }
     interface ChStepList {
     }
     interface ChStepListItem {
@@ -9369,6 +9335,40 @@ declare namespace LocalJSX {
          */
         "useGxRender"?: boolean;
     }
+    interface ChVirtualScroller {
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount"?: number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems"?: number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading"?: boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount"?: number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode"?: "virtual-scroll" | "lazy-render";
+        /**
+          * Emitted when the array of visible items in the ch-smart-grid changes.
+         */
+        "onVirtualItemsChanged"?: (event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>) => void;
+        /**
+          * Fired when the visible content of the virtual scroller did render for the first time.
+         */
+        "onVirtualScrollerDidLoad"?: (event: ChVirtualScrollerCustomEvent<any>) => void;
+    }
     /**
      * The 'ch-window' component represents a popup container that is positioned
      * relative to an element or the screen.
@@ -9574,7 +9574,6 @@ declare namespace LocalJSX {
         "ch-slider": ChSlider;
         "ch-smart-grid": ChSmartGrid;
         "ch-smart-grid-cell": ChSmartGridCell;
-        "ch-smart-grid-virtual-scroller": ChSmartGridVirtualScroller;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
         "ch-style": ChStyle;
@@ -9611,6 +9610,7 @@ declare namespace LocalJSX {
         "ch-tree-view-drop": ChTreeViewDrop;
         "ch-tree-view-item": ChTreeViewItem;
         "ch-tree-view-render": ChTreeViewRender;
+        "ch-virtual-scroller": ChVirtualScroller;
         "ch-window": ChWindow;
         "ch-window-close": ChWindowClose;
         "gx-grid-chameleon": GxGridChameleon;
@@ -9844,7 +9844,6 @@ declare module "@stencil/core" {
             "ch-slider": LocalJSX.ChSlider & JSXBase.HTMLAttributes<HTMLChSliderElement>;
             "ch-smart-grid": LocalJSX.ChSmartGrid & JSXBase.HTMLAttributes<HTMLChSmartGridElement>;
             "ch-smart-grid-cell": LocalJSX.ChSmartGridCell & JSXBase.HTMLAttributes<HTMLChSmartGridCellElement>;
-            "ch-smart-grid-virtual-scroller": LocalJSX.ChSmartGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChSmartGridVirtualScrollerElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
             /**
@@ -9952,6 +9951,7 @@ declare module "@stencil/core" {
             "ch-tree-view-drop": LocalJSX.ChTreeViewDrop & JSXBase.HTMLAttributes<HTMLChTreeViewDropElement>;
             "ch-tree-view-item": LocalJSX.ChTreeViewItem & JSXBase.HTMLAttributes<HTMLChTreeViewItemElement>;
             "ch-tree-view-render": LocalJSX.ChTreeViewRender & JSXBase.HTMLAttributes<HTMLChTreeViewRenderElement>;
+            "ch-virtual-scroller": LocalJSX.ChVirtualScroller & JSXBase.HTMLAttributes<HTMLChVirtualScrollerElement>;
             /**
              * The 'ch-window' component represents a popup container that is positioned
              * relative to an element or the screen.

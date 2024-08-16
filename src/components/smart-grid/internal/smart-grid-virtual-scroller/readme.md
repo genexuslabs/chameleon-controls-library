@@ -57,8 +57,8 @@ Type: `Promise<void>`
 ### Graph
 ```mermaid
 graph TD;
-  ch-chat --> ch-smart-grid-virtual-scroller
-  style ch-smart-grid-virtual-scroller fill:#f9f,stroke:#333,stroke-width:4px
+  ch-chat --> ch-virtual-scroller
+  style ch-virtual-scroller fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
 ----------------------------------------------

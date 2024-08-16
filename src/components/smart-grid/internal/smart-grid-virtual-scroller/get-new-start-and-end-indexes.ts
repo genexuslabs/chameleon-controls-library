@@ -149,7 +149,7 @@ const getAmountOfCellsThatAreVisibleInTheBuffer = (
  * and end index of the virtual array to rendered the cells
  */
 export const getNewStartAndEndIndexes = (
-  scroller: HTMLChSmartGridVirtualScrollerElement,
+  scroller: HTMLChVirtualScrollerElement,
   smartGrid: HTMLChSmartGridElement,
   items: SmartGridModel,
   virtualSizes: Map<string, SmartGridCellVirtualSize>,

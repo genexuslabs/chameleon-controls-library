@@ -12,7 +12,7 @@ import { ChEdit } from "../../../components/edit/edit";
 import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
 import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
-import { ChMarkdown } from "../../../components/markdown/markdown";
+import { ChMarkdownViewer } from "../../../components/markdown-viewer/markdown-viewer";
 import { ChPopover } from "../../../components/popover/popover";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
@@ -135,5 +135,5 @@ export type ShowcaseAvailableStories =
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<
-  ChChat | ChMarkdown | ChFlexibleLayoutRender
+  ChChat | ChMarkdownViewer | ChFlexibleLayoutRender
 >;

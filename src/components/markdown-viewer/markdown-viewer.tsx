@@ -23,7 +23,7 @@ import { defaultCodeRender } from "../code/internal/default-render";
   styleUrl: "markdown-viewer.scss",
   tag: "ch-markdown-viewer"
 })
-export class ChMarkdown {
+export class ChMarkdownViewer {
   #JSXTree: any;
 
   @Element() el: HTMLChMarkdownViewerElement;

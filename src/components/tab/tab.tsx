@@ -44,7 +44,11 @@ import {
   SELECTED_PART
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
-import { focusComposedPath } from "../common/helpers";
+import {
+  focusComposedPath,
+  MouseEventButton,
+  MouseEventButtons
+} from "../common/helpers";
 import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
 // Custom vars
@@ -810,6 +814,14 @@ export class ChTabRender implements DraggableView {
     });
   };
 
+  #preventMouseDownOnScroll = (event: MouseEvent) => {
+    // We have to prevent the mousedown event to make work the close with the
+    // mouse wheel, because when the page has scroll, the auxClick is not fired
+    if (event.buttons === MouseEventButtons.WHEEL) {
+      event.preventDefault();
+    }
+  };
+
   #handleClose = (index: number, itemId: string) => (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -939,6 +951,11 @@ export class ChTabRender implements DraggableView {
           isPseudoElementImg(item.startImgSrc, item.startImgType)
             ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
             : null
+        }
+        onMouseDown={
+          !isDisabled && this.closeButton
+            ? this.#preventMouseDownOnScroll
+            : undefined
         }
         onAuxClick={
           !isDisabled && this.closeButton

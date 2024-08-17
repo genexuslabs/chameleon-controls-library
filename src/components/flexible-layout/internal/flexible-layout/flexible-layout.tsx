@@ -280,7 +280,7 @@ export class ChFlexibleLayout {
   //   forceUpdate(this);
   // };
 
-  private handleItemChange =
+  #handleItemChange =
     (viewId: string) =>
     (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => {
       // Check if the selected item change event comes from a tab of the
@@ -301,7 +301,7 @@ export class ChFlexibleLayout {
       this.selectedViewItemChange.emit(eventInfo);
     };
 
-  private handleItemClose =
+  #handleItemClose =
     (viewId: string) => (event: ChTabRenderCustomEvent<TabItemCloseInfo>) => {
       event.stopPropagation();
 
@@ -319,7 +319,7 @@ export class ChFlexibleLayout {
       }
     };
 
-  private handleDragStart =
+  #handleDragStart =
     (viewId: string) => async (event: ChTabRenderCustomEvent<number>) => {
       event.stopPropagation();
 
@@ -450,7 +450,7 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
+  #renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
     const closeButtonEnabled = viewInfo.closeButton ?? this.closeButton;
     const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
     const sortableEnabled = viewInfo.sortable ?? this.sortable;
@@ -481,14 +481,14 @@ export class ChFlexibleLayout {
         tabButtonHidden={viewInfo.tabButtonHidden}
         // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
         onItemClose={
-          closeButtonEnabled ? this.handleItemClose(viewInfo.id) : undefined
+          closeButtonEnabled ? this.#handleItemClose(viewInfo.id) : undefined
         }
         onItemDragStart={
           dragOutsideEnabled && sortableEnabled
-            ? this.handleDragStart(viewInfo.id)
+            ? this.#handleDragStart(viewInfo.id)
             : undefined
         }
-        onSelectedItemChange={this.handleItemChange(viewInfo.id)}
+        onSelectedItemChange={this.#handleItemChange(viewInfo.id)}
       >
         {viewInfo.widgets.map(
           widget =>
@@ -498,13 +498,13 @@ export class ChFlexibleLayout {
     );
   };
 
-  private renderView = <T extends FlexibleLayoutLeafType>(
+  #renderView = <T extends FlexibleLayoutLeafType>(
     leaf: FlexibleLayoutLeafInfo<T>
   ) =>
     leaf.type === "single-content" ? (
       <slot key={leaf.id} slot={leaf.id} name={leaf.id} />
     ) : (
-      this.renderTab(leaf)
+      this.#renderTab(leaf)
     );
 
   render() {
@@ -522,7 +522,7 @@ export class ChFlexibleLayout {
           exportparts={"bar," + this.layoutSplitterParts}
           ref={el => (this.#layoutSplitterRef = el)}
         >
-          {this.#getAllLeafs().map(this.renderView)}
+          {this.#getAllLeafs().map(this.#renderView)}
         </ch-layout-splitter>
 
         <div

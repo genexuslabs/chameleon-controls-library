@@ -823,6 +823,11 @@ export class ChTabRender implements DraggableView {
   };
 
   #handleClose = (index: number, itemId: string) => (event: MouseEvent) => {
+    // Ensure the auxClick can is not fired with the right click
+    if (event.button !== MouseEventButton.WHEEL) {
+      return;
+    }
+
     event.preventDefault();
     event.stopPropagation();
 

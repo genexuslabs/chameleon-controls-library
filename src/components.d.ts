@@ -1009,9 +1009,17 @@ export namespace Components {
     interface ChFlexibleLayout {
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
         /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton": boolean;
+        /**
           * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
         "contain": CssContainProperty;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside": boolean;
         /**
           * Specifies the information of each view displayed.
          */
@@ -1044,6 +1052,10 @@ export namespace Components {
           * Removes the view that is identified by the given ID. The layout is rearranged depending on the state of the removed view.
          */
         "removeView": (itemId: string) => Promise<FlexibleLayoutViewRemoveResult>;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     interface ChFlexibleLayoutRender {
         /**
@@ -1055,6 +1067,10 @@ export namespace Components {
          */
         "addWidget": (leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>;
         /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton": boolean;
+        /**
           * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
         "contain": CssContainProperty;
@@ -1062,6 +1078,10 @@ export namespace Components {
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass": string;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside": boolean;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -1083,6 +1103,10 @@ export namespace Components {
           * Specifies the distribution of the items in the flexible layout.
          */
         "renders": FlexibleLayoutRenders;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
         /**
           * Update the selected widget from a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type.
          */
@@ -2518,13 +2542,13 @@ export namespace Components {
          */
         "accessibleName": string;
         /**
+          * `true` to display a close button for the items.
+         */
+        "closeButton": boolean;
+        /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
          */
         "closeButtonAccessibleName": string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden": boolean;
         /**
           * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
@@ -2538,9 +2562,9 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+          * When the control is sortable, the items can be dragged outside of the tab-list.  This property lets you specify if this behavior is enabled.
          */
-        "dragOutsideDisabled": boolean;
+        "dragOutside": boolean;
         /**
           * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
          */
@@ -2579,7 +2603,7 @@ export namespace Components {
          */
         "showCaptions": boolean;
         /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
          */
         "sortable": boolean;
         /**
@@ -6738,9 +6762,17 @@ declare namespace LocalJSX {
     }
     interface ChFlexibleLayout {
         /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton"?: boolean;
+        /**
           * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
         "contain"?: CssContainProperty;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside"?: boolean;
         /**
           * Specifies the information of each view displayed.
          */
@@ -6773,8 +6805,16 @@ declare namespace LocalJSX {
          */
         "overflow"?: | CssOverflowProperty
     | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     interface ChFlexibleLayoutRender {
+        /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton"?: boolean;
         /**
           * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
@@ -6783,6 +6823,10 @@ declare namespace LocalJSX {
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass"?: string;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside"?: boolean;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -6800,6 +6844,10 @@ declare namespace LocalJSX {
           * Specifies the distribution of the items in the flexible layout.
          */
         "renders"?: FlexibleLayoutRenders;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -8318,13 +8366,13 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: string;
         /**
+          * `true` to display a close button for the items.
+         */
+        "closeButton"?: boolean;
+        /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
          */
         "closeButtonAccessibleName"?: string;
-        /**
-          * `true` to hide the close button in the items.
-         */
-        "closeButtonHidden"?: boolean;
         /**
           * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
@@ -8338,9 +8386,9 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+          * When the control is sortable, the items can be dragged outside of the tab-list.  This property lets you specify if this behavior is enabled.
          */
-        "dragOutsideDisabled"?: boolean;
+        "dragOutside"?: boolean;
         /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
@@ -8379,7 +8427,7 @@ declare namespace LocalJSX {
          */
         "showCaptions"?: boolean;
         /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
          */
         "sortable"?: boolean;
         /**

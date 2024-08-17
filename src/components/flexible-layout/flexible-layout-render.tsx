@@ -104,6 +104,14 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly cssClass: string = "flexible-layout";
 
   /**
+   * When the "tabbed" type leafs are sortable, the items can be dragged
+   * outside of its tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
+   */
+  @Prop() readonly dragOutside: boolean = false;
+
+  /**
    * Specifies the distribution of the items in the flexible layout.
    */
   @Prop() readonly model: FlexibleLayoutModel;
@@ -804,6 +812,7 @@ export class ChFlexibleLayoutRender {
         class={this.cssClass || null}
         closeButton={this.closeButton}
         contain={this.contain}
+        dragOutside={this.dragOutside}
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}

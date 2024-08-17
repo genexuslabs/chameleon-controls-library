@@ -85,6 +85,14 @@ export class ChFlexibleLayout {
   @Prop() readonly contain: CssContainProperty = "none";
 
   /**
+   * When the "tabbed" type leafs are sortable, the items can be dragged
+   * outside of its tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
+   */
+  @Prop() readonly dragOutside: boolean = false;
+
+  /**
    * Specifies the information of each view displayed.
    */
   @Prop() readonly itemsInfo: Map<
@@ -448,7 +456,7 @@ export class ChFlexibleLayout {
       }`}
       exportparts={viewInfo.exportParts}
       closeButton={viewInfo.closeButton ?? this.closeButton}
-      dragOutsideDisabled={viewInfo.dragOutsideDisabled}
+      dragOutside={viewInfo.dragOutside ?? this.dragOutside}
       direction={viewInfo.tabDirection}
       disabled={viewInfo.disabled}
       model={viewInfo.widgets}

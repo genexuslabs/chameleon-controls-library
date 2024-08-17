@@ -101,7 +101,7 @@ const render = () => (
       >
         {renderedItems.has("item1") && (
           <ch-tree-view-render
-            class="tree-view-secondary"
+            class="tree-view tree-view-secondary"
             slot="item1"
             showLines="last"
             model={kbExplorerModel}
@@ -111,7 +111,7 @@ const render = () => (
 
         {renderedItems.has("item2") && (
           <ch-tree-view-render
-            class="tree-view-secondary"
+            class="tree-view tree-view-secondary"
             slot="item2"
             showLines="last"
             model={preferencesModel}

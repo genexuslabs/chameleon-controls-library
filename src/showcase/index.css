@@ -163,10 +163,6 @@ header {
   margin: var(--spacing--l, var(--mer-spacing--md));
 }
 
-.heading-1 {
-  margin-block-end: var(--spacing--m, var(--mer-spacing--xs));
-}
-
 .heading-2 {
   display: grid;
   grid-template-columns: max-content max-content;

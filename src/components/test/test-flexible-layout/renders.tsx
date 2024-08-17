@@ -471,7 +471,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
@@ -483,7 +483,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [PREFERENCES]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
       dragDisabled={true}
@@ -497,17 +497,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [START_PAGE]: () => (
     <div slot={START_PAGE} key={START_PAGE}>
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          fontSize: "64px",
-          color: "#c5c8c6",
-          "text-align": "center"
-        }}
-      >
-        GeneXus
-      </h1>
+      <h1 class="heading-1 welcome-message">GeneXus</h1>
     </div>
   ),
   [STRUCT_EDITOR]: () => (
@@ -654,7 +644,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
       dragDisabled={true}
@@ -667,7 +657,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [IMPORT_OBJECTS]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
       checkbox

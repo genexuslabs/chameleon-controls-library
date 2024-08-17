@@ -450,40 +450,53 @@ export class ChFlexibleLayout {
     this.dragBarDisabled = false;
   };
 
-  private renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => (
-    <ch-tab-render
-      id={viewInfo.id}
-      key={viewInfo.id}
-      slot={viewInfo.id}
-      contain={this.contain}
-      class={{
-        [`ch-tab-${viewInfo.tabDirection}--end`]: viewInfo.tabPosition === "end"
-      }}
-      part={`leaf ${viewInfo.tabDirection} ${viewInfo.tabPosition ?? "start"} ${
-        viewInfo.id
-      }`}
-      exportparts={viewInfo.exportParts}
-      closeButton={viewInfo.closeButton ?? this.closeButton}
-      dragOutside={viewInfo.dragOutside ?? this.dragOutside}
-      direction={viewInfo.tabDirection}
-      disabled={viewInfo.disabled}
-      model={viewInfo.widgets}
-      overflow={this.overflow}
-      selectedId={viewInfo.selectedWidgetId}
-      showCaptions={viewInfo.showCaptions}
-      sortable={viewInfo.sortable ?? this.sortable}
-      tabButtonHidden={viewInfo.tabButtonHidden}
-      // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
-      onItemClose={this.handleItemClose(viewInfo.id)}
-      onItemDragStart={this.handleDragStart(viewInfo.id)}
-      onSelectedItemChange={this.handleItemChange(viewInfo.id)}
-    >
-      {viewInfo.widgets.map(
-        widget =>
-          widget.wasRendered && <slot name={widget.id} slot={widget.id} />
-      )}
-    </ch-tab-render>
-  );
+  private renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
+    const closeButtonEnabled = viewInfo.closeButton ?? this.closeButton;
+    const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
+    const sortableEnabled = viewInfo.sortable ?? this.sortable;
+
+    return (
+      <ch-tab-render
+        id={viewInfo.id}
+        key={viewInfo.id}
+        slot={viewInfo.id}
+        contain={this.contain}
+        class={{
+          [`ch-tab-${viewInfo.tabDirection}--end`]:
+            viewInfo.tabPosition === "end"
+        }}
+        part={`leaf ${viewInfo.tabDirection} ${
+          viewInfo.tabPosition ?? "start"
+        } ${viewInfo.id}`}
+        exportparts={viewInfo.exportParts}
+        closeButton={closeButtonEnabled}
+        dragOutside={dragOutsideEnabled}
+        direction={viewInfo.tabDirection}
+        disabled={viewInfo.disabled}
+        model={viewInfo.widgets}
+        overflow={this.overflow}
+        selectedId={viewInfo.selectedWidgetId}
+        showCaptions={viewInfo.showCaptions}
+        sortable={sortableEnabled}
+        tabButtonHidden={viewInfo.tabButtonHidden}
+        // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
+        onItemClose={
+          closeButtonEnabled ? this.handleItemClose(viewInfo.id) : undefined
+        }
+        onItemDragStart={
+          dragOutsideEnabled && sortableEnabled
+            ? this.handleDragStart(viewInfo.id)
+            : undefined
+        }
+        onSelectedItemChange={this.handleItemChange(viewInfo.id)}
+      >
+        {viewInfo.widgets.map(
+          widget =>
+            widget.wasRendered && <slot name={widget.id} slot={widget.id} />
+        )}
+      </ch-tab-render>
+    );
+  };
 
   private renderView = <T extends FlexibleLayoutLeafType>(
     leaf: FlexibleLayoutLeafInfo<T>

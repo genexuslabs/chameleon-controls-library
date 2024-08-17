@@ -270,8 +270,8 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
-          // dragOutsideDisabled: true,
+          closeButton: false,
+          // dragOutside: false,
           // sortable: false,
           dragBar: { part: "visible", size: 1 },
           size: "300px",
@@ -315,6 +315,7 @@ export const layout3: FlexibleLayoutModel = {
               items: [
                 {
                   id: "sub-group-2-2-1-1",
+                  closeButton: false,
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
@@ -406,7 +407,7 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
+          closeButton: false,
           size: "300px",
           showCaptions: false,
           type: "tabbed",

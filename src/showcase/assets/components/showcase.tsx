@@ -48,7 +48,7 @@ const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   items: [
     {
       id: MAIN_WIDGET,
-      closeButtonHidden: true,
+      closeButton: true,
       size: "1fr",
       minSize: "220px",
       selectedWidgetId: MAIN_WIDGET,

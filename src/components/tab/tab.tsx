@@ -377,9 +377,11 @@ export class ChTabRender implements DraggableView {
 
   /**
    * When the control is sortable, the items can be dragged outside of the
-   * tab-list. This property lets you specify if this behavior is disabled.
+   * tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
    */
-  @Prop() readonly dragOutsideDisabled: boolean = false;
+  @Prop() readonly dragOutside: boolean = false;
 
   /**
    * `true` if the group has is view section expanded. Otherwise, only the
@@ -603,7 +605,7 @@ export class ChTabRender implements DraggableView {
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
 
     // Update mouse limits if drag outside is enabled
-    if (!this.dragOutsideDisabled) {
+    if (this.dragOutside) {
       this.#mouseBoundingLimits = {
         xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
         xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
@@ -740,7 +742,7 @@ export class ChTabRender implements DraggableView {
       const mouseLimits = this.#mouseBoundingLimits;
 
       // Check mouse limits if drag outside is enabled
-      if (!this.dragOutsideDisabled) {
+      if (this.dragOutside) {
         const draggedButtonIsInsideTheTabList =
           inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
           inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);

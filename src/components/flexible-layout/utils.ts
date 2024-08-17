@@ -100,7 +100,7 @@ export const createAndSetLeafInfo = (
     exportParts,
     closeButton: flexibleLayoutLeaf.closeButton,
     disabled: flexibleLayoutLeaf.disabled,
-    dragOutsideDisabled: flexibleLayoutLeaf.dragOutsideDisabled ?? false,
+    dragOutside: flexibleLayoutLeaf.dragOutside,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
     sortable: flexibleLayoutLeaf.sortable ?? true,

@@ -68,9 +68,10 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /**
    * When the control is sortable, the items can be dragged outside of the
    * tab-list. This property lets you specify if this behavior is disabled.
-   * If not specified, defaults to `false`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
-  dragOutsideDisabled?: boolean;
+  dragOutside?: boolean;
 
   selectedWidgetId?: string;
   showCaptions?: boolean;

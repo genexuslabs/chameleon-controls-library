@@ -497,12 +497,13 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [START_PAGE]: () => (
     <div slot={START_PAGE} key={START_PAGE}>
-      <h1 class="heading-1 welcome-message">GeneXus</h1>
+      <h2 class="heading-1 welcome-message">GeneXus</h2>
     </div>
   ),
   [STRUCT_EDITOR]: () => (
     <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
-      Grid render... <input type="text" />
+      Grid render...
+      <ch-edit class="form-input" accessibleName="Name" type="text"></ch-edit>
       <ch-grid>
         <ch-grid-columnset>
           <ch-grid-column
@@ -629,12 +630,22 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
     <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
-      Panel AttrsContainersAndOthers <input type="text" />
+      Panel AttrsContainersAndOthers
+      <ch-edit
+        class="form-input"
+        accessibleName="Panel name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [PROPERTIES]: () => (
     <div slot={PROPERTIES} key={PROPERTIES}>
-      Properties render... <input type="text" />
+      Properties render...
+      <ch-edit
+        class="form-input"
+        accessibleName="Property name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [OUTPUT]: () => (

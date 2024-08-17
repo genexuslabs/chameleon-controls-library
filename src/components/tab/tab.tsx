@@ -337,16 +337,16 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly accessibleName: string;
 
   /**
+   * `true` to display a close button for the items.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element. This label is used for the close button of the captions.
    */
   @Prop() readonly closeButtonAccessibleName: string = "Close";
-
-  /**
-   * `true` to hide the close button in the items.
-   */
-  @Prop() readonly closeButtonHidden: boolean = false;
 
   /**
    * Same as the contain CSS property. This property indicates that an item
@@ -377,9 +377,11 @@ export class ChTabRender implements DraggableView {
 
   /**
    * When the control is sortable, the items can be dragged outside of the
-   * tab-list. This property lets you specify if this behavior is disabled.
+   * tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
    */
-  @Prop() readonly dragOutsideDisabled: boolean = false;
+  @Prop() readonly dragOutside: boolean = false;
 
   /**
    * `true` if the group has is view section expanded. Otherwise, only the
@@ -428,7 +430,8 @@ export class ChTabRender implements DraggableView {
 
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
-   * If sortable !== true, the tab buttons can not be dragged out either.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
    */
   @Prop() readonly sortable: boolean = false;
 
@@ -603,7 +606,7 @@ export class ChTabRender implements DraggableView {
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
 
     // Update mouse limits if drag outside is enabled
-    if (!this.dragOutsideDisabled) {
+    if (this.dragOutside) {
       this.#mouseBoundingLimits = {
         xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
         xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
@@ -740,7 +743,7 @@ export class ChTabRender implements DraggableView {
       const mouseLimits = this.#mouseBoundingLimits;
 
       // Check mouse limits if drag outside is enabled
-      if (!this.dragOutsideDisabled) {
+      if (this.dragOutside) {
         const draggedButtonIsInsideTheTabList =
           inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
           inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
@@ -960,7 +963,7 @@ export class ChTabRender implements DraggableView {
 
         {this.showCaptions && item.name}
 
-        {!this.closeButtonHidden && (
+        {this.closeButton && (
           <button
             aria-label={this.closeButtonAccessibleName}
             class="close-button"

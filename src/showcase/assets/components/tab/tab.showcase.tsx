@@ -45,11 +45,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
         disabled={state.disabled}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -87,11 +87,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
         disabled={state.disabled}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -179,16 +179,16 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "string"
         },
         {
+          id: "closeButton",
+          caption: "Close Button",
+          value: false,
+          type: "boolean"
+        },
+        {
           id: "closeButtonAccessibleName",
           caption: "Close Button Accessible Name",
           value: "Close",
           type: "string"
-        },
-        {
-          id: "closeButtonHidden",
-          caption: "Close Button Hidden",
-          value: true,
-          type: "boolean"
         },
         {
           id: "disabled",
@@ -197,9 +197,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "boolean"
         },
         {
-          id: "dragOutsideDisabled",
-          caption: "Drag Outside Disabled",
-          value: false,
+          id: "dragOutside",
+          caption: "Drag Outside",
+          value: true,
           type: "boolean"
         },
         {

@@ -17,9 +17,12 @@ export class ChTestFlexibleLayout {
   render() {
     return (
       <ch-flexible-layout-render
+        closeButton
         contain="size"
+        dragOutside
         model={this.model}
         renders={layoutRenders}
+        sortable
       ></ch-flexible-layout-render>
     );
   }

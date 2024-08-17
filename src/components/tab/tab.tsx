@@ -430,7 +430,8 @@ export class ChTabRender implements DraggableView {
 
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
-   * If sortable !== true, the tab buttons can not be dragged out either.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
    */
   @Prop() readonly sortable: boolean = false;
 

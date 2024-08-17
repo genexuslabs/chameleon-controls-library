@@ -940,7 +940,11 @@ export class ChTabRender implements DraggableView {
             ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
             : null
         }
-        onAuxClick={!isDisabled ? this.#handleClose(index, item.id) : undefined}
+        onAuxClick={
+          !isDisabled && this.closeButton
+            ? this.#handleClose(index, item.id)
+            : undefined
+        }
         onClick={
           !(item.id === this.selectedId) && !isDisabled
             ? this.#handleSelectedItemChange(index, item.id)

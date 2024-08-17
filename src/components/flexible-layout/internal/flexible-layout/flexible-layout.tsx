@@ -4,6 +4,7 @@ import {
   Event,
   EventEmitter,
   Host,
+  Listen,
   Method,
   Prop,
   State,
@@ -222,6 +223,32 @@ export class ChFlexibleLayout {
     await viewRef.removePage(itemId, forceRerender);
   }
 
+  @Listen("itemClose")
+  handleItemClose(event: ChTabRenderCustomEvent<TabItemCloseInfo>) {
+    const viewRef = event.composedPath()[0] as HTMLChTabRenderElement;
+
+    if (
+      viewRef.tagName.toLowerCase() !== "ch-tab-render" ||
+      viewRef.getRootNode() !== this.el.shadowRoot
+    ) {
+      return;
+    }
+    event.stopPropagation();
+
+    // Add the view id to properly update the render
+    const eventDetail: ViewItemCloseInfo = {
+      ...event.detail,
+      viewId: viewRef.id
+    };
+
+    const eventInfo = this.viewItemClose.emit(eventDetail);
+
+    // Prevent the tab closing
+    if (eventInfo.defaultPrevented) {
+      event.preventDefault();
+    }
+  }
+
   #getLeafInfo = (
     leafId: string
   ): FlexibleLayoutLeafInfo<FlexibleLayoutLeafType> =>
@@ -299,24 +326,6 @@ export class ChFlexibleLayout {
       };
 
       this.selectedViewItemChange.emit(eventInfo);
-    };
-
-  #handleItemClose =
-    (viewId: string) => (event: ChTabRenderCustomEvent<TabItemCloseInfo>) => {
-      event.stopPropagation();
-
-      // Add the view id to properly update the render
-      const eventDetail: ViewItemCloseInfo = {
-        ...event.detail,
-        viewId: viewId
-      };
-
-      const eventInfo = this.viewItemClose.emit(eventDetail);
-
-      // Prevent the tab closing
-      if (eventInfo.defaultPrevented) {
-        event.preventDefault();
-      }
     };
 
   #handleDragStart =
@@ -451,7 +460,6 @@ export class ChFlexibleLayout {
   };
 
   #renderTab = (viewInfo: FlexibleLayoutLeafInfo<"tabbed">) => {
-    const closeButtonEnabled = viewInfo.closeButton ?? this.closeButton;
     const dragOutsideEnabled = viewInfo.dragOutside ?? this.dragOutside;
     const sortableEnabled = viewInfo.sortable ?? this.sortable;
 
@@ -469,10 +477,10 @@ export class ChFlexibleLayout {
           viewInfo.tabPosition ?? "start"
         } ${viewInfo.id}`}
         exportparts={viewInfo.exportParts}
-        closeButton={closeButtonEnabled}
-        dragOutside={dragOutsideEnabled}
+        closeButton={viewInfo.closeButton ?? this.closeButton}
         direction={viewInfo.tabDirection}
         disabled={viewInfo.disabled}
+        dragOutside={dragOutsideEnabled}
         model={viewInfo.widgets}
         overflow={this.overflow}
         selectedId={viewInfo.selectedWidgetId}
@@ -480,9 +488,6 @@ export class ChFlexibleLayout {
         sortable={sortableEnabled}
         tabButtonHidden={viewInfo.tabButtonHidden}
         // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
-        onItemClose={
-          closeButtonEnabled ? this.#handleItemClose(viewInfo.id) : undefined
-        }
         onItemDragStart={
           dragOutsideEnabled && sortableEnabled
             ? this.#handleDragStart(viewInfo.id)

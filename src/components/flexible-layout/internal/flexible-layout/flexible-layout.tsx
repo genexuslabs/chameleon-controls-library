@@ -69,6 +69,11 @@ export class ChFlexibleLayout {
   @State() dragBarDisabled = false;
 
   /**
+   * `true` to display a close button for the `"tabbed"` type leafs.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
    * Same as the contain CSS property. This property indicates that an widget
    * and its contents are, as much as possible, independent from the rest of the
    * document tree. Containment enables isolating a subsection of the DOM,
@@ -442,7 +447,7 @@ export class ChFlexibleLayout {
         viewInfo.id
       }`}
       exportparts={viewInfo.exportParts}
-      closeButtonHidden={viewInfo.closeButtonHidden}
+      closeButton={viewInfo.closeButton ?? this.closeButton}
       dragOutsideDisabled={viewInfo.dragOutsideDisabled}
       direction={viewInfo.tabDirection}
       disabled={viewInfo.disabled}

@@ -83,6 +83,11 @@ export class ChFlexibleLayoutRender {
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
 
   /**
+   * `true` to display a close button for the `"tabbed"` type leafs.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
    * Same as the contain CSS property. This property indicates that an widget
    * and its contents are, as much as possible, independent from the rest of the
    * document tree. Containment enables isolating a subsection of the DOM,
@@ -796,8 +801,9 @@ export class ChFlexibleLayoutRender {
 
     return (
       <ch-flexible-layout
-        contain={this.contain}
         class={this.cssClass || null}
+        closeButton={this.closeButton}
+        contain={this.contain}
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}

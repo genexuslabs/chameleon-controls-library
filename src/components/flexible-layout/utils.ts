@@ -103,7 +103,7 @@ export const createAndSetLeafInfo = (
     dragOutside: flexibleLayoutLeaf.dragOutside,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
-    sortable: flexibleLayoutLeaf.sortable ?? true,
+    sortable: flexibleLayoutLeaf.sortable,
     tabDirection: tabOrientation,
     tabButtonHidden: flexibleLayoutLeaf.tabButtonHidden ?? false,
     tabPosition: flexibleLayoutLeaf.tabPosition,

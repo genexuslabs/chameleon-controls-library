@@ -135,6 +135,14 @@ export class ChFlexibleLayoutRender {
   @Prop() readonly renders: FlexibleLayoutRenders;
 
   /**
+   * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by
+   * dragging them in the tab-list.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
+   */
+  @Prop() readonly sortable: boolean = false;
+
+  /**
    * Emitted when the user pressed the close button in a widget.
    */
   @Event() widgetClose: EventEmitter<FlexibleLayoutWidgetCloseInfo>;
@@ -817,6 +825,7 @@ export class ChFlexibleLayoutRender {
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
         overflow={this.overflow}
+        sortable={this.sortable}
         onViewItemClose={this.#handleLeafWidgetClose}
         onViewItemReorder={this.#handleLeafWidgetReorder}
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}

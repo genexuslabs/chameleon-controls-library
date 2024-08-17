@@ -120,6 +120,14 @@ export class ChFlexibleLayout {
     | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
 
   /**
+   * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by
+   * dragging them in the tab-list.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
+   */
+  @Prop() readonly sortable: boolean = false;
+
+  /**
    * Fired when a item of a view request to be closed.
    */
   @Event() viewItemClose: EventEmitter<ViewItemCloseInfo>;
@@ -463,7 +471,7 @@ export class ChFlexibleLayout {
       overflow={this.overflow}
       selectedId={viewInfo.selectedWidgetId}
       showCaptions={viewInfo.showCaptions}
-      sortable={viewInfo.sortable}
+      sortable={viewInfo.sortable ?? this.sortable}
       tabButtonHidden={viewInfo.tabButtonHidden}
       // onExpandMainGroup={tabType === "main" ? this.handleMainGroupExpand : null}
       onItemClose={this.handleItemClose(viewInfo.id)}

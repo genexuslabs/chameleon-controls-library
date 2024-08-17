@@ -79,7 +79,8 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
    * If sortable !== true, the tab buttons can not be dragged out either.
-   * If not specified, defaults to `true`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
   sortable?: boolean;
 

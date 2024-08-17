@@ -6,6 +6,14 @@
 
 ch-test-flexible-layout {
   display: contents;
+
+  .welcome-message {
+    margin-block-start: var(--spacing--l, var(--mer-spacing--md));
+    text-align: center;
+    font-size: 64px;
+    line-height: 80px;
+    opacity: 0.75;
+  }
 }
 
 .flexible-layout {

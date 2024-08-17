@@ -6,6 +6,11 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
     />
+    <meta
+      name="description"
+      content="A library of white-label, highly-customizable and reusable web components.
+      "
+    />
     <title>Chameleon</title>
     <link
       rel="icon"
@@ -274,184 +279,180 @@
         setLanguageDirectionInBrowser
       } from "./showcase/models/language-manager.js";
 
-      window.addEventListener("appload", () => {
-        const layoutSplitterRef = document.querySelector("ch-layout-splitter");
-        const treeViewRef = document.querySelector("ch-tree-view-render");
-        const searchInputRef = document.querySelector(".form-input-search");
-        const mainPage = document.querySelector(".main-page");
-        const showcase = document.querySelector("ch-showcase");
-        const home = document.querySelector(".home");
-        const toggleThemeRef = document.getElementById(
-          "segmented-control-theme"
-        );
-        const toggleDSRef = document.getElementById("segmented-control-ds");
-        const toggleRtlRef = document.getElementById("segmented-control-rtl");
-        const chameleonHome = document.getElementById("chameleon-home");
+      const layoutSplitterRef = document.querySelector("ch-layout-splitter");
+      const treeViewRef = document.querySelector("ch-tree-view-render");
+      const searchInputRef = document.querySelector(".form-input-search");
+      const mainPage = document.querySelector(".main-page");
+      const showcase = document.querySelector("ch-showcase");
+      const home = document.querySelector(".home");
+      const toggleThemeRef = document.getElementById("segmented-control-theme");
+      const toggleDSRef = document.getElementById("segmented-control-ds");
+      const toggleRtlRef = document.getElementById("segmented-control-rtl");
+      const chameleonHome = document.getElementById("chameleon-home");
 
-        // Initialize Design Systems
-        toggleDSRef.model = [
-          {
-            id: "unanimo",
-            caption: "Unanimo"
-          },
-          {
-            id: "mercury",
-            caption: "Mercury"
+      // Initialize Design Systems
+      toggleDSRef.model = [
+        {
+          id: "unanimo",
+          caption: "Unanimo"
+        },
+        {
+          id: "mercury",
+          caption: "Mercury"
+        }
+      ];
+
+      // Initialize themes
+      toggleThemeRef.model = [
+        {
+          id: "light",
+          caption: "Light"
+        },
+        {
+          id: "dark",
+          caption: "Dark"
+        }
+      ];
+
+      // Initialize language directions
+      toggleRtlRef.model = [
+        {
+          id: "ltr",
+          caption: "LTR"
+        },
+        {
+          id: "rtl",
+          caption: "RTL"
+        }
+      ];
+
+      toggleDSRef.selectedId = getDesignSystem();
+      toggleThemeRef.selectedId = getTheme();
+      toggleRtlRef.selectedId = getLanguageDirection();
+
+      const setMainPage = () => {
+        mainPage.hidden = false;
+        showcase.hidden = true;
+        showcase.componentName = undefined;
+        showcase.pageSrc = undefined;
+      };
+
+      const setPage = () => {
+        if (window.location.hash && window.location.hash !== "#") {
+          const componentName = window.location.hash.replace("#", "");
+          const treeItemInformation = treeViewComponents.find(
+            treeItem => treeItem.id === componentName
+          );
+
+          // If the hash is a valid page
+          if (treeItemInformation) {
+            showcase.componentName = componentName;
+            showcase.pageSrc = `showcase/pages/${componentName}.html`;
+            showcase.pageName = treeItemInformation.caption;
+            showcase.status = `(${
+              treeItemInformation.metadata.split("---")[1]
+            })`;
+
+            mainPage.hidden = true;
+            showcase.hidden = false;
+
+            // Mark the new selected item in the Tree View
+            treeViewRef.updateItemsProperties([componentName], {
+              selected: true
+            });
+            return;
           }
-        ];
+        }
 
-        // Initialize themes
-        toggleThemeRef.model = [
-          {
-            id: "light",
-            caption: "Light"
-          },
-          {
-            id: "dark",
-            caption: "Dark"
-          }
-        ];
+        // Go to Main page
+        setMainPage();
+      };
 
-        // Initialize language directions
-        toggleRtlRef.model = [
-          {
-            id: "ltr",
-            caption: "LTR"
-          },
-          {
-            id: "rtl",
-            caption: "RTL"
-          }
-        ];
+      // Initialize sample
+      setPage();
 
-        toggleDSRef.selectedId = getDesignSystem();
-        toggleThemeRef.selectedId = getTheme();
-        toggleRtlRef.selectedId = getLanguageDirection();
-
-        const setMainPage = () => {
-          mainPage.hidden = false;
-          showcase.hidden = true;
-          showcase.componentName = undefined;
-          showcase.pageSrc = undefined;
-        };
-
-        const setPage = () => {
-          if (window.location.hash && window.location.hash !== "#") {
-            const componentName = window.location.hash.replace("#", "");
-            const treeItemInformation = treeViewComponents.find(
-              treeItem => treeItem.id === componentName
-            );
-
-            // If the hash is a valid page
-            if (treeItemInformation) {
-              showcase.componentName = componentName;
-              showcase.pageSrc = `showcase/pages/${componentName}.html`;
-              showcase.pageName = treeItemInformation.caption;
-              showcase.status = `(${
-                treeItemInformation.metadata.split("---")[1]
-              })`;
-
-              mainPage.hidden = true;
-              showcase.hidden = false;
-
-              // Mark the new selected item in the Tree View
-              treeViewRef.updateItemsProperties([componentName], {
-                selected: true
-              });
-              return;
-            }
-          }
-
-          // Go to Main page
-          setMainPage();
-        };
-
-        // Initialize sample
-        setPage();
-
-        // WA to reset the page when clicking in the logo
-        chameleonHome.addEventListener("click", () => {
-          mainPage.hidden = false;
-          showcase.hidden = true;
-          showcase.componentName = undefined;
-          showcase.pageSrc = undefined;
-        });
-
-        // Add event lister for the design system changes
-        toggleDSRef.addEventListener("selectedItemChange", () => {
-          const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
-
-          storeDesignSystem(newDS);
-          setDesignSystemInBrowser(newDS);
-          showcase.designSystem = newDS;
-        });
-
-        // Add event lister for the color scheme changes
-        toggleThemeRef.addEventListener("selectedItemChange", () => {
-          const colorScheme = getTheme() === "light" ? "dark" : "light";
-
-          storeTheme(colorScheme);
-          setThemeInBrowser(colorScheme);
-          showcase.colorScheme = colorScheme;
-        });
-
-        // Add event lister for the language direction changes
-        toggleRtlRef.addEventListener("selectedItemChange", () => {
-          const newLanguageDirection =
-            getLanguageDirection() === "rtl" ? "ltr" : "rtl";
-
-          storeLanguageDirection(newLanguageDirection);
-          setLanguageDirectionInBrowser(newLanguageDirection);
-        });
-
-        const layoutSplitterModel = {
-          id: "root",
-          direction: "rows",
-          items: [
-            { id: "header", size: "48px", dragBar: { hidden: true } },
-            {
-              id: "content",
-              direction: "columns",
-              size: "1fr",
-              items: [
-                {
-                  id: "aside",
-                  size: "250px",
-                  minSize: "235px",
-                  dragBar: {
-                    hidden: false,
-                    size: 1
-                  }
-                },
-                {
-                  id: "main",
-                  size: "1fr",
-                  minSize: "500px"
-                }
-              ]
-            }
-          ]
-        };
-
-        layoutSplitterRef.model = layoutSplitterModel;
-        treeViewRef.model = treeViewComponents;
-
-        searchInputRef.addEventListener("input", () => {
-          treeViewRef.filter = searchInputRef.value;
-        });
-
-        // When the selected item of the Tree View changes, the main page must be updated
-        treeViewRef.addEventListener("selectedItemsChange", () => {
-          if (event.detail?.length > 0) {
-            const componentName = event.detail[0].item.id;
-
-            // This is a WA until we have the ch-navigation-list component
-            window.location.hash = `#${componentName}`;
-          }
-        });
-
-        window.addEventListener("hashchange", setPage);
+      // WA to reset the page when clicking in the logo
+      chameleonHome.addEventListener("click", () => {
+        mainPage.hidden = false;
+        showcase.hidden = true;
+        showcase.componentName = undefined;
+        showcase.pageSrc = undefined;
       });
+
+      // Add event lister for the design system changes
+      toggleDSRef.addEventListener("selectedItemChange", () => {
+        const newDS = getDesignSystem() === "unanimo" ? "mercury" : "unanimo";
+
+        storeDesignSystem(newDS);
+        setDesignSystemInBrowser(newDS);
+        showcase.designSystem = newDS;
+      });
+
+      // Add event lister for the color scheme changes
+      toggleThemeRef.addEventListener("selectedItemChange", () => {
+        const colorScheme = getTheme() === "light" ? "dark" : "light";
+
+        storeTheme(colorScheme);
+        setThemeInBrowser(colorScheme);
+        showcase.colorScheme = colorScheme;
+      });
+
+      // Add event lister for the language direction changes
+      toggleRtlRef.addEventListener("selectedItemChange", () => {
+        const newLanguageDirection =
+          getLanguageDirection() === "rtl" ? "ltr" : "rtl";
+
+        storeLanguageDirection(newLanguageDirection);
+        setLanguageDirectionInBrowser(newLanguageDirection);
+      });
+
+      const layoutSplitterModel = {
+        id: "root",
+        direction: "rows",
+        items: [
+          { id: "header", size: "48px", dragBar: { hidden: true } },
+          {
+            id: "content",
+            direction: "columns",
+            size: "1fr",
+            items: [
+              {
+                id: "aside",
+                size: "250px",
+                minSize: "235px",
+                dragBar: {
+                  hidden: false,
+                  size: 1
+                }
+              },
+              {
+                id: "main",
+                size: "1fr",
+                minSize: "500px"
+              }
+            ]
+          }
+        ]
+      };
+
+      layoutSplitterRef.model = layoutSplitterModel;
+      treeViewRef.model = treeViewComponents;
+
+      searchInputRef.addEventListener("input", () => {
+        treeViewRef.filter = searchInputRef.value;
+      });
+
+      // When the selected item of the Tree View changes, the main page must be updated
+      treeViewRef.addEventListener("selectedItemsChange", () => {
+        if (event.detail?.length > 0) {
+          const componentName = event.detail[0].item.id;
+
+          // This is a WA until we have the ch-navigation-list component
+          window.location.hash = `#${componentName}`;
+        }
+      });
+
+      window.addEventListener("hashchange", setPage);
     </script>
   </body>
 </html>

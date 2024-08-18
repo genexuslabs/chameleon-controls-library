@@ -22,6 +22,12 @@ export const config: Config = {
     }
   ],
   plugins: [sass()],
+  testing: {
+    browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
+    verbose: true,
+    browserHeadless: "new",
+    testPathIgnorePatterns: ["node_modules/", "src/testing/", "dist/"]
+  },
   bundles: [
     {
       components: [

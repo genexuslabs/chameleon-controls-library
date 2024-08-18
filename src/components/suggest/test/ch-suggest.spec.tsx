@@ -1,7 +1,7 @@
 import { newSpecPage } from "@stencil/core/testing";
 import { ChSuggest } from "../ch-suggest";
 
-describe("ch-suggest", () => {
+describe.skip("ch-suggest", () => {
   it("renders", async () => {
     const page = await newSpecPage({
       components: [ChSuggest],

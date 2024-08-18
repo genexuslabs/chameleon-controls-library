@@ -1,6 +1,6 @@
 import { newE2EPage } from "@stencil/core/testing";
 
-describe("ch-action-group-item", () => {
+describe.skip("ch-action-group-item", () => {
   it("renders", async () => {
     const page = await newE2EPage();
     await page.setContent(

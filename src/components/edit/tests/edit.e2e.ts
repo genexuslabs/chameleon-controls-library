@@ -5,7 +5,7 @@ describe("[ch-edit][form][multiline = false]", () => {
 });
 
 // TODO: Fix falling tests
-describe.skip("[ch-edit][form][multiline = true]", () => {
+describe("[ch-edit][form][multiline = true]", () => {
   performFormTests(
     {
       formElementTagName: "ch-edit",

@@ -30,7 +30,7 @@
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "stencil test --spec --e2e --watchAll",
     "validate": "npm run lint && npm run test && npm run build",
-    "validate.ci": "npm run lint && npm run build -- --max-workers 1 --debug && npm run test"
+    "validate.ci": "npm run test"
   },
   "license": "MIT",
   "dependencies": {

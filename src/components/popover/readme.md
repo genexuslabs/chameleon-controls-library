@@ -61,7 +61,7 @@ relative to an element, but placed on the top layer using `position: fixed`.
 
 ### Used by
 
- - [ch-combo-box-render](../combobox)
+ - [ch-combo-box-render](../combo-box)
  - [ch-dropdown](../dropdown/internal/dropdown)
  - [ch-showcase](../../showcase/assets/components)
 

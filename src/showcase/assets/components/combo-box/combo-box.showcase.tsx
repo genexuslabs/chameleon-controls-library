@@ -1,5 +1,5 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChComboBoxRender } from "../../../../components/combobox/combo-box";
+import { ChComboBoxRender } from "../../../../components/combo-box/combo-box";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
@@ -15,7 +15,7 @@ import {
 import {
   ComboBoxFilterOptions,
   ComboBoxItemModel
-} from "../../../../components/combobox/types";
+} from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
 
 const state: Partial<Mutable<ChComboBoxRender>> = {};

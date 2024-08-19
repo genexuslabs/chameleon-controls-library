@@ -62,12 +62,24 @@ export const performFormTests = (
     additionalAttributes?: string;
     formElementTagName: ChameleonControlsTagName;
     hasReadonlySupport: boolean;
+    pressEnterToConfirmValue?: boolean;
+    focusIsOnHostElement?: boolean;
+    valueCanBeUpdatedByTheUser?: boolean;
   },
   inputSelector: string = "input"
 ) => {
-  const additionalAttributes = testOptions.additionalAttributes;
-  const formElementTagName = testOptions.formElementTagName;
-  const hasReadonlySupport = testOptions.hasReadonlySupport;
+  const {
+    formElementTagName,
+    hasReadonlySupport,
+    additionalAttributes,
+    focusIsOnHostElement,
+    pressEnterToConfirmValue,
+    valueCanBeUpdatedByTheUser
+  } = testOptions;
+
+  const focusableElementSelector = focusIsOnHostElement
+    ? formElementTagName
+    : `${formElementTagName} >>> ${inputSelector}`;
 
   const getInputRef = async (page: E2EPage) =>
     await page.find(`${formElementTagName} >>> ${inputSelector}`);
@@ -85,7 +97,7 @@ export const performFormTests = (
     expect(inputRef).toBeDefined();
   });
 
-  it("should label the element (inputSelector) with the external label (for and id)", async () => {
+  it(`should label the ${inputSelector} with the external label (for and id)`, async () => {
     const page = await newE2EPage();
     await page.setContent(
       formElementTemplate(formElementTagName, additionalAttributes, {
@@ -100,7 +112,7 @@ export const performFormTests = (
     expect(inputRef).toEqualAttribute("aria-label", EXTERNAL_LABEL_TEXT);
   });
 
-  it("should label the element (inputSelector) with the parent label", async () => {
+  it(`should label the ${inputSelector} with the parent label`, async () => {
     const page = await newE2EPage();
     await page.setContent(
       formElementTemplate(formElementTagName, additionalAttributes, {
@@ -221,30 +233,36 @@ export const performFormTests = (
     expect(formValues[FORM_NAME]).toBe(UPDATED_VALUE);
   });
 
-  it("the form value for the element should be updated if the value is updated by the user", async () => {
-    const page = await newE2EPage();
-    await page.setContent(
-      `<form>
+  if (valueCanBeUpdatedByTheUser) {
+    it("the form value for the element should be updated if the value is updated by the user", async () => {
+      const page = await newE2EPage();
+      await page.setContent(
+        `<form>
         ${formElementTemplate(formElementTagName, additionalAttributes, {
           externalLabel: true,
           accessibleName: true
         })}
       </form>`
-    );
-    let formValues = await getFormValues(page);
+      );
+      let formValues = await getFormValues(page);
 
-    expect(formValues[FORM_NAME]).toBeUndefined();
+      expect(formValues[FORM_NAME]).toBeUndefined();
 
-    const inputRef = await getInputRef(page);
-    await inputRef.press("H");
-    await inputRef.press("e");
-    await inputRef.press("l");
-    await inputRef.press("l");
-    await inputRef.press("o");
+      const inputRef = await getInputRef(page);
+      await inputRef.press("H");
+      await inputRef.press("e");
+      await inputRef.press("l");
+      await inputRef.press("l");
+      await inputRef.press("o");
 
-    formValues = await getFormValues(page);
-    expect(formValues[FORM_NAME]).toBe("Hello");
-  });
+      if (pressEnterToConfirmValue) {
+        await inputRef.press("Enter");
+      }
+
+      formValues = await getFormValues(page);
+      expect(formValues[FORM_NAME]).toBe("Hello");
+    });
+  }
 
   it("should focus the element when clicking on the external label", async () => {
     const page = await newE2EPage();
@@ -259,7 +277,7 @@ export const performFormTests = (
 
     const inputIsFocused = await isActiveElement(
       page,
-      `${formElementTagName} >>> ${inputSelector}`
+      focusableElementSelector
     );
 
     expect(inputIsFocused).toBe(true);
@@ -312,7 +330,7 @@ export const performFormTests = (
 
       const inputIsFocused = await isActiveElement(
         page,
-        `${formElementTagName} >>> ${inputSelector}`
+        focusableElementSelector
       );
 
       if (options.disabled) {
@@ -341,5 +359,24 @@ export const performFormTests = (
         });
       });
     });
+  });
+
+  it(`should focus the ${inputSelector} when programmatically calling focus() on the Host`, async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      formElementTemplate(formElementTagName, additionalAttributes, {
+        externalLabel: true,
+        accessibleName: false
+      })
+    );
+
+    await page.focus(formElementTagName);
+
+    const inputIsFocused = await isActiveElement(
+      page,
+      focusableElementSelector
+    );
+
+    expect(inputIsFocused).toBe(true);
   });
 };

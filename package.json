@@ -26,9 +26,8 @@
     "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
     "test": "stencil test --spec --e2e",
-    "test.coverage": "stencil test --spec --e2e --coverage --no-cache",
     "test.spec": "stencil test --spec --coverage --no-cache",
-    "test.watch": "stencil test --spec --e2e --watchAll",
+    "test.watch": "stencil test --spec --e2e --watchAll --maxWorkers=24",
     "validate": "npm run lint && npm run test && npm run build",
     "validate.ci": "npm run lint && npm run build.monaco && npm run test && npm run build.light --debug"
   },

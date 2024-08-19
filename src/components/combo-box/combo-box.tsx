@@ -1160,7 +1160,7 @@ export class ChComboBoxRender
     </span>,
 
     <select
-      aria-label={this.accessibleName ?? this.#accessibleNameFromExternalLabel}
+      aria-label={this.#accessibleNameFromExternalLabel ?? this.accessibleName}
       disabled={this.disabled}
       onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
@@ -1188,7 +1188,7 @@ export class ChComboBoxRender
     const labels = this.internals.labels;
 
     // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
+    if (labels?.length > 0) {
       this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
     }
   }
@@ -1348,7 +1348,7 @@ export class ChComboBoxRender
                   aria-expanded={this.expanded.toString()}
                   aria-haspopup="true"
                   aria-label={
-                    this.accessibleName ?? this.#accessibleNameFromExternalLabel
+                    this.#accessibleNameFromExternalLabel ?? this.accessibleName
                   }
                   autocomplete="off"
                   class={{

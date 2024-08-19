@@ -56,6 +56,7 @@ const COMPLEX_PARSED_CODE = `<code class="hljs language-typescript" part="code l
   };</code>`;
 
 describe("[ch-code]", () => {
+  // TODO: For some reason, this is a flaky test
   it("should render a ch-code", async () => {
     const page = await newE2EPage();
     await page.setContent(`<ch-code></ch-code>`);

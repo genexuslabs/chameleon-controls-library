@@ -56,7 +56,9 @@ const COMPLEX_PARSED_CODE = `<code class="hljs language-typescript" part="code l
   };</code>`;
 
 describe("[ch-code]", () => {
-  // TODO: For some reason, this is a flaky test
+  // If this test fails with "App did not load in allowed time. Please ensure the content loads a stencil application.",
+  // set --maxWorkers=1 in the test script of the package.json.
+  // For more information: https://github.com/ionic-team/stencil/issues/4782
   it("should render a ch-code", async () => {
     const page = await newE2EPage();
     await page.setContent(`<ch-code></ch-code>`);

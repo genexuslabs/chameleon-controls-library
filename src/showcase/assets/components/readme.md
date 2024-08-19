@@ -22,7 +22,7 @@
 - [ch-code](../../../components/code)
 - [ch-flexible-layout-render](../../../components/flexible-layout)
 - [ch-checkbox](../../../components/checkbox)
-- [ch-combo-box-render](../../../components/combobox)
+- [ch-combo-box-render](../../../components/combo-box)
 - [ch-radio-group-render](../../../components/radio-group)
 - [ch-action-group-render](../../../components/action-group)
 - [ch-action-list-render](../../../components/action-list)
@@ -95,6 +95,7 @@ graph TD;
   ch-test-flexible-layout --> ch-flexible-layout-render
   ch-test-flexible-layout --> ch-action-group-render
   ch-test-flexible-layout --> ch-tree-view-render
+  ch-test-flexible-layout --> ch-edit
   ch-test-flexible-layout --> ch-grid
   ch-test-flexible-layout --> ch-grid-columnset
   ch-test-flexible-layout --> ch-grid-column

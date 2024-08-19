@@ -25,7 +25,7 @@
     "lint": "eslint src/**/*{.ts,.tsx} --fix",
     "start": "npm run build.monaco && npm run start.light",
     "start.light": "stencil build --dev --watch --serve",
-    "test": "stencil test --spec --e2e",
+    "test": "stencil test --spec --e2e --maxWorkers=1",
     "test.spec": "stencil test --spec --coverage --no-cache",
     "test.watch": "stencil test --spec --e2e --watchAll --maxWorkers=1",
     "validate": "npm run lint && npm run test && npm run build",

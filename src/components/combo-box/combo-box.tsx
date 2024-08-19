@@ -1292,7 +1292,10 @@ export class ChComboBoxRender
         tabindex={
           !mobileDevice && !filtersAreApplied && !this.disabled ? "0" : null
         }
-        class={this.disabled ? "ch-disabled" : null}
+        class={{
+          "ch-disabled": this.disabled,
+          "ch-combo-box--suggest": filtersAreApplied
+        }}
         onKeyDown={
           !mobileDevice && comboBoxIsInteractive
             ? this.#handleExpandedChangeWithKeyBoard

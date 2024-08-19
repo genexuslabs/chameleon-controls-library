@@ -129,6 +129,10 @@
   pointer-events: none;
 }
 
+:host(.ch-combo-box--suggest) {
+  --ch-combo-box__picker-size: 0px;
+}
+
 .invisible-text {
   visibility: hidden;
   pointer-events: none;

@@ -62,6 +62,7 @@ export const performFormTests = (
     additionalAttributes?: string;
     formElementTagName: ChameleonControlsTagName;
     hasReadonlySupport: boolean;
+    pressEnterToConfirmValue?: boolean;
   },
   inputSelector: string = "input"
 ) => {
@@ -242,6 +243,10 @@ export const performFormTests = (
     await inputRef.press("l");
     await inputRef.press("o");
 
+    if (testOptions.pressEnterToConfirmValue) {
+      await inputRef.press("Enter");
+    }
+
     formValues = await getFormValues(page);
     expect(formValues[FORM_NAME]).toBe("Hello");
   });
@@ -341,5 +346,24 @@ export const performFormTests = (
         });
       });
     });
+  });
+
+  it(`should focus the ${inputSelector} when programmatically calling focus() on the Host`, async () => {
+    const page = await newE2EPage();
+    await page.setContent(
+      formElementTemplate(formElementTagName, additionalAttributes, {
+        externalLabel: true,
+        accessibleName: false
+      })
+    );
+
+    await page.focus(formElementTagName);
+
+    const inputIsFocused = await isActiveElement(
+      page,
+      `${formElementTagName} >>> ${inputSelector}`
+    );
+
+    expect(inputIsFocused).toBe(true);
   });
 };

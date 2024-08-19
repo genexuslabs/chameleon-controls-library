@@ -15,7 +15,7 @@ import { SmartGridDataState } from "./components/smart-grid/internal/infinite-sc
 import { ChatTranslations } from "./components/chat/translations";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
-import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
+import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
@@ -70,7 +70,7 @@ export { SmartGridDataState } from "./components/smart-grid/internal/infinite-sc
 export { ChatTranslations } from "./components/chat/translations";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
-export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
+export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";

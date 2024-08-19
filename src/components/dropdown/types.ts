@@ -6,12 +6,12 @@ export type DropdownModel = DropdownItemModel[];
 export type DropdownItemModel = {
   id?: string;
   caption: string;
-  class?: string;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;
   items?: DropdownModel;
   itemsPosition?: DropdownPosition;
   link?: Link;
+  parts?: string;
   separatorClass?: string;
   shortcut?: string;
   startImgSrc?: string;

@@ -3,17 +3,13 @@ import { DropdownItemModel, DropdownModel } from "./types";
 import { DropdownPosition } from "./internal/dropdown/types";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { dropdownKeyEventsDictionary } from "./utils";
-import { DROPDOWN_EXPORT_PARTS } from "../../common/reserved-names";
 
 @Component({
   tag: "ch-dropdown-render",
   styleUrl: "dropdown-render.scss",
-  shadow: false // Necessary to avoid focus capture
+  shadow: true // Necessary to avoid focus capture
 })
 export class ChDropdownRender {
-  #showHeader = false;
-  #showFooter = false;
-
   #mainDropdownExpanded = false;
 
   @Element() el: HTMLChDropdownRenderElement;
@@ -25,25 +21,14 @@ export class ChDropdownRender {
   @Prop() readonly buttonAccessibleName: string;
 
   /**
-   * A CSS class to set as the `ch-dropdown` element class.
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
-  @Prop() readonly cssClass: string = "dropdown";
-
-  /**
-   * Specifies the parts that are exported by the internal dropdown. This
-   * property is useful to override the exported parts.
-   */
-  @Prop() readonly exportParts: string = DROPDOWN_EXPORT_PARTS;
+  @Prop() readonly gxImageConstructor?: (name: string) => any;
 
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
-  @Prop() readonly gxImageConstructor: (name: string) => any;
-
-  /**
-   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
-   */
-  @Prop() readonly gxSettings: any;
+  @Prop() readonly gxSettings?: any;
 
   /**
    * This callback is executed when an item is clicked.
@@ -74,7 +59,7 @@ export class ChDropdownRender {
   /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
-  @Prop() readonly useGxRender: boolean = false;
+  @Prop() readonly useGxRender?: boolean = false;
 
   // /**
   //  * Fired when the visibility of the dropdown section is changed
@@ -92,10 +77,8 @@ export class ChDropdownRender {
 
     return [
       <ch-dropdown
-        exportparts={this.exportParts}
         id={item.id}
         caption={item.caption}
-        class={item.class || this.cssClass}
         endImgSrc={
           this.useGxRender
             ? fromGxImageToURL(
@@ -110,6 +93,7 @@ export class ChDropdownRender {
         itemClickCallback={this.#handleItemClick(item.link?.url, item.id)}
         leaf={!hasItems}
         level={level}
+        parts={item.parts}
         position={item.itemsPosition || "OutsideEnd_InsideStart"}
         shortcut={item.shortcut}
         startImgSrc={
@@ -168,20 +152,11 @@ export class ChDropdownRender {
     forceUpdate(this);
   };
 
-  componentWillLoad() {
-    this.#showHeader = !!this.el.querySelector(':scope>[slot="header"]');
-    this.#showFooter = !!this.el.querySelector(':scope>[slot="footer"]');
-  }
-
   render() {
     return (
       <ch-dropdown
-        exportparts={this.exportParts}
         buttonAccessibleName={this.buttonAccessibleName}
-        class={this.cssClass}
         level={-1}
-        showHeader={this.#showHeader}
-        showFooter={this.#showFooter}
         position={this.position}
         onKeyDown={
           this.#mainDropdownExpanded ? this.#handleKeyDownEvents : null
@@ -191,10 +166,6 @@ export class ChDropdownRender {
         }
       >
         <slot name="action" slot="action" />
-
-        {this.#showHeader && <slot name="header" slot="header" />}
-
-        {this.#showFooter && <slot name="footer" slot="footer" />}
 
         {this.#mainDropdownExpanded &&
           this.model != null &&

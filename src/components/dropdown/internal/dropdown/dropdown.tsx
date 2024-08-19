@@ -1,5 +1,6 @@
 import {
   Component,
+  ComponentInterface,
   Element,
   Event,
   EventEmitter,
@@ -10,7 +11,6 @@ import {
   Watch,
   h
 } from "@stencil/core";
-import { Component as ChComponent } from "../../../../common/interfaces";
 
 import { DropdownAlign, DropdownPosition } from "./types";
 import { ChPopoverAlign } from "../../../popover/types";
@@ -18,7 +18,12 @@ import { focusComposedPath } from "../../../common/helpers";
 import { ChDropdownCustomEvent } from "../../../../components";
 import { isPseudoElementImg } from "../../../../common/utils";
 import { ImageRender } from "../../../../common/types";
-import { DROPDOWN_PARTS_DICTIONARY } from "../../../../common/reserved-names";
+import {
+  DROPDOWN_EXPORT_PARTS,
+  DROPDOWN_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
+
+const SEPARATE_BY_SPACE_REGEX = /\s*/;
 
 const mapDropdownAlignToChWindowAlign: {
   [key in DropdownAlign]: ChPopoverAlign;
@@ -54,7 +59,7 @@ const elementIsDropdown = (element: Element) =>
   styleUrl: "dropdown.scss",
   tag: "ch-dropdown"
 })
-export class ChDropDown implements ChComponent {
+export class ChDropdown implements ComponentInterface {
   #firstExpanded = false;
 
   // Refs
@@ -151,6 +156,15 @@ export class ChDropDown implements ChComponent {
   @Prop() readonly openOnFocus: boolean = false;
 
   /**
+   * Specifies a set of parts to use in every DOM element of the control.
+   */
+  @Prop() readonly parts?: string;
+  @Watch("parts")
+  partsChanged(newParts: string) {
+    this.#setExportparts(newParts);
+  }
+
+  /**
    * Specifies the position of the dropdown section that is placed relative to
    * the expandable button.
    */
@@ -160,16 +174,6 @@ export class ChDropDown implements ChComponent {
    * Specifies the shortcut caption that the control will display.
    */
   @Prop() readonly shortcut: string;
-
-  /**
-   * `true` to make available a slot to show a footer element.
-   */
-  @Prop() readonly showFooter: boolean = false;
-
-  /**
-   * `true` to make available a slot to show a header element.
-   */
-  @Prop() readonly showHeader: boolean = false;
 
   /**
    * Specifies the src for the left img.
@@ -462,11 +466,9 @@ export class ChDropDown implements ChComponent {
     const xAlignMapping = mapDropdownAlignToChWindowAlign[alignX];
     const yAlignMapping = mapDropdownAlignToChWindowAlign[alignY];
 
-    const noNeedToAddDivListWrapper = !this.showHeader && !this.showFooter;
-
     return (
       <ch-popover
-        role={noNeedToAddDivListWrapper ? "list" : null}
+        role="list"
         id={WINDOW_ID}
         part={DROPDOWN_PARTS_DICTIONARY.WINDOW}
         actionById={true}
@@ -477,22 +479,24 @@ export class ChDropDown implements ChComponent {
         inlineAlign={xAlignMapping}
         blockAlign={yAlignMapping}
       >
-        {noNeedToAddDivListWrapper ? (
-          <slot />
-        ) : (
-          [
-            this.showHeader && <slot name="header" />,
-
-            <div role="list" class="list">
-              <slot />
-            </div>,
-
-            this.showFooter && <slot name="footer" />
-          ]
-        )}
+        <slot />
       </ch-popover>
     );
   };
+
+  #setExportparts = (parts?: string) => {
+    const customParts = parts
+      ? `${DROPDOWN_EXPORT_PARTS},${parts
+          .split(SEPARATE_BY_SPACE_REGEX)
+          .join(",")}`
+      : DROPDOWN_EXPORT_PARTS;
+
+    this.el.setAttribute("exportparts", customParts);
+  };
+
+  connectedCallback(): void {
+    this.#setExportparts(this.parts);
+  }
 
   render() {
     return (

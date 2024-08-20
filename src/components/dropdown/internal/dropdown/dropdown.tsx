@@ -5,8 +5,6 @@ import {
   Event,
   EventEmitter,
   Host,
-  Listen,
-  Method,
   Prop,
   Watch,
   h
@@ -14,14 +12,13 @@ import {
 
 import { DropdownAlign, DropdownPosition } from "./types";
 import { ChPopoverAlign } from "../../../popover/types";
-import { focusComposedPath } from "../../../common/helpers";
-import { ChDropdownCustomEvent } from "../../../../components";
 import { isPseudoElementImg } from "../../../../common/utils";
 import { ImageRender } from "../../../../common/types";
 import {
   DROPDOWN_EXPORT_PARTS,
   DROPDOWN_PARTS_DICTIONARY
 } from "../../../../common/reserved-names";
+import { DropdownItemModelExtended } from "../../types";
 
 const SEPARATE_BY_SPACE_REGEX = /\s*/;
 
@@ -48,11 +45,7 @@ const ACTION_BUTTON =
 const ACTION_BUTTON_EXPANDABLE =
   `${ACTION_BUTTON} ${DROPDOWN_PARTS_DICTIONARY.EXPANDABLE}` as const;
 
-const DROPDOWN_TAG_NAME = "ch-dropdown";
 const WINDOW_ID = "window";
-
-const elementIsDropdown = (element: Element) =>
-  element?.tagName?.toLowerCase() === DROPDOWN_TAG_NAME;
 
 @Component({
   shadow: true,
@@ -60,8 +53,6 @@ const elementIsDropdown = (element: Element) =>
   tag: "ch-dropdown"
 })
 export class ChDropdown implements ComponentInterface {
-  #firstExpanded = false;
-
   // Refs
   #mainAction: HTMLButtonElement | HTMLAnchorElement;
 
@@ -94,30 +85,36 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly endImgType: ImageRender = "background";
 
   /**
+   * Specifies whether the item contains a subtree. `true` if the item has a
+   * subtree.
+   */
+  @Prop() readonly expandable: boolean = false;
+
+  /**
    * `true` to display the dropdown section.
    */
-  @Prop({ mutable: true }) expanded = false;
+  @Prop() readonly expanded: boolean = false;
 
-  @Watch("expanded")
-  handleExpandedChange(newExpandedValue: boolean) {
-    if (newExpandedValue) {
-      // Click
-      document.addEventListener("click", this.#closeOnClickOutside, {
-        capture: true,
-        passive: true
-      });
-    } else {
-      // Click
-      document.removeEventListener("click", this.#closeOnClickOutside, {
-        capture: true
-      });
+  // @Watch("expanded")
+  // handleExpandedChange(newExpandedValue: boolean) {
+  //   if (newExpandedValue) {
+  //     // Click
+  //     document.addEventListener("click", this.#closeOnClickOutside, {
+  //       capture: true,
+  //       passive: true
+  //     });
+  //   } else {
+  //     // Click
+  //     document.removeEventListener("click", this.#closeOnClickOutside, {
+  //       capture: true
+  //     });
 
-      // This is a WA to avoid a StencilJS's (or browser) issue when reusing
-      // the top layer and interacting with the Tab key in the same top layer.
-      // After the second opening, the Tab key stops working
-      (this.#mainAction as HTMLButtonElement).popoverTargetElement = null;
-    }
-  }
+  //     // This is a WA to avoid a StencilJS's (or browser) issue when reusing
+  //     // the top layer and interacting with the Tab key in the same top layer.
+  //     // After the second opening, the Tab key stops working
+  //     (this.#mainAction as HTMLButtonElement).popoverTargetElement = null;
+  //   }
+  // }
 
   /**
    * Specifies the hyperlink of the item. If this property is defined, the
@@ -132,15 +129,16 @@ export class ChDropdown implements ComponentInterface {
   @Prop() readonly itemClickCallback: (event: UIEvent) => void;
 
   /**
-   * Specifies whether the item contains a subtree. `true` if the item does not
-   * have a subtree.
+   * Specifies if the control is at the first level, where the actions are
+   * always visible.
    */
-  @Prop() readonly leaf: boolean = false;
+  @Prop() readonly firstLevel: boolean = false;
 
   /**
-   * Level in the render at which the item is placed.
+   * Specifies the extended model of the control. This property is only needed
+   * to know the UI Model on each event
    */
-  @Prop() readonly level: number;
+  @Prop() readonly model!: DropdownItemModelExtended;
 
   /**
    * This attribute lets you specify if the control is nested in another
@@ -189,176 +187,7 @@ export class ChDropdown implements ComponentInterface {
    * Fired when the visibility of the dropdown section is changed by user
    * interaction.
    */
-  @Event() expandedChange: EventEmitter<boolean>;
-
-  @Listen("actionClick")
-  onActionClick() {
-    // this.#closeDropdown();
-    // @todo This behavior must be specified by a property
-    // this.returnFocusToButton();
-  }
-
-  @Listen("recursiveClose")
-  onRecursiveClose(event: ChDropdownCustomEvent<number>) {
-    const stopperLevel = event.detail;
-
-    if (this.level === stopperLevel) {
-      event.stopPropagation();
-    }
-
-    this.#closeDropdown();
-  }
-
-  /**
-   * Focus the dropdown action.
-   */
-  @Method()
-  async focusElement() {
-    this.#mainAction.focus();
-  }
-
-  /**
-   * Collapse the content of the dropdown.
-   */
-  @Method()
-  async collapseDropdown() {
-    if (this.expanded) {
-      this.expandedChange.emit(false);
-      this.expanded = false;
-    }
-  }
-
-  /**
-   * Expand the content of the dropdown.
-   */
-  @Method()
-  async expandDropdown() {
-    if (!this.expanded) {
-      this.expandedChange.emit(true);
-      this.expanded = true;
-    }
-  }
-
-  #closeDropdownSibling = () => {
-    const currentFocusedElement = focusComposedPath();
-    const currentFocusedItem = currentFocusedElement[
-      currentFocusedElement.length - 1
-    ] as HTMLChDropdownElement;
-
-    if (!elementIsDropdown(currentFocusedItem)) {
-      return;
-    }
-
-    if (currentFocusedItem.level < this.level) {
-      return;
-    }
-
-    // Fire an event to close all dropdown parents up to a certain level
-    currentFocusedItem.dispatchEvent(
-      new CustomEvent("recursiveClose", { bubbles: true, detail: this.level })
-    );
-  };
-
-  #closeDropdown = () => {
-    this.expandedChange.emit(false);
-    this.expanded = false;
-  };
-
-  /**
-   * Returns focus to the expandable button when closing the dropdown. Only
-   * works if `openOnFocus = "false"`
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  // #returnFocusToButton = () => {
-  //   if (!this.openOnFocus) {
-  //     this.#mainAction.focus();
-  //   }
-  // };
-
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #closeOnClickOutside = (event: MouseEvent) => {
-    if (event.composedPath().find(el => el === this.el) === undefined) {
-      this.#closeDropdown();
-    }
-  };
-
-  #handleMouseEnter = (event: MouseEvent) => {
-    event.stopPropagation();
-
-    // We first must close the current expanded dropdown, since with the
-    // keyboard we could have expanded a different dropdown
-    this.#closeDropdownSibling();
-
-    if (!this.expanded) {
-      this.expandedChange.emit(true);
-      this.expanded = true;
-    }
-  };
-
-  #handleMouseLeave = (event: MouseEvent) => {
-    event.stopPropagation();
-
-    if (this.expanded) {
-      this.expandedChange.emit(false);
-      this.expanded = false;
-    }
-  };
-
-  // /**
-  //  * Check if the next focused element is a child element of the dropdown
-  //  * control.
-  //  */
-  // // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  // #handleKeyUpEvents = (event: KeyboardEvent) => {
-
-  //   if (event.code !== TAB_KEY) {
-  //     return;
-  //   }
-
-  //   const isChildElement = event.composedPath().includes(this.el);
-  //   if (isChildElement) {
-  //     return;
-  //   }
-
-  //   this.#closeDropdown();
-  // };
-
-  #handleButtonClick = (event: PointerEvent) => {
-    event.stopPropagation();
-
-    if (this.level !== -1 && this.itemClickCallback) {
-      this.itemClickCallback(event);
-    }
-
-    // If the nested dropdown is expanded and its expandable button is clicked
-    // with the MOUSE and not the keyboard, do not change the visibility
-    if (this.nestedDropdown && this.expanded && event.pointerType) {
-      return;
-    }
-
-    // if (!this.expanded) {
-    //   // We first must close the current expanded dropdown, since with the
-    //   // mouse we could have expanded a different dropdown
-    //   this.#closeDropdownSibling();
-    // }
-
-    // WA: When clicking a leaf, its dropdown ancestors must be closed
-    if (this.leaf) {
-      this.el.dispatchEvent(
-        new CustomEvent("recursiveClose", {
-          bubbles: true,
-          detail: this.level + 1
-        })
-      );
-
-      return;
-    }
-
-    const newExpandedValue = !this.expanded;
-
-    this.expanded = newExpandedValue;
-    this.expandedChange.emit(newExpandedValue);
-  };
+  @Event({ composed: true }) expandedChange: EventEmitter<boolean>;
 
   #dropDownItemContent = () => [
     <span
@@ -390,7 +219,6 @@ export class ChDropdown implements ComponentInterface {
       class="expandable-button"
       part={DROPDOWN_PARTS_DICTIONARY.EXPANDABLE_BUTTON}
       type="button"
-      onClick={this.#handleButtonClick}
       ref={el => (this.#mainAction = el)}
     >
       <slot name="action" />
@@ -406,9 +234,9 @@ export class ChDropdown implements ComponentInterface {
 
     return this.href ? (
       <a
-        aria-controls={!this.leaf ? WINDOW_ID : null}
-        aria-expanded={!this.leaf ? this.expanded.toString() : null}
-        aria-haspopup={!this.leaf ? "true" : null}
+        aria-controls={this.expandable ? WINDOW_ID : null}
+        aria-expanded={this.expandable ? this.expanded.toString() : null}
+        aria-haspopup={this.expandable ? "true" : null}
         class={{
           action: true,
 
@@ -416,12 +244,8 @@ export class ChDropdown implements ComponentInterface {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={this.leaf ? ACTION_LINK : ACTION_LINK_EXPANDABLE}
+        part={!this.expandable ? ACTION_LINK : ACTION_LINK_EXPANDABLE}
         href={this.href}
-        onClick={this.#handleButtonClick}
-        onMouseEnter={
-          !this.leaf && !this.actionGroupParent ? this.#handleMouseEnter : null
-        }
         ref={el => (this.#mainAction = el)}
       >
         {this.#dropDownItemContent()}
@@ -429,9 +253,9 @@ export class ChDropdown implements ComponentInterface {
     ) : (
       <button
         popoverTarget={WINDOW_ID}
-        aria-controls={!this.leaf ? WINDOW_ID : null}
-        aria-expanded={!this.leaf ? this.expanded.toString() : null}
-        aria-haspopup={!this.leaf ? "true" : null}
+        aria-controls={this.expandable ? WINDOW_ID : null}
+        aria-expanded={this.expandable ? this.expanded.toString() : null}
+        aria-haspopup={this.expandable ? "true" : null}
         class={{
           action: true,
 
@@ -439,12 +263,8 @@ export class ChDropdown implements ComponentInterface {
             pseudoStartImage,
           [`end-img-type--${this.endImgType} pseudo-img--end`]: pseudoEndImage
         }}
-        part={this.leaf ? ACTION_BUTTON : ACTION_BUTTON_EXPANDABLE}
+        part={!this.expandable ? ACTION_BUTTON : ACTION_BUTTON_EXPANDABLE}
         type="button"
-        onMouseEnter={
-          !this.leaf && !this.actionGroupParent ? this.#handleMouseEnter : null
-        }
-        onClick={this.#handleButtonClick}
         ref={el => (this.#mainAction = el)}
       >
         {this.#dropDownItemContent()}
@@ -453,12 +273,6 @@ export class ChDropdown implements ComponentInterface {
   };
 
   #popoverRender = () => {
-    this.#firstExpanded ||= this.expanded;
-
-    if (!this.#firstExpanded) {
-      return "";
-    }
-
     const aligns = this.position.split("_");
     const alignX = aligns[0] as DropdownAlign;
     const alignY = aligns[1] as DropdownAlign;
@@ -473,7 +287,8 @@ export class ChDropdown implements ComponentInterface {
         part={DROPDOWN_PARTS_DICTIONARY.WINDOW}
         actionById={true}
         actionElement={this.#mainAction as HTMLButtonElement}
-        firstLayer={this.level === -1 || this.actionGroupParent}
+        closeOnClickOutside={this.firstLevel}
+        firstLayer={this.firstLevel || this.actionGroupParent}
         popover="manual"
         hidden={!this.expanded}
         inlineAlign={xAlignMapping}
@@ -496,12 +311,15 @@ export class ChDropdown implements ComponentInterface {
 
   connectedCallback(): void {
     this.#setExportparts(this.parts);
+
+    if (!this.firstLevel) {
+      this.el.setAttribute("role", "listitem");
+    }
   }
 
   render() {
     return (
       <Host
-        role={this.level !== -1 ? "listitem" : null}
         style={
           !!this.startImgSrc || !!this.endImgSrc
             ? {
@@ -510,17 +328,12 @@ export class ChDropdown implements ComponentInterface {
               }
             : undefined
         }
-        onMouseLeave={
-          !this.actionGroupParent && this.level !== -1
-            ? this.#handleMouseLeave
-            : null
-        }
       >
-        {this.level === -1 && !this.leaf
+        {this.firstLevel && this.expandable
           ? this.#firstLevelRender()
           : this.#actionRender()}
 
-        {!this.leaf && this.#popoverRender()}
+        {this.expandable && this.expanded && this.#popoverRender()}
       </Host>
     );
   }

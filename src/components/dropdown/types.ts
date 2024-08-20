@@ -3,27 +3,61 @@ import { DropdownPosition } from "./internal/dropdown/types";
 
 export type DropdownModel = DropdownItemModel[];
 
-export type DropdownItemModel = {
+export type DropdownItemType =
+  | DropdownItemTypeActionable
+  | DropdownItemTypeGroup
+  | DropdownItemTypeSeparator;
+
+export type DropdownItemTypeActionable = "actionable";
+export type DropdownItemTypeGroup = "group";
+export type DropdownItemTypeSeparator = "separator";
+
+export type DropdownItemModel =
+  | DropdownItemActionable
+  // | DropdownItemGroup
+  | DropdownItemSeparator;
+
+export type DropdownItemActionable = {
   id?: string;
   caption: string;
   endImgSrc?: string;
   endImgType?: Exclude<ImageRender, "img">;
+
+  // TODO: Test using different expanded values on the initial load
+  expanded?: boolean;
+
   items?: DropdownModel;
   itemsPosition?: DropdownPosition;
   link?: Link;
   parts?: string;
-  separatorClass?: string;
   shortcut?: string;
   startImgSrc?: string;
   startImgType?: Exclude<ImageRender, "img">;
-  showSeparator?: boolean;
+  type?: DropdownItemTypeActionable;
+};
 
-  /**
-   * Only used for performance reasons. It is not used as public property
-   */
-  wasExpanded?: boolean;
+export type DropdownItemSeparator = {
+  id?: string;
+  part?: string;
+  type: DropdownItemTypeSeparator;
 };
 
 type Link = {
   url: string;
+};
+
+export type DropdownExpandedChangeEvent = {
+  item: DropdownItemActionable;
+  expanded: boolean;
+};
+
+// - - - - - - - - - - - - - - - - - - - -
+//             Internal model
+// - - - - - - - - - - - - - - - - - - - -
+export type DropdownModelExtended = DropdownItemModelExtended[];
+
+export type DropdownItemModelExtended = {
+  item: DropdownItemActionable;
+  items?: DropdownModelExtended;
+  parentItem: DropdownItemModelExtended | undefined;
 };

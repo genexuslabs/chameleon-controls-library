@@ -7,8 +7,11 @@ const BASEURL_REGEX =
   /(url\((?!\s*["']?(?:\/|https?:|data:))\s*["']?)([^'")]+)/g;
 
 type ThemePromiseResolver = {
+  name: string;
   resolve: (value: Theme) => void;
   reject: (reason?: any) => void;
+  timeout: NodeJS.Timeout;
+  isLoading: boolean;
 };
 
 export async function getTheme(
@@ -17,53 +20,68 @@ export async function getTheme(
 ): Promise<Theme> {
   const promise =
     THEMES.get(themeModel.name) ??
-    THEMES.set(themeModel.name, createThemePromise(themeModel.name)).get(
-      themeModel.name
-    );
+    THEMES.set(
+      themeModel.name,
+      createThemePromise(themeModel.name, timeout)
+    ).get(themeModel.name);
 
   if (themeModel.url) {
-    instanceTheme(themeModel, PROMISE_RESOLVER.get(themeModel.name));
-  } else {
-    setThemeLoadTimeout(themeModel.name, timeout);
+    instanceTheme(themeModel);
   }
 
   return promise;
 }
 
-function createThemePromise(name: string): Promise<Theme> {
+function createThemePromise(name: string, timeout: number): Promise<Theme> {
   return new Promise<Theme>((resolve, reject) => {
-    PROMISE_RESOLVER.set(name, { resolve, reject });
+    PROMISE_RESOLVER.set(name, {
+      name,
+      resolve,
+      reject,
+      timeout: setTimeout(() => promiseTimeout(name), timeout),
+      isLoading: false
+    });
   });
 }
 
-async function instanceTheme(
-  themeModel: ThemeItemModel,
-  resolver: ThemePromiseResolver
-) {
-  try {
-    const styleSheet = await loadThemeStyleSheet(
-      themeModel.url,
-      themeModel.themeBaseUrl
-    );
-    resolver.resolve({ name: themeModel.name, styleSheet });
-  } catch (error) {
-    resolver.reject(error);
+function resolvePromise(resolver: ThemePromiseResolver, value: Theme) {
+  disposeResolver(resolver);
+  resolver.resolve(value);
+}
+
+function rejectPromise(resolver: ThemePromiseResolver, error: Error) {
+  disposeResolver(resolver);
+  resolver.reject(error);
+}
+
+function promiseTimeout(name: string) {
+  const resolver = PROMISE_RESOLVER.get(name);
+  if (resolver) {
+    rejectPromise(resolver, new Error(`Theme load timeout: ${name}`));
   }
 }
 
-function setThemeLoadTimeout(name: string, timeout: number) {
-  setTimeout(() => {
-    const resolver = PROMISE_RESOLVER.get(name);
-    if (resolver) {
-      resolver.reject(
-        new Error(
-          `Theme load timeout: ${name} was not loaded within ${timeout}ms`
-        )
+function disposeResolver(resolver: ThemePromiseResolver) {
+  clearTimeout(resolver.timeout);
+  PROMISE_RESOLVER.delete(resolver.name);
+}
+
+async function instanceTheme(themeModel: ThemeItemModel) {
+  const resolver = PROMISE_RESOLVER.get(themeModel.name);
+
+  if (resolver && !resolver.isLoading) {
+    resolver.isLoading = true;
+
+    try {
+      const styleSheet = await loadThemeStyleSheet(
+        themeModel.url,
+        themeModel.themeBaseUrl
       );
-      PROMISE_RESOLVER.delete(name);
-      THEMES.delete(name);
+      resolvePromise(resolver, { name: themeModel.name, styleSheet });
+    } catch (error) {
+      rejectPromise(resolver, error);
     }
-  }, timeout);
+  }
 }
 
 async function loadThemeStyleSheet(

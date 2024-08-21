@@ -1,4 +1,5 @@
-ch-grid-smart {
+ch-grid-smart,
+:host([overflow-behavior="add-scroll"]) {
   scrollbar-width: thin;
   scrollbar-gutter: stable;
   scrollbar-color: var(--accents__secondary) transparent;

@@ -65,6 +65,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.readonly}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -95,6 +96,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.readonly}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -126,6 +128,7 @@ const render = () => (
               : state.model
           }
           readonly={state.readonly}
+          resizable={state.resizable}
           value={state.value}
           onFilterChange={handleFilterChange}
         ></ch-combo-box-render>
@@ -196,6 +199,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       {
         id: "destroyItemsOnClose",
         caption: "Destroy Items On Close",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "resizable",
+        caption: "Resizable",
         value: false,
         type: "boolean"
       },

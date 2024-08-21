@@ -33,8 +33,6 @@ describe.skip('should style the ch-popover\'s scrollbar when setting a ch-theme 
     expect(adoptedStyleSheets.length).toBeGreaterThan(0);
 
     // It contains the style of the scrollbar.css
-    expect(adoptedStyleSheets).toContain(
-      ':host([overflow-behavior="add-scroll"])'
-    );
+    expect(adoptedStyleSheets).toContain(":host(.ch-scrollable)");
   });
 });

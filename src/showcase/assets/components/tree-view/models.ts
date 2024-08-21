@@ -4,7 +4,9 @@ import {
 } from "../../../../components/tree-view/internal/tree-view/types";
 import {
   LazyLoadTreeItemsCallback,
-  TreeViewItemModel
+  TreeViewItemModel,
+  TreeViewImagePathCallback,
+  TreeViewModel
 } from "../../../../components/tree-view/types";
 
 const KB_EXPLORER_ORDER = {
@@ -30,11 +32,55 @@ const THIRD_LEVEL_SIZE = 20;
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
+const FOLDER_ICON = "folder";
+const MODULE_ICON = "module";
+
+export const getImagePathCallbackTreeView: TreeViewImagePathCallback = (
+  item: TreeViewItemModel,
+  iconDirection: "start" | "end"
+) => {
+  if (item.startImgSrc === MODULE_ICON) {
+    return {
+      default: {
+        base: "var(--icon-module-base)",
+        active: "var(--icon-module-active)",
+        hover: "var(--icon-module-hover)",
+        disabled: "var(--icon-module-disabled)"
+      },
+      expanded: {
+        base: "var(--icon-module-base--expanded)",
+        active: "var(--icon-module-active--expanded)",
+        hover: "var(--icon-module-hover--expanded)",
+        disabled: "var(--icon-module-disabled--expanded)"
+      }
+    };
+  }
+
+  if (item.startImgSrc === FOLDER_ICON) {
+    return {
+      default: {
+        base: "var(--icon-folder-base)",
+        active: "var(--icon-folder-active)",
+        hover: "var(--icon-folder-hover)",
+        disabled: "var(--icon-folder-disabled)"
+      },
+      expanded: {
+        base: "var(--icon-folder-base--expanded)",
+        active: "var(--icon-folder-active--expanded)",
+        hover: "var(--icon-folder-hover--expanded)",
+        disabled: "var(--icon-folder-disabled--expanded)"
+      }
+    };
+  }
+
+  return iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
+};
+
 const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "dev",
     caption: "dev",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -44,7 +90,7 @@ const fileSystem_root: TreeViewItemModel[] = [
     id: "etc",
     caption: "etc",
     editable: false,
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     dragDisabled: true,
     dropDisabled: true,
     items: [
@@ -80,7 +126,7 @@ const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "sbin",
     caption: "sbin",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -89,7 +135,7 @@ const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "tmp",
     caption: "tmp",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -98,7 +144,7 @@ const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "Users",
     caption: "Users",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -106,7 +152,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "jdoe",
         caption: "jdoe",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -115,7 +161,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "jmiller",
         caption: "jmiller",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -124,7 +170,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "mysql",
         caption: "mysql",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -135,7 +181,7 @@ const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "usr",
     caption: "usr",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -143,7 +189,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "bin",
         caption: "bin",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -152,7 +198,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "lib",
         caption: "lib",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -161,7 +207,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "local",
         caption: "local",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -172,7 +218,7 @@ const fileSystem_root: TreeViewItemModel[] = [
   {
     id: "var",
     caption: "var",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     dragDisabled: true,
     dropDisabled: true,
@@ -180,7 +226,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "log",
         caption: "log",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -189,7 +235,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "spool",
         caption: "spool",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -198,7 +244,7 @@ const fileSystem_root: TreeViewItemModel[] = [
       {
         id: "yp",
         caption: "yp",
-        parts: "item--folder",
+        startImgSrc: FOLDER_ICON,
         editable: false,
         dragDisabled: true,
         dropDisabled: true,
@@ -212,7 +258,7 @@ export const fileSystemModel: TreeViewItemModel[] = [
   {
     id: "root",
     caption: "/",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     editable: false,
     expanded: true,
     dragDisabled: true,
@@ -236,7 +282,7 @@ const kbExplorer_root: TreeViewItemModel[] = [
     id: "Root_Module",
     caption: "Root Module",
     editable: false,
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     dragDisabled: true,
     lazy: true,
     order: 1
@@ -272,7 +318,7 @@ const kbExplorer_root: TreeViewItemModel[] = [
   }
 ];
 
-export const kbExplorerModel = [
+export const kbExplorerModel: TreeViewModel = [
   {
     id: "root",
     caption: "GeneXusNext Develop",
@@ -280,6 +326,7 @@ export const kbExplorerModel = [
     expanded: true,
     leaf: false,
     startImgSrc: `${ASSETS_PREFIX}version.svg`,
+    startImgType: "img",
     dragDisabled: true,
     dropDisabled: true,
     items: kbExplorer_root
@@ -292,6 +339,7 @@ const kbExplorerModel_MainPrograms: TreeViewItemModel[] = [
     caption: "Prompt",
     dragDisabled: true,
     dropDisabled: true,
+    startImgType: "img",
     leaf: true,
     startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
     metadata: "Panel",
@@ -348,44 +396,44 @@ const kbExplorerModel_RootModule: TreeViewItemModel[] = [
   {
     id: "Root_Module.IDE",
     caption: "IDE",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.BL",
     caption: "BL",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General",
     caption: "General",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     lazy: true,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.AWS_internal",
     caption: "AWS_internal",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.DataModel",
     caption: "DataModel",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.Back",
     caption: "Back",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.Tests",
     caption: "Tests",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     order: KB_EXPLORER_ORDER.folder
   },
   {
@@ -511,19 +559,19 @@ const kbExplorerModel_RootModule_General: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.Security",
     caption: "Security",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.Services",
     caption: "Services",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI",
     caption: "UI",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     lazy: true,
     order: KB_EXPLORER_ORDER.module
   },
@@ -553,26 +601,26 @@ const kbExplorerModel_RootModule_General_UI: TreeViewItemModel[] = [
   {
     id: "Root_Module.General.UI.DesignSystem",
     caption: "DesignSystem",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI.Q2",
     caption: "Q2",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     lazy: true,
     order: KB_EXPLORER_ORDER.folder
   },
   {
     id: "Root_Module.General.UI.Popups",
     caption: "Popups",
-    parts: "item--module",
+    startImgSrc: MODULE_ICON,
     order: KB_EXPLORER_ORDER.module
   },
   {
     id: "Root_Module.General.UI.Stencils",
     caption: "Stencils",
-    parts: "item--folder",
+    startImgSrc: FOLDER_ICON,
     lazy: true,
     order: KB_EXPLORER_ORDER.folder
   },

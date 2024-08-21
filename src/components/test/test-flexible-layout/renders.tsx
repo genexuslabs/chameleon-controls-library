@@ -17,6 +17,7 @@ import {
   ChTreeViewRenderCustomEvent,
   TreeViewItemOpenReferenceInfo
 } from "../../../components";
+import { panelToolbox } from "../../../showcase/assets/components/action-list/models";
 
 // IDs
 const MENU_BAR = "menu-bar";
@@ -24,10 +25,10 @@ const KB_EXPLORER = "kb-explorer";
 const PREFERENCES = "preferences";
 const HEAVY_TREE = "heavy-tree";
 const START_PAGE = "start-page";
-const GRID = "Grid";
 const STRUCT_EDITOR = "StructEditor";
 const ATTRS_CONTAINERS_AND_OTHERS = "AttrsContainersAndOthers";
 const PROPERTIES = "properties";
+const TOOLBOX = "toolbox";
 const OUTPUT = "output";
 const IMPORT_OBJECTS = "import-objects";
 const PANEL1 = "panel-1";
@@ -35,6 +36,8 @@ const PANEL2 = "panel-2";
 
 // Common renders
 const PANEL = "Panel";
+
+const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
 export const defaultLayout: FlexibleLayoutModel = {
   id: "root",
@@ -66,17 +69,20 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -89,8 +95,11 @@ export const defaultLayout: FlexibleLayoutModel = {
           selectedWidgetId: START_PAGE,
           widgets: [
             { id: START_PAGE, name: "Start Page" },
-            { id: GRID, name: "Grid" },
-            { id: STRUCT_EDITOR, name: "Struct Editor" }
+            {
+              id: STRUCT_EDITOR,
+              name: "Struct Editor",
+              overflow: "auto"
+            }
           ]
         },
         {
@@ -104,7 +113,7 @@ export const defaultLayout: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
             }
           ]
         }
@@ -120,7 +129,7 @@ export const defaultLayout: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
         }
       ]
     }
@@ -158,17 +167,20 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -192,8 +204,11 @@ export const layout2: FlexibleLayoutModel = {
               type: "tabbed",
               tabDirection: "block",
               widgets: [
-                { id: GRID, name: "Grid" },
-                { id: STRUCT_EDITOR, name: "Struct Editor" }
+                {
+                  id: STRUCT_EDITOR,
+                  name: "Struct Editor",
+                  overflow: "auto"
+                }
               ]
             }
           ]
@@ -209,7 +224,7 @@ export const layout2: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
             }
           ]
         }
@@ -225,7 +240,7 @@ export const layout2: FlexibleLayoutModel = {
         {
           id: OUTPUT,
           name: "Output",
-          startImgSrc: "assets/icons/toolbar/output.svg"
+          startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
         }
       ]
     }
@@ -255,9 +270,10 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
-          // dragOutsideDisabled: true,
+          closeButton: false,
+          // dragOutside: false,
           // sortable: false,
+          dragBar: { part: "visible", size: 1 },
           size: "300px",
           type: "tabbed",
           tabDirection: "inline",
@@ -267,17 +283,20 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: KB_EXPLORER,
               name: "KB Explorer",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             },
             {
               id: PREFERENCES,
               name: "Preferences",
-              startImgSrc: "assets/icons/toolbar/preferences.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/preferences.svg`
             },
             {
               id: HEAVY_TREE,
               name: "Heavy Tree",
-              startImgSrc: "assets/icons/toolbar/kb-explorer.svg"
+              contain: "none", // Necessary to avoid performance issues
+              startImgSrc: `${ASSETS_PREFIX}toolbar/kb-explorer.svg`
             }
           ]
         },
@@ -285,6 +304,7 @@ export const layout3: FlexibleLayoutModel = {
           id: "sub-group-2-2",
           direction: "rows",
           size: "1fr",
+          dragBar: { part: "visible", size: 1 },
           items: [
             {
               id: "sub-group-2-2-1",
@@ -295,12 +315,19 @@ export const layout3: FlexibleLayoutModel = {
               items: [
                 {
                   id: "sub-group-2-2-1-1",
+                  closeButton: false,
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
                   tabDirection: "block",
                   selectedWidgetId: START_PAGE,
-                  widgets: [{ id: START_PAGE, name: "Start Page" }]
+                  widgets: [
+                    {
+                      id: START_PAGE,
+                      name: "Start Page",
+                      startImgSrc: `${ASSETS_PREFIX}/toolbar/home.svg`
+                    }
+                  ]
                 },
                 {
                   id: "sub-group-2-2-1-2",
@@ -314,11 +341,17 @@ export const layout3: FlexibleLayoutModel = {
                       type: "tabbed",
                       tabDirection: "block",
                       widgets: [
-                        { id: GRID, name: "Grid" },
-                        { id: STRUCT_EDITOR, name: "Struct Editor" },
+                        {
+                          id: STRUCT_EDITOR,
+                          name: "Struct Editor",
+                          startImgSrc: `${ASSETS_PREFIX}transaction.svg`,
+                          overflow: "auto"
+                        },
                         {
                           id: ATTRS_CONTAINERS_AND_OTHERS,
-                          name: "AttrsContainersAndOthers"
+                          name: "AttrsContainersAndOthers",
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
                         }
                       ]
                     },
@@ -328,9 +361,27 @@ export const layout3: FlexibleLayoutModel = {
                       type: "tabbed",
                       tabDirection: "block",
                       widgets: [
-                        { id: PANEL1, name: "Panel 1", renderId: PANEL },
-                        { id: PANEL2, name: "Panel 2", renderId: PANEL },
-                        { id: IMPORT_OBJECTS, name: "Import Objects" }
+                        {
+                          id: PANEL1,
+                          name: "Panel 1",
+                          renderId: PANEL,
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
+                        },
+                        {
+                          id: PANEL2,
+                          name: "Panel 2 (disabled)",
+                          disabled: true,
+                          renderId: PANEL,
+                          startImgSrc: `${ASSETS_PREFIX}panel-for-sd.svg`,
+                          startImgType: "background"
+                        },
+                        {
+                          id: IMPORT_OBJECTS,
+                          name: "Import Objects",
+                          startImgSrc: `${ASSETS_PREFIX}knowledge-base.svg`,
+                          startImgType: "background"
+                        }
                       ]
                     }
                   ]
@@ -347,7 +398,7 @@ export const layout3: FlexibleLayoutModel = {
                 {
                   id: OUTPUT,
                   name: "Output",
-                  startImgSrc: "assets/icons/toolbar/output.svg"
+                  startImgSrc: `${ASSETS_PREFIX}toolbar/output.svg`
                 }
               ]
             }
@@ -356,7 +407,7 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
+          closeButton: false,
           size: "300px",
           showCaptions: false,
           type: "tabbed",
@@ -366,7 +417,12 @@ export const layout3: FlexibleLayoutModel = {
             {
               id: PROPERTIES,
               name: "Properties",
-              startImgSrc: "assets/icons/toolbar/properties.svg"
+              startImgSrc: `${ASSETS_PREFIX}toolbar/properties.svg`
+            },
+            {
+              id: TOOLBOX,
+              name: "Toolbox",
+              startImgSrc: `${ASSETS_PREFIX}toolbar/toolbox.svg`
             }
           ]
         }
@@ -415,7 +471,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
@@ -427,7 +483,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [PREFERENCES]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
       dragDisabled={true}
@@ -441,22 +497,13 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [START_PAGE]: () => (
     <div slot={START_PAGE} key={START_PAGE}>
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          fontSize: "64px",
-          color: "#c5c8c6",
-          "text-align": "center"
-        }}
-      >
-        GeneXus
-      </h1>
+      <h2 class="heading-1 welcome-message">GeneXus</h2>
     </div>
   ),
-  [GRID]: () => (
-    <div slot={GRID} key={GRID}>
-      Grid render... <input type="text" />
+  [STRUCT_EDITOR]: () => (
+    <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
+      Grid render...
+      <ch-edit class="form-input" accessibleName="Name" type="text"></ch-edit>
       <ch-grid>
         <ch-grid-columnset>
           <ch-grid-column
@@ -581,19 +628,24 @@ export const layoutRenders: FlexibleLayoutRenders = {
       </ch-grid>
     </div>
   ),
-  [STRUCT_EDITOR]: () => (
-    <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
-      Struct Editor... <input type="text" />
-    </div>
-  ),
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
     <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
-      Panel AttrsContainersAndOthers <input type="text" />
+      Panel AttrsContainersAndOthers
+      <ch-edit
+        class="form-input"
+        accessibleName="Panel name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [PROPERTIES]: () => (
     <div slot={PROPERTIES} key={PROPERTIES}>
-      Properties render... <input type="text" />
+      Properties render...
+      <ch-edit
+        class="form-input"
+        accessibleName="Property name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [OUTPUT]: () => (
@@ -603,7 +655,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
       dragDisabled={true}
@@ -616,7 +668,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [IMPORT_OBJECTS]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
       checkbox
@@ -635,5 +687,12 @@ export const layoutRenders: FlexibleLayoutRenders = {
     <div slot={widget.id} key={widget.id}>
       This is the render for the <strong>{widget.id}</strong> widget
     </div>
+  ),
+  [TOOLBOX]: () => (
+    <ch-action-list-render
+      slot={TOOLBOX}
+      key={TOOLBOX}
+      model={panelToolbox}
+    ></ch-action-list-render>
   )
 };

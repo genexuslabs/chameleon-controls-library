@@ -7,7 +7,10 @@ import {
   State,
   Listen,
   Watch,
-  forceUpdate
+  forceUpdate,
+  Event,
+  EventEmitter,
+  Method
   // EventEmitter
 } from "@stencil/core";
 import {
@@ -24,6 +27,10 @@ import {
 import { ChActionListItemCustomEvent } from "../../components";
 import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
+import { mouseEventModifierKey } from "../common/helpers";
+import { actionListKeyboardNavigation } from "./keyboard-navigation";
+import { getActionListOrGroupItemFromEvent } from "./utils";
+import { updateItemProperty } from "./update-item-property";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -34,10 +41,19 @@ const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const renderMapping: {
   [key in ActionListItemType]: (
     itemModel: ActionListItemModelMap[key],
-    actionRenderState: ChActionListRender
+    actionRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
 } = {
-  actionable: (itemModel, actionListRenderState) => (
+  actionable: (
+    itemModel,
+    actionListRenderState,
+    disabled: boolean,
+    nested = false,
+    nestedExpandable = false
+  ) => (
     <ch-action-list-item
       key={itemModel.id}
       id={itemModel.id}
@@ -45,17 +61,34 @@ const renderMapping: {
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
       checked={itemModel.checked ?? actionListRenderState.checked}
-      disabled={itemModel.disabled}
+      disabled={disabled === true ? true : itemModel.disabled}
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
       metadata={itemModel.metadata}
+      nested={nested}
+      nestedExpandable={nestedExpandable}
+      selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
     ></ch-action-list-item>
   ),
   group: (itemModel, actionRenderState) => (
-    <ch-action-list-group key={itemModel.id} caption={itemModel.caption}>
+    <ch-action-list-group
+      key={itemModel.id}
+      id={itemModel.id}
+      caption={itemModel.caption}
+      disabled={itemModel.disabled}
+      expandable={itemModel.expandable}
+      expanded={itemModel.expanded}
+      selected={itemModel.selected}
+    >
       {itemModel.items?.map(item =>
-        actionRenderState.renderItem(item, actionRenderState)
+        actionRenderState.renderItem(
+          item,
+          actionRenderState,
+          itemModel.disabled,
+          true,
+          itemModel.expandable
+        )
       )}
     </ch-action-list-group>
   ),
@@ -71,12 +104,23 @@ const renderMapping: {
 
 const defaultRenderItem = (
   itemModel: ActionListItemModel,
-  actionListRenderState: ChActionListRender
+  actionListRenderState: ChActionListRender,
+  disabled?: boolean,
+  nested?: boolean,
+  nestedExpandable?: boolean
 ) =>
-  renderMapping[itemModel.type](
-    itemModel as any, // THIS IS A WA
-    actionListRenderState
-  );
+  itemModel.type === "actionable"
+    ? renderMapping.actionable(
+        itemModel as any, // THIS IS A WA
+        actionListRenderState,
+        disabled,
+        nested,
+        nestedExpandable
+      )
+    : renderMapping[itemModel.type](
+        itemModel as any, // THIS IS A WA
+        actionListRenderState
+      );
 
 const FIRST_ITEM_GREATER_THAN_SECOND = -1;
 const SECOND_ITEM_GREATER_THAN_FIRST = 0;
@@ -123,8 +167,6 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
   });
 };
 
-// type ImmediateFilter = "immediate" | "debounced" | undefined;
-
 @Component({
   tag: "ch-action-list-render",
   styleUrl: "action-list-render.scss",
@@ -133,6 +175,7 @@ const defaultSortItemsCallback = (subModel: ActionListItemModel[]): void => {
 export class ChActionListRender {
   #flattenedModel: Map<string, ActionListItemModelExtended> = new Map();
   // #additionalItemsParts: Set<string> | undefined;
+  #selectedItems: Set<string> | undefined;
 
   @Element() el: HTMLChActionListRenderElement;
 
@@ -161,6 +204,16 @@ export class ChActionListRender {
    * items by default. If `true`, the items can edit its caption in place.
    */
   @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+
+  /**
+   * Callback that is executed when and item requests to be fixed/unfixed.
+   * If the callback is not defined, the item will be fixed/unfixed without
+   * further confirmation.
+   */
+  @Prop() readonly fixItemCallback?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
 
   /**
    * This property lets you define the model of the control.
@@ -277,7 +330,10 @@ export class ChActionListRender {
    */
   @Prop() readonly renderItem: (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any = defaultRenderItem;
 
   /**
@@ -288,6 +344,26 @@ export class ChActionListRender {
   @Prop() readonly removeItemCallback?: (
     itemInfo: ActionListItemActionable
   ) => Promise<boolean>;
+
+  /**
+   * Specifies the type of selection implemented by the control.
+   */
+  @Prop() readonly selection: "single" | "multiple" | "none" = "none";
+  @Watch("selection")
+  selectionChanged(newValue: "single" | "multiple" | "none") {
+    if (newValue === "none") {
+      this.#removeAllSelectedItems();
+      this.#selectedItems = undefined;
+    }
+    // Create the set to allocate the selected items, if necessary
+    else {
+      this.#selectedItems ??= new Set();
+
+      if (newValue === "single") {
+        this.#removeAllSelectedItemsExceptForTheLast(this.#selectedItems);
+      }
+    }
+  }
 
   /**
    * Callback that is executed when the treeModel is changed to order its items.
@@ -304,43 +380,150 @@ export class ChActionListRender {
   // >;
 
   /**
-   * Fired when the selected items change.
-   * This event can be fired by the following conditions:
-   *   1. A user changes the selected items interacting with the Tree View.
-   *
-   *   2. The `multiSelection` value is changed from `true` to `false`.
-   *
-   *   3. A selected item is no longer rendered because it does not satisfies a
-   *      filter condition.
-   *
-   *   4. TODO: The `treeModel` property is updated and contains different selected
-   *      items. Even if it does not contains different selected items, this
-   *      event is fired because the selected items can have a different path
-   *      than before the `treeModel` update.
-   *
-   *   5. The `updateItemsProperties` method is executed, changing the item
-   *      selection.
-   *
-   *   6. A selected item is removed.
-   *
-   *   7. TODO: A selected item is moved into a new parent with drag and drop.
-   *      In this case, since the detail of the event contains the information
-   *      of the parent, this event must be fired to update the information.
-   *
-   *   8. Executing `scrollIntoVisible` method and updating the selected value
-   *      of the scrolled item.
-   *
-   *   9. TODO: An external item is dropped into the Tree View and the item is
-   *      selected.
-   *
-   *  10. TODO: Lazy loading content that has selected items?
-   *
-   * Thing that does not fire this event:
-   *   - TODO: Renaming a selected item.
-   *
-   *   - TODO: Applying a filter that keeps all selected items rendered.
+   * Fired when the selected items change and `selection !== "none"`
    */
-  // @Event() selectedItemsChange: EventEmitter<TreeViewItemModelExtended[]>;
+  @Event() selectedItemsChange: EventEmitter<ActionListItemModelExtended[]>;
+
+  /**
+   * Fired when an item is clicked and `selection === "none"`.
+   * Applies for items that have `type === "actionable"` or
+   * (`type === "group"` and `expandable === true`)
+   */
+  @Event() itemClick: EventEmitter<ActionListItemModelExtended>;
+
+  /**
+   * Adds an item in the control.
+   *
+   * If the item already exists, the operation is canceled.
+   *
+   * If the `groupParentId` property is specified the item is added in the
+   * group determined by `groupParentId`. It only works if the item to add
+   * has `type === "actionable"`
+   */
+  @Method()
+  async addItem(
+    itemInfo: ActionListItemModel,
+    groupParentId?: string
+  ): Promise<void> {
+    // Already exists
+    if (this.#flattenedModel.get(itemInfo.id)) {
+      return;
+    }
+
+    if (groupParentId) {
+      const parentGroup = this.#flattenedModel.get(groupParentId);
+
+      // The parent group does not exists or it isn't a group
+      if (
+        !parentGroup ||
+        parentGroup.item.type !== "group" ||
+        itemInfo.type !== "actionable"
+      ) {
+        return;
+      }
+
+      parentGroup.item.items.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        parentItem: parentGroup.item
+      });
+
+      // Sort items in parent model
+      this.#sortModel(parentGroup.item.items);
+    }
+    // Item is placed at the root
+    else {
+      this.model.push(itemInfo);
+      this.#flattenedModel.set(itemInfo.id, {
+        item: itemInfo,
+        root: this.model
+      });
+
+      // Sort items in parent model
+      this.#sortModel(this.model);
+    }
+
+    forceUpdate(this);
+  }
+
+  /**
+   * Given a list of ids, it returns an array of the items that exists in the
+   * given list.
+   */
+  @Method()
+  async getItemsInfo(
+    itemsId: string[]
+  ): Promise<ActionListItemModelExtended[]> {
+    return this.#getItemsInfo(itemsId);
+  }
+
+  /**
+   * Remove the item and all its descendants from the control.
+   */
+  @Method()
+  async removeItem(itemId: string) {
+    const itemUIModel = this.#flattenedModel.get(itemId);
+
+    if (!itemUIModel) {
+      return;
+    }
+
+    // Remove all descendants
+    if (itemUIModel.item.type === "group") {
+      const items = itemUIModel.item.items;
+
+      items.forEach(item => {
+        this.#flattenedModel.delete(item.id);
+      });
+    }
+
+    this.#removeItem(itemUIModel);
+  }
+
+  #getItemsInfo = (itemsId: string[]): ActionListItemModelExtended[] => {
+    const actionListItemsInfo: ActionListItemModelExtended[] = [];
+
+    itemsId.forEach(itemId => {
+      const itemUIModel = this.#flattenedModel.get(itemId);
+
+      if (itemUIModel) {
+        actionListItemsInfo.push(itemUIModel);
+      }
+    });
+
+    return actionListItemsInfo;
+  };
+
+  /**
+   * Given an itemId and the properties to update, it updates the properties
+   * of the items in the list.
+   */
+  @Method()
+  async updateItemProperties(
+    itemId: string,
+    properties: Partial<ActionListItemModel> & { type: ActionListItemType }
+  ) {
+    // Set to check if there are new selected items
+    const newSelectedItems = new Set(this.#selectedItems);
+
+    const parentArray = updateItemProperty(
+      itemId,
+      properties,
+      this.#flattenedModel,
+      newSelectedItems
+    );
+
+    if (parentArray !== undefined) {
+      this.#sortModel(parentArray);
+    }
+
+    // MultiSelection is disabled. We must select the last updated item
+    if (this.selection === "single") {
+      this.#removeAllSelectedItemsExceptForTheLast(newSelectedItems);
+    }
+
+    forceUpdate(this);
+  }
 
   @Listen("fixedChange")
   onFixedChange(
@@ -350,7 +533,25 @@ export class ChActionListRender {
 
     const itemUIModel = this.#flattenedModel.get(detail.itemId);
     const itemInfo = itemUIModel.item as ActionListItemActionable;
-    itemInfo.fixed = detail.value;
+
+    if (!this.fixItemCallback) {
+      this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      return;
+    }
+
+    this.fixItemCallback(itemInfo, detail.value).then(acceptChange => {
+      if (acceptChange) {
+        this.#updateItemFix(itemUIModel, itemInfo, detail.value);
+      }
+    });
+  }
+
+  #updateItemFix = (
+    itemUIModel: ActionListItemModelExtended,
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => {
+    itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
     this.#sortModel(
@@ -360,7 +561,7 @@ export class ChActionListRender {
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
-  }
+  };
 
   @Listen("remove")
   onRemove(event: ChActionListItemCustomEvent<string>) {
@@ -381,19 +582,174 @@ export class ChActionListRender {
     );
   }
 
+  #getItemOrGroupInfo = (itemId: string) =>
+    this.#flattenedModel.get(itemId).item as
+      | ActionListItemActionable
+      | ActionListItemGroup;
+
+  #removeAllSelectedItemsExceptForTheLast = (
+    currentSelectedItems: Set<string>
+  ) => {
+    if (currentSelectedItems.size > 1) {
+      const selectedItemsArray = [...currentSelectedItems.values()];
+      const lastItemIndex = currentSelectedItems.size - 1;
+
+      // Deselect all items except the last
+      for (let index = 0; index < lastItemIndex; index++) {
+        const itemId = selectedItemsArray[index];
+
+        this.#getItemOrGroupInfo(itemId).selected = false;
+      }
+
+      // Create a new Set with only the last item
+      currentSelectedItems.clear();
+      currentSelectedItems.add(selectedItemsArray[lastItemIndex]);
+
+      forceUpdate(this);
+      this.#emitSelectedItemsChange();
+      // this.#scheduleSelectedItemsChange();
+    }
+  };
+
+  #removeAllSelectedItems = () => {
+    this.#selectedItems.forEach(selectedItemId => {
+      const selectedItemInfo = this.#getItemOrGroupInfo(selectedItemId);
+      selectedItemInfo.selected = false;
+    });
+
+    this.#selectedItems.clear();
+  };
+
+  #handleItemClick = (event: PointerEvent) => {
+    const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
+
+    if (!actionListItemOrGroup) {
+      return;
+    }
+    const itemInfo = this.#getItemOrGroupInfo(actionListItemOrGroup.id);
+    this.#checkIfMustExpandCollapseGroup(itemInfo);
+
+    if (itemInfo.type === "group" && !itemInfo.expandable) {
+      return;
+    }
+    this.itemClick.emit(this.#flattenedModel.get(itemInfo.id));
+  };
+
+  #checkIfMustExpandCollapseGroup = (
+    itemInfo: ActionListItemActionable | ActionListItemGroup
+  ) => {
+    // Toggle the expanded/collapsed in the group on click
+    if (
+      itemInfo.type === "group" &&
+      itemInfo.expandable &&
+      !itemInfo.disabled
+    ) {
+      itemInfo.expanded = !itemInfo.expanded;
+      forceUpdate(this);
+    }
+  };
+
+  #handleItemSelection = (event: PointerEvent) => {
+    const actionListItemOrGroup = getActionListOrGroupItemFromEvent(event);
+
+    if (!actionListItemOrGroup) {
+      return;
+    }
+    const itemId = actionListItemOrGroup.id;
+    const itemInfo = this.#getItemOrGroupInfo(itemId);
+
+    const ctrlKeyIsPressed = mouseEventModifierKey(event);
+    const itemWasSelected = this.#selectedItems.has(itemId);
+    const singleSelectionMode = this.selection === "single";
+
+    // - - - - - - - - - - Single selection - - - - - - - - - -
+    if (singleSelectionMode) {
+      if (!ctrlKeyIsPressed) {
+        this.#checkIfMustExpandCollapseGroup(itemInfo);
+      }
+
+      // Nothing to update in the UI
+      if (itemWasSelected && !ctrlKeyIsPressed) {
+        return;
+      }
+      const previousSelectedItemId: string | undefined = [
+        ...this.#selectedItems.keys()
+      ][0];
+
+      // Remove the previous selected item
+      if (previousSelectedItemId) {
+        this.#selectedItems.clear();
+
+        const previousSelectedItemInfo = this.#getItemOrGroupInfo(
+          previousSelectedItemId
+        );
+        previousSelectedItemInfo.selected = false;
+      }
+
+      // If the item was not selected, add it to the Set. If the item was
+      // selected, the previous if removes the item
+      if (!itemWasSelected) {
+        this.#selectedItems.add(itemId);
+      }
+
+      itemInfo.selected = !itemWasSelected;
+      this.#emitSelectedItemsChange();
+      forceUpdate(this);
+      return;
+    }
+
+    // - - - - - - - - - - Multiple selection - - - - - - - - - -
+    if (ctrlKeyIsPressed) {
+      // The item was selected, deselect the item
+      if (itemWasSelected) {
+        this.#selectedItems.delete(itemId);
+      }
+      // Otherwise, select the item
+      else {
+        this.#selectedItems.add(itemId);
+      }
+
+      itemInfo.selected = !itemWasSelected;
+    } else {
+      this.#checkIfMustExpandCollapseGroup(itemInfo);
+
+      // Remove the selection from all items
+      this.#removeAllSelectedItems();
+
+      this.#selectedItems.add(itemId);
+      itemInfo.selected = true;
+    }
+
+    this.#emitSelectedItemsChange();
+    forceUpdate(this);
+  };
+
+  #emitSelectedItemsChange = () => {
+    const selectedItemsInfo = this.#getItemsInfo([
+      ...this.#selectedItems.keys()
+    ]);
+    this.selectedItemsChange.emit(selectedItemsInfo);
+  };
+
   #removeItem = (itemUIModel: ActionListItemModelExtended) => {
     const parentArray =
       (itemUIModel as ActionListItemModelExtendedRoot).root ??
       (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
-    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const itemToRemoveId = itemUIModel.item.id;
 
     const itemToRemoveIndex = parentArray.findIndex(
-      el => (el as ActionListItemActionable).id === itemInfo.id
+      el => el.id === itemToRemoveId
     );
 
-    // Remove the UI model from the previous parent. The equality function
-    // must be by index, not by object reference
-    removeElement(parentArray, itemToRemoveIndex);
+    // In some situations, the user could remove the item before the
+    // "removeItemCallback" promise is resolved
+    if (itemToRemoveIndex > -1) {
+      // Remove the UI model from the previous parent. The equality function
+      // must be by index, not by object reference
+      removeElement(parentArray, itemToRemoveIndex);
+    }
+
+    this.#flattenedModel.delete(itemToRemoveId);
 
     // Queue a re-render
     forceUpdate(this);
@@ -461,6 +817,20 @@ export class ChActionListRender {
   }
 
   render() {
-    return <Host>{this.model?.map(item => this.renderItem(item, this))}</Host>;
+    return (
+      <Host
+        aria-multiselectable={this.selection === "multiple" ? "true" : null}
+        onClick={
+          this.selection === "none"
+            ? this.#handleItemClick
+            : this.#handleItemSelection
+        }
+        onKeyDown={actionListKeyboardNavigation(this.el, this.#flattenedModel)}
+      >
+        {this.model?.map(item =>
+          this.renderItem(item, this, false, false, false)
+        )}
+      </Host>
+    );
   }
 }

@@ -2,7 +2,7 @@ const DS_MANAGER_LANGUAGE_KEY = "chameleon-design-system";
 const UNANIMO_DS =
   "https://unpkg.com/@genexus/unanimo@latest/dist/css/unanimo.css";
 const MERCURY_DS =
-  "https://unpkg.com/@genexus/mercury@latest/dist/css/mercury.css";
+  "https://unpkg.com/@genexus/mercury@latest/dist/bundles/css/all.css";
 
 const CURRENT_DS_SELECTOR = "data-selected-ds";
 const CURRENT_DS_ATTRIBUTE_SELECTOR = `[${CURRENT_DS_SELECTOR}]`;
@@ -48,6 +48,8 @@ export function setDesignSystemInBrowser(designSystem) {
 
     document.head.appendChild(styleSheetLink);
   }
+
+  document.body.classList = designSystem;
 }
 
 // Initialize the design system

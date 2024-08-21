@@ -24,11 +24,13 @@ import {
   FlexibleLayoutWidget,
   FlexibleLayoutLeafType,
   FlexibleLayoutWidgetExtended,
-  FlexibleLayoutWidgetCloseInfo
+  FlexibleLayoutWidgetCloseInfo,
+  FlexibleLayoutLeafConfigurationTabbed
 } from "./internal/flexible-layout/types";
 import { ChFlexibleLayoutCustomEvent } from "../../components";
 import { removeElement } from "../../common/array";
 import { addNewLeafToInfo, getLeafInfo, updateFlexibleModels } from "./utils";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -81,9 +83,33 @@ export class ChFlexibleLayoutRender {
   #flexibleLayoutRef: HTMLChFlexibleLayoutElement;
 
   /**
+   * `true` to display a close button for the `"tabbed"` type leafs.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of the
+   * document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   */
+  @Prop() readonly contain: CssContainProperty = "none";
+
+  /**
    * A CSS class to set as the `ch-flexible-layout` element class.
    */
   @Prop() readonly cssClass: string = "flexible-layout";
+
+  /**
+   * When the "tabbed" type leafs are sortable, the items can be dragged
+   * outside of its tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
+   */
+  @Prop() readonly dragOutside: boolean = false;
 
   /**
    * Specifies the distribution of the items in the flexible layout.
@@ -95,9 +121,26 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflow:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
+
+  /**
    * Specifies the distribution of the items in the flexible layout.
    */
   @Prop() readonly renders: FlexibleLayoutRenders;
+
+  /**
+   * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by
+   * dragging them in the tab-list.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
+   */
+  @Prop() readonly sortable: boolean = false;
 
   /**
    * Emitted when the user pressed the close button in a widget.
@@ -366,6 +409,44 @@ export class ChFlexibleLayoutRender {
   }
 
   /**
+   * Given the viewId, it updates the info of the view if the view is a leaf.
+   * The `type` of the properties argument must match the `type` of the view to
+   * update.
+   */
+  @Method()
+  async updateViewInfo(
+    viewId: string,
+    // TODO: Add support to update sticky at runtime
+    properties: Partial<
+      Omit<
+        FlexibleLayoutLeafConfigurationTabbed,
+        "selectedWidgetId" | "widget" | "widgets"
+      >
+    >
+  ) {
+    const viewUIModel = this.#itemsInfo.get(viewId) as LeafExtended;
+
+    if (
+      !viewUIModel ||
+      !viewUIModel.leafInfo ||
+      viewUIModel.item.type !== properties.type
+    ) {
+      return;
+    }
+
+    for (const key in properties) {
+      // TODO: Avoid property duplication. Share the memory between the
+      // `leafInfo` member and the `item` member
+      viewUIModel.item[key] = properties[key];
+      viewUIModel.leafInfo[key] = properties[key];
+    }
+
+    // Queue re-renders
+    forceUpdate(this);
+    this.#flexibleLayoutRef.refreshLeaf(viewUIModel.item.id);
+  }
+
+  /**
    * Update the widget info.
    */
   @Method()
@@ -390,21 +471,35 @@ export class ChFlexibleLayoutRender {
   }
 
   #updateFlexibleModels = (layout: FlexibleLayoutModel) => {
+    // Partially delete the previous state
+    this.#itemsInfo.clear();
+    this.#widgetsInfo.clear();
+
     // Empty layout
     if (layout == null) {
+      this.#renderedWidgets.clear();
       return;
     }
 
     const layoutSplitterPartsSet: Set<string> = new Set();
+    const newRenderedWidgets: Set<string> = new Set(); // Temporal Set to store the new rendered widgets
 
     updateFlexibleModels(
       layout,
       this.#itemsInfo,
       layoutSplitterPartsSet,
-      this.#renderedWidgets,
+      newRenderedWidgets,
       this.#widgetsInfo
     );
 
+    // Add the previous rendered widgets if they are still in the new layout
+    this.#widgetsInfo.forEach(widget => {
+      if (this.#renderedWidgets.has(widget.info.id)) {
+        newRenderedWidgets.add(widget.info.id);
+      }
+    });
+
+    this.#renderedWidgets = newRenderedWidgets;
     this.#layoutSplitterParts = [...layoutSplitterPartsSet.values()].join(",");
   };
 
@@ -531,6 +626,13 @@ export class ChFlexibleLayoutRender {
 
     // Mark the item as rendered
     widget.wasRendered = true;
+
+    const leafUIModel = this.#itemsInfo.get(leafInfo.id)
+      .item as FlexibleLayoutLeafConfigurationTabbed;
+
+    // TODO: This is a WA to fix the selectedWidgetId update. The leafInfo
+    // member should share memory with the leaf to avoid these issues
+    leafUIModel.selectedWidgetId = widget.id;
 
     leafInfo.selectedWidgetId = widget.id;
   };
@@ -681,6 +783,15 @@ export class ChFlexibleLayoutRender {
     const widgetInfo = this.#widgetsInfo.get(widgetId).info;
     const widgetRender = this.renders[widgetInfo.renderId ?? widgetId];
 
+    if (!widgetRender) {
+      console.error(
+        `Could not find a render for the "${widgetId}" widget. The render "${
+          widgetInfo.renderId ?? widgetId
+        }" does not exists in the "renders" property.`
+      );
+      return;
+    }
+
     return widgetInfo.addWrapper ? (
       <div
         key={widgetId}
@@ -707,9 +818,14 @@ export class ChFlexibleLayoutRender {
     return (
       <ch-flexible-layout
         class={this.cssClass || null}
+        closeButton={this.closeButton}
+        contain={this.contain}
+        dragOutside={this.dragOutside}
         model={this.model}
         layoutSplitterParts={this.#layoutSplitterParts}
         itemsInfo={this.#itemsInfo}
+        overflow={this.overflow}
+        sortable={this.sortable}
         onViewItemClose={this.#handleLeafWidgetClose}
         onViewItemReorder={this.#handleLeafWidgetReorder}
         onSelectedViewItemChange={this.#handleLeafSelectedWidgetChange}

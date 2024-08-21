@@ -1,6 +1,7 @@
-import { Component, Element, Host, Prop, h } from "@stencil/core";
-import { defaultCodeRender, parseCodeToJSX } from "./internal/code-highlight";
-import { MarkdownCodeRender } from "./internal/types";
+import { Component, Element, Host, Prop, State, h } from "@stencil/core";
+import { CodeToJSX } from "./internal/types";
+
+let parseCodeToJSX: CodeToJSX;
 
 /**
  * A control to highlight code blocks.
@@ -11,20 +12,24 @@ import { MarkdownCodeRender } from "./internal/types";
  * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
  */
 @Component({
-  shadow: false,
+  shadow: true,
   styleUrl: "code.scss",
   tag: "ch-code"
 })
 export class ChCode {
-  #JSXCodeBlock: any;
   #lastNestedChildIsRoot: boolean = true;
+
+  /**
+   * This flag is used for faster initial loading. It avoid waiting for the
+   * lazy JS to render the code with its language. This reduces the CLS at the
+   * initial load.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #initialLoad = true;
 
   @Element() el: HTMLChCodeElement;
 
-  /**
-   *
-   */
-  @Prop() readonly addLastNestedChildClass: boolean = false;
+  @State() JSXCodeBlock: any;
 
   /**
    *
@@ -37,9 +42,10 @@ export class ChCode {
   @Prop() readonly language: string;
 
   /**
-   * This property allows us to implement custom rendering for the code blocks.
+   * Specifies if an indicator is displayed in the last element rendered.
+   * Useful for streaming scenarios where a loading indicator is needed.
    */
-  @Prop() readonly renderCode: MarkdownCodeRender = defaultCodeRender;
+  @Prop() readonly showIndicator: boolean = false;
 
   /**
    * Specifies the code string to highlight.
@@ -48,36 +54,70 @@ export class ChCode {
 
   #getLanguageOrDefault = () => this.language || "plaintext";
 
-  async componentWillRender() {
-    if (this.value) {
-      const result = await parseCodeToJSX(
-        this.value,
-        this.#getLanguageOrDefault(),
-        this.addLastNestedChildClass,
-        this.lastNestedChildClass
-      );
+  #parseCodeToJSX = () =>
+    parseCodeToJSX(
+      this.value,
+      this.#getLanguageOrDefault(),
+      this.showIndicator,
+      this.lastNestedChildClass
+    );
 
-      this.#JSXCodeBlock = result.renderedCode;
-      this.#lastNestedChildIsRoot = result.lastNestedChildIsRoot;
-    } else {
-      this.#JSXCodeBlock = "";
+  async componentWillRender() {
+    if (!this.value) {
+      this.JSXCodeBlock = "";
       this.#lastNestedChildIsRoot = true;
+      return;
     }
+
+    // Don't block the initial render, even if the parser is not downloaded
+    if (this.#initialLoad) {
+      // The parser was already downloaded
+      if (parseCodeToJSX) {
+        this.#parseCodeToJSX().then(renderResult => {
+          this.JSXCodeBlock = renderResult.renderedCode;
+          this.#lastNestedChildIsRoot = renderResult.lastNestedChildIsRoot;
+        });
+      }
+      // The parser is not downloaded. Subscribe to its download
+      else {
+        import("./internal/code-highlight").then(async bundle => {
+          parseCodeToJSX ??= bundle.parseCodeToJSX; // Initialize the parser if necessary
+          const renderResult = await this.#parseCodeToJSX();
+
+          this.JSXCodeBlock = renderResult.renderedCode;
+          this.#lastNestedChildIsRoot = renderResult.lastNestedChildIsRoot;
+        });
+      }
+    }
+    // Block re-renders until the JSX is resolved
+    else {
+      const result = await this.#parseCodeToJSX();
+
+      this.JSXCodeBlock = result.renderedCode;
+      this.#lastNestedChildIsRoot = result.lastNestedChildIsRoot;
+    }
+
+    this.#initialLoad = false;
   }
 
   render() {
     const addLastNestedChildClassInHost =
-      this.addLastNestedChildClass && this.#lastNestedChildIsRoot;
+      this.showIndicator && this.#lastNestedChildIsRoot;
 
+    const language = this.#getLanguageOrDefault();
+
+    // TODO: Should we hide the ch-code on the initial load?
     return (
-      <Host>
-        {this.renderCode({
-          addLastNestedChildClassInHost: addLastNestedChildClassInHost,
-          language: this.#getLanguageOrDefault(),
-          lastNestedChildClass: this.lastNestedChildClass,
-          plainText: this.value || "",
-          renderedContent: this.#JSXCodeBlock
-        })}
+      <Host class={this.showIndicator ? "ch-code-show-indicator" : undefined}>
+        <code
+          class={{
+            [`hljs language-${language}`]: true,
+            [this.lastNestedChildClass]: addLastNestedChildClassInHost
+          }}
+          part={`code language-${language}`}
+        >
+          {this.JSXCodeBlock ?? this.value}
+        </code>
       </Host>
     );
   }

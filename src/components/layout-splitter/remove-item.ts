@@ -128,7 +128,9 @@ export const removeItem = (
           key !== "id" &&
           key !== "size" &&
           key !== "dragBar" &&
-          key !== "fixedOffsetSize"
+          key !== "fixedOffsetSize" &&
+          // TODO: Check if "sticky" should be supported
+          key !== "sticky"
         ) {
           parentItem[key] = itemToAddSpace[key];
         }

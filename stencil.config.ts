@@ -7,9 +7,7 @@ export const config: Config = {
     {
       type: "dist",
       esmLoaderPath: "../loader",
-      copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" }
-      ]
+      copy: [{ src: "common/monaco/output/assets", dest: "assets" }]
     },
     {
       type: "docs-readme"
@@ -18,12 +16,18 @@ export const config: Config = {
       type: "www",
       serviceWorker: null,
       copy: [
-        { src: "components/code-editor/monaco/output/assets", dest: "assets" },
+        { src: "common/monaco/output/assets", dest: "assets" },
         { src: "showcase" }
       ]
     }
   ],
   plugins: [sass()],
+  testing: {
+    browserArgs: ["--no-sandbox", "--disable-setuid-sandbox"],
+    verbose: true,
+    browserHeadless: "new",
+    testPathIgnorePatterns: ["node_modules/", "src/testing/", "dist/"]
+  },
   bundles: [
     {
       components: [
@@ -33,10 +37,16 @@ export const config: Config = {
       ]
     },
     {
-      components: ["ch-code"] // Make sure the ch-code control is not bundled with other components
+      components: ["ch-code", "ch-markdown-viewer"] // Make sure the ch-code and ch-markdown-viewer control are not bundled with other components
     },
     {
-      components: ["ch-combo-box"] // Make sure the ch-combo-box control is not bundled with other components
+      components: ["ch-combo-box-render"] // Make sure the ch-combo-box-render control is not bundled with other components
+    },
+    {
+      components: ["ch-dialog"] // Make sure the ch-dialog control is not bundled with other components
+    },
+    {
+      components: ["ch-edit"] // Make sure the ch-edit control is not bundled with other components
     },
     {
       components: ["ch-markdown"] // Make sure the ch-markdown control is not bundled with other components
@@ -70,6 +80,12 @@ export const config: Config = {
     },
     {
       components: ["ch-showcase"] // Make sure the ch-showcase control is not bundled with other components
+    },
+    {
+      components: ["ch-smart-grid", "ch-smart-grid-cell", "ch-infinite-scroll"]
+    },
+    {
+      components: ["ch-textblock"] // Make sure the ch-textblock control is not bundled with other components
     },
     {
       components: [

@@ -1,6 +1,7 @@
 import { Component, Prop, Host, Watch, h, forceUpdate } from "@stencil/core";
 import {
   ShowcaseAvailableStories,
+  ShowcaseCustomStory,
   ShowcaseRenderProperty,
   ShowcaseRenderPropertyBoolean,
   ShowcaseRenderPropertyEnum,
@@ -11,9 +12,9 @@ import {
   ShowcaseRenderPropertyTypes,
   ShowcaseStory
 } from "./types";
-import { showcaseStories } from "./showcase-stories";
+import { showcaseStories, showcaseCustomStories } from "./showcase-stories";
 import {
-  ChComboBoxCustomEvent,
+  ChComboBoxRenderCustomEvent,
   ChRadioGroupRenderCustomEvent,
   ComboBoxModel,
   FlexibleLayoutModel,
@@ -24,6 +25,18 @@ import {
   defineControlMarkupWithUIModel,
   defineControlMarkupWithoutUIModel
 } from "./utils";
+import { registryProperty } from "../../../common/registry-properties";
+import { getImagePathCallbackImage } from "./image/models";
+import { getImagePathCallbackEdit } from "./edit/models";
+import { getImagePathCallbackTreeView } from "./tree-view/models";
+
+registryProperty("getImagePathCallback", {
+  "ch-edit": getImagePathCallbackEdit,
+  "ch-image": getImagePathCallbackImage,
+  "ch-tree-view-render": getImagePathCallbackTreeView
+});
+
+// registryControlProperty("getImagePathCallback", "ch-image", getImagePathCallbackImage)
 
 const MAIN_WIDGET = "main";
 const USAGE_STENCIL_JS = "usage (StencilJS)";
@@ -35,7 +48,6 @@ const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   items: [
     {
       id: MAIN_WIDGET,
-      closeButtonHidden: true,
       size: "1fr",
       minSize: "220px",
       selectedWidgetId: MAIN_WIDGET,
@@ -71,13 +83,16 @@ const defaultRenderForEachPropertyType = {
 })
 export class ChShowcase {
   #showcaseStory: ShowcaseStory<ShowcaseAvailableStories> | undefined;
+  #showcaseCustomStory: ShowcaseCustomStory | undefined;
   #showcaseStoryCheckboxes: Map<string, () => void> | undefined;
   #showcaseStoryComboBoxes:
     | Map<
         string,
         {
           model: ComboBoxModel;
-          handler: (event: ChComboBoxCustomEvent<string> | InputEvent) => void;
+          handler: (
+            event: ChComboBoxRenderCustomEvent<string> | InputEvent
+          ) => void;
         }
       >
     | undefined;
@@ -162,7 +177,7 @@ export class ChShowcase {
       const eventHandler = (
         event:
           | ChRadioGroupRenderCustomEvent<string>
-          | ChComboBoxCustomEvent<string>
+          | ChComboBoxRenderCustomEvent<string>
           | InputEvent
       ) => {
         showcaseStoryState[propertyGroupId as any] = event.detail;
@@ -348,7 +363,7 @@ export class ChShowcase {
   // Refs
   #copyButtonRef: HTMLButtonElement;
   #flexibleLayoutRef: HTMLChFlexibleLayoutRenderElement | undefined;
-  #iframeRef: HTMLIFrameElement;
+  #iframeRef: HTMLIFrameElement | undefined;
 
   /**
    * Specifies the theme used in the iframe of the control
@@ -361,7 +376,7 @@ export class ChShowcase {
       return;
     }
 
-    this.#iframeRef.contentWindow.postMessage(
+    this.#iframeRef?.contentWindow.postMessage(
       newColorSchemeValue,
       `${window.location.origin}/${this.pageSrc}`
     );
@@ -387,7 +402,7 @@ export class ChShowcase {
       return;
     }
 
-    this.#iframeRef.contentWindow.postMessage(
+    this.#iframeRef?.contentWindow.postMessage(
       newDSValue,
       `${window.location.origin}/${this.pageSrc}`
     );
@@ -434,9 +449,8 @@ export class ChShowcase {
     this.#showcaseStoryInputNumber = undefined; // Free the memory
     this.#showcaseStoryRadioGroups = undefined; // Free the memory
 
-    this.#showcaseStory = componentName
-      ? showcaseStories[componentName]
-      : undefined;
+    this.#showcaseStory = showcaseStories[componentName];
+    this.#showcaseCustomStory = showcaseCustomStories[componentName];
 
     if (this.#showcaseStory) {
       const properties = this.#showcaseStory.properties;
@@ -474,13 +488,17 @@ export class ChShowcase {
     }
   };
 
-  #customShowcaseRender = () => (
-    <ch-flexible-layout-render
-      model={flexibleLayoutConfiguration}
-      renders={this.#flexibleLayoutRender}
-      ref={el => (this.#flexibleLayoutRef = el)}
-    ></ch-flexible-layout-render>
-  );
+  #customShowcaseRender = () =>
+    this.#showcaseStory ? (
+      <ch-flexible-layout-render
+        // TODO: Fix error when adding the closeButton and closing the last item
+        model={flexibleLayoutConfiguration}
+        renders={this.#flexibleLayoutRender}
+        ref={el => (this.#flexibleLayoutRef = el)}
+      ></ch-flexible-layout-render>
+    ) : (
+      this.#showcaseCustomStory.render()
+    );
 
   #propertyGroupRender = (
     group: ShowcaseRenderPropertyGroup<ShowcaseAvailableStories>,
@@ -576,14 +594,14 @@ export class ChShowcase {
             {property.caption}
           </label>
         ),
-        <ch-combo-box
+        <ch-combo-box-render
           id={propertyGroupId}
           accessibleName={property.accessibleName}
           class="combo-box"
           model={this.#showcaseStoryComboBoxes.get(propertyGroupId).model}
           value={property.value.toString()}
           onInput={this.#showcaseStoryComboBoxes.get(propertyGroupId).handler}
-        ></ch-combo-box>
+        ></ch-combo-box-render>
       ]);
     },
 
@@ -746,7 +764,7 @@ export class ChShowcase {
           {this.pageName} {this.status}
         </h1>
 
-        {this.#showcaseStory
+        {this.#showcaseStory || this.#showcaseCustomStory
           ? this.#customShowcaseRender()
           : this.#iframeRender()}
       </Host>

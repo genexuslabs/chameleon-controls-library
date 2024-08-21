@@ -20,6 +20,14 @@ export type LayoutSplitterLeafModel = {
   fixedOffsetSize?: number;
   size: LayoutSplitterSize;
   minSize?: `${number}px`;
+  sticky?: LayoutSplitterSticky;
+};
+
+export type LayoutSplitterSticky = {
+  blockStart?: string;
+  blockEnd?: string;
+  inlineStart?: string;
+  inlineEnd?: string;
 };
 
 export type LayoutSplitterGroupModel = LayoutSplitterLeafModel & {

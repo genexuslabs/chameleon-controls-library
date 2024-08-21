@@ -8,21 +8,27 @@ import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
-import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-import { MarkdownCodeRender } from "./components/code/internal/types";
-import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
+import { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
+import { ChatTranslations } from "./components/chat/translations";
+import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
+import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
+import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-import { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
+import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
-import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+import { EditInputMode, EditType } from "./components/edit/types";
+import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 import { GridLocalization } from "./deprecated-components/grid/ch-grid";
 import { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
 import { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
 import { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-import { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
+import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
+import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -41,13 +47,15 @@ import { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, T
 import { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 import { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-import { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
+import { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 import { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
 import { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
 import { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
+import { SmartGridModel } from "./components/smart-grid/types";
+import { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -55,21 +63,27 @@ import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-c
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
-export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListModel } from "./components/action-list/types";
+export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-export { MarkdownCodeRender } from "./components/code/internal/types";
-export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combobox/types";
+export { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
+export { ChatTranslations } from "./components/chat/translations";
+export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
+export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
+export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-export { GxDataTransferInfo, ImageRender, LabelPosition } from "./common/types";
+export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
-export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
+export { EditInputMode, EditType } from "./components/edit/types";
+export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
 export { GridLocalization } from "./deprecated-components/grid/ch-grid";
 export { ChGridCellSelectionChangedEvent, ChGridMarkingChangedEvent, ChGridRowClickedEvent, ChGridRowContextMenuEvent, ChGridRowPressedEvent, ChGridSelectionChangedEvent } from "./deprecated-components/grid/ch-grid-types";
 export { ChGridColumnDragEvent, ChGridColumnFreeze, ChGridColumnFreezeChangedEvent, ChGridColumnHiddenChangedEvent, ChGridColumnOrderChangedEvent, ChGridColumnResizeEvent, ChGridColumnSelectorClickedEvent, ChGridColumnSizeChangedEvent, ChGridColumnSortChangedEvent, ChGridColumnSortDirection } from "./deprecated-components/grid/grid-column/ch-grid-column-types";
 export { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-infinite-scroll/ch-grid-infinite-scroll";
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
-export { MarkdownCodeRender as MarkdownCodeRender1 } from "./components/markdown/parsers/types";
+export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
+export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -88,13 +102,15 @@ export { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, T
 export { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 export { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
 export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
-export { ChThemeLoadedEvent } from "./components/theme/theme-stylesheet";
+export { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 export { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
 export { TreeViewDataTransferInfo, TreeViewDropCheckInfo, TreeViewDropType, TreeViewItemCheckedInfo, TreeViewItemContextMenu, TreeViewItemDragStartInfo, TreeViewItemExpandedInfo, TreeViewItemNewCaption, TreeViewItemOpenReferenceInfo, TreeViewItemSelected, TreeViewItemSelectedInfo, TreeViewLines } from "./components/tree-view/internal/tree-view/types";
 export { DragState } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
+export { SmartGridModel } from "./components/smart-grid/types";
+export { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
 export { ChWindowAlign } from "./deprecated-components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -218,10 +234,6 @@ export namespace Components {
          */
         "downloading": boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
-         */
-        "editable": boolean;
-        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expandable"?: boolean;
@@ -229,10 +241,6 @@ export namespace Components {
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded"?: boolean;
-        /**
-          * `true` if the checkbox's value is indeterminate.
-         */
-        "indeterminate": boolean;
         /**
           * Determine if the items are lazy loaded when opening the first time the control.
          */
@@ -245,6 +253,14 @@ export namespace Components {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected": boolean;
+        /**
+          * Set the focus in the control if `expandable === true`.
+         */
+        "setFocus": () => Promise<void>;
         /**
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
@@ -284,10 +300,6 @@ export namespace Components {
           * Set this attribute when the item is in edit mode
          */
         "editing": boolean;
-        /**
-          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
-         */
-        "expanded": boolean;
         "fixed"?: boolean;
         /**
           * `true` if the checkbox's value is indeterminate.
@@ -298,9 +310,21 @@ export namespace Components {
          */
         "metadata": string;
         /**
+          * Specifies if the item is inside of a ch-action-list-group control.
+         */
+        "nested": boolean;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control that is expandable.
+         */
+        "nestedExpandable": boolean;
+        /**
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * Specifies if the item can be selected.
+         */
+        "selectable": boolean;
         /**
           * This attribute lets you specify if the item is selected
          */
@@ -311,6 +335,10 @@ export namespace Components {
         "showDownloadingSpinner": boolean;
     }
     interface ChActionListRender {
+        /**
+          * Adds an item in the control.  If the item already exists, the operation is canceled.  If the `groupParentId` property is specified the item is added in the group determined by `groupParentId`. It only works if the item to add has `type === "actionable"`
+         */
+        "addItem": (itemInfo: ActionListItemModel, groupParentId?: string) => Promise<void>;
         /**
           * Set this attribute if you want display a checkbox in all items by default.
          */
@@ -324,9 +352,24 @@ export namespace Components {
          */
         "editableItems": boolean;
         /**
+          * Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.
+         */
+        "fixItemCallback"?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
+        /**
+          * Given a list of ids, it returns an array of the items that exists in the given list.
+         */
+        "getItemsInfo": (itemsId: string[]) => Promise<ActionListItemModelExtended[]>;
+        /**
           * This property lets you define the model of the control.
          */
         "model": ActionListModel;
+        /**
+          * Remove the item and all its descendants from the control.
+         */
+        "removeItem": (itemId: string) => Promise<void>;
         /**
           * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
          */
@@ -338,12 +381,23 @@ export namespace Components {
          */
         "renderItem": (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
+        /**
+          * Specifies the type of selection implemented by the control.
+         */
+        "selection": "single" | "multiple" | "none";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback": (subModel: ActionListModel) => void;
+        /**
+          * Given an itemId and the properties to update, it updates the properties of the items in the list.
+         */
+        "updateItemProperties": (itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>;
     }
     interface ChAlert {
         /**
@@ -418,6 +472,75 @@ export namespace Components {
         "scanning": boolean;
     }
     /**
+     * TODO: Add description
+     */
+    interface ChChat {
+        /**
+          * Add a new message at the end of the record, performing a re-render.
+         */
+        "addNewMessage": (message: ChatMessage) => Promise<void>;
+        /**
+          * Specifies the callbacks required in the control.
+         */
+        "callbacks": ChatInternalCallbacks;
+        /**
+          * Specifies if all interactions are disabled
+         */
+        "disabled": boolean;
+        /**
+          * Focus the chat input
+         */
+        "focusChatInput": () => Promise<void>;
+        /**
+          * `true` if a response for the assistant is being generated.
+         */
+        "generatingResponse": boolean;
+        /**
+          * Specifies an object containing an HTMLAnchorElement reference. Use this property to render a button to download the code when displaying a code block.
+         */
+        "hyperlinkToDownloadFile"?: { anchor: HTMLAnchorElement };
+        /**
+          * Specifies if the control can render a button to load images from the file system.
+         */
+        "imageUpload": boolean;
+        /**
+          * Specifies if the chat is used in a mobile device.
+         */
+        "isMobile": boolean;
+        /**
+          * Specifies the items that the chat will display.
+         */
+        "items": ChatMessage[];
+        /**
+          * Specifies if the chat is waiting for the data to be loaded.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+         */
+        "markdownTheme": string | undefined;
+        /**
+          * This property allows us to implement custom rendering of chat items.
+         */
+        "renderItem": (messageModel: ChatMessage) => any;
+        /**
+          * Set the text for the chat input
+         */
+        "setChatInputMessage": (text: string) => Promise<void>;
+        /**
+          * Specifies the literals required in the control.
+         */
+        "translations": ChatTranslations;
+        /**
+          * Given the id of the message, it updates the content of the indexed message.
+         */
+        "updateChatMessage": (messageIndex: number, message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>;
+        /**
+          * Update the content of the last message, performing a re-render.
+         */
+        "updateLastMessage": (message: ChatMessageByRoleNoId<"system" | "assistant">, mode: "concat" | "replace") => Promise<void>;
+    }
+    /**
      * @status developer-preview
      */
     interface ChCheckbox {
@@ -469,56 +592,48 @@ export namespace Components {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChCode {
-        "addLastNestedChildClass": boolean;
         /**
           * Specifies the code language to highlight.
          */
         "language": string;
         "lastNestedChildClass": string;
         /**
-          * This property allows us to implement custom rendering for the code blocks.
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
          */
-        "renderCode": MarkdownCodeRender;
+        "showIndicator": boolean;
         /**
           * Specifies the code string to highlight.
          */
         "value": string;
     }
-    interface ChCodeEditor {
-        /**
-          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
-         */
-        "enableSplitViewResizing": boolean;
+    interface ChCodeDiffEditor {
         /**
           * Specifies the language of the auto created model in the editor.
          */
         "language": string;
         /**
-          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
-         */
-        "mode": "editor" | "diff-editor";
-        /**
-          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the modified value of the diff editor.
          */
         "modifiedValue": string;
         /**
-          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the editor options.
          */
-        "modifiedValueReadonly": boolean;
+        "options": CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+          * Specifies if the editor should be readonly. If the `readOnly` or `originalEditable` property is specified in the `options` property, this property has no effect.
          */
-        "readonly"?: boolean;
-        /**
-          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
-         */
-        "renderSideBySide": boolean;
+        "readonly": boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme": string;
         /**
-          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeDiffEditorOptions) => Promise<void>;
+        /**
+          * Specifies the original value of the diff editor.
          */
         "value": string;
         /**
@@ -526,7 +641,38 @@ export namespace Components {
          */
         "yamlSchemaUri": string;
     }
-    interface ChComboBox {
+    interface ChCodeEditor {
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the editor options.
+         */
+        "options": CodeEditorOptions;
+        /**
+          * Specifies if the editor should be readonly. If the `readOnly` property is specified in the `options` property, this property has no effect.
+         */
+        "readonly": boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme": string;
+        /**
+          * Update the editor's options after the editor has been created.
+          * @param options Set of options to be updated
+         */
+        "updateOptions": (options: CodeEditorOptions) => Promise<void>;
+        /**
+          * Specifies the value of the editor.
+         */
+        "value": string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri": string;
+    }
+    interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
@@ -758,8 +904,122 @@ export namespace Components {
          */
         "useGxRender": boolean;
     }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface ChEdit {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * Specifies if the control automatically get focus when the page loads.
+         */
+        "autoFocus": boolean;
+        /**
+          * This property defines if the control size will grow automatically, to adjust to its content size.
+         */
+        "autoGrow": boolean;
+        /**
+          * Specifies the auto-capitalization behavior. Same as [autocapitalize](https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/Attributes.html#//apple_ref/doc/uid/TP40008058-autocapitalize) attribute for `input` elements. Only supported by Safari and Chrome.
+         */
+        "autocapitalize": string;
+        /**
+          * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
+         */
+        "autocomplete": "on" | "off";
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property defines the maximum string length that the user can enter into the control.
+         */
+        "maxLength": number;
+        /**
+          * This attribute hints at the type of data that might be entered by the user while editing the element or its contents. This allows a browser to display an appropriate virtual keyboard. Only works when `multiline === false`.
+         */
+        "mode": EditInputMode | undefined;
+        /**
+          * Controls if the element accepts multiline text.
+         */
+        "multiline": boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * This attribute specifies a regular expression the form control's value should match. Only works when `multiline === false`.
+         */
+        "pattern": string;
+        /**
+          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+         */
+        "picture"?: string;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder": string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly": boolean;
+        /**
+          * If true, a trigger button is shown next to the edit field. The button can be customized adding a child element with `slot="trigger-content"` attribute to specify the content inside the trigger button.
+         */
+        "showTrigger": boolean;
+        /**
+          * Specifies whether the element may be checked for spelling errors
+         */
+        "spellcheck": boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc": string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
+        /**
+          * This attribute lets you specify the label for the trigger button. Important for accessibility.
+         */
+        "triggerButtonAccessibleName": string;
+        /**
+          * The type of control to render. A subset of the types supported by the `input` element is supported:  * `"date"` * `"datetime-local"` * `"email"` * `"file"` * `"number"` * `"password"` * `"search"` * `"tel"` * `"text"` * `"url"`
+         */
+        "type": EditType;
+        /**
+          * The initial value of the control.
+         */
+        "value": string;
+    }
     interface ChFlexibleLayout {
         "addSiblingView": (parentGroup: string, siblingItem: string, placedInTheSibling: "before" | "after", viewInfo: FlexibleLayoutLeafModel, takeHalfTheSpaceOfTheSiblingItem: boolean) => Promise<boolean>;
+        /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton": boolean;
+        /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain": CssContainProperty;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside": boolean;
         /**
           * Specifies the information of each view displayed.
          */
@@ -776,6 +1036,11 @@ export namespace Components {
          */
         "model": FlexibleLayoutModel;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Schedules a new render for a leaf even if no state changed.
          */
         "refreshLeaf": (leafId: string) => Promise<void>;
@@ -787,6 +1052,10 @@ export namespace Components {
           * Removes the view that is identified by the given ID. The layout is rearranged depending on the state of the removed view.
          */
         "removeView": (itemId: string) => Promise<FlexibleLayoutViewRemoveResult>;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
     }
     interface ChFlexibleLayoutRender {
         /**
@@ -798,13 +1067,30 @@ export namespace Components {
          */
         "addWidget": (leafId: string, widget: FlexibleLayoutWidget, selectWidget?: boolean) => Promise<void>;
         /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton": boolean;
+        /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain": CssContainProperty;
+        /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass": string;
         /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside": boolean;
+        /**
           * Specifies the distribution of the items in the flexible layout.
          */
         "model": FlexibleLayoutModel;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
         /**
           * Removes a view and optionally all its rendered widget from the render. The reserved space will be given to the closest view.
          */
@@ -818,9 +1104,17 @@ export namespace Components {
          */
         "renders": FlexibleLayoutRenders;
         /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable": boolean;
+        /**
           * Update the selected widget from a `"tabbed"` type leaf. Only works if the parent leaf is `"tabbed"` type.
          */
         "updateSelectedWidget": (parentLeafId: string, newSelectedWidgetId: string) => Promise<void>;
+        /**
+          * Given the viewId, it updates the info of the view if the view is a leaf. The `type` of the properties argument must match the `type` of the view to update.
+         */
+        "updateViewInfo": (viewId: string, properties: Partial<Omit<FlexibleLayoutLeafConfigurationTabbed, "selectedWidgetId" | "widget" | "widgets">>) => Promise<void>;
         /**
           * Update the widget info.
          */
@@ -1306,6 +1600,64 @@ export namespace Components {
          */
         "src": string;
     }
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface ChImage {
+        /**
+          * Specifies a reference for the container, in order to update the state of the icon. The reference must be an ancestor of the control. If not specified, the direct parent reference will be used.
+         */
+        "containerRef": HTMLElement | undefined;
+        /**
+          * Specifies if the icon is disabled.
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies a callback that is executed when the path the image needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the src for the image.
+         */
+        "src": string | undefined;
+        /**
+          * Specifies how the image will be rendered.
+         */
+        "type": Exclude<ImageRender, "img">;
+    }
+    interface ChInfiniteScroll {
+        /**
+          * Call `complete()` within the `gxInfinite` output event handler when your async operation has completed. For example, the `loading` state is while the app is performing an asynchronous operation, such as receiving more data from an AJAX request to add more items to a data list. Once the data has been received and UI updated, you then call this method to signify that the loading has completed. This method will change the infinite scroll's state from `loading` to `enabled`.
+         */
+        "complete": () => Promise<void>;
+        /**
+          * `true` if the infinite scroll is used in a grid that has data provider. This attribute determine the utility of the infinite scroll, because in certain configurations the infinite scroll can be used only to implement the inverse loading utility.
+         */
+        "dataProvider": boolean;
+        /**
+          * Specifies if the infinite scroll is disabled. When disabled, the infinite scroll won't fire any event when reaching the threshold. The `dataProvider` property can be `true` and this property can be `false` at the same time, meaning that the infinite scroll is disabled, but if the control has `inverseLoading`, the `dataProvider` property will re-position the scrollbar when new content is added to the grid.
+         */
+        "disabled": boolean;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "infiniteThresholdReachedCallback": () => void;
+        /**
+          * If `true`, the infinite scroll will be hidden and scroll event listeners will be removed.  Set this to `false` to disable the infinite scroll from actively trying to receive new data while reaching the threshold. This is useful when it is known that there is no more data that can be added, and the infinite scroll is no longer needed.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The position of the infinite scroll element. The value can be either `top` or `bottom`. When `position === "top"`, the control also implements inverse loading.
+         */
+        "position": "top" | "bottom";
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold": string;
+    }
     interface ChIntersectionObserver {
         /**
           * Bottom margin around the root element
@@ -1360,9 +1712,10 @@ export namespace Components {
         "removeItem": (itemId: string) => Promise<LayoutSplitterItemRemoveResult>;
     }
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -1377,7 +1730,39 @@ export namespace Components {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode": MarkdownCodeRender1;
+        "renderCode": MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value": string;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChMarkdownViewer {
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml": boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode": MarkdownViewerCodeRender;
+        /**
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
+         */
+        "showIndicator": boolean;
+        /**
+          * Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.
+         */
+        "theme": string | undefined;
         /**
           * Specifies the markdown string to parse.
          */
@@ -2003,6 +2388,42 @@ export namespace Components {
          */
         "value": number;
     }
+    interface ChSmartGrid {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName": string;
+        /**
+          * This attribute defines if the control size will grow automatically, to adjust to its content size. If set to `false`, it won't grow automatically and it will show scrollbars if the content overflows.
+         */
+        "autoGrow": boolean;
+        /**
+          * `true` if the control has a data provider and therefore must implement a infinite scroll to load data.
+         */
+        "dataProvider": boolean;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the first element at the bottom and the "Loading" message (infinite-scroll) at the top.
+         */
+        "inverseLoading": boolean;
+        /**
+          * Grid current row count. This property is used in order to be able to re-render the Grid every time the Grid data changes. If not specified, then grid empty and loading placeholders may not work correctly.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies the loading state of the grid.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold": string;
+    }
+    interface ChSmartGridCell {
+        /**
+          * Specifies the ID of the cell.
+         */
+        "cellId": string;
+    }
     interface ChStepList {
     }
     interface ChStepListItem {
@@ -2121,21 +2542,29 @@ export namespace Components {
          */
         "accessibleName": string;
         /**
+          * `true` to display a close button for the items.
+         */
+        "closeButton": boolean;
+        /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
          */
         "closeButtonAccessibleName": string;
         /**
-          * `true` to hide the close button in the items.
+          * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
-        "closeButtonHidden": boolean;
+        "contain"?: CssContainProperty;
         /**
           * Specifies the flexible layout type.
          */
         "direction": TabDirection;
         /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+          * This attribute lets you specify if all tab buttons are disabled. If disabled, tab buttons will not fire any user interaction related event (for example, click event).
          */
-        "dragOutsideDisabled": boolean;
+        "disabled": boolean;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside": boolean;
         /**
           * Ends the preview of the dragged item. Useful for ending the preview via keyboard interaction.
          */
@@ -2153,6 +2582,11 @@ export namespace Components {
          */
         "model": TabModel;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow": | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Promotes the drag preview to the top layer. Useful to avoid z-index issues.
          */
         "promoteDragPreviewToTopLayer": () => Promise<void>;
@@ -2169,9 +2603,13 @@ export namespace Components {
          */
         "showCaptions": boolean;
         /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
          */
         "sortable": boolean;
+        /**
+          * `true` to not render the tab buttons of the control.
+         */
+        "tabButtonHidden": boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
@@ -2599,23 +3037,30 @@ export namespace Components {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChTextblock {
         /**
-          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
+          * This property defines if the control size will grow automatically, to adjust to its content size.  If `false` the overflowing content will be displayed with an ellipsis. This ellipsis takes into account multiple lines.
          */
-        "format": "Text" | "HTML";
+        "autoGrow": boolean;
         /**
-          * True to cut text when it overflows, showing an ellipsis.
+          * Specifies the content to be displayed when the control has `format = text`.
          */
-        "lineClamp": boolean;
+        "caption": string;
         /**
-          * Determine the tooltip text that will be displayed when the pointer is over the control
+          * Specifies the character used to measure the line height
          */
-        "tooltip": string;
+        "characterToMeasureLineHeight": string;
         /**
-          * Determine the way that the tooltip text will be displayed
+          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
          */
-        "tooltipShowMode": "always" | "line-clamp";
+        "format": "text" | "HTML";
+        /**
+          * `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.
+         */
+        "showTooltipOnOverflow": boolean;
     }
     /**
      * It allows you to load a style sheet in a similar way to the
@@ -2625,21 +3070,17 @@ export namespace Components {
      */
     interface ChTheme {
         /**
-          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+          * `true` to visually hide the contents of the root node while the control's style is not loaded.
          */
-        "baseUrl": string;
+        "avoidFlashOfUnstyledContent": boolean;
         /**
-          * Specifies the location of the stylesheet theme
+          * Specify themes to load
          */
-        "href": string;
+        "model": ThemeModel;
         /**
-          * Indicates whether the theme has successfully loaded
+          * Specifies the time to wait for the requested theme to load.
          */
-        "loaded": boolean;
-        /**
-          * Specifies the name of the theme to instantiate
-         */
-        "name": string;
+        "timeout": 10000;
     }
     interface ChTimer {
         /**
@@ -2890,6 +3331,10 @@ export namespace Components {
          */
         "focusPreviousItem": (ctrlKeyPressed: boolean) => Promise<void>;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate": boolean;
@@ -2913,6 +3358,10 @@ export namespace Components {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata": string;
+        /**
+          * Specifies the model of the item.
+         */
+        "model": TreeViewItemModel;
         /**
           * Specifies a set of parts to use in every DOM element of the control.
          */
@@ -3123,6 +3572,36 @@ export namespace Components {
          */
         "useGxRender": boolean;
     }
+    interface ChVirtualScroller {
+        /**
+          * Add items to the beginning or end of the items property. This method is useful for adding new items to the collection, without impacting in the internal indexes used to display the virtual items. Without this method, the virtual scroll would behave unexpectedly when new items are added.
+         */
+        "addItems": (position: "start" | "end", ...items: SmartGridModel) => Promise<void>;
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount": number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems": number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading": boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode": "virtual-scroll" | "lazy-render";
+    }
     /**
      * The 'ch-window' component represents a popup container that is positioned
      * relative to an element or the screen.
@@ -3258,6 +3737,10 @@ export interface ChActionListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionListItemElement;
 }
+export interface ChActionListRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChActionListRenderElement;
+}
 export interface ChAlertCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAlertElement;
@@ -3270,9 +3753,9 @@ export interface ChCheckboxCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChCheckboxElement;
 }
-export interface ChComboBoxCustomEvent<T> extends CustomEvent<T> {
+export interface ChComboBoxRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
-    target: HTMLChComboBoxElement;
+    target: HTMLChComboBoxRenderElement;
 }
 export interface ChDialogCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3281,6 +3764,10 @@ export interface ChDialogCustomEvent<T> extends CustomEvent<T> {
 export interface ChDropdownCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChDropdownElement;
+}
+export interface ChEditCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChEditElement;
 }
 export interface ChFlexibleLayoutCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3402,6 +3889,14 @@ export interface ChSliderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChSliderElement;
 }
+export interface ChSmartGridCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSmartGridElement;
+}
+export interface ChSmartGridCellCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChSmartGridCellElement;
+}
 export interface ChStepListItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChStepListItemElement;
@@ -3462,6 +3957,10 @@ export interface ChTabularGridVirtualScrollerCustomEvent<T> extends CustomEvent<
     detail: T;
     target: HTMLChTabularGridVirtualScrollerElement;
 }
+export interface ChTextblockCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChTextblockElement;
+}
 export interface ChThemeCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChThemeElement;
@@ -3481,6 +3980,10 @@ export interface ChTreeViewItemCustomEvent<T> extends CustomEvent<T> {
 export interface ChTreeViewRenderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChTreeViewRenderElement;
+}
+export interface ChVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChVirtualScrollerElement;
 }
 export interface ChWindowCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -3578,7 +4081,19 @@ declare global {
         prototype: HTMLChActionListItemElement;
         new (): HTMLChActionListItemElement;
     };
+    interface HTMLChActionListRenderElementEventMap {
+        "selectedItemsChange": ActionListItemModelExtended[];
+        "itemClick": ActionListItemModelExtended;
+    }
     interface HTMLChActionListRenderElement extends Components.ChActionListRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChActionListRenderElementEventMap>(type: K, listener: (this: HTMLChActionListRenderElement, ev: ChActionListRenderCustomEvent<HTMLChActionListRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChActionListRenderElementEventMap>(type: K, listener: (this: HTMLChActionListRenderElement, ev: ChActionListRenderCustomEvent<HTMLChActionListRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChActionListRenderElement: {
         prototype: HTMLChActionListRenderElement;
@@ -3623,6 +4138,15 @@ declare global {
         prototype: HTMLChBarcodeScannerElement;
         new (): HTMLChBarcodeScannerElement;
     };
+    /**
+     * TODO: Add description
+     */
+    interface HTMLChChatElement extends Components.ChChat, HTMLStencilElement {
+    }
+    var HTMLChChatElement: {
+        prototype: HTMLChChatElement;
+        new (): HTMLChChatElement;
+    };
     interface HTMLChCheckboxElementEventMap {
         "click": any;
         "input": any;
@@ -3656,29 +4180,35 @@ declare global {
         prototype: HTMLChCodeElement;
         new (): HTMLChCodeElement;
     };
+    interface HTMLChCodeDiffEditorElement extends Components.ChCodeDiffEditor, HTMLStencilElement {
+    }
+    var HTMLChCodeDiffEditorElement: {
+        prototype: HTMLChCodeDiffEditorElement;
+        new (): HTMLChCodeDiffEditorElement;
+    };
     interface HTMLChCodeEditorElement extends Components.ChCodeEditor, HTMLStencilElement {
     }
     var HTMLChCodeEditorElement: {
         prototype: HTMLChCodeEditorElement;
         new (): HTMLChCodeEditorElement;
     };
-    interface HTMLChComboBoxElementEventMap {
+    interface HTMLChComboBoxRenderElementEventMap {
         "filterChange": string;
         "input": string;
     }
-    interface HTMLChComboBoxElement extends Components.ChComboBox, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+    interface HTMLChComboBoxRenderElement extends Components.ChComboBoxRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLChComboBoxElementEventMap>(type: K, listener: (this: HTMLChComboBoxElement, ev: ChComboBoxCustomEvent<HTMLChComboBoxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChComboBoxRenderElementEventMap>(type: K, listener: (this: HTMLChComboBoxRenderElement, ev: ChComboBoxRenderCustomEvent<HTMLChComboBoxRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
         removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
-    var HTMLChComboBoxElement: {
-        prototype: HTMLChComboBoxElement;
-        new (): HTMLChComboBoxElement;
+    var HTMLChComboBoxRenderElement: {
+        prototype: HTMLChComboBoxRenderElement;
+        new (): HTMLChComboBoxRenderElement;
     };
     interface HTMLChDialogElementEventMap {
         "dialogClosed": any;
@@ -3723,6 +4253,35 @@ declare global {
     var HTMLChDropdownRenderElement: {
         prototype: HTMLChDropdownRenderElement;
         new (): HTMLChDropdownRenderElement;
+    };
+    interface HTMLChEditElementEventMap {
+        "change": any;
+        "input": any;
+        "triggerClick": any;
+    }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface HTMLChEditElement extends Components.ChEdit, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChEditElementEventMap>(type: K, listener: (this: HTMLChEditElement, ev: ChEditCustomEvent<HTMLChEditElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChEditElementEventMap>(type: K, listener: (this: HTMLChEditElement, ev: ChEditCustomEvent<HTMLChEditElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChEditElement: {
+        prototype: HTMLChEditElement;
+        new (): HTMLChEditElement;
     };
     interface HTMLChFlexibleLayoutElementEventMap {
         "viewItemClose": ViewItemCloseInfo;
@@ -4074,6 +4633,22 @@ declare global {
         prototype: HTMLChIconElement;
         new (): HTMLChIconElement;
     };
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface HTMLChImageElement extends Components.ChImage, HTMLStencilElement {
+    }
+    var HTMLChImageElement: {
+        prototype: HTMLChImageElement;
+        new (): HTMLChImageElement;
+    };
+    interface HTMLChInfiniteScrollElement extends Components.ChInfiniteScroll, HTMLStencilElement {
+    }
+    var HTMLChInfiniteScrollElement: {
+        prototype: HTMLChInfiniteScrollElement;
+        new (): HTMLChInfiniteScrollElement;
+    };
     interface HTMLChIntersectionObserverElementEventMap {
         "intersectionUpdate": IntersectionObserverEntry;
     }
@@ -4098,9 +4673,10 @@ declare global {
         new (): HTMLChLayoutSplitterElement;
     };
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -4112,6 +4688,22 @@ declare global {
     var HTMLChMarkdownElement: {
         prototype: HTMLChMarkdownElement;
         new (): HTMLChMarkdownElement;
+    };
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface HTMLChMarkdownViewerElement extends Components.ChMarkdownViewer, HTMLStencilElement {
+    }
+    var HTMLChMarkdownViewerElement: {
+        prototype: HTMLChMarkdownViewerElement;
+        new (): HTMLChMarkdownViewerElement;
     };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
@@ -4468,6 +5060,40 @@ declare global {
     var HTMLChSliderElement: {
         prototype: HTMLChSliderElement;
         new (): HTMLChSliderElement;
+    };
+    interface HTMLChSmartGridElementEventMap {
+        "infiniteThresholdReached": void;
+    }
+    interface HTMLChSmartGridElement extends Components.ChSmartGrid, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSmartGridElementEventMap>(type: K, listener: (this: HTMLChSmartGridElement, ev: ChSmartGridCustomEvent<HTMLChSmartGridElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSmartGridElementEventMap>(type: K, listener: (this: HTMLChSmartGridElement, ev: ChSmartGridCustomEvent<HTMLChSmartGridElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSmartGridElement: {
+        prototype: HTMLChSmartGridElement;
+        new (): HTMLChSmartGridElement;
+    };
+    interface HTMLChSmartGridCellElementEventMap {
+        "smartCellDidLoad": string;
+    }
+    interface HTMLChSmartGridCellElement extends Components.ChSmartGridCell, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChSmartGridCellElementEventMap>(type: K, listener: (this: HTMLChSmartGridCellElement, ev: ChSmartGridCellCustomEvent<HTMLChSmartGridCellElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChSmartGridCellElementEventMap>(type: K, listener: (this: HTMLChSmartGridCellElement, ev: ChSmartGridCellCustomEvent<HTMLChSmartGridCellElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChSmartGridCellElement: {
+        prototype: HTMLChSmartGridCellElement;
+        new (): HTMLChSmartGridCellElement;
     };
     interface HTMLChStepListElement extends Components.ChStepList, HTMLStencilElement {
     }
@@ -4874,7 +5500,21 @@ declare global {
         prototype: HTMLChTestSuggestElement;
         new (): HTMLChTestSuggestElement;
     };
+    interface HTMLChTextblockElementEventMap {
+        "overflowingContentChange": boolean;
+    }
+    /**
+     * @status developer-preview
+     */
     interface HTMLChTextblockElement extends Components.ChTextblock, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChTextblockElementEventMap>(type: K, listener: (this: HTMLChTextblockElement, ev: ChTextblockCustomEvent<HTMLChTextblockElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChTextblockElementEventMap>(type: K, listener: (this: HTMLChTextblockElement, ev: ChTextblockCustomEvent<HTMLChTextblockElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLChTextblockElement: {
         prototype: HTMLChTextblockElement;
@@ -5011,6 +5651,24 @@ declare global {
         prototype: HTMLChTreeViewRenderElement;
         new (): HTMLChTreeViewRenderElement;
     };
+    interface HTMLChVirtualScrollerElementEventMap {
+        "virtualItemsChanged": VirtualScrollVirtualItems;
+        "virtualScrollerDidLoad": any;
+    }
+    interface HTMLChVirtualScrollerElement extends Components.ChVirtualScroller, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: ChVirtualScrollerCustomEvent<HTMLChVirtualScrollerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChVirtualScrollerElementEventMap>(type: K, listener: (this: HTMLChVirtualScrollerElement, ev: ChVirtualScrollerCustomEvent<HTMLChVirtualScrollerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChVirtualScrollerElement: {
+        prototype: HTMLChVirtualScrollerElement;
+        new (): HTMLChVirtualScrollerElement;
+    };
     interface HTMLChWindowElementEventMap {
         "windowOpened": any;
         "windowClosed": any;
@@ -5089,13 +5747,16 @@ declare global {
         "ch-action-list-render": HTMLChActionListRenderElement;
         "ch-alert": HTMLChAlertElement;
         "ch-barcode-scanner": HTMLChBarcodeScannerElement;
+        "ch-chat": HTMLChChatElement;
         "ch-checkbox": HTMLChCheckboxElement;
         "ch-code": HTMLChCodeElement;
+        "ch-code-diff-editor": HTMLChCodeDiffEditorElement;
         "ch-code-editor": HTMLChCodeEditorElement;
-        "ch-combo-box": HTMLChComboBoxElement;
+        "ch-combo-box-render": HTMLChComboBoxRenderElement;
         "ch-dialog": HTMLChDialogElement;
         "ch-dropdown": HTMLChDropdownElement;
         "ch-dropdown-render": HTMLChDropdownRenderElement;
+        "ch-edit": HTMLChEditElement;
         "ch-flexible-layout": HTMLChFlexibleLayoutElement;
         "ch-flexible-layout-render": HTMLChFlexibleLayoutRenderElement;
         "ch-form-checkbox": HTMLChFormCheckboxElement;
@@ -5116,9 +5777,12 @@ declare global {
         "ch-grid-settings-columns": HTMLChGridSettingsColumnsElement;
         "ch-grid-virtual-scroller": HTMLChGridVirtualScrollerElement;
         "ch-icon": HTMLChIconElement;
+        "ch-image": HTMLChImageElement;
+        "ch-infinite-scroll": HTMLChInfiniteScrollElement;
         "ch-intersection-observer": HTMLChIntersectionObserverElement;
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-markdown": HTMLChMarkdownElement;
+        "ch-markdown-viewer": HTMLChMarkdownViewerElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -5142,6 +5806,8 @@ declare global {
         "ch-sidebar-menu-list": HTMLChSidebarMenuListElement;
         "ch-sidebar-menu-list-item": HTMLChSidebarMenuListItemElement;
         "ch-slider": HTMLChSliderElement;
+        "ch-smart-grid": HTMLChSmartGridElement;
+        "ch-smart-grid-cell": HTMLChSmartGridCellElement;
         "ch-step-list": HTMLChStepListElement;
         "ch-step-list-item": HTMLChStepListItemElement;
         "ch-style": HTMLChStyleElement;
@@ -5178,6 +5844,7 @@ declare global {
         "ch-tree-view-drop": HTMLChTreeViewDropElement;
         "ch-tree-view-item": HTMLChTreeViewItemElement;
         "ch-tree-view-render": HTMLChTreeViewRenderElement;
+        "ch-virtual-scroller": HTMLChVirtualScrollerElement;
         "ch-window": HTMLChWindowElement;
         "ch-window-close": HTMLChWindowCloseElement;
         "gx-grid-chameleon": HTMLGxGridChameleonElement;
@@ -5315,10 +5982,6 @@ declare namespace LocalJSX {
          */
         "downloading"?: boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
-         */
-        "editable"?: boolean;
-        /**
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expandable"?: boolean;
@@ -5326,10 +5989,6 @@ declare namespace LocalJSX {
           * If the item has a sub-tree, this attribute determines if the subtree is displayed.
          */
         "expanded"?: boolean;
-        /**
-          * `true` if the checkbox's value is indeterminate.
-         */
-        "indeterminate"?: boolean;
         /**
           * Determine if the items are lazy loaded when opening the first time the control.
          */
@@ -5346,6 +6005,10 @@ declare namespace LocalJSX {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * This attribute lets you specify if the item is selected
+         */
+        "selected"?: boolean;
         /**
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
@@ -5385,10 +6048,6 @@ declare namespace LocalJSX {
           * Set this attribute when the item is in edit mode
          */
         "editing"?: boolean;
-        /**
-          * If the item has a sub-tree, this attribute determines if the subtree is displayed.
-         */
-        "expanded"?: boolean;
         "fixed"?: boolean;
         /**
           * `true` if the checkbox's value is indeterminate.
@@ -5398,6 +6057,14 @@ declare namespace LocalJSX {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata"?: string;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control.
+         */
+        "nested"?: boolean;
+        /**
+          * Specifies if the item is inside of a ch-action-list-group control that is expandable.
+         */
+        "nestedExpandable"?: boolean;
         /**
           * Fired when the fixed value of the control is changed.
          */
@@ -5414,6 +6081,10 @@ declare namespace LocalJSX {
           * Specifies a set of parts to use in every DOM element of the control.
          */
         "parts"?: string;
+        /**
+          * Specifies if the item can be selected.
+         */
+        "selectable"?: boolean;
         /**
           * This attribute lets you specify if the item is selected
          */
@@ -5437,9 +6108,24 @@ declare namespace LocalJSX {
          */
         "editableItems"?: boolean;
         /**
+          * Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation.
+         */
+        "fixItemCallback"?: (
+    itemInfo: ActionListItemActionable,
+    newFixedValue: boolean
+  ) => Promise<boolean>;
+        /**
           * This property lets you define the model of the control.
          */
         "model"?: ActionListModel;
+        /**
+          * Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`)
+         */
+        "onItemClick"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended>) => void;
+        /**
+          * Fired when the selected items change and `selection !== "none"`
+         */
+        "onSelectedItemsChange"?: (event: ChActionListRenderCustomEvent<ActionListItemModelExtended[]>) => void;
         /**
           * Callback that is executed when and item requests to be removed. If the callback is not defined, the item will be removed without further confirmation.
          */
@@ -5451,8 +6137,15 @@ declare namespace LocalJSX {
          */
         "renderItem"?: (
     itemModel: ActionListItemModel,
-    actionListRenderState: ChActionListRender
+    actionListRenderState: ChActionListRender,
+    disabled?: boolean,
+    nested?: boolean,
+    nestedExpandable?: boolean
   ) => any;
+        /**
+          * Specifies the type of selection implemented by the control.
+         */
+        "selection"?: "single" | "multiple" | "none";
         /**
           * Callback that is executed when the treeModel is changed to order its items.
          */
@@ -5539,6 +6232,55 @@ declare namespace LocalJSX {
         "scanning"?: boolean;
     }
     /**
+     * TODO: Add description
+     */
+    interface ChChat {
+        /**
+          * Specifies the callbacks required in the control.
+         */
+        "callbacks": ChatInternalCallbacks;
+        /**
+          * Specifies if all interactions are disabled
+         */
+        "disabled"?: boolean;
+        /**
+          * `true` if a response for the assistant is being generated.
+         */
+        "generatingResponse": boolean;
+        /**
+          * Specifies an object containing an HTMLAnchorElement reference. Use this property to render a button to download the code when displaying a code block.
+         */
+        "hyperlinkToDownloadFile"?: { anchor: HTMLAnchorElement };
+        /**
+          * Specifies if the control can render a button to load images from the file system.
+         */
+        "imageUpload"?: boolean;
+        /**
+          * Specifies if the chat is used in a mobile device.
+         */
+        "isMobile": boolean;
+        /**
+          * Specifies the items that the chat will display.
+         */
+        "items"?: ChatMessage[];
+        /**
+          * Specifies if the chat is waiting for the data to be loaded.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+         */
+        "markdownTheme"?: string | undefined;
+        /**
+          * This property allows us to implement custom rendering of chat items.
+         */
+        "renderItem"?: (messageModel: ChatMessage) => any;
+        /**
+          * Specifies the literals required in the control.
+         */
+        "translations": ChatTranslations;
+    }
+    /**
      * @status developer-preview
      */
     interface ChCheckbox {
@@ -5598,56 +6340,43 @@ declare namespace LocalJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChCode {
-        "addLastNestedChildClass"?: boolean;
         /**
           * Specifies the code language to highlight.
          */
         "language"?: string;
         "lastNestedChildClass"?: string;
         /**
-          * This property allows us to implement custom rendering for the code blocks.
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
          */
-        "renderCode"?: MarkdownCodeRender;
+        "showIndicator"?: boolean;
         /**
           * Specifies the code string to highlight.
          */
         "value"?: string;
     }
-    interface ChCodeEditor {
-        /**
-          * Allow the user to resize the diff editor split view. This property only works if `mode` === `"diff-editor"`.
-         */
-        "enableSplitViewResizing"?: boolean;
+    interface ChCodeDiffEditor {
         /**
           * Specifies the language of the auto created model in the editor.
          */
         "language": string;
         /**
-          * Specifies the rendered mode of the editor, allowing to set a normal editor or a diff editor.
-         */
-        "mode"?: "editor" | "diff-editor";
-        /**
-          * Specifies the modified value of the diff editor. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the modified value of the diff editor.
          */
         "modifiedValue"?: string;
         /**
-          * Specifies if the modified value of the diff editor should be readonly. This property only works if `mode` === `"diff-editor"`.
+          * Specifies the editor options.
          */
-        "modifiedValueReadonly"?: boolean;
+        "options"?: CodeDiffEditorOptions;
         /**
-          * Specifies if the editor should be readonly. When `mode` === `"diff-editor"` this property will apply to the left pane.  - If `mode` === `"editor"` defaults to `false`.  - If `mode` === `"diff-editor"` defaults to `true`.
+          * Specifies if the editor should be readonly. If the `readOnly` or `originalEditable` property is specified in the `options` property, this property has no effect.
          */
         "readonly"?: boolean;
-        /**
-          * Render the differences in two side-by-side editors. Only works if `mode` === `"diff-editor"`.
-         */
-        "renderSideBySide"?: boolean;
         /**
           * Specifies the theme to be used for rendering.
          */
         "theme"?: string;
         /**
-          * Specifies the value of the editor. If `mode` === `"diff-editor"`, this property will be used as the original model.
+          * Specifies the original value of the diff editor.
          */
         "value"?: string;
         /**
@@ -5655,7 +6384,33 @@ declare namespace LocalJSX {
          */
         "yamlSchemaUri"?: string;
     }
-    interface ChComboBox {
+    interface ChCodeEditor {
+        /**
+          * Specifies the language of the auto created model in the editor.
+         */
+        "language": string;
+        /**
+          * Specifies the editor options.
+         */
+        "options"?: CodeEditorOptions;
+        /**
+          * Specifies if the editor should be readonly. If the `readOnly` property is specified in the `options` property, this property has no effect.
+         */
+        "readonly"?: boolean;
+        /**
+          * Specifies the theme to be used for rendering.
+         */
+        "theme"?: string;
+        /**
+          * Specifies the value of the editor.
+         */
+        "value"?: string;
+        /**
+          * Specifies the schema URI for the YAML language.
+         */
+        "yamlSchemaUri"?: string;
+    }
+    interface ChComboBoxRender {
         /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
          */
@@ -5695,11 +6450,11 @@ declare namespace LocalJSX {
         /**
           * Emitted when a change to the element's filter is committed by the user. Only applies if `filterType !== "none"`. It contains the information about the new filter value.  This event is debounced by the `filterDebounce` value.
          */
-        "onFilterChange"?: (event: ChComboBoxCustomEvent<string>) => void;
+        "onFilterChange"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
           * The `input` event is emitted when a change to the element's value is committed by the user.
          */
-        "onInput"?: (event: ChComboBoxCustomEvent<string>) => void;
+        "onInput"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
           * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
          */
@@ -5891,7 +6646,133 @@ declare namespace LocalJSX {
          */
         "useGxRender"?: boolean;
     }
+    /**
+     * A wrapper for the input and textarea elements. It additionally provides:
+     *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+     *  - An action button.
+     *  - Useful style resets.
+     *  - Support for picture formatting.
+     *  - Support to auto grow the control when used with multiline (useful to
+     *    model chat inputs).
+     *  - An image which can have multiple states.
+     */
+    interface ChEdit {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * Specifies if the control automatically get focus when the page loads.
+         */
+        "autoFocus"?: boolean;
+        /**
+          * This property defines if the control size will grow automatically, to adjust to its content size.
+         */
+        "autoGrow"?: boolean;
+        /**
+          * Specifies the auto-capitalization behavior. Same as [autocapitalize](https://developer.apple.com/library/content/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/Attributes.html#//apple_ref/doc/uid/TP40008058-autocapitalize) attribute for `input` elements. Only supported by Safari and Chrome.
+         */
+        "autocapitalize"?: string;
+        /**
+          * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
+         */
+        "autocomplete"?: "on" | "off";
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property defines the maximum string length that the user can enter into the control.
+         */
+        "maxLength"?: number;
+        /**
+          * This attribute hints at the type of data that might be entered by the user while editing the element or its contents. This allows a browser to display an appropriate virtual keyboard. Only works when `multiline === false`.
+         */
+        "mode"?: EditInputMode | undefined;
+        /**
+          * Controls if the element accepts multiline text.
+         */
+        "multiline"?: boolean;
+        /**
+          * This property specifies the `name` of the control when used in a form.
+         */
+        "name"?: string;
+        /**
+          * The `change` event is emitted when a change to the element's value is committed by the user. Unlike the `input` event, the `change` event is not necessarily fired for each change to an element's value but when the control loses focus.
+         */
+        "onChange"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * Fired synchronously when the value is changed.
+         */
+        "onInput"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * Fired when the trigger button is clicked.
+         */
+        "onTriggerClick"?: (event: ChEditCustomEvent<any>) => void;
+        /**
+          * This attribute specifies a regular expression the form control's value should match. Only works when `multiline === false`.
+         */
+        "pattern"?: string;
+        /**
+          * Specifies a picture to apply for the value of the control. Only works if `type === "Text"` and `mode === "numeric"`.
+         */
+        "picture"?: string;
+        /**
+          * A hint to the user of what can be entered in the control. Same as [placeholder](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-placeholder) attribute for `input` elements.
+         */
+        "placeholder"?: string;
+        /**
+          * This attribute indicates that the user cannot modify the value of the control. Same as [readonly](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-readonly) attribute for `input` elements.
+         */
+        "readonly"?: boolean;
+        /**
+          * If true, a trigger button is shown next to the edit field. The button can be customized adding a child element with `slot="trigger-content"` attribute to specify the content inside the trigger button.
+         */
+        "showTrigger"?: boolean;
+        /**
+          * Specifies whether the element may be checked for spelling errors
+         */
+        "spellcheck"?: boolean;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgSrc"?: string;
+        /**
+          * Specifies the source of the start image.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
+        /**
+          * This attribute lets you specify the label for the trigger button. Important for accessibility.
+         */
+        "triggerButtonAccessibleName"?: string;
+        /**
+          * The type of control to render. A subset of the types supported by the `input` element is supported:  * `"date"` * `"datetime-local"` * `"email"` * `"file"` * `"number"` * `"password"` * `"search"` * `"tel"` * `"text"` * `"url"`
+         */
+        "type"?: EditType;
+        /**
+          * The initial value of the control.
+         */
+        "value"?: string;
+    }
     interface ChFlexibleLayout {
+        /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton"?: boolean;
+        /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside"?: boolean;
         /**
           * Specifies the information of each view displayed.
          */
@@ -5919,12 +6800,33 @@ declare namespace LocalJSX {
           * Fired when a widget is dragged and dropped into a view.
          */
         "onViewItemReorder"?: (event: ChFlexibleLayoutCustomEvent<WidgetReorderInfo>) => void;
+        /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     interface ChFlexibleLayoutRender {
+        /**
+          * `true` to display a close button for the `"tabbed"` type leafs.
+         */
+        "closeButton"?: boolean;
+        /**
+          * Same as the contain CSS property. This property indicates that an widget and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
+         */
+        "contain"?: CssContainProperty;
         /**
           * A CSS class to set as the `ch-flexible-layout` element class.
          */
         "cssClass"?: string;
+        /**
+          * When the "tabbed" type leafs are sortable, the items can be dragged outside of its tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside"?: boolean;
         /**
           * Specifies the distribution of the items in the flexible layout.
          */
@@ -5934,9 +6836,18 @@ declare namespace LocalJSX {
          */
         "onWidgetClose"?: (event: ChFlexibleLayoutRenderCustomEvent<FlexibleLayoutWidgetCloseInfo>) => void;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the widget's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Specifies the distribution of the items in the flexible layout.
          */
         "renders"?: FlexibleLayoutRenders;
+        /**
+          * `true` to enable sorting the tab buttons in the `"tabbed"` type leafs by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
+         */
+        "sortable"?: boolean;
     }
     interface ChFormCheckbox {
         /**
@@ -6413,6 +7324,60 @@ declare namespace LocalJSX {
          */
         "src"?: string;
     }
+    /**
+     * A control to display multiple images, depending on the state (focus, hover,
+     * active or disabled) of a parent element.
+     */
+    interface ChImage {
+        /**
+          * Specifies a reference for the container, in order to update the state of the icon. The reference must be an ancestor of the control. If not specified, the direct parent reference will be used.
+         */
+        "containerRef"?: HTMLElement | undefined;
+        /**
+          * Specifies if the icon is disabled.
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path the image needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the src for the image.
+         */
+        "src"?: string | undefined;
+        /**
+          * Specifies how the image will be rendered.
+         */
+        "type"?: Exclude<ImageRender, "img">;
+    }
+    interface ChInfiniteScroll {
+        /**
+          * `true` if the infinite scroll is used in a grid that has data provider. This attribute determine the utility of the infinite scroll, because in certain configurations the infinite scroll can be used only to implement the inverse loading utility.
+         */
+        "dataProvider"?: boolean;
+        /**
+          * Specifies if the infinite scroll is disabled. When disabled, the infinite scroll won't fire any event when reaching the threshold. The `dataProvider` property can be `true` and this property can be `false` at the same time, meaning that the infinite scroll is disabled, but if the control has `inverseLoading`, the `dataProvider` property will re-position the scrollbar when new content is added to the grid.
+         */
+        "disabled"?: boolean;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "infiniteThresholdReachedCallback": () => void;
+        /**
+          * If `true`, the infinite scroll will be hidden and scroll event listeners will be removed.  Set this to `false` to disable the infinite scroll from actively trying to receive new data while reaching the threshold. This is useful when it is known that there is no more data that can be added, and the infinite scroll is no longer needed.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * The position of the infinite scroll element. The value can be either `top` or `bottom`. When `position === "top"`, the control also implements inverse loading.
+         */
+        "position"?: "top" | "bottom";
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold"?: string;
+    }
     interface ChIntersectionObserver {
         /**
           * Bottom margin around the root element
@@ -6463,9 +7428,10 @@ declare namespace LocalJSX {
         "model"?: LayoutSplitterModel;
     }
     /**
+     * @deprecated Use the `ch-markdown-viewer` component instead.
      * A control to render markdown syntax. It supports GitHub Flavored Markdown
      * (GFM) and code highlighting.
-     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
      * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
      * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
      * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
@@ -6480,7 +7446,39 @@ declare namespace LocalJSX {
         /**
           * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderCode"?: MarkdownCodeRender1;
+        "renderCode"?: MarkdownCodeRender;
+        /**
+          * Specifies the markdown string to parse.
+         */
+        "value"?: string;
+    }
+    /**
+     * A control to render markdown syntax. It supports GitHub Flavored Markdown
+     * (GFM) and code highlighting.
+     *  - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+     * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+     * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+     * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+     * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+     * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+     */
+    interface ChMarkdownViewer {
+        /**
+          * `true` to render raw HTML with sanitization.
+         */
+        "rawHtml"?: boolean;
+        /**
+          * This property allows us to implement custom rendering for the code blocks.
+         */
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * Specifies if an indicator is displayed in the last element rendered. Useful for streaming scenarios where a loading indicator is needed.
+         */
+        "showIndicator"?: boolean;
+        /**
+          * Specifies the theme to be used for rendering the control. If `undefined`, no theme will be applied.
+         */
+        "theme"?: string | undefined;
         /**
           * Specifies the markdown string to parse.
          */
@@ -7186,6 +8184,50 @@ declare namespace LocalJSX {
          */
         "value"?: number;
     }
+    interface ChSmartGrid {
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element.
+         */
+        "accessibleName"?: string;
+        /**
+          * This attribute defines if the control size will grow automatically, to adjust to its content size. If set to `false`, it won't grow automatically and it will show scrollbars if the content overflows.
+         */
+        "autoGrow"?: boolean;
+        /**
+          * `true` if the control has a data provider and therefore must implement a infinite scroll to load data.
+         */
+        "dataProvider"?: boolean;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the first element at the bottom and the "Loading" message (infinite-scroll) at the top.
+         */
+        "inverseLoading"?: boolean;
+        /**
+          * Grid current row count. This property is used in order to be able to re-render the Grid every time the Grid data changes. If not specified, then grid empty and loading placeholders may not work correctly.
+         */
+        "itemsCount": number;
+        /**
+          * Specifies the loading state of the grid.
+         */
+        "loadingState": SmartGridDataState;
+        /**
+          * This Handler will be called every time grid threshold is reached. Needed for infinite scrolling grids.
+         */
+        "onInfiniteThresholdReached"?: (event: ChSmartGridCustomEvent<void>) => void;
+        /**
+          * The threshold distance from the bottom of the content to call the `infinite` output event when scrolled. The threshold value can be either a percent, or in pixels. For example, use the value of `10%` for the `infinite` output event to get called when the user has scrolled 10% from the bottom of the page. Use the value `100px` when the scroll is within 100 pixels from the bottom of the page.
+         */
+        "threshold"?: string;
+    }
+    interface ChSmartGridCell {
+        /**
+          * Specifies the ID of the cell.
+         */
+        "cellId": string;
+        /**
+          * Fired when the component and all its child did render for the first time.
+         */
+        "onSmartCellDidLoad"?: (event: ChSmartGridCellCustomEvent<string>) => void;
+    }
     interface ChStepList {
     }
     interface ChStepListItem {
@@ -7324,21 +8366,29 @@ declare namespace LocalJSX {
          */
         "accessibleName"?: string;
         /**
+          * `true` to display a close button for the items.
+         */
+        "closeButton"?: boolean;
+        /**
           * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for the element. This label is used for the close button of the captions.
          */
         "closeButtonAccessibleName"?: string;
         /**
-          * `true` to hide the close button in the items.
+          * Same as the contain CSS property. This property indicates that an item and its contents are, as much as possible, independent from the rest of the document tree. Containment enables isolating a subsection of the DOM, providing performance benefits by limiting calculations of layout, style, paint, size, or any combination to a DOM subtree rather than the entire page. Containment can also be used to scope CSS counters and quotes.
          */
-        "closeButtonHidden"?: boolean;
+        "contain"?: CssContainProperty;
         /**
           * Specifies the flexible layout type.
          */
         "direction"?: TabDirection;
         /**
-          * When the control is sortable, the items can be dragged outside of the tab-list. This property lets you specify if this behavior is disabled.
+          * This attribute lets you specify if all tab buttons are disabled. If disabled, tab buttons will not fire any user interaction related event (for example, click event).
          */
-        "dragOutsideDisabled"?: boolean;
+        "disabled"?: boolean;
+        /**
+          * When the control is sortable, the items can be dragged outside of the tab-list.  This property lets you specify if this behavior is enabled.
+         */
+        "dragOutside"?: boolean;
         /**
           * `true` if the group has is view section expanded. Otherwise, only the toolbar will be displayed.
          */
@@ -7364,6 +8414,11 @@ declare namespace LocalJSX {
          */
         "onSelectedItemChange"?: (event: ChTabRenderCustomEvent<TabSelectedItemInfo>) => void;
         /**
+          * Same as the overflow CSS property. This property sets the desired behavior when content does not fit in the item's padding box (overflows) in the horizontal and/or vertical direction.
+         */
+        "overflow"?: | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+        /**
           * Specifies the selected item of the widgets array.
          */
         "selectedId"?: string;
@@ -7372,9 +8427,13 @@ declare namespace LocalJSX {
          */
         "showCaptions"?: boolean;
         /**
-          * `true` to enable sorting the tab buttons by dragging them in the tab-list. If sortable !== true, the tab buttons can not be dragged out either.
+          * `true` to enable sorting the tab buttons by dragging them in the tab-list.  If `false`, the tab buttons can not be dragged out either.
          */
         "sortable"?: boolean;
+        /**
+          * `true` to not render the tab buttons of the control.
+         */
+        "tabButtonHidden"?: boolean;
     }
     /**
      * The `ch-tabular-grid` component represents a Grid/TreeGrid of data, with rows and cells.
@@ -7796,23 +8855,34 @@ declare namespace LocalJSX {
     prefix: string
   ) => Promise<SelectorCategoryData[]>;
     }
+    /**
+     * @status developer-preview
+     */
     interface ChTextblock {
         /**
-          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `Text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
+          * This property defines if the control size will grow automatically, to adjust to its content size.  If `false` the overflowing content will be displayed with an ellipsis. This ellipsis takes into account multiple lines.
          */
-        "format"?: "Text" | "HTML";
+        "autoGrow"?: boolean;
         /**
-          * True to cut text when it overflows, showing an ellipsis.
+          * Specifies the content to be displayed when the control has `format = text`.
          */
-        "lineClamp"?: boolean;
+        "caption"?: string;
         /**
-          * Determine the tooltip text that will be displayed when the pointer is over the control
+          * Specifies the character used to measure the line height
          */
-        "tooltip"?: string;
+        "characterToMeasureLineHeight"?: string;
         /**
-          * Determine the way that the tooltip text will be displayed
+          * It specifies the format that will have the textblock control.   - If `format` = `HTML`, the textblock control works as an HTML div and    the innerHTML will be taken from the default slot.   - If `format` = `text`, the control works as a normal textblock control    and it is affected by most of the defined properties.
          */
-        "tooltipShowMode"?: "always" | "line-clamp";
+        "format"?: "text" | "HTML";
+        /**
+          * Fired when the displayed lines overflows the control's content. If `true`, the current content overflows the control.
+         */
+        "onOverflowingContentChange"?: (event: ChTextblockCustomEvent<boolean>) => void;
+        /**
+          * `true` to display a tooltip when the caption overflows the size of the container.  Only works if `format = text` and `autoGrow = false`.
+         */
+        "showTooltipOnOverflow"?: boolean;
     }
     /**
      * It allows you to load a style sheet in a similar way to the
@@ -7822,25 +8892,21 @@ declare namespace LocalJSX {
      */
     interface ChTheme {
         /**
-          * A string containing the baseURL used to resolve relative URLs in the stylesheet
+          * `true` to visually hide the contents of the root node while the control's style is not loaded.
          */
-        "baseUrl"?: string;
+        "avoidFlashOfUnstyledContent"?: boolean;
         /**
-          * Specifies the location of the stylesheet theme
+          * Specify themes to load
          */
-        "href"?: string;
-        /**
-          * Indicates whether the theme has successfully loaded
-         */
-        "loaded"?: boolean;
-        /**
-          * Specifies the name of the theme to instantiate
-         */
-        "name"?: string;
+        "model"?: ThemeModel;
         /**
           * Event emitted when the theme has successfully loaded
          */
         "onThemeLoaded"?: (event: ChThemeCustomEvent<ChThemeLoadedEvent>) => void;
+        /**
+          * Specifies the time to wait for the requested theme to load.
+         */
+        "timeout"?: 10000;
     }
     interface ChTimer {
         /**
@@ -8084,6 +9150,10 @@ declare namespace LocalJSX {
          */
         "expanded"?: boolean;
         /**
+          * This property specifies a callback that is executed when the path for an item image needs to be resolved.
+         */
+        "getImagePathCallback": TreeViewImagePathCallback;
+        /**
           * `true` if the checkbox's value is indeterminate.
          */
         "indeterminate"?: boolean;
@@ -8107,6 +9177,10 @@ declare namespace LocalJSX {
           * This attribute represents additional info for the control that is included when dragging the item.
          */
         "metadata"?: string;
+        /**
+          * Specifies the model of the item.
+         */
+        "model"?: TreeViewItemModel;
         /**
           * Fired when the checkbox value of the control is changed.
          */
@@ -8309,6 +9383,40 @@ declare namespace LocalJSX {
          */
         "useGxRender"?: boolean;
     }
+    interface ChVirtualScroller {
+        /**
+          * The number of elements to be rendered above and below the current container's viewport.
+         */
+        "bufferAmount"?: number;
+        /**
+          * Specifies an estimation for the items that will enter in the viewport of the initial render.
+         */
+        "initialRenderViewportItems"?: number;
+        /**
+          * When set to `true`, the grid items will be loaded in inverse order, with the scroll positioned at the bottom on the initial load.  If `mode="virtual-scroll"`, only the items at the start of the viewport that are not visible will be removed from the DOM. The items at the end of the viewport that are not visible will remain rendered to avoid flickering issues.
+         */
+        "inverseLoading"?: boolean;
+        /**
+          * The array of items to be rendered in the ch-smart-grid.
+         */
+        "items": SmartGridModel | undefined;
+        /**
+          * The number of elements in the items array. Use if the array changes, without recreating the array.
+         */
+        "itemsCount"?: number;
+        /**
+          * Specifies how the control will behave.
+         */
+        "mode"?: "virtual-scroll" | "lazy-render";
+        /**
+          * Emitted when the array of visible items in the ch-smart-grid changes.
+         */
+        "onVirtualItemsChanged"?: (event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>) => void;
+        /**
+          * Fired when the visible content of the virtual scroller did render for the first time.
+         */
+        "onVirtualScrollerDidLoad"?: (event: ChVirtualScrollerCustomEvent<any>) => void;
+    }
     /**
      * The 'ch-window' component represents a popup container that is positioned
      * relative to an element or the screen.
@@ -8453,13 +9561,16 @@ declare namespace LocalJSX {
         "ch-action-list-render": ChActionListRender;
         "ch-alert": ChAlert;
         "ch-barcode-scanner": ChBarcodeScanner;
+        "ch-chat": ChChat;
         "ch-checkbox": ChCheckbox;
         "ch-code": ChCode;
+        "ch-code-diff-editor": ChCodeDiffEditor;
         "ch-code-editor": ChCodeEditor;
-        "ch-combo-box": ChComboBox;
+        "ch-combo-box-render": ChComboBoxRender;
         "ch-dialog": ChDialog;
         "ch-dropdown": ChDropdown;
         "ch-dropdown-render": ChDropdownRender;
+        "ch-edit": ChEdit;
         "ch-flexible-layout": ChFlexibleLayout;
         "ch-flexible-layout-render": ChFlexibleLayoutRender;
         "ch-form-checkbox": ChFormCheckbox;
@@ -8480,9 +9591,12 @@ declare namespace LocalJSX {
         "ch-grid-settings-columns": ChGridSettingsColumns;
         "ch-grid-virtual-scroller": ChGridVirtualScroller;
         "ch-icon": ChIcon;
+        "ch-image": ChImage;
+        "ch-infinite-scroll": ChInfiniteScroll;
         "ch-intersection-observer": ChIntersectionObserver;
         "ch-layout-splitter": ChLayoutSplitter;
         "ch-markdown": ChMarkdown;
+        "ch-markdown-viewer": ChMarkdownViewer;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -8506,6 +9620,8 @@ declare namespace LocalJSX {
         "ch-sidebar-menu-list": ChSidebarMenuList;
         "ch-sidebar-menu-list-item": ChSidebarMenuListItem;
         "ch-slider": ChSlider;
+        "ch-smart-grid": ChSmartGrid;
+        "ch-smart-grid-cell": ChSmartGridCell;
         "ch-step-list": ChStepList;
         "ch-step-list-item": ChStepListItem;
         "ch-style": ChStyle;
@@ -8542,6 +9658,7 @@ declare namespace LocalJSX {
         "ch-tree-view-drop": ChTreeViewDrop;
         "ch-tree-view-item": ChTreeViewItem;
         "ch-tree-view-render": ChTreeViewRender;
+        "ch-virtual-scroller": ChVirtualScroller;
         "ch-window": ChWindow;
         "ch-window-close": ChWindowClose;
         "gx-grid-chameleon": GxGridChameleon;
@@ -8566,6 +9683,10 @@ declare module "@stencil/core" {
              */
             "ch-barcode-scanner": LocalJSX.ChBarcodeScanner & JSXBase.HTMLAttributes<HTMLChBarcodeScannerElement>;
             /**
+             * TODO: Add description
+             */
+            "ch-chat": LocalJSX.ChChat & JSXBase.HTMLAttributes<HTMLChChatElement>;
+            /**
              * @status developer-preview
              */
             "ch-checkbox": LocalJSX.ChCheckbox & JSXBase.HTMLAttributes<HTMLChCheckboxElement>;
@@ -8576,8 +9697,9 @@ declare module "@stencil/core" {
              * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
              */
             "ch-code": LocalJSX.ChCode & JSXBase.HTMLAttributes<HTMLChCodeElement>;
+            "ch-code-diff-editor": LocalJSX.ChCodeDiffEditor & JSXBase.HTMLAttributes<HTMLChCodeDiffEditorElement>;
             "ch-code-editor": LocalJSX.ChCodeEditor & JSXBase.HTMLAttributes<HTMLChCodeEditorElement>;
-            "ch-combo-box": LocalJSX.ChComboBox & JSXBase.HTMLAttributes<HTMLChComboBoxElement>;
+            "ch-combo-box-render": LocalJSX.ChComboBoxRender & JSXBase.HTMLAttributes<HTMLChComboBoxRenderElement>;
             /**
              * The `ch-dialog` component represents a modal or non-modal dialog box or other
              * interactive component.
@@ -8585,6 +9707,17 @@ declare module "@stencil/core" {
             "ch-dialog": LocalJSX.ChDialog & JSXBase.HTMLAttributes<HTMLChDialogElement>;
             "ch-dropdown": LocalJSX.ChDropdown & JSXBase.HTMLAttributes<HTMLChDropdownElement>;
             "ch-dropdown-render": LocalJSX.ChDropdownRender & JSXBase.HTMLAttributes<HTMLChDropdownRenderElement>;
+            /**
+             * A wrapper for the input and textarea elements. It additionally provides:
+             *  - A placeholder for `"date"`, `"datetime-local"` and `"time"` types.
+             *  - An action button.
+             *  - Useful style resets.
+             *  - Support for picture formatting.
+             *  - Support to auto grow the control when used with multiline (useful to
+             *    model chat inputs).
+             *  - An image which can have multiple states.
+             */
+            "ch-edit": LocalJSX.ChEdit & JSXBase.HTMLAttributes<HTMLChEditElement>;
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;
             "ch-flexible-layout-render": LocalJSX.ChFlexibleLayoutRender & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutRenderElement>;
             "ch-form-checkbox": LocalJSX.ChFormCheckbox & JSXBase.HTMLAttributes<HTMLChFormCheckboxElement>;
@@ -8673,8 +9806,26 @@ declare module "@stencil/core" {
              */
             "ch-grid-virtual-scroller": LocalJSX.ChGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChGridVirtualScrollerElement>;
             "ch-icon": LocalJSX.ChIcon & JSXBase.HTMLAttributes<HTMLChIconElement>;
+            /**
+             * A control to display multiple images, depending on the state (focus, hover,
+             * active or disabled) of a parent element.
+             */
+            "ch-image": LocalJSX.ChImage & JSXBase.HTMLAttributes<HTMLChImageElement>;
+            "ch-infinite-scroll": LocalJSX.ChInfiniteScroll & JSXBase.HTMLAttributes<HTMLChInfiniteScrollElement>;
             "ch-intersection-observer": LocalJSX.ChIntersectionObserver & JSXBase.HTMLAttributes<HTMLChIntersectionObserverElement>;
             "ch-layout-splitter": LocalJSX.ChLayoutSplitter & JSXBase.HTMLAttributes<HTMLChLayoutSplitterElement>;
+            /**
+             * @deprecated Use the `ch-markdown-viewer` component instead.
+             * A control to render markdown syntax. It supports GitHub Flavored Markdown
+             * (GFM) and code highlighting.
+             * - It parses the incoming markdown to [mdast](https://github.com/syntax-tree/mdast) using [micromark](https://github.com/micromark/micromark) via [mdast-util-from-markdown](https://github.com/syntax-tree/mdast-util-from-markdown).
+             * - After that, it implements a reactivity layer by implementing its own render for the mdast. With this, changes to the input markdown only update the portion of the DOM that changes.
+             * - It supports Github Flavored Markdown (GFM) by using [mdast-util-gfm](https://github.com/syntax-tree/mdast-util-gfm) and [micromark-extension-gfm](https://github.com/micromark/micromark-extension-gfm).
+             * - It supports code highlight by parsing the incomming code of the markdown to [hast](https://github.com/micromark/micromark-extension-gfm) using [lowlight](lowlight). After that, it implements a reactivity layer by implementing its own render for the hast.
+             * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
+             * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
+             */
+            "ch-markdown": LocalJSX.ChMarkdown & JSXBase.HTMLAttributes<HTMLChMarkdownElement>;
             /**
              * A control to render markdown syntax. It supports GitHub Flavored Markdown
              * (GFM) and code highlighting.
@@ -8685,7 +9836,7 @@ declare module "@stencil/core" {
              * - It also supports all programming languages from [highlight.js](https://github.com/highlightjs/highlight.js).
              * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
              */
-            "ch-markdown": LocalJSX.ChMarkdown & JSXBase.HTMLAttributes<HTMLChMarkdownElement>;
+            "ch-markdown-viewer": LocalJSX.ChMarkdownViewer & JSXBase.HTMLAttributes<HTMLChMarkdownViewerElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;
@@ -8739,6 +9890,8 @@ declare module "@stencil/core" {
              * The slider control is a input where the user selects a value from within a given range.
              */
             "ch-slider": LocalJSX.ChSlider & JSXBase.HTMLAttributes<HTMLChSliderElement>;
+            "ch-smart-grid": LocalJSX.ChSmartGrid & JSXBase.HTMLAttributes<HTMLChSmartGridElement>;
+            "ch-smart-grid-cell": LocalJSX.ChSmartGridCell & JSXBase.HTMLAttributes<HTMLChSmartGridCellElement>;
             "ch-step-list": LocalJSX.ChStepList & JSXBase.HTMLAttributes<HTMLChStepListElement>;
             "ch-step-list-item": LocalJSX.ChStepListItem & JSXBase.HTMLAttributes<HTMLChStepListItemElement>;
             /**
@@ -8827,6 +9980,9 @@ declare module "@stencil/core" {
             "ch-tabular-grid-virtual-scroller": LocalJSX.ChTabularGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChTabularGridVirtualScrollerElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
+            /**
+             * @status developer-preview
+             */
             "ch-textblock": LocalJSX.ChTextblock & JSXBase.HTMLAttributes<HTMLChTextblockElement>;
             /**
              * It allows you to load a style sheet in a similar way to the
@@ -8843,6 +9999,7 @@ declare module "@stencil/core" {
             "ch-tree-view-drop": LocalJSX.ChTreeViewDrop & JSXBase.HTMLAttributes<HTMLChTreeViewDropElement>;
             "ch-tree-view-item": LocalJSX.ChTreeViewItem & JSXBase.HTMLAttributes<HTMLChTreeViewItemElement>;
             "ch-tree-view-render": LocalJSX.ChTreeViewRender & JSXBase.HTMLAttributes<HTMLChTreeViewRenderElement>;
+            "ch-virtual-scroller": LocalJSX.ChVirtualScroller & JSXBase.HTMLAttributes<HTMLChVirtualScrollerElement>;
             /**
              * The 'ch-window' component represents a popup container that is positioned
              * relative to an element or the screen.

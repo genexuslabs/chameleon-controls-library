@@ -18,7 +18,8 @@ import {
   LayoutSplitterItemModel,
   LayoutSplitterLeafModel,
   LayoutSplitterItemAddResult,
-  LayoutSplitterItemRemoveResult
+  LayoutSplitterItemRemoveResult,
+  LayoutSplitterSticky
 } from "./types";
 import {
   FIXED_SIZES_SUM_CUSTOM_VAR,
@@ -43,6 +44,10 @@ type Group = LayoutSplitterGroupModel;
 type Item = LayoutSplitterItemModel;
 
 const GRID_TEMPLATE_DIRECTION_CUSTOM_VAR = "--ch-layout-splitter__distribution";
+const STICKY_BLOCK_START_PROP = "inset-block-start";
+const STICKY_BLOCK_END_PROP = "inset-block-end";
+const STICKY_INLINE_START_PROP = "inset-inline-start";
+const STICKY_INLINE_END_PROP = "inset-inline-end";
 
 const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
   `group direction--${direction}`;
@@ -50,14 +55,19 @@ const DIRECTION_CLASS = (direction: LayoutSplitterDirection) =>
 const TEMPLATE_STYLE = (
   items: Item[],
   itemsInfo: Map<string, ItemExtended>,
-  fixedSizesSum: number
+  fixedSizesSum: number,
+  sticky?: LayoutSplitterSticky
 ) => ({
   [GRID_TEMPLATE_DIRECTION_CUSTOM_VAR]: sizesToGridTemplate(
     items,
     itemsInfo,
     items.length - 1
   ),
-  [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`
+  [FIXED_SIZES_SUM_CUSTOM_VAR]: `${fixedSizesSum}px`,
+  [STICKY_BLOCK_START_PROP]: sticky?.blockStart,
+  [STICKY_BLOCK_END_PROP]: sticky?.blockEnd,
+  [STICKY_INLINE_START_PROP]: sticky?.inlineStart,
+  [STICKY_INLINE_END_PROP]: sticky?.inlineEnd
 });
 
 const getAriaControls = (layoutItems: Item[], index: number) =>
@@ -359,17 +369,22 @@ export class ChLayoutSplitter implements ChComponent {
     index: number
   ) => {
     const itemUIModel = this.#itemsInfo.get(item.id);
+    const isSticky = !!item.sticky;
 
     return [
       (item as Group).items ? (
         <div
           id={item.id}
-          class={DIRECTION_CLASS((item as Group).direction)}
+          class={{
+            [DIRECTION_CLASS((item as Group).direction)]: true,
+            sticky: isSticky
+          }}
           part={item.id}
           style={TEMPLATE_STYLE(
             (item as Group).items,
             this.#itemsInfo,
-            (itemUIModel as GroupExtended).fixedSizesSum
+            (itemUIModel as GroupExtended).fixedSizesSum,
+            item.sticky
           )}
         >
           {this.#renderItems(
@@ -379,7 +394,20 @@ export class ChLayoutSplitter implements ChComponent {
           )}
         </div>
       ) : (
-        <div id={item.id} class="leaf">
+        <div
+          id={item.id}
+          class={{ leaf: true, sticky: isSticky }}
+          style={
+            isSticky
+              ? {
+                  [STICKY_BLOCK_START_PROP]: item.sticky?.blockStart,
+                  [STICKY_BLOCK_END_PROP]: item.sticky?.blockEnd,
+                  [STICKY_INLINE_START_PROP]: item.sticky?.inlineStart,
+                  [STICKY_INLINE_END_PROP]: item.sticky?.inlineEnd
+                }
+              : undefined
+          }
+        >
           <slot key={item.id} name={item.id} />
         </div>
       ),

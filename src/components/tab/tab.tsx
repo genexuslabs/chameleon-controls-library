@@ -30,7 +30,6 @@ import {
   TabSelectedItemInfo
 } from "./types";
 import {
-  CAPTION_ID,
   CLOSE_BUTTON_PART,
   DRAG_PREVIEW,
   DRAG_PREVIEW_ELEMENT,
@@ -44,7 +43,14 @@ import {
   SELECTED_PART
 } from "./utils";
 import { insertIntoIndex, removeElement } from "../../common/array";
-import { focusComposedPath } from "../common/helpers";
+import {
+  focusComposedPath,
+  MouseEventButton,
+  MouseEventButtons
+} from "../common/helpers";
+import { CssContainProperty, CssOverflowProperty } from "../../common/types";
+
+const CLOSE_BUTTON_CLASS = "close-button";
 
 // Custom vars
 const TRANSITION_DURATION = "--ch-tab-transition-duration";
@@ -83,10 +89,10 @@ type KeyEvents =
 
 // Selectors
 const FIRST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
-  tabListRef.querySelector(":scope>button");
+  tabListRef.querySelector(":scope>button") as HTMLButtonElement;
 
 const LAST_CAPTION_BUTTON = (tabListRef: HTMLElement) =>
-  tabListRef.querySelector(":scope>button:last-child");
+  tabListRef.querySelector(":scope>button:last-child") as HTMLButtonElement;
 
 // Utility functions
 
@@ -173,6 +179,20 @@ const addGrabbingStyle = () =>
   document.body.style.setProperty("cursor", "grabbing");
 const removeGrabbingStyle = () => document.body.style.removeProperty("cursor");
 
+const getNextEnabledButtonCaption = (
+  currentBUttonCaption: HTMLButtonElement,
+  tabListRef: HTMLElement
+) =>
+  (currentBUttonCaption.nextElementSibling ??
+    FIRST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+
+const getPreviousEnabledButtonCaption = (
+  currentBUttonCaption: HTMLButtonElement,
+  tabListRef: HTMLElement
+) =>
+  (currentBUttonCaption.previousElementSibling ??
+    LAST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+
 const focusNextOrPreviousCaption = (
   focusNextSibling: boolean,
   tabListRef: HTMLElement,
@@ -184,13 +204,15 @@ const focusNextOrPreviousCaption = (
 
   let nextFocusedCaption: HTMLButtonElement;
 
+  const searchFunction = focusNextSibling
+    ? getNextEnabledButtonCaption
+    : getPreviousEnabledButtonCaption;
+
   // Determine the next selected caption button
-  if (focusNextSibling) {
-    nextFocusedCaption = (focusedCaption.nextElementSibling ??
-      FIRST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
-  } else {
-    nextFocusedCaption = (focusedCaption.previousElementSibling ??
-      LAST_CAPTION_BUTTON(tabListRef)) as HTMLButtonElement;
+  nextFocusedCaption = searchFunction(focusedCaption, tabListRef);
+
+  while (nextFocusedCaption.disabled) {
+    nextFocusedCaption = searchFunction(nextFocusedCaption, tabListRef);
   }
 
   // Focus and select the caption
@@ -242,7 +264,8 @@ export class ChTabRender implements DraggableView {
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #mouseBoundingLimits: TabElementSize;
 
-  #renderedPages: Set<string> = new Set();
+  #renderedPages: Map<string, TabItemModel> = new Map();
+  #itemIdToIndex: Map<string, number> = new Map();
 
   // Refs
   #dragPreviewRef: HTMLDivElement;
@@ -285,25 +308,21 @@ export class ChTabRender implements DraggableView {
       focusNextOrPreviousCaption(isRTL(), this.#tabListRef, focusedButton, ev);
     },
 
-    [HOME]: () => {
-      const nextFocusedCaption = FIRST_CAPTION_BUTTON(
-        this.#tabListRef
-      ) as HTMLButtonElement;
+    [HOME]: (_, ev) =>
+      focusNextOrPreviousCaption(
+        true,
+        this.#tabListRef,
+        LAST_CAPTION_BUTTON(this.#tabListRef),
+        ev
+      ),
 
-      // Focus and select the caption
-      nextFocusedCaption.focus();
-      nextFocusedCaption.click();
-    },
-
-    [END]: () => {
-      const nextFocusedCaption = LAST_CAPTION_BUTTON(
-        this.#tabListRef
-      ) as HTMLButtonElement;
-
-      // Focus and select the caption
-      nextFocusedCaption.focus();
-      nextFocusedCaption.click();
-    }
+    [END]: (_, ev) =>
+      focusNextOrPreviousCaption(
+        false,
+        this.#tabListRef,
+        FIRST_CAPTION_BUTTON(this.#tabListRef),
+        ev
+      )
   };
 
   @Element() el: HTMLChTabRenderElement;
@@ -324,6 +343,11 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly accessibleName: string;
 
   /**
+   * `true` to display a close button for the items.
+   */
+  @Prop() readonly closeButton: boolean = false;
+
+  /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
    * for the element. This label is used for the close button of the captions.
@@ -331,9 +355,15 @@ export class ChTabRender implements DraggableView {
   @Prop() readonly closeButtonAccessibleName: string = "Close";
 
   /**
-   * `true` to hide the close button in the items.
+   * Same as the contain CSS property. This property indicates that an item
+   * and its contents are, as much as possible, independent from the rest of
+   * the document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
    */
-  @Prop() readonly closeButtonHidden: boolean = false;
+  @Prop() readonly contain?: CssContainProperty = "none";
 
   /**
    * Specifies the flexible layout type.
@@ -345,10 +375,19 @@ export class ChTabRender implements DraggableView {
   }
 
   /**
-   * When the control is sortable, the items can be dragged outside of the
-   * tab-list. This property lets you specify if this behavior is disabled.
+   * This attribute lets you specify if all tab buttons are disabled.
+   * If disabled, tab buttons will not fire any user interaction related event
+   * (for example, click event).
    */
-  @Prop() readonly dragOutsideDisabled: boolean = false;
+  @Prop() readonly disabled: boolean = false;
+
+  /**
+   * When the control is sortable, the items can be dragged outside of the
+   * tab-list.
+   *
+   * This property lets you specify if this behavior is enabled.
+   */
+  @Prop() readonly dragOutside: boolean = false;
 
   /**
    * `true` if the group has is view section expanded. Otherwise, only the
@@ -367,12 +406,27 @@ export class ChTabRender implements DraggableView {
   }
 
   /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the item's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   */
+  @Prop() readonly overflow:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}` = "visible";
+
+  /**
    * Specifies the selected item of the widgets array.
    */
   @Prop({ mutable: true }) selectedId: string;
   @Watch("selectedId")
-  handleSelectedIdChange(newSelectedId: string) {
-    this.#renderedPages.add(newSelectedId);
+  selectedIdChanged(newSelectedId: string) {
+    const newSelectedTabItem = this.model.find(
+      item => item.id === newSelectedId
+    );
+
+    if (newSelectedTabItem) {
+      this.#renderedPages.set(newSelectedId, newSelectedTabItem);
+    }
   }
 
   /**
@@ -382,9 +436,15 @@ export class ChTabRender implements DraggableView {
 
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
-   * If sortable !== true, the tab buttons can not be dragged out either.
+   *
+   * If `false`, the tab buttons can not be dragged out either.
    */
   @Prop() readonly sortable: boolean = false;
+
+  /**
+   * `true` to not render the tab buttons of the control.
+   */
+  @Prop() readonly tabButtonHidden: boolean = false;
 
   /**
    * Fired when an item of the main group is double clicked.
@@ -458,21 +518,8 @@ export class ChTabRender implements DraggableView {
     }
   }
 
-  #handleSelectedItemChange =
-    (index: number, itemId: string) => (event: MouseEvent) => {
-      event.stopPropagation();
-
-      const eventInfo = this.selectedItemChange.emit({
-        lastSelectedIndex: this.#selectedIndex,
-        newSelectedId: itemId,
-        newSelectedIndex: index
-      });
-
-      if (!eventInfo.defaultPrevented) {
-        this.#selectedIndex = index;
-        this.selectedId = itemId;
-      }
-    };
+  #buttonIsCloseButton = (buttonRef: HTMLButtonElement) =>
+    buttonRef.className === CLOSE_BUTTON_CLASS;
 
   /**
    * Make a set based on the rendered items array to maintain order between the
@@ -481,16 +528,25 @@ export class ChTabRender implements DraggableView {
    */
   // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #updateRenderedPages = (items: TabModel) => {
+    this.#renderedPages.clear();
+    this.#itemIdToIndex.clear();
+
     (items ?? []).forEach(item => {
       if (item.wasRendered) {
-        this.#renderedPages.add(item.id);
+        this.#renderedPages.set(item.id, item);
       }
     });
 
     // The selected id must be added to the rendered pages, even if it was not
     // marked as "wasRendered" in the UI Model
-    if (this.selectedId) {
-      this.#renderedPages.add(this.selectedId);
+    if (this.selectedId && items !== undefined) {
+      const newSelectedTabItem = this.model.find(
+        item => item.id === this.selectedId
+      );
+
+      if (newSelectedTabItem) {
+        this.#renderedPages.set(this.selectedId, newSelectedTabItem);
+      }
     }
   };
 
@@ -501,12 +557,21 @@ export class ChTabRender implements DraggableView {
   //   this.expandMainGroup.emit();
   // };
 
-  #handleDragStart = (index: number) => (event: DragEvent) => {
+  #handleDragStart = (event: DragEvent) => {
+    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+
+    if (buttonRef.tagName.toLowerCase() !== "button") {
+      return;
+    }
+
+    // The only button that can perform dragstart is the tab button
+    const itemIndex = this.#itemIdToIndex.get(buttonRef.id);
+
     // Remove dragover event to allow mousemove event to fire
     event.preventDefault();
 
     // Store the index of the dragged element
-    this.draggedElementIndex = index;
+    this.draggedElementIndex = itemIndex;
 
     // - - - - - - - - - - - DOM read operations - - - - - - - - - - -
     const mousePositionX = event.clientX;
@@ -544,7 +609,7 @@ export class ChTabRender implements DraggableView {
     const mouseDistanceToButtonRightEdge = buttonSizes.xEnd - mousePositionX;
 
     // Update mouse limits if drag outside is enabled
-    if (!this.dragOutsideDisabled) {
+    if (this.dragOutside) {
       this.#mouseBoundingLimits = {
         xStart: tabListSizes.xStart - mouseDistanceToButtonRightEdge,
         xEnd: tabListSizes.xEnd + mouseDistanceToButtonLeftEdge,
@@ -681,7 +746,7 @@ export class ChTabRender implements DraggableView {
       const mouseLimits = this.#mouseBoundingLimits;
 
       // Check mouse limits if drag outside is enabled
-      if (!this.dragOutsideDisabled) {
+      if (this.dragOutside) {
         const draggedButtonIsInsideTheTabList =
           inBetween(mouseLimits.xStart, mousePositionX, mouseLimits.xEnd) &&
           inBetween(mouseLimits.yStart, mousePositionY, mouseLimits.yEnd);
@@ -748,21 +813,86 @@ export class ChTabRender implements DraggableView {
     });
   };
 
-  #handleClose = (index: number, itemId: string) => (event: MouseEvent) => {
+  #preventMouseDownOnScroll = (event: MouseEvent) => {
+    // We have to prevent the mousedown event to make work the close with the
+    // mouse wheel, because when the page has scroll, the auxClick is not fired
+    if (event.buttons !== MouseEventButtons.WHEEL) {
+      return;
+    }
+    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+
+    if (buttonRef.tagName.toLowerCase() !== "button") {
+      return;
+    }
+    event.preventDefault();
+  };
+
+  #handleSelectedItemChange = (event: PointerEvent) => {
+    event.stopPropagation();
+    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+
+    // Check the click event is performed on a button element
+    if (buttonRef.tagName.toLowerCase() !== "button") {
+      return;
+    }
+
+    // Click was performed on the close button --> itemClose event
+    if (this.#buttonIsCloseButton(buttonRef)) {
+      // The parent is the tab button with the itemId
+      this.#emitCloseEvent(buttonRef.parentElement.id, event);
+    }
+    // Otherwise --> selectedItemChange event
+    else {
+      const itemId = buttonRef.id;
+
+      // Don't fire the selectedItemChange event if the item is already selected
+      if (this.selectedId === itemId) {
+        return;
+      }
+      const itemIndex = this.#itemIdToIndex.get(itemId)!;
+
+      const eventInfo = this.selectedItemChange.emit({
+        lastSelectedIndex: this.#selectedIndex,
+        newSelectedId: itemId,
+        newSelectedIndex: itemIndex
+      });
+
+      if (!eventInfo.defaultPrevented) {
+        this.#selectedIndex = itemIndex;
+        this.selectedId = itemId;
+      }
+    }
+  };
+
+  #handleClose = (event: PointerEvent) => {
+    // Check if the action was performed on the close button or the action
+    // was a click on the wheel
+    if (event.button !== MouseEventButton.WHEEL) {
+      return;
+    }
+    const buttonRef = event.composedPath()[0] as HTMLButtonElement;
+
+    if (buttonRef.tagName.toLowerCase() === "button") {
+      const itemId = this.#buttonIsCloseButton(buttonRef)
+        ? buttonRef.parentElement.id
+        : buttonRef.id;
+      this.#emitCloseEvent(itemId, event);
+    }
+  };
+
+  #emitCloseEvent = (itemId: string, event: PointerEvent) => {
     event.preventDefault();
     event.stopPropagation();
 
+    const itemIndex = this.#itemIdToIndex.get(itemId)!;
+
     this.itemClose.emit({
-      itemIndex: index,
+      itemIndex: itemIndex,
       itemId: itemId
     });
   };
 
   #handleTabFocus = (event: KeyboardEvent) => {
-    if (this.model.length < 2) {
-      return;
-    }
-
     const keyEventHandler = this.#keyEvents[event.code];
     if (!keyEventHandler) {
       return;
@@ -773,6 +903,26 @@ export class ChTabRender implements DraggableView {
     ) as HTMLButtonElement;
 
     keyEventHandler(this.direction, event, currentFocusedCaption);
+  };
+
+  #getEnabledItems = (): number => {
+    let itemsEnabled = 0;
+    let itemIndex = 0;
+
+    while (itemsEnabled < 2 && itemIndex < this.model.length) {
+      const itemUIModel = this.model[itemIndex];
+
+      if (
+        itemUIModel.disabled === false ||
+        (!this.disabled && itemUIModel.disabled !== true)
+      ) {
+        itemsEnabled++;
+      }
+
+      itemIndex++;
+    }
+
+    return itemsEnabled;
   };
 
   #imgRender = (item: TabItemModel) =>
@@ -788,88 +938,126 @@ export class ChTabRender implements DraggableView {
       />
     );
 
-  #renderTabBar = (thereAreShiftedElements: boolean) => (
-    <div
-      role="tablist"
-      aria-label={this.accessibleName}
-      class={this.#classes.TAB_LIST}
-      part={this.#parts.TAB_LIST}
-      ref={el => (this.#tabListRef = el)}
-      onKeyDown={this.#handleTabFocus}
-    >
-      {this.model.map((item, index) => (
-        <button
-          key={CAPTION_ID(item.id)}
-          id={CAPTION_ID(item.id)}
-          role="tab"
-          aria-controls={PAGE_ID(item.id)}
-          aria-label={!this.showCaptions ? item.name : null}
-          aria-selected={(item.id === this.selectedId).toString()}
-          class={{
-            [this.#classes.BUTTON]: true,
-            "decorative-image": isPseudoElementImg(
-              item.startImgSrc,
-              item.startImgType
-            ),
+  #renderTabBar = (thereAreShiftedElements: boolean) => {
+    const enabledItems = this.#getEnabledItems();
+    const atLeastOneItemsIsEnabled = enabledItems >= 1;
 
-            "dragged-element": this.draggedElementIndex === index,
-            "dragged-element--outside":
-              this.draggedElementIndex === index &&
-              this.hasCrossedBoundaries &&
-              this.model.length > 1,
-            "shifted-element": this.draggedElementIndex !== -1,
+    return (
+      <div
+        role="tablist"
+        aria-label={this.accessibleName}
+        class={this.#classes.TAB_LIST}
+        part={this.#parts.TAB_LIST}
+        onAuxClick={
+          this.closeButton && atLeastOneItemsIsEnabled
+            ? this.#handleClose
+            : undefined
+        }
+        onClick={
+          atLeastOneItemsIsEnabled ? this.#handleSelectedItemChange : undefined
+        }
+        // TODO: Add support to drag the item when it is disabled.
+        // TODO: Add support to position the item in different areas
+        onDragStart={
+          this.sortable && atLeastOneItemsIsEnabled
+            ? this.#handleDragStart
+            : undefined
+        }
+        onKeyDown={
+          this.model.length >= 2 && enabledItems >= 2
+            ? this.#handleTabFocus
+            : undefined
+        }
+        onMouseDown={
+          this.closeButton && atLeastOneItemsIsEnabled
+            ? this.#preventMouseDownOnScroll
+            : undefined
+        }
+        ref={el => (this.#tabListRef = el)}
+      >
+        {this.model.map((item, index) =>
+          this.#renderTabButton(item, index, thereAreShiftedElements)
+        )}
+      </div>
+    );
+  };
 
-            "shifted-element--start":
-              thereAreShiftedElements &&
-              this.draggedElementIndex < index &&
-              index <= this.draggedElementNewIndex,
+  #renderTabButton = (
+    item: TabItemModel,
+    index: number,
+    thereAreShiftedElements: boolean
+  ) => {
+    const isDisabled = item.disabled ?? this.disabled;
+    this.#itemIdToIndex.set(item.id, index);
 
-            "shifted-element--end":
-              thereAreShiftedElements &&
-              this.draggedElementNewIndex <= index &&
-              index < this.draggedElementIndex,
+    return (
+      <button
+        key={item.id}
+        id={item.id}
+        role="tab"
+        aria-controls={PAGE_ID(item.id)}
+        aria-label={!this.showCaptions ? item.name : null}
+        aria-selected={(item.id === this.selectedId).toString()}
+        class={{
+          [this.#classes.BUTTON]: true,
+          "no-captions": !this.showCaptions,
 
-            sortable: this.sortable
-          }}
-          part={tokenMap({
-            [this.#parts.BUTTON]: true,
-            [CAPTION_ID(item.id)]: true,
-            [SELECTED_PART]: item.id === this.selectedId
-          })}
-          style={
-            isPseudoElementImg(item.startImgSrc, item.startImgType)
-              ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
-              : null
-          }
-          onAuxClick={this.#handleClose(index, item.id)}
-          onClick={
-            !(item.id === this.selectedId)
-              ? this.#handleSelectedItemChange(index, item.id)
-              : null
-          }
-          // onDblClick={
-          //   this.direction === "main" ? this.#handleItemDblClick : null
-          // }
-          // Drag and drop
-          onDragStart={this.sortable ? this.#handleDragStart(index) : null}
-        >
-          {this.#imgRender(item)}
+          "decorative-image": isPseudoElementImg(
+            item.startImgSrc,
+            item.startImgType
+          ),
 
-          {this.showCaptions && item.name}
+          "dragged-element": this.draggedElementIndex === index,
+          "dragged-element--outside":
+            this.draggedElementIndex === index &&
+            this.hasCrossedBoundaries &&
+            this.model.length > 1,
+          "shifted-element": this.draggedElementIndex !== -1,
 
-          {!this.closeButtonHidden && (
-            <button
-              aria-label={this.closeButtonAccessibleName}
-              class="close-button"
-              part={CLOSE_BUTTON_PART}
-              type="button"
-              onClick={this.#handleClose(index, item.id)}
-            ></button>
-          )}
-        </button>
-      ))}
-    </div>
-  );
+          "shifted-element--start":
+            thereAreShiftedElements &&
+            this.draggedElementIndex < index &&
+            index <= this.draggedElementNewIndex,
+
+          "shifted-element--end":
+            thereAreShiftedElements &&
+            this.draggedElementNewIndex <= index &&
+            index < this.draggedElementIndex,
+
+          sortable: this.sortable
+        }}
+        part={tokenMap({
+          [this.#parts.BUTTON]: true,
+          [item.id]: true,
+          [SELECTED_PART]: item.id === this.selectedId,
+          disabled: isDisabled
+        })}
+        disabled={isDisabled}
+        style={
+          isPseudoElementImg(item.startImgSrc, item.startImgType)
+            ? { [DECORATIVE_IMAGE]: `url("${item.startImgSrc}")` }
+            : null
+        }
+        // onDblClick={
+        //   this.direction === "main" ? this.#handleItemDblClick : null
+        // }
+      >
+        {this.#imgRender(item)}
+
+        {this.showCaptions && item.name}
+
+        {this.closeButton && (
+          <button
+            aria-label={this.closeButtonAccessibleName}
+            class={CLOSE_BUTTON_CLASS}
+            part={CLOSE_BUTTON_PART}
+            disabled={isDisabled}
+            type="button"
+          ></button>
+        )}
+      </button>
+    );
+  };
 
   #renderTabPages = () => (
     <div
@@ -881,24 +1069,43 @@ export class ChTabRender implements DraggableView {
       part={this.#parts.PAGE_CONTAINER}
       ref={el => (this.#tabPageRef = el)}
     >
-      {[...this.#renderedPages.keys()].map(itemId => (
-        <div
-          key={PAGE_ID(itemId)}
-          id={PAGE_ID(itemId)}
-          role="tabpanel"
-          aria-labelledby={CAPTION_ID(itemId)}
-          class={{
-            [this.#classes.PAGE]: true,
-            "page--selected": itemId === this.selectedId,
-            "page--hidden": !(itemId === this.selectedId)
-          }}
-          part={this.#parts.PAGE}
-        >
-          <slot name={itemId} />
-        </div>
-      ))}
+      {[...this.#renderedPages.values()].map(this.#renderTabPage)}
     </div>
   );
+
+  #renderTabPage = (item: TabItemModel) => {
+    const contain = item.contain ?? this.contain;
+    const overflow = item.overflow ?? this.overflow;
+
+    const hasContain = contain !== "none";
+    const hasOverflow =
+      overflow !== "visible" && overflow !== "visible visible";
+
+    return (
+      <div
+        key={PAGE_ID(item.id)}
+        id={PAGE_ID(item.id)}
+        role={!this.tabButtonHidden ? "tabpanel" : undefined}
+        aria-labelledby={!this.tabButtonHidden ? item.id : undefined}
+        class={{
+          [this.#classes.PAGE]: true,
+          "page--selected": item.id === this.selectedId,
+          "page--hidden": !(item.id === this.selectedId)
+        }}
+        style={
+          hasContain || hasOverflow
+            ? {
+                contain: hasContain ? contain : undefined,
+                overflow: hasOverflow ? overflow : undefined
+              }
+            : undefined
+        }
+        part={this.#parts.PAGE}
+      >
+        <slot name={item.id} />
+      </div>
+    );
+  };
 
   #renderDragPreview = (draggedElement: TabItemModel) => {
     const classes = {
@@ -932,7 +1139,7 @@ export class ChTabRender implements DraggableView {
           }}
           part={tokenMap({
             [this.#parts.BUTTON]: true,
-            [CAPTION_ID(draggedElement.id)]: true,
+            [draggedElement.id]: true,
             [DRAG_PREVIEW_ELEMENT]: true,
             [SELECTED_PART]: draggedElement.id === this.selectedId
           })}
@@ -979,8 +1186,15 @@ export class ChTabRender implements DraggableView {
       this.draggedElementIndex !== this.draggedElementNewIndex;
 
     return (
-      <Host class={`ch-tab-direction--${this.direction}`}>
-        {this.#renderTabBar(thereAreShiftedElementsInPreview)}
+      <Host
+        class={
+          !this.tabButtonHidden
+            ? `ch-tab-direction--${this.direction}`
+            : undefined
+        }
+      >
+        {!this.tabButtonHidden &&
+          this.#renderTabBar(thereAreShiftedElementsInPreview)}
         {this.#renderTabPages()}
 
         {draggedIndex !== -1 && this.#renderDragPreview(draggedElement)}

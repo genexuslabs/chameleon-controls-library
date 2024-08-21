@@ -6,115 +6,112 @@
 
 ch-test-flexible-layout {
   display: contents;
+
+  .welcome-message {
+    margin-block-start: var(--spacing--l, var(--mer-spacing--md));
+    text-align: center;
+    font-size: 64px;
+    line-height: 80px;
+    opacity: 0.75;
+  }
 }
 
 .flexible-layout {
   &::part(bar visible) {
-    background-color: var(--colors-foundation-un-color__gray--400);
+    background-color: var(--colors-foundation__gray--400);
   }
 
-  &::part(page-container inline) {
-    background-color: var(--colors-foundation-un-color__gray--200);
-  }
-
-  &::part(tab-list inline) {
-    background-color: var(--colors-foundation-un-color__gray--300);
-    inline-size: 48px;
-    gap: 4px;
-  }
-
-  &::part(button inline) {
-    position: relative;
-    block-size: 32px;
-    inline-size: 48px;
-
-    &::before {
-      display: flex;
-      block-size: 100%;
-      inline-size: 100%;
-      -webkit-mask-size: 16px;
-    }
-  }
-
-  &::part(button selected inline) {
-    &::after {
-      content: "";
-      display: flex;
-      position: absolute;
-      inset-block-start: 4px;
-      inset-inline-start: 1px;
-      block-size: calc(100% - 8px);
-      inline-size: 2px;
-      background-color: currentColor;
-    }
-  }
-
-  &::part(button inlineEnd selected)::after {
-    inset-inline-start: unset;
-    inset-inline-end: 1px;
-  }
-
-  // &::part(page-name inline) {
-  //   display: block;
-  //   padding-block: 8px;
-  //   padding-inline: 16px;
+  // &::part(page-container inline) {
+  //   background-color: var(--colors-foundation__gray--200);
   // }
 
-  &::part(close-button) {
-    padding: 1px;
+  // &::part(button inline) {
+  //   position: relative;
+  //   block-size: 32px;
+  //   inline-size: 48px;
 
-    &:hover {
-      background-color: color-mix(in srgb, currentColor 10%, transparent);
-      border-radius: 4px;
-    }
+  //   &::before {
+  //     display: flex;
+  //     block-size: 100%;
+  //     inline-size: 100%;
+  //     -webkit-mask-size: 16px;
+  //   }
+  // }
 
-    &:focus-visible {
-      outline: 1px solid currentColor;
-    }
-  }
+  // &::part(button selected inline) {
+  //   &::after {
+  //     content: "";
+  //     display: flex;
+  //     position: absolute;
+  //     inset-block-start: 4px;
+  //     inset-inline-start: 1px;
+  //     block-size: calc(100% - 8px);
+  //     inline-size: 2px;
+  //     background-color: currentColor;
+  //   }
+  // }
 
-  &::part(button inline):focus-visible {
-    outline: 1px solid currentColor;
-    outline-offset: -1px;
-  }
+  // &::part(button inlineEnd selected)::after {
+  //   inset-inline-start: unset;
+  //   inset-inline-end: 1px;
+  // }
 
-  // Main, BlockEnd
-  &::part(button block) {
-    padding-block: 6px;
-    padding-inline: 16px 8px;
-    gap: 8px;
-    background-color: var(--colors-foundation-un-color__gray--200);
+  // // &::part(page-name inline) {
+  // //   display: block;
+  // //   padding-block: 8px;
+  // //   padding-inline: 16px;
+  // // }
 
-    &:focus-visible {
-      outline: 1px solid currentColor;
-      outline-offset: -1px;
-    }
-  }
+  // &::part(close-button) {
+  //   padding: 1px;
 
-  &::part(button block selected) {
-    background-color: var(--elevation-un-elevation--2);
-  }
+  //   &:hover {
+  //     background-color: color-mix(in srgb, currentColor 10%, transparent);
+  //     border-radius: 4px;
+  //   }
 
-  &::part(button block selected blockEnd) {
-    position: relative;
+  //   &:focus-visible {
+  //     outline: 1px solid currentColor;
+  //   }
+  // }
 
-    &::after {
-      content: "";
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline: 0;
-      block-size: 1px;
-      background-color: currentColor;
-      z-index: 1;
-    }
-  }
+  // &::part(button inline):focus-visible {
+  //   outline: 1px solid currentColor;
+  //   outline-offset: -1px;
+  // }
+
+  // // Main, BlockEnd
+  // &::part(button block) {
+  //   padding-block: 6px;
+  //   padding-inline: 16px 8px;
+  //   gap: 8px;
+  //   background-color: var(--colors-foundation__gray--200);
+
+  //   &:focus-visible {
+  //     outline: 1px solid currentColor;
+  //     outline-offset: -1px;
+  //   }
+  // }
+
+  // &::part(button block selected) {
+  //   background-color: var(--elevation--2);
+  // }
+
+  // &::part(button block selected blockEnd) {
+  //   position: relative;
+
+  //   &::after {
+  //     content: "";
+  //     position: absolute;
+  //     inset-block-start: 0;
+  //     inset-inline: 0;
+  //     block-size: 1px;
+  //     background-color: currentColor;
+  //     z-index: 1;
+  //   }
+  // }
 
   &::part(tab-list block) {
-    background-color: var(--colors-foundation-un-color__gray--200);
-    overflow: auto;
-  }
-
-  &::part(page-container) {
     overflow: auto;
   }
 

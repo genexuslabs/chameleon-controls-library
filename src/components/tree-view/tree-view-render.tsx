@@ -60,14 +60,41 @@ import {
   subscribe,
   syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-obervables";
+import {
+  getControlRegisterProperty,
+  registryControlProperty
+} from "../../common/registry-properties";
 
+// - - - - - - - - - - - - - - - - - - - -
+//                Registry
+// - - - - - - - - - - - - - - - - - - - -
+// This callback will be registered by default. If it is used in GeneXus, all
+// tree views will have the same state, so the parameters used of the treeState
+// are "shared" across all tree view instances
+const registerDefaultGetImagePathCallback = (treeState: ChTreeViewRender) =>
+  registryControlProperty(
+    "getImagePathCallback",
+    "ch-tree-view-render",
+    (item: TreeViewItemModel, iconDirection: "start" | "end" = "start") => {
+      const img = iconDirection === "start" ? item.startImgSrc : item.endImgSrc;
+
+      return treeState.useGxRender
+        ? fromGxImageToURL(
+            img,
+            treeState.gxSettings,
+            treeState.gxImageConstructor
+          )
+        : img;
+    }
+  );
+
+// - - - - - - - - - - - - - - - - - - - -
+//                Defaults
+// - - - - - - - - - - - - - - - - - - - -
 let autoId = 0;
 
 const ROOT_ID = null;
 
-const DEFAULT_DRAG_DISABLED_VALUE = false;
-const DEFAULT_DROP_DISABLED_VALUE = false;
-const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 const DEFAULT_EXPANDED_VALUE = false;
 const DEFAULT_INDETERMINATE_VALUE = false;
 const DEFAULT_LAZY_VALUE = false;
@@ -80,19 +107,6 @@ const treeViewHasFilters = (filterType: TreeViewFilterType, filter: string) =>
   filterType !== "none" &&
   ((filterType !== "caption" && filterType !== "metadata") ||
     (filter != null && filter.trim() !== ""));
-
-const defaultGetImagePath: TreeViewImagePathCallback = (
-  imgSrc: string,
-  treeState: ChTreeViewRender,
-  useGxRender?: boolean
-) =>
-  useGxRender
-    ? fromGxImageToURL(
-        imgSrc,
-        treeState.gxSettings,
-        treeState.gxImageConstructor
-      )
-    : imgSrc;
 
 // GeneXus implementation
 const gxDragDisabled = (
@@ -162,32 +176,26 @@ const defaultRenderItem = <T extends true | false>(
       }
       dropDisabled={isDropDisabled(itemModel, treeState, useGxRender)}
       editable={itemModel.editable ?? treeState.editableItems}
-      endImgSrc={treeState.getImagePathCallback(
-        itemModel.endImgSrc,
-        treeState,
-        useGxRender
-      )}
+      endImgSrc={itemModel.endImgSrc}
       endImgType={itemModel.endImgType ?? "background"}
       expanded={itemModel.expanded}
       expandableButton={treeState.expandableButton}
       expandOnClick={treeState.expandOnClick}
+      getImagePathCallback={treeState.getImagePathCallback}
       indeterminate={itemModel.indeterminate}
       lastItem={lastItem}
       lazyLoad={itemModel.lazy}
       leaf={itemModel.leaf}
       level={level}
       metadata={itemModel.metadata}
+      model={itemModel}
       parts={itemModel.parts}
       selected={itemModel.selected}
       showLines={treeState.showLines}
       toggleCheckboxes={
         itemModel.toggleCheckboxes ?? treeState.toggleCheckboxes
       }
-      startImgSrc={treeState.getImagePathCallback(
-        itemModel.startImgSrc,
-        treeState,
-        useGxRender
-      )}
+      startImgSrc={itemModel.startImgSrc}
       startImgType={itemModel.startImgType ?? "background"}
     >
       {treeState.expanded &&
@@ -364,13 +372,13 @@ export class ChTreeViewRender {
    * This attribute lets you specify if the drag operation is disabled in all
    * items by default. If `true`, the items can't be dragged.
    */
-  @Prop() readonly dragDisabled: boolean = DEFAULT_DRAG_DISABLED_VALUE;
+  @Prop() readonly dragDisabled: boolean = true;
 
   /**
    * This attribute lets you specify if the drop operation is disabled in all
    * items by default. If `true`, the items won't accept any drops.
    */
-  @Prop() readonly dropDisabled: boolean = DEFAULT_DROP_DISABLED_VALUE;
+  @Prop() readonly dropDisabled: boolean = true;
 
   /**
    * Callback that is executed when a list of items request to be dropped into
@@ -390,7 +398,7 @@ export class ChTreeViewRender {
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
    */
-  @Prop() readonly editableItems: boolean = DEFAULT_EDITABLE_ITEMS_VALUE;
+  @Prop() readonly editableItems: boolean = false;
 
   /**
    * Specifies what kind of expandable button is displayed in the items by
@@ -498,8 +506,7 @@ export class ChTreeViewRender {
    * re-implement item rendering (`renderItem` property) just to change the
    * path used for the images.
    */
-  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
-    defaultGetImagePath;
+  @Prop() readonly getImagePathCallback: TreeViewImagePathCallback;
 
   /**
    * Callback that is executed when a item request to load its subitems.
@@ -1598,6 +1605,13 @@ export class ChTreeViewRender {
 
   connectedCallback() {
     this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
+
+    // If the getImagePathCallback was not previously registered
+    if (
+      !getControlRegisterProperty("getImagePathCallback", "ch-tree-view-render")
+    ) {
+      registerDefaultGetImagePathCallback(this);
+    }
 
     // Subscribe to expand/collapse changes in the ancestor nodes
     subscribe(this.#treeViewId, {

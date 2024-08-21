@@ -40,7 +40,6 @@ export const LIST_PART_INLINE = {
 };
 
 // Ids
-export const CAPTION_ID = (name: string) => `caption-${name}`;
 export const PAGE_ID = (name: string) => `page-${name}`;
 
 // Export part functions
@@ -73,7 +72,7 @@ export const BLOCK_START_PARTS = PARTS + ",block,block:start";
 export const BLOCK_END_PARTS = PARTS + ",block,block:end";
 
 export const CAPTION_PARTS = (widgets: FlexibleLayoutWidget[]) =>
-  widgets.map(item => CAPTION_ID(item.id)).join(",");
+  widgets.map(item => item.id).join(",");
 
 export const tabTypeToPart: {
   [key in `${FlexibleLayoutLeafTabDirection}-${FlexibleLayoutLeafTabPosition}`]: (

@@ -39,6 +39,13 @@
   --ch-tree-view-item__image-size: #{$default-decorative-image-size};
 
   /**
+   * @prop --ch-tree-view-item__image-size:
+   * Specifies the size of the start and end images of the items.
+   * @default 100%
+   */
+  --ch-tree-view-item__background-image-size: 100%;
+
+  /**
    * @prop --ch-tree-view-item__line--inset-inline-start:
    * Specifies an additional separation that only applies for the inline start
    * position of the item's line.

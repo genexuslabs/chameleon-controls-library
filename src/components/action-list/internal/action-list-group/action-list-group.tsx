@@ -4,18 +4,27 @@ import {
   Event,
   EventEmitter,
   Host,
+  Method,
   Prop,
   h
 } from "@stencil/core";
+import { tokenMap } from "../../../../common/utils";
+import {
+  ACTION_LIST_GROUP_EXPORT_PARTS,
+  ACTION_LIST_GROUP_PARTS_DICTIONARY,
+  ACTION_LIST_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 
 const EXPANDABLE_ID = "expandable";
 
 @Component({
   tag: "ch-action-list-group",
   styleUrl: "action-list-group.scss",
-  shadow: true
+  shadow: { delegatesFocus: true }
 })
 export class ChActionListGroup {
+  #buttonRef: HTMLButtonElement;
+
   @Element() el: HTMLChActionListGroupElement;
 
   /**
@@ -37,23 +46,6 @@ export class ChActionListGroup {
   @Prop({ mutable: true }) downloading = false;
 
   /**
-   * This attribute lets you specify if the edit operation is enabled in the
-   * control. If `true`, the control can edit its caption in place.
-   */
-  @Prop() readonly editable: boolean;
-
-  // /**
-  //  * Specifies what kind of expandable button is displayed.
-  //  * Only works if `leaf === false`.
-  //  *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-  //  *     the items of the control.
-  //  *  - `"decorative"`: Only a decorative icon is rendered to display the state
-  //  *     of the item.
-  //  */
-  // @Prop() readonly expandableButton: "action" | "decorative" | "no" =
-  //   "decorative";
-
-  /**
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
@@ -63,7 +55,7 @@ export class ChActionListGroup {
    * If the item has a sub-tree, this attribute determines if the subtree is
    * displayed.
    */
-  @Prop({ mutable: true }) expanded?: boolean;
+  @Prop() readonly expanded?: boolean;
   // @Watch("expanded")
   // expandedChanged(isExpanded: boolean) {
   //   // Wait until all properties are updated before lazy loading. Otherwise, the
@@ -78,11 +70,6 @@ export class ChActionListGroup {
    * control.
    */
   @Prop({ mutable: true }) lazyLoad = false;
-
-  /**
-   * `true` if the checkbox's value is indeterminate.
-   */
-  @Prop({ mutable: true }) indeterminate = false;
 
   /**
    * This attribute represents additional info for the control that is included
@@ -100,21 +87,15 @@ export class ChActionListGroup {
   // }
 
   /**
+   * This attribute lets you specify if the item is selected
+   */
+  @Prop() readonly selected: boolean = false;
+
+  /**
    * `true` to show the downloading spinner when lazy loading the sub items of
    * the control.
    */
   @Prop() readonly showDownloadingSpinner: boolean = true;
-
-  // /**
-  //  * Fired when the checkbox value of the control is changed.
-  //  */
-  // @Event() checkboxChange: EventEmitter<TreeViewItemCheckedInfo>;
-
-  // /**
-  //  * Fired when the checkbox value of the control is changed. This event only
-  //  * applies when the control has `toggleCheckboxes = true`
-  //  */
-  // @Event() checkboxToggleChange: EventEmitter<TreeViewItemCheckedInfo>;
 
   // /**
   //  * Fired when the item is being dragged.
@@ -126,23 +107,23 @@ export class ChActionListGroup {
    */
   @Event() loadLazyContent: EventEmitter<string>;
 
-  // /**
-  //  * Fired when the item is asking to modify its caption.
-  //  */
-  // @Event() modifyCaption: EventEmitter<TreeViewItemNewCaption>;
+  /**
+   * Set the focus in the control if `expandable === true`.
+   */
+  @Method()
+  async setFocus() {
+    if (this.expandable && this.#buttonRef) {
+      this.#buttonRef.focus();
+    }
+  }
 
-  // /**
-  //  * Fired when the selected state is updated by user interaction on the
-  //  * control.
-  //  */
-  // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
-
-  #getExpandedValue = () =>
-    this.expandable ? (this.expanded ?? true).toString() : "true";
+  #getExpandedValue = (): boolean =>
+    this.expandable ? this.expanded ?? false : true;
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
-    this.el.setAttribute("exportparts", "item__action");
+    this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.GROUP);
+    this.el.setAttribute("exportparts", ACTION_LIST_GROUP_EXPORT_PARTS);
   }
 
   render() {
@@ -150,23 +131,33 @@ export class ChActionListGroup {
     const expanded = hasContent && this.#getExpandedValue();
 
     return (
-      <Host role="listitem">
+      <Host>
         {this.expandable ? (
           <button
             aria-controls={hasContent ? EXPANDABLE_ID : null}
-            aria-expanded={hasContent ? expanded : null}
-            class="action"
-            part="item__action"
+            aria-expanded={hasContent ? expanded.toString() : null}
+            class={{ action: true, "action--collapsed": !expanded }}
+            disabled={this.disabled}
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.ACTION]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.SELECTED]: this.selected,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
             type="button"
+            ref={el => (this.#buttonRef = el)}
           >
             {this.caption}
           </button>
         ) : (
           <span
             aria-controls={hasContent ? EXPANDABLE_ID : null}
-            aria-expanded={hasContent ? expanded : null}
+            aria-expanded={hasContent ? expanded.toString() : null}
             class="action"
-            part="item__action"
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.CAPTION]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
           >
             {this.caption}
           </span>
@@ -181,6 +172,13 @@ export class ChActionListGroup {
               "expandable--collapsed": !expanded,
               "expandable--lazy-loaded": !this.downloading
             }}
+            part={tokenMap({
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDABLE]: true,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.EXPANDED]: expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.COLLAPSED]: !expanded,
+              [ACTION_LIST_GROUP_PARTS_DICTIONARY.LAZY_LOADED]:
+                !this.downloading
+            })}
             id={EXPANDABLE_ID}
           >
             <slot />

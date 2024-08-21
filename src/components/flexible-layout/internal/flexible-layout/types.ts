@@ -1,4 +1,9 @@
-import { AccessibleRole, ImageRender } from "../../../../common/types";
+import {
+  AccessibleRole,
+  CssContainProperty,
+  CssOverflowProperty,
+  ImageRender
+} from "../../../../common/types";
 import {
   LayoutSplitterModel,
   LayoutSplitterGroupModel,
@@ -46,14 +51,27 @@ export type FlexibleLayoutLeafConfiguration =
   | FlexibleLayoutLeafConfigurationSingleContent;
 
 export type FlexibleLayoutLeafConfigurationTabbed = {
-  closeButtonHidden?: boolean;
+  /**
+   * `true` to display a close button in the tab buttons.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  closeButton?: boolean;
+
+  /**
+   * Specify if all tab buttons are disabled.
+   * If disabled, tab buttons will not fire any user interaction related event
+   * (for example, click event).
+   */
+  disabled?: boolean;
 
   /**
    * When the control is sortable, the items can be dragged outside of the
    * tab-list. This property lets you specify if this behavior is disabled.
-   * If not specified, defaults to `false`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
-  dragOutsideDisabled?: boolean;
+  dragOutside?: boolean;
 
   selectedWidgetId?: string;
   showCaptions?: boolean;
@@ -61,9 +79,13 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
    * If sortable !== true, the tab buttons can not be dragged out either.
-   * If not specified, defaults to `true`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
   sortable?: boolean;
+
+  /** `true` to not render the tab captions of the view. */
+  tabButtonHidden?: boolean;
 
   tabDirection: FlexibleLayoutLeafTabDirection;
 
@@ -113,6 +135,14 @@ export type FlexibleLayoutWidget = {
    */
   conserveRenderState?: boolean;
   id: string;
+
+  /**
+   * Specify if the tab button is disabled.
+   * If disabled, it will not fire any user interaction related event
+   * (for example, click event).
+   */
+  disabled?: boolean;
+
   name: string;
 
   startImgSrc?: string;
@@ -125,6 +155,30 @@ export type FlexibleLayoutWidget = {
 } & FlexibleLayoutWidgetRender;
 
 type FlexibleLayoutWidgetRender = {
+  /**
+   * Same as the contain CSS property. This property indicates that an widget
+   * and its contents are, as much as possible, independent from the rest of
+   * the document tree. Containment enables isolating a subsection of the DOM,
+   * providing performance benefits by limiting calculations of layout, style,
+   * paint, size, or any combination to a DOM subtree rather than the entire
+   * page.
+   * Containment can also be used to scope CSS counters and quotes.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  contain?: CssContainProperty;
+
+  /**
+   * Same as the overflow CSS property. This property sets the desired behavior
+   * when content does not fit in the widget's padding box (overflows) in the
+   * horizontal and/or vertical direction.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  overflow?:
+    | CssOverflowProperty
+    | `${CssOverflowProperty} ${CssOverflowProperty}`;
+
   /**
    * Specifies the render of the widget. If not specified, the id of the widget
    * will be used as the `renderId`.

@@ -18,6 +18,20 @@
    */
   --ch-action-list-item__background-image-size: 100%;
 
+  /**
+   * @prop --ch-action-list-group__expandable-button-size:
+   * Specifies the box size that contains the expandable button image.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-action-list-group__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-action-list-group__expandable-button-image-size:
+   * Specifies the image size of the expandable button.
+   * @default 100%
+   */
+  --ch-action-list-group__expandable-button-image-size: 100%;
+
   --ch-action-list-item__additional-item-fixed-image: #{$unpin-outlined};
   --ch-action-list-item__additional-item-not-fixed-image: #{$pin-outlined};
   --ch-action-list-item__additional-item-remove-image: #{$remove};

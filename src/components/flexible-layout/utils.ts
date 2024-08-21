@@ -11,6 +11,7 @@ import {
   FlexibleLayoutWidgetExtended
 } from "./internal/flexible-layout/types";
 import { ROOT_VIEW } from "../../common/utils";
+import { Build } from "@stencil/core";
 
 // Aliases
 type ItemExtended = FlexibleLayoutItemExtended<
@@ -77,8 +78,14 @@ export const createAndSetLeafInfo = (
     widgetsInfo.set(widget.id, { parentLeafId: leafId, info: widget });
   });
 
+  if (Build.isDev) {
+    if (widgets.length === 0) {
+      console.warn(`The view "${leafId}" does not have any widget.`);
+    }
+  }
+
   // If there is no widget selected by default, select one
-  if (selectedWidgetId == null) {
+  if (selectedWidgetId == null && widgets.length > 0) {
     const selectedWidget =
       widgets[tabOrientation === "block" ? widgets.length - 1 : 0];
     selectedWidgetId = selectedWidget.id;
@@ -91,12 +98,14 @@ export const createAndSetLeafInfo = (
   return {
     id: leafId,
     exportParts,
-    closeButtonHidden: flexibleLayoutLeaf.closeButtonHidden ?? false,
-    dragOutsideDisabled: flexibleLayoutLeaf.dragOutsideDisabled ?? false,
+    closeButton: flexibleLayoutLeaf.closeButton,
+    disabled: flexibleLayoutLeaf.disabled,
+    dragOutside: flexibleLayoutLeaf.dragOutside,
     selectedWidgetId: selectedWidgetId,
     showCaptions: flexibleLayoutLeaf.showCaptions ?? true,
-    sortable: flexibleLayoutLeaf.sortable ?? true,
+    sortable: flexibleLayoutLeaf.sortable,
     tabDirection: tabOrientation,
+    tabButtonHidden: flexibleLayoutLeaf.tabButtonHidden ?? false,
     tabPosition: flexibleLayoutLeaf.tabPosition,
     type: leafType,
     widgets: widgets

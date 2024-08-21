@@ -2,7 +2,14 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChTabRender } from "../../../../components/tab/tab";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
-import { simpleModel1, simpleModel2 } from "./models";
+import {
+  disabledModel1,
+  disabledModel4,
+  disabledModel2,
+  disabledModel3,
+  simpleModel1,
+  simpleModel2
+} from "./models";
 import { ChTabRenderCustomEvent } from "../../../../components";
 import { TabSelectedItemInfo } from "../../../../components/tab/types";
 import {
@@ -38,10 +45,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        disabled={state.disabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -79,10 +87,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        disabled={state.disabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -92,6 +101,7 @@ const render = () => (
       >
         {renderedItems.has("item1") && (
           <ch-tree-view-render
+            class="tree-view tree-view-secondary"
             slot="item1"
             showLines="last"
             model={kbExplorerModel}
@@ -101,6 +111,7 @@ const render = () => (
 
         {renderedItems.has("item2") && (
           <ch-tree-view-render
+            class="tree-view tree-view-secondary"
             slot="item2"
             showLines="last"
             model={preferencesModel}
@@ -131,7 +142,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "enum",
           values: [
             { caption: "Simple Model 1", value: simpleModel1 },
-            { caption: "Simple Model 2", value: simpleModel2 }
+            { caption: "Simple Model 2", value: simpleModel2 },
+            { caption: "Disabled Model 1", value: disabledModel1 },
+            { caption: "Disabled Model 2", value: disabledModel2 },
+            { caption: "Disabled Model 3", value: disabledModel3 },
+            { caption: "Disabled Model 4", value: disabledModel4 }
           ],
           value: simpleModel1
         },
@@ -164,21 +179,27 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "string"
         },
         {
+          id: "closeButton",
+          caption: "Close Button",
+          value: false,
+          type: "boolean"
+        },
+        {
           id: "closeButtonAccessibleName",
           caption: "Close Button Accessible Name",
           value: "Close",
           type: "string"
         },
         {
-          id: "closeButtonHidden",
-          caption: "Close Button Hidden",
-          value: true,
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
           type: "boolean"
         },
         {
-          id: "dragOutsideDisabled",
-          caption: "Drag Outside Disabled",
-          value: false,
+          id: "dragOutside",
+          caption: "Drag Outside",
+          value: true,
           type: "boolean"
         },
         {

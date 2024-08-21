@@ -1,16 +1,26 @@
 import { Mutable } from "../../../common/types";
 import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
 import { ChActionListRender } from "../../../components/action-list/action-list-render";
+import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
+import { ChChat } from "../../../components/chat/chat";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
-import { ChComboBox } from "../../../components/combobox/combo-box";
+import { ChComboBoxRender } from "../../../components/combo-box/combo-box";
+import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
+import { ChEdit } from "../../../components/edit/edit";
+import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
+import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
+import { ChMarkdownViewer } from "../../../components/markdown-viewer/markdown-viewer";
+import { ChPopover } from "../../../components/popover/popover";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
+import { ChSegmentedControl } from "../../../components/segmented-control/segmented-control-render";
 import { ChSlider } from "../../../components/slider/slider";
 import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
+import { ChTextBlock } from "../../../components/textblock/textblock";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
@@ -23,6 +33,10 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   markupWithoutUIModel?: string;
   properties: ShowcaseRenderProperties<T>;
   state: Partial<T>;
+};
+
+export type ShowcaseCustomStory = {
+  render: () => any;
 };
 
 export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
@@ -103,14 +117,25 @@ export type ShowcaseRenderPropertyObject<
 export type ShowcaseAvailableStories =
   | Mutable<ChActionGroupRender>
   | Mutable<ChActionListRender>
+  | Mutable<ChBarcodeScanner>
   | Mutable<ChCheckBox>
   | Mutable<ChCode>
-  | Mutable<ChComboBox>
+  | Mutable<ChComboBoxRender>
+  | Mutable<ChDialog>
   | Mutable<ChDropdownRender>
+  | Mutable<ChEdit>
+  | Mutable<ChImage>
   | Mutable<ChLayoutSplitter>
+  | Mutable<ChPopover>
   | Mutable<ChQr>
   | Mutable<ChRadioGroupRender>
+  | Mutable<ChSegmentedControl>
   | Mutable<ChSlider>
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>
+  | Mutable<ChTextBlock>
   | Mutable<ChTreeViewRender>;
+
+export type ShowcaseAvailableCustomStories = Mutable<
+  ChChat | ChMarkdownViewer | ChFlexibleLayoutRender
+>;

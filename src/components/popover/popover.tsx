@@ -15,10 +15,11 @@ import {
   ChPopoverSizeMatch,
   PopoverActionElement
 } from "./types";
+import { adoptCommonThemes } from "../../common/theme";
 import { forceCSSMinMax, isRTL } from "../../common/utils";
 import { SyncWithRAF } from "../../common/sync-with-frames";
 import { fromPxToNumber, setResponsiveAlignment } from "./utils";
-import { KEY_CODES } from "../../common/reserved-names";
+import { KEY_CODES, SCROLLABLE_CLASS } from "../../common/reserved-names";
 
 const DRAGGING_CLASS = "gx-popover-dragging";
 const POPOVER_PREVENT_FLICKERING_CLASS = "gx-popover-prevent-flickering";
@@ -1069,6 +1070,8 @@ export class ChPopover {
   };
 
   connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
     // Set RTL watcher
     this.#rtlWatcher = new MutationObserver(() => {
       this.#isRTLDirection = isRTL();
@@ -1174,7 +1177,8 @@ export class ChPopover {
         class={{
           "gx-popover-header-drag":
             canAddListeners && this.allowDrag === "header",
-          [RESIZING_CLASS]: this.resizing
+          [RESIZING_CLASS]: this.resizing,
+          [SCROLLABLE_CLASS]: this.overflowBehavior === "add-scroll"
         }}
         popover={this.mode}
         onMouseDown={

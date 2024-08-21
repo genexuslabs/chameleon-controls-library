@@ -1405,15 +1405,9 @@ export class ChComboBoxRender
                       : null
                   }
                 >
-                  <div class="window__content" part="window__content">
-                    {this.model.map(
-                      this.#customItemRender(
-                        false,
-                        undefined,
-                        filtersAreApplied
-                      )
-                    )}
-                  </div>
+                  {this.model.map(
+                    this.#customItemRender(false, undefined, filtersAreApplied)
+                  )}
                 </ch-popover>
               )
             ]}

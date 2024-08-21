@@ -1,5 +1,8 @@
 import { E2EPage } from "@stencil/core/testing";
 
+export const delayTest = (value: number) =>
+  new Promise(resolve => setTimeout(resolve, value));
+
 /**
  *
  * @param elementToCheckSelector A CSS selector that contains the piercing separator ">>>" to cross shadow boundaries.

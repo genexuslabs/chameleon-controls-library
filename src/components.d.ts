@@ -2082,6 +2082,11 @@ export namespace Components {
          */
         "mode": "auto" | "manual";
         /**
+          * Specifies how the popover behaves when the content overflows the window size.   - "overflow": The control won't implement any behavior if the content overflows.   - "add-scroll": The control will place a scroll if the content overflows.
+         */
+        "overflowBehavior": | "overflow"
+    | "add-scroll";
+        /**
           * Specifies an alternate position to try when the control overflows the window.
          */
         "positionTry": "flip-block" | "flip-inline" | "none";
@@ -7835,6 +7840,11 @@ declare namespace LocalJSX {
           * Emitted when the popover is opened.
          */
         "onPopoverOpened"?: (event: ChPopoverCustomEvent<any>) => void;
+        /**
+          * Specifies how the popover behaves when the content overflows the window size.   - "overflow": The control won't implement any behavior if the content overflows.   - "add-scroll": The control will place a scroll if the content overflows.
+         */
+        "overflowBehavior"?: | "overflow"
+    | "add-scroll";
         /**
           * Specifies an alternate position to try when the control overflows the window.
          */

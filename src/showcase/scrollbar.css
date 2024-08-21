@@ -1,6 +1,7 @@
-ch-grid-smart {
+ch-grid-smart,
+:host(.ch-scrollable) {
   scrollbar-width: thin;
-  scrollbar-gutter: stable;
+  /* scrollbar-gutter: stable; */
   scrollbar-color: var(--accents__secondary) transparent;
 
   &::-webkit-scrollbar {

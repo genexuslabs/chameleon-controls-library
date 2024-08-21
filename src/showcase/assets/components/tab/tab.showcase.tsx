@@ -58,7 +58,7 @@ const render = () => (
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
-          <div slot="item1">
+          <div key="item1" slot="item1">
             Content of the item 1
             <label>
               Any text
@@ -68,15 +68,21 @@ const render = () => (
         )}
 
         {renderedItems.has("item2") && (
-          <div slot="item2">Content of the item 2</div>
+          <div key="item2" slot="item2">
+            Content of the item 2
+          </div>
         )}
 
         {renderedItems.has("item3") && (
-          <div slot="item3">Content of the item 3</div>
+          <div key="item3" slot="item3">
+            Content of the item 3
+          </div>
         )}
 
         {renderedItems.has("item4") && (
-          <div slot="item4">Content of the item 4</div>
+          <div key="item4" slot="item4">
+            Content of the item 4
+          </div>
         )}
       </ch-tab-render>
     </fieldset>

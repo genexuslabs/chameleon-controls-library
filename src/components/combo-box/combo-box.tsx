@@ -1397,6 +1397,7 @@ export class ChComboBoxRender
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  overflowBehavior="add-scroll"
                   positionTry="flip-block"
                   onPopoverClosed={
                     this.expanded && comboBoxIsInteractive
@@ -1404,15 +1405,9 @@ export class ChComboBoxRender
                       : null
                   }
                 >
-                  <div class="window__content" part="window__content">
-                    {this.model.map(
-                      this.#customItemRender(
-                        false,
-                        undefined,
-                        filtersAreApplied
-                      )
-                    )}
-                  </div>
+                  {this.model.map(
+                    this.#customItemRender(false, undefined, filtersAreApplied)
+                  )}
                 </ch-popover>
               )
             ]}

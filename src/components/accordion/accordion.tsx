@@ -11,6 +11,7 @@ import {
 } from "@stencil/core";
 import { AccordionItemExpandedChangeEvent, AccordionModel } from "./types";
 import { tokenMap } from "../../common/utils";
+import { ACCORDION_PARTS_DICTIONARY } from "../../common/reserved-names";
 
 @Component({
   shadow: true,
@@ -31,12 +32,13 @@ export class ChAccordionRender implements ComponentInterface {
   @Event() expandedChange: EventEmitter<AccordionItemExpandedChangeEvent>;
 
   #handleHeaderToggle = (event: PointerEvent) => {
-    const headerRef = event.composedPath()[0] as HTMLButtonElement;
+    const headerRef = event
+      .composedPath()
+      .find(
+        el => (el as HTMLElement).tagName?.toLowerCase() === "button"
+      ) as HTMLButtonElement;
 
-    if (
-      headerRef.tagName.toLowerCase() !== "button" ||
-      headerRef.getRootNode() !== this.el.shadowRoot
-    ) {
+    if (!headerRef || headerRef.getRootNode() !== this.el.shadowRoot) {
       return;
     }
 
@@ -65,14 +67,19 @@ export class ChAccordionRender implements ComponentInterface {
               aria-expanded={item.expanded ? "true" : "false"}
               part={tokenMap({
                 [item.id]: true,
-                header: true,
-                expanded: item.expanded,
-                collapsed: !item.expanded
+                [item.headerSlotId]: !!item.headerSlotId,
+                [ACCORDION_PARTS_DICTIONARY.HEADER]: true,
+                [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
+                [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
               })}
               disabled={item.disabled}
               type="button"
             >
-              {item.headerSlot ? <slot name={item.headerSlot} /> : item.caption}
+              {item.headerSlotId ? (
+                <slot name={item.headerSlotId} />
+              ) : (
+                item.caption
+              )}
             </button>
 
             <section
@@ -82,9 +89,9 @@ export class ChAccordionRender implements ComponentInterface {
               class={!item.expanded ? "section--hidden" : undefined}
               part={tokenMap({
                 [item.id]: true,
-                section: true,
-                expanded: item.expanded,
-                collapsed: !item.expanded
+                [ACCORDION_PARTS_DICTIONARY.SECTION]: true,
+                [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
+                [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
               })}
             >
               <slot name={item.id} />

@@ -96,6 +96,19 @@ export const TREE_VIEW_ITEM_CHECKBOX_EXPORT_PARTS = joinParts(
 );
 
 // - - - - - - - - - - - - - - - - - - - -
+//             Accordion Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const ACCORDION_PARTS_DICTIONARY = {
+  HEADER: "header",
+  SECTION: "section",
+
+  EXPANDED: "expanded",
+  COLLAPSED: "collapsed"
+} as const;
+
+export const ACCORDION_EXPORT_PARTS = joinParts(ACCORDION_PARTS_DICTIONARY);
+
+// - - - - - - - - - - - - - - - - - - - -
 //           Action Group Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {

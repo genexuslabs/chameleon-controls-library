@@ -1160,7 +1160,7 @@ export class ChComboBoxRender
     </span>,
 
     <select
-      aria-label={this.accessibleName ?? this.#accessibleNameFromExternalLabel}
+      aria-label={this.#accessibleNameFromExternalLabel ?? this.accessibleName}
       disabled={this.disabled}
       onChange={!this.disabled ? this.#handleSelectChange : null}
       ref={el => (this.#selectRef = el)}
@@ -1188,7 +1188,7 @@ export class ChComboBoxRender
     const labels = this.internals.labels;
 
     // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
+    if (labels?.length > 0) {
       this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
     }
   }
@@ -1292,7 +1292,10 @@ export class ChComboBoxRender
         tabindex={
           !mobileDevice && !filtersAreApplied && !this.disabled ? "0" : null
         }
-        class={this.disabled ? "ch-disabled" : null}
+        class={{
+          "ch-disabled": this.disabled,
+          "ch-combo-box--suggest": filtersAreApplied
+        }}
         onKeyDown={
           !mobileDevice && comboBoxIsInteractive
             ? this.#handleExpandedChangeWithKeyBoard
@@ -1348,7 +1351,7 @@ export class ChComboBoxRender
                   aria-expanded={this.expanded.toString()}
                   aria-haspopup="true"
                   aria-label={
-                    this.accessibleName ?? this.#accessibleNameFromExternalLabel
+                    this.#accessibleNameFromExternalLabel ?? this.accessibleName
                   }
                   autocomplete="off"
                   class={{
@@ -1394,6 +1397,7 @@ export class ChComboBoxRender
                   popover="manual"
                   resizable={this.resizable}
                   inlineSizeMatch="action-element-as-minimum"
+                  overflowBehavior="add-scroll"
                   positionTry="flip-block"
                   onPopoverClosed={
                     this.expanded && comboBoxIsInteractive
@@ -1401,15 +1405,9 @@ export class ChComboBoxRender
                       : null
                   }
                 >
-                  <div class="window__content" part="window__content">
-                    {this.model.map(
-                      this.#customItemRender(
-                        false,
-                        undefined,
-                        filtersAreApplied
-                      )
-                    )}
-                  </div>
+                  {this.model.map(
+                    this.#customItemRender(false, undefined, filtersAreApplied)
+                  )}
                 </ch-popover>
               )
             ]}

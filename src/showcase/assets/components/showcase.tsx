@@ -48,7 +48,6 @@ const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   items: [
     {
       id: MAIN_WIDGET,
-      closeButtonHidden: true,
       size: "1fr",
       minSize: "220px",
       selectedWidgetId: MAIN_WIDGET,
@@ -492,6 +491,7 @@ export class ChShowcase {
   #customShowcaseRender = () =>
     this.#showcaseStory ? (
       <ch-flexible-layout-render
+        // TODO: Fix error when adding the closeButton and closing the last item
         model={flexibleLayoutConfiguration}
         renders={this.#flexibleLayoutRender}
         ref={el => (this.#flexibleLayoutRef = el)}

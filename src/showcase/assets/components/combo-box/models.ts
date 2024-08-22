@@ -5,7 +5,7 @@ import {
   ComboBoxItemGroup,
   ComboBoxItemModel,
   ComboBoxModel
-} from "../../../../components/combobox/types";
+} from "../../../../components/combo-box/types";
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 

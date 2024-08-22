@@ -39,7 +39,6 @@
 | `"group__content"`        |             |
 | `"group__header-caption"` |             |
 | `"window"`                |             |
-| `"window__content"`       |             |
 
 
 ## CSS Custom Properties

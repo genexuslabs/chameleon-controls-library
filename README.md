@@ -22,16 +22,30 @@ To run the unit tests for the custom elements, run:
 npm test
 ```
 
-To run the spec tests for a specific custom elements, run:
+To run the spec tests for a specific custom element, run:
 
 ```bash
-npm run test.spec <component-name-without-prefix>
+npm run test.spec src/components/<path to test file.spec.ts>
+
+## For example:
+
+npm run test.spec src/components/layout-splitter/tests/fixAndUpdateLayoutModel.spec.ts
 ```
 
-For example:
+To watch changes for tests (spec and e2e), run:
 
 ```bash
-npm run test.spec layout-splitter
+npm run test.watch
+```
+
+To watch only one file, run:
+
+```bash
+npm run test.watch -- -- src/components/edit/<path to test file.spec.ts>
+
+## For example:
+
+npm run test.watch -- -- src/components/edit/tests/edit.e2e.ts
 ```
 
 ## Building for production

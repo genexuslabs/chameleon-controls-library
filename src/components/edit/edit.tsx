@@ -393,7 +393,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     const labels = this.internals.labels;
 
     // Get external aria-label
-    if (!this.accessibleName && labels?.length > 0) {
+    if (labels?.length > 0) {
       this.#accessibleNameFromExternalLabel = labels[0].textContent.trim();
     }
   }
@@ -427,8 +427,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
               <textarea
                 autoFocus={this.autoFocus}
                 aria-label={
-                  this.accessibleName ||
                   this.#accessibleNameFromExternalLabel ||
+                  this.accessibleName ||
                   null
                 }
                 autoCapitalize={this.autocapitalize}
@@ -458,8 +458,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
               <input
                 autoFocus={this.autoFocus}
                 aria-label={
-                  this.accessibleName ||
                   this.#accessibleNameFromExternalLabel ||
+                  this.accessibleName ||
                   null
                 }
                 autoCapitalize={this.autocapitalize}

@@ -1,5 +1,5 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChComboBoxRender } from "../../../../components/combobox/combo-box";
+import { ChComboBoxRender } from "../../../../components/combo-box/combo-box";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
@@ -15,7 +15,7 @@ import {
 import {
   ComboBoxFilterOptions,
   ComboBoxItemModel
-} from "../../../../components/combobox/types";
+} from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
 
 const state: Partial<Mutable<ChComboBoxRender>> = {};
@@ -65,6 +65,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.readonly}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -95,6 +96,7 @@ const render = () => (
             : state.model
         }
         readonly={state.readonly}
+        resizable={state.readonly}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -126,6 +128,7 @@ const render = () => (
               : state.model
           }
           readonly={state.readonly}
+          resizable={state.resizable}
           value={state.value}
           onFilterChange={handleFilterChange}
         ></ch-combo-box-render>
@@ -196,6 +199,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       {
         id: "destroyItemsOnClose",
         caption: "Destroy Items On Close",
+        value: false,
+        type: "boolean"
+      },
+      {
+        id: "resizable",
+        caption: "Resizable",
         value: false,
         type: "boolean"
       },

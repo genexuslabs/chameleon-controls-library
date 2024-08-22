@@ -270,8 +270,8 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-1",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
-          // dragOutsideDisabled: true,
+          closeButton: false,
+          // dragOutside: false,
           // sortable: false,
           dragBar: { part: "visible", size: 1 },
           size: "300px",
@@ -315,6 +315,7 @@ export const layout3: FlexibleLayoutModel = {
               items: [
                 {
                   id: "sub-group-2-2-1-1",
+                  closeButton: false,
                   dragBar: { part: "visible", size: 1 },
                   size: "0.5fr",
                   type: "tabbed",
@@ -406,7 +407,7 @@ export const layout3: FlexibleLayoutModel = {
         {
           id: "sub-group-2-3",
           accessibleRole: "complementary",
-          closeButtonHidden: true,
+          closeButton: false,
           size: "300px",
           showCaptions: false,
           type: "tabbed",
@@ -470,7 +471,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [KB_EXPLORER]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={KB_EXPLORER}
       key={KB_EXPLORER}
       lazyLoadTreeItemsCallback={lazyLoadTreeItems}
@@ -482,7 +483,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [PREFERENCES]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={PREFERENCES}
       key={PREFERENCES}
       dragDisabled={true}
@@ -496,22 +497,13 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [START_PAGE]: () => (
     <div slot={START_PAGE} key={START_PAGE}>
-      <h1
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          fontSize: "64px",
-          color: "#c5c8c6",
-          "text-align": "center"
-        }}
-      >
-        GeneXus
-      </h1>
+      <h2 class="heading-1 welcome-message">GeneXus</h2>
     </div>
   ),
   [STRUCT_EDITOR]: () => (
     <div slot={STRUCT_EDITOR} key={STRUCT_EDITOR}>
-      Grid render... <input type="text" />
+      Grid render...
+      <ch-edit class="form-input" accessibleName="Name" type="text"></ch-edit>
       <ch-grid>
         <ch-grid-columnset>
           <ch-grid-column
@@ -638,12 +630,22 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [ATTRS_CONTAINERS_AND_OTHERS]: () => (
     <div slot={ATTRS_CONTAINERS_AND_OTHERS} key={ATTRS_CONTAINERS_AND_OTHERS}>
-      Panel AttrsContainersAndOthers <input type="text" />
+      Panel AttrsContainersAndOthers
+      <ch-edit
+        class="form-input"
+        accessibleName="Panel name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [PROPERTIES]: () => (
     <div slot={PROPERTIES} key={PROPERTIES}>
-      Properties render... <input type="text" />
+      Properties render...
+      <ch-edit
+        class="form-input"
+        accessibleName="Property name"
+        type="text"
+      ></ch-edit>
     </div>
   ),
   [OUTPUT]: () => (
@@ -653,7 +655,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [HEAVY_TREE]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={HEAVY_TREE}
       key={HEAVY_TREE}
       dragDisabled={true}
@@ -666,7 +668,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
   ),
   [IMPORT_OBJECTS]: () => (
     <ch-tree-view-render
-      class="tree-view-secondary"
+      class="tree-view tree-view-secondary"
       slot={IMPORT_OBJECTS}
       key={IMPORT_OBJECTS}
       checkbox

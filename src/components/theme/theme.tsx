@@ -5,7 +5,8 @@ import {
   Event,
   EventEmitter,
   h,
-  State
+  State,
+  Watch
 } from "@stencil/core";
 import {
   ChThemeLoadedEvent,
@@ -41,6 +42,13 @@ export class ChTheme {
    * Specify themes to load
    */
   @Prop() readonly model: ThemeModel;
+  @Watch("model")
+  modelChanged(_, oldModel: ThemeModel) {
+    // TODO: Make fully reactive the model property
+    if (oldModel === undefined) {
+      this.#loadModel();
+    }
+  }
 
   /**
    * Specifies the time to wait for the requested theme to load.
@@ -55,10 +63,10 @@ export class ChTheme {
 
   connectedCallback() {
     this.el.hidden = true;
-  }
 
-  componentWillLoad() {
-    this.#loadModel();
+    if (this.model !== undefined) {
+      this.#loadModel();
+    }
   }
 
   #loadModel = async () => {

@@ -51,7 +51,12 @@ export type FlexibleLayoutLeafConfiguration =
   | FlexibleLayoutLeafConfigurationSingleContent;
 
 export type FlexibleLayoutLeafConfigurationTabbed = {
-  closeButtonHidden?: boolean;
+  /**
+   * `true` to display a close button in the tab buttons.
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
+   */
+  closeButton?: boolean;
 
   /**
    * Specify if all tab buttons are disabled.
@@ -63,9 +68,10 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /**
    * When the control is sortable, the items can be dragged outside of the
    * tab-list. This property lets you specify if this behavior is disabled.
-   * If not specified, defaults to `false`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
-  dragOutsideDisabled?: boolean;
+  dragOutside?: boolean;
 
   selectedWidgetId?: string;
   showCaptions?: boolean;
@@ -73,7 +79,8 @@ export type FlexibleLayoutLeafConfigurationTabbed = {
   /**
    * `true` to enable sorting the tab buttons by dragging them in the tab-list.
    * If sortable !== true, the tab buttons can not be dragged out either.
-   * If not specified, defaults to `true`
+   *
+   * By default, this property takes to value of the ch-flexible-layout-render.
    */
   sortable?: boolean;
 

@@ -45,11 +45,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
         disabled={state.disabled}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -58,7 +58,7 @@ const render = () => (
         onSelectedItemChange={selectedItemChangeHandler}
       >
         {renderedItems.has("item1") && (
-          <div slot="item1">
+          <div key="item1" slot="item1">
             Content of the item 1
             <label>
               Any text
@@ -68,15 +68,21 @@ const render = () => (
         )}
 
         {renderedItems.has("item2") && (
-          <div slot="item2">Content of the item 2</div>
+          <div key="item2" slot="item2">
+            Content of the item 2
+          </div>
         )}
 
         {renderedItems.has("item3") && (
-          <div slot="item3">Content of the item 3</div>
+          <div key="item3" slot="item3">
+            Content of the item 3
+          </div>
         )}
 
         {renderedItems.has("item4") && (
-          <div slot="item4">Content of the item 4</div>
+          <div key="item4" slot="item4">
+            Content of the item 4
+          </div>
         )}
       </ch-tab-render>
     </fieldset>
@@ -87,11 +93,11 @@ const render = () => (
       <ch-tab-render
         class="tab"
         accessibleName={state.accessibleName}
+        closeButton={state.closeButton}
         closeButtonAccessibleName={state.closeButtonAccessibleName}
-        closeButtonHidden={state.closeButtonHidden}
         direction={state.direction}
         disabled={state.disabled}
-        dragOutsideDisabled={state.dragOutsideDisabled}
+        dragOutside={state.dragOutside}
         expanded={state.expanded}
         model={state.model}
         selectedId={state.selectedId}
@@ -101,7 +107,7 @@ const render = () => (
       >
         {renderedItems.has("item1") && (
           <ch-tree-view-render
-            class="tree-view-secondary"
+            class="tree-view tree-view-secondary"
             slot="item1"
             showLines="last"
             model={kbExplorerModel}
@@ -111,7 +117,7 @@ const render = () => (
 
         {renderedItems.has("item2") && (
           <ch-tree-view-render
-            class="tree-view-secondary"
+            class="tree-view tree-view-secondary"
             slot="item2"
             showLines="last"
             model={preferencesModel}
@@ -179,16 +185,16 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "string"
         },
         {
+          id: "closeButton",
+          caption: "Close Button",
+          value: false,
+          type: "boolean"
+        },
+        {
           id: "closeButtonAccessibleName",
           caption: "Close Button Accessible Name",
           value: "Close",
           type: "string"
-        },
-        {
-          id: "closeButtonHidden",
-          caption: "Close Button Hidden",
-          value: true,
-          type: "boolean"
         },
         {
           id: "disabled",
@@ -197,9 +203,9 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
           type: "boolean"
         },
         {
-          id: "dragOutsideDisabled",
-          caption: "Drag Outside Disabled",
-          value: false,
+          id: "dragOutside",
+          caption: "Drag Outside",
+          value: true,
           type: "boolean"
         },
         {

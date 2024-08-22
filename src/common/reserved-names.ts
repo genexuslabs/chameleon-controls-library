@@ -21,6 +21,11 @@ export const KEY_CODES = {
 
 export const DISABLED_CLASS = "ch-disabled";
 
+/**
+ * Utility class to globally style the scrollbars
+ */
+export const SCROLLABLE_CLASS = "ch-scrollable";
+
 // - - - - - - - - - - - - - - - - - - - -
 //                 Images
 // - - - - - - - - - - - - - - - - - - - -

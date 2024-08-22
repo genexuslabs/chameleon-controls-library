@@ -129,6 +129,10 @@
   pointer-events: none;
 }
 
+:host(.ch-combo-box--suggest) {
+  --ch-combo-box__picker-size: 0px;
+}
+
 .invisible-text {
   visibility: hidden;
   pointer-events: none;
@@ -200,12 +204,6 @@ ch-popover {
   &:not(.hydrated) {
     opacity: 0;
   }
-}
-
-.window__content {
-  display: grid;
-  grid-auto-rows: max-content;
-  overflow: auto;
 }
 
 // - - - - - - - - - - - - - - - -

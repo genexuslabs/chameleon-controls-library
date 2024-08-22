@@ -6,7 +6,7 @@ import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-sc
 import { ChChat } from "../../../components/chat/chat";
 import { ChCheckBox } from "../../../components/checkbox/checkbox";
 import { ChCode } from "../../../components/code/code";
-import { ChComboBoxRender } from "../../../components/combobox/combo-box";
+import { ChComboBoxRender } from "../../../components/combo-box/combo-box";
 import { ChDialog } from "../../../components/dialog/dialog";
 import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
 import { ChEdit } from "../../../components/edit/edit";

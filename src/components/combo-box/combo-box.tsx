@@ -1306,7 +1306,6 @@ export class ChComboBoxRender
                 // This mask is used to capture click events that must open the
                 // popover. If we capture click events in the Host, clicking external
                 // label would open the combo-box's window
-                aria-hidden="true"
                 class={{
                   mask: true,
                   "mask--no-filters": !filtersAreApplied,

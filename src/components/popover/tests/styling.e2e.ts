@@ -1,8 +1,7 @@
 import { newE2EPage } from "@stencil/core/testing";
 
-// Fix ch-theme reactivity
-describe.skip('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', () => {
-  it("should fetch and check the CSS file", async () => {
+describe("[ch-popover]", () => {
+  it('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', async () => {
     const page = await newE2EPage();
 
     await page.setContent(`<ch-theme></ch-theme>
@@ -11,7 +10,6 @@ describe.skip('should style the ch-popover\'s scrollbar when setting a ch-theme 
     const themeRef = await page.find("ch-theme");
     const themeLoadedEvent = themeRef.waitForEvent("themeLoaded");
 
-    // TODO: The ch-theme is not reactive. Add support to update the model at runtime
     themeRef.setProperty("model", {
       name: "chameleon/scrollbar",
       url: "showcase/scrollbar.css"
@@ -33,6 +31,8 @@ describe.skip('should style the ch-popover\'s scrollbar when setting a ch-theme 
     expect(adoptedStyleSheets.length).toBeGreaterThan(0);
 
     // It contains the style of the scrollbar.css
-    expect(adoptedStyleSheets).toContain(":host(.ch-scrollable)");
+    expect(
+      adoptedStyleSheets.some(item => item.includes(":host(.ch-scrollable)"))
+    ).toBeTruthy();
   });
 });

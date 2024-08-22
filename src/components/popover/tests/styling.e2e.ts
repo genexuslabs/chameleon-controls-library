@@ -1,8 +1,8 @@
 import { newE2EPage } from "@stencil/core/testing";
 
 // Fix ch-theme reactivity
-describe.skip('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', () => {
-  it("should fetch and check the CSS file", async () => {
+describe.skip("[ch-popover]", () => {
+  it('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', async () => {
     const page = await newE2EPage();
 
     await page.setContent(`<ch-theme></ch-theme>

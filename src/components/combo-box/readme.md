@@ -25,10 +25,10 @@
 
 ## Events
 
-| Event          | Description                                                                                                                                                                                                                      | Type                  |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `filterChange` | Emitted when a change to the element's filter is committed by the user. Only applies if `filterType !== "none"`. It contains the information about the new filter value.  This event is debounced by the `filterDebounce` value. | `CustomEvent<string>` |
-| `input`        | The `input` event is emitted when a change to the element's value is committed by the user.                                                                                                                                      | `CustomEvent<string>` |
+| Event          | Description                                                                                                                                                                                                                  | Type                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `filterChange` | Emitted when a change to the element's filter is committed by the user. Only applies if `suggest === true`. It contains the information about the new filter value.  This event is debounced by the `suggestDebounce` value. | `CustomEvent<string>` |
+| `input`        | The `input` event is emitted when a change to the element's value is committed by the user.                                                                                                                                  | `CustomEvent<string>` |
 
 
 ## Shadow Parts

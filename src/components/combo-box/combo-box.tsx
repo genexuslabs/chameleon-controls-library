@@ -546,10 +546,10 @@ export class ChComboBoxRender
 
   /**
    * Emitted when a change to the element's filter is committed by the user.
-   * Only applies if `filterType !== "none"`. It contains the information about
+   * Only applies if `suggest === true`. It contains the information about
    * the new filter value.
    *
-   * This event is debounced by the `filterDebounce` value.
+   * This event is debounced by the `suggestDebounce` value.
    */
   @Event() filterChange: EventEmitter<string>;
 
@@ -936,7 +936,7 @@ export class ChComboBoxRender
     this.currentSelectedValue = itemValue;
 
     // Update current filter, even if no filters are applied. With this, if the
-    // filterType property is updated at runtime, the current selected caption
+    // suggest property is updated at runtime, the current selected caption
     // won't change
     this.filter = this.#getCaptionUsingValue(itemValue);
     this.#checkAndEmitValueChangeWithNoFilter();

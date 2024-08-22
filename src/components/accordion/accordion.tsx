@@ -65,6 +65,7 @@ export class ChAccordionRender implements ComponentInterface {
               aria-controls={`section-${index}`}
               aria-label={item.accessibleName || undefined}
               aria-expanded={item.expanded ? "true" : "false"}
+              class={{ header: true, "header--collapsed": !item.expanded }}
               part={tokenMap({
                 [item.id]: true,
                 [item.headerSlotId]: !!item.headerSlotId,

@@ -1,10 +1,36 @@
 @import "../../common/base";
+@import "../../common/icons";
 
 @include box-sizing();
 @include button-reset();
 
 :host {
-  --ch-accordion-expand-collapse-duration: 250ms;
+  /**
+   * @prop --ch-accordion__expandable-button-size:
+   * Specifies the box size that contains the expandable button image.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-accordion__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-accordion__expandable-button-image-size:
+   * Specifies the image size of the expandable button.
+   * @default 100%
+   */
+  --ch-accordion__expandable-button-image-size: 100%;
+
+  /**
+   * @prop --ch-accordion-expand-collapse-duration
+   * Specifies duration of the expand and collapse animation
+   * @default 0ms
+   */
+  --ch-accordion-expand-collapse-duration: 0ms;
+
+  /**
+   * @prop --ch-accordion-expand-collapse-timing-function
+   * Specifies timing function of the expand and collapse animation
+   * @default linear
+   */
   --ch-accordion-expand-collapse-timing-function: linear;
 
   display: grid;
@@ -25,6 +51,26 @@
 
   &--expanded {
     grid-template-rows: max-content 1fr;
+  }
+}
+
+.header {
+  &::after {
+    content: "";
+    inline-size: var(--ch-accordion__expandable-button-size);
+    block-size: var(--ch-accordion__expandable-button-size);
+    margin-inline-start: auto;
+    background-color: currentColor;
+
+    -webkit-mask: no-repeat center /
+      var(--ch-accordion__expandable-button-image-size) $expandable-icon;
+
+    transition: transform var(--ch-accordion-expand-collapse-duration)
+      var(--ch-accordion-expand-collapse-timing-function);
+  }
+
+  &--collapsed::after {
+    transform: rotate(-180deg);
   }
 }
 

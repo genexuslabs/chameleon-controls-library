@@ -1002,7 +1002,7 @@ export class ChComboBoxRender
 
       return itemGroup.items != null ? (
         <div
-          key={item.value}
+          key={`__group__${item.value}`}
           aria-controls={itemGroup.expandable ? `${index}__content` : null}
           aria-expanded={
             itemGroup.expandable ? (!!itemGroup.expanded).toString() : null
@@ -1064,7 +1064,7 @@ export class ChComboBoxRender
           )}
 
           <div
-            key={`${index}__content`}
+            key={`__content__${item.value}`}
             id={itemGroup.expandable ? `${index}__content` : null}
             class={{
               // eslint-disable-next-line camelcase

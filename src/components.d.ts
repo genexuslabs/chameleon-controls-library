@@ -15,7 +15,7 @@ import { SmartGridDataState } from "./components/smart-grid/internal/infinite-sc
 import { ChatTranslations } from "./components/chat/translations";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
-import { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
+import { ComboBoxModel, ComboBoxSuggestOptions } from "./components/combo-box/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
@@ -70,7 +70,7 @@ export { SmartGridDataState } from "./components/smart-grid/internal/infinite-sc
 export { ChatTranslations } from "./components/chat/translations";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
-export { ComboBoxFilterOptions, ComboBoxFilterType, ComboBoxModel } from "./components/combo-box/types";
+export { ComboBoxModel, ComboBoxSuggestOptions } from "./components/combo-box/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
 export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
@@ -686,21 +686,9 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "value"`.
+          * This property lets you determine the expression that will be applied to the filter. Only works if `suggest === true`.
          */
         "filter": string;
-        /**
-          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "value"`.
-         */
-        "filterDebounce": number;
-        /**
-          * This property lets you determine the options that will be applied to the filter.
-         */
-        "filterOptions": ComboBoxFilterOptions;
-        /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                       | | --------- | --------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   | | `none`    | Show all items.                                                                               |
-         */
-        "filterType": ComboBoxFilterType;
         /**
           * Specifies the items of the control
          */
@@ -725,6 +713,18 @@ export namespace Components {
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable": boolean;
+        /**
+          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.                                                                         |
+         */
+        "suggest": boolean;
+        /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `suggest === true`.
+         */
+        "suggestDebounce": number;
+        /**
+          * This property lets you determine the options that will be applied to the filter.
+         */
+        "suggestOptions": ComboBoxSuggestOptions;
         /**
           * Specifies the value (selected item) of the control.
          */
@@ -6429,21 +6429,9 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * This property lets you determine the expression that will be applied to the filter. Only works if `filterType = "caption" | "value"`.
+          * This property lets you determine the expression that will be applied to the filter. Only works if `suggest === true`.
          */
         "filter"?: string;
-        /**
-          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `filterType = "caption" | "value"`.
-         */
-        "filterDebounce"?: number;
-        /**
-          * This property lets you determine the options that will be applied to the filter.
-         */
-        "filterOptions"?: ComboBoxFilterOptions;
-        /**
-          * This attribute lets you define what kind of filter is applied to items. Only items that satisfy the filter predicate will be displayed.  | Value     | Details                                                                                       | | --------- | --------------------------------------------------------------------------------------------- | | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. | | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   | | `none`    | Show all items.                                                                               |
-         */
-        "filterType"?: ComboBoxFilterType;
         /**
           * Specifies the items of the control
          */
@@ -6453,7 +6441,7 @@ declare namespace LocalJSX {
          */
         "multiple"?: boolean;
         /**
-          * Emitted when a change to the element's filter is committed by the user. Only applies if `filterType !== "none"`. It contains the information about the new filter value.  This event is debounced by the `filterDebounce` value.
+          * Emitted when a change to the element's filter is committed by the user. Only applies if `suggest === true`. It contains the information about the new filter value.  This event is debounced by the `suggestDebounce` value.
          */
         "onFilterChange"?: (event: ChComboBoxRenderCustomEvent<string>) => void;
         /**
@@ -6476,6 +6464,18 @@ declare namespace LocalJSX {
           * Specifies whether the control can be resized. If `true` the control can be resized at runtime by dragging the edges or corners.
          */
         "resizable"?: boolean;
+        /**
+          * This property lets you specify if the control behaves like a suggest. If `true` the combo-box value will be editable an displayed items will be filtered according to the input's value.                                                                         |
+         */
+        "suggest"?: boolean;
+        /**
+          * This property lets you determine the debounce time (in ms) that the control waits until it processes the changes to the filter property. Consecutive changes to the `filter` property between this range, reset the timeout to process the filter. Only works if `suggest === true`.
+         */
+        "suggestDebounce"?: number;
+        /**
+          * This property lets you determine the options that will be applied to the filter.
+         */
+        "suggestOptions"?: ComboBoxSuggestOptions;
         /**
           * Specifies the value (selected item) of the control.
          */

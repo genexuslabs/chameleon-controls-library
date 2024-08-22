@@ -13,7 +13,7 @@ import {
   smallModel
 } from "./models";
 import {
-  ComboBoxFilterOptions,
+  ComboBoxSuggestOptions,
   ComboBoxItemModel
 } from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
@@ -21,15 +21,17 @@ import { ChComboBoxRenderCustomEvent } from "../../../../components";
 const state: Partial<Mutable<ChComboBoxRender>> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
 
+// TODO: There is an issue when setting suggest, items are already filtered, string filter and the input equals to "data"
+
 const handleFilterChange = (event: ChComboBoxRenderCustomEvent<string>) => {
   // Filters on the client
-  if (state.filterOptions.alreadyProcessed !== true) {
+  if (state.suggestOptions.alreadyProcessed !== true) {
     return;
   }
 
-  itemsFilteredByTheServer = comboBoxFilterChange(state.filterType, {
+  itemsFilteredByTheServer = comboBoxFilterChange({
     filter: event.detail,
-    filterOptions: state.filterOptions
+    options: state.suggestOptions
   });
 
   // TODO: Until we support external slots in the ch-flexible-layout-render,
@@ -54,18 +56,17 @@ const render = () => (
         disabled={state.disabled}
         destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
-        filterDebounce={state.filterDebounce}
-        filterOptions={state.filterOptions}
-        filterType={state.filterType}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
-          state.filterOptions.alreadyProcessed === true &&
-          state.filterType !== "none"
+          state.suggestOptions.alreadyProcessed === true && state.suggest
             ? itemsFilteredByTheServer
             : state.model
         }
         readonly={state.readonly}
         resizable={state.readonly}
+        suggest={state.suggest}
+        suggestDebounce={state.suggestDebounce}
+        suggestOptions={state.suggestOptions}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -85,18 +86,17 @@ const render = () => (
         disabled={state.disabled}
         destroyItemsOnClose={state.destroyItemsOnClose}
         filter={state.filter}
-        filterDebounce={state.filterDebounce}
-        filterOptions={state.filterOptions}
-        filterType={state.filterType}
         popoverInlineAlign={state.popoverInlineAlign}
         model={
-          state.filterOptions.alreadyProcessed === true &&
-          state.filterType !== "none"
+          state.suggestOptions.alreadyProcessed === true && state.suggest
             ? itemsFilteredByTheServer
             : state.model
         }
         readonly={state.readonly}
         resizable={state.readonly}
+        suggest={state.suggest}
+        suggestDebounce={state.suggestDebounce}
+        suggestOptions={state.suggestOptions}
         value={state.value}
         onFilterChange={handleFilterChange}
       ></ch-combo-box-render>
@@ -117,18 +117,17 @@ const render = () => (
           disabled={state.disabled}
           destroyItemsOnClose={state.destroyItemsOnClose}
           filter={state.filter}
-          filterDebounce={state.filterDebounce}
-          filterOptions={state.filterOptions}
-          filterType={state.filterType}
           popoverInlineAlign={state.popoverInlineAlign}
           model={
-            state.filterOptions.alreadyProcessed === true &&
-            state.filterType !== "none"
+            state.suggestOptions.alreadyProcessed === true && state.suggest
               ? itemsFilteredByTheServer
               : state.model
           }
           readonly={state.readonly}
           resizable={state.resizable}
+          suggest={state.suggest}
+          suggestDebounce={state.suggestDebounce}
+          suggestOptions={state.suggestOptions}
           value={state.value}
           onFilterChange={handleFilterChange}
         ></ch-combo-box-render>
@@ -223,68 +222,57 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     ]
   },
   {
-    caption: "Filters",
-    columns: 2,
+    caption: "Suggest",
     properties: [
       {
-        id: "filterType",
-        caption: "Filter Type",
-        value: "none",
-        type: "enum",
-        values: [
-          { caption: "None", value: "none" },
-          { caption: "Caption", value: "caption" },
-          { caption: "Value", value: "value" },
-          { caption: "List", value: "list" }
-        ]
-      },
-      {
-        id: "filterDebounce",
-        caption: "Filter Debounce",
-        value: 250,
-        type: "number"
+        id: "suggest",
+        caption: "Suggest",
+        value: false,
+        type: "boolean"
       },
       {
         id: "filter",
-        columnSpan: 2,
         caption: "Filter",
         value: "",
         type: "string"
       },
       {
-        id: "filterOptions",
+        id: "suggestDebounce",
+        caption: "Debounce",
+        value: 250,
+        type: "number"
+      },
+      {
+        id: "suggestOptions",
+        caption: "Options",
         type: "object",
         render: "independent-properties",
         properties: [
           {
             id: "alreadyProcessed",
-            columnSpan: 2,
             caption: "Items are already filtered / Server filters",
             value: false,
             type: "boolean"
           },
           {
             id: "matchCase",
-            columnSpan: 2,
             caption: "Apply camel casing",
             value: false,
             type: "boolean"
           },
           {
             id: "hideMatchesAndShowNonMatches",
-            columnSpan: 2,
             caption: "Hide matches and show non-matches",
             value: false,
             type: "boolean"
           },
           {
             id: "strict",
-            columnSpan: 2,
             caption: "Strict filter",
             value: false,
             type: "boolean"
           }
-        ] satisfies ShowcaseRenderProperty<ComboBoxFilterOptions>[]
+        ] satisfies ShowcaseRenderProperty<ComboBoxSuggestOptions>[]
       }
     ]
   }

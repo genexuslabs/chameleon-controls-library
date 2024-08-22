@@ -40,7 +40,7 @@ export type ComboBoxItemGroup = ComboBoxItemLeaf & {
   items: ComboBoxItemLeaf[];
 };
 
-export type ComboBoxFilterOptions = {
+export type ComboBoxSuggestOptions = {
   /**
    * `true` if the items of the combo-box are already filtered and the control
    * does not have to apply any transformation to process the filter value.
@@ -88,9 +88,7 @@ export type ComboBoxFilterOptions = {
   strict?: boolean;
 };
 
-export type ComboBoxFilterType = "caption" | "value" | "none";
-
-export type ComboBoxFilterInfo = {
+export type ComboBoxSuggestInfo = {
   filter: string;
-  filterOptions: ComboBoxFilterOptions;
+  options: ComboBoxSuggestOptions;
 };

@@ -34,6 +34,7 @@ const render = () => (
     class="accordion-filled"
     disabled={state.disabled}
     model={state.model}
+    singleItemExpanded={state.singleItemExpanded}
     onExpandedChange={expandedItemChangeHandler}
   >
     {renderedItems.has("item 1") && (
@@ -66,6 +67,12 @@ const render = () => (
         type="text"
         placeholder="Search..."
       />
+      <ch-slider
+        accessibleName="Temperature"
+        class="slider slider-secondary"
+        minValue={0}
+        maxValue={50}
+      ></ch-slider>
     </div>
 
     {renderedItems.has("item 4") && (
@@ -94,6 +101,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Simple model", value: simpleModel },
           { caption: "Disabled model", value: disabledModel }
         ]
+      },
+      {
+        id: "singleItemExpanded",
+        caption: "Single Item Expanded",
+        type: "boolean",
+        value: false
       },
       {
         id: "disabled",

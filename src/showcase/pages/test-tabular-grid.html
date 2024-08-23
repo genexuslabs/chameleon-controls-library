@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" class="ch-scrollbar-custom">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0"
+    />
+    <title>ch-tabular-grid</title>
+    <script type="module" src="/build/chameleon.esm.js"></script>
+    <script nomodule src="/build/chameleon.js"></script>
+    <link rel="stylesheet" href="./assets/styles/styles.css" />
+    <link rel="stylesheet" href="./assets/styles/tabular-grid.css" />
+    <link href="../base.css" rel="stylesheet" />
+    <script type="module">
+      import { setDesignSystemInBrowser } from "../models/ds-manager.js";
+      import { setThemeInBrowser } from "../models/theme-manager.js";
+
+      window.addEventListener("message", event => {
+        if (event.data === "light" || event.data === "dark") {
+          setThemeInBrowser(event.data);
+        }
+
+        if (event.data === "unanimo" || event.data === "mercury") {
+          setDesignSystemInBrowser(event.data);
+        }
+      });
+    </script>
+
+    <style>
+      /* Avoid FOUC (Flash Of Unstyled Content) */
+      html:not(.hydrated) {
+        visibility: hidden;
+      }
+      body {
+        color: black;
+      }
+      .grid-1 {
+        color: black;
+        display: grid;
+        grid-template-columns: max-content max-content 1400px max-content;
+        overflow-x: auto;
+      }
+      .grid-2 {
+        color: black;
+        display: grid;
+        grid-template-columns: auto auto auto auto;
+        overflow-x: auto;
+      }
+      .grid-3 {
+        color: black;
+        display: grid;
+        grid-template-columns: auto auto minmax(200px, 1400px) auto;
+        overflow-x: auto;
+      }
+      .grid-item {
+        border: 1px solid black;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      ch-tabular-grid-rowset-empty {
+        color: black;
+        background-color: bisque;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>
+        Caso de rowset-empty centrado, cuando el ancho de las columas supera al
+        ancho del contenedor:
+      </p>
+      <section class="section-dev empty" data-title="empty">
+        <ch-tabular-grid>
+          <ch-tabular-grid-columnset>
+            <ch-tabular-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+              size="400px"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+              size="400px"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+              size="400px"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+              size="400px"
+            ></ch-tabular-grid-column>
+          </ch-tabular-grid-columnset>
+
+          <ch-tabular-grid-rowset>
+            <ch-tabular-grid-rowset-empty>
+              <div class="my-rowset-empty-wrapper">No hay registros</div>
+            </ch-tabular-grid-rowset-empty>
+          </ch-tabular-grid-rowset>
+        </ch-tabular-grid>
+      </section>
+
+      <p>
+        Test de minmax() para el size de las columnas. El objetivo es poder
+        definir un mínimo, y un ancho con minmax():
+      </p>
+      <section class="section-dev basic" data-title="minmax tabular-grid">
+        <ch-tabular-grid
+          row-selection-mode="none"
+          keyboard-navigation-mode="focus"
+        >
+          <ch-tabular-grid-columnset>
+            <ch-tabular-grid-column
+              column-id="code"
+              column-name="Country Code"
+              settingable="false"
+              sortable="true"
+              size="auto"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="name"
+              column-name="Country Name"
+              settingable="false"
+              size="auto"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="population"
+              column-name="Country Population"
+              settingable="false"
+              size="minmax(auto, 1200px)"
+            ></ch-tabular-grid-column>
+            <ch-tabular-grid-column
+              column-id="language"
+              column-name="Country Language"
+              settingable="false"
+              size="auto"
+            ></ch-tabular-grid-column>
+          </ch-tabular-grid-columnset>
+
+          <ch-tabular-grid-row rowid="ar">
+            <ch-tabular-grid-cell>AR</ch-tabular-grid-cell>
+            <ch-tabular-grid-cell>Argentina</ch-tabular-grid-cell>
+            <ch-tabular-grid-cell
+              >Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
+              inventore quisquam deleniti neque enim consectetur unde, harum
+              provident odit omnis molestias sunt recusandae quo reprehenderit
+              libero beatae quia soluta vel?</ch-tabular-grid-cell
+            >
+            <ch-tabular-grid-cell>Español</ch-tabular-grid-cell>
+          </ch-tabular-grid-row>
+        </ch-tabular-grid>
+      </section>
+
+      <p>Test de minmax() en una grilla con estilos básicos:</p>
+      <section class="section-dev basic" data-title="minmax simple grid-1">
+        <div class="grid-1">
+          <div class="grid-item">AR</div>
+          <div class="grid-item">Argentina</div>
+          <div class="grid-item">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
+            inventore quisquam deleniti neque enim consectetur unde, harum
+            provident odit omnis molestias sunt recusandae quo reprehenderit
+            libero beatae quia soluta vel?
+          </div>
+          <div class="grid-item">Español</div>
+        </div>
+      </section>
+
+      <section class="section-dev basic" data-title="minmax simple grid-2">
+        <div class="grid-2">
+          <div class="grid-item">AR</div>
+          <div class="grid-item">Argentina</div>
+          <div class="grid-item">Lorem ipsum</div>
+          <div class="grid-item">Español</div>
+        </div>
+      </section>
+
+      <section class="section-dev basic" data-title="minmax simple grid-3">
+        <div class="grid-3">
+          <div class="grid-item">AR</div>
+          <div class="grid-item">Argentina</div>
+          <div class="grid-item">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
+            inventore quisquam deleniti neque enim consectetur unde, harum
+            provident odit omnis molestias sunt recusandae quo reprehenderit
+            libero beatae quia soluta vel?
+          </div>
+          <div class="grid-item">Español</div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.addEventListener("rowClicked", eventInfo =>
+        console.log(
+          `[rowClicked] rowId:${eventInfo.detail.rowId}, cellId:${eventInfo.detail.cellId}, columnId:${eventInfo.detail.columnId}`
+        )
+      );
+      document.addEventListener("selectionChanged", eventInfo =>
+        console.log(`[selectionChanged] rowsId:${eventInfo.detail.rowsId}`)
+      );
+      document.addEventListener("rowMarkingChanged", eventInfo => {
+        console.log(`[rowMarkingChanged] rowsId:${eventInfo.detail.rowsId}`);
+      });
+    </script>
+    <script src="./assets/scripts/common.js"></script>
+  </body>
+</html>

@@ -222,9 +222,8 @@ legend {
   }
 } */
 
-ch-code > pre > code {
+ch-code {
   contain: size;
-  overflow: auto;
 }
 
 ch-showcase ch-flexible-layout-render {
@@ -237,6 +236,18 @@ ch-showcase ch-flexible-layout-render {
     block-size: 200px;
     max-block-size: unset;
     resize: vertical;
+  }
+
+  .card {
+    background-color: color-mix(in srgb, var(--elevation--1), transparent);
+
+    .dark .mercury & {
+      background-color: color-mix(
+        in srgb,
+        var(--mer-color__elevation--01),
+        transparent
+      );
+    }
   }
 }
 
@@ -295,15 +306,16 @@ ch-showcase ch-flexible-layout-render {
 }
 
 /* This is a WA to improve the UX */
-ch-tree-view-render.tree-view-primary::part(item__action) {
-  --ch-tree-view-item__image-size: 20px;
-  padding-block: var(--spacing--s, var(--mer-spacing--2xs));
-}
+ch-tree-view-render.tree-view-primary {
+  &::part(item__header) {
+    border-radius: 0px;
+  }
 
-/* 
-.combo-box::part(item):hover {
-  background-color: var(--accents__primary-dim--hover);
-} */
+  &::part(item__action) {
+    --ch-tree-view-item__image-size: 20px;
+    padding-block: var(--spacing--s, var(--mer-spacing--2xs));
+  }
+}
 
 .chat {
   &::part(content) {

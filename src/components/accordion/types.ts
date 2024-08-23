@@ -1,3 +1,5 @@
+import { ImageRender } from "../../common/types";
+
 export type AccordionModel = AccordionItem[];
 
 export type AccordionItem = {
@@ -6,7 +8,9 @@ export type AccordionItem = {
   caption: string;
   disabled?: boolean;
   expanded?: boolean;
-  headerSlot?: string;
+  headerSlotId?: string;
+  startImgSrc?: string;
+  startImgType?: Exclude<ImageRender, "img">;
 };
 
 export type AccordionItemExpandedChangeEvent = {

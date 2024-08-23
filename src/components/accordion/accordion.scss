@@ -20,6 +20,13 @@
   --ch-accordion__expandable-button-image-size: 100%;
 
   /**
+   * @prop --ch-accordion__expandable-button-color:
+   * Specifies the image color of the expandable button.
+   * @default 100%
+   */
+  --ch-accordion__expandable-button-color: currentColor;
+
+  /**
    * @prop --ch-accordion-expand-collapse-duration
    * Specifies duration of the expand and collapse animation
    * @default 0ms
@@ -32,6 +39,27 @@
    * @default linear
    */
   --ch-accordion-expand-collapse-timing-function: linear;
+
+  /**
+   * @prop --ch-accordion-header__image-size:
+   * Specifies the box size that contains the start image of the header.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-accordion-header__image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-accordion-header__background-image-size:
+   * Specifies the size of the start image of the header.
+   * @default 100%
+   */
+  --ch-accordion-header__background-image-size: 100%;
+
+  /**
+   * @prop --ch-accordion-header__background-image-size:
+   * Specifies the start image of the header.
+   * @default #{$expandable-icon}
+   */
+  --ch-accordion-header__background-image: #{$expandable-icon};
 
   display: grid;
   grid-auto-rows: max-content;
@@ -60,21 +88,70 @@
     inline-size: var(--ch-accordion__expandable-button-size);
     block-size: var(--ch-accordion__expandable-button-size);
     margin-inline-start: auto;
-    background-color: currentColor;
+    background-color: var(--ch-accordion__expandable-button-color);
 
     -webkit-mask: no-repeat center /
-      var(--ch-accordion__expandable-button-image-size) $expandable-icon;
+      var(--ch-accordion__expandable-button-image-size)
+      var(--ch-accordion-header__background-image);
 
     transition: transform var(--ch-accordion-expand-collapse-duration)
       var(--ch-accordion-expand-collapse-timing-function);
   }
 
-  &--collapsed::after {
-    transform: rotate(-180deg);
+  &--expanded::after {
+    transform: rotate(-180deg); // TODO: Add support for RTL
   }
 }
 
-section {
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.header {
+  --ch-accordion-header-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-accordion-header-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-accordion-header-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-accordion-header-start-img: var(--ch-start-img--focus);
+  }
+
+  &.start-img--disabled.ch-disabled {
+    --ch-accordion-header-start-img: var(--ch-start-img--disabled);
+  }
+}
+
+.pseudo-img--start::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-accordion-header__image-size);
+  block-size: var(--ch-accordion-header__image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-accordion-header__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center /
+    var(--ch-accordion-header__background-image-size)
+    var(--ch-accordion-header-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center /
+    var(--ch-accordion-header__background-image-size)
+    var(--ch-accordion-header-start-img);
+  background-color: currentColor;
+}
+
+section,
+.sub-section {
   display: grid;
   overflow: hidden;
 }

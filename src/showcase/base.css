@@ -1,3 +1,59 @@
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Light.woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Regular.woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_SemiBold.woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Bold.woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_ExtraBold.woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
   padding: var(--spacing--l, var(--mer-spacing--md));

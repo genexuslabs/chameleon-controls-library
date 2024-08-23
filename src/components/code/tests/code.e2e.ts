@@ -95,7 +95,7 @@ describe("[ch-code]", () => {
     );
   });
 
-  it("should have white-space: pre the Host to properly display the content", async () => {
+  it('should have "white-space: pre" to properly display the content', async () => {
     const page = await newE2EPage();
     await page.setContent(`<ch-code language="typescript"></ch-code>`);
     const codeRef = await page.find("ch-code");
@@ -103,6 +103,16 @@ describe("[ch-code]", () => {
     const computedStyle = await codeRef.getComputedStyle();
 
     expect(computedStyle.whiteSpace).toBe("pre");
+  });
+
+  it('should have "overflow: auto" to properly display the content', async () => {
+    const page = await newE2EPage();
+    await page.setContent(`<ch-code language="typescript"></ch-code>`);
+    const codeRef = await page.find("ch-code");
+
+    const computedStyle = await codeRef.getComputedStyle();
+
+    expect(computedStyle.overflow).toBe("auto");
   });
 
   it("should render a hello world", async () => {

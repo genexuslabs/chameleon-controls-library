@@ -33,6 +33,9 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
 
 const ELEMENTS_TO_PREVENT_EXPAND_COLLAPSE = ["input", "textarea"];
 
+/**
+ * @status experimental
+ */
 @Component({
   shadow: true,
   styleUrl: "accordion.scss",

@@ -6,25 +6,25 @@
 
 :host {
   /**
-   * @prop --ch-accordion__expandable-button-size:
-   * Specifies the box size that contains the expandable button image.
+   * @prop --ch-accordion__chevron-size:
+   * Specifies the box size of the chevron.
    * @default #{$default-decorative-image-size}
    */
-  --ch-accordion__expandable-button-size: #{$default-decorative-image-size};
+  --ch-accordion__chevron-size: #{$default-decorative-image-size};
 
   /**
-   * @prop --ch-accordion__expandable-button-image-size:
-   * Specifies the image size of the expandable button.
+   * @prop --ch-accordion__chevron-image-size:
+   * Specifies the image size of the chevron.
    * @default 100%
    */
-  --ch-accordion__expandable-button-image-size: 100%;
+  --ch-accordion__chevron-image-size: 100%;
 
   /**
-   * @prop --ch-accordion__expandable-button-color:
-   * Specifies the image color of the expandable button.
+   * @prop --ch-accordion__chevron-color:
+   * Specifies the color of the chevron.
    * @default 100%
    */
-  --ch-accordion__expandable-button-color: currentColor;
+  --ch-accordion__chevron-color: currentColor;
 
   /**
    * @prop --ch-accordion-expand-collapse-duration
@@ -41,25 +41,25 @@
   --ch-accordion-expand-collapse-timing-function: linear;
 
   /**
-   * @prop --ch-accordion-header__image-size:
+   * @prop --ch-accordion__header-image-size:
    * Specifies the box size that contains the start image of the header.
    * @default #{$default-decorative-image-size}
    */
-  --ch-accordion-header__image-size: #{$default-decorative-image-size};
+  --ch-accordion__header-image-size: #{$default-decorative-image-size};
 
   /**
-   * @prop --ch-accordion-header__background-image-size:
+   * @prop --ch-accordion__header-background-image-size:
    * Specifies the size of the start image of the header.
    * @default 100%
    */
-  --ch-accordion-header__background-image-size: 100%;
+  --ch-accordion__header-background-image-size: 100%;
 
   /**
-   * @prop --ch-accordion-header__background-image-size:
+   * @prop --ch-accordion__header-background-image-size:
    * Specifies the start image of the header.
    * @default #{$expandable-icon}
    */
-  --ch-accordion-header__background-image: #{$expandable-icon};
+  --ch-accordion__header-background-image: #{$expandable-icon};
 
   display: grid;
   grid-auto-rows: max-content;
@@ -85,14 +85,13 @@
 .header {
   &::after {
     content: "";
-    inline-size: var(--ch-accordion__expandable-button-size);
-    block-size: var(--ch-accordion__expandable-button-size);
+    inline-size: var(--ch-accordion__chevron-size);
+    block-size: var(--ch-accordion__chevron-size);
     margin-inline-start: auto;
-    background-color: var(--ch-accordion__expandable-button-color);
+    background-color: var(--ch-accordion__chevron-color);
 
-    -webkit-mask: no-repeat center /
-      var(--ch-accordion__expandable-button-image-size)
-      var(--ch-accordion-header__background-image);
+    -webkit-mask: no-repeat center / var(--ch-accordion__chevron-image-size)
+      var(--ch-accordion__header-background-image);
 
     transition: transform var(--ch-accordion-expand-collapse-duration)
       var(--ch-accordion-expand-collapse-timing-function);
@@ -129,25 +128,29 @@
 .pseudo-img--start::before {
   content: "";
   display: block;
-  inline-size: var(--ch-accordion-header__image-size);
-  block-size: var(--ch-accordion-header__image-size);
+  inline-size: var(--ch-accordion__header-image-size);
+  block-size: var(--ch-accordion__header-image-size);
   content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-accordion-header__image-size);
+  contain-intrinsic-size: auto var(--ch-accordion__header-image-size);
 }
 
 // Background
 .start-img-type--background::before {
   background: no-repeat center /
-    var(--ch-accordion-header__background-image-size)
+    var(--ch-accordion__header-background-image-size)
     var(--ch-accordion-header-start-img);
 }
 
 // Mask
 .start-img-type--mask::before {
   -webkit-mask: no-repeat center /
-    var(--ch-accordion-header__background-image-size)
+    var(--ch-accordion__header-background-image-size)
     var(--ch-accordion-header-start-img);
   background-color: currentColor;
+}
+
+section {
+  display: grid;
 }
 
 section,

@@ -16,12 +16,11 @@ import {
   DisableableComponent
 } from "../../common/interfaces";
 import {
-  ComboBoxFilterOptions,
-  ComboBoxFilterType,
+  ComboBoxSuggestOptions,
   ComboBoxItemModel,
   ComboBoxItemGroup,
   ComboBoxItemLeaf,
-  ComboBoxFilterInfo,
+  ComboBoxSuggestInfo,
   ComboBoxModel,
   ComboBoxSelectedIndex,
   ComboBoxItemModelExtended
@@ -284,7 +283,7 @@ export class ChComboBoxRender
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         -1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -293,7 +292,7 @@ export class ChComboBoxRender
         event,
         findSelectedIndex(this.#valueToItemInfo, this.currentSelectedValue),
         1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -305,7 +304,7 @@ export class ChComboBoxRender
           firstLevelIndex: -1
         }, // The algorithm will sum 1 to the start index
         1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -317,7 +316,7 @@ export class ChComboBoxRender
           firstLevelIndex: this.model.length
         }, // The algorithm will sum -1 to the start index
         -1,
-        this.filterType !== "none" && !this.#isModelAlreadyFiltered(),
+        this.suggest && !this.#isModelAlreadyFiltered(),
         this.#displayedValues
       ),
 
@@ -400,7 +399,7 @@ export class ChComboBoxRender
 
       // When the control is expanded and has filters applied, we should
       // refresh the rendered items without any debounce
-      if (this.filterType !== "none") {
+      if (this.suggest) {
         this.currentSelectedValue = undefined; // Clear selected value when expanding with filters
         this.#scheduleFilterProcessing("immediate");
       }
@@ -437,55 +436,14 @@ export class ChComboBoxRender
   /**
    * This property lets you determine the expression that will be applied to the
    * filter.
-   * Only works if `filterType = "caption" | "value"`.
+   * Only works if `suggest === true`.
    */
   @Prop({ mutable: true }) filter: string;
   @Watch("filter")
   filterChanged() {
-    if (this.filterType === "caption" || this.filterType === "value") {
+    if (this.suggest) {
       this.#scheduleFilterProcessing();
     }
-  }
-
-  /**
-   * This property lets you determine the debounce time (in ms) that the
-   * control waits until it processes the changes to the filter property.
-   * Consecutive changes to the `filter` property between this range, reset the
-   * timeout to process the filter.
-   * Only works if `filterType = "caption" | "value"`.
-   */
-  @Prop() readonly filterDebounce: number = 250;
-  @Watch("filterDebounce")
-  filterDebounceChanged() {
-    if (this.filterType === "caption" || this.filterType === "value") {
-      this.#scheduleFilterProcessing();
-    }
-  }
-
-  /**
-   * This property lets you determine the options that will be applied to the
-   * filter.
-   */
-  @Prop() readonly filterOptions: ComboBoxFilterOptions = {};
-  @Watch("filterOptions")
-  filterOptionsChanged() {
-    this.#scheduleFilterProcessing("immediate");
-  }
-
-  /**
-   * This attribute lets you define what kind of filter is applied to items.
-   * Only items that satisfy the filter predicate will be displayed.
-   *
-   * | Value     | Details                                                                                       |
-   * | --------- | --------------------------------------------------------------------------------------------- |
-   * | `caption` | Show only the items whose `caption` satisfies the regex determinate by the `filter` property. |
-   * | `value`   | Show only the items whose `value` satisfies the regex determinate by the `filter` property.   |
-   * | `none`    | Show all items.                                                                               |
-   */
-  @Prop() readonly filterType: ComboBoxFilterType = "none";
-  @Watch("filterType")
-  filterTypeChanged() {
-    this.#scheduleFilterProcessing("immediate");
   }
 
   /**
@@ -533,6 +491,42 @@ export class ChComboBoxRender
   @Prop() readonly resizable: boolean = false;
 
   /**
+   * This property lets you specify if the control behaves like a suggest.
+   * If `true` the combo-box value will be editable an displayed items will be
+   * filtered according to the input's value.                                                                         |
+   */
+  @Prop() readonly suggest: boolean = false;
+  @Watch("suggest")
+  filterTypeChanged() {
+    this.#scheduleFilterProcessing("immediate");
+  }
+
+  /**
+   * This property lets you determine the debounce time (in ms) that the
+   * control waits until it processes the changes to the filter property.
+   * Consecutive changes to the `filter` property between this range, reset the
+   * timeout to process the filter.
+   * Only works if `suggest === true`.
+   */
+  @Prop() readonly suggestDebounce: number = 250;
+  @Watch("suggestDebounce")
+  suggestDebounceChanged() {
+    if (this.suggest) {
+      this.#scheduleFilterProcessing();
+    }
+  }
+
+  /**
+   * This property lets you determine the options that will be applied to the
+   * filter.
+   */
+  @Prop() readonly suggestOptions: ComboBoxSuggestOptions = {};
+  @Watch("suggestOptions")
+  suggestOptionsChanged() {
+    this.#scheduleFilterProcessing("immediate");
+  }
+
+  /**
    * Specifies the value (selected item) of the control.
    */
   @Prop({ mutable: true }) value?: string;
@@ -542,7 +536,7 @@ export class ChComboBoxRender
     this.#currentValueCaption = this.#getCaptionUsingValue(newValue);
 
     // Update the filter property is there are no filters applied. TODO: USE @State FOR FILTER PROPERTY?
-    if (this.filterType === "none") {
+    if (!this.suggest) {
       this.filter = this.#currentValueCaption;
     }
 
@@ -552,10 +546,10 @@ export class ChComboBoxRender
 
   /**
    * Emitted when a change to the element's filter is committed by the user.
-   * Only applies if `filterType !== "none"`. It contains the information about
+   * Only applies if `suggest === true`. It contains the information about
    * the new filter value.
    *
-   * This event is debounced by the `filterDebounce` value.
+   * This event is debounced by the `suggestDebounce` value.
    */
   @Event() filterChange: EventEmitter<string>;
 
@@ -609,20 +603,15 @@ export class ChComboBoxRender
 
     this.#displayedValues.clear();
 
-    const filterOptions: ComboBoxFilterInfo = {
+    const filterOptions: ComboBoxSuggestInfo = {
       filter: this.filter,
-      filterOptions: this.filterOptions
+      options: this.suggestOptions
     };
 
     for (let index = 0; index < this.model.length; index++) {
       const item = this.model[index];
 
-      filterSubModel(
-        item,
-        this.filterType,
-        filterOptions,
-        this.#displayedValues
-      );
+      filterSubModel(item, filterOptions, this.#displayedValues);
     }
 
     // Remove the selected value if it is no longer rendered
@@ -632,7 +621,7 @@ export class ChComboBoxRender
   };
 
   #updateFilters = () => {
-    if (this.filterType === "none") {
+    if (!this.suggest) {
       this.#displayedValues = undefined;
       return;
     }
@@ -642,9 +631,7 @@ export class ChComboBoxRender
     // Remove queued filter processing
     clearTimeout(this.#queuedFilterId);
 
-    const processWithDebounce =
-      this.filterDebounce > 0 &&
-      (this.filterType === "caption" || this.filterType === "value");
+    const processWithDebounce = this.suggestDebounce > 0;
 
     // Check if the model already contains the filtered items
     if (!modelIsAlreadyFiltered) {
@@ -656,7 +643,7 @@ export class ChComboBoxRender
       this.#queuedFilterId = setTimeout(() => {
         this.#filterFunction(modelIsAlreadyFiltered);
         forceUpdate(this); // After the filter processing is completed, force a re-render
-      }, this.filterDebounce);
+      }, this.suggestDebounce);
     }
     // No debounce
     else {
@@ -759,7 +746,7 @@ export class ChComboBoxRender
     }
 
     // No item was selected and the filters are not strict
-    if (!this.filterOptions?.strict) {
+    if (!this.suggestOptions?.strict) {
       this.value = this.filter;
 
       // Emit input event
@@ -878,7 +865,7 @@ export class ChComboBoxRender
   };
 
   #handleExpandedChangeWithKeyBoard = (event: KeyboardEvent) => {
-    if (this.filterType === "none") {
+    if (!this.suggest) {
       const keyboardHandler = this.#keyEventsNoFiltersDictionary[event.code];
 
       if (!keyboardHandler) {
@@ -949,7 +936,7 @@ export class ChComboBoxRender
     this.currentSelectedValue = itemValue;
 
     // Update current filter, even if no filters are applied. With this, if the
-    // filterType property is updated at runtime, the current selected caption
+    // suggest property is updated at runtime, the current selected caption
     // won't change
     this.filter = this.#getCaptionUsingValue(itemValue);
     this.#checkAndEmitValueChangeWithNoFilter();
@@ -979,7 +966,7 @@ export class ChComboBoxRender
         }
       : undefined;
 
-  #isModelAlreadyFiltered = () => this.filterOptions.alreadyProcessed === true;
+  #isModelAlreadyFiltered = () => this.suggestOptions.alreadyProcessed === true;
 
   #customItemRender =
     (
@@ -1015,7 +1002,7 @@ export class ChComboBoxRender
 
       return itemGroup.items != null ? (
         <div
-          key={item.value}
+          key={`__group__${item.value}`}
           aria-controls={itemGroup.expandable ? `${index}__content` : null}
           aria-expanded={
             itemGroup.expandable ? (!!itemGroup.expanded).toString() : null
@@ -1077,7 +1064,7 @@ export class ChComboBoxRender
           )}
 
           <div
-            key={`${index}__content`}
+            key={`__content__${item.value}`}
             id={itemGroup.expandable ? `${index}__content` : null}
             class={{
               // eslint-disable-next-line camelcase
@@ -1229,7 +1216,7 @@ export class ChComboBoxRender
 
   componentDidRender() {
     // Focus the input when there are filters and the control is expanded
-    if (this.filterType !== "none" && this.expanded) {
+    if (this.suggest && this.expanded) {
       this.#focusSelectAfterNextRender = false;
       this.#inputRef.focus();
       return;
@@ -1265,7 +1252,7 @@ export class ChComboBoxRender
   }
 
   render() {
-    const filtersAreApplied = this.filterType !== "none";
+    const filtersAreApplied = this.suggest;
     const comboBoxIsInteractive = !this.readonly && !this.disabled;
     const destroyRender = this.destroyItemsOnClose && !this.expanded;
 
@@ -1319,10 +1306,9 @@ export class ChComboBoxRender
                 // This mask is used to capture click events that must open the
                 // popover. If we capture click events in the Host, clicking external
                 // label would open the combo-box's window
-                aria-hidden="true"
                 class={{
                   mask: true,
-                  "mask--no-filters": this.filterType === "none",
+                  "mask--no-filters": !filtersAreApplied,
 
                   [`start-img-type--${
                     currentItemInInput?.startImgType ?? "background"

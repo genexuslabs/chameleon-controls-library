@@ -12,7 +12,7 @@ describe("[ch-combo-box-render][form]", () => {
 describe.skip("[ch-combo-box-render][form][suggest]", () => {
   performFormTests({
     formElementTagName: "ch-combo-box-render",
-    additionalAttributes: "filter-type='caption'",
+    additionalAttributes: "suggest",
     hasReadonlySupport: false,
     pressEnterToConfirmValue: true,
     valueCanBeUpdatedByTheUser: true

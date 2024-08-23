@@ -118,7 +118,7 @@ export class ChImage {
           "ch-image--enabled": !this.disabled,
           [`ch-image--${this.type}`]: true
         }}
-        style={this.#image ?? undefined}
+        style={this.#image?.styles ?? undefined}
       ></Host>
     );
   }

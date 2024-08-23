@@ -2,7 +2,7 @@ ch-grid-smart,
 :host(.ch-scrollable) {
   scrollbar-width: thin;
   /* scrollbar-gutter: stable; */
-  scrollbar-color: var(--accents__secondary) transparent;
+  scrollbar-color: var(--accents__primary--hover) transparent;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -11,6 +11,6 @@ ch-grid-smart,
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--accents__secondary);
+    background-color: var(--accents__primary--hover);
   }
 }

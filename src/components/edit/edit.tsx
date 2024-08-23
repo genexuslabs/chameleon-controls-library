@@ -417,7 +417,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
 
           [DISABLED_CLASS]: this.disabled
         }}
-        style={this.#startImage ?? undefined}
+        style={this.#startImage?.styles ?? undefined}
         // Alignment
         data-text-align=""
         data-valign={!this.multiline ? "" : undefined}

@@ -10,3 +10,98 @@ ch-showcase {
     inline-size: 100%;
   }
 }
+
+%accordion {
+  --ch-accordion__header-image-size: var(--spacing--xl);
+  --ch-accordion__header-background-image-size: var(--spacing--l);
+
+  --ch-accordion__chevron-size: 13px;
+  --ch-accordion__chevron-image-size: 13px;
+
+  --ch-accordion-expand-collapse-duration: 200ms;
+  --ch-accordion-expand-collapse-timing-function: ease-in-out;
+
+  gap: var(--spacing--s);
+}
+
+%accordion-header {
+  padding: var(--spacing--l);
+  gap: var(--spacing--m);
+
+  &--focus-visible {
+    outline: 1px solid;
+  }
+}
+
+%accordion-panel {
+  border: 1px solid var(--border-color__mild);
+  border-radius: var(--border-radius--m);
+  background-color: var(--elevation--1);
+
+  &-outlined {
+    border-block-end: 1px solid var(--border-color__mild);
+    border-radius: var(--border-radius--m);
+  }
+}
+
+%accordion-section {
+  padding-inline: var(--spacing--l);
+  padding-block: var(--spacing--m) var(--spacing--l);
+}
+
+@mixin accordion-filled(
+  $accordion-selector: ".accordion-filled",
+  $panel-selector: ".accordion-filled::part(panel)",
+  $header-selector: ".accordion-filled::part(header)",
+  $section-selector: ".accordion-filled::part(section)"
+) {
+  #{$accordion-selector} {
+    @extend %accordion;
+  }
+
+  #{$panel-selector} {
+    @extend %accordion-panel;
+  }
+
+  #{$header-selector} {
+    @extend %accordion-header;
+
+    &:focus-visible {
+      @extend %accordion-header--focus-visible;
+    }
+  }
+
+  #{$section-selector} {
+    @extend %accordion-section;
+  }
+}
+
+@mixin accordion-outlined(
+  $accordion-selector: ".accordion-outlined",
+  $panel-selector: ".accordion-outlined::part(panel)",
+  $header-selector: ".accordion-outlined::part(header)",
+  $section-selector: ".accordion-outlined::part(section)"
+) {
+  #{$accordion-selector} {
+    @extend %accordion;
+  }
+
+  #{$panel-selector} {
+    @extend %accordion-panel-outlined;
+  }
+
+  #{$header-selector} {
+    @extend %accordion-header;
+
+    &:focus-visible {
+      @extend %accordion-header--focus-visible;
+    }
+  }
+
+  #{$section-selector} {
+    @extend %accordion-section;
+  }
+}
+
+@include accordion-filled();
+@include accordion-outlined();

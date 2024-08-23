@@ -73,7 +73,8 @@ A wrapper for the input and textarea elements. It additionally provides:
 | -------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | `--ch-edit-auto-fill-background-color` | Define the background color when the edit is auto filled. (#e8f0fe by default)                  |
 | `--ch-edit-gap`                        | Specifies the gap between the start image and the value of the control. @default 0px            |
-| `--ch-edit__image-size`                | Specifies the box size that contains the start of the control. @default 0.875em                 |
+| `--ch-edit__background-image-size`     | Specifies the size of the start image of the control. @default 100%                             |
+| `--ch-edit__image-size`                | Specifies the box size that contains the start image of the control. @default 0.875em           |
 | `--ch-placeholder-color`               | Define the placeholder color when the edit does not have a value set. (currentColor by default) |
 
 

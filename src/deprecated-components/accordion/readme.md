@@ -5,6 +5,8 @@ This control implements a simple accordion with a header and a collapsible/expan
 <!-- Auto Generated Below -->
 
 
+> **[DEPRECATED]** Use the `ch-accordion-render` instead
+
 ## Properties
 
 | Property                | Attribute                | Description                          | Type      | Default |
@@ -42,7 +44,7 @@ This control implements a simple accordion with a header and a collapsible/expan
 
 ### Used by
 
- - [ch-next-data-modeling-item](../next/data-modeling-item)
+ - [ch-next-data-modeling-item](../../components/next/data-modeling-item)
 
 ### Graph
 ```mermaid

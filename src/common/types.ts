@@ -36,6 +36,11 @@ export type GxImageMultiState = {
 };
 
 export type GxImageMultiStateStart = {
+  classes: string;
+  styles: GxImageMultiStateStartStyles;
+};
+
+export type GxImageMultiStateStartStyles = {
   "--ch-start-img--base": string;
   "--ch-start-img--hover"?: string;
   "--ch-start-img--active"?: string;
@@ -44,6 +49,11 @@ export type GxImageMultiStateStart = {
 };
 
 export type GxImageMultiStateEnd = {
+  classes: string;
+  styles: GxImageMultiStateEndStyles;
+};
+
+export type GxImageMultiStateEndStyles = {
   "--ch-end-img--base": string;
   "--ch-end-img--hover"?: string;
   "--ch-end-img--active"?: string;
@@ -134,7 +144,7 @@ export type ChameleonControls = {
 
 export type ChameleonImagePathCallbackControlsTagName = Extract<
   ChameleonControlsTagName,
-  "ch-edit" | "ch-image" | "ch-tree-view-render"
+  "ch-accordion-render" | "ch-edit" | "ch-image" | "ch-tree-view-render"
 >;
 
 export type ChameleonImagePathCallbackControls = {

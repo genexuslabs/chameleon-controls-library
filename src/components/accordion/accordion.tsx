@@ -31,6 +31,8 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
   imageSrc: string
 ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
 
+const ELEMENTS_TO_PREVENT_EXPAND_COLLAPSE = ["input", "textarea"];
+
 @Component({
   shadow: true,
   styleUrl: "accordion.scss",
@@ -134,7 +136,13 @@ export class ChAccordionRender implements ComponentInterface {
       el => (el as HTMLElement).tagName?.toLowerCase() === "button"
     ) as HTMLButtonElement;
 
-    if (!headerRef || headerRef.getRootNode() !== this.el.shadowRoot) {
+    if (
+      !headerRef ||
+      headerRef.getRootNode() !== this.el.shadowRoot ||
+      ELEMENTS_TO_PREVENT_EXPAND_COLLAPSE.includes(
+        (composedPath[0] as HTMLElement).tagName?.toLowerCase()
+      )
+    ) {
       return;
     }
 

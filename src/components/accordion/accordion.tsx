@@ -184,6 +184,10 @@ export class ChAccordionRender implements ComponentInterface {
     if (newExpandedValue) {
       this.#expandedItems.add(itemUIModel.id);
     }
+    // Otherwise, remove it
+    else {
+      this.#expandedItems.delete(itemUIModel.id);
+    }
 
     itemUIModel.expanded = newExpandedValue;
     this.expandedChange.emit({
@@ -308,7 +312,11 @@ export class ChAccordionRender implements ComponentInterface {
 
   render() {
     return (
-      <Host onClick={this.#handleHeaderToggle}>
+      <Host
+        // TODO: Add support to prevent expand/collapse when pressing the space
+        // key on an input/textarea
+        onClick={this.#handleHeaderToggle}
+      >
         {this.model.map(this.#renderItem)}
       </Host>
     );

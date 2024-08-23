@@ -38,6 +38,7 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
 })
 export class ChAccordionRender implements ComponentInterface {
   #images: Map<string, GxImageMultiStateStart | undefined> = new Map();
+  #expandedItems: Set<string> = new Set();
 
   @Element() el: HTMLChAccordionRenderElement;
 
@@ -64,9 +65,27 @@ export class ChAccordionRender implements ComponentInterface {
    * Specifies the items of the control.
    */
   @Prop() readonly model!: AccordionModel;
-  @Watch("getImagePathCallback")
+  @Watch("model")
   modelChanged() {
     this.#computeImages();
+    this.#expandedItems.clear();
+
+    this.model.forEach(item => {
+      if (item.expanded) {
+        this.#expandedItems.add(item.id);
+      }
+    });
+
+    this.#closeAllExpandedItemsExceptForTheLast(false);
+  }
+
+  /**
+   * If `true` only one item will be expanded at the same time.
+   */
+  @Prop() readonly singleItemExpanded: boolean = false;
+  @Watch("singleItemExpanded")
+  singleItemExpandedChanged() {
+    this.#closeAllExpandedItemsExceptForTheLast(true);
   }
 
   /**
@@ -109,11 +128,11 @@ export class ChAccordionRender implements ComponentInterface {
   };
 
   #handleHeaderToggle = (event: PointerEvent) => {
-    const headerRef = event
-      .composedPath()
-      .find(
-        el => (el as HTMLElement).tagName?.toLowerCase() === "button"
-      ) as HTMLButtonElement;
+    const composedPath = event.composedPath();
+
+    const headerRef = composedPath.find(
+      el => (el as HTMLElement).tagName?.toLowerCase() === "button"
+    ) as HTMLButtonElement;
 
     if (!headerRef || headerRef.getRootNode() !== this.el.shadowRoot) {
       return;
@@ -127,9 +146,42 @@ export class ChAccordionRender implements ComponentInterface {
     }
 
     const newExpandedValue = !itemUIModel.expanded;
-    itemUIModel.expanded = newExpandedValue;
+    this.#updateExpandedOnItem(itemUIModel, newExpandedValue);
+  };
 
-    this.expandedChange.emit({ id: itemId, expanded: newExpandedValue });
+  #updateExpandedOnItem = (
+    itemUIModel: AccordionItem,
+    newExpandedValue: boolean
+  ) => {
+    // Collapse all opened items and emit expandedChange
+    if (this.singleItemExpanded && this.#expandedItems.size > 0) {
+      this.model.forEach(itemUIModelToCollapse => {
+        if (
+          itemUIModelToCollapse.expanded &&
+          itemUIModelToCollapse.id !== itemUIModel.id
+        ) {
+          itemUIModelToCollapse.expanded = false;
+
+          this.expandedChange.emit({
+            id: itemUIModelToCollapse.id,
+            expanded: false
+          });
+        }
+      });
+
+      this.#expandedItems.clear();
+    }
+
+    // If the item is expanded, added it to the Set
+    if (newExpandedValue) {
+      this.#expandedItems.add(itemUIModel.id);
+    }
+
+    itemUIModel.expanded = newExpandedValue;
+    this.expandedChange.emit({
+      id: itemUIModel.id,
+      expanded: newExpandedValue
+    });
 
     forceUpdate(this);
   };
@@ -203,6 +255,30 @@ export class ChAccordionRender implements ComponentInterface {
     );
   };
 
+  #closeAllExpandedItemsExceptForTheLast = (
+    emitExpandedChangeEvent: boolean
+  ) => {
+    if (!this.singleItemExpanded || this.#expandedItems.size <= 1) {
+      return;
+    }
+
+    const lastItemId = [...this.#expandedItems.keys()].at(-1);
+
+    // Close all items except for the last and emit the expandedChange event
+    this.model.forEach(itemUIModel => {
+      if (itemUIModel.expanded && itemUIModel.id !== lastItemId) {
+        itemUIModel.expanded = false;
+
+        if (emitExpandedChangeEvent) {
+          this.expandedChange.emit({ id: itemUIModel.id, expanded: false });
+        }
+      }
+    });
+
+    this.#expandedItems.clear();
+    this.#expandedItems.add(lastItemId);
+  };
+
   connectedCallback(): void {
     // Initialize default getImagePathCallback
     GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
@@ -212,6 +288,14 @@ export class ChAccordionRender implements ComponentInterface {
       ) ?? DEFAULT_GET_IMAGE_PATH_CALLBACK;
 
     this.#computeImages();
+
+    this.model.forEach(item => {
+      if (item.expanded) {
+        this.#expandedItems.add(item.id);
+      }
+    });
+
+    this.#closeAllExpandedItemsExceptForTheLast(false);
   }
 
   render() {

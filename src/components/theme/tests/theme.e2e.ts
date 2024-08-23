@@ -24,7 +24,7 @@ describe("[ch-theme]", () => {
     await page.setContent(`<ch-theme></ch-theme>`);
     const themeRef = await page.find("ch-theme");
 
-    expect(themeRef.shadowRoot).toBe(null);
+    expect(themeRef.shadowRoot).toBeNull();
   });
 
   it("should hide the root node if avoidFlashOfUnstyledContent is set", async () => {
@@ -202,6 +202,10 @@ describe("[ch-theme]", () => {
   });
 
   it.skip("should reuse the stylesheet defined by another ch-theme", async () => {
+    // TODO: Add implementation
+  });
+
+  it.skip("should not duplicate the stylesheet adoption when another ch-theme loads the same CSS", async () => {
     // TODO: Add implementation
   });
 });

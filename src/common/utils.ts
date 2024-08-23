@@ -2,8 +2,8 @@ import { Component } from "./interfaces";
 import {
   CssCursorProperty,
   GxImageMultiState,
-  GxImageMultiStateEnd,
-  GxImageMultiStateStart,
+  GxImageMultiStateEndStyles,
+  GxImageMultiStateStartStyles,
   ImageRender
 } from "./types";
 
@@ -211,48 +211,64 @@ export const unsubscribeToRTLChanges = (subscriberId: string) => {
 export const updateDirectionInImageCustomVar = <T extends "start" | "end">(
   image: GxImageMultiState | undefined,
   direction: T
-): GxImageMultiStateStart | GxImageMultiStateEnd | undefined => {
+):
+  | {
+      classes: string;
+      styles: GxImageMultiStateStartStyles | GxImageMultiStateEndStyles;
+    }
+  | undefined => {
   if (!image) {
     return undefined;
   }
 
   if (direction === "start") {
-    const startImg: GxImageMultiStateStart = {
+    let states = "start-img--base";
+
+    const startImg: GxImageMultiStateStartStyles = {
       "--ch-start-img--base": image.base
     };
 
     if (image.active) {
       startImg["--ch-start-img--active"] = image.active;
+      states += " start-img--active";
     }
     if (image.focus) {
       startImg["--ch-start-img--focus"] = image.focus;
+      states += " start-img--focus";
     }
     if (image.hover) {
       startImg["--ch-start-img--hover"] = image.hover;
+      states += " start-img--hover";
     }
     if (image.disabled) {
       startImg["--ch-start-img--disabled"] = image.disabled;
+      states += " start-img--disabled";
     }
 
-    return startImg;
+    return { classes: states, styles: startImg };
   }
 
-  const endImg: GxImageMultiStateEnd = {
+  let states = "end-img--base";
+  const endImg: GxImageMultiStateEndStyles = {
     "--ch-end-img--base": image.base
   };
 
   if (image.active) {
     endImg["--ch-end-img--active"] = image.active;
+    states += " end-img--active";
   }
   if (image.focus) {
     endImg["--ch-end-img--focus"] = image.focus;
+    states += " end-img--focus";
   }
   if (image.hover) {
     endImg["--ch-end-img--hover"] = image.hover;
+    states += " end-img--hover";
   }
   if (image.disabled) {
     endImg["--ch-end-img--disabled"] = image.disabled;
+    states += " end-img--disabled";
   }
 
-  return endImg;
+  return { classes: states, styles: endImg };
 };

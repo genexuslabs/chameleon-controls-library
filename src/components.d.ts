@@ -5,6 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+import { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/accordion/types";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
@@ -17,7 +19,6 @@ import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 import { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 import { ComboBoxModel, ComboBoxSuggestOptions } from "./components/combo-box/types";
 import { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 import { DropdownModel } from "./components/dropdown/types";
 import { EditInputMode, EditType } from "./components/edit/types";
 import { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -60,6 +61,8 @@ import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
+export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+export { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/accordion/types";
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
@@ -72,7 +75,6 @@ export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-e
 export { CodeEditorOptions } from "./components/code-editor/code-editor-types.js";
 export { ComboBoxModel, ComboBoxSuggestOptions } from "./components/combo-box/types";
 export { ChPopoverAlign, ChPopoverSizeMatch, PopoverActionElement } from "./components/popover/types";
-export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
 export { DropdownModel } from "./components/dropdown/types";
 export { EditInputMode, EditType } from "./components/edit/types";
 export { DraggableViewInfo, FlexibleLayoutGroupModel, FlexibleLayoutItemExtended, FlexibleLayoutItemModel, FlexibleLayoutLeafConfigurationTabbed, FlexibleLayoutLeafModel, FlexibleLayoutLeafType, FlexibleLayoutModel, FlexibleLayoutRenders, FlexibleLayoutViewRemoveResult, FlexibleLayoutWidget, FlexibleLayoutWidgetCloseInfo, ViewItemCloseInfo, ViewSelectedItemInfo, WidgetReorderInfo } from "./components/flexible-layout/internal/flexible-layout/types";
@@ -116,6 +118,9 @@ export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 export { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
 export namespace Components {
+    /**
+     * @deprecated Use the `ch-accordion-render` instead
+     */
     interface ChAccordion {
         /**
           * The description of the entity.
@@ -129,6 +134,29 @@ export namespace Components {
           * `true` if the accordion is expanded.
          */
         "expanded": boolean;
+    }
+    /**
+     * @status experimental
+     */
+    interface ChAccordionRender {
+        /**
+          * This attribute lets you specify if all accordions are disabled. If disabled,accordions will not fire any user interaction related event (for example, `expandedChange` event).
+         */
+        "disabled": boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the items of the control.
+         */
+        "model": AccordionModel;
+        /**
+          * If `true` only one item will be expanded at the same time.
+         */
+        "singleItemExpanded": boolean;
     }
     interface ChActionGroup {
         /**
@@ -3730,6 +3758,10 @@ export interface ChAccordionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChAccordionElement;
 }
+export interface ChAccordionRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChAccordionRenderElement;
+}
 export interface ChActionGroupCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChActionGroupElement;
@@ -4006,6 +4038,9 @@ declare global {
     interface HTMLChAccordionElementEventMap {
         "expandedChange": boolean;
     }
+    /**
+     * @deprecated Use the `ch-accordion-render` instead
+     */
     interface HTMLChAccordionElement extends Components.ChAccordion, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChAccordionElementEventMap>(type: K, listener: (this: HTMLChAccordionElement, ev: ChAccordionCustomEvent<HTMLChAccordionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4019,6 +4054,26 @@ declare global {
     var HTMLChAccordionElement: {
         prototype: HTMLChAccordionElement;
         new (): HTMLChAccordionElement;
+    };
+    interface HTMLChAccordionRenderElementEventMap {
+        "expandedChange": AccordionItemExpandedChangeEvent;
+    }
+    /**
+     * @status experimental
+     */
+    interface HTMLChAccordionRenderElement extends Components.ChAccordionRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChAccordionRenderElementEventMap>(type: K, listener: (this: HTMLChAccordionRenderElement, ev: ChAccordionRenderCustomEvent<HTMLChAccordionRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChAccordionRenderElementEventMap>(type: K, listener: (this: HTMLChAccordionRenderElement, ev: ChAccordionRenderCustomEvent<HTMLChAccordionRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChAccordionRenderElement: {
+        prototype: HTMLChAccordionRenderElement;
+        new (): HTMLChAccordionRenderElement;
     };
     interface HTMLChActionGroupElementEventMap {
         "displayedItemsCountChange": number;
@@ -5744,6 +5799,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "ch-accordion": HTMLChAccordionElement;
+        "ch-accordion-render": HTMLChAccordionRenderElement;
         "ch-action-group": HTMLChActionGroupElement;
         "ch-action-group-item": HTMLChActionGroupItemElement;
         "ch-action-group-render": HTMLChActionGroupRenderElement;
@@ -5857,6 +5913,9 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    /**
+     * @deprecated Use the `ch-accordion-render` instead
+     */
     interface ChAccordion {
         /**
           * The description of the entity.
@@ -5874,6 +5933,33 @@ declare namespace LocalJSX {
           * Fired when the content is expanded or collapsed
          */
         "onExpandedChange"?: (event: ChAccordionCustomEvent<boolean>) => void;
+    }
+    /**
+     * @status experimental
+     */
+    interface ChAccordionRender {
+        /**
+          * This attribute lets you specify if all accordions are disabled. If disabled,accordions will not fire any user interaction related event (for example, `expandedChange` event).
+         */
+        "disabled"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: string
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies the items of the control.
+         */
+        "model": AccordionModel;
+        /**
+          * Fired when an item is expanded or collapsed
+         */
+        "onExpandedChange"?: (event: ChAccordionRenderCustomEvent<AccordionItemExpandedChangeEvent>) => void;
+        /**
+          * If `true` only one item will be expanded at the same time.
+         */
+        "singleItemExpanded"?: boolean;
     }
     interface ChActionGroup {
         /**
@@ -9563,6 +9649,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "ch-accordion": ChAccordion;
+        "ch-accordion-render": ChAccordionRender;
         "ch-action-group": ChActionGroup;
         "ch-action-group-item": ChActionGroupItem;
         "ch-action-group-render": ChActionGroupRender;
@@ -9679,7 +9766,14 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            /**
+             * @deprecated Use the `ch-accordion-render` instead
+             */
             "ch-accordion": LocalJSX.ChAccordion & JSXBase.HTMLAttributes<HTMLChAccordionElement>;
+            /**
+             * @status experimental
+             */
+            "ch-accordion-render": LocalJSX.ChAccordionRender & JSXBase.HTMLAttributes<HTMLChAccordionRenderElement>;
             "ch-action-group": LocalJSX.ChActionGroup & JSXBase.HTMLAttributes<HTMLChActionGroupElement>;
             "ch-action-group-item": LocalJSX.ChActionGroupItem & JSXBase.HTMLAttributes<HTMLChActionGroupItemElement>;
             "ch-action-group-render": LocalJSX.ChActionGroupRender & JSXBase.HTMLAttributes<HTMLChActionGroupRenderElement>;

@@ -1,3 +1,4 @@
+import { accordionShowcaseStory } from "./accordion/accordion.showcase";
 import { actionGroupShowcaseStory } from "./action-group/action-group.showcase";
 import { actionListShowcaseStory } from "./action-list/action-list.showcase";
 import { barcodeScannerShowcaseStory } from "./barcode-scanner/barcode-scanner.showcase";
@@ -23,6 +24,7 @@ import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 
 export const showcaseStories = {
+  accordion: accordionShowcaseStory,
   "action-group-in-development": actionGroupShowcaseStory,
   "action-list": actionListShowcaseStory,
   "barcode-scanner": barcodeScannerShowcaseStory,

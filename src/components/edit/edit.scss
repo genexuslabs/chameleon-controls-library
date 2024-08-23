@@ -21,13 +21,13 @@
 
   /**
    * @prop --ch-edit__image-size:
-   * Specifies the box size that contains the start of the control.
+   * Specifies the box size that contains the start image of the control.
    * @default #{$default-decorative-image-size}
    */
   --ch-edit__image-size: #{$default-decorative-image-size};
 
   /**
-    * @prop --ch-edit__image-size:
+    * @prop --ch-edit__background-image-size:
     * Specifies the size of the start image of the control.
     * @default 100%
     */

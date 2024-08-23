@@ -1,3 +1,59 @@
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: SourceSansPro;
+  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Light.woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Regular.woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_SemiBold.woff2");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Bold.woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_ExtraBold.woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
 .card {
   margin: 4px; /* Necessary to avoid iframe's "overflow: clip" issues */
   padding: var(--spacing--l, var(--mer-spacing--md));
@@ -222,9 +278,8 @@ legend {
   }
 } */
 
-ch-code > pre > code {
+ch-code {
   contain: size;
-  overflow: auto;
 }
 
 ch-showcase ch-flexible-layout-render {
@@ -237,6 +292,18 @@ ch-showcase ch-flexible-layout-render {
     block-size: 200px;
     max-block-size: unset;
     resize: vertical;
+  }
+
+  .card {
+    background-color: color-mix(in srgb, var(--elevation--1), transparent);
+
+    .dark .mercury & {
+      background-color: color-mix(
+        in srgb,
+        var(--mer-color__elevation--01),
+        transparent
+      );
+    }
   }
 }
 
@@ -295,15 +362,16 @@ ch-showcase ch-flexible-layout-render {
 }
 
 /* This is a WA to improve the UX */
-ch-tree-view-render.tree-view-primary::part(item__action) {
-  --ch-tree-view-item__image-size: 20px;
-  padding-block: var(--spacing--s, var(--mer-spacing--2xs));
-}
+ch-tree-view-render.tree-view-primary {
+  &::part(item__header) {
+    border-radius: 0px;
+  }
 
-/* 
-.combo-box::part(item):hover {
-  background-color: var(--accents__primary-dim--hover);
-} */
+  &::part(item__action) {
+    --ch-tree-view-item__image-size: 20px;
+    padding-block: var(--spacing--s, var(--mer-spacing--2xs));
+  }
+}
 
 .chat {
   &::part(content) {

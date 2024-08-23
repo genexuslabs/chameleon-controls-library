@@ -1140,7 +1140,7 @@ export class ChTreeViewItem {
               ? this.#getImageExpandedOrDefault(
                   this.#startImage,
                   this.#startImageExpanded
-                )
+                ).styles
               : undefined
           }
           type="button"
@@ -1224,7 +1224,7 @@ export class ChTreeViewItem {
                     ? this.#getImageExpandedOrDefault(
                         this.#endImage,
                         this.#endImageExpanded
-                      )
+                      ).styles
                     : undefined
                 }
                 onDblClick={!this.editing ? this.#handleActionDblClick : null}
@@ -1235,7 +1235,7 @@ export class ChTreeViewItem {
                     hasParts
                       ? `${START_IMAGE_PARTS} ${this.parts}`
                       : START_IMAGE_PARTS,
-                    this.#startImage["--ch-start-img--base"],
+                    this.#startImage.styles["--ch-start-img--base"],
                     this.startImgType
                   )}
 
@@ -1265,7 +1265,7 @@ export class ChTreeViewItem {
                     hasParts
                       ? `${END_IMAGE_PARTS} ${this.parts}`
                       : END_IMAGE_PARTS,
-                    this.#endImage["--ch-end-img--base"],
+                    this.#endImage.styles["--ch-end-img--base"],
                     this.endImgType
                   )}
               </div>,

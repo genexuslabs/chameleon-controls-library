@@ -24,6 +24,8 @@
 - [ch-checkbox](../../../components/checkbox)
 - [ch-combo-box-render](../../../components/combo-box)
 - [ch-radio-group-render](../../../components/radio-group)
+- [ch-accordion-render](../../../components/accordion)
+- [ch-slider](../../../components/slider)
 - [ch-action-group-render](../../../components/action-group)
 - [ch-action-list-render](../../../components/action-list)
 - [ch-barcode-scanner](../../../components/barcode-scanner)
@@ -38,7 +40,6 @@
 - [ch-popover](../../../components/popover)
 - [ch-qr](../../../components/qr)
 - [ch-segmented-control-render](../../../components/segmented-control)
-- [ch-slider](../../../components/slider)
 - [ch-switch](../../../components/switch)
 - [ch-tab-render](../../../components/tab)
 - [ch-tree-view-render](../../../components/tree-view)
@@ -52,6 +53,8 @@ graph TD;
   ch-showcase --> ch-checkbox
   ch-showcase --> ch-combo-box-render
   ch-showcase --> ch-radio-group-render
+  ch-showcase --> ch-accordion-render
+  ch-showcase --> ch-slider
   ch-showcase --> ch-action-group-render
   ch-showcase --> ch-action-list-render
   ch-showcase --> ch-barcode-scanner
@@ -66,7 +69,6 @@ graph TD;
   ch-showcase --> ch-popover
   ch-showcase --> ch-qr
   ch-showcase --> ch-segmented-control-render
-  ch-showcase --> ch-slider
   ch-showcase --> ch-switch
   ch-showcase --> ch-tab-render
   ch-showcase --> ch-tree-view-render

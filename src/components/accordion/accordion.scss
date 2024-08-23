@@ -1,58 +1,165 @@
-// Reset browser defaults
-:where(button) {
-  all: unset;
-}
+@import "../../common/base";
+@import "../../common/icons";
 
-*,
-::before,
-::after {
-  box-sizing: border-box;
-}
+@include box-sizing();
+@include button-reset();
 
 :host {
-  --chevron: url('data:image/svg+xml,<svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.645 0.5L7 4.83019L12.355 0.5L14 1.83962L7 7.5L0 1.83962L1.645 0.5Z" fill="%23000"/></svg>');
+  /**
+   * @prop --ch-accordion__chevron-size:
+   * Specifies the box size of the chevron.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-accordion__chevron-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-accordion__chevron-image-size:
+   * Specifies the image size of the chevron.
+   * @default 100%
+   */
+  --ch-accordion__chevron-image-size: 100%;
+
+  /**
+   * @prop --ch-accordion__chevron-color:
+   * Specifies the color of the chevron.
+   * @default 100%
+   */
+  --ch-accordion__chevron-color: currentColor;
+
+  /**
+   * @prop --ch-accordion-expand-collapse-duration
+   * Specifies duration of the expand and collapse animation
+   * @default 0ms
+   */
+  --ch-accordion-expand-collapse-duration: 0ms;
+
+  /**
+   * @prop --ch-accordion-expand-collapse-timing-function
+   * Specifies timing function of the expand and collapse animation
+   * @default linear
+   */
+  --ch-accordion-expand-collapse-timing-function: linear;
+
+  /**
+   * @prop --ch-accordion__header-image-size:
+   * Specifies the box size that contains the start image of the header.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-accordion__header-image-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-accordion__header-background-image-size:
+   * Specifies the size of the start image of the header.
+   * @default 100%
+   */
+  --ch-accordion__header-background-image-size: 100%;
+
+  /**
+   * @prop --ch-accordion__header-background-image-size:
+   * Specifies the start image of the header.
+   * @default #{$expandable-icon}
+   */
+  --ch-accordion__header-background-image: #{$expandable-icon};
 
   display: grid;
-  grid-template-rows: min-content min-content;
-  width: 100%;
-  height: 100%;
-  text-align: start;
+  grid-auto-rows: max-content;
+
+  // Avoid unnecessary click events in the Host
+  pointer-events: none;
 }
 
-.header {
+.panel {
   display: grid;
-  grid-template-columns: 1fr min-content;
-  grid-template-rows: 1fr;
-  text-align: start;
-  cursor: pointer;
-}
+  grid-template-rows: max-content 0fr;
+  transition: grid-template-rows var(--ch-accordion-expand-collapse-duration)
+    var(--ch-accordion-expand-collapse-timing-function);
 
-.chevron {
-  align-self: center;
-  width: 14px;
-  height: 8px;
-  -webkit-mask: var(--chevron);
-  background-color: #000;
-  transition: transform 250ms;
+  // Restore click events
+  pointer-events: all;
 
   &--expanded {
-    transform: rotate(180deg);
+    grid-template-rows: max-content 1fr;
   }
 }
 
-.expandable {
+.header {
+  &::after {
+    content: "";
+    inline-size: var(--ch-accordion__chevron-size);
+    block-size: var(--ch-accordion__chevron-size);
+    margin-inline-start: auto;
+    background-color: var(--ch-accordion__chevron-color);
+
+    -webkit-mask: no-repeat center / var(--ch-accordion__chevron-image-size)
+      var(--ch-accordion__header-background-image);
+
+    transition: transform var(--ch-accordion-expand-collapse-duration)
+      var(--ch-accordion-expand-collapse-timing-function);
+  }
+
+  &--expanded::after {
+    transform: rotate(-180deg); // TODO: Add support for RTL
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.header {
+  --ch-accordion-header-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-accordion-header-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-accordion-header-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-accordion-header-start-img: var(--ch-start-img--focus);
+  }
+
+  &.start-img--disabled.ch-disabled {
+    --ch-accordion-header-start-img: var(--ch-start-img--disabled);
+  }
+}
+
+.pseudo-img--start::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-accordion__header-image-size);
+  block-size: var(--ch-accordion__header-image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-accordion__header-image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center /
+    var(--ch-accordion__header-background-image-size)
+    var(--ch-accordion-header-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center /
+    var(--ch-accordion__header-background-image-size)
+    var(--ch-accordion-header-start-img);
+  background-color: currentColor;
+}
+
+section {
   display: grid;
-  grid-template-rows: 0fr;
-  visibility: hidden;
-  transition: grid-template-rows 250ms;
 }
 
-.expanded {
-  visibility: visible;
-  grid-template-rows: 1fr;
-}
-
-.expandable ::slotted(*) {
-  height: 100%;
+section,
+.sub-section {
+  display: grid;
   overflow: hidden;
+}
+
+// Necessary to hide the collapsed DOM and remove keyboard interactions
+.section--hidden {
+  visibility: hidden;
 }

@@ -29,8 +29,10 @@ import { registryProperty } from "../../../common/registry-properties";
 import { getImagePathCallbackImage } from "./image/models";
 import { getImagePathCallbackEdit } from "./edit/models";
 import { getImagePathCallbackTreeView } from "./tree-view/models";
+import { getAccordionPathCallbackEdit } from "./accordion/models";
 
 registryProperty("getImagePathCallback", {
+  "ch-accordion-render": getAccordionPathCallbackEdit,
   "ch-edit": getImagePathCallbackEdit,
   "ch-image": getImagePathCallbackImage,
   "ch-tree-view-render": getImagePathCallbackTreeView

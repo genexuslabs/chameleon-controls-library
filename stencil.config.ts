@@ -30,6 +30,9 @@ export const config: Config = {
   },
   bundles: [
     {
+      components: ["ch-accordion-render"] // Make sure the ch-accordion-render control is not bundled with other components
+    },
+    {
       components: [
         "ch-action-group",
         "ch-action-group-item",
@@ -94,6 +97,9 @@ export const config: Config = {
         "ch-tree-view-item",
         "ch-tree-view-render"
       ]
+    },
+    {
+      components: ["ch-virtual-scroller"] // Make sure the ch-virtual-scroller control is not bundled with other components
     }
   ]
 };

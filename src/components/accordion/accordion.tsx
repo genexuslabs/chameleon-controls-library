@@ -42,6 +42,13 @@ export class ChAccordionRender implements ComponentInterface {
   @Element() el: HTMLChAccordionRenderElement;
 
   /**
+   * This attribute lets you specify if all accordions are disabled.
+   * If disabled,accordions will not fire any user interaction related event
+   * (for example, `expandedChange` event).
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
    * This property specifies a callback that is executed when the path for an
    * startImgSrc needs to be resolved.
    */
@@ -130,6 +137,7 @@ export class ChAccordionRender implements ComponentInterface {
   #renderItem = (item: AccordionItem, index: number) => {
     const startImage = this.#images.get(item.id);
     const startImageClasses = startImage?.classes;
+    const isDisabled = item.disabled ?? this.disabled;
 
     return (
       <div
@@ -138,6 +146,7 @@ export class ChAccordionRender implements ComponentInterface {
         part={tokenMap({
           [item.id]: true,
           [ACCORDION_PARTS_DICTIONARY.PANEL]: true,
+          [ACCORDION_PARTS_DICTIONARY.DISABLED]: isDisabled,
           [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
           [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
         })}
@@ -149,7 +158,7 @@ export class ChAccordionRender implements ComponentInterface {
           aria-expanded={item.expanded ? "true" : "false"}
           class={{
             header: true,
-            [DISABLED_CLASS]: item.disabled,
+            [DISABLED_CLASS]: isDisabled,
             "header--expanded": item.expanded,
             [`start-img-type--${
               item.startImgType ?? "background"
@@ -160,11 +169,12 @@ export class ChAccordionRender implements ComponentInterface {
             [item.id]: true,
             [item.headerSlotId]: !!item.headerSlotId,
             [ACCORDION_PARTS_DICTIONARY.HEADER]: true,
+            [ACCORDION_PARTS_DICTIONARY.DISABLED]: isDisabled,
             [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
             [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
           })}
           style={startImage?.styles ?? undefined}
-          disabled={item.disabled}
+          disabled={isDisabled}
           type="button"
         >
           {item.headerSlotId ? <slot name={item.headerSlotId} /> : item.caption}
@@ -181,6 +191,7 @@ export class ChAccordionRender implements ComponentInterface {
             part={tokenMap({
               [item.id]: true,
               [ACCORDION_PARTS_DICTIONARY.SECTION]: true,
+              [ACCORDION_PARTS_DICTIONARY.DISABLED]: isDisabled,
               [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
               [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
             })}

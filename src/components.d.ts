@@ -3502,9 +3502,9 @@ export namespace Components {
          */
         "filterDebounce": number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`. If `undefined` or `null` all items will be rendered. If `[]` no items will be rendered.
          */
-        "filterList": string[];
+        "filterList": string[] | undefined | null;
         /**
           * This property lets you determine the options that will be applied to the filter.
          */
@@ -9428,9 +9428,9 @@ declare namespace LocalJSX {
          */
         "filterDebounce"?: number;
         /**
-          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`.
+          * This property lets you determine the list of items that will be filtered. Only works if `filterType = "list"`. If `undefined` or `null` all items will be rendered. If `[]` no items will be rendered.
          */
-        "filterList"?: string[];
+        "filterList"?: string[] | undefined | null;
         /**
           * This property lets you determine the options that will be applied to the filter.
          */

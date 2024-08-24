@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { h } from "@stencil/core";
-import { SuggestItemData } from "../../../deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
-import { SuggestListData } from "../../../deprecated-components/suggest/suggest-list/ch-suggest-list";
-import { SuggestData } from "../../../deprecated-components/suggest/ch-suggest";
+import { SuggestItemData } from "../../suggest/suggest-list-item/ch-suggest-list-item";
+import { SuggestListData } from "../../suggest/suggest-list/ch-suggest-list";
+import { SuggestData } from "../../suggest/ch-suggest";
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export const renderSuggestLists = (
   suggestData: SuggestData
 ): HTMLChSuggestListElement[] => {

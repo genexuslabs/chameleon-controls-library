@@ -1,11 +1,12 @@
 import { SelectorCategoryData, ObjectData } from "./test-suggest";
 
-import { SuggestItemData } from "../../../deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
-import { SuggestListData } from "../../../deprecated-components/suggest/suggest-list/ch-suggest-list";
-import { SuggestData } from "../../../deprecated-components/suggest/ch-suggest";
+import { SuggestItemData } from "../../suggest/suggest-list-item/ch-suggest-list-item";
+import { SuggestListData } from "../../suggest/suggest-list/ch-suggest-list";
+import { SuggestData } from "../../suggest/ch-suggest";
 
 /**
- * @description This function converts SelectorCategoryData[] SuggestData
+ * This function converts SelectorCategoryData[] SuggestData
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
  */
 export const convertObjectDataToSuggestData = (
   selectorCategoriesData: SelectorCategoryData[]

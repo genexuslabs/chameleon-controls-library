@@ -146,7 +146,11 @@ const defaultRenderItem = <T extends true | false>(
   dropBeforeAndAfterEnabled: boolean,
   useGxRender = false
 ) =>
-  (treeState.filterType === "none" || itemModel.render !== false) && [
+  (treeState.filterType === "none" ||
+    itemModel.render !== false ||
+    (treeState.filterType === "list" &&
+      (treeState.filterList === undefined ||
+        treeState.filterList === null))) && [
     dropBeforeAndAfterEnabled && (
       <ch-tree-view-drop
         id={treeDropId(itemModel.id)}
@@ -449,8 +453,10 @@ export class ChTreeViewRender {
   /**
    * This property lets you determine the list of items that will be filtered.
    * Only works if `filterType = "list"`.
+   * If `undefined` or `null` all items will be rendered. If `[]` no items will
+   * be rendered.
    */
-  @Prop() readonly filterList: string[] = [];
+  @Prop() readonly filterList: string[] | undefined | null = undefined;
   @Watch("filterList")
   filterListChanged() {
     // Use a Set to efficiently check for ids
@@ -486,7 +492,14 @@ export class ChTreeViewRender {
    */
   @Prop() readonly filterType: TreeViewFilterType = "none";
   @Watch("filterType")
-  filterTypeChanged() {
+  filterTypeChanged(newValue: TreeViewFilterType) {
+    if (newValue === "list") {
+      // Use a Set to efficiently check for ids
+      this.#filterListAsSet = new Set(this.filterList);
+    } else {
+      this.#filterListAsSet = undefined; // Free the memory
+    }
+
     this.#scheduleFilterProcessing();
   }
 
@@ -1530,6 +1543,10 @@ export class ChTreeViewRender {
       const currentSelectedItems: Set<string> = new Set();
       const currentCheckedItems: Map<string, TreeViewItemModelExtended> =
         new Map();
+
+      if (this.filterType === "list") {
+        this.#filterListAsSet ??= new Set();
+      }
 
       this.#filterSubModel(
         {

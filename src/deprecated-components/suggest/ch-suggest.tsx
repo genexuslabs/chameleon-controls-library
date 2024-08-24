@@ -23,6 +23,10 @@ import { LabelPosition } from "../../common/types";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
+
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 @Component({
   tag: "ch-suggest",
   styleUrl: "ch-suggest.scss",
@@ -403,6 +407,9 @@ INDEX:
   }
 }
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type ChSuggestKeyDownEvents = typeof ARROW_DOWN | typeof ARROW_UP;
 type FocusChangeAttemptEventData = {
   event: FocusChangeAttempt;
@@ -412,6 +419,9 @@ type FocusChangeAttemptEventData = {
   newItemToSetFocusOn: HTMLElement | null;
 };
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SuggestData = {
   suggestItems: SuggestItemData[];
   suggestLists: SuggestListData[];

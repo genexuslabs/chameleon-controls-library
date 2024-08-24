@@ -14,6 +14,10 @@ import { ChSuggestKeyDownEvents } from "../ch-suggest";
 
 const ARROW_DOWN = "ArrowDown";
 const ARROW_UP = "ArrowUp";
+
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 @Component({
   tag: "ch-suggest-list-item",
   styleUrl: "ch-suggest-list-item.scss",
@@ -154,12 +158,18 @@ INDEX:
   }
 }
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SuggestItemData = {
   value: any;
   description?: string;
   icon?: string;
 };
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SuggestItemSelectedEvent = {
   value: any;
   indexes: SuggestItemIndexes;
@@ -167,11 +177,17 @@ export type SuggestItemSelectedEvent = {
   icon?: string;
 };
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type FocusChangeAttempt = {
   el: HTMLChSuggestListItemElement;
   code: ChSuggestKeyDownEvents;
 };
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SuggestItemIndexes = {
   itemIndex: number;
   listIndex: number | undefined;

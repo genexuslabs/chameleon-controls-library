@@ -4,6 +4,9 @@ import { SuggestItemData } from "../../suggest/suggest-list-item/ch-suggest-list
 import { SuggestListData } from "../../suggest/suggest-list/ch-suggest-list";
 import { SuggestData } from "../../suggest/ch-suggest";
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export const renderSuggestLists = (
   suggestData: SuggestData
 ): HTMLChSuggestListElement[] => {

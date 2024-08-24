@@ -3,6 +3,9 @@ import { SuggestData } from "../../suggest/ch-suggest";
 import { convertObjectDataToSuggestData } from "./helpers";
 import { renderSuggestLists } from "./renderSuggest";
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 @Component({
   tag: "ch-test-suggest",
   styleUrl: "test-suggest.css",
@@ -85,11 +88,17 @@ INDEX:
   }
 }
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SelectorCategoryData = {
   name: string;
   items: ObjectData[];
 };
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type ObjectData = {
   id: string;
   icon: string;

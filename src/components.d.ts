@@ -40,14 +40,14 @@ import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
-import { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+import { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
+import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 import { GridLocalization as GridLocalization1 } from "./components/tabular-grid/tabular-grid";
 import { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
 import { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 import { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
-import { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+import { SelectorCategoryData } from "./deprecated-components/test/test-suggest/test-suggest";
 import { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 import { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 import { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
@@ -96,14 +96,14 @@ export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
-export { SuggestItemSelectedEvent } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
-export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./components/suggest/suggest-list-item/ch-suggest-list-item";
+export { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
+export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
 export { GridLocalization as GridLocalization1 } from "./components/tabular-grid/tabular-grid";
 export { TabularGridCellSelectionChangedEvent, TabularGridMarkingChangedEvent, TabularGridRowClickedEvent, TabularGridRowContextMenuEvent, TabularGridRowPressedEvent, TabularGridSelectionChangedEvent } from "./components/tabular-grid/tabular-grid-types";
 export { TabularGridColumnDragEvent, TabularGridColumnFreeze, TabularGridColumnFreezeChangedEvent, TabularGridColumnHiddenChangedEvent, TabularGridColumnOrderChangedEvent, TabularGridColumnResizeEvent, TabularGridColumnSelectorClickedEvent, TabularGridColumnSizeChangedEvent, TabularGridColumnSortChangedEvent, TabularGridColumnSortDirection } from "./components/tabular-grid/column/tabular-grid-column-types";
 export { TabularGridInfiniteScrollState } from "./components/tabular-grid/infinite-scroll/tabular-grid-infinite-scroll";
-export { SelectorCategoryData } from "./components/test/test-suggest/test-suggest";
+export { SelectorCategoryData } from "./deprecated-components/test/test-suggest/test-suggest";
 export { ChThemeLoadedEvent, ThemeModel } from "./components/theme/theme-types";
 export { checkedChTreeItem } from "./deprecated-components/tree/ch-tree";
 export { chTreeItemData } from "./deprecated-components/tree-item/ch-tree-item";
@@ -2477,6 +2477,9 @@ export namespace Components {
          */
         "href": string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggest {
         /**
           * If true, it will position the cursor at the end when the input is focused.
@@ -2515,12 +2518,18 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggestList {
         /**
           * The label
          */
         "label": string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggestListItem {
         /**
           * The icon url
@@ -3062,6 +3071,9 @@ export namespace Components {
          */
         "model": FlexibleLayoutModel;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -5194,6 +5206,9 @@ declare global {
         "valueChanged": string;
         "selectionChanged": SuggestItemSelectedEvent;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface HTMLChSuggestElement extends Components.ChSuggest, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChSuggestElementEventMap>(type: K, listener: (this: HTMLChSuggestElement, ev: ChSuggestCustomEvent<HTMLChSuggestElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5208,6 +5223,9 @@ declare global {
         prototype: HTMLChSuggestElement;
         new (): HTMLChSuggestElement;
     };
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface HTMLChSuggestListElement extends Components.ChSuggestList, HTMLStencilElement {
     }
     var HTMLChSuggestListElement: {
@@ -5218,6 +5236,9 @@ declare global {
         "itemSelected": SuggestItemSelectedEvent1;
         "focusChangeAttempt": FocusChangeAttempt;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface HTMLChSuggestListItemElement extends Components.ChSuggestListItem, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChSuggestListItemElementEventMap>(type: K, listener: (this: HTMLChSuggestListItemElement, ev: ChSuggestListItemCustomEvent<HTMLChSuggestListItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
         addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5554,6 +5575,9 @@ declare global {
         prototype: HTMLChTestFlexibleLayoutElement;
         new (): HTMLChTestFlexibleLayoutElement;
     };
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface HTMLChTestSuggestElement extends Components.ChTestSuggest, HTMLStencilElement {
     }
     var HTMLChTestSuggestElement: {
@@ -8348,6 +8372,9 @@ declare namespace LocalJSX {
          */
         "href"?: string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggest {
         /**
           * If true, it will position the cursor at the end when the input is focused.
@@ -8390,12 +8417,18 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggestList {
         /**
           * The label
          */
         "label"?: string;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChSuggestListItem {
         /**
           * The icon url
@@ -8943,6 +8976,9 @@ declare namespace LocalJSX {
          */
         "model"?: FlexibleLayoutModel;
     }
+    /**
+     * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+     */
     interface ChTestSuggest {
         /**
           * Callback invoked when user writes on object selector input, return possible options to show in autocomplete list
@@ -10005,8 +10041,17 @@ declare module "@stencil/core" {
              * referencing an external stylesheet in a similar way to the html LINK tag.
              */
             "ch-style": LocalJSX.ChStyle & JSXBase.HTMLAttributes<HTMLChStyleElement>;
+            /**
+             * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+             */
             "ch-suggest": LocalJSX.ChSuggest & JSXBase.HTMLAttributes<HTMLChSuggestElement>;
+            /**
+             * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+             */
             "ch-suggest-list": LocalJSX.ChSuggestList & JSXBase.HTMLAttributes<HTMLChSuggestListElement>;
+            /**
+             * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+             */
             "ch-suggest-list-item": LocalJSX.ChSuggestListItem & JSXBase.HTMLAttributes<HTMLChSuggestListItemElement>;
             /**
              * @status experimental
@@ -10083,6 +10128,9 @@ declare module "@stencil/core" {
              */
             "ch-tabular-grid-virtual-scroller": LocalJSX.ChTabularGridVirtualScroller & JSXBase.HTMLAttributes<HTMLChTabularGridVirtualScrollerElement>;
             "ch-test-flexible-layout": LocalJSX.ChTestFlexibleLayout & JSXBase.HTMLAttributes<HTMLChTestFlexibleLayoutElement>;
+            /**
+             * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+             */
             "ch-test-suggest": LocalJSX.ChTestSuggest & JSXBase.HTMLAttributes<HTMLChTestSuggestElement>;
             /**
              * @status developer-preview

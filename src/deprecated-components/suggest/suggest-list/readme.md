@@ -5,6 +5,8 @@
 <!-- Auto Generated Below -->
 
 
+> **[DEPRECATED]** Use the `ch-combo-box-render` with `suggest = true`
+
 ## Properties
 
 | Property | Attribute | Description | Type     | Default     |

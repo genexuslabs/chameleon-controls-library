@@ -5,6 +5,8 @@
 <!-- Auto Generated Below -->
 
 
+> **[DEPRECATED]** Use the `ch-combo-box-render` with `suggest = true`
+
 ## Properties
 
 | Property                 | Attribute | Description                                                                                                      | Type                                                  | Default     |
@@ -23,9 +25,9 @@
 
 ### Depends on
 
-- [ch-suggest](../../../deprecated-components/suggest)
-- [ch-suggest-list](../../../deprecated-components/suggest/suggest-list)
-- [ch-suggest-list-item](../../../deprecated-components/suggest/suggest-list-item)
+- [ch-suggest](../../suggest)
+- [ch-suggest-list](../../suggest/suggest-list)
+- [ch-suggest-list-item](../../suggest/suggest-list-item)
 
 ### Graph
 ```mermaid

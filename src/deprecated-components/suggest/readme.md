@@ -5,6 +5,8 @@
 <!-- Auto Generated Below -->
 
 
+> **[DEPRECATED]** Use the `ch-combo-box-render` with `suggest = true`
+
 ## Properties
 
 | Property        | Attribute        | Description                                                                                                                                                                                        | Type                 | Default     |
@@ -58,7 +60,7 @@ Type: `Promise<void>`
 
 ### Depends on
 
-- [ch-window](../../deprecated-components/window)
+- [ch-window](../window)
 
 ### Graph
 ```mermaid

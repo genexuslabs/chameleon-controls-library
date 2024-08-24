@@ -1,5 +1,5 @@
 import { Component, Host, h, Prop, State } from "@stencil/core";
-import { SuggestData } from "../../suggest/ch-suggest";
+import { SuggestData } from "../../../deprecated-components/suggest/ch-suggest";
 import { convertObjectDataToSuggestData } from "./helpers";
 import { renderSuggestLists } from "./renderSuggest";
 

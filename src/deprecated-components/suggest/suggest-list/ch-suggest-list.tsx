@@ -1,6 +1,9 @@
 import { Component, Host, h, Prop } from "@stencil/core";
 import { SuggestItemData } from "../suggest-list-item/ch-suggest-list-item";
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 @Component({
   tag: "ch-suggest-list",
   styleUrl: "ch-suggest-list.scss",
@@ -66,6 +69,9 @@ INDEX:
   }
 }
 
+/**
+ * @deprecated Use the `ch-combo-box-render` with `suggest = true`
+ */
 export type SuggestListData = {
   label: string;
   items: SuggestItemData[];

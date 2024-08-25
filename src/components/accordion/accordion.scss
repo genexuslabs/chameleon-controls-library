@@ -152,6 +152,8 @@
 section {
   display: grid;
   overflow: hidden;
+
+  // Delays the visibility application based on the value of var(--ch-accordion-expand-collapse-duration)
   transition: visibility var(--ch-accordion-expand-collapse-duration)
     allow-discrete;
 }

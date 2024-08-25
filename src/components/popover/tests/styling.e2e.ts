@@ -1,9 +1,13 @@
-import { newE2EPage } from "@stencil/core/testing";
+import { E2EPage, newE2EPage } from "@stencil/core/testing";
 
 describe("[ch-popover]", () => {
-  it('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', async () => {
-    const page = await newE2EPage();
+  let page: E2EPage;
 
+  beforeEach(async () => {
+    page = await newE2EPage({ failOnConsoleError: true });
+  });
+
+  it('should style the ch-popover\'s scrollbar when setting a ch-theme with "chameleon/scrollbar"', async () => {
     await page.setContent(`<ch-theme></ch-theme>
       <ch-popover></ch-popover>`);
 

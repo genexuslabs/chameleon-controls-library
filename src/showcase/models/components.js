@@ -22,6 +22,7 @@ const components = [
   ["tabular-grid", "Tabular Grid", STABLE],
   ["layout-splitter", "Layout Splitter", EXPERIMENTAL],
   ["markdown", "Markdown", EXPERIMENTAL],
+  ["navigation-list", "Navigation List", EXPERIMENTAL],
   // ["notifications", "Notifications", EXPERIMENTAL], // Temporally disabled
   ["paginator", "Paginator", STABLE],
   ["popover", "Popover", EXPERIMENTAL],

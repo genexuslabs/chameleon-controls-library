@@ -14,6 +14,7 @@ import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flex
 import { ChImage } from "../../../components/image/image";
 import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
 import { ChMarkdownViewer } from "../../../components/markdown-viewer/markdown-viewer";
+import { ChNavigationListRender } from "../../../components/navigation-list/navigation-list-render";
 import { ChPopover } from "../../../components/popover/popover";
 import { ChQr } from "../../../components/qr/qr";
 import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
@@ -128,6 +129,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChEdit>
   | Mutable<ChImage>
   | Mutable<ChLayoutSplitter>
+  | Mutable<ChNavigationListRender>
   | Mutable<ChPopover>
   | Mutable<ChQr>
   | Mutable<ChRadioGroupRender>

@@ -13,6 +13,7 @@ import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.s
 import { imageShowcaseStory } from "./image/image.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
@@ -36,6 +37,7 @@ export const showcaseStories = {
   edit: editShowcaseStory,
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
+  "navigation-list": navigationListShowcaseStory,
   popover: popoverShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,

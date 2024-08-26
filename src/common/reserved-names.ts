@@ -235,6 +235,36 @@ export const DROPDOWN_PARTS_DICTIONARY = {
 export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 
 // - - - - - - - - - - - - - - - - - - - -
+//          Navigation List Parts
+// - - - - - - - - - - - - - - - - - - - -
+export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
+  ACTION: "item__action",
+  BUTTON: "item__button",
+  EXPANDABLE_BUTTON: "item__expandable-button",
+  GROUP: "item__group",
+  HEADER: "item__header",
+  LINK: "item__link",
+
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // ACTION, EXPANDABLE_BUTTON
+
+  EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
+  COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
+
+  EXPAND_BUTTON: "expand-button", // HEADER
+
+  EVEN_LEVEL: "even-level", // HEADER, GROUP
+  ODD_LEVEL: "odd-level", // HEADER, GROUP
+
+  START_IMAGE: "start-img", // IMAGE
+  END_IMAGE: "end-img" // IMAGE
+} as const;
+
+export const NAVIGATION_LIST_ITEM_EXPORT_PARTS = joinParts(
+  NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
+);
+
+// - - - - - - - - - - - - - - - - - - - -
 //            Radio item Parts
 // - - - - - - - - - - - - - - - - - - - -
 export const RADIO_ITEM_PARTS_DICTIONARY = {

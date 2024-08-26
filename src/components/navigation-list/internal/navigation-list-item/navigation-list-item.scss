@@ -5,4 +5,76 @@
 @include button-reset();
 
 :host {
+  display: grid;
+}
+
+:host(.expandable) {
+  grid-template-rows: max-content 0fr;
+  transition: grid-template-rows
+    var(--ch-navigation-list-item-expand-collapse-duration)
+    var(--ch-navigation-list-item-expand-collapse-timing-function);
+}
+
+:host(.expandable--expanded) {
+  grid-template-rows: max-content 1fr;
+}
+
+.ch-navigation-list-expandable-button-container {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-navigation-list-item-gap);
+}
+
+.expandable-button-container--decorative {
+  cursor: pointer;
+}
+
+.action {
+  display: flex;
+  flex: 1;
+  gap: var(--ch-navigation-list-item-gap);
+}
+
+.expandable {
+  display: grid;
+  overflow: hidden;
+
+  &--collapsed {
+    visibility: hidden;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//        Expandable button
+// - - - - - - - - - - - - - - - -
+.expandable-button {
+  display: grid;
+  place-items: center;
+  inline-size: var(--ch-navigation-list-item__expandable-button-size);
+  block-size: var(--ch-navigation-list-item__expandable-button-size);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.expandable-button {
+  &::before {
+    content: "";
+    display: grid;
+    inline-size: 100%;
+    block-size: 100%;
+    background-color: currentColor;
+    -webkit-mask: no-repeat center /
+      var(--ch-navigation-list-item__expandable-button-image-size)
+      $expandable-icon;
+
+    cursor: pointer;
+  }
+
+  &--collapsed::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
+button:focus-visible {
+  outline: 1px solid;
 }

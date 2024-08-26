@@ -4,4 +4,53 @@
 @include box-sizing();
 
 :host {
+  /**
+   * @prop --ch-navigation-list-item-expand-collapse-duration
+   * Specifies duration of the expand and collapse animation
+   * @default 0ms
+   */
+  --ch-navigation-list-item-expand-collapse-duration: 0ms;
+
+  /**
+    * @prop --ch-navigation-list-item-expand-collapse-timing-function
+    * Specifies timing function of the expand and collapse animation
+    * @default linear
+    */
+  --ch-navigation-list-item-expand-collapse-timing-function: linear;
+
+  /**
+   * @prop --ch-navigation-list-item-gap:
+   * Specifies the spacing between the images, text and the expandable button
+   * of the items.
+   * @default 0px
+   */
+  --ch-navigation-list-item-gap: 0px;
+
+  /**
+   * @prop --ch-navigation-list-item__checkbox-size:
+   * Specifies the expandable button size of the items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-navigation-list-item__expandable-button-size: #{$default-decorative-image-size};
+
+  /**
+   * @prop --ch-navigation-list-item__expandable-button-image-size:
+   * Specifies the image size of the expandable button.
+   * @default 100%
+   */
+  --ch-navigation-list-item__expandable-button-image-size: 100%;
+
+  /**
+   * @prop --ch-navigation-list-item__image-size:
+   * Specifies the box size that contains the start image of the items.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-navigation-list-item__image-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-navigation-list-item__image-size:
+    * Specifies the size of the start image of the items.
+    * @default 100%
+    */
+  --ch-navigation-list-item__background-image-size: 100%;
 }

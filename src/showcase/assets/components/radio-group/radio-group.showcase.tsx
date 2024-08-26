@@ -2,7 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChRadioGroupRender } from "../../../../components/radio-group/radio-group-render";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
-import { simpleModel2 } from "./models";
+import { simpleModel1, simpleModel2 } from "./models";
 
 const state: Partial<Mutable<ChRadioGroupRender>> = {};
 const formRefs: {
@@ -118,9 +118,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         accessibleName: "Model",
         type: "enum",
         values: [
-          { caption: "Simple Model", value: simpleModel2 },
-          { caption: "Small Model", value: simpleModel2 },
-          { caption: "Data Type Model in GeneXus", value: simpleModel2 }
+          { caption: "Simple Model", value: simpleModel1 },
+          { caption: "Simple Model 2", value: simpleModel2 }
         ],
         value: simpleModel2
       }

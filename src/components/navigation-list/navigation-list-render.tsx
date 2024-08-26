@@ -12,6 +12,8 @@ const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
   imageSrc: string
 ) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
 
+// items != null comparison is based on the following benchmark
+// https://www.measurethat.net/Benchmarks/Show/6389/0/compare-comparison-with-null-or-undefined
 const defaultRender = (
   item: NavigationListItem,
   navigationListState: ChNavigationListRender

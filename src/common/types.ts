@@ -150,3 +150,7 @@ export type ChameleonImagePathCallbackControlsTagName = Extract<
 export type ChameleonImagePathCallbackControls = {
   [key in ChameleonImagePathCallbackControlsTagName]: ChameleonControls[key];
 };
+
+export type ItemLink = {
+  url: string;
+};

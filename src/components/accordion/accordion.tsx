@@ -81,14 +81,14 @@ export class ChAccordionRender implements ComponentInterface {
   /**
    * Specifies the items of the control.
    */
-  @Prop() readonly model!: AccordionModel;
+  @Prop() readonly model?: AccordionModel | undefined;
   @Watch("model")
   modelChanged() {
     this.#computeImages();
     this.#expandedItems.clear();
     this.#renderedItems.clear();
 
-    this.model.forEach(item => {
+    this.model?.forEach(item => {
       if (item.expanded) {
         this.#expandedItems.add(item.id);
         this.#renderedItems.add(item.id);
@@ -137,7 +137,7 @@ export class ChAccordionRender implements ComponentInterface {
   #computeImages = () => {
     this.#images.clear();
 
-    this.model.forEach(itemUIModel => {
+    this.model?.forEach(itemUIModel => {
       const itemImage = this.#computeImage(itemUIModel.startImgSrc);
 
       if (itemImage) {
@@ -321,7 +321,7 @@ export class ChAccordionRender implements ComponentInterface {
 
     this.#computeImages();
 
-    this.model.forEach(item => {
+    this.model?.forEach(item => {
       if (item.expanded) {
         this.#expandedItems.add(item.id);
         this.#renderedItems.add(item.id);
@@ -338,7 +338,7 @@ export class ChAccordionRender implements ComponentInterface {
         // key on an input/textarea
         onClick={this.#handleHeaderToggle}
       >
-        {this.model.map(this.#renderItem)}
+        {(this.model ?? []).map(this.#renderItem)}
       </Host>
     );
   }

@@ -6,7 +6,8 @@ describe("[ch-combo-box-render][behavior][suggest]", () => {
 
   beforeEach(async () => {
     page = await newE2EPage({
-      html: `<ch-combo-box-render suggest></ch-combo-box-render>`
+      html: `<ch-combo-box-render suggest></ch-combo-box-render>`,
+      failOnConsoleError: true
     });
     comboBoxRef = await page.find("ch-combo-box-render");
   });

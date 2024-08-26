@@ -43,7 +43,19 @@ const ELEMENTS_TO_PREVENT_EXPAND_COLLAPSE = ["input", "textarea"];
 })
 export class ChAccordionRender implements ComponentInterface {
   #images: Map<string, GxImageMultiStateStart | undefined> = new Map();
+
+  /**
+   * Useful to track all expand/collapse interactions in order to close all
+   * items expect for the last expanded when switching to `singleItemExpanded`
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
   #expandedItems: Set<string> = new Set();
+
+  /**
+   * Useful to rendering items after the first expansion.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #renderedItems: Set<string> = new Set();
 
   @Element() el: HTMLChAccordionRenderElement;
 
@@ -69,15 +81,17 @@ export class ChAccordionRender implements ComponentInterface {
   /**
    * Specifies the items of the control.
    */
-  @Prop() readonly model!: AccordionModel;
+  @Prop() readonly model?: AccordionModel | undefined;
   @Watch("model")
   modelChanged() {
     this.#computeImages();
     this.#expandedItems.clear();
+    this.#renderedItems.clear();
 
-    this.model.forEach(item => {
+    this.model?.forEach(item => {
       if (item.expanded) {
         this.#expandedItems.add(item.id);
+        this.#renderedItems.add(item.id);
       }
     });
 
@@ -123,7 +137,7 @@ export class ChAccordionRender implements ComponentInterface {
   #computeImages = () => {
     this.#images.clear();
 
-    this.model.forEach(itemUIModel => {
+    this.model?.forEach(itemUIModel => {
       const itemImage = this.#computeImage(itemUIModel.startImgSrc);
 
       if (itemImage) {
@@ -186,6 +200,7 @@ export class ChAccordionRender implements ComponentInterface {
     // If the item is expanded, added it to the Set
     if (newExpandedValue) {
       this.#expandedItems.add(itemUIModel.id);
+      this.#renderedItems.add(itemUIModel.id);
     }
     // Otherwise, remove it
     else {
@@ -253,18 +268,20 @@ export class ChAccordionRender implements ComponentInterface {
           aria-labelledby={!item.accessibleName ? item.id : undefined}
           class={!item.expanded ? "section--hidden" : undefined}
         >
-          <div
-            class="sub-section"
-            part={tokenMap({
-              [item.id]: true,
-              [ACCORDION_PARTS_DICTIONARY.SECTION]: true,
-              [ACCORDION_PARTS_DICTIONARY.DISABLED]: isDisabled,
-              [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
-              [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
-            })}
-          >
-            <slot name={item.id} />
-          </div>
+          {(this.#renderedItems.has(item.id) || !item.id) && (
+            <div
+              class="sub-section"
+              part={tokenMap({
+                [item.id]: true,
+                [ACCORDION_PARTS_DICTIONARY.SECTION]: true,
+                [ACCORDION_PARTS_DICTIONARY.DISABLED]: isDisabled,
+                [ACCORDION_PARTS_DICTIONARY.EXPANDED]: item.expanded,
+                [ACCORDION_PARTS_DICTIONARY.COLLAPSED]: !item.expanded
+              })}
+            >
+              <slot name={item.id} />
+            </div>
+          )}
         </section>
       </div>
     );
@@ -304,9 +321,10 @@ export class ChAccordionRender implements ComponentInterface {
 
     this.#computeImages();
 
-    this.model.forEach(item => {
+    this.model?.forEach(item => {
       if (item.expanded) {
         this.#expandedItems.add(item.id);
+        this.#renderedItems.add(item.id);
       }
     });
 
@@ -320,7 +338,7 @@ export class ChAccordionRender implements ComponentInterface {
         // key on an input/textarea
         onClick={this.#handleHeaderToggle}
       >
-        {this.model.map(this.#renderItem)}
+        {(this.model ?? []).map(this.#renderItem)}
       </Host>
     );
   }

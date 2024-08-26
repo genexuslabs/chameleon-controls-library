@@ -2,7 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { ChAccordionRender } from "../../../../components/accordion/accordion";
-import { disabledModel, simpleModel } from "./models";
+import { accordionDisabledModel, accordionSimpleModel } from "./models";
 import {
   AccordionItemExpandedChangeEvent,
   ChAccordionRenderCustomEvent
@@ -47,6 +47,18 @@ const render = () => (
         <button class="button-primary" type="button">
           Some action
         </button>
+        <div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga rem cum
+          deleniti? Ullam sit saepe non laudantium dicta alias, corrupti dolores
+          rerum sint, maiores expedita esse, molestias modi perspiciatis
+          pariatur.
+        </div>
+        <div>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga rem cum
+          deleniti? Ullam sit saepe non laudantium dicta alias, corrupti dolores
+          rerum sint, maiores expedita esse, molestias modi perspiciatis
+          pariatur.
+        </div>
       </div>
     )}
 
@@ -96,10 +108,10 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         id: "model",
         caption: "Model",
         type: "enum",
-        value: simpleModel,
+        value: accordionSimpleModel,
         values: [
-          { caption: "Simple model", value: simpleModel },
-          { caption: "Disabled model", value: disabledModel }
+          { caption: "Simple model", value: accordionSimpleModel },
+          { caption: "Disabled model", value: accordionDisabledModel }
         ]
       },
       {
@@ -122,27 +134,39 @@ export const accordionShowcaseStory: ShowcaseStory<Mutable<ChAccordionRender>> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
-      uiModel: simpleModel,
+      uiModel: accordionSimpleModel,
       uiModelType: "TabModel",
       render: `<ch-accordion-render
           class="accordion"
-          model={state.model}
-          onExpandedChange={expandedItemChangeHandler}
+          model={this.#controlUIModel}
+          onExpandedChange={this.#handleExpandedItemChange}
         >
           {renderedItems.has("item 1") && (
             <div slot="item 1">Content of the item 1</div>
           )}
-    
-           {renderedItems.has("item 2") && (
+
+          {renderedItems.has("item 2") && (
             <div slot="item 2">
               Content of the item 2
               <button class="button-primary" type="button">
                 Some action
               </button>
+              <div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga rem cum
+                deleniti? Ullam sit saepe non laudantium dicta alias, corrupti dolores
+                rerum sint, maiores expedita esse, molestias modi perspiciatis
+                pariatur.
+              </div>
+              <div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga rem cum
+                deleniti? Ullam sit saepe non laudantium dicta alias, corrupti dolores
+                rerum sint, maiores expedita esse, molestias modi perspiciatis
+                pariatur.
+              </div>
             </div>
           )}
-    
-           {renderedItems.has("item 3") && (
+
+          {renderedItems.has("item 3") && (
             <div slot="item 3">
               Content of the item 3
               <button class="button-secondary" type="button">
@@ -150,25 +174,31 @@ export const accordionShowcaseStory: ShowcaseStory<Mutable<ChAccordionRender>> =
               </button>
             </div>
           )}
-    
-           {renderedItems.has("item 4") && [
-            <div slot="item 4 header">
-              Custom header
-              <input
-                aria-label="Search"
-                class="form-input"
-                type="text"
-                placeholder="Search..."
-              />
-            </div>,
-    
-             <div slot="item 4">
+
+          <div slot="item 4 header">
+            Custom header
+            <input
+              aria-label="Search"
+              class="form-input"
+              type="text"
+              placeholder="Search..."
+            />
+            <ch-slider
+              accessibleName="Temperature"
+              class="slider slider-secondary"
+              minValue={0}
+              maxValue={50}
+            ></ch-slider>
+          </div>
+
+          {renderedItems.has("item 4") && (
+            <div slot="item 4">
               Content of the item 4
               <button class="button-tertiary" type="button">
                 Some action
               </button>
             </div>
-          ]}
+          )}
         </ch-accordion-render>`
     },
     render: render,

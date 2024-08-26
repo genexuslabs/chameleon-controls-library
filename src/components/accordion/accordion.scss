@@ -151,15 +151,18 @@
 
 section {
   display: grid;
-}
-
-section,
-.sub-section {
-  display: grid;
   overflow: hidden;
+
+  // Delays the visibility application based on the value of var(--ch-accordion-expand-collapse-duration)
+  transition: visibility var(--ch-accordion-expand-collapse-duration)
+    allow-discrete;
 }
 
 // Necessary to hide the collapsed DOM and remove keyboard interactions
 .section--hidden {
   visibility: hidden;
+}
+
+.sub-section {
+  display: grid;
 }

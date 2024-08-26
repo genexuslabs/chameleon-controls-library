@@ -152,7 +152,7 @@ export namespace Components {
         /**
           * Specifies the items of the control.
          */
-        "model": AccordionModel;
+        "model"?: AccordionModel | undefined;
         /**
           * If `true` only one item will be expanded at the same time.
          */
@@ -5975,7 +5975,7 @@ declare namespace LocalJSX {
         /**
           * Specifies the items of the control.
          */
-        "model": AccordionModel;
+        "model"?: AccordionModel | undefined;
         /**
           * Fired when an item is expanded or collapsed
          */

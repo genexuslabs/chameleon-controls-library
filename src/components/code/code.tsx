@@ -1,5 +1,7 @@
 import { Component, Element, Host, Prop, State, h } from "@stencil/core";
 import { CodeToJSX } from "./internal/types";
+import { adoptCommonThemes } from "../../common/theme";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 
 let parseCodeToJSX: CodeToJSX;
 
@@ -62,6 +64,10 @@ export class ChCode {
       this.lastNestedChildClass
     );
 
+  connectedCallback() {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+  }
+
   async componentWillRender() {
     if (!this.value) {
       this.JSXCodeBlock = "";
@@ -108,7 +114,12 @@ export class ChCode {
 
     // TODO: Should we hide the ch-code on the initial load?
     return (
-      <Host class={this.showIndicator ? "ch-code-show-indicator" : undefined}>
+      <Host
+        class={{
+          "ch-code-show-indicator": this.showIndicator,
+          [SCROLLABLE_CLASS]: true
+        }}
+      >
         <code
           class={{
             [`hljs language-${language}`]: true,

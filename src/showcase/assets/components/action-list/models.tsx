@@ -886,3 +886,135 @@ export const keyboardNavigation: ActionListModel = [
     ]
   }
 ];
+
+const processingAnimation = () => (
+  <svg
+    width="14"
+    height="13"
+    viewBox="0 0 14 13"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    class="infinite-rotate"
+  >
+    <path
+      d="M6.73324 11.9269C9.67875 11.9269 12.0666 9.53911 12.0666 6.59359C12.0666 3.64807 9.67875 1.26025 6.73324 1.26025C3.78772 1.26025 1.3999 3.64807 1.3999 6.59359C1.3999 9.53911 3.78772 11.9269 6.73324 11.9269Z"
+      stroke="var(--mer-color__primary-blue--200)"
+      stroke-opacity="0.2"
+      stroke-width="2.06667"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M1.3999 6.59359C1.3999 3.66025 3.7999 1.26025 6.73324 1.26025"
+      stroke="var(--mer-color__primary-blue--200)"
+      stroke-width="2.06667"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <style>
+      {`.infinite-rotate {
+  animation: infinite-rotate 1s infinite linear;
+}
+
+@keyframes infinite-rotate {
+  100% {
+    transform: rotate(1turn);
+  }
+}
+`}
+    </style>
+  </svg>
+);
+
+const ticketAdditionalInfo = (
+  status: "Open" | "Pending" | "Processing" | "Error" | "Closed",
+  description: string,
+  priority: "Low" | "Medium" | "High"
+): ActionListItemAdditionalInformation => ({
+  "block-start": {
+    start:
+      status === "Processing"
+        ? [
+            { jsx: processingAnimation },
+            {
+              caption: status,
+              part: "status processing"
+            }
+          ]
+        : [
+            {
+              caption: status,
+              part: `status ${status.toLowerCase()} dot`
+            }
+          ]
+  },
+  "block-end": { start: [{ caption: description, part: "description" }] },
+  "stretch-end": {
+    center: [
+      {
+        caption: priority,
+        part: "priority",
+        imageSrc:
+          "https://unpkg.com/@genexus/mercury@latest/dist/assets/icons/system/light/success.svg#enabled",
+        imageType: "mask"
+      }
+    ]
+  }
+});
+
+export const ticketList: ActionListModel = [
+  {
+    id: "1",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Pending",
+      "Incorrect validation on user registration in login form.",
+      "Medium"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "2",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Closed",
+      "Image upload feature not working as expected in the Main section.",
+      "High"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "3",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Error",
+      "Image upload feature not working as expected in the Main section.",
+      "Medium"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "4",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Processing",
+      "Mismatch between email body content in general use case",
+      "Low"
+    ),
+    type: "actionable"
+  },
+  { type: "separator" },
+  {
+    id: "5",
+    caption: "SISALGONT-10745",
+    additionalInformation: ticketAdditionalInfo(
+      "Open",
+      "Incorrect validation on user registration in login form.",
+      "Medium"
+    ),
+    type: "actionable"
+  }
+];

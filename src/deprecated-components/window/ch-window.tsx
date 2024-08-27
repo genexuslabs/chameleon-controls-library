@@ -363,7 +363,11 @@ export class ChWindow {
           ref={el => (this.mask = el)}
           onClick={this.maskClickHandler}
         >
-          <section class="window" part="window" ref={el => (this.window = el)}>
+          <section
+            class="window ch-scrollable"
+            part="window"
+            ref={el => (this.window = el)}
+          >
             {this.showHeader && (
               <header part="header" ref={el => (this.header = el)}>
                 <slot name="header">
@@ -376,7 +380,7 @@ export class ChWindow {
             )}
 
             {this.showMain ? (
-              <div part="main">
+              <div part="main" class="ch-scrollable">
                 <slot />
               </div>
             ) : (

@@ -33,13 +33,11 @@ $close-icon: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18
 
   .pseudo-img--start::before,
   .img--start {
-    grid-area: start-img;
     --ch-img: #{$start-image-path-custom-var};
   }
 
   .pseudo-img--end::after,
   .img--end {
-    grid-area: end-img;
     --ch-img: #{$end-image-path-custom-var};
   }
 

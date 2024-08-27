@@ -254,6 +254,7 @@ export class ChActionListItem {
           aria-label={additionalAction.accessibleName}
           disabled={this.disabled}
           class={{
+            "additional-item": true,
             [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
             "show-on-mouse-hover":
               (actionTypeIsFix && !this.fixed) ||
@@ -266,11 +267,18 @@ export class ChActionListItem {
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ACTION]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+              this.selectable && this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+              this.selectable && !this.selected,
+
             [ACTION_TYPE_PARTS[action.type] satisfies string]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.FIXED]:
               actionTypeIsFix && this.fixed,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_FIXED]:
               actionTypeIsFix && !this.fixed,
+
             [item.part]: !!item.part
           })}
           style={
@@ -295,10 +303,19 @@ export class ChActionListItem {
       return (
         <span
           key={additionalAction.id ?? null}
-          class={pseudoImageStartClass ?? null}
+          class={{
+            "additional-item": true,
+            [pseudoImageStartClass]: !!pseudoImageStartClass
+          }}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_TEXT]: true,
+
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+              this.selectable && this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+              this.selectable && !this.selected,
+
             [item.part]: !!item.part
           })}
           style={
@@ -318,10 +335,18 @@ export class ChActionListItem {
       return (
         <div
           aria-hidden="true"
-          class={imageTypeDictionary[item.imageType ?? "background"]}
+          class={`additional-item ${
+            imageTypeDictionary[item.imageType ?? "background"]
+          }`}
           part={tokenMap({
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM]: true,
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_IMAGE]: true,
+
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+              this.selectable && this.selected,
+            [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+              this.selectable && !this.selected,
+
             [item.part]: !!item.part
           })}
           style={{ "--ch-img": `url(${item.imageSrc})` }}
@@ -330,8 +355,8 @@ export class ChActionListItem {
     }
 
     // Img
-    if (hasImage && item.imageType === "background") {
-      return imageTag;
+    if (hasImage) {
+      return imageTag; // TODO: Add the "additional-item" class
     }
 
     return undefined;

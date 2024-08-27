@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Host,
   Prop,
+  Watch,
   h
 } from "@stencil/core";
 import {
@@ -25,6 +26,7 @@ import {
 } from "../../../../common/reserved-names";
 import { ActionListFixedChangeEventDetail } from "./types";
 import { tokenMap } from "../../../../common/utils";
+import { computeExportParts } from "./compute-exportparts";
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -40,12 +42,9 @@ const ACTION_TYPE_PARTS = {
 })
 export class ChActionListItem {
   #additionalItemListenerDictionary = {
-    fix: () => {
-      this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed });
-    },
-    remove: () => {
-      this.remove.emit(this.el.id);
-    },
+    fix: () =>
+      this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed }),
+    remove: () => this.remove.emit(this.el.id),
     custom: callback => callback()
   };
 
@@ -55,9 +54,13 @@ export class ChActionListItem {
    *
    */
   @Prop() readonly additionalInfo?: ActionListItemAdditionalInformation;
+  @Watch("additionalInfo")
+  additionalInfoChanged() {
+    this.#setExportParts();
+  }
 
   /**
-   * This attributes specifies the caption of the control
+   * This attributes specifies the caption of the control.
    */
   @Prop() readonly caption: string;
 
@@ -377,10 +380,30 @@ export class ChActionListItem {
       }
     };
 
+  #setExportParts = () => {
+    let exportParts: string | undefined = undefined;
+
+    if (this.additionalInfo) {
+      const parts = computeExportParts(this.additionalInfo);
+
+      // Additional parts
+      if (parts.size > 0) {
+        exportParts = `${ACTION_LIST_ITEM_EXPORT_PARTS},${Array.from(
+          parts
+        ).join(",")}`;
+      }
+    }
+
+    this.el.setAttribute(
+      "exportparts",
+      exportParts ?? ACTION_LIST_ITEM_EXPORT_PARTS
+    );
+  };
+
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
-    this.el.setAttribute("exportparts", ACTION_LIST_ITEM_EXPORT_PARTS);
+    this.#setExportParts();
   }
 
   render() {

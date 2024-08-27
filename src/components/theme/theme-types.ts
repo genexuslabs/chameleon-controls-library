@@ -4,6 +4,7 @@ export type ThemeItemModel = {
   name: string;
   url?: string;
   themeBaseUrl?: string;
+  attachStyleSheet?: boolean;
 };
 
 export type Theme = {

@@ -1316,7 +1316,7 @@ export class ChTabularGrid {
           <slot name="header"></slot>
         </header>
         <section
-          class="main"
+          class="main ch-scrollable"
           style={this.gridStyle}
           part="main"
           ref={el => (this.gridLayoutElement = el)}

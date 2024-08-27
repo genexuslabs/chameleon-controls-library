@@ -10,14 +10,17 @@ import {
   agentTickets,
   keyboardNavigation,
   panelToolbox,
-  recentKBs
+  recentKBs,
+  ticketList
 } from "./models";
 
 const state: Partial<Mutable<ChActionListRender>> = {};
 
 const render = () => (
   <ch-action-list-render
-    class="list-box-secondary list-box"
+    class={
+      state.model === ticketList ? "ticket-list" : "list-box-secondary list-box"
+    }
     checkbox={state.checkbox}
     checked={state.checked}
     selection={state.selection}
@@ -44,7 +47,8 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Panel Toolbox", value: panelToolbox },
           { caption: "GX EAI recent chats", value: GxEAIRecentChats },
           { caption: "GX EAI notifications", value: GxEAINotifications },
-          { caption: "Keyboard Navigation", value: keyboardNavigation }
+          { caption: "Keyboard Navigation", value: keyboardNavigation },
+          { caption: "Ticket List", value: ticketList }
         ],
         value: keyboardNavigation
       }

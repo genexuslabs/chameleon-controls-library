@@ -297,7 +297,7 @@ export namespace Components {
     interface ChActionListItem {
         "additionalInfo"?: ActionListItemAdditionalInformation;
         /**
-          * This attributes specifies the caption of the control
+          * This attributes specifies the caption of the control.
          */
         "caption": string;
         /**
@@ -6132,7 +6132,7 @@ declare namespace LocalJSX {
     interface ChActionListItem {
         "additionalInfo"?: ActionListItemAdditionalInformation;
         /**
-          * This attributes specifies the caption of the control
+          * This attributes specifies the caption of the control.
          */
         "caption"?: string;
         /**

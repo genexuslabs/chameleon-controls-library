@@ -814,6 +814,7 @@ export class ChActionListRender {
 
   connectedCallback() {
     this.#flattenUIModel(this.model);
+    this.el.setAttribute("role", "list");
   }
 
   render() {

@@ -135,7 +135,7 @@ export const accordionShowcaseStory: ShowcaseStory<Mutable<ChAccordionRender>> =
     properties: showcaseRenderProperties,
     markupWithUIModel: {
       uiModel: accordionSimpleModel,
-      uiModelType: "TabModel",
+      uiModelType: "AccordionModel",
       render: `<ch-accordion-render
           class="accordion"
           model={this.#controlUIModel}

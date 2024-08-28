@@ -24,7 +24,10 @@ import {
   imageTypeDictionary,
   startPseudoImageTypeDictionary
 } from "../../../../common/reserved-names";
-import { ActionListFixedChangeEventDetail } from "./types";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./types";
 import { tokenMap } from "../../../../common/utils";
 import { computeExportParts } from "./compute-exportparts";
 
@@ -190,6 +193,13 @@ export class ChActionListItem {
    * Fired when the fixed value of the control is changed.
    */
   @Event({ composed: true })
+  captionChange: EventEmitter<ActionListCaptionChangeEventDetail>;
+
+  /**
+   * Fired when the control is asking to modify its caption
+   */
+  // TODO: Unify terms (modifyCaption in the Tree View)
+  @Event({ composed: true })
   fixedChange: EventEmitter<ActionListFixedChangeEventDetail>;
 
   /**
@@ -201,17 +211,6 @@ export class ChActionListItem {
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
-
-  // /**
-  //  * Fired when the item is asking to modify its caption.
-  //  */
-  // @Event() modifyCaption: EventEmitter<TreeViewItemNewCaption>;
-
-  // /**
-  //  * Fired when the selected state is updated by user interaction on the
-  //  * control.
-  //  */
-  // @Event() selectedItemChange: EventEmitter<TreeViewItemSelected>;
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
     additionalItems.map(item =>

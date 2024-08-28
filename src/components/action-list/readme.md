@@ -1,9 +1,10 @@
 # ch-action-list-render
 
+## Item Layout
 
+![ActionListItem layout](action-list-item-layout.svg "Action List Item Layout")
 
 <!-- Auto Generated Below -->
-
 
 ## Properties
 
@@ -19,14 +20,12 @@
 | `selection`          | `selection`      | Specifies the type of selection implemented by the control.                                                                                                        | `"multiple" \| "none" \| "single"`                                                                                                                     | `"none"`                       |
 | `sortItemsCallback`  | --               | Callback that is executed when the treeModel is changed to order its items.                                                                                        | `(subModel: ActionListModel) => void`                                                                                                                  | `defaultSortItemsCallback`     |
 
-
 ## Events
 
 | Event                 | Description                                                                                                                                                     | Type                                                                                                                                    |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `itemClick`           | Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`) | `CustomEvent<{ parentItem: ActionListItemGroup; item: ActionListItemModel; } \| { root: ActionListModel; item: ActionListItemModel; }>` |
 | `selectedItemsChange` | Fired when the selected items change and `selection !== "none"`                                                                                                 | `CustomEvent<ActionListItemModelExtended[]>`                                                                                            |
-
 
 ## Methods
 
@@ -51,8 +50,6 @@ has `type === "actionable"`
 
 Type: `Promise<void>`
 
-
-
 ### `getItemsInfo(itemsId: string[]) => Promise<ActionListItemModelExtended[]>`
 
 Given a list of ids, it returns an array of the items that exists in the
@@ -68,8 +65,6 @@ given list.
 
 Type: `Promise<ActionListItemModelExtended[]>`
 
-
-
 ### `removeItem(itemId: string) => Promise<void>`
 
 Remove the item and all its descendants from the control.
@@ -83,8 +78,6 @@ Remove the item and all its descendants from the control.
 #### Returns
 
 Type: `Promise<void>`
-
-
 
 ### `updateItemProperties(itemId: string, properties: Partial<ActionListItemModel> & { type: ActionListItemType; }) => Promise<void>`
 
@@ -102,9 +95,6 @@ of the items in the list.
 
 Type: `Promise<void>`
 
-
-
-
 ## CSS Custom Properties
 
 | Name                                                   | Description                                                                                 |
@@ -114,13 +104,12 @@ Type: `Promise<void>`
 | `--ch-action-list-item__background-image-size`         | Specifies the image size of the additional images. @default 100%                            |
 | `--ch-action-list-item__image-size`                    | Specifies the box size that contains the images for the additional images. @default 0.875em |
 
-
 ## Dependencies
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components)
- - [ch-test-flexible-layout](../test/test-flexible-layout)
+- [ch-showcase](../../showcase/assets/components)
+- [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
 
@@ -128,6 +117,7 @@ Type: `Promise<void>`
 - [ch-action-list-group](./internal/action-list-group)
 
 ### Graph
+
 ```mermaid
 graph TD;
   ch-action-list-render --> ch-action-list-item
@@ -137,6 +127,6 @@ graph TD;
   style ch-action-list-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 
-----------------------------------------------
+---
 
-*Built with [StencilJS](https://stenciljs.com/)*
+_Built with [StencilJS](https://stenciljs.com/)_

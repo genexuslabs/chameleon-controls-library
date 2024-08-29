@@ -112,6 +112,18 @@ export class ChNavigationListItem implements ComponentInterface {
   @Prop() readonly navigationListExpanded: boolean = true;
 
   /**
+   * Specifies if the hyperlink is selected. Only applies when the `link`
+   * property is defined.
+   */
+  @Prop() readonly selected?: boolean = false;
+
+  /**
+   * Specifies if the selected item indicator is displayed when the item is
+   * selected. Only applies when the `link` property is defined.
+   */
+  @Prop() readonly selectedItemIndicator: boolean = false;
+
+  /**
    * Specifies how the caption will be displayed when the navigation-list
    * parent is collapsed
    */
@@ -163,6 +175,10 @@ export class ChNavigationListItem implements ComponentInterface {
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
             navigationListCollapsed,
+
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]:
             navigationListCollapsed && this.showCaptionOnCollapse === "tooltip",
           [levelPart]: true
@@ -211,12 +227,15 @@ export class ChNavigationListItem implements ComponentInterface {
       <a
         key="hyperlink"
         role={this.disabled ? "link" : undefined}
+        aria-current={this.selected ? "page" : undefined}
         aria-disabled={this.disabled ? "true" : undefined}
         class={classes}
         style={this.#startImage?.styles ?? undefined}
         part={tokenMap({
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.LINK]: true,
+
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
@@ -289,9 +308,20 @@ export class ChNavigationListItem implements ComponentInterface {
       <Host
         class={{
           expandable: this.expandable,
-          "expandable--expanded": this.expanded
+          "expandable--expanded": this.expanded,
+          selected: this.selected && this.selectedItemIndicator
         }}
       >
+        {this.selected && this.selectedItemIndicator && (
+          <div
+            class="indicator"
+            part={tokenMap({
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.INDICATOR]: true,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
+            })}
+          ></div>
+        )}
+
         {this.#renderContent(evenLevelParts, levelPart)}
 
         {this.expandable && (
@@ -302,6 +332,8 @@ export class ChNavigationListItem implements ComponentInterface {
             }}
             part={tokenMap({
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.GROUP]: true,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
               [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL,
               [levelPart]: true
             })}

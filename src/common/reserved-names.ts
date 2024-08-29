@@ -241,19 +241,22 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   BUTTON: "item__button",
   CAPTION: "item__caption",
-  EXPANDABLE_BUTTON: "item__expandable-button",
   GROUP: "item__group",
   LINK: "item__link",
 
-  // - - - - - - - - States - - - - - - - -
-  DISABLED: "disabled", // ACTION, EXPANDABLE_BUTTON
+  INDICATOR: "indicator",
 
-  EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
-  COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
+  // - - - - - - - - States - - - - - - - -
+  DISABLED: "disabled", // ACTION, CAPTION, GROUP, INDICATOR
+
+  EXPANDED: "expanded", // ACTION, GROUP
+  COLLAPSED: "collapsed", // ACTION, GROUP
 
   EXPAND_BUTTON: "expand-button", // ACTION
   AFTER: "after", // ACTION
   BEFORE: "before", // ACTION
+
+  SELECTED: "selected", // CAPTION, GROUP, LINK
 
   NAVIGATION_LIST_COLLAPSED: "navigation-list-collapsed", // ACTION, CAPTION
   TOOLTIP: "tooltip", // CAPTION

@@ -6,6 +6,7 @@
 
 :host {
   display: grid;
+  position: relative;
 }
 
 :host(.expandable) {
@@ -17,6 +18,14 @@
 
 :host(.expandable--expanded) {
   grid-template-rows: max-content 1fr;
+}
+
+.indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background-color: currentColor;
 }
 
 .ch-disabled {

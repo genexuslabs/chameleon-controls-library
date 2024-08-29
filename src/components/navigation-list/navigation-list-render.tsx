@@ -10,7 +10,7 @@ import {
   h
 } from "@stencil/core";
 
-import { GxImageMultiState } from "../../common/types";
+import { GxImageMultiState, ItemLink } from "../../common/types";
 import {
   getControlRegisterProperty,
   registryControlProperty
@@ -63,6 +63,12 @@ const defaultRender = (
     link={item.link}
     model={item}
     navigationListExpanded={navigationListState.expanded}
+    selected={
+      !!item.link &&
+      navigationListState.selectedLink.link.url === item.link.url &&
+      navigationListState.selectedLink.id === item.id
+    }
+    selectedItemIndicator={navigationListState.selectedItemIndicator}
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
     startImgType={item.startImgType}
@@ -154,6 +160,18 @@ export class ChNavigationListRender implements ComponentInterface {
   ) => any = defaultRender;
 
   /**
+   * Specifies the current selected hyperlink.
+   */
+  @Prop({ mutable: true }) selectedLink?: { id?: string; link: ItemLink } = {
+    link: { url: undefined }
+  };
+
+  /**
+   * Specifies if the selected item indicator is displayed (only work for hyperlink)
+   */
+  @Prop() readonly selectedItemIndicator: boolean = false;
+
+  /**
    * Specifies how the caption of the items will be displayed when the control
    * is collapsed
    */
@@ -210,6 +228,9 @@ export class ChNavigationListRender implements ComponentInterface {
         event.preventDefault();
         return;
       }
+
+      // Update the selected link
+      this.selectedLink = { id: itemUIModel.id, link: itemUIModel.link };
     } else {
       const eventInfo = this.buttonClick.emit(itemUIModel);
 
@@ -218,8 +239,11 @@ export class ChNavigationListRender implements ComponentInterface {
         return;
       }
     }
-    itemUIModel.expanded = !itemUIModel.expanded;
-    forceUpdate(this);
+
+    if (itemUIModel.items != null) {
+      itemUIModel.expanded = !itemUIModel.expanded;
+      forceUpdate(this);
+    }
   };
 
   connectedCallback(): void {

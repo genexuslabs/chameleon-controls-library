@@ -10,9 +10,6 @@ import { TREE_VIEW_ITEM_PARTS_DICTIONARY } from "../../common/reserved-names";
 export const INITIAL_LEVEL = 0;
 
 // Parts
-export const EVEN_LEVEL = "even-level";
-export const ODD_LEVEL = "odd-level";
-
 export const getTreeItemLevelPart = (evenLevel: boolean) =>
   evenLevel
     ? TREE_VIEW_ITEM_PARTS_DICTIONARY.EVEN_LEVEL

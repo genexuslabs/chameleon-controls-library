@@ -1017,6 +1017,7 @@ export class ChTreeViewItem {
       this.el.setAttribute(
         "exportparts",
         // Replace sequential empty characters with a comma
+        // TODO: Use replaceAll?
         `${TREE_VIEW_ITEM_EXPORT_PARTS},${exportparts.replace(/\s+/g, ",")}`
       );
     } else {

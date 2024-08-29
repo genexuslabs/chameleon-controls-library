@@ -240,9 +240,9 @@ export const DROPDOWN_EXPORT_PARTS = joinParts(DROPDOWN_PARTS_DICTIONARY);
 export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   BUTTON: "item__button",
+  CAPTION: "item__caption",
   EXPANDABLE_BUTTON: "item__expandable-button",
   GROUP: "item__group",
-  HEADER: "item__header",
   LINK: "item__link",
 
   // - - - - - - - - States - - - - - - - -
@@ -255,11 +255,13 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   AFTER: "after", // ACTION
   BEFORE: "before", // ACTION
 
-  EVEN_LEVEL: "even-level", // ACTION, GROUP
-  ODD_LEVEL: "odd-level", // ACTION, GROUP
+  NAVIGATION_LIST_COLLAPSED: "navigation-list-collapsed", // ACTION
 
-  START_IMAGE: "start-img", // IMAGE
-  END_IMAGE: "end-img" // IMAGE
+  EVEN_LEVEL: "even-level", // ACTION, GROUP
+  ODD_LEVEL: "odd-level" // ACTION, GROUP
+
+  // START_IMAGE: "start-img", // IMAGE
+  // END_IMAGE: "end-img" // IMAGE
 } as const;
 
 export const NAVIGATION_LIST_ITEM_EXPORT_PARTS = joinParts(

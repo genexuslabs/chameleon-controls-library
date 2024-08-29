@@ -1,8 +1,8 @@
 import { ImageRender, ItemLink } from "../../common/types";
 
-export type NavigationListModel = NavigationListItem[];
+export type NavigationListModel = NavigationListItemModel[];
 
-export type NavigationListItem = {
+export type NavigationListItemModel = {
   id?: string;
   caption: string;
   disabled?: boolean;

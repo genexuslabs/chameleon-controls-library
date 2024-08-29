@@ -5,6 +5,13 @@
 
 :host {
   /**
+   * @prop --ch-navigation-list-collapsed-size:
+   * Specifies the inline-size when the navigation list is collapsed
+   * @default auto
+   */
+  --ch-navigation-list-collapsed-size: auto;
+
+  /**
    * @prop --ch-navigation-list-item-custom-padding-inline-start:
    * Specifies an additional value for the padding-inline-start of the items
    * without breaking the indentation of the items.
@@ -56,10 +63,10 @@
   --ch-navigation-list-item__image-size: #{$default-decorative-image-size};
 
   /**
-    * @prop --ch-navigation-list-item__image-size:
-    * Specifies the size of the start image of the items.
-    * @default 100%
-    */
+   * @prop --ch-navigation-list-item__image-size:
+   * Specifies the size of the start image of the items.
+   * @default 100%
+   */
   --ch-navigation-list-item__background-image-size: 100%;
 
   --ch-navigation-list-tab-size: calc(
@@ -67,6 +74,10 @@
       var(--ch-navigation-list-item__expandable-button-size) +
       (var(--ch-navigation-list-item-gap) * 2)
   );
+}
+
+.ch-navigation-list--collapsed {
+  inline-size: var(--ch-navigation-list-collapsed-size);
 }
 
 // - - - - - - - - - - - - - - - -

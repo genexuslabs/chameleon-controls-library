@@ -11,26 +11,47 @@ import {
 } from "@stencil/core";
 
 import { GxImageMultiState } from "../../common/types";
-import { getControlRegisterProperty } from "../../common/registry-properties";
-import { NavigationListItem, NavigationListModel } from "./types";
+import {
+  getControlRegisterProperty,
+  registryControlProperty
+} from "../../common/registry-properties";
+import { NavigationListItemModel, NavigationListModel } from "./types";
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
+import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 
-let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
-  imageSrc: string
-) => GxImageMultiState | undefined;
-
-const DEFAULT_GET_IMAGE_PATH_CALLBACK: (
-  imageSrc: string
-) => GxImageMultiState | undefined = imageSrc => ({ base: imageSrc });
+// - - - - - - - - - - - - - - - - - - - -
+//                Registry
+// - - - - - - - - - - - - - - - - - - - -
+// This callback will be registered by default. If it is used in GeneXus, all
+// tree views will have the same state, so the parameters used of the treeState
+// are "shared" across all tree view instances
+const registerDefaultGetImagePathCallback = (
+  navigationListState: ChNavigationListRender
+) =>
+  registryControlProperty(
+    "getImagePathCallback",
+    "ch-navigation-list-render",
+    (item: NavigationListItemModel) => ({
+      base: navigationListState.useGxRender
+        ? fromGxImageToURL(
+            item.startImgSrc,
+            navigationListState.gxSettings,
+            navigationListState.gxImageConstructor
+          )
+        : item.startImgSrc
+    })
+  );
 
 // items != null comparison is based on the following benchmark
 // https://www.measurethat.net/Benchmarks/Show/6389/0/compare-comparison-with-null-or-undefined
 const defaultRender = (
-  item: NavigationListItem,
+  item: NavigationListItemModel,
   navigationListState: ChNavigationListRender,
-  level: number
+  level: number,
+  index: number
 ) => (
   <ch-navigation-list-item
+    key={item.id ?? `${level}-${index}`}
     id={item.id}
     caption={item.caption}
     disabled={item.disabled}
@@ -41,10 +62,20 @@ const defaultRender = (
     level={level}
     link={item.link}
     model={item}
+    navigationListExpanded={navigationListState.expanded}
+    showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
+    startImgSrc={item.startImgSrc}
+    startImgType={item.startImgType}
   >
-    {item.items != null &&
-      item.items.map(item =>
-        navigationListState.renderItem(item, navigationListState, level + 1)
+    {navigationListState.expanded &&
+      item.items != null &&
+      item.items.map((item, subItemIndex) =>
+        navigationListState.renderItem(
+          item,
+          navigationListState,
+          level + 1,
+          subItemIndex
+        )
       )}
   </ch-navigation-list-item>
 );
@@ -83,13 +114,23 @@ export class ChNavigationListRender implements ComponentInterface {
    * startImgSrc needs to be resolved.
    */
   @Prop() readonly getImagePathCallback?: (
-    imageSrc: string
+    item: NavigationListItemModel
   ) => GxImageMultiState | undefined;
 
   /**
    * Specifies if the control is expanded or collapsed.
    */
   @Prop() readonly expanded: boolean = true;
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxImageConstructor: (name: string) => any;
+
+  /**
+   * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+   */
+  @Prop() readonly gxSettings: any;
 
   /**
    * Specifies the items of the control.
@@ -100,16 +141,29 @@ export class ChNavigationListRender implements ComponentInterface {
    * Specifies the items of the control.
    */
   @Prop() readonly renderItem?: (
-    item: NavigationListItem,
+    item: NavigationListItemModel,
     navigationListState: ChNavigationListRender,
-    level: number
+    level: number,
+    index: number
   ) => any = defaultRender;
+
+  /**
+   * Specifies how the caption of the items will be displayed when the control
+   * is collapsed
+   */
+  @Prop() readonly showCaptionOnCollapse?: "inline" | "tooltip" = "inline";
+
+  /**
+   * This property is a WA to implement the Navigation List as a UC 2.0 in
+   * GeneXus.
+   */
+  @Prop() readonly useGxRender: boolean = false;
 
   /**
    * Fired when an button is clicked.
    * This event can be prevented.
    */
-  @Event() buttonClick: EventEmitter<NavigationListItem>;
+  @Event() buttonClick: EventEmitter<NavigationListItemModel>;
 
   /**
    * Fired when an hyperlink is clicked.
@@ -163,12 +217,15 @@ export class ChNavigationListRender implements ComponentInterface {
   };
 
   connectedCallback(): void {
-    // Initialize default getImagePathCallback
-    GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
-      getControlRegisterProperty(
+    // If the getImagePathCallback was not previously registered
+    if (
+      !getControlRegisterProperty(
         "getImagePathCallback",
-        "ch-accordion-render"
-      ) ?? DEFAULT_GET_IMAGE_PATH_CALLBACK;
+        "ch-navigation-list-render"
+      )
+    ) {
+      registerDefaultGetImagePathCallback(this);
+    }
 
     // Static attributes that we including in the Host functional component to
     // eliminate additional overhead
@@ -177,9 +234,12 @@ export class ChNavigationListRender implements ComponentInterface {
 
   render() {
     return (
-      <Host onClick={this.#handleItemClick}>
-        {this.model?.map(item =>
-          this.renderItem(item, this, NAVIGATION_LIST_INITIAL_LEVEL)
+      <Host
+        class={!this.expanded ? "ch-navigation-list--collapsed" : undefined}
+        onClick={this.#handleItemClick}
+      >
+        {this.model?.map((item, index) =>
+          this.renderItem(item, this, NAVIGATION_LIST_INITIAL_LEVEL, index)
         )}
       </Host>
     );

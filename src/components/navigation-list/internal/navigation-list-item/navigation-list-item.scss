@@ -19,20 +19,13 @@
   grid-template-rows: max-content 1fr;
 }
 
-.action {
-  display: flex;
-  align-items: center;
-  gap: var(--ch-navigation-list-item-gap);
-
-  // Defined in the navigation-list-render.scss file
-  padding-inline-start: var(--ch-navigation-list-item-indentation);
-}
-
-.hyperlink-disabled {
+.ch-disabled {
   pointer-events: none;
 }
 
 .caption {
+  display: flex;
+  align-items: center;
   flex: 1;
 }
 
@@ -67,11 +60,69 @@
       $expandable-icon;
   }
 
-  &--collapsed::before {
-    transform: rotate(-90deg); // TODO: Add RTL support
-  }
-
   &--after::before {
     order: 1;
   }
+
+  &--collapsed-after::before {
+    transform: rotate(-180deg); // TODO: Add RTL support
+  }
+
+  &--collapsed-before::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-navigation-list-item-gap);
+
+  // Defined in the navigation-list-render.scss file
+  padding-inline-start: var(--ch-navigation-list-item-indentation);
+
+  --ch-navigation-list-item-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--focus);
+  }
+
+  &.start-img--disabled.ch-disabled {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--disabled);
+  }
+}
+
+.pseudo-img--start::before {
+  content: "";
+  display: block;
+  inline-size: var(--ch-navigation-list-item__image-size);
+  block-size: var(--ch-navigation-list-item__image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-navigation-list-item__image-size);
+}
+
+// Background
+.start-img-type--background::before {
+  background: no-repeat center /
+    var(--ch-navigation-list-item__background-image-size)
+    var(--ch-navigation-list-item-start-img);
+}
+
+// Mask
+.start-img-type--mask::before {
+  -webkit-mask: no-repeat center /
+    var(--ch-navigation-list-item__background-image-size)
+    var(--ch-navigation-list-item-start-img);
+  background-color: currentColor;
 }

@@ -11,16 +11,22 @@ import {
 import {
   GxImageMultiState,
   GxImageMultiStateStart,
+  ImageRender,
   ItemLink
 } from "../../../../common/types";
 import {
   tokenMap,
   updateDirectionInImageCustomVar
 } from "../../../../common/utils";
-import { NavigationListItem } from "../../types";
+import { NavigationListItemModel } from "../../types";
 import { getNavigationListItemLevelPart } from "./utils";
 import { NAVIGATION_LIST_ITEM_PARTS_DICTIONARY } from "../../../../common/reserved-names";
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "../../utils";
+import { getControlRegisterProperty } from "../../../../common/registry-properties";
+
+let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
+  item: NavigationListItemModel
+) => GxImageMultiState | undefined;
 
 /**
  * @status experimental
@@ -74,6 +80,18 @@ export class ChNavigationListItem implements ComponentInterface {
   @Prop() readonly expanded?: boolean;
 
   /**
+   * This property specifies a callback that is executed when the path for an
+   * startImgSrc needs to be resolved.
+   */
+  @Prop() readonly getImagePathCallback?: (
+    imageSrc: NavigationListItemModel
+  ) => GxImageMultiState | undefined;
+  @Watch("getImagePathCallback")
+  getImagePathCallbackChanged() {
+    this.#startImage = this.#computeImage();
+  }
+
+  /**
    * Specifies at which level of the navigation list is rendered the control.
    */
   @Prop() readonly level!: number;
@@ -86,34 +104,41 @@ export class ChNavigationListItem implements ComponentInterface {
   /**
    * Specifies the UI model of the control
    */
-  @Prop() readonly model!: NavigationListItem;
+  @Prop() readonly model!: NavigationListItemModel;
 
   /**
-   *
+   * Specifies if the navigation-list parent is expanded or collapsed.
+   */
+  @Prop() readonly navigationListExpanded: boolean = true;
+
+  /**
+   * Specifies how the caption will be displayed when the navigation-list
+   * parent is collapsed
+   */
+  @Prop() readonly showCaptionOnCollapse?: "inline" | "tooltip" = "inline";
+
+  /**
+   * Specifies the src of the start image.
    */
   @Prop() readonly startImgSrc?: string | undefined;
 
   /**
-   * This property specifies a callback that is executed when the path for an
-   * startImgSrc needs to be resolved.
+   * Specifies how the start image will be rendered.
    */
-  @Prop() readonly getImagePathCallback?: (
-    imageSrc: string
-  ) => GxImageMultiState | undefined;
-  @Watch("getImagePathCallback")
-  getImagePathCallbackChanged() {
-    this.#startImage = this.#computeImage();
-  }
+  @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
   #computeImage = (): GxImageMultiStateStart | undefined => {
     if (!this.startImgSrc) {
       return undefined;
     }
 
-    if (!this.getImagePathCallback) {
+    const getImagePathCallback =
+      this.getImagePathCallback ?? GET_IMAGE_PATH_CALLBACK_REGISTRY;
+
+    if (!getImagePathCallback) {
       return undefined;
     }
-    const img = this.getImagePathCallback(this.startImgSrc);
+    const img = getImagePathCallback(this.model);
 
     return img
       ? (updateDirectionInImageCustomVar(
@@ -123,27 +148,72 @@ export class ChNavigationListItem implements ComponentInterface {
       : undefined;
   };
 
-  #renderContent = (evenLevelParts: "even-level" | "odd-level") => {
+  #renderCaption = (
+    navigationListExpanded: boolean,
+    navigationListCollapsed: boolean,
+    levelPart: `level-${number}`
+  ) => {
+    const startImageClasses = this.#startImage?.classes;
+
+    return (
+      (navigationListExpanded || this.showCaptionOnCollapse === "inline") && (
+        <span
+          class={{
+            caption: true,
+            [`start-img-type--${
+              this.startImgType ?? "background"
+            } pseudo-img--start`]: !!this.#startImage,
+            [startImageClasses]: !!startImageClasses
+          }}
+          part={tokenMap({
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+              navigationListCollapsed,
+            [levelPart]: true
+          })}
+        >
+          {this.caption}
+        </span>
+      )
+    );
+  };
+
+  #renderContent = (
+    evenLevelParts: "even-level" | "odd-level",
+    levelPart: `level-${number}`
+  ) => {
+    const navigationListExpanded = this.navigationListExpanded;
+    const navigationListCollapsed = !navigationListExpanded;
+
     const hasExpandableButton =
-      this.expandable && this.expandableButton === "decorative";
+      this.expandable &&
+      navigationListExpanded &&
+      this.expandableButton === "decorative";
 
     const expandableButtonPosition = this.expandableButtonPosition;
+
+    // Classes
+    const classes = {
+      action: true,
+      "ch-disabled": this.disabled,
+
+      "expandable-button": hasExpandableButton,
+      [`expandable-button--collapsed-${this.expandableButtonPosition}`]:
+        hasExpandableButton && !this.expanded,
+      "expandable-button--after":
+        hasExpandableButton && expandableButtonPosition === "after"
+    };
 
     return this.link ? (
       <a
         key="hyperlink"
         role={this.disabled ? "link" : undefined}
         aria-disabled={this.disabled ? "true" : undefined}
-        class={{
-          action: true,
-          "hyperlink-disabled": this.disabled,
-          "expandable-button": hasExpandableButton,
-          "expandable-button--collapsed": hasExpandableButton && !this.expanded,
-          "expandable-button--after":
-            hasExpandableButton && expandableButtonPosition === "after"
-        }}
+        class={classes}
+        style={this.#startImage?.styles ?? undefined}
         part={tokenMap({
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.LINK]: true,
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
@@ -152,26 +222,28 @@ export class ChNavigationListItem implements ComponentInterface {
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
             hasExpandableButton && expandableButtonPosition === "after",
 
-          [evenLevelParts]: true
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+            navigationListCollapsed,
+
+          [evenLevelParts]: true,
+          [levelPart]: true
         })}
         href={!this.disabled ? this.link.url : undefined}
       >
-        <span class="caption" part="caption">
-          {this.caption}
-        </span>
+        {this.#renderCaption(
+          navigationListExpanded,
+          navigationListCollapsed,
+          levelPart
+        )}
       </a>
     ) : (
       <button
         key="button"
-        class={{
-          action: true,
-          "expandable-button": hasExpandableButton,
-          "expandable-button--collapsed": hasExpandableButton && !this.expanded,
-          "expandable-button--after":
-            hasExpandableButton && expandableButtonPosition === "after"
-        }}
+        class={classes}
+        style={this.#startImage?.styles ?? undefined}
         part={tokenMap({
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BUTTON]: true,
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
@@ -180,19 +252,31 @@ export class ChNavigationListItem implements ComponentInterface {
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
             hasExpandableButton && expandableButtonPosition === "after",
 
-          [evenLevelParts]: true
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+            navigationListCollapsed,
+
+          [evenLevelParts]: true,
+          [levelPart]: true
         })}
         disabled={this.disabled}
         type="button"
       >
-        <span class="caption" part="caption">
-          {this.caption}
-        </span>
+        {this.#renderCaption(
+          navigationListExpanded,
+          navigationListCollapsed,
+          levelPart
+        )}
       </button>
     );
   };
 
   connectedCallback(): void {
+    // Initialize default getImagePathCallback
+    GET_IMAGE_PATH_CALLBACK_REGISTRY ??= getControlRegisterProperty(
+      "getImagePathCallback",
+      "ch-navigation-list-render"
+    );
+
     this.#startImage = this.#computeImage();
 
     // Static attributes that we including in the Host functional component to
@@ -202,6 +286,7 @@ export class ChNavigationListItem implements ComponentInterface {
   }
 
   render() {
+    const levelPart = `level-${this.level}` as const;
     const evenLevel = this.level % 2 === 0;
     const evenLevelParts = getNavigationListItemLevelPart(evenLevel);
 
@@ -212,7 +297,7 @@ export class ChNavigationListItem implements ComponentInterface {
           "expandable--expanded": this.expanded
         }}
       >
-        {this.#renderContent(evenLevelParts)}
+        {this.#renderContent(evenLevelParts, levelPart)}
 
         {this.expandable && (
           <div
@@ -222,7 +307,8 @@ export class ChNavigationListItem implements ComponentInterface {
             }}
             part={tokenMap({
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.GROUP]: true,
-              [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL
+              [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL,
+              [levelPart]: true
             })}
           >
             <slot />

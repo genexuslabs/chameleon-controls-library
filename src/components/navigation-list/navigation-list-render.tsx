@@ -94,6 +94,12 @@ export class ChNavigationListRender implements ComponentInterface {
   @Element() el!: HTMLChNavigationListRenderElement;
 
   /**
+   * If `false` the overflowing content of the control will be clipped to the
+   * borders of its container.
+   */
+  @Prop() readonly autoGrow: boolean = false;
+
+  /**
    * Specifies what kind of expandable button is displayed in the items by
    * default.
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
@@ -235,7 +241,10 @@ export class ChNavigationListRender implements ComponentInterface {
   render() {
     return (
       <Host
-        class={!this.expanded ? "ch-navigation-list--collapsed" : undefined}
+        class={{
+          "ch-navigation-list--collapsed": !this.expanded,
+          "ch-navigation-list--contain": !this.autoGrow
+        }}
         onClick={this.#handleItemClick}
       >
         {this.model?.map((item, index) =>

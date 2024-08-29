@@ -74,9 +74,17 @@
       var(--ch-navigation-list-item__expandable-button-size) +
       (var(--ch-navigation-list-item-gap) * 2)
   );
+
+  display: grid;
+  grid-auto-rows: max-content;
+  overflow: auto;
 }
 
-.ch-navigation-list--collapsed {
+:host(.ch-navigation-list--contain) {
+  contain: strict;
+}
+
+:host(.ch-navigation-list--collapsed) {
   inline-size: var(--ch-navigation-list-collapsed-size);
 }
 

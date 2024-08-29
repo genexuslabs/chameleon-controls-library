@@ -17,6 +17,7 @@ import {
   ComboBoxItemModel
 } from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChComboBoxRender>> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
@@ -281,12 +282,24 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
 export const comboBoxShowcaseStory: ShowcaseStory<Mutable<ChComboBoxRender>> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: simpleModel1,
+    uiModel: () => state.model,
     uiModelType: "ComboBoxModel",
-    render: `<ch-combo-box-render
-          class="combo-box"
-          model={this.#controlUIModel}
-          value={<initial value (optional)>}
+    render: () => `<ch-combo-box-render
+          accessibleName="${state.accessibleName}"
+          class="combo-box"${renderBooleanPropertyOrEmpty("disabled", state)}
+          filter="${state.filter}"
+          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+            "suggest",
+            state
+          )}
+          placeholder="${state.placeholder}"
+          suggestDebounce={${
+            state.suggestDebounce
+          }}${renderBooleanPropertyOrEmpty(
+      "readonly",
+      state
+    )}${renderBooleanPropertyOrEmpty("resizable", state)}
+          value="${state.value}"
           onInput={this.#handleValueChange}
           onFilterChange={this.#handleFilterChange}
         ></ch-combo-box-render>`

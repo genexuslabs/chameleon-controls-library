@@ -3,6 +3,7 @@ import { ChDialog } from "../../../../components/dialog/dialog";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { ChDialogCustomEvent } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChDialog>> = {};
 
@@ -164,7 +165,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
 
 export const dialogShowcaseStory: ShowcaseStory<Mutable<ChDialog>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
+  markupWithoutUIModel: () => `<button
           class="button-primary"
           type="button"
           onClick={this.#handleDialogOpen}
@@ -172,17 +173,28 @@ export const dialogShowcaseStory: ShowcaseStory<Mutable<ChDialog>> = {
           Open dialog
         </button>
   
-        <ch-dialog
-          adjustPositionAfterResize={<adjustPositionAfterResize value>}
-          allowDrag={<allowDrag value (optional)>}
-          caption={<caption value>}
+        <ch-dialog${renderBooleanPropertyOrEmpty(
+          "adjustPositionAfterResize",
+          state
+        )}
+          allowDrag="${state.allowDrag}"
+          caption="${state.caption}"
           class="dialog dialog-primary"
-          closeButtonAccessibleName={<closeButtonAccessibleName value>}
-          hidden={this.#dialogHidden}
-          modal={<modal value (optional)>}
-          resizable={<resizable value (optional)>}
-          showFooter={<showFooter value>}
-          showHeader={<showHeader value>}
+          closeButtonAccessibleName="${
+            state.closeButtonAccessibleName
+          }"${renderBooleanPropertyOrEmpty(
+    "hidden",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "modal",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "resizable",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "showFooter",
+    state
+  )}${renderBooleanPropertyOrEmpty("showHeader", state)}
           onDialogClosed={this.#handlePopoverClosed}
         >
           <label htmlFor="some-input">Any data</label>

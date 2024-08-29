@@ -2,6 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChPopover } from "../../../../components/popover/popover";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChPopover>> = {};
 let buttonRef: HTMLButtonElement;
@@ -283,7 +284,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChPopover>> = [
 
 export const popoverShowcaseStory: ShowcaseStory<Mutable<ChPopover>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
+  markupWithoutUIModel: () => `<button
           class="button-primary"
           type="button"
           ref={el => (this.#buttonRef = el)}
@@ -292,18 +293,21 @@ export const popoverShowcaseStory: ShowcaseStory<Mutable<ChPopover>> = {
         </button>
   
         <ch-popover
-          allowDrag={<allowDrag value (optional)>}
+          allowDrag="${state.allowDrag}"
           actionElement={this.#buttonRef}
-          blockAlign={<blockAlign value>}
-          blockSizeMatch={<blockSizeMatch value (optional)>}
-          class="popover popover-secondary"
-          closeOnClickOutside={<closeOnClickOutside value>}
-          hidden={this.#popoverHidden}
-          inlineAlign={<inlineAlign value>}
-          inlineSizeMatch={<inlineSizeMatch value>}
-          mode={<mode value>}
-          positionTry={<positionTry value (optional)>}
-          resizable={<resizable value (optional)>}
+          blockAlign="${state.blockAlign}"
+          blockSizeMatch="${state.blockSizeMatch}"
+          class="popover popover-secondary"${renderBooleanPropertyOrEmpty(
+            "closeOnClickOutside",
+            state
+          )}${renderBooleanPropertyOrEmpty("hidden", state)}
+          inlineAlign="${state.inlineAlign}"
+          inlineSizeMatch="${state.inlineSizeMatch}"
+          mode="${state.mode}"
+          positionTry="${state.positionTry}"${renderBooleanPropertyOrEmpty(
+    "resizable",
+    state
+  )}
           onPopoverClosed={this.#handlePopoverClosed}
         >
           <div slot="header">

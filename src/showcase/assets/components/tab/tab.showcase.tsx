@@ -17,6 +17,7 @@ import {
   lazyLoadTreeItemsCallback,
   preferencesModel
 } from "../tree-view/models";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChTabRender>> = {};
 const renderedItems = new Set(["item1"]);
@@ -234,13 +235,23 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
 export const tabShowcaseStory: ShowcaseStory<Mutable<ChTabRender>> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: simpleModel2,
+    uiModel: () => state.model,
     uiModelType: "TabModel",
-    render: `<ch-tab-render
-          accessibleName={<accessibleName>}
-          class="tab"
+    render: () => `<ch-tab-render
+          accessibleName="${state.accessibleName}"
+          class="tab"${renderBooleanPropertyOrEmpty("closeButton", state)}
+          direction="${state.direction}"${renderBooleanPropertyOrEmpty(
+      "disabled",
+      state
+    )}${renderBooleanPropertyOrEmpty(
+      "dragOutside",
+      state
+    )}${renderBooleanPropertyOrEmpty("expanded", state)}
           model={this.#controlUIModel}
-          selectedId={<initial selected id (optional)>}
+          selectedId="${state.selectedId}"${renderBooleanPropertyOrEmpty(
+      "sortable",
+      state
+    )}${renderBooleanPropertyOrEmpty("showCaptions", state)}
           onSelectedItemChange={this.#handleSelectedItemChange}
         >
           {renderedItems.has("item1") && (

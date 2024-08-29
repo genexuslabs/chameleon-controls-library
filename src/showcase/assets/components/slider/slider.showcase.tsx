@@ -2,6 +2,7 @@ import { h } from "@stencil/core";
 import { ChSlider } from "../../../../components/slider/slider";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChSlider>> = {};
 
@@ -121,12 +122,15 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSlider>> = [
 
 export const sliderShowcaseStory: ShowcaseStory<Mutable<ChSlider>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-slider
-          class="slider-primary"
-          maxValue={<max value>}
-          minValue={<min value>}
-          value={<initial value>}
-          step={<step>}
+  markupWithoutUIModel: () => `<ch-slider
+          class="slider-primary"${renderBooleanPropertyOrEmpty(
+            "disabled",
+            state
+          )}
+          maxValue={${state.maxValue}}
+          minValue={${state.minValue}}
+          value={${state.value}}
+          step={${state.step}}
           onInput={this.#handleValueChange}
         ></ch-slider>`,
   render: render,

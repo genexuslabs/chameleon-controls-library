@@ -39,9 +39,9 @@ export const segmentedControlShowcaseStory: ShowcaseStory<
 > = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: basicModel1,
+    uiModel: () => state.model,
     uiModelType: "SegmentedControlModel",
-    render: `<ch-segmented-control-render
+    render: () => `<ch-segmented-control-render
           class="segmented-control"
           model={this.#controlUIModel}
         >

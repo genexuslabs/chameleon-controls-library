@@ -10,9 +10,12 @@ const render = () => (
   <div class="tab-test-main-wrapper">
     <ch-navigation-list-render
       class="navigation-list"
+      autoGrow={state.autoGrow}
       expandableButton={state.expandableButton}
       expandableButtonPosition={state.expandableButtonPosition}
+      expanded={state.expanded}
       model={state.model}
+      showCaptionOnCollapse={state.showCaptionOnCollapse}
     ></ch-navigation-list-render>
   </div>
 );
@@ -36,6 +39,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
     caption: "Properties",
     properties: [
       {
+        id: "autoGrow",
+        caption: "Auto Grow",
+        value: false,
+        type: "boolean"
+      },
+      {
         id: "expanded",
         caption: "Expanded",
         value: true,
@@ -46,7 +55,6 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         caption: "Expandable button",
         type: "enum",
         values: [
-          { caption: "Action", value: "action" },
           { caption: "Decorative", value: "decorative" },
           { caption: "No", value: "no" }
         ],
@@ -62,6 +70,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "After", value: "after" }
         ],
         value: "before"
+      },
+      {
+        id: "showCaptionOnCollapse",
+        caption: "Show Caption On Collapse",
+        type: "enum",
+        render: "radio-group",
+        values: [
+          { caption: "Inline", value: "inline" },
+          { caption: "Tooltip", value: "tooltip" }
+        ],
+        value: "inline"
       }
     ]
   }

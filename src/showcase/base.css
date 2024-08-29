@@ -1,20 +1,20 @@
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Regular.woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Bold.woff2");
   font-weight: 700;
   font-display: swap;
 }

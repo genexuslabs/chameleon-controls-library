@@ -106,6 +106,12 @@ export class ChNavigationListRender implements ComponentInterface {
   ) => any = defaultRender;
 
   /**
+   * Fired when an button is clicked.
+   * This event can be prevented.
+   */
+  @Event() buttonClick: EventEmitter<NavigationListItem>;
+
+  /**
    * Fired when an hyperlink is clicked.
    * This event can be prevented.
    */
@@ -125,9 +131,10 @@ export class ChNavigationListRender implements ComponentInterface {
     }
 
     const navigationListItem = composedPath[
-      itemActionIndex + 2 // TODO: Refactor the implementation?
+      itemActionIndex + 2
     ] as HTMLChNavigationListItemElement;
 
+    // Get the navigation list item of the event
     if (
       !navigationListItem ||
       navigationListItem.tagName?.toLowerCase() !== NAVIGATION_LIST_ITEM
@@ -138,6 +145,13 @@ export class ChNavigationListRender implements ComponentInterface {
 
     if (itemUIModel.link) {
       const eventInfo = this.hyperlinkClick.emit(event);
+
+      if (eventInfo.defaultPrevented) {
+        event.preventDefault();
+        return;
+      }
+    } else {
+      const eventInfo = this.buttonClick.emit(itemUIModel);
 
       if (eventInfo.defaultPrevented) {
         event.preventDefault();
@@ -155,6 +169,10 @@ export class ChNavigationListRender implements ComponentInterface {
         "getImagePathCallback",
         "ch-accordion-render"
       ) ?? DEFAULT_GET_IMAGE_PATH_CALLBACK;
+
+    // Static attributes that we including in the Host functional component to
+    // eliminate additional overhead
+    this.el.setAttribute("role", "list");
   }
 
   render() {

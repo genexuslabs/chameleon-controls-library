@@ -197,6 +197,7 @@ export class ChNavigationListItem implements ComponentInterface {
 
     // Static attributes that we including in the Host functional component to
     // eliminate additional overhead
+    this.el.setAttribute("role", "listitem");
     this.el.style.setProperty("--level", `${this.level}`);
   }
 

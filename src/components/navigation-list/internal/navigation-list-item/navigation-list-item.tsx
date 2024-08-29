@@ -149,32 +149,27 @@ export class ChNavigationListItem implements ComponentInterface {
   };
 
   #renderCaption = (
-    navigationListExpanded: boolean,
     navigationListCollapsed: boolean,
     levelPart: `level-${number}`
   ) => {
-    const startImageClasses = this.#startImage?.classes;
-
     return (
-      (navigationListExpanded || this.showCaptionOnCollapse === "inline") && (
-        <span
-          class={{
-            caption: true,
-            [`start-img-type--${
-              this.startImgType ?? "background"
-            } pseudo-img--start`]: !!this.#startImage,
-            [startImageClasses]: !!startImageClasses
-          }}
-          part={tokenMap({
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
-              navigationListCollapsed,
-            [levelPart]: true
-          })}
-        >
-          {this.caption}
-        </span>
-      )
+      <span
+        class={{
+          caption: true,
+          "caption--tooltip":
+            navigationListCollapsed && this.showCaptionOnCollapse === "tooltip"
+        }}
+        part={tokenMap({
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+            navigationListCollapsed,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]:
+            navigationListCollapsed && this.showCaptionOnCollapse === "tooltip",
+          [levelPart]: true
+        })}
+      >
+        {this.caption}
+      </span>
     );
   };
 
@@ -193,9 +188,17 @@ export class ChNavigationListItem implements ComponentInterface {
     const expandableButtonPosition = this.expandableButtonPosition;
 
     // Classes
+    const startImageClasses = this.#startImage?.classes;
     const classes = {
       action: true,
+      "action--navigation-list-collapsed-inline":
+        navigationListCollapsed && this.showCaptionOnCollapse === "inline",
       "ch-disabled": this.disabled,
+
+      [`start-img-type--${
+        this.startImgType ?? "background"
+      } pseudo-img--start`]: !!this.#startImage,
+      [startImageClasses]: !!startImageClasses,
 
       "expandable-button": hasExpandableButton,
       [`expandable-button--collapsed-${this.expandableButtonPosition}`]:
@@ -230,11 +233,7 @@ export class ChNavigationListItem implements ComponentInterface {
         })}
         href={!this.disabled ? this.link.url : undefined}
       >
-        {this.#renderCaption(
-          navigationListExpanded,
-          navigationListCollapsed,
-          levelPart
-        )}
+        {this.#renderCaption(navigationListCollapsed, levelPart)}
       </a>
     ) : (
       <button
@@ -261,11 +260,7 @@ export class ChNavigationListItem implements ComponentInterface {
         disabled={this.disabled}
         type="button"
       >
-        {this.#renderCaption(
-          navigationListExpanded,
-          navigationListCollapsed,
-          levelPart
-        )}
+        {this.#renderCaption(navigationListCollapsed, levelPart)}
       </button>
     );
   };

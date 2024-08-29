@@ -255,7 +255,8 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   AFTER: "after", // ACTION
   BEFORE: "before", // ACTION
 
-  NAVIGATION_LIST_COLLAPSED: "navigation-list-collapsed", // ACTION
+  NAVIGATION_LIST_COLLAPSED: "navigation-list-collapsed", // ACTION, CAPTION
+  TOOLTIP: "tooltip", // CAPTION
 
   EVEN_LEVEL: "even-level", // ACTION, GROUP
   ODD_LEVEL: "odd-level" // ACTION, GROUP

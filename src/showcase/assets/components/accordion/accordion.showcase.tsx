@@ -7,6 +7,7 @@ import {
   AccordionItemExpandedChangeEvent,
   ChAccordionRenderCustomEvent
 } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChAccordionRender>> = {};
 
@@ -134,11 +135,14 @@ export const accordionShowcaseStory: ShowcaseStory<Mutable<ChAccordionRender>> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
-      uiModel: accordionSimpleModel,
-      uiModelType: "TabModel",
-      render: `<ch-accordion-render
-          class="accordion"
-          model={this.#controlUIModel}
+      uiModel: () => state.model,
+      uiModelType: "AccordionModel",
+      render: () => `<ch-accordion-render
+          class="accordion"${renderBooleanPropertyOrEmpty("disabled", state)}
+          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+            "singleItemExpanded",
+            state
+          )}
           onExpandedChange={this.#handleExpandedItemChange}
         >
           {renderedItems.has("item 1") && (

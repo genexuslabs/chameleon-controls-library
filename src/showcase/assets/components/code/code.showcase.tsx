@@ -2,6 +2,7 @@ import { h } from "@stencil/core";
 import { ChCode } from "../../../../components/code/code";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChCode>> = {};
 
@@ -49,6 +50,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCode>> = [
 
 export const codeShowcaseStory: ShowcaseStory<Mutable<ChCode>> = {
   properties: showcaseRenderProperties,
+  markupWithoutUIModel: () => `<ch-code
+          class="code"
+          language="${state.language}"${renderBooleanPropertyOrEmpty(
+    "showIndicator",
+    state
+  )}
+          value={\`${state.value}\`}
+        ></ch-code>`,
   render: render,
   state: state
 };

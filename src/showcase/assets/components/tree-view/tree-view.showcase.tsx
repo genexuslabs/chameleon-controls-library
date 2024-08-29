@@ -15,6 +15,7 @@ import {
   checkDroppableZoneCallback,
   dropItemsCallback
 } from "./models";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChTreeViewRender>> = {};
 
@@ -185,5 +186,41 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
 export const treeViewShowcaseStory: ShowcaseStory<Mutable<ChTreeViewRender>> = {
   properties: showcaseRenderProperties,
   render: render,
+  markupWithUIModel: {
+    uiModel: () => state.model,
+    uiModelType: "TreeViewModel",
+    render: () => `<ch-tree-view-render
+          class="tree-view tree-view-secondary"${renderBooleanPropertyOrEmpty(
+            "checkbox",
+            state
+          )}${renderBooleanPropertyOrEmpty("checked", state)}
+          checkDroppableZoneCallback={checkDroppableZoneCallback}${renderBooleanPropertyOrEmpty(
+            "dragDisabled",
+            state
+          )}${renderBooleanPropertyOrEmpty("dropDisabled", state)}
+          dropItemsCallback={dropItemsCallback}
+          dropMode="${state.dropMode}"${renderBooleanPropertyOrEmpty(
+      "editableItems",
+      state
+    )}${renderBooleanPropertyOrEmpty("expandOnClick", state)}
+          expandableButton="${state.expandableButton}"
+          filter="${state.filter}"
+          filterDebounce="${state.filterDebounce}"
+          filterList="${state.filterList}"
+          filterOptions="${state.filterOptions}"
+          filterType="${state.filterType}"
+          lazyLoadTreeItemsCallback={lazyLoadTreeItemsCallback}
+          model={this.#controlUIModel}
+          modifyItemCaptionCallback={modifyItemCaptionCallback}${renderBooleanPropertyOrEmpty(
+            "multiSelection",
+            state
+          )}
+          showLines="${state.showLines}"
+          sortItemsCallback={sortItemsCallback}${renderBooleanPropertyOrEmpty(
+            "toggleCheckboxes",
+            state
+          )}
+        ></ch-tree-view-render>`
+  },
   state: state
 };

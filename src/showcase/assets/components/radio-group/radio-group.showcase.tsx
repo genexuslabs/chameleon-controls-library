@@ -3,6 +3,7 @@ import { ChRadioGroupRender } from "../../../../components/radio-group/radio-gro
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { simpleModel1, simpleModel2 } from "./models";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChRadioGroupRender>> = {};
 const formRefs: {
@@ -133,6 +134,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         caption: "Value",
         value: undefined,
         type: "string"
+      },
+      {
+        id: "disabled",
+        caption: "Disabled",
+        value: false,
+        type: "boolean"
       }
     ]
   }
@@ -143,12 +150,12 @@ export const radioGroupShowcaseStory: ShowcaseStory<
 > = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: simpleModel2,
+    uiModel: () => state.model,
     uiModelType: "RadioGroupModel",
-    render: `<ch-radio-group-render
-          class="radio-group"
+    render: () => `<ch-radio-group-render
+          class="radio-group"${renderBooleanPropertyOrEmpty("disabled", state)}
           model={this.#controlUIModel}
-          value={<initial value (optional)>}
+          value="${state.value}"
           onInput={this.#handleValueChange}
         ></ch-radio-group-render>`
   },

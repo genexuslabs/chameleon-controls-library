@@ -2,6 +2,7 @@ import { h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
 import { ChImage } from "../../../../components/image/image";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChImage>> = {};
 let button2Ref: HTMLButtonElement;
@@ -74,33 +75,38 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChImage>> = [
 
 export const imageShowcaseStory: ShowcaseStory<Mutable<ChImage>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
-          class="button-tertiary button-icon"
-          disabled={<disabled value>}
+  markupWithoutUIModel: () => `<button
+          class="button-tertiary button-icon"${renderBooleanPropertyOrEmpty(
+            "disabled",
+            state
+          )}
           type="button"
         >
-          <ch-image
-            disabled={<disabled value>}
+          <ch-image${renderBooleanPropertyOrEmpty("disabled", state)}
             getImagePathCallback={getImagePathCallback}
-            src={<src value>}
-            type={<type value>}
+            src="${state.src}"
+            type="${state.type}"
           ></ch-image>
           Some text
         </button>
 
         <button
-          class="button-tertiary button-icon"
-          disabled={<disabled value>}
+          class="button-tertiary button-icon"${renderBooleanPropertyOrEmpty(
+            "disabled",
+            state
+          )}
           type="button"
           ref={el => (this.#buttonRef = el)}
         >
           <div>
             <ch-image
-              containerRef={this.#buttonRef}
-              disabled={<disabled value>}
+              containerRef={this.#buttonRef}${renderBooleanPropertyOrEmpty(
+                "disabled",
+                state
+              )}
               getImagePathCallback={getImagePathCallback}
-              src={<src value>}
-              type={<type value>}
+              src="${state.src}"
+              type="${state.type}"
             ></ch-image>
           </div>
           Some text

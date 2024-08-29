@@ -15,6 +15,7 @@ const render = () => (
       expandableButtonPosition={state.expandableButtonPosition}
       expanded={state.expanded}
       model={state.model}
+      selectedItemIndicator={state.selectedItemIndicator}
       showCaptionOnCollapse={state.showCaptionOnCollapse}
     ></ch-navigation-list-render>
   </div>
@@ -70,6 +71,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "After", value: "after" }
         ],
         value: "before"
+      },
+      {
+        id: "selectedItemIndicator",
+        caption: "Selected Item Indicator",
+        value: true,
+        type: "boolean"
       },
       {
         id: "showCaptionOnCollapse",

@@ -10,30 +10,30 @@ export const unanimoShowcase: NavigationListModel = [
       {
         caption: "Button",
         items: [
-          { caption: "Primary button", link: { url: "#" } },
-          { caption: "Secondary button", link: { url: "#" } },
-          { caption: "Tertiary button", link: { url: "#" } },
-          { caption: "Rounded button", link: { url: "#" } }
+          { caption: "Primary button", link: { url: "#primary-button" } },
+          { caption: "Secondary button", link: { url: "#secondary-button" } },
+          { caption: "Tertiary button", link: { url: "#tertiary-button" } },
+          { caption: "Rounded button", link: { url: "#rounded-button" } }
         ]
       },
       {
         caption: "Grid",
         items: [
-          { caption: "Standard grid", link: { url: "#" } },
-          { caption: "Horizontal grid", link: { url: "#" } },
-          { caption: "Tabular grid", link: { url: "#" } }
+          { caption: "Standard grid", link: { url: "#standard-grid" } },
+          { caption: "Horizontal grid", link: { url: "#horizontal-grid" } },
+          { caption: "Tabular grid", link: { url: "#tabular-grid" } }
         ]
       },
       {
         caption: "Attribute/Variable",
         items: [
-          { caption: "Check Box", link: { url: "#" } },
-          { caption: "Combo Box", link: { url: "#" } },
-          { caption: "Date Picker", link: { url: "#" } },
-          { caption: "Edit", link: { url: "#" } },
-          { caption: "Radio Button", link: { url: "#" } },
-          { caption: "Slider", link: { url: "#" } },
-          { caption: "Switch", link: { url: "#" } }
+          { caption: "Check Box", link: { url: "#checkbox" } },
+          { caption: "Combo Box", link: { url: "#combo-box" } },
+          { caption: "Date Picker", link: { url: "#date-picker" } },
+          { caption: "Edit", link: { url: "#edit" } },
+          { caption: "Radio Button", link: { url: "#radio-button" } },
+          { caption: "Slider", link: { url: "#slider" } },
+          { caption: "Switch", link: { url: "#switch" } }
         ]
       },
       {
@@ -49,19 +49,19 @@ export const unanimoShowcase: NavigationListModel = [
     items: [
       {
         caption: "Action Group",
-        link: { url: "#" }
+        link: { url: "#action-group" }
       },
       {
         caption: "Action Menu",
-        link: { url: "#" }
+        link: { url: "#action-menu" }
       },
       {
         caption: "Breadcrumb",
-        link: { url: "#" }
+        link: { url: "#breadcrumb" }
       },
       {
         caption: "Tab",
-        link: { url: "#" }
+        link: { url: "#tab" }
       }
     ]
   },
@@ -73,11 +73,11 @@ export const unanimoShowcase: NavigationListModel = [
     items: [
       {
         caption: "Alert",
-        link: { url: "#" }
+        link: { url: "#alert" }
       },
       {
         caption: "Progress Bar",
-        link: { url: "#" }
+        link: { url: "#progress-bar" }
       }
     ]
   },

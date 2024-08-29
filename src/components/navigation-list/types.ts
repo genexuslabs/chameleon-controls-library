@@ -7,7 +7,6 @@ export type NavigationListItem = {
   caption: string;
   disabled?: boolean;
   expanded?: boolean;
-  level?: number;
   startImgSrc?: string;
   startImgType?: Exclude<ImageRender, "img">;
   link?: ItemLink;

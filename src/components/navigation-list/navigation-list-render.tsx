@@ -13,6 +13,7 @@ import {
 import { GxImageMultiState } from "../../common/types";
 import { getControlRegisterProperty } from "../../common/registry-properties";
 import { NavigationListItem, NavigationListModel } from "./types";
+import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
 
 let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
   imageSrc: string
@@ -37,7 +38,8 @@ const defaultRender = (
     expandableButton={navigationListState.expandableButton}
     expandableButtonPosition={navigationListState.expandableButtonPosition}
     expanded={item.expanded}
-    level={item.level}
+    level={level}
+    link={item.link}
     model={item}
   >
     {item.items != null &&
@@ -63,13 +65,10 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies what kind of expandable button is displayed in the items by
    * default.
-   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-   *     the items of the control.
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
    *     of the item.
    */
-  @Prop() readonly expandableButton: "action" | "decorative" | "no" =
-    "decorative";
+  @Prop() readonly expandableButton: "decorative" | "no" = "decorative";
 
   /**
    * Specifies the position of the expandable button in reference of the action
@@ -126,7 +125,7 @@ export class ChNavigationListRender implements ComponentInterface {
     }
 
     const navigationListItem = composedPath[
-      itemActionIndex + 3 // TODO: Use 2 and refactor the implementation
+      itemActionIndex + 2 // TODO: Refactor the implementation?
     ] as HTMLChNavigationListItemElement;
 
     if (
@@ -161,7 +160,9 @@ export class ChNavigationListRender implements ComponentInterface {
   render() {
     return (
       <Host onClick={this.#handleItemClick}>
-        {(this.model ?? []).map(item => this.renderItem(item, this, 0))}
+        {this.model?.map(item =>
+          this.renderItem(item, this, NAVIGATION_LIST_INITIAL_LEVEL)
+        )}
       </Host>
     );
   }

@@ -1,6 +1,7 @@
 import {
   Component,
   ComponentInterface,
+  Element,
   Host,
   Prop,
   Watch,
@@ -12,8 +13,14 @@ import {
   GxImageMultiStateStart,
   ItemLink
 } from "../../../../common/types";
-import { updateDirectionInImageCustomVar } from "../../../../common/utils";
+import {
+  tokenMap,
+  updateDirectionInImageCustomVar
+} from "../../../../common/utils";
 import { NavigationListItem } from "../../types";
+import { getNavigationListItemLevelPart } from "./utils";
+import { NAVIGATION_LIST_ITEM_PARTS_DICTIONARY } from "../../../../common/reserved-names";
+import { NAVIGATION_LIST_INITIAL_LEVEL } from "../../utils";
 
 /**
  * @status experimental
@@ -25,6 +32,8 @@ import { NavigationListItem } from "../../types";
 })
 export class ChNavigationListItem implements ComponentInterface {
   #startImage: GxImageMultiStateStart | undefined;
+
+  @Element() el!: HTMLChNavigationListItemElement;
 
   /**
    * Specifies the caption of the control
@@ -46,13 +55,10 @@ export class ChNavigationListItem implements ComponentInterface {
   /**
    * Specifies what kind of expandable button is displayed in the items by
    * default.
-   *  - `"expandableButton"`: Expandable button that allows to expand/collapse
-   *     the items of the control.
    *  - `"decorative"`: Only a decorative icon is rendered to display the state
    *     of the item.
    */
-  @Prop() readonly expandableButton: "action" | "decorative" | "no" =
-    "decorative";
+  @Prop() readonly expandableButton: "decorative" | "no" = "decorative";
 
   /**
    * Specifies the position of the expandable button in reference of the action
@@ -117,33 +123,87 @@ export class ChNavigationListItem implements ComponentInterface {
       : undefined;
   };
 
-  #renderContent = () =>
-    this.link ? (
+  #renderContent = (evenLevelParts: "even-level" | "odd-level") => {
+    const hasExpandableButton =
+      this.expandable && this.expandableButton === "decorative";
+
+    const expandableButtonPosition = this.expandableButtonPosition;
+
+    return this.link ? (
       <a
         key="hyperlink"
         role={this.disabled ? "link" : undefined}
         aria-disabled={this.disabled ? "true" : undefined}
-        class="action"
+        class={{
+          action: true,
+          "hyperlink-disabled": this.disabled,
+          "expandable-button": hasExpandableButton,
+          "expandable-button--collapsed": hasExpandableButton && !this.expanded,
+          "expandable-button--after":
+            hasExpandableButton && expandableButtonPosition === "after"
+        }}
+        part={tokenMap({
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
+            hasExpandableButton,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
+            hasExpandableButton && expandableButtonPosition === "before",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
+            hasExpandableButton && expandableButtonPosition === "after",
+
+          [evenLevelParts]: true
+        })}
         href={!this.disabled ? this.link.url : undefined}
       >
-        {this.caption}
+        <span class="caption" part="caption">
+          {this.caption}
+        </span>
       </a>
     ) : (
       <button
         key="button"
-        class="action"
+        class={{
+          action: true,
+          "expandable-button": hasExpandableButton,
+          "expandable-button--collapsed": hasExpandableButton && !this.expanded,
+          "expandable-button--after":
+            hasExpandableButton && expandableButtonPosition === "after"
+        }}
+        part={tokenMap({
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
+
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
+            hasExpandableButton,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
+            hasExpandableButton && expandableButtonPosition === "before",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
+            hasExpandableButton && expandableButtonPosition === "after",
+
+          [evenLevelParts]: true
+        })}
         disabled={this.disabled}
         type="button"
       >
-        {this.caption}
+        <span class="caption" part="caption">
+          {this.caption}
+        </span>
       </button>
     );
+  };
 
   connectedCallback(): void {
     this.#startImage = this.#computeImage();
+
+    // Static attributes that we including in the Host functional component to
+    // eliminate additional overhead
+    this.el.style.setProperty("--level", `${this.level}`);
   }
 
   render() {
+    const evenLevel = this.level % 2 === 0;
+    const evenLevelParts = getNavigationListItemLevelPart(evenLevel);
+
     return (
       <Host
         class={{
@@ -151,41 +211,7 @@ export class ChNavigationListItem implements ComponentInterface {
           "expandable--expanded": this.expanded
         }}
       >
-        {this.expandable && this.expandableButton !== "no" ? (
-          <div
-            class={{
-              "ch-navigation-list-expandable-button-container": true,
-              "expandable-button-container--decorative":
-                this.expandableButton === "decorative"
-            }}
-          >
-            {this.expandableButtonPosition === "after" && this.#renderContent()}
-
-            {this.expandableButton === "action" && (
-              <button
-                key="expandable-button"
-                type="button"
-                class={{
-                  "expandable-button": true,
-                  "expandable-button--collapsed": !this.expanded
-                }}
-                // part={tokenMap({
-                //   [TREE_VIEW_ITEM_PARTS_DICTIONARY.EXPANDABLE_BUTTON]: true,
-                //   [TREE_VIEW_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-                //   [expandedPart]: true,
-                //   [this.parts]: hasParts
-                // })}
-                disabled={this.disabled}
-                // onClick={this.#toggleExpand}
-              ></button>
-            )}
-
-            {this.expandableButtonPosition === "before" &&
-              this.#renderContent()}
-          </div>
-        ) : (
-          this.#renderContent()
-        )}
+        {this.#renderContent(evenLevelParts)}
 
         {this.expandable && (
           <div
@@ -193,6 +219,10 @@ export class ChNavigationListItem implements ComponentInterface {
               expandable: true,
               "expandable--collapsed": !this.expanded
             }}
+            part={tokenMap({
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.GROUP]: true,
+              [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL
+            })}
           >
             <slot />
           </div>

@@ -19,25 +19,30 @@
   grid-template-rows: max-content 1fr;
 }
 
-.ch-navigation-list-expandable-button-container {
+.action {
   display: flex;
   align-items: center;
   gap: var(--ch-navigation-list-item-gap);
+
+  // Defined in the navigation-list-render.scss file
+  padding-inline-start: var(--ch-navigation-list-item-indentation);
 }
 
-.expandable-button-container--decorative {
-  cursor: pointer;
+.hyperlink-disabled {
+  pointer-events: none;
 }
 
-.action {
-  display: flex;
+.caption {
   flex: 1;
-  gap: var(--ch-navigation-list-item-gap);
 }
 
 .expandable {
   display: grid;
   overflow: hidden;
+
+  // Delays the visibility application based on the value of var(--ch-navigation-list-item-expand-collapse-duration)
+  transition: visibility var(--ch-navigation-list-item-expand-collapse-duration)
+    allow-discrete;
 
   &--collapsed {
     visibility: hidden;
@@ -48,33 +53,25 @@
 //        Expandable button
 // - - - - - - - - - - - - - - - -
 .expandable-button {
-  display: grid;
-  place-items: center;
-  inline-size: var(--ch-navigation-list-item__expandable-button-size);
-  block-size: var(--ch-navigation-list-item__expandable-button-size);
-  z-index: 1;
-  cursor: pointer;
-}
-
-.expandable-button {
   &::before {
     content: "";
     display: grid;
-    inline-size: 100%;
-    block-size: 100%;
+    place-items: center;
+    inline-size: var(--ch-navigation-list-item__expandable-button-size);
+    block-size: var(--ch-navigation-list-item__expandable-button-size);
+    pointer-events: none;
+    z-index: 1;
     background-color: currentColor;
     -webkit-mask: no-repeat center /
       var(--ch-navigation-list-item__expandable-button-image-size)
       $expandable-icon;
-
-    cursor: pointer;
   }
 
   &--collapsed::before {
     transform: rotate(-90deg); // TODO: Add RTL support
   }
-}
 
-button:focus-visible {
-  outline: 1px solid;
+  &--after::before {
+    order: 1;
+  }
 }

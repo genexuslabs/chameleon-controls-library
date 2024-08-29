@@ -5,6 +5,14 @@
 
 :host {
   /**
+   * @prop --ch-navigation-list-item-custom-padding-inline-start:
+   * Specifies an additional value for the padding-inline-start of the items
+   * without breaking the indentation of the items.
+   * @default 0px
+   */
+  --ch-navigation-list-item-custom-padding-inline-start: 0px;
+
+  /**
    * @prop --ch-navigation-list-item-expand-collapse-duration
    * Specifies duration of the expand and collapse animation
    * @default 0ms
@@ -53,4 +61,54 @@
     * @default 100%
     */
   --ch-navigation-list-item__background-image-size: 100%;
+
+  --ch-navigation-list-tab-size: calc(
+    var(--ch-navigation-list-item__image-size) +
+      var(--ch-navigation-list-item__expandable-button-size) +
+      (var(--ch-navigation-list-item-gap) * 2)
+  );
+}
+
+// - - - - - - - - - - - - - - - -
+//        Item indentation
+// - - - - - - - - - - - - - - - -
+::part(item__action) {
+  --own-offset: 0px;
+
+  --ch-navigation-list-item-indentation: calc(
+    var(--ch-navigation-list-tab-size) * var(--level) - var(--own-offset) -
+      var(--parent-offset, 0px) +
+      var(--ch-navigation-list-item-custom-padding-inline-start)
+  );
+}
+
+::part(item__action expand-button before) {
+  --own-offset: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap)
+  );
+}
+
+// Even level
+::part(item__action even-level) {
+  --parent-offset: var(--parent-offset-odd);
+}
+
+// Odd level
+::part(item__action odd-level) {
+  --parent-offset: var(--parent-offset-even);
+}
+
+::part(item__group even-level) {
+  --parent-offset-even: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap) + var(--parent-offset-odd, 0px)
+  );
+}
+
+::part(item__group odd-level) {
+  --parent-offset-odd: calc(
+    var(--ch-navigation-list-item__expandable-button-size) +
+      var(--ch-navigation-list-item-gap) + var(--parent-offset-even, 0px)
+  );
 }

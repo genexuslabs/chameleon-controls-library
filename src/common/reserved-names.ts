@@ -251,10 +251,12 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   EXPANDED: "expanded", // ACTION, EXPANDABLE_BUTTON, GROUP
   COLLAPSED: "collapsed", // ACTION, EXPANDABLE_BUTTON, GROUP
 
-  EXPAND_BUTTON: "expand-button", // HEADER
+  EXPAND_BUTTON: "expand-button", // ACTION
+  AFTER: "after", // ACTION
+  BEFORE: "before", // ACTION
 
-  EVEN_LEVEL: "even-level", // HEADER, GROUP
-  ODD_LEVEL: "odd-level", // HEADER, GROUP
+  EVEN_LEVEL: "even-level", // ACTION, GROUP
+  ODD_LEVEL: "odd-level", // ACTION, GROUP
 
   START_IMAGE: "start-img", // IMAGE
   END_IMAGE: "end-img" // IMAGE

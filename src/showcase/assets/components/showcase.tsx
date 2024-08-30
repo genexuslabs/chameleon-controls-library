@@ -340,12 +340,14 @@ export class ChShowcase {
           value={
             this.#showcaseStory.markupWithUIModel
               ? defineControlMarkupWithUIModel(
-                  this.#showcaseStory.markupWithUIModel.uiModel ?? [],
-                  this.#showcaseStory.markupWithUIModel.uiModelType ?? "",
-                  this.#showcaseStory.markupWithUIModel.render ?? ""
+                  this.#showcaseStory.markupWithUIModel.uiModel(),
+                  this.#showcaseStory.markupWithUIModel.uiModelType,
+                  this.#showcaseStory.markupWithUIModel.render()
                 )
               : defineControlMarkupWithoutUIModel(
                   this.#showcaseStory.markupWithoutUIModel
+                    ? this.#showcaseStory.markupWithoutUIModel()
+                    : "To be defined"
                 )
           }
         ></ch-code>

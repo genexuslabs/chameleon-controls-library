@@ -103,9 +103,9 @@ export const layoutSplitterShowcaseStory: ShowcaseStory<
 > = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: layout7,
+    uiModel: () => state.model,
     uiModelType: "LayoutSplitterModel",
-    render: `<ch-layout-splitter model={this.#controlUIModel}>
+    render: () => `<ch-layout-splitter model={this.#controlUIModel}>
           <div slot="start-component">
             Start
             <input class="form-input" type="text" />

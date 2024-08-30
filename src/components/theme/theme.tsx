@@ -39,6 +39,13 @@ export class ChTheme {
   @Prop() readonly avoidFlashOfUnstyledContent: boolean = true;
 
   /**
+   * Indicates whether the theme should be attached to the Document or
+   * the ShadowRoot after loading.
+   * The value can be overridden by the `attachStyleSheet` property of the model.
+   */
+  @Prop() readonly attachStyleSheets: boolean = true;
+
+  /**
    * Specify themes to load
    */
   @Prop() readonly model: ThemeModel;
@@ -70,16 +77,17 @@ export class ChTheme {
   }
 
   #loadModel = async () => {
-    const themePromises = this.#normalizeModel().map(item =>
-      getTheme(item, this.timeout)
-    );
+    const model = this.#normalizeModel();
+    const themePromises = model.map(item => getTheme(item, this.timeout));
 
     Promise.allSettled(themePromises).then(results => {
       const successThemes = results
         .filter(result => result.status === "fulfilled")
         .map(result => result.status === "fulfilled" && result.value);
 
-      this.#attachThemes(successThemes);
+      this.#attachThemes(
+        successThemes.filter(theme => this.#mustAttachTheme(model, theme))
+      );
       this.themeLoaded.emit({
         success: successThemes.map(successTheme => successTheme.name)
       });
@@ -115,6 +123,17 @@ export class ChTheme {
         }
       });
     }
+  };
+
+  #mustAttachTheme = (normalizedModel: ThemeItemModel[], theme: Theme) => {
+    const themeItemModel = normalizedModel.find(
+      item => item.name === theme.name
+    );
+
+    if (themeItemModel.url) {
+      return themeItemModel.attachStyleSheet ?? this.attachStyleSheets;
+    }
+    return true;
   };
 
   render() {

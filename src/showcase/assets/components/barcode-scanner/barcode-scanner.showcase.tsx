@@ -3,6 +3,7 @@ import { ChBarcodeScanner } from "../../../../components/barcode-scanner/barcode
 import { ChBarcodeScannerCustomEvent } from "../../../../components";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChBarcodeScanner>> = {};
 let barcodeScannerRef: HTMLChBarcodeScannerElement;
@@ -63,10 +64,11 @@ export const barcodeScannerShowcaseStory: ShowcaseStory<
   Mutable<ChBarcodeScanner>
 > = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-barcode-scanner
-          barcodeBoxWidth={state.barcodeBoxWidth}
-          barcodeBoxHeight={state.barcodeBoxHeight}
-          scanning={state.scanning}
+  markupWithoutUIModel: () => `<ch-barcode-scanner
+          barcodeBoxWidth={${state.barcodeBoxWidth}}
+          barcodeBoxHeight={${
+            state.barcodeBoxHeight
+          }}${renderBooleanPropertyOrEmpty("scanning", state)}
           onRead={this.#handleRead}
         ></ch-barcode-scanner>`,
   render: render,

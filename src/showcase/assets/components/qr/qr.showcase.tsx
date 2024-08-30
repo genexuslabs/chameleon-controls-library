@@ -81,13 +81,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
 
 export const qrShowcaseStory: ShowcaseStory<Mutable<ChQr>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-qr
-          accessibleName={<accessible name>}
-          errorCorrectionLevel={<Error Correction Level>}
-          background={<background>}
-          fill={<fill>}
-          size={<size>}
-          value={<initial value>}
+  markupWithoutUIModel: () => `<ch-qr
+          accessibleName="${state.accessibleName}"
+          errorCorrectionLevel="${state.errorCorrectionLevel}"
+          background="${state.background}"
+          fill="${state.fill}"
+          size="${state.size}"
+          value="${state.value}"
         ></ch-qr>`,
   render: render,
   state: state

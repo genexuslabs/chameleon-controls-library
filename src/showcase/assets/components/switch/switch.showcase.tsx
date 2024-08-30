@@ -2,6 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChSwitch } from "../../../../components/switch/switch";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChSwitch>> = {};
 const formRefs: {
@@ -154,10 +155,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSwitch>> = [
 
 export const switchShowcaseStory: ShowcaseStory<Mutable<ChSwitch>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-switch
+  markupWithoutUIModel: () => `<ch-switch
+          accessibleName={${state.accessibleName}}
           class="switch"
-          checkedValue={<checked value>}
-          value={<initial value (optional)>}
+          checkedCaption="${state.checkedCaption}"
+          checkedValue="${state.checkedValue}"${renderBooleanPropertyOrEmpty(
+    "disabled",
+    state
+  )}
+          unCheckedCaption="${state.unCheckedCaption}"
+          unCheckedValue="${state.unCheckedValue}"
+          value="${state.value}"
           onInput={this.#handleValueChange}
         ></ch-switch>`,
   render: render,

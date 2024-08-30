@@ -2,6 +2,7 @@ import { forceUpdate, h } from "@stencil/core";
 import { ChEdit } from "../../../../components/edit/edit";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<Mutable<ChEdit>> = {};
 const formRefs: {
@@ -325,33 +326,35 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
 
 export const editShowcaseStory: ShowcaseStory<Mutable<ChEdit>> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<label class="form-input__label" htmlFor="first-name">
+  markupWithoutUIModel:
+    () => `<label class="form-input__label" htmlFor="first-name">
           First name
         </label>
 
         <ch-edit
           id="first-name"
           name="First name"
-          accessibleName={state.accessibleName}
-          autocapitalize={state.autocapitalize}
-          autocomplete={state.autocomplete}
-          class="form-input"
-          disabled={state.disabled}
+          accessibleName="${state.accessibleName}"
+          autocapitalize="${state.autocapitalize}"
+          autocomplete="${state.autocomplete}"
+          class="form-input"${renderBooleanPropertyOrEmpty("disabled", state)}
           getImagePathCallback={getImagePathCallback}
-          maxLength={state.maxLength}
-          mode={state.mode}
-          multiline={state.multiline}
-          pattern={state.pattern}
-          placeholder={state.placeholder}
-          picture={state.picture}
-          value={state.value}
-          showTrigger={state.showTrigger}
-          spellcheck={state.spellcheck}
-          startImgSrc={state.startImgSrc}
-          startImgType={state.startImgType}
-          type={state.type}
-          triggerButtonAccessibleName={state.triggerButtonAccessibleName}
-          readonly={state.readonly}
+          maxLength={${state.maxLength}}
+          mode="${state.mode}"${renderBooleanPropertyOrEmpty(
+      "multiline",
+      state
+    )}
+          pattern="${state.pattern}"
+          placeholder="${state.placeholder}"
+          picture="${state.picture}"
+          value="${state.value}"
+          spellcheck="${state.spellcheck}"
+          startImgSrc="${state.startImgSrc}"
+          startImgType="${state.startImgType}"
+          type="${state.type}"
+          triggerButtonAccessibleName="${
+            state.triggerButtonAccessibleName
+          }"${renderBooleanPropertyOrEmpty("readonly", state)}
           onInput={this.#handleValueChange}
         ></ch-edit>`,
   render: render,

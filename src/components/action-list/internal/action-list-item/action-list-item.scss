@@ -57,14 +57,17 @@
 //         Second level containers
 // - - - - - - - - - - - - - - - - - - - -
 .align-start {
+  display: flex;
   justify-self: flex-start;
 }
 
 .align-center {
+  display: flex;
   justify-self: center;
 }
 
 .align-end {
+  display: flex;
   justify-self: flex-end;
 }
 
@@ -88,6 +91,13 @@
 // - - - - - - - - - - - - - - - - - - - -
 :host(:not(:hover):not(:focus-within)) .show-on-mouse-hover {
   display: none;
+}
+
+.additional-item {
+  display: inline-grid;
+  grid-auto-columns: max-content;
+  grid-auto-flow: column;
+  align-items: center;
 }
 
 .fix,

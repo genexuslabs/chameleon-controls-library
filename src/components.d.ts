@@ -297,7 +297,7 @@ export namespace Components {
     interface ChActionListItem {
         "additionalInfo"?: ActionListItemAdditionalInformation;
         /**
-          * This attributes specifies the caption of the control
+          * This attributes specifies the caption of the control.
          */
         "caption": string;
         /**
@@ -3114,6 +3114,10 @@ export namespace Components {
      * either in the Document or in a Shadow-Root.
      */
     interface ChTheme {
+        /**
+          * Indicates whether the theme should be attached to the Document or the ShadowRoot after loading. The value can be overridden by the `attachStyleSheet` property of the model.
+         */
+        "attachStyleSheets": boolean;
         /**
           * `true` to visually hide the contents of the root node while the control's style is not loaded.
          */
@@ -6132,7 +6136,7 @@ declare namespace LocalJSX {
     interface ChActionListItem {
         "additionalInfo"?: ActionListItemAdditionalInformation;
         /**
-          * This attributes specifies the caption of the control
+          * This attributes specifies the caption of the control.
          */
         "caption"?: string;
         /**
@@ -9023,6 +9027,10 @@ declare namespace LocalJSX {
      * either in the Document or in a Shadow-Root.
      */
     interface ChTheme {
+        /**
+          * Indicates whether the theme should be attached to the Document or the ShadowRoot after loading. The value can be overridden by the `attachStyleSheet` property of the model.
+         */
+        "attachStyleSheets"?: boolean;
         /**
           * `true` to visually hide the contents of the root node while the control's style is not loaded.
          */

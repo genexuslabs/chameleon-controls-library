@@ -22,6 +22,7 @@ import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
 import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
+import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
 
 export const showcaseStories = {
@@ -46,6 +47,7 @@ export const showcaseStories = {
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
   textblock: textBlockShowcaseStory,
+  tooltip: tooltipShowcaseStory,
   "tree-view": treeViewShowcaseStory
 } as const;
 

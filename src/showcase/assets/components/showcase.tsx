@@ -757,6 +757,14 @@ export class ChShowcase {
     }
   }
 
+  componentDidRender() {
+    const showcaseStory = this.#showcaseStory || this.#showcaseCustomStory;
+
+    if (showcaseStory && showcaseStory.afterRender) {
+      showcaseStory.afterRender();
+    }
+  }
+
   render() {
     if (!this.pageSrc || !this.componentName) {
       return "";

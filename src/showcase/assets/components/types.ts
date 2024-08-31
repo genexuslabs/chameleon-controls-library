@@ -23,10 +23,12 @@ import { ChSlider } from "../../../components/slider/slider";
 import { ChSwitch } from "../../../components/switch/switch";
 import { ChTabRender } from "../../../components/tab/tab";
 import { ChTextBlock } from "../../../components/textblock/textblock";
+import { ChTooltip } from "../../../components/tooltip/tooltip";
 import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
 export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   render: () => any;
+  afterRender?: () => void;
   markupWithUIModel?: {
     uiModel: () => any[] | { [key: string]: any };
     uiModelType: string;
@@ -39,6 +41,7 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
 
 export type ShowcaseCustomStory = {
   render: () => any;
+  afterRender?: () => void;
 };
 
 export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
@@ -138,6 +141,7 @@ export type ShowcaseAvailableStories =
   | Mutable<ChSwitch>
   | Mutable<ChTabRender>
   | Mutable<ChTextBlock>
+  | Mutable<ChTooltip>
   | Mutable<ChTreeViewRender>;
 
 export type ShowcaseAvailableCustomStories = Mutable<

@@ -36,7 +36,7 @@ const components = [
   // ["suggest", "Suggest", EXPERIMENTAL], // Temporally disabled
   ["tab", "Tab", EXPERIMENTAL],
   ["textblock", "TextBlock", DEVELOPER_PREVIEW],
-  // ["tooltip", "Tooltip", EXPERIMENTAL], // Temporally disabled
+  ["tooltip", "Tooltip", EXPERIMENTAL], // Temporally disabled
   ["tree-view", "Tree View", DEVELOPER_PREVIEW]
 ];
 

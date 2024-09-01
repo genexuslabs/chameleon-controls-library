@@ -28,6 +28,7 @@ import {
   ChRadioGroupRenderCustomEvent,
   ComboBoxModel,
   FlexibleLayoutRenders,
+  ItemLink,
   NavigationListItemModel,
   NavigationListModel,
   RadioGroupModel
@@ -384,7 +385,16 @@ export class ChShowcase {
         <ch-navigation-list-render
           class="navigation-list"
           model={this.pages}
+          selectedLink={
+            this.componentMetadata?.link
+              ? (this.componentMetadata as {
+                  id?: string;
+                  link: ItemLink;
+                })
+              : undefined
+          }
           selectedItemIndicator
+          expandableButtonPosition="after"
         ></ch-navigation-list-render>
       </aside>
     ),
@@ -455,23 +465,6 @@ export class ChShowcase {
   @Element() el!: HTMLChShowcaseElement;
 
   /**
-   * Specifies the theme used in the iframe of the control
-   */
-  @Prop({ mutable: true }) colorScheme: "light" | "dark";
-  @Watch("colorScheme")
-  colorSchemeChange(newColorSchemeValue: "light" | "dark") {
-    // The showcase does not render a iframe
-    if (this.#showcaseStory) {
-      return;
-    }
-
-    this.#iframeRef?.contentWindow.postMessage(
-      newColorSchemeValue,
-      `${window.location.origin}/showcase/pages/${this.componentMetadata.id}.html`
-    );
-  }
-
-  /**
    * Specifies the name of the control.
    */
   @State() componentMetadata: NavigationListItemModel | undefined;
@@ -488,6 +481,23 @@ export class ChShowcase {
     }
 
     this.#checkShowcaseStoryMapping(newComponentMetadata?.id);
+  }
+
+  /**
+   * Specifies the theme used in the iframe of the control
+   */
+  @Prop({ mutable: true }) colorScheme: "light" | "dark";
+  @Watch("colorScheme")
+  colorSchemeChange(newColorSchemeValue: "light" | "dark") {
+    // The showcase does not render a iframe
+    if (this.#showcaseStory) {
+      return;
+    }
+
+    this.#iframeRef?.contentWindow.postMessage(
+      newColorSchemeValue,
+      `${window.location.origin}/showcase/pages/${this.componentMetadata.id}.html`
+    );
   }
 
   /**

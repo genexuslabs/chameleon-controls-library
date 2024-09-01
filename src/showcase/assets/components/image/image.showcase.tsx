@@ -1,10 +1,8 @@
 import { h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
-import { ChImage } from "../../../../components/image/image";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChImage>> = {};
+const state: Partial<HTMLChImageElement> = {};
 let button2Ref: HTMLButtonElement;
 
 const render = () => (
@@ -41,7 +39,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChImage>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChImageElement> = [
   {
     caption: "Properties",
     properties: [
@@ -73,7 +71,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChImage>> = [
   }
 ];
 
-export const imageShowcaseStory: ShowcaseStory<Mutable<ChImage>> = {
+export const imageShowcaseStory: ShowcaseStory<HTMLChImageElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: () => `<button
           class="button-tertiary button-icon"${renderBooleanPropertyOrEmpty(

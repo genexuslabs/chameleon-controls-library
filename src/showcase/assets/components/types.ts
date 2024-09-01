@@ -1,34 +1,28 @@
 import { Mutable } from "../../../common/types";
-import { ChAccordionRender } from "../../../components/accordion/accordion";
-import { ChActionGroupRender } from "../../../components/action-group/action-group-render";
-import { ChActionListRender } from "../../../components/action-list/action-list-render";
-import { ChBarcodeScanner } from "../../../components/barcode-scanner/barcode-scanner";
-import { ChChat } from "../../../components/chat/chat";
-import { ChCheckBox } from "../../../components/checkbox/checkbox";
-import { ChCode } from "../../../components/code/code";
-import { ChComboBoxRender } from "../../../components/combo-box/combo-box";
-import { ChDialog } from "../../../components/dialog/dialog";
-import { ChDropdownRender } from "../../../components/dropdown/dropdown-render";
-import { ChEdit } from "../../../components/edit/edit";
-import { ChFlexibleLayoutRender } from "../../../components/flexible-layout/flexible-layout-render";
-import { ChImage } from "../../../components/image/image";
-import { ChLayoutSplitter } from "../../../components/layout-splitter/layout-splitter";
-import { ChMarkdownViewer } from "../../../components/markdown-viewer/markdown-viewer";
-import { ChNavigationListRender } from "../../../components/navigation-list/navigation-list-render";
-import { ChPopover } from "../../../components/popover/popover";
-import { ChQr } from "../../../components/qr/qr";
-import { ChRadioGroupRender } from "../../../components/radio-group/radio-group-render";
-import { ChSegmentedControl } from "../../../components/segmented-control/segmented-control-render";
-import { ChSlider } from "../../../components/slider/slider";
-import { ChSwitch } from "../../../components/switch/switch";
-import { ChTabRender } from "../../../components/tab/tab";
-import { ChTextBlock } from "../../../components/textblock/textblock";
-import { ChTooltip } from "../../../components/tooltip/tooltip";
-import { ChTreeViewRender } from "../../../components/tree-view/tree-view-render";
 
-export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
+export type ShowcaseStories = {
+  [key: string]: ShowcaseStory<ShowcaseStoryClass>;
+};
+
+export type ShowcaseStory<T extends ShowcaseStoryClass> = {
   render: () => any;
-  afterRender?: () => void;
+
+  /**
+   * Called after the first render of the story and before the storyDidRender
+   * method.
+   */
+  storyDidLoad?: () => void;
+
+  /**
+   * Called after each render update.
+   */
+  storyDidRender?: () => void;
+
+  /**
+   * Called before the story is destroyed.
+   */
+  disconnectedCallback?: () => void;
+
   markupWithUIModel?: {
     uiModel: () => any[] | { [key: string]: any };
     uiModelType: string;
@@ -39,12 +33,31 @@ export type ShowcaseStory<T extends ShowcaseAvailableStories> = {
   state: Partial<T>;
 };
 
+export type ShowcaseStoryClass = Mutable<
+  HTMLElementTagNameMap[keyof HTMLElementTagNameMap]
+>;
+
 export type ShowcaseCustomStory = {
   render: () => any;
-  afterRender?: () => void;
+
+  /**
+   * Called after the first render of the story and before the storyDidRender
+   * method.
+   */
+  storyDidLoad?: () => void;
+
+  /**
+   * Called after each render update.
+   */
+  storyDidRender?: () => void;
+
+  /**
+   * Called before the story is destroyed.
+   */
+  disconnectedCallback?: () => void;
 };
 
-export type ShowcaseRenderProperties<T extends ShowcaseAvailableStories> =
+export type ShowcaseRenderProperties<T extends { [key in string]: any }> =
   ShowcaseRenderPropertyGroup<T>[];
 
 export type ShowcaseRenderPropertyGroup<T> = {
@@ -61,7 +74,7 @@ export type ShowcaseRenderProperty<T> =
   | ShowcaseRenderPropertyObject<T, keyof T>;
 
 export type ShowcaseRenderPropertyTypes = Pick<
-  ShowcaseRenderProperty<ShowcaseAvailableStories>,
+  ShowcaseRenderProperty<ShowcaseStoryClass>,
   "type"
 >["type"];
 
@@ -119,31 +132,39 @@ export type ShowcaseRenderPropertyObject<
   type: "object";
 };
 
-export type ShowcaseAvailableStories =
-  | Mutable<ChAccordionRender>
-  | Mutable<ChActionGroupRender>
-  | Mutable<ChActionListRender>
-  | Mutable<ChBarcodeScanner>
-  | Mutable<ChCheckBox>
-  | Mutable<ChCode>
-  | Mutable<ChComboBoxRender>
-  | Mutable<ChDialog>
-  | Mutable<ChDropdownRender>
-  | Mutable<ChEdit>
-  | Mutable<ChImage>
-  | Mutable<ChLayoutSplitter>
-  | Mutable<ChNavigationListRender>
-  | Mutable<ChPopover>
-  | Mutable<ChQr>
-  | Mutable<ChRadioGroupRender>
-  | Mutable<ChSegmentedControl>
-  | Mutable<ChSlider>
-  | Mutable<ChSwitch>
-  | Mutable<ChTabRender>
-  | Mutable<ChTextBlock>
-  | Mutable<ChTooltip>
-  | Mutable<ChTreeViewRender>;
+export type ChameleonStories = {
+  accordion: ShowcaseStory<HTMLChAccordionRenderElement>;
+  "action-group-in-development": ShowcaseStory<HTMLChActionGroupRenderElement>;
+  "action-list": ShowcaseStory<HTMLChActionListRenderElement>;
+  "barcode-scanner": ShowcaseStory<HTMLChBarcodeScannerElement>;
+  checkbox: ShowcaseStory<HTMLChCheckboxElement>;
+  code: ShowcaseStory<HTMLChCodeElement>;
+  "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
+  dialog: ShowcaseStory<HTMLChDialogElement>;
+  dropdown: ShowcaseStory<HTMLChDropdownRenderElement>;
+  edit: ShowcaseStory<HTMLChEditElement>;
+  image: ShowcaseStory<HTMLChImageElement>;
+  "layout-splitter": ShowcaseStory<HTMLChLayoutSplitterElement>;
+  "navigation-list": ShowcaseStory<HTMLChNavigationListRenderElement>;
+  popover: ShowcaseStory<HTMLChPopoverElement>;
+  qr: ShowcaseStory<HTMLChQrElement>;
+  "radio-group": ShowcaseStory<HTMLChRadioGroupRenderElement>;
+  "segmented-control": ShowcaseStory<HTMLChSegmentedControlRenderElement>;
+  slider: ShowcaseStory<HTMLChSliderElement>;
+  switch: ShowcaseStory<HTMLChSwitchElement>;
+  tab: ShowcaseStory<HTMLChTabRenderElement>;
+  textblock: ShowcaseStory<HTMLChTextblockElement>;
+  tooltip: ShowcaseStory<HTMLChTooltipElement>;
+  "tree-view": ShowcaseStory<HTMLChTreeViewRenderElement>;
+};
 
-export type ShowcaseAvailableCustomStories = Mutable<
-  ChChat | ChMarkdownViewer | ChFlexibleLayoutRender
->;
+export type ChameleonCustomStories = {
+  chat: ShowcaseCustomStory;
+  "markdown-viewer": ShowcaseCustomStory;
+  "flexible-layout": ShowcaseCustomStory;
+};
+
+export type ShowcaseAvailableCustomStories =
+  | Mutable<HTMLChChatElement>
+  | Mutable<HTMLChMarkdownViewerElement>
+  | Mutable<HTMLChFlexibleLayoutRenderElement>;

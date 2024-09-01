@@ -1,10 +1,8 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChEdit } from "../../../../components/edit/edit";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChEdit>> = {};
+const state: Partial<HTMLChEditElement> = {};
 const formRefs: {
   [key in "form-edit-1" | "form-edit-2" | "form-edit-3"]:
     | HTMLFormElement
@@ -146,7 +144,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
   {
     caption: "Model",
     columns: 2,
@@ -324,7 +322,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChEdit>> = [
   }
 ];
 
-export const editShowcaseStory: ShowcaseStory<Mutable<ChEdit>> = {
+export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel:
     () => `<label class="form-input__label" htmlFor="first-name">

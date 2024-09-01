@@ -1,10 +1,8 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChCheckBox } from "../../../../components/checkbox/checkbox";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChCheckBox>> = {};
+const state: Partial<HTMLChCheckboxElement> = {};
 const formRefs: {
   [key in "form-checkbox-1" | "form-checkbox-2" | "form-checkbox-3"]:
     | HTMLFormElement
@@ -113,7 +111,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCheckboxElement> =
   [
     {
       caption: "Properties",
@@ -164,7 +162,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
     }
   ];
 
-export const checkboxShowcaseStory: ShowcaseStory<Mutable<ChCheckBox>> = {
+export const checkboxShowcaseStory: ShowcaseStory<HTMLChCheckboxElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: () => `<ch-checkbox
           accessibleName="${state.accessibleName}"

@@ -24,6 +24,7 @@ import { tabShowcaseStory } from "./tab/tab.showcase";
 import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
 import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
+import { ChameleonCustomStories, ChameleonStories } from "./types";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
@@ -49,10 +50,10 @@ export const showcaseStories = {
   textblock: textBlockShowcaseStory,
   tooltip: tooltipShowcaseStory,
   "tree-view": treeViewShowcaseStory
-} as const;
+} as const satisfies ChameleonStories;
 
 export const showcaseCustomStories = {
   chat: chatShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
-  markdown: markdownShowcaseStory
-};
+  "markdown-viewer": markdownShowcaseStory
+} as const satisfies ChameleonCustomStories;

@@ -1,10 +1,8 @@
 import { h } from "@stencil/core";
-import { ChCode } from "../../../../components/code/code";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChCode>> = {};
+const state: Partial<HTMLChCodeElement> = {};
 
 const render = () => (
   <ch-code
@@ -15,7 +13,7 @@ const render = () => (
   ></ch-code>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCode>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCodeElement> = [
   {
     caption: "Value",
     properties: [
@@ -48,7 +46,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCode>> = [
   }
 ];
 
-export const codeShowcaseStory: ShowcaseStory<Mutable<ChCode>> = {
+export const codeShowcaseStory: ShowcaseStory<HTMLChCodeElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: () => `<ch-code
           class="code"

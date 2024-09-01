@@ -1,10 +1,8 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChSwitch } from "../../../../components/switch/switch";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChSwitch>> = {};
+const state: Partial<HTMLChSwitchElement> = {};
 const formRefs: {
   [key in "form-switch-1" | "form-switch-2" | "form-switch-3"]:
     | HTMLFormElement
@@ -109,51 +107,52 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChSwitch>> = [
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "accessibleName",
-        caption: "Accessible Name",
-        value: undefined,
-        type: "string"
-      },
-      {
-        id: "checkedValue",
-        caption: "Checked Value",
-        value: "true",
-        type: "string"
-      },
-      {
-        id: "unCheckedValue",
-        caption: "Unchecked Value",
-        value: undefined,
-        type: "string"
-      },
-      {
-        id: "checkedCaption",
-        caption: "Checked Caption",
-        value: "Checked caption",
-        type: "string"
-      },
-      {
-        id: "unCheckedCaption",
-        caption: "Unchecked Caption",
-        value: "Unchecked caption",
-        type: "string"
-      },
-      {
-        id: "disabled",
-        caption: "Disabled",
-        value: false,
-        type: "boolean"
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChSwitchElement> =
+  [
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "accessibleName",
+          caption: "Accessible Name",
+          value: undefined,
+          type: "string"
+        },
+        {
+          id: "checkedValue",
+          caption: "Checked Value",
+          value: "true",
+          type: "string"
+        },
+        {
+          id: "unCheckedValue",
+          caption: "Unchecked Value",
+          value: undefined,
+          type: "string"
+        },
+        {
+          id: "checkedCaption",
+          caption: "Checked Caption",
+          value: "Checked caption",
+          type: "string"
+        },
+        {
+          id: "unCheckedCaption",
+          caption: "Unchecked Caption",
+          value: "Unchecked caption",
+          type: "string"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
+        }
+      ]
+    }
+  ];
 
-export const switchShowcaseStory: ShowcaseStory<Mutable<ChSwitch>> = {
+export const switchShowcaseStory: ShowcaseStory<HTMLChSwitchElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: () => `<ch-switch
           accessibleName={${state.accessibleName}}

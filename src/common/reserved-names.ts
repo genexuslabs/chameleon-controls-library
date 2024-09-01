@@ -257,6 +257,7 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   BEFORE: "before", // ACTION, GROUP
 
   SELECTED: "selected", // CAPTION, GROUP, LINK
+  NOT_SELECTED: "not-selected", // CAPTION, GROUP, LINK
 
   NAVIGATION_LIST_COLLAPSED: "navigation-list-collapsed", // ACTION, CAPTION
   TOOLTIP: "tooltip", // CAPTION

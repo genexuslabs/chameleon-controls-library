@@ -186,7 +186,10 @@ export class ChNavigationListItem implements ComponentInterface {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]: true,
 
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+              !this.selected,
 
             [levelPart]: true
           },
@@ -205,7 +208,10 @@ export class ChNavigationListItem implements ComponentInterface {
             navigationListCollapsed,
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
+
           [levelPart]: true
         })}
       >
@@ -254,7 +260,8 @@ export class ChNavigationListItem implements ComponentInterface {
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.ACTION]: true,
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.LINK]: true,
 
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]: !this.selected,
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
@@ -341,6 +348,13 @@ export class ChNavigationListItem implements ComponentInterface {
           selected: this.selected && this.selectedItemIndicator
         }}
       >
+        {this.#renderContent(
+          evenLevelParts,
+          levelPart,
+          hasExpandableButton,
+          expandableButtonPosition
+        )}
+
         {this.selected && this.selectedItemIndicator && (
           <div
             class="indicator"
@@ -349,13 +363,6 @@ export class ChNavigationListItem implements ComponentInterface {
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
             })}
           ></div>
-        )}
-
-        {this.#renderContent(
-          evenLevelParts,
-          levelPart,
-          hasExpandableButton,
-          expandableButtonPosition
         )}
 
         {this.expandable && (
@@ -367,7 +374,10 @@ export class ChNavigationListItem implements ComponentInterface {
             part={tokenMap({
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.GROUP]: true,
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: this.selected,
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+                !this.selected,
+
               [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL,
 
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:

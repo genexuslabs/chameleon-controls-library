@@ -216,17 +216,11 @@ export class ChNavigationListItem implements ComponentInterface {
 
   #renderContent = (
     evenLevelParts: "even-level" | "odd-level",
-    levelPart: `level-${number}`
+    levelPart: `level-${number}`,
+    hasExpandableButton: boolean,
+    expandableButtonPosition: "before" | "after"
   ) => {
-    const navigationListExpanded = this.navigationListExpanded;
-    const navigationListCollapsed = !navigationListExpanded;
-
-    const hasExpandableButton =
-      this.expandable &&
-      navigationListExpanded &&
-      this.expandableButton === "decorative";
-
-    const expandableButtonPosition = this.expandableButtonPosition;
+    const navigationListCollapsed = !this.navigationListExpanded;
 
     // Classes
     const startImageClasses = this.#startImage?.classes;
@@ -332,6 +326,13 @@ export class ChNavigationListItem implements ComponentInterface {
     const evenLevel = this.level % 2 === 0;
     const evenLevelParts = getNavigationListItemLevelPart(evenLevel);
 
+    const hasExpandableButton =
+      this.expandable &&
+      this.navigationListExpanded &&
+      this.expandableButton === "decorative";
+
+    const expandableButtonPosition = this.expandableButtonPosition;
+
     return (
       <Host
         class={{
@@ -350,7 +351,12 @@ export class ChNavigationListItem implements ComponentInterface {
           ></div>
         )}
 
-        {this.#renderContent(evenLevelParts, levelPart)}
+        {this.#renderContent(
+          evenLevelParts,
+          levelPart,
+          hasExpandableButton,
+          expandableButtonPosition
+        )}
 
         {this.expandable && (
           <div
@@ -363,6 +369,12 @@ export class ChNavigationListItem implements ComponentInterface {
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
               [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
               [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL,
+
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
+                hasExpandableButton && expandableButtonPosition === "before",
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
+                hasExpandableButton && expandableButtonPosition === "after",
+
               [levelPart]: true
             })}
           >

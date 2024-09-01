@@ -108,6 +108,10 @@
   );
 }
 
+::part(item__action expand-button before level-0) {
+  --own-offset: 0px;
+}
+
 // Even level
 ::part(item__action even-level) {
   --parent-offset: var(--parent-offset-odd);
@@ -118,12 +122,31 @@
   --parent-offset: var(--parent-offset-even);
 }
 
+::part(item__group level-0 after) {
+  --parent-offset-even: calc(
+    var(--ch-navigation-list-item-gap) +
+      var(--ch-navigation-list-item__expandable-button-size)
+  );
+}
+
+// ::part(item__group even-level before) {
+//   --parent-offset-even: calc(
+//     var(--ch-navigation-list-item-gap) + var(--parent-offset-odd, 0px)
+//   );
+// }
+
 ::part(item__group even-level) {
   --parent-offset-even: calc(
     var(--ch-navigation-list-item__expandable-button-size) +
       var(--ch-navigation-list-item-gap) + var(--parent-offset-odd, 0px)
   );
 }
+
+// ::part(item__group odd-level before) {
+//   --parent-offset-odd: calc(
+//     var(--ch-navigation-list-item-gap) + var(--parent-offset-even, 0px)
+//   );
+// }
 
 ::part(item__group odd-level) {
   --parent-offset-odd: calc(

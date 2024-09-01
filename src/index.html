@@ -21,18 +21,6 @@
     <script type="module" src="/build/chameleon.esm.js"></script>
     <script nomodule src="/build/chameleon.js"></script>
 
-    <script>
-      // Get the latest version
-      fetch(
-        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
-      )
-        .then(response => response.json())
-        .then(data => {
-          // const chameleonVersion = document.getElementById("chameleon-version");
-          // chameleonVersion.textContent = data.version;
-        });
-    </script>
-
     <link href="showcase/base.css" rel="stylesheet" rel="preload" as="style" />
     <link href="showcase/index.css" rel="stylesheet" />
     <!-- <link
@@ -59,77 +47,17 @@
         { name: "ch-markdown-viewer", url: "showcase/scrollbar.css" }
       ];
       document.body.append(themeRef);
+
+      // Get the latest version
+      fetch(
+        `https://registry.npmjs.org/@genexus/chameleon-controls-library/latest`
+      )
+        .then(response => response.json())
+        .then(data => {
+          document.querySelector("ch-showcase").packageVersion = data.version;
+        });
     </script>
 
     <ch-showcase></ch-showcase>
-
-    <script type="module">
-      // const searchInputRef = document.querySelector(".form-input-search");
-      // const mainPage = document.querySelector(".main-page");
-      // const showcase = document.querySelector("ch-showcase");
-      // const home = document.querySelector(".home");
-      // const chameleonHome = document.getElementById("chameleon-home");
-
-      // const setMainPage = () => {
-      //   // mainPage.hidden = false;
-      //   // showcase.hidden = true;
-      //   // showcase.componentName = undefined;
-      //   // showcase.pageSrc = undefined;
-      // };
-
-      // const setPage = () => {
-      //   if (window.location.hash && window.location.hash !== "#") {
-      //     const componentName = window.location.hash.replace("#", "");
-      //     const treeItemInformation = treeViewComponents.find(
-      //       treeItem => treeItem.id === componentName
-      //     );
-
-      //     // If the hash is a valid page
-      //     if (treeItemInformation) {
-      //       // showcase.componentName = componentName;
-      //       showcase.pageSrc = `showcase/pages/${componentName}.html`;
-      //       showcase.pageName = treeItemInformation.caption;
-      //       showcase.status = `(${
-      //         treeItemInformation.metadata.split("---")[1]
-      //       })`;
-
-      //       // mainPage.hidden = true;
-      //       showcase.hidden = false;
-
-      //       // Mark the new selected item in the Tree View
-      //       // treeViewRef.updateItemsProperties([componentName], {
-      //       //   selected: true
-      //       // });
-      //       return;
-      //     }
-      //   }
-
-      //   // Go to Main page
-      //   setMainPage();
-      // };
-
-      // Initialize sample
-      // setPage();
-
-      // WA to reset the page when clicking in the logo
-      // chameleonHome.addEventListener("click", () => {
-      //   mainPage.hidden = false;
-      //   showcase.hidden = true;
-      //   showcase.componentName = undefined;
-      //   showcase.pageSrc = undefined;
-      // });
-
-      // // When the selected item of the Tree View changes, the main page must be updated
-      // treeViewRef.addEventListener("selectedItemsChange", () => {
-      //   if (event.detail?.length > 0) {
-      //     const componentName = event.detail[0].item.id;
-
-      //     // This is a WA until we have the ch-navigation-list component
-      //     window.location.hash = `#${componentName}`;
-      //   }
-      // });
-
-      // window.addEventListener("hashchange", setPage);
-    </script>
   </body>
 </html>

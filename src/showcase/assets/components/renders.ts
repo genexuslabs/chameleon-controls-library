@@ -14,7 +14,7 @@ export const flexibleLayoutConfiguration: FlexibleLayoutModel = {
   items: [
     {
       id: HEADER_WIDGET,
-      size: "60px",
+      size: "48px",
       type: "single-content",
       widget: { id: HEADER_WIDGET, name: "" }
     },

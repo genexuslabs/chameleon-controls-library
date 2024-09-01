@@ -338,7 +338,9 @@ export class ChShowcase {
           >
             Chameleon
           </a>
-          <span id="chameleon-version" class="text-body-2"></span>
+          <span id="chameleon-version" class="text-body-2">
+            {this.packageVersion}
+          </span>
         </div>
 
         <div class="header-end">
@@ -380,7 +382,9 @@ export class ChShowcase {
         />
 
         <ch-navigation-list-render
+          class="navigation-list"
           model={this.pages}
+          selectedItemIndicator
         ></ch-navigation-list-render>
       </aside>
     ),
@@ -509,6 +513,11 @@ export class ChShowcase {
   @Prop({ mutable: true }) languageDirection: "ltr" | "rtl";
 
   /**
+   * Specifies the version of the showcase displayed in the header
+   */
+  @Prop() readonly packageVersion: string;
+
+  /**
    * Specifies the pages that will be displayed in the sidebar
    */
   @Prop({ mutable: true }) pages: NavigationListModel | undefined;
@@ -550,8 +559,6 @@ export class ChShowcase {
 
   @Listen("hashchange", { target: "window" })
   onHashChange() {
-    console.log(window.location.hash);
-
     if (!window.location.hash) {
       this.componentMetadata = undefined;
       return;
@@ -561,8 +568,6 @@ export class ChShowcase {
       this.pages,
       window.location.hash
     );
-
-    console.log("newComponentMetadata", newComponentMetadata);
 
     if (newComponentMetadata) {
       this.componentMetadata = newComponentMetadata;
@@ -579,12 +584,6 @@ export class ChShowcase {
 
     this.#showcaseStory = this.stories.playground[componentId] ?? undefined;
     this.#showcaseCustomStory = this.stories.custom[componentId] ?? undefined;
-
-    console.log(
-      "ASIGNO UNDEFINED",
-      this.#showcaseStory,
-      this.#showcaseCustomStory
-    );
 
     if (this.#showcaseStory) {
       const properties = this.#showcaseStory.properties;
@@ -889,8 +888,6 @@ export class ChShowcase {
   // );
 
   #renderMainSection = () => {
-    console.log("RENDER MAIN SECTION", this.#showcaseStory);
-
     if (this.#showcaseStory) {
       return (
         <div class="ch-showcase__playground">
@@ -960,15 +957,15 @@ export class ChShowcase {
     requestAnimationFrame(() => {
       const showcaseStory = this.#showcaseStory || this.#showcaseCustomStory;
 
+      // This is a WA to make reactive the URL changes in the page
+      // To remove this WA we must implement slots in the flexible-layout-render,
+      // but to implement slots we should also implement Shadow DOM
+      if (this.#playgroundRef) {
+        forceUpdate(this.#playgroundRef);
+      }
+
       if (this.#storyFirstRender) {
         this.#storyFirstRender = false;
-
-        // This is a WA to make reactive the URL changes in the page
-        // To remove this WA we must implement slots in the flexible-layout-render,
-        // but to implement slots we should also implement Shadow DOM
-        if (this.#playgroundRef) {
-          forceUpdate(this.#playgroundRef);
-        }
 
         requestAnimationFrame(() => {
           // Story did load

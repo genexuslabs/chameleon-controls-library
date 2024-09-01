@@ -30,7 +30,7 @@ const showcasePagesWithoutLink: NavigationListModel = [
   { id: "image", caption: "Image", metadata: EXPERIMENTAL },
   { id: "tabular-grid", caption: "Tabular Grid", metadata: STABLE },
   { id: "layout-splitter", caption: "Layout Splitter", metadata: EXPERIMENTAL },
-  { id: "markdown", caption: "Markdown", metadata: EXPERIMENTAL },
+  { id: "markdown-viewer", caption: "Markdown Viewer", metadata: EXPERIMENTAL },
   { id: "navigation-list", caption: "Navigation List", metadata: EXPERIMENTAL },
   // {id: "notifications", caption: "Notifications", metadata: EXPERIMENTAL], // Temporally disabled
   { id: "paginator", caption: "Paginator", metadata: STABLE },

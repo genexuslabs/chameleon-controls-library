@@ -11,13 +11,16 @@ import {
 } from "@stencil/core";
 
 import { GxImageMultiState, ItemLink } from "../../common/types";
+import { NavigationListItemModel, NavigationListModel } from "./types";
+
+import { adoptCommonThemes } from "../../common/theme";
 import {
   getControlRegisterProperty,
   registryControlProperty
 } from "../../common/registry-properties";
-import { NavigationListItemModel, NavigationListModel } from "./types";
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -247,6 +250,8 @@ export class ChNavigationListRender implements ComponentInterface {
   };
 
   connectedCallback(): void {
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
+
     // If the getImagePathCallback was not previously registered
     if (
       !getControlRegisterProperty(
@@ -266,6 +271,7 @@ export class ChNavigationListRender implements ComponentInterface {
     return (
       <Host
         class={{
+          [SCROLLABLE_CLASS]: true,
           "ch-navigation-list--collapsed": !this.expanded,
           "ch-navigation-list--contain": !this.autoGrow
         }}

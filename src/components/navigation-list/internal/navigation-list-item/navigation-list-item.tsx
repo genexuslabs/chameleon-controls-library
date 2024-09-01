@@ -16,11 +16,15 @@ import {
 } from "../../../../common/types";
 import {
   tokenMap,
+  tokenMapExportParts,
   updateDirectionInImageCustomVar
 } from "../../../../common/utils";
 import { NavigationListItemModel } from "../../types";
 import { getNavigationListItemLevelPart } from "./utils";
-import { NAVIGATION_LIST_ITEM_PARTS_DICTIONARY } from "../../../../common/reserved-names";
+import {
+  NAVIGATION_LIST_ITEM_EXPORT_PARTS,
+  NAVIGATION_LIST_ITEM_PARTS_DICTIONARY
+} from "../../../../common/reserved-names";
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "../../utils";
 import { getControlRegisterProperty } from "../../../../common/registry-properties";
 
@@ -38,6 +42,9 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 })
 export class ChNavigationListItem implements ComponentInterface {
   #startImage: GxImageMultiStateStart | undefined;
+
+  // Refs
+  #actionRef: HTMLButtonElement | HTMLAnchorElement;
 
   @Element() el!: HTMLChNavigationListItemElement;
 
@@ -164,13 +171,34 @@ export class ChNavigationListItem implements ComponentInterface {
     navigationListCollapsed: boolean,
     levelPart: `level-${number}`
   ) => {
-    return (
+    return navigationListCollapsed &&
+      this.showCaptionOnCollapse === "tooltip" ? (
+      <ch-tooltip
+        key="tooltip"
+        actionElement={(this.#actionRef as HTMLButtonElement) ?? null}
+        blockAlign="center"
+        inlineAlign="outside-end"
+        exportparts={tokenMapExportParts(
+          {
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
+              true,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]: true,
+
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+            [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
+
+            [levelPart]: true
+          },
+          "window"
+        )}
+      >
+        {this.caption}
+      </ch-tooltip>
+    ) : (
       <span
-        class={{
-          caption: true,
-          "caption--tooltip":
-            navigationListCollapsed && this.showCaptionOnCollapse === "tooltip"
-        }}
+        key="caption"
+        class="caption"
         part={tokenMap({
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
@@ -178,9 +206,6 @@ export class ChNavigationListItem implements ComponentInterface {
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]: true,
-
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.TOOLTIP]:
-            navigationListCollapsed && this.showCaptionOnCollapse === "tooltip",
           [levelPart]: true
         })}
       >
@@ -251,6 +276,7 @@ export class ChNavigationListItem implements ComponentInterface {
           [levelPart]: true
         })}
         href={!this.disabled ? this.link.url : undefined}
+        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </a>
@@ -278,6 +304,7 @@ export class ChNavigationListItem implements ComponentInterface {
         })}
         disabled={this.disabled}
         type="button"
+        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </button>
@@ -296,6 +323,7 @@ export class ChNavigationListItem implements ComponentInterface {
     // Static attributes that we including in the Host functional component to
     // eliminate additional overhead
     this.el.setAttribute("role", "listitem");
+    this.el.setAttribute("exportparts", NAVIGATION_LIST_ITEM_EXPORT_PARTS);
     this.el.style.setProperty("--level", `${this.level}`);
   }
 

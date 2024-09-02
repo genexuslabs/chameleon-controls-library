@@ -69,6 +69,33 @@
    */
   --ch-navigation-list-item__background-image-size: 100%;
 
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation:
+   * Specifies the separation between the action and the displayed tooltip.
+   * @default 0px
+   */
+  --ch-navigation-list-item__tooltip-separation: 0px;
+
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation-x:
+   * Specifies the separation between the action and the tooltip displayed
+   * on the x-axis.
+   * @default var(--ch-navigation-list-item__tooltip-separation)
+   */
+  --ch-navigation-list-item__tooltip-separation-x: var(
+    --ch-navigation-list-item__tooltip-separation
+  );
+
+  /**
+   * @prop --ch-navigation-list-item__tooltip-separation-y:
+   * Specifies the separation between the action and the tooltip displayed
+   * on the y-axis.
+   * @default var(--ch-navigation-list-item__tooltip-separation)
+   */
+  --ch-navigation-list-item__tooltip-separation-y: var(
+    --ch-navigation-list-item__tooltip-separation
+  );
+
   --ch-navigation-list-tab-size: calc(
     var(--ch-navigation-list-item__image-size) +
       var(--ch-navigation-list-item__expandable-button-size) +

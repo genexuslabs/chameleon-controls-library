@@ -151,3 +151,16 @@
     var(--ch-navigation-list-item-start-img);
   background-color: currentColor;
 }
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Tooltip
+// - - - - - - - - - - - - - - - - - - - -
+ch-tooltip {
+  --ch-tooltip-separation: var(--ch-navigation-list-item__tooltip-separation);
+  --ch-tooltip-separation-x: var(
+    --ch-navigation-list-item__tooltip-separation-x
+  );
+  --ch-tooltip-separation-y: var(
+    --ch-navigation-list-item__tooltip-separation-y
+  );
+}

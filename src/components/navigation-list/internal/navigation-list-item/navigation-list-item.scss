@@ -73,6 +73,10 @@
     -webkit-mask: no-repeat center /
       var(--ch-navigation-list-item__expandable-button-image-size)
       $expandable-icon;
+
+    transition: transform
+      var(--ch-navigation-list-item-expand-collapse-duration)
+      var(--ch-navigation-list-item-expand-collapse-timing-function);
   }
 
   &--after::before {

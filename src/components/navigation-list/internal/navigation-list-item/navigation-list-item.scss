@@ -26,6 +26,7 @@
   inset-inline-start: 0;
   inline-size: 2px;
   background-color: currentColor;
+  pointer-events: none;
 }
 
 .ch-disabled {
@@ -36,11 +37,6 @@
   display: flex;
   align-items: center;
   flex: 1;
-
-  &--tooltip {
-    position: absolute;
-    inset-inline-start: 100%;
-  }
 }
 
 .expandable {
@@ -98,7 +94,6 @@
 .action {
   display: flex;
   align-items: center;
-  position: relative;
   gap: var(--ch-navigation-list-item-gap);
 
   // Defined in the navigation-list-render.scss file

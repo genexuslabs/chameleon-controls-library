@@ -6,6 +6,7 @@ import {
   EventEmitter,
   Host,
   Prop,
+  Watch,
   forceUpdate,
   h
 } from "@stencil/core";
@@ -45,6 +46,14 @@ const registerDefaultGetImagePathCallback = (
     })
   );
 
+const isSelectedLink = (
+  item: NavigationListItemModel,
+  navigationListState: ChNavigationListRender
+) =>
+  !!item.link &&
+  navigationListState.selectedLink.link.url === item.link.url &&
+  navigationListState.selectedLink.id === item.id;
+
 // items != null comparison is based on the following benchmark
 // https://www.measurethat.net/Benchmarks/Show/6389/0/compare-comparison-with-null-or-undefined
 const defaultRender = (
@@ -66,11 +75,7 @@ const defaultRender = (
     link={item.link}
     model={item}
     navigationListExpanded={navigationListState.expanded}
-    selected={
-      !!item.link &&
-      navigationListState.selectedLink.link.url === item.link.url &&
-      navigationListState.selectedLink.id === item.id
-    }
+    selected={isSelectedLink(item, navigationListState)}
     selectedItemIndicator={navigationListState.selectedItemIndicator}
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
@@ -138,6 +143,12 @@ export class ChNavigationListRender implements ComponentInterface {
   @Prop() readonly expanded: boolean = true;
 
   /**
+   * `true` to expand the path to the selected link when the `selectedLink`
+   * property is updated.
+   */
+  @Prop() readonly expandSelectedLink: boolean = false;
+
+  /**
    * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
    */
   @Prop() readonly gxImageConstructor: (name: string) => any;
@@ -151,6 +162,12 @@ export class ChNavigationListRender implements ComponentInterface {
    * Specifies the items of the control.
    */
   @Prop() readonly model?: NavigationListModel | undefined;
+  @Watch("model")
+  modelChanged() {
+    if (this.model && this.expandSelectedLink) {
+      this.#expandNewSelectedLink(this.model);
+    }
+  }
 
   /**
    * Specifies the items of the control.
@@ -168,6 +185,12 @@ export class ChNavigationListRender implements ComponentInterface {
   @Prop({ mutable: true }) selectedLink?: { id?: string; link: ItemLink } = {
     link: { url: undefined }
   };
+  @Watch("selectedLink")
+  selectedLinkChanged() {
+    if (this.model && this.expandSelectedLink) {
+      this.#expandNewSelectedLink(this.model);
+    }
+  }
 
   /**
    * Specifies if the selected item indicator is displayed (only work for hyperlink)
@@ -197,6 +220,31 @@ export class ChNavigationListRender implements ComponentInterface {
    * This event can be prevented.
    */
   @Event() hyperlinkClick: EventEmitter<PointerEvent>;
+
+  #expandNewSelectedLink = (model: NavigationListModel) => {
+    // for let index ... is the fastest for
+    for (let index = 0; index < model.length; index++) {
+      const itemUIModel = model[index];
+
+      if (isSelectedLink(itemUIModel, this)) {
+        itemUIModel.expanded = true;
+        return true;
+      }
+
+      if (itemUIModel.items != null) {
+        const selectedLinkIsChild = this.#expandNewSelectedLink(
+          itemUIModel.items
+        );
+
+        if (selectedLinkIsChild) {
+          itemUIModel.expanded = true;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  };
 
   #handleItemClick = (event: PointerEvent) => {
     const composedPath = event.composedPath();
@@ -265,6 +313,10 @@ export class ChNavigationListRender implements ComponentInterface {
     // Static attributes that we including in the Host functional component to
     // eliminate additional overhead
     this.el.setAttribute("role", "list");
+
+    if (this.model && this.expandSelectedLink) {
+      this.#expandNewSelectedLink(this.model);
+    }
   }
 
   render() {

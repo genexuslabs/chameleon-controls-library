@@ -385,6 +385,7 @@ export class ChShowcase {
         <ch-navigation-list-render
           class="navigation-list-primary"
           model={this.pages}
+          expandSelectedLink
           selectedLink={
             this.componentMetadata?.link
               ? (this.componentMetadata as {

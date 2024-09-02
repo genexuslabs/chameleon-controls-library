@@ -42,6 +42,17 @@ ch-popover {
   }
 }
 
+.visible {
+  animation: delay-visibility var(--ch-tooltip-delay) linear;
+}
+
+@keyframes delay-visibility {
+  0%,
+  100% {
+    opacity: 0;
+  }
+}
+
 // ch-tooltip {
 //   --ch-tooltip-separation: 12px;
 //   --ch-tooltip-separation-x: var(--ch-tooltip-separation);

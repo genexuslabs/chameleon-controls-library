@@ -11,7 +11,6 @@ import {
 import { ChPopoverAlign } from "../popover/types";
 
 const LISTENER_CONFIG = {
-  once: true,
   passive: true
 } as const satisfies AddEventListenerOptions;
 
@@ -24,7 +23,6 @@ let autoId = 0;
 })
 export class ChTooltip implements ComponentInterface {
   #tooltipId: string;
-  #timeoutId: NodeJS.Timeout;
 
   #addListenersForTheActionElement = true;
   #actualActionElement: HTMLButtonElement;
@@ -80,14 +78,10 @@ export class ChTooltip implements ComponentInterface {
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
 
   #handleEnter = () => {
-    clearTimeout(this.#timeoutId);
-    this.#timeoutId = setTimeout(() => {
-      this.visible = true;
-    }, this.delay);
+    this.visible = true;
   };
 
   #handleLeave = () => {
-    clearTimeout(this.#timeoutId);
     this.visible = false;
   };
 
@@ -188,6 +182,10 @@ export class ChTooltip implements ComponentInterface {
         <ch-popover
           id={actionInsideShadow ? this.#tooltipId : undefined}
           role={actionInsideShadow ? "tooltip" : undefined}
+          class={this.visible ? "visible" : undefined}
+          style={{
+            "--ch-tooltip-delay": `${this.delay}ms`
+          }}
           part="window"
           // Don't use #actualActionElement. On the first render is not defined
           actionElement={this.#getActionElement()}

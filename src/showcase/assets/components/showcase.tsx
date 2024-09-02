@@ -383,7 +383,7 @@ export class ChShowcase {
         />
 
         <ch-navigation-list-render
-          class="navigation-list"
+          class="navigation-list-primary"
           model={this.pages}
           selectedLink={
             this.componentMetadata?.link
@@ -480,7 +480,9 @@ export class ChShowcase {
       showcaseStory.disconnectedCallback();
     }
 
-    this.#checkShowcaseStoryMapping(newComponentMetadata?.id);
+    this.#checkShowcaseStoryMapping(
+      newComponentMetadata?.link!.url.replace("#", "")
+    );
   }
 
   /**
@@ -496,7 +498,12 @@ export class ChShowcase {
 
     this.#iframeRef?.contentWindow.postMessage(
       newColorSchemeValue,
-      `${window.location.origin}/showcase/pages/${this.componentMetadata.id}.html`
+      `${
+        window.location.origin
+      }/showcase/pages/${this.componentMetadata.link!.url.replace(
+        "#",
+        ""
+      )}.html`
     );
   }
 
@@ -513,7 +520,12 @@ export class ChShowcase {
 
     this.#iframeRef?.contentWindow.postMessage(
       newDSValue,
-      `${window.location.origin}/showcase/pages/${this.componentMetadata.id}.html`
+      `${
+        window.location.origin
+      }/showcase/pages/${this.componentMetadata.link!.url.replace(
+        "#",
+        ""
+      )}.html`
     );
   }
 
@@ -954,7 +966,9 @@ export class ChShowcase {
     this.onHashChange();
 
     if (this.componentMetadata) {
-      this.#checkShowcaseStoryMapping(this.componentMetadata.id);
+      this.#checkShowcaseStoryMapping(
+        this.componentMetadata?.link!.url.replace("#", "")
+      );
     }
   }
 

@@ -7,60 +7,248 @@ const DEVELOPER_PREVIEW = "Developer Preview";
 const EXPERIMENTAL = "Experimental";
 const STABLE = "Stable";
 
-const showcasePagesWithoutLink: NavigationListModel = [
-  { id: "action-list", caption: "Action List", metadata: EXPERIMENTAL },
-  { id: "accordion", caption: "Accordion", metadata: EXPERIMENTAL },
-  { id: "action-group", caption: "Action Group", metadata: EXPERIMENTAL },
-  { id: "alert", caption: "Alert", metadata: EXPERIMENTAL },
-  { id: "barcode-scanner", caption: "Barcode Scanner", metadata: EXPERIMENTAL },
-  { id: "checkbox", caption: "Checkbox", metadata: DEVELOPER_PREVIEW },
-  { id: "chat", caption: "Chat", metadata: EXPERIMENTAL },
-  { id: "code", caption: "Code", metadata: EXPERIMENTAL },
-  { id: "code-editor", caption: "Code Editor", metadata: EXPERIMENTAL },
+export const showcasePages: NavigationListModel = [
   {
-    id: "code-diff-editor",
-    caption: "Code Diff Editor",
-    metadata: EXPERIMENTAL
+    caption: "Getting started",
+    startImgSrc:
+      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/company.svg')",
+    startImgType: "mask",
+    items: [
+      {
+        caption: "Browser support",
+        link: { url: "#browser-support" }
+      }
+    ]
   },
-  { id: "combo-box", caption: "Combo Box", metadata: EXPERIMENTAL },
-  { id: "dropdown", caption: "Dropdown", metadata: EXPERIMENTAL },
-  { id: "dialog", caption: "Dialog", metadata: EXPERIMENTAL },
-  { id: "edit", caption: "Edit", metadata: EXPERIMENTAL },
-  { id: "flexible-layout", caption: "Flexible Layout", metadata: EXPERIMENTAL },
-  { id: "image", caption: "Image", metadata: EXPERIMENTAL },
-  { id: "tabular-grid", caption: "Tabular Grid", metadata: STABLE },
-  { id: "layout-splitter", caption: "Layout Splitter", metadata: EXPERIMENTAL },
-  { id: "markdown-viewer", caption: "Markdown Viewer", metadata: EXPERIMENTAL },
-  { id: "navigation-list", caption: "Navigation List", metadata: EXPERIMENTAL },
-  // {id: "notifications", caption: "Notifications", metadata: EXPERIMENTAL], // Temporally disabled
-  { id: "paginator", caption: "Paginator", metadata: STABLE },
-  { id: "popover", caption: "Popover", metadata: EXPERIMENTAL },
-  { id: "qr", caption: "QR", metadata: DEVELOPER_PREVIEW },
-  { id: "radio-group", caption: "Radio Group", metadata: EXPERIMENTAL },
-  {
-    id: "segmented-control",
-    caption: "Segmented Control",
-    metadata: EXPERIMENTAL
-  },
-  { id: "shortcuts", caption: "Shortcuts", metadata: EXPERIMENTAL },
-  // {id: "sidebar", caption: "Sidebar", metadata: EXPERIMENTAL], // Temporally disabled
-  { id: "slider", caption: "Slider", metadata: DEVELOPER_PREVIEW },
-  { id: "switch", caption: "Switch", metadata: EXPERIMENTAL },
-  // {id: "suggest", caption: "Suggest", metadata: EXPERIMENTAL], // Temporally disabled
-  { id: "tab", caption: "Tab", metadata: EXPERIMENTAL },
-  { id: "textblock", caption: "TextBlock", metadata: DEVELOPER_PREVIEW },
-  { id: "tooltip", caption: "Tooltip", metadata: EXPERIMENTAL }, // Temporally disabled
-  { id: "tree-view", caption: "Tree View", metadata: DEVELOPER_PREVIEW }
-];
 
-export const showcasePages: NavigationListModel = showcasePagesWithoutLink.map(
-  ({ id, caption, metadata }) => ({
-    id,
-    caption,
-    metadata,
-    link: { url: `#${id}` }
-  })
-);
+  {
+    caption: "Components",
+    startImgSrc:
+      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/projects.svg')",
+    startImgType: "mask",
+    items: [
+      {
+        caption: "Panel",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/overview.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#accordion" },
+            caption: "Accordion",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#flexible-layout" },
+            caption: "Flexible Layout",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#layout-splitter" },
+            caption: "Layout Splitter",
+            metadata: EXPERIMENTAL
+          },
+          { link: { url: "#tab" }, caption: "Tab", metadata: EXPERIMENTAL }
+        ]
+      },
+
+      {
+        caption: "Form",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/profile.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#action-list" },
+            caption: "Action List",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#checkbox" },
+            caption: "Checkbox",
+            metadata: DEVELOPER_PREVIEW
+          },
+          {
+            link: { url: "#combo-box" },
+            caption: "Combo Box",
+            metadata: EXPERIMENTAL
+          },
+          { link: { url: "#edit" }, caption: "Edit", metadata: EXPERIMENTAL },
+          {
+            link: { url: "#radio-group" },
+            caption: "Radio Group",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#segmented-control" },
+            caption: "Segmented Control",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#slider" },
+            caption: "Slider",
+            metadata: DEVELOPER_PREVIEW
+          },
+          {
+            link: { url: "#switch" },
+            caption: "Switch",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Data",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/excel.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#paginator" },
+            caption: "Paginator",
+            metadata: STABLE
+          },
+          {
+            link: { url: "#tabular-grid" },
+            caption: "Tabular Grid",
+            metadata: STABLE
+          },
+          {
+            link: { url: "#tree-view" },
+            caption: "Tree View",
+            metadata: DEVELOPER_PREVIEW
+          }
+        ]
+      },
+
+      {
+        caption: "Navigation",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/send.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#navigation-list" },
+            caption: "Navigation List",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Menu",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/hamburger.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#action-group" },
+            caption: "Action Group",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#dropdown" },
+            caption: "Dropdown",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Overlay",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/expand.svg')",
+        startImgType: "mask",
+        items: [
+          {
+            link: { url: "#dialog" },
+            caption: "Dialog",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#popover" },
+            caption: "Popover",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#shortcuts" },
+            caption: "Shortcuts",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#tooltip" },
+            caption: "Tooltip",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Media",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/image.svg')",
+        startImgType: "mask",
+        items: [
+          { link: { url: "#image" }, caption: "Image", metadata: EXPERIMENTAL },
+          { link: { url: "#qr" }, caption: "QR", metadata: DEVELOPER_PREVIEW },
+          {
+            link: { url: "#barcode-scanner" },
+            caption: "Barcode Scanner",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Code/Markdown",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/csv.svg')",
+        startImgType: "mask",
+        items: [
+          { link: { url: "#code" }, caption: "Code", metadata: EXPERIMENTAL },
+          {
+            link: { url: "#code-editor" },
+            caption: "Code Editor",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#code-diff-editor" },
+            caption: "Code Diff Editor",
+            metadata: EXPERIMENTAL
+          },
+          {
+            link: { url: "#markdown-viewer" },
+            caption: "Markdown Viewer",
+            metadata: EXPERIMENTAL
+          }
+        ]
+      },
+
+      {
+        caption: "Misc",
+        startImgSrc:
+          "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/light-mode.svg')",
+        startImgType: "mask",
+        items: [
+          { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
+
+          { link: { url: "#chat" }, caption: "Chat", metadata: EXPERIMENTAL },
+          {
+            link: { url: "#textblock" },
+            caption: "TextBlock",
+            metadata: DEVELOPER_PREVIEW
+          }
+        ]
+      }
+
+      // {link: { url: "#notifications", caption: "Notifications", metadata: EXPERIMENTAL], // Temporally disabled
+
+      // {link: { url: "#sidebar", caption: "Sidebar", metadata: EXPERIMENTAL], // Temporally disabled
+
+      // {link: { url: "#suggest", caption: "Suggest", metadata: EXPERIMENTAL], // Temporally disabled
+    ]
+  }
+];
 
 export const findComponentMetadataUsingURLHash = (
   navigationListModel: NavigationListModel,

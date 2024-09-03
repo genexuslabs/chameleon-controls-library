@@ -14,7 +14,7 @@ const preventNavigation = (
 const render = () => (
   <div class="tab-test-main-wrapper">
     <ch-navigation-list-render
-      class="navigation-list"
+      class="navigation-list navigation-list-secondary"
       autoGrow={state.autoGrow}
       expandableButton={state.expandableButton}
       expandableButtonPosition={state.expandableButtonPosition}

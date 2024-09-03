@@ -119,7 +119,6 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -132,7 +131,6 @@ Type: `Promise<void>`
 graph TD;
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
-  ch-showcase --> ch-action-list-render
   ch-test-flexible-layout --> ch-action-list-render
   style ch-action-list-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

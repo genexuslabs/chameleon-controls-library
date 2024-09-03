@@ -144,9 +144,17 @@ export type ChameleonControls = {
 
 export type ChameleonImagePathCallbackControlsTagName = Extract<
   ChameleonControlsTagName,
-  "ch-accordion-render" | "ch-edit" | "ch-image" | "ch-tree-view-render"
+  | "ch-accordion-render"
+  | "ch-edit"
+  | "ch-image"
+  | "ch-navigation-list-render"
+  | "ch-tree-view-render"
 >;
 
 export type ChameleonImagePathCallbackControls = {
   [key in ChameleonImagePathCallbackControlsTagName]: ChameleonControls[key];
+};
+
+export type ItemLink = {
+  url: string;
 };

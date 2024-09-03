@@ -1,7 +1,5 @@
 import { h } from "@stencil/core";
-import { ChLayoutSplitter } from "../../../../components/layout-splitter/layout-splitter";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import {
   layout1,
   layout2,
@@ -13,7 +11,7 @@ import {
   layout8
 } from "./models";
 
-const state: Partial<Mutable<ChLayoutSplitter>> = {};
+const state: Partial<HTMLChLayoutSplitterElement> = {};
 
 const render = () => (
   <ch-layout-splitter model={state.model}>
@@ -72,40 +70,38 @@ const render = () => (
   </ch-layout-splitter>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChLayoutSplitter>
-> = [
-  {
-    caption: "Models",
-    properties: [
-      {
-        id: "model",
-        accessibleName: "Model",
-        type: "enum",
-        values: [
-          { caption: "Layout 1", value: layout1 },
-          { caption: "Layout 2", value: layout2 },
-          { caption: "Layout 3", value: layout3 },
-          { caption: "Layout 4", value: layout4 },
-          { caption: "Layout 5", value: layout5 },
-          { caption: "Layout 6", value: layout6 },
-          { caption: "Layout 7", value: layout7 },
-          { caption: "Layout 8", value: layout8 }
-        ],
-        value: layout2
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChLayoutSplitterElement> =
+  [
+    {
+      caption: "Models",
+      properties: [
+        {
+          id: "model",
+          accessibleName: "Model",
+          type: "enum",
+          values: [
+            { caption: "Layout 1", value: layout1 },
+            { caption: "Layout 2", value: layout2 },
+            { caption: "Layout 3", value: layout3 },
+            { caption: "Layout 4", value: layout4 },
+            { caption: "Layout 5", value: layout5 },
+            { caption: "Layout 6", value: layout6 },
+            { caption: "Layout 7", value: layout7 },
+            { caption: "Layout 8", value: layout8 }
+          ],
+          value: layout2
+        }
+      ]
+    }
+  ];
 
-export const layoutSplitterShowcaseStory: ShowcaseStory<
-  Mutable<ChLayoutSplitter>
-> = {
-  properties: showcaseRenderProperties,
-  markupWithUIModel: {
-    uiModel: () => state.model,
-    uiModelType: "LayoutSplitterModel",
-    render: () => `<ch-layout-splitter model={this.#controlUIModel}>
+export const layoutSplitterShowcaseStory: ShowcaseStory<HTMLChLayoutSplitterElement> =
+  {
+    properties: showcaseRenderProperties,
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "LayoutSplitterModel",
+      render: () => `<ch-layout-splitter model={this.#controlUIModel}>
           <div slot="start-component">
             Start
             <input class="form-input" type="text" />
@@ -131,7 +127,7 @@ export const layoutSplitterShowcaseStory: ShowcaseStory<
             <input class="form-input" type="text" />
           </div>
         </ch-layout-splitter>`
-  },
-  render: render,
-  state: state
-};
+    },
+    render: render,
+    state: state
+  };

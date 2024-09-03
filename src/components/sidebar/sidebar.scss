@@ -1,4 +1,5 @@
 @import "../../common/base";
+@import "../../common/icons";
 
 @include button-reset();
 @include box-sizing();
@@ -7,6 +8,27 @@
   --ch-sidebar-inline-size--expanded: auto;
   --ch-sidebar-inline-size--collapsed: auto;
 
+  /**
+   * @prop --ch-sidebar__chevron-size:
+   * Specifies the expandable button size.
+   * @default #{$default-decorative-image-size}
+   */
+  --ch-sidebar__chevron-size: #{$default-decorative-image-size};
+
+  /**
+    * @prop --ch-sidebar__chevron-image-size:
+    * Specifies the image size of the expandable button.
+    * @default 100%
+    */
+  --ch-sidebar__chevron-image-size: 100%;
+
+  /**
+   * @prop --ch-sidebar__chevron-background-image:
+   * Specifies the image of expand button.
+   * @default #{$expandable-icon}
+   */
+  --ch-sidebar__chevron-background-image: #{$expandable-icon};
+
   display: grid;
   grid-template-rows: 1fr max-content;
   inline-size: var(--ch-sidebar-inline-size--expanded);
@@ -14,4 +36,30 @@
 
 :host(.ch-sidebar--collapsed) {
   inline-size: var(--ch-sidebar-inline-size--collapsed);
+}
+
+.expand-button {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: max-content;
+  align-items: center;
+
+  &::before {
+    content: "";
+    display: inline-grid;
+    inline-size: var(--ch-sidebar__chevron-size);
+    block-size: var(--ch-sidebar__chevron-size);
+    -webkit-mask: no-repeat center / var(--ch-sidebar__chevron-image-size)
+      var(--ch-sidebar__chevron-background-image);
+    background-color: currentColor;
+    transform: rotate(90deg);
+  }
+
+  &--collapsed {
+    justify-content: center;
+
+    &::before {
+      transform: rotate(-90deg);
+    }
+  }
 }

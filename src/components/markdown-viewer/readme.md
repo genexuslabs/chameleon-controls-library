@@ -37,7 +37,6 @@ A control to render markdown syntax. It supports GitHub Flavored Markdown
 ### Used by
 
  - [ch-chat](../chat)
- - [ch-showcase](../../showcase/assets/components)
 
 ### Depends on
 
@@ -50,7 +49,6 @@ graph TD;
   ch-markdown-viewer --> ch-theme
   ch-markdown-viewer --> ch-code
   ch-chat --> ch-markdown-viewer
-  ch-showcase --> ch-markdown-viewer
   style ch-markdown-viewer fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

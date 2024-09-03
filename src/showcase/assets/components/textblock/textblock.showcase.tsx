@@ -1,9 +1,7 @@
 import { h } from "@stencil/core";
-import { ChTextBlock } from "../../../../components/textblock/textblock";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 
-const state: Partial<Mutable<ChTextBlock>> = {};
+const state: Partial<HTMLChTextblockElement> = {};
 
 const render = () => (
   <ch-textblock
@@ -60,7 +58,7 @@ const render = () => (
   </ch-textblock>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTextBlock>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTextblockElement> =
   [
     {
       caption: "Properties",
@@ -117,7 +115,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTextBlock>> =
     }
   ];
 
-export const textBlockShowcaseStory: ShowcaseStory<Mutable<ChTextBlock>> = {
+export const textBlockShowcaseStory: ShowcaseStory<HTMLChTextblockElement> = {
   properties: showcaseRenderProperties,
   render: render,
   state: state

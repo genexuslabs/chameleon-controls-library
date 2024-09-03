@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+import { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, ItemLink, LabelPosition } from "./common/types";
 import { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/accordion/types";
 import { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
@@ -30,6 +30,7 @@ import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
 import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
+import { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -40,6 +41,8 @@ import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
+import { NavigationListModel as NavigationListModel1 } from "./components";
+import { ShowcaseCustomStory, ShowcaseStories } from "./showcase/assets/components/types";
 import { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 import { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -61,7 +64,7 @@ import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
 import { GridChameleonColumnFilterChanged } from "./components/gx-grid/gx-grid-column-filter/gx-grid-chameleon-column-filter";
-export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, LabelPosition } from "./common/types";
+export { CssContainProperty, CssOverflowProperty, GxDataTransferInfo, GxImageMultiState, ImageRender, ItemLink, LabelPosition } from "./common/types";
 export { AccordionItemExpandedChangeEvent, AccordionModel } from "./components/accordion/types";
 export { ItemsOverflowBehavior } from "./components/action-group/internal/action-group/types";
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
@@ -86,6 +89,7 @@ export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
 export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
+export { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -96,6 +100,8 @@ export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
+export { NavigationListModel as NavigationListModel1 } from "./components";
+export { ShowcaseCustomStory, ShowcaseStories } from "./showcase/assets/components/types";
 export { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 export { TabDirection, TabItemCloseInfo, TabModel, TabSelectedItemInfo } from "./components/tab/types";
@@ -1796,6 +1802,150 @@ export namespace Components {
          */
         "value": string;
     }
+    /**
+     * @status experimental
+     */
+    interface ChNavigationListItem {
+        /**
+          * Specifies the caption of the control
+         */
+        "caption": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled": boolean;
+        /**
+          * Specifies if the control contains sub items.
+         */
+        "expandable": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "decorative" | "no";
+        /**
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+         */
+        "expandableButtonPosition": "before" | "after";
+        /**
+          * Specifies if the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: NavigationListItemModel
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies at which level of the navigation list is rendered the control.
+         */
+        "level": number;
+        "link"?: ItemLink | undefined;
+        /**
+          * Specifies the UI model of the control
+         */
+        "model": NavigationListItemModel;
+        /**
+          * Specifies if the navigation-list parent is expanded or collapsed.
+         */
+        "navigationListExpanded": boolean;
+        /**
+          * Specifies if the hyperlink is selected. Only applies when the `link` property is defined.
+         */
+        "selected"?: boolean;
+        /**
+          * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
+         */
+        "selectedItemIndicator": boolean;
+        /**
+          * Specifies how the caption will be displayed when the navigation-list parent is collapsed
+         */
+        "showCaptionOnCollapse"?: "inline" | "tooltip";
+        /**
+          * Specifies the src of the start image.
+         */
+        "startImgSrc"?: string | undefined;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType": Exclude<ImageRender, "img">;
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "tooltipDelay"?: number;
+    }
+    /**
+     * @status experimental
+     */
+    interface ChNavigationListRender {
+        /**
+          * If `false` the overflowing content of the control will be clipped to the borders of its container.
+         */
+        "autoGrow": boolean;
+        /**
+          * `true` to expand the path to the selected link when the `selectedLink` property is updated.
+         */
+        "expandSelectedLink": boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton": "decorative" | "no";
+        /**
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+         */
+        "expandableButtonPosition": "before" | "after";
+        /**
+          * Specifies if the control is expanded or collapsed.
+         */
+        "expanded": boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    item: NavigationListItemModel
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor": (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings": any;
+        /**
+          * Specifies the items of the control.
+         */
+        "model"?: NavigationListModel | undefined;
+        /**
+          * Specifies the items of the control.
+         */
+        "renderItem"?: (
+    item: NavigationListItemModel,
+    navigationListState: ChNavigationListRender,
+    level: number,
+    index: number
+  ) => any;
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedItemIndicator": boolean;
+        /**
+          * Specifies the current selected hyperlink.
+         */
+        "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies how the caption of the items will be displayed when the control is collapsed
+         */
+        "showCaptionOnCollapse"?: "inline" | "tooltip";
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "tooltipDelay"?: number;
+        /**
+          * This property is a WA to implement the Navigation List as a UC 2.0 in GeneXus.
+         */
+        "useGxRender": boolean;
+    }
     interface ChNextDataModeling {
     }
     interface ChNextDataModelingItem {
@@ -2304,35 +2454,52 @@ export namespace Components {
          */
         "colorScheme": "light" | "dark";
         /**
-          * Specifies the name of the control.
-         */
-        "componentName": string;
-        /**
           * Specifies the design system used in the iframe of the control
          */
         "designSystem": "mercury" | "unanimo";
         /**
-          * Specifies the title for the current showcase.
+          * Specifies the language direction of the document
          */
-        "pageName": string;
+        "languageDirection": "ltr" | "rtl";
         /**
-          * Specifies the HTML directory where the showcase for the control is placed.
+          * Specifies the version of the showcase displayed in the header
          */
-        "pageSrc": string;
+        "packageVersion": string;
+        /**
+          * Specifies the pages that will be displayed in the sidebar
+         */
+        "pages": NavigationListModel1 | undefined;
         /**
           * Specifies the development status of the control.   - "experimental": The control is in its early stages of the development.     This phase is often useful for testing the control early, but it is     very likely that the interface will change from the final version.      Breaking changes for the control can be applied in "patch" tags.    - "developer-preview": The control is in its final stages of the     development. The interface and behaviors to implement the control are     almost complete. The interface of the control should not change so much     from the final version.      Breaking changes for the control can be applied in "major" tags.    - "stable": The control's development is stable and can be safety used     in production environments.      Breaking changes for the control can be applied in "major" tags. In     some cases, two "major" tags would be used to deprecate a behavior in     the control.
          */
         "status": "developer-preview" | "experimental" | "stable";
+        /**
+          * Specifies the stories for the showcase.
+         */
+        "stories": | {
+        custom: { [key: string]: ShowcaseCustomStory };
+        landing: ShowcaseCustomStory;
+        playground: ShowcaseStories;
+      }
+    | undefined;
     }
     interface ChSidebar {
         /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button.
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button when `expanded = true`.
          */
-        "expandButtonAccessibleName"?: string;
+        "expandButtonCollapseAccessibleName"?: string;
         /**
-          * Specifies the caption of the expand button.
+          * Specifies the caption of the expand button when `expanded = true`.
          */
-        "expandButtonCaption"?: string;
+        "expandButtonCollapseCaption"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button when `expanded = false`.
+         */
+        "expandButtonExpandAccessibleName"?: string;
+        /**
+          * Specifies the caption of the expand button when `expanded = false`.
+         */
+        "expandButtonExpandCaption"?: string;
         /**
           * Specifies whether the control is expanded or collapsed.
          */
@@ -3151,32 +3318,21 @@ export namespace Components {
     }
     interface ChTooltip {
         /**
+          * Specifies a reference for the action that opens the tooltip.  If `undefined`, a button on the tooltip will be rendered and the slot "action" can be used to display the content of the action.  If `null`, the parentElement will be used as the action reference.
+         */
+        "actionElement"?: HTMLButtonElement | undefined | null;
+        /**
+          * Specifies the block alignment of the window.
+         */
+        "blockAlign": ChPopoverAlign;
+        /**
           * Specifies the delay (in ms) for the tooltip to be displayed.
          */
         "delay": number;
         /**
-          * Specifies the position of the tooltip relative to the container element.
+          * Specifies the inline alignment of the window.
          */
-        "position": | "OutsideStart_OutsideStart"
-    | "InsideStart_OutsideStart"
-    | "Center_OutsideStart"
-    | "InsideEnd_OutsideStart"
-    | "OutsideEnd_OutsideStart"
-    | "OutsideStart_InsideStart"
-    | "OutsideEnd_InsideStart"
-    | "OutsideStart_Center"
-    | "OutsideEnd_Center"
-    | "OutsideStart_InsideEnd"
-    | "OutsideEnd_InsideEnd"
-    | "OutsideStart_OutsideEnd"
-    | "InsideStart_OutsideEnd"
-    | "Center_OutsideEnd"
-    | "InsideEnd_OutsideEnd"
-    | "OutsideEnd_OutsideEnd";
-        /**
-          * Specifies the tooltip description.
-         */
-        "tooltipId": string;
+        "inlineAlign": ChPopoverAlign;
     }
     interface ChTree {
         /**
@@ -3877,6 +4033,10 @@ export interface ChGridVirtualScrollerCustomEvent<T> extends CustomEvent<T> {
 export interface ChIntersectionObserverCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLChIntersectionObserverElement;
+}
+export interface ChNavigationListRenderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLChNavigationListRenderElement;
 }
 export interface ChNextDataModelingItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -4780,6 +4940,36 @@ declare global {
     var HTMLChMarkdownViewerElement: {
         prototype: HTMLChMarkdownViewerElement;
         new (): HTMLChMarkdownViewerElement;
+    };
+    /**
+     * @status experimental
+     */
+    interface HTMLChNavigationListItemElement extends Components.ChNavigationListItem, HTMLStencilElement {
+    }
+    var HTMLChNavigationListItemElement: {
+        prototype: HTMLChNavigationListItemElement;
+        new (): HTMLChNavigationListItemElement;
+    };
+    interface HTMLChNavigationListRenderElementEventMap {
+        "buttonClick": NavigationListItemModel;
+        "hyperlinkClick": PointerEvent;
+    }
+    /**
+     * @status experimental
+     */
+    interface HTMLChNavigationListRenderElement extends Components.ChNavigationListRender, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLChNavigationListRenderElementEventMap>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: ChNavigationListRenderCustomEvent<HTMLChNavigationListRenderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLChNavigationListRenderElementEventMap>(type: K, listener: (this: HTMLChNavigationListRenderElement, ev: ChNavigationListRenderCustomEvent<HTMLChNavigationListRenderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLChNavigationListRenderElement: {
+        prototype: HTMLChNavigationListRenderElement;
+        new (): HTMLChNavigationListRenderElement;
     };
     interface HTMLChNextDataModelingElement extends Components.ChNextDataModeling, HTMLStencilElement {
     }
@@ -5872,6 +6062,8 @@ declare global {
         "ch-layout-splitter": HTMLChLayoutSplitterElement;
         "ch-markdown": HTMLChMarkdownElement;
         "ch-markdown-viewer": HTMLChMarkdownViewerElement;
+        "ch-navigation-list-item": HTMLChNavigationListItemElement;
+        "ch-navigation-list-render": HTMLChNavigationListRenderElement;
         "ch-next-data-modeling": HTMLChNextDataModelingElement;
         "ch-next-data-modeling-item": HTMLChNextDataModelingItemElement;
         "ch-next-data-modeling-render": HTMLChNextDataModelingRenderElement;
@@ -7603,6 +7795,158 @@ declare namespace LocalJSX {
          */
         "value"?: string;
     }
+    /**
+     * @status experimental
+     */
+    interface ChNavigationListItem {
+        /**
+          * Specifies the caption of the control
+         */
+        "caption": string;
+        /**
+          * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
+         */
+        "disabled"?: boolean;
+        /**
+          * Specifies if the control contains sub items.
+         */
+        "expandable"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "decorative" | "no";
+        /**
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+         */
+        "expandableButtonPosition"?: "before" | "after";
+        /**
+          * Specifies if the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    imageSrc: NavigationListItemModel
+  ) => GxImageMultiState | undefined;
+        /**
+          * Specifies at which level of the navigation list is rendered the control.
+         */
+        "level": number;
+        "link"?: ItemLink | undefined;
+        /**
+          * Specifies the UI model of the control
+         */
+        "model": NavigationListItemModel;
+        /**
+          * Specifies if the navigation-list parent is expanded or collapsed.
+         */
+        "navigationListExpanded"?: boolean;
+        /**
+          * Specifies if the hyperlink is selected. Only applies when the `link` property is defined.
+         */
+        "selected"?: boolean;
+        /**
+          * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
+         */
+        "selectedItemIndicator"?: boolean;
+        /**
+          * Specifies how the caption will be displayed when the navigation-list parent is collapsed
+         */
+        "showCaptionOnCollapse"?: "inline" | "tooltip";
+        /**
+          * Specifies the src of the start image.
+         */
+        "startImgSrc"?: string | undefined;
+        /**
+          * Specifies how the start image will be rendered.
+         */
+        "startImgType"?: Exclude<ImageRender, "img">;
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "tooltipDelay"?: number;
+    }
+    /**
+     * @status experimental
+     */
+    interface ChNavigationListRender {
+        /**
+          * If `false` the overflowing content of the control will be clipped to the borders of its container.
+         */
+        "autoGrow"?: boolean;
+        /**
+          * `true` to expand the path to the selected link when the `selectedLink` property is updated.
+         */
+        "expandSelectedLink"?: boolean;
+        /**
+          * Specifies what kind of expandable button is displayed in the items by default.  - `"decorative"`: Only a decorative icon is rendered to display the state     of the item.
+         */
+        "expandableButton"?: "decorative" | "no";
+        /**
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+         */
+        "expandableButtonPosition"?: "before" | "after";
+        /**
+          * Specifies if the control is expanded or collapsed.
+         */
+        "expanded"?: boolean;
+        /**
+          * This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.
+         */
+        "getImagePathCallback"?: (
+    item: NavigationListItemModel
+  ) => GxImageMultiState | undefined;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxImageConstructor"?: (name: string) => any;
+        /**
+          * This property is a WA to implement the Tree View as a UC 2.0 in GeneXus.
+         */
+        "gxSettings"?: any;
+        /**
+          * Specifies the items of the control.
+         */
+        "model"?: NavigationListModel | undefined;
+        /**
+          * Fired when an button is clicked. This event can be prevented.
+         */
+        "onButtonClick"?: (event: ChNavigationListRenderCustomEvent<NavigationListItemModel>) => void;
+        /**
+          * Fired when an hyperlink is clicked. This event can be prevented.
+         */
+        "onHyperlinkClick"?: (event: ChNavigationListRenderCustomEvent<PointerEvent>) => void;
+        /**
+          * Specifies the items of the control.
+         */
+        "renderItem"?: (
+    item: NavigationListItemModel,
+    navigationListState: ChNavigationListRender,
+    level: number,
+    index: number
+  ) => any;
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedItemIndicator"?: boolean;
+        /**
+          * Specifies the current selected hyperlink.
+         */
+        "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies how the caption of the items will be displayed when the control is collapsed
+         */
+        "showCaptionOnCollapse"?: "inline" | "tooltip";
+        /**
+          * Specifies the delay (in ms) for the tooltip to be displayed.
+         */
+        "tooltipDelay"?: number;
+        /**
+          * This property is a WA to implement the Navigation List as a UC 2.0 in GeneXus.
+         */
+        "useGxRender"?: boolean;
+    }
     interface ChNextDataModeling {
     }
     interface ChNextDataModelingItem {
@@ -8173,35 +8517,52 @@ declare namespace LocalJSX {
          */
         "colorScheme"?: "light" | "dark";
         /**
-          * Specifies the name of the control.
-         */
-        "componentName"?: string;
-        /**
           * Specifies the design system used in the iframe of the control
          */
         "designSystem"?: "mercury" | "unanimo";
         /**
-          * Specifies the title for the current showcase.
+          * Specifies the language direction of the document
          */
-        "pageName"?: string;
+        "languageDirection"?: "ltr" | "rtl";
         /**
-          * Specifies the HTML directory where the showcase for the control is placed.
+          * Specifies the version of the showcase displayed in the header
          */
-        "pageSrc"?: string;
+        "packageVersion"?: string;
+        /**
+          * Specifies the pages that will be displayed in the sidebar
+         */
+        "pages"?: NavigationListModel1 | undefined;
         /**
           * Specifies the development status of the control.   - "experimental": The control is in its early stages of the development.     This phase is often useful for testing the control early, but it is     very likely that the interface will change from the final version.      Breaking changes for the control can be applied in "patch" tags.    - "developer-preview": The control is in its final stages of the     development. The interface and behaviors to implement the control are     almost complete. The interface of the control should not change so much     from the final version.      Breaking changes for the control can be applied in "major" tags.    - "stable": The control's development is stable and can be safety used     in production environments.      Breaking changes for the control can be applied in "major" tags. In     some cases, two "major" tags would be used to deprecate a behavior in     the control.
          */
         "status"?: "developer-preview" | "experimental" | "stable";
+        /**
+          * Specifies the stories for the showcase.
+         */
+        "stories": | {
+        custom: { [key: string]: ShowcaseCustomStory };
+        landing: ShowcaseCustomStory;
+        playground: ShowcaseStories;
+      }
+    | undefined;
     }
     interface ChSidebar {
         /**
-          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button.
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button when `expanded = true`.
          */
-        "expandButtonAccessibleName"?: string;
+        "expandButtonCollapseAccessibleName"?: string;
         /**
-          * Specifies the caption of the expand button.
+          * Specifies the caption of the expand button when `expanded = true`.
          */
-        "expandButtonCaption"?: string;
+        "expandButtonCollapseCaption"?: string;
+        /**
+          * Specifies a short string, typically 1 to 3 words, that authors associate with an element to provide users of assistive technologies with a label for expand button when `expanded = false`.
+         */
+        "expandButtonExpandAccessibleName"?: string;
+        /**
+          * Specifies the caption of the expand button when `expanded = false`.
+         */
+        "expandButtonExpandCaption"?: string;
         /**
           * Specifies whether the control is expanded or collapsed.
          */
@@ -9068,32 +9429,21 @@ declare namespace LocalJSX {
     }
     interface ChTooltip {
         /**
+          * Specifies a reference for the action that opens the tooltip.  If `undefined`, a button on the tooltip will be rendered and the slot "action" can be used to display the content of the action.  If `null`, the parentElement will be used as the action reference.
+         */
+        "actionElement"?: HTMLButtonElement | undefined | null;
+        /**
+          * Specifies the block alignment of the window.
+         */
+        "blockAlign"?: ChPopoverAlign;
+        /**
           * Specifies the delay (in ms) for the tooltip to be displayed.
          */
         "delay"?: number;
         /**
-          * Specifies the position of the tooltip relative to the container element.
+          * Specifies the inline alignment of the window.
          */
-        "position"?: | "OutsideStart_OutsideStart"
-    | "InsideStart_OutsideStart"
-    | "Center_OutsideStart"
-    | "InsideEnd_OutsideStart"
-    | "OutsideEnd_OutsideStart"
-    | "OutsideStart_InsideStart"
-    | "OutsideEnd_InsideStart"
-    | "OutsideStart_Center"
-    | "OutsideEnd_Center"
-    | "OutsideStart_InsideEnd"
-    | "OutsideEnd_InsideEnd"
-    | "OutsideStart_OutsideEnd"
-    | "InsideStart_OutsideEnd"
-    | "Center_OutsideEnd"
-    | "InsideEnd_OutsideEnd"
-    | "OutsideEnd_OutsideEnd";
-        /**
-          * Specifies the tooltip description.
-         */
-        "tooltipId"?: string;
+        "inlineAlign"?: ChPopoverAlign;
     }
     interface ChTree {
         /**
@@ -9738,6 +10088,8 @@ declare namespace LocalJSX {
         "ch-layout-splitter": ChLayoutSplitter;
         "ch-markdown": ChMarkdown;
         "ch-markdown-viewer": ChMarkdownViewer;
+        "ch-navigation-list-item": ChNavigationListItem;
+        "ch-navigation-list-render": ChNavigationListRender;
         "ch-next-data-modeling": ChNextDataModeling;
         "ch-next-data-modeling-item": ChNextDataModelingItem;
         "ch-next-data-modeling-render": ChNextDataModelingRender;
@@ -9985,6 +10337,14 @@ declare module "@stencil/core" {
              * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
              */
             "ch-markdown-viewer": LocalJSX.ChMarkdownViewer & JSXBase.HTMLAttributes<HTMLChMarkdownViewerElement>;
+            /**
+             * @status experimental
+             */
+            "ch-navigation-list-item": LocalJSX.ChNavigationListItem & JSXBase.HTMLAttributes<HTMLChNavigationListItemElement>;
+            /**
+             * @status experimental
+             */
+            "ch-navigation-list-render": LocalJSX.ChNavigationListRender & JSXBase.HTMLAttributes<HTMLChNavigationListRenderElement>;
             "ch-next-data-modeling": LocalJSX.ChNextDataModeling & JSXBase.HTMLAttributes<HTMLChNextDataModelingElement>;
             "ch-next-data-modeling-item": LocalJSX.ChNextDataModelingItem & JSXBase.HTMLAttributes<HTMLChNextDataModelingItemElement>;
             "ch-next-data-modeling-render": LocalJSX.ChNextDataModelingRender & JSXBase.HTMLAttributes<HTMLChNextDataModelingRenderElement>;

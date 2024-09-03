@@ -4,6 +4,8 @@ import { actionListShowcaseStory } from "./action-list/action-list.showcase";
 import { barcodeScannerShowcaseStory } from "./barcode-scanner/barcode-scanner.showcase";
 import { chatShowcaseStory } from "./chat/chat.showcase";
 import { checkboxShowcaseStory } from "./checkbox/checkbox.showcase";
+import { codeDiffEditorShowcaseStory } from "./code-diff-editor/code-diff-editor.showcase";
+import { codeEditorShowcaseStory } from "./code-editor/code-editor.showcase";
 import { codeShowcaseStory } from "./code/code.showcase";
 import { comboBoxShowcaseStory } from "./combo-box/combo-box.showcase";
 import { dialogShowcaseStory } from "./dialog/dialog.showcase";
@@ -13,19 +15,26 @@ import { flexibleLayoutShowcaseStory } from "./flexible-layout/flexible-layout.s
 import { imageShowcaseStory } from "./image/image.showcase";
 import { layoutSplitterShowcaseStory } from "./layout-splitter/layout-splitter.showcase";
 import { markdownShowcaseStory } from "./markdown/markdown.showcase";
+import { navigationListShowcaseStory } from "./navigation-list/navigation-list.showcase";
+import { paginatorShowcaseStory } from "./paginator/paginator.showcase";
 import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
+import { shortcutsShowcaseStory } from "./shortcuts/shortcuts.showcase";
+import { sidebarShowcaseStory } from "./sidebar/sidebar.showcase";
 import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
+import { tabularGridShowcaseStory } from "./tabular-grid/tabular-grid.showcase";
 import { textBlockShowcaseStory } from "./textblock/textblock.showcase";
+import { tooltipShowcaseStory } from "./tooltip/tooltip.showcase";
 import { treeViewShowcaseStory } from "./tree-view/tree-view.showcase";
+import { ChameleonCustomStories, ChameleonStories } from "./types";
 
 export const showcaseStories = {
   accordion: accordionShowcaseStory,
-  "action-group-in-development": actionGroupShowcaseStory,
+  "action-group": actionGroupShowcaseStory,
   "action-list": actionListShowcaseStory,
   "barcode-scanner": barcodeScannerShowcaseStory,
   checkbox: checkboxShowcaseStory,
@@ -36,19 +45,27 @@ export const showcaseStories = {
   edit: editShowcaseStory,
   image: imageShowcaseStory,
   "layout-splitter": layoutSplitterShowcaseStory,
+  "navigation-list": navigationListShowcaseStory,
   popover: popoverShowcaseStory,
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,
+  sidebar: sidebarShowcaseStory,
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,
   textblock: textBlockShowcaseStory,
+  tooltip: tooltipShowcaseStory,
   "tree-view": treeViewShowcaseStory
-} as const;
+} as const satisfies ChameleonStories;
 
 export const showcaseCustomStories = {
   chat: chatShowcaseStory,
+  "code-editor": codeEditorShowcaseStory,
+  "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,
-  markdown: markdownShowcaseStory
-};
+  "markdown-viewer": markdownShowcaseStory,
+  paginator: paginatorShowcaseStory,
+  shortcuts: shortcutsShowcaseStory,
+  "tabular-grid": tabularGridShowcaseStory
+} as const satisfies ChameleonCustomStories;

@@ -1,20 +1,20 @@
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Regular.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Regular.woff2");
   font-weight: 400;
   font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_SemiBold.woff2");
   font-weight: 600;
   font-display: swap;
 }
 
 @font-face {
   font-family: SourceSansPro;
-  src: url("https://unpkg.com/@genexus/unanimo@latest/dist/assets/fonts/SourceSansPro_Bold.woff2");
+  src: url("https://unpkg.com/@genexus/unanimo@0.19.1/dist/assets/fonts/SourceSansPro_Bold.woff2");
   font-weight: 700;
   font-display: swap;
 }
@@ -91,6 +91,10 @@
   gap: var(--spacing--l, var(--mer-spacing--md));
 }
 
+.unanimo .card-properties {
+  margin-block-start: 38px;
+}
+
 label {
   display: grid;
   grid-template-rows: max-content max-content;
@@ -156,7 +160,7 @@ legend {
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing--m, var(--mer-spacing--xs));
 
-  textarea {
+  textarea.form-input {
     block-size: 100%;
     max-block-size: unset;
     contain: size;
@@ -202,6 +206,13 @@ legend {
   gap: 8px;
 }
 
+.tooltip-test-main-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: max-content;
+  gap: 64px;
+}
+
 .unanimo .tab-test-main-wrapper {
   ch-tab-render {
     gap: 8px;
@@ -233,50 +244,6 @@ legend {
   grid-template-rows: 80px;
   gap: var(--spacing--l, var(--mer-spacing--md));
 }
-
-/* ch-action-list-render {
-  gap: 4px;
-
-  &::part(item__caption) {
-    font-weight: 600;
-  }
-
-  &::part(item__action) {
-    padding-inline: 8px;
-    padding-block: 4px;
-  }
-
-  &::part(item__action group) {
-    border: 1px solid;
-  }
-
-  &::part(expandable) {
-    padding-inline-start: 15px;
-  }
-
-  &::part(item__action):focus-visible {
-    outline: 2px solid #be6c6c;
-    outline-offset: -2px;
-  }
-
-  &::part(item__action disabled) {
-    color: gray;
-  }
-
-  &::part(item__action selected) {
-    background-color: color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  &::part(time) {
-    display: block;
-    font-style: italic;
-    color: gray;
-  }
-
-  &::part(hyperlink-notification) {
-    text-decoration: underline;
-  }
-} */
 
 ch-code {
   contain: size;
@@ -359,18 +326,6 @@ ch-showcase ch-flexible-layout-render {
   --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#active");
   --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#hover");
   --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#disabled");
-}
-
-/* This is a WA to improve the UX */
-ch-tree-view-render.tree-view-primary {
-  &::part(item__header) {
-    border-radius: 0px;
-  }
-
-  &::part(item__action) {
-    --ch-tree-view-item__image-size: 20px;
-    padding-block: var(--spacing--s, var(--mer-spacing--2xs));
-  }
 }
 
 .chat {

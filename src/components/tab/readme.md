@@ -97,13 +97,11 @@ Type: `Promise<void>`
 ### Used by
 
  - [ch-flexible-layout](../flexible-layout/internal/flexible-layout)
- - [ch-showcase](../../showcase/assets/components)
 
 ### Graph
 ```mermaid
 graph TD;
   ch-flexible-layout --> ch-tab-render
-  ch-showcase --> ch-tab-render
   style ch-tab-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

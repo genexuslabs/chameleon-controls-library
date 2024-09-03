@@ -1,11 +1,9 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChRadioGroupRender } from "../../../../components/radio-group/radio-group-render";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { simpleModel1, simpleModel2 } from "./models";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChRadioGroupRender>> = {};
+const state: Partial<HTMLChRadioGroupRenderElement> = {};
 const formRefs: {
   [key in "form-radio-group-1" | "form-radio-group-2" | "form-radio-group-3"]:
     | HTMLFormElement
@@ -108,57 +106,55 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChRadioGroupRender>
-> = [
-  {
-    caption: "Models",
-    properties: [
-      {
-        id: "model",
-        accessibleName: "Model",
-        type: "enum",
-        values: [
-          { caption: "Simple Model", value: simpleModel1 },
-          { caption: "Simple Model 2", value: simpleModel2 }
-        ],
-        value: simpleModel2
-      }
-    ]
-  },
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "value",
-        caption: "Value",
-        value: undefined,
-        type: "string"
-      },
-      {
-        id: "disabled",
-        caption: "Disabled",
-        value: false,
-        type: "boolean"
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChRadioGroupRenderElement> =
+  [
+    {
+      caption: "Models",
+      properties: [
+        {
+          id: "model",
+          accessibleName: "Model",
+          type: "enum",
+          values: [
+            { caption: "Simple Model", value: simpleModel1 },
+            { caption: "Simple Model 2", value: simpleModel2 }
+          ],
+          value: simpleModel2
+        }
+      ]
+    },
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "value",
+          caption: "Value",
+          value: undefined,
+          type: "string"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
+        }
+      ]
+    }
+  ];
 
-export const radioGroupShowcaseStory: ShowcaseStory<
-  Mutable<ChRadioGroupRender>
-> = {
-  properties: showcaseRenderProperties,
-  markupWithUIModel: {
-    uiModel: () => state.model,
-    uiModelType: "RadioGroupModel",
-    render: () => `<ch-radio-group-render
+export const radioGroupShowcaseStory: ShowcaseStory<HTMLChRadioGroupRenderElement> =
+  {
+    properties: showcaseRenderProperties,
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "RadioGroupModel",
+      render: () => `<ch-radio-group-render
           class="radio-group"${renderBooleanPropertyOrEmpty("disabled", state)}
           model={this.#controlUIModel}
           value="${state.value}"
           onInput={this.#handleValueChange}
         ></ch-radio-group-render>`
-  },
-  render: render,
-  state: state
-};
+    },
+    render: render,
+    state: state
+  };

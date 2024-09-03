@@ -1,7 +1,5 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChTabRender } from "../../../../components/tab/tab";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import {
   disabledModel1,
   disabledModel4,
@@ -19,7 +17,7 @@ import {
 } from "../tree-view/models";
 import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChTabRender>> = {};
+const state: Partial<HTMLChTabRenderElement> = {};
 const renderedItems = new Set(["item1"]);
 
 const selectedItemChangeHandler = (
@@ -138,7 +136,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement> =
   [
     {
       caption: "Models",
@@ -232,7 +230,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
     }
   ];
 
-export const tabShowcaseStory: ShowcaseStory<Mutable<ChTabRender>> = {
+export const tabShowcaseStory: ShowcaseStory<HTMLChTabRenderElement> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
     uiModel: () => state.model,

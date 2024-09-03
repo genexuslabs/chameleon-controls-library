@@ -123,10 +123,6 @@ Type: `Promise<void>`
 
 ## Dependencies
 
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
 ### Depends on
 
 - [ch-smart-grid](../smart-grid)
@@ -148,7 +144,6 @@ graph TD;
   ch-smart-grid --> ch-infinite-scroll
   ch-markdown-viewer --> ch-theme
   ch-markdown-viewer --> ch-code
-  ch-showcase --> ch-chat
   style ch-chat fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

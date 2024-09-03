@@ -35,14 +35,26 @@ export class ChSidebar {
   /**
    * Specifies a short string, typically 1 to 3 words, that authors associate
    * with an element to provide users of assistive technologies with a label
-   * for expand button.
+   * for expand button when `expanded = true`.
    */
-  @Prop() readonly expandButtonAccessibleName?: string;
+  @Prop() readonly expandButtonCollapseAccessibleName?: string;
 
   /**
-   * Specifies the caption of the expand button.
+   * Specifies a short string, typically 1 to 3 words, that authors associate
+   * with an element to provide users of assistive technologies with a label
+   * for expand button when `expanded = false`.
    */
-  @Prop() readonly expandButtonCaption?: string;
+  @Prop() readonly expandButtonExpandAccessibleName?: string;
+
+  /**
+   * Specifies the caption of the expand button when `expanded = true`.
+   */
+  @Prop() readonly expandButtonCollapseCaption?: string;
+
+  /**
+   * Specifies the caption of the expand button when `expanded = false`.
+   */
+  @Prop() readonly expandButtonExpandCaption?: string;
 
   /**
    * Specifies whether the control is expanded or collapsed.
@@ -91,6 +103,14 @@ export class ChSidebar {
   }
 
   render() {
+    const accessibleName = this.expanded
+      ? this.expandButtonCollapseAccessibleName
+      : this.expandButtonExpandAccessibleName;
+
+    const caption = this.expanded
+      ? this.expandButtonCollapseCaption
+      : this.expandButtonExpandCaption;
+
     return (
       <Host
         class={this.expanded ? "ch-sidebar--expanded" : "ch-sidebar--collapsed"}
@@ -99,12 +119,16 @@ export class ChSidebar {
 
         {this.showExpandButton && (
           <button
-            aria-label={this.expandButtonAccessibleName}
+            aria-label={accessibleName !== caption ? accessibleName : undefined}
+            class={{
+              "expand-button": true,
+              "expand-button--collapsed": !this.expanded
+            }}
             part={`expand-button ${this.expanded ? "expanded" : "collapsed"}`}
             type="button"
             onClick={this.#handleExpandedChange}
           >
-            {this.expandButtonCaption}
+            {caption}
           </button>
         )}
       </Host>

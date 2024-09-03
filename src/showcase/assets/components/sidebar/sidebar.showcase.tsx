@@ -33,8 +33,12 @@ const handleExpandedChange = () => {
 const render = () => (
   <ch-sidebar
     class="sidebar"
-    expandButtonAccessibleName={state.expandButtonAccessibleName}
-    expandButtonCaption={state.expandButtonCaption}
+    expandButtonExpandAccessibleName={state.expandButtonExpandAccessibleName}
+    expandButtonCollapseAccessibleName={
+      state.expandButtonCollapseAccessibleName
+    }
+    expandButtonExpandCaption={state.expandButtonExpandCaption}
+    expandButtonCollapseCaption={state.expandButtonCollapseCaption}
     expanded={state.expanded}
     showExpandButton={state.showExpandButton}
     onExpandedChange={handleExpandedChange}
@@ -89,15 +93,27 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         type: "boolean"
       },
       {
-        id: "expandButtonCaption",
-        caption: "Expand Button Caption",
+        id: "expandButtonExpandCaption",
+        caption: "Expand Button Expand Caption",
+        value: "",
+        type: "string"
+      },
+      {
+        id: "expandButtonCollapseCaption",
+        caption: "Expand Button Collapse Caption",
+        value: "",
+        type: "string"
+      },
+      {
+        id: "expandButtonExpandAccessibleName",
+        caption: "Expand Button Expand Accessible Name",
         value: "Expand",
         type: "string"
       },
       {
-        id: "expandButtonAccessibleName",
-        caption: "Expand Button Accessible Name",
-        value: "",
+        id: "expandButtonCollapseAccessibleName",
+        caption: "Expand Button Collapse Accessible Name",
+        value: "Collapse",
         type: "string"
       },
       {
@@ -191,9 +207,13 @@ export const sidebarShowcaseStory: ShowcaseStory<
     uiModel: () => state.model,
     uiModelType: "NavigationListModel",
     render: () => `<ch-sidebar${renderBooleanPropertyOrEmpty("expanded", state)}
-          expandButtonCaption="${state.expandButtonCaption}"
-          expandButtonAccessibleName="${
-            state.expandButtonAccessibleName
+          expandButtonExpandCaption="${state.expandButtonExpandCaption}"
+          expandButtonCollapseCaption="${state.expandButtonCollapseCaption}"
+          expandButtonExpandAccessibleName="${
+            state.expandButtonExpandAccessibleName
+          }"
+          expandButtonCollapseAccessibleName="${
+            state.expandButtonCollapseAccessibleName
           }"${renderBooleanPropertyOrEmpty("showExpandButton", state)}
         >
           <ch-navigation-list-render${renderBooleanPropertyOrEmpty(

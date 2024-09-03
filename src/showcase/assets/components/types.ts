@@ -2,7 +2,7 @@ import { Mutable } from "../../../common/types";
 
 export type ShowcaseStories = {
   [key: string]: ShowcaseStory<ShowcaseStoryClass>;
-};
+} & { customVars: ShowcaseRenderPropertyStyleValues };
 
 export type ShowcaseStory<T extends ShowcaseStoryClass> = {
   render: () => any;
@@ -71,7 +71,8 @@ export type ShowcaseRenderProperty<T> =
   | ShowcaseRenderPropertyNumber<T, keyof T>
   | ShowcaseRenderPropertyString<T, keyof T>
   | ShowcaseRenderPropertyEnum<T, keyof T>
-  | ShowcaseRenderPropertyObject<T, keyof T>;
+  | ShowcaseRenderPropertyObject<T, keyof T>
+  | ShowcaseRenderPropertyStyle;
 
 export type ShowcaseRenderPropertyTypes = Pick<
   ShowcaseRenderProperty<ShowcaseStoryClass>,
@@ -123,6 +124,24 @@ export type ShowcaseRenderPropertyEnum<
   values: { caption: string; value: any }[];
 };
 
+export type ShowcaseRenderPropertyStyle = ShowcaseRenderPropertyBase<
+  { customVars: { [key: string]: string } },
+  "customVars"
+> & {
+  properties: ShowcaseRenderPropertyStyleValues;
+  render?: "action-button" | "independent-properties";
+  type: "style";
+};
+
+export type ShowcaseRenderPropertyStyleValues =
+  ShowcaseRenderPropertyStyleValue[];
+
+// TODO: Improve typing
+export type ShowcaseRenderPropertyStyleValue =
+  | ShowcaseRenderPropertyBoolean<any, any>
+  | ShowcaseRenderPropertyNumber<any, any>
+  | ShowcaseRenderPropertyString<any, any>;
+
 export type ShowcaseRenderPropertyObject<
   T,
   D extends keyof T
@@ -150,6 +169,9 @@ export type ChameleonStories = {
   qr: ShowcaseStory<HTMLChQrElement>;
   "radio-group": ShowcaseStory<HTMLChRadioGroupRenderElement>;
   "segmented-control": ShowcaseStory<HTMLChSegmentedControlRenderElement>;
+  sidebar: ShowcaseStory<
+    HTMLChSidebarElement & HTMLChNavigationListRenderElement
+  >;
   slider: ShowcaseStory<HTMLChSliderElement>;
   switch: ShowcaseStory<HTMLChSwitchElement>;
   tab: ShowcaseStory<HTMLChTabRenderElement>;

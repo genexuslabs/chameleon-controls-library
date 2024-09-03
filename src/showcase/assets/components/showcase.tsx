@@ -21,7 +21,8 @@ import {
   ShowcaseRenderPropertyString,
   ShowcaseRenderPropertyTypes,
   ShowcaseStory,
-  ShowcaseStories
+  ShowcaseStories,
+  ShowcaseRenderPropertyStyle
 } from "./types";
 import {
   ChComboBoxRenderCustomEvent,
@@ -87,7 +88,8 @@ const defaultRenderForEachPropertyType = {
   enum: "combo-box",
   number: "input-number",
   string: "input",
-  object: "independent-properties"
+  object: "independent-properties",
+  style: "independent-properties"
 } as const;
 
 @Component({
@@ -272,6 +274,13 @@ export class ChShowcase {
         keyof ShowcaseStoryClass
       >
     ) => {
+      const showcaseStoryState = this.#showcaseStory.state;
+
+      // Initialize the state as an empty object
+      showcaseStoryState[property.id as any] = {};
+    },
+
+    style: (property: ShowcaseRenderPropertyStyle) => {
       const showcaseStoryState = this.#showcaseStory.state;
 
       // Initialize the state as an empty object
@@ -622,7 +631,9 @@ export class ChShowcase {
 
   #initializePropertyInState = <T extends ShowcaseStoryClass>(
     property: ShowcaseRenderProperty<T>,
-    object?: ShowcaseRenderPropertyObject<T, keyof T>
+    object?:
+      | ShowcaseRenderPropertyObject<T, keyof T>
+      | ShowcaseRenderPropertyStyle
   ) => {
     if (property.type === "object") {
       // Initialize the object
@@ -631,6 +642,14 @@ export class ChShowcase {
       // Initialize all object properties. "property" in this case is the "object"
       property.properties.forEach(childProperty =>
         this.#initializePropertyInState(childProperty as any, property)
+      );
+    } else if (property.type === "style") {
+      // Initialize the object
+      this.#handlerInitializationMapping[property.type](property as any);
+
+      // Initialize all object properties. "property" in this case is the "style"
+      property.properties.forEach(childProperty =>
+        this.#initializePropertyInState(childProperty, property)
       );
     } else {
       // TODO: Improve type inference

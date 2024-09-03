@@ -813,10 +813,6 @@ export class ChActionListRender {
   // }
 
   connectedCallback() {
-    if (this.selection !== "none") {
-      this.#selectedItems = new Set();
-    }
-
     this.#flattenUIModel(this.model);
   }
 

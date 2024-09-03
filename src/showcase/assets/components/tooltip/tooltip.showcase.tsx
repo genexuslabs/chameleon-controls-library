@@ -18,7 +18,9 @@ const render = () => (
       <ch-tooltip
         class="tooltip"
         actionElement={buttonRef}
-        style={{ "--ch-tooltip-separation": "10px" }}
+        blockAlign={state.blockAlign}
+        delay={state.delay}
+        inlineAlign={state.inlineAlign}
       >
         Tooltip using a reference (actionElement property)
       </ch-tooltip>
@@ -31,7 +33,13 @@ const render = () => (
 
       <button class="button-secondary" type="button">
         Something 2
-        <ch-tooltip class="tooltip" actionElement={null}>
+        <ch-tooltip
+          class="tooltip"
+          actionElement={null}
+          blockAlign={state.blockAlign}
+          delay={state.delay}
+          inlineAlign={state.inlineAlign}
+        >
           Tooltip inside a button element
         </ch-tooltip>
       </button>
@@ -40,7 +48,12 @@ const render = () => (
     <fieldset class="fieldset-test">
       <legend class="heading-4 field-legend-test">Standalone tooltip</legend>
 
-      <ch-tooltip class="tooltip">
+      <ch-tooltip
+        class="tooltip"
+        blockAlign={state.blockAlign}
+        delay={state.delay}
+        inlineAlign={state.inlineAlign}
+      >
         <div slot="action">Standalone tooltip content</div>
         Standalone tooltip
       </ch-tooltip>

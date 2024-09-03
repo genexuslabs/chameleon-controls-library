@@ -199,6 +199,9 @@ export class ChTooltip implements ComponentInterface {
           hidden={!this.visible}
           inlineAlign={this.inlineAlign}
           mode="manual"
+          // We need to sync the visible state when the popover is closed by an
+          // user interaction (click outside)
+          onPopoverClosed={this.visible ? this.#handleLeave : undefined}
         >
           <slot />
         </ch-popover>

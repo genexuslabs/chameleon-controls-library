@@ -56,7 +56,7 @@ export class ChSidebar {
   /**
    * `true` to display a expandable button at the bottom of the control.
    */
-  @Prop() readonly showExpandButton: boolean = true;
+  @Prop() readonly showExpandButton: boolean = false;
 
   /**
    * Emitted when the element is clicked or the space key is pressed and

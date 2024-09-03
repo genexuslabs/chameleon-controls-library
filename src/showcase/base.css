@@ -160,7 +160,7 @@ legend {
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing--m, var(--mer-spacing--xs));
 
-  textarea {
+  textarea.form-input {
     block-size: 100%;
     max-block-size: unset;
     contain: size;
@@ -245,50 +245,6 @@ legend {
   gap: var(--spacing--l, var(--mer-spacing--md));
 }
 
-/* ch-action-list-render {
-  gap: 4px;
-
-  &::part(item__caption) {
-    font-weight: 600;
-  }
-
-  &::part(item__action) {
-    padding-inline: 8px;
-    padding-block: 4px;
-  }
-
-  &::part(item__action group) {
-    border: 1px solid;
-  }
-
-  &::part(expandable) {
-    padding-inline-start: 15px;
-  }
-
-  &::part(item__action):focus-visible {
-    outline: 2px solid #be6c6c;
-    outline-offset: -2px;
-  }
-
-  &::part(item__action disabled) {
-    color: gray;
-  }
-
-  &::part(item__action selected) {
-    background-color: color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  &::part(time) {
-    display: block;
-    font-style: italic;
-    color: gray;
-  }
-
-  &::part(hyperlink-notification) {
-    text-decoration: underline;
-  }
-} */
-
 ch-code {
   contain: size;
 }
@@ -370,18 +326,6 @@ ch-showcase ch-flexible-layout-render {
   --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#active");
   --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#hover");
   --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#disabled");
-}
-
-/* This is a WA to improve the UX */
-ch-tree-view-render.tree-view-primary {
-  &::part(item__header) {
-    border-radius: 0px;
-  }
-
-  &::part(item__action) {
-    --ch-tree-view-item__image-size: 20px;
-    padding-block: var(--spacing--s, var(--mer-spacing--2xs));
-  }
 }
 
 .chat {

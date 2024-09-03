@@ -6,6 +6,7 @@ import {
 } from "../types";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { unanimoShowcase } from "../navigation-list/models";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<
   HTMLChSidebarElement &
@@ -56,6 +57,7 @@ const render = () => (
         model={state.model}
         selectedItemIndicator={state.selectedItemIndicator}
         showCaptionOnCollapse={state.showCaptionOnCollapse}
+        tooltipDelay={state.tooltipDelay}
         onHyperlinkClick={preventNavigation}
       ></ch-navigation-list-render>
     </div>
@@ -83,7 +85,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       {
         id: "expanded",
         caption: "Expanded",
-        value: false,
+        value: true,
         type: "boolean"
       },
       {
@@ -152,6 +154,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
           { caption: "Tooltip", value: "tooltip" }
         ],
         value: "tooltip"
+      },
+      {
+        id: "tooltipDelay",
+        caption: "Tooltip Delay",
+        value: 100,
+        type: "number"
       }
     ]
   },
@@ -179,6 +187,33 @@ export const sidebarShowcaseStory: ShowcaseStory<
   HTMLChSidebarElement & HTMLChNavigationListRenderElement
 > = {
   properties: showcaseRenderProperties,
+  markupWithUIModel: {
+    uiModel: () => state.model,
+    uiModelType: "NavigationListModel",
+    render: () => `<ch-sidebar${renderBooleanPropertyOrEmpty("expanded", state)}
+          expandButtonCaption="${state.expandButtonCaption}"
+          expandButtonAccessibleName="${
+            state.expandButtonAccessibleName
+          }"${renderBooleanPropertyOrEmpty("showExpandButton", state)}
+        >
+          <ch-navigation-list-render${renderBooleanPropertyOrEmpty(
+            "autoGrow",
+            state,
+            13
+          )}
+            expandableButton="${state.expandableButton}"
+            expandableButtonPosition="${state.expandableButtonPosition}"
+            class="navigation-list navigation-list-secondary"
+            model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+              "selectedItemIndicator",
+              state,
+              13
+            )}
+            showCaptionOnCollapse="${state.showCaptionOnCollapse}"
+            tooltipDelay={${state.tooltipDelay}}
+          ></ch-navigation-list-render>
+        </ch-sidebar>`
+  },
   render: render,
   state: state
 };

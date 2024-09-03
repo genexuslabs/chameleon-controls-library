@@ -2,6 +2,7 @@ import { h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { unanimoShowcase } from "./models";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<HTMLChNavigationListRenderElement> = {};
 
@@ -22,6 +23,7 @@ const render = () => (
       model={state.model}
       selectedItemIndicator={state.selectedItemIndicator}
       showCaptionOnCollapse={state.showCaptionOnCollapse}
+      tooltipDelay={state.tooltipDelay}
       onHyperlinkClick={preventNavigation}
     ></ch-navigation-list-render>
   </div>
@@ -93,6 +95,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChNavigationListRen
             { caption: "Tooltip", value: "tooltip" }
           ],
           value: "inline"
+        },
+        {
+          id: "tooltipDelay",
+          caption: "Tooltip Delay",
+          value: 100,
+          type: "number"
         }
       ]
     }
@@ -101,39 +109,27 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChNavigationListRen
 export const navigationListShowcaseStory: ShowcaseStory<HTMLChNavigationListRenderElement> =
   {
     properties: showcaseRenderProperties,
-    // markupWithUIModel: {
-    //   uiModel: simpleModel2,
-    //   uiModelType: "TabModel",
-    //   render: `<ch-tab-render
-    //         accessibleName={<accessibleName>}
-    //         class="tab"
-    //         model={this.#controlUIModel}
-    //         selectedId={<initial selected id (optional)>}
-    //         onSelectedItemChange={this.#handleSelectedItemChange}
-    //       >
-    //         {renderedItems.has("item1") && (
-    //           <div slot="item1">
-    //             Content of the item 1
-    //             <label>
-    //               Any text
-    //               <input type="text" />
-    //             </label>
-    //           </div>
-    //         )}
-
-    //         {renderedItems.has("item2") && (
-    //           <div slot="item2">Content of the item 2</div>
-    //         )}
-
-    //         {renderedItems.has("item3") && (
-    //           <div slot="item3">Content of the item 3</div>
-    //         )}
-
-    //         {renderedItems.has("item4") && (
-    //           <div slot="item4">Content of the item 4</div>
-    //         )}
-    //       </ch-tab-render>`
-    // },
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "NavigationListModel",
+      render: () => `<ch-navigation-list-render${renderBooleanPropertyOrEmpty(
+        "autoGrow",
+        state
+      )}
+          expandableButton="${state.expandableButton}"
+          expandableButtonPosition="${state.expandableButtonPosition}"
+          class="navigation-list navigation-list-secondary"${renderBooleanPropertyOrEmpty(
+            "expanded",
+            state
+          )}
+          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+            "selectedItemIndicator",
+            state
+          )}
+          showCaptionOnCollapse="${state.showCaptionOnCollapse}"
+          tooltipDelay={${state.tooltipDelay}}
+        ></ch-navigation-list-render>`
+    },
     render: render,
     state: state
   };

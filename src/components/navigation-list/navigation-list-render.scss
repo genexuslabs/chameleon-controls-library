@@ -7,9 +7,12 @@
   /**
    * @prop --ch-navigation-list-collapsed-size:
    * Specifies the inline-size when the navigation list is collapsed
-   * @default auto
+   * @default var(--ch-sidebar-inline-size--collapsed, auto)
    */
-  --ch-navigation-list-collapsed-size: auto;
+  --ch-navigation-list-collapsed-size: var(
+    --ch-sidebar-inline-size--collapsed,
+    auto
+  );
 
   /**
    * @prop --ch-navigation-list-item-custom-padding-inline-start:

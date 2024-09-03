@@ -22,6 +22,11 @@ import {
 import { NAVIGATION_LIST_INITIAL_LEVEL } from "./utils";
 import { fromGxImageToURL } from "../tree-view/genexus-implementation";
 import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import {
+  removeSubscription,
+  subscribe,
+  syncStateWithObservableAncestors
+} from "../sidebar/expanded-change-obervables";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -94,6 +99,7 @@ const defaultRender = (
   </ch-navigation-list-item>
 );
 
+let autoId = 0;
 const NAVIGATION_LIST_ITEM = "ch-navigation-list-item";
 
 /**
@@ -105,6 +111,13 @@ const NAVIGATION_LIST_ITEM = "ch-navigation-list-item";
   tag: "ch-navigation-list-render"
 })
 export class ChNavigationListRender implements ComponentInterface {
+  /**
+   * This ID is used to identify the Navigation List. Necessary to subscribe
+   * for expand/collapse changes in the ancestor nodes.
+   */
+  // eslint-disable-next-line @stencil-community/own-props-must-be-private
+  #navigationListId: string;
+
   @Element() el!: HTMLChNavigationListRenderElement;
 
   /**
@@ -140,7 +153,7 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies if the control is expanded or collapsed.
    */
-  @Prop() readonly expanded: boolean = true;
+  @Prop({ mutable: true }) expanded: boolean = true;
 
   /**
    * `true` to expand the path to the selected link when the `selectedLink`
@@ -298,6 +311,8 @@ export class ChNavigationListRender implements ComponentInterface {
   };
 
   connectedCallback(): void {
+    this.#navigationListId ??= `ch-navigation-list-render-${autoId++}`;
+
     adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
 
     // If the getImagePathCallback was not previously registered
@@ -310,13 +325,28 @@ export class ChNavigationListRender implements ComponentInterface {
       registerDefaultGetImagePathCallback(this);
     }
 
-    // Static attributes that we including in the Host functional component to
-    // eliminate additional overhead
-    this.el.setAttribute("role", "list");
-
     if (this.model && this.expandSelectedLink) {
       this.#expandNewSelectedLink(this.model);
     }
+
+    // Subscribe to expand/collapse changes in the ancestor nodes
+    subscribe(this.#navigationListId, {
+      getSubscriberRef: () => this.el,
+      observerCallback: expanded => {
+        this.expanded = expanded;
+      }
+    });
+
+    // Initialize the state
+    syncStateWithObservableAncestors(this.#navigationListId);
+
+    // Static attributes that we including in the Host functional component to
+    // eliminate additional overhead
+    this.el.setAttribute("role", "list");
+  }
+
+  disconnectedCallback(): void {
+    removeSubscription(this.#navigationListId);
   }
 
   render() {

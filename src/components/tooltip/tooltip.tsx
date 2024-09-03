@@ -9,6 +9,7 @@ import {
   Watch
 } from "@stencil/core";
 import { ChPopoverAlign } from "../popover/types";
+import { focusComposedPath } from "../common/helpers";
 
 const LISTENER_CONFIG = {
   passive: true
@@ -82,7 +83,11 @@ export class ChTooltip implements ComponentInterface {
   };
 
   #handleLeave = () => {
-    this.visible = false;
+    // Only remove the tooltip if the action element is not focused. If focused,
+    // "mouseleave" should not dismiss the tooltip
+    if (focusComposedPath()[0] !== this.#getActionElement()) {
+      this.visible = false;
+    }
   };
 
   #addListenersToDisplayPopover = () => {

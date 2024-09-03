@@ -85,6 +85,7 @@ const defaultRender = (
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
     startImgType={item.startImgType}
+    tooltipDelay={navigationListState.tooltipDelay}
   >
     {navigationListState.expanded &&
       item.items != null &&
@@ -215,6 +216,11 @@ export class ChNavigationListRender implements ComponentInterface {
    * is collapsed
    */
   @Prop() readonly showCaptionOnCollapse?: "inline" | "tooltip" = "inline";
+
+  /**
+   * Specifies the delay (in ms) for the tooltip to be displayed.
+   */
+  @Prop() readonly tooltipDelay?: number = 100;
 
   /**
    * This property is a WA to implement the Navigation List as a UC 2.0 in

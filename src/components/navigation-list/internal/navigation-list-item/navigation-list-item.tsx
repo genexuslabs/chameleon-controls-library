@@ -43,9 +43,6 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 export class ChNavigationListItem implements ComponentInterface {
   #startImage: GxImageMultiStateStart | undefined;
 
-  // Refs
-  #actionRef: HTMLButtonElement | HTMLAnchorElement;
-
   @Element() el!: HTMLChNavigationListItemElement;
 
   /**
@@ -146,6 +143,11 @@ export class ChNavigationListItem implements ComponentInterface {
    */
   @Prop() readonly startImgType: Exclude<ImageRender, "img"> = "background";
 
+  /**
+   * Specifies the delay (in ms) for the tooltip to be displayed.
+   */
+  @Prop() readonly tooltipDelay?: number = 100;
+
   #computeImage = (): GxImageMultiStateStart | undefined => {
     if (!this.startImgSrc) {
       return undefined;
@@ -175,9 +177,10 @@ export class ChNavigationListItem implements ComponentInterface {
       this.showCaptionOnCollapse === "tooltip" ? (
       <ch-tooltip
         key="tooltip"
-        actionElement={(this.#actionRef as HTMLButtonElement) ?? null}
+        actionElement={(this.el as any as HTMLButtonElement) ?? null}
         blockAlign="center"
         inlineAlign="outside-end"
+        delay={this.tooltipDelay}
         exportparts={tokenMapExportParts(
           {
             [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.CAPTION]: true,
@@ -232,8 +235,8 @@ export class ChNavigationListItem implements ComponentInterface {
     const startImageClasses = this.#startImage?.classes;
     const classes = {
       action: true,
-      "action--navigation-list-collapsed-inline":
-        navigationListCollapsed && this.showCaptionOnCollapse === "inline",
+      "action--navigation-list-collapsed": navigationListCollapsed,
+
       "ch-disabled": this.disabled,
 
       [`start-img-type--${
@@ -277,7 +280,6 @@ export class ChNavigationListItem implements ComponentInterface {
           [levelPart]: true
         })}
         href={!this.disabled ? this.link.url : undefined}
-        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </a>
@@ -305,7 +307,6 @@ export class ChNavigationListItem implements ComponentInterface {
         })}
         disabled={this.disabled}
         type="button"
-        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </button>

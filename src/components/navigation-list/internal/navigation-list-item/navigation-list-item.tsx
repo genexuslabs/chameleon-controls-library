@@ -43,6 +43,9 @@ let GET_IMAGE_PATH_CALLBACK_REGISTRY: (
 export class ChNavigationListItem implements ComponentInterface {
   #startImage: GxImageMultiStateStart | undefined;
 
+  // Refs
+  #actionRef: HTMLButtonElement | HTMLAnchorElement;
+
   @Element() el!: HTMLChNavigationListItemElement;
 
   /**
@@ -177,7 +180,10 @@ export class ChNavigationListItem implements ComponentInterface {
       this.showCaptionOnCollapse === "tooltip" ? (
       <ch-tooltip
         key="tooltip"
-        actionElement={(this.el as any as HTMLButtonElement) ?? null}
+        // We can't use this.el because in not a focusable element. Non
+        // focusable elements generate issue with the "mouseleave" and
+        // "focusout" events
+        actionElement={(this.#actionRef as HTMLButtonElement) ?? null}
         blockAlign="center"
         inlineAlign="outside-end"
         delay={this.tooltipDelay}
@@ -280,6 +286,7 @@ export class ChNavigationListItem implements ComponentInterface {
           [levelPart]: true
         })}
         href={!this.disabled ? this.link.url : undefined}
+        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </a>
@@ -307,6 +314,7 @@ export class ChNavigationListItem implements ComponentInterface {
         })}
         disabled={this.disabled}
         type="button"
+        ref={el => (this.#actionRef = el)}
       >
         {this.#renderCaption(navigationListCollapsed, levelPart)}
       </button>

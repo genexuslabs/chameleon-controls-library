@@ -11,6 +11,7 @@
 | -------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
 | `checkbox`           | `checkbox`       | Set this attribute if you want display a checkbox in all items by default.                                                                                         | `boolean`                                                                                                                                              | `false`                        |
 | `checked`            | `checked`        | Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`                                                 | `boolean`                                                                                                                                              | `false`                        |
+| `dock`               | `dock`           |                                                                                                                                                                    | `boolean`                                                                                                                                              | `false`                        |
 | `editableItems`      | `editable-items` | This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.                      | `boolean`                                                                                                                                              | `DEFAULT_EDITABLE_ITEMS_VALUE` |
 | `fixItemCallback`    | --               | Callback that is executed when and item requests to be fixed/unfixed. If the callback is not defined, the item will be fixed/unfixed without further confirmation. | `(itemInfo: ActionListItemActionable, newFixedValue: boolean) => Promise<boolean>`                                                                     | `undefined`                    |
 | `model`              | --               | This property lets you define the model of the control.                                                                                                            | `ActionListItemModel[]`                                                                                                                                | `[]`                           |
@@ -119,7 +120,6 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-showcase](../../showcase/assets/components)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Depends on
@@ -132,7 +132,6 @@ Type: `Promise<void>`
 graph TD;
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
-  ch-showcase --> ch-action-list-render
   ch-test-flexible-layout --> ch-action-list-render
   style ch-action-list-render fill:#f9f,stroke:#333,stroke-width:4px
 ```

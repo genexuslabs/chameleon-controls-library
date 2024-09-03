@@ -99,8 +99,9 @@
   // Defined in the navigation-list-render.scss file
   padding-inline-start: var(--ch-navigation-list-item-indentation);
 
-  &--navigation-list-collapsed-inline {
+  &--navigation-list-collapsed {
     flex-direction: column;
+    text-align: center;
   }
 
   --ch-navigation-list-item-start-img: var(--ch-start-img--base);

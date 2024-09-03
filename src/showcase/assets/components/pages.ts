@@ -8,18 +8,19 @@ const EXPERIMENTAL = "Experimental";
 const STABLE = "Stable";
 
 export const showcasePages: NavigationListModel = [
-  {
-    caption: "Getting started",
-    startImgSrc:
-      "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/company.svg')",
-    startImgType: "mask",
-    items: [
-      {
-        caption: "Browser support",
-        link: { url: "#browser-support" }
-      }
-    ]
-  },
+  // Temporally disabled
+  // {
+  //   caption: "Getting started",
+  //   startImgSrc:
+  //     "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/company.svg')",
+  //   startImgType: "mask",
+  //   items: [
+  //     {
+  //       caption: "Browser support",
+  //       link: { url: "#browser-support" }
+  //     }
+  //   ]
+  // },
 
   {
     caption: "Components",
@@ -235,7 +236,8 @@ export const showcasePages: NavigationListModel = [
           "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/light-mode.svg')",
         startImgType: "mask",
         items: [
-          { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
+          // Temporally disabled
+          // { link: { url: "#alert" }, caption: "Alert", metadata: EXPERIMENTAL },
 
           { link: { url: "#chat" }, caption: "Chat", metadata: EXPERIMENTAL },
           {
@@ -247,10 +249,6 @@ export const showcasePages: NavigationListModel = [
       }
 
       // {link: { url: "#notifications", caption: "Notifications", metadata: EXPERIMENTAL], // Temporally disabled
-
-      // {link: { url: "#sidebar", caption: "Sidebar", metadata: EXPERIMENTAL], // Temporally disabled
-
-      // {link: { url: "#suggest", caption: "Suggest", metadata: EXPERIMENTAL], // Temporally disabled
     ]
   }
 ];

@@ -153,7 +153,7 @@ export type ShowcaseRenderPropertyObject<
 
 export type ChameleonStories = {
   accordion: ShowcaseStory<HTMLChAccordionRenderElement>;
-  "action-group-in-development": ShowcaseStory<HTMLChActionGroupRenderElement>;
+  "action-group": ShowcaseStory<HTMLChActionGroupRenderElement>;
   "action-list": ShowcaseStory<HTMLChActionListRenderElement>;
   "barcode-scanner": ShowcaseStory<HTMLChBarcodeScannerElement>;
   checkbox: ShowcaseStory<HTMLChCheckboxElement>;
@@ -182,11 +182,11 @@ export type ChameleonStories = {
 
 export type ChameleonCustomStories = {
   chat: ShowcaseCustomStory;
+  "code-editor": ShowcaseCustomStory;
+  "code-diff-editor": ShowcaseCustomStory;
   "markdown-viewer": ShowcaseCustomStory;
   "flexible-layout": ShowcaseCustomStory;
+  paginator: ShowcaseCustomStory;
+  shortcuts: ShowcaseCustomStory;
+  "tabular-grid": ShowcaseCustomStory;
 };
-
-export type ShowcaseAvailableCustomStories =
-  | Mutable<HTMLChChatElement>
-  | Mutable<HTMLChMarkdownViewerElement>
-  | Mutable<HTMLChFlexibleLayoutRenderElement>;

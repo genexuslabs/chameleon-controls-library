@@ -18,6 +18,7 @@ import { popoverShowcaseStory } from "./popover/popover.showcase";
 import { qrShowcaseStory } from "./qr/qr.showcase";
 import { radioGroupShowcaseStory } from "./radio-group/radio-group.showcase";
 import { segmentedControlShowcaseStory } from "./segmented-control/segmented-control.showcase";
+import { sidebarShowcaseStory } from "./sidebar/sidebar.showcase";
 import { sliderShowcaseStory } from "./slider/slider.showcase";
 import { switchShowcaseStory } from "./switch/switch.showcase";
 import { tabShowcaseStory } from "./tab/tab.showcase";
@@ -44,6 +45,7 @@ export const showcaseStories = {
   qr: qrShowcaseStory,
   "radio-group": radioGroupShowcaseStory,
   "segmented-control": segmentedControlShowcaseStory,
+  sidebar: sidebarShowcaseStory,
   slider: sliderShowcaseStory,
   switch: switchShowcaseStory,
   tab: tabShowcaseStory,

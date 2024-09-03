@@ -48,6 +48,11 @@ export const showcasePages: NavigationListModel = [
             caption: "Layout Splitter",
             metadata: EXPERIMENTAL
           },
+          {
+            link: { url: "#sidebar" },
+            caption: "Sidebar",
+            metadata: EXPERIMENTAL
+          },
           { link: { url: "#tab" }, caption: "Tab", metadata: EXPERIMENTAL }
         ]
       },

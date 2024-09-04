@@ -71,6 +71,7 @@ export type ActionListItemActionable = {
 export type ActionListItemAdditionalInformation = {
   "stretch-start"?: ActionListItemAdditionalModel;
   "block-start"?: ActionListItemAdditionalModel;
+  // TODO: Remove "center" section
   "inline-caption"?: ActionListItemAdditionalModel;
   "block-end"?: ActionListItemAdditionalModel;
   "stretch-end"?: ActionListItemAdditionalModel;
@@ -81,6 +82,12 @@ export type ActionListItemAdditionalModel = {
   center?: ActionListItemAdditionalItem[];
   end?: ActionListItemAdditionalItem[];
 };
+
+export type ActionListItemAdditionalInformationSection =
+  keyof ActionListItemAdditionalInformation;
+
+export type ActionListItemAdditionalInformationSectionAlign =
+  keyof ActionListItemAdditionalModel;
 
 export type ActionListItemAdditionalItem =
   | ActionListItemAdditionalBase

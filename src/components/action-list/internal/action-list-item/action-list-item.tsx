@@ -13,6 +13,7 @@ import {
   ActionListItemAdditionalBase,
   ActionListItemAdditionalCustom,
   ActionListItemAdditionalInformation,
+  ActionListItemAdditionalInformationSection,
   ActionListItemAdditionalItem,
   ActionListItemAdditionalItemActionType,
   ActionListItemAdditionalModel
@@ -23,14 +24,17 @@ import {
   ACTION_LIST_ITEM_PARTS_DICTIONARY,
   ACTION_LIST_PARTS_DICTIONARY,
   imageTypeDictionary,
+  KEY_CODES,
   startPseudoImageTypeDictionary
 } from "../../../../common/reserved-names";
 import {
   ActionListCaptionChangeEventDetail,
-  ActionListFixedChangeEventDetail
+  ActionListFixedChangeEventDetail,
+  ActionListItemEditingBlockInfo
 } from "./types";
 import { tokenMap } from "../../../../common/utils";
 import { computeExportParts } from "./compute-exportparts";
+import { computeEditingBlocks } from "./compute-editing-sections";
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -49,8 +53,19 @@ export class ChActionListItem {
     fix: () =>
       this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed }),
     remove: () => this.remove.emit(this.el.id),
-    custom: callback => callback()
+    custom: callback => callback(),
+    modify: () => {
+      this.editing = true;
+    }
+  } satisfies {
+    [key in ActionListItemAdditionalItemActionType["type"]]: (...args) => any;
   };
+
+  #editingSections: ActionListItemEditingBlockInfo[] | undefined;
+
+  // Refs
+  #headerRef!: HTMLButtonElement;
+  #inputRef: HTMLChEditElement | undefined;
 
   @Element() el: HTMLChActionListItemElement;
 
@@ -61,6 +76,7 @@ export class ChActionListItem {
   @Watch("additionalInfo")
   additionalInfoChanged() {
     this.#setExportParts();
+    this.#setEditingBlocks();
   }
 
   /**
@@ -99,34 +115,15 @@ export class ChActionListItem {
   @Prop({ mutable: true }) downloading = false;
 
   /**
-   * This attribute lets you specify if the edit operation is enabled in the
+   * This property lets you specify if the edit operation is enabled in the
    * control. If `true`, the control can edit its caption in place.
    */
   @Prop() readonly editable: boolean;
 
   /**
-   * Set this attribute when the item is in edit mode
+   * Set this property when the control is in edit mode.
    */
   @Prop({ mutable: true }) editing = false;
-  // @Watch("editing")
-  // editingChanged(isEditing: boolean) {
-  //   if (!isEditing) {
-  //     return;
-  //   }
-
-  //   document.addEventListener("click", this.#removeEditModeOnClick, {
-  //     capture: true
-  //   });
-
-  //   // Wait until the input is rendered to focus it
-  //   writeTask(() => {
-  //     requestAnimationFrame(() => {
-  //       if (this.#inputRef) {
-  //         this.#inputRef.focus();
-  //       }
-  //     });
-  //   });
-  // }
 
   /**
    *
@@ -212,6 +209,47 @@ export class ChActionListItem {
    * Fired when the item is no longer being dragged.
    */
   @Event() itemDragEnd: EventEmitter;
+
+  #removeEditMode =
+    (shouldFocusHeader: boolean, commitEdition = false) =>
+    () => {
+      // When pressing the enter key in the input, the removeEditMode event is
+      // triggered twice (due to the headerRef.focus() triggering the onBlur
+      // event in the input), so we need to check if the edit mode was disabled
+      if (!this.editing) {
+        return;
+      }
+      this.editing = false;
+
+      const newCaption = this.#inputRef.value;
+
+      if (
+        commitEdition &&
+        newCaption.trim() !== "" &&
+        this.caption !== newCaption
+      ) {
+        this.captionChange.emit({
+          itemId: this.el.id,
+          newCaption: newCaption
+        });
+      }
+
+      if (shouldFocusHeader) {
+        this.#headerRef.focus();
+      }
+    };
+
+  #checkIfShouldRemoveEditMode = (event: KeyboardEvent) => {
+    event.stopPropagation();
+
+    if (event.code !== KEY_CODES.ENTER && event.code !== KEY_CODES.ESCAPE) {
+      return;
+    }
+
+    event.preventDefault();
+    const commitEdition = event.code === KEY_CODES.ENTER;
+    this.#removeEditMode(true, commitEdition)();
+  };
 
   #renderAdditionalItems = (additionalItems: ActionListItemAdditionalItem[]) =>
     additionalItems.map(item =>
@@ -376,7 +414,13 @@ export class ChActionListItem {
       if (callback) {
         callback(this.el.id);
       } else {
-        this.#additionalItemListenerDictionary[type]();
+        this.#additionalItemListenerDictionary[
+          // Only "custom" type has callbacks
+          type as Exclude<
+            ActionListItemAdditionalItemActionType["type"],
+            "custom"
+          >
+        ]();
       }
     };
 
@@ -400,9 +444,13 @@ export class ChActionListItem {
     );
   };
 
+  #setEditingBlocks = () => {
+    this.#editingSections = computeEditingBlocks(this.additionalInfo);
+  };
+
   #renderAdditionalInfo = (
     additionalModel: ActionListItemAdditionalModel,
-    zoneName: keyof ActionListItemAdditionalInformation,
+    zoneName: ActionListItemAdditionalInformationSection,
     stretch = false
   ) => {
     if (!additionalModel) {
@@ -410,6 +458,18 @@ export class ChActionListItem {
     }
 
     const zoneNameWithPrefix = `item__${zoneName}` as const;
+
+    const isEditingSection =
+      this.editing &&
+      this.#editingSections !== undefined &&
+      this.#editingSections.some(
+        editingSection => editingSection.section === zoneName
+      );
+    const editingAligns = isEditingSection
+      ? this.#editingSections.find(
+          editingSection => editingSection.section === zoneName
+        ).align
+      : undefined;
 
     return (
       <div
@@ -423,7 +483,9 @@ export class ChActionListItem {
             class={stretch ? "align-start valign-start" : "align-start"}
             part={`${zoneNameWithPrefix} start`}
           >
-            {this.#renderAdditionalItems(additionalModel.start)}
+            {isEditingSection && editingAligns.includes("start")
+              ? this.#renderConfirmCancelButtons("modify")
+              : this.#renderAdditionalItems(additionalModel.start)}
           </div>
         )}
         {additionalModel.center && (
@@ -432,7 +494,9 @@ export class ChActionListItem {
             class={stretch ? "align-center valign-center" : "align-center"}
             part={`${zoneNameWithPrefix} center`}
           >
-            {this.#renderAdditionalItems(additionalModel.center)}
+            {isEditingSection && editingAligns.includes("center")
+              ? this.#renderConfirmCancelButtons("modify")
+              : this.#renderAdditionalItems(additionalModel.center)}
           </div>
         )}
         {additionalModel.end && (
@@ -441,17 +505,80 @@ export class ChActionListItem {
             class={stretch ? "align-end valign-end" : "align-end"}
             part={`${zoneNameWithPrefix} end`}
           >
-            {this.#renderAdditionalItems(additionalModel.end)}
+            {isEditingSection && editingAligns.includes("end")
+              ? this.#renderConfirmCancelButtons("modify")
+              : this.#renderAdditionalItems(additionalModel.end)}
           </div>
         )}
       </div>
     );
   };
 
+  #renderConfirmCancelButtons = (
+    action: ActionListItemAdditionalItemActionType["type"]
+  ) => [
+    <button
+      part={tokenMap({
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_ACCEPT]: true,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+          this.selectable && this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+          this.selectable && !this.selected
+      })}
+      disabled={this.disabled}
+      type="button"
+      onClick={this.#acceptAction(action)}
+    >
+      Accept
+    </button>,
+
+    <button
+      part={tokenMap({
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_CANCEL]: true,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled,
+
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.SELECTED]:
+          this.selectable && this.selected,
+        [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_SELECTED]:
+          this.selectable && !this.selected
+      })}
+      disabled={this.disabled}
+      type="button"
+      onClick={this.#cancelAction(action)}
+    >
+      Cancel
+    </button>
+  ];
+
+  #acceptAction =
+    (action: ActionListItemAdditionalItemActionType["type"]) =>
+    (event: PointerEvent) => {
+      event.stopPropagation();
+
+      if (action === "modify") {
+        this.#removeEditMode(true, true)();
+      }
+    };
+
+  #cancelAction =
+    (action: ActionListItemAdditionalItemActionType["type"]) =>
+    (event: PointerEvent) => {
+      event.stopPropagation();
+
+      if (action === "modify") {
+        this.editing = false;
+      }
+    };
+
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
     this.#setExportParts();
+    this.#setEditingBlocks();
   }
 
   render() {
@@ -463,6 +590,8 @@ export class ChActionListItem {
     const inlineCaption = hasAdditionalInfo && additionalInfo["inline-caption"];
     const blockEnd = hasAdditionalInfo && additionalInfo["block-end"];
     const stretchEnd = hasAdditionalInfo && additionalInfo["stretch-end"];
+
+    const hasParts = !!this.parts;
 
     return (
       <Host aria-selected={this.selectable && this.selected ? "true" : null}>
@@ -484,6 +613,7 @@ export class ChActionListItem {
             [ACTION_LIST_ITEM_PARTS_DICTIONARY.DISABLED]: this.disabled
           })}
           type="button"
+          ref={el => (this.#headerRef = el)}
         >
           {this.#renderAdditionalInfo(stretchStart, "stretch-start", true)}
           {this.#renderAdditionalInfo(blockStart, "block-start")}
@@ -491,12 +621,32 @@ export class ChActionListItem {
           <div
             key="item__inline-caption"
             class="align-container inline-caption"
-            part="item__inline-caption"
+            part={tokenMap({
+              "item__inline-caption": true,
+
+              [ACTION_LIST_ITEM_PARTS_DICTIONARY.EDITING]: this.editing,
+              [ACTION_LIST_ITEM_PARTS_DICTIONARY.NOT_EDITING]: !this.editing
+            })}
           >
-            {this.caption && (
-              <span part={ACTION_LIST_ITEM_PARTS_DICTIONARY.CAPTION}>
-                {this.caption}
-              </span>
+            {this.editing ? (
+              <ch-edit
+                autoFocus
+                part={
+                  hasParts
+                    ? `${ACTION_LIST_ITEM_PARTS_DICTIONARY.EDIT_CAPTION} ${this.parts}`
+                    : ACTION_LIST_ITEM_PARTS_DICTIONARY.EDIT_CAPTION
+                }
+                disabled={this.disabled}
+                value={this.caption}
+                onKeyDown={this.#checkIfShouldRemoveEditMode}
+                ref={el => (this.#inputRef = el)}
+              ></ch-edit>
+            ) : (
+              this.caption && (
+                <span part={ACTION_LIST_ITEM_PARTS_DICTIONARY.CAPTION}>
+                  {this.caption}
+                </span>
+              )
             )}
 
             {inlineCaption && [

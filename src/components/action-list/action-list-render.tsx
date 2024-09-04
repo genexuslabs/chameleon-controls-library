@@ -25,7 +25,10 @@ import {
   ActionListModel
 } from "./types";
 import { ChActionListItemCustomEvent } from "../../components";
-import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
@@ -305,13 +308,13 @@ export class ChActionListRender {
   // @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
   //   defaultGetImagePath;
 
-  // /**
-  //  * Callback that is executed when a item request to modify its caption.
-  //  */
-  // @Prop() readonly modifyItemCaptionCallback: (
-  //   treeItemId: string,
-  //   newCaption: string
-  // ) => Promise<TreeViewOperationStatusModifyCaption>;
+  /**
+   * Callback that is executed when a item request to modify its caption.
+   */
+  @Prop() readonly modifyItemCaptionCallback: (
+    actionListItemId: string,
+    newCaption: string
+  ) => Promise<void>;
 
   // /**
   //  * Set this attribute if you want to allow multi selection of the items.
@@ -525,6 +528,48 @@ export class ChActionListRender {
     forceUpdate(this);
   }
 
+  @Listen("captionChange")
+  onCaptionChange(
+    event: ChActionListItemCustomEvent<ActionListCaptionChangeEventDetail>
+  ) {
+    if (!this.modifyItemCaptionCallback) {
+      return;
+    }
+    event.stopPropagation();
+
+    const itemRef = event.target;
+    const itemId = event.detail.itemId;
+    const itemUIModel = this.#flattenedModel.get(itemId);
+    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const newCaption = event.detail.newCaption;
+    const oldCaption = itemInfo.caption;
+
+    // Optimistic UI: Update the caption in the UI Model before the change is
+    // completed in the server
+    itemInfo.caption = newCaption;
+
+    // Due to performance reasons, we don't make a shallow copy of the
+    // treeModel to force a re-render
+    itemRef.caption = newCaption;
+
+    this.modifyItemCaptionCallback(itemId, newCaption)
+      .then(() => {
+        // Sort items in parent model
+        this.#sortModel(this.#getParentArray(itemUIModel));
+
+        // Update filters
+        // this.#scheduleFilterProcessing();
+
+        // Force re-render
+        forceUpdate(this);
+      })
+      .catch(() => {
+        // TODO: Should we do something with the error message?
+        itemRef.caption = oldCaption;
+        itemInfo.caption = oldCaption;
+      });
+  }
+
   @Listen("fixedChange")
   onFixedChange(
     event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>
@@ -554,10 +599,7 @@ export class ChActionListRender {
     itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
-    this.#sortModel(
-      (itemUIModel as ActionListItemModelExtendedRoot).root ??
-        (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
-    );
+    this.#sortModel(this.#getParentArray(itemUIModel));
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
@@ -581,6 +623,10 @@ export class ChActionListRender {
       }
     );
   }
+
+  #getParentArray = (itemUIModel: ActionListItemModelExtended) =>
+    (itemUIModel as ActionListItemModelExtendedRoot).root ??
+    (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
 
   #getItemOrGroupInfo = (itemId: string) =>
     this.#flattenedModel.get(itemId).item as

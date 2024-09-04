@@ -14,7 +14,8 @@ import {
   ActionListItemAdditionalCustom,
   ActionListItemAdditionalInformation,
   ActionListItemAdditionalItem,
-  ActionListItemAdditionalItemActionType
+  ActionListItemAdditionalItemActionType,
+  ActionListItemAdditionalModel
 } from "../../types";
 import { renderImg } from "../../../../common/renders";
 import {
@@ -399,6 +400,54 @@ export class ChActionListItem {
     );
   };
 
+  #renderAdditionalInfo = (
+    additionalModel: ActionListItemAdditionalModel,
+    zoneName: keyof ActionListItemAdditionalInformation,
+    stretch = false
+  ) => {
+    if (!additionalModel) {
+      return;
+    }
+
+    const zoneNameWithPrefix = `item__${zoneName}` as const;
+
+    return (
+      <div
+        key={zoneNameWithPrefix}
+        class={`align-container ${zoneName}`}
+        part={zoneNameWithPrefix}
+      >
+        {additionalModel.start && (
+          <div
+            key={`${zoneNameWithPrefix}-start`}
+            class={stretch ? "align-start valign-start" : "align-start"}
+            part={`${zoneNameWithPrefix} start`}
+          >
+            {this.#renderAdditionalItems(additionalModel.start)}
+          </div>
+        )}
+        {additionalModel.center && (
+          <div
+            key={`${zoneNameWithPrefix}-center`}
+            class={stretch ? "align-center valign-center" : "align-center"}
+            part={`${zoneNameWithPrefix} center`}
+          >
+            {this.#renderAdditionalItems(additionalModel.center)}
+          </div>
+        )}
+        {additionalModel.end && (
+          <div
+            key={`${zoneNameWithPrefix}-end`}
+            class={stretch ? "align-end valign-end" : "align-end"}
+            part={`${zoneNameWithPrefix} end`}
+          >
+            {this.#renderAdditionalItems(additionalModel.end)}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
@@ -436,68 +485,8 @@ export class ChActionListItem {
           })}
           type="button"
         >
-          {stretchStart && (
-            <div
-              key="item__stretch-start"
-              class="align-container stretch-start"
-              part="item__stretch-start"
-            >
-              {stretchStart.start && (
-                <div
-                  key="item__stretch-start-start"
-                  class="align-start valign-start"
-                  part="item__stretch-start start"
-                >
-                  {this.#renderAdditionalItems(stretchStart.start)}
-                </div>
-              )}
-              {stretchStart.center && (
-                <div
-                  key="item__stretch-start-center"
-                  class="align-center valign-center"
-                  part="item__stretch-start center"
-                >
-                  {this.#renderAdditionalItems(stretchStart.center)}
-                </div>
-              )}
-              {stretchStart.end && (
-                <div
-                  key="item__stretch-start-end"
-                  class="align-end valign-end"
-                  part="item__stretch-start end"
-                >
-                  {this.#renderAdditionalItems(stretchStart.end)}
-                </div>
-              )}
-            </div>
-          )}
-
-          {blockStart && (
-            <div
-              key="item__block-start"
-              class="align-container block-start"
-              part="item__block-start"
-            >
-              {blockStart.start && (
-                <div
-                  key="item__block-start-start"
-                  class="align-start"
-                  part="item__block-start start"
-                >
-                  {this.#renderAdditionalItems(blockStart.start)}
-                </div>
-              )}
-              {blockStart.end && (
-                <div
-                  key="item__block-start-end"
-                  class="align-end"
-                  part="item__block-start end"
-                >
-                  {this.#renderAdditionalItems(blockStart.end)}
-                </div>
-              )}
-            </div>
-          )}
+          {this.#renderAdditionalInfo(stretchStart, "stretch-start", true)}
+          {this.#renderAdditionalInfo(blockStart, "block-start")}
 
           <div
             key="item__inline-caption"
@@ -532,68 +521,8 @@ export class ChActionListItem {
             ]}
           </div>
 
-          {blockEnd && (
-            <div
-              key="item__block-end"
-              class="align-container block-end"
-              part="item__block-end"
-            >
-              {blockEnd.start && (
-                <div
-                  key="item__block-end-start"
-                  class="align-start"
-                  part="item__block-end start"
-                >
-                  {this.#renderAdditionalItems(blockEnd.start)}
-                </div>
-              )}
-              {blockEnd.end && (
-                <div
-                  key="item__block-end-end"
-                  class="align-end"
-                  part="item__block-end end"
-                >
-                  {this.#renderAdditionalItems(blockEnd.end)}
-                </div>
-              )}
-            </div>
-          )}
-
-          {stretchEnd && (
-            <div
-              key="item__stretch-end"
-              class="align-container stretch-end"
-              part="item__stretch-end"
-            >
-              {stretchEnd.start && (
-                <div
-                  key="item__stretch-end-start"
-                  class="align-start valign-start"
-                  part="item__stretch-end start"
-                >
-                  {this.#renderAdditionalItems(stretchEnd.start)}
-                </div>
-              )}
-              {stretchEnd.center && (
-                <div
-                  key="item__stretch-end-center"
-                  class="align-center valign-center"
-                  part="item__stretch-end center"
-                >
-                  {this.#renderAdditionalItems(stretchEnd.center)}
-                </div>
-              )}
-              {stretchEnd.end && (
-                <div
-                  key="item__stretch-end-end"
-                  class="align-end valign-end"
-                  part="item__stretch-end end"
-                >
-                  {this.#renderAdditionalItems(stretchEnd.end)}
-                </div>
-              )}
-            </div>
-          )}
+          {this.#renderAdditionalInfo(blockEnd, "block-end")}
+          {this.#renderAdditionalInfo(stretchEnd, "stretch-end")}
         </button>
       </Host>
     );

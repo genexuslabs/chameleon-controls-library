@@ -11,7 +11,7 @@
 | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | ----------- |
 | `disabled`             | `disabled`             | This attribute lets you specify if all accordions are disabled. If disabled,accordions will not fire any user interaction related event (for example, `expandedChange` event). | `boolean`                                 | `false`     |
 | `getImagePathCallback` | --                     | This property specifies a callback that is executed when the path for an startImgSrc needs to be resolved.                                                                     | `(imageSrc: string) => GxImageMultiState` | `undefined` |
-| `model`                | --                     | Specifies the items of the control.                                                                                                                                            | `AccordionItem[]`                         | `undefined` |
+| `model`                | --                     | Specifies the items of the control.                                                                                                                                            | `AccordionItemModel[]`                    | `undefined` |
 | `singleItemExpanded`   | `single-item-expanded` | If `true` only one item will be expanded at the same time.                                                                                                                     | `boolean`                                 | `false`     |
 
 

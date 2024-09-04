@@ -1,8 +1,8 @@
 import { ImageRender } from "../../common/types";
 
-export type AccordionModel = AccordionItem[];
+export type AccordionModel = AccordionItemModel[];
 
-export type AccordionItem = {
+export type AccordionItemModel = {
   id: string;
   accessibleName?: string;
   caption: string;

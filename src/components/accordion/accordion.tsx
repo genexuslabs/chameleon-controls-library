@@ -11,7 +11,7 @@ import {
   h
 } from "@stencil/core";
 import {
-  AccordionItem,
+  AccordionItemModel,
   AccordionItemExpandedChangeEvent,
   AccordionModel
 } from "./types";
@@ -175,7 +175,7 @@ export class ChAccordionRender implements ComponentInterface {
   };
 
   #updateExpandedOnItem = (
-    itemUIModel: AccordionItem,
+    itemUIModel: AccordionItemModel,
     newExpandedValue: boolean
   ) => {
     // Collapse all opened items and emit expandedChange
@@ -216,7 +216,7 @@ export class ChAccordionRender implements ComponentInterface {
     forceUpdate(this);
   };
 
-  #renderItem = (item: AccordionItem, index: number) => {
+  #renderItem = (item: AccordionItemModel, index: number) => {
     const startImage = this.#images.get(item.id);
     const startImageClasses = startImage?.classes;
     const isDisabled = item.disabled ?? this.disabled;

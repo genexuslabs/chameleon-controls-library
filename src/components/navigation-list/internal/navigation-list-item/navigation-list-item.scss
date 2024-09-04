@@ -79,12 +79,14 @@
     order: 1;
   }
 
-  &--collapsed-after::before {
-    transform: rotate(-180deg); // TODO: Add RTL support
-  }
-
+  // - - - - - - - Before - - - - - - -
   &--collapsed-before::before {
     transform: rotate(-90deg); // TODO: Add RTL support
+  }
+
+  // - - - - - - - After - - - - - - -
+  &--expanded-after::before {
+    transform: rotate(-180deg); // TODO: Add RTL support
   }
 }
 

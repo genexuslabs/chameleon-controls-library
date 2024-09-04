@@ -1,9 +1,7 @@
 import { h } from "@stencil/core";
-import { ChQr } from "../../../../components/qr/qr";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 
-const state: Partial<Mutable<ChQr>> = {};
+const state: Partial<HTMLChQrElement> = {};
 
 const render = () => (
   <ch-qr
@@ -18,7 +16,7 @@ const render = () => (
   ></ch-qr>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChQrElement> = [
   {
     caption: "Model",
     properties: [
@@ -79,15 +77,15 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChQr>> = [
   }
 ];
 
-export const qrShowcaseStory: ShowcaseStory<Mutable<ChQr>> = {
+export const qrShowcaseStory: ShowcaseStory<HTMLChQrElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-qr
-          accessibleName={<accessible name>}
-          errorCorrectionLevel={<Error Correction Level>}
-          background={<background>}
-          fill={<fill>}
-          size={<size>}
-          value={<initial value>}
+  markupWithoutUIModel: () => `<ch-qr
+          accessibleName="${state.accessibleName}"
+          errorCorrectionLevel="${state.errorCorrectionLevel}"
+          background="${state.background}"
+          fill="${state.fill}"
+          size="${state.size}"
+          value="${state.value}"
         ></ch-qr>`,
   render: render,
   state: state

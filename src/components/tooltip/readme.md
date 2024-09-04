@@ -7,24 +7,46 @@
 
 ## Properties
 
-| Property    | Attribute    | Description                                                              | Type                                                                                                                                                                                                                                                                                                                                                                                                                                               | Default                 |
-| ----------- | ------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| `delay`     | `delay`      | Specifies the delay (in ms) for the tooltip to be displayed.             | `number`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `100`                   |
-| `position`  | `position`   | Specifies the position of the tooltip relative to the container element. | `"Center_OutsideEnd" \| "Center_OutsideStart" \| "InsideEnd_OutsideEnd" \| "InsideEnd_OutsideStart" \| "InsideStart_OutsideEnd" \| "InsideStart_OutsideStart" \| "OutsideEnd_Center" \| "OutsideEnd_InsideEnd" \| "OutsideEnd_InsideStart" \| "OutsideEnd_OutsideEnd" \| "OutsideEnd_OutsideStart" \| "OutsideStart_Center" \| "OutsideStart_InsideEnd" \| "OutsideStart_InsideStart" \| "OutsideStart_OutsideEnd" \| "OutsideStart_OutsideStart"` | `"OutsideStart_Center"` |
-| `tooltipId` | `tooltip-id` | Specifies the tooltip description.                                       | `string`                                                                                                                                                                                                                                                                                                                                                                                                                                           | `"Tooltip"`             |
+| Property        | Attribute      | Description                                                                                                                                                                                                                                                        | Type                                                                             | Default         |
+| --------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- | --------------- |
+| `actionElement` | --             | Specifies a reference for the action that opens the tooltip.  If `undefined`, a button on the tooltip will be rendered and the slot "action" can be used to display the content of the action.  If `null`, the parentElement will be used as the action reference. | `HTMLButtonElement`                                                              | `undefined`     |
+| `blockAlign`    | `block-align`  | Specifies the block alignment of the window.                                                                                                                                                                                                                       | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"outside-end"` |
+| `delay`         | `delay`        | Specifies the delay (in ms) for the tooltip to be displayed.                                                                                                                                                                                                       | `number`                                                                         | `100`           |
+| `inlineAlign`   | `inline-align` | Specifies the inline alignment of the window.                                                                                                                                                                                                                      | `"center" \| "inside-end" \| "inside-start" \| "outside-end" \| "outside-start"` | `"center"`      |
+
+
+## Shadow Parts
+
+| Part       | Description |
+| ---------- | ----------- |
+| `"action"` |             |
+| `"window"` |             |
+
+
+## CSS Custom Properties
+
+| Name                        | Description                                                                                                                |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `--ch-tooltip-separation`   | Specifies the separation between the action and the displayed tooltip. @default 0px                                        |
+| `--ch-tooltip-separation-x` | Specifies the separation between the action and the tooltip displayed on the x-axis. @default var(--ch-tooltip-separation) |
+| `--ch-tooltip-separation-y` | Specifies the separation between the action and the tooltip displayed on the y-axis. @default var(--ch-tooltip-separation) |
 
 
 ## Dependencies
 
+### Used by
+
+ - [ch-navigation-list-item](../navigation-list/internal/navigation-list-item)
+
 ### Depends on
 
-- [ch-window](../../deprecated-components/window)
+- [ch-popover](../popover)
 
 ### Graph
 ```mermaid
 graph TD;
-  ch-tooltip --> ch-window
-  ch-window --> ch-window-close
+  ch-tooltip --> ch-popover
+  ch-navigation-list-item --> ch-tooltip
   style ch-tooltip fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

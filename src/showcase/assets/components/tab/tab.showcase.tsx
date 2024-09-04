@@ -1,7 +1,5 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChTabRender } from "../../../../components/tab/tab";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import {
   disabledModel1,
   disabledModel4,
@@ -17,8 +15,9 @@ import {
   lazyLoadTreeItemsCallback,
   preferencesModel
 } from "../tree-view/models";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChTabRender>> = {};
+const state: Partial<HTMLChTabRenderElement> = {};
 const renderedItems = new Set(["item1"]);
 
 const selectedItemChangeHandler = (
@@ -137,7 +136,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTabRenderElement> =
   [
     {
       caption: "Models",
@@ -231,16 +230,26 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChTabRender>> =
     }
   ];
 
-export const tabShowcaseStory: ShowcaseStory<Mutable<ChTabRender>> = {
+export const tabShowcaseStory: ShowcaseStory<HTMLChTabRenderElement> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
-    uiModel: simpleModel2,
+    uiModel: () => state.model,
     uiModelType: "TabModel",
-    render: `<ch-tab-render
-          accessibleName={<accessibleName>}
-          class="tab"
+    render: () => `<ch-tab-render
+          accessibleName="${state.accessibleName}"
+          class="tab"${renderBooleanPropertyOrEmpty("closeButton", state)}
+          direction="${state.direction}"${renderBooleanPropertyOrEmpty(
+      "disabled",
+      state
+    )}${renderBooleanPropertyOrEmpty(
+      "dragOutside",
+      state
+    )}${renderBooleanPropertyOrEmpty("expanded", state)}
           model={this.#controlUIModel}
-          selectedId={<initial selected id (optional)>}
+          selectedId="${state.selectedId}"${renderBooleanPropertyOrEmpty(
+      "sortable",
+      state
+    )}${renderBooleanPropertyOrEmpty("showCaptions", state)}
           onSelectedItemChange={this.#handleSelectedItemChange}
         >
           {renderedItems.has("item1") && (

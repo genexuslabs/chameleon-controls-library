@@ -35,19 +35,6 @@
 | `--ch-accordion__header-image-size`                                                                                             | Specifies the box size that contains the start image of the header. @default 0.875em |
 
 
-## Dependencies
-
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
-### Graph
-```mermaid
-graph TD;
-  ch-showcase --> ch-accordion-render
-  style ch-accordion-render fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

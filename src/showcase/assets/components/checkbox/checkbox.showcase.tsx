@@ -1,9 +1,8 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChCheckBox } from "../../../../components/checkbox/checkbox";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChCheckBox>> = {};
+const state: Partial<HTMLChCheckboxElement> = {};
 const formRefs: {
   [key in "form-checkbox-1" | "form-checkbox-2" | "form-checkbox-3"]:
     | HTMLFormElement
@@ -112,7 +111,7 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCheckboxElement> =
   [
     {
       caption: "Properties",
@@ -163,12 +162,21 @@ const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChCheckBox>> =
     }
   ];
 
-export const checkboxShowcaseStory: ShowcaseStory<Mutable<ChCheckBox>> = {
+export const checkboxShowcaseStory: ShowcaseStory<HTMLChCheckboxElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-checkbox
+  markupWithoutUIModel: () => `<ch-checkbox
+          accessibleName="${state.accessibleName}"
           class="checkbox"
-          checkedValue={<checked value>}
-          value={<initial value (optional)>}
+          caption="${state.caption}"
+          checkedValue="${state.checkedValue}"${renderBooleanPropertyOrEmpty(
+    "disabled",
+    state
+  )}${renderBooleanPropertyOrEmpty("indeterminate", state)}
+          value="${state.value}"${renderBooleanPropertyOrEmpty(
+    "readonly",
+    state
+  )}
+          unCheckedValue="${state.unCheckedValue}"
           onInput={this.#handleValueChange}
         ></ch-checkbox>`,
   render: render,

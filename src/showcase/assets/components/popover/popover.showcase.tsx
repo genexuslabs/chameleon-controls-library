@@ -1,9 +1,8 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChPopover } from "../../../../components/popover/popover";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChPopover>> = {};
+const state: Partial<HTMLChPopoverElement> = {};
 let buttonRef: HTMLButtonElement;
 let popoverRef: HTMLChPopoverElement;
 
@@ -92,198 +91,199 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChPopover>> = [
-  {
-    caption: "Visibility",
-    columns: 2,
-    properties: [
-      {
-        id: "hidden",
-        caption: "Hidden",
-        value: true,
-        type: "boolean"
-      },
-      {
-        id: "mode",
-        caption: "Mode",
-        value: "auto",
-        type: "enum",
-        render: "radio-group",
-        values: [
-          {
-            value: "auto",
-            caption: "Auto"
-          },
-          {
-            value: "manual",
-            caption: "Manual"
-          }
-        ]
-      },
-      {
-        id: "closeOnClickOutside",
-        caption: 'Close On Click Outside (when Mode === "Manual")',
-        columnSpan: 2,
-        value: false,
-        type: "boolean"
-      }
-    ]
-  },
-  {
-    caption: "Alignment",
-    columns: 2,
-    properties: [
-      {
-        id: "inlineAlign",
-        caption: "Inline Align",
-        value: "center",
-        type: "enum",
-        values: [
-          {
-            value: "outside-start",
-            caption: "outside-start"
-          },
-          {
-            value: "inside-start",
-            caption: "inside-start"
-          },
-          { value: "center", caption: "center" },
-          {
-            value: "inside-end",
-            caption: "inside-end"
-          },
-          {
-            value: "outside-end",
-            caption: "outside-end"
-          }
-        ]
-      },
-      {
-        id: "blockAlign",
-        caption: "Block Align",
-        value: "outside-end",
-        type: "enum",
-        values: [
-          {
-            value: "outside-start",
-            caption: "outside-start"
-          },
-          {
-            value: "inside-start",
-            caption: "inside-start"
-          },
-          { value: "center", caption: "center" },
-          {
-            value: "inside-end",
-            caption: "inside-end"
-          },
-          {
-            value: "outside-end",
-            caption: "outside-end"
-          }
-        ]
-      },
-      {
-        id: "inlineSizeMatch",
-        caption: "Inline Size Match",
-        value: "content",
-        type: "enum",
-        values: [
-          {
-            value: "content",
-            caption: "content"
-          },
-          {
-            value: "action-element",
-            caption: "action-element"
-          },
-          {
-            value: "action-element-as-minimum",
-            caption: "action-element-as-minimum"
-          }
-        ]
-      },
-      {
-        id: "blockSizeMatch",
-        caption: "Block Size Match",
-        value: "content",
-        type: "enum",
-        values: [
-          {
-            value: "content",
-            caption: "content"
-          },
-          {
-            value: "action-element",
-            caption: "action-element"
-          },
-          {
-            value: "action-element-as-minimum",
-            caption: "action-element-as-minimum"
-          }
-        ]
-      },
-      {
-        id: "positionTry",
-        caption: "Position Try",
-        columnSpan: 2,
-        value: "content",
-        type: "enum",
-        values: [
-          {
-            value: "flip-block",
-            caption: "flip-block"
-          },
-          {
-            value: "flip-inline",
-            caption: "flip-inline"
-          },
-          {
-            value: "none",
-            caption: "none"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "allowDrag",
-        caption: "Allow Drag",
-        value: "no",
-        type: "enum",
-        render: "radio-group",
-        values: [
-          {
-            value: "box",
-            caption: "Box"
-          },
-          {
-            value: "header",
-            caption: "Header"
-          },
-          {
-            value: "no",
-            caption: "No"
-          }
-        ]
-      },
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPopoverElement> =
+  [
+    {
+      caption: "Visibility",
+      columns: 2,
+      properties: [
+        {
+          id: "hidden",
+          caption: "Hidden",
+          value: true,
+          type: "boolean"
+        },
+        {
+          id: "mode",
+          caption: "Mode",
+          value: "auto",
+          type: "enum",
+          render: "radio-group",
+          values: [
+            {
+              value: "auto",
+              caption: "Auto"
+            },
+            {
+              value: "manual",
+              caption: "Manual"
+            }
+          ]
+        },
+        {
+          id: "closeOnClickOutside",
+          caption: 'Close On Click Outside (when Mode === "Manual")',
+          columnSpan: 2,
+          value: false,
+          type: "boolean"
+        }
+      ]
+    },
+    {
+      caption: "Alignment",
+      columns: 2,
+      properties: [
+        {
+          id: "inlineAlign",
+          caption: "Inline Align",
+          value: "center",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
+            },
+            {
+              value: "inside-start",
+              caption: "inside-start"
+            },
+            { value: "center", caption: "center" },
+            {
+              value: "inside-end",
+              caption: "inside-end"
+            },
+            {
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+        {
+          id: "blockAlign",
+          caption: "Block Align",
+          value: "outside-end",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
+            },
+            {
+              value: "inside-start",
+              caption: "inside-start"
+            },
+            { value: "center", caption: "center" },
+            {
+              value: "inside-end",
+              caption: "inside-end"
+            },
+            {
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+        {
+          id: "inlineSizeMatch",
+          caption: "Inline Size Match",
+          value: "content",
+          type: "enum",
+          values: [
+            {
+              value: "content",
+              caption: "content"
+            },
+            {
+              value: "action-element",
+              caption: "action-element"
+            },
+            {
+              value: "action-element-as-minimum",
+              caption: "action-element-as-minimum"
+            }
+          ]
+        },
+        {
+          id: "blockSizeMatch",
+          caption: "Block Size Match",
+          value: "content",
+          type: "enum",
+          values: [
+            {
+              value: "content",
+              caption: "content"
+            },
+            {
+              value: "action-element",
+              caption: "action-element"
+            },
+            {
+              value: "action-element-as-minimum",
+              caption: "action-element-as-minimum"
+            }
+          ]
+        },
+        {
+          id: "positionTry",
+          caption: "Position Try",
+          columnSpan: 2,
+          value: "content",
+          type: "enum",
+          values: [
+            {
+              value: "flip-block",
+              caption: "flip-block"
+            },
+            {
+              value: "flip-inline",
+              caption: "flip-inline"
+            },
+            {
+              value: "none",
+              caption: "none"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "allowDrag",
+          caption: "Allow Drag",
+          value: "no",
+          type: "enum",
+          render: "radio-group",
+          values: [
+            {
+              value: "box",
+              caption: "Box"
+            },
+            {
+              value: "header",
+              caption: "Header"
+            },
+            {
+              value: "no",
+              caption: "No"
+            }
+          ]
+        },
 
-      {
-        id: "resizable",
-        caption: "Resizable",
-        value: false,
-        type: "boolean"
-      }
-    ]
-  }
-];
+        {
+          id: "resizable",
+          caption: "Resizable",
+          value: false,
+          type: "boolean"
+        }
+      ]
+    }
+  ];
 
-export const popoverShowcaseStory: ShowcaseStory<Mutable<ChPopover>> = {
+export const popoverShowcaseStory: ShowcaseStory<HTMLChPopoverElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
+  markupWithoutUIModel: () => `<button
           class="button-primary"
           type="button"
           ref={el => (this.#buttonRef = el)}
@@ -292,18 +292,21 @@ export const popoverShowcaseStory: ShowcaseStory<Mutable<ChPopover>> = {
         </button>
   
         <ch-popover
-          allowDrag={<allowDrag value (optional)>}
+          allowDrag="${state.allowDrag}"
           actionElement={this.#buttonRef}
-          blockAlign={<blockAlign value>}
-          blockSizeMatch={<blockSizeMatch value (optional)>}
-          class="popover popover-secondary"
-          closeOnClickOutside={<closeOnClickOutside value>}
-          hidden={this.#popoverHidden}
-          inlineAlign={<inlineAlign value>}
-          inlineSizeMatch={<inlineSizeMatch value>}
-          mode={<mode value>}
-          positionTry={<positionTry value (optional)>}
-          resizable={<resizable value (optional)>}
+          blockAlign="${state.blockAlign}"
+          blockSizeMatch="${state.blockSizeMatch}"
+          class="popover popover-secondary"${renderBooleanPropertyOrEmpty(
+            "closeOnClickOutside",
+            state
+          )}${renderBooleanPropertyOrEmpty("hidden", state)}
+          inlineAlign="${state.inlineAlign}"
+          inlineSizeMatch="${state.inlineSizeMatch}"
+          mode="${state.mode}"
+          positionTry="${state.positionTry}"${renderBooleanPropertyOrEmpty(
+    "resizable",
+    state
+  )}
           onPopoverClosed={this.#handlePopoverClosed}
         >
           <div slot="header">

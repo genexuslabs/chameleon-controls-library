@@ -1,14 +1,13 @@
 import { forceUpdate, h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
-import { ChAccordionRender } from "../../../../components/accordion/accordion";
 import { accordionDisabledModel, accordionSimpleModel } from "./models";
 import {
   AccordionItemExpandedChangeEvent,
   ChAccordionRenderCustomEvent
 } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChAccordionRender>> = {};
+const state: Partial<HTMLChAccordionRenderElement> = {};
 
 const renderedItems = new Set();
 
@@ -98,47 +97,49 @@ const render = () => (
   </ch-accordion-render>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChAccordionRender>
-> = [
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "model",
-        caption: "Model",
-        type: "enum",
-        value: accordionSimpleModel,
-        values: [
-          { caption: "Simple model", value: accordionSimpleModel },
-          { caption: "Disabled model", value: accordionDisabledModel }
-        ]
-      },
-      {
-        id: "singleItemExpanded",
-        caption: "Single Item Expanded",
-        type: "boolean",
-        value: false
-      },
-      {
-        id: "disabled",
-        caption: "Disabled",
-        type: "boolean",
-        value: false
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChAccordionRenderElement> =
+  [
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "model",
+          caption: "Model",
+          type: "enum",
+          value: accordionSimpleModel,
+          values: [
+            { caption: "Simple model", value: accordionSimpleModel },
+            { caption: "Disabled model", value: accordionDisabledModel }
+          ]
+        },
+        {
+          id: "singleItemExpanded",
+          caption: "Single Item Expanded",
+          type: "boolean",
+          value: false
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          type: "boolean",
+          value: false
+        }
+      ]
+    }
+  ];
 
-export const accordionShowcaseStory: ShowcaseStory<Mutable<ChAccordionRender>> =
+export const accordionShowcaseStory: ShowcaseStory<HTMLChAccordionRenderElement> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
-      uiModel: accordionSimpleModel,
-      uiModelType: "TabModel",
-      render: `<ch-accordion-render
-          class="accordion"
-          model={this.#controlUIModel}
+      uiModel: () => state.model,
+      uiModelType: "AccordionModel",
+      render: () => `<ch-accordion-render
+          class="accordion"${renderBooleanPropertyOrEmpty("disabled", state)}
+          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+            "singleItemExpanded",
+            state
+          )}
           onExpandedChange={this.#handleExpandedItemChange}
         >
           {renderedItems.has("item 1") && (

@@ -56,11 +56,6 @@ import { reloadItems } from "./reload-items";
 import { updateItemProperty } from "./update-item-property";
 import { insertIntoIndex, removeElement } from "../../common/array";
 import {
-  removeSubscription,
-  subscribe,
-  syncStateWithObservableAncestors
-} from "../sidebar/expanded-change-obervables";
-import {
   getControlRegisterProperty,
   registryControlProperty
 } from "../../common/registry-properties";
@@ -91,7 +86,6 @@ const registerDefaultGetImagePathCallback = (treeState: ChTreeViewRender) =>
 // - - - - - - - - - - - - - - - - - - - -
 //                Defaults
 // - - - - - - - - - - - - - - - - - - - -
-let autoId = 0;
 
 const ROOT_ID = null;
 
@@ -202,8 +196,7 @@ const defaultRenderItem = <T extends true | false>(
       startImgSrc={itemModel.startImgSrc}
       startImgType={itemModel.startImgType ?? "background"}
     >
-      {treeState.expanded &&
-        !itemModel.leaf &&
+      {!itemModel.leaf &&
         itemModel.items != null &&
         itemModel.items.map((subModel, index) =>
           treeState.renderItem(
@@ -332,19 +325,10 @@ export class ChTreeViewRender {
   #filterTimeout: NodeJS.Timeout;
   #filterListAsSet: Set<string>;
 
-  /**
-   * This ID is used to identify the Tree View. Necessary to subscribe for
-   * expand/collapse changes in the ancestor nodes.
-   */
-  // eslint-disable-next-line @stencil-community/own-props-must-be-private
-  #treeViewId: string;
-
   // Refs
   #treeRef: HTMLChTreeViewElement;
 
   @Element() el: HTMLChTreeViewRenderElement;
-
-  @State() expanded: boolean = true;
 
   /**
    * This property lets you specify if the tree is waiting to process the drop
@@ -1621,25 +1605,12 @@ export class ChTreeViewRender {
   };
 
   connectedCallback() {
-    this.#treeViewId ||= `ch-tree-view-render-${autoId++}`;
-
     // If the getImagePathCallback was not previously registered
     if (
       !getControlRegisterProperty("getImagePathCallback", "ch-tree-view-render")
     ) {
       registerDefaultGetImagePathCallback(this);
     }
-
-    // Subscribe to expand/collapse changes in the ancestor nodes
-    subscribe(this.#treeViewId, {
-      getSubscriberRef: () => this.el,
-      observerCallback: expanded => {
-        this.expanded = expanded;
-      }
-    });
-
-    // Initialize the state
-    syncStateWithObservableAncestors(this.#treeViewId);
 
     // Accessibility
     this.el.setAttribute("role", "tree");
@@ -1667,10 +1638,6 @@ export class ChTreeViewRender {
     }
 
     this.#validateCheckedAndSelectedItems();
-  }
-
-  disconnectedCallback() {
-    removeSubscription(this.#treeViewId);
   }
 
   render() {

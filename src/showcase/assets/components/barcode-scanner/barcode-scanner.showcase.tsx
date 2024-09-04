@@ -1,10 +1,9 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChBarcodeScanner } from "../../../../components/barcode-scanner/barcode-scanner";
 import { ChBarcodeScannerCustomEvent } from "../../../../components";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChBarcodeScanner>> = {};
+const state: Partial<HTMLChBarcodeScannerElement> = {};
 let barcodeScannerRef: HTMLChBarcodeScannerElement;
 
 let lastRead: string;
@@ -36,39 +35,38 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChBarcodeScanner>
-> = [
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "barcodeBoxWidth",
-        caption: "Barcode Box Width",
-        value: 200,
-        type: "number"
-      },
-      {
-        id: "barcodeBoxHeight",
-        caption: "Barcode Box Height",
-        value: 200,
-        type: "number"
-      },
-      { id: "scanning", caption: "Scanning", value: true, type: "boolean" }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChBarcodeScannerElement> =
+  [
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "barcodeBoxWidth",
+          caption: "Barcode Box Width",
+          value: 200,
+          type: "number"
+        },
+        {
+          id: "barcodeBoxHeight",
+          caption: "Barcode Box Height",
+          value: 200,
+          type: "number"
+        },
+        { id: "scanning", caption: "Scanning", value: true, type: "boolean" }
+      ]
+    }
+  ];
 
-export const barcodeScannerShowcaseStory: ShowcaseStory<
-  Mutable<ChBarcodeScanner>
-> = {
-  properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<ch-barcode-scanner
-          barcodeBoxWidth={state.barcodeBoxWidth}
-          barcodeBoxHeight={state.barcodeBoxHeight}
-          scanning={state.scanning}
+export const barcodeScannerShowcaseStory: ShowcaseStory<HTMLChBarcodeScannerElement> =
+  {
+    properties: showcaseRenderProperties,
+    markupWithoutUIModel: () => `<ch-barcode-scanner
+          barcodeBoxWidth={${state.barcodeBoxWidth}}
+          barcodeBoxHeight={${
+            state.barcodeBoxHeight
+          }}${renderBooleanPropertyOrEmpty("scanning", state)}
           onRead={this.#handleRead}
         ></ch-barcode-scanner>`,
-  render: render,
-  state: state
-};
+    render: render,
+    state: state
+  };

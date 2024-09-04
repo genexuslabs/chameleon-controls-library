@@ -1,0 +1,162 @@
+@import "../../../../common/base";
+@import "../../../../common/icons";
+
+@include box-sizing();
+@include button-reset();
+
+:host {
+  display: grid;
+  position: relative;
+}
+
+:host(.expandable) {
+  grid-template-rows: max-content 0fr;
+  transition: grid-template-rows
+    var(--ch-navigation-list-item-expand-collapse-duration)
+    var(--ch-navigation-list-item-expand-collapse-timing-function);
+}
+
+:host(.expandable--expanded) {
+  grid-template-rows: max-content 1fr;
+}
+
+.indicator {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background-color: currentColor;
+  pointer-events: none;
+}
+
+.ch-disabled {
+  pointer-events: none;
+}
+
+.caption {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.expandable {
+  display: grid;
+  overflow: hidden;
+
+  // Delays the visibility application based on the value of var(--ch-navigation-list-item-expand-collapse-duration)
+  transition: visibility var(--ch-navigation-list-item-expand-collapse-duration)
+    allow-discrete;
+
+  &--collapsed {
+    visibility: hidden;
+  }
+}
+
+// - - - - - - - - - - - - - - - -
+//        Expandable button
+// - - - - - - - - - - - - - - - -
+.expandable-button {
+  &::before {
+    content: "";
+    display: grid;
+    place-items: center;
+    inline-size: var(--ch-navigation-list-item__expandable-button-size);
+    block-size: var(--ch-navigation-list-item__expandable-button-size);
+    pointer-events: none;
+    order: -2;
+    z-index: 1;
+    background-color: currentColor;
+    -webkit-mask: no-repeat center /
+      var(--ch-navigation-list-item__expandable-button-image-size)
+      $expandable-icon;
+
+    transition: transform
+      var(--ch-navigation-list-item-expand-collapse-duration)
+      var(--ch-navigation-list-item-expand-collapse-timing-function);
+  }
+
+  &--after::before {
+    order: 1;
+  }
+
+  &--collapsed-after::before {
+    transform: rotate(-180deg); // TODO: Add RTL support
+  }
+
+  &--collapsed-before::before {
+    transform: rotate(-90deg); // TODO: Add RTL support
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Images
+// - - - - - - - - - - - - - - - - - - - -
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--ch-navigation-list-item-gap);
+
+  // Defined in the navigation-list-render.scss file
+  padding-inline-start: var(--ch-navigation-list-item-indentation);
+
+  &--navigation-list-collapsed {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  --ch-navigation-list-item-start-img: var(--ch-start-img--base);
+
+  &.start-img--hover:hover {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--hover);
+  }
+
+  &.start-img--active:active {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--active);
+  }
+
+  &.start-img--focus:focus {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--focus);
+  }
+
+  &.start-img--disabled.ch-disabled {
+    --ch-navigation-list-item-start-img: var(--ch-start-img--disabled);
+  }
+}
+
+.pseudo-img--start::after {
+  order: -1;
+  content: "";
+  display: block;
+  inline-size: var(--ch-navigation-list-item__image-size);
+  block-size: var(--ch-navigation-list-item__image-size);
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--ch-navigation-list-item__image-size);
+}
+
+// Background
+.start-img-type--background::after {
+  background: no-repeat center /
+    var(--ch-navigation-list-item__background-image-size)
+    var(--ch-navigation-list-item-start-img);
+}
+
+// Mask
+.start-img-type--mask::after {
+  -webkit-mask: no-repeat center /
+    var(--ch-navigation-list-item__background-image-size)
+    var(--ch-navigation-list-item-start-img);
+  background-color: currentColor;
+}
+
+// - - - - - - - - - - - - - - - - - - - -
+//                 Tooltip
+// - - - - - - - - - - - - - - - - - - - -
+ch-tooltip {
+  --ch-tooltip-separation: var(--ch-navigation-list-item__tooltip-separation);
+  --ch-tooltip-separation-x: var(
+    --ch-navigation-list-item__tooltip-separation-x
+  );
+  --ch-tooltip-separation-y: var(
+    --ch-navigation-list-item__tooltip-separation-y
+  );
+}

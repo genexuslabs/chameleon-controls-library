@@ -21,10 +21,6 @@
 
 ## Dependencies
 
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
 ### Depends on
 
 - [ch-dropdown](./internal/dropdown)
@@ -34,7 +30,6 @@
 graph TD;
   ch-dropdown-render --> ch-dropdown
   ch-dropdown --> ch-popover
-  ch-showcase --> ch-dropdown-render
   style ch-dropdown-render fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

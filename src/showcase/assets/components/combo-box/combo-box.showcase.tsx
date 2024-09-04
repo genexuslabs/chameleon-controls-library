@@ -1,11 +1,9 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChComboBoxRender } from "../../../../components/combo-box/combo-box";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
   ShowcaseStory
 } from "../types";
-import { Mutable } from "../../../../common/types";
 import {
   comboBoxFilterChange,
   dataTypeInGeneXus,
@@ -17,8 +15,9 @@ import {
   ComboBoxItemModel
 } from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChComboBoxRender>> = {};
+const state: Partial<HTMLChComboBoxRenderElement> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
 
 // TODO: There is an issue when setting suggest, items are already filtered, string filter and the input equals to "data"
@@ -136,161 +135,173 @@ const render = () => (
   </div>
 );
 
-const showcaseRenderProperties: ShowcaseRenderProperties<
-  Mutable<ChComboBoxRender>
-> = [
-  {
-    caption: "Models",
-    properties: [
-      {
-        id: "model",
-        accessibleName: "Model",
-        type: "enum",
-        values: [
-          { caption: "Simple Model", value: simpleModel1 },
-          { caption: "Small Model", value: smallModel },
-          { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
-        ],
-        value: simpleModel1
-      }
-    ]
-  },
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "accessibleName",
-        caption: "Accessible Name",
-        value: "Option",
-        type: "string"
-      },
-      {
-        id: "placeholder",
-        caption: "Placeholder",
-        value: "Select an option...",
-        type: "string"
-      },
-      {
-        id: "popoverInlineAlign",
-        caption: "Popover Inline Align",
-        value: "inside-start",
-        type: "enum",
-        values: [
-          {
-            value: "outside-start",
-            caption: "outside-start"
-          },
-          {
-            value: "inside-start",
-            caption: "inside-start"
-          },
-          { value: "center", caption: "center" },
-          {
-            value: "inside-end",
-            caption: "inside-end"
-          },
-          {
-            value: "outside-end",
-            caption: "outside-end"
-          }
-        ]
-      },
-      {
-        id: "destroyItemsOnClose",
-        caption: "Destroy Items On Close",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "resizable",
-        caption: "Resizable",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "disabled",
-        caption: "Disabled",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "readonly",
-        caption: "Readonly",
-        value: false,
-        type: "boolean"
-      }
-    ]
-  },
-  {
-    caption: "Suggest",
-    properties: [
-      {
-        id: "suggest",
-        caption: "Suggest",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "filter",
-        caption: "Filter",
-        value: "",
-        type: "string"
-      },
-      {
-        id: "suggestDebounce",
-        caption: "Debounce",
-        value: 250,
-        type: "number"
-      },
-      {
-        id: "suggestOptions",
-        caption: "Options",
-        type: "object",
-        render: "independent-properties",
-        properties: [
-          {
-            id: "alreadyProcessed",
-            caption: "Items are already filtered / Server filters",
-            value: false,
-            type: "boolean"
-          },
-          {
-            id: "matchCase",
-            caption: "Apply camel casing",
-            value: false,
-            type: "boolean"
-          },
-          {
-            id: "hideMatchesAndShowNonMatches",
-            caption: "Hide matches and show non-matches",
-            value: false,
-            type: "boolean"
-          },
-          {
-            id: "strict",
-            caption: "Strict filter",
-            value: false,
-            type: "boolean"
-          }
-        ] satisfies ShowcaseRenderProperty<ComboBoxSuggestOptions>[]
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderElement> =
+  [
+    {
+      caption: "Models",
+      properties: [
+        {
+          id: "model",
+          accessibleName: "Model",
+          type: "enum",
+          values: [
+            { caption: "Simple Model", value: simpleModel1 },
+            { caption: "Small Model", value: smallModel },
+            { caption: "Data Type Model in GeneXus", value: dataTypeInGeneXus }
+          ],
+          value: simpleModel1
+        }
+      ]
+    },
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "accessibleName",
+          caption: "Accessible Name",
+          value: "Option",
+          type: "string"
+        },
+        {
+          id: "placeholder",
+          caption: "Placeholder",
+          value: "Select an option...",
+          type: "string"
+        },
+        {
+          id: "popoverInlineAlign",
+          caption: "Popover Inline Align",
+          value: "inside-start",
+          type: "enum",
+          values: [
+            {
+              value: "outside-start",
+              caption: "outside-start"
+            },
+            {
+              value: "inside-start",
+              caption: "inside-start"
+            },
+            { value: "center", caption: "center" },
+            {
+              value: "inside-end",
+              caption: "inside-end"
+            },
+            {
+              value: "outside-end",
+              caption: "outside-end"
+            }
+          ]
+        },
+        {
+          id: "destroyItemsOnClose",
+          caption: "Destroy Items On Close",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "resizable",
+          caption: "Resizable",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "disabled",
+          caption: "Disabled",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "readonly",
+          caption: "Readonly",
+          value: false,
+          type: "boolean"
+        }
+      ]
+    },
+    {
+      caption: "Suggest",
+      properties: [
+        {
+          id: "suggest",
+          caption: "Suggest",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "filter",
+          caption: "Filter",
+          value: "",
+          type: "string"
+        },
+        {
+          id: "suggestDebounce",
+          caption: "Debounce",
+          value: 250,
+          type: "number"
+        },
+        {
+          id: "suggestOptions",
+          caption: "Options",
+          type: "object",
+          render: "independent-properties",
+          properties: [
+            {
+              id: "alreadyProcessed",
+              caption: "Items are already filtered / Server filters",
+              value: false,
+              type: "boolean"
+            },
+            {
+              id: "matchCase",
+              caption: "Apply camel casing",
+              value: false,
+              type: "boolean"
+            },
+            {
+              id: "hideMatchesAndShowNonMatches",
+              caption: "Hide matches and show non-matches",
+              value: false,
+              type: "boolean"
+            },
+            {
+              id: "strict",
+              caption: "Strict filter",
+              value: false,
+              type: "boolean"
+            }
+          ] satisfies ShowcaseRenderProperty<ComboBoxSuggestOptions>[]
+        }
+      ]
+    }
+  ];
 
-export const comboBoxShowcaseStory: ShowcaseStory<Mutable<ChComboBoxRender>> = {
-  properties: showcaseRenderProperties,
-  markupWithUIModel: {
-    uiModel: simpleModel1,
-    uiModelType: "ComboBoxModel",
-    render: `<ch-combo-box-render
-          class="combo-box"
-          model={this.#controlUIModel}
-          value={<initial value (optional)>}
+export const comboBoxShowcaseStory: ShowcaseStory<HTMLChComboBoxRenderElement> =
+  {
+    properties: showcaseRenderProperties,
+    markupWithUIModel: {
+      uiModel: () => state.model,
+      uiModelType: "ComboBoxModel",
+      render: () => `<ch-combo-box-render
+          accessibleName="${state.accessibleName}"
+          class="combo-box"${renderBooleanPropertyOrEmpty("disabled", state)}
+          filter="${state.filter}"
+          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
+            "suggest",
+            state
+          )}
+          placeholder="${state.placeholder}"
+          suggestDebounce={${
+            state.suggestDebounce
+          }}${renderBooleanPropertyOrEmpty(
+        "readonly",
+        state
+      )}${renderBooleanPropertyOrEmpty("resizable", state)}
+          value="${state.value}"
           onInput={this.#handleValueChange}
           onFilterChange={this.#handleFilterChange}
         ></ch-combo-box-render>`
-  },
-  render: render,
-  state: state
-};
+    },
+    render: render,
+    state: state
+  };

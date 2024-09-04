@@ -54,3 +54,16 @@ export class MyCustomDialog {
     );
   }
 }`;
+
+export const renderBooleanPropertyOrEmpty = <
+  Dictionary extends { [key in string]: any },
+  T extends keyof Dictionary
+>(
+  propertyName: T,
+  state: Dictionary,
+  spaces: number = 11
+) =>
+  state[propertyName]
+    ? `
+${Array(spaces).join(" ")}${propertyName as string}`
+    : "";

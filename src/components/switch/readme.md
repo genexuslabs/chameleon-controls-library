@@ -52,19 +52,6 @@
 | `--ch-switch-track__unchecked-background-color` | Specifies the background color of the track when the control is unchecked. @default color-mix(in srgb, currentColor 35%, #b2b2b2) |
 
 
-## Dependencies
-
-### Used by
-
- - [ch-showcase](../../showcase/assets/components)
-
-### Graph
-```mermaid
-graph TD;
-  ch-showcase --> ch-switch
-  style ch-switch fill:#f9f,stroke:#333,stroke-width:4px
-```
-
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

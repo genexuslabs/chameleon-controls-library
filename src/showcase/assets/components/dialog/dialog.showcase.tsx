@@ -1,10 +1,9 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ChDialog } from "../../../../components/dialog/dialog";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { Mutable } from "../../../../common/types";
 import { ChDialogCustomEvent } from "../../../../components";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
-const state: Partial<Mutable<ChDialog>> = {};
+const state: Partial<HTMLChDialogElement> = {};
 
 const handleClose = (event: ChDialogCustomEvent<any>) => {
   state.hidden = true;
@@ -79,92 +78,93 @@ const render = () => [
   </ch-dialog>
 ];
 
-const showcaseRenderProperties: ShowcaseRenderProperties<Mutable<ChDialog>> = [
-  {
-    caption: "Visibility",
-    columns: 2,
-    properties: [
-      {
-        id: "hidden",
-        caption: "Hidden",
-        value: true,
-        type: "boolean"
-      },
-      {
-        id: "modal",
-        caption: "Modal",
-        value: true,
-        type: "boolean"
-      },
-      {
-        id: "showFooter",
-        caption: "Show Footer",
-        value: true,
-        type: "boolean"
-      },
-      {
-        id: "showHeader",
-        caption: "Show Header",
-        value: true,
-        type: "boolean"
-      }
-    ]
-  },
-  {
-    caption: "Properties",
-    properties: [
-      {
-        id: "caption",
-        caption: "Caption",
-        value: "Title",
-        type: "string"
-      },
-      {
-        id: "closeButtonAccessibleName",
-        caption: "Close Button Accessible Name",
-        value: "Close dialog",
-        type: "string"
-      },
-      {
-        id: "resizable",
-        caption: "Resizable",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "adjustPositionAfterResize",
-        caption: "Adjust Position After Resize",
-        value: false,
-        type: "boolean"
-      },
-      {
-        id: "allowDrag",
-        caption: "Allow Drag",
-        value: "no",
-        type: "enum",
-        render: "radio-group",
-        values: [
-          {
-            value: "box",
-            caption: "Box"
-          },
-          {
-            value: "header",
-            caption: "Header"
-          },
-          {
-            value: "no",
-            caption: "No"
-          }
-        ]
-      }
-    ]
-  }
-];
+const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDialogElement> =
+  [
+    {
+      caption: "Visibility",
+      columns: 2,
+      properties: [
+        {
+          id: "hidden",
+          caption: "Hidden",
+          value: true,
+          type: "boolean"
+        },
+        {
+          id: "modal",
+          caption: "Modal",
+          value: true,
+          type: "boolean"
+        },
+        {
+          id: "showFooter",
+          caption: "Show Footer",
+          value: true,
+          type: "boolean"
+        },
+        {
+          id: "showHeader",
+          caption: "Show Header",
+          value: true,
+          type: "boolean"
+        }
+      ]
+    },
+    {
+      caption: "Properties",
+      properties: [
+        {
+          id: "caption",
+          caption: "Caption",
+          value: "Title",
+          type: "string"
+        },
+        {
+          id: "closeButtonAccessibleName",
+          caption: "Close Button Accessible Name",
+          value: "Close dialog",
+          type: "string"
+        },
+        {
+          id: "resizable",
+          caption: "Resizable",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "adjustPositionAfterResize",
+          caption: "Adjust Position After Resize",
+          value: false,
+          type: "boolean"
+        },
+        {
+          id: "allowDrag",
+          caption: "Allow Drag",
+          value: "no",
+          type: "enum",
+          render: "radio-group",
+          values: [
+            {
+              value: "box",
+              caption: "Box"
+            },
+            {
+              value: "header",
+              caption: "Header"
+            },
+            {
+              value: "no",
+              caption: "No"
+            }
+          ]
+        }
+      ]
+    }
+  ];
 
-export const dialogShowcaseStory: ShowcaseStory<Mutable<ChDialog>> = {
+export const dialogShowcaseStory: ShowcaseStory<HTMLChDialogElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: `<button
+  markupWithoutUIModel: () => `<button
           class="button-primary"
           type="button"
           onClick={this.#handleDialogOpen}
@@ -172,17 +172,28 @@ export const dialogShowcaseStory: ShowcaseStory<Mutable<ChDialog>> = {
           Open dialog
         </button>
   
-        <ch-dialog
-          adjustPositionAfterResize={<adjustPositionAfterResize value>}
-          allowDrag={<allowDrag value (optional)>}
-          caption={<caption value>}
+        <ch-dialog${renderBooleanPropertyOrEmpty(
+          "adjustPositionAfterResize",
+          state
+        )}
+          allowDrag="${state.allowDrag}"
+          caption="${state.caption}"
           class="dialog dialog-primary"
-          closeButtonAccessibleName={<closeButtonAccessibleName value>}
-          hidden={this.#dialogHidden}
-          modal={<modal value (optional)>}
-          resizable={<resizable value (optional)>}
-          showFooter={<showFooter value>}
-          showHeader={<showHeader value>}
+          closeButtonAccessibleName="${
+            state.closeButtonAccessibleName
+          }"${renderBooleanPropertyOrEmpty(
+    "hidden",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "modal",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "resizable",
+    state
+  )}${renderBooleanPropertyOrEmpty(
+    "showFooter",
+    state
+  )}${renderBooleanPropertyOrEmpty("showHeader", state)}
           onDialogClosed={this.#handlePopoverClosed}
         >
           <label htmlFor="some-input">Any data</label>

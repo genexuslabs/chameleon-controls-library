@@ -13,7 +13,8 @@ import {
 import {
   AccordionItemModel,
   AccordionItemExpandedChangeEvent,
-  AccordionModel
+  AccordionModel,
+  AccordionItemModelExpandedSize
 } from "./types";
 import { tokenMap, updateDirectionInImageCustomVar } from "../../common/utils";
 import {
@@ -311,6 +312,18 @@ export class ChAccordionRender implements ComponentInterface {
     this.#expandedItems.add(lastItemId);
   };
 
+  #computeGridTemplateRows = () =>
+    this.model
+      .map(item =>
+        item.expanded
+          ? item.expandedSize ?? "max-content"
+          : this.#getCollapsedSizeForUnit(item.expandedSize)
+      )
+      .join(" ");
+
+  #getCollapsedSizeForUnit = (expandedSize: AccordionItemModelExpandedSize) =>
+    expandedSize && expandedSize.includes("fr") ? "0fr" : "max-content";
+
   connectedCallback(): void {
     // Initialize default getImagePathCallback
     GET_IMAGE_PATH_CALLBACK_REGISTRY ??=
@@ -336,6 +349,14 @@ export class ChAccordionRender implements ComponentInterface {
       <Host
         // TODO: Add support to prevent expand/collapse when pressing the space
         // key on an input/textarea
+        style={
+          this.model != null
+            ? {
+                "--ch-accordion-grid-template-rows":
+                  this.#computeGridTemplateRows()
+              }
+            : undefined
+        }
         onClick={this.#handleHeaderToggle}
       >
         {(this.model ?? []).map(this.#renderItem)}

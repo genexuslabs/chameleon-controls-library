@@ -251,8 +251,12 @@ export class ChNavigationListItem implements ComponentInterface {
       [startImageClasses]: !!startImageClasses,
 
       "expandable-button": hasExpandableButton,
+
+      [`expandable-button--expanded-${this.expandableButtonPosition}`]:
+        hasExpandableButton && this.expanded,
       [`expandable-button--collapsed-${this.expandableButtonPosition}`]:
         hasExpandableButton && !this.expanded,
+
       "expandable-button--after":
         hasExpandableButton && expandableButtonPosition === "after"
     };

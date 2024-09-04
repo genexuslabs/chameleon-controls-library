@@ -1,6 +1,10 @@
 import { forceUpdate, h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { accordionDisabledModel, accordionSimpleModel } from "./models";
+import {
+  accordionDisabledModel,
+  accordionSimpleModel,
+  accordionWithExpandedSizeModel
+} from "./models";
 import {
   AccordionItemExpandedChangeEvent,
   ChAccordionRenderCustomEvent
@@ -109,7 +113,11 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChAccordionRenderEl
           value: accordionSimpleModel,
           values: [
             { caption: "Simple model", value: accordionSimpleModel },
-            { caption: "Disabled model", value: accordionDisabledModel }
+            { caption: "Disabled model", value: accordionDisabledModel },
+            {
+              caption: "Expanded size model",
+              value: accordionWithExpandedSizeModel
+            }
           ]
         },
         {

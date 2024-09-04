@@ -61,8 +61,12 @@
    */
   --ch-accordion__header-background-image: #{$expandable-icon};
 
+  --ch-accordion-grid-template-rows: 1fr;
+
   display: grid;
-  grid-auto-rows: max-content;
+  grid-template-rows: var(--ch-accordion-grid-template-rows);
+  transition: grid-template-rows var(--ch-accordion-expand-collapse-duration)
+    var(--ch-accordion-expand-collapse-timing-function);
 
   // Avoid unnecessary click events in the Host
   pointer-events: none;

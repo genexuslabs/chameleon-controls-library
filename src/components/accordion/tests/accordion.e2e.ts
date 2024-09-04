@@ -26,6 +26,14 @@ describe("[ch-accordion-render]", () => {
     duration?: string;
     timingFunction?: string;
   }) => {
+    const accordionComputedStyle = await accordionRef.getComputedStyle();
+
+    expect(accordionComputedStyle.transition).toEqual(
+      `grid-template-rows ${options.duration ?? "0s"} ${
+        options.timingFunction ?? "linear"
+      } 0s`
+    );
+
     const panelRef = await page.find("ch-accordion-render >>> .panel");
     const panelComputedStyle = await panelRef.getComputedStyle();
 

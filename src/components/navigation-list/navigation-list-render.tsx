@@ -63,6 +63,7 @@ const isSelectedLink = (
   navigationListState: ChNavigationListRender
 ) =>
   !!item.link &&
+  !!navigationListState.selectedLink?.link?.url &&
   navigationListState.selectedLink.link.url === item.link.url &&
   navigationListState.selectedLink.id === item.id;
 

@@ -26,6 +26,7 @@ describe("[ch-edit][default]", () => {
 
   it("should render an input element when multiline = false", async () => {
     await page.setContent(`<ch-edit multiline="false"></ch-edit>`);
+    await page.waitForChanges();
     const inputRef = await page.find("ch-edit >>> input");
     const textareaRef = await page.find("ch-edit >>> textarea");
 
@@ -35,6 +36,7 @@ describe("[ch-edit][default]", () => {
 
   it("should render a textarea element when multiline = true", async () => {
     await page.setContent(`<ch-edit multiline="true"></ch-edit>`);
+    await page.waitForChanges();
     const inputRef = await page.find("ch-edit >>> input");
     const textareaRef = await page.find("ch-edit >>> textarea");
 
@@ -72,6 +74,7 @@ describe("[ch-edit][default]", () => {
 
   it("should not expose a part attribute the inner textarea element (multiline = true)", async () => {
     await page.setContent(`<ch-edit multiline></ch-edit>`);
+    await page.waitForChanges();
 
     const textareaRef = await page.find("ch-edit >>> textarea");
     expect(textareaRef).toEqualAttribute("part", null);
@@ -82,6 +85,7 @@ describe("[ch-edit][default]", () => {
       <div style="inline-size: 300px">
         <ch-edit></ch-edit>
       <div>`);
+    await page.waitForChanges();
     editRef = await page.find("ch-edit");
     const inputRef = await page.find("ch-edit >>> input");
 
@@ -96,6 +100,7 @@ describe("[ch-edit][default]", () => {
       <div style="inline-size: 300px">
         <ch-edit multiline></ch-edit>
       <div>`);
+    await page.waitForChanges();
     editRef = await page.find("ch-edit");
     const textareaRef = await page.find("ch-edit >>> textarea");
 

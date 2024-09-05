@@ -27,6 +27,7 @@ import {
   subscribe,
   syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-obervables";
+import { formatImagePath } from "../../common/utils";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -41,13 +42,15 @@ const registerDefaultGetImagePathCallback = (
     "getImagePathCallback",
     "ch-navigation-list-render",
     (item: NavigationListItemModel) => ({
-      base: navigationListState.useGxRender
-        ? fromGxImageToURL(
-            item.startImgSrc,
-            navigationListState.gxSettings,
-            navigationListState.gxImageConstructor
-          )
-        : item.startImgSrc
+      base: formatImagePath(
+        navigationListState.useGxRender
+          ? fromGxImageToURL(
+              item.startImgSrc,
+              navigationListState.gxSettings,
+              navigationListState.gxImageConstructor
+            )
+          : item.startImgSrc
+      )
     })
   );
 

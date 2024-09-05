@@ -15,6 +15,8 @@ import { AccessibleNameComponent } from "../../common/interfaces";
 import { SmartGridDataState } from "./internal/infinite-scroll/types";
 import { VirtualScrollVirtualItems } from "../../virtual-scroller/types";
 import { ChVirtualScrollerCustomEvent } from "../../components";
+import { SCROLLABLE_CLASS } from "../../common/reserved-names";
+import { adoptCommonThemes } from "../../common/theme";
 
 const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";
 
@@ -137,6 +139,9 @@ export class ChSmartGrid
   };
 
   connectedCallback(): void {
+    // TODO: Investigate this. If we don't add this function call, but we add
+    // the class in the Host, the scrollbar is styled, but it shouldn't
+    adoptCommonThemes(this.el.shadowRoot.adoptedStyleSheets);
     this.#avoidCLSOnInitialLoad();
 
     if (this.inverseLoading && !this.autoGrow) {
@@ -172,7 +177,7 @@ export class ChSmartGrid
           "ch-smart-grid--inverse-loading": hasRecords && this.inverseLoading,
           "ch-smart-grid--data-provider":
             hasRecords && this.dataProvider && !this.inverseLoading,
-          "ch-smart-grid--scroll": !this.autoGrow
+          [SCROLLABLE_CLASS]: !this.autoGrow
         }}
       >
         {initialLoad ? (

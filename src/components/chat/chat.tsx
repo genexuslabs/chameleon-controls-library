@@ -91,9 +91,9 @@ export class ChChat {
 
   /**
    * Specifies the theme to be used for rendering the markdown.
-   * If `undefined`, no theme will be applied.
+   * If `null`, no theme will be applied.
    */
-  @Prop() readonly markdownTheme: string | undefined = "ch-markdown-viewer";
+  @Prop() readonly markdownTheme?: string | null = "ch-markdown-viewer";
 
   /**
    * Specifies the literals required in the control.
@@ -104,12 +104,13 @@ export class ChChat {
    * This property allows us to implement custom rendering of chat items.
    */
   @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
-    defaultChatRender(
-      this.translations,
-      this.isMobile,
-      this.markdownTheme,
-      this.hyperlinkToDownloadFile
-    );
+    messageModel =>
+      defaultChatRender(
+        this.translations,
+        this.isMobile,
+        this.markdownTheme,
+        this.hyperlinkToDownloadFile
+      )(messageModel);
 
   /**
    * Add a new message at the end of the record, performing a re-render.

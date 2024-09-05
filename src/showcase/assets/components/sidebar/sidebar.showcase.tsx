@@ -7,6 +7,7 @@ import {
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { unanimoShowcase } from "../navigation-list/models";
 import { renderBooleanPropertyOrEmpty } from "../utils";
+import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<
   HTMLChSidebarElement &
@@ -18,8 +19,8 @@ const state: Partial<
 // The current implementation of the showcase navigates when the hash of the
 // URL changes
 const preventNavigation = (
-  event: ChNavigationListRenderCustomEvent<PointerEvent>
-) => event.detail.preventDefault();
+  event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>
+) => event.detail.event.preventDefault();
 
 const handleExpandedChange = () => {
   state.expanded = !state.expanded;

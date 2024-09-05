@@ -398,6 +398,12 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     }
   }
 
+  componentDidLoad() {
+    if (this.autoFocus) {
+      this.el.focus();
+    }
+  }
+
   render() {
     const isDateType = DATE_TYPES.includes(this.type);
     const shouldDisplayPicture = this.#hasPictureApplied();

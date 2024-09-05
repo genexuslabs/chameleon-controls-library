@@ -49,9 +49,7 @@
 
   // --ch-edit-trigger-button-inline-size: #{$ch-icon-size};
 
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
+  display: flex;
   align-items: center;
   position: relative;
 
@@ -111,14 +109,24 @@
   --ch-start-img: var(--ch-start-img--disabled, var(--ch-start-img--base));
 }
 
-:host(.ch-edit-pseudo-img--start)::before {
-  content: "";
-  display: block;
-  inline-size: var(--ch-edit__image-size);
-  block-size: var(--ch-edit__image-size);
-  margin-inline-end: var(--ch-edit-gap);
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--ch-edit__image-size);
+:host(.ch-edit-pseudo-img--start) {
+  & > .content {
+    margin-inline-start: var(--ch-edit-gap);
+  }
+
+  &::before {
+    content: "";
+    display: block;
+    inline-size: var(--ch-edit__image-size);
+    // Necessary to properly size the image, due to the Host has display: flex
+    min-inline-size: var(--ch-edit__image-size);
+    block-size: var(--ch-edit__image-size);
+
+    // Do not add content-visibility with display: flex. The Tree View control
+    // had browser crashes with this combination
+    // content-visibility: auto;
+    // contain-intrinsic-size: auto var(--ch-edit__image-size);
+  }
 }
 
 // Background

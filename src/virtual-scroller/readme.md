@@ -52,7 +52,7 @@ Type: `Promise<void>`
 
 ### Used by
 
- - [ch-chat](../../../chat)
+ - [ch-chat](../components/chat)
 
 ### Graph
 ```mermaid

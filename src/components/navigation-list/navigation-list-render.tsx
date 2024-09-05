@@ -298,6 +298,7 @@ export class ChNavigationListRender implements ComponentInterface {
       return;
     }
     const itemUIModel = navigationListItem.model;
+    const canExpandSubItems = this.expanded;
 
     if (itemUIModel.link) {
       const eventInfo = this.hyperlinkClick.emit({ event, item: itemUIModel });
@@ -318,7 +319,8 @@ export class ChNavigationListRender implements ComponentInterface {
       }
     }
 
-    if (itemUIModel.items != null) {
+    // TODO: Add an unit test for this
+    if (canExpandSubItems && itemUIModel.items != null) {
       itemUIModel.expanded = !itemUIModel.expanded;
       forceUpdate(this);
     }

@@ -4,6 +4,7 @@ describe("[ch-edit][form][multiline = false]", () => {
   performFormTests({
     formElementTagName: "ch-edit",
     hasReadonlySupport: true,
+    hasAutoFocusSupport: true,
     valueCanBeUpdatedByTheUser: true
   });
 });
@@ -14,6 +15,7 @@ describe("[ch-edit][form][multiline = false]", () => {
 //     {
 //       formElementTagName: "ch-edit",
 //       hasReadonlySupport: true,
+//       hasAutoFocusSupport: true,
 //       additionalAttributes: "multiline"
 //     },
 //     "textarea"

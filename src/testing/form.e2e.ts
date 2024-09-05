@@ -62,6 +62,7 @@ export const performFormTests = (
     additionalAttributes?: string;
     formElementTagName: ChameleonControlsTagName;
     hasReadonlySupport: boolean;
+    hasAutoFocusSupport?: boolean;
     pressEnterToConfirmValue?: boolean;
     focusIsOnHostElement?: boolean;
     valueCanBeUpdatedByTheUser?: boolean;
@@ -71,6 +72,7 @@ export const performFormTests = (
   const {
     formElementTagName,
     hasReadonlySupport,
+    hasAutoFocusSupport,
     additionalAttributes,
     focusIsOnHostElement,
     pressEnterToConfirmValue,
@@ -379,4 +381,39 @@ export const performFormTests = (
 
     expect(inputIsFocused).toBe(true);
   });
+
+  if (hasAutoFocusSupport) {
+    it(`should focus the ${inputSelector} when setting autoFocus on the initial page render`, async () => {
+      const page = await newE2EPage({
+        failOnConsoleError: true,
+        html: `<${formElementTagName} auto-focus></${formElementTagName}>`
+      });
+
+      const inputIsFocused = await isActiveElement(
+        page,
+        focusableElementSelector
+      );
+      expect(inputIsFocused).toBe(true);
+    });
+
+    it(`should focus the ${inputSelector} when setting autoFocus and creating the element after the initial page render`, async () => {
+      const page = await newE2EPage({
+        failOnConsoleError: true,
+        html: `<${formElementTagName}></${formElementTagName}>`
+      });
+
+      let inputIsFocused = await isActiveElement(
+        page,
+        focusableElementSelector
+      );
+      expect(inputIsFocused).toBe(false);
+      await page.setContent(
+        `<${formElementTagName} auto-focus></${formElementTagName}>`
+      );
+      await page.waitForChanges();
+
+      inputIsFocused = await isActiveElement(page, focusableElementSelector);
+      expect(inputIsFocused).toBe(true);
+    });
+  }
 };

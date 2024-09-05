@@ -13,7 +13,7 @@ import {
 } from "@stencil/core";
 import { AccessibleNameComponent } from "../../common/interfaces";
 import { SmartGridDataState } from "./internal/infinite-scroll/types";
-import { VirtualScrollVirtualItems } from "./internal/smart-grid-virtual-scroller/types";
+import { VirtualScrollVirtualItems } from "../../smart-grid-virtual-scroller/types";
 import { ChVirtualScrollerCustomEvent } from "../../components";
 
 const HIDE_CONTENT_AFTER_LOADING_CLASS = "ch-smart-grid--loaded-render-delay";

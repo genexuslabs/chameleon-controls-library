@@ -380,7 +380,12 @@ export class ChVirtualScroller implements ComponentInterface {
     const newStartIndex = Math.max(0, this.#startIndex - startShift);
 
     // Nothing to update
-    if (this.#startIndex === newStartIndex && this.#endIndex === newEndIndex) {
+    if (
+      this.#startIndex === newStartIndex &&
+      this.#endIndex === newEndIndex &&
+      // TODO: Add a unit test for this use case
+      this.items.length > 1
+    ) {
       return;
     }
 

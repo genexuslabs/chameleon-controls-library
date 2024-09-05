@@ -24,6 +24,7 @@ export const showcasePages: NavigationListModel = [
 
   {
     caption: "Components",
+    expanded: true,
     startImgSrc:
       "url('https://unpkg.com/@genexus/unanimo@latest/dist/assets/icons/projects.svg')",
     startImgType: "mask",

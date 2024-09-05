@@ -41,7 +41,11 @@
     <script>
       const themeRef = document.createElement("ch-theme");
       themeRef.model = [
-        { name: "chameleon/scrollbar", url: "showcase/scrollbar.css" },
+        {
+          name: "chameleon/scrollbar",
+          url: "showcase/scrollbar.css",
+          attachStyleSheet: false
+        },
 
         // TODO: Use the right url
         {

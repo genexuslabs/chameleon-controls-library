@@ -31,7 +31,7 @@
 | Event            | Description                                                      | Type                                                                                                                                                                                                                   |
 | ---------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `buttonClick`    | Fired when an button is clicked. This event can be prevented.    | `CustomEvent<{ id?: string; caption: string; disabled?: boolean; expanded?: boolean; metadata?: string; startImgSrc?: string; startImgType?: "mask" \| "background"; link?: ItemLink; items?: NavigationListModel; }>` |
-| `hyperlinkClick` | Fired when an hyperlink is clicked. This event can be prevented. | `CustomEvent<PointerEvent>`                                                                                                                                                                                            |
+| `hyperlinkClick` | Fired when an hyperlink is clicked. This event can be prevented. | `CustomEvent<{ event: PointerEvent; item: NavigationListItemModel; }>`                                                                                                                                                 |
 
 
 ## CSS Custom Properties

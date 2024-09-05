@@ -59,7 +59,7 @@ import { DragState } from "./components/tree-view/internal/tree-view-item/tree-v
 import { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 import { SmartGridModel } from "./components/smart-grid/types";
-import { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
+import { VirtualScrollVirtualItems } from "./virtual-scroller/types";
 import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -118,7 +118,7 @@ export { DragState } from "./components/tree-view/internal/tree-view-item/tree-v
 export { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 export { SmartGridModel } from "./components/smart-grid/types";
-export { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
+export { VirtualScrollVirtualItems } from "./virtual-scroller/types";
 export { ChWindowAlign } from "./deprecated-components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -550,9 +550,9 @@ export namespace Components {
          */
         "loadingState": SmartGridDataState;
         /**
-          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+          * Specifies the theme to be used for rendering the markdown. If `null`, no theme will be applied.
          */
-        "markdownTheme": string | undefined;
+        "markdownTheme"?: string | null;
         /**
           * This property allows us to implement custom rendering of chat items.
          */
@@ -6579,9 +6579,9 @@ declare namespace LocalJSX {
          */
         "loadingState": SmartGridDataState;
         /**
-          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+          * Specifies the theme to be used for rendering the markdown. If `null`, no theme will be applied.
          */
-        "markdownTheme"?: string | undefined;
+        "markdownTheme"?: string | null;
         /**
           * This property allows us to implement custom rendering of chat items.
          */

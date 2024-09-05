@@ -12,7 +12,11 @@ import {
 } from "@stencil/core";
 
 import { GxImageMultiState, ItemLink } from "../../common/types";
-import { NavigationListItemModel, NavigationListModel } from "./types";
+import {
+  NavigationListHyperlinkClickEvent,
+  NavigationListItemModel,
+  NavigationListModel
+} from "./types";
 
 import { adoptCommonThemes } from "../../common/theme";
 import {
@@ -241,7 +245,7 @@ export class ChNavigationListRender implements ComponentInterface {
    * Fired when an hyperlink is clicked.
    * This event can be prevented.
    */
-  @Event() hyperlinkClick: EventEmitter<PointerEvent>;
+  @Event() hyperlinkClick: EventEmitter<NavigationListHyperlinkClickEvent>;
 
   #expandNewSelectedLink = (model: NavigationListModel) => {
     // for let index ... is the fastest for
@@ -295,7 +299,7 @@ export class ChNavigationListRender implements ComponentInterface {
     const itemUIModel = navigationListItem.model;
 
     if (itemUIModel.link) {
-      const eventInfo = this.hyperlinkClick.emit(event);
+      const eventInfo = this.hyperlinkClick.emit({ event, item: itemUIModel });
 
       if (eventInfo.defaultPrevented) {
         event.preventDefault();

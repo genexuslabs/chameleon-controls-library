@@ -41,10 +41,18 @@
     <script>
       const themeRef = document.createElement("ch-theme");
       themeRef.model = [
-        { name: "chameleon/scrollbar", url: "showcase/scrollbar.css" },
+        {
+          name: "chameleon/scrollbar",
+          url: "showcase/scrollbar.css",
+          attachStyleSheet: false
+        },
 
         // TODO: Use the right url
-        { name: "ch-markdown-viewer", url: "showcase/scrollbar.css" }
+        {
+          name: "ch-markdown-viewer",
+          url: "https://unpkg.com/@genexus/unanimo@0.20.0/dist/bundles/css/components/markdown-viewer.css",
+          attachStyleSheet: false
+        }
       ];
       document.body.append(themeRef);
 

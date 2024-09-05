@@ -1,5 +1,5 @@
-import { inBetween } from "../../../../common/utils";
-import { SmartGridModel } from "../../types";
+import { inBetween } from "../common/utils";
+import { SmartGridModel } from "../components/smart-grid/types";
 import { SmartGridCellVirtualSize } from "./types";
 
 export const cellIsRendered = (cell: HTMLElement) =>

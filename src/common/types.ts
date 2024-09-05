@@ -156,5 +156,5 @@ export type ChameleonImagePathCallbackControls = {
 };
 
 export type ItemLink = {
-  url: string;
+  url?: string;
 };

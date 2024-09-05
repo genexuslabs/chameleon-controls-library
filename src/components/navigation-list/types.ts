@@ -13,3 +13,8 @@ export type NavigationListItemModel = {
   link?: ItemLink;
   items?: NavigationListModel;
 };
+
+export type NavigationListHyperlinkClickEvent = {
+  event: PointerEvent;
+  item: NavigationListItemModel;
+};

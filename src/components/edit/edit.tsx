@@ -78,7 +78,10 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #startImage: GxImageMultiStateStart | undefined;
 
   // Refs
-  #inputRef: HTMLInputElement | HTMLTextAreaElement = null;
+  // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
+  // update the ref when updating the multiline property
+  #inputRef: HTMLInputElement | undefined;
+  #textareaRef: HTMLTextAreaElement | undefined;
 
   @State() isFocusOnControl = false;
 
@@ -245,7 +248,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   valueChanged(newValue: string) {
     this.#computePictureValue(newValue);
 
-    if (!this.#inputRef) {
+    if (!this.#getInputRef()) {
       return;
     }
 
@@ -259,8 +262,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
      *  - ChangeEvent. Input ref: "X"
      *  Result: Angular's UIModel has value = "", but the control has value = "X"
      */
-    if (this.#inputRef.value !== this.value) {
-      this.#inputRef.value = this.value;
+    if (this.#getInputRef().value !== this.value) {
+      this.#getInputRef().value = this.value;
     }
 
     // Update form value
@@ -290,6 +293,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * Fired when the trigger button is clicked.
    */
   @Event() triggerClick: EventEmitter;
+
+  #getInputRef = () => this.#inputRef ?? this.#textareaRef;
 
   #computeImage = () => {
     if (!this.startImgSrc) {
@@ -332,8 +337,8 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
     event.stopPropagation();
 
     // Don't allow invalid values
-    if (!this.#inputRef.validity.valid) {
-      this.#inputRef.value = this.value;
+    if (!this.#getInputRef().validity.valid) {
+      this.#getInputRef().value = this.value;
       return;
     }
 
@@ -450,7 +455,7 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
                 onChange={canAddListeners ? this.#handleChange : null}
                 onInput={canAddListeners ? this.#handleValueChanging : null}
                 onAnimationStart={canAddListeners ? this.#handleAutoFill : null}
-                ref={el => (this.#inputRef = el)}
+                ref={el => (this.#textareaRef = el)}
               ></textarea>,
 
               // The space at the end of the value is necessary to correctly display the enters

@@ -108,10 +108,11 @@ export class ChChat {
 
   /**
    * This property allows us to implement custom rendering of chat items.
+   * If allow us to implement the render of the cell content.
    */
-  @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
-    messageModel =>
-      defaultChatRender(this.el, this.hyperlinkToDownloadFile)(messageModel);
+  @Prop() readonly renderItem: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any = messageModel => defaultChatRender(this.el)(messageModel);
 
   /**
    * Add a new message at the end of the record, performing a re-render.
@@ -384,9 +385,20 @@ export class ChChat {
             (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
           }
         >
-          {this.virtualItems.map(this.renderItem)}
+          {this.virtualItems.map(this.#renderItem)}
         </ch-virtual-scroller>
       </ch-smart-grid>
+    );
+
+  #renderItem = (messageModel: ChatMessage) =>
+    (messageModel.role === "assistant" || messageModel.role === "user") && (
+      <ch-smart-grid-cell
+        key={messageModel.id}
+        cellId={messageModel.id}
+        part={`message ${messageModel.role}`}
+      >
+        {this.renderItem(messageModel)}
+      </ch-smart-grid-cell>
     );
 
   #loadMoreItems = () => {

@@ -90,7 +90,7 @@ const defaultRender = (
     model={item}
     navigationListExpanded={navigationListState.expanded}
     selected={isSelectedLink(item, navigationListState)}
-    selectedItemIndicator={navigationListState.selectedItemIndicator}
+    selectedLinkIndicator={navigationListState.selectedLinkIndicator}
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
     startImgType={item.startImgType}
@@ -218,7 +218,7 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies if the selected item indicator is displayed (only work for hyperlink)
    */
-  @Prop() readonly selectedItemIndicator: boolean = false;
+  @Prop() readonly selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption of the items will be displayed when the control

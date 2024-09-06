@@ -128,7 +128,7 @@ export class ChNavigationListItem implements ComponentInterface {
    * Specifies if the selected item indicator is displayed when the item is
    * selected. Only applies when the `link` property is defined.
    */
-  @Prop() readonly selectedItemIndicator: boolean = false;
+  @Prop() readonly selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption will be displayed when the navigation-list
@@ -358,7 +358,7 @@ export class ChNavigationListItem implements ComponentInterface {
         class={{
           expandable: this.expandable,
           "expandable--expanded": this.expanded,
-          selected: this.selected && this.selectedItemIndicator
+          selected: this.selected && this.selectedLinkIndicator
         }}
       >
         {this.#renderContent(
@@ -368,7 +368,7 @@ export class ChNavigationListItem implements ComponentInterface {
           expandableButtonPosition
         )}
 
-        {this.selected && this.selectedItemIndicator && (
+        {this.selected && this.selectedLinkIndicator && (
           <div
             class="indicator"
             part={tokenMap({

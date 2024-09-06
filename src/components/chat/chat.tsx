@@ -24,6 +24,8 @@ import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
+import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
+import { tokenMap } from "../../common/utils";
 
 const ENTER_KEY = "Enter";
 
@@ -50,6 +52,11 @@ export class ChChat {
    * Specifies the callbacks required in the control.
    */
   @Prop() readonly callbacks!: ChatInternalCallbacks;
+
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * Specifies if all interactions are disabled
@@ -102,15 +109,11 @@ export class ChChat {
 
   /**
    * This property allows us to implement custom rendering of chat items.
+   * If allow us to implement the render of the cell content.
    */
-  @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
-    messageModel =>
-      defaultChatRender(
-        this.translations,
-        this.isMobile,
-        this.markdownTheme,
-        this.hyperlinkToDownloadFile
-      )(messageModel);
+  @Prop() readonly renderItem?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
 
   /**
    * Add a new message at the end of the record, performing a re-render.
@@ -355,6 +358,12 @@ export class ChChat {
     URL.revokeObjectURL(imageFile); // Free the memory
   };
 
+  #virtualItemsChanged = (
+    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
+  ) => {
+    this.virtualItems = event.detail.virtualItems as ChatMessage[];
+  };
+
   #renderChatOrEmpty = () =>
     this.loadingState === "all-records-loaded" && this.items.length === 0 ? (
       <slot name="empty-chat"></slot>
@@ -383,9 +392,27 @@ export class ChChat {
             (this.#virtualScrollRef = el as HTMLChVirtualScrollerElement)
           }
         >
-          {this.virtualItems.map(this.renderItem)}
+          {this.virtualItems.map(this.#renderItem)}
         </ch-virtual-scroller>
       </ch-smart-grid>
+    );
+
+  #renderItem = (messageModel: ChatMessage) =>
+    messageModel.role !== "system" && (
+      <ch-smart-grid-cell
+        key={messageModel.id}
+        cellId={messageModel.id}
+        part={tokenMap({
+          [`message ${messageModel.role}`]: true,
+          [messageModel.parts]: !!messageModel.parts,
+          [(messageModel as ChatMessageByRole<"assistant">).status]:
+            messageModel.role === "assistant"
+        })}
+      >
+        {this.renderItem
+          ? this.renderItem(messageModel)
+          : defaultChatRender(this.el)(messageModel)}
+      </ch-smart-grid-cell>
     );
 
   #loadMoreItems = () => {
@@ -427,12 +454,6 @@ export class ChChat {
 
       this.loadingState = "more-data-to-fetch";
     }, 10);
-  };
-
-  #virtualItemsChanged = (
-    event: ChVirtualScrollerCustomEvent<VirtualScrollVirtualItems>
-  ) => {
-    this.virtualItems = event.detail.virtualItems as ChatMessage[];
   };
 
   connectedCallback() {

@@ -12,7 +12,8 @@ import { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 import { ActionGroupModel } from "./components/action-group/types";
 import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-import { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+import { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
+import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
 import { ChatTranslations } from "./components/chat/translations";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -29,7 +30,6 @@ import { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-inf
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
-import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -71,7 +71,8 @@ export { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 export { ActionGroupModel } from "./components/action-group/types";
 export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-export { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+export { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
+export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
 export { ChatTranslations } from "./components/chat/translations";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -88,7 +89,6 @@ export { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-inf
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
-export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
@@ -554,9 +554,15 @@ export namespace Components {
          */
         "markdownTheme"?: string | null;
         /**
-          * This property allows us to implement custom rendering of chat items.
+          * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderItem": (messageModel: ChatMessage) => any;
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * This property allows us to implement custom rendering of chat items. If allow us to implement the render of the cell content.
+         */
+        "renderItem"?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
         /**
           * Set the text for the chat input
          */
@@ -1781,6 +1787,10 @@ export namespace Components {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChMarkdownViewer {
+        /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded. Only works if the `theme` property is set.
+         */
+        "avoidFlashOfUnstyledContent"?: boolean;
         /**
           * `true` to render raw HTML with sanitization.
          */
@@ -6583,9 +6593,15 @@ declare namespace LocalJSX {
          */
         "markdownTheme"?: string | null;
         /**
-          * This property allows us to implement custom rendering of chat items.
+          * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderItem"?: (messageModel: ChatMessage) => any;
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * This property allows us to implement custom rendering of chat items. If allow us to implement the render of the cell content.
+         */
+        "renderItem"?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
         /**
           * Specifies the literals required in the control.
          */
@@ -7774,6 +7790,10 @@ declare namespace LocalJSX {
      * - When the code highlighting is needed at runtime, the control will load on demand the code parser and the programming language needed to parse the code.
      */
     interface ChMarkdownViewer {
+        /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded. Only works if the `theme` property is set.
+         */
+        "avoidFlashOfUnstyledContent"?: boolean;
         /**
           * `true` to render raw HTML with sanitization.
          */

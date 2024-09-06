@@ -229,3 +229,69 @@ export const longChatRecord: ChatMessage[] = Array.from(
             `index: ${index}\n`
         }
 );
+
+export const codeFixerRecord: ChatMessage[] = [
+  {
+    id: "1",
+    role: "user",
+    content: "Please give me an example about...",
+    metadata: "14:55"
+  },
+  {
+    id: "2",
+    role: "assistant",
+    status: "complete",
+    content:
+      "Action required example. Action required example. Action required example.",
+    metadata: "14:56"
+  },
+  {
+    id: "3",
+    role: "assistant",
+    status: "complete",
+    content: "Warning in request",
+    metadata: "14:57",
+    parts: "warning"
+  },
+  {
+    id: "4",
+    role: "error",
+    content: "Error in Request",
+    metadata: "14:58"
+  },
+  {
+    id: "5",
+    role: "assistant",
+    status: "complete",
+    content: "Warning in request",
+    metadata: "14:59",
+    parts: "success"
+  },
+  {
+    id: "6",
+    role: "user",
+    content:
+      "Implement the function calculate_average_grade in grades.py that takes a list of grades as input and returns the average grade as a floating-point number",
+    metadata: "15:00"
+  },
+  {
+    id: "7",
+    role: "assistant",
+    status: "complete",
+    content:
+      "You can provide further details or updates regarding your support ticket and its associated code. Your input here helps us better understand and address your issue effectively.",
+    metadata: "15:01"
+  },
+  {
+    id: "8",
+    role: "assistant",
+    status: "waiting",
+    content: "Processing Request"
+  },
+  {
+    id: "9",
+    role: "assistant",
+    status: "complete",
+    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
+  }
+];

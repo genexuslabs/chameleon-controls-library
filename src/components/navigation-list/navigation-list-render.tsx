@@ -147,10 +147,10 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies the position of the expandable button in reference of the action
    * element of the items
-   *  - `"before"`: Expandable button is placed before the action element.
-   *  - `"after"`: Expandable button is placed after the action element.
+   *  - `"start"`: Expandable button is placed before the action element.
+   *  - `"end"`: Expandable button is placed after the action element.
    */
-  @Prop() readonly expandableButtonPosition: "before" | "after" = "before";
+  @Prop() readonly expandableButtonPosition: "start" | "end" = "start";
 
   /**
    * This property specifies a callback that is executed when the path for an

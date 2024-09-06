@@ -75,17 +75,17 @@
       var(--ch-navigation-list-item-expand-collapse-timing-function);
   }
 
-  &--after::before {
+  &--end::before {
     order: 1;
   }
 
-  // - - - - - - - Before - - - - - - -
-  &--collapsed-before::before {
+  // - - - - - - - Start - - - - - - -
+  &--collapsed-start::before {
     transform: rotate(-90deg); // TODO: Add RTL support
   }
 
-  // - - - - - - - After - - - - - - -
-  &--expanded-after::before {
+  // - - - - - - - End - - - - - - -
+  &--expanded-end::before {
     transform: rotate(-180deg); // TODO: Add RTL support
   }
 }

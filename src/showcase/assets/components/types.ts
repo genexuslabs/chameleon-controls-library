@@ -5,7 +5,7 @@ export type ShowcaseStories = {
 } & { customVars: ShowcaseRenderPropertyStyleValues };
 
 export type ShowcaseStory<T extends ShowcaseStoryClass> = {
-  render: () => any;
+  render: ShowcaseRender;
 
   /**
    * Called after the first render of the story and before the storyDidRender
@@ -38,7 +38,7 @@ export type ShowcaseStoryClass = Mutable<
 >;
 
 export type ShowcaseCustomStory = {
-  render: () => any;
+  render: ShowcaseRender;
 
   /**
    * Called after the first render of the story and before the storyDidRender
@@ -56,6 +56,8 @@ export type ShowcaseCustomStory = {
    */
   disconnectedCallback?: () => void;
 };
+
+export type ShowcaseRender = (designSystem: "mercury" | "unanimo") => any;
 
 export type ShowcaseRenderProperties<T extends { [key in string]: any }> =
   ShowcaseRenderPropertyGroup<T>[];
@@ -157,6 +159,7 @@ export type ChameleonStories = {
   "action-list": ShowcaseStory<HTMLChActionListRenderElement>;
   "barcode-scanner": ShowcaseStory<HTMLChBarcodeScannerElement>;
   checkbox: ShowcaseStory<HTMLChCheckboxElement>;
+  chat: ShowcaseStory<HTMLChChatElement>;
   code: ShowcaseStory<HTMLChCodeElement>;
   "combo-box": ShowcaseStory<HTMLChComboBoxRenderElement>;
   dialog: ShowcaseStory<HTMLChDialogElement>;
@@ -181,7 +184,6 @@ export type ChameleonStories = {
 };
 
 export type ChameleonCustomStories = {
-  chat: ShowcaseCustomStory;
   "code-editor": ShowcaseCustomStory;
   "code-diff-editor": ShowcaseCustomStory;
   "markdown-viewer": ShowcaseCustomStory;

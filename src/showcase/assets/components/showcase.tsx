@@ -418,7 +418,7 @@ export class ChShowcase {
   #flexibleLayoutPlaygroundRenders: FlexibleLayoutRenders = {
     [MAIN_WIDGET]: () => (
       <div key={MAIN_WIDGET} slot={MAIN_WIDGET} class="card">
-        {this.#showcaseStory.render()}
+        {this.#showcaseStory.render(this.designSystem)}
       </div>
     ),
     [USAGE_STENCIL_JS]: () => (
@@ -953,12 +953,12 @@ export class ChShowcase {
           <h1 class="heading-1">
             {this.componentMetadata.caption} ({this.componentMetadata.metadata})
           </h1>
-          {this.#showcaseCustomStory.render()}
+          {this.#showcaseCustomStory.render(this.designSystem)}
         </div>
       );
     }
 
-    return this.stories?.landing.render();
+    return this.stories?.landing.render(this.designSystem);
   };
 
   async connectedCallback() {

@@ -287,5 +287,11 @@ export const codeFixerRecord: ChatMessage[] = [
     role: "assistant",
     status: "waiting",
     content: "Processing Request"
+  },
+  {
+    id: "9",
+    role: "assistant",
+    status: "complete",
+    content: ASSISTANT_RESPONSE_SHORT_MARKDOWN
   }
 ];

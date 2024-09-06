@@ -24,7 +24,6 @@ export const mercuryCodeRender =
         <ch-code
           language={options.language}
           lastNestedChildClass={options.lastNestedChildClass}
-          showIndicator={options.showIndicator}
           value={options.plainText}
         ></ch-code>
       </div>
@@ -33,26 +32,35 @@ export const mercuryCodeRender =
 export const mercuryChatMessageRender =
   (theme: string) =>
   (messageModel: ChatMessageByRole<"assistant" | "error" | "user">) =>
-    messageModel.role === "assistant" && messageModel.status === "waiting" ? (
-      <span part="message__processing">Processing request</span>
-    ) : (
-      [
-        <span part="message__role">
-          {messageModel.role === "user" ? "You" : "GeneXus Code Fixer"}
-        </span>,
-        <time dateTime={messageModel.metadata} part="message__time">
-          {messageModel.metadata}
-        </time>,
+    messageModel.role === "assistant" && messageModel.status === "waiting"
+      ? [
+          <span part="message__processing">Processing request</span>,
 
-        messageModel.role === "user" ? (
-          <span part="message__content">{messageModel.content}</span>
-        ) : (
-          <ch-markdown-viewer
-            part="message__content"
-            theme={theme}
-            renderCode={mercuryCodeRender("Copy code")}
-            value={messageModel.content as string}
-          ></ch-markdown-viewer>
-        )
-      ]
-    );
+          <div class="processing-animation" part="processing-animation"></div>
+        ]
+      : [
+          <span part={`message__role ${messageModel.role}`}>
+            {messageModel.role === "user" ? "You" : "GeneXus Code Fixer"}
+          </span>,
+          <time dateTime={messageModel.metadata} part="message__time">
+            {messageModel.metadata}
+          </time>,
+
+          messageModel.role === "user" ? (
+            <span part="message__content user">{messageModel.content}</span>
+          ) : (
+            <ch-markdown-viewer
+              part={
+                messageModel.role === "assistant" &&
+                (messageModel.status === "complete" || !messageModel.status) &&
+                !messageModel.parts
+                  ? `message__content no-error`
+                  : "message__content"
+              }
+              theme={theme}
+              showIndicator={false}
+              renderCode={mercuryCodeRender("Copy code")}
+              value={messageModel.content as string}
+            ></ch-markdown-viewer>
+          )
+        ];

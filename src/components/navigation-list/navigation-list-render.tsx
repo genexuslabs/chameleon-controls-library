@@ -90,7 +90,7 @@ const defaultRender = (
     model={item}
     navigationListExpanded={navigationListState.expanded}
     selected={isSelectedLink(item, navigationListState)}
-    selectedItemIndicator={navigationListState.selectedItemIndicator}
+    selectedLinkIndicator={navigationListState.selectedLinkIndicator}
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
     startImgType={item.startImgType}
@@ -147,10 +147,10 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies the position of the expandable button in reference of the action
    * element of the items
-   *  - `"before"`: Expandable button is placed before the action element.
-   *  - `"after"`: Expandable button is placed after the action element.
+   *  - `"start"`: Expandable button is placed before the action element.
+   *  - `"end"`: Expandable button is placed after the action element.
    */
-  @Prop() readonly expandableButtonPosition: "before" | "after" = "before";
+  @Prop() readonly expandableButtonPosition: "start" | "end" = "start";
 
   /**
    * This property specifies a callback that is executed when the path for an
@@ -218,7 +218,7 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies if the selected item indicator is displayed (only work for hyperlink)
    */
-  @Prop() readonly selectedItemIndicator: boolean = false;
+  @Prop() readonly selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption of the items will be displayed when the control

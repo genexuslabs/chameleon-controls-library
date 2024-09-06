@@ -131,14 +131,14 @@
   );
 }
 
-::part(item__action expand-button before) {
+::part(item__action expand-button start) {
   --own-offset: calc(
     var(--ch-navigation-list-item__expandable-button-size) +
       var(--ch-navigation-list-item-gap)
   );
 }
 
-::part(item__action expand-button before level-0) {
+::part(item__action expand-button start level-0) {
   --own-offset: 0px;
 }
 
@@ -152,7 +152,7 @@
   --parent-offset: var(--parent-offset-even);
 }
 
-::part(item__group level-0 after) {
+::part(item__group level-0 end) {
   --parent-offset-even: calc(
     var(--ch-navigation-list-item-gap) +
       var(--ch-navigation-list-item__expandable-button-size)

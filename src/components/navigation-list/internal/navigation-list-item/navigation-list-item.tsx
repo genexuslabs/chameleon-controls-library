@@ -76,10 +76,10 @@ export class ChNavigationListItem implements ComponentInterface {
   /**
    * Specifies the position of the expandable button in reference of the action
    * element of the items
-   *  - `"before"`: Expandable button is placed before the action element.
-   *  - `"after"`: Expandable button is placed after the action element.
+   *  - `"start"`: Expandable button is placed before the action element.
+   *  - `"end"`: Expandable button is placed after the action element.
    */
-  @Prop() readonly expandableButtonPosition: "before" | "after" = "before";
+  @Prop() readonly expandableButtonPosition: "start" | "end" = "start";
 
   /**
    * Specifies if the control is expanded or collapsed.
@@ -128,7 +128,7 @@ export class ChNavigationListItem implements ComponentInterface {
    * Specifies if the selected item indicator is displayed when the item is
    * selected. Only applies when the `link` property is defined.
    */
-  @Prop() readonly selectedItemIndicator: boolean = false;
+  @Prop() readonly selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption will be displayed when the navigation-list
@@ -233,7 +233,7 @@ export class ChNavigationListItem implements ComponentInterface {
     evenLevelParts: "even-level" | "odd-level",
     levelPart: `level-${number}`,
     hasExpandableButton: boolean,
-    expandableButtonPosition: "before" | "after"
+    expandableButtonPosition: "start" | "end"
   ) => {
     const navigationListCollapsed = !this.navigationListExpanded;
 
@@ -257,8 +257,8 @@ export class ChNavigationListItem implements ComponentInterface {
       [`expandable-button--collapsed-${this.expandableButtonPosition}`]:
         hasExpandableButton && !this.expanded,
 
-      "expandable-button--after":
-        hasExpandableButton && expandableButtonPosition === "after"
+      "expandable-button--end":
+        hasExpandableButton && expandableButtonPosition === "end"
     };
 
     return this.link ? (
@@ -278,10 +278,10 @@ export class ChNavigationListItem implements ComponentInterface {
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
-            hasExpandableButton && expandableButtonPosition === "before",
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
-            hasExpandableButton && expandableButtonPosition === "after",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.START]:
+            hasExpandableButton && expandableButtonPosition === "start",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.END]:
+            hasExpandableButton && expandableButtonPosition === "end",
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
             navigationListCollapsed,
@@ -305,10 +305,10 @@ export class ChNavigationListItem implements ComponentInterface {
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.EXPAND_BUTTON]:
             hasExpandableButton,
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
-            hasExpandableButton && expandableButtonPosition === "before",
-          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
-            hasExpandableButton && expandableButtonPosition === "after",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.START]:
+            hasExpandableButton && expandableButtonPosition === "start",
+          [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.END]:
+            hasExpandableButton && expandableButtonPosition === "end",
 
           [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.NAVIGATION_LIST_COLLAPSED]:
             navigationListCollapsed,
@@ -358,7 +358,7 @@ export class ChNavigationListItem implements ComponentInterface {
         class={{
           expandable: this.expandable,
           "expandable--expanded": this.expanded,
-          selected: this.selected && this.selectedItemIndicator
+          selected: this.selected && this.selectedLinkIndicator
         }}
       >
         {this.#renderContent(
@@ -368,7 +368,7 @@ export class ChNavigationListItem implements ComponentInterface {
           expandableButtonPosition
         )}
 
-        {this.selected && this.selectedItemIndicator && (
+        {this.selected && this.selectedLinkIndicator && (
           <div
             class="indicator"
             part={tokenMap({
@@ -393,10 +393,10 @@ export class ChNavigationListItem implements ComponentInterface {
 
               [evenLevelParts]: this.level !== NAVIGATION_LIST_INITIAL_LEVEL,
 
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.BEFORE]:
-                hasExpandableButton && expandableButtonPosition === "before",
-              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.AFTER]:
-                hasExpandableButton && expandableButtonPosition === "after",
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.START]:
+                hasExpandableButton && expandableButtonPosition === "start",
+              [NAVIGATION_LIST_ITEM_PARTS_DICTIONARY.END]:
+                hasExpandableButton && expandableButtonPosition === "end",
 
               [levelPart]: true
             })}

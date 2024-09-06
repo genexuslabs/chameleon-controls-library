@@ -403,8 +403,8 @@ export class ChShowcase {
                 })
               : undefined
           }
-          selectedItemIndicator
-          expandableButtonPosition="after"
+          selectedLinkIndicator
+          expandableButtonPosition="end"
         ></ch-navigation-list-render>
       </aside>
     ),

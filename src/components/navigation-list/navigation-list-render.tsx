@@ -53,7 +53,8 @@ const registerDefaultGetImagePathCallback = (
               navigationListState.gxSettings,
               navigationListState.gxImageConstructor
             )
-          : item.startImgSrc
+          : item.startImgSrc,
+        item.startImgType
       )
     })
   );

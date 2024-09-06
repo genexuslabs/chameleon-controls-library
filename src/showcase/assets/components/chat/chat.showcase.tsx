@@ -14,16 +14,7 @@ import { mercuryChatMessageRender } from "./mercury-code-render";
 
 const state: Partial<HTMLChChatElement> = {};
 
-const render: ShowcaseRender = designSystem => [
-  <ch-theme
-    key={designSystem}
-    avoidFlashOfUnstyledContent={false}
-    model={
-      designSystem === "unanimo"
-        ? "unanimo/markdown-viewer"
-        : "mercury/markdown-viewer"
-    }
-  ></ch-theme>,
+const render: ShowcaseRender = designSystem => (
   <ch-chat
     callbacks={chatCallbacks}
     class="chat"
@@ -43,7 +34,7 @@ const render: ShowcaseRender = designSystem => [
     items={state.items}
     translations={chatTranslations}
   ></ch-chat>
-];
+);
 
 const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
   {

@@ -68,7 +68,7 @@ export type ChatMessageUser = {
 export type ChatMessageAssistant = {
   id: string;
   role: "assistant";
-  content: ChatAssistantContent;
+  content?: ChatAssistantContent;
   metadata?: string;
 
   /**

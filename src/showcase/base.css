@@ -71,10 +71,6 @@
 
 .card-markup {
   position: relative;
-
-  pre {
-    margin: 0; /* WA until this is fixed by Unanimo/Mercury */
-  }
 }
 
 .copy-button {

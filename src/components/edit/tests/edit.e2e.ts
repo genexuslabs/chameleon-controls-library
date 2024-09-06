@@ -133,7 +133,7 @@ describe("[ch-edit][default]", () => {
 
   it("should have the right size the startImgSrc ", async () => {
     await page.setContent(
-      `<ch-edit start-img-src="something" style="--ch-edit__image-size: 16px"></ch-edit>`
+      `<ch-edit start-img-src="var(something)" style="--ch-edit__image-size: 16px"></ch-edit>`
     );
     await page.waitForChanges();
     const imageComputedStyle = await page.evaluate(

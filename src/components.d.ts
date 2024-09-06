@@ -30,7 +30,7 @@ import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
 import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
-import { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
+import { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -89,7 +89,7 @@ export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
 export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
-export { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
+export { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -4952,7 +4952,7 @@ declare global {
     };
     interface HTMLChNavigationListRenderElementEventMap {
         "buttonClick": NavigationListItemModel;
-        "hyperlinkClick": PointerEvent;
+        "hyperlinkClick": NavigationListHyperlinkClickEvent;
     }
     /**
      * @status experimental
@@ -7916,7 +7916,7 @@ declare namespace LocalJSX {
         /**
           * Fired when an hyperlink is clicked. This event can be prevented.
          */
-        "onHyperlinkClick"?: (event: ChNavigationListRenderCustomEvent<PointerEvent>) => void;
+        "onHyperlinkClick"?: (event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>) => void;
         /**
           * Specifies the items of the control.
          */

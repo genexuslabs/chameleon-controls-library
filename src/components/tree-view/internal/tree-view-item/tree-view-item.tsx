@@ -658,7 +658,8 @@ export class ChTreeViewItem {
         this.#startImageExpanded = this.startImgSrc
           ? (updateDirectionInImageCustomVar(
               (img as TreeViewItemImageMultiState).expanded,
-              "start"
+              "start",
+              this.startImgType
             ) as GxImageMultiStateStart)
           : undefined;
       }
@@ -666,7 +667,8 @@ export class ChTreeViewItem {
       this.#startImage = this.startImgSrc
         ? (updateDirectionInImageCustomVar(
             parsedImg,
-            "start"
+            "start",
+            this.startImgType
           ) as GxImageMultiStateStart)
         : undefined;
     }
@@ -688,7 +690,8 @@ export class ChTreeViewItem {
         this.#endImageExpanded = this.endImgSrc
           ? (updateDirectionInImageCustomVar(
               (img as TreeViewItemImageMultiState).expanded,
-              "end"
+              "end",
+              this.endImgType
             ) as GxImageMultiStateEnd)
           : undefined;
       }
@@ -696,7 +699,8 @@ export class ChTreeViewItem {
       this.#endImage = this.endImgSrc
         ? (updateDirectionInImageCustomVar(
             parsedImg,
-            "end"
+            "end",
+            this.endImgType
           ) as GxImageMultiStateEnd)
         : undefined;
     }

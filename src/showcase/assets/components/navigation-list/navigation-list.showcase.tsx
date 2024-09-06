@@ -3,14 +3,15 @@ import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { unanimoShowcase } from "./models";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { renderBooleanPropertyOrEmpty } from "../utils";
+import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<HTMLChNavigationListRenderElement> = {};
 
 // The current implementation of the showcase navigates when the hash of the
 // URL changes
 const preventNavigation = (
-  event: ChNavigationListRenderCustomEvent<PointerEvent>
-) => event.detail.preventDefault();
+  event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>
+) => event.detail.event.preventDefault();
 
 const render = () => (
   <div class="tab-test-main-wrapper">

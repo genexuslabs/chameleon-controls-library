@@ -1823,9 +1823,9 @@ export namespace Components {
          */
         "expandableButton": "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition": "before" | "after";
+        "expandableButtonPosition": "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -1856,7 +1856,7 @@ export namespace Components {
         /**
           * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
          */
-        "selectedItemIndicator": boolean;
+        "selectedLinkIndicator": boolean;
         /**
           * Specifies how the caption will be displayed when the navigation-list parent is collapsed
          */
@@ -1891,9 +1891,9 @@ export namespace Components {
          */
         "expandableButton": "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition": "before" | "after";
+        "expandableButtonPosition": "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -1926,13 +1926,13 @@ export namespace Components {
     index: number
   ) => any;
         /**
-          * Specifies if the selected item indicator is displayed (only work for hyperlink)
-         */
-        "selectedItemIndicator": boolean;
-        /**
           * Specifies the current selected hyperlink.
          */
         "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedLinkIndicator": boolean;
         /**
           * Specifies how the caption of the items will be displayed when the control is collapsed
          */
@@ -7816,9 +7816,9 @@ declare namespace LocalJSX {
          */
         "expandableButton"?: "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition"?: "before" | "after";
+        "expandableButtonPosition"?: "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -7849,7 +7849,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
          */
-        "selectedItemIndicator"?: boolean;
+        "selectedLinkIndicator"?: boolean;
         /**
           * Specifies how the caption will be displayed when the navigation-list parent is collapsed
          */
@@ -7884,9 +7884,9 @@ declare namespace LocalJSX {
          */
         "expandableButton"?: "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition"?: "before" | "after";
+        "expandableButtonPosition"?: "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -7927,13 +7927,13 @@ declare namespace LocalJSX {
     index: number
   ) => any;
         /**
-          * Specifies if the selected item indicator is displayed (only work for hyperlink)
-         */
-        "selectedItemIndicator"?: boolean;
-        /**
           * Specifies the current selected hyperlink.
          */
         "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedLinkIndicator"?: boolean;
         /**
           * Specifies how the caption of the items will be displayed when the control is collapsed
          */

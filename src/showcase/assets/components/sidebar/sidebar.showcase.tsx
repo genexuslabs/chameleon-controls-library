@@ -60,7 +60,7 @@ const render = () => (
         expandableButton={state.expandableButton}
         expandableButtonPosition={state.expandableButtonPosition}
         model={state.model}
-        selectedItemIndicator={state.selectedItemIndicator}
+        selectedLinkIndicator={state.selectedLinkIndicator}
         showCaptionOnCollapse={state.showCaptionOnCollapse}
         tooltipDelay={state.tooltipDelay}
         onHyperlinkClick={preventNavigation}
@@ -150,14 +150,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         type: "enum",
         render: "radio-group",
         values: [
-          { caption: "Before", value: "before" },
-          { caption: "After", value: "after" }
+          { caption: "Start", value: "start" },
+          { caption: "End", value: "end" }
         ],
-        value: "before"
+        value: "start"
       },
       {
-        id: "selectedItemIndicator",
-        caption: "Selected Item Indicator",
+        id: "selectedLinkIndicator",
+        caption: "Selected Link Indicator",
         value: true,
         type: "boolean"
       },
@@ -226,7 +226,7 @@ export const sidebarShowcaseStory: ShowcaseStory<
             expandableButtonPosition="${state.expandableButtonPosition}"
             class="navigation-list navigation-list-secondary"
             model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-              "selectedItemIndicator",
+              "selectedLinkIndicator",
               state,
               13
             )}

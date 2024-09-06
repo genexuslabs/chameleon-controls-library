@@ -47,9 +47,8 @@ const downloadCode =
 
 const defaultCodeRender =
   (
-    isMobile: boolean,
-    copyCodeButtonText: string,
-    downloadCodeButtonAccessibleName: string,
+    chatRef: HTMLChChatElement,
+    translations: ChatTranslations,
     hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
   ): MarkdownViewerCodeRender =>
   (options: MarkdownViewerCodeRenderOptions): any =>
@@ -63,19 +62,21 @@ const defaultCodeRender =
             part="code-block__header-actions"
           >
             <button
-              aria-label={isMobile ? copyCodeButtonText : undefined}
+              aria-label={
+                chatRef.isMobile ? translations.text.copyCodeButton : undefined
+              }
               class="code-block__copy-code-button"
               part="code-block__copy-code-button"
               type="button"
               onClick={copy(options.plainText)}
             >
-              {!isMobile && copyCodeButtonText}
+              {!chatRef.isMobile && translations.text.copyCodeButton}
             </button>
 
             {hyperlinkToDownloadFile && (
               <button
-                aria-label={downloadCodeButtonAccessibleName}
-                title={downloadCodeButtonAccessibleName}
+                aria-label={translations.accessibleName.downloadCodeButton}
+                title={translations.accessibleName.downloadCodeButton}
                 class="code-block__download-code-button"
                 part="code-block__download-code-button"
                 onClick={downloadCode(options, hyperlinkToDownloadFile)}
@@ -124,9 +125,7 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
 };
 
 const renderDefaultAssistantMessage = (
-  translations: ChatTranslations,
-  isMobile: boolean,
-  markdownTheme: string | undefined,
+  chatRef: HTMLChChatElement,
   messageModel: ChatMessageByRole<"assistant">,
   hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
 ) => {
@@ -137,6 +136,8 @@ const renderDefaultAssistantMessage = (
 
   const files =
     (messageModel.content as ChatAssistantContentFiles).files ?? null;
+
+  const translations = chatRef.translations;
 
   return (
     <div
@@ -156,14 +157,12 @@ const renderDefaultAssistantMessage = (
       ) : (
         [
           <ch-markdown-viewer
-            renderCode={defaultCodeRender(
-              isMobile,
-              translations.text.copyCodeButton,
-              translations.accessibleName.downloadCodeButton,
-              hyperlinkToDownloadFile
-            )}
+            renderCode={
+              chatRef.renderCode ??
+              defaultCodeRender(chatRef, translations, hyperlinkToDownloadFile)
+            }
             showIndicator={messageModel.status === "streaming"}
-            theme={markdownTheme}
+            theme={chatRef.markdownTheme}
             value={messageContent}
           ></ch-markdown-viewer>,
 
@@ -196,9 +195,7 @@ const renderDefaultAssistantMessage = (
 
 export const defaultChatRender =
   (
-    translations: ChatTranslations,
-    isMobile: boolean,
-    markdownTheme: string | undefined,
+    chatRef: HTMLChChatElement,
     hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
   ) =>
   (messageModel: ChatMessage) =>
@@ -210,9 +207,7 @@ export const defaultChatRender =
       >
         {messageModel.role === "assistant"
           ? renderDefaultAssistantMessage(
-              translations,
-              isMobile,
-              markdownTheme,
+              chatRef,
               messageModel,
               hyperlinkToDownloadFile
             )

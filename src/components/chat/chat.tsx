@@ -24,6 +24,7 @@ import { removeElement } from "../../common/array";
 import { ChatTranslations } from "./translations";
 import { defaultChatRender } from "./default-chat-render";
 import { adoptCommonThemes } from "../../common/theme";
+import { MarkdownViewerCodeRender } from "../markdown-viewer/parsers/types";
 
 const ENTER_KEY = "Enter";
 
@@ -50,6 +51,11 @@ export class ChChat {
    * Specifies the callbacks required in the control.
    */
   @Prop() readonly callbacks!: ChatInternalCallbacks;
+
+  /**
+   * This property allows us to implement custom rendering for the code blocks.
+   */
+  @Prop() readonly renderCode?: MarkdownViewerCodeRender;
 
   /**
    * Specifies if all interactions are disabled
@@ -105,12 +111,7 @@ export class ChChat {
    */
   @Prop() readonly renderItem: (messageModel: ChatMessage) => any =
     messageModel =>
-      defaultChatRender(
-        this.translations,
-        this.isMobile,
-        this.markdownTheme,
-        this.hyperlinkToDownloadFile
-      )(messageModel);
+      defaultChatRender(this.el, this.hyperlinkToDownloadFile)(messageModel);
 
   /**
    * Add a new message at the end of the record, performing a re-render.

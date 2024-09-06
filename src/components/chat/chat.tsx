@@ -409,7 +409,7 @@ export class ChChat {
             messageModel.role === "assistant"
         })}
       >
-        {this.render
+        {this.renderItem
           ? this.renderItem(messageModel)
           : defaultChatRender(this.el)(messageModel)}
       </ch-smart-grid-cell>

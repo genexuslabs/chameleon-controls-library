@@ -21,37 +21,111 @@
 
 @font-face {
   font-family: "Inter";
-  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Light.woff2");
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Thin.woff2");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ThinItalic.woff2");
+  font-weight: 100;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraLight.woff2");
+  font-weight: 200;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraLightItalic.woff2");
+  font-weight: 200;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Light.woff2");
   font-weight: 300;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Inter";
-  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Regular.woff2");
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-LightItalic.woff2");
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Regular.woff2");
   font-weight: 400;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Inter";
-  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_SemiBold.woff2");
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Italic.woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Medium.woff2");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-MediumItalic.woff2");
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-SemiBold.woff2");
   font-weight: 600;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Inter";
-  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_Bold.woff2");
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-SemiBoldItalic.woff2");
+  font-weight: 600;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Bold.woff2");
   font-weight: 700;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Inter";
-  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter_ExtraBold.woff2");
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-BoldItalic.woff2");
+  font-weight: 700;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraBold.woff2");
   font-weight: 800;
   font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-ExtraBoldItalic.woff2");
+  font-weight: 800;
+  font-style: italic;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-Black.woff2");
+  font-weight: 900;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("https://unpkg.com/@genexus/mercury@latest/dist/assets/fonts/Inter-BlackItalic.woff2");
+  font-weight: 900;
+  font-style: italic;
 }
 
 .card {
@@ -271,67 +345,59 @@ ch-showcase ch-flexible-layout-render {
 }
 
 :root.dark {
-  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#enabled");
-  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#active");
-  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#hover");
-  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module.svg#disabled");
+  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#enabled");
+  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#active");
+  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#hover");
+  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module.svg#disabled");
 
-  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#enabled");
-  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#active");
-  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#hover");
-  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder.svg#disabled");
+  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#enabled");
+  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#active");
+  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#hover");
+  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder.svg#disabled");
 
-  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#enabled");
-  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#active");
-  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#hover");
-  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/module-open.svg#disabled");
+  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#enabled");
+  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#active");
+  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#hover");
+  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/module-open.svg#disabled");
 
-  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#enabled");
-  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#active");
-  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#hover");
-  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/folder-open.svg#disabled");
+  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#enabled");
+  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#active");
+  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#hover");
+  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/folder-open.svg#disabled");
 
-  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#enabled");
-  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#active");
-  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#hover");
-  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/dark/stencil.svg#disabled");
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/dark/stencil.svg#disabled");
+
+  --icon__system_copy_primary--enabledd: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/system/dark/copy.svg#primary--enabled");
 }
 
 :root.light {
-  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#enabled");
-  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#active");
-  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#hover");
-  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module.svg#disabled");
+  --icon-module-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#enabled");
+  --icon-module-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#active");
+  --icon-module-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#hover");
+  --icon-module-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module.svg#disabled");
 
-  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#enabled");
-  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#active");
-  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#hover");
-  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder.svg#disabled");
+  --icon-folder-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#enabled");
+  --icon-folder-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#active");
+  --icon-folder-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#hover");
+  --icon-folder-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder.svg#disabled");
 
-  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#enabled");
-  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#active");
-  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#hover");
-  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/module-open.svg#disabled");
+  --icon-module-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#enabled");
+  --icon-module-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#active");
+  --icon-module-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#hover");
+  --icon-module-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/module-open.svg#disabled");
 
-  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#enabled");
-  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#active");
-  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#hover");
-  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/folder-open.svg#disabled");
+  --icon-folder-base--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#enabled");
+  --icon-folder-active--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#active");
+  --icon-folder-hover--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#hover");
+  --icon-folder-disabled--expanded: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/folder-open.svg#disabled");
 
-  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#enabled");
-  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#active");
-  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#hover");
-  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.2.0/dist/assets/icons/objects/light/stencil.svg#disabled");
-}
+  --icon-stencil-base: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#enabled");
+  --icon-stencil-active: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#active");
+  --icon-stencil-hover: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#hover");
+  --icon-stencil-disabled: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/objects/light/stencil.svg#disabled");
 
-.chat {
-  &::part(content) {
-    /* gap: 12px; */
-  }
-
-  &::part(message) {
-    border: 1px solid;
-    border-radius: 8px;
-    padding: 8px;
-  }
+  --icon__system_copy_primary--enabledd: url("https://unpkg.com/@genexus/mercury@0.6.8/dist/assets/icons/system/light/copy.svg#primary--enabled");
 }

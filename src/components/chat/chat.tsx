@@ -179,12 +179,12 @@ export class ChChat {
     forceUpdate(this);
   }
 
-  #pushMessage = (message: ChatMessage) => {
+  #pushMessage = async (message: ChatMessage) => {
     if (this.items.length === 0) {
       this.items.push(message);
       forceUpdate(this);
     } else {
-      this.#virtualScrollRef.addItems("end", message);
+      await this.#virtualScrollRef.addItems("end", message);
     }
   };
 
@@ -229,7 +229,7 @@ export class ChChat {
     this.#sendMessage();
   };
 
-  #addUserMessageToRecordAndFocusInput = (
+  #addUserMessageToRecordAndFocusInput = async (
     userMessage: ChatMessageByRole<"user">
   ) => {
     this.#editRef.value = "";
@@ -240,7 +240,7 @@ export class ChChat {
       this.#scrollRef.scrollTop = this.#scrollRef.scrollHeight;
     }
 
-    this.#pushMessage(userMessage);
+    await this.#pushMessage(userMessage);
   };
 
   #sendMessage = async () => {
@@ -263,7 +263,7 @@ export class ChChat {
         content: this.#editRef.value
       };
 
-      this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+      await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
       this.callbacks.sendChatToLLM(this.items);
 
       // Queue a new re-render
@@ -317,7 +317,7 @@ export class ChChat {
       role: "user",
       content: userContent
     };
-    this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
+    await this.#addUserMessageToRecordAndFocusInput(userMessageToAdd);
 
     // Free the memory
     this.imagesToUpload = [];

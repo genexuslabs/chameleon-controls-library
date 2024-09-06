@@ -1,7 +1,7 @@
 import { GxImageMultiState } from "../../../../common/types";
 
-const FOLDER_ICON = "folder";
-const MODULE_ICON = "module";
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 
 export const getImagePathCallbackImage = (
   imgSrc: string

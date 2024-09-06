@@ -1,8 +1,8 @@
 import { GxImageMultiState } from "../../../../common/types";
 import { AccordionModel } from "../../../../components/accordion/types";
 
-const FOLDER_ICON = "folder";
-const MODULE_ICON = "module";
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 
 export const accordionSimpleModel: AccordionModel = [
   { id: "item 1", caption: "Item 1", startImgSrc: FOLDER_ICON },

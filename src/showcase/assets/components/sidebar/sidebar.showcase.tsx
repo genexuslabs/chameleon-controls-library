@@ -7,6 +7,7 @@ import {
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { unanimoShowcase } from "../navigation-list/models";
 import { renderBooleanPropertyOrEmpty } from "../utils";
+import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<
   HTMLChSidebarElement &
@@ -18,8 +19,8 @@ const state: Partial<
 // The current implementation of the showcase navigates when the hash of the
 // URL changes
 const preventNavigation = (
-  event: ChNavigationListRenderCustomEvent<PointerEvent>
-) => event.detail.preventDefault();
+  event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>
+) => event.detail.event.preventDefault();
 
 const handleExpandedChange = () => {
   state.expanded = !state.expanded;
@@ -59,7 +60,7 @@ const render = () => (
         expandableButton={state.expandableButton}
         expandableButtonPosition={state.expandableButtonPosition}
         model={state.model}
-        selectedItemIndicator={state.selectedItemIndicator}
+        selectedLinkIndicator={state.selectedLinkIndicator}
         showCaptionOnCollapse={state.showCaptionOnCollapse}
         tooltipDelay={state.tooltipDelay}
         onHyperlinkClick={preventNavigation}
@@ -149,14 +150,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
         type: "enum",
         render: "radio-group",
         values: [
-          { caption: "Before", value: "before" },
-          { caption: "After", value: "after" }
+          { caption: "Start", value: "start" },
+          { caption: "End", value: "end" }
         ],
-        value: "before"
+        value: "start"
       },
       {
-        id: "selectedItemIndicator",
-        caption: "Selected Item Indicator",
+        id: "selectedLinkIndicator",
+        caption: "Selected Link Indicator",
         value: true,
         type: "boolean"
       },
@@ -225,7 +226,7 @@ export const sidebarShowcaseStory: ShowcaseStory<
             expandableButtonPosition="${state.expandableButtonPosition}"
             class="navigation-list navigation-list-secondary"
             model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-              "selectedItemIndicator",
+              "selectedLinkIndicator",
               state,
               13
             )}

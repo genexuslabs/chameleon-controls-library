@@ -263,8 +263,8 @@ export const NAVIGATION_LIST_ITEM_PARTS_DICTIONARY = {
   COLLAPSED: "collapsed", // ACTION, GROUP
 
   EXPAND_BUTTON: "expand-button", // ACTION
-  AFTER: "after", // ACTION, GROUP
-  BEFORE: "before", // ACTION, GROUP
+  START: "start", // ACTION, GROUP
+  END: "end", // ACTION, GROUP
 
   SELECTED: "selected", // CAPTION, GROUP, LINK
   NOT_SELECTED: "not-selected", // CAPTION, GROUP, LINK

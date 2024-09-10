@@ -3,14 +3,15 @@ import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
 import { unanimoShowcase } from "./models";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { renderBooleanPropertyOrEmpty } from "../utils";
+import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<HTMLChNavigationListRenderElement> = {};
 
 // The current implementation of the showcase navigates when the hash of the
 // URL changes
 const preventNavigation = (
-  event: ChNavigationListRenderCustomEvent<PointerEvent>
-) => event.detail.preventDefault();
+  event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>
+) => event.detail.event.preventDefault();
 
 const render = () => (
   <div class="tab-test-main-wrapper">
@@ -21,7 +22,7 @@ const render = () => (
       expandableButtonPosition={state.expandableButtonPosition}
       expanded={state.expanded}
       model={state.model}
-      selectedItemIndicator={state.selectedItemIndicator}
+      selectedLinkIndicator={state.selectedLinkIndicator}
       showCaptionOnCollapse={state.showCaptionOnCollapse}
       tooltipDelay={state.tooltipDelay}
       onHyperlinkClick={preventNavigation}
@@ -74,14 +75,14 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChNavigationListRen
           type: "enum",
           render: "radio-group",
           values: [
-            { caption: "Before", value: "before" },
-            { caption: "After", value: "after" }
+            { caption: "Start", value: "start" },
+            { caption: "End", value: "end" }
           ],
-          value: "before"
+          value: "start"
         },
         {
-          id: "selectedItemIndicator",
-          caption: "Selected Item Indicator",
+          id: "selectedLinkIndicator",
+          caption: "Selected Link Indicator",
           value: true,
           type: "boolean"
         },
@@ -123,7 +124,7 @@ export const navigationListShowcaseStory: ShowcaseStory<HTMLChNavigationListRend
             state
           )}
           model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-            "selectedItemIndicator",
+            "selectedLinkIndicator",
             state
           )}
           showCaptionOnCollapse="${state.showCaptionOnCollapse}"

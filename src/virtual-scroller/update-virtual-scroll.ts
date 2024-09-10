@@ -1,4 +1,4 @@
-import { SmartGridModel } from "../../types";
+import { SmartGridModel } from "../components/smart-grid/types";
 import {
   SmartGridCellVirtualSize,
   SmartGridVirtualPositionIndex

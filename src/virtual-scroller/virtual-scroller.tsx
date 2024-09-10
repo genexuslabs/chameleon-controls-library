@@ -12,11 +12,11 @@ import {
   Watch
 } from "@stencil/core";
 import { emptyItems } from "./utils";
-import { SyncWithRAF } from "../../../../common/sync-with-frames";
-import { SmartGridModel } from "../../types";
+import { SyncWithRAF } from "../common/sync-with-frames";
+import { SmartGridModel } from "../components/smart-grid/types";
 import { SmartGridCellVirtualSize, VirtualScrollVirtualItems } from "./types";
 import { updateVirtualScrollSize } from "./update-virtual-scroll";
-import { ChSmartGridCellCustomEvent } from "../../../../components";
+import { ChSmartGridCellCustomEvent } from "../components";
 import { cellsInViewportAreLoadedAndVisible } from "./cells-in-viewport-are-rendered-and-visible";
 import { getNewStartAndEndIndexes } from "./get-new-start-and-end-indexes";
 
@@ -380,7 +380,12 @@ export class ChVirtualScroller implements ComponentInterface {
     const newStartIndex = Math.max(0, this.#startIndex - startShift);
 
     // Nothing to update
-    if (this.#startIndex === newStartIndex && this.#endIndex === newEndIndex) {
+    if (
+      this.#startIndex === newStartIndex &&
+      this.#endIndex === newEndIndex &&
+      // TODO: Add a unit test for this use case
+      this.items.length > 1
+    ) {
       return;
     }
 

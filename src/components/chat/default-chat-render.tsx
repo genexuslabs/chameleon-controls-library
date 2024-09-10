@@ -2,7 +2,6 @@ import { h } from "@stencil/core";
 import {
   ChatAssistantContentFiles,
   ChatContentImage,
-  ChatMessage,
   ChatMessageByRole
 } from "./types";
 import { ChatTranslations } from "./translations";
@@ -47,10 +46,8 @@ const downloadCode =
 
 const defaultCodeRender =
   (
-    isMobile: boolean,
-    copyCodeButtonText: string,
-    downloadCodeButtonAccessibleName: string,
-    hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
+    chatRef: HTMLChChatElement,
+    translations: ChatTranslations
   ): MarkdownViewerCodeRender =>
   (options: MarkdownViewerCodeRenderOptions): any =>
     (
@@ -63,22 +60,24 @@ const defaultCodeRender =
             part="code-block__header-actions"
           >
             <button
-              aria-label={isMobile ? copyCodeButtonText : undefined}
+              aria-label={
+                chatRef.isMobile ? translations.text.copyCodeButton : undefined
+              }
               class="code-block__copy-code-button"
               part="code-block__copy-code-button"
               type="button"
               onClick={copy(options.plainText)}
             >
-              {!isMobile && copyCodeButtonText}
+              {!chatRef.isMobile && translations.text.copyCodeButton}
             </button>
 
-            {hyperlinkToDownloadFile && (
+            {chatRef.hyperlinkToDownloadFile && (
               <button
-                aria-label={downloadCodeButtonAccessibleName}
-                title={downloadCodeButtonAccessibleName}
+                aria-label={translations.accessibleName.downloadCodeButton}
+                title={translations.accessibleName.downloadCodeButton}
                 class="code-block__download-code-button"
                 part="code-block__download-code-button"
-                onClick={downloadCode(options, hyperlinkToDownloadFile)}
+                onClick={downloadCode(options, chatRef.hyperlinkToDownloadFile)}
               ></button>
             )}
           </div>
@@ -124,11 +123,8 @@ const renderUserMessage = (userMessage: ChatMessageByRole<"user">) => {
 };
 
 const renderDefaultAssistantMessage = (
-  translations: ChatTranslations,
-  isMobile: boolean,
-  markdownTheme: string | undefined,
-  messageModel: ChatMessageByRole<"assistant">,
-  hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
+  chatRef: HTMLChChatElement,
+  messageModel: ChatMessageByRole<"assistant">
 ) => {
   const messageContent =
     typeof messageModel.content === "string"
@@ -137,6 +133,8 @@ const renderDefaultAssistantMessage = (
 
   const files =
     (messageModel.content as ChatAssistantContentFiles).files ?? null;
+
+  const translations = chatRef.translations;
 
   return (
     <div
@@ -156,14 +154,11 @@ const renderDefaultAssistantMessage = (
       ) : (
         [
           <ch-markdown-viewer
-            renderCode={defaultCodeRender(
-              isMobile,
-              translations.text.copyCodeButton,
-              translations.accessibleName.downloadCodeButton,
-              hyperlinkToDownloadFile
-            )}
+            renderCode={
+              chatRef.renderCode ?? defaultCodeRender(chatRef, translations)
+            }
             showIndicator={messageModel.status === "streaming"}
-            theme={markdownTheme}
+            theme={chatRef.markdownTheme}
             value={messageContent}
           ></ch-markdown-viewer>,
 
@@ -194,28 +189,27 @@ const renderDefaultAssistantMessage = (
   );
 };
 
+const renderErrorMessage = (
+  chatRef: HTMLChChatElement,
+  messageModel: ChatMessageByRole<"error">
+) => (
+  <ch-markdown-viewer
+    renderCode={
+      chatRef.renderCode ?? defaultCodeRender(chatRef, chatRef.translations)
+    }
+    theme={chatRef.markdownTheme}
+    value={messageModel.content}
+  ></ch-markdown-viewer>
+);
+
 export const defaultChatRender =
-  (
-    translations: ChatTranslations,
-    isMobile: boolean,
-    markdownTheme: string | undefined,
-    hyperlinkToDownloadFile?: { anchor: HTMLAnchorElement }
-  ) =>
-  (messageModel: ChatMessage) =>
-    (messageModel.role === "assistant" || messageModel.role === "user") && (
-      <ch-smart-grid-cell
-        key={messageModel.id}
-        cellId={messageModel.id}
-        part={`message ${messageModel.role}`}
-      >
-        {messageModel.role === "assistant"
-          ? renderDefaultAssistantMessage(
-              translations,
-              isMobile,
-              markdownTheme,
-              messageModel,
-              hyperlinkToDownloadFile
-            )
-          : renderUserMessage(messageModel)}
-      </ch-smart-grid-cell>
-    );
+  (chatRef: HTMLChChatElement) =>
+  (messageModel: ChatMessageByRole<"assistant" | "error" | "user">) => {
+    if (messageModel.role === "assistant") {
+      return renderDefaultAssistantMessage(chatRef, messageModel);
+    }
+
+    return messageModel.role === "user"
+      ? renderUserMessage(messageModel)
+      : renderErrorMessage(chatRef, messageModel);
+  };

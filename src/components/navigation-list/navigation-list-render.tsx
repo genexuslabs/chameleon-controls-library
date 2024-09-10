@@ -12,7 +12,11 @@ import {
 } from "@stencil/core";
 
 import { GxImageMultiState, ItemLink } from "../../common/types";
-import { NavigationListItemModel, NavigationListModel } from "./types";
+import {
+  NavigationListHyperlinkClickEvent,
+  NavigationListItemModel,
+  NavigationListModel
+} from "./types";
 
 import { adoptCommonThemes } from "../../common/theme";
 import {
@@ -27,6 +31,7 @@ import {
   subscribe,
   syncStateWithObservableAncestors
 } from "../sidebar/expanded-change-obervables";
+import { formatImagePath } from "../../common/utils";
 
 // - - - - - - - - - - - - - - - - - - - -
 //                Registry
@@ -41,13 +46,16 @@ const registerDefaultGetImagePathCallback = (
     "getImagePathCallback",
     "ch-navigation-list-render",
     (item: NavigationListItemModel) => ({
-      base: navigationListState.useGxRender
-        ? fromGxImageToURL(
-            item.startImgSrc,
-            navigationListState.gxSettings,
-            navigationListState.gxImageConstructor
-          )
-        : item.startImgSrc
+      base: formatImagePath(
+        navigationListState.useGxRender
+          ? fromGxImageToURL(
+              item.startImgSrc,
+              navigationListState.gxSettings,
+              navigationListState.gxImageConstructor
+            )
+          : item.startImgSrc,
+        item.startImgType
+      )
     })
   );
 
@@ -56,6 +64,7 @@ const isSelectedLink = (
   navigationListState: ChNavigationListRender
 ) =>
   !!item.link &&
+  !!navigationListState.selectedLink?.link?.url &&
   navigationListState.selectedLink.link.url === item.link.url &&
   navigationListState.selectedLink.id === item.id;
 
@@ -81,7 +90,7 @@ const defaultRender = (
     model={item}
     navigationListExpanded={navigationListState.expanded}
     selected={isSelectedLink(item, navigationListState)}
-    selectedItemIndicator={navigationListState.selectedItemIndicator}
+    selectedLinkIndicator={navigationListState.selectedLinkIndicator}
     showCaptionOnCollapse={navigationListState.showCaptionOnCollapse}
     startImgSrc={item.startImgSrc}
     startImgType={item.startImgType}
@@ -138,10 +147,10 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies the position of the expandable button in reference of the action
    * element of the items
-   *  - `"before"`: Expandable button is placed before the action element.
-   *  - `"after"`: Expandable button is placed after the action element.
+   *  - `"start"`: Expandable button is placed before the action element.
+   *  - `"end"`: Expandable button is placed after the action element.
    */
-  @Prop() readonly expandableButtonPosition: "before" | "after" = "before";
+  @Prop() readonly expandableButtonPosition: "start" | "end" = "start";
 
   /**
    * This property specifies a callback that is executed when the path for an
@@ -209,7 +218,7 @@ export class ChNavigationListRender implements ComponentInterface {
   /**
    * Specifies if the selected item indicator is displayed (only work for hyperlink)
    */
-  @Prop() readonly selectedItemIndicator: boolean = false;
+  @Prop() readonly selectedLinkIndicator: boolean = false;
 
   /**
    * Specifies how the caption of the items will be displayed when the control
@@ -238,7 +247,7 @@ export class ChNavigationListRender implements ComponentInterface {
    * Fired when an hyperlink is clicked.
    * This event can be prevented.
    */
-  @Event() hyperlinkClick: EventEmitter<PointerEvent>;
+  @Event() hyperlinkClick: EventEmitter<NavigationListHyperlinkClickEvent>;
 
   #expandNewSelectedLink = (model: NavigationListModel) => {
     // for let index ... is the fastest for
@@ -290,9 +299,10 @@ export class ChNavigationListRender implements ComponentInterface {
       return;
     }
     const itemUIModel = navigationListItem.model;
+    const canExpandSubItems = this.expanded;
 
     if (itemUIModel.link) {
-      const eventInfo = this.hyperlinkClick.emit(event);
+      const eventInfo = this.hyperlinkClick.emit({ event, item: itemUIModel });
 
       if (eventInfo.defaultPrevented) {
         event.preventDefault();
@@ -310,7 +320,8 @@ export class ChNavigationListRender implements ComponentInterface {
       }
     }
 
-    if (itemUIModel.items != null) {
+    // TODO: Add an unit test for this
+    if (canExpandSubItems && itemUIModel.items != null) {
       itemUIModel.expanded = !itemUIModel.expanded;
       forceUpdate(this);
     }

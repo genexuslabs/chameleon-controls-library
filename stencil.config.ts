@@ -70,6 +70,9 @@ export const config: Config = {
       components: ["ch-tab-render"] // Make sure the ch-tab-render control is not bundled with other components
     },
     {
+      components: ["ch-navigation-list-render", "ch-navigation-list-item"]
+    },
+    {
       components: ["ch-next-data-modeling", "ch-next-data-modeling-item"]
     },
     {

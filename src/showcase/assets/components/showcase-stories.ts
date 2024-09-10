@@ -38,6 +38,7 @@ export const showcaseStories = {
   "action-list": actionListShowcaseStory,
   "barcode-scanner": barcodeScannerShowcaseStory,
   checkbox: checkboxShowcaseStory,
+  chat: chatShowcaseStory,
   code: codeShowcaseStory,
   "combo-box": comboBoxShowcaseStory,
   dialog: dialogShowcaseStory,
@@ -60,7 +61,6 @@ export const showcaseStories = {
 } as const satisfies ChameleonStories;
 
 export const showcaseCustomStories = {
-  chat: chatShowcaseStory,
   "code-editor": codeEditorShowcaseStory,
   "code-diff-editor": codeDiffEditorShowcaseStory,
   "flexible-layout": flexibleLayoutShowcaseStory,

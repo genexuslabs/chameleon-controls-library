@@ -12,7 +12,8 @@ import { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 import { ActionGroupModel } from "./components/action-group/types";
 import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-import { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+import { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
+import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
 import { ChatTranslations } from "./components/chat/translations";
 import { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -29,8 +30,7 @@ import { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-inf
 import { Color, Size } from "./deprecated-components/icon/icon";
 import { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 import { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
-import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
-import { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
+import { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 import { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 import { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 import { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -59,7 +59,7 @@ import { DragState } from "./components/tree-view/internal/tree-view-item/tree-v
 import { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 import { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 import { SmartGridModel } from "./components/smart-grid/types";
-import { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
+import { VirtualScrollVirtualItems } from "./virtual-scroller/types";
 import { ChWindowAlign } from "./deprecated-components/window/ch-window";
 import { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 import { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -71,7 +71,8 @@ export { DropdownPosition } from "./components/dropdown/internal/dropdown/types"
 export { ActionGroupModel } from "./components/action-group/types";
 export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
 export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
-export { ChatInternalCallbacks, ChatMessage, ChatMessageByRoleNoId } from "./components/chat/types";
+export { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
+export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
 export { ChatTranslations } from "./components/chat/translations";
 export { CodeDiffEditorOptions } from "./components/code-diff-editor/code-diff-editor-types.js";
@@ -88,8 +89,7 @@ export { ChGridInfiniteScrollState } from "./deprecated-components/grid/grid-inf
 export { Color, Size } from "./deprecated-components/icon/icon";
 export { GroupExtended, LayoutSplitterItemAddResult, LayoutSplitterItemRemoveResult, LayoutSplitterLeafModel, LayoutSplitterModel } from "./components/layout-splitter/types";
 export { MarkdownCodeRender } from "./deprecated-components/markdown/parsers/types";
-export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
-export { NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
+export { NavigationListHyperlinkClickEvent, NavigationListItemModel, NavigationListModel } from "./components/navigation-list/types";
 export { DataModelItemLabels, EntityInfo, ErrorText, ItemInfo, Mode } from "./components/next/data-modeling-item/next-data-modeling-item";
 export { DataModel, EntityItem, EntityItemType, EntityNameToATTs } from "./components/next/data-modeling/data-model";
 export { DataModelItemLabels as DataModelItemLabels1, ErrorText as ErrorText1 } from "./components/next/data-modeling-item/next-data-modeling-item";
@@ -118,7 +118,7 @@ export { DragState } from "./components/tree-view/internal/tree-view-item/tree-v
 export { DragState as DragState1 } from "./components/tree-view/internal/tree-view-item/tree-view-item";
 export { LazyLoadTreeItemsCallback, TreeViewFilterOptions, TreeViewFilterType, TreeViewImagePathCallback, TreeViewItemModel, TreeViewItemModelExtended, TreeViewModel, TreeViewOperationStatusModifyCaption, TreeViewRemoveItemsResult } from "./components/tree-view/types";
 export { SmartGridModel } from "./components/smart-grid/types";
-export { VirtualScrollVirtualItems } from "./components/smart-grid/internal/smart-grid-virtual-scroller/types";
+export { VirtualScrollVirtualItems } from "./virtual-scroller/types";
 export { ChWindowAlign } from "./deprecated-components/window/ch-window";
 export { GxGrid, GxGridColumn } from "./components/gx-grid/genexus";
 export { GridChameleonState } from "./components/gx-grid/gx-grid-chameleon-state";
@@ -550,13 +550,19 @@ export namespace Components {
          */
         "loadingState": SmartGridDataState;
         /**
-          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+          * Specifies the theme to be used for rendering the markdown. If `null`, no theme will be applied.
          */
-        "markdownTheme": string | undefined;
+        "markdownTheme"?: string | null;
         /**
-          * This property allows us to implement custom rendering of chat items.
+          * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderItem": (messageModel: ChatMessage) => any;
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * This property allows us to implement custom rendering of chat items. If allow us to implement the render of the cell content.
+         */
+        "renderItem"?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
         /**
           * Set the text for the chat input
          */
@@ -1782,6 +1788,10 @@ export namespace Components {
      */
     interface ChMarkdownViewer {
         /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded. Only works if the `theme` property is set.
+         */
+        "avoidFlashOfUnstyledContent"?: boolean;
+        /**
           * `true` to render raw HTML with sanitization.
          */
         "rawHtml": boolean;
@@ -1823,9 +1833,9 @@ export namespace Components {
          */
         "expandableButton": "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition": "before" | "after";
+        "expandableButtonPosition": "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -1856,7 +1866,7 @@ export namespace Components {
         /**
           * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
          */
-        "selectedItemIndicator": boolean;
+        "selectedLinkIndicator": boolean;
         /**
           * Specifies how the caption will be displayed when the navigation-list parent is collapsed
          */
@@ -1891,9 +1901,9 @@ export namespace Components {
          */
         "expandableButton": "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition": "before" | "after";
+        "expandableButtonPosition": "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -1926,13 +1936,13 @@ export namespace Components {
     index: number
   ) => any;
         /**
-          * Specifies if the selected item indicator is displayed (only work for hyperlink)
-         */
-        "selectedItemIndicator": boolean;
-        /**
           * Specifies the current selected hyperlink.
          */
         "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedLinkIndicator": boolean;
         /**
           * Specifies how the caption of the items will be displayed when the control is collapsed
          */
@@ -4952,7 +4962,7 @@ declare global {
     };
     interface HTMLChNavigationListRenderElementEventMap {
         "buttonClick": NavigationListItemModel;
-        "hyperlinkClick": PointerEvent;
+        "hyperlinkClick": NavigationListHyperlinkClickEvent;
     }
     /**
      * @status experimental
@@ -6579,13 +6589,19 @@ declare namespace LocalJSX {
          */
         "loadingState": SmartGridDataState;
         /**
-          * Specifies the theme to be used for rendering the markdown. If `undefined`, no theme will be applied.
+          * Specifies the theme to be used for rendering the markdown. If `null`, no theme will be applied.
          */
-        "markdownTheme"?: string | undefined;
+        "markdownTheme"?: string | null;
         /**
-          * This property allows us to implement custom rendering of chat items.
+          * This property allows us to implement custom rendering for the code blocks.
          */
-        "renderItem"?: (messageModel: ChatMessage) => any;
+        "renderCode"?: MarkdownViewerCodeRender;
+        /**
+          * This property allows us to implement custom rendering of chat items. If allow us to implement the render of the cell content.
+         */
+        "renderItem"?: (
+    messageModel: ChatMessageByRole<"assistant" | "error" | "user">
+  ) => any;
         /**
           * Specifies the literals required in the control.
          */
@@ -7775,6 +7791,10 @@ declare namespace LocalJSX {
      */
     interface ChMarkdownViewer {
         /**
+          * `true` to visually hide the contents of the root node while the control's style is not loaded. Only works if the `theme` property is set.
+         */
+        "avoidFlashOfUnstyledContent"?: boolean;
+        /**
           * `true` to render raw HTML with sanitization.
          */
         "rawHtml"?: boolean;
@@ -7816,9 +7836,9 @@ declare namespace LocalJSX {
          */
         "expandableButton"?: "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition"?: "before" | "after";
+        "expandableButtonPosition"?: "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -7849,7 +7869,7 @@ declare namespace LocalJSX {
         /**
           * Specifies if the selected item indicator is displayed when the item is selected. Only applies when the `link` property is defined.
          */
-        "selectedItemIndicator"?: boolean;
+        "selectedLinkIndicator"?: boolean;
         /**
           * Specifies how the caption will be displayed when the navigation-list parent is collapsed
          */
@@ -7884,9 +7904,9 @@ declare namespace LocalJSX {
          */
         "expandableButton"?: "decorative" | "no";
         /**
-          * Specifies the position of the expandable button in reference of the action element of the items  - `"before"`: Expandable button is placed before the action element.  - `"after"`: Expandable button is placed after the action element.
+          * Specifies the position of the expandable button in reference of the action element of the items  - `"start"`: Expandable button is placed before the action element.  - `"end"`: Expandable button is placed after the action element.
          */
-        "expandableButtonPosition"?: "before" | "after";
+        "expandableButtonPosition"?: "start" | "end";
         /**
           * Specifies if the control is expanded or collapsed.
          */
@@ -7916,7 +7936,7 @@ declare namespace LocalJSX {
         /**
           * Fired when an hyperlink is clicked. This event can be prevented.
          */
-        "onHyperlinkClick"?: (event: ChNavigationListRenderCustomEvent<PointerEvent>) => void;
+        "onHyperlinkClick"?: (event: ChNavigationListRenderCustomEvent<NavigationListHyperlinkClickEvent>) => void;
         /**
           * Specifies the items of the control.
          */
@@ -7927,13 +7947,13 @@ declare namespace LocalJSX {
     index: number
   ) => any;
         /**
-          * Specifies if the selected item indicator is displayed (only work for hyperlink)
-         */
-        "selectedItemIndicator"?: boolean;
-        /**
           * Specifies the current selected hyperlink.
          */
         "selectedLink"?: { id?: string; link: ItemLink };
+        /**
+          * Specifies if the selected item indicator is displayed (only work for hyperlink)
+         */
+        "selectedLinkIndicator"?: boolean;
         /**
           * Specifies how the caption of the items will be displayed when the control is collapsed
          */

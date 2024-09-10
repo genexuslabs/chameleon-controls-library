@@ -32,8 +32,8 @@ const THIRD_LEVEL_SIZE = 20;
 
 const ASSETS_PREFIX = "showcase/pages/assets/icons/";
 
-const FOLDER_ICON = "folder";
-const MODULE_ICON = "module";
+const FOLDER_ICON = "var(folder)";
+const MODULE_ICON = "var(module)";
 
 export const getImagePathCallbackTreeView: TreeViewImagePathCallback = (
   item: TreeViewItemModel,

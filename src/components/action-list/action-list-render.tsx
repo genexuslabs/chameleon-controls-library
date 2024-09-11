@@ -24,13 +24,23 @@ import {
   ActionListItemType,
   ActionListModel
 } from "./types";
-import { ChActionListItemCustomEvent } from "../../components";
-import { ActionListFixedChangeEventDetail } from "./internal/action-list-item/types";
+import {
+  ActionListTranslations,
+  ChActionListItemCustomEvent
+} from "../../components";
+import {
+  ActionListCaptionChangeEventDetail,
+  ActionListFixedChangeEventDetail
+} from "./internal/action-list-item/types";
 import { removeElement } from "../../common/array";
 import { mouseEventModifierKey } from "../common/helpers";
 import { actionListKeyboardNavigation } from "./keyboard-navigation";
-import { getActionListOrGroupItemFromEvent } from "./utils";
+import {
+  ACTION_LIST_ITEM_TAG,
+  getActionListOrGroupItemFromEvent
+} from "./utils";
 import { updateItemProperty } from "./update-item-property";
+import { actionListDefaultTranslations } from "./translations";
 
 const DEFAULT_EDITABLE_ITEMS_VALUE = true;
 // const DEFAULT_ORDER_VALUE = 0;
@@ -61,7 +71,11 @@ const renderMapping: {
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
       checked={itemModel.checked ?? actionListRenderState.checked}
-      disabled={disabled === true ? true : itemModel.disabled}
+      disabled={
+        disabled === true
+          ? true
+          : itemModel.disabled ?? actionListRenderState.disabled
+      }
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
       metadata={itemModel.metadata}
@@ -69,22 +83,23 @@ const renderMapping: {
       nestedExpandable={nestedExpandable}
       selectable={actionListRenderState.selection !== "none"}
       selected={itemModel.selected}
+      translations={actionListRenderState.translations}
     ></ch-action-list-item>
   ),
-  group: (itemModel, actionRenderState) => (
+  group: (itemModel, actionListRenderState) => (
     <ch-action-list-group
       key={itemModel.id}
       id={itemModel.id}
       caption={itemModel.caption}
-      disabled={itemModel.disabled}
+      disabled={itemModel.disabled ?? actionListRenderState.disabled}
       expandable={itemModel.expandable}
       expanded={itemModel.expanded}
       selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
-        actionRenderState.renderItem(
+        actionListRenderState.renderItem(
           item,
-          actionRenderState,
+          actionListRenderState,
           itemModel.disabled,
           true,
           itemModel.expandable
@@ -200,6 +215,13 @@ export class ChActionListRender {
   @Prop() readonly checked: boolean = false;
 
   /**
+   * This attribute lets you specify if all items are disabled.
+   * If disabled, action list items will not fire any user interaction related
+   * event (for example, `selectedItemsChange` event).
+   */
+  @Prop() readonly disabled: boolean = false;
+
+  /**
    * This attribute lets you specify if the edit operation is enabled in all
    * items by default. If `true`, the items can edit its caption in place.
    */
@@ -305,13 +327,13 @@ export class ChActionListRender {
   // @Prop() readonly getImagePathCallback: TreeViewImagePathCallback =
   //   defaultGetImagePath;
 
-  // /**
-  //  * Callback that is executed when a item request to modify its caption.
-  //  */
-  // @Prop() readonly modifyItemCaptionCallback: (
-  //   treeItemId: string,
-  //   newCaption: string
-  // ) => Promise<TreeViewOperationStatusModifyCaption>;
+  /**
+   * Callback that is executed when a item request to modify its caption.
+   */
+  @Prop() readonly modifyItemCaptionCallback: (
+    actionListItemId: string,
+    newCaption: string
+  ) => Promise<void>;
 
   // /**
   //  * Set this attribute if you want to allow multi selection of the items.
@@ -378,6 +400,12 @@ export class ChActionListRender {
   // @Event() checkedItemsChange: EventEmitter<
   //   Map<string, TreeViewItemModelExtended>
   // >;
+
+  /**
+   * Specifies the literals required for the control.
+   */
+  @Prop() readonly translations: ActionListTranslations =
+    actionListDefaultTranslations;
 
   /**
    * Fired when the selected items change and `selection !== "none"`
@@ -525,6 +553,55 @@ export class ChActionListRender {
     forceUpdate(this);
   }
 
+  @Listen("captionChange")
+  onCaptionChange(
+    event: ChActionListItemCustomEvent<ActionListCaptionChangeEventDetail>
+  ) {
+    if (!this.modifyItemCaptionCallback) {
+      return;
+    }
+    event.stopPropagation();
+
+    const itemRef = event
+      .composedPath()
+      .find(
+        el =>
+          (el as HTMLElement).tagName &&
+          (el as HTMLElement).tagName?.toLowerCase() === ACTION_LIST_ITEM_TAG
+      ) as HTMLChActionListItemElement;
+    if (!itemRef) {
+      return;
+    }
+
+    const itemId = event.detail.itemId;
+    const itemUIModel = this.#flattenedModel.get(itemId);
+    const itemInfo = itemUIModel.item as ActionListItemActionable;
+    const newCaption = event.detail.newCaption;
+    const oldCaption = itemInfo.caption;
+
+    // Optimistic UI: Update the caption in the UI Model before the change is
+    // completed in the server
+    itemInfo.caption = newCaption;
+    itemRef.caption = newCaption;
+
+    this.modifyItemCaptionCallback(itemId, newCaption)
+      .then(() => {
+        // Sort items in parent model
+        this.#sortModel(this.#getParentArray(itemUIModel));
+
+        // Update filters
+        // this.#scheduleFilterProcessing();
+
+        // Force re-render
+        forceUpdate(this);
+      })
+      .catch(() => {
+        // TODO: Should we do something with the error message?
+        itemRef.caption = oldCaption;
+        itemInfo.caption = oldCaption;
+      });
+  }
+
   @Listen("fixedChange")
   onFixedChange(
     event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>
@@ -554,10 +631,7 @@ export class ChActionListRender {
     itemInfo.fixed = newFixedValue;
 
     // Sort items in parent model
-    this.#sortModel(
-      (itemUIModel as ActionListItemModelExtendedRoot).root ??
-        (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items
-    );
+    this.#sortModel(this.#getParentArray(itemUIModel));
 
     // Queue a re-render to update the fixed binding and the order of the items
     forceUpdate(this);
@@ -581,6 +655,10 @@ export class ChActionListRender {
       }
     );
   }
+
+  #getParentArray = (itemUIModel: ActionListItemModelExtended) =>
+    (itemUIModel as ActionListItemModelExtendedRoot).root ??
+    (itemUIModel as ActionListItemModelExtendedGroup).parentItem.items;
 
   #getItemOrGroupInfo = (itemId: string) =>
     this.#flattenedModel.get(itemId).item as
@@ -818,6 +896,7 @@ export class ChActionListRender {
     }
 
     this.#flattenUIModel(this.model);
+    this.el.setAttribute("role", "list");
   }
 
   render() {

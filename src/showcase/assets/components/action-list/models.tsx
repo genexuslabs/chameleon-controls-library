@@ -14,6 +14,19 @@ const editIconPath =
 const deleteIconPath =
   "https://unpkg.com/@genexus/unanimo@0.10.0/dist/assets/icons/delete.svg";
 
+let acceptModification = true;
+
+export const modifyItemCaptionCallback = () =>
+  new Promise<void>((resolve, reject) => {
+    if (acceptModification) {
+      resolve();
+    } else {
+      reject();
+    }
+
+    acceptModification = !acceptModification;
+  });
+
 export const GitHubHistoryModel: ActionListModel = [
   {
     id: "5903474",
@@ -968,7 +981,7 @@ export const ticketList: ActionListModel = [
     caption: "SISALGONT-10745",
     additionalInformation: ticketAdditionalInfo(
       "Pending",
-      "Incorrect validation on user registration in login form.",
+      "Incorrect validation on user registration in login form. Incorrect validation on user registration in login form.Incorrect validation on user registration in login form.",
       "Medium"
     ),
     type: "actionable"

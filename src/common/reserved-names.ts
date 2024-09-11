@@ -14,6 +14,7 @@ export const KEY_CODES = {
   END: "End",
   ENTER: "Enter",
   ESCAPE: "Escape",
+  F2: "F2",
   HOME: "Home",
   SPACE: "Space",
   TAB: "Tab"
@@ -116,6 +117,7 @@ export const ACCORDION_EXPORT_PARTS = joinParts(ACCORDION_PARTS_DICTIONARY);
 export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION: "item__action",
   ADDITIONAL_ITEM: "item__additional-item",
+  ADDITIONAL_ITEM_CONFIRM: "item__additional-item-confirm",
   CAPTION: "item__caption",
   CHECKBOX: "item__checkbox",
   CHECKBOX_CONTAINER:
@@ -124,6 +126,8 @@ export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   CHECKBOX_OPTION: CHECKBOX_INSIDE_SHADOW_TRANSFORMED_PARTS_DICTIONARY.OPTION,
   // EXPANDABLE_BUTTON: "item__expandable-button",
   // GROUP: "item__group",
+
+  EDIT_CAPTION: "item__edit-caption",
 
   ADDITIONAL_ACTION: "action", // ADDITIONAL_ITEM
   ADDITIONAL_IMAGE: "image", // ADDITIONAL_ITEM
@@ -134,6 +138,9 @@ export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   ACTION_MODIFY: "action--modify", // ADDITIONAL_ACTION
   ACTION_REMOVE: "action--remove", // ADDITIONAL_ACTION
   ACTION_CUSTOM: "action--custom", // ADDITIONAL_ACTION
+
+  ACTION_ACCEPT: "action--accept", // ADDITIONAL_ITEM_CONFIRM
+  ACTION_CANCEL: "action--cancel", // ADDITIONAL_ITEM_CONFIRM
 
   FIXED: "fixed", // ACTION_FIX
   NOT_FIXED: "not-fixed", // ACTION_FIX
@@ -160,6 +167,9 @@ export const ACTION_LIST_ITEM_PARTS_DICTIONARY = {
   NOT_SELECTABLE: "not-selectable", // ACTION
   SELECTED: "selected", // ACTION
   NOT_SELECTED: "not-selected", // ACTION
+
+  EDITING: "editing", // ACTION
+  NOT_EDITING: "not-editing", // ACTION
 
   CHECKED: CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY.CHECKED, // CHECKBOX
   UNCHECKED: CHECKBOX_INSIDE_SHADOW_PARTS_DICTIONARY.UNCHECKED, // CHECKBOX

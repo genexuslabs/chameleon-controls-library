@@ -82,12 +82,14 @@ A wrapper for the input and textarea elements. It additionally provides:
 
 ### Used by
 
+ - [ch-action-list-item](../action-list/internal/action-list-item)
  - [ch-chat](../chat)
  - [ch-test-flexible-layout](../test/test-flexible-layout)
 
 ### Graph
 ```mermaid
 graph TD;
+  ch-action-list-item --> ch-edit
   ch-chat --> ch-edit
   ch-test-flexible-layout --> ch-edit
   style ch-edit fill:#f9f,stroke:#333,stroke-width:4px

@@ -7,6 +7,7 @@ import {
   GxEAIRecentChats,
   agentTickets,
   keyboardNavigation,
+  modifyItemCaptionCallback,
   panelToolbox,
   recentKBs,
   ticketList
@@ -23,6 +24,7 @@ const render = () => (
     checked={state.checked}
     selection={state.selection}
     editableItems={state.editableItems}
+    modifyItemCaptionCallback={modifyItemCaptionCallback}
     model={state.model}
   ></ch-action-list-render>
 );
@@ -47,7 +49,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionListRenderE
             { caption: "Keyboard Navigation", value: keyboardNavigation },
             { caption: "Ticket List", value: ticketList }
           ],
-          value: keyboardNavigation
+          value: GxEAIRecentChats
         }
       ]
     },
@@ -66,7 +68,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChActionListRenderE
         {
           id: "selection",
           caption: "Selection",
-          value: "single",
+          value: "none",
           columnSpan: 2,
           type: "enum",
           render: "radio-group",

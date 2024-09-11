@@ -59,6 +59,7 @@ graph TD;
   ch-grid-column-settings --> ch-window
   ch-action-list-render --> ch-action-list-item
   ch-action-list-render --> ch-action-list-group
+  ch-action-list-item --> ch-edit
   style ch-test-flexible-layout fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

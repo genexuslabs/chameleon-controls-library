@@ -1,5 +1,6 @@
 import { KEY_CODES } from "../../common/reserved-names";
-import { mouseEventModifierKey } from "../common/helpers";
+import { ChameleonControlsTagName } from "../../common/types";
+import { focusComposedPath, mouseEventModifierKey } from "../common/helpers";
 import {
   ActionListItemActionable,
   ActionListItemGroup,
@@ -14,6 +15,16 @@ import {
   getActionListOrGroupItemFromEvent,
   getActionListOrGroupItemIndex
 } from "./utils";
+
+const EDIT_KEY = KEY_CODES.F2;
+const ACTION_LIST_ITEM_TAG_NAME =
+  "ch-action-list-item" satisfies ChameleonControlsTagName;
+
+const isActionListItem = (element: HTMLElement) =>
+  element.tagName.toLowerCase() === ACTION_LIST_ITEM_TAG_NAME;
+
+const getFocusedActionListItem = (): HTMLChActionListItemElement | undefined =>
+  focusComposedPath().find(isActionListItem) as HTMLChActionListItemElement;
 
 const focusItemById = (
   itemInfo: ActionListItemActionable | ActionListItemGroup,
@@ -214,6 +225,7 @@ const keyboardDictionary = {
       );
     }
   },
+
   [KEY_CODES.ARROW_DOWN]: (
     actionListRef: HTMLChActionListRenderElement,
     flattenedModel: Map<string, ActionListItemModelExtended>,
@@ -278,7 +290,32 @@ const keyboardDictionary = {
         1
       );
     }
+  },
+
+  [EDIT_KEY]: (actionListRef, _, event) => {
+    const actionListItem = getFocusedActionListItem();
+
+    // TODO: Add support to edit items even if editable === undefined. This case
+    // applies when an item has a "modify" type action
+    if (
+      !actionListItem ||
+      (!actionListItem.editable && !actionListRef.editableItems) ||
+      actionListItem.editing ||
+      actionListItem.deleting ||
+      actionListItem.disabled
+    ) {
+      return;
+    }
+
+    event.preventDefault();
+    actionListItem.editing = true;
   }
+} satisfies {
+  [key: string]: (
+    actionListRef: HTMLChActionListRenderElement,
+    flattenedModel: Map<string, ActionListItemModelExtended>,
+    event: KeyboardEvent
+  ) => void;
 };
 
 export const actionListKeyboardNavigation =

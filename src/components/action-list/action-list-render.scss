@@ -36,6 +36,10 @@
   --ch-action-list-item__additional-item-not-fixed-image: #{$pin-outlined};
   --ch-action-list-item__additional-item-remove-image: #{$remove};
   --ch-action-list-item__additional-item-modify-image: #{$edit};
+  --ch-action-list-item__additional-item-confirm-image: #{$confirm-icon};
+  --ch-action-list-item__additional-item-cancel-image: #{$close-icon};
+
+  --ch-action-list-item__action-color: currentColor;
 
   display: grid;
   grid-auto-rows: max-content;

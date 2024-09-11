@@ -151,8 +151,9 @@ export class ChActionListGroup {
           </button>
         ) : (
           <span
-            aria-controls={hasContent ? EXPANDABLE_ID : null}
-            aria-expanded={hasContent ? expanded.toString() : null}
+            // TODO: Test this case (accessibility)
+            // aria-controls={hasContent ? EXPANDABLE_ID : null}
+            // aria-expanded={hasContent ? expanded.toString() : null}
             class="action"
             part={tokenMap({
               [ACTION_LIST_GROUP_PARTS_DICTIONARY.CAPTION]: true,

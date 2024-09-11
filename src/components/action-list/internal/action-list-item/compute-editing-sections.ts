@@ -3,9 +3,10 @@ import {
   ActionListItemAdditionalInformation,
   ActionListItemAdditionalInformationSection,
   ActionListItemAdditionalItem,
+  ActionListItemAdditionalItemActionType,
   ActionListItemAdditionalModel
 } from "../../types";
-import { ActionListItemEditingBlockInfo } from "./types";
+import { ActionListItemActionTypeBlockInfo } from "./types";
 
 const BLOCKS_TO_CHECK: (keyof ActionListItemAdditionalInformation)[] = [
   "block-start",
@@ -15,7 +16,8 @@ const BLOCKS_TO_CHECK: (keyof ActionListItemAdditionalInformation)[] = [
   "stretch-end"
 ];
 
-const containsEditingActions = (
+const containsActionTypeActions = (
+  action: ActionListItemAdditionalItemActionType["type"],
   additionalItems?: ActionListItemAdditionalItem[]
 ): boolean => {
   if (additionalItems == null) {
@@ -25,26 +27,26 @@ const containsEditingActions = (
   return additionalItems.some(
     additionalItem =>
       (additionalItem as ActionListItemAdditionalAction).action &&
-      (additionalItem as ActionListItemAdditionalAction).action.type ===
-        "modify"
+      (additionalItem as ActionListItemAdditionalAction).action.type === action
   );
 };
 
-const isEditingBlock = (
+const isActionTypeBlock = (
+  action: ActionListItemAdditionalItemActionType["type"],
   section: ActionListItemAdditionalInformationSection,
   additionalModel?: ActionListItemAdditionalModel
-): ActionListItemEditingBlockInfo | undefined => {
+): ActionListItemActionTypeBlockInfo | undefined => {
   if (additionalModel == null) {
     return undefined;
   }
 
-  let editingBlockInfo: ActionListItemEditingBlockInfo | undefined;
+  let editingBlockInfo: ActionListItemActionTypeBlockInfo | undefined;
 
-  if (containsEditingActions(additionalModel.start)) {
+  if (containsActionTypeActions(action, additionalModel.start)) {
     editingBlockInfo = { section: section, align: ["start"] };
   }
 
-  if (containsEditingActions(additionalModel.center)) {
+  if (containsActionTypeActions(action, additionalModel.center)) {
     if (editingBlockInfo) {
       editingBlockInfo.align.push("center");
     } else {
@@ -52,7 +54,7 @@ const isEditingBlock = (
     }
   }
 
-  if (containsEditingActions(additionalModel.end)) {
+  if (containsActionTypeActions(action, additionalModel.end)) {
     if (editingBlockInfo) {
       editingBlockInfo.align.push("end");
     } else {
@@ -63,17 +65,23 @@ const isEditingBlock = (
   return editingBlockInfo;
 };
 
-export const computeEditingBlocks = (
+export const computeActionTypeBlocks = (
+  action: ActionListItemAdditionalItemActionType["type"],
   additionalInfo?: ActionListItemAdditionalInformation
-): ActionListItemEditingBlockInfo[] | undefined => {
+): ActionListItemActionTypeBlockInfo[] | undefined => {
   if (additionalInfo == null) {
     return undefined;
   }
 
-  let editingBlocks: ActionListItemEditingBlockInfo[] | undefined = undefined;
+  let editingBlocks: ActionListItemActionTypeBlockInfo[] | undefined =
+    undefined;
 
   BLOCKS_TO_CHECK.forEach(block => {
-    const editingBlock = isEditingBlock(block, additionalInfo[block]);
+    const editingBlock = isActionTypeBlock(
+      action,
+      block,
+      additionalInfo[block]
+    );
 
     if (editingBlock) {
       editingBlocks ??= [];

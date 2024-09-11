@@ -30,11 +30,11 @@ import {
 import {
   ActionListCaptionChangeEventDetail,
   ActionListFixedChangeEventDetail,
-  ActionListItemEditingBlockInfo
+  ActionListItemActionTypeBlockInfo
 } from "./types";
 import { tokenMap } from "../../../../common/utils";
 import { computeExportParts } from "./compute-exportparts";
-import { computeEditingBlocks } from "./compute-editing-sections";
+import { computeActionTypeBlocks } from "./compute-editing-sections";
 import { ActionListTranslations } from "../../translations";
 
 const ACTION_TYPE_PARTS = {
@@ -53,10 +53,16 @@ export class ChActionListItem {
   #additionalItemListenerDictionary = {
     fix: () =>
       this.fixedChange.emit({ itemId: this.el.id, value: !this.fixed }),
-    remove: () => this.remove.emit(this.el.id),
+    remove: () => {
+      if (!this.editing) {
+        this.deleting = true;
+      }
+    },
     custom: callback => callback(),
     modify: () => {
-      this.editing = true;
+      if (!this.deleting) {
+        this.editing = true;
+      }
     }
   } satisfies {
     [key in ActionListItemAdditionalItemActionType["type"]]: (...args) => any;
@@ -84,7 +90,8 @@ export class ChActionListItem {
     >]: () => string;
   };
 
-  #editingSections: ActionListItemEditingBlockInfo[] | undefined;
+  #editingSections: ActionListItemActionTypeBlockInfo[] | undefined;
+  #deletingSections: ActionListItemActionTypeBlockInfo[] | undefined;
 
   // Refs
   #headerRef!: HTMLButtonElement;
@@ -99,7 +106,7 @@ export class ChActionListItem {
   @Watch("additionalInfo")
   additionalInfoChanged() {
     this.#setExportParts();
-    this.#setEditingBlocks();
+    this.#setActionTypeBlocks();
   }
 
   /**
@@ -123,6 +130,11 @@ export class ChActionListItem {
    * passing a slot.
    */
   @Prop() readonly customRender: boolean = false;
+
+  /**
+   * Set this property when the control is in delete mode.
+   */
+  @Prop({ mutable: true }) deleting = false;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -472,8 +484,15 @@ export class ChActionListItem {
     );
   };
 
-  #setEditingBlocks = () => {
-    this.#editingSections = computeEditingBlocks(this.additionalInfo);
+  #setActionTypeBlocks = () => {
+    this.#deletingSections = computeActionTypeBlocks(
+      "remove",
+      this.additionalInfo
+    );
+    this.#editingSections = computeActionTypeBlocks(
+      "modify",
+      this.additionalInfo
+    );
   };
 
   #renderAdditionalInfo = (
@@ -487,17 +506,37 @@ export class ChActionListItem {
 
     const zoneNameWithPrefix = `item__${zoneName}` as const;
 
-    const isEditingSection =
+    let actionTypeSection:
+      | Exclude<ActionListItemAdditionalItemActionType["type"], "fix">
+      | undefined;
+    let actionTypeAligns = undefined;
+
+    // Editing
+    if (
       this.editing &&
       this.#editingSections !== undefined &&
       this.#editingSections.some(
         editingSection => editingSection.section === zoneName
-      );
-    const editingAligns = isEditingSection
-      ? this.#editingSections.find(
-          editingSection => editingSection.section === zoneName
-        ).align
-      : undefined;
+      )
+    ) {
+      actionTypeSection = "modify";
+      actionTypeAligns = this.#editingSections.find(
+        editingSection => editingSection.section === zoneName
+      ).align;
+    }
+    // Deleting
+    else if (
+      this.deleting &&
+      this.#deletingSections !== undefined &&
+      this.#deletingSections.some(
+        deletingSection => deletingSection.section === zoneName
+      )
+    ) {
+      actionTypeSection = "remove";
+      actionTypeAligns = this.#deletingSections.find(
+        deletingSection => deletingSection.section === zoneName
+      ).align;
+    }
 
     return (
       <div
@@ -511,8 +550,8 @@ export class ChActionListItem {
             class={stretch ? "align-start valign-start" : "align-start"}
             part={`${zoneNameWithPrefix} start`}
           >
-            {isEditingSection && editingAligns.includes("start")
-              ? this.#renderConfirmCancelButtons("modify")
+            {actionTypeSection && actionTypeAligns.includes("start")
+              ? this.#renderConfirmCancelButtons(actionTypeSection)
               : this.#renderAdditionalItems(additionalModel.start)}
           </div>
         )}
@@ -522,8 +561,8 @@ export class ChActionListItem {
             class={stretch ? "align-center valign-center" : "align-center"}
             part={`${zoneNameWithPrefix} center`}
           >
-            {isEditingSection && editingAligns.includes("center")
-              ? this.#renderConfirmCancelButtons("modify")
+            {actionTypeSection && actionTypeAligns.includes("center")
+              ? this.#renderConfirmCancelButtons(actionTypeSection)
               : this.#renderAdditionalItems(additionalModel.center)}
           </div>
         )}
@@ -533,8 +572,8 @@ export class ChActionListItem {
             class={stretch ? "align-end valign-end" : "align-end"}
             part={`${zoneNameWithPrefix} end`}
           >
-            {isEditingSection && editingAligns.includes("end")
-              ? this.#renderConfirmCancelButtons("modify")
+            {actionTypeSection && actionTypeAligns.includes("end")
+              ? this.#renderConfirmCancelButtons(actionTypeSection)
               : this.#renderAdditionalItems(additionalModel.end)}
           </div>
         )}
@@ -580,7 +619,7 @@ export class ChActionListItem {
       })}
       disabled={this.disabled}
       type="button"
-      onClick={this.#cancelAction(action)}
+      onClick={this.#cancelAction}
     ></button>
   ];
 
@@ -591,24 +630,23 @@ export class ChActionListItem {
 
       if (action === "modify") {
         this.#removeEditMode(true, true)();
+      } else if (action === "remove") {
+        this.remove.emit(this.el.id);
       }
     };
 
-  #cancelAction =
-    (action: ActionListItemAdditionalItemActionType["type"]) =>
-    (event: PointerEvent) => {
-      event.stopPropagation();
+  #cancelAction = (event: PointerEvent) => {
+    event.stopPropagation();
 
-      if (action === "modify") {
-        this.editing = false;
-      }
-    };
+    this.editing = false;
+    this.deleting = false;
+  };
 
   connectedCallback() {
     this.el.setAttribute("role", "listitem");
     this.el.setAttribute("part", ACTION_LIST_PARTS_DICTIONARY.ITEM);
     this.#setExportParts();
-    this.#setEditingBlocks();
+    this.#setActionTypeBlocks();
   }
 
   render() {

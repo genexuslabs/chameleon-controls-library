@@ -300,7 +300,8 @@ const keyboardDictionary = {
     if (
       !actionListItem ||
       (!actionListItem.editable && !actionListRef.editableItems) ||
-      actionListItem.editing
+      actionListItem.editing ||
+      actionListItem.deleting
     ) {
       return;
     }

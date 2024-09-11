@@ -13,7 +13,7 @@ export type ActionListCaptionChangeEventDetail = {
   newCaption: string;
 };
 
-export type ActionListItemEditingBlockInfo = {
+export type ActionListItemActionTypeBlockInfo = {
   section: ActionListItemAdditionalInformationSection;
   align: ActionListItemAdditionalInformationSectionAlign[];
 };

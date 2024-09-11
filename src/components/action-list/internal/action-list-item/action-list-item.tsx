@@ -69,24 +69,24 @@ export class ChActionListItem {
   };
 
   #confirmActionsDictionary = {
-    custom: () => this.translations.confirm,
+    // custom: () => this.translations.confirm,
     modify: () => this.translations.confirmModify,
     remove: () => this.translations.confirmDelete
   } satisfies {
     [key in Exclude<
       ActionListItemAdditionalItemActionType["type"],
-      "fix"
+      "fix" | "custom"
     >]: () => string;
   };
 
   #cancelActionsDictionary = {
-    custom: () => this.translations.cancel,
+    // custom: () => this.translations.cancel,
     modify: () => this.translations.cancelModify,
     remove: () => this.translations.cancelDelete
   } satisfies {
     [key in Exclude<
       ActionListItemAdditionalItemActionType["type"],
-      "fix"
+      "fix" | "custom"
     >]: () => string;
   };
 
@@ -511,7 +511,10 @@ export class ChActionListItem {
     const zoneNameWithPrefix = `item__${zoneName}` as const;
 
     let actionTypeSection:
-      | Exclude<ActionListItemAdditionalItemActionType["type"], "fix">
+      | Exclude<
+          ActionListItemAdditionalItemActionType["type"],
+          "fix" | "custom"
+        >
       | undefined;
     let actionTypeAligns = undefined;
 
@@ -586,7 +589,10 @@ export class ChActionListItem {
   };
 
   #renderConfirmCancelButtons = (
-    action: Exclude<ActionListItemAdditionalItemActionType["type"], "fix">
+    action: Exclude<
+      ActionListItemAdditionalItemActionType["type"],
+      "fix" | "custom"
+    >
   ) => [
     <button
       aria-label={this.#confirmActionsDictionary[action]()}

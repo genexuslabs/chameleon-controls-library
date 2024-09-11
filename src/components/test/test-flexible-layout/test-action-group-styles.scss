@@ -1,7 +1,10 @@
 .action-group {
   min-height: 32px;
   padding-inline: 48px;
-  background-color: var(--colors-foundation__gray--300);
+  background-color: var(
+    --colors-foundation__gray--300,
+    var(--mer-color__neutral-gray--600)
+  );
 }
 
 .action-group::part(more-actions-window),

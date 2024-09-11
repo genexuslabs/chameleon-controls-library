@@ -392,7 +392,7 @@ export class ChShowcase {
         />
 
         <ch-navigation-list-render
-          class="navigation-list-primary"
+          class="navigation-list navigation-list-primary"
           model={this.pages}
           expandSelectedLink
           selectedLink={

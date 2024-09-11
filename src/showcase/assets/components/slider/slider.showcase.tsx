@@ -11,7 +11,7 @@ const render = () => (
 
       <ch-slider
         accessibleName={state.accessibleName}
-        class="slider-primary"
+        class="slider slider-primary"
         disabled={state.disabled}
         maxValue={state.maxValue}
         minValue={state.minValue}
@@ -30,7 +30,7 @@ const render = () => (
       <ch-slider
         id="slider-2"
         accessibleName={state.accessibleName}
-        class="slider-primary"
+        class="slider slider-primary"
         disabled={state.disabled}
         maxValue={state.maxValue}
         minValue={state.minValue}
@@ -50,7 +50,7 @@ const render = () => (
         <ch-slider
           id="slider-3"
           accessibleName={state.accessibleName}
-          class="slider-primary"
+          class="slider slider-primary"
           disabled={state.disabled}
           maxValue={state.maxValue}
           minValue={state.minValue}
@@ -122,10 +122,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChSliderElement> =
 export const sliderShowcaseStory: ShowcaseStory<HTMLChSliderElement> = {
   properties: showcaseRenderProperties,
   markupWithoutUIModel: () => `<ch-slider
-          class="slider-primary"${renderBooleanPropertyOrEmpty(
-            "disabled",
-            state
-          )}
+          class="slider"${renderBooleanPropertyOrEmpty("disabled", state)}
           maxValue={${state.maxValue}}
           minValue={${state.minValue}}
           value={${state.value}}

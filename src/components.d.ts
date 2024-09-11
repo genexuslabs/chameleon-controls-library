@@ -11,7 +11,9 @@ import { ItemsOverflowBehavior } from "./components/action-group/internal/action
 import { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 import { ActionGroupModel } from "./components/action-group/types";
 import { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
-import { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
+import { ActionListTranslations } from "./components/action-list/translations";
+import { ActionListCaptionChangeEventDetail, ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
+import { ActionListTranslations as ActionListTranslations1, NavigationListModel as NavigationListModel1 } from "./components";
 import { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
 import { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 import { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
@@ -41,7 +43,6 @@ import { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 import { ErrorCorrectionLevel } from "./components/qr/types";
 import { RadioGroupModel } from "./components/radio-group/types";
 import { SegmentedControlModel } from "./components/segmented-control/types";
-import { NavigationListModel as NavigationListModel1 } from "./components";
 import { ShowcaseCustomStory, ShowcaseStories } from "./showcase/assets/components/types";
 import { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 import { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -70,7 +71,9 @@ export { ItemsOverflowBehavior } from "./components/action-group/internal/action
 export { DropdownPosition } from "./components/dropdown/internal/dropdown/types";
 export { ActionGroupModel } from "./components/action-group/types";
 export { ActionListItemActionable, ActionListItemAdditionalInformation, ActionListItemModel, ActionListItemModelExtended, ActionListItemType, ActionListModel } from "./components/action-list/types";
-export { ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
+export { ActionListTranslations } from "./components/action-list/translations";
+export { ActionListCaptionChangeEventDetail, ActionListFixedChangeEventDetail } from "./components/action-list/internal/action-list-item/types";
+export { ActionListTranslations as ActionListTranslations1, NavigationListModel as NavigationListModel1 } from "./components";
 export { ChatInternalCallbacks, ChatMessage, ChatMessageByRole, ChatMessageByRoleNoId } from "./components/chat/types";
 export { MarkdownViewerCodeRender } from "./components/markdown-viewer/parsers/types";
 export { SmartGridDataState } from "./components/smart-grid/internal/infinite-scroll/types";
@@ -100,7 +103,6 @@ export { ChPaginatorPagesPageChangedEvent } from "./components/paginator/paginat
 export { ErrorCorrectionLevel } from "./components/qr/types";
 export { RadioGroupModel } from "./components/radio-group/types";
 export { SegmentedControlModel } from "./components/segmented-control/types";
-export { NavigationListModel as NavigationListModel1 } from "./components";
 export { ShowcaseCustomStory, ShowcaseStories } from "./showcase/assets/components/types";
 export { SuggestItemSelectedEvent } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
 export { FocusChangeAttempt, SuggestItemSelectedEvent as SuggestItemSelectedEvent1 } from "./deprecated-components/suggest/suggest-list-item/ch-suggest-list-item";
@@ -319,6 +321,10 @@ export namespace Components {
          */
         "customRender": boolean;
         /**
+          * Set this property when the control is in delete mode.
+         */
+        "deleting": boolean;
+        /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
         "disabled": boolean;
@@ -327,11 +333,11 @@ export namespace Components {
          */
         "downloading": boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+          * This property lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
          */
         "editable": boolean;
         /**
-          * Set this attribute when the item is in edit mode
+          * Set this property when the control is in edit mode.
          */
         "editing": boolean;
         "fixed"?: boolean;
@@ -367,6 +373,10 @@ export namespace Components {
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
         "showDownloadingSpinner": boolean;
+        /**
+          * Specifies the literals required for the control.
+         */
+        "translations": ActionListTranslations;
     }
     interface ChActionListRender {
         /**
@@ -381,6 +391,10 @@ export namespace Components {
           * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
          */
         "checked": boolean;
+        /**
+          * This attribute lets you specify if all items are disabled. If disabled, action list items will not fire any user interaction related event (for example, `selectedItemsChange` event).
+         */
+        "disabled": boolean;
         /**
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
@@ -400,6 +414,13 @@ export namespace Components {
           * This property lets you define the model of the control.
          */
         "model": ActionListModel;
+        /**
+          * Callback that is executed when a item request to modify its caption.
+         */
+        "modifyItemCaptionCallback": (
+    actionListItemId: string,
+    newCaption: string
+  ) => Promise<void>;
         /**
           * Remove the item and all its descendants from the control.
          */
@@ -428,6 +449,10 @@ export namespace Components {
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback": (subModel: ActionListModel) => void;
+        /**
+          * Specifies the literals required for the control.
+         */
+        "translations": ActionListTranslations1;
         /**
           * Given an itemId and the properties to update, it updates the properties of the items in the list.
          */
@@ -4309,6 +4334,7 @@ declare global {
         new (): HTMLChActionListGroupElement;
     };
     interface HTMLChActionListItemElementEventMap {
+        "captionChange": ActionListCaptionChangeEventDetail;
         "fixedChange": ActionListFixedChangeEventDetail;
         "remove": string;
         "itemDragEnd": any;
@@ -6354,6 +6380,10 @@ declare namespace LocalJSX {
          */
         "customRender"?: boolean;
         /**
+          * Set this property when the control is in delete mode.
+         */
+        "deleting"?: boolean;
+        /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
         "disabled"?: boolean;
@@ -6362,11 +6392,11 @@ declare namespace LocalJSX {
          */
         "downloading"?: boolean;
         /**
-          * This attribute lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
+          * This property lets you specify if the edit operation is enabled in the control. If `true`, the control can edit its caption in place.
          */
         "editable"?: boolean;
         /**
-          * Set this attribute when the item is in edit mode
+          * Set this property when the control is in edit mode.
          */
         "editing"?: boolean;
         "fixed"?: boolean;
@@ -6388,6 +6418,10 @@ declare namespace LocalJSX {
         "nestedExpandable"?: boolean;
         /**
           * Fired when the fixed value of the control is changed.
+         */
+        "onCaptionChange"?: (event: ChActionListItemCustomEvent<ActionListCaptionChangeEventDetail>) => void;
+        /**
+          * Fired when the control is asking to modify its caption
          */
         "onFixedChange"?: (event: ChActionListItemCustomEvent<ActionListFixedChangeEventDetail>) => void;
         /**
@@ -6414,6 +6448,10 @@ declare namespace LocalJSX {
           * `true` to show the downloading spinner when lazy loading the sub items of the control.
          */
         "showDownloadingSpinner"?: boolean;
+        /**
+          * Specifies the literals required for the control.
+         */
+        "translations": ActionListTranslations;
     }
     interface ChActionListRender {
         /**
@@ -6424,6 +6462,10 @@ declare namespace LocalJSX {
           * Set this attribute if you want the checkbox to be checked in all items by default. Only works if `checkbox = true`
          */
         "checked"?: boolean;
+        /**
+          * This attribute lets you specify if all items are disabled. If disabled, action list items will not fire any user interaction related event (for example, `selectedItemsChange` event).
+         */
+        "disabled"?: boolean;
         /**
           * This attribute lets you specify if the edit operation is enabled in all items by default. If `true`, the items can edit its caption in place.
          */
@@ -6439,6 +6481,13 @@ declare namespace LocalJSX {
           * This property lets you define the model of the control.
          */
         "model"?: ActionListModel;
+        /**
+          * Callback that is executed when a item request to modify its caption.
+         */
+        "modifyItemCaptionCallback"?: (
+    actionListItemId: string,
+    newCaption: string
+  ) => Promise<void>;
         /**
           * Fired when an item is clicked and `selection === "none"`. Applies for items that have `type === "actionable"` or (`type === "group"` and `expandable === true`)
          */
@@ -6471,6 +6520,10 @@ declare namespace LocalJSX {
           * Callback that is executed when the treeModel is changed to order its items.
          */
         "sortItemsCallback"?: (subModel: ActionListModel) => void;
+        /**
+          * Specifies the literals required for the control.
+         */
+        "translations"?: ActionListTranslations1;
     }
     interface ChAlert {
         /**

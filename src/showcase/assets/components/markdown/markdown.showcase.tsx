@@ -1,5 +1,5 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseCustomStory } from "../types";
+import { ShowcaseCustomStory, ShowcaseRender } from "../types";
 import { markdownReadmeModel } from "./models";
 
 let initialMarkdown = markdownReadmeModel;
@@ -34,7 +34,7 @@ const handleCheckboxValueChange = () => {
   }
 };
 
-const render = () => (
+const render: ShowcaseRender = designSystem => (
   <div class="markdown-test-main-wrapper">
     <div class="markdown-test-properties">
       <ch-checkbox
@@ -54,7 +54,13 @@ const render = () => (
       ref={el => (textareaRef = el)}
     ></textarea>
     <ch-markdown-viewer
+      key={designSystem}
       class="markdown"
+      theme={
+        designSystem === "unanimo"
+          ? "unanimo/markdown-viewer"
+          : "mercury/markdown-viewer"
+      }
       value={initialMarkdown}
       rawHtml={rawHTMLEnabled === "true"}
     ></ch-markdown-viewer>

@@ -470,7 +470,7 @@ export class ChGrid {
   }
 
   @Listen("mousedown", { passive: true })
-  clickHandler(eventInfo: MouseEvent) {
+  mouseDownHandler(eventInfo: MouseEvent) {
     const row = this.manager.getRowEventTarget(eventInfo);
     const cell = this.manager.getCellEventTarget(eventInfo);
 
@@ -491,7 +491,16 @@ export class ChGrid {
     if (this.manager.selection.selecting) {
       this.stopSelecting();
     }
-    this.emitRowClicked(this.rowFocused, this.cellFocused);
+  }
+
+  @Listen("click", { passive: true })
+  clickHandler(eventInfo: MouseEvent) {
+    const row = this.manager.getRowEventTarget(eventInfo);
+    const cell = this.manager.getCellEventTarget(eventInfo);
+
+    if (row) {
+      this.emitRowClicked(row, cell);
+    }
   }
 
   @Listen("dblclick", { passive: true })

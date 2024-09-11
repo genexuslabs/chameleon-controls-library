@@ -345,6 +345,9 @@ export default class HTMLChTabularGridCellElement extends HTMLElement {
         "mousedown",
         this.caretMouseDownHandler.bind(this)
       );
+      this.caret.addEventListener("click", eventInfo =>
+        eventInfo.stopPropagation()
+      );
     }
   }
 }

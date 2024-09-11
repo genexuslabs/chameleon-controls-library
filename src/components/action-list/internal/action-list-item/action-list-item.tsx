@@ -35,6 +35,7 @@ import {
 import { tokenMap } from "../../../../common/utils";
 import { computeExportParts } from "./compute-exportparts";
 import { computeEditingBlocks } from "./compute-editing-sections";
+import { ActionListTranslations } from "../../translations";
 
 const ACTION_TYPE_PARTS = {
   fix: ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_FIX,
@@ -59,6 +60,28 @@ export class ChActionListItem {
     }
   } satisfies {
     [key in ActionListItemAdditionalItemActionType["type"]]: (...args) => any;
+  };
+
+  #confirmActionsDictionary = {
+    custom: () => this.translations.confirm,
+    modify: () => this.translations.confirmModify,
+    remove: () => this.translations.confirmDelete
+  } satisfies {
+    [key in Exclude<
+      ActionListItemAdditionalItemActionType["type"],
+      "fix"
+    >]: () => string;
+  };
+
+  #cancelActionsDictionary = {
+    custom: () => this.translations.cancel,
+    modify: () => this.translations.cancelModify,
+    remove: () => this.translations.cancelDelete
+  } satisfies {
+    [key in Exclude<
+      ActionListItemAdditionalItemActionType["type"],
+      "fix"
+    >]: () => string;
   };
 
   #editingSections: ActionListItemEditingBlockInfo[] | undefined;
@@ -176,6 +199,11 @@ export class ChActionListItem {
    * the control.
    */
   @Prop() readonly showDownloadingSpinner: boolean = true;
+
+  /**
+   * Specifies the literals required for the control.
+   */
+  @Prop() readonly translations!: ActionListTranslations;
 
   // /**
   //  * Fired when the checkbox value of the control is changed.
@@ -515,9 +543,12 @@ export class ChActionListItem {
   };
 
   #renderConfirmCancelButtons = (
-    action: ActionListItemAdditionalItemActionType["type"]
+    action: Exclude<ActionListItemAdditionalItemActionType["type"], "fix">
   ) => [
     <button
+      aria-label={this.#confirmActionsDictionary[action]()}
+      title={this.#confirmActionsDictionary[action]()}
+      class="confirm-action"
       part={tokenMap({
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_ACCEPT]: true,
@@ -531,11 +562,12 @@ export class ChActionListItem {
       disabled={this.disabled}
       type="button"
       onClick={this.#acceptAction(action)}
-    >
-      Accept
-    </button>,
+    ></button>,
 
     <button
+      aria-label={this.#cancelActionsDictionary[action]()}
+      title={this.#cancelActionsDictionary[action]()}
+      class="cancel-action"
       part={tokenMap({
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ADDITIONAL_ITEM_CONFIRM]: true,
         [ACTION_LIST_ITEM_PARTS_DICTIONARY.ACTION_CANCEL]: true,
@@ -549,9 +581,7 @@ export class ChActionListItem {
       disabled={this.disabled}
       type="button"
       onClick={this.#cancelAction(action)}
-    >
-      Cancel
-    </button>
+    ></button>
   ];
 
   #acceptAction =

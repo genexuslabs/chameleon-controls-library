@@ -333,7 +333,6 @@ export class ChActionListItem {
         <button
           key={additionalAction.id}
           aria-label={additionalAction.accessibleName}
-          disabled={this.disabled}
           class={{
             "additional-item": true,
             [pseudoImageStartClass]: hasPseudoImage && actionTypeIsCustom,
@@ -367,11 +366,16 @@ export class ChActionListItem {
               ? { "--ch-start-img": `url(${item.imageSrc})` }
               : null
           }
+          disabled={this.disabled}
           type="button"
-          onClick={this.#handleAdditionalItemClick(
-            action.type,
-            actionTypeIsCustom ? action.callback : undefined
-          )}
+          onClick={
+            !this.disabled
+              ? this.#handleAdditionalItemClick(
+                  action.type,
+                  actionTypeIsCustom ? action.callback : undefined
+                )
+              : undefined
+          }
         >
           {actionTypeIsCustom && imageTag}
           {item.caption && item.caption}
@@ -600,7 +604,7 @@ export class ChActionListItem {
       })}
       disabled={this.disabled}
       type="button"
-      onClick={this.#acceptAction(action)}
+      onClick={!this.disabled ? this.#acceptAction(action) : undefined}
     ></button>,
 
     <button
@@ -619,7 +623,7 @@ export class ChActionListItem {
       })}
       disabled={this.disabled}
       type="button"
-      onClick={this.#cancelAction}
+      onClick={!this.disabled ? this.#cancelAction : undefined}
     ></button>
   ];
 
@@ -706,7 +710,9 @@ export class ChActionListItem {
                 }
                 disabled={this.disabled}
                 value={this.caption}
-                onKeyDown={this.#checkIfShouldRemoveEditMode}
+                onKeyDown={
+                  !this.disabled ? this.#checkIfShouldRemoveEditMode : undefined
+                }
                 ref={el => (this.#inputRef = el)}
               ></ch-edit>
             ) : (

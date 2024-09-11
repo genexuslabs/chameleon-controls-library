@@ -301,7 +301,8 @@ const keyboardDictionary = {
       !actionListItem ||
       (!actionListItem.editable && !actionListRef.editableItems) ||
       actionListItem.editing ||
-      actionListItem.deleting
+      actionListItem.deleting ||
+      actionListItem.disabled
     ) {
       return;
     }

@@ -71,7 +71,11 @@ const renderMapping: {
       caption={itemModel.caption}
       checkbox={itemModel.checkbox ?? actionListRenderState.checkbox}
       checked={itemModel.checked ?? actionListRenderState.checked}
-      disabled={disabled === true ? true : itemModel.disabled}
+      disabled={
+        disabled === true
+          ? true
+          : itemModel.disabled ?? actionListRenderState.disabled
+      }
       editable={itemModel.editable ?? actionListRenderState.editableItems}
       fixed={itemModel.fixed}
       metadata={itemModel.metadata}
@@ -82,20 +86,20 @@ const renderMapping: {
       translations={actionListRenderState.translations}
     ></ch-action-list-item>
   ),
-  group: (itemModel, actionRenderState) => (
+  group: (itemModel, actionListRenderState) => (
     <ch-action-list-group
       key={itemModel.id}
       id={itemModel.id}
       caption={itemModel.caption}
-      disabled={itemModel.disabled}
+      disabled={itemModel.disabled ?? actionListRenderState.disabled}
       expandable={itemModel.expandable}
       expanded={itemModel.expanded}
       selected={itemModel.selected}
     >
       {itemModel.items?.map(item =>
-        actionRenderState.renderItem(
+        actionListRenderState.renderItem(
           item,
-          actionRenderState,
+          actionListRenderState,
           itemModel.disabled,
           true,
           itemModel.expandable
@@ -209,6 +213,13 @@ export class ChActionListRender {
    * Only works if `checkbox = true`
    */
   @Prop() readonly checked: boolean = false;
+
+  /**
+   * This attribute lets you specify if all items are disabled.
+   * If disabled, action list items will not fire any user interaction related
+   * event (for example, `selectedItemsChange` event).
+   */
+  @Prop() readonly disabled: boolean = false;
 
   /**
    * This attribute lets you specify if the edit operation is enabled in all

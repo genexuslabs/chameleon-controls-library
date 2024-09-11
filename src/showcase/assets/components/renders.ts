@@ -16,7 +16,8 @@ export const flexibleLayoutConfiguration: FlexibleLayoutModel = {
       id: HEADER_WIDGET,
       size: "48px",
       type: "single-content",
-      widget: { id: HEADER_WIDGET, name: "" }
+      widget: { id: HEADER_WIDGET, name: "" },
+      dragBar: { hidden: true }
     },
     {
       id: "rest",

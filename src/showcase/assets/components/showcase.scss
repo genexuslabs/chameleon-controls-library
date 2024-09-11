@@ -29,9 +29,9 @@ ch-showcase {
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 1;
       margin-block: var(--spacing--l, var(--mer-spacing--md))
-        var(--spacing--m, var(--mer-spacing--xs));
+        var(--mer-spacing--xs);
       margin-inline: var(--spacing--l, var(--mer-spacing--md))
-        var(--spacing--m, var(--mer-spacing--xs));
+        var(--mer-spacing--xs);
 
       overflow: hidden;
     }

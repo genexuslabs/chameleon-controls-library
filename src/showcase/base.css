@@ -139,6 +139,25 @@
   border-radius: 8px;
 }
 
+.mercury {
+  .icon-mask::before {
+    content: "";
+    display: block;
+    inline-size: 24px;
+    block-size: 24px;
+    -webkit-mask: no-repeat center / 100% var(--icon-path);
+    background-color: currentColor;
+  }
+
+  .icon-background::before {
+    content: "";
+    display: block;
+    inline-size: 24px;
+    block-size: 24px;
+    background: no-repeat center / 100% var(--icon-path);
+  }
+}
+
 .dark .mercury .card {
   background-color: var(--mer-color__elevation--01);
 }

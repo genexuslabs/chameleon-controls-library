@@ -17,10 +17,6 @@ ch-test-flexible-layout {
 }
 
 .flexible-layout {
-  &::part(bar visible) {
-    background-color: var(--colors-foundation__gray--400);
-  }
-
   // &::part(page-container inline) {
   //   background-color: var(--colors-foundation__gray--200);
   // }

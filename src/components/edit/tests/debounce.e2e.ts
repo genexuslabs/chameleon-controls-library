@@ -3,8 +3,8 @@ import { EditType } from "../types";
 import { delayTest } from "../../../testing/utils.e2e";
 
 // Increase this value if CI tests fail
-const NO_DEBOUNCE_THRESHOLD_TIME = 100;
-const DEBOUNCE_VALUE = 120;
+const NO_DEBOUNCE_THRESHOLD_TIME = 140;
+const DEBOUNCE_VALUE = 180;
 
 const getTestDescription = (multiline: boolean, type?: EditType) => {
   if (multiline) {
@@ -192,7 +192,7 @@ const testWithDebounce = (multiline: boolean, type?: EditType) => {
       await checkValues("hello");
     });
 
-    it("should emit one event when the debounce is set and the characters are written with a delay less than the debounce value", async () => {
+    it("should emit one event when the debounce is set and each character is written with a delay less than the debounce value", async () => {
       editRef.setProperty("debounce", DEBOUNCE_VALUE);
       await page.waitForChanges();
 

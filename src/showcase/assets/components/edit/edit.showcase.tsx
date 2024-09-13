@@ -48,6 +48,7 @@ const render = () => (
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
           class="form-input"
+          debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
           mode={state.mode}
@@ -84,6 +85,7 @@ const render = () => (
           autocomplete={state.autocomplete}
           autoGrow={state.autoGrow}
           class="form-input"
+          debounce={state.debounce}
           disabled={state.disabled}
           maxLength={state.maxLength}
           mode={state.mode}
@@ -120,6 +122,7 @@ const render = () => (
             autocomplete={state.autocomplete}
             autoGrow={state.autoGrow}
             class="form-input"
+            debounce={state.debounce}
             disabled={state.disabled}
             maxLength={state.maxLength}
             mode={state.mode}
@@ -245,6 +248,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChEditElement> = [
         type: "string"
       },
       {
+        id: "debounce",
+        columnSpan: 2,
+        caption: "Debounce",
+        type: "number",
+        value: 0
+      },
+      {
         id: "startImgSrc",
         caption: "Start Image Src",
         value: "folder",
@@ -336,6 +346,7 @@ export const editShowcaseStory: ShowcaseStory<HTMLChEditElement> = {
           autocapitalize="${state.autocapitalize}"
           autocomplete="${state.autocomplete}"
           class="form-input"${renderBooleanPropertyOrEmpty("disabled", state)}
+          debounce={${state.debounce}}
           getImagePathCallback={getImagePathCallback}
           maxLength={${state.maxLength}}
           mode="${state.mode}"${renderBooleanPropertyOrEmpty(

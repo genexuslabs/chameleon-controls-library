@@ -78,6 +78,11 @@ export class ChTooltip implements ComponentInterface {
    */
   @Prop() readonly inlineAlign: ChPopoverAlign = "center";
 
+  /**
+   * Specifies if an indicator for the tooltip should be displayed.
+   */
+  @Prop() readonly showIndicator: boolean = false;
+
   #handleEnter = () => {
     this.visible = true;
   };
@@ -203,6 +208,7 @@ export class ChTooltip implements ComponentInterface {
           // user interaction (click outside)
           onPopoverClosed={this.visible ? this.#handleLeave : undefined}
         >
+          {this.showIndicator && <div class="indicator"></div>}
           <slot />
         </ch-popover>
       </Host>

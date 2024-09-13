@@ -1,5 +1,6 @@
 import { forceUpdate, h } from "@stencil/core";
 import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import { renderBooleanPropertyOrEmpty } from "../utils";
 
 const state: Partial<HTMLChTooltipElement> = {};
 let buttonRef: HTMLButtonElement;
@@ -21,6 +22,7 @@ const render = () => (
         blockAlign={state.blockAlign}
         delay={state.delay}
         inlineAlign={state.inlineAlign}
+        showIndicator={state.showIndicator}
       >
         Tooltip using a reference (actionElement property)
       </ch-tooltip>
@@ -39,6 +41,7 @@ const render = () => (
           blockAlign={state.blockAlign}
           delay={state.delay}
           inlineAlign={state.inlineAlign}
+          showIndicator={state.showIndicator}
         >
           Tooltip inside a button element
         </ch-tooltip>
@@ -53,6 +56,7 @@ const render = () => (
         blockAlign={state.blockAlign}
         delay={state.delay}
         inlineAlign={state.inlineAlign}
+        showIndicator={state.showIndicator}
       >
         <div slot="action">Standalone tooltip content</div>
         Standalone tooltip
@@ -97,6 +101,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTooltipElement> =
           caption: "Delay",
           value: 100,
           type: "number"
+        },
+        {
+          id: "showIndicator",
+          caption: "Show Indicator",
+          value: true,
+          type: "boolean"
         }
       ]
     }
@@ -112,8 +122,11 @@ export const tooltipShowcaseStory: ShowcaseStory<HTMLChTooltipElement> = {
           class="tooltip"
           actionElement={button1Ref}
           blockAlign="${state.blockAlign}"
-          inlineAlign="${state.inlineAlign}"
           delay={${state.delay}}
+          inlineAlign="${state.inlineAlign}"${renderBooleanPropertyOrEmpty(
+      "showIndicator",
+      state
+    )}
         >
           Tooltip using a reference (actionElement property)
         </ch-tooltip>
@@ -124,8 +137,11 @@ export const tooltipShowcaseStory: ShowcaseStory<HTMLChTooltipElement> = {
             class="tooltip" 
             actionElement={null}
             blockAlign="${state.blockAlign}"
-            inlineAlign="${state.inlineAlign}"
             delay={${state.delay}}
+            inlineAlign="${state.inlineAlign}"${renderBooleanPropertyOrEmpty(
+      "showIndicator",
+      state
+    )}
           >
             Tooltip inside a button element
           </ch-tooltip>
@@ -134,8 +150,11 @@ export const tooltipShowcaseStory: ShowcaseStory<HTMLChTooltipElement> = {
         <ch-tooltip
           class="tooltip"
           blockAlign="${state.blockAlign}"
-          inlineAlign="${state.inlineAlign}"
           delay={${state.delay}}
+          inlineAlign="${state.inlineAlign}"${renderBooleanPropertyOrEmpty(
+      "showIndicator",
+      state
+    )}
         >
           <div slot="action">Standalone tooltip content</div>
           Standalone tooltip

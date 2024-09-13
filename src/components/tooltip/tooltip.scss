@@ -27,17 +27,67 @@
     */
   --ch-tooltip-separation-y: var(--ch-tooltip-separation);
 
+  --ch-tooltip-indicator-inline-size: 12px;
+  --ch-tooltip-indicator-block-size: 12px;
+
+  // --ch-tooltip-indicator-inline-size: 0.75em;
+  // --ch-tooltip-indicator-block-size: 0.75em;
+
   display: contents;
 }
 
 ch-popover {
   --ch-popover-separation-x: var(--ch-tooltip-separation-x);
   --ch-popover-separation-y: var(--ch-tooltip-separation-y);
+  position: relative;
+  outline: 1px solid;
 
   &:not(.hydrated) {
     display: none;
     opacity: 0;
   }
+}
+
+// Block align
+[block-align="inside-start"] {
+  --ch-popover-separation-y: calc(
+    var(--ch-tooltip-separation-y) - var(--ch-tooltip-indicator-block-size)
+  );
+
+  & > .indicator {
+    align-self: flex-start;
+  }
+}
+
+[block-align="center"] > .indicator {
+  align-self: center;
+}
+
+[block-align="outside-start"] > .indicator,
+[block-align="inside-end"] > .indicator {
+  align-self: flex-end;
+}
+
+// Inline align
+[inline-align="inside-start"] > .indicator {
+  justify-self: flex-start;
+}
+
+[inline-align="center"] > .indicator {
+  justify-self: center;
+}
+
+[inline-align="outside-start"] > .indicator,
+[inline-align="inside-end"] > .indicator {
+  justify-self: flex-end;
+}
+
+.indicator {
+  position: absolute;
+  display: block;
+  inline-size: var(--ch-tooltip-indicator-inline-size);
+  block-size: var(--ch-tooltip-indicator-block-size);
+  background-color: currentColor;
 }
 
 .visible {

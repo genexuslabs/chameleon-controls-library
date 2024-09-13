@@ -312,7 +312,7 @@ export class ChPopover {
   /**
    * Specifies the block alignment of the window.
    */
-  @Prop() readonly blockAlign: ChPopoverAlign = "center";
+  @Prop({ reflect: true }) readonly blockAlign: ChPopoverAlign = "center";
   @Watch("blockAlign")
   handleBlockChange() {
     this.#adjustAlignment = true;
@@ -393,7 +393,7 @@ export class ChPopover {
   /**
    * Specifies the inline alignment of the window.
    */
-  @Prop() readonly inlineAlign: ChPopoverAlign = "center";
+  @Prop({ reflect: true }) readonly inlineAlign: ChPopoverAlign = "center";
   @Watch("inlineAlign")
   handleInlineChange() {
     this.#adjustAlignment = true;

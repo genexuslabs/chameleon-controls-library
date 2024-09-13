@@ -2352,6 +2352,10 @@ export namespace Components {
      */
     interface ChRadioGroupRender {
         /**
+          * Specifies the direction of the items.
+         */
+        "direction": "horizontal" | "vertical";
+        /**
           * This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
         "disabled": boolean;
@@ -8434,6 +8438,10 @@ declare namespace LocalJSX {
      * It contains radio items to allow users to select one option from the list of options.
      */
     interface ChRadioGroupRender {
+        /**
+          * Specifies the direction of the items.
+         */
+        "direction"?: "horizontal" | "vertical";
         /**
           * This attribute lets you specify if the radio-group is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */

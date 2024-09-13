@@ -48,6 +48,7 @@ const render = () => (
           id="radio-group-1"
           // name="radio-group-1"
           class="radio-group"
+          direction={state.direction}
           disabled={state.disabled}
           model={state.model}
           value={state.value}
@@ -71,6 +72,7 @@ const render = () => (
           id="radio-group-2"
           // name="radio-group-2"
           class="radio-group"
+          direction={state.direction}
           disabled={state.disabled}
           model={state.model}
           value={state.value}
@@ -94,6 +96,7 @@ const render = () => (
             id="radio-group-3"
             // name="radio-group-3"
             class="radio-group"
+            direction={state.direction}
             disabled={state.disabled}
             model={state.model}
             value={state.value}
@@ -133,6 +136,17 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChRadioGroupRenderE
           type: "string"
         },
         {
+          id: "direction",
+          caption: "Direction",
+          value: "horizontal",
+          values: [
+            { caption: "Horizontal", value: "horizontal" },
+            { caption: "Vertical", value: "vertical" }
+          ],
+          render: "radio-group",
+          type: "enum"
+        },
+        {
           id: "disabled",
           caption: "Disabled",
           value: false,
@@ -150,6 +164,7 @@ export const radioGroupShowcaseStory: ShowcaseStory<HTMLChRadioGroupRenderElemen
       uiModelType: "RadioGroupModel",
       render: () => `<ch-radio-group-render
           class="radio-group"${renderBooleanPropertyOrEmpty("disabled", state)}
+          direction="${state.direction}"
           model={this.#controlUIModel}
           value="${state.value}"
           onInput={this.#handleValueChange}

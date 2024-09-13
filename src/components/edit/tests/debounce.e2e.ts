@@ -2,7 +2,7 @@ import { E2EElement, E2EPage, newE2EPage } from "@stencil/core/testing";
 import { EditType } from "../types";
 import { delayTest } from "../../../testing/utils.e2e";
 
-// Increase this value if CI tests fail
+// Increase/adjust these values if CI tests fail
 const NO_DEBOUNCE_THRESHOLD_TIME = 140;
 const DEBOUNCE_VALUE = 180;
 const WAIT_FOR_DEBOUNCE_VALUE = DEBOUNCE_VALUE + 20;

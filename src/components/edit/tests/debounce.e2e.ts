@@ -5,6 +5,7 @@ import { delayTest } from "../../../testing/utils.e2e";
 // Increase this value if CI tests fail
 const NO_DEBOUNCE_THRESHOLD_TIME = 140;
 const DEBOUNCE_VALUE = 180;
+const WAIT_FOR_DEBOUNCE_VALUE = DEBOUNCE_VALUE + 20;
 
 const getTestDescription = (multiline: boolean, type?: EditType) => {
   if (multiline) {
@@ -143,23 +144,23 @@ const testWithDebounce = (multiline: boolean, type?: EditType) => {
 
       const inputEvent = await editRef.spyOnEvent("input");
       await inputRef.press("h");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(1);
 
       await inputRef.press("e");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(2);
 
       await inputRef.press("l");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(3);
 
       await inputRef.press("l");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(4);
 
       await inputRef.press("o");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(5);
 
       await checkValues("hello");
@@ -174,19 +175,19 @@ const testWithDebounce = (multiline: boolean, type?: EditType) => {
       expect(inputEvent).not.toHaveReceivedEvent();
 
       await inputRef.press("e");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(1);
 
       await inputRef.press("l");
       expect(inputEvent).toHaveReceivedEventTimes(1);
 
       await inputRef.press("l");
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(2);
 
       await inputRef.press("o");
       expect(inputEvent).toHaveReceivedEventTimes(2);
-      await delayTest(DEBOUNCE_VALUE + 20);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEventTimes(3);
 
       await checkValues("hello");
@@ -251,7 +252,7 @@ const testWithDebounce = (multiline: boolean, type?: EditType) => {
 
       expect(inputEvent).not.toHaveReceivedEvent();
       expect(changeEvent).toHaveReceivedEvent();
-      await delayTest(DEBOUNCE_VALUE);
+      await delayTest(WAIT_FOR_DEBOUNCE_VALUE);
       expect(inputEvent).toHaveReceivedEvent();
 
       await checkValues("hello");

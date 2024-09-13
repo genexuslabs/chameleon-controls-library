@@ -60,6 +60,7 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
  *  - Support to auto grow the control when used with multiline (useful to
  *    model chat inputs).
  *  - An image which can have multiple states.
+ *  - Support for debouncing the input event.
  *
  * @part date-placeholder - A placeholder displayed when the control is editable (`readonly="false"`), has no value set, and its type is `"datetime-local" | "date" | "time"`.
  * @part hidden-multiline - The auxiliary content rendered in the control to implement the auto-grow. This part only applies when `multiline="true"`.
@@ -76,6 +77,8 @@ const MIN_DATE_VALUE: { [key: string]: string } = {
 export class ChEdit implements AccessibleNameComponent, DisableableComponent {
   #accessibleNameFromExternalLabel: string | undefined;
   #startImage: GxImageMultiStateStart | undefined;
+
+  #debounceId: NodeJS.Timeout | undefined;
 
   // Refs
   // TODO: StencilJS issue. We have to use two refs because StencilJS does not,
@@ -128,6 +131,11 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * adjust to its content size.
    */
   @Prop() readonly autoGrow: boolean = false;
+
+  /**
+   * Specifies a debounce for the input event.
+   */
+  @Prop() readonly debounce?: number = 0;
 
   /**
    * This attribute lets you specify if the element is disabled.
@@ -281,13 +289,15 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
    * committed by the user. Unlike the `input` event, the `change` event is not
    * necessarily fired for each change to an element's value but when the
    * control loses focus.
+   * This event is _NOT_ debounced by the `debounce` property.
    */
   @Event() change: EventEmitter;
 
   /**
    * Fired synchronously when the value is changed.
+   * This event is debounced by the `debounce` property.
    */
-  @Event() input: EventEmitter;
+  @Event() input: EventEmitter<InputEvent>;
 
   /**
    * Fired when the trigger button is clicked.
@@ -342,8 +352,18 @@ export class ChEdit implements AccessibleNameComponent, DisableableComponent {
       return;
     }
 
-    this.value = this.#getValueFromEvent(event);
-    this.input.emit(event);
+    clearTimeout(this.#debounceId);
+    const newValue = this.#getValueFromEvent(event);
+
+    if (this.debounce > 0) {
+      this.#debounceId = setTimeout(() => {
+        this.value = newValue;
+        this.input.emit(event);
+      }, this.debounce);
+    } else {
+      this.value = newValue;
+      this.input.emit(event);
+    }
   };
 
   #handleTriggerClick = (event: UIEvent) => {

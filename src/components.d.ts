@@ -978,6 +978,7 @@ export namespace Components {
      *  - Support to auto grow the control when used with multiline (useful to
      *    model chat inputs).
      *  - An image which can have multiple states.
+     *  - Support for debouncing the input event.
      */
     interface ChEdit {
         /**
@@ -1000,6 +1001,10 @@ export namespace Components {
           * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
          */
         "autocomplete": "on" | "off";
+        /**
+          * Specifies a debounce for the input event.
+         */
+        "debounce"?: number;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -4528,7 +4533,7 @@ declare global {
     };
     interface HTMLChEditElementEventMap {
         "change": any;
-        "input": any;
+        "input": InputEvent;
         "triggerClick": any;
     }
     /**
@@ -4540,6 +4545,7 @@ declare global {
      *  - Support to auto grow the control when used with multiline (useful to
      *    model chat inputs).
      *  - An image which can have multiple states.
+     *  - Support for debouncing the input event.
      */
     interface HTMLChEditElement extends Components.ChEdit, HTMLStencilElement {
         addEventListener<K extends keyof HTMLChEditElementEventMap>(type: K, listener: (this: HTMLChEditElement, ev: ChEditCustomEvent<HTMLChEditElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7035,6 +7041,7 @@ declare namespace LocalJSX {
      *  - Support to auto grow the control when used with multiline (useful to
      *    model chat inputs).
      *  - An image which can have multiple states.
+     *  - Support for debouncing the input event.
      */
     interface ChEdit {
         /**
@@ -7057,6 +7064,10 @@ declare namespace LocalJSX {
           * This attribute indicates whether the value of the control can be automatically completed by the browser. Same as [autocomplete](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-autocomplete) attribute for `input` elements.
          */
         "autocomplete"?: "on" | "off";
+        /**
+          * Specifies a debounce for the input event.
+         */
+        "debounce"?: number;
         /**
           * This attribute lets you specify if the element is disabled. If disabled, it will not fire any user interaction related event (for example, click event).
          */
@@ -7084,13 +7095,13 @@ declare namespace LocalJSX {
          */
         "name"?: string;
         /**
-          * The `change` event is emitted when a change to the element's value is committed by the user. Unlike the `input` event, the `change` event is not necessarily fired for each change to an element's value but when the control loses focus.
+          * The `change` event is emitted when a change to the element's value is committed by the user. Unlike the `input` event, the `change` event is not necessarily fired for each change to an element's value but when the control loses focus. This event is _NOT_ debounced by the `debounce` property.
          */
         "onChange"?: (event: ChEditCustomEvent<any>) => void;
         /**
-          * Fired synchronously when the value is changed.
+          * Fired synchronously when the value is changed. This event is debounced by the `debounce` property.
          */
-        "onInput"?: (event: ChEditCustomEvent<any>) => void;
+        "onInput"?: (event: ChEditCustomEvent<InputEvent>) => void;
         /**
           * Fired when the trigger button is clicked.
          */
@@ -10289,6 +10300,7 @@ declare module "@stencil/core" {
              *  - Support to auto grow the control when used with multiline (useful to
              *    model chat inputs).
              *  - An image which can have multiple states.
+             *  - Support for debouncing the input event.
              */
             "ch-edit": LocalJSX.ChEdit & JSXBase.HTMLAttributes<HTMLChEditElement>;
             "ch-flexible-layout": LocalJSX.ChFlexibleLayout & JSXBase.HTMLAttributes<HTMLChFlexibleLayoutElement>;

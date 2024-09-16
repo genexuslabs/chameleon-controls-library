@@ -21,12 +21,19 @@ $option-checked-color: currentColor;
    */
   --ch-radio-group__radio-option-size: 50%;
 
-  display: inline-grid;
-  grid-auto-rows: max-content;
-
   // This property is necessary to ensure the focus is not delegated to the
   // checked radio when clicking the background of the control, but not an item
   pointer-events: none;
+}
+
+:host(.ch-radio-group--direction-horizontal) {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+:host(.ch-radio-group--direction-vertical) {
+  display: inline-grid;
+  grid-auto-rows: max-content;
 }
 
 .radio-item {

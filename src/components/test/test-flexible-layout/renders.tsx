@@ -692,6 +692,7 @@ export const layoutRenders: FlexibleLayoutRenders = {
     <ch-action-list-render
       slot={TOOLBOX}
       key={TOOLBOX}
+      class="list-box list-box-secondary"
       model={panelToolbox}
     ></ch-action-list-render>
   )

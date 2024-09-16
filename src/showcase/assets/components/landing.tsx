@@ -25,7 +25,7 @@ const renderShowcaseLanding = () => (
     </ul>
 
     <div class="sections">
-      <section>
+      {/* <section>
         <h2 id="quick-start" class="heading-2">
           Quick start
           <a href="#quick-start" aria-label='Direct link to "Quick Start"'>
@@ -44,7 +44,7 @@ const renderShowcaseLanding = () => (
             #
           </a>
         </h2>
-      </section>
+      </section> */}
 
       <section>
         <h2 id="browser-support" class="heading-2">
@@ -130,14 +130,14 @@ const renderShowcaseLanding = () => (
         </ul>
       </section>
 
-      <section>
+      {/* <section>
         <h2 id="license" class="heading-2">
           License
           <a href="#license" aria-label='Direct link to "License"'>
             #
           </a>
         </h2>
-      </section>
+      </section> */}
     </div>
   </div>
 );

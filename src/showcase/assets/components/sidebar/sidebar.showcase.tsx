@@ -2,11 +2,12 @@ import { forceUpdate, h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderPropertyStyleValues,
-  ShowcaseStory
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
 } from "../types";
 import { ChNavigationListRenderCustomEvent } from "../../../../components";
 import { unanimoShowcase } from "../navigation-list/models";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import { renderShowcaseProperties } from "../utils";
 import { NavigationListHyperlinkClickEvent } from "../../../../components/navigation-list/types";
 
 const state: Partial<
@@ -96,13 +97,13 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
       {
         id: "expandButtonExpandCaption",
         caption: "Expand Button Expand Caption",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
         id: "expandButtonCollapseCaption",
         caption: "Expand Button Collapse Caption",
-        value: "",
+        value: undefined,
         type: "string"
       },
       {
@@ -200,6 +201,86 @@ const showcaseRenderProperties: ShowcaseRenderProperties<
   }
 ];
 
+const showcaseSidebarPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChSidebarElement>[] =
+  [
+    { name: "expanded", defaultValue: true, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "sidebar",
+      type: "string"
+    },
+    {
+      name: "expandButtonCollapseAccessibleName",
+      defaultValue: undefined,
+      type: "string"
+    },
+    {
+      name: "expandButtonCollapseCaption",
+      defaultValue: undefined,
+      type: "string"
+    },
+    {
+      name: "expandButtonExpandAccessibleName",
+      defaultValue: undefined,
+      type: "string"
+    },
+    {
+      name: "expandButtonExpandCaption",
+      defaultValue: undefined,
+      type: "string"
+    },
+    { name: "showExpandButton", defaultValue: false, type: "boolean" },
+    { name: "tooltipDelay", defaultValue: 100, type: "number" },
+    {
+      name: "buttonClick",
+      fixed: true,
+      value: "buttonClick",
+      type: "event"
+    },
+    {
+      name: "hyperlinkClick",
+      fixed: true,
+      value: "hyperlinkClick",
+      type: "event"
+    }
+  ];
+
+const showcaseNavigationListPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChNavigationListRenderElement>[] =
+  [
+    { name: "autoGrow", defaultValue: false, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "navigation-list navigation-list-secondary",
+      type: "string"
+    },
+    { name: "expandableButton", defaultValue: "decorative", type: "string" },
+    { name: "expandableButtonPosition", defaultValue: "start", type: "string" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" },
+    {
+      name: "selectedLink",
+      fixed: true,
+      value: "selectedLink",
+      type: "function"
+    },
+    { name: "selectedLinkIndicator", defaultValue: false, type: "boolean" },
+    { name: "showCaptionOnCollapse", defaultValue: "inline", type: "string" },
+    { name: "tooltipDelay", defaultValue: 100, type: "number" },
+    {
+      name: "buttonClick",
+      fixed: true,
+      value: "handleButtonClick",
+      type: "event"
+    },
+    {
+      name: "hyperlinkClick",
+      fixed: true,
+      value: "handleHyperlinkClick",
+      type: "event"
+    }
+  ];
+
 export const sidebarShowcaseStory: ShowcaseStory<
   HTMLChSidebarElement & HTMLChNavigationListRenderElement
 > = {
@@ -207,33 +288,37 @@ export const sidebarShowcaseStory: ShowcaseStory<
   markupWithUIModel: {
     uiModel: () => state.model,
     uiModelType: "NavigationListModel",
-    render: () => `<ch-sidebar${renderBooleanPropertyOrEmpty("expanded", state)}
-          expandButtonExpandCaption="${state.expandButtonExpandCaption}"
-          expandButtonCollapseCaption="${state.expandButtonCollapseCaption}"
-          expandButtonExpandAccessibleName="${
-            state.expandButtonExpandAccessibleName
-          }"
-          expandButtonCollapseAccessibleName="${
-            state.expandButtonCollapseAccessibleName
-          }"${renderBooleanPropertyOrEmpty("showExpandButton", state)}
+    render: {
+      react: () => `<ChSidebar${renderShowcaseProperties(
+        state,
+        "react",
+        showcaseSidebarPropertiesInfo
+      )}
+      >
+        <ChNavigationListRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcaseNavigationListPropertiesInfo,
+          11
+        )}
+        ></ChNavigationListRender>
+      </ChSidebar>`,
+
+      stencil: () => `<ch-sidebar${renderShowcaseProperties(
+        state,
+        "stencil",
+        showcaseSidebarPropertiesInfo
+      )}
         >
-          <ch-navigation-list-render${renderBooleanPropertyOrEmpty(
-            "autoGrow",
+          <ch-navigation-list-render${renderShowcaseProperties(
             state,
+            "stencil",
+            showcaseNavigationListPropertiesInfo,
             13
           )}
-            expandableButton="${state.expandableButton}"
-            expandableButtonPosition="${state.expandableButtonPosition}"
-            class="navigation-list navigation-list-secondary"
-            model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-              "selectedLinkIndicator",
-              state,
-              13
-            )}
-            showCaptionOnCollapse="${state.showCaptionOnCollapse}"
-            tooltipDelay={${state.tooltipDelay}}
           ></ch-navigation-list-render>
         </ch-sidebar>`
+    }
   },
   render: render,
   state: state

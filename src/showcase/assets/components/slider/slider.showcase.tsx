@@ -1,6 +1,10 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChSliderElement> = {};
 
@@ -119,16 +123,40 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChSliderElement> =
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChSliderElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    {
+      name: "class",
+      fixed: true,
+      value: "slider",
+      type: "string"
+    },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "maxValue", defaultValue: 5, type: "number" },
+    { name: "minValue", defaultValue: 0, type: "number" },
+    { name: "step", defaultValue: 1, type: "number" },
+    { name: "value", defaultValue: 0, type: "number" },
+    { name: "input", fixed: true, value: "handleInput", type: "event" }
+  ];
+
 export const sliderShowcaseStory: ShowcaseStory<HTMLChSliderElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: () => `<ch-slider
-          class="slider"${renderBooleanPropertyOrEmpty("disabled", state)}
-          maxValue={${state.maxValue}}
-          minValue={${state.minValue}}
-          value={${state.value}}
-          step={${state.step}}
-          onInput={this.#handleValueChange}
-        ></ch-slider>`,
+  markupWithoutUIModel: {
+    react: () => `<ChSlider${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChSlider>`,
+
+    stencil: () => `<ch-slider${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-slider>`
+  },
   render: render,
   state: state
 };

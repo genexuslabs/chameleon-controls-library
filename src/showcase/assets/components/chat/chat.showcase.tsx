@@ -2,7 +2,8 @@ import { h } from "@stencil/core";
 import {
   ShowcaseRender,
   ShowcaseRenderProperties,
-  ShowcaseStory
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
 } from "../types";
 import {
   chatCallbacks,
@@ -11,6 +12,7 @@ import {
   codeFixerRecord
 } from "./callbacks";
 import { mercuryChatMessageRender } from "./mercury-code-render";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChChatElement> = {};
 
@@ -68,15 +70,37 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChChatElement> = [
   // }
 ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChChatElement>[] =
+  [
+    { name: "class", fixed: true, value: "chat", type: "string" },
+    {
+      name: "items",
+      fixed: true,
+      value: "controlUIModel",
+      type: "function"
+    }
+  ];
+
 export const chatShowcaseStory: ShowcaseStory<HTMLChChatElement> = {
   properties: showcaseRenderProperties,
   markupWithUIModel: {
     uiModelType: "ChatMessage[]",
     uiModel: () => state.items,
-    render: () => `<ch-chat
-    class="chat"
-    items={this.#controlUIModel}
-  ></ch-chat>`
+    render: {
+      react: () => `<ChChat${renderShowcaseProperties(
+        state,
+        "react",
+        showcasePropertiesInfo
+      )}
+      ></ChChat>`,
+
+      stencil: () => `<ch-chat${renderShowcaseProperties(
+        state,
+        "stencil",
+        showcasePropertiesInfo
+      )}
+        ></ch-chat>`
+    }
   },
   render: render,
   state: state

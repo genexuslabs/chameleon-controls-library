@@ -1,7 +1,11 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import { simpleModel1, simpleModel2 } from "./models";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChRadioGroupRenderElement> = {};
 const formRefs: {
@@ -142,18 +146,41 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChRadioGroupRenderE
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChRadioGroupRenderElement>[] =
+  [
+    { name: "class", fixed: true, value: "radio-group", type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    {
+      name: "input",
+      fixed: true,
+      value: "handleInput",
+      type: "event"
+    }
+  ];
+
 export const radioGroupShowcaseStory: ShowcaseStory<HTMLChRadioGroupRenderElement> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
       uiModel: () => state.model,
       uiModelType: "RadioGroupModel",
-      render: () => `<ch-radio-group-render
-          class="radio-group"${renderBooleanPropertyOrEmpty("disabled", state)}
-          model={this.#controlUIModel}
-          value="${state.value}"
-          onInput={this.#handleValueChange}
+      render: {
+        react: () => `<ChRadioGroupRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      ></ChRadioGroupRender>`,
+
+        stencil: () => `<ch-radio-group-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         ></ch-radio-group-render>`
+      }
     },
     render: render,
     state: state

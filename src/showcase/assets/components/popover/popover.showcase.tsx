@@ -1,6 +1,13 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import {
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty
+} from "../utils";
 
 const state: Partial<HTMLChPopoverElement> = {};
 let buttonRef: HTMLButtonElement;
@@ -50,6 +57,7 @@ const render = () => (
         inlineAlign={state.inlineAlign}
         inlineSizeMatch={state.inlineSizeMatch}
         mode={state.mode}
+        overflowBehavior={state.overflowBehavior}
         positionTry={state.positionTry}
         resizable={state.resizable}
         onPopoverOpened={handlePopoverOpened}
@@ -270,7 +278,23 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPopoverElement> =
             }
           ]
         },
-
+        {
+          id: "overflowBehavior",
+          caption: "Overflow Behavior",
+          value: "overflow",
+          type: "enum",
+          render: "radio-group",
+          values: [
+            {
+              value: "overflow",
+              caption: "Overflow"
+            },
+            {
+              value: "add-scroll",
+              caption: "Add Scroll"
+            }
+          ]
+        },
         {
           id: "resizable",
           caption: "Resizable",
@@ -281,43 +305,155 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChPopoverElement> =
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChPopoverElement>[] =
+  [
+    { name: "allowDrag", defaultValue: "no", type: "string" },
+    {
+      name: "actionElement",
+      fixed: true,
+      value: "buttonRef",
+      type: "function"
+    },
+    { name: "blockAlign", defaultValue: "center", type: "string" },
+    { name: "blockSizeMatch", defaultValue: "content", type: "string" },
+    {
+      name: "class",
+      fixed: true,
+      value: "popover popover-secondary",
+      type: "string"
+    },
+    { name: "closeOnClickOutside", defaultValue: false, type: "boolean" },
+    { name: "hidden", defaultValue: true, type: "boolean" },
+    { name: "inlineAlign", defaultValue: "center", type: "string" },
+    { name: "inlineSizeMatch", defaultValue: "content", type: "string" },
+    { name: "mode", defaultValue: "auto", type: "string" },
+    { name: "overflowBehavior", defaultValue: "overflow", type: "string" },
+    { name: "positionTry", defaultValue: "none", type: "string" },
+    { name: "resizable", defaultValue: false, type: "boolean" },
+    {
+      name: "popoverClosed",
+      fixed: true,
+      value: "handlePopoverClosed",
+      type: "event"
+    }
+  ];
+
+const showcaseOpenButtonPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChPopoverElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "button-primary",
+      type: "string"
+    },
+    {
+      name: "type",
+      fixed: true,
+      value: "button",
+      type: "string"
+    }
+    // TODO: Add ref keyword/type
+  ];
+
+const showcaseCloseButtonPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChPopoverElement>[] =
+  [
+    {
+      name: "aria-label",
+      fixed: true,
+      value: "Close",
+      type: "string"
+    },
+    {
+      name: "class",
+      fixed: true,
+      value: "button-tertiary",
+      type: "string"
+    },
+    {
+      name: "type",
+      fixed: true,
+      value: "button",
+      type: "string"
+    },
+    {
+      name: "popoverClosed",
+      fixed: true,
+      value: "handlePopoverClosed",
+      type: "event"
+    }
+  ];
+
 export const popoverShowcaseStory: ShowcaseStory<HTMLChPopoverElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: () => `<button
-          class="button-primary"
-          type="button"
-          ref={el => (this.#buttonRef = el)}
+  markupWithoutUIModel: {
+    react: () => `<button${renderShowcaseProperties(
+      state,
+      "react",
+      showcaseOpenButtonPropertiesInfo
+    )}
+      >
+        Open popover
+      </button>
+
+      <ChPopover${renderShowcaseProperties(
+        state,
+        "react",
+        showcasePropertiesInfo
+      )}
+      >
+        <div slot="header">
+          <span ${showcaseTemplateClassProperty(
+            "react",
+            "heading-4"
+          )}>Header title</span>
+
+          <button${renderShowcaseProperties(
+            state,
+            "react",
+            showcaseCloseButtonPropertiesInfo,
+            13
+          )}
+          >
+          </button>
+        </div>
+
+        Popover content
+      </ChPopover>`,
+
+    stencil: () => `<button${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcaseOpenButtonPropertiesInfo
+    )}
         >
           Open popover
         </button>
   
-        <ch-popover
-          allowDrag="${state.allowDrag}"
-          actionElement={this.#buttonRef}
-          blockAlign="${state.blockAlign}"
-          blockSizeMatch="${state.blockSizeMatch}"
-          class="popover popover-secondary"${renderBooleanPropertyOrEmpty(
-            "closeOnClickOutside",
-            state
-          )}${renderBooleanPropertyOrEmpty("hidden", state)}
-          inlineAlign="${state.inlineAlign}"
-          inlineSizeMatch="${state.inlineSizeMatch}"
-          mode="${state.mode}"
-          positionTry="${state.positionTry}"${renderBooleanPropertyOrEmpty(
-    "resizable",
-    state
-  )}
-          onPopoverClosed={this.#handlePopoverClosed}
+        <ch-popover${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         >
           <div slot="header">
-            <span class="heading-4">Header title</span>
-
-            <button aria-label="Close" class="button-tertiary" onClick={this.#handlePopoverClosed}>
+            <span ${showcaseTemplateClassProperty(
+              "stencil",
+              "heading-4"
+            )}>Header title</span>
+  
+            <button${renderShowcaseProperties(
+              state,
+              "stencil",
+              showcaseCloseButtonPropertiesInfo,
+              15
+            )}
+            >
             </button>
           </div>
-
+  
           Popover content
-        </ch-popover>`,
+        </ch-popover>`
+  },
   render: render,
   state: state
 };

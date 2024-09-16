@@ -1,7 +1,16 @@
 import { forceUpdate, h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplateFrameWork,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import { ChDialogCustomEvent } from "../../../../components";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  insertSpacesAtTheBeginningExceptForTheFirstLine,
+  renderShowcaseProperties,
+  showcaseTemplateClassProperty
+} from "../utils";
 
 const state: Partial<HTMLChDialogElement> = {};
 
@@ -162,55 +171,135 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChDialogElement> =
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement>[] =
+  [
+    { name: "adjustPositionAfterResize", defaultValue: false, type: "boolean" },
+    { name: "allowDrag", defaultValue: "no", type: "string" },
+    { name: "caption", defaultValue: undefined, type: "string" },
+    {
+      name: "class",
+      fixed: true,
+      value: "dialog dialog-primary",
+      type: "string"
+    },
+    {
+      name: "closeButtonAccessibleName",
+      defaultValue: undefined,
+      type: "string"
+    },
+    { name: "hidden", defaultValue: false, type: "boolean" },
+    { name: "modal", defaultValue: true, type: "boolean" },
+    { name: "resizable", defaultValue: false, type: "boolean" },
+    { name: "showFooter", defaultValue: false, type: "boolean" },
+    { name: "showHeader", defaultValue: false, type: "boolean" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    { name: "unCheckedValue", defaultValue: undefined, type: "string" },
+    {
+      name: "dialogClosed",
+      fixed: true,
+      value: "handleDialogClosed",
+      type: "event"
+    }
+  ];
+
+const showcaseButtonPropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCheckboxElement>[] =
+  [
+    {
+      name: "class",
+      fixed: true,
+      value: "button-primary",
+      type: "string"
+    },
+    {
+      name: "type",
+      fixed: true,
+      value: "button",
+      type: "string"
+    },
+    {
+      name: "click",
+      fixed: true,
+      value: "handleDialogOpen",
+      type: "event"
+    }
+  ];
+
+const lightDOMMarkup = (
+  framework: ShowcaseTemplateFrameWork
+) => `<label htmlFor="some-input">Any data</label>
+<input id="some-input" ${showcaseTemplateClassProperty(
+  framework,
+  "form-input"
+)} type="text" />
+
+<button ${showcaseTemplateClassProperty(
+  framework,
+  "button-primary"
+)}>Button</button>
+<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
+
+<button slot="footer" type="button" ${showcaseTemplateClassProperty(
+  framework,
+  "button-secondary"
+)}>
+  Cancel
+</button>
+<button slot="footer" type="button" ${showcaseTemplateClassProperty(
+  framework,
+  "button-primary"
+)}>
+  Save
+</button>`;
+
+const lightDOMMarkupReact = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("react"),
+  8
+);
+
+const lightDOMMarkupStencil = insertSpacesAtTheBeginningExceptForTheFirstLine(
+  lightDOMMarkup("stencil"),
+  10
+);
+
 export const dialogShowcaseStory: ShowcaseStory<HTMLChDialogElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: () => `<button
-          class="button-primary"
-          type="button"
-          onClick={this.#handleDialogOpen}
+  markupWithoutUIModel: {
+    react: () => `<button${renderShowcaseProperties(
+      state,
+      "react",
+      showcaseButtonPropertiesInfo
+    )}
+      >
+        Open dialog
+      </button>
+
+      <ChDialog${renderShowcaseProperties(
+        state,
+        "react",
+        showcasePropertiesInfo
+      )}
+      >
+        ${lightDOMMarkupReact}
+      </ChDialog>`,
+
+    stencil: () => `<button${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcaseButtonPropertiesInfo
+    )}
         >
           Open dialog
         </button>
-  
-        <ch-dialog${renderBooleanPropertyOrEmpty(
-          "adjustPositionAfterResize",
-          state
+
+        <ch-dialog${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
         )}
-          allowDrag="${state.allowDrag}"
-          caption="${state.caption}"
-          class="dialog dialog-primary"
-          closeButtonAccessibleName="${
-            state.closeButtonAccessibleName
-          }"${renderBooleanPropertyOrEmpty(
-    "hidden",
-    state
-  )}${renderBooleanPropertyOrEmpty(
-    "modal",
-    state
-  )}${renderBooleanPropertyOrEmpty(
-    "resizable",
-    state
-  )}${renderBooleanPropertyOrEmpty(
-    "showFooter",
-    state
-  )}${renderBooleanPropertyOrEmpty("showHeader", state)}
-          onDialogClosed={this.#handlePopoverClosed}
         >
-          <label htmlFor="some-input">Any data</label>
-          <input id="some-input" class="form-input" type="text" />
-
-          <button class="button-primary">
-            button
-          </button>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-
-          <button slot="footer" type="button" class="button-secondary">
-            Cancel
-          </button>
-          <button slot="footer" type="button" class="button-primary">
-            Save
-          </button>
-        </ch-dialog>`,
+          ${lightDOMMarkupStencil}
+        </ch-dialog>`
+  },
   render: render,
   state: state
 };

@@ -2,7 +2,8 @@ import { forceUpdate, h } from "@stencil/core";
 import {
   ShowcaseRenderProperties,
   ShowcaseRenderProperty,
-  ShowcaseStory
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
 } from "../types";
 import {
   comboBoxFilterChange,
@@ -15,7 +16,7 @@ import {
   ComboBoxItemModel
 } from "../../../../components/combo-box/types";
 import { ChComboBoxRenderCustomEvent } from "../../../../components";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChComboBoxRenderElement> = {};
 let itemsFilteredByTheServer: ComboBoxItemModel[] = [];
@@ -231,7 +232,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
         {
           id: "filter",
           caption: "Filter",
-          value: "",
+          value: undefined,
           type: "string"
         },
         {
@@ -276,31 +277,49 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChComboBoxRenderEle
     }
   ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChComboBoxRenderElement>[] =
+  [
+    { name: "accessibleName", defaultValue: undefined, type: "string" },
+    { name: "class", fixed: true, value: "combo-box", type: "string" },
+    { name: "disabled", defaultValue: false, type: "boolean" },
+    { name: "filter", defaultValue: undefined, type: "string" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "string" },
+    { name: "placeholder", defaultValue: undefined, type: "string" },
+    { name: "readonly", defaultValue: false, type: "boolean" },
+    { name: "suggest", defaultValue: false, type: "boolean" },
+    { name: "suggestDebounce", defaultValue: 250, type: "number" },
+    { name: "resizable", defaultValue: false, type: "boolean" },
+    { name: "value", defaultValue: undefined, type: "string" },
+    {
+      name: "filterChange",
+      fixed: true,
+      value: "handleFilterChange",
+      type: "event"
+    },
+    { name: "input", fixed: true, value: "handleValueChange", type: "event" }
+  ];
+
 export const comboBoxShowcaseStory: ShowcaseStory<HTMLChComboBoxRenderElement> =
   {
     properties: showcaseRenderProperties,
     markupWithUIModel: {
       uiModel: () => state.model,
       uiModelType: "ComboBoxModel",
-      render: () => `<ch-combo-box-render
-          accessibleName="${state.accessibleName}"
-          class="combo-box"${renderBooleanPropertyOrEmpty("disabled", state)}
-          filter="${state.filter}"
-          model={this.#controlUIModel}${renderBooleanPropertyOrEmpty(
-            "suggest",
-            state
-          )}
-          placeholder="${state.placeholder}"
-          suggestDebounce={${
-            state.suggestDebounce
-          }}${renderBooleanPropertyOrEmpty(
-        "readonly",
-        state
-      )}${renderBooleanPropertyOrEmpty("resizable", state)}
-          value="${state.value}"
-          onInput={this.#handleValueChange}
-          onFilterChange={this.#handleFilterChange}
+      render: {
+        react: () => `<ChComboBoxRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      ></ChComboBoxRender>`,
+
+        stencil: () => `<ch-combo-box-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         ></ch-combo-box-render>`
+      }
     },
     render: render,
     state: state

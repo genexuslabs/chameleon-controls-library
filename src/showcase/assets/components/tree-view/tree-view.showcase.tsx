@@ -1,5 +1,9 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
 import {
   lazyLargeModel,
   disabledItemsModel,
@@ -13,7 +17,7 @@ import {
   checkDroppableZoneCallback,
   dropItemsCallback
 } from "./models";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChTreeViewRenderElement> = {};
 
@@ -90,6 +94,12 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTreeViewRenderEle
         {
           id: "editableItems",
           caption: "Editable Items",
+          value: true,
+          type: "boolean"
+        },
+        {
+          id: "expandOnClick",
+          caption: "Expand on Click",
           value: true,
           type: "boolean"
         },
@@ -171,7 +181,7 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTreeViewRenderEle
           id: "filter",
           columnSpan: 2,
           caption: "Filter",
-          value: "",
+          value: undefined,
           type: "string"
         }
       ]
@@ -180,6 +190,92 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChTreeViewRenderEle
 
 // Hide matches and show non-matches
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChTreeViewRenderElement>[] =
+  [
+    { name: "checkbox", defaultValue: false, type: "boolean" },
+    { name: "checked", defaultValue: false, type: "boolean" },
+    {
+      name: "class",
+      fixed: true,
+      value: "tree-view tree-view-secondary",
+      type: "string"
+    },
+    {
+      name: "checkDroppableZoneCallback",
+      fixed: true,
+      value: "checkDroppableZoneCallback",
+      type: "function"
+    },
+    { name: "dragDisabled", defaultValue: true, type: "boolean" },
+    { name: "dropDisabled", defaultValue: true, type: "boolean" },
+    {
+      name: "dropItemsCallback",
+      fixed: true,
+      value: "dropItemsCallback",
+      type: "function"
+    },
+    { name: "dropMode", defaultValue: "above", type: "string" },
+    { name: "editableItems", defaultValue: false, type: "boolean" },
+    { name: "expandableButton", defaultValue: "decorative", type: "string" },
+    { name: "expandOnClick", defaultValue: true, type: "boolean" },
+    { name: "filter", defaultValue: undefined, type: "string" },
+    { name: "filterDebounce", defaultValue: 250, type: "number" },
+    // TODO: filterList and filterOptions
+    { name: "filterType", defaultValue: "none", type: "string" },
+    {
+      name: "getImagePathCallback",
+      fixed: true,
+      value: "getImagePathCallback",
+      type: "function"
+    },
+    {
+      name: "lazyLoadTreeItemsCallback",
+      fixed: true,
+      value: "lazyLoadTreeItemsCallback",
+      type: "function"
+    },
+    {
+      name: "modifyItemCaptionCallback",
+      fixed: true,
+      value: "modifyItemCaptionCallback",
+      type: "function"
+    },
+    { name: "multiSelection", defaultValue: false, type: "boolean" },
+    { name: "model", fixed: true, value: "controlUIModel", type: "function" },
+    { name: "showLines", defaultValue: "none", type: "string" },
+    {
+      name: "sortItemsCallback",
+      fixed: true,
+      value: "sortItemsCallback",
+      type: "function"
+    },
+    { name: "toggleCheckboxes", defaultValue: false, type: "boolean" },
+    {
+      name: "checkedItemsChange",
+      fixed: true,
+      value: "handleCheckedItemsChange",
+      type: "event"
+    },
+    {
+      name: "itemContextmenu",
+      fixed: true,
+      value: "handleItemContextmenu",
+      type: "event"
+    },
+    {
+      name: "itemOpenReference",
+      fixed: true,
+      value: "handleItemOpenReference",
+      type: "event"
+    },
+    {
+      name: "selectedItemsChange",
+      fixed: true,
+      value: "handleSelectedItemsChange",
+      type: "event"
+    }
+  ];
+
 export const treeViewShowcaseStory: ShowcaseStory<HTMLChTreeViewRenderElement> =
   {
     properties: showcaseRenderProperties,
@@ -187,38 +283,21 @@ export const treeViewShowcaseStory: ShowcaseStory<HTMLChTreeViewRenderElement> =
     markupWithUIModel: {
       uiModel: () => state.model,
       uiModelType: "TreeViewModel",
-      render: () => `<ch-tree-view-render
-          class="tree-view tree-view-secondary"${renderBooleanPropertyOrEmpty(
-            "checkbox",
-            state
-          )}${renderBooleanPropertyOrEmpty("checked", state)}
-          checkDroppableZoneCallback={checkDroppableZoneCallback}${renderBooleanPropertyOrEmpty(
-            "dragDisabled",
-            state
-          )}${renderBooleanPropertyOrEmpty("dropDisabled", state)}
-          dropItemsCallback={dropItemsCallback}
-          dropMode="${state.dropMode}"${renderBooleanPropertyOrEmpty(
-        "editableItems",
-        state
-      )}${renderBooleanPropertyOrEmpty("expandOnClick", state)}
-          expandableButton="${state.expandableButton}"
-          filter="${state.filter}"
-          filterDebounce="${state.filterDebounce}"
-          filterList="${state.filterList}"
-          filterOptions="${state.filterOptions}"
-          filterType="${state.filterType}"
-          lazyLoadTreeItemsCallback={lazyLoadTreeItemsCallback}
-          model={this.#controlUIModel}
-          modifyItemCaptionCallback={modifyItemCaptionCallback}${renderBooleanPropertyOrEmpty(
-            "multiSelection",
-            state
-          )}
-          showLines="${state.showLines}"
-          sortItemsCallback={sortItemsCallback}${renderBooleanPropertyOrEmpty(
-            "toggleCheckboxes",
-            state
-          )}
+      render: {
+        react: () => `<ChTreeViewRender${renderShowcaseProperties(
+          state,
+          "react",
+          showcasePropertiesInfo
+        )}
+      ></ChTreeViewRender>`,
+
+        stencil: () => `<ch-tree-view-render${renderShowcaseProperties(
+          state,
+          "stencil",
+          showcasePropertiesInfo
+        )}
         ></ch-tree-view-render>`
+      }
     },
     state: state
   };

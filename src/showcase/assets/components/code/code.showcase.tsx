@@ -1,6 +1,10 @@
 import { h } from "@stencil/core";
-import { ShowcaseRenderProperties, ShowcaseStory } from "../types";
-import { renderBooleanPropertyOrEmpty } from "../utils";
+import {
+  ShowcaseRenderProperties,
+  ShowcaseStory,
+  ShowcaseTemplatePropertyInfo
+} from "../types";
+import { renderShowcaseProperties } from "../utils";
 
 const state: Partial<HTMLChCodeElement> = {};
 
@@ -46,16 +50,30 @@ const showcaseRenderProperties: ShowcaseRenderProperties<HTMLChCodeElement> = [
   }
 ];
 
+const showcasePropertiesInfo: ShowcaseTemplatePropertyInfo<HTMLChCodeElement>[] =
+  [
+    { name: "class", fixed: true, value: "code", type: "string" },
+    { name: "showIndicator", defaultValue: false, type: "boolean" },
+    { name: "value", defaultValue: undefined, type: "string-template" }
+  ];
+
 export const codeShowcaseStory: ShowcaseStory<HTMLChCodeElement> = {
   properties: showcaseRenderProperties,
-  markupWithoutUIModel: () => `<ch-code
-          class="code"
-          language="${state.language}"${renderBooleanPropertyOrEmpty(
-    "showIndicator",
-    state
-  )}
-          value={\`${state.value}\`}
-        ></ch-code>`,
+  markupWithoutUIModel: {
+    react: () => `<ChCode${renderShowcaseProperties(
+      state,
+      "react",
+      showcasePropertiesInfo
+    )}
+      ></ChCode>`,
+
+    stencil: () => `<ch-code${renderShowcaseProperties(
+      state,
+      "stencil",
+      showcasePropertiesInfo
+    )}
+        ></ch-code>`
+  },
   render: render,
   state: state
 };

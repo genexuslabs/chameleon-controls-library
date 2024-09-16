@@ -6,6 +6,7 @@ export const MAIN_WIDGET = "main";
 export const HEADER_WIDGET = "header";
 export const MAIN_SECTION = "main";
 export const USAGE_STENCIL_JS = "usage (StencilJS)";
+export const USAGE_REACT = "usage (React)";
 export const CONFIGURATION_WIDGET = "configuration";
 
 export const flexibleLayoutConfiguration: FlexibleLayoutModel = {
@@ -60,6 +61,7 @@ export const flexibleLayoutPlaygroundConfiguration: FlexibleLayoutModel = {
       type: "tabbed",
       widgets: [
         { id: MAIN_WIDGET, name: "Playground" },
+        { id: USAGE_REACT, name: "Usage (React)" },
         { id: USAGE_STENCIL_JS, name: "Usage (StencilJS)" }
       ]
     },
